@@ -27,7 +27,7 @@ import com.hp.hpl.jena.rdf.model.test.helpers.ModelHelper;
 import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 import com.hp.hpl.jena.test.JenaTestBase;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * TestLiteralImpl - minimal, this is the first time an extra test has

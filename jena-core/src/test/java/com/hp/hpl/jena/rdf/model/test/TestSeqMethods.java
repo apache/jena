@@ -34,7 +34,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestSuite;
 
 public class TestSeqMethods extends AbstractContainerMethods

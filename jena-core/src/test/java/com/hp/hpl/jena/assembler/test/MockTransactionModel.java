@@ -20,7 +20,7 @@ package com.hp.hpl.jena.assembler.test;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.ModelAssembler;

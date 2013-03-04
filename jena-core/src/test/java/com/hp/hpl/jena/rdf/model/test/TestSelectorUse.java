@@ -31,7 +31,7 @@ import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 // import com.hp.hpl.jena.regression.Regression.*;
 

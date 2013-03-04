@@ -32,7 +32,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class TestSimpleListStatements extends AbstractModelTestBase
 {

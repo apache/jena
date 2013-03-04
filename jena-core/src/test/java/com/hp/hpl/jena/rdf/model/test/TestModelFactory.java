@@ -30,7 +30,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.test.JenaTestBase;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 /**

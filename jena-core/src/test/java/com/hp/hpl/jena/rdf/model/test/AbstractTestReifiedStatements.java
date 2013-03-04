@@ -34,7 +34,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public abstract class AbstractTestReifiedStatements extends ModelTestBase
 {

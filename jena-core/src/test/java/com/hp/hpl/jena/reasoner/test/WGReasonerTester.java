@@ -27,7 +27,7 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import junit.framework.Assert ;
+import org.junit.Assert ;
 import junit.framework.TestCase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;

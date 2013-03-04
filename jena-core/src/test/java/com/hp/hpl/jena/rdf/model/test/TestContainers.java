@@ -23,7 +23,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Seq;
 import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Tests for containers.

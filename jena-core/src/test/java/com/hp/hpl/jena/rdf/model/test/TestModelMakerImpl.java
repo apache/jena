@@ -33,7 +33,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 /**

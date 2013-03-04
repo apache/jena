@@ -24,7 +24,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.test.helpers.ModelHelper;
 import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class TestLiteralsInModel extends AbstractModelTestBase
 {

@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.rdf.arp.states;
 
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.xml.sax.Attributes;
 

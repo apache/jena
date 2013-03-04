@@ -22,7 +22,7 @@ import java.io.IOException ;
 import java.net.HttpURLConnection ;
 import java.net.URL ;
 
-import junit.framework.Assert ;
+import org.junit.Assert ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;

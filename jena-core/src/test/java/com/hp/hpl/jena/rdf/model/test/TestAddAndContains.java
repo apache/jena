@@ -25,7 +25,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class TestAddAndContains extends AbstractModelTestBase
 {

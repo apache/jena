@@ -24,7 +24,7 @@ import java.lang.management.ThreadMXBean ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 
-import junit.framework.Assert ;
+import org.junit.Assert ;
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 

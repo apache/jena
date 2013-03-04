@@ -22,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.test.JenaTestBase;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestSuite;
 
 /**

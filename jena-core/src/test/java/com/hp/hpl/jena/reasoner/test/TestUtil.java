@@ -18,12 +18,15 @@
 
 package com.hp.hpl.jena.reasoner.test;
 
-import junit.framework.*;
-import java.util.Iterator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.rdf.model.*;
+import org.junit.Assert ;
+import junit.framework.TestCase ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
 
 /**
  * Collection of utilities to assist with unit testing.
