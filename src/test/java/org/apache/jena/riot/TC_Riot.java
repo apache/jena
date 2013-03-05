@@ -32,20 +32,16 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Old world - org.openjena.riot
     TS_Out.class
-
-    // New world - org.apache.jena.riot
     , TS_Lang.class
     , TS_LangSuite.class
     , TS_ReaderRIOT.class
     , TS_IO2.class
     , TS_RIOTAdapters.class
     , TS_Process.class
-    //, TS_RiotMisc.class
+    , TS_RiotWriter.class
     , TS_RiotSystem.class
     , TS_RiotWeb.class
-    , TS_RiotWriter.class
 })
 
 

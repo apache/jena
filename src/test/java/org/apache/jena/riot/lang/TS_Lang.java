@@ -29,7 +29,6 @@ import org.junit.runners.Suite ;
      TestIRI.class
     , TestLang.class
     , TestNodeAllocator.class
-    
     , TestTurtleTerms.class
     , TestLangNTriples.class
     , TestLangNQuads.class
@@ -37,7 +36,6 @@ import org.junit.runners.Suite ;
     , TestLangTrig.class
     , TestLangRdfJson.class
     , TestParserFactory.class
-
     , TestPipedRDFIterators.class
 })
 

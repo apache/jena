@@ -25,15 +25,12 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.riot.* ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
-import org.apache.jena.riot.lang.LangRDFJSON ;
-import org.apache.jena.riot.lang.RDFParserOutputCounting ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
@@ -45,14 +42,12 @@ public class TestLangRdfJson extends BaseTest
 	@BeforeClass
 	public static void setup()
 	{
-		IO_Jena.wireIntoJena();
+	    RIOT.init();
 	}
 	
-	@AfterClass
-	public static void teardown()
-	{
-	    IO_Jena.resetJenaReaders();
-	}
+//	@AfterClass
+//	public static void teardown()
+//	{ }
 	
 	@Test
 	public void rdfjson_get_jena_reader()

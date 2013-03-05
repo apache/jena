@@ -35,8 +35,6 @@ import com.hp.hpl.jena.rdf.model.Model ;
 @RunWith(Parameterized.class)
 public class TestJenaWriters extends AbstractWriterTest
 {
-    static { IO_Jena2.wireIntoJenaW() ; }
-    
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
         List<Object[]> x = new ArrayList<Object[]>() ;
@@ -78,10 +76,11 @@ public class TestJenaWriters extends AbstractWriterTest
     
     private void test(String filename) {
         Model m = readModel(filename) ;
-        ByteArrayOutputStream out1 = new ByteArrayOutputStream() ;
-        m.write(out1, jenaFormatName) ;
         ByteArrayOutputStream out2 = new ByteArrayOutputStream() ;
         RDFWriterMgr.write(out2, m, IO_Jena2.getFormatForJenaWriter(jenaFormatName)) ;
+
+        ByteArrayOutputStream out1 = new ByteArrayOutputStream() ;
+        m.write(out1, jenaFormatName) ;
         
         try {
             assertArrayEquals("Format: "+jenaFormatName, out2.toByteArray(), out1.toByteArray()) ;

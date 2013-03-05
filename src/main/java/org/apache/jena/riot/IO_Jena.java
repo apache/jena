@@ -84,8 +84,8 @@ public class IO_Jena
         RDFReaderFImpl.setBaseReaderClassName("Turtle", jenaTurtleReader) ;
         RDFReaderFImpl.setBaseReaderClassName("TTL",    jenaTurtleReader) ;
 
-        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", "") ;
-        RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", "") ;
+        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", null) ;
+        RDFWriterFImpl.setBaseWriterClassName("RDFJSON",  null) ;
     }
     
     /** Register for use with Model.read **/ 
