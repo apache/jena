@@ -45,6 +45,8 @@ public class StreamManager
     
     private static StreamManager globalStreamManager ;
     
+    public StreamManager() {}
+    
     /** Return a default configuration StreamManager 
      *  with a {@link LocatorFile}, 
      *  {@link LocatorURL},
