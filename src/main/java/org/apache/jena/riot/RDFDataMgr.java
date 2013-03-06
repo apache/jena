@@ -19,6 +19,7 @@
 package org.apache.jena.riot;
 
 import java.io.* ;
+import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
@@ -31,16 +32,20 @@ import org.apache.jena.riot.stream.StreamManager ;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.writer.NQuadsWriter ;
+import org.apache.jena.riot.writer.NTriplesWriter ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
@@ -1022,6 +1027,25 @@ public class RDFDataMgr
     public static void write(Writer out, DatasetGraph dataset, RDFFormat serialization)
     {
         write$(out, dataset, serialization) ;
+    }
+
+    /** Write an iterator of triples (in N-Triples)
+     * @param out
+     * @param iterator
+     */
+    public static void writeTriples(OutputStream out, Iterator<Triple> iterator)
+    {
+        NTriplesWriter.write(out, iterator) ;        
+    }
+    
+
+    /** Write an iterator of quads (in N-Quads)
+     * @param out
+     * @param iterator
+     */
+    public static void writeQuads(OutputStream out, Iterator<Quad> iterator)
+    {
+        NQuadsWriter.write(out, iterator) ;        
     }
 
     /** Create a writer for an RDF language

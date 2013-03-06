@@ -23,13 +23,18 @@ import java.io.OutputStream ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.WriterI ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.system.SyntaxLabels ;
+import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** A class that print quads, N-Quads style */ 
+/** A class that print quads, N-Quads style *  
+ * @see WriterStreamRDFTuples
+ * @see RDFDataMgr#writeTriples
+ */ 
 public class SinkQuadOutput implements Sink<Quad>
 {
     private Prologue prologue = null ;
@@ -37,6 +42,8 @@ public class SinkQuadOutput implements Sink<Quad>
     private NodeToLabel labelPolicy = null ;
     private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
+    /** @deprecated Use {@linkplain RDFDataMgr#writeTriples} */ 
+    @Deprecated
     public SinkQuadOutput(OutputStream outs)
     {
         this(outs, null, SyntaxLabels.createNodeToLabel()) ;

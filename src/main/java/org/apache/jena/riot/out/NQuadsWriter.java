@@ -21,12 +21,8 @@ package org.apache.jena.riot.out;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.Prologue ;
-import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -34,7 +30,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class NQuadsWriter
 {
-    /** @deprecated Use {@link RDFDataMgr#write(OutputStream, DatasetGraph, Lang)}
+    /** @deprecated Use {@linkplain RDFDataMgr#write(OutputStream, DatasetGraph, Lang)}
      * with {@code Lang.NQUADS}.
      */  
     @Deprecated
@@ -43,7 +39,7 @@ public class NQuadsWriter
         RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
     }
     
-    /** @deprecated Use {@link RDFDataMgr#write(OutputStream, Dataset, Lang)} 
+    /** @deprecated Use {@linkplain RDFDataMgr#write(OutputStream, Dataset, Lang)} 
      * with {@code Lang.NQUADS}.
      */
     @Deprecated
@@ -52,11 +48,10 @@ public class NQuadsWriter
         RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
     }
     
+    /** @deprecated Use {@linkplain RDFDataMgr#writeQuads} */
+    @Deprecated
     public static void write(OutputStream out, Iterator<Quad> iter)
     {
-        Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
-        // Write prologue.
-        Sink<Quad> sink = new SinkQuadOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
-        Iter.sendToSink(iter, sink) ;
+        RDFDataMgr.writeQuads(out, iter) ;
     }
 }

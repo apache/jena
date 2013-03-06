@@ -23,21 +23,31 @@ import java.io.OutputStream ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.WriterI ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.system.SyntaxLabels ;
+import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
-/** A class that print triples, N-triples style */ 
+/** A class that print triples, N-triples style
+ *  
+ * @see WriterStreamRDFTuples
+ * @see RDFDataMgr#writeTriples
+ */ 
 public class SinkTripleOutput implements Sink<Triple>
 {
+    // WriterStreamRDFTuples
+    
     private Prologue prologue = null ;
     private final WriterI out ;
     private NodeToLabel labelPolicy = null ;
     
     private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
+    /** @deprecated Use {@linkplain RDFDataMgr#writeTriples} */ 
+    @Deprecated
     public SinkTripleOutput(OutputStream outs)
     {
         this(outs, null, SyntaxLabels.createNodeToLabel()) ;

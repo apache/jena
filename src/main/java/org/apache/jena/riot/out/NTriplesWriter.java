@@ -21,12 +21,8 @@ package org.apache.jena.riot.out;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.system.Prologue ;
-import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -34,7 +30,7 @@ import com.hp.hpl.jena.graph.Triple ;
 public class NTriplesWriter
 {
     /** @deprecated 
-     * Use {@link RDFDataMgr#write(OutputStream, Graph, Lang)}
+     * Use {@linkplain RDFDataMgr#write(OutputStream, Graph, Lang)}
      * with {@code Lang.NTRIPLES}
      */  
     @Deprecated
@@ -43,11 +39,10 @@ public class NTriplesWriter
         RDFDataMgr.write(out, graph, Lang.NTRIPLES) ;
     }
     
+    /** @deprecated Use {@linkplain RDFDataMgr#writeTriples} */
+    @Deprecated
     public static void write(OutputStream out, Iterator<Triple> iter)
     {
-        Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
-        //NodeToLabel.createBNodeByLabelEncoded() ;
-        Sink<Triple> sink = new SinkTripleOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
-        Iter.sendToSink(iter, sink) ;
+        RDFDataMgr.writeTriples(out, iter) ;
     }
 }
