@@ -23,7 +23,7 @@ import org.apache.jena.atlas.lib.Closeable ;
 
 /** Simple abstraction of a string/character output stream */
 
-public interface WriterI extends Closeable
+public interface AWriter extends Closeable
 {
     public void write(char ch) ;
     public void write(char[] cbuf) ; 

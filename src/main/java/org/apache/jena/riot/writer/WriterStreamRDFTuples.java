@@ -18,16 +18,13 @@
 
 package org.apache.jena.riot.writer;
 
-import java.io.OutputStream ;
-import java.io.Writer ;
-
+import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterNT ;
-import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -39,19 +36,22 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class WriterStreamRDFTuples implements StreamRDF
 {
-    private final IndentedWriter out ;
+    private final AWriter out ;
     
-    public WriterStreamRDFTuples(OutputStream outs)
-    {
-        this(new IndentedWriter(outs)) ;
-    }
-
-    public WriterStreamRDFTuples(Writer w)
-    {
-        this(RiotLib.create(w)) ;
-    }
-
-    public WriterStreamRDFTuples(IndentedWriter w)
+//    public WriterStreamRDFTuples(OutputStream outs)
+//    {
+//        this(IO.wrapUTF8(outs)) ;
+//    }
+//
+//    public WriterStreamRDFTuples(Writer w)
+//    {
+//        this(IO.wrap(w)) ;
+//    }
+//
+    /**
+     * See {@linkplain StreamRDFLib#writer} for ways to create a writer stream.
+     */
+    public WriterStreamRDFTuples(AWriter w)
     {
         out = w ;
     }

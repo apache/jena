@@ -21,7 +21,7 @@ package org.apache.jena.riot.out;
 import java.io.IOException ;
 import java.io.Writer ;
 
-import org.apache.jena.atlas.io.WriterI ;
+import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.lib.BitsInt ;
 import org.apache.jena.atlas.lib.Chars ;
 
@@ -60,14 +60,14 @@ public class OutputUtils
     }
 
     /** Print the number x in width hex chars.  x must fit */
-    public static void printHex(WriterI out, int x, int width)
+    public static void printHex(AWriter out, int x, int width)
     {
         for ( int i = width-1 ; i >= 0 ; i-- )
             x = oneHex(out, x, i) ;
     }
 
     /** Print one hex digit of the number */
-    public static int oneHex(WriterI out, int x, int i)
+    public static int oneHex(AWriter out, int x, int i)
     {
         int y = BitsInt.unpack(x, 4*i, 4*i+4) ;
         char charHex = Chars.hexDigitsUC[y] ;

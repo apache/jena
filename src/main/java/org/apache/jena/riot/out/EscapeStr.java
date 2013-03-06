@@ -19,7 +19,7 @@
 package org.apache.jena.riot.out;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.io.WriterI ;
+import org.apache.jena.atlas.io.AWriter ;
 
 import com.hp.hpl.jena.sparql.lang.ParserBase ;
 
@@ -31,7 +31,7 @@ public class EscapeStr
 
     public EscapeStr(boolean asciiOnly) { this.ascii = asciiOnly ; }
 
-    public void writeURI(WriterI w, String s)
+    public void writeURI(AWriter w, String s)
     {
         if ( ascii )
             stringEsc(w, s, true, ascii) ;
@@ -40,12 +40,12 @@ public class EscapeStr
             w.print(s) ;
     }
 
-    public void writeStr(WriterI w, String s) 
+    public void writeStr(AWriter w, String s) 
     {
         stringEsc(w, s, true, ascii) ;
     }
 
-    public void writeStrMultiLine(WriterI w, String s) 
+    public void writeStrMultiLine(AWriter w, String s) 
     {
         // N-Triples does not have """
         stringEsc(w, s, false, ascii) ;
@@ -65,7 +65,7 @@ public class EscapeStr
         return sb.toString() ;
     }
 
-    public static void stringEsc(WriterI out, String s, boolean singleLineString, boolean asciiOnly)
+    public static void stringEsc(AWriter out, String s, boolean singleLineString, boolean asciiOnly)
     {
         int len = s.length() ;
         for (int i = 0; i < len; i++) {

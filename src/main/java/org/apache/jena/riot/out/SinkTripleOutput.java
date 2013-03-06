@@ -21,7 +21,7 @@ package org.apache.jena.riot.out;
 import java.io.OutputStream ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.io.WriterI ;
+import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.Prologue ;
@@ -41,7 +41,7 @@ public class SinkTripleOutput implements Sink<Triple>
     // WriterStreamRDFTuples
     
     private Prologue prologue = null ;
-    private final WriterI out ;
+    private final AWriter out ;
     private NodeToLabel labelPolicy = null ;
     
     private NodeFormatter nodeFmt = new NodeFormatterNT() ;

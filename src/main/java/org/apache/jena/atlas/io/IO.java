@@ -129,13 +129,13 @@ public class IO
     }
 
     /** Wrap in a general writer interface */ 
-    static public WriterI wrap(Writer w)            
+    static public AWriter wrap(Writer w)            
     { 
         return Writer2.wrap(w) ;
     }
     
     /** Wrap in a general writer interface */ 
-    static public WriterI wrapUTF8(OutputStream out)    { return wrap(asUTF8(out)); } 
+    static public AWriter wrapUTF8(OutputStream out)    { return wrap(asUTF8(out)); } 
     
     /** Create a print writer that uses UTF-8 encoding */ 
     static public PrintWriter asPrintWriterUTF8(OutputStream out) {
@@ -197,7 +197,7 @@ public class IO
         try { out.flush(); } catch (IOException ex) { exception(ex) ; } 
     }
 
-    public static void flush(WriterI out)
+    public static void flush(AWriter out)
     {
         if ( out == null )
             return ;

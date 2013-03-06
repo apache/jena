@@ -19,7 +19,7 @@
 package org.apache.jena.riot.out;
 
 
-import org.apache.jena.atlas.io.WriterI ;
+import org.apache.jena.atlas.io.AWriter ;
 
 public class NodeFormatterNT extends NodeFormatterBase
 {
@@ -33,7 +33,7 @@ public class NodeFormatterNT extends NodeFormatterBase
     protected NodeFormatterNT(boolean asciiOnly) { escapeProc = new EscapeStr(asciiOnly) ;}
 
     @Override
-    public void formatURI(WriterI w, String uriStr)
+    public void formatURI(AWriter w, String uriStr)
     {
         w.print('<') ;
         w.print(uriStr) ;
@@ -41,14 +41,14 @@ public class NodeFormatterNT extends NodeFormatterBase
     }
 
     @Override
-    public void formatVar(WriterI w, String name)
+    public void formatVar(AWriter w, String name)
     {
         w.print('?') ;
         w.print(name) ;
     }
 
     @Override
-    public void formatBNode(WriterI w, String label)
+    public void formatBNode(AWriter w, String label)
     {
         w.print("_:") ;
         String lab = NodeFmtLib.encodeBNodeLabel(label) ;
@@ -56,12 +56,12 @@ public class NodeFormatterNT extends NodeFormatterBase
     }
 
     @Override
-    public void formatLitString(WriterI w, String lex)
+    public void formatLitString(AWriter w, String lex)
     {
         writeEscaped(w, lex) ;
     }
 
-    private void writeEscaped(WriterI w, String lex)
+    private void writeEscaped(AWriter w, String lex)
     {
         w.print('"') ;
         escapeProc.writeStr(w, lex) ;
@@ -69,7 +69,7 @@ public class NodeFormatterNT extends NodeFormatterBase
     }
 
     @Override
-    public void formatLitLang(WriterI w, String lex, String langTag)
+    public void formatLitLang(AWriter w, String lex, String langTag)
     {
         writeEscaped(w, lex) ;
         w.print('@') ;
@@ -77,7 +77,7 @@ public class NodeFormatterNT extends NodeFormatterBase
     }
 
     @Override
-    public void formatLitDT(WriterI w, String lex, String datatypeURI)
+    public void formatLitDT(AWriter w, String lex, String datatypeURI)
     {
         writeEscaped(w, lex) ;
         w.print("^^") ;

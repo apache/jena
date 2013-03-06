@@ -21,7 +21,7 @@ package org.apache.jena.atlas.io;
 
 /** Simple abstraction of a string/character output stream */
 
-public abstract class WriterIBase implements WriterI
+public abstract class AWriterBase implements AWriter
 {
     @Override
     public final void write(char ch)          { print(ch) ; }

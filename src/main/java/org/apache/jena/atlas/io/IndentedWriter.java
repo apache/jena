@@ -30,7 +30,7 @@ import org.apache.jena.atlas.lib.Closeable ;
  *  uses that to insert a prefix at each line. 
  *  It can also insert line numbers at the beginning of lines. */
 
-public class IndentedWriter extends WriterIBase implements WriterI, Closeable
+public class IndentedWriter extends AWriterBase implements AWriter, Closeable
 {
     /** Stdout wrapped in an IndentedWriter - no line numbers */
     public static final IndentedWriter stdout = new IndentedWriter(System.out) ; 

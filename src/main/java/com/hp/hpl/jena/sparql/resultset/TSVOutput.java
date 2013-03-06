@@ -24,7 +24,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.io.WriterI ;
+import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
 
@@ -54,7 +54,7 @@ public class TSVOutput extends OutputBase
         //Use a Turtle formatter to format terms
         NodeFormatterTTL formatter = new NodeFormatterTTL(null, null);
 
-        WriterI w = IO.wrapUTF8(out) ; 
+        AWriter w = IO.wrapUTF8(out) ; 
 
         String sep = null ;
         List<String> varNames = resultSet.getResultVars() ;

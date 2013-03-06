@@ -20,7 +20,7 @@ package org.apache.jena.riot.out;
 
 import java.net.MalformedURLException ;
 
-import org.apache.jena.atlas.io.WriterI ;
+import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
@@ -56,7 +56,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
    }
     
     @Override
-    public void formatURI(WriterI w, String uriStr)
+    public void formatURI(AWriter w, String uriStr)
     {
         Pair<String, String> pName = prefixMap.abbrev(uriStr) ;
         // Check if legal
@@ -127,7 +127,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
 //    public void formatBNode(WriterI w, String label)
     
     @Override
-    public void formatBNode(WriterI w, Node n)
+    public void formatBNode(AWriter w, Node n)
     {
         String x = nodeToLabel.get(null, n) ;
         w.print(x) ; 
@@ -201,7 +201,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     private static final String dtBoolean   = XSDDatatype.XSDboolean.getURI() ;
 
     @Override
-    public void formatLitDT(WriterI w, String lex, String datatypeURI)
+    public void formatLitDT(AWriter w, String lex, String datatypeURI)
     {
         if ( dtDecimal.equals(datatypeURI) )
         {

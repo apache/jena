@@ -25,7 +25,7 @@ import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.io.WriterI ;
+import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.iri.IRI ;
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 /** Parser for the RDF Tuples language */
 public class BindingOutputStream implements Sink<Binding>
 {
-    private final WriterI bw ;
+    private final AWriter bw ;
     private Binding lastBinding = null ;
     private List<Var> vars = null ;
     private PrefixMap pmap ;

@@ -22,6 +22,8 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.io.AWriter ;
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
@@ -39,8 +41,9 @@ public class StreamRDFLib
     /** Send everything to nowhere ... efficiently */
     public static StreamRDF sinkNull()                       { return new StreamRDFBase() ; }
 
-    public static StreamRDF writer(OutputStream out)         { return new WriterStreamRDFTuples(out) ; }
-    public static StreamRDF writer(Writer out)               { return new WriterStreamRDFTuples(out) ; }
+    public static StreamRDF writer(OutputStream out)         { return new WriterStreamRDFTuples(IO.wrapUTF8(out)) ; }
+    public static StreamRDF writer(AWriter out)              { return new WriterStreamRDFTuples(out) ; }
+    public static StreamRDF writer(Writer out)               { return new WriterStreamRDFTuples(IO.wrap(out)) ; }
 
     public static StreamRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
     
