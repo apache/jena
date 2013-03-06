@@ -69,7 +69,7 @@ public class TestRiotWriterDataset extends AbstractWriterTest
         assertEquals(lang, rs.getLang()) ;
 
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        RDFWriterMgr.write(out, ds, format) ;
+        RDFDataMgr.write(out, ds, format) ;
         
         if ( lang == Lang.RDFNULL )
             return ;

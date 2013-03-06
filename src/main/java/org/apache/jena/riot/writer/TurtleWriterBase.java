@@ -24,7 +24,7 @@ import java.io.Writer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.RiotWriterLib ;
+import org.apache.jena.riot.system.RiotLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -40,7 +40,7 @@ public abstract class TurtleWriterBase extends WriterGraphRIOTBase
     @Override
     public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
     {
-        IndentedWriter iOut = RiotWriterLib.create(out) ;
+        IndentedWriter iOut = RiotLib.create(out) ;
         output$(iOut, graph, prefixMap, baseURI) ;
         iOut.flush() ;
     }

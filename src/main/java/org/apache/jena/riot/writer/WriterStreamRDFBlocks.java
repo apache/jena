@@ -19,7 +19,6 @@
 package org.apache.jena.riot.writer;
 
 import static org.apache.jena.atlas.lib.Lib.equal ;
-import static org.apache.jena.riot.system.RiotWriterLib.calcWidthTriples ;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
@@ -29,6 +28,7 @@ import java.util.List ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.riot.other.GLib ;
+import org.apache.jena.riot.system.RiotLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -144,7 +144,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
     private void writePredicateObjectList(Collection<Triple> triples)
     {
         // Find width
-        int predicateMaxWidth = calcWidthTriples(pMap, baseURI, triples, MIN_PREDICATE, LONG_PREDICATE) ;
+        int predicateMaxWidth = RiotLib.calcWidthTriples(pMap, baseURI, triples, MIN_PREDICATE, LONG_PREDICATE) ;
         boolean first = true ;
         for ( Triple triple : triples )
         {

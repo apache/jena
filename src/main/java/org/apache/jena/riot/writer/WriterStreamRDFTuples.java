@@ -26,7 +26,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterNT ;
-import org.apache.jena.riot.system.RiotWriterLib ;
+import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -48,7 +48,7 @@ public class WriterStreamRDFTuples implements StreamRDF
 
     public WriterStreamRDFTuples(Writer w)
     {
-        this(RiotWriterLib.create(w)) ;
+        this(RiotLib.create(w)) ;
     }
 
     public WriterStreamRDFTuples(IndentedWriter w)

@@ -19,7 +19,6 @@
 
 package org.apache.jena.riot.writer;
 
-import static org.apache.jena.riot.system.RiotWriterLib.* ;
 import static org.apache.jena.riot.writer.WriterConst.* ;
 
 import java.util.* ;
@@ -32,7 +31,7 @@ import org.apache.jena.riot.out.NodeFormatterTTL ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
-import org.apache.jena.riot.system.RiotWriterLib ;
+import org.apache.jena.riot.system.RiotLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -41,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
-/** Base class to support the pretty forms of Turtle-related languages (Turle, TriG) */ 
+/** Base class to support the pretty forms of Turtle-related languages (Turtle, TriG) */ 
 public abstract class TurtleShell
 {
     protected final IndentedWriter out ; 
@@ -61,12 +60,12 @@ public abstract class TurtleShell
 
     protected void writeBase(String base)
     {
-        RiotWriterLib.writeBase(out, base) ;
+        RiotLib.writeBase(out, base) ;
     }
 
     protected void writePrefixes(PrefixMap prefixMap)
     {
-        RiotWriterLib.writePrefixes(out, prefixMap) ;
+        RiotLib.writePrefixes(out, prefixMap) ;
     }
 
     protected void writeGraphTTL(Graph graph)
@@ -157,7 +156,7 @@ public abstract class TurtleShell
          */
         private void findLists()
         {
-            List<Triple> tails = RiotWriterLib.triples(graph, Node.ANY, RDF_Rest, RDF_Nil) ;
+            List<Triple> tails = RiotLib.triples(graph, Node.ANY, RDF_Rest, RDF_Nil) ;
             for ( Triple t : tails )
             {
                 // Returns the elements, reversed.
@@ -168,7 +167,7 @@ public abstract class TurtleShell
                     Node headElt = p.getLeft() ; 
                     // Free standing?private
                     List<Node> elts = p.getRight() ;
-                    long numLinks = RiotWriterLib.countTriples(graph, null, null, headElt) ;
+                    long numLinks = RiotLib.countTriples(graph, null, null, headElt) ;
                     if ( numLinks == 1 )
                         lists.put(headElt, elts) ;
                     else if ( numLinks == 0 )
@@ -202,15 +201,15 @@ public abstract class TurtleShell
                     break ;
                 }
 
-                Triple t = RiotWriterLib.triple1(graph, x, RDF_First, null) ;
+                Triple t = RiotLib.triple1(graph, x, RDF_First, null) ;
                 if ( t == null )
                     return null ;
                 eltsReversed.add(t.getObject()) ;
                 listCells.add(x) ;
 
                 // Try to move up the list.
-                List<Triple> acc2 = RiotWriterLib.triples(graph, null, null, x) ;
-                long numRest = RiotWriterLib.countTriples(graph, null, RDF_Rest, x) ;
+                List<Triple> acc2 = RiotLib.triples(graph, null, null, x) ;
+                long numRest = RiotLib.countTriples(graph, null, RDF_Rest, x) ;
                 if ( numRest != 1 )
                 {
                     // Head of well-formed list.
@@ -236,13 +235,13 @@ public abstract class TurtleShell
         /* Return the triples of the list element, or null if invalid list */
         private boolean validListElement(Node x, List<Triple> acc)
         {
-            Triple t1 = RiotWriterLib.triple1(graph, x, RDF_Rest, null) ; // Which we came up to get here :-(
+            Triple t1 = RiotLib.triple1(graph, x, RDF_Rest, null) ; // Which we came up to get here :-(
             if ( t1 == null )
                 return false ;
-            Triple t2 = RiotWriterLib.triple1(graph, x, RDF_First, null) ;
+            Triple t2 = RiotLib.triple1(graph, x, RDF_First, null) ;
             if ( t2 == null )
                 return false ;
-            long N = RiotWriterLib.countTriples(graph, x, null, null) ;
+            long N = RiotLib.countTriples(graph, x, null, null) ;
             if ( N != 2 )
                 return false ;
             acc.add(t1) ;
@@ -361,7 +360,7 @@ public abstract class TurtleShell
                     continue ;
                 }
 
-                Collection<Triple> cluster = RiotWriterLib.triplesOfSubject(graph, subj) ;
+                Collection<Triple> cluster = RiotLib.triplesOfSubject(graph, subj) ;
                 writeCluster(subj, cluster) ;
             }
             return !first ;
@@ -399,7 +398,7 @@ public abstract class TurtleShell
             Collection<Node> predicates = pGroups.keySet() ;
             
             // Find longest predicate URI
-            int predicateMaxWidth = calcWidth(prefixMap, baseURI, predicates, MIN_PREDICATE, LONG_PREDICATE) ;
+            int predicateMaxWidth = RiotLib.calcWidth(prefixMap, baseURI, predicates, MIN_PREDICATE, LONG_PREDICATE) ;
 
             boolean first = true ;
 
@@ -530,7 +529,7 @@ public abstract class TurtleShell
 
         private void nestedObject(Node node)
         {
-            Collection<Triple> x = RiotWriterLib.triplesOfSubject(graph, node) ;
+            Collection<Triple> x = RiotLib.triplesOfSubject(graph, node) ;
 
             if ( x.isEmpty() )
             {

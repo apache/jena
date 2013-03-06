@@ -28,7 +28,7 @@ import org.apache.jena.riot.out.NodeFormatterTTL ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
-import org.apache.jena.riot.system.RiotWriterLib ;
+import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -81,7 +81,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
     {
         if ( ! ( output instanceof BufferedWriter ) )
             output = new BufferedWriter(output, 32*1024) ;
-        return RiotWriterLib.create(output) ;
+        return RiotLib.create(output) ;
     }
     
     private void reset$() 

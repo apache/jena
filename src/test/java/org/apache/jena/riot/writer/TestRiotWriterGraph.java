@@ -95,7 +95,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest
         assertEquals(lang, rs.getLang()) ;
 
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        RDFWriterMgr.write(out, m, format) ;
+        RDFDataMgr.write(out, m, format) ;
         
         if ( lang == Lang.RDFNULL )
             return ;

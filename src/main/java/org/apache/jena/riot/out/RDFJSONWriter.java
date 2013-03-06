@@ -20,67 +20,25 @@ package org.apache.jena.riot.out;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
-import java.util.HashMap ;
-import java.util.HashSet ;
-import java.util.Map ;
-import java.util.Set ;
 
-import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.riot.system.Prologue ;
-import org.apache.jena.riot.system.SyntaxLabels ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphUtil ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class RDFJSONWriter {
 
-    public RDFJSONWriter() {}
+    //public RDFJSONWriter() {}
     
+    /** @deprecated 
+     * Use {@link RDFDataMgr#write(OutputStream, Graph, Lang)}
+     * with {@code Lang.RDFJSON}
+     */  
+    @Deprecated
 	public static void write (OutputStream out, Graph graph) {
-        Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
-		Sink<Pair<Node, Map<Node, Set<Node>>>> sink = new SinkEntityOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
-		write ( sink, graph ) ;
+	    RDFDataMgr.write(out, graph, Lang.RDFJSON) ;
 	}
 	
 	public static void write (Writer out, Graph graph) {
-        Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
-		Sink<Pair<Node, Map<Node, Set<Node>>>> sink = new SinkEntityOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
-		write ( sink, graph ) ;
 	}
-
-	private static void write (Sink<Pair<Node, Map<Node, Set<Node>>>> sink, Graph graph) {
-		ExtendedIterator<Node> subjects = GraphUtil.listSubjects(graph, Node.ANY, Node.ANY) ;
-		try {
-			Map<Node, Set<Node>> predicates = new HashMap<Node, Set<Node>>() ;
-			while ( subjects.hasNext() ) {
-				Node subject = subjects.next() ;
-				ExtendedIterator<Triple> triples = graph.find(subject, Node.ANY, Node.ANY) ;
-				try {
-					while ( triples.hasNext() ) {
-						Triple triple = triples.next() ;
-						Node p = triple.getPredicate() ;
-						if ( predicates.containsKey(p) ) {
-							predicates.get(p).add(triple.getObject()) ; 
-						} else {
-							Set<Node> objects = new HashSet<Node>() ;
-							objects.add(triple.getObject()) ;
-							predicates.put(p, objects) ;
-						}
-					}				
-				} finally {
-					if ( triples != null ) triples.close() ;
-				}
-				sink.send(new Pair<Node, Map<Node, Set<Node>>>(subject, predicates)) ;
-				predicates.clear() ;
-			}			
-		} finally {
-			if ( subjects != null ) subjects.close() ;
-			sink.close() ;
-		}
-	}
-	
 }

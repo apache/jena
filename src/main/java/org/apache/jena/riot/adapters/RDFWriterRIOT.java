@@ -18,13 +18,12 @@
 
 package org.apache.jena.riot.adapters;
 
-import static org.apache.jena.riot.system.RiotWriterLib.prefixMap ;
-
 import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.riot.* ;
-import org.apache.jena.riot.system.IO_Jena2 ;
+import org.apache.jena.riot.system.IO_JenaWriters ;
+import org.apache.jena.riot.system.RiotLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -46,13 +45,13 @@ public class RDFWriterRIOT implements RDFWriter
     //Initial late to avoid confusing exceptions during newInstance. 
     private WriterGraphRIOT writer()
     {
-        RDFFormat format = IO_Jena2.getFormatForJenaWriter(jenaName) ;
+        RDFFormat format = IO_JenaWriters.getFormatForJenaWriter(jenaName) ;
         if ( format != null )
-            return RDFWriterMgr.createGraphWriter(format) ;
+            return RDFDataMgr.createGraphWriter(format) ;
         // Try lang instead.
         Lang lang = RDFLanguages.nameToLang(jenaName) ;
         if ( lang != null )
-            return RDFWriterMgr.createGraphWriter(lang) ;
+            return RDFDataMgr.createGraphWriter(lang) ;
         throw new RiotException("No graph writer for '"+jenaName+"'") ;
     }
     
@@ -62,7 +61,7 @@ public class RDFWriterRIOT implements RDFWriter
         if (  base != null && base.equals("") )
             base = null ;
         Graph graph = model.getGraph() ;
-        writer().write(out, graph, prefixMap(graph), base, context) ;
+        writer().write(out, graph, RiotLib.prefixMap(graph), base, context) ;
     }
 
     @Override
@@ -71,7 +70,7 @@ public class RDFWriterRIOT implements RDFWriter
         if ( base != null && base.equals("") )
             base = null ;
         Graph graph = model.getGraph() ;
-        writer().write(out, graph, prefixMap(graph), base, context) ;
+        writer().write(out, graph, RiotLib.prefixMap(graph), base, context) ;
     }
 
     @Override

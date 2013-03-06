@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot.writer;
 
-import org.apache.jena.riot.RDFWriterRegistry ;
 import org.apache.jena.riot.RIOT ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
@@ -32,6 +31,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRiotWriterGraph.class
     , TestRiotWriterDataset.class
     , TestJenaWriters.class
+    , TestRDFJSON.class
 })
 
 public class TS_RiotWriter
@@ -39,6 +39,5 @@ public class TS_RiotWriter
     @BeforeClass public static void beforeClass()
     { 
         RIOT.init() ;
-        RDFWriterRegistry.init() ;
     }
 }

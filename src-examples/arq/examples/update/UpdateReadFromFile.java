@@ -19,7 +19,7 @@
 package arq.examples.update;
 
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFWriterMgr ;
+import org.apache.jena.riot.RDFDataMgr ;
 
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.* ;
@@ -49,6 +49,6 @@ public class UpdateReadFromFile
         System.out.println();
         
         System.out.println("# N-Quads: S P O G") ;
-        RDFWriterMgr.write(System.out, graphStore, Lang.NQUADS) ;
+        RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) ;
     }
 }

@@ -35,12 +35,12 @@ public class ExRIOT_out1
         System.out.println() ;
         System.out.println("#### ---- Write as Turtle") ;
         System.out.println() ;
-        RDFWriterMgr.write(System.out, model, Lang.TURTLE) ;
+        RDFDataMgr.write(System.out, model, Lang.TURTLE) ;
         
         System.out.println() ;
         System.out.println("#### ---- Write as Turtle (streaming)") ;
         System.out.println() ;
-        RDFWriterMgr.write(System.out, model, RDFFormat.TURTLE_BLOCKS) ;
+        RDFDataMgr.write(System.out, model, RDFFormat.TURTLE_BLOCKS) ;
         
         System.out.println() ;
         System.out.println("#### ---- Write as Turtle via model.write") ;

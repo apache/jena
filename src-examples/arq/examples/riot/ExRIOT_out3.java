@@ -25,7 +25,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.adapters.RDFWriterRIOT ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.RiotWriterLib ;
+import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -62,10 +62,10 @@ public class ExRIOT_out3
         Model model = RDFDataMgr.loadModel("D.ttl") ;
         // Write
         System.out.println("## Write by format") ;
-        RDFWriterMgr.write(System.out, model, format) ;
+        RDFDataMgr.write(System.out, model, format) ;
         System.out.println() ;
         System.out.println("## Write by language") ;
-        RDFWriterMgr.write(System.out, model, lang) ;
+        RDFDataMgr.write(System.out, model, lang) ;
         
         // ---- Register for use with Model.read
         // because naming is explicit, need to register an adapter.  
@@ -100,7 +100,7 @@ public class ExRIOT_out3
         public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
         {
             // Writers are discouraged : just hope the charset is UTF-8.
-            IndentedWriter x = RiotWriterLib.create(out) ;
+            IndentedWriter x = RiotLib.create(out) ;
             SSE.write(x, graph) ;
         }
     }

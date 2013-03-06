@@ -29,7 +29,7 @@ import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.n3.N3JenaWriter ;
 import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
 
-public class IO_Jena2
+public class IO_JenaWriters
 {
     // Jena writer adapters
     // To adapters.JenaReadersWriters
@@ -57,7 +57,7 @@ public class IO_Jena2
     /** Return a collection of jena writer names */ 
     public static Collection<String> getJenaWriterNames() { return mapJenaNameToFormat.keySet() ; }
     
-    public static void wireIntoJenaW()
+    public static void wireIntoJena()
     {
         setFormatForJenaWriter("RDF/XML",                           RDFFormat.RDFXML_PLAIN) ;
         setFormatForJenaWriter("RDF/XML-ABBREV",                    RDFFormat.RDFXML_ABBREV) ;
@@ -79,28 +79,28 @@ public class IO_Jena2
         
 //        RDFWriterFImpl.LANGS
 //        RDFWriterFImpl.DEFAULTWRITER
-        RDFWriterFImpl.setBaseWriterClassName("RDF/XML",            RDFWriterRIOT_RDFXML.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName("RDF/XML-ABBREV",     RDFWriterRIOT_RDFXMLAbbrev.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName("N-TRIPLE",           RDFWriterRIOT_NTriples.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName("N-TRIPLES",          RDFWriterRIOT_NTriples.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName("N-Triples",          RDFWriterRIOT_NTriples.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName("NT",                 RDFWriterRIOT_NTriples.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName("N3",                 RDFWriterRIOT_N3.class.getName()) ;
+        registerForModelWrite("RDF/XML",            RDFWriterRIOT_RDFXML.class) ;
+        registerForModelWrite("RDF/XML-ABBREV",     RDFWriterRIOT_RDFXMLAbbrev.class) ;
+        registerForModelWrite("N-TRIPLE",           RDFWriterRIOT_NTriples.class) ;
+        registerForModelWrite("N-TRIPLES",          RDFWriterRIOT_NTriples.class) ;
+        registerForModelWrite("N-Triples",          RDFWriterRIOT_NTriples.class) ;
+        registerForModelWrite("NT",                 RDFWriterRIOT_NTriples.class) ;
+        registerForModelWrite("N3",                 RDFWriterRIOT_N3.class) ;
         
-        RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.n3WriterPrettyPrinter,   RDFWriterRIOT_N3_PP.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.n3WriterPlain,           RDFWriterRIOT_N3Plain.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.n3WriterTriples,         RDFWriterRIOT_N3Triples.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.n3WriterTriplesAlt,      RDFWriterRIOT_N3TriplesAlt.class.getName()) ;
+        registerForModelWrite(N3JenaWriter.n3WriterPrettyPrinter,   RDFWriterRIOT_N3_PP.class) ;
+        registerForModelWrite(N3JenaWriter.n3WriterPlain,           RDFWriterRIOT_N3Plain.class) ;
+        registerForModelWrite(N3JenaWriter.n3WriterTriples,         RDFWriterRIOT_N3Triples.class) ;
+        registerForModelWrite(N3JenaWriter.n3WriterTriplesAlt,      RDFWriterRIOT_N3TriplesAlt.class) ;
         
-        RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.turtleWriter,            RDFWriterRIOT_Turtle.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.turtleWriterAlt1,        RDFWriterRIOT_Turtle1.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.turtleWriterAlt2,        RDFWriterRIOT_Turtle2.class.getName()) ;
+        registerForModelWrite(N3JenaWriter.turtleWriter,            RDFWriterRIOT_Turtle.class) ;
+        registerForModelWrite(N3JenaWriter.turtleWriterAlt1,        RDFWriterRIOT_Turtle1.class) ;
+        registerForModelWrite(N3JenaWriter.turtleWriterAlt2,        RDFWriterRIOT_Turtle2.class) ;
         
-        RDFWriterFImpl.setBaseWriterClassName("RDF/JSON",       RDFWriterRIOT_RDFJSON.class.getName()) ;
-        RDFWriterFImpl.setBaseWriterClassName("RDFJSON",        RDFWriterRIOT_RDFJSON.class.getName()) ;
+        registerForModelWrite("RDF/JSON",       RDFWriterRIOT_RDFJSON.class) ;
+        registerForModelWrite("RDFJSON",        RDFWriterRIOT_RDFJSON.class) ;
     }
     
-    public static void resetJenaW()
+    public static void resetJena()
     {
         // This is the old Jena configuration (bugs and all) 
         RDFWriterFImpl.setBaseWriterClassName("RDF/XML",        Jena.PATH + ".xmloutput.impl.Basic") ;
@@ -119,6 +119,12 @@ public class IO_Jena2
         RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.turtleWriterAlt1,        Jena.PATH + ".n3.N3TurtleJenaWriter") ;
         RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.turtleWriterAlt2,        Jena.PATH + ".n3.N3TurtleJenaWriter") ;
         
+    }
+    
+    /** Register for use with Model.write  (old style compatibility) */ 
+    public static void registerForModelWrite(String name, Class<?> cls)
+    {
+        RDFWriterFImpl.setBaseWriterClassName(name, cls.getName()) ;
     }
 }
 

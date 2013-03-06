@@ -18,9 +18,7 @@
 
 package org.apache.jena.riot;
 
-import java.io.InputStream ;
-import java.io.Reader ;
-import java.io.StringReader ;
+import java.io.* ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
@@ -30,10 +28,7 @@ import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.lang.LangRDFXML ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.stream.StreamManager ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.slf4j.Logger ;
@@ -811,6 +806,302 @@ public class RDFDataMgr
         if ( ct == null && hintLang != null ) 
             ct = hintLang.getContentType() ;
         return ct ;
+    }
+    
+    // -------- WRITERS
+    
+    /** Write the model to the output stream in the default serialization for the language.
+     * @param out       OutputStream
+     * @param model     Graph to write
+     * @param lang      Language for the seralization.
+     */
+    public static void write(OutputStream out, Model model, Lang lang)
+    {
+        write(out, model.getGraph(), lang) ;
+    }
+
+    /** Write the model to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param model         Model to write
+     * @param serialization Serialization format
+     */
+    public static void write(OutputStream out, Model model, RDFFormat serialization)
+    {
+        write(out, model.getGraph(), serialization) ;
+    }
+    
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param model         Model to write
+     * @param lang          Serialization format
+     */
+    public static void write(StringWriter out, Model model, Lang lang)
+    {
+        write(out, model.getGraph(), lang) ;
+    }
+    
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param model         Model to write
+     * @param serialization Serialization format
+     */
+    public static void write(StringWriter out, Model model, RDFFormat serialization)
+    {
+        write(out, model.getGraph(), serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param model         Model to write
+     * @param serialization Serialization format
+     * @deprecated Use of writers is deprecated - use an OutputStream
+     */
+    @Deprecated
+    public static void write(Writer out, Model model, RDFFormat serialization)
+    {
+        write(out, model.getGraph(), serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out       OutputStream
+     * @param graph     Graph to write
+     * @param lang      Language for the seralization.
+     */
+    public static void write(OutputStream out, Graph graph, Lang lang)
+    {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
+        write(out, graph, serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param graph         Graph to write
+     * @param serialization Serialization format
+     */
+    public static void write(OutputStream out, Graph graph, RDFFormat serialization)
+    {
+        write$(out, graph, serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param graph         Graph to write
+     * @param lang          Serialization format
+     */
+    public static void write(StringWriter out, Graph graph, Lang lang)
+    {
+        // Only known reasonable use of a Writer
+        write$(out, graph, RDFWriterRegistry.defaultSerialization(lang)) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param graph         Graph to write
+     * @param serialization Serialization format
+     */
+    public static void write(StringWriter out, Graph graph, RDFFormat serialization)
+    {
+        // Only known reasonable use of a Writer
+        write$(out, graph, serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param graph         Graph to write
+     * @param serialization Serialization format
+     * @deprecated Use of writers is deprecated - use an OutputStream
+     */
+    @Deprecated
+    public static void write(Writer out, Graph graph, RDFFormat serialization)
+    {
+        write$(out, graph, serialization) ;
+    }
+    
+    /** Write the Dataset to the output stream in the default serialization for the language.
+     * @param out       OutputStream
+     * @param dataset   Dataset to write
+     * @param lang      Language for the seralization.
+     */
+    public static void write(OutputStream out, Dataset dataset, Lang lang)
+    {
+        write(out, dataset.asDatasetGraph(), lang) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param dataset       Dataset to write
+     * @param serialization Serialization format
+     */
+    public static void write(OutputStream out, Dataset dataset, RDFFormat serialization)
+    {
+        write(out, dataset.asDatasetGraph(), serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           Writer
+     * @param dataset       Dataset to write
+     * @param serialization Serialization format
+     */
+    public static void write(StringWriter out, Dataset dataset, RDFFormat serialization)
+    {
+        write$(out, dataset.asDatasetGraph(), serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           StringWriter
+     * @param dataset       Dataset to write
+     * @param lang      Language for the seralization.
+     */
+    public static void write(StringWriter out, Dataset dataset, Lang lang)
+    {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
+        write$(out, dataset.asDatasetGraph(), serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           Writer
+     * @param dataset       Dataset to write
+     * @param serialization Serialization format
+     * @deprecated Use of writers is deprecated - use an OutputStream
+     */
+    @Deprecated
+    public static void write(Writer out, Dataset dataset, RDFFormat serialization)
+    {
+        write$(out, dataset.asDatasetGraph(), serialization) ;
+    }
+
+    /** Write the DatasetGraph to the output stream in the default serialization for the language.
+     * @param out       OutputStream
+     * @param dataset   DatasetGraph to write
+     * @param lang      Language for the seralization.
+     */
+    public static void write(OutputStream out, DatasetGraph dataset, Lang lang)
+    {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
+        write(out, dataset, serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           OutputStream
+     * @param dataset       DatasetGraph to write
+     * @param serialization Serialization format
+     */
+    public static void write(OutputStream out, DatasetGraph dataset, RDFFormat serialization)
+    {
+        write$(out, dataset, serialization) ;
+    }
+
+    /** Write the DatasetGraph to the output stream in the default serialization for the language.
+     * @param out       StringWriter
+     * @param dataset   DatasetGraph to write
+     * @param lang      Language for the seralization.
+     */
+    public static void write(StringWriter out, DatasetGraph dataset, Lang lang)
+    {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
+        write(out, dataset, serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           StringWriter
+     * @param dataset       DatasetGraph to write
+     * @param serialization Serialization format
+     */
+    public static void write(StringWriter out, DatasetGraph dataset, RDFFormat serialization)
+    {
+        write$(out, dataset, serialization) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           Writer
+     * @param dataset       DatasetGraph to write
+     * @param serialization Serialization format
+     * @deprecated Use of writers is deprecated - use an OutputStream
+     */
+    @Deprecated
+    public static void write(Writer out, DatasetGraph dataset, RDFFormat serialization)
+    {
+        write$(out, dataset, serialization) ;
+    }
+
+    /** Create a writer for an RDF language
+     * @param lang   Language for the seralization.
+     * @return WriterGraphRIOT
+     */
+    
+    public static WriterGraphRIOT createGraphWriter(Lang lang)
+    {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
+        return createGraphWriter$(serialization) ;    
+    }
+    
+    /** Create a writer for an RDF language
+     * @param serialization Serialization format
+     * @return WriterGraphRIOT
+     */
+    public static WriterGraphRIOT createGraphWriter(RDFFormat serialization)
+    {
+        return createGraphWriter$(serialization) ;    
+    }
+
+    /** Create a writer for an RDF language
+     * @param lang   Language for the seralization.
+     * @return WriterGraphRIOT
+     */
+    
+    public static WriterDatasetRIOT createDatasetWriter(Lang lang)
+    {
+        RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
+        return createDatasetWriter$(serialization) ;    
+    }
+    
+    /** Create a writer for an RDF language
+     * @param serialization Serialization format
+     * @return WriterGraphRIOT
+     */
+    public static WriterDatasetRIOT createDatasetWriter(RDFFormat serialization)
+    {
+        return createDatasetWriter$(serialization) ;    
+    }
+    
+    private static WriterGraphRIOT createGraphWriter$(RDFFormat serialization)
+    {
+        WriterGraphRIOTFactory wf = RDFWriterRegistry.getWriterGraphFactory(serialization) ;
+        if ( wf == null )
+            throw new RiotException("No graph writer for "+serialization) ; 
+        return wf.create(serialization) ;
+    }
+
+    private static WriterDatasetRIOT createDatasetWriter$(RDFFormat serialization)
+    {
+        WriterDatasetRIOTFactory wf = RDFWriterRegistry.getWriterDatasetFactory(serialization) ;
+        if ( wf == null )
+            throw new RiotException("No dataset writer for "+serialization) ; 
+        return wf.create(serialization) ;
+    }
+
+    private static void write$(OutputStream out, Graph graph, RDFFormat serialization)
+    {
+        WriterGraphRIOT w = createGraphWriter$(serialization) ;
+        w.write(out, graph, RiotLib.prefixMap(graph), null, null) ;
+    }
+
+    private static void write$(Writer out, Graph graph, RDFFormat serialization)
+    {
+        WriterGraphRIOT w = createGraphWriter$(serialization) ;
+        w.write(out, graph, RiotLib.prefixMap(graph), null, null) ;
+    }
+
+    private static void write$(OutputStream out, DatasetGraph dataset, RDFFormat serialization)
+    {
+        WriterDatasetRIOT w = createDatasetWriter$(serialization) ;
+        w.write(out, dataset, RiotLib.prefixMap(dataset), null, null) ;
+    }
+
+    private static void write$(Writer out, DatasetGraph dataset, RDFFormat serialization)
+    {
+        WriterDatasetRIOT w = createDatasetWriter$(serialization) ;
+        w.write(out, dataset, RiotLib.prefixMap(dataset), null, null) ;
     }
 }
 

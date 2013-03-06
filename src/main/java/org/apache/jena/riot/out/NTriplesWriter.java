@@ -23,18 +23,24 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
 public class NTriplesWriter
 {
+    /** @deprecated 
+     * Use {@link RDFDataMgr#write(OutputStream, Graph, Lang)}
+     * with {@code Lang.NTRIPLES}
+     */  
+    @Deprecated
     public static void write(OutputStream out, Graph graph)
     {
-        write(out, graph.find(Node.ANY, Node.ANY, Node.ANY)) ;
+        RDFDataMgr.write(out, graph, Lang.NTRIPLES) ;
     }
     
     public static void write(OutputStream out, Iterator<Triple> iter)

@@ -23,24 +23,33 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class NQuadsWriter
 {
+    /** @deprecated Use {@link RDFDataMgr#write(OutputStream, DatasetGraph, Lang)}
+     * with {@code Lang.NQUADS}.
+     */  
+    @Deprecated
     public static void write(OutputStream out, DatasetGraph dsg)
     {
-        write(out, dsg.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY)) ;
+        RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
     }
     
+    /** @deprecated Use {@link RDFDataMgr#write(OutputStream, Dataset, Lang)} 
+     * with {@code Lang.NQUADS}.
+     */
+    @Deprecated
     public static void write(OutputStream out, Dataset dsg)
     {
-        write(out, dsg.asDatasetGraph()) ;
+        RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
     }
     
     public static void write(OutputStream out, Iterator<Quad> iter)

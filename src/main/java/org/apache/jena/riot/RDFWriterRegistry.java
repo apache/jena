@@ -27,7 +27,7 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.RiotWriterLib ;
+import org.apache.jena.riot.system.RiotLib ;
 
 public class RDFWriterRegistry
 {
@@ -65,7 +65,7 @@ public class RDFWriterRegistry
             
             WriterDatasetRIOT dsw = wdsfactory.create(serialization) ;
             if ( dsw != null )
-                return RiotWriterLib.adapter(dsw) ;
+                return RiotLib.adapter(dsw) ;
             return null ;
     }} ;
         

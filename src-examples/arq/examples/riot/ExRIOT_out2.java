@@ -18,7 +18,10 @@
 
 package arq.examples.riot;
 
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFWriterRegistry ;
+import org.apache.jena.riot.RIOT ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -36,14 +39,14 @@ public class ExRIOT_out2
         System.out.println("#### ---- Write as TriG") ;
         System.out.println() ;
         // This wil be the default graph of the dataset written.
-        RDFWriterMgr.write(System.out, model, Lang.TRIG) ;
+        RDFDataMgr.write(System.out, model, Lang.TRIG) ;
         
         // Loading Turtle as Trig reads into the default graph.
         Dataset dataset = RDFDataMgr.loadDataset("D.ttl") ;
         System.out.println() ;
         System.out.println("#### ---- Write as NQuads") ;
         System.out.println() ;
-        RDFWriterMgr.write(System.out, dataset, Lang.NQUADS) ;
+        RDFDataMgr.write(System.out, dataset, Lang.NQUADS) ;
     }
 
 }

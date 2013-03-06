@@ -24,7 +24,7 @@ import java.io.Writer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.RiotWriterLib ;
+import org.apache.jena.riot.system.RiotLib ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -41,7 +41,7 @@ public abstract class TriGWriterBase extends WriterDatasetRIOTBase
     @Override
     public void write(Writer out, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context)
     {
-        IndentedWriter iOut = RiotWriterLib.create(out) ;
+        IndentedWriter iOut = RiotLib.create(out) ;
         output$(iOut, dsg, prefixMap, baseURI) ;
         iOut.flush() ;
     }

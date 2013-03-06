@@ -30,16 +30,16 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Direct call to create writers for specific formats.
- *  The normal way to write is {@linkplain RDFWriterMgr} 
+ *  The normal way to write is {@linkplain RDFDataMgr} 
  */
 public class RiotWriter
 {
     // Compatibility stuff
-    /** @deprecated Use RDFWriterMgr.write(OutputStream, DatasetGraph, Lang.NQUADS) */
+    /** @deprecated Use RDFDataMgr.write(OutputStream, DatasetGraph, Lang.NQUADS) */
     @Deprecated
     public static void writeNQuads(OutputStream out, DatasetGraph dsg)
     {
-        RDFWriterMgr.write(out, dsg, Lang.NQUADS) ;
+        RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
     }
     
     public static void writeNQuads(OutputStream out, Iterator<Quad> it)
@@ -47,11 +47,11 @@ public class RiotWriter
         NQuadsWriter.write(out, it) ;
     }
 
-    /** @deprecated Use RDFWriterMgr.write(OutputStream, Graph, Lang.NTRIPLES) */
+    /** @deprecated Use RDFDataMgr.write(OutputStream, Graph, Lang.NTRIPLES) */
     @Deprecated
     public static void writeTriples(OutputStream out, Graph graph)
     {
-        RDFWriterMgr.write(out, graph, Lang.NTRIPLES) ;
+        RDFDataMgr.write(out, graph, Lang.NTRIPLES) ;
     }
     
     public static void writeTriples(OutputStream out, Iterator<Triple> it)
@@ -59,11 +59,11 @@ public class RiotWriter
         NTriplesWriter.write(out, it) ;
     }
 
-    /** @deprecated Use RDFWriterMgr.write(OutputStream, Graph, Lang.RDFJSON) */
+    /** @deprecated Use RDFDataMgr.write(OutputStream, Graph, Lang.RDFJSON) */
     @Deprecated
     public static void writeRDFJSON(OutputStream out, Graph graph)
     {
-        RDFWriterMgr.write(out, graph, Lang.RDFJSON) ;
+        RDFDataMgr.write(out, graph, Lang.RDFJSON) ;
     }
 
     // Remove after release ... no one should be using this code unless
