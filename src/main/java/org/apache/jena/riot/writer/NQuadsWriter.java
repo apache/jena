@@ -35,7 +35,7 @@ public class NQuadsWriter extends WriterDatasetRIOTBase
 {
     public static void write(OutputStream out, Iterator<Quad> iter)
     {
-        StreamRDF s = new WriterStreamRDFTuples(out) ;
+        StreamRDF s = StreamRDFLib.writer(out) ;
         s.start() ;
         StreamRDFLib.quadsToStream(s, iter) ;
         s.finish();
@@ -43,7 +43,7 @@ public class NQuadsWriter extends WriterDatasetRIOTBase
     
     public static void write(Writer out, Iterator<Quad> iter)
     {
-        StreamRDF s = new WriterStreamRDFTuples(out) ;
+        StreamRDF s = StreamRDFLib.writer(out) ;
         s.start() ;
         StreamRDFLib.quadsToStream(s, iter) ;
         s.finish();

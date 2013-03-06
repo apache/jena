@@ -496,14 +496,14 @@ public class TestLangRdfJson extends BaseTest
 		byte b[] = StrUtils.asUTF8bytes("") ;
 		ByteArrayInputStream in = new ByteArrayInputStream(b);
 		Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
-        RDFParserOutputCounting sink = StreamRDFLib.count() ;
+        StreamRDFCounting sink = StreamRDFLib.count() ;
 		LangRDFJSON parser = RiotReader.createParserRdfJson(tokenizer, sink) ;
 	}
 
     private long parseCount(String string)
     {
         Tokenizer tokenizer = tokenizer(string) ;
-        RDFParserOutputCounting sink = StreamRDFLib.count() ;
+        StreamRDFCounting sink = StreamRDFLib.count() ;
         LangRDFJSON x = RiotReader.createParserRdfJson(tokenizer, sink) ;
         x.getProfile().setHandler(new ErrorHandlerEx()) ;
         x.parse() ;

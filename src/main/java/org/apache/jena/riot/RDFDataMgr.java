@@ -658,6 +658,17 @@ public class RDFDataMgr
      * @param in        Bytes to read.
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
+     */
+    public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang)
+    {
+        parse(sink, in, base, hintLang, null) ;  
+    }
+
+    /** Read RDF data.
+     * @param sink      Destination for the RDF read.
+     * @param in        Bytes to read.
+     * @param base      Base URI (defaults to uri).
+     * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
     public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang, Context context)

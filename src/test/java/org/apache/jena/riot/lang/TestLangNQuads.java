@@ -21,7 +21,7 @@ package org.apache.jena.riot.lang;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutputCounting ;
+import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -75,7 +75,7 @@ public class TestLangNQuads extends TestLangNTuples
     @Override
     protected long parseCount(String... strings)
     {
-        RDFParserOutputCounting sink = StreamRDFLib.count() ;
+        StreamRDFCounting sink = StreamRDFLib.count() ;
         parse(sink, strings) ;
         return sink.count() ;
     }

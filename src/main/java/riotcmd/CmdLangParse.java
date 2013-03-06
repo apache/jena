@@ -27,16 +27,12 @@ import java.util.Map ;
 import java.util.Properties ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.atlas.lib.SinkCounting ;
-import org.apache.jena.atlas.lib.SinkNull ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.out.NodeToLabel ;
-import org.apache.jena.riot.out.SinkQuadOutput ;
-import org.apache.jena.riot.out.SinkTripleOutput ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.* ;
@@ -47,9 +43,7 @@ import arq.cmd.CmdException ;
 import arq.cmdline.* ;
 
 import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdGeneral
@@ -271,44 +265,20 @@ public abstract class CmdLangParse extends CmdGeneral
         // Also, as URI.
         final boolean labelsAsGiven = false ;
         
-        SinkCounting<?> sink ;
-        LangRIOT parser ;
-        
         NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
         if ( labelsAsGiven )
             labels = NodeToLabel.createBNodeByLabelEncoded() ;
         
-        // Uglyness because quads and triples aren't subtype of some Tuple<Node>
-        // Replace with StreamRDF all the way through.
+        StreamRDF s = StreamRDFLib.sinkNull() ;
+        if ( ! modLangParse.toBitBucket() )
+            s = StreamRDFLib.writer(output) ;
+        if ( setup != null )
+            s = InfFactory.inf(s, setup) ;
+        StreamRDFCounting sink = StreamRDFLib.count(s) ;
+        s = null ;
         
-        if ( RDFLanguages.isTriples(lang) )
-        {
-            Sink<Triple> s = SinkNull.create() ;
-            if ( ! modLangParse.toBitBucket() )
-                s = new SinkTripleOutput(output, null, labels) ;
-            if ( setup != null )
-                s = InfFactory.infTriples(s, setup) ;
-            
-            SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
-            StreamRDF dest = StreamRDFLib.sinkTriples(sink2) ;
-            parser = RiotReader.createParser(in, lang, baseURI, dest) ;
-            
-            sink = sink2 ;
-        }
-        else
-        {
-            Sink <Quad> s = SinkNull.create() ;
-            if ( ! modLangParse.toBitBucket() )
-                s = new SinkQuadOutput(output, null, labels) ;
-            if ( setup != null )
-                s = InfFactory.infQuads(s, setup) ;
-            
-            SinkCounting<Quad> sink2 = new SinkCounting<Quad>(s) ;
-            StreamRDF dest = StreamRDFLib.sinkQuads(sink2) ;
-            parser = RiotReader.createParser(in, lang, baseURI, dest) ;
-            sink = sink2 ;
-        }
-        
+        // Need low level control over the parser.
+        LangRIOT parser = RiotReader.createParser(in, lang, baseURI, sink) ;
         try
         {
             if ( checking )
@@ -323,7 +293,6 @@ public abstract class CmdLangParse extends CmdGeneral
             
             if ( labelsAsGiven )
                 parser.getProfile().setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
-            
             modTime.startTimer() ;
             parser.parse() ;
         }
@@ -336,12 +305,12 @@ public abstract class CmdLangParse extends CmdGeneral
                 return ;
         }
         finally {
-            IO.close(in) ;
             // Not close - we may write again to the underlying output stream in another call to parse a file.  
-            sink.flush() ;
+            sink.finish() ;
+            IO.close(in) ;
         }
         long x = modTime.endTimer() ;
-        long n = sink.getCount() ;
+        long n = sink.countTriples()+sink.countQuads() ;
 
         if ( modTime.timingEnabled() )
             output(filename, n, x, handler) ;

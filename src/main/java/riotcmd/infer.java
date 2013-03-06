@@ -18,17 +18,12 @@
 
 package riotcmd;
 
-import java.io.InputStream ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.IRILib ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.out.SinkQuadOutput ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -37,7 +32,6 @@ import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.util.FileManager ;
 
 /*
@@ -130,8 +124,8 @@ public class infer extends CmdGeneral
     @Override
     protected void exec()
     {
-        Sink<Quad> sink = new SinkQuadOutput(System.out) ;
-        sink = InfFactory.infQuads(sink, vocab) ;
+        StreamRDF sink = StreamRDFLib.writer(System.out) ;
+        sink = InfFactory.inf(sink, vocab) ;
         
         List<String> files = getPositionalOrStdin() ;
         if ( files.isEmpty() )
@@ -142,26 +136,14 @@ public class infer extends CmdGeneral
         IO.flush(System.out); 
     }
 
-    private void processFile(String filename, Sink<Quad> qsink)
+    private void processFile(String filename, StreamRDF sink)
     {
         Lang lang = filename.equals("-") ? RDFLanguages.NQUADS : RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;
-        String baseURI = IRILib.filenameToIRI(filename) ;
-        StreamRDF sink = StreamRDFLib.sinkQuads(qsink) ;
-        
-        if ( RDFLanguages.isTriples(lang) )
-        {
-            InputStream in = IO.openFile(filename) ;
-            sink = StreamRDFLib.extendTriplesToQuads(sink) ;
-            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, sink) ;
-            parser.parse() ;
-            return ;
-        }
+
+        if ( filename.equals("-") )
+            RDFDataMgr.parse(sink, System.in, null, RDFLanguages.NQUADS, null) ;
         else
-        {
-            InputStream in = IO.openFile(filename) ;
-            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, sink) ; 
-            parser.parse() ;
-        }        
+            RDFDataMgr.parse(sink, filename) ;
     }
 
     @Override

@@ -18,11 +18,14 @@
 
 package org.apache.jena.riot.system;
 
+import java.io.OutputStream ;
+import java.io.Writer ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.riot.lang.RDFParserOutputCounting ;
+import org.apache.jena.riot.lang.StreamRDFCounting ;
+import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -36,11 +39,14 @@ public class StreamRDFLib
     /** Send everything to nowhere ... efficiently */
     public static StreamRDF sinkNull()                       { return new StreamRDFBase() ; }
 
+    public static StreamRDF writer(OutputStream out)         { return new WriterStreamRDFTuples(out) ; }
+    public static StreamRDF writer(Writer out)               { return new WriterStreamRDFTuples(out) ; }
+
     public static StreamRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
     
     public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
     
-    /** Set triples to a StreamRDF - does not all .start/.finish */ 
+    /** Set triples to a StreamRDF - does not call .start/.finish */ 
     public static void triplesToStream(StreamRDF dest, Iterator<Triple> iter)
     {
         for ( ; iter.hasNext() ; )
@@ -50,7 +56,7 @@ public class StreamRDFLib
         }
     }
 
-    /** Set quads to a StreamRDF - does not all .start/.finish */ 
+    /** Set quads to a StreamRDF - does not call .start/.finish */ 
     public static void quadsToStream(StreamRDF dest, Iterator<Quad> iter)
     {
         for ( ; iter.hasNext() ; )
@@ -59,7 +65,6 @@ public class StreamRDFLib
             dest.quad(q) ;
         }
     }
-
     
     /** 
      * Output to a sink; prefix and base handled only within the parser.
@@ -83,11 +88,11 @@ public class StreamRDFLib
     public static StreamRDF extendTriplesToQuads(Node graphNode, StreamRDF base)
     { return new ParserOutputSinkTriplesToQuads(graphNode, base) ; }
     
-    public static RDFParserOutputCounting count()
-    { return new ParserOutputCountingBase(sinkNull()) ; }
+    public static StreamRDFCounting count()
+    { return new StreamRDFCountingBase(sinkNull()) ; }
 
-    public static RDFParserOutputCounting count(StreamRDF other)
-    { return new ParserOutputCountingBase(other) ; }
+    public static StreamRDFCounting count(StreamRDF other)
+    { return new StreamRDFCountingBase(other) ; }
 
     private static class ParserOutputSinkTriplesToQuads extends StreamRDFWrapper
     {
@@ -192,7 +197,7 @@ public class StreamRDFLib
         }
     }
 
-    private  static class ParserOutputCountingBase extends StreamRDFWrapper implements StreamRDF, RDFParserOutputCounting
+    private  static class StreamRDFCountingBase extends StreamRDFWrapper implements StreamRDF, StreamRDFCounting
     {
         private long countTriples = 0 ;
         private long countQuads = 0 ;
@@ -200,7 +205,7 @@ public class StreamRDFLib
         private long countBase = 0 ;
         private long countPrefixes = 0 ;
         
-        public ParserOutputCountingBase (StreamRDF other)     { super(other) ; }
+        public StreamRDFCountingBase (StreamRDF other)     { super(other) ; }
 
         @Override
         public void triple(Triple triple)
