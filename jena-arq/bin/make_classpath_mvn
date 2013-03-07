@@ -28,7 +28,6 @@ X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/s ; print "$1","\n"' $DIRROOT
 
 SEP=':'
 CP=${CP:-}
-[ "$CP" != "" ] && CP="${SEP}${CP}"
 
 for x in $X
 do
