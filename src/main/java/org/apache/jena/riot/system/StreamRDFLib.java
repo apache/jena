@@ -32,6 +32,7 @@ import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -175,7 +176,14 @@ public class StreamRDFLib
     private static class ParserOutputDataset extends StreamRDFBase
     {
         protected final DatasetGraph dsg ;
-        public ParserOutputDataset(DatasetGraph dsg) { this.dsg = dsg ; }
+        protected final PrefixMapping prefixMapping ;
+        
+        public ParserOutputDataset(DatasetGraph dsg)
+        { 
+            this.dsg = dsg ;
+            this.prefixMapping = dsg.getDefaultGraph().getPrefixMapping() ;
+            // = dsg.getPrefixMapping().setNsPrefix(prefix, uri) ;
+        }
         
         @Override public void triple(Triple triple) 
         {
@@ -196,7 +204,7 @@ public class StreamRDFLib
 
         @Override public void prefix(String prefix, String uri)
         {
-            //dsg.getPrefixMapping().setNsPrefix(prefix, uri) ;
+            prefixMapping.setNsPrefix(prefix, uri) ;
         }
     }
 
