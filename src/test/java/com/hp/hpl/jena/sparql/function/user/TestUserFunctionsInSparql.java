@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.function.user;
 
 import java.util.ArrayList;
 
-import org.junit.Assert ;
+import org.junit.Assert;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

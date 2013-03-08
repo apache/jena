@@ -34,7 +34,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.vocabulary.XSD;
 
-import org.junit.Assert ;
+import org.junit.Assert;
 
 public class TestParameterizedSparqlString {
 

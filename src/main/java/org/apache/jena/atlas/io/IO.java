@@ -166,7 +166,14 @@ public class IO
         try { resource.close(); } catch (IOException ex) { }
     }
     
-    public static void closeSilent(IndentedWriter resource)
+    public static void close(AWriter resource)
+    {
+        if ( resource == null )
+            return ;
+        resource.close();
+    }
+    
+    public static void closeSilent(AWriter resource)
     {
         if ( resource == null )
             return ;
