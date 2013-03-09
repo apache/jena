@@ -3,6 +3,6 @@
 <!--  Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
 <properties version="1.0">
   <comment>ARQ System Properties</comment>
-  <entry key="com.hp.hpl.jena.sparql.version">${project.version}</entry>
-  <entry key="com.hp.hpl.jena.sparql.build.datetime">${build.time.xsd}</entry>
+  <entry key="org.apache.jena.arq.version">${project.version}</entry>
+  <entry key="org.apache.jena.arq.build.datetime">${build.time.xsd}</entry>
 </properties>

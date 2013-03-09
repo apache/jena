@@ -398,20 +398,20 @@ public class ARQ
     // ----------------------------------
     
     /** The root package name for ARQ */   
-    public static final String PATH = "com.hp.hpl.jena.sparql";
+    public static final String PATH         = "org.apache.jena.arq";
    
-    static private String metadataLocation = "com/hp/hpl/jena/sparql/arq-properties.xml" ;
+    static private String metadataLocation  = "org/apache/jena/arq/arq-properties.xml" ;
 
-    static private Metadata metadata = new Metadata(metadataLocation) ;
+    static private Metadata metadata        = new Metadata(metadataLocation) ;
     
     /** The product name */   
-    public static final String NAME = "ARQ";
+    public static final String NAME         = "ARQ";
    
     /** The full name of the current ARQ version */   
-    public static final String VERSION = metadata.get(PATH+".version", "unknown") ;
+    public static final String VERSION      = metadata.get(PATH+".version", "unknown") ;
    
     /** The date and time at which this release was built */   
-    public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
+    public static final String BUILD_DATE   = metadata.get(PATH+".build.datetime", "unset") ;
     
     // A correct way to manage without synchonized using the double checked locking pattern.
     //   http://en.wikipedia.org/wiki/Double-checked_locking

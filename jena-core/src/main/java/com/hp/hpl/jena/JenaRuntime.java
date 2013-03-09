@@ -30,7 +30,7 @@ import com.hp.hpl.jena.util.Metadata ;
 
 public class JenaRuntime
 {
-    private static String metadataLocation = "com/hp/hpl/jena/jena-properties.xml" ;
+    private static String metadataLocation = "org/apache/jena/jena-properties.xml" ;
     private static Metadata metadata = new Metadata(metadataLocation) ;
     public static String getMetadata(String key, String defaultValue) { return metadata.get(key, defaultValue) ; }
     
