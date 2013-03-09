@@ -1,0 +1,8 @@
+# Some tests require exact line endings
+# GIT will by default override the line endings with the platform default
+# So tell it not to for those files.
+
+testing/RIOT/Lang/Turtle/turtle-subm-15.ttl text eol=lf
+testing/RIOT/Lang/Turtle/turtle-subm-16.ttl text eol=lf
+testing/RIOT/Lang/TurtleSubm/test-17.ttl text eol=lf
+testing/RIOT/Lang/TurtleSubm/test-18.ttl text eol=lf
