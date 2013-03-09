@@ -18,7 +18,8 @@
 
 package tdb;
 
-import org.apache.jena.riot.RiotWriter ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -46,6 +47,6 @@ public class tdbdump extends CmdTDB
     protected void exec()
     {
         DatasetGraph dsg = super.getDatasetGraphTDB() ;
-        RiotWriter.writeNQuads(System.out, dsg) ;
+        RDFDataMgr.write(System.out, dsg, Lang.NQUADS) ;
     }
 }

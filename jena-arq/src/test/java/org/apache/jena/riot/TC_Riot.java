@@ -25,23 +25,21 @@ import org.apache.jena.riot.process.TS_Process ;
 import org.apache.jena.riot.stream.TS_IO2 ;
 import org.apache.jena.riot.system.TS_RiotSystem ;
 import org.apache.jena.riot.web.TS_RiotWeb ;
+import org.apache.jena.riot.writer.TS_RiotWriter ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Old world - org.openjena.riot
     TS_Out.class
-
-    // New world - org.apache.jena.riot
     , TS_Lang.class
     , TS_LangSuite.class
     , TS_ReaderRIOT.class
     , TS_IO2.class
     , TS_RIOTAdapters.class
     , TS_Process.class
-    //, TS_RiotMisc.class
+    , TS_RiotWriter.class
     , TS_RiotSystem.class
     , TS_RiotWeb.class
 })

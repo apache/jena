@@ -1,0 +1,9 @@
+@prefix :     <http://example/> .
+@prefix ns:   <http://example/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  .
+
+# Simple stuff.
+:s ns:p1 <http://other/planet> .
+:s ns:p2 123 .
+:s ns:p3 [] .
+:s a :T .

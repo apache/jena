@@ -1,0 +1,30 @@
+@prefix :     <http://example/> .
+@prefix ns:   <http://example/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  .
+
+<http://localhost/longsubject/X01234567890_1> :p :o .
+
+<http://localhost/longsubject/X01234567890_2> 
+    :p 
+      <http://localhost/longobject/X01234567890> ;
+    :p1 123 .
+
+<http://localhost/longsubject/X01234567890_3>
+   <http://localhost/longpredicate/X01234567890>
+      :o .
+
+<http://localhost/longsubject/X01234567890_4>
+   <http://localhost/longpredicate/X01234567890>
+      <http://localhost/longobject/X01234567890> .
+
+:s1
+   <http://localhost/longpredicate/X01234567890>
+      :o .
+
+:s2
+   :p
+      <http://localhost/longobject/X01234567890> .
+
+
+
+

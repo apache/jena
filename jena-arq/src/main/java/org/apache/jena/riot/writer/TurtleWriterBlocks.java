@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,18 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.riot.writer;
 
-import java.io.Writer ;
-
-import org.apache.jena.riot.out.RDFJSONWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.graph.Graph ;
 
-public class JenaWriterRdfJson extends JenaWriterBase
+/** Turtle writer that streams - print in blocks of triples formatted
+ *  by adjacent same subject.
+ */
+public class TurtleWriterBlocks extends TurtleWriterBase
 {
-	@Override
-	protected void write(Graph graph, Writer out, String base) {
-		RDFJSONWriter.write(out, graph) ;
-	}
+    @Override
+    protected void output$(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI)
+    {
+        StreamRDF dest = new WriterStreamRDFBlocks(out) ;
+        WriterStream.write(dest, graph, prefixMap, baseURI) ;
+    }
 }
+

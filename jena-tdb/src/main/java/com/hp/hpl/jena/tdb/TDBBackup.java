@@ -18,15 +18,12 @@
 
 package com.hp.hpl.jena.tdb;
 
-import java.io.BufferedOutputStream ;
-import java.io.FileNotFoundException ;
-import java.io.FileOutputStream ;
-import java.io.IOException ;
-import java.io.OutputStream ;
+import java.io.* ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.riot.out.NQuadsWriter ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -63,7 +60,7 @@ public class TDBBackup
         Dataset ds = TDBFactory.createDataset(location) ;
         StoreConnection sConn = StoreConnection.make(location) ;
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ, "backup") ;
-        NQuadsWriter.write(backupfile, dsg) ;
+        RDFDataMgr.write(backupfile, dsg, Lang.NQUADS) ;
         dsg.end();
     }
 }

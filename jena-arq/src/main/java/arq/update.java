@@ -21,15 +21,16 @@ package arq;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.riot.out.NQuadsWriter ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdUpdate ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.core.TransactionalNull ;
 import com.hp.hpl.jena.sparql.core.Transactional ;
+import com.hp.hpl.jena.sparql.core.TransactionalNull ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateExecutionFactory ;
@@ -104,8 +105,7 @@ public class update extends CmdUpdate
         SystemARQ.sync(graphStore) ;
 
         if ( dump )
-            //SSE.write(graphStore) ;
-            NQuadsWriter.write(System.out, graphStore) ;
+            RDFDataMgr.write(System.out, graphStore, Lang.NQUADS) ;
     }
 
 

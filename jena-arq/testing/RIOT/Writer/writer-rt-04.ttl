@@ -1,0 +1,9 @@
+@prefix :     <http://example/> .
+@prefix ns:   <http://example/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  .
+
+# Well formed lists
+:a :q1 (1 2 3) .
+:a :q2 ( 1 ) .
+:a :q3 () .
+:a :q4 ( :s [ :p :o ] ) .

@@ -1,0 +1,16 @@
+@prefix :     <http://example/> .
+@prefix ns:   <http://example/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  .
+
+# Shared list
+:s1 :slist _:x1 .
+:s2 :slist _:x2 .
+
+_:x1 rdf:first "A" ;
+    rdf:rest _:y .
+
+_:x2 rdf:first "B" ;
+    rdf:rest _:y .
+
+_:y rdf:first 9 ;
+    rdf:rest ( 8 7 ) .

@@ -58,7 +58,7 @@ public class Pattern implements Printable
         out.print(objItem.toString()) ;
         out.print(")") ;
         out.print(" ") ;
-        out.print(weight) ;
+        out.print(Double.toString(weight)) ;
         out.print(")") ;
     }
 }

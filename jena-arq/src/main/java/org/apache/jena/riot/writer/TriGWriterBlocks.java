@@ -16,15 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.writer;
 
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamRDF ;
 
-public interface RDFParserOutputCounting extends StreamRDF
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+
+/** TriG writer that streams - print in blocks of quads clustered
+ *  by adjacent same graph and same subject
+ */
+public class TriGWriterBlocks extends TriGWriterBase
 {
-    /** Count of triples, quads or tuples */
-    public long count() ;
-    public long countTriples() ;
-    public long countQuads() ;
-    public long countTuples() ;
+    @Override
+    protected void output$(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI)
+    {
+        StreamRDF dest = new WriterStreamRDFBlocks(iOut) ;
+        WriterStream.write(dest, dsg, prefixMap, baseURI) ;
+    }
 }
+
