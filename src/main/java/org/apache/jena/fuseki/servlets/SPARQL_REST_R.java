@@ -27,16 +27,15 @@ import javax.servlet.ServletOutputStream ;
 
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.WebContent ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
 
 /** Only the READ operations */
 public class SPARQL_REST_R extends SPARQL_REST
@@ -107,12 +106,11 @@ public class SPARQL_REST_R extends SPARQL_REST
                 errorNotFound("No such graph: <"+action.getTarget().name+">") ;
             // If we want to set the Content-Length, we need to buffer.
             //response.setContentLength(??) ;
-            RDFWriter writer = FusekiLib.chooseWriter(lang) ;
             String ct = WebContent.mapLangToContentType(lang) ;
             action.response.setContentType(ct) ;
             Graph g = action.getTarget().graph() ;
             Model model = ModelFactory.createModelForGraph(g) ;
-            writer.write(model, out, null) ;
+            RDFDataMgr.write(out, model, lang) ;
             success(action) ;
         } finally { action.endRead() ; }
     }

@@ -18,26 +18,17 @@
 
 package org.apache.jena.fuseki;
 
-import java.util.HashMap ;
 import java.util.Iterator ;
-import java.util.Map ;
 
 import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.commons.lang.StringUtils ;
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.web.MediaType ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.WebContent ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Convert ;
@@ -50,26 +41,6 @@ public class FusekiLib
         if ( x == null )
             return null ;
         return MediaType.create(x) ;
-    }
-
-    private static Map<Lang, String> mapLangToWriterName =  new HashMap<Lang, String>() ;
-    static {
-        mapLangToWriterName.put(RDFLanguages.N3, WebContent.langN3) ;
-        mapLangToWriterName.put(RDFLanguages.RDFJSON, WebContent.langRdfJson) ;
-        mapLangToWriterName.put(RDFLanguages.TURTLE, WebContent.langTurtle) ;
-        mapLangToWriterName.put(RDFLanguages.NTRIPLES, WebContent.langNTriples) ;
-        mapLangToWriterName.put(RDFLanguages.RDFXML, WebContent.langRDFXML) ;
-    }
-    
-    private static Model dummy = ModelFactory.createDefaultModel() ;
-    public static RDFWriter chooseWriter(Lang lang)        
-    {
-        if ( lang == null )
-            lang = RDFLanguages.RDFXML ;
-        String name = mapLangToWriterName.get(lang) ;
-        if ( name == null )
-            throw new RiotException("Not a triples language: "+lang) ;
-        return dummy.getWriter(name) ;
     }
 
     static String fmtRequest(HttpServletRequest request)
