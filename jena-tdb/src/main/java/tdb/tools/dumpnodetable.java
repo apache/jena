@@ -104,7 +104,7 @@ public class dumpnodetable extends CmdGeneral
         for ( ; iter.hasNext() ; )
         {
             Pair<NodeId, Node> pair = iter.next() ;
-            iw.print(pair.car()) ;
+            iw.print(pair.car().toString()) ;
             iw.print(" : ") ;
             //iw.print(pair.cdr()) ;
             Node n = pair.cdr() ;

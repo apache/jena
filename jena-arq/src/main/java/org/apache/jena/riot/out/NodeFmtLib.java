@@ -18,25 +18,20 @@
 
 package org.apache.jena.riot.out;
 
-import java.io.StringWriter ;
-import java.io.Writer ;
 import java.net.MalformedURLException ;
 import java.util.Map ;
 
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
-import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.riot.system.Prologue ;
-import org.apache.jena.riot.system.RiotChars ;
+import org.apache.jena.riot.system.* ;
 
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -47,7 +42,7 @@ public class NodeFmtLib
     // See OutputLangUtils.
     // See and use EscapeStr
     
-    static PrefixMap dftPrefixMap = PrefixMapFactory.createForOutput() ;
+    static PrefixMap dftPrefixMap = PrefixMapFactory.create() ;
     static {
         PrefixMapping pm = ARQConstants.getGlobalPrefixMap() ;
         Map<String, String> map = pm.getNsPrefixMap() ;
@@ -69,13 +64,15 @@ public class NodeFmtLib
     // Worker
     public static String strNodes(Node ... nodes)
     {
-        StringWriter sw = new StringWriter() ;
+        IndentedLineBuffer sw = new IndentedLineBuffer() ;
         boolean first = true ;
         for ( Node n : nodes ) 
         {
             if ( ! first )
+            {
                 sw.append(" ") ;
-            first = false ;
+                first = false ;
+            }
             str(sw, n) ;
         }
         return sw.toString() ; 
@@ -83,7 +80,7 @@ public class NodeFmtLib
 
     public static String str(Node n)
     {
-        StringWriter sw = new StringWriter() ;
+        IndentedLineBuffer sw = new IndentedLineBuffer() ;
         str(sw, n) ;
         return sw.toString() ; 
     }
@@ -92,14 +89,14 @@ public class NodeFmtLib
 
     //public static String displayStr(Node n) { return serialize(n) ; }
 
-    public static void str(Writer w, Node n)
+    public static void str(IndentedWriter w, Node n)
     { serialize(w, n, null, null) ; }
 
-    public static void serialize(Writer w, Node n, Prologue prologue)
+    public static void serialize(IndentedWriter w, Node n, Prologue prologue)
     { serialize(w, n, prologue.getBaseURI(), prologue.getPrefixMap()) ; }
 
     
-    public static void serialize(Writer w, Node n, String base, PrefixMap prefixMap)
+    public static void serialize(IndentedWriter w, Node n, String base, PrefixMap prefixMap)
     {
         if ( prefixMap == null )
             prefixMap = dftPrefixMap ;

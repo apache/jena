@@ -18,33 +18,20 @@
 
 package org.apache.jena.riot.process.inf;
 
-import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.system.StreamRDF ;
 
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class InfFactory
 {
-    public static Sink<Triple> infTriples(Sink<Triple> sink, Model vocab)
+    public static StreamRDF inf(StreamRDF data, Model vocab)
     {
         InferenceSetupRDFS setup =  new InferenceSetupRDFS(vocab) ;
-        return new InferenceProcessorTriples(sink, setup) ; 
+        return new InferenceProcessorStreamRDF(data, setup) ; 
     }
     
-    public static Sink<Quad> infQuads(Sink<Quad> sink, Model vocab)
+    public static StreamRDF inf(StreamRDF data, InferenceSetupRDFS setup)
     {
-        InferenceSetupRDFS setup =  new InferenceSetupRDFS(vocab) ;
-        return new InferenceProcessorQuads(sink, setup) ; 
-    }
-
-    public static Sink<Triple> infTriples(Sink<Triple> sink, InferenceSetupRDFS setup)
-    {
-        return new InferenceProcessorTriples(sink, setup) ; 
-    }
-    
-    public static Sink<Quad> infQuads(Sink<Quad> sink, InferenceSetupRDFS setup)
-    {
-        return new InferenceProcessorQuads(sink, setup) ; 
+        return new InferenceProcessorStreamRDF(data, setup) ; 
     }
 }

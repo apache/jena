@@ -37,7 +37,6 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  *  Usage: call process(Node, Node, Node), outputs to derive(Node, Node, Node).
  */
 
-
 abstract class InferenceProcessorRDFS
 {
     // Calculates hierarchies (subclass, subproperty) from a model.

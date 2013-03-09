@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,33 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
-
-import java.io.ByteArrayOutputStream ;
-import java.io.OutputStream ;
+package org.apache.jena.riot.writer;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.system.JenaWriterNTriples2 ;
-import org.junit.Test ;
+import org.apache.jena.riot.RDFDataMgr ;
 
-import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public class TestOutputNTriples extends BaseTest
+public class AbstractWriterTest extends BaseTest
 {
-    // Read a file, write it to a string, read it again.  Test for same. 
+    static String DIR = "testing/RIOT/Writer" ;
     
-    Triple t1 = SSE.parseTriple("(<x> <p> 123)") ;
+    static Dataset readDataset(String filename) {
+        String fn = DIR + "/" + filename ;
+        Dataset ds = RDFDataMgr.loadDataset(fn) ;
+        return ds ;
+    }
     
-    @Test public void ntriples0()
-    {
-        Model m = ModelFactory.createDefaultModel() ;
-        m.getGraph().add(t1) ;
-        OutputStream out = new ByteArrayOutputStream() ;
-        RDFWriter w = new JenaWriterNTriples2() ;
-        w.write(m, out, null) ;
+    static Model readModel(String filename) {
+        String fn = DIR + "/" + filename ;
+        Model m = RDFDataMgr.loadModel(fn) ;
+        return m ;
     }
 }
+

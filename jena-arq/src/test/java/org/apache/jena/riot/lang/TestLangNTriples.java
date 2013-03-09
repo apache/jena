@@ -95,7 +95,7 @@ public class TestLangNTriples extends TestLangNTuples
     {
         String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = tokenizer(string) ;
-        RDFParserOutputCounting sink = StreamRDFLib.count() ;
+        StreamRDFCounting sink = StreamRDFLib.count() ;
         LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
         x.getProfile().setHandler(new ErrorHandlerEx()) ;
         x.parse() ;

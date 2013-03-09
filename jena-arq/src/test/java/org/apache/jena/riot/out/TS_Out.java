@@ -27,8 +27,6 @@ import org.junit.runners.Suite ;
       TestNodeFmt.class
     , TestNodeFmtLib.class
     , TestOutput.class
-    , TestOutputNTriples.class
-    , TestOutputRDFJSON.class
 })
 
 public class TS_Out

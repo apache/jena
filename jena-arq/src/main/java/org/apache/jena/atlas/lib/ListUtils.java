@@ -107,7 +107,7 @@ public class ListUtils
             public void apply(T item)
             {
                 if ( ! first ) out.print(sep) ;
-                out.print(item) ;
+                out.print(item.toString()) ;
                 first = false ;
             }
         } ;

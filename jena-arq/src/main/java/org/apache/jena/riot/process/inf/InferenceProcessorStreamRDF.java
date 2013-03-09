@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,45 +18,57 @@
 
 package org.apache.jena.riot.process.inf;
 
-import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFWrapper ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-class InferenceProcessorQuads implements Sink<Quad>
+/** Receive triples and quads (incoming because this is a StreamRDF);
+ *  allow RDFS; output to place provided. 
+ */
+public class InferenceProcessorStreamRDF extends StreamRDFWrapper
 {
-    private final Sink<Quad> output ;
     private final InferenceSetupRDFS rdfsSetup ;
     private final InferenceProcessorRDFS rdfs ;
+    private boolean isTriple = true ;
     private Node g ;
 
-    public InferenceProcessorQuads(Sink<Quad> output, InferenceSetupRDFS rdfsSetup)
+    public InferenceProcessorStreamRDF(final StreamRDF output, InferenceSetupRDFS rdfsSetup)
     {
-        this.output = output ;
+        super(output) ;
         this.rdfsSetup = rdfsSetup ;
         this.rdfs = new InferenceProcessorRDFS(rdfsSetup)
         {
             @Override
             public void derive(Node s, Node p, Node o)
-            { InferenceProcessorQuads.this.output.send(new Quad(g,s,p,o)) ; }
+            {
+                if ( isTriple )
+                    output.triple(Triple.create(s,p,o)) ;
+                else
+                    output.quad(Quad.create(g,s,p,o)) ;
+            }
         } ;
     }
-
     
     @Override
-    public void send(Quad quad)
+    public void triple(Triple triple)
+    { 
+        super.triple(triple) ;
+        isTriple = true ;
+        g = null ;
+        rdfs.process(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+    }
+
+    @Override
+    public void quad(Quad quad)
     {
-        output.send(quad) ;
-        // Take a note of the graph, so the derive operation has access to it.
+        super.quad(quad) ;
+        isTriple = false ;
         g = quad.getGraph() ;
         rdfs.process(quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
-
-    @Override
-    public void flush()
-    { output.flush() ; }
-
-    @Override
-    public void close()
-    { output.close() ; }
+    
 }
+

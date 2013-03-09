@@ -18,29 +18,36 @@
 
 package org.apache.jena.riot.out;
 
-import java.io.IOException ;
 import java.io.OutputStream ;
-import java.io.Writer ;
-import java.nio.charset.CharsetEncoder ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.system.SyntaxLabels ;
+import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
-/** A class that print triples, N-triples style */ 
+/** A class that print triples, N-triples style
+ *  
+ * @see WriterStreamRDFTuples
+ * @see RDFDataMgr#writeTriples
+ */ 
 public class SinkTripleOutput implements Sink<Triple>
 {
-    private CharsetEncoder encoder ;
+    // WriterStreamRDFTuples
+    
     private Prologue prologue = null ;
-    private Writer out ;
+    private final AWriter out ;
     private NodeToLabel labelPolicy = null ;
     
     private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
+    /** @deprecated Use {@linkplain RDFDataMgr#writeTriples} */ 
+    @Deprecated
     public SinkTripleOutput(OutputStream outs)
     {
         this(outs, null, SyntaxLabels.createNodeToLabel()) ;
@@ -48,7 +55,7 @@ public class SinkTripleOutput implements Sink<Triple>
     
     public SinkTripleOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
     {
-        out = IO.asBufferedUTF8(outs) ;
+        out = IO.wrapUTF8(outs) ;
         setPrologue(prologue) ;
         setLabelPolicy(labels) ;
     }
@@ -67,18 +74,16 @@ public class SinkTripleOutput implements Sink<Triple>
     @Override
     public void send(Triple triple)
     {
-        try {
             Node s = triple.getSubject() ;
             Node p = triple.getPredicate() ;
             Node o = triple.getObject() ;
 
             nodeFmt.format(out, s) ;
-            out.write(" ") ;
+            out.print(" ") ;
             nodeFmt.format(out, p) ;
-            out.write(" ") ;
+            out.print(" ") ;
             nodeFmt.format(out, o) ;
-            out.write(" .\n") ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+            out.print(" .\n") ;
     }
 
     @Override

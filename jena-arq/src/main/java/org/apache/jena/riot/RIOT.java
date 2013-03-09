@@ -67,8 +67,10 @@ public class RIOT
             // called RIOT.init.
             RDFLanguages.init() ;
             RDFParserRegistry.init() ;
-            IO_Jena.wireIntoJena() ;
+            RDFWriterRegistry.init() ;
 
+            IO_Jena.wireIntoJena() ;
+            
             // Don't register JMX info with ARQ as it may not be initialized
             // itself and we can get into a circularity.
             // This is done in ARQ.init at the proper moment.

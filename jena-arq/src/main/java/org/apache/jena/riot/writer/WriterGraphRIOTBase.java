@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,31 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.riot.writer;
 
+import java.io.OutputStream ;
 import java.io.Writer ;
-import java.util.Iterator ;
 
-import org.apache.jena.riot.out.NodeToLabel ;
-import org.apache.jena.riot.out.OutputLangUtils ;
+import org.apache.jena.riot.WriterGraphRIOT ;
+import org.apache.jena.riot.system.PrefixMap ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
-public class JenaWriterNTriples2 extends JenaWriterBase
+public abstract class WriterGraphRIOTBase implements WriterGraphRIOT
 {
-    // See also SinkTripleOutput.
-    // This is only here because it needs to cover the "Writer" path from JenaWriterBase < RDFWriter
     @Override
-    protected void write(Graph graph, Writer out, String base)
-    {
-        NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
-        Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        for ( ; iter.hasNext() ; )
-        {
-            Triple triple = iter.next() ;
-            OutputLangUtils.output(out, triple, null, labels) ;
-        }
-    }
+    public abstract void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) ;
+    
+    @Override
+    public abstract void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) ;
 }

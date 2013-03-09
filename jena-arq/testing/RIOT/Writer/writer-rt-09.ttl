@@ -1,0 +1,15 @@
+@prefix :     <http://example/> .
+@prefix ns:   <http://example/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  .
+
+# bad list : no rdf:first 
+:x1 :q _:x0 .
+
+## _:x0   rdf:first   "cell-0" .
+_:x0   rdf:rest    _:x1 .
+
+_:x1   rdf:first   "cell-1" .
+_:x1   rdf:rest    _:x2 .
+
+_:x2   rdf:first   "cell-2" .
+_:x2   rdf:rest    rdf:nil .

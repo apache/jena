@@ -296,7 +296,7 @@ public class QuerySerializer implements QueryVisitor
         for ( Var v : variables )
         {
             out.print(" ") ;
-            out.print(v) ;
+            out.print(v.toString()) ;
         }
         out.print(" )") ;
         out.print(" {") ;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.riot.writer;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
@@ -25,9 +25,10 @@ import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.out.RDFJSONWriter ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.junit.Test ;
@@ -38,7 +39,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public class TestOutputRDFJSON extends BaseTest
+public class TestRDFJSON extends BaseTest
 {
     @Test public void rdfjson_00()
     {
@@ -162,7 +163,7 @@ public class TestOutputRDFJSON extends BaseTest
     private ByteArrayOutputStream serializeAsJSON (Graph graph) 
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
-        RDFJSONWriter.write(bout, graph) ;
+        RDFDataMgr.write(bout, graph, Lang.RDFJSON) ;
         return bout ;
     }
 
