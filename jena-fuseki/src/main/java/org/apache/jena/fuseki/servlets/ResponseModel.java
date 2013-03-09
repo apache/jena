@@ -28,16 +28,14 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.conneg.WebLib ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.xmloutput.RDFXMLWriterI ;
 
 public class ResponseModel
 {
@@ -98,10 +96,10 @@ public class ResponseModel
         }
 
         Lang lang = WebContent.contentTypeToLang(contentType) ; 
-        RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
-
-        if ( rdfw instanceof RDFXMLWriterI )
-            rdfw.setProperty("showXmlDeclaration", "true") ;
+//        RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
+//
+//        if ( rdfw instanceof RDFXMLWriterI )
+//            rdfw.setProperty("showXmlDeclaration", "true") ;
 
     //        // Write locally to check it's possible.
     //        // Time/space tradeoff.
@@ -118,7 +116,7 @@ public class ResponseModel
             ResponseResultSet.setHttpResponse(request, response, contentType, charset) ; 
             response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = response.getOutputStream() ;
-            rdfw.write(model, out, null) ;
+            RDFDataMgr.write(out, model, lang) ;
             out.flush() ;
         }
         catch (Exception ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
