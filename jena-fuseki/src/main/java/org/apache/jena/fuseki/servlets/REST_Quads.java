@@ -75,13 +75,7 @@ public class REST_Quads extends SPARQL_REST
         action.beginRead() ;
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
-            
-            if ( lang == RDFLanguages.NQUADS )
-                RiotWriter.writeNQuads(out, dsg) ;
-            else if ( lang == RDFLanguages.TRIG )
-                errorBadRequest("TriG - Not implemented (yet) : "+mediaType) ;
-            else
-                errorBadRequest("No handled: "+mediaType) ;
+            RDFDataMgr.write(out, dsg, lang) ;
             success(action) ;
         } finally { action.endRead() ; }
     }

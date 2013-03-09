@@ -38,7 +38,8 @@ import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletBase ;
-import org.apache.jena.riot.out.NQuadsWriter ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -183,7 +184,7 @@ public class ActionBackup extends ServletBase
                 out = new BufferedOutputStream(out) ;
             }
             
-            NQuadsWriter.write(out, dsg) ;
+            RDFDataMgr.write(out, dsg,Lang.NQUADS) ;
             out.close() ;
             out = null ;
         } 
