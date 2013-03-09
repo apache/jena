@@ -54,10 +54,6 @@ public class Metadata
         read(properties, resourceName) ;
     }
     
-    
-    //static String resource = "com/hp/hpl/jena/jena-properties.xml" ;
-
-        
     private static void read(Properties properties, String resource)
     {
         ClassLoader classLoader = SystemUtils.chooseClassLoader() ;

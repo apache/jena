@@ -70,43 +70,28 @@
   <build>
   
     <resources>
+
+      <!-- Legacy -->
       <resource>
-        <directory>etc</directory>
+	<directory>etc</directory>
         <targetPath>etc</targetPath>
         <filtering>false</filtering>
       </resource>
 
       <resource>
-        <directory>vocabularies</directory>
-        <targetPath>vocabularies</targetPath>
-        <filtering>false</filtering>
-        <includes>
-          <include>assembler.n3</include>
-        </includes>
-      </resource>
-
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>jena-log4j.properties</include>
-        </includes>
-        <filtering>false</filtering>
-      </resource>
-
-  
-  <!-- <copy file="src/main/resources/jena-properties.xml" toFile="${project.basedir}/target/classes/com/hp/hpl/jena/jena-properties.xml" overwrite="true">
-   -->
-      <resource>
         <filtering>false</filtering>
         <directory>src/main/resources</directory>
       </resource>
+
       <resource>
-        <targetPath>com/hp/hpl/jena/</targetPath>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>org/apache/jena/jena-properties.xml</include>
+        </includes>
         <filtering>true</filtering>
-        <directory>src/main/resources</directory>
       </resource>
+
     </resources>
-  
   
     <plugins>
 

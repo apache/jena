@@ -27,46 +27,21 @@ public interface Jena
 {
 	/** The root package name for Jena */    
     public static final String PATH = "com.hp.hpl.jena";
+    
+    /** The root name for metadata */
+    
+    public static final String MPATH = "org.apache.jena";
     static final String UNSET = "unset" ;
     
     /** The product name */    
-    public static final String NAME = JenaRuntime.getMetadata( PATH + ".name", UNSET ) ;
+    public static final String NAME = JenaRuntime.getMetadata( MPATH + ".name", UNSET ) ;
     
     /** The Jena web site */    
-    public static final String WEBSITE = JenaRuntime.getMetadata( PATH + ".website", UNSET ) ;
+    public static final String WEBSITE = JenaRuntime.getMetadata( MPATH + ".website", UNSET ) ;
     
     /** The full name of the current Jena version */    
-    public static final String VERSION = JenaRuntime.getMetadata( PATH + ".version", UNSET ) ;
+    public static final String VERSION = JenaRuntime.getMetadata( MPATH + ".version", UNSET ) ;
     
     /** The date and time at which this release was built */    
-    public static final String BUILD_DATE = JenaRuntime.getMetadata( PATH + ".build.datetime", UNSET ) ;
-
-    /** @deprecated See the VERSION constant */ 
-    @Deprecated 
-    public static final String MAJOR_VERSION = "unset" ;
-    
-    /** @deprecated See the VERSION constant */ 
-    @Deprecated 
-    public static final String MINOR_VERSION = "unset" ;
-
-    /** @deprecated See the VERSION constant */ 
-    @Deprecated 
-    public static final String REVISION_VERSION = "unset" ;
-    
-    /** @deprecated See the VERSION constant */ 
-    @Deprecated 
-    public static final String VERSION_STATUS = "unset" ;
-    
-//    /** The major version number for this release of Jena (ie '2' for Jena 2.6.0) */
-//    public static final String MAJOR_VERSION = metadata.get ( PATH + ".version.major", UNSET ) ;
-//    
-//    /** The minor version number for this release of Jena (ie '6' for Jena 2.6.0) */
-//    public static final String MINOR_VERSION = metadata.get ( PATH + ".version.minor", UNSET ) ;
-//    
-//    /** The minor version number for this release of Jena (ie '0' for Jena 2.6.0) */
-//    public static final String REVISION_VERSION = metadata.get ( PATH + ".version.revision", UNSET ) ;
-//    
-//    /** The version status for this release of Jena (eg '-beta1' or the empty string) */
-//    public static final String VERSION_STATUS = metadata.get ( PATH + ".version.status", UNSET ) ;
-    
+    public static final String BUILD_DATE = JenaRuntime.getMetadata( MPATH + ".build.datetime", UNSET ) ;
 }

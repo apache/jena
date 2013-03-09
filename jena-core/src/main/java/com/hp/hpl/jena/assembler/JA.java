@@ -193,5 +193,5 @@ public class JA
         }
     
     private static String getSchemaPath()
-        { return "vocabularies/assembler.n3"; }
+        { return "org/apache/jena/vocabulary/assembler.ttl"; }
     }

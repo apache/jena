@@ -93,17 +93,16 @@
     <resources>
       <resource>
         <filtering>true</filtering>
-        <targetPath>com/hp/hpl/jena/sparql/</targetPath>
         <directory>src/main/resources</directory>
 	<includes>
-	  <include>arq-properties.xml</include>
+	  <include>org/apache/jena/arq/arq-properties.xml</include>
 	</includes>
       </resource>
       <resource>
         <filtering>false</filtering>
 	<directory>src/main/resources</directory>
 	<excludes>
-	  <exclude>arq-properties.xml</exclude>
+	  <exclude>org/apache/jena/arq/arq-properties.xml</exclude>
 	</excludes>
       </resource>
     </resources>
