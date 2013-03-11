@@ -43,9 +43,8 @@ public class NodeTransformLib
     public static Op transform(NodeTransform nodeTransform, Op op)
     {
         Transform opTransform = new NodeTransformOp(nodeTransform) ; 
-        return Transformer.transform(opTransform, op) ;
+        return Transformer.transform(opTransform, null, op) ;   // No expr transform - we do it ourselves.
     }
-
     
     /** Do a node->node conversion of a BGP - return original BGP for "no change" */
     public static BasicPattern transform(NodeTransform nodeTransform, BasicPattern pattern)  
