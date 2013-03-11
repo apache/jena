@@ -18,17 +18,30 @@
 
 package org.apache.jena.riot.adapters;
 
+import com.hp.hpl.jena.n3.N3JenaWriter ;
+
 public class JenaReadersWriters
 {
-
-    // Yukky hack to integrate into current jena-core where the structure of model.read assumes
-    // the language is determined before the reading process starts.
     // Temporary - eventually, replace all model.read calls with the correct call to RIOT
     // and then the common RDFReaderRIOT can be used.
-    public static class RDFReaderRIOT_RDFXML extends RDFReaderRIOT   { public RDFReaderRIOT_RDFXML() { super("RDF/XML") ; } }
-    public static class RDFReaderRIOT_TTL extends RDFReaderRIOT      { public RDFReaderRIOT_TTL() { super("TTL") ; } }
-    public static class RDFReaderRIOT_NT extends RDFReaderRIOT       { public RDFReaderRIOT_NT() { super("N-TRIPLE") ; } }
-    public static class RDFReaderRIOT_RDFJSON extends RDFReaderRIOT  { public RDFReaderRIOT_RDFJSON() { super("RDF/JSON") ; } }
-
+    
+    public static class RDFReaderRIOT_RDFXML        extends RDFReaderRIOT   { public RDFReaderRIOT_RDFXML()     { super("RDF/XML") ; } }
+    public static class RDFReaderRIOT_TTL           extends RDFReaderRIOT   { public RDFReaderRIOT_TTL()        { super("TTL") ; } }
+    public static class RDFReaderRIOT_NT            extends RDFReaderRIOT   { public RDFReaderRIOT_NT()         { super("N-TRIPLE") ; } }
+    public static class RDFReaderRIOT_RDFJSON       extends RDFReaderRIOT   { public RDFReaderRIOT_RDFJSON()    { super("RDF/JSON") ; } }
+    
+    // Unused - we use the originsl RDF/XML writers directly to preserve property setting.  
+//    public static class RDFWriterRIOT_RDFXML        extends RDFWriterRIOT   { public RDFWriterRIOT_RDFXML()         { super("RDF/XML") ; } }
+//    public static class RDFWriterRIOT_RDFXMLAbbrev  extends RDFWriterRIOT   { public RDFWriterRIOT_RDFXMLAbbrev()   { super("RDF/XML-ABBREV") ; } }
+    public static class RDFWriterRIOT_NTriples      extends RDFWriterRIOT   { public RDFWriterRIOT_NTriples()       { super("N-TRIPLES") ; } }
+    public static class RDFWriterRIOT_N3            extends RDFWriterRIOT   { public RDFWriterRIOT_N3()             { super("N3") ; } }
+    public static class RDFWriterRIOT_N3_PP         extends RDFWriterRIOT   { public RDFWriterRIOT_N3_PP()          { super(N3JenaWriter.n3WriterPrettyPrinter) ; } }
+    public static class RDFWriterRIOT_N3Plain       extends RDFWriterRIOT   { public RDFWriterRIOT_N3Plain()        { super(N3JenaWriter.n3WriterPlain) ; } }
+    public static class RDFWriterRIOT_N3Triples     extends RDFWriterRIOT   { public RDFWriterRIOT_N3Triples()      { super(N3JenaWriter.n3WriterTriples) ; } }
+    public static class RDFWriterRIOT_N3TriplesAlt  extends RDFWriterRIOT   { public RDFWriterRIOT_N3TriplesAlt()   { super(N3JenaWriter.n3WriterTriplesAlt) ; } }
+    public static class RDFWriterRIOT_Turtle        extends RDFWriterRIOT   { public RDFWriterRIOT_Turtle()         { super(N3JenaWriter.turtleWriter) ; } }
+    public static class RDFWriterRIOT_Turtle1       extends RDFWriterRIOT   { public RDFWriterRIOT_Turtle1()        { super(N3JenaWriter.turtleWriterAlt1) ; } }
+    public static class RDFWriterRIOT_Turtle2       extends RDFWriterRIOT   { public RDFWriterRIOT_Turtle2()        { super(N3JenaWriter.turtleWriterAlt2) ; } }
+    public static class RDFWriterRIOT_RDFJSON       extends RDFWriterRIOT   { public RDFWriterRIOT_RDFJSON()        { super("RDF/JSON") ; } }
 }
 

@@ -23,29 +23,15 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import org.apache.jena.riot.RDFFormat ;
-import org.apache.jena.riot.adapters.RDFWriterRIOT ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.n3.N3JenaWriter ;
 import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
 
+import static org.apache.jena.riot.adapters.JenaReadersWriters.* ;
+
 public class IO_JenaWriters
 {
-    // Jena writer adapters
-    // To adapters.JenaReadersWriters
-    public static class RDFWriterRIOT_RDFXML        extends RDFWriterRIOT   { public RDFWriterRIOT_RDFXML()         { super("RDF/XML") ; } }
-    public static class RDFWriterRIOT_RDFXMLAbbrev  extends RDFWriterRIOT   { public RDFWriterRIOT_RDFXMLAbbrev()   { super("RDF/XML-ABBREV") ; } }
-    public static class RDFWriterRIOT_NTriples      extends RDFWriterRIOT   { public RDFWriterRIOT_NTriples()       { super("N-TRIPLES") ; } }
-    public static class RDFWriterRIOT_N3            extends RDFWriterRIOT   { public RDFWriterRIOT_N3()             { super("N3") ; } }
-    public static class RDFWriterRIOT_N3_PP         extends RDFWriterRIOT   { public RDFWriterRIOT_N3_PP()          { super(N3JenaWriter.n3WriterPrettyPrinter) ; } }
-    public static class RDFWriterRIOT_N3Plain       extends RDFWriterRIOT   { public RDFWriterRIOT_N3Plain()        { super(N3JenaWriter.n3WriterPlain) ; } }
-    public static class RDFWriterRIOT_N3Triples     extends RDFWriterRIOT   { public RDFWriterRIOT_N3Triples()      { super(N3JenaWriter.n3WriterTriples) ; } }
-    public static class RDFWriterRIOT_N3TriplesAlt  extends RDFWriterRIOT   { public RDFWriterRIOT_N3TriplesAlt()   { super(N3JenaWriter.n3WriterTriplesAlt) ; } }
-    public static class RDFWriterRIOT_Turtle        extends RDFWriterRIOT   { public RDFWriterRIOT_Turtle()         { super(N3JenaWriter.turtleWriter) ; } }
-    public static class RDFWriterRIOT_Turtle1       extends RDFWriterRIOT   { public RDFWriterRIOT_Turtle1()        { super(N3JenaWriter.turtleWriterAlt1) ; } }
-    public static class RDFWriterRIOT_Turtle2       extends RDFWriterRIOT   { public RDFWriterRIOT_Turtle2()        { super(N3JenaWriter.turtleWriterAlt2) ; } }
-    public static class RDFWriterRIOT_RDFJSON       extends RDFWriterRIOT   { public RDFWriterRIOT_RDFJSON()        { super("RDF/JSON") ; } }
-    
     private static Map<String, RDFFormat> mapJenaNameToFormat               = new HashMap<String, RDFFormat>() ;
 
     /** return the RDFFormat for the existing Jena writer name, or null */ 
@@ -77,15 +63,18 @@ public class IO_JenaWriters
         setFormatForJenaWriter("RDF/JSON",                          RDFFormat.RDFJSON) ;
         setFormatForJenaWriter("RDFJSON",                           RDFFormat.RDFJSON) ;
         
-//        RDFWriterFImpl.LANGS
-//        RDFWriterFImpl.DEFAULTWRITER
-        registerForModelWrite("RDF/XML",            RDFWriterRIOT_RDFXML.class) ;
-        registerForModelWrite("RDF/XML-ABBREV",     RDFWriterRIOT_RDFXMLAbbrev.class) ;
-        registerForModelWrite("N-TRIPLE",           RDFWriterRIOT_NTriples.class) ;
-        registerForModelWrite("N-TRIPLES",          RDFWriterRIOT_NTriples.class) ;
-        registerForModelWrite("N-Triples",          RDFWriterRIOT_NTriples.class) ;
-        registerForModelWrite("NT",                 RDFWriterRIOT_NTriples.class) ;
-        registerForModelWrite("N3",                 RDFWriterRIOT_N3.class) ;
+        //registerForModelWrite("RDF/XML",                            RDFWriterRIOT_RDFXML.class) ;
+        //registerForModelWrite("RDF/XML-ABBREV",                     RDFWriterRIOT_RDFXMLAbbrev.class) ;
+        
+        // Use the original classes so that setting properties works transparently.
+        registerForModelWrite("RDF/XML",                            com.hp.hpl.jena.xmloutput.impl.Basic.class) ;
+        registerForModelWrite("RDF/XML-ABBREV",                     com.hp.hpl.jena.xmloutput.impl.Abbreviated.class) ;
+        
+        registerForModelWrite("N-TRIPLE",                           RDFWriterRIOT_NTriples.class) ;
+        registerForModelWrite("N-TRIPLES",                          RDFWriterRIOT_NTriples.class) ;
+        registerForModelWrite("N-Triples",                          RDFWriterRIOT_NTriples.class) ;
+        registerForModelWrite("NT",                                 RDFWriterRIOT_NTriples.class) ;
+        registerForModelWrite("N3",                                 RDFWriterRIOT_N3.class) ;
         
         registerForModelWrite(N3JenaWriter.n3WriterPrettyPrinter,   RDFWriterRIOT_N3_PP.class) ;
         registerForModelWrite(N3JenaWriter.n3WriterPlain,           RDFWriterRIOT_N3Plain.class) ;

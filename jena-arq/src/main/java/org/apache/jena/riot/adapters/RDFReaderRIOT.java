@@ -38,18 +38,17 @@ public class RDFReaderRIOT implements RDFReader
     private final String basename ; // This will be per reader instance.
     private final String hintlang ;
     private Context context = new Context() ;
-    
-    RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
+    private RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
     
     public RDFReaderRIOT()
     {
-        basename = "org.apache.jena.lang.generic" ;
+        basename = "org.apache.jena.riot.reader.generic" ;
         hintlang = null ;
     }
     
     public RDFReaderRIOT(String lang)
     {
-        basename = "org.apache.jena.lang."+lang.toLowerCase(Locale.ENGLISH) ;
+        basename = "org.apache.jena.riot.reader."+lang.toLowerCase(Locale.ENGLISH) ;
         hintlang = lang ;
     }
 
