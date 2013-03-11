@@ -176,7 +176,7 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
                 if ( ! first )
                     out.print(sep) ;
                 first = false ;
-                out.print(quad) ;
+                out.print(String.valueOf(quad)) ;
             } } ;
 
             apply(this, strAction) ;
