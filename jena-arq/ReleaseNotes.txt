@@ -5,6 +5,10 @@ ChangeLog for ARQ
 
 ==== Jena 2.10.1
 
++ RIOT is the main way to write RDF data.
+  All the writes for Turtle/TriG/N-triples and N-Quads revised.
+  http://jena.apache.org/documentation/io/
+
 ==== Jena 2.10.0
 
 + Consolidation of versions numbers.

@@ -3,6 +3,8 @@ Release Notes
 
 ==== Jena 2.10.1
 
++ RIOT is the main way to read and write RDF data.
+  http://jena.apache.org/documentation/io/
 
 ==== Jena 2.10.0
 
