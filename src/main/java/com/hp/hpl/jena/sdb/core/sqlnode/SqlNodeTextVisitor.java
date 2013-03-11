@@ -114,9 +114,9 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         start(sqlRename, "Rename", sqlRename.getAliasName()) ;
         out.incIndent() ;
         if ( ! sqlRename.getIdScope().isEmpty() )
-            out.println(sqlRename.getIdScope()) ;
+            out.println(sqlRename.getIdScope().toString()) ;
         if ( ! sqlRename.getNodeScope().isEmpty() )
-            out.println(sqlRename.getNodeScope()) ;
+            out.println(sqlRename.getNodeScope().toString()) ;
         out.decIndent() ;
         sqlRename.getSubNode().visit(this) ;
         finish() ;
