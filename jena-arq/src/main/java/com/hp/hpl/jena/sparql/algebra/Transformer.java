@@ -47,9 +47,20 @@ public class Transformer
     public static Op transform(Transform transform, Op op)
     { return get().transformation(transform, op, null, null) ; }
     
+    /** Transform an algebra expression and the expressions */
+    public static Op transform(Transform transform, ExprTransform exprTransform, Op op)
+    { return get().transformation(transform, exprTransform, op, null, null) ; }
+
+    /** Transformation with specific Transform and default ExprTransform (apply transform inside pattern expressions like NOT EXISTS) */ 
     public static Op transform(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         return get().transformation(transform, op, beforeVisitor, afterVisitor) ;
+    }
+    
+    /** Transformation with specific Transform and ExprTransform applied */
+    public static Op transform(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
+        return get().transformation(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
     }
 
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
@@ -59,6 +70,13 @@ public class Transformer
     }
 
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
+    public static Op transformSkipService(Transform transform, ExprTransform exprTransform, Op op)
+    {
+        return transformSkipService(transform, exprTransform, op, null, null) ; 
+    }
+
+
+    /** Transform an algebra expression except skip (leave alone) any OpService nodes */
     public static Op transformSkipService(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         // Skip SERVICE
@@ -66,7 +84,6 @@ public class Transformer
         {
             // Simplest way but still walks the OpService subtree (and throws away the transformation).
             Transform walker = new TransformSkipService(transform) ;
-            ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
             return Transformer.transform(walker, op, beforeVisitor, afterVisitor) ;
         }
         else
@@ -79,7 +96,26 @@ public class Transformer
             return v.result() ;
         }
     }
-    
+
+    /** Transform an algebra expression except skip (leave alone) any OpService nodes */
+    public static Op transformSkipService(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
+        // Skip SERVICE
+        if ( true )
+        {
+            // Simplest way but still walks the OpService subtree (and throws away the transformation).
+            Transform walker = new TransformSkipService(transform) ;
+            return Transformer.transform(walker, exprTransform, op, beforeVisitor, afterVisitor) ;
+        }
+        else
+        {
+            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform, exprTransform) ;
+            WalkerVisitorSkipService walker = new WalkerVisitorSkipService(v, beforeVisitor, afterVisitor) ;
+            OpWalker.walk(walker, op) ;
+            return v.result() ;
+        }
+    }
+
     /** Transform an Op - not recursively */ 
     public static Op transformOne(Transform transform, Op op)
     {
@@ -93,6 +129,11 @@ public class Transformer
     protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
         ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
+        return transformation(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
+    }
+        
+    protected Op transformation(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
         ApplyTransformVisitor v = new ApplyTransformVisitor(transform, exprTransform) ;
         return transformation(v, op, beforeVisitor, afterVisitor) ;
     }
