@@ -38,6 +38,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.WriterDatasetRIOT ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -117,7 +118,11 @@ public class RiotLib
     public static ParserProfile profile(Lang lang, String baseIRI, ErrorHandler handler)
     {
         if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) )
-            return profile(baseIRI, false, false, handler) ;
+        {
+            boolean checking = SysRIOT.strictMode ;
+            // If strict mode, do checking e.g. URIs
+            return profile(baseIRI, false, checking, handler) ;
+        }
         if ( sameLang(RDFJSON, lang) )
             return profile(baseIRI, false, true, handler) ;
         return profile(baseIRI, true, true, handler) ;
