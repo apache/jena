@@ -84,9 +84,8 @@ public class LocatorFile implements Locator
         }
         // fn is the file name to use.
         // If it is relative, and we have a different working directory, prepend that.  
-        // "/" is a path separator on Windows as well.
         if ( thisDir != null && ! fn.startsWith("/") && ! fn.startsWith(File.separator) )
-            fn = thisDir+"/"+fn ;
+            fn = thisDir+File.separator+fn ;
         return fn ;
     }
     
