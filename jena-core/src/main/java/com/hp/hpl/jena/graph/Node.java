@@ -286,18 +286,6 @@ public abstract class Node {
         { this.label = label; }
         
     /**
-        provided only for testing purposes. _cache(false)_ switches off caching and
-        clears the cache. _cache(true)_ switches caching [back] on. This allows
-        structural equality to be tested. 
-    */
-    @Deprecated
-    public static void cache( boolean wantCache ) {}
-
-    @Deprecated
-    public static boolean isCaching() { return false ;}
-
-    
-    /**
         We object strongly to null labels: for example, they make .equals flaky.
     */
     public static Node create( NodeMaker maker, Object label )

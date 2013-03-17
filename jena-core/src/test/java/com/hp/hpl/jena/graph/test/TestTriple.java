@@ -18,16 +18,15 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.shared.*;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
-@SuppressWarnings("deprecation")
-//Node.useCache is deprecated.
 public class TestTriple extends GraphTestBase
     {    
         
@@ -42,79 +41,72 @@ public class TestTriple extends GraphTestBase
     private static final LiteralLabel L = LiteralLabelFactory.create( "ashes are burning", "en", false );
         
     public void testTripleEquals() {
-        try {
-            Node.cache(false);
-            
-            // create some nodes to test
-            AnonId id = AnonId.create();
-            LiteralLabel L2 = LiteralLabelFactory.create(id.toString(), "", false);
-            String U2 = id.toString();
-            String N2 = id.toString();
-            
-            Node[] nodes = new Node[] {
-              Node.ANY,
-              Node.createAnon(id),    Node.createAnon(),
-              Node.createLiteral(L),  Node.createLiteral(L2),
-              Node.createURI(U),      Node.createURI(U2),
-              Node.createVariable(N), Node.createVariable(N2)
-            };
-            
-            Triple[] triples = 
-               new Triple [nodes.length * nodes.length * nodes.length];
-            for (int i=0; i<nodes.length; i++) {
-                for (int j=0; j<nodes.length; j++) {
-                    for (int k=0; k<nodes.length; k++) {
-                        triples[i*nodes.length*nodes.length +
-                                j*nodes.length +
-                                k] = new Triple(nodes[i], nodes[j], nodes[k]);
-                    }
+        // create some nodes to test
+        AnonId id = AnonId.create();
+        LiteralLabel L2 = LiteralLabelFactory.create(id.toString(), "", false);
+        String U2 = id.toString();
+        String N2 = id.toString();
+
+        Node[] nodes = new Node[] {
+            Node.ANY,
+            Node.createAnon(id),    Node.createAnon(),
+            Node.createLiteral(L),  Node.createLiteral(L2),
+            Node.createURI(U),      Node.createURI(U2),
+            Node.createVariable(N), Node.createVariable(N2)
+        };
+
+        Triple[] triples = 
+            new Triple [nodes.length * nodes.length * nodes.length];
+        for (int i=0; i<nodes.length; i++) {
+            for (int j=0; j<nodes.length; j++) {
+                for (int k=0; k<nodes.length; k++) {
+                    triples[i*nodes.length*nodes.length +
+                            j*nodes.length +
+                            k] = new Triple(nodes[i], nodes[j], nodes[k]);
                 }
             }
-            
-            // set up the expected results matrix
-            // a expected[i][j] is true if triples[i] equals triples[j]
-            // triples are expected to be equals if there components are equal
-            boolean[][] expected = new boolean[triples.length][triples.length];
-            for (int i1=0; i1<nodes.length; i1++) {
-                for (int j1=0; j1<nodes.length; j1++) {
-                    for (int k1=0; k1<nodes.length; k1++) {
-                        for (int i2=0; i2<nodes.length; i2++) {
-                            for (int j2=0; j2<nodes.length; j2++) {
-                                for (int k2=0; k2<nodes.length; k2++) {
-                                    expected[i1*nodes.length*nodes.length +
-                                             j1*nodes.length +
-                                             k1]
-                                            [i2*nodes.length*nodes.length +
-                                             j2*nodes.length +
-                                             k2] =
-                                             nodes[i1].equals(nodes[i2]) &&
-                                             nodes[j1].equals(nodes[j2]) &&
-                                             nodes[k1].equals(nodes[k2]);
-                                }
+        }
+
+        // set up the expected results matrix
+        // a expected[i][j] is true if triples[i] equals triples[j]
+        // triples are expected to be equals if there components are equal
+        boolean[][] expected = new boolean[triples.length][triples.length];
+        for (int i1=0; i1<nodes.length; i1++) {
+            for (int j1=0; j1<nodes.length; j1++) {
+                for (int k1=0; k1<nodes.length; k1++) {
+                    for (int i2=0; i2<nodes.length; i2++) {
+                        for (int j2=0; j2<nodes.length; j2++) {
+                            for (int k2=0; k2<nodes.length; k2++) {
+                                expected[i1*nodes.length*nodes.length +
+                                         j1*nodes.length +
+                                         k1]
+                                             [i2*nodes.length*nodes.length +
+                                              j2*nodes.length +
+                                              k2] =
+                                              nodes[i1].equals(nodes[i2]) &&
+                                              nodes[j1].equals(nodes[j2]) &&
+                                              nodes[k1].equals(nodes[k2]);
                             }
                         }
                     }
                 }
             }
+        }
 
-            assertEquals("triple, null",   triples[0].equals(null), false);
-            assertDiffer("triple, string", triples[0], "string");
-            
-            // now compare each triple with each other triple
-            for (int i=0; i<triples.length; i++) {
-                for (int j=0; j<triples.length; j++) {
-                    if (expected[i][j]) {
-                        assertEquals("triples " + i + ", " + j ,
-                                                       triples[i], triples[j]);
-                    } else {
-                        assertDiffer("triples" + i + ", " + j,
-                                                       triples[i], triples[j]);
-                    }
+        assertEquals("triple, null",   triples[0].equals(null), false);
+        assertDiffer("triple, string", triples[0], "string");
+
+        // now compare each triple with each other triple
+        for (int i=0; i<triples.length; i++) {
+            for (int j=0; j<triples.length; j++) {
+                if (expected[i][j]) {
+                    assertEquals("triples " + i + ", " + j ,
+                                 triples[i], triples[j]);
+                } else {
+                    assertDiffer("triples" + i + ", " + j,
+                                 triples[i], triples[j]);
                 }
             }
-                
-        } finally {
-            Node.cache(true);
         }
     }
     
