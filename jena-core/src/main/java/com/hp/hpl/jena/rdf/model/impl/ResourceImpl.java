@@ -83,7 +83,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public ResourceImpl(String nameSpace, String localName) {
-        super( Node.createURI( nameSpace + localName ), null );
+        super( NodeFactory.createURI( nameSpace + localName ), null );
     }
 
     public ResourceImpl(AnonId id) {
@@ -91,7 +91,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public ResourceImpl(AnonId id, ModelCom m) {
-        this( Node.createAnon( id ), m );
+        this( NodeFactory.createAnon( id ), m );
     }
 
     public ResourceImpl(String uri, ModelCom m) {
@@ -103,7 +103,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
     
     public ResourceImpl(String nameSpace, String localName, ModelCom m) {
-        this( Node.createURI( nameSpace + localName ), m );
+        this( NodeFactory.createURI( nameSpace + localName ), m );
     }
 
     @Override
@@ -129,7 +129,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         }
     
     private static Node fresh( String uri )
-        { return uri == null ? Node.createAnon() : Node.createURI( uri ); }
+        { return uri == null ? NodeFactory.createAnon() : NodeFactory.createURI( uri ); }
 
     @Override
     public AnonId getId() 

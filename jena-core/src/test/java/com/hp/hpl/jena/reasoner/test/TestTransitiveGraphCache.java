@@ -21,6 +21,7 @@ package com.hp.hpl.jena.reasoner.test;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveGraphCache;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import  com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import  com.hp.hpl.jena.graph.Triple;
 
 import junit.framework.TestCase;
@@ -38,16 +39,16 @@ public class TestTransitiveGraphCache extends TestCase {
     
     // Dummy predicates and nodes for the graph
     String NS = "urn:x-hp-test:ex/";
-    Node directP = Node.createURI(NS+"directSubProperty");
-    Node closedP = Node.createURI(NS+"subProperty");
+    Node directP = NodeFactory.createURI(NS+"directSubProperty");
+    Node closedP = NodeFactory.createURI(NS+"subProperty");
     
-    Node a = Node.createURI(NS+"a");
-    Node b = Node.createURI(NS+"b");
-    Node c = Node.createURI(NS+"c");
-    Node d = Node.createURI(NS+"d");
-    Node e = Node.createURI(NS+"e");
-    Node f = Node.createURI(NS+"f");
-    Node g = Node.createURI(NS+"g");
+    Node a = NodeFactory.createURI(NS+"a");
+    Node b = NodeFactory.createURI(NS+"b");
+    Node c = NodeFactory.createURI(NS+"c");
+    Node d = NodeFactory.createURI(NS+"d");
+    Node e = NodeFactory.createURI(NS+"e");
+    Node f = NodeFactory.createURI(NS+"f");
+    Node g = NodeFactory.createURI(NS+"g");
      
     /**
      * Boilerplate for junit

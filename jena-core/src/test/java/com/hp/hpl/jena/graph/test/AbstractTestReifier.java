@@ -18,10 +18,7 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.graph.Factory ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.rdf.model.impl.ReifierStd ;
 import com.hp.hpl.jena.shared.AlreadyReifiedException ;
 import com.hp.hpl.jena.shared.CannotReifyException ;
@@ -151,7 +148,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     public void testRetrieveTriplesByNode()
     {
         Graph G = getGraph();
-        Node N = Node.createAnon(), M = Node.createAnon();
+        Node N = NodeFactory.createAnon(), M = NodeFactory.createAnon();
         ReifierStd.reifyAs( G , N, triple( "x R y" ) );
         assertEquals( "gets correct triple", triple( "x R y" ), ReifierStd.getTriple( G , N ) );
         ReifierStd.reifyAs( G, M, triple( "p S q" ) );
@@ -160,7 +157,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
 
         assertTrue( "node is known bound", ReifierStd.hasTriple( G, M ) );
         assertTrue( "node is known bound", ReifierStd.hasTriple( G, N ) );
-        assertFalse( "node is known unbound", ReifierStd.hasTriple( G, Node.createURI( "any:thing" ) ) );
+        assertFalse( "node is known unbound", ReifierStd.hasTriple( G, NodeFactory.createURI( "any:thing" ) ) );
     }
 
     public void testRetrieveTriplesByTriple()
@@ -176,7 +173,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     public void testReifyAs()
     {
         Graph G = getGraph();
-        Node X = Node.createURI( "some:uri" );
+        Node X = NodeFactory.createURI( "some:uri" );
         assertEquals( "node used", X, ReifierStd.reifyAs( G, X, triple( "x R y" ) ) );
         assertEquals( "retrieves correctly", triple( "x R y" ), ReifierStd.getTriple( G, X ) );
     }

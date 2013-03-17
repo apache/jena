@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import com.hp.hpl.jena.graph.*;
+
 import org.apache.jena.iri.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
@@ -411,8 +412,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		// SystemOutAndErr.block();
 		// TestLogger tl = new TestLogger(BaseXMLWriter.class);
 		blockLogger();
-		Node blank = Node.createAnon();
-		Node prop = Node.createURI(s);
+		Node blank = NodeFactory.createAnon();
+		Node prop = NodeFactory.createURI(s);
 		Graph g = Factory.createGraphMem();
 		g.add(Triple.create(blank, prop, blank));
 		// create Model

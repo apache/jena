@@ -21,7 +21,7 @@ package com.hp.hpl.jena.reasoner.rulesys.test;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner.RuleMode;
+import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner.RuleMode ;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.LocationMapper;
@@ -50,18 +50,18 @@ public class TestGenericRules extends TestCase {
     protected static Logger logger = LoggerFactory.getLogger(TestFBRules.class);
 
     // Useful constants
-    Node p = Node.createURI("p");
-    Node q = Node.createURI("q");
-    Node r = Node.createURI("r");
-    Node s = Node.createURI("s");
-    Node t = Node.createURI("t");
-    Node a = Node.createURI("a");
-    Node b = Node.createURI("b");
-    Node c = Node.createURI("c");
-    Node d = Node.createURI("d");
-    Node C1 = Node.createURI("C1");
-    Node C2 = Node.createURI("C2");
-    Node C3 = Node.createURI("C3");
+    Node p = NodeFactory.createURI("p");
+    Node q = NodeFactory.createURI("q");
+    Node r = NodeFactory.createURI("r");
+    Node s = NodeFactory.createURI("s");
+    Node t = NodeFactory.createURI("t");
+    Node a = NodeFactory.createURI("a");
+    Node b = NodeFactory.createURI("b");
+    Node c = NodeFactory.createURI("c");
+    Node d = NodeFactory.createURI("d");
+    Node C1 = NodeFactory.createURI("C1");
+    Node C2 = NodeFactory.createURI("C2");
+    Node C3 = NodeFactory.createURI("C3");
     Node ty = RDF.Nodes.type;
     Node sC = RDFS.Nodes.subClassOf;
 
@@ -253,9 +253,9 @@ public class TestGenericRules extends TestCase {
         reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(configuration);
         
         infgraph = reasoner.bind(Factory.createGraphMem());
-        Node an = Node.createURI(PrintUtil.egNS + "a");
-        Node C = Node.createURI(PrintUtil.egNS + "C");
-        Node D = Node.createURI(PrintUtil.egNS + "D");
+        Node an = NodeFactory.createURI(PrintUtil.egNS + "a");
+        Node C = NodeFactory.createURI(PrintUtil.egNS + "C");
+        Node D = NodeFactory.createURI(PrintUtil.egNS + "D");
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, null, null), new Object[] {
                 new Triple(an, RDF.Nodes.type, C),

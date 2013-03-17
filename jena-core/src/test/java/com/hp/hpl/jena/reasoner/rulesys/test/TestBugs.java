@@ -25,6 +25,7 @@ import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
 import com.hp.hpl.jena.ontology.* ;
@@ -819,8 +820,8 @@ public class TestBugs extends TestCase {
         public boolean bodyCall(Node[] args, int length, RuleContext context) {
             checkArgs(length, context);
             BindingEnvironment env = context.getEnv();
-            Triple t = new Triple( Node.createAnon(), Node.createURI("http://jena.hpl.hp.com/example#"), Node.createAnon());
-            Node l = Node.createLiteral( LiteralLabelFactory.create(t) );
+            Triple t = new Triple( NodeFactory.createAnon(), NodeFactory.createURI("http://jena.hpl.hp.com/example#"), NodeFactory.createAnon());
+            Node l = NodeFactory.createLiteral( LiteralLabelFactory.create(t) );
             return env.bind(args[0], l);
         }
     }

@@ -193,7 +193,7 @@ public class AltImpl extends ContainerImpl implements Alt {
     
     @Override
     public Alt setDefault(String o, String l)  {
-        return setDefault( new LiteralImpl( Node.createLiteral( o,l, false ), getModelCom()) );
+        return setDefault( new LiteralImpl( NodeFactory.createLiteral( o,l, false ), getModelCom()) );
     }      
         
     protected Statement getDefaultStatement()  

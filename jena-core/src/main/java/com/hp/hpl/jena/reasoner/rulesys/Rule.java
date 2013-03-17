@@ -34,6 +34,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.reasoner.ReasonerException;
 import com.hp.hpl.jena.reasoner.TriplePattern;
@@ -824,9 +825,9 @@ public class Rule implements ClauseEntry {
 //                return Node_RuleVariable.WILD;
             } else if (token.startsWith("<") && token.endsWith(">")) {
                 String uri = token.substring(1, token.length()-1);
-                return Node.createURI(uri);
+                return NodeFactory.createURI(uri);
             } else if (token.startsWith( "_" )) { // TODO rationalise [this is for the RIF code]
-                return Node.createAnon( new AnonId( token.substring( 1 ) ) );
+                return NodeFactory.createAnon( new AnonId( token.substring( 1 ) ) );
             } else if (token.indexOf(':') != -1) {
                 String exp = prefixMapping.expandPrefix(token); // Local map first
                 exp = PrintUtil.expandQname(exp);  // Retain global map for backward compatibility
@@ -841,7 +842,7 @@ public class Rule implements ClauseEntry {
                         throw new ParserException("Unrecognized qname prefix (" + prefix + ") in rule", this);
                     }
                 }
-                return Node.createURI(exp);
+                return NodeFactory.createURI(exp);
             } else if (peekToken().equals("(")) {
                 Functor f = new Functor(token, parseNodeList(), BuiltinRegistry.theRegistry);
                 return Functor.makeFunctorNode( f );
@@ -872,9 +873,9 @@ public class Rule implements ClauseEntry {
                         }
                     } 
                     RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-                    return Node.createLiteral(lit, "", dt);
+                    return NodeFactory.createLiteral(lit, "", dt);
                 } else {
-                    return Node.createLiteral(lit, "", false);
+                    return NodeFactory.createLiteral(lit, "", false);
                 }                
             } else  if ( Character.isDigit(token.charAt(0)) || 
                          (token.charAt(0) == '-' && token.length() > 1 && Character.isDigit(token.charAt(1))) ) {
@@ -882,7 +883,7 @@ public class Rule implements ClauseEntry {
                return parseNumber(token);
             } else {
                 // A  uri
-                return Node.createURI(token);
+                return NodeFactory.createURI(token);
             }
         }
         
@@ -896,17 +897,17 @@ public class Rule implements ClauseEntry {
                 if (lit.indexOf(".") != -1) {
                     // Float?
                     if (XSDDatatype.XSDfloat.isValid(lit)) {
-                        return Node.createLiteral(lit, "", XSDDatatype.XSDfloat);
+                        return NodeFactory.createLiteral(lit, "", XSDDatatype.XSDfloat);
                     }
                 } else {
                     // Int?
                     if (XSDDatatype.XSDint.isValid(lit)) {
-                        return Node.createLiteral(lit, "", XSDDatatype.XSDint);
+                        return NodeFactory.createLiteral(lit, "", XSDDatatype.XSDint);
                     }
                 }
             }
             // Default is a plain literal
-            return Node.createLiteral(lit, "", false);
+            return NodeFactory.createLiteral(lit, "", false);
         }
         
         /**

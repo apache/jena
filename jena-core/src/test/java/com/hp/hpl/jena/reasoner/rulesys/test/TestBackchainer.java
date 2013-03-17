@@ -47,18 +47,18 @@ public class TestBackchainer extends TestCase {
     private static final int MAX_VARS = 10;
 
     // Useful constants
-    protected Node p = Node.createURI("p");
-    protected Node q = Node.createURI("q");
-    protected Node r = Node.createURI("r");
-    protected Node s = Node.createURI("s");
-    protected Node t = Node.createURI("t");
-    protected Node a = Node.createURI("a");
-    protected Node b = Node.createURI("b");
-    protected Node c = Node.createURI("c");
-    protected Node d = Node.createURI("d");
-    protected Node C1 = Node.createURI("C1");
-    protected Node C2 = Node.createURI("C2");
-    protected Node C3 = Node.createURI("C3");
+    protected Node p = NodeFactory.createURI("p");
+    protected Node q = NodeFactory.createURI("q");
+    protected Node r = NodeFactory.createURI("r");
+    protected Node s = NodeFactory.createURI("s");
+    protected Node t = NodeFactory.createURI("t");
+    protected Node a = NodeFactory.createURI("a");
+    protected Node b = NodeFactory.createURI("b");
+    protected Node c = NodeFactory.createURI("c");
+    protected Node d = NodeFactory.createURI("d");
+    protected Node C1 = NodeFactory.createURI("C1");
+    protected Node C2 = NodeFactory.createURI("C2");
+    protected Node C3 = NodeFactory.createURI("C3");
     protected Node sP = RDFS.Nodes.subPropertyOf;
     protected Node sC = RDFS.Nodes.subClassOf;
     protected Node ty = RDF.Nodes.type;
@@ -895,9 +895,9 @@ public class TestBackchainer extends TestCase {
      */
     public void testBug1() throws IOException {
         Graph data = Factory.createGraphMem();
-        Node p = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#p");
-        Node r = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#r");
-        Node C1 = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#C1");
+        Node p = NodeFactory.createURI("http://www.hpl.hp.com/semweb/2003/eg#p");
+        Node r = NodeFactory.createURI("http://www.hpl.hp.com/semweb/2003/eg#r");
+        Node C1 = NodeFactory.createURI("http://www.hpl.hp.com/semweb/2003/eg#C1");
         data.add(new Triple(a, p, b));
         List<Rule> rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("testing/reasoners/bugs/rdfs-error1.brules"));
         Reasoner reasoner =  createReasoner(rules);

@@ -170,10 +170,10 @@ implements Model, PrefixMapping, Lock
     }
 
     private Literal literal( String s, String lang, boolean wellFormed )
-    { return new LiteralImpl( Node.createLiteral( s, lang, wellFormed), this ); }
+    { return new LiteralImpl( NodeFactory.createLiteral( s, lang, wellFormed), this ); }
 
     private Literal literal( String lex, RDFDatatype datatype)
-    { return new LiteralImpl( Node.createLiteral( lex, "", datatype), this ); }
+    { return new LiteralImpl( NodeFactory.createLiteral( lex, "", datatype), this ); }
 
     @Override
     public Model add( Resource s, Property p, String o, String l )
@@ -464,7 +464,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public StmtIterator listStatements( Resource S, Property P, String O ) {
         return O == null ? listStatements(S, P, Node.ANY) 
-                         :  listStatements( S, P, Node.createLiteral( O ) ); 
+                         :  listStatements( S, P, NodeFactory.createLiteral( O ) ); 
     }
 
     @Override
@@ -472,7 +472,7 @@ implements Model, PrefixMapping, Lock
         if (O != null) {
             // this is not OK when L is null: returns only the statements whose lang is ""
             // return listStatements( S, P, Node.createLiteral( O, L, false ) );
-            if (L != null) return listStatements( S, P, Node.createLiteral( O, L, false ) );
+            if (L != null) return listStatements( S, P, NodeFactory.createLiteral( O, L, false ) );
             // there's maybe a better way
             return new StringFilteredStmtIterator(O, listStatements(S, P, Node.ANY));
         } else {
@@ -675,7 +675,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(String v)  {
         LiteralLabel ll = LiteralLabelFactory.create(v);
-        return new LiteralImpl(Node.createLiteral(ll), this);
+        return new LiteralImpl(NodeFactory.createLiteral(ll), this);
     }
 
     /**
@@ -685,7 +685,7 @@ implements Model, PrefixMapping, Lock
     public Literal createTypedLiteral(Calendar cal) {
         Object value = new XSDDateTime(cal);
         LiteralLabel ll = LiteralLabelFactory.create(value, "", XSDDatatype.XSDdateTime);
-        return new LiteralImpl(Node.createLiteral(ll), this);
+        return new LiteralImpl(NodeFactory.createLiteral(ll), this);
 
     }
 
@@ -701,7 +701,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(String lex, RDFDatatype dtype) 
         throws DatatypeFormatException {
-        return new LiteralImpl( Node.createLiteral( lex, "", dtype ), this);
+        return new LiteralImpl( NodeFactory.createLiteral( lex, "", dtype ), this);
     }
 
     /**
@@ -713,7 +713,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(Object value, RDFDatatype dtype) {
         LiteralLabel ll = LiteralLabelFactory.create(value, "", dtype);
-        return new LiteralImpl( Node.createLiteral(ll), this );
+        return new LiteralImpl( NodeFactory.createLiteral(ll), this );
     }
 
     /**
@@ -729,7 +729,7 @@ implements Model, PrefixMapping, Lock
     public Literal createTypedLiteral(String lex, String typeURI)  {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = LiteralLabelFactory.createLiteralLabel( lex, "", dt );
-        return new LiteralImpl( Node.createLiteral(ll), this );
+        return new LiteralImpl( NodeFactory.createLiteral(ll), this );
     }
 
     /**
@@ -742,7 +742,7 @@ implements Model, PrefixMapping, Lock
     public Literal createTypedLiteral(Object value, String typeURI) {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = LiteralLabelFactory.create(value, "", dt);
-        return new LiteralImpl(Node.createLiteral(ll), this);
+        return new LiteralImpl(NodeFactory.createLiteral(ll), this);
     }
 
     /**
@@ -758,7 +758,7 @@ implements Model, PrefixMapping, Lock
         if (value instanceof Calendar) 
             return createTypedLiteral( (Calendar)value );
         LiteralLabel ll = LiteralLabelFactory.create( value );
-        return new LiteralImpl( Node.createLiteral( ll ), this);
+        return new LiteralImpl( NodeFactory.createLiteral( ll ), this);
     }
 
     @Override
@@ -903,7 +903,7 @@ implements Model, PrefixMapping, Lock
     { return r.as( Bag.class ); }
 
     static private Node makeURI(String uri) 
-    { return uri == null ? Node.createAnon() : Node.createURI( uri ); }
+    { return uri == null ? NodeFactory.createAnon() : NodeFactory.createURI( uri ); }
 
     @Override
     public Alt getAlt( String uri )  
@@ -1338,7 +1338,7 @@ implements Model, PrefixMapping, Lock
 
      @Override
      public Resource createResource()  
-     { return IteratorFactory.asResource( Node.createAnon(),this ); }
+     { return IteratorFactory.asResource( NodeFactory.createAnon(),this ); }
 
      @Override
      public Resource createResource( String uri )  

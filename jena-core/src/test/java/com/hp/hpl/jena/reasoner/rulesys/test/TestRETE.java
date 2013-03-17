@@ -35,20 +35,20 @@ public class TestRETE  extends TestCase {
     Node_RuleVariable x = new Node_RuleVariable("x", 0);
     Node_RuleVariable y = new Node_RuleVariable("y", 1);
     Node_RuleVariable z = new Node_RuleVariable("z", 2);
-    Node p = Node.createURI("p");
-    Node q = Node.createURI("q");
-    Node a = Node.createURI("a");
-    Node b = Node.createURI("b");
-    Node c = Node.createURI("c");
-    Node d = Node.createURI("d");
-    Node e = Node.createURI("e");
-    Node r = Node.createURI("r");
-    Node s = Node.createURI("s");
-    Node n1 = Node.createURI("n1");
-    Node n2 = Node.createURI("n2");
-    Node n3 = Node.createURI("n3");
-    Node n4 = Node.createURI("n4");
-    Node res = Node.createURI("res");
+    Node p = NodeFactory.createURI("p");
+    Node q = NodeFactory.createURI("q");
+    Node a = NodeFactory.createURI("a");
+    Node b = NodeFactory.createURI("b");
+    Node c = NodeFactory.createURI("c");
+    Node d = NodeFactory.createURI("d");
+    Node e = NodeFactory.createURI("e");
+    Node r = NodeFactory.createURI("r");
+    Node s = NodeFactory.createURI("s");
+    Node n1 = NodeFactory.createURI("n1");
+    Node n2 = NodeFactory.createURI("n2");
+    Node n3 = NodeFactory.createURI("n3");
+    Node n4 = NodeFactory.createURI("n4");
+    Node res = NodeFactory.createURI("res");
          
     /**
      * Boilerplate for junit

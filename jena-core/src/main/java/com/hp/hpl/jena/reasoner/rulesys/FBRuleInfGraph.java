@@ -25,10 +25,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.graph.Factory ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -740,7 +737,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         checkOpen();
         StandardValidityReport report = new StandardValidityReport();
         // Switch on validation
-        Triple validateOn = new Triple(Node.createAnon(), 
+        Triple validateOn = new Triple(NodeFactory.createAnon(), 
                                 ReasonerVocabulary.RB_VALIDATION.asNode(),
                                 Functor.makeFunctorNode("on", new Node[] {}));
         // We sneak this switch directly into the engine to avoid contaminating the

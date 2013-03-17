@@ -24,6 +24,7 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 import com.hp.hpl.jena.util.iterator.Map1;
@@ -110,10 +111,10 @@ public class TestFindLiterals extends GraphTestBase
     
     public void testProgrammaticValues() 
         {
-        Node ab = Node.createLiteral( LiteralLabelFactory.create( new Byte((byte)42) ) );
-        Node as = Node.createLiteral( LiteralLabelFactory.create( new Short((short)42) ) );
-        Node ai = Node.createLiteral( LiteralLabelFactory.create( new Integer(42) ) );
-        Node al = Node.createLiteral( LiteralLabelFactory.create( new Long(42) ) );
+        Node ab = NodeFactory.createLiteral( LiteralLabelFactory.create( new Byte((byte)42) ) );
+        Node as = NodeFactory.createLiteral( LiteralLabelFactory.create( new Short((short)42) ) );
+        Node ai = NodeFactory.createLiteral( LiteralLabelFactory.create( new Integer(42) ) );
+        Node al = NodeFactory.createLiteral( LiteralLabelFactory.create( new Long(42) ) );
         Graph g = graphWith( "" );
         Node SB = NodeCreateUtils.create( "SB" );
         Node SS = NodeCreateUtils.create( "SS" );

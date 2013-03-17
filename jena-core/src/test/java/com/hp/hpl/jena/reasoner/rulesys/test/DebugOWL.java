@@ -188,9 +188,9 @@ public class DebugOWL {
             Node property = null;
             if (i == 0) {
                 for (int j = 0; j < NS; j++) {
-                    Node concept = Node.createURI("concept" + conceptPtr);
+                    Node concept = NodeFactory.createURI("concept" + conceptPtr);
                     if (withProps) { 
-                        property = Node.createURI("prop" + conceptPtr);
+                        property = NodeFactory.createURI("prop" + conceptPtr);
                         properties[conceptPtr] = property;
                     }
                     concepts[conceptPtr++] = concept;
@@ -199,9 +199,9 @@ public class DebugOWL {
                 for (int j = levelStart; j < levelEnd; j++) {
                     Node superConcept = concepts[j];
                     for (int k = 0; k < NS; k++) {
-                        Node concept = Node.createURI("concept" + conceptPtr);
+                        Node concept = NodeFactory.createURI("concept" + conceptPtr);
                         if (withProps) { 
-                            property = Node.createURI("prop" + conceptPtr);
+                            property = NodeFactory.createURI("prop" + conceptPtr);
                             properties[conceptPtr] = property;
                         }
                         concepts[conceptPtr++] = concept;
@@ -215,7 +215,7 @@ public class DebugOWL {
             for (int j = levelStart; j < levelEnd; j++) {
                 Node concept = concepts[j];
                 for (int k = 0; k < NI; k++) {
-                    Node instance = Node.createURI("instance"+instancePtr);
+                    Node instance = NodeFactory.createURI("instance"+instancePtr);
                     testdata.add(new Triple(instance, RDF.type.asNode(), concept));
                     if (withProps && (k-1)%3 == 0) {
                         testdata.add(new Triple(instances[instancePtr-1], property, instance));

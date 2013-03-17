@@ -213,7 +213,7 @@ public class Util {
      * Construct a new integer valued node
      */
     public static Node makeIntNode(int value) {
-        return Node.createLiteral(LiteralLabelFactory.create(new Integer(value)));
+        return NodeFactory.createLiteral(LiteralLabelFactory.create(new Integer(value)));
     }
 
     /**
@@ -221,9 +221,9 @@ public class Util {
      */
     public static Node makeLongNode(long value) {
         if (value > Integer.MAX_VALUE) {
-            return Node.createLiteral(LiteralLabelFactory.create(new Long(value)));
+            return NodeFactory.createLiteral(LiteralLabelFactory.create(new Long(value)));
         } else {
-            return Node.createLiteral(LiteralLabelFactory.create(new Integer((int)value)));
+            return NodeFactory.createLiteral(LiteralLabelFactory.create(new Integer((int)value)));
         }
     }
 
@@ -231,7 +231,7 @@ public class Util {
      * Construct a new double valued node
      */
     public static Node makeDoubleNode(double value) {
-        return Node.createLiteral(LiteralLabelFactory.create(new Double(value)));
+        return NodeFactory.createLiteral(LiteralLabelFactory.create(new Double(value)));
     }
 
     /**
@@ -247,7 +247,7 @@ public class Util {
      */
     private static Node doMakeList(Node[] nodes, int next, Graph graph) {
         if (next < nodes.length) {
-            Node listNode = Node.createAnon();
+            Node listNode = NodeFactory.createAnon();
             graph.add(new Triple(listNode, RDF.Nodes.first, nodes[next]));
             graph.add(new Triple(listNode, RDF.Nodes.rest, doMakeList(nodes, next+1, graph)));
             return listNode;

@@ -54,16 +54,16 @@ public class TestRDFS9 extends TestCase {
      * Test a type inheritance example.
      */
     public void testRDFSInheritance() {
-        Node C1 = Node.createURI("C1");
-        Node C2 = Node.createURI("C2");
-        Node C3 = Node.createURI("C3");
-        Node C4 = Node.createURI("C4");
-        Node D = Node.createURI("D");
-        Node a = Node.createURI("a");
-        Node b = Node.createURI("b");
-        Node p = Node.createURI("p");
-        Node q = Node.createURI("q");
-        Node r = Node.createURI("r");
+        Node C1 = NodeFactory.createURI("C1");
+        Node C2 = NodeFactory.createURI("C2");
+        Node C3 = NodeFactory.createURI("C3");
+        Node C4 = NodeFactory.createURI("C4");
+        Node D = NodeFactory.createURI("D");
+        Node a = NodeFactory.createURI("a");
+        Node b = NodeFactory.createURI("b");
+        Node p = NodeFactory.createURI("p");
+        Node q = NodeFactory.createURI("q");
+        Node r = NodeFactory.createURI("r");
         Node sC = RDFS.subClassOf.asNode();
         Node ty = RDF.type.asNode();
         

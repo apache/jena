@@ -22,6 +22,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.n3.JenaURIException;
@@ -34,8 +35,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 public class ParserBase
 {
     // Should be the same as ARQ ParserBase and Prologues.
-    protected final Node XSD_TRUE   = Node.createLiteral("true", null, XSDDatatype.XSDboolean) ;
-    protected final Node XSD_FALSE  = Node.createLiteral("false", null, XSDDatatype.XSDboolean) ;
+    protected final Node XSD_TRUE   = NodeFactory.createLiteral("true", null, XSDDatatype.XSDboolean) ;
+    protected final Node XSD_FALSE  = NodeFactory.createLiteral("false", null, XSDDatatype.XSDboolean) ;
     
     protected final Node nRDFtype       = RDF.type.asNode() ;
     
@@ -49,7 +50,7 @@ public class ParserBase
 
     protected final String SWAP_NS      = "http://www.w3.org/2000/10/swap/" ;
     protected final String SWAP_LOG_NS  = "http://www.w3.org/2000/10/swap/log#" ;
-    protected final Node nLogImplies    = Node.createURI(SWAP_LOG_NS+"implies") ;
+    protected final Node nLogImplies    = NodeFactory.createURI(SWAP_LOG_NS+"implies") ;
     
     protected final Node nOwlSameAs     = OWL.sameAs.asNode() ;
     
@@ -108,17 +109,17 @@ public class ParserBase
     
     protected Node createLiteralInteger(String lexicalForm)
     {
-        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
+        return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
     }
     
     protected Node createLiteralDouble(String lexicalForm)
     {
-        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
+        return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
     }
     
     protected Node createLiteralDecimal(String lexicalForm)
     {
-        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
+        return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
     }
 
     protected Node createLiteral(String lexicalForm, String langTag, Node datatype)
@@ -134,10 +135,10 @@ public class ParserBase
         if ( datatypeURI != null)
         {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI) ;
-            n = Node.createLiteral(lexicalForm, null, dType) ;
+            n = NodeFactory.createLiteral(lexicalForm, null, dType) ;
         }
         else
-            n = Node.createLiteral(lexicalForm, langTag, null) ;
+            n = NodeFactory.createLiteral(lexicalForm, langTag, null) ;
         return n ;
     }
     
@@ -245,7 +246,7 @@ public class ParserBase
     protected Node createVariable(String s, int line, int column)
     {
         s = s.substring(1) ; // Drop the marker
-        return Node.createVariable(s) ;
+        return NodeFactory.createVariable(s) ;
     }
     
     protected Node createNode(String iri)
@@ -254,10 +255,10 @@ public class ParserBase
         if ( isBNodeIRI(iri) )
         {
             String s = iri.substring(bNodeLabelStart.length()) ;
-            Node n = Node.createAnon(new AnonId(s)) ;
+            Node n = NodeFactory.createAnon(new AnonId(s)) ;
             return n ;
         }
-        return Node.createURI(iri) ;
+        return NodeFactory.createURI(iri) ;
     }
     
     protected boolean isBNodeIRI(String iri)

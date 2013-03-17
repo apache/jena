@@ -69,10 +69,10 @@ public class TestReasoners extends TestCase {
      */
     public void testTransitiveRebind() {
         Graph data = Factory.createGraphMem();
-        Node C1 = Node.createURI("C1");
-        Node C2 = Node.createURI("C2");
-        Node C3 = Node.createURI("C3");
-        Node C4 = Node.createURI("C4");
+        Node C1 = NodeFactory.createURI("C1");
+        Node C2 = NodeFactory.createURI("C2");
+        Node C3 = NodeFactory.createURI("C3");
+        Node C4 = NodeFactory.createURI("C4");
         data.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
         data.add( new Triple(C2, RDFS.subClassOf.asNode(), C3) );
         Reasoner reasoner = TransitiveReasonerFactory.theInstance().create(null);
@@ -92,9 +92,9 @@ public class TestReasoners extends TestCase {
         infgraph.rebind(data2);
             
         // Incremental additions
-        Node a = Node.createURI("a");
-        Node b = Node.createURI("b");
-        Node c = Node.createURI("c");
+        Node a = NodeFactory.createURI("a");
+        Node b = NodeFactory.createURI("b");
+        Node c = NodeFactory.createURI("c");
         infgraph.add(new Triple(a, RDFS.subClassOf.asNode(), b));
         infgraph.add(new Triple(b, RDFS.subClassOf.asNode(), c));
         TestUtil.assertIteratorValues(this, 
@@ -110,9 +110,9 @@ public class TestReasoners extends TestCase {
                 new Triple(a, RDFS.subClassOf.asNode(), b),
                 new Triple(a, RDFS.subClassOf.asNode(), c)
             } );
-        Node p = Node.createURI("p");
-        Node q = Node.createURI("q");
-        Node r = Node.createURI("r");
+        Node p = NodeFactory.createURI("p");
+        Node q = NodeFactory.createURI("q");
+        Node r = NodeFactory.createURI("r");
         infgraph.add(new Triple(p, RDFS.subPropertyOf.asNode(), q));
         infgraph.add(new Triple(q, RDFS.subPropertyOf.asNode(), r));
         TestUtil.assertIteratorValues(this, 
@@ -135,11 +135,11 @@ public class TestReasoners extends TestCase {
      */
     public void testTransitiveRemove() {
         Graph data = Factory.createGraphMem();
-        Node a = Node.createURI("a");
-        Node b = Node.createURI("b");
-        Node c = Node.createURI("c");
-        Node d = Node.createURI("d");
-        Node e = Node.createURI("e");
+        Node a = NodeFactory.createURI("a");
+        Node b = NodeFactory.createURI("b");
+        Node c = NodeFactory.createURI("c");
+        Node d = NodeFactory.createURI("d");
+        Node e = NodeFactory.createURI("e");
         Node closedP = RDFS.subClassOf.asNode();
         data.add( new Triple(a, RDFS.subClassOf.asNode(), b) );
         data.add( new Triple(a, RDFS.subClassOf.asNode(), c) );
@@ -214,11 +214,11 @@ public class TestReasoners extends TestCase {
      */
     public void doTestMetaLevel(ReasonerFactory rf) {
         Graph data = Factory.createGraphMem();
-        Node c1 = Node.createURI("C1");
-        Node c2 = Node.createURI("C2");
-        Node c3 = Node.createURI("C3");
-        Node p = Node.createURI("p");
-        Node q = Node.createURI("q");
+        Node c1 = NodeFactory.createURI("C1");
+        Node c2 = NodeFactory.createURI("C2");
+        Node c3 = NodeFactory.createURI("C3");
+        Node p = NodeFactory.createURI("p");
+        Node q = NodeFactory.createURI("q");
         Node sC = RDFS.subClassOf.asNode();
         Node sP = RDFS.subPropertyOf.asNode();
         Node ty = RDF.type.asNode();
@@ -336,10 +336,10 @@ public class TestReasoners extends TestCase {
      */
     public void testRDFSRebind() {
         Graph data = Factory.createGraphMem();
-        Node C1 = Node.createURI("C1");
-        Node C2 = Node.createURI("C2");
-        Node C3 = Node.createURI("C3");
-        Node C4 = Node.createURI("C4");
+        Node C1 = NodeFactory.createURI("C1");
+        Node C2 = NodeFactory.createURI("C2");
+        Node C3 = NodeFactory.createURI("C3");
+        Node C4 = NodeFactory.createURI("C4");
         data.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
         data.add( new Triple(C2, RDFS.subClassOf.asNode(), C3) );
         Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
@@ -442,9 +442,9 @@ public class TestReasoners extends TestCase {
      * Assumes the reasoner can at least implement RDFS subClassOf.
      */
     public void doTestFindWithPremises(ReasonerFactory rf) {
-        Node c1 = Node.createURI("C1");
-        Node c2 = Node.createURI("C2");
-        Node c3 = Node.createURI("C3");
+        Node c1 = NodeFactory.createURI("C1");
+        Node c2 = NodeFactory.createURI("C2");
+        Node c3 = NodeFactory.createURI("C3");
         Node sC = RDFS.subClassOf.asNode();
         Graph data = Factory.createGraphMem();
         data.add( new Triple(c2, sC, c3));
