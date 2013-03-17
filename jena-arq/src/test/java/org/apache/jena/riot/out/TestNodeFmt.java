@@ -26,7 +26,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestNodeFmt extends BaseTest
 {
@@ -46,7 +46,7 @@ public class TestNodeFmt extends BaseTest
 
     public static void test(NodeFormatter nodeFormatter, String nStr , String str)
     {
-        Node n = NodeFactory.parseNode(nStr) ;
+        Node n = NodeFactoryExtra.parseNode(nStr) ;
         test(nodeFormatter, n, str) ;
     }
 

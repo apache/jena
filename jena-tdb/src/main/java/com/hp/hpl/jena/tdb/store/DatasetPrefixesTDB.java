@@ -30,6 +30,7 @@ import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.graph.GraphPrefixesProjection ;
@@ -114,9 +115,9 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized void insertPrefix(String graphName, String prefix, String uri)
     {
-        Node g = Node.createURI(graphName) ; 
-        Node p = Node.createLiteral(prefix) ; 
-        Node u = Node.createURI(uri) ;
+        Node g = NodeFactory.createURI(graphName) ; 
+        Node p = NodeFactory.createLiteral(prefix) ; 
+        Node u = NodeFactory.createURI(uri) ;
 
         nodeTupleTable.addRow(g,p,u) ;
     }
@@ -135,8 +136,8 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized String readPrefix(String graphName, String prefix)
     {
-        Node g = Node.createURI(graphName) ; 
-        Node p = Node.createLiteral(prefix) ; 
+        Node g = NodeFactory.createURI(graphName) ; 
+        Node p = NodeFactory.createLiteral(prefix) ; 
         
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
         try {
@@ -151,8 +152,8 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized String readByURI(String graphName, String uriStr)
     {
-        Node g = Node.createURI(graphName) ; 
-        Node u = Node.createURI(uriStr) ; 
+        Node g = NodeFactory.createURI(graphName) ; 
+        Node u = NodeFactory.createURI(uriStr) ; 
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, u) ;
         if ( ! iter.hasNext() )
             return null ;
@@ -164,7 +165,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized Map<String, String> readPrefixMap(String graphName)
     {
-        Node g = Node.createURI(graphName) ;
+        Node g = NodeFactory.createURI(graphName) ;
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
         Map<String, String> map = new HashMap<String, String>() ;
         for ( ; iter.hasNext() ; )
@@ -181,7 +182,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized void loadPrefixMapping(String graphName, PrefixMapping pmap)
     {
-        Node g = Node.createURI(graphName) ;
+        Node g = NodeFactory.createURI(graphName) ;
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
         for ( ; iter.hasNext() ; )
         {
@@ -196,8 +197,8 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized void removeFromPrefixMap(String graphName, String prefix)
     {
-        Node g = Node.createURI(graphName) ; 
-        Node p = Node.createLiteral(prefix) ; 
+        Node g = NodeFactory.createURI(graphName) ; 
+        Node p = NodeFactory.createLiteral(prefix) ; 
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
         List<Tuple<Node>> list = Iter.toList(iter) ;    // Materialize.
         Iter.close(iter) ;

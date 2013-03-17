@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.pfunction.library;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.QueryBuildException ;
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -101,11 +102,11 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
         
         if ( Var.isVar(namespaceNode) ) // .isVariable() )
         {
-            b.add(Var.alloc(namespaceNode), Node.createURI(namespace)) ;
+            b.add(Var.alloc(namespaceNode), NodeFactory.createURI(namespace)) ;
             // Check for the case of (?x ?x) (very unlikely - and even more unlikely to cause a match)
             // but it's possible for strange URI schemes.
             if ( localnameNode.isVariable() && namespaceNode.getName() == localnameNode.getName() )
-                localnameNode = Node.createURI(namespace) ;
+                localnameNode = NodeFactory.createURI(namespace) ;
         }
         else
         {
@@ -121,7 +122,7 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
         }
         
         if ( Var.isVar(localnameNode) )
-            b.add(Var.alloc(localnameNode), Node.createLiteral(localname)) ;
+            b.add(Var.alloc(localnameNode), NodeFactory.createLiteral(localname)) ;
         else
         {
             // Only string literals (plain strings or datatype xsd:string) 

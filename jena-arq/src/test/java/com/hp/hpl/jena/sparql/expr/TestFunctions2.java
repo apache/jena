@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
@@ -533,7 +533,7 @@ public class TestFunctions2 extends BaseTest
     {
         Expr expr = ExprUtils.parse(string, pmap) ;
         NodeValue nv = expr.eval(null, new FunctionEnvBase()) ;
-        Node r = NodeFactory.parseNode(result) ;
+        Node r = NodeFactoryExtra.parseNode(result) ;
         NodeValue nvr = NodeValue.makeNode(r) ;
         
         assertTrue("Not same value: Expected: "+nvr+" : Actual = "+nv, NodeValue.sameAs(nvr, nv)) ;  

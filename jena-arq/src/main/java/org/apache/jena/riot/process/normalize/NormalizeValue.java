@@ -30,6 +30,7 @@ import javax.xml.datatype.XMLGregorianCalendar ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
@@ -81,7 +82,7 @@ class NormalizeValue
                 String lex2 = xcal.toXMLFormat() ;
                 if ( lex2.equals(lexicalForm) )
                     return node ;
-                return Node.createLiteral(lex2, null, datatype) ;
+                return NodeFactory.createLiteral(lex2, null, datatype) ;
             }
             // The only variablity for a valid date/dateTime/g* type is:
             //   Second part can have fractional seconds '.' s+ (if present) represents the fractional seconds;
@@ -106,7 +107,7 @@ class NormalizeValue
             // Can't happen.  We munged dts.second. 
 //            if ( lex2.equals(lexicalForm) )
 //                return node ;
-            return Node.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, null, datatype) ;
         }
     } ;
     
@@ -141,7 +142,7 @@ class NormalizeValue
             // If it's a subtype of integer, then output a new node of datatype integer.
             if ( datatype.equals(XSDDatatype.XSDinteger) && lex2.equals(lexicalForm) )
                 return node ;
-            return Node.createLiteral(lex2, null, XSDDatatype.XSDinteger) ;
+            return NodeFactory.createLiteral(lex2, null, XSDDatatype.XSDinteger) ;
         }
     } ;
 
@@ -159,7 +160,7 @@ class NormalizeValue
                 lex2 = lex2+".0" ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
-            return Node.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, null, datatype) ;
         }
     } ;
     
@@ -189,7 +190,7 @@ class NormalizeValue
             String lex2 = fmtFloatingPoint.format(d) ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
-            return Node.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, null, datatype) ;
         }
     } ;
     
@@ -201,7 +202,7 @@ class NormalizeValue
             String lex2 = fmtFloatingPoint.format(f) ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
-            return Node.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, null, datatype) ;
         }
     } ;
 
@@ -210,7 +211,7 @@ class NormalizeValue
         @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
-            return Node.createLiteral(lexicalForm) ;
+            return NodeFactory.createLiteral(lexicalForm) ;
         }
     } ;
     
@@ -219,7 +220,7 @@ class NormalizeValue
         @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
-            return Node.createLiteral(lexicalForm, "", datatype) ;
+            return NodeFactory.createLiteral(lexicalForm, "", datatype) ;
         }
     } ;
 
@@ -237,9 +238,9 @@ class NormalizeValue
             
             String lex = lexicalForm.substring(0, idx) ;
             if ( idx == lexicalForm.length()-1 )
-                return Node.createLiteral(lex) ;
+                return NodeFactory.createLiteral(lex) ;
             String lang = lexicalForm.substring(idx+1) ;
-            return Node.createLiteral(lex,lang, null) ;
+            return NodeFactory.createLiteral(lex,lang, null) ;
         }
     } ;
 }

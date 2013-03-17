@@ -307,7 +307,7 @@ public class Context
             // Copy per-dataset settings.
             context.putAll(dataset.getContext()) ;
         
-        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+        context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
         
         // Allocators.
 //        context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;

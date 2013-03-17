@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.E_Multiply;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
 
 /**
  * Tests that user functions are properly wired in and usable from SPARQL
@@ -76,6 +76,6 @@ public class TestUserFunctionsInSparql {
         
         //Validate returned value
         Node actual = b.get(Var.alloc("square"));
-        Assert.assertEquals(NodeFactory.intToNode(4), actual);
+        Assert.assertEquals(NodeFactoryExtra.intToNode(4), actual);
     }
 }

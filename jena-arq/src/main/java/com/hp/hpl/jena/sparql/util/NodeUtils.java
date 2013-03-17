@@ -27,6 +27,7 @@ import java.util.Set ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.iri.IRI ;
@@ -48,8 +49,8 @@ public class NodeUtils
 {
     public interface EqualityTest { boolean equal(Node n1, Node n2) ; }
 
-    public static Node asNode(IRI iri)  { return Node.createURI(iri.toString()) ; }
-    public static Node asNode(String iri)  { return Node.createURI(iri) ; }
+    public static Node asNode(IRI iri)  { return NodeFactory.createURI(iri.toString()) ; }
+    public static Node asNode(String iri)  { return NodeFactory.createURI(iri) ; }
     
     public static boolean isStringLiteral(Node literal)
     {
@@ -103,7 +104,7 @@ public class NodeUtils
     {
         Set<Node> nodes = new HashSet<Node>() ;
         for ( String x : uris )
-            nodes.add(Node.createURI(x)) ;
+            nodes.add(NodeFactory.createURI(x)) ;
         return nodes ;
     }
     

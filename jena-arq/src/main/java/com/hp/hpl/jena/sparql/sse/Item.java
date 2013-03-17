@@ -24,6 +24,7 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
@@ -93,7 +94,7 @@ public class Item extends ItemLocation
     
     public static void addPair(ItemList list, String key, String value)
     {
-        addPair(list, Item.createSymbol(key), Item.createNode(Node.createLiteral(value))) ;
+        addPair(list, Item.createSymbol(key), Item.createNode(NodeFactory.createLiteral(value))) ;
     }
     
     public static void addPair(ItemList list, String key, Node node)

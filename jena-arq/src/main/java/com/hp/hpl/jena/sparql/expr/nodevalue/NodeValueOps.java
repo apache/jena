@@ -38,7 +38,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.ValueSpaceClassification ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /** The code parts of arithmetic opperations on Nodevlaues.
  */
@@ -126,11 +126,11 @@ public class NodeValueOps
             String lex = d3.toString() ;
             Node n ;
             if ( isDTDur )
-                n = NodeFactory.createLiteralNode(lex, null, dtXSDdayTimeDuration) ;
+                n = NodeFactoryExtra.createLiteralNode(lex, null, dtXSDdayTimeDuration) ;
             else if ( isYMDur )
-                n = NodeFactory.createLiteralNode(lex, null, dtXSDyearMonthDuration) ;
+                n = NodeFactoryExtra.createLiteralNode(lex, null, dtXSDyearMonthDuration) ;
             else
-                n = Node.createLiteral(lex, XSDDatatype.XSDduration) ;
+                n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, XSDDatatype.XSDduration) ;
             return NodeValue.makeNodeDuration(d3, n) ;
         }
         
@@ -186,11 +186,11 @@ public class NodeValueOps
             String lex = d3.toString() ;
             Node n ;
             if ( isDTDur )
-                n = NodeFactory.createLiteralNode(lex, null, dtXSDdayTimeDuration) ;
+                n = NodeFactoryExtra.createLiteralNode(lex, null, dtXSDdayTimeDuration) ;
             else if ( isYMDur )
-                n = NodeFactory.createLiteralNode(lex, null, dtXSDyearMonthDuration) ;
+                n = NodeFactoryExtra.createLiteralNode(lex, null, dtXSDyearMonthDuration) ;
             else
-                n = Node.createLiteral(lex, XSDDatatype.XSDduration) ;
+                n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, XSDDatatype.XSDduration) ;
             return NodeValue.makeNodeDuration(d3, n) ;
         }
         
@@ -252,7 +252,7 @@ public class NodeValueOps
                 throw new ExprEvalTypeException("Operator '*': only dayTime duration.  Got: "+nv1) ;
             BigDecimal dec = nv2.getDecimal() ;
             Duration r = dur.multiply(dec) ;
-            Node n = NodeFactory.createLiteralNode(r.toString(), null, dtXSDdayTimeDuration) ;
+            Node n = NodeFactoryExtra.createLiteralNode(r.toString(), null, dtXSDdayTimeDuration) ;
             return NodeValue.makeNodeDuration(r, n) ; 
         }
         throw new ExprEvalTypeException("Operator '*' : Undefined multiply: "+nv1+" and "+nv2) ; 

@@ -30,7 +30,7 @@ import org.apache.jena.riot.system.Prologue ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 // Check the basisc of output 
 //  Nodes, escapes, prefix mapping.
@@ -108,7 +108,7 @@ public class TestOutput extends BaseTest
     
     private static String stringForNode(String nodeStr, Prologue prologue, String encoding)
     {
-        Node node = NodeFactory.parseNode(nodeStr) ;
+        Node node = NodeFactoryExtra.parseNode(nodeStr) ;
         try
         {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream() ;

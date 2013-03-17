@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
@@ -51,7 +52,7 @@ public class CodecSimple implements EncoderDecoder
             System.err.println(s) ;
         
         if ( s.startsWith("_:") )
-            return Node.createAnon(new AnonId(s.substring(2))) ;
+            return NodeFactory.createAnon(new AnonId(s.substring(2))) ;
         return stringToNode(s, prefixMapping) ; 
     }
     

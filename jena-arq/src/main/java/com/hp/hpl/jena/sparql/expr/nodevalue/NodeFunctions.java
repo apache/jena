@@ -24,6 +24,7 @@ import java.util.UUID ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.iri.IRI ;
@@ -180,7 +181,7 @@ public class NodeFunctions
                 return NodeConst.dtRDFlangString ;
             return XSD.xstring.asNode() ;
         }
-        return Node.createURI(s) ;
+        return NodeFactory.createURI(s) ;
     }
     
     // -------- lang
@@ -322,7 +323,7 @@ public class NodeFunctions
         {
             // Skolemization of blank nodes to IRIs : Don't ask, just don't ask.
             String x = nv.getBlankNodeLabel() ;
-            return Node.createURI("_:"+x) ;
+            return NodeFactory.createURI("_:"+x) ;
         }
         
         // Simple literal or xsd:string
@@ -355,7 +356,7 @@ public class NodeFunctions
             }
             Log.warn(NodeFunctions.class, "Bad IRI: "+msg+": "+iri) ;
         }
-        return Node.createURI(iri.toString()) ;
+        return NodeFactory.createURI(iri.toString()) ;
     }
     
     // The Jena version can vbe slow to inityailise (but is pure java)
@@ -383,7 +384,7 @@ public class NodeFunctions
     public static NodeValue uuid()
     {
         String str = "urn:uuid:"+uuidString() ;
-        Node n = Node.createURI(str) ;
+        Node n = NodeFactory.createURI(str) ;
         return NodeValue.makeNode(n) ;
     }
 
@@ -415,7 +416,7 @@ public class NodeFunctions
         Node dt = v2.asNode() ;
         // Check?
         
-        Node n = Node.createLiteral(lex, null, Node.getType(dt.getURI())) ;
+        Node n = NodeFactory.createLiteral(lex, null, NodeFactory.getType(dt.getURI())) ;
         return NodeValue.makeNode(n) ; 
     }
     
@@ -428,7 +429,7 @@ public class NodeFunctions
         String lang = v2.asString() ;
         // Check?
         
-        Node n = Node.createLiteral(lex, lang, null) ;
+        Node n = NodeFactory.createLiteral(lex, lang, null) ;
         return NodeValue.makeNode(n) ; 
     }
 

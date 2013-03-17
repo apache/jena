@@ -29,6 +29,7 @@ import org.apache.jena.riot.system.MapWithScope ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 
 /** Allocation Nodes (Bnodes usually) based on the graph and label 
@@ -109,7 +110,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     {
         @Override
         public Node create(String label)
-        { return Node.createAnon() ; }
+        { return NodeFactory.createAnon() ; }
 
         @Override
         public void reset()     {}
@@ -123,7 +124,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
         public Node create(String label)
         {
             String $ = format("B0x%04X", ++counter) ;
-            return Node.createAnon(new AnonId($)) ;
+            return NodeFactory.createAnon(new AnonId($)) ;
         }
 
         @Override
@@ -139,7 +140,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
         {
             if ( label == null )
                 label = SysRIOT.BNodeGenIdPrefix+counter++ ;
-            return Node.createAnon(new AnonId(label)) ;
+            return NodeFactory.createAnon(new AnonId(label)) ;
         }
 
         @Override
@@ -155,7 +156,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
         {
             if ( label == null )
                 label = SysRIOT.BNodeGenIdPrefix+counter++ ;
-            return Node.createAnon(new AnonId(NodeFmtLib.decodeBNodeLabel(label))) ;
+            return NodeFactory.createAnon(new AnonId(NodeFmtLib.decodeBNodeLabel(label))) ;
         }
 
         @Override

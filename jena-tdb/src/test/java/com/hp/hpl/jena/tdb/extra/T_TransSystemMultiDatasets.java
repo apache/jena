@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -512,9 +513,9 @@ public class T_TransSystemMultiDatasets
         Node g1 = q.getGraph() ;
         
         Node g = Quad.defaultGraphNodeGenerated ; // urn:x-arq:DefaultGraphNode
-        Node s = Node.createURI("S") ;
-        Node p = Node.createURI("P") ;
-        Node o = Node.createLiteral(Integer.toString(value), null, XSDDatatype.XSDinteger) ;
+        Node s = NodeFactory.createURI("S") ;
+        Node p = NodeFactory.createURI("P") ;
+        Node o = NodeFactory.createLiteral(Integer.toString(value), null, XSDDatatype.XSDinteger) ;
         return new Quad(g,s,p,o) ;
     }
 

@@ -40,6 +40,7 @@ import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 
@@ -300,7 +301,7 @@ public abstract class LangTurtleBase<X> extends LangBase
     }
     
     static protected final Node nodeSameAs = OWL.sameAs.asNode() ; 
-    static protected final Node nodeLogImplies = Node.createURI("http://www.w3.org/2000/10/swap/log#implies") ;
+    static protected final Node nodeLogImplies = NodeFactory.createURI("http://www.w3.org/2000/10/swap/log#implies") ;
     
     /** Get predicate - maybe null for "illegal" */
     protected final Node predicate()
@@ -435,7 +436,7 @@ public abstract class LangTurtleBase<X> extends LangBase
     protected final Node triplesBlankNode()
     {
         nextToken() ;        // Skip [
-        Node subject = Node.createAnon() ;
+        Node subject = NodeFactory.createAnon() ;
 
         if ( peekPredicate() )
             predicateObjectList(subject) ;
@@ -478,7 +479,7 @@ public abstract class LangTurtleBase<X> extends LangBase
                 exception(errorToken, "Malformed list") ;
             
             // Node for the list structre.
-            Node nextCell = Node.createAnon() ;
+            Node nextCell = NodeFactory.createAnon() ;
             if ( listHead == null )
                 listHead = nextCell ;
             if ( lastCell != null )

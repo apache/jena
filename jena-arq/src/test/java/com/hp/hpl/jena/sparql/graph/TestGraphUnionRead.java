@@ -28,6 +28,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.graph.GraphUnionRead ;
 import com.hp.hpl.jena.sparql.sse.Item ;
@@ -76,7 +77,7 @@ public class TestGraphUnionRead extends BaseTest
     {
         List<Node> gnodes = list(gn1, gn2) ;
         Graph g = new GraphUnionRead(dsg, gnodes) ;
-        Node s = Node.createURI("http://example/s") ; 
+        Node s = NodeFactory.createURI("http://example/s") ; 
         long x = Iter.count(g.find(s, null, null)) ;
         assertEquals(3, x) ;
     }
@@ -85,7 +86,7 @@ public class TestGraphUnionRead extends BaseTest
     {
         List<Node> gnodes = list(gn1, gn2, gn9) ;
         Graph g = new GraphUnionRead(dsg, gnodes) ;
-        Node o = Node.createLiteral("g2") ; 
+        Node o = NodeFactory.createLiteral("g2") ; 
         long x = Iter.count(g.find(null, null, o)) ;
         assertEquals(1, x) ;
     }

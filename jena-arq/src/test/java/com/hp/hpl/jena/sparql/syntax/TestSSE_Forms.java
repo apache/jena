@@ -25,6 +25,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.sse.Item ;
@@ -55,13 +56,13 @@ public class TestSSE_Forms extends TestCase
     
     @Test public void testBase_01()
     { 
-        Item r = Item.createNode(Node.createURI("http://example/x")) ; 
+        Item r = Item.createNode(NodeFactory.createURI("http://example/x")) ; 
         testItem("(base <http://example/> <x>)", r) ;
     }
     
     @Test public void testBase_02()
     { 
-        Item r = Item.createNode(Node.createURI("http://example/x")) ; 
+        Item r = Item.createNode(NodeFactory.createURI("http://example/x")) ; 
         testItem("(base <http://HOST/> (base <http://example/xyz> <x>))", r) ;
     }
 
@@ -99,13 +100,13 @@ public class TestSSE_Forms extends TestCase
     
     @Test public void testPrefix_01()
     { 
-        Item r = Item.createNode(Node.createURI("http://example/abc")) ;
+        Item r = Item.createNode(NodeFactory.createURI("http://example/abc")) ;
         testItem("(prefix ((ex: <http://example/>)) ex:abc)", r);
     }
 
     @Test public void testPrefix_02()
     { 
-        Item r = Item.createNode(Node.createURI("http://EXAMPLE/abc")) ;
+        Item r = Item.createNode(NodeFactory.createURI("http://EXAMPLE/abc")) ;
         testItem("(prefix ((ex: <http://example/>)) (prefix ((ex: <http://EXAMPLE/>)) ex:abc))", r);
     }
     
@@ -148,7 +149,7 @@ public class TestSSE_Forms extends TestCase
     
     @Test public void testTypedLit_r1()
     { 
-        Node node = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ; 
+        Node node = NodeFactory.createLiteral("3", null, XSDDatatype.XSDinteger) ; 
         testItem("'3'^^xsd:integer", Item.createNode(node)) ;
     }
 

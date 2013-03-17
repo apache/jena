@@ -27,7 +27,7 @@ import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.lib.DatasetLib ;
 
@@ -68,7 +68,7 @@ public class TestLangNQuads extends TestLangNTuples
         // This must parse to <g> 
         DatasetGraph dsg = parseToDataset("<x> <p> <s> <g> .") ;
         assertEquals(1,dsg.size()) ;
-        assertEquals(1, dsg.getGraph(Node.createURI("g")).size()) ;
+        assertEquals(1, dsg.getGraph(NodeFactory.createURI("g")).size()) ;
         assertEquals(0, dsg.getDefaultGraph().size()) ;
     }
 

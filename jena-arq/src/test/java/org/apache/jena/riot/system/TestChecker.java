@@ -27,7 +27,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestChecker
 {
@@ -131,7 +131,7 @@ public class TestChecker
 
     private static void check(String string)
     {
-        Node n = NodeFactory.parseNode(string) ;
+        Node n = NodeFactoryExtra.parseNode(string) ;
         checker.check(n, -1, -1) ;
     }
     

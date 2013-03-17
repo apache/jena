@@ -27,6 +27,7 @@ import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 
@@ -293,12 +294,12 @@ public class GraphList
         if ( list.size() == 0 )
             return RDF.Nodes.nil ;
         
-        Node head = Node.createAnon() ;
+        Node head = NodeFactory.createAnon() ;
         Node n = head ;
         for ( Node elt : list )
         {
             // Cell:
-            Node consCell = Node.createAnon() ;
+            Node consCell = NodeFactory.createAnon() ;
             // Last cell to this one.
             Triple t = new Triple(n, RDF.Nodes.rest, consCell) ;
             Triple t1 = new Triple(consCell, RDF.Nodes.first, elt) ;

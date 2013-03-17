@@ -26,6 +26,7 @@ import org.apache.jena.atlas.logging.Log ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarAlloc ;
@@ -136,10 +137,10 @@ public class ParseHandlerPlain implements ParseHandler
                 datatypeIRI = resolvePrefixedName(datatypePN, line, column) ;
             
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeIRI) ;
-            n = Node.createLiteral(lexicalForm, null, dType) ;
+            n = NodeFactory.createLiteral(lexicalForm, null, dType) ;
         }
         else
-            n = Node.createLiteral(lexicalForm, langTag, null) ;
+            n = NodeFactory.createLiteral(lexicalForm, langTag, null) ;
         Item item = Item.createNode(n, line, column) ;
         listAdd(item) ;
     }
@@ -151,7 +152,7 @@ public class ParseHandlerPlain implements ParseHandler
         Node n = null ;
         if ( label.equals("") )
             // Fresh anonymous bNode
-            n = Node.createAnon() ; 
+            n = NodeFactory.createAnon() ; 
         else
             n = bNodeLabels.asNode(label) ;
         Item item = Item.createNode(n, line, column) ;
@@ -161,7 +162,7 @@ public class ParseHandlerPlain implements ParseHandler
     @Override
     public void emitIRI(int line, int column, String iriStr)
     {
-        Node n = Node.createURI(iriStr) ;
+        Node n = NodeFactory.createURI(iriStr) ;
         Item item = Item.createNode(n, line, column) ;
         listAdd(item) ;
     }

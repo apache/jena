@@ -22,6 +22,7 @@ import java.util.IdentityHashMap ;
 import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -52,7 +53,7 @@ public class E_BNode extends ExprFunctionN // 0 or one
             expr = getArg(1) ;
 
         if ( expr == null )
-            return NodeValue.makeNode(Node.createAnon()) ;
+            return NodeValue.makeNode(NodeFactory.createAnon()) ;
 
         NodeValue x = expr.eval(binding, env) ;
         if ( ! x.isString() )

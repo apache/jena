@@ -47,6 +47,7 @@ import org.apache.jena.riot.writer.WriterGraphRIOTBase ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
@@ -72,10 +73,10 @@ public class RiotLib
         if ( isBNodeIRI(iri) )
         {
             String s = iri.substring(bNodeLabelStart.length()) ;
-            Node n = Node.createAnon(new AnonId(s)) ;
+            Node n = NodeFactory.createAnon(new AnonId(s)) ;
             return n ;
         }
-        return Node.createURI(iri) ;
+        return NodeFactory.createURI(iri) ;
     }
 
     /** Test whether  */

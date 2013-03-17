@@ -29,6 +29,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -199,15 +200,15 @@ public class TestList extends TestCase
         return new GNode(graph, t.getObject()) ;
     }
     
-    private static Node node1 = Node.createLiteral("1", "", XSDDatatype.XSDinteger) ;
-    private static Node node2 = Node.createLiteral("2", "", XSDDatatype.XSDinteger) ;
-    private static Node node3 = Node.createLiteral("3", "", XSDDatatype.XSDinteger) ;
-    private static Node node4 = Node.createLiteral("4", "", XSDDatatype.XSDinteger) ;
+    private static Node node1 = NodeFactory.createLiteral("1", "", XSDDatatype.XSDinteger) ;
+    private static Node node2 = NodeFactory.createLiteral("2", "", XSDDatatype.XSDinteger) ;
+    private static Node node3 = NodeFactory.createLiteral("3", "", XSDDatatype.XSDinteger) ;
+    private static Node node4 = NodeFactory.createLiteral("4", "", XSDDatatype.XSDinteger) ;
     
-    private static Node node0 = Node.createLiteral("0", "", XSDDatatype.XSDinteger) ;
+    private static Node node0 = NodeFactory.createLiteral("0", "", XSDDatatype.XSDinteger) ;
     
-    private static Node r = Node.createURI("http://example/r") ;
-    private static Node p = Node.createURI("http://example/p") ;
+    private static Node r = NodeFactory.createURI("http://example/r") ;
+    private static Node p = NodeFactory.createURI("http://example/p") ;
     private static String preamble = "@prefix : <http://example/> . :r :p " ;
     
     private static String listStr_1 = preamble + "() ." ;

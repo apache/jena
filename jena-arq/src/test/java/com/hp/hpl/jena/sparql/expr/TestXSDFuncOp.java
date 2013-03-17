@@ -24,7 +24,7 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble ;
@@ -444,7 +444,7 @@ public class TestXSDFuncOp extends TestCase
 
     @Test public void testCompare23()
     {
-        NodeValue nv1 = NodeValue.makeNode(Node.createAnon()) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createAnon()) ;
         NodeValue nv2 = NodeValue.makeString("5") ;
         
         try {
@@ -457,8 +457,8 @@ public class TestXSDFuncOp extends TestCase
 
     @Test public void testSameUnknown_1()
     {
-        NodeValue nv1 = NodeValue.makeNode(Node.createURI("test:abc")) ; 
-        NodeValue nv2 = NodeValue.makeNode(Node.createURI("test:abc")) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ; 
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
         
         assertTrue(NodeValue.sameAs(nv1, nv2)) ; 
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
@@ -472,8 +472,8 @@ public class TestXSDFuncOp extends TestCase
     
     @Test public void testSameUnknown_2()
     {
-        NodeValue nv1 = NodeValue.makeNode(Node.createAnon()) ; 
-        NodeValue nv2 = NodeValue.makeNode(Node.createURI("test:abc")) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createAnon()) ; 
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
         
         assertFalse(NodeValue.sameAs(nv1, nv2)) ;
         assertTrue(NodeValue.notSameAs(nv1, nv2)) ;
@@ -589,7 +589,7 @@ public class TestXSDFuncOp extends TestCase
     
     @Test public void testCompareGeneral1()
     {
-        NodeValue nv1 = NodeValue.makeNode(Node.createAnon()) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createAnon()) ;
         NodeValue nv2 = NodeValue.makeString("5") ;
         
         // bNodes before strings
@@ -599,8 +599,8 @@ public class TestXSDFuncOp extends TestCase
     
     @Test public void testCompareGeneral2()
     {
-        NodeValue nv1 = NodeValue.makeNode(Node.createAnon()) ;
-        NodeValue nv2 = NodeValue.makeNode(Node.createURI("test:abc")) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createAnon()) ;
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
         
         // bNodes before URIs
         int x = NodeValue.compareAlways(nv1, nv2) ;
@@ -609,8 +609,8 @@ public class TestXSDFuncOp extends TestCase
 
     @Test public void testCompareGeneral3()
     {
-        NodeValue nv1 = NodeValue.makeNode(Node.createLiteral("test:abc")) ;
-        NodeValue nv2 = NodeValue.makeNode(Node.createURI("test:abc")) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("test:abc")) ;
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
         
         // URIs before literals
         int x = NodeValue.compareAlways(nv1, nv2) ;
@@ -619,8 +619,8 @@ public class TestXSDFuncOp extends TestCase
 
     @Test public void testCompareGeneral4()
     {
-        NodeValue nv1 = NodeValue.makeNode(Node.createURI("test:abc")) ;
-        NodeValue nv2 = NodeValue.makeNode(Node.createURI("test:xyz")) ;
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createURI("test:abc")) ;
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:xyz")) ;
         
         int x = NodeValue.compareAlways(nv1, nv2) ;
         assertEquals("Does not compare "+nv1+" & "+nv2, NodeValue.CMP_LESS, NodeValue.compareAlways(nv1, nv2) ) ;

@@ -40,7 +40,7 @@ import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.sparql.vocabulary.DOAP ;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF ;
@@ -194,7 +194,7 @@ public class rdflangtest extends CmdGeneral
         Resource release = model.createResource(DOAP.Version) ;
         system.addProperty(DOAP.release, release) ;
         
-        Node today_node = NodeFactory.todayAsDate() ;
+        Node today_node = NodeFactoryExtra.todayAsDate() ;
         Literal today = model.createTypedLiteral(today_node.getLiteralLexicalForm(), today_node.getLiteralDatatype()) ;
         release.addProperty(DOAP.created, today) ;
         release.addProperty(DOAP.name, releaseName) ;      // Again

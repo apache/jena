@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.graph;
 
 import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -34,9 +34,9 @@ public class TestGraphsMem extends GraphsTests
     protected Dataset createDataset()
     {
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        dsg.addGraph(Node.createURI(graph1), GraphFactory.createDefaultGraph()) ;
-        dsg.addGraph(Node.createURI(graph2), GraphFactory.createDefaultGraph()) ;
-        dsg.addGraph(Node.createURI(graph3), GraphFactory.createDefaultGraph()) ;
+        dsg.addGraph(NodeFactory.createURI(graph1), GraphFactory.createDefaultGraph()) ;
+        dsg.addGraph(NodeFactory.createURI(graph2), GraphFactory.createDefaultGraph()) ;
+        dsg.addGraph(NodeFactory.createURI(graph3), GraphFactory.createDefaultGraph()) ;
         return DatasetFactory.create(dsg) ;
     }
     

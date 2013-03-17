@@ -29,7 +29,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /** Break expression testing suite into parts
  * @see TestExpressions
@@ -426,7 +426,7 @@ public class TestNodeValue extends TestCase
     
     static NodeValue make(String str)
     {
-        Node n = NodeFactory.parseNode(str) ;
+        Node n = NodeFactoryExtra.parseNode(str) ;
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;
     }
@@ -724,18 +724,18 @@ public class TestNodeValue extends TestCase
     
     @Test public void testLang1()
     {
-        Node n1 = Node.createLiteral("xyz", "en", null) ;
+        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
-        Node n2 = Node.createLiteral("xyz", "en", null) ;
+        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
         NodeValue nv2 = NodeValue.makeNode(n2) ;
         assertTrue(NodeValue.sameAs(nv1, nv2)) ;
     }
     
     @Test public void testLang2()
     {
-        Node n1 = Node.createLiteral("xyz", "en", null) ;
+        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
-        Node n2 = Node.createLiteral("xyz", "EN", null) ;
+        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "EN", null) ;
         NodeValue nv2 = NodeValue.makeNode(n2) ;
         assertTrue(NodeValue.sameAs(nv1, nv2)) ;
         assertFalse(nv1.equals(nv2)) ;
@@ -743,18 +743,18 @@ public class TestNodeValue extends TestCase
 
     @Test public void testLang3()
     {
-        Node n1 = Node.createLiteral("xyz", "en", null) ;
+        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
-        Node n2 = Node.createLiteral("xyz", "en", null) ;
+        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
         NodeValue nv2 = NodeValue.makeNode(n2) ;
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
     }
     
     @Test public void testLang4()
     {
-        Node n1 = Node.createLiteral("xyz", "en", null) ;
+        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
-        Node n2 = Node.createLiteral("xyz", "EN", null) ;
+        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "EN", null) ;
         NodeValue nv2 = NodeValue.makeNode(n2) ;
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
         assertFalse(nv1.equals(nv2)) ;
@@ -783,8 +783,8 @@ public class TestNodeValue extends TestCase
     
     @Test public void testEquals4()
     {
-        NodeValue nv1 = NodeValue.makeNode(Node.createURI("http://example")) ;
-        NodeValue nv2 = NodeValue.makeNode(Node.createURI("http://example")) ;
+        NodeValue nv1 = NodeValue.makeNode(com.hp.hpl.jena.graph.NodeFactory.createURI("http://example")) ;
+        NodeValue nv2 = NodeValue.makeNode(com.hp.hpl.jena.graph.NodeFactory.createURI("http://example")) ;
         assertEquals("Not NodeValue.equals()", nv1 , nv2) ;
     }
     
@@ -804,8 +804,8 @@ public class TestNodeValue extends TestCase
     
     @Test public void testNotEquals3()
     {   //Literals and URIs are different.
-        NodeValue nv1 = NodeValue.makeNode(Node.createURI("http://example")) ;
-        NodeValue nv2 = NodeValue.makeNode(Node.createLiteral("http://example")) ;
+        NodeValue nv1 = NodeValue.makeNode(com.hp.hpl.jena.graph.NodeFactory.createURI("http://example")) ;
+        NodeValue nv2 = NodeValue.makeNode(com.hp.hpl.jena.graph.NodeFactory.createLiteral("http://example")) ;
         assertFalse("NodeValue.equals()", nv1.equals(nv2)) ;
     } 
 

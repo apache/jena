@@ -43,7 +43,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.sparql.util.ResultSetUtils ;
 
 public class TestResultSet extends BaseTest
@@ -71,7 +71,7 @@ public class TestResultSet extends BaseTest
 
     @Test public void test_RS_2()
     {
-        ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
+        ResultSetRewindable rs1 = makeRewindable("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
         ResultSetFormatter.outputAsXML(arr, rs1) ;
         rs1.reset() ;
@@ -82,7 +82,7 @@ public class TestResultSet extends BaseTest
     
     @Test public void test_RS_2_str()
     {
-        ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
+        ResultSetRewindable rs1 = makeRewindable("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
         String x = ResultSetFormatter.asXMLString(rs1) ;
         rs1.reset() ;
         ResultSet rs2 = ResultSetFactory.fromXML(x) ;
@@ -102,7 +102,7 @@ public class TestResultSet extends BaseTest
     
     @Test public void test_RS_4()
     {
-        ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
+        ResultSetRewindable rs1 = makeRewindable("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
         Model model = ResultSetFormatter.toModel(rs1) ;
         rs1.reset() ;
         ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.fromRDF(model)) ;
@@ -133,7 +133,7 @@ public class TestResultSet extends BaseTest
     
     @Test public void test_RS_6()
     {
-        ResultSetRewindable rs1 = make2Rewindable("x", Node.createURI("tag:local")) ;
+        ResultSetRewindable rs1 = make2Rewindable("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
         ResultSetFormatter.outputAsJSON(arr, rs1) ;
         rs1.reset() ;
@@ -172,17 +172,17 @@ public class TestResultSet extends BaseTest
 
     @Test public void test_RS_union_1() 
     {
-    	ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
-    	ResultSet rs2 = make("x", Node.createURI("tag:local")) ;
-    	ResultSet rs3 = make2("x", Node.createURI("tag:local")) ;
+    	ResultSet rs1 = make("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
+    	ResultSet rs2 = make("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
+    	ResultSet rs3 = make2("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
     	assertTrue(ResultSetCompare.equalsByTerm(rs3, ResultSetUtils.union(rs1, rs2))) ;
     }
 
     @Test(expected = ResultSetException.class) 
     public void test_RS_union_2() 
     {
-    	ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
-    	ResultSet rs2 = make("y", Node.createURI("tag:local")) ;
+    	ResultSet rs1 = make("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
+    	ResultSet rs2 = make("y", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
     	ResultSetUtils.union(rs1, rs2) ;
     }
 
@@ -229,7 +229,7 @@ public class TestResultSet extends BaseTest
     
     @Test public void test_RS_cmp_2()
     {
-        ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
+        ResultSet rs1 = make("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
         ResultSet rs2 = new ResultSetMem() ;
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
 
@@ -237,15 +237,15 @@ public class TestResultSet extends BaseTest
 
     @Test public void test_RS_cmp_3()
     {
-        ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
+        ResultSet rs1 = make("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
         ResultSet rs2 = new ResultSetMem() ;
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
 
     @Test public void test_RS_cmp_4()
     {
-        ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
-        ResultSet rs2 = make("x", Node.createURI("tag:local")) ;
+        ResultSet rs1 = make("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
+        ResultSet rs2 = make("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
     }
@@ -253,8 +253,8 @@ public class TestResultSet extends BaseTest
     @Test public void test_RS_cmp_5()
     {
         // Same variable, different values
-        ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local:1")) ;
-        ResultSetRewindable rs2 = makeRewindable("x", Node.createURI("tag:local:2")) ;
+        ResultSetRewindable rs1 = makeRewindable("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local:1")) ;
+        ResultSetRewindable rs2 = makeRewindable("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local:2")) ;
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         rs1.reset() ;
         rs2.reset() ;
@@ -264,8 +264,8 @@ public class TestResultSet extends BaseTest
     @Test public void test_RS_cmp_6()
     {
         // Different variable, same values
-        ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
-        ResultSetRewindable rs2 = makeRewindable("y", Node.createURI("tag:local")) ;
+        ResultSetRewindable rs1 = makeRewindable("x", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
+        ResultSetRewindable rs2 = makeRewindable("y", com.hp.hpl.jena.graph.NodeFactory.createURI("tag:local")) ;
         assertFalse(ResultSetCompare.equalsByTermAndOrder(rs1, rs2)) ;
         rs1.reset() ;
         rs2.reset() ;
@@ -275,8 +275,8 @@ public class TestResultSet extends BaseTest
     // Value based 
     @Test public void test_RS_cmp_value_1()
     {
-        ResultSetRewindable rs1 = makeRewindable("x", NodeFactory.parseNode("123")) ;
-        ResultSetRewindable rs2 = makeRewindable("x", NodeFactory.parseNode("0123")) ;
+        ResultSetRewindable rs1 = makeRewindable("x", NodeFactoryExtra.parseNode("123")) ;
+        ResultSetRewindable rs2 = makeRewindable("x", NodeFactoryExtra.parseNode("0123")) ;
         assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2)) ;
         assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
     }

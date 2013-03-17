@@ -50,7 +50,7 @@ import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.util.FileManager ;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
@@ -105,7 +105,7 @@ public class QueryExecutionBase implements QueryExecution
             // Copy per-dataset settings.
             context.putAll(dataset.getContext()) ;
         
-        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+        context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
         
         // Allocators.
 //        context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;

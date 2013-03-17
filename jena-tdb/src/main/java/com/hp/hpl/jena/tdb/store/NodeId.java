@@ -27,6 +27,7 @@ import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -312,27 +313,27 @@ public class NodeId
             case INTEGER:
             {
                 long val = IntegerNode.unpack(v) ;
-                Node n = Node.createLiteral(Long.toString(val), null, XSDDatatype.XSDinteger) ;
+                Node n = NodeFactory.createLiteral(Long.toString(val), null, XSDDatatype.XSDinteger) ;
                 return n ;
             }
             case DECIMAL:
             {
                 BigDecimal d = DecimalNode.unpackAsBigDecimal(v) ;
                 String x = d.toEngineeringString() ;
-                return Node.createLiteral(x, null, XSDDatatype.XSDdecimal) ;
+                return NodeFactory.createLiteral(x, null, XSDDatatype.XSDdecimal) ;
             }
 
             case DATETIME:
             {
                 long val = BitsLong.clear(v, 56, 64) ;
                 String lex = DateTimeNode.unpackDateTime(val) ; 
-                return Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
+                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
             }
             case DATE:
             {
                 long val = BitsLong.clear(v, 56, 64) ;
                 String lex = DateTimeNode.unpackDate(val) ;
-                return Node.createLiteral(lex, null, XSDDatatype.XSDdate) ;
+                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate) ;
             }
             case BOOLEAN:
             {

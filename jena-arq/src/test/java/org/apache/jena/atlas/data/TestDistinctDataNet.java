@@ -34,7 +34,7 @@ import org.junit.Test ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -270,16 +270,16 @@ public class TestDistinctDataNet extends TestCase
     private Binding randomBinding(Var[] vars)
     {
         BindingMap binding = BindingFactory.create();
-        binding.add(vars[0], Node.createAnon());
-        binding.add(vars[1], Node.createURI(randomURI()));
-        binding.add(vars[2], Node.createURI(randomURI()));
-        binding.add(vars[3], Node.createLiteral(randomString(20)));
-        binding.add(vars[4], Node.createAnon());
-        binding.add(vars[5], Node.createURI(randomURI()));
-        binding.add(vars[6], Node.createURI(randomURI()));
-        binding.add(vars[7], Node.createLiteral(randomString(5)));
-        binding.add(vars[8], Node.createLiteral("" + random.nextInt(), null, XSDDatatype.XSDinteger));
-        binding.add(vars[9], Node.createAnon());
+        binding.add(vars[0], NodeFactory.createAnon());
+        binding.add(vars[1], NodeFactory.createURI(randomURI()));
+        binding.add(vars[2], NodeFactory.createURI(randomURI()));
+        binding.add(vars[3], NodeFactory.createLiteral(randomString(20)));
+        binding.add(vars[4], NodeFactory.createAnon());
+        binding.add(vars[5], NodeFactory.createURI(randomURI()));
+        binding.add(vars[6], NodeFactory.createURI(randomURI()));
+        binding.add(vars[7], NodeFactory.createLiteral(randomString(5)));
+        binding.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), null, XSDDatatype.XSDinteger));
+        binding.add(vars[9], NodeFactory.createAnon());
         return binding;
     }
 

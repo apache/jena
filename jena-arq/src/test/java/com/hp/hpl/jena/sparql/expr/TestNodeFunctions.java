@@ -24,6 +24,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.vocabulary.XSD ;
@@ -48,58 +49,58 @@ public class TestNodeFunctions extends TestCase
 
     @Test public void testSameTerm1()
     {
-        Node n1 = Node.createLiteral("xyz") ;
-        Node n2 = Node.createLiteral("xyz") ;
+        Node n1 = NodeFactory.createLiteral("xyz") ;
+        Node n2 = NodeFactory.createLiteral("xyz") ;
         assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
     @Test public void testSameTerm2()
     {
-        Node n1 = Node.createLiteral("xyz") ;
-        Node n2 = Node.createLiteral("abc") ;
+        Node n1 = NodeFactory.createLiteral("xyz") ;
+        Node n2 = NodeFactory.createLiteral("abc") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
     @Test public void testSameTerm3()
     {
-        Node n1 = Node.createLiteral("xyz") ;
-        Node n2 = Node.createURI("xyz") ;
+        Node n1 = NodeFactory.createLiteral("xyz") ;
+        Node n2 = NodeFactory.createURI("xyz") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
     @Test public void testSameTerm4()
     {
-        Node n1 = Node.createLiteral("xyz") ;
-        Node n2 = Node.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
+        Node n1 = NodeFactory.createLiteral("xyz") ;
+        Node n2 = NodeFactory.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
     @Test public void testSameTerm5()
     {
-        Node n1 = Node.createLiteral("xyz", "en", null) ;
-        Node n2 = Node.createLiteral("xyz", null, null) ;
+        Node n1 = NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n2 = NodeFactory.createLiteral("xyz", null, null) ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
     @Test public void testSameTerm6()
     {
-        Node n1 = Node.createLiteral("xyz", "en", null) ;
-        Node n2 = Node.createLiteral("xyz", "EN", null) ;
+        Node n1 = NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n2 = NodeFactory.createLiteral("xyz", "EN", null) ;
         assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
     
     @Test public void testRDFtermEquals1()
     {
-        Node n1 = Node.createURI("xyz") ;
-        Node n2 = Node.createLiteral("xyz", null, null) ;
+        Node n1 = NodeFactory.createURI("xyz") ;
+        Node n2 = NodeFactory.createLiteral("xyz", null, null) ;
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
     
     @Test public void testRDFtermEquals3()
     {
         // Unextended - no language tag  
-        Node n1 = Node.createLiteral("xyz") ;
-        Node n2 = Node.createLiteral("xyz", "en", null) ;
+        Node n1 = NodeFactory.createLiteral("xyz") ;
+        Node n2 = NodeFactory.createLiteral("xyz", "en", null) ;
         try {
             NodeFunctions.rdfTermEquals(n1, n2) ;
             fail("Expected an exception from rdfTermEquals") ;
@@ -109,8 +110,8 @@ public class TestNodeFunctions extends TestCase
 
     @Test public void testRDFtermEquals2()
     {
-        Node n1 = Node.createLiteral("xyz", "en", null) ;
-        Node n2 = Node.createLiteral("xyz", "EN", null) ;
+        Node n1 = NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n2 = NodeFactory.createLiteral("xyz", "EN", null) ;
         assertTrue(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
     
@@ -137,7 +138,7 @@ public class TestNodeFunctions extends TestCase
 
     @Test public void testStr4()
     {
-        Node n = Node.createAnon() ;
+        Node n = NodeFactory.createAnon() ;
         try {
             String s = NodeFunctions.str(n) ;
             fail("Expect a type exception but call succeeded") ;
@@ -187,7 +188,7 @@ public class TestNodeFunctions extends TestCase
     @Test public void testDatatype5()
     {
         try {
-            NodeValue nv = NodeValue.makeNode(Node.createURI("http://example")) ;
+            NodeValue nv = NodeValue.makeNode(NodeFactory.createURI("http://example")) ;
             NodeValue r = NodeFunctions.datatype(nv) ;
             fail("Expect a type exception but call succeeded") ;
         }
@@ -196,7 +197,7 @@ public class TestNodeFunctions extends TestCase
 
     @Test public void testDatatype6()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createAnon()) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createAnon()) ;
         try {
             NodeValue r = NodeFunctions.datatype(nv) ;
             fail("Expect a type exception but call succeeded") ;
@@ -206,7 +207,7 @@ public class TestNodeFunctions extends TestCase
 
     @Test public void testLang1()
     {
-        Node n = Node.createLiteral("abc", "en-gb", null) ;
+        Node n = NodeFactory.createLiteral("abc", "en-gb", null) ;
         assertEquals("en-gb", NodeFunctions.lang(n)) ;
     }
 
@@ -228,7 +229,7 @@ public class TestNodeFunctions extends TestCase
     
     @Test public void testLang4()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createLiteral("simple")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteral("simple")) ;
         NodeValue r = NodeFunctions.lang(nv) ;
         NodeValue e = NodeValue.makeString("") ;
         assertEquals(e, r) ;
@@ -236,7 +237,7 @@ public class TestNodeFunctions extends TestCase
     
     @Test public void testLang5()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createURI("http://example/")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createURI("http://example/")) ;
         try {
             NodeValue r = NodeFunctions.lang(nv) ;
             fail("Expect a type exception but call succeeded") ;
@@ -314,21 +315,21 @@ public class TestNodeFunctions extends TestCase
 
     @Test public void testIsIRI_1()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createURI("http://example/")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createURI("http://example/")) ;
         NodeValue r = NodeFunctions.isIRI(nv) ;
         assertEquals(NodeValue.TRUE, r) ;
     }
     
     @Test public void testIsIRI_2()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createLiteral("http://example/")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteral("http://example/")) ;
         NodeValue r = NodeFunctions.isIRI(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
     
     @Test public void testIsBlank1()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createAnon());
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createAnon());
         NodeValue r = NodeFunctions.isBlank(nv) ;
         assertEquals(NodeValue.TRUE, r) ;
         
@@ -336,14 +337,14 @@ public class TestNodeFunctions extends TestCase
 
     @Test public void testIsBlank2()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createLiteral("xyz")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteral("xyz")) ;
         NodeValue r = NodeFunctions.isBlank(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
 
     @Test public void testIsBlank3()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createURI("http://example/")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createURI("http://example/")) ;
         NodeValue r = NodeFunctions.isBlank(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
         
@@ -351,14 +352,14 @@ public class TestNodeFunctions extends TestCase
     
     @Test public void testIsLiteral1()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createLiteral("xyz")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteral("xyz")) ;
         NodeValue r = NodeFunctions.isLiteral(nv) ;
         assertEquals(NodeValue.TRUE, r) ;
     }
 
     @Test public void testIsLiteral2()
     {
-        NodeValue nv = NodeValue.makeNode(Node.createURI("http://example/")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createURI("http://example/")) ;
         NodeValue r = NodeFunctions.isLiteral(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }

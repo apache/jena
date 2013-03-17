@@ -23,11 +23,12 @@ import org.apache.jena.riot.lang.LabelToNode ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 public class TestNodeAllocator extends BaseTest
 {
-    static Node gragh1 = Node.createURI("g1") ;
-    static Node gragh2 = Node.createURI("g2") ;
+    static Node gragh1 = NodeFactory.createURI("g1") ;
+    static Node gragh2 = NodeFactory.createURI("g2") ;
     
     // ---- One Scope
     @Test public void allocOneScope1()

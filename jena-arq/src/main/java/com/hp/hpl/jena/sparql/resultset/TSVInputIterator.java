@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Class used to do streaming parsing of actual result rows from the TSV
@@ -121,7 +121,7 @@ public class TSVInputIterator extends QueryIteratorBase
 
             //Bound value so parse it and add to the binding
             try {
-                Node node = NodeFactory.parseNode(token) ;
+                Node node = NodeFactoryExtra.parseNode(token) ;
                 if ( !node.isConcrete() )
                     throw new ResultSetException(format("Line %d: Not a concrete RDF term: %s",lineNum, token)) ;
                 this.binding.add(this.vars.get(i), node);

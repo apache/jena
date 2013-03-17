@@ -27,6 +27,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.checker.CheckerLiterals ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.JenaException ;
@@ -274,7 +275,7 @@ public class QueryTest extends EarlTestCase
                     s = "_:"+n.getBlankNodeLabel() ;
                 else
                     s = NodeFunctions.str(n) ;
-                b2.add(v, Node.createLiteral(s)) ;
+                b2.add(v, NodeFactory.createLiteral(s)) ;
             }
             bindings.add(b2) ;
         }

@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.pfunction.library;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -39,7 +40,7 @@ public class blankNode extends PFuncSimple
         if ( ! subject.isBlank() )
             return IterLib.noResults(execCxt) ;
         String str = subject.getBlankNodeLabel() ;
-        Node obj = Node.createLiteral(str) ;
+        Node obj = NodeFactory.createLiteral(str) ;
         if ( Var.isVar(object) )
             return IterLib.oneResult(binding, Var.alloc(object), obj, execCxt) ;
         

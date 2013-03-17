@@ -30,6 +30,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryParseException ;
@@ -58,14 +59,14 @@ public class TestPath extends BaseTest
     static Graph graph6 = GraphFactory.createDefaultGraph() ;
     static Graph graph7 = GraphFactory.createDefaultGraph() ;
     
-    static Node n1 = Node.createURI("n1") ;
-    static Node n2 = Node.createURI("n2") ;
-    static Node n3 = Node.createURI("n3") ;
-    static Node n4 = Node.createURI("n4") ;
-    static Node n5 = Node.createURI("n5") ;
-    static Node n6 = Node.createURI("n6") ;
-    static Node p = Node.createURI("http://example/p") ;
-    static Node q = Node.createURI("http://example/q") ;
+    static Node n1 = NodeFactory.createURI("n1") ;
+    static Node n2 = NodeFactory.createURI("n2") ;
+    static Node n3 = NodeFactory.createURI("n3") ;
+    static Node n4 = NodeFactory.createURI("n4") ;
+    static Node n5 = NodeFactory.createURI("n5") ;
+    static Node n6 = NodeFactory.createURI("n6") ;
+    static Node p = NodeFactory.createURI("http://example/p") ;
+    static Node q = NodeFactory.createURI("http://example/q") ;
     static PrefixMapping pmap  = new PrefixMappingImpl() ;
     
     static {

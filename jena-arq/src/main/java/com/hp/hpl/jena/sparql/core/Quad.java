@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.core;
 import static org.apache.jena.atlas.lib.Lib.equal ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 
 public class Quad
@@ -30,16 +31,16 @@ public class Quad
     /** Name of the default graph as used by parsers and in quad form of algebra. 
      *  Not for access to the default graph by name - use Quad.defaultGraphIRI.
      */ 
-    public static final Node defaultGraphNodeGenerated     =  Node.createURI("urn:x-arq:DefaultGraphNode") ;
+    public static final Node defaultGraphNodeGenerated     =  NodeFactory.createURI("urn:x-arq:DefaultGraphNode") ;
     
     // These are convenience constants for other systems to give special
     // interpretation to these "named" graphs.  
     
     /** Name of the default for explict use in GRAPH */
-    public static final Node defaultGraphIRI        =  Node.createURI("urn:x-arq:DefaultGraph") ;
+    public static final Node defaultGraphIRI        =  NodeFactory.createURI("urn:x-arq:DefaultGraph") ;
 
     /** Name of the merge of all named graphs (use this for the graph of all named graphs) */
-    public static final Node unionGraph           =  Node.createURI("urn:x-arq:UnionGraph") ;
+    public static final Node unionGraph           =  NodeFactory.createURI("urn:x-arq:UnionGraph") ;
 
     /** Name of the non-graph when a quad is really a triple - also parsing of triples formats 
      *  (and the default graph when parsing N-Quads or TriG) 

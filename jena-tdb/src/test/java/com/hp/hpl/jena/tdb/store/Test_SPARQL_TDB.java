@@ -23,7 +23,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -56,7 +56,7 @@ public class Test_SPARQL_TDB extends BaseTest
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> 123)") ;
         Dataset ds = create() ;
-        Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
+        Graph g2 = ds.asDatasetGraph().getGraph(NodeFactory.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them
         g2.add(triple) ;
         
@@ -74,7 +74,7 @@ public class Test_SPARQL_TDB extends BaseTest
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> 123)") ;
         Dataset ds = create() ;
-        Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
+        Graph g2 = ds.asDatasetGraph().getGraph(NodeFactory.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them
         g2.add(triple) ;
         
@@ -104,7 +104,7 @@ public class Test_SPARQL_TDB extends BaseTest
         
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> 123)") ;
-        Graph g2 = dataset.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
+        Graph g2 = dataset.asDatasetGraph().getGraph(NodeFactory.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them
         g2.add(triple) ;
         

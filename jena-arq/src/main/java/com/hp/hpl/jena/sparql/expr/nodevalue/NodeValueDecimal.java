@@ -22,6 +22,7 @@ import java.math.BigDecimal ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -53,7 +54,7 @@ public class NodeValueDecimal extends NodeValue
     protected Node makeNode()
     { 
         int s = decimal.scale() ;
-        return Node.createLiteral(Utils.stringForm(decimal), null, XSDDatatype.XSDdecimal) ;
+        return NodeFactory.createLiteral(Utils.stringForm(decimal), null, XSDDatatype.XSDdecimal) ;
     }
     
     @Override

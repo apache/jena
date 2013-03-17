@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.expr.nodevalue;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -45,7 +46,7 @@ public class NodeValueFloat extends NodeValue
 
     @Override
     protected Node makeNode()
-    { return Node.createLiteral(Utils.stringForm(value), null, XSDDatatype.XSDfloat) ; }
+    { return NodeFactory.createLiteral(Utils.stringForm(value), null, XSDDatatype.XSDfloat) ; }
     
     @Override
     public String asString() { return toString() ; }

@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.tdb;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -245,12 +245,12 @@ public class TDBFactory
      */  
     @Deprecated
     public static Graph createNamedGraph(String name, String location)
-    { return createDatasetGraph(location).getGraph(Node.createURI(name)) ; }
+    { return createDatasetGraph(location).getGraph(NodeFactory.createURI(name)) ; }
     
     /** Create a TDB graph for named graph
      * @deprecated Create a DatasetGraph and get the name graph from that.
      */  
     @Deprecated
     public static Graph createNamedGraph(String name, Location location)
-    { return createDatasetGraph(location).getGraph(Node.createURI(name)) ; }
+    { return createDatasetGraph(location).getGraph(NodeFactory.createURI(name)) ; }
 }

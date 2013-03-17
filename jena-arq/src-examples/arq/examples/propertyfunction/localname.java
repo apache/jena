@@ -24,6 +24,7 @@ import java.util.List ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -81,7 +82,7 @@ public class localname extends PFuncSimple
             return new QueryIterNullIterator(execCxt) ;
 
         // Subject is bound and a URI - get the localname as a Node 
-        Node localname = Node.createLiteral(nodeURI.getLocalName()) ;
+        Node localname = NodeFactory.createLiteral(nodeURI.getLocalName()) ;
         
         // Object - unbound variable or a value? 
         if ( ! nodeLocalname.isVariable() )
@@ -133,7 +134,7 @@ public class localname extends PFuncSimple
     private void slot(Collection<Binding> bindings, Binding input, Node node, Var subjVar, Node nodeLocalname)
     {
         if ( ! node.isURI() ) return ;
-        Node localname = Node.createLiteral(node.getLocalName()) ;
+        Node localname = NodeFactory.createLiteral(node.getLocalName()) ;
         if ( nodeLocalname.isVariable() )
         {
             // Object is an unbound variable.

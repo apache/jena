@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized.Parameters ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 @RunWith(Parameterized.class)
 public class TestCodec extends BaseTest 
@@ -97,13 +97,13 @@ public class TestCodec extends BaseTest
     @Test public void nodec_uri_02()    { test ("<http://example/>") ; }
     
     // Jena anon ids can have a string form including ":"
-    @Test public void nodec_blank_01()  { test (Node.createAnon(new AnonId("a"))) ; }
-    @Test public void nodec_blank_02()  { test (Node.createAnon(new AnonId("a:b:c-d"))) ; }
-    @Test public void nodec_blank_03()  { test (Node.createAnon()) ; }
+    @Test public void nodec_blank_01()  { test (com.hp.hpl.jena.graph.NodeFactory.createAnon(new AnonId("a"))) ; }
+    @Test public void nodec_blank_02()  { test (com.hp.hpl.jena.graph.NodeFactory.createAnon(new AnonId("a:b:c-d"))) ; }
+    @Test public void nodec_blank_03()  { test (com.hp.hpl.jena.graph.NodeFactory.createAnon()) ; }
     
     private void test(String sseString)
     {
-        Node n = NodeFactory.parseNode(sseString) ;
+        Node n = NodeFactoryExtra.parseNode(sseString) ;
         test(n) ;
     }
     

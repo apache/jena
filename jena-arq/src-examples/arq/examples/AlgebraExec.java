@@ -23,6 +23,7 @@ import java.util.List ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
@@ -58,7 +59,7 @@ public class AlgebraExec
         Var var_z = Var.alloc("z") ;
         
         // ---- Build expression
-        bp.add(new Triple(var_x, Node.createURI(BASE+"p"), var_z)) ;
+        bp.add(new Triple(var_x, NodeFactory.createURI(BASE+"p"), var_z)) ;
         Op op = new OpBGP(bp) ;
         //Expr expr = ExprUtils.parse("?z < 2 ") ;
         Expr expr = new E_LessThan(new ExprVar(var_z), NodeValue.makeNodeInteger(2)) ;

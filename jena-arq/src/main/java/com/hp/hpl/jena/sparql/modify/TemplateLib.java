@@ -24,6 +24,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.Transform ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
@@ -191,7 +192,7 @@ public class TemplateLib
     private static Node newBlank(Node n, Map<Node, Node> bNodeMap)
     {
         if ( ! bNodeMap.containsKey(n) ) 
-            bNodeMap.put(n, Node.createAnon() );
+            bNodeMap.put(n, NodeFactory.createAnon() );
         return bNodeMap.get(n) ;
     }
 }

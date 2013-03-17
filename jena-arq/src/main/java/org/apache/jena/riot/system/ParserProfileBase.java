@@ -28,6 +28,7 @@ import org.apache.jena.riot.tokens.TokenType ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -118,19 +119,19 @@ public class ParserProfileBase implements ParserProfile
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype dt, long line, long col)
     {
-        return Node.createLiteral(lexical, null, dt)  ;
+        return NodeFactory.createLiteral(lexical, null, dt)  ;
     }
 
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col)
     {
-        return Node.createLiteral(lexical, langTag, null)  ;
+        return NodeFactory.createLiteral(lexical, langTag, null)  ;
     }
 
     @Override
     public Node createPlainLiteral(String lexical, long line, long col)
     {
-        return Node.createLiteral(lexical) ;
+        return NodeFactory.createLiteral(lexical) ;
     }
     
     /** Special token forms*/ 
@@ -190,7 +191,7 @@ public class ParserProfileBase implements ParserProfile
                 }
                 
                 uriStr = resolveIRI(uriStr, tokenDT.getLine(), tokenDT.getColumn()) ;
-                RDFDatatype dt = Node.getType(uriStr) ;
+                RDFDatatype dt = NodeFactory.getType(uriStr) ;
                 return createTypedLiteral(str, dt, line, col) ;
             }
             

@@ -39,6 +39,7 @@ import org.xml.sax.SAXParseException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.arp.* ;
 import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler ;
@@ -176,25 +177,25 @@ public class LangRDFXML implements LangRIOT
         private static Node convert(ALiteral lit) {
             String dtURI = lit.getDatatypeURI();
             if (dtURI == null)
-                return Node.createLiteral(lit.toString(), lit.getLang(), false);
+                return NodeFactory.createLiteral(lit.toString(), lit.getLang(), false);
 
             if (lit.isWellFormedXML()) {
-                return Node.createLiteral(lit.toString(), null, true);
+                return NodeFactory.createLiteral(lit.toString(), null, true);
             }
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-            return Node.createLiteral(lit.toString(), null, dt);
+            return NodeFactory.createLiteral(lit.toString(), null, dt);
 
         }
 
         private static Node convert(AResource r) {
             if (!r.isAnonymous())
-                return Node.createURI(r.getURI());
+                return NodeFactory.createURI(r.getURI());
 
             // String id = r.getAnonymousID();
             Node rr = (Node) r.getUserData();
             if (rr == null) {
-                rr = Node.createAnon();
+                rr = NodeFactory.createAnon();
                 r.setUserData(rr);
             }
             return rr;

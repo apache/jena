@@ -26,7 +26,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestTokenForNode extends BaseTest 
 {
@@ -62,7 +62,7 @@ public class TestTokenForNode extends BaseTest
     { test( "<http://example/bar>", TokenType.PREFIXED_NAME, "ex", "bar", null, null) ; }
     
     @Test public void tokenForNode07()
-    { test( Node.createAnon(new AnonId("abc")), TokenType.BNODE, "abc", null, null, null ) ; }
+    { test( com.hp.hpl.jena.graph.NodeFactory.createAnon(new AnonId("abc")), TokenType.BNODE, "abc", null, null, null ) ; }
 
     @Test public void tokenForNode08()
     { test( Node.ANY, TokenType.KEYWORD, "ANY", null, null, null) ; }
@@ -81,7 +81,7 @@ public class TestTokenForNode extends BaseTest
     private static void test(String nodeStr,
                              TokenType type, String image, String image2, Token subToken1, Token subToken2)
     {
-        Node n = NodeFactory.parseNode(nodeStr) ;
+        Node n = NodeFactoryExtra.parseNode(nodeStr) ;
         test(n, type, image, image2, subToken1, subToken2) ;
     }
     

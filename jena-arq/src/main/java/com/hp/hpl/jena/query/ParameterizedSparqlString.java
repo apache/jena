@@ -41,7 +41,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
 
@@ -424,7 +424,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Lexical Value
      */
     public void appendLiteral(String value) {
-        this.appendNode(NodeFactory.createLiteralNode(value, null, null));
+        this.appendNode(NodeFactoryExtra.createLiteralNode(value, null, null));
     }
 
     /**
@@ -437,7 +437,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Language
      */
     public void appendLiteral(String value, String lang) {
-        this.appendNode(NodeFactory.createLiteralNode(value, lang, null));
+        this.appendNode(NodeFactoryExtra.createLiteralNode(value, lang, null));
     }
 
     /**
@@ -450,7 +450,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Datatype
      */
     public void appendLiteral(String value, RDFDatatype datatype) {
-        this.appendNode(NodeFactory.createLiteralNode(value, null, datatype.getURI()));
+        this.appendNode(NodeFactoryExtra.createLiteralNode(value, null, datatype.getURI()));
     }
 
     /**
@@ -472,7 +472,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Integer to append
      */
     public void appendLiteral(int i) {
-        this.appendNode(NodeFactory.intToNode(i));
+        this.appendNode(NodeFactoryExtra.intToNode(i));
     }
 
     /**
@@ -483,7 +483,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Long to append
      */
     public void appendLiteral(long l) {
-        this.appendNode(NodeFactory.intToNode(l));
+        this.appendNode(NodeFactoryExtra.intToNode(l));
     }
 
     /**
@@ -792,7 +792,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * 
      */
     public void setLiteral(int index, String value) {
-        this.setParam(index, NodeFactory.createLiteralNode(value, null, null));
+        this.setParam(index, NodeFactoryExtra.createLiteralNode(value, null, null));
     }
 
     /**
@@ -809,7 +809,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * 
      */
     public void setLiteral(String var, String value) {
-        this.setParam(var, NodeFactory.createLiteralNode(value, null, null));
+        this.setParam(var, NodeFactoryExtra.createLiteralNode(value, null, null));
     }
 
     /**
@@ -828,7 +828,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * 
      */
     public void setLiteral(int index, String value, String lang) {
-        this.setParam(index, NodeFactory.createLiteralNode(value, lang, null));
+        this.setParam(index, NodeFactoryExtra.createLiteralNode(value, lang, null));
     }
 
     /**
@@ -847,7 +847,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * 
      */
     public void setLiteral(String var, String value, String lang) {
-        this.setParam(var, NodeFactory.createLiteralNode(value, lang, null));
+        this.setParam(var, NodeFactoryExtra.createLiteralNode(value, lang, null));
     }
 
     /**
@@ -921,7 +921,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Integer Value
      */
     public void setLiteral(int index, int i) {
-        this.setParam(index, NodeFactory.intToNode(i));
+        this.setParam(index, NodeFactoryExtra.intToNode(i));
     }
 
     /**
@@ -933,7 +933,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Integer Value
      */
     public void setLiteral(String var, int i) {
-        this.setParam(var, NodeFactory.intToNode(i));
+        this.setParam(var, NodeFactoryExtra.intToNode(i));
     }
 
     /**
@@ -945,7 +945,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Integer Value
      */
     public void setLiteral(int index, long l) {
-        this.setParam(index, NodeFactory.intToNode(l));
+        this.setParam(index, NodeFactoryExtra.intToNode(l));
     }
 
     /**
@@ -957,7 +957,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Integer Value
      */
     public void setLiteral(String var, long l) {
-        this.setParam(var, NodeFactory.intToNode(l));
+        this.setParam(var, NodeFactoryExtra.intToNode(l));
     }
 
     /**
@@ -969,7 +969,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Float value
      */
     public void setLiteral(int index, float f) {
-        this.setParam(index, NodeFactory.floatToNode(f));
+        this.setParam(index, NodeFactoryExtra.floatToNode(f));
     }
 
     /**
@@ -981,7 +981,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Float value
      */
     public void setLiteral(String var, float f) {
-        this.setParam(var, NodeFactory.floatToNode(f));
+        this.setParam(var, NodeFactoryExtra.floatToNode(f));
     }
 
     /**

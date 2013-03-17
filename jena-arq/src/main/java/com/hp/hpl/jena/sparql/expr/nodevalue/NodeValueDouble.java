@@ -24,6 +24,7 @@ import java.math.BigDecimal ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -49,7 +50,7 @@ public class NodeValueDouble extends NodeValue
 
     @Override
     protected Node makeNode()
-    { return Node.createLiteral(Utils.stringForm(value), null, XSDDatatype.XSDdouble) ; }
+    { return NodeFactory.createLiteral(Utils.stringForm(value), null, XSDDatatype.XSDdouble) ; }
     
     @Override
     public String asString() { return toString() ; }

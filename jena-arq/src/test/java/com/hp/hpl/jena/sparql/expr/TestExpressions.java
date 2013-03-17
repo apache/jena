@@ -30,7 +30,7 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QueryParseException ;
@@ -408,9 +408,9 @@ public class TestExpressions
     static Binding env ; 
     static {
         BindingMap b = BindingFactory.create() ;
-        b.add(Var.alloc("a"), Node.createLiteral("A")) ;
-        b.add(Var.alloc("b"), Node.createAnon()) ;
-        b.add(Var.alloc("x"), Node.createURI("urn:x")) ;
+        b.add(Var.alloc("a"), NodeFactory.createLiteral("A")) ;
+        b.add(Var.alloc("b"), NodeFactory.createAnon()) ;
+        b.add(Var.alloc("x"), NodeFactory.createURI("urn:x")) ;
         env = b ;
     }
 

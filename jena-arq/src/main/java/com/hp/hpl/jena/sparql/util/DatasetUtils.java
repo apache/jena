@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
@@ -190,7 +191,7 @@ public class DatasetUtils
                 else
                     absURI = IRIResolver.resolveGlobal(sourceURI) ;
                 Model m = fileManager.loadModel(sourceURI, absURI, null) ;
-                Node gn = Node.createURI(sourceURI) ;
+                Node gn = NodeFactory.createURI(sourceURI) ;
                 ds.addGraph(gn, m.getGraph()) ;
             }
         }

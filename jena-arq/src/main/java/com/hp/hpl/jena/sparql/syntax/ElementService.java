@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 import org.apache.jena.atlas.logging.Log ;
 
@@ -34,12 +35,12 @@ public class ElementService extends Element
 
     public ElementService(String serviceURI, Element el)
     { 
-        this(Node.createURI(serviceURI), el, false) ;
+        this(NodeFactory.createURI(serviceURI), el, false) ;
     }
     
     public ElementService(String serviceURI, Element el, boolean silent)
     { 
-        this(Node.createURI(serviceURI), el, silent) ;
+        this(NodeFactory.createURI(serviceURI), el, silent) ;
     }
     
     // Variable?

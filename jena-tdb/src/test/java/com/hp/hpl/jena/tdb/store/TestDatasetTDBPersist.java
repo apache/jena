@@ -35,7 +35,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -45,9 +45,9 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 /** Testing persistence  */ 
 public class TestDatasetTDBPersist extends BaseTest
 {
-    static Node n0 = NodeFactory.parseNode("<http://example/n0>") ; 
-    static Node n1 = NodeFactory.parseNode("<http://example/n1>") ;
-    static Node n2 = NodeFactory.parseNode("<http://example/n2>") ;
+    static Node n0 = NodeFactoryExtra.parseNode("<http://example/n0>") ; 
+    static Node n1 = NodeFactoryExtra.parseNode("<http://example/n1>") ;
+    static Node n2 = NodeFactoryExtra.parseNode("<http://example/n2>") ;
     static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
     
     // To avoid the problems on MS Windows whereby memory mapped files
@@ -112,7 +112,7 @@ public class TestDatasetTDBPersist extends BaseTest
     {
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
-        Node gn = Node.createURI(graphName) ;
+        Node gn = com.hp.hpl.jena.graph.NodeFactory.createURI(graphName) ;
 
         Dataset ds = graphLocation.getDataset() ;
         // ?? See TupleLib.
@@ -140,7 +140,7 @@ public class TestDatasetTDBPersist extends BaseTest
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> <z>)") ;
         Dataset ds = graphLocation.getDataset() ;
-        Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
+        Graph g2 = ds.asDatasetGraph().getGraph(com.hp.hpl.jena.graph.NodeFactory.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them
         g2.add(triple) ;
         
