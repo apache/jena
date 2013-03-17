@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
@@ -55,7 +56,7 @@ public class NodeValueString extends NodeValue
     
     @Override
     protected Node makeNode()
-    { return Node.createLiteral(string) ; }
+    { return NodeFactory.createLiteral(string) ; }
     
     @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }

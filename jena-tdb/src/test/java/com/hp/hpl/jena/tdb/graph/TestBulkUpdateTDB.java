@@ -27,7 +27,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
 @SuppressWarnings("deprecation")
@@ -38,9 +38,9 @@ public class TestBulkUpdateTDB extends BaseTest
     
     private static String graphName = "http://graph/";
     
-    private static Node n0 = NodeFactory.parseNode("<http://example/n0>") ; 
-    private static Node n1 = NodeFactory.parseNode("<http://example/n1>") ;
-    private static Node n2 = NodeFactory.parseNode("<http://example/n2>") ;
+    private static Node n0 = NodeFactoryExtra.parseNode("<http://example/n0>") ; 
+    private static Node n1 = NodeFactoryExtra.parseNode("<http://example/n1>") ;
+    private static Node n2 = NodeFactoryExtra.parseNode("<http://example/n2>") ;
     
     private static Triple t1 = SSE.parseTriple("(<x> <y> <z>)") ;
     

@@ -20,7 +20,7 @@ package org.apache.jena.web;
 
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.DatasetAccessor ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -44,7 +44,7 @@ public class DatasetAdapter implements DatasetAccessor
     @Override
     public Model getModel(String graphUri)
     {
-        Graph g = updater.httpGet(Node.createURI(graphUri)) ;
+        Graph g = updater.httpGet(NodeFactory.createURI(graphUri)) ;
         if ( g == null )
             return null ;
         return ModelFactory.createModelForGraph(g) ;
@@ -53,7 +53,7 @@ public class DatasetAdapter implements DatasetAccessor
     @Override
     public boolean containsModel(String graphUri)
     {
-        return updater.httpHead(Node.createURI(graphUri)) ;
+        return updater.httpHead(NodeFactory.createURI(graphUri)) ;
     }
 
     /** Put (replace) the default model of a Dataset */
@@ -67,7 +67,7 @@ public class DatasetAdapter implements DatasetAccessor
     @Override
     public void putModel(String graphUri, Model data)
     {
-        updater.httpPut(Node.createURI(graphUri), data.getGraph()) ;
+        updater.httpPut(NodeFactory.createURI(graphUri), data.getGraph()) ;
     }
 
     /** Delete (which means clear) the default model of a Dataset */
@@ -81,7 +81,7 @@ public class DatasetAdapter implements DatasetAccessor
     @Override
     public void deleteModel(String graphUri)
     {
-        updater.httpDelete(Node.createURI(graphUri)) ;
+        updater.httpDelete(NodeFactory.createURI(graphUri)) ;
     }
 
     /** Add statements to the default model of a Dataset */
@@ -95,6 +95,6 @@ public class DatasetAdapter implements DatasetAccessor
     @Override
     public void add(String graphUri, Model data)
     {
-        updater.httpPost(Node.createURI(graphUri), data.getGraph()) ;
+        updater.httpPost(NodeFactory.createURI(graphUri), data.getGraph()) ;
     }
 }

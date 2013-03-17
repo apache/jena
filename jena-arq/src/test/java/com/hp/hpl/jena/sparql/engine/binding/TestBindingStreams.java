@@ -35,6 +35,7 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
@@ -103,7 +104,7 @@ public class TestBindingStreams extends BaseTest
     public void bindingStream_61()
     {
         BindingMap b = BindingFactory.create() ;
-        Node bn = Node.createAnon(new AnonId("unusual")) ;
+        Node bn = NodeFactory.createAnon(new AnonId("unusual")) ;
         b.add(Var.alloc("v"), bn) ;
         testWriteRead(b) ;
     }

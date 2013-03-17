@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.pfunction.library;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -38,7 +39,7 @@ public class versionARQ extends PropertyFunctionEval
     
     static Node version = NodeValue.makeString(versionStr).asNode() ;
     
-    static Node arq = Node.createURI(ARQ.arqIRI) ;
+    static Node arq = NodeFactory.createURI(ARQ.arqIRI) ;
     
     public versionARQ()
     { super(PropFuncArgType.PF_ARG_SINGLE, PropFuncArgType.PF_ARG_SINGLE) ; }

@@ -24,6 +24,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
@@ -35,9 +36,9 @@ public abstract class TestDatasetGraphAccessorBase extends BaseTest
     protected static final String gn2       = "http://graph/2" ;
     protected static final String gn99      = "http://graph/99" ;
     
-    protected static final Node n1          = Node.createURI("http://graph/1") ;
-    protected static final Node n2          = Node.createURI("http://graph/2") ;
-    protected static final Node n99         = Node.createURI("http://graph/99") ;
+    protected static final Node n1          = NodeFactory.createURI("http://graph/1") ;
+    protected static final Node n2          = NodeFactory.createURI("http://graph/2") ;
+    protected static final Node n99         = NodeFactory.createURI("http://graph/99") ;
     
     protected static final Graph graph1     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))") ;
     protected static final Graph graph2     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))") ;

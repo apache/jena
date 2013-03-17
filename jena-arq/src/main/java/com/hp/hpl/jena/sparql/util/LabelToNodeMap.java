@@ -23,6 +23,7 @@ import java.util.Map ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.VarAlloc ;
 
@@ -81,7 +82,7 @@ public class LabelToNodeMap
     {
         if ( generateVars )
             return allocAnonVariable() ;
-        return Node.createAnon() ;
+        return NodeFactory.createAnon() ;
     }
     
     private Node allocAnonVariable()

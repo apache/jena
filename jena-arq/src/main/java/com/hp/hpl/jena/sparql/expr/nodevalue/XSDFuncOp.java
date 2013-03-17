@@ -52,6 +52,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
@@ -538,7 +539,7 @@ public class XSDFuncOp
     
     private static NodeValue calcReturn(String result, Node arg)
     {
-        Node n2 = Node.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralDatatype()) ; 
+        Node n2 = NodeFactory.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralDatatype()) ; 
         return NodeValue.makeNode(n2) ;
         
 //        if ( arg.getLiteralDatatype() != null )
@@ -1090,7 +1091,7 @@ public class XSDFuncOp
     
     public static NodeValue dateTimeCast(NodeValue nv, String typeURI)
     {
-       RDFDatatype t = Node.getType(typeURI) ;
+       RDFDatatype t = NodeFactory.getType(typeURI) ;
        return dateTimeCast(nv, t) ;
     }
 
@@ -1312,17 +1313,17 @@ public class XSDFuncOp
             return null ;
         if ("Z".equals(dts.timezone) )
         {
-            Node n = Node.createLiteral("PT0S", null, Node.getType(XSDDatatype.XSD+"#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteral("PT0S", null, NodeFactory.getType(XSDDatatype.XSD+"#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
         if ("+00:00".equals(dts.timezone) )
         {
-            Node n = Node.createLiteral("PT0S", null, Node.getType(XSDDatatype.XSD+"#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteral("PT0S", null, NodeFactory.getType(XSDDatatype.XSD+"#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
         if ("-00:00".equals(dts.timezone) )
         {
-            Node n = Node.createLiteral("-PT0S", null, Node.getType(XSDDatatype.XSD+"#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteral("-PT0S", null, NodeFactory.getType(XSDDatatype.XSD+"#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
         

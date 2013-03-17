@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.pfunction.library;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -47,7 +48,7 @@ public class concat extends PFuncSimpleAndList
             x = x+str ;
         }
          
-        return IterLib.oneResult(binding, Var.alloc(subject), Node.createLiteral(x), execCxt) ;
+        return IterLib.oneResult(binding, Var.alloc(subject), NodeFactory.createLiteral(x), execCxt) ;
     }
 
 }

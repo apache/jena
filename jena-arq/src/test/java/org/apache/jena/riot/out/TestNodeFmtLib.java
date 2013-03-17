@@ -19,7 +19,7 @@
 package org.apache.jena.riot.out;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
@@ -67,7 +67,7 @@ public class TestNodeFmtLib extends BaseTest
     @Test public void fmtNode_04() { test ("'abc'^^xsd:integer", "\"abc\"^^xsd:integer") ; }
     
     private static void test(String node, String output)
-    { test(NodeFactory.parseNode(node) , output) ; }
+    { test(NodeFactoryExtra.parseNode(node) , output) ; }
     
     private static void test(Node node, String output)
     {

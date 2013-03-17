@@ -24,6 +24,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
@@ -201,10 +202,10 @@ public class TestFunctions
     @Test public void exprNotOneOf_06()  { test("57 not in (1,2,3)",                TRUE) ; }
     
     
-    static Node xyz_en = Node.createLiteral("xyz", "en", null) ;
+    static Node xyz_en = NodeFactory.createLiteral("xyz", "en", null) ;
     static NodeValue nv_xyz_en = NodeValue.makeNode(xyz_en) ;
 
-    static Node xyz_xsd_string = Node.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
+    static Node xyz_xsd_string = NodeFactory.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
     static NodeValue nv_xyz_string = NodeValue.makeNode(xyz_xsd_string) ;
 
     
@@ -215,7 +216,7 @@ public class TestFunctions
     @Test public void exprStrDatatype2()    { test("strdt('xyz', xsd:string)",     nv_xyz_string) ; }
     @Test public void exprStrDatatype3()    { testEvalException("strdt('123', 'datatype')") ; }
     
-    static Node n_uri = Node.createURI("http://example/") ;
+    static Node n_uri = NodeFactory.createURI("http://example/") ;
     static NodeValue nv_uri = NodeValue.makeNode(n_uri) ;
     
     @Test public void exprIRI1()            { test("iri('http://example/')", nv_uri ) ; }

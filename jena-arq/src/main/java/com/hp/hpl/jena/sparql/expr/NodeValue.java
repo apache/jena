@@ -176,7 +176,7 @@ public abstract class NodeValue extends ExprNode
     
     // Use "==" for equality.
     private static final String strForUnNode = "node value nothing" ;
-    public static final NodeValue nvNothing = NodeValue.makeNode(Node.createAnon(new AnonId("node value nothing"))) ;
+    public static final NodeValue nvNothing = NodeValue.makeNode(com.hp.hpl.jena.graph.NodeFactory.createAnon(new AnonId("node value nothing"))) ;
     
     public static final String xsdNamespace = XSD+"#" ; 
     
@@ -263,7 +263,7 @@ public abstract class NodeValue extends ExprNode
     
     /** Convenience operation - parse a string to produce a NodeValue - common namespaces like xsd: are built-in */
     public static NodeValue parse(String string)
-    { return makeNode(NodeFactory.parseNode(string)) ; }
+    { return makeNode(NodeFactoryExtra.parseNode(string)) ; }
     
     public static NodeValue makeInteger(long i)
     { return new NodeValueInteger(BigInteger.valueOf(i)) ; }
@@ -310,7 +310,7 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDateTime(XMLGregorianCalendar cal)
     {
         String lex = cal.toXMLFormat() ;
-        Node node = Node.createLiteral(lex, XSDdateTime) ; 
+        Node node = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, XSDdateTime) ; 
         return new NodeValueDT(lex, node) ;
     }
 
@@ -323,7 +323,7 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDate(XMLGregorianCalendar cal)
     {
         String lex = cal.toXMLFormat() ;
-        Node node = Node.createLiteral(lex, XSDdate) ; 
+        Node node = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, XSDdate) ; 
         return new NodeValueDT(lex, node) ;
     }
 
@@ -353,7 +353,7 @@ public abstract class NodeValue extends ExprNode
                                
     public static NodeValue makeNode(String lexicalForm, XSDDatatype dtype)
     {
-        Node n = Node.createLiteral(lexicalForm, null, dtype) ;
+        Node n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, null, dtype) ;
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;
     }
@@ -379,10 +379,10 @@ public abstract class NodeValue extends ExprNode
         if ( datatype != null)
         {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatype) ;
-            n = Node.createLiteral(lexicalForm, null, dType) ;
+            n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, null, dType) ;
         }
         else
-            n = Node.createLiteral(lexicalForm, langTag, null) ;
+            n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, langTag, null) ;
         return NodeValue.makeNode(n) ;
     }
     

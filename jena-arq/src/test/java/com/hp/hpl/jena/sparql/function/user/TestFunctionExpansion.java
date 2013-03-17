@@ -41,7 +41,7 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase;
 import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
 
 /**
  * Test for checking that functions are appropriately expanded when supplied with actual arguments
@@ -339,7 +339,7 @@ public class TestFunctionExpansion {
         
         Expr actual = f.getActualExpr();
         NodeValue result = actual.eval(BindingFactory.create(), FunctionEnvBase.createTest());
-        Assert.assertEquals(8, NodeFactory.nodeToInt(result.asNode()));
+        Assert.assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
         
         //Change the definition of the function we depend on
         //This has no effect with preserveDependencies set to false (the default) since we fully expanded the call to the dependent
@@ -350,7 +350,7 @@ public class TestFunctionExpansion {
         
         actual = f.getActualExpr();
         result = actual.eval(BindingFactory.create(), FunctionEnvBase.createTest());
-        Assert.assertEquals(8, NodeFactory.nodeToInt(result.asNode()));
+        Assert.assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
     }
     
     @Test(expected=ExprBuildException.class)

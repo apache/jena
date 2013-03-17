@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -57,7 +58,7 @@ public class version extends PropertyFunctionEval
             SystemInfo info = iter.next();
             if ( ! isSameOrVar(subj, info.getIRI()) )
                 continue ;
-            Node version = Node.createLiteral(info.getVersion()) ;
+            Node version = NodeFactory.createLiteral(info.getVersion()) ;
             if ( ! isSameOrVar(obj, version) ) 
                 continue ;
             

@@ -27,7 +27,7 @@ import java.util.NoSuchElementException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -176,7 +176,7 @@ public class CSVInputIterator extends QueryIteratorBase
         if ( terms.size() != vars.size() )
             throw new QueryException(String.format("Error Parsing CSV results at Line %d - The result row '%s' has %d items when %d was expected", this.lineNum, line, terms.size(), vars.size())) ;
         for ( int i = 0 ; i < vars.size() ; i++ )
-            binding.add(vars.get(i), Node.createLiteral(terms.get(i))) ;
+            binding.add(vars.get(i), NodeFactory.createLiteral(terms.get(i))) ;
         return binding ;
     }
 

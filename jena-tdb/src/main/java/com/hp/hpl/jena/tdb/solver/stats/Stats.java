@@ -39,7 +39,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.ItemWriter ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -50,7 +50,7 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class Stats
 {
-    static Item ZERO = Item.createNode(NodeFactory.intToNode(0)) ;
+    static Item ZERO = Item.createNode(NodeFactoryExtra.intToNode(0)) ;
 
     /** Write statistics */
     static public void write(String filename, StatsCollector stats)
@@ -180,10 +180,10 @@ public class Stats
 //        System.out.println("Nodes") ;
         
         Item meta = createTagged(StatsMatcher.META) ;
-        addPair(meta.getList(), "timestamp", NodeFactory.nowAsDateTime()) ;
+        addPair(meta.getList(), "timestamp", NodeFactoryExtra.nowAsDateTime()) ;
         addPair(meta.getList(), "run@",  Utils.nowAsString()) ;
         if ( count >= 0 )
-            addPair(meta.getList(), StatsMatcher.COUNT, NodeFactory.intToNode((int)count)) ;
+            addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode((int)count)) ;
         statsList.add(meta) ;
         
         for ( Entry<Node, Integer> entry : predicates.entrySet() )
@@ -192,7 +192,7 @@ public class Stats
             // Skip these - they just clog things up!
             if ( node.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )
                 continue ;
-            addPair(statsList, node, NodeFactory.intToNode(entry.getValue())) ;
+            addPair(statsList, node, NodeFactoryExtra.intToNode(entry.getValue())) ;
         }
         
         // Add a default rule.

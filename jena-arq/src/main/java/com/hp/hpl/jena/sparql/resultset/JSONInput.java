@@ -46,6 +46,7 @@ import org.apache.jena.riot.lang.LabelToNode ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -228,7 +229,7 @@ public class JSONInput extends SPARQLResult
         {
             checkContains(term, kType, kValue) ;
             String uri = v ;
-            Node n = Node.createURI(v) ;
+            Node n = NodeFactory.createURI(v) ;
             return n ;
         }
         
@@ -239,7 +240,7 @@ public class JSONInput extends SPARQLResult
             if ( lang != null && dtStr != null )
                 throw new ResultSetException("Both language and datatype defined: "+term) ;
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtStr) ;
-            return Node.createLiteral(v, lang, dt)  ;
+            return NodeFactory.createLiteral(v, lang, dt)  ;
         }
         
         if ( kBnode.equals(type) )

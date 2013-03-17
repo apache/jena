@@ -37,6 +37,7 @@ import org.apache.jena.atlas.logging.Log ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
@@ -467,7 +468,7 @@ class XMLInputStAX extends SPARQLResult
                         Node node = null ;
                         //if ( inputGraphLabels.getValue() )
                         if ( inputGraphLabels )
-                            node = Node.createAnon(new AnonId(label)) ;
+                            node = NodeFactory.createAnon(new AnonId(label)) ;
                         else
                             node = bNodes.asNode(label) ;
                         addBinding(binding, Var.alloc(varName), node) ;
@@ -492,7 +493,7 @@ class XMLInputStAX extends SPARQLResult
                         if ( datatype != null )
                             dType = TypeMapper.getInstance().getSafeTypeByName(datatype);
                         
-                        Node n = Node.createLiteral(text,  langTag, dType) ;
+                        Node n = NodeFactory.createLiteral(text,  langTag, dType) ;
                         if ( varName == null )
                             throw new ResultSetException("No name for variable") ;
                         addBinding(binding, Var.alloc(varName), n) ;
@@ -507,7 +508,7 @@ class XMLInputStAX extends SPARQLResult
                     if ( isTag(tag, XMLResults.dfURI) )
                     {
                         String uri = parser.getElementText() ;
-                        Node node = Node.createURI(uri) ;
+                        Node node = NodeFactory.createURI(uri) ;
                         addBinding(binding, Var.alloc(varName), node) ;
                         break ;
                     }

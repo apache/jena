@@ -29,6 +29,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.n3.JenaURIException ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -129,17 +130,17 @@ public class ParserBase
     
     protected Node createLiteralInteger(String lexicalForm)
     {
-        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
+        return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
     }
     
     protected Node createLiteralDouble(String lexicalForm)
     {
-        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
+        return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
     }
     
     protected Node createLiteralDecimal(String lexicalForm)
     {
-        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
+        return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
     }
 
     protected Node stripSign(Node node)
@@ -153,7 +154,7 @@ public class ParserBase
             throw new ARQInternalErrorException("Literal does not start with a sign: "+lex) ;
         
         lex = lex.substring(1) ;
-        return Node.createLiteral(lex, lang, dt) ;
+        return NodeFactory.createLiteral(lex, lang, dt) ;
     }
     
     protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI)
@@ -163,10 +164,10 @@ public class ParserBase
         if ( datatypeURI != null)
         {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI) ;
-            n = Node.createLiteral(lexicalForm, null, dType) ;
+            n = NodeFactory.createLiteral(lexicalForm, null, dType) ;
         }
         else
-            n = Node.createLiteral(lexicalForm, langTag, null) ;
+            n = NodeFactory.createLiteral(lexicalForm, langTag, null) ;
         return n ;
     }
     
@@ -280,7 +281,7 @@ public class ParserBase
         if ( skolomizedBNodes )
             return RiotLib.createIRIorBNode(iri) ;
         else
-            return Node.createURI(iri) ;
+            return NodeFactory.createURI(iri) ;
     }
     
     protected boolean isBNodeIRI(String iri)

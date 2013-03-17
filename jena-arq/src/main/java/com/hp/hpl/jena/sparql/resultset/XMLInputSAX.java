@@ -35,6 +35,7 @@ import org.xml.sax.helpers.XMLReaderFactory ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
@@ -321,7 +322,7 @@ class XMLInputSAX extends SPARQLResult
         {
             endAccumulate() ;
             String uri = buff.toString() ;
-            Node n = Node.createURI(uri) ;
+            Node n = NodeFactory.createURI(uri) ;
             if ( checkVarName("URI: "+uri) )
                 addBinding(binding, Var.alloc(varName), n) ;
         }
@@ -346,7 +347,7 @@ class XMLInputSAX extends SPARQLResult
             if ( datatype != null )
                 dType = TypeMapper.getInstance().getSafeTypeByName(datatype);
             
-            Node n = Node.createLiteral(lexicalForm.toString(),  langTag, dType) ;
+            Node n = NodeFactory.createLiteral(lexicalForm.toString(),  langTag, dType) ;
             if ( checkVarName("Literal: "+FmtUtils.stringForNode(n)) )
                 addBinding(binding, Var.alloc(varName), n) ;
             

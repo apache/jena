@@ -19,6 +19,7 @@
 package arq.examples.propertyfunction;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.pfunction.PFuncAssignToObject ;
 
 /** Example property function that uppercases the lexical form of a literal.
@@ -44,6 +45,6 @@ public class uppercase extends PFuncAssignToObject
         if ( ! node.isLiteral() ) 
             return null ;
         String str = node.getLiteralLexicalForm().toUpperCase() ;
-        return Node.createLiteral(str) ;
+        return NodeFactory.createLiteral(str) ;
     }
 }

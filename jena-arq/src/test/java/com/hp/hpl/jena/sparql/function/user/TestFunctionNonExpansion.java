@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
 
 /**
  * Tests which check that functions are not expanded when {@link UserDefinedFunctionFactory#setPreserveDependencies(boolean)} is set to true
@@ -90,7 +90,7 @@ public class TestFunctionNonExpansion {
         
         Expr actual = f.getActualExpr();
         NodeValue result = actual.eval(BindingFactory.create(), FunctionEnvBase.createTest());
-        Assert.assertEquals(8, NodeFactory.nodeToInt(result.asNode()));
+        Assert.assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
         
         //Change the definition of the function we depend on
         square = new ExprVar("x");
@@ -99,6 +99,6 @@ public class TestFunctionNonExpansion {
         
         actual = f.getActualExpr();
         result = actual.eval(BindingFactory.create(), FunctionEnvBase.createTest());
-        Assert.assertEquals(4, NodeFactory.nodeToInt(result.asNode()));
+        Assert.assertEquals(4, NodeFactoryExtra.nodeToInt(result.asNode()));
     }
 }

@@ -22,6 +22,7 @@ import javax.xml.datatype.Duration ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 /** XSD Duration */ 
@@ -46,7 +47,7 @@ public class NodeValueDuration extends NodeValue
     protected Node makeNode()
     {
         String lex = duration.toString() ;
-        return Node.createLiteral(lex, null, XSDDatatype.XSDduration) ;
+        return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDduration) ;
     }
     
     @Override

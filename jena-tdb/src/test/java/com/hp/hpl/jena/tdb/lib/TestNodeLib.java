@@ -23,30 +23,30 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestNodeLib extends BaseTest
 {
     // Tests of TDBs NodeLib
     @Test public void hash1() 
     {
-        Node x1 = NodeFactory.parseNode("<http://example/x>") ;
-        Node x2 = NodeFactory.parseNode("<http://example/x>") ;
+        Node x1 = NodeFactoryExtra.parseNode("<http://example/x>") ;
+        Node x2 = NodeFactoryExtra.parseNode("<http://example/x>") ;
         assertEquals(hash(x1), hash(x2)) ;
     }
     
     @Test public void hash2() 
     {
-        Node x1 = NodeFactory.parseNode("<http://example/x1>") ;
-        Node x2 = NodeFactory.parseNode("<http://example/x2>") ;
+        Node x1 = NodeFactoryExtra.parseNode("<http://example/x1>") ;
+        Node x2 = NodeFactoryExtra.parseNode("<http://example/x2>") ;
         assertNotEquals(hash(x1), hash(x2)) ;
     }
     
     @Test public void hash3() 
     {
-        Node x1 = NodeFactory.parseNode("<lex>") ;
-        Node x2 = NodeFactory.parseNode("'lex'") ;
-        Node x3 = NodeFactory.parseNode("_:lex") ;
+        Node x1 = NodeFactoryExtra.parseNode("<lex>") ;
+        Node x2 = NodeFactoryExtra.parseNode("'lex'") ;
+        Node x3 = NodeFactoryExtra.parseNode("_:lex") ;
         assertNotEquals(hash(x1), hash(x2)) ;
         assertNotEquals(hash(x2), hash(x3)) ;
         assertNotEquals(hash(x3), hash(x1)) ;
@@ -54,16 +54,16 @@ public class TestNodeLib extends BaseTest
     
     @Test public void hash4() 
     {
-        Node x1 = NodeFactory.parseNode("123") ;
-        Node x2 = NodeFactory.parseNode("'123'") ;
+        Node x1 = NodeFactoryExtra.parseNode("123") ;
+        Node x2 = NodeFactoryExtra.parseNode("'123'") ;
         assertNotEquals(hash(x1), hash(x2)) ;
     }
 
     @Test public void hash5() 
     {
-        Node x1 = NodeFactory.parseNode("123") ;
-        Node x2 = NodeFactory.parseNode("123.0") ;
-        Node x3 = NodeFactory.parseNode("123e0") ;
+        Node x1 = NodeFactoryExtra.parseNode("123") ;
+        Node x2 = NodeFactoryExtra.parseNode("123.0") ;
+        Node x3 = NodeFactoryExtra.parseNode("123e0") ;
         assertNotEquals(hash(x1), hash(x2)) ;
         assertNotEquals(hash(x2), hash(x3)) ;
         assertNotEquals(hash(x3), hash(x1)) ;

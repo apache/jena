@@ -23,6 +23,7 @@ import java.math.BigInteger ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 
@@ -60,7 +61,7 @@ public class NodeValueInteger extends NodeValue
 
     @Override
     protected Node makeNode()
-    { return Node.createLiteral(integer.toString(), null, XSDDatatype.XSDinteger) ; }
+    { return NodeFactory.createLiteral(integer.toString(), null, XSDDatatype.XSDinteger) ; }
     
     @Override
     public String asString() { return toString() ; }

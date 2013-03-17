@@ -30,6 +30,7 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -41,10 +42,10 @@ import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 public class TestLoader extends BaseTest
 {
     private static final String DIR = "testing/Loader/" ;
-    private static final Node g = Node.createURI("g") ;
-    private static final Node s = Node.createURI("s") ;
-    private static final Node p = Node.createURI("p") ;
-    private static final Node o = Node.createURI("o") ;
+    private static final Node g = NodeFactory.createURI("g") ;
+    private static final Node s = NodeFactory.createURI("s") ;
+    private static final Node p = NodeFactory.createURI("p") ;
+    private static final Node o = NodeFactory.createURI("o") ;
     
     @BeforeClass static public void beforeClass()   { Log.disable(ARQ.logExecName) ; Log.disable(TDB.logLoaderName) ; }
     @AfterClass  static public void afterClass()    { Log.enable(ARQ.logExecName) ; Log.enable(TDB.logLoaderName) ; }

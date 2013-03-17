@@ -35,6 +35,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -136,11 +137,11 @@ public class TestRDFJSON extends BaseTest
     @Test public void rdfjson_escapes()
     {
     	Graph g = GraphFactory.createGraphMem();
-    	Node s = Node.createAnon();
-    	Node p = Node.createURI("http://predicate");
-    	g.add(new Triple(s, p, Node.createLiteral("quote \" character")));
-    	g.add(new Triple(s, p, Node.createLiteral("new \n\r lines")));
-    	g.add(new Triple(s, p, Node.createLiteral("tab \t character")));
+    	Node s = NodeFactory.createAnon();
+    	Node p = NodeFactory.createURI("http://predicate");
+    	g.add(new Triple(s, p, NodeFactory.createLiteral("quote \" character")));
+    	g.add(new Triple(s, p, NodeFactory.createLiteral("new \n\r lines")));
+    	g.add(new Triple(s, p, NodeFactory.createLiteral("tab \t character")));
     	test(g);
     }
 

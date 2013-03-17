@@ -22,7 +22,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.update.GraphStore ;
 
 public abstract class UpdateEngineBase implements UpdateEngine
@@ -47,7 +47,7 @@ public abstract class UpdateEngineBase implements UpdateEngine
         if ( dataset.getContext() != null )
             context.putAll(dataset.getContext()) ;
         
-        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+        context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
         return context ; 
     }
 }

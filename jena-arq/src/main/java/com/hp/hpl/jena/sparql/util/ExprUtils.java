@@ -143,7 +143,7 @@ public class ExprUtils
 
     public static NodeValue parseNodeValue(String s)
     {
-        Node n = NodeFactory.parseNode(s) ;
+        Node n = NodeFactoryExtra.parseNode(s) ;
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;
     }
@@ -253,7 +253,7 @@ public class ExprUtils
     public static NodeValue eval(Expr expr, Binding binding)
     {
         Context context = ARQ.getContext().copy() ;
-        context.set(ARQConstants.sysCurrentTime, NodeFactory.nowAsDateTime()) ;
+        context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
         FunctionEnv env = new ExecutionContext(context, null, null, null) ; 
         NodeValue r = expr.eval(binding, env) ;
         return r ;

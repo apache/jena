@@ -22,7 +22,7 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
@@ -30,12 +30,12 @@ public abstract class TestNodeTableBase extends BaseTest
 {
     protected abstract NodeTable createEmptyNodeTable() ;
     
-    static protected final Node n1 = NodeFactory.parseNode("<http://example/x>") ;
-    static protected final Node n2 = NodeFactory.parseNode("1") ;
+    static protected final Node n1 = NodeFactoryExtra.parseNode("<http://example/x>") ;
+    static protected final Node n2 = NodeFactoryExtra.parseNode("1") ;
     
     protected void testNode(String str)
     {
-        testNode(NodeFactory.parseNode(str)) ;
+        testNode(NodeFactoryExtra.parseNode(str)) ;
     }
     
     protected void testNode(Node n)
@@ -46,7 +46,7 @@ public abstract class TestNodeTableBase extends BaseTest
     
     protected static void writeNode(NodeTable nt, String str)
     {
-        writeNode(nt, NodeFactory.parseNode(str)) ;
+        writeNode(nt, NodeFactoryExtra.parseNode(str)) ;
     }
     
     protected static void writeNode(NodeTable nt, Node n)
@@ -81,7 +81,7 @@ public abstract class TestNodeTableBase extends BaseTest
     @Test public void nodetable_05()    { testNode("'x'@en") ; }
     @Test public void nodetable_06()    { testNode("'x'^^<http://example/dt>") ; }
     
-    static Node badNode1 = Node.createLiteral("abc", "99bad", null) ;
+    static Node badNode1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("abc", "99bad", null) ;
     
     @Test public void nodetable_bad_01()    { testNodeBad(badNode1) ; }
     @Test public void nodetable_bad_02()    

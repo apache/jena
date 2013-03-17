@@ -53,6 +53,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
@@ -415,18 +416,18 @@ public final class Token
         switch(tokenType)
         {
             // Assumes that bnode labels have been sorted out already.
-            case BNODE : return Node.createAnon(new AnonId(tokenImage)) ;
-            case IRI :   return Node.createURI(tokenImage) ; 
+            case BNODE : return NodeFactory.createAnon(new AnonId(tokenImage)) ;
+            case IRI :   return NodeFactory.createURI(tokenImage) ; 
             case PREFIXED_NAME :
                 if ( pmap == null )
-                    return Node.createURI("urn:prefixed-name:"+tokenImage+":"+tokenImage2) ;
+                    return NodeFactory.createURI("urn:prefixed-name:"+tokenImage+":"+tokenImage2) ;
                 String x = pmap.expand(tokenImage, tokenImage2) ;
                 if ( x == null )
                     throw new RiotException("Can't expand prefixed name: "+this) ;
-                return Node.createURI(x) ;
-            case DECIMAL :  return Node.createLiteral(tokenImage, null, XSDDatatype.XSDdecimal)  ; 
-            case DOUBLE :   return Node.createLiteral(tokenImage, null, XSDDatatype.XSDdouble)  ;
-            case INTEGER:   return Node.createLiteral(tokenImage, null, XSDDatatype.XSDinteger) ;
+                return NodeFactory.createURI(x) ;
+            case DECIMAL :  return NodeFactory.createLiteral(tokenImage, null, XSDDatatype.XSDdecimal)  ; 
+            case DOUBLE :   return NodeFactory.createLiteral(tokenImage, null, XSDDatatype.XSDdouble)  ;
+            case INTEGER:   return NodeFactory.createLiteral(tokenImage, null, XSDDatatype.XSDinteger) ;
             case LITERAL_DT :
             {
                 Token lexToken = getSubToken1() ;
@@ -439,15 +440,15 @@ public final class Token
                 if ( ! n.isURI() )
                     throw new RiotException("Invalid token: "+this) ;
                 RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(n.getURI()) ;
-                return Node.createLiteral(lexToken.getImage(), null, dt)  ;
+                return NodeFactory.createLiteral(lexToken.getImage(), null, dt)  ;
             }
-            case LITERAL_LANG : return Node.createLiteral(tokenImage, tokenImage2, null)  ;
+            case LITERAL_LANG : return NodeFactory.createLiteral(tokenImage, tokenImage2, null)  ;
             case STRING:
             case STRING1:
             case STRING2:
             case LONG_STRING1:
             case LONG_STRING2:
-                return Node.createLiteral(tokenImage) ;
+                return NodeFactory.createLiteral(tokenImage) ;
             case VAR:
                 return Var.alloc(tokenImage) ;
             case KEYWORD:
@@ -612,7 +613,7 @@ public final class Token
                     // Not a recognized form.
                     // Has datatype.
                     
-                    Node dt = Node.createURI(datatype) ;
+                    Node dt = NodeFactory.createURI(datatype) ;
                     Token subToken1 = new Token(STRING, s) ;
                     Token subToken2 = tokenForNode(dt) ;
                     Token t = new Token(LITERAL_DT, s) ;

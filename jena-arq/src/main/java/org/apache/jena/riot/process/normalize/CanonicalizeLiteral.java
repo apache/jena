@@ -27,6 +27,7 @@ import org.apache.jena.riot.web.LangTag ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
@@ -74,10 +75,10 @@ public class CanonicalizeLiteral implements NodeTransform
         String langTag2 = LangTag.canonical(langTag) ;
         if ( langTag2.equals(langTag) )
             return null ;
-        return Node.createLiteral(lexicalForm, langTag2, null) ;
+        return NodeFactory.createLiteral(lexicalForm, langTag2, null) ;
     }
     
-    private static final RDFDatatype dtPlainLiteral = Node.getType(RDF.getURI()+"PlainLiteral") ;
+    private static final RDFDatatype dtPlainLiteral = NodeFactory.getType(RDF.getURI()+"PlainLiteral") ;
     
     private final static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<RDFDatatype, DatatypeHandler>() ;
 

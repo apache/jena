@@ -36,6 +36,7 @@ import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** 
@@ -182,7 +183,7 @@ public class REST_Quads extends SPARQL_REST
             if ( ! name.endsWith("/") )
                 name = name+ "/"  ;
             name = name+(++counter) ;
-            Node gn = Node.createURI(name) ;
+            Node gn = NodeFactory.createURI(name) ;
             Graph g = dsg.getGraph(gn) ;
             StreamRDF dest = StreamRDFLib.graph(g) ;
             LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;

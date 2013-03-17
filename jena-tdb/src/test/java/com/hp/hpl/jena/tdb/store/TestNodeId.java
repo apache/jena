@@ -24,7 +24,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestNodeId extends BaseTest
 {
@@ -43,28 +43,28 @@ public class TestNodeId extends BaseTest
     // Inlines
     
     @Test public void nodeId_int_01()
-    { test("1", NodeFactory.parseNode("1")) ; }
+    { test("1", NodeFactoryExtra.parseNode("1")) ; }
 
     @Test public void nodeId_int_02()
-    { test("2", NodeFactory.parseNode("2")) ; }
+    { test("2", NodeFactoryExtra.parseNode("2")) ; }
 
     @Test public void nodeId_int_03()
-    { test("'3'^^xsd:int", NodeFactory.parseNode("3")) ; }
+    { test("'3'^^xsd:int", NodeFactoryExtra.parseNode("3")) ; }
 
     @Test public void nodeId_int_04()
     { test("'3'", (Node)null) ; }
 
     @Test public void nodeId_int_05()
-    { test("-1",  NodeFactory.parseNode("-1")) ; }
+    { test("-1",  NodeFactoryExtra.parseNode("-1")) ; }
     
     @Test public void nodeId_int_06()
-    { test("-180",  NodeFactory.parseNode("-180")) ; }
+    { test("-180",  NodeFactoryExtra.parseNode("-180")) ; }
 
     @Test public void nodeId_int_07()
-    { test("01",  NodeFactory.parseNode("1")) ; }
+    { test("01",  NodeFactoryExtra.parseNode("1")) ; }
     
     @Test public void nodeId_int_08()
-    { test("+01",  NodeFactory.parseNode("1")) ; }
+    { test("+01",  NodeFactoryExtra.parseNode("1")) ; }
     
     @Test public void nodeId_int_09()
     // More than Long.MAX_VALUE
@@ -98,17 +98,17 @@ public class TestNodeId extends BaseTest
     
 
     @Test public void nodeId_decimal_1()
-    { test("3.14", NodeFactory.parseNode("3.14")) ; }
+    { test("3.14", NodeFactoryExtra.parseNode("3.14")) ; }
 
     @Test public void nodeId_decimal_2()
     { test("123456789.123456789", (Node)null) ; }
     
     // Just this once, directly create the Node.
     @Test public void nodeId_decimal_3()
-    { test("12.89", Node.createLiteral("12.89", null, XSDDatatype.XSDdecimal)) ; }
+    { test("12.89", com.hp.hpl.jena.graph.NodeFactory.createLiteral("12.89", null, XSDDatatype.XSDdecimal)) ; }
 
     @Test public void nodeId_decimal_4()
-    { test("-1.0",  NodeFactory.parseNode("-1.0")) ; }
+    { test("-1.0",  NodeFactoryExtra.parseNode("-1.0")) ; }
     
     // This number has > 47 bits of value : 2412.80478192688
     @Test public void nodeId_decimal_5()
@@ -180,16 +180,16 @@ public class TestNodeId extends BaseTest
     { test("'2012-07-29T20:39:11.100Z'^^xsd:dateTime", "'2012-07-29T20:39:11.1Z'^^xsd:dateTime") ; }
 
     @Test public void nodeId_date_1()
-    { test("'2008-04-28Z'^^xsd:date", NodeFactory.parseNode("'2008-04-28Z'^^xsd:date")) ; }
+    { test("'2008-04-28Z'^^xsd:date", NodeFactoryExtra.parseNode("'2008-04-28Z'^^xsd:date")) ; }
 
     @Test public void nodeId_date_2()
-    { test("'2008-04-28+00:00'^^xsd:date", NodeFactory.parseNode("'2008-04-28+00:00'^^xsd:date")) ; }
+    { test("'2008-04-28+00:00'^^xsd:date", NodeFactoryExtra.parseNode("'2008-04-28+00:00'^^xsd:date")) ; }
 
     @Test public void nodeId_date_3()
-    { test("'2008-04-28-05:00'^^xsd:date", NodeFactory.parseNode("'2008-04-28-05:00'^^xsd:date")) ; }
+    { test("'2008-04-28-05:00'^^xsd:date", NodeFactoryExtra.parseNode("'2008-04-28-05:00'^^xsd:date")) ; }
 
     @Test public void nodeId_date_4()
-    { test("'2008-04-28+02:00'^^xsd:date", NodeFactory.parseNode("'2008-04-28+02:00'^^xsd:date")) ; }
+    { test("'2008-04-28+02:00'^^xsd:date", NodeFactoryExtra.parseNode("'2008-04-28+02:00'^^xsd:date")) ; }
 
     @Test public void nodeId_date_5()
     { test("'8008-04-28'^^xsd:date", (Node)null) ; }
@@ -201,16 +201,16 @@ public class TestNodeId extends BaseTest
     { test("'2012-07-29-06:30'^^xsd:date", "'2012-07-29-06:30'^^xsd:date") ; }
 
     @Test public void nodeId_boolean_1()
-    { test("'true'^^xsd:boolean", NodeFactory.parseNode("'true'^^xsd:boolean")) ; }
+    { test("'true'^^xsd:boolean", NodeFactoryExtra.parseNode("'true'^^xsd:boolean")) ; }
 
     @Test public void nodeId_boolean_2()
-    { test("'false'^^xsd:boolean", NodeFactory.parseNode("'false'^^xsd:boolean")) ; }
+    { test("'false'^^xsd:boolean", NodeFactoryExtra.parseNode("'false'^^xsd:boolean")) ; }
 
     @Test public void nodeId_boolean_3()
-    { test("'1'^^xsd:boolean", NodeFactory.parseNode("'true'^^xsd:boolean")) ; }
+    { test("'1'^^xsd:boolean", NodeFactoryExtra.parseNode("'true'^^xsd:boolean")) ; }
 
     @Test public void nodeId_boolean_4()
-    { test("'0'^^xsd:boolean", NodeFactory.parseNode("'false'^^xsd:boolean")) ; }
+    { test("'0'^^xsd:boolean", NodeFactoryExtra.parseNode("'false'^^xsd:boolean")) ; }
 
     private void test(String x)
     {
@@ -219,12 +219,12 @@ public class TestNodeId extends BaseTest
     
     private void test(String x, String expected)
     {
-        test(x, NodeFactory.parseNode(expected)) ;
+        test(x, NodeFactoryExtra.parseNode(expected)) ;
     }
 
     private void test(String x, Node correct)
     {
-        Node n = NodeFactory.parseNode(x) ;
+        Node n = NodeFactoryExtra.parseNode(x) ;
         NodeId nodeId = NodeId.inline(n) ;
         if ( correct == null )
         {

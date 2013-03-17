@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
@@ -38,7 +39,7 @@ public class TestService {
 	{
 		BasicPattern basicPattern = new BasicPattern();
 		basicPattern.add( Triple.ANY );
-		Node serviceNode = Node.createURI("http://example.com:40000");
+		Node serviceNode = NodeFactory.createURI("http://example.com:40000");
 		OpService opService = new OpService( serviceNode, new OpBGP( basicPattern ), false);
 
 		Context context = new Context();
@@ -69,7 +70,7 @@ public class TestService {
 	{
 		BasicPattern basicPattern = new BasicPattern();
 		basicPattern.add( Triple.ANY );
-		Node serviceNode = Node.createURI("http://example.com:40000");
+		Node serviceNode = NodeFactory.createURI("http://example.com:40000");
 		OpService opService = new OpService( serviceNode, new OpBGP( basicPattern ), false);
 
 		Context context = new Context();
@@ -99,7 +100,7 @@ public class TestService {
 	{
 		BasicPattern basicPattern = new BasicPattern();
 		basicPattern.add( Triple.ANY );
-		Node serviceNode = Node.createURI("http://example.com:40000");
+		Node serviceNode = NodeFactory.createURI("http://example.com:40000");
 		OpService opService = new OpService( serviceNode, new OpBGP( basicPattern ), false);
 
 		Context context = new Context();

@@ -25,6 +25,7 @@ import org.apache.jena.atlas.lib.CacheFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.LabelExistsException ;
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -164,7 +165,7 @@ public class DatasetImpl implements Dataset
     public Model getNamedModel(String uri)
     { 
         checkGraphName(uri) ;
-        Node n = Node.createURI(uri) ;
+        Node n = NodeFactory.createURI(uri) ;
         synchronized(internalLock)
         {
             Graph g = dsg.getGraph(n) ;
@@ -180,7 +181,7 @@ public class DatasetImpl implements Dataset
         checkGraphName(uri) ;
         // Assumes single writer.
         addToCache(model) ;
-        Node n = Node.createURI(uri) ;
+        Node n = NodeFactory.createURI(uri) ;
         dsg.addGraph(n, model.getGraph()) ;
     }
 
@@ -188,7 +189,7 @@ public class DatasetImpl implements Dataset
     public void removeNamedModel(String uri)
     { 
         checkGraphName(uri) ;
-        Node n = Node.createURI(uri) ;
+        Node n = NodeFactory.createURI(uri) ;
         // Assumes single writer.
         removeFromCache(dsg.getGraph(n)) ;
         dsg.removeGraph(n) ;
@@ -199,7 +200,7 @@ public class DatasetImpl implements Dataset
     {
         // Assumes single writer.
         checkGraphName(uri) ;
-        Node n = Node.createURI(uri) ;
+        Node n = NodeFactory.createURI(uri) ;
         removeFromCache(dsg.getGraph(n)) ;
         dsg.removeGraph(n) ;
         addToCache(model) ;
@@ -220,7 +221,7 @@ public class DatasetImpl implements Dataset
     { 
         // Does not touch the cache.
         checkGraphName(uri) ;
-        Node n = Node.createURI(uri) ;
+        Node n = NodeFactory.createURI(uri) ;
         return dsg.containsGraph(n) ;
     }
 

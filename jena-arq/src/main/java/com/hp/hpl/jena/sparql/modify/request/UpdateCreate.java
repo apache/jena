@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.update.Update ;
 
 
@@ -29,12 +30,12 @@ public class UpdateCreate extends Update
     
     public UpdateCreate(String s)
     {
-        this(Node.createURI(s), false) ;
+        this(NodeFactory.createURI(s), false) ;
     }
     
     public UpdateCreate(String s, boolean silent)
     {
-        this(Node.createURI(s), silent) ;
+        this(NodeFactory.createURI(s), silent) ;
     }
     
     public UpdateCreate(Node iri)

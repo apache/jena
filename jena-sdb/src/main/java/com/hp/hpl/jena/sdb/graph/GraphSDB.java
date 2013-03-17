@@ -64,7 +64,7 @@ public class GraphSDB extends GraphBase implements Graph
     
     public GraphSDB(Store store, String uri)
     { 
-        this(store, Node.createURI(uri)) ;
+        this(store, NodeFactory.createURI(uri)) ;
         
     }
     

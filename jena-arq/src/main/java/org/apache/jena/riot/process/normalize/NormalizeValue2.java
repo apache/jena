@@ -24,6 +24,7 @@ import static org.apache.jena.atlas.lib.Chars.CH_PLUS ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 class NormalizeValue2
 {
@@ -132,7 +133,7 @@ class NormalizeValue2
             String lex2 = rebuild(chars) ;
             if ( lex2 == null )
                 return node ;
-            return Node.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, null, datatype) ;
         }
     } ;
 
@@ -151,7 +152,7 @@ class NormalizeValue2
             String lex2 = rebuild(chars) ;
             if ( lex2 == null )
                 return node ;
-            return Node.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, null, datatype) ;
         }
     } ;
 }

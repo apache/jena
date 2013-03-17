@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Statement ;
@@ -564,10 +565,10 @@ public class T_TransSystem
         int n2 = (int)Math.round(Math.random()*10000) ;
         
         Node g = Quad.defaultGraphNodeGenerated ; // urn:x-arq:DefaultGraphNode
-        Node s = Node.createURI("S") ;
-        Node p = Node.createURI("P"+value) ;
+        Node s = NodeFactory.createURI("S") ;
+        Node p = NodeFactory.createURI("P"+value) ;
         // Integer - that gets inlined.
-        Node o = Node.createLiteral(Integer.toString(value), null, XSDDatatype.XSDinteger) ;
+        Node o = NodeFactory.createLiteral(Integer.toString(value), null, XSDDatatype.XSDinteger) ;
         return new Quad(g,s,p,o) ;
     }
 

@@ -24,24 +24,24 @@ import org.junit.Test ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /** Basic add and delete tests for a graph */
 
 public abstract class AbstractTestGraph2 extends BaseTest
 {
     // This will become the basis for a general graph test in Jena
-    protected static final Node s1 = NodeFactory.parseNode("<ex:s1>") ;
-    protected static final Node p1 = NodeFactory.parseNode("<ex:p1>") ;
-    protected static final Node o1 = NodeFactory.parseNode("<ex:o1>") ;
+    protected static final Node s1 = NodeFactoryExtra.parseNode("<ex:s1>") ;
+    protected static final Node p1 = NodeFactoryExtra.parseNode("<ex:p1>") ;
+    protected static final Node o1 = NodeFactoryExtra.parseNode("<ex:o1>") ;
 
-    protected static final Node s2 = NodeFactory.parseNode("<ex:s2>") ;
-    protected static final Node p2 = NodeFactory.parseNode("<ex:p2>") ;
-    protected static final Node o2 = NodeFactory.parseNode("<ex:o2>") ;
+    protected static final Node s2 = NodeFactoryExtra.parseNode("<ex:s2>") ;
+    protected static final Node p2 = NodeFactoryExtra.parseNode("<ex:p2>") ;
+    protected static final Node o2 = NodeFactoryExtra.parseNode("<ex:o2>") ;
     
-    protected static final Node lit1 = NodeFactory.parseNode("'lex'") ;
-    protected static final Node lit2 = NodeFactory.parseNode("'lex'@en") ;
-    protected static final Node lit3 = NodeFactory.parseNode("123") ;
+    protected static final Node lit1 = NodeFactoryExtra.parseNode("'lex'") ;
+    protected static final Node lit2 = NodeFactoryExtra.parseNode("'lex'@en") ;
+    protected static final Node lit3 = NodeFactoryExtra.parseNode("123") ;
     
     static Triple triple(Node s, Node p, Node o)
     { return new Triple(s, p, o) ; }
@@ -85,13 +85,13 @@ public abstract class AbstractTestGraph2 extends BaseTest
     {
         Graph g = emptyGraph() ;
         // SPO twice -- as different nodes.
-        Node ns1 = NodeFactory.parseNode("<ex:s>") ;
-        Node np1 = NodeFactory.parseNode("<ex:p>") ;
-        Node no1 = NodeFactory.parseNode("<ex:o>") ;
+        Node ns1 = NodeFactoryExtra.parseNode("<ex:s>") ;
+        Node np1 = NodeFactoryExtra.parseNode("<ex:p>") ;
+        Node no1 = NodeFactoryExtra.parseNode("<ex:o>") ;
         
-        Node ns2 = NodeFactory.parseNode("<ex:s>") ;
-        Node np2 = NodeFactory.parseNode("<ex:p>") ;
-        Node no2 = NodeFactory.parseNode("<ex:o>") ;
+        Node ns2 = NodeFactoryExtra.parseNode("<ex:s>") ;
+        Node np2 = NodeFactoryExtra.parseNode("<ex:p>") ;
+        Node no2 = NodeFactoryExtra.parseNode("<ex:o>") ;
         
         Triple t1 = triple(ns1, np1, no1) ;
         Triple t2 = triple(ns2, np2, no2) ;
@@ -118,7 +118,7 @@ public abstract class AbstractTestGraph2 extends BaseTest
         assertTrue(g.contains(t2)) ;
         assertTrue(g.contains(s1,p1,lit1)) ;
         assertTrue(g.contains(s1,p1,lit2)) ;
-        Node o = NodeFactory.parseNode("<ex:lex>") ;
+        Node o = NodeFactoryExtra.parseNode("<ex:lex>") ;
         assertFalse(g.contains(s1,p1,o)) ;
         returnGraph(g) ;
 

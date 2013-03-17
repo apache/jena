@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.mgt;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.n3.IRIResolver ;
 
 
@@ -40,7 +41,7 @@ public class SystemInfo implements SystemInfoMBean
     private static Node createIRI(String iriStr)
     {
         try {
-            return Node.createURI(IRIResolver.resolveGlobal(iriStr)) ;
+            return NodeFactory.createURI(IRIResolver.resolveGlobal(iriStr)) ;
         } catch (RuntimeException ex) { return null ; }
     }
         
@@ -64,6 +65,6 @@ public class SystemInfo implements SystemInfoMBean
     
     public Node getIRI()
     { 
-        return Node.createURI(name) ;
+        return NodeFactory.createURI(name) ;
     }
 }

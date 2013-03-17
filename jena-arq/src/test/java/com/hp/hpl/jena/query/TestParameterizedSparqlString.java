@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -1185,7 +1186,7 @@ public class TestParameterizedSparqlString {
         // Test positional parameters
         ParameterizedSparqlString query = new ParameterizedSparqlString();
         query.append("SELECT * WHERE { ? ?p ?o }");
-        query.setParam(0, Node.createURI("http://example.org"));
+        query.setParam(0, NodeFactory.createURI("http://example.org"));
 
         test(query, new String[] { "<http://example.org>" }, new String[] { "? " });
     }
@@ -1195,9 +1196,9 @@ public class TestParameterizedSparqlString {
         // Test regular string injection
         String cmdText = "SELECT * WHERE { ? ? ? . }";
         ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
-        query.setParam(0, Node.createURI("http://example.org"));
-        query.setParam(1, Node.createURI("http://predicate"));
-        query.setParam(2, Node.createLiteral("test"));
+        query.setParam(0, NodeFactory.createURI("http://example.org"));
+        query.setParam(1, NodeFactory.createURI("http://predicate"));
+        query.setParam(2, NodeFactory.createLiteral("test"));
 
         Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"test\" . }", query.toString());
     }
@@ -1207,9 +1208,9 @@ public class TestParameterizedSparqlString {
         // Test regular string injection
         String cmdText = "SELECT * WHERE { ? ? ? . }";
         ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
-        query.setParam(0, Node.createLiteral("with ? mark"));
-        query.setParam(1, Node.createURI("http://predicate"));
-        query.setParam(2, Node.createLiteral("test"));
+        query.setParam(0, NodeFactory.createLiteral("with ? mark"));
+        query.setParam(1, NodeFactory.createURI("http://predicate"));
+        query.setParam(2, NodeFactory.createLiteral("test"));
 
         Assert.assertEquals("SELECT * WHERE { \"with ? mark\" <http://predicate> \"test\" . }", query.toString());
     }
@@ -1219,9 +1220,9 @@ public class TestParameterizedSparqlString {
         // Test regular string injection
         String cmdText = "SELECT * WHERE { ? ? ? . }";
         ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
-        query.setParam(0, Node.createLiteral("with ? mark"));
-        query.setParam(1, Node.createLiteral("with ? mark"));
-        query.setParam(2, Node.createLiteral("test"));
+        query.setParam(0, NodeFactory.createLiteral("with ? mark"));
+        query.setParam(1, NodeFactory.createLiteral("with ? mark"));
+        query.setParam(2, NodeFactory.createLiteral("test"));
 
         Assert.assertEquals("SELECT * WHERE { \"with ? mark\" \"with ? mark\" \"test\" . }", query.toString());
     }
@@ -1231,9 +1232,9 @@ public class TestParameterizedSparqlString {
         // Test regular string injection
         String cmdText = "SELECT * WHERE { ? ? ?. }";
         ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
-        query.setParam(0, Node.createURI("http://example.org"));
-        query.setParam(1, Node.createURI("http://predicate"));
-        query.setParam(2, Node.createLiteral("test"));
+        query.setParam(0, NodeFactory.createURI("http://example.org"));
+        query.setParam(1, NodeFactory.createURI("http://predicate"));
+        query.setParam(2, NodeFactory.createLiteral("test"));
 
         Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"test\". }", query.toString());
     }
@@ -1243,9 +1244,9 @@ public class TestParameterizedSparqlString {
         // Test regular string injection
         String cmdText = "SELECT * WHERE { ? ? ?; ?p ?o . }";
         ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
-        query.setParam(0, Node.createURI("http://example.org"));
-        query.setParam(1, Node.createURI("http://predicate"));
-        query.setParam(2, Node.createLiteral("test"));
+        query.setParam(0, NodeFactory.createURI("http://example.org"));
+        query.setParam(1, NodeFactory.createURI("http://predicate"));
+        query.setParam(2, NodeFactory.createLiteral("test"));
 
         Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"test\"; ?p ?o . }", query.toString());
     }
@@ -1255,9 +1256,9 @@ public class TestParameterizedSparqlString {
         // Test regular string injection
         String cmdText = "SELECT * WHERE { ? ? ?, ?o . }";
         ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
-        query.setParam(0, Node.createURI("http://example.org"));
-        query.setParam(1, Node.createURI("http://predicate"));
-        query.setParam(2, Node.createLiteral("test"));
+        query.setParam(0, NodeFactory.createURI("http://example.org"));
+        query.setParam(1, NodeFactory.createURI("http://predicate"));
+        query.setParam(2, NodeFactory.createLiteral("test"));
 
         Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"test\", ?o . }", query.toString());
     }

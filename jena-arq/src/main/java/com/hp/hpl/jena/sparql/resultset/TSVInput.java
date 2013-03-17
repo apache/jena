@@ -33,7 +33,7 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Input reader associated to {@link TSVOutput}.
@@ -66,7 +66,7 @@ public class TSVInput {
         	    {
         	        Node v ;
         	        try {
-        	            v = NodeFactory.parseNode(token) ;
+        	            v = NodeFactoryExtra.parseNode(token) ;
         	            if ( v == null || ! v.isVariable())
         	                throw new ResultSetException("TSV Results malformed, not a variable: "+token);
         	        } catch (RiotException ex)

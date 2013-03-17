@@ -22,6 +22,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -54,7 +55,7 @@ public class NodecLib
             //throw new TDBException("Space found in URI: "+node) ;
             String x = StrUtils.encodeHex(node.getURI(), '_', invalidIRIChars) ;
             if ( x != node.getURI() )
-                node = Node.createURI(x) ; 
+                node = NodeFactory.createURI(x) ; 
         }
         
         return NodeFmtLib.serialize(node) ;
@@ -67,14 +68,14 @@ public class NodecLib
         if ( s.startsWith("_:") )   
         {
             s = s.substring(2) ;
-            return Node.createAnon(new AnonId(s)) ;
+            return NodeFactory.createAnon(new AnonId(s)) ;
         }
 
         if ( s.startsWith("<") )
         {
             s = s.substring(1,s.length()-1) ;
             s = StrUtils.decodeHex(s, MarkerChar) ;
-            return Node.createURI(s) ;
+            return NodeFactory.createURI(s) ;
         }
         
         try {

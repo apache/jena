@@ -61,7 +61,7 @@ public class GraphSPARQL extends GraphBase implements Graph
     
     public GraphSPARQL(DatasetGraph dataset, String uri)
     {
-        this(dataset, Node.createURI(uri)) ;
+        this(dataset, NodeFactory.createURI(uri)) ;
     }
 
     public GraphSPARQL(DatasetGraph dsg, Node gn)

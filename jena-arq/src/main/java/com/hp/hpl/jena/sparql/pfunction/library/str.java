@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.pfunction.library;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -61,7 +62,7 @@ public class str extends PFuncSimple
         if ( object.isBlank() )
             throw new QueryExecException("str: object is a blank node") ;
         
-        Node strValue =  Node.createLiteral(NodeFunctions.str(object)) ;
+        Node strValue =  NodeFactory.createLiteral(NodeFunctions.str(object)) ;
         
         if ( Var.isVar(subject) )
             return IterLib.oneResult(binding, Var.alloc(subject), strValue, execCxt) ;

@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
@@ -46,7 +47,7 @@ public class OpProcedure extends Op1
     
     public OpProcedure(String iri, ExprList args, Op op)
     {
-        this(Node.createURI(iri), args, op) ;
+        this(NodeFactory.createURI(iri), args, op) ;
     }
     
     @Override

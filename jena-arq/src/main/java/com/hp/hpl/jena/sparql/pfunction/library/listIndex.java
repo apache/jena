@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.sparql.util.graph.GNode ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 
@@ -97,7 +97,7 @@ public class listIndex extends ListBaseList
                                             Node listNode, Node indexNode, Var varMember,
                                             ExecutionContext execCxt)
     {
-        int i = NodeFactory.nodeToInt(indexNode) ;
+        int i = NodeFactoryExtra.nodeToInt(indexNode) ;
         if ( i < 0 )
             return IterLib.noResults(execCxt) ;
 
@@ -111,7 +111,7 @@ public class listIndex extends ListBaseList
                                                Node listNode, Node indexNode, Node memberNode,
                                                ExecutionContext execCxt)
     {
-        int i = NodeFactory.nodeToInt(indexNode) ;
+        int i = NodeFactoryExtra.nodeToInt(indexNode) ;
         if ( i < 0 )
             return IterLib.noResults(execCxt) ;
         Node n = GraphList.get(new GNode(graph, listNode), i) ;
@@ -131,7 +131,7 @@ public class listIndex extends ListBaseList
         int i = GraphList.index(new GNode(graph, listNode), member) ;
         if ( i < 0 )
             return IterLib.noResults(execCxt) ;
-        Node idx = NodeFactory.intToNode(i) ;
+        Node idx = NodeFactoryExtra.intToNode(i) ;
         return IterLib.oneResult(binding, var, idx, execCxt) ; 
     }
 
@@ -144,7 +144,7 @@ public class listIndex extends ListBaseList
         List<Binding> bindings = new ArrayList<Binding>() ;
         for ( int i = 0 ; i < members.size() ; i++ )
         {
-            Node idx = NodeFactory.intToNode(i) ;
+            Node idx = NodeFactoryExtra.intToNode(i) ;
             Node member = members.get(i) ;
             BindingMap b = BindingFactory.create(binding) ;
             b.add(varIndex, idx) ;

@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.modify.request;
 import static com.hp.hpl.jena.sparql.modify.request.Target.Decl.* ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class Target
@@ -32,7 +33,7 @@ public class Target
     public static final Target ALL = new Target(ALL$) ;
 
     public static Target create(String iri)
-    { return new Target(Node.createURI(iri)) ; }
+    { return new Target(NodeFactory.createURI(iri)) ; }
 
     public static Target create(Node graphName)
     { return new Target(graphName) ; }

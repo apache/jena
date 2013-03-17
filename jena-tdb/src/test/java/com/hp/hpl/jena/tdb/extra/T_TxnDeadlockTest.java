@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger ;
 import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
@@ -81,13 +82,13 @@ public class T_TxnDeadlockTest {
                             DatasetGraphTxn txnGraph =
                                     storeConnection.begin(ReadWrite.WRITE);
                             txnGraph.add(new Quad(
-                                    Node.createURI("http://openjena.org/"
+                                    NodeFactory.createURI("http://openjena.org/"
                                             + numberGenerator.nextInt()),
-                                    Node.createURI("http://openjena.org/"
+                                    NodeFactory.createURI("http://openjena.org/"
                                             + numberGenerator.nextInt()),
-                                    Node.createURI("http://openjena.org/"
+                                    NodeFactory.createURI("http://openjena.org/"
                                             + numberGenerator.nextInt()),
-                                    Node.createURI("http://openjena.org/"
+                                    NodeFactory.createURI("http://openjena.org/"
                                             + numberGenerator.nextInt())));
                             txnGraph.commit();
                             txnGraph.end();

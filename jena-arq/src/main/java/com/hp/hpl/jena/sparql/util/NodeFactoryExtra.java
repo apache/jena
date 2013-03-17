@@ -33,7 +33,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public class NodeFactory
+public class NodeFactoryExtra
 {
     private static final PrefixMap prefixMappingDefault = PrefixMapFactory.createForInput(SSE.getDefaultPrefixMapRead()) ; 
     
@@ -88,7 +88,7 @@ public class NodeFactory
         if ( datatypeURI != null )
             dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI);
         
-        Node n = Node.createLiteral(lex, lang, dType) ;
+        Node n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, lang, dType) ;
         return n ;
     }
     
@@ -134,34 +134,34 @@ public class NodeFactory
     
     public static Node intToNode(int integer)
     {
-        return Node.createLiteral(Integer.toString(integer), "", XSDDatatype.XSDinteger) ;
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(Integer.toString(integer), "", XSDDatatype.XSDinteger) ;
     }
 
     public static Node intToNode(long integer)
     {
-        return Node.createLiteral(Long.toString(integer), "", XSDDatatype.XSDinteger) ;
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(Long.toString(integer), "", XSDDatatype.XSDinteger) ;
     }
 
     public static Node floatToNode(float value)
     {
-        return Node.createLiteral(Float.toString(value), "", XSDDatatype.XSDfloat) ;
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(Float.toString(value), "", XSDDatatype.XSDfloat) ;
     }
     
     public static Node doubleToNode(double value)
     {
-        return Node.createLiteral(Double.toString(value), "", XSDDatatype.XSDdouble) ;
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(Double.toString(value), "", XSDDatatype.XSDdouble) ;
     }
 
     public static Node nowAsDateTime()
     {
         String lex = Utils.nowAsXSDDateTimeString() ;
-        return Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
     }
 
     public static Node todayAsDate()
     {
         String lex = Utils.todayAsXSDDateString() ;
-        return Node.createLiteral(lex, null, XSDDatatype.XSDdate) ;
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate) ;
     }
 
 }

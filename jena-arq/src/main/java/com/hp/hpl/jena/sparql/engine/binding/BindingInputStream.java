@@ -30,6 +30,7 @@ import java.util.List ;
 
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.Closeable ;
@@ -174,7 +175,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
                     if ( token.hasType(TokenType.STAR ) || ( token.isCtlCode() && token.getCntrlCode() == -1 ) )
                         n = lastLine.get(v) ;
                     else if ( token.hasType(TokenType.BNODE) )
-                        n = Node.createAnon(new AnonId(NodeFmtLib.decodeBNodeLabel(token.getImage()))) ;
+                        n = NodeFactory.createAnon(new AnonId(NodeFmtLib.decodeBNodeLabel(token.getImage()))) ;
                     else
                         n = profile.create(null, token) ;
                     binding.add(v, n) ;

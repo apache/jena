@@ -21,6 +21,7 @@ package org.apache.jena.riot.system;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.RiotException ;
@@ -107,7 +108,7 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
             else
             {
                 String resolvedIRI = resolveIRI(x, line, col) ;
-                return Node.createURI(resolvedIRI) ;
+                return NodeFactory.createURI(resolvedIRI) ;
             }
         } catch (RiotException ex)
         {
@@ -129,7 +130,7 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col)
     {
-        Node n = Node.createLiteral(lexical, null, datatype)  ;
+        Node n = NodeFactory.createLiteral(lexical, null, datatype)  ;
         CheckerLiterals.checkLiteral(lexical, datatype, errorHandler, line, col) ;
         return n ;
     }
@@ -137,7 +138,7 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col)
     {
-        Node n = Node.createLiteral(lexical, langTag, null)  ;
+        Node n = NodeFactory.createLiteral(lexical, langTag, null)  ;
         CheckerLiterals.checkLiteral(lexical, langTag, errorHandler, line, col) ;
         return n ;
     }
@@ -145,7 +146,7 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
     @Override
     public Node createPlainLiteral(String lexical, long line, long col)
     {
-        return Node.createLiteral(lexical) ;
+        return NodeFactory.createLiteral(lexical) ;
     }
 
     @Override

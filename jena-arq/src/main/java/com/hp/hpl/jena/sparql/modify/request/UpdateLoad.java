@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.update.Update ;
 
 public class UpdateLoad extends Update
@@ -30,12 +31,12 @@ public class UpdateLoad extends Update
 
     public UpdateLoad(String source, String dest)
     {
-        this(source, Node.createURI(dest), false) ;
+        this(source, NodeFactory.createURI(dest), false) ;
     }
     
     public UpdateLoad(String source, String dest, boolean silent)
     {
-        this(source, Node.createURI(dest), silent) ;
+        this(source, NodeFactory.createURI(dest), silent) ;
     }
 
     public UpdateLoad(String source, Node dest)

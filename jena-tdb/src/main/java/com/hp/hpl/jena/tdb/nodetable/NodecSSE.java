@@ -29,6 +29,7 @@ import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.riot.web.LangTag ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -60,7 +61,7 @@ public class NodecSSE implements Nodec
             // Pesky spaces etc
             String x = StrUtils.encodeHex(node.getURI(), MarkerChar, invalidIRIChars) ;
             if ( x != node.getURI() )
-                node = Node.createURI(x) ; 
+                node = NodeFactory.createURI(x) ; 
         }
         
         if ( node.isLiteral() && node.getLiteralLanguage() != null )
@@ -102,7 +103,7 @@ public class NodecSSE implements Nodec
             // In particular, bnode labels can contain ":" from Jena
             // TokenizerText does not recognize these.
             str = str.substring(2) ;
-            return Node.createAnon(new AnonId(str)) ;
+            return NodeFactory.createAnon(new AnonId(str)) ;
         }
 
         if ( str.startsWith("<") )
@@ -112,7 +113,7 @@ public class NodecSSE implements Nodec
             str = str.substring(1,str.length()-1) ;
             str = StrUtils.unescapeString(str) ;
             str = StrUtils.decodeHex(str, MarkerChar) ;
-            return Node.createURI(str) ;
+            return NodeFactory.createURI(str) ;
         }
 
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(str) ;

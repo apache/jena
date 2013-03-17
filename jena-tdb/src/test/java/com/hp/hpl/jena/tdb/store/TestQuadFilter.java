@@ -25,7 +25,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -79,7 +79,7 @@ public class TestQuadFilter extends BaseTest
     {
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
         final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
-        final NodeId target = nodeTable.getNodeIdForNode(Node.createURI(graphToHide)) ;
+        final NodeId target = nodeTable.getNodeIdForNode(NodeFactory.createURI(graphToHide)) ;
         Filter<Tuple<NodeId>> filter = new Filter<Tuple<NodeId>>() {
             @Override
             public boolean accept(Tuple<NodeId> item)

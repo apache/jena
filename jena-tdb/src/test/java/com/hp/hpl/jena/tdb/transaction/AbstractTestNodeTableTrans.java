@@ -23,7 +23,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -56,9 +56,9 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         return ntt ;
     }
     
-    protected static Node node1 = NodeFactory.parseNode("<x>") ;
-    protected static Node node2 = NodeFactory.parseNode("<y>") ;
-    protected static Node node3 = NodeFactory.parseNode("<z>") ;
+    protected static Node node1 = NodeFactoryExtra.parseNode("<x>") ;
+    protected static Node node2 = NodeFactoryExtra.parseNode("<y>") ;
+    protected static Node node3 = NodeFactoryExtra.parseNode("<z>") ;
 
     static void contains(NodeTable nt, Node...nodes)
     {

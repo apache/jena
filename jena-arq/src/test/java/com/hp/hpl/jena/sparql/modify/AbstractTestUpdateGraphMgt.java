@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.modify;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
@@ -31,7 +32,7 @@ import com.hp.hpl.jena.update.UpdateException ;
 
 public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
 {
-    static final Node graphIRI = Node.createURI("http://example/graph") ;
+    static final Node graphIRI = NodeFactory.createURI("http://example/graph") ;
     
     @Test public void testCreateDrop1()
     {

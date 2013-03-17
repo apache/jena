@@ -24,6 +24,7 @@ import java.util.Locale ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
@@ -101,7 +102,7 @@ public class GraphMemPlain extends GraphBase
         {
             String lang = node.getLiteralLanguage() ;
             if ( lang != null && ! lang.equals("") )
-                node = Node.createLiteral(node.getLiteralLexicalForm(),
+                node = NodeFactory.createLiteral(node.getLiteralLexicalForm(),
                                           lang.toLowerCase(Locale.ENGLISH),
                                           node.getLiteralDatatype()) ;
         }

@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Tests for the {@link PipedRDFIterator} implementation
@@ -90,7 +90,7 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate triples
                 for (int i = 1; i <= generateSize; i++) {
-                    Triple t = new Triple(Node.createAnon(), Node.createURI("http://predicate"), NodeFactory.intToNode(i));
+                    Triple t = new Triple(com.hp.hpl.jena.graph.NodeFactory.createAnon(), com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
                     out.triple(t);
                 }
                 out.finish();
@@ -233,8 +233,8 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate quads
                 for (int i = 1; i <= generateSize; i++) {
-                    Quad q = new Quad(Node.createURI("http://graph"), Node.createAnon(), Node.createURI("http://predicate"),
-                            NodeFactory.intToNode(i));
+                    Quad q = new Quad(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"), com.hp.hpl.jena.graph.NodeFactory.createAnon(), com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"),
+                            NodeFactoryExtra.intToNode(i));
                     out.quad(q);
                 }
                 out.finish();
@@ -377,8 +377,8 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate tuples
                 for (int i = 1; i <= generateSize; i++) {
-                    Tuple<Node> t = Tuple.create(Node.createURI("http://graph"), Node.createAnon(),
-                            Node.createURI("http://predicate"), NodeFactory.intToNode(i));
+                    Tuple<Node> t = Tuple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"), com.hp.hpl.jena.graph.NodeFactory.createAnon(),
+                            com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
                     out.tuple(t);
                 }
                 out.finish();
@@ -644,7 +644,7 @@ public class TestPipedRDFIterators {
             public void run()
             {
                 out.start();
-                out.triple(Triple.create(Node.createURI("urn:s"), Node.createURI("urn:p"), Node.createURI("urn:o")));
+                out.triple(Triple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("urn:s"), com.hp.hpl.jena.graph.NodeFactory.createURI("urn:p"), com.hp.hpl.jena.graph.NodeFactory.createURI("urn:o")));
                 throw new RuntimeException("die!");
             }
         });

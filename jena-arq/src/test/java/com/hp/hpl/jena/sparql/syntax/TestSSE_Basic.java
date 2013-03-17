@@ -30,18 +30,18 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemException ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestSSE_Basic extends TestCase
 {
     // Tests not requiring URI resolution or prefix name handling.
     
-    static Node int1 = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;
-    static Node int2 = Node.createLiteral("2", null, XSDDatatype.XSDinteger) ;
-    static Node int3 = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ;
-    static Node strLangEN = Node.createLiteral("xyz", "en", null) ;
+    static Node int1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("1", null, XSDDatatype.XSDinteger) ;
+    static Node int2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("2", null, XSDDatatype.XSDinteger) ;
+    static Node int3 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("3", null, XSDDatatype.XSDinteger) ;
+    static Node strLangEN = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
 
-    static Node typeLit1 = NodeFactory.createLiteralNode("123", null, "http://example/type") ;
+    static Node typeLit1 = NodeFactoryExtra.createLiteralNode("123", null, "http://example/type") ;
     
     static Item int1i = Item.createNode(int1) ;
     static Item int2i = Item.createNode(int2) ;
@@ -92,7 +92,7 @@ public class TestSSE_Basic extends TestCase
     
     @Test public void testLit_12()
     { 
-        Node n = Node.createLiteral("A\tB") ;
+        Node n = com.hp.hpl.jena.graph.NodeFactory.createLiteral("A\tB") ;
         testNode("'''A\\tB'''", n) ;
     }
     
@@ -153,7 +153,7 @@ public class TestSSE_Basic extends TestCase
     // ---- Nodes
     
     @Test public void testNode_1()    { testNode("3", int3) ; }
-    @Test public void testNode_2()    { testNode("<http://example/node1>", Node.createURI("http://example/node1")) ; } 
+    @Test public void testNode_2()    { testNode("<http://example/node1>", com.hp.hpl.jena.graph.NodeFactory.createURI("http://example/node1")) ; } 
     @Test public void testTypedLit_1() { testNode("\"123\"^^<http://example/type>", typeLit1) ; }
     @Test public void testTypedLit_2() { testNode("'123'^^<http://example/type>", typeLit1) ; }
     @Test public void testTypedLit_3() { testNode("'3'^^<"+XSDDatatype.XSDinteger.getURI()+">", int3) ; }
