@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
@@ -63,7 +64,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         HttpActionREST(long id, DatasetRef desc, String absUri, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, desc, request, response, verbose) ;
-            Node gn = Node.createURI(absUri) ;
+            Node gn = NodeFactory.createURI(absUri) ;
             _target = Target.createNamed(desc.dataset, absUri, gn) ; 
         }
         
@@ -426,7 +427,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             base = base + "/" ;
         
         String absUri = IRIResolver.resolveString(uri, base) ;
-        Node gn = Node.createURI(absUri) ;
+        Node gn = NodeFactory.createURI(absUri) ;
         return Target.createNamed(dsg, absUri, gn) ;
     }
     

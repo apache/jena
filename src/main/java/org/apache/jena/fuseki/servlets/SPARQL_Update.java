@@ -45,6 +45,7 @@ import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.modify.UsingList ;
@@ -301,7 +302,7 @@ public class SPARQL_Update extends SPARQL_Protocol
     {
         try {
             IRI iri = resolver.resolve(x) ;
-            return Node.createURI(iri.toString()) ;
+            return NodeFactory.createURI(iri.toString()) ;
         } catch (Exception ex)
         {
             errorBadRequest("SPARQL Update: bad IRI: "+x) ;

@@ -43,6 +43,7 @@ import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
@@ -101,7 +102,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
             
             Node gn = graphName.equals(HttpNames.valueDefault)
                 ? Quad.defaultGraphNodeGenerated 
-                : Node.createURI(graphName) ;
+                : NodeFactory.createURI(graphName) ;
                 
             FusekiLib.addDataInto(graphTmp, action.getActiveDSG(), gn) ;
             tripleCount = graphTmp.size();
