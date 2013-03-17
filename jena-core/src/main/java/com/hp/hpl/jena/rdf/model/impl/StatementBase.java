@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.rdf.model.impl;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
 
@@ -63,7 +63,7 @@ public abstract class StatementBase
 	protected StatementImpl stringReplace(String s, String lang,
 			boolean wellFormed)
 		{
-		return replace(new LiteralImpl(Node.createLiteral(s, lang, wellFormed),
+		return replace(new LiteralImpl(NodeFactory.createLiteral(s, lang, wellFormed),
 				model));
 		}
 

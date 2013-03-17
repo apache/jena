@@ -172,7 +172,7 @@ public class ContainerImpl extends ResourceImpl
     }
 
     private Literal literal( String s, String lang )
-        { return new LiteralImpl( Node.createLiteral( s, lang, false ), getModelCom() ); }
+        { return new LiteralImpl( NodeFactory.createLiteral( s, lang, false ), getModelCom() ); }
             
     @Override
     public NodeIterator iterator()  

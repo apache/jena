@@ -36,6 +36,7 @@ import com.hp.hpl.jena.enhanced.BuiltinPersonalities ;
 import com.hp.hpl.jena.enhanced.EnhNode ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.compose.MultiUnion ;
 import com.hp.hpl.jena.ontology.* ;
@@ -2854,7 +2855,7 @@ public class OntModelImpl extends ModelCom implements OntModel
             throw new IllegalArgumentException( "Cannot get() ontology value with a null URI" );
         }
 
-        Node n = Node.createURI( uri );
+        Node n = NodeFactory.createURI( uri );
 
         if (getGraph().contains( n, Node.ANY, Node.ANY )) {
             // this resource is a subject in the graph

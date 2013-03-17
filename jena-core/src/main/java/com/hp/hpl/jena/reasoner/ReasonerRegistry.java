@@ -163,7 +163,7 @@ public class ReasonerRegistry {
      * <code>node</code>s URI.
      */
     public static Node makeDirect(Node node) {
-        return Node.createURI( makeDirect( node.getURI() ) );
+        return NodeFactory.createURI( makeDirect( node.getURI() ) );
     }
 
     /**

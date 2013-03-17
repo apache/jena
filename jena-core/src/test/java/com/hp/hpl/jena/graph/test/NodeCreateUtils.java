@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
@@ -78,22 +79,22 @@ public class NodeCreateUtils
             throw new JenaException( "Node.create does not accept an empty string as argument" );
         char first = x.charAt( 0 );
         if (first == '\'' || first == '\"')
-            return Node.createLiteral( newString( pm, first, x ) );
+            return NodeFactory.createLiteral( newString( pm, first, x ) );
         if (Character.isDigit( first )) 
-            return Node.createLiteral( x, "", XSDDatatype.XSDinteger );
+            return NodeFactory.createLiteral( x, "", XSDDatatype.XSDinteger );
         if (first == '_')
-            return Node.createAnon( new AnonId( x ) );
+            return NodeFactory.createAnon( new AnonId( x ) );
         if (x.equals( "??" ))
             return Node.ANY;
         if (first == '?')
-            return Node.createVariable( x.substring( 1 ) );
+            return NodeFactory.createVariable( x.substring( 1 ) );
         if (first == '&')
-            return Node.createURI( "q:" + x.substring( 1 ) );        
+            return NodeFactory.createURI( "q:" + x.substring( 1 ) );        
         int colon = x.indexOf( ':' );
         String d = pm.getNsPrefixURI( "" );
         return colon < 0 
-            ? Node.createURI( (d == null ? "eh:/" : d) + x )
-            : Node.createURI( pm.expandPrefix( x ) )
+            ? NodeFactory.createURI( (d == null ? "eh:/" : d) + x )
+            : NodeFactory.createURI( pm.expandPrefix( x ) )
             ;
         }
 
@@ -134,7 +135,7 @@ public class NodeCreateUtils
         int colon = langOrType.indexOf( ':' );
         return colon < 0 
             ? LiteralLabelFactory.create( content, langOrType, false )
-            : LiteralLabelFactory.createLiteralLabel( content, "", Node.getType( pm.expandPrefix( langOrType ) ) )
+            : LiteralLabelFactory.createLiteralLabel( content, "", NodeFactory.getType( pm.expandPrefix( langOrType ) ) )
             ;
         }
 

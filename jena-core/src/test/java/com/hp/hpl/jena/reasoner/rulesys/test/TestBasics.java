@@ -41,16 +41,16 @@ public class TestBasics extends TestCase  {
     private static final int MAX_VARS = 10;
     
     // Useful constants
-    Node p = Node.createURI("p");
-    Node q = Node.createURI("q");
-    Node r = Node.createURI("r");
-    Node s = Node.createURI("s");
-    Node n1 = Node.createURI("n1");
-    Node n2 = Node.createURI("n2");
-    Node n3 = Node.createURI("n3");
-    Node n4 = Node.createURI("n4");
-    Node n5 = Node.createURI("n5");
-    Node res = Node.createURI("res");
+    Node p = NodeFactory.createURI("p");
+    Node q = NodeFactory.createURI("q");
+    Node r = NodeFactory.createURI("r");
+    Node s = NodeFactory.createURI("s");
+    Node n1 = NodeFactory.createURI("n1");
+    Node n2 = NodeFactory.createURI("n2");
+    Node n3 = NodeFactory.createURI("n3");
+    Node n4 = NodeFactory.createURI("n4");
+    Node n5 = NodeFactory.createURI("n5");
+    Node res = NodeFactory.createURI("res");
         
      
     /**

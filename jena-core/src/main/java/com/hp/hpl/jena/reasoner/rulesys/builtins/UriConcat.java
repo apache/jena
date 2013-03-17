@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.reasoner.rulesys.BuiltinException;
 import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
 
@@ -56,7 +57,7 @@ public class UriConcat extends StrConcat {
         for (int i = 0; i < length-1; i++) {
             buff.append( lex(getArg(i, args, context), context) );
         }
-        Node result = Node.createURI( buff.toString() );
+        Node result = NodeFactory.createURI( buff.toString() );
         return context.getEnv().bind(args[length-1], result);
     }
 }

@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.shared.JenaException ;
 
@@ -197,7 +198,7 @@ public class Matcher
         int counter = 0 ; 
         @Override
         public Node allocate()
-        { return Node.createVariable("v"+(counter++)) ; }
+        { return NodeFactory.createVariable("v"+(counter++)) ; }
         @Override
         public boolean test(Node n) { return n.isBlank() ; }
         @Override

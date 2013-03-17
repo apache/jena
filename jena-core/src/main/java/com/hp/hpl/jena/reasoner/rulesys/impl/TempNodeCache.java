@@ -21,6 +21,7 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.reasoner.InfGraph;
 import com.hp.hpl.jena.util.OneToManyMap;
 
@@ -77,7 +78,7 @@ public class TempNodeCache {
         }
         if (result == null) {
             // No value yet, so create one
-            result = Node.createAnon();
+            result = NodeFactory.createAnon();
             ipMap.put(ip, result);
             if (pclass != null) {
                 classMap.put(result, pclass);

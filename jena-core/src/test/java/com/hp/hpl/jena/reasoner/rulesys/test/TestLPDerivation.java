@@ -22,11 +22,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.reasoner.Derivation;
 import com.hp.hpl.jena.reasoner.InfGraph;
 import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
@@ -60,15 +56,15 @@ public class TestLPDerivation extends TestCase {
     }
     
     // Useful constants
-    Node p = Node.createURI("p");
-    Node q = Node.createURI("q");
-    Node r = Node.createURI("r");
-    Node s = Node.createURI("s");
-    Node a = Node.createURI("a");
-    Node b = Node.createURI("b");
-    Node c = Node.createURI("c");
-    Node d = Node.createURI("d");
-    Node e = Node.createURI("e");
+    Node p = NodeFactory.createURI("p");
+    Node q = NodeFactory.createURI("q");
+    Node r = NodeFactory.createURI("r");
+    Node s = NodeFactory.createURI("s");
+    Node a = NodeFactory.createURI("a");
+    Node b = NodeFactory.createURI("b");
+    Node c = NodeFactory.createURI("c");
+    Node d = NodeFactory.createURI("d");
+    Node e = NodeFactory.createURI("e");
 
     /**
      * Return an inference graph working over the given rule set and raw data.

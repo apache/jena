@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
 import com.hp.hpl.jena.reasoner.rulesys.BuiltinException;
 import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
@@ -68,7 +69,7 @@ public class Regex extends BaseBuiltin {
             BindingEnvironment env = context.getEnv();
             for (int i = 0; i < Math.min(length-2, m.groupCount()); i++) {
                 String gm = m.group(i+1);
-                Node match =  (gm != null) ? Node.createLiteral( gm ) : Node.createLiteral("");
+                Node match =  (gm != null) ? NodeFactory.createLiteral( gm ) : NodeFactory.createLiteral("");
                 if ( !env.bind(args[i+2], match) ) return false;
             }
         }

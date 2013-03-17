@@ -21,6 +21,7 @@ package com.hp.hpl.jena.graph.test;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
@@ -49,10 +50,10 @@ public class TestTriple extends GraphTestBase
 
         Node[] nodes = new Node[] {
             Node.ANY,
-            Node.createAnon(id),    Node.createAnon(),
-            Node.createLiteral(L),  Node.createLiteral(L2),
-            Node.createURI(U),      Node.createURI(U2),
-            Node.createVariable(N), Node.createVariable(N2)
+            NodeFactory.createAnon(id),    NodeFactory.createAnon(),
+            NodeFactory.createLiteral(L),  NodeFactory.createLiteral(L2),
+            NodeFactory.createURI(U),      NodeFactory.createURI(U2),
+            NodeFactory.createVariable(N), NodeFactory.createVariable(N2)
         };
 
         Triple[] triples = 

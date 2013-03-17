@@ -822,7 +822,7 @@ public class RuleClauseCode {
             String test22 = "(?C p ?D) <- (?C rb:xsdBase ?BC), (?D rb:xsdBase ?BD), notEqual(?BC, ?BD).";
             store.addRule(Rule.parseRule(test22));
             System.out.println("Code for p:");
-            List<RuleClauseCode> codeList = store.codeFor(Node.createURI("p"));
+            List<RuleClauseCode> codeList = store.codeFor(NodeFactory.createURI("p"));
             RuleClauseCode code = codeList.get(0);
             code.print(System.out);
         } catch (Exception e) {

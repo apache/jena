@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.xerces.impl.dv.util.Base64;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
 import com.hp.hpl.jena.shared.JenaException;
@@ -77,7 +78,7 @@ public class MakeSkolem extends BaseBuiltin {
             MessageDigest digester = MessageDigest.getInstance("MD5");
             digester.reset();
             byte[] digest = digester.digest(key.toString().getBytes());
-            Node skolem = Node.createAnon( new AnonId( Base64.encode(digest) ) );
+            Node skolem = NodeFactory.createAnon( new AnonId( Base64.encode(digest) ) );
             return context.getEnv().bind(args[0], skolem); 
             
         } catch (NoSuchAlgorithmException e) {

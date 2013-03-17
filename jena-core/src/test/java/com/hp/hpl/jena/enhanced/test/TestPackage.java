@@ -415,9 +415,9 @@ public class TestPackage extends GraphTestBase  {
         Graph g = Factory.createGraphMem();
         Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
         EnhGraph eg = new EnhGraph( g, ours ); 
-        Node n = Node.createURI( "spoo:bar" );
-        EnhNode eNode = new EnhNode( Node.createURI( "spoo:bar" ), eg );
-        EnhNode eBlank = new EnhNode( Node.createAnon(), eg );
+        Node n = NodeFactory.createURI( "spoo:bar" );
+        EnhNode eNode = new EnhNode( NodeFactory.createURI( "spoo:bar" ), eg );
+        EnhNode eBlank = new EnhNode( NodeFactory.createAnon(), eg );
         assertTrue( "URI node can be an Example", eNode.supports( Example.class ) );
         assertFalse( "Blank node cannot be an Example", eBlank.supports( Example.class ) );
         }

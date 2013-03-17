@@ -23,7 +23,7 @@ import java.util.Calendar;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 import com.hp.hpl.jena.rdf.model.impl.*;
@@ -265,18 +265,18 @@ public class ResourceFactory {
         
         @Override
         public Literal createPlainLiteral( String string ) {
-            return new LiteralImpl(  Node.createLiteral( string, "", false ), null );
+            return new LiteralImpl(  NodeFactory.createLiteral( string, "", false ), null );
         }
 
         @Override
         public Literal createLangLiteral( String string , String lang ) {
-            return new LiteralImpl(  Node.createLiteral( string, lang, false ), null );
+            return new LiteralImpl(  NodeFactory.createLiteral( string, lang, false ), null );
         }
         
         @Override
         public Literal createTypedLiteral( String string , RDFDatatype dType)
         {
-            return new LiteralImpl(Node.createLiteral(string, "", dType), null) ;
+            return new LiteralImpl(NodeFactory.createLiteral(string, "", dType), null) ;
         }
 
         @Override
@@ -288,7 +288,7 @@ public class ResourceFactory {
             } else {
                 ll =  LiteralLabelFactory.create(value);
             }
-            return new LiteralImpl(Node.createLiteral( ll ), null) ;
+            return new LiteralImpl(NodeFactory.createLiteral( ll ), null) ;
         }
         
         @Override

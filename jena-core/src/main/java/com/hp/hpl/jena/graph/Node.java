@@ -20,9 +20,7 @@ package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.datatypes.DatatypeFormatException;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -47,42 +45,74 @@ public abstract class Node {
        
     static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
             
+    /**
+     * @deprecated Use {@link NodeFactory#getType(String)} instead
+     */
+    @Deprecated
     public static RDFDatatype getType( String s )
-        { return TypeMapper.getInstance().getSafeTypeByName( s ); }
+        {
+            return NodeFactory.getType(s) ;
+        }
     
-    /** make a blank node with a fresh anon id */ 
+    /** make a blank node with a fresh anon id 
+     * @deprecated Use {@link NodeFactory#createAnon()} instead*/ 
+    @Deprecated
     public static Node createAnon()
-        { return createAnon( AnonId.create() ); }
+        {
+            return NodeFactory.createAnon() ;
+        }
     
-    /** make a blank node with the specified label */
+    /** make a blank node with the specified label 
+     * @deprecated Use {@link NodeFactory#createAnon(AnonId)} instead*/
+    @Deprecated
     public static Node createAnon( AnonId id )
-        { return create( makeAnon, id ); }
+        {
+            return NodeFactory.createAnon(id) ;
+        }
         
-    /** make a literal node with the specified literal value */
+    /** make a literal node with the specified literal value 
+     * @deprecated Use {@link NodeFactory#createLiteral(LiteralLabel)} instead*/
+    @Deprecated
     public static Node createLiteral( LiteralLabel lit )
-        { return create( makeLiteral, lit ); }
+        {
+            return NodeFactory.createLiteral(lit) ;
+        }
         
-    /** make a URI node with the specified URIref string */
+    /** make a URI node with the specified URIref string 
+     * @deprecated Use {@link NodeFactory#createURI(String)} instead*/
+    @Deprecated
     public static Node createURI( String uri )
-        { return create( makeURI, uri ); }
+        {
+            return NodeFactory.createURI(uri) ;
+        }
     
-    /** make a variable node with a given name */
+    /** make a variable node with a given name 
+     * @deprecated Use {@link NodeFactory#createVariable(String)} instead*/
+    @Deprecated
     public static Node createVariable( String name )
-        { return create( makeVariable, Node_Variable.variable( name ) ); }
+        {
+            return NodeFactory.createVariable(name) ;
+        }
         
+    /**
+     * @deprecated Use {@link NodeFactory#createLiteral(String)} instead
+     */
+    @Deprecated
     public static Node createLiteral( String value )
-        { return createLiteral( value, "", false ); }
+        {
+            return NodeFactory.createLiteral(value) ;
+        }
     
     /** make a literal with specified language and XMLishness.
         _lit_ must *not* be null.
         @param isXml If true then lit is exclusive canonical XML of type 
             rdf:XMLLiteral, and no checking will be invoked.
+     * @deprecated Use {@link NodeFactory#createLiteral(String,String,boolean)} instead
     */
+    @Deprecated
     public static Node createLiteral( String lit, String lang, boolean isXml )
         {
-        if (lit == null) throw new NullPointerException
-            ( "null for literals has been illegal since Jena 2.0" );
-        return createLiteral( LiteralLabelFactory.create( lit, lang, isXml ) ); 
+            return NodeFactory.createLiteral(lit, lang, isXml) ;
         }    
         
     /**
@@ -94,10 +124,14 @@ public abstract class Node {
      * @param lang the optional language tag
      * @param dtype the type of the literal, null for old style "plain" literals
      * @throws DatatypeFormatException if lex is not a legal form of dtype
+     * @deprecated Use {@link NodeFactory#createLiteral(String,String,RDFDatatype)} instead
      */
+    @Deprecated
     public static Node createLiteral( String lex, String lang, RDFDatatype dtype ) 
         throws DatatypeFormatException 
-        { return createLiteral( LiteralLabelFactory.createLiteralLabel( lex, lang, dtype ) ); }
+        {
+            return NodeFactory.createLiteral(lex, lang, dtype) ;
+        }
     
     /**
      * Build a typed literal node from its lexical form. The
@@ -107,18 +141,34 @@ public abstract class Node {
      * @param lex the lexical form of the literal
      * @param dtype the type of the literal, null for old style "plain" literals
      * @throws DatatypeFormatException if lex is not a legal form of dtype
+     * @deprecated Use {@link NodeFactory#createLiteral(String,RDFDatatype)} instead
      */
+    @Deprecated
     public static Node createLiteral( String lex, RDFDatatype dtype ) 
         throws DatatypeFormatException 
-        { return createLiteral( LiteralLabelFactory.createLiteralLabel( lex, "", dtype ) ); }
+        {
+            return NodeFactory.createLiteral(lex, dtype) ;
+        }
     
+    /**
+     * @deprecated Use {@link NodeFactory#createUncachedLiteral(Object,String,RDFDatatype)} instead
+     */
+    @Deprecated
     public static Node createUncachedLiteral( Object value, String lang, RDFDatatype dtype ) 
         throws DatatypeFormatException 
-        { return new Node_Literal( LiteralLabelFactory.create( value, lang, dtype ) ); }
+        {
+            return NodeFactory.createUncachedLiteral(value, lang, dtype) ;
+        }
     
+    /**
+     * @deprecated Use {@link NodeFactory#createUncachedLiteral(Object,RDFDatatype)} instead
+     */
+    @Deprecated
     public static Node createUncachedLiteral( Object value, RDFDatatype dtype ) 
         throws DatatypeFormatException 
-        { return new Node_Literal( LiteralLabelFactory.create( value, "", dtype ) ); }
+        {
+            return NodeFactory.createUncachedLiteral(value, dtype) ;
+        }
                                                    
     /**
         Visit a Node and dispatch on it to the appropriate method from the 

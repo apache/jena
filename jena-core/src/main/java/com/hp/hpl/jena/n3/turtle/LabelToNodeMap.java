@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 /** Map from _:* form to bNodes
  */
@@ -45,7 +46,7 @@ public class LabelToNodeMap
     
     public Node allocNode()
     {
-        return Node.createAnon() ;
+        return NodeFactory.createAnon() ;
     }
     
     public void clear()

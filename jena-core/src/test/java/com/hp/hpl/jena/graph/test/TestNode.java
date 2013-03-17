@@ -54,39 +54,39 @@ public class TestNode extends GraphTestBase
 
     public void testBlanks()
         {
-        assertTrue( "anonymous nodes are blank", Node.createAnon().isBlank() );
-        assertFalse( "anonymous nodes aren't literal", Node.createAnon().isLiteral() );
-        assertFalse( "anonymous nodes aren't URIs", Node.createAnon().isURI() );
-        assertFalse( "anonymous nodes aren't variables", Node.createAnon().isVariable() );
-        assertEquals( "anonymous nodes have the right id", Node.createAnon(A).getBlankNodeId(), A );
+        assertTrue( "anonymous nodes are blank", NodeFactory.createAnon().isBlank() );
+        assertFalse( "anonymous nodes aren't literal", NodeFactory.createAnon().isLiteral() );
+        assertFalse( "anonymous nodes aren't URIs", NodeFactory.createAnon().isURI() );
+        assertFalse( "anonymous nodes aren't variables", NodeFactory.createAnon().isVariable() );
+        assertEquals( "anonymous nodes have the right id", NodeFactory.createAnon(A).getBlankNodeId(), A );
         }
         
     public void testLiterals()
         {
-        assertFalse( "literal nodes aren't blank", Node.createLiteral( L ).isBlank() );
-        assertTrue( "literal nodes are literal", Node.createLiteral( L ).isLiteral() );
-        assertFalse( "literal nodes aren't variables", Node.createLiteral( L ).isVariable() );
-        assertFalse( "literal nodes aren't URIs", Node.createLiteral( L ).isURI() );
-        assertEquals( "literal nodes preserve value", Node.createLiteral( L ).getLiteral(), L );
+        assertFalse( "literal nodes aren't blank", NodeFactory.createLiteral( L ).isBlank() );
+        assertTrue( "literal nodes are literal", NodeFactory.createLiteral( L ).isLiteral() );
+        assertFalse( "literal nodes aren't variables", NodeFactory.createLiteral( L ).isVariable() );
+        assertFalse( "literal nodes aren't URIs", NodeFactory.createLiteral( L ).isURI() );
+        assertEquals( "literal nodes preserve value", NodeFactory.createLiteral( L ).getLiteral(), L );
         }
         
     public void testURIs()
         {
-        assertFalse( "URI nodes aren't blank", Node.createURI( U ).isBlank() );
-        assertFalse( "URI nodes aren't literal", Node.createURI( U ).isLiteral() );
-        assertFalse( "URI nodes aren't variables", Node.createURI( U ).isVariable() );
-        assertTrue( "URI nodes are URIs", Node.createURI( U ).isURI() );
-        assertEquals( "URI nodes preserve URI", Node.createURI( U ).getURI(), U );
+        assertFalse( "URI nodes aren't blank", NodeFactory.createURI( U ).isBlank() );
+        assertFalse( "URI nodes aren't literal", NodeFactory.createURI( U ).isLiteral() );
+        assertFalse( "URI nodes aren't variables", NodeFactory.createURI( U ).isVariable() );
+        assertTrue( "URI nodes are URIs", NodeFactory.createURI( U ).isURI() );
+        assertEquals( "URI nodes preserve URI", NodeFactory.createURI( U ).getURI(), U );
         }
         
     public void testVariables()
         {
-        assertFalse( "variable nodes aren't blank", Node.createVariable( N ).isBlank() );
-        assertFalse( "variable nodes aren't literal", Node.createVariable( N ).isLiteral() );        
-        assertFalse( "variable nodes aren't URIs", Node.createVariable( N ).isURI() );
-        assertTrue( "variable nodes are variable", Node.createVariable( N ).isVariable() );
-        assertEquals( "variable nodes keep their name", N, Node.createVariable( N ).getName() );
-        assertEquals( "variable nodes keep their name", N + "x", Node.createVariable( N + "x" ).getName() );
+        assertFalse( "variable nodes aren't blank", NodeFactory.createVariable( N ).isBlank() );
+        assertFalse( "variable nodes aren't literal", NodeFactory.createVariable( N ).isLiteral() );        
+        assertFalse( "variable nodes aren't URIs", NodeFactory.createVariable( N ).isURI() );
+        assertTrue( "variable nodes are variable", NodeFactory.createVariable( N ).isVariable() );
+        assertEquals( "variable nodes keep their name", N, NodeFactory.createVariable( N ).getName() );
+        assertEquals( "variable nodes keep their name", N + "x", NodeFactory.createVariable( N + "x" ).getName() );
         }
         
     public void testANY()
@@ -101,9 +101,9 @@ public class TestNode extends GraphTestBase
     
     public void testNodeVariableConstructor()
         {
-        assertEquals( Node.createVariable( "hello" ), new Node_Variable( "hello" ) );
-        assertEquals( Node.createVariable( "world" ), new Node_Variable( "world" ) );
-        assertDiffer( Node.createVariable( "hello" ), new Node_Variable( "world" ) );
+        assertEquals( NodeFactory.createVariable( "hello" ), new Node_Variable( "hello" ) );
+        assertEquals( NodeFactory.createVariable( "world" ), new Node_Variable( "world" ) );
+        assertDiffer( NodeFactory.createVariable( "hello" ), new Node_Variable( "world" ) );
         assertEquals( "myName", new Node_Variable( "myName" ).getName() );
         }
         
@@ -127,22 +127,22 @@ public class TestNode extends GraphTestBase
         return new Object [][]
             {
             { Node.ANY, "0" },
-            { Node.createAnon( id ), "1" },
-            { Node.createAnon(), "2" },
-            { Node.createAnon( id ), "1" },
-            { Node.createLiteral( L ), "3" },
+            { NodeFactory.createAnon( id ), "1" },
+            { NodeFactory.createAnon(), "2" },
+            { NodeFactory.createAnon( id ), "1" },
+            { NodeFactory.createLiteral( L ), "3" },
 
-            { Node.createLiteral( L2 ), "4" },
-            { Node.createLiteral( L ), "3" },
-            { Node.createURI( U ), "5" },
-            { Node.createURI( U2 ), "6" },
-            { Node.createURI( U ), "5" },
-            { Node.createVariable( N ), "7" },
-            { Node.createVariable( N2 ), "8" },
-            { Node.createVariable( N ), "7" } ,
+            { NodeFactory.createLiteral( L2 ), "4" },
+            { NodeFactory.createLiteral( L ), "3" },
+            { NodeFactory.createURI( U ), "5" },
+            { NodeFactory.createURI( U2 ), "6" },
+            { NodeFactory.createURI( U ), "5" },
+            { NodeFactory.createVariable( N ), "7" },
+            { NodeFactory.createVariable( N2 ), "8" },
+            { NodeFactory.createVariable( N ), "7" } ,
 
-            { Node.createLiteral( LLang1 ), "9" },
-            { Node.createLiteral( LLang2 ), "10" },
+            { NodeFactory.createLiteral( LLang1 ), "9" },
+            { NodeFactory.createLiteral( LLang2 ), "10" },
             };
     }
         
@@ -179,15 +179,15 @@ public class TestNode extends GraphTestBase
         
     public void testEquals()
     {
-        assertDiffer( "different variables", Node.createVariable( "xx" ), Node.createVariable( "yy" ) );
-        assertEquals( "same vars", Node.createVariable( "aa" ), Node.createVariable( "aa" ) );
-        assertEquals( "same URI", Node.createURI( U ), Node.createURI( U ) );
-        assertEquals( "same anon", Node.createAnon( A ), Node.createAnon( A ) );
-        assertEquals( "same literal", Node.createLiteral( L ), Node.createLiteral( L ) );
-        assertFalse( "distinct URIs", Node.createURI( U ) == Node.createURI( U ) );
-        assertFalse( "distinct hyphens", Node.createAnon( A ) == Node.createAnon( A ) );
-        assertFalse( "distinct literals", Node.createLiteral( L ) == Node.createLiteral( L ) );
-        assertFalse( "distinct vars", Node.createVariable( "aa" ) == Node.createVariable( "aa" ) );
+        assertDiffer( "different variables", NodeFactory.createVariable( "xx" ), NodeFactory.createVariable( "yy" ) );
+        assertEquals( "same vars", NodeFactory.createVariable( "aa" ), NodeFactory.createVariable( "aa" ) );
+        assertEquals( "same URI", NodeFactory.createURI( U ), NodeFactory.createURI( U ) );
+        assertEquals( "same anon", NodeFactory.createAnon( A ), NodeFactory.createAnon( A ) );
+        assertEquals( "same literal", NodeFactory.createLiteral( L ), NodeFactory.createLiteral( L ) );
+        assertFalse( "distinct URIs", NodeFactory.createURI( U ) == NodeFactory.createURI( U ) );
+        assertFalse( "distinct hyphens", NodeFactory.createAnon( A ) == NodeFactory.createAnon( A ) );
+        assertFalse( "distinct literals", NodeFactory.createLiteral( L ) == NodeFactory.createLiteral( L ) );
+        assertFalse( "distinct vars", NodeFactory.createVariable( "aa" ) == NodeFactory.createVariable( "aa" ) );
     }
 
     /**
@@ -197,10 +197,10 @@ public class TestNode extends GraphTestBase
     public void testLabels()
         {
         AnonId id = AnonId.create();
-        assertEquals( "get URI value", U, Node.createURI( U ).getURI() );
-        assertEquals( "get blank value", id, Node.createAnon( id ).getBlankNodeId() );
-        assertEquals( "get literal value", L, Node.createLiteral( L ).getLiteral() );
-        assertEquals( "get variable name", N, Node.createVariable( N ).getName() );
+        assertEquals( "get URI value", U, NodeFactory.createURI( U ).getURI() );
+        assertEquals( "get blank value", id, NodeFactory.createAnon( id ).getBlankNodeId() );
+        assertEquals( "get literal value", L, NodeFactory.createLiteral( L ).getLiteral() );
+        assertEquals( "get variable name", N, NodeFactory.createVariable( N ).getName() );
         }
         
     /**
@@ -209,8 +209,8 @@ public class TestNode extends GraphTestBase
     */
     public void testFailingLabels()
         {
-        Node u = Node.createURI( U ), b = Node.createAnon();
-        Node l = Node.createLiteral( L ), v = Node.createVariable( N );
+        Node u = NodeFactory.createURI( U ), b = NodeFactory.createAnon();
+        Node l = NodeFactory.createLiteral( L ), v = NodeFactory.createVariable( N );
         Node a = Node.ANY;
     /* */
         testGetURIFails( a );
@@ -249,7 +249,7 @@ public class TestNode extends GraphTestBase
     
     public void testGetBlankNodeLabelString()
         {
-        Node n = Node.createAnon();
+        Node n = NodeFactory.createAnon();
         assertEquals( n.getBlankNodeId().getLabelString(), n.getBlankNodeLabel() );
         }
     
@@ -580,8 +580,8 @@ public class TestNode extends GraphTestBase
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dt1 = tm.getTypeByValue( new Integer( 10 ) );
         RDFDatatype dt2 = tm.getTypeByValue( new Short( (short) 10 ) );
-        Node a = Node.createLiteral( "10", "", dt1 );
-        Node b = Node.createLiteral( "10", "", dt2 );
+        Node a = NodeFactory.createLiteral( "10", "", dt1 );
+        Node b = NodeFactory.createLiteral( "10", "", dt2 );
         assertDiffer( "types must make a difference", a, b );
         assertTrue( "A and B must express the same value", a.sameValueAs( b ) );
         assertTrue( "matching literals must respect sameValueAs", a.matches( b ) );
@@ -591,9 +591,9 @@ public class TestNode extends GraphTestBase
         {
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dtInt = tm.getTypeByValue( new Integer( 10 ) );
-        Node plain = Node.createLiteral( "rhubarb", "", false );    
-        Node english = Node.createLiteral( "eccentric", "en_UK", false );
-        Node typed = Node.createLiteral( "10", "", dtInt );
+        Node plain = NodeFactory.createLiteral( "rhubarb", "", false );    
+        Node english = NodeFactory.createLiteral( "eccentric", "en_UK", false );
+        Node typed = NodeFactory.createLiteral( "10", "", dtInt );
         assertEquals( "\"rhubarb\"", plain.toString() );
         assertEquals( "rhubarb", plain.toString( false ) );
         assertEquals( "\"eccentric\"@en_UK", english.toString() );
@@ -641,8 +641,8 @@ public class TestNode extends GraphTestBase
         assertFalse( NodeCreateUtils.create( "'notXML'" ).getLiteralIsXML() );
         assertFalse( NodeCreateUtils.create( "17" ).getLiteralIsXML() );
         assertFalse( NodeCreateUtils.create( "'joke'xsd:Joke" ).getLiteralIsXML() );
-        assertTrue( Node.createLiteral( "lit", "lang", true ).getLiteralIsXML() );
-        assertFalse( Node.createLiteral( "lit", "lang", false ).getLiteralIsXML() );
+        assertTrue( NodeFactory.createLiteral( "lit", "lang", true ).getLiteralIsXML() );
+        assertFalse( NodeFactory.createLiteral( "lit", "lang", false ).getLiteralIsXML() );
         }
    
     public void testConcrete()
