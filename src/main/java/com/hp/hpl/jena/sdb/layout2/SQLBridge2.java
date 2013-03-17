@@ -29,6 +29,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.compiler.SqlBuilder;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
@@ -236,25 +237,25 @@ public class SQLBridge2 extends SQLBridgeBase
         switch (vType)
         {
             case BNODE:
-                return Node.createAnon(new AnonId(lex)) ;
+                return NodeFactory.createAnon(new AnonId(lex)) ;
             case URI:
-                return Node.createURI(lex) ;
+                return NodeFactory.createURI(lex) ;
             case STRING:
-                return Node.createLiteral(lex, lang, false) ;
+                return NodeFactory.createLiteral(lex, lang, false) ;
             case XSDSTRING:
-                return Node.createLiteral(lex, null, XSDDatatype.XSDstring) ;
+                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDstring) ;
             case INTEGER:
-                return Node.createLiteral(lex, null, XSDDatatype.XSDinteger) ;
+                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDinteger) ;
             case DOUBLE:
-                return Node.createLiteral(lex, null, XSDDatatype.XSDdouble) ;
+                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdouble) ;
             case DATETIME:       
-                return Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
+                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
             case OTHER:
                 RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(datatype);
-                return Node.createLiteral(lex, null, dt) ;
+                return NodeFactory.createLiteral(lex, null, dt) ;
             default:
                 log.warn("Unrecognized: ("+lex+", "+lang+", "+vType+")") ;
-            return Node.createLiteral("UNRECOGNIZED") ; 
+            return NodeFactory.createLiteral("UNRECOGNIZED") ; 
         }
     }
 }
