@@ -39,8 +39,6 @@ import com.hp.hpl.jena.vocabulary.VCARD ;
     Exercise nodes. Make sure that the different node types do not overlap
     and that the test predicates work properly on the different node kinds.
 */
-@SuppressWarnings("deprecation")
-// Node.useCache is deprecated.
 public class TestNode extends GraphTestBase
     {    
     public TestNode( String name )
@@ -117,42 +115,36 @@ public class TestNode extends GraphTestBase
         associated strings test equal. 
     */
     private Object [][] eqTestCases()
-        {
-        try
-            {
-            Node.cache( false );           
-            AnonId id = AnonId.create();
-            LiteralLabel L2 = LiteralLabelFactory.create( id.toString(), "", false );
-            
-            LiteralLabel LLang1 = LiteralLabelFactory.create( "xyz", "en", null) ;
-            LiteralLabel LLang2 = LiteralLabelFactory.create( "xyz", "EN", null) ;
-            
-            String U2 = id.toString();
-            String N2 = id.toString();
-            return new Object [][]
-                {
-                    { Node.ANY, "0" },
-                    { Node.createAnon( id ), "1" },
-                    { Node.createAnon(), "2" },
-                    { Node.createAnon( id ), "1" },
-                    { Node.createLiteral( L ), "3" },
-                    
-                    { Node.createLiteral( L2 ), "4" },
-                    { Node.createLiteral( L ), "3" },
-                    { Node.createURI( U ), "5" },
-                    { Node.createURI( U2 ), "6" },
-                    { Node.createURI( U ), "5" },
-                    { Node.createVariable( N ), "7" },
-                    { Node.createVariable( N2 ), "8" },
-                    { Node.createVariable( N ), "7" } ,
+    {
+        AnonId id = AnonId.create();
+        LiteralLabel L2 = LiteralLabelFactory.create( id.toString(), "", false );
 
-                    { Node.createLiteral( LLang1 ), "9" },
-                    { Node.createLiteral( LLang2 ), "10" },
-                };
-            }
-        finally
-            { Node.cache( true ); }
-        }
+        LiteralLabel LLang1 = LiteralLabelFactory.create( "xyz", "en", null) ;
+        LiteralLabel LLang2 = LiteralLabelFactory.create( "xyz", "EN", null) ;
+
+        String U2 = id.toString();
+        String N2 = id.toString();
+        return new Object [][]
+            {
+            { Node.ANY, "0" },
+            { Node.createAnon( id ), "1" },
+            { Node.createAnon(), "2" },
+            { Node.createAnon( id ), "1" },
+            { Node.createLiteral( L ), "3" },
+
+            { Node.createLiteral( L2 ), "4" },
+            { Node.createLiteral( L ), "3" },
+            { Node.createURI( U ), "5" },
+            { Node.createURI( U2 ), "6" },
+            { Node.createURI( U ), "5" },
+            { Node.createVariable( N ), "7" },
+            { Node.createVariable( N2 ), "8" },
+            { Node.createVariable( N ), "7" } ,
+
+            { Node.createLiteral( LLang1 ), "9" },
+            { Node.createLiteral( LLang2 ), "10" },
+            };
+    }
         
     public void testNodeEquals() 
         {
@@ -186,24 +178,18 @@ public class TestNode extends GraphTestBase
         }
         
     public void testEquals()
-        {
-        try
-            {
-            Node.cache( false );
-            assertDiffer( "different variables", Node.createVariable( "xx" ), Node.createVariable( "yy" ) );
-            assertEquals( "same vars", Node.createVariable( "aa" ), Node.createVariable( "aa" ) );
-            assertEquals( "same URI", Node.createURI( U ), Node.createURI( U ) );
-            assertEquals( "same anon", Node.createAnon( A ), Node.createAnon( A ) );
-            assertEquals( "same literal", Node.createLiteral( L ), Node.createLiteral( L ) );
-            assertFalse( "distinct URIs", Node.createURI( U ) == Node.createURI( U ) );
-            assertFalse( "distinct hyphens", Node.createAnon( A ) == Node.createAnon( A ) );
-            assertFalse( "distinct literals", Node.createLiteral( L ) == Node.createLiteral( L ) );
-            assertFalse( "distinct vars", Node.createVariable( "aa" ) == Node.createVariable( "aa" ) );
-            }
-        finally
-            { Node.cache( true ); }
-        }
-        
+    {
+        assertDiffer( "different variables", Node.createVariable( "xx" ), Node.createVariable( "yy" ) );
+        assertEquals( "same vars", Node.createVariable( "aa" ), Node.createVariable( "aa" ) );
+        assertEquals( "same URI", Node.createURI( U ), Node.createURI( U ) );
+        assertEquals( "same anon", Node.createAnon( A ), Node.createAnon( A ) );
+        assertEquals( "same literal", Node.createLiteral( L ), Node.createLiteral( L ) );
+        assertFalse( "distinct URIs", Node.createURI( U ) == Node.createURI( U ) );
+        assertFalse( "distinct hyphens", Node.createAnon( A ) == Node.createAnon( A ) );
+        assertFalse( "distinct literals", Node.createLiteral( L ) == Node.createLiteral( L ) );
+        assertFalse( "distinct vars", Node.createVariable( "aa" ) == Node.createVariable( "aa" ) );
+    }
+
     /**
         test that the label of a Node can be retrieved from that Node in
         a way appropriate to that Node.
@@ -275,18 +261,6 @@ public class TestNode extends GraphTestBase
         assertDiffer( Node_Variable.variable( "aaa" ), Node_Variable.variable( "yyy" ) );
         }
     
-    public void testCache()
-    {
-        if ( Node.isCaching() )
-        {
-            assertEquals( Node_Variable.variable( "xxx" ), Node_Variable.variable( "xxx" ) );
-            assertTrue( "remembers URI", Node.createURI( U ) == Node.createURI( U ) );   
-            assertTrue( "remembers literal", Node.createLiteral( L ) == Node.createLiteral( L ) );
-            assertTrue( "remembers hyphens", Node.createAnon( A ) == Node.createAnon( A ) );
-            assertTrue( "remembers variables", Node.createVariable( N ) == Node.createVariable( N ) );
-            assertFalse( "is not confused", Node.createVariable( N ) == Node.createURI( N ) );
-        }
-    }        
     /** 
         Test that the create method does sensible things on null and ""
     */
