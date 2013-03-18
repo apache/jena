@@ -516,7 +516,7 @@ public final class TokenizerText implements Tokenizer
 
         // If we made no progress, nothing found, not even a keyword -- it's an error.
         if ( posn == reader.getPosition() )  
-            exception("Unknown char: %c(%d)",ch,ch) ;
+            exception("Unknown char: %c(%d;0x%04X)",ch,ch,ch) ;
 
         if ( Checking ) checkKeyword(token.getImage()) ;
         
@@ -593,7 +593,7 @@ public final class TokenizerText implements Tokenizer
             ch = reader.peekChar() ;
             boolean valid = false ;
 
-            if ( isLocalPart && (  ch == CH_PERCENT|| ch == CH_RSLASH ) )
+            if ( isLocalPart && ( ch == CH_PERCENT|| ch == CH_RSLASH ) )
             {
                 reader.readChar() ;
                 if ( chDot != 0 )
@@ -807,8 +807,7 @@ public final class TokenizerText implements Tokenizer
         return stringBuilder.toString() ;
     }
 
-    // Blank node label: letters, numbers and '-', '_'
-    // Strictly, can't start with "-" or digits.
+    // BLANK_NODE_LABEL    ::=     '_:' (PN_CHARS_U | [0-9]) ((PN_CHARS | '.')* PN_CHARS)?
 
     private String readBlankNodeLabel()
     {
@@ -822,22 +821,45 @@ public final class TokenizerText implements Tokenizer
                 exception("Blank node label missing") ;
             //if ( ! isAlpha(ch) && ch != '_' )
             // Not strict
-            if ( ! isAlphaNumeric(ch) && ch != '_' )
+            
+            if ( ! RiotChars.isPNChars_U_N(ch) )
                 exception("Blank node label does not start with alphabetic or _ :"+(char)ch) ;
             reader.readChar() ;
             stringBuilder.append((char)ch) ;
         }
-        // Remainder.
+        
+        // Remainder.  DOT can't be last so do a delay on that.
+        
+        int chDot = 0 ;
+        
         for(;;)
         {
             int ch = reader.peekChar() ;
             if ( ch == EOF )
                 break ;
-            if ( ! isAlphaNumeric(ch) && ch != '-' && ch != '_' )
+            
+            // DOT magic.
+            if ( ! ( RiotChars.isPNChars(ch) || ch == CH_DOT ) )
                 break ;
             reader.readChar() ;
-            stringBuilder.append((char)ch) ;
+            
+            if ( chDot != 0 )
+            {
+                stringBuilder.append((char)chDot) ;
+                chDot = 0 ;
+            }
+            
+            if ( ch != CH_DOT )
+                stringBuilder.append((char)ch) ;
+            else
+                //DOT - delay until next loop.
+                chDot = ch ;
         }
+        
+        if ( chDot == CH_DOT )
+            // Unread it.
+            reader.pushbackChar(chDot) ;
+        
         //        if ( ! seen )
         //            exception("Blank node label missing") ;
         return stringBuilder.toString() ; 
