@@ -32,6 +32,7 @@ import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -169,7 +170,9 @@ public class StreamRDFLib
 
         @Override public void prefix(String prefix, String uri)
         {
-            graph.getPrefixMapping().setNsPrefix(prefix, uri) ;
+            try { // Jena applies XML rules to prerfixes.
+                graph.getPrefixMapping().setNsPrefix(prefix, uri) ;
+            } catch (JenaException ex) {} 
         }
     }
 
@@ -204,7 +207,9 @@ public class StreamRDFLib
 
         @Override public void prefix(String prefix, String uri)
         {
-            prefixMapping.setNsPrefix(prefix, uri) ;
+            try { // Jena applies XML rules to prerfixes.  
+                prefixMapping.setNsPrefix(prefix, uri) ;
+            } catch (JenaException ex) {}
         }
     }
 
