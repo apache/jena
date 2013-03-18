@@ -71,6 +71,9 @@ VARNAME        ::=  ( PN_CHARS_U  | [0-9] ) ( PN_CHARS_U | [0-9] | #x00B7 | [#x0
 PN_CHARS       ::=  PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
 PN_PREFIX      ::=  PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
 PN_LOCAL       ::=  ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
+
+//  "high surrogates" (D800–DBFF) "low surrogates" (DC00–DFFF).
+Notes: PN_CHARS_BASE has a hole above #xD800 -- these are the  surrogate pairs 
      */
     
     public static boolean isPNCharsBase(int ch)
@@ -82,7 +85,10 @@ PN_LOCAL       ::=  ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
         return 
             r(ch, 'a', 'z') || r(ch, 'A', 'Z') || r(ch, 0x00C0, 0x00D6) || r(ch, 0x00D8, 0x00F6) || r(ch, 0x00F8, 0x02FF) ||
             r(ch, 0x0370, 0x037D) || r(ch, 0x037F, 0x1FFF) || r(ch, 0x200C, 0x200D) || r(ch, 0x2070, 0x218F) ||
-            r(ch, 0x2C00, 0x2FEF) || r(ch, 0x3001, 0xD7FF) || r(ch, 0xF900, 0xFDCF) || r(ch, 0xFDF0, 0xFFFD) ||
+            r(ch, 0x2C00, 0x2FEF) || r(ch, 0x3001, 0xD7FF) ||
+            // Surrogate pairs
+            r(ch, 0xD800, 0xDFFF) ||
+            r(ch, 0xF900, 0xFDCF) || r(ch, 0xFDF0, 0xFFFD) || 
             r(ch, 0x10000, 0xEFFFF) ; // Outside the basic plain. 
     }
     
