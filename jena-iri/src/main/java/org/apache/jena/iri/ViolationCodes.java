@@ -5091,8 +5091,8 @@ This class is not part of the API.
             new ViolationCodeInfo(
                 UNASSIGNED_UNICODE_CHARACTER,
                 "UNASSIGNED_UNICODE_CHARACTER",
-                "The character code is not assigned in the version of Unicode implemented here. Check validity of code, consider updating your copy of icu4j.jar.",
-                "<p>The character code is not assigned in the version of Unicode implemented here. Check validity of code, consider updating your copy of icu4j.jar.</p>",
+                "The character code is not assigned in the version of Unicode implemented here.",
+                "<p>The character code is not assigned in the version of Unicode implemented here.</p>",
                 0|Force.minting,
                 new InSpec[]{
                   
@@ -7505,7 +7505,6 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
         
     
 /**The character code is not assigned in the version of Unicode implemented here.
-      Check validity of code, consider updating your copy of icu4j.jar.
       
           <p>This violates the following specifications:
           <a href="#ref-Unicode">[Unicode]</a>, <a href="#ref-IRI">[IRI]</a>.

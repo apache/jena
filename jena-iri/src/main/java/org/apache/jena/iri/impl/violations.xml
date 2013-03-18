@@ -1656,9 +1656,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
     <violation>
       <name>UNASSIGNED_UNICODE_CHARACTER</name>
       <minting/>
-      <description>The character code is not assigned in the version of Unicode implemented here.
-      Check validity of code, consider updating your copy of icu4j.jar.
-      </description>
+      <description>The character code is not assigned in the version of Unicode implemented here.</description>
       <also ref="Unicode"/>
       <also ref="IRI"/>
     </violation>
