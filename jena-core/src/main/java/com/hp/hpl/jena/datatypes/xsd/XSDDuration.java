@@ -112,45 +112,52 @@ public class XSDDuration extends AbstractDateTime {
      */
     @Override
     public String toString() {
-         StringBuffer message = new StringBuffer(30);
-         int negate = 1;
-         if ( data[CY]<0 || data[M]<0 || data[D]<0 || data[h]<0 || data[m]<0 || data[s]<0 || data[ms]<0 ) {
-             message.append('-');
-             negate=-1;
-         }
-         message.append('P');
-         if (data[CY] != 0) {
-             message.append(negate * data[CY]);
-             message.append('Y');
-         }
-         if (data[M] != 0) {
-             message.append(negate * data[M]);
-             message.append('M');
-         }
-         if (data[D] != 0) {
-             message.append(negate * data[D]);
-             message.append('D');
-         }
-         if (data[h] != 0 || data[m] != 0 || data[s] != 0 || data[ms] != 0) {
-             message.append('T');
-             if (data[h] != 0) {
-                 message.append(negate * data[h]);
-                 message.append('H');
-             }
-             if (data[m] != 0) {
-                 message.append(negate * data[m]);
-                 message.append('M');
-             }
-             if (data[s] != 0 && data[ms] != 0) {
-                 message.append(negate * data[s]);
-                 message.append('.');
-                 XSDAbstractDateTimeType.appendFractionalTime(message, negate * data[ms], data[msscale]);
-                 message.append('S');
-             }
-         }
+        // All zeros -> return canonical zero duration.
+        if ( data[CY]==0 && data[M]==0 && data[D]==0 && data[h]==0 && data[m]==0 && data[s]==0 && data[ms]==0 )
+            return "PT0S" ;
 
-         return message.toString();
-     }
+        StringBuffer message = new StringBuffer(30);
+        int negate = 1;
+        if ( data[CY]<0 || data[M]<0 || data[D]<0 || data[h]<0 || data[m]<0 || data[s]<0 || data[ms]<0 ) {
+            message.append('-');
+            negate=-1;
+        }
+        // All zeros -> return canonical zero duration.
+        if ( data[CY]==0 && data[M]==0 && data[D]==0 && data[h]==0 && data[m]==0 && data[s]==0 && data[ms]==0 )
+            return "PT0S" ;
+        message.append('P');
+        if (data[CY] != 0) {
+            message.append(negate * data[CY]);
+            message.append('Y');
+        }
+        if (data[M] != 0) {
+            message.append(negate * data[M]);
+            message.append('M');
+        }
+        if (data[D] != 0) {
+            message.append(negate * data[D]);
+            message.append('D');
+        }
+        if (data[h] != 0 || data[m] != 0 || data[s] != 0 || data[ms] != 0) {
+            message.append('T');
+            if (data[h] != 0) {
+                message.append(negate * data[h]);
+                message.append('H');
+            }
+            if (data[m] != 0) {
+                message.append(negate * data[m]);
+                message.append('M');
+            }
+            if (data[s] != 0 && data[ms] != 0) {
+                message.append(negate * data[s]);
+                message.append('.');
+                XSDAbstractDateTimeType.appendFractionalTime(message, negate * data[ms], data[msscale]);
+                message.append('S');
+            }
+        }
+
+        return message.toString();
+    }
 
     // The following duration comparison code is based on Xerces DurationDV, Apache Software Foundation
     
