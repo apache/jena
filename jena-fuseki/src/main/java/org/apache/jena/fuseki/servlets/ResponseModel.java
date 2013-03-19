@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static org.apache.jena.fuseki.servlets.ServletBase.* ;
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -82,7 +83,7 @@ public class ResponseModel
                 msg = "No Accept: header" ;
             else
                 msg = "Accept: "+x+" : Not understood" ;
-            SPARQL_ServletBase.error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
+            error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
         }
 
         String contentType = mimeType ;
@@ -95,9 +96,10 @@ public class ResponseModel
             charset = WebContent.charsetUTF8 ;
         }
 
-        Lang lang = WebContent.contentTypeToLang(contentType) ; 
-//        RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
-//
+        Lang lang = WebContent.contentTypeToLang(contentType) ;
+        if ( lang == null )
+            errorBadRequest("Can't determine output content type: "+contentType) ;
+        
 //        if ( rdfw instanceof RDFXMLWriterI )
 //            rdfw.setProperty("showXmlDeclaration", "true") ;
 
@@ -105,7 +107,7 @@ public class ResponseModel
     //        // Time/space tradeoff.
     //        try {
     //            OutputStream out = new NullOutputStream() ;
-    //            rdfw.write(model, out, null) ;
+    //            RDFDataMgr.write(out, model, lang) ;
     //            IO.flush(out) ;
     //        } catch (JenaException ex)
     //        {
@@ -119,7 +121,7 @@ public class ResponseModel
             RDFDataMgr.write(out, model, lang) ;
             out.flush() ;
         }
-        catch (Exception ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
+        catch (Exception ex) { errorOccurred(ex) ; }
     }
 }
 

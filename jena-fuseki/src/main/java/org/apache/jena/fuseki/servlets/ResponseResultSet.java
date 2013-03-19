@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static org.apache.jena.fuseki.servlets.ServletBase.* ;
 import java.io.IOException ;
 import java.util.HashMap ;
 import java.util.Map ;
@@ -238,7 +239,7 @@ public class ResponseResultSet
             return ;
         }
         
-        SPARQL_ServletBase.errorBadRequest("Can't determine output serialization: "+serializationType) ;
+        errorBadRequest("Can't determine output serialization: "+serializationType) ;
     }
     
     
@@ -253,7 +254,7 @@ public class ResponseResultSet
             out.flush() ;
             // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
             // then the JSON callback closing details can't be added. 
-        } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
+        } catch (IOException ex) { errorOccurred(ex) ; }
     }
 
     public static void setHttpResponse(HttpServletRequest httpRequest,
@@ -290,7 +291,7 @@ public class ResponseResultSet
         try {
             output(contentType, null, proc, httpRequest, httpResponse) ;
             httpResponse.flushBuffer() ;
-        } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
+        } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
     private static void jsonOutput(String contentType, OutputContent proc,
@@ -314,7 +315,7 @@ public class ResponseResultSet
                 out.println(")") ;
             httpResponse.flushBuffer();
 
-        } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
+        } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
     private static void textOutput(String contentType, OutputContent proc, 
@@ -325,6 +326,6 @@ public class ResponseResultSet
             output(contentType, WebContent.charsetUTF8, proc, httpRequest, httpResponse) ;
             out.flush() ;
             httpResponse.flushBuffer();
-        } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
+        } catch (IOException ex) { errorOccurred(ex) ; }
     }
 }
