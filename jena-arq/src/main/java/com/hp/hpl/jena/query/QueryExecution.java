@@ -68,7 +68,17 @@ public interface QueryExecution
      */ 
     public Query getQuery() ;
 
-    /** Execute a SELECT query */
+    /**
+     *  Execute a SELECT query 
+     *  <p>
+     *  <strong>Important:</strong> The name of this method is somewhat of a misnomer in that 
+     *  depending on the underlying implementation this typically does not execute the
+     *  SELECT query but rather answers a wrapper over an internal data structure that can be
+     *  used to answer the query.  In essence calling this method only returns a plan for
+     *  executing this query which only gets evaluated when you actually start iterating
+     *  over the results.
+     *  </p>
+     *  */
 	public ResultSet execSelect();
     
     /** Execute a CONSTRUCT query */
@@ -81,9 +91,18 @@ public interface QueryExecution
     
     /**
      * Execute a CONSTRUCT query, returning the results as an iterator of {@link Triple}.
+     * <p>
      * <b>Caution:</b> This method may return duplicate Triples.  This method may be useful if you only
      * need the results for stream processing, as it can avoid having to place the results in a Model.
-     * 
+     * </p>
+     * <p>
+     * <strong>Important:</strong> The name of this method is somewhat of a misnomer in that 
+     * depending on the underlying implementation this typically does not execute the
+     * CONSTRUCT query but rather answers a wrapper over an internal data structure that can be
+     * used to answer the query.  In essence calling this method only returns a plan for
+     * executing this query which only gets evaluated when you actually start iterating
+     * over the results.
+     * </p>
      * @return An iterator of Triple objects (possibly containing duplicates) generated
      * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
      */
@@ -99,9 +118,18 @@ public interface QueryExecution
     
     /**
      * Execute a DESCRIBE query, returning the results as an iterator of {@link Triple}.
+     * <p>
      * <b>Caution:</b> This method may return duplicate Triples.  This method may be useful if you only
      * need the results for stream processing, as it can avoid having to place the results in a Model.
-     * 
+     * </p>
+     * <p>
+     * <strong>Important:</strong> The name of this method is somewhat of a misnomer in that 
+     * depending on the underlying implementation this typically does not execute the
+     * DESCRIBE query but rather answers a wrapper over an internal data structure that can be
+     * used to answer the query.  In essence calling this method only returns a plan for
+     * executing this query which only gets evaluated when you actually start iterating
+     * over the results.
+     * </p>
      * @return An iterator of Triple objects (possibly containing duplicates) generated as the output of the DESCRIBE query.
      */
     public Iterator<Triple> execDescribeTriples();
