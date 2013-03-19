@@ -870,5 +870,25 @@ public class TestBugs extends TestCase {
 //            System.out.println(" - " + i.next());
 //        }
 //    }
+    
+    /**
+     * Potential problem in handling of maxCardinality(0) assertions in the
+     * presence of disjointness.
+     */
+    public void testMaxCard2() {
+        doTestmaxCard2(OntModelSpec.OWL_MEM_MINI_RULE_INF);
+        doTestmaxCard2(OntModelSpec.OWL_MEM_RULE_INF);
+    }
+    
+    
+    private void doTestmaxCard2(OntModelSpec spec) {
+        String NS = "http://jena.hpl.hp.com/eg#";
+        Model base = FileManager.get().loadModel("testing/reasoners/bugs/terrorism.owl");
+        OntModel model = ModelFactory.createOntologyModel(spec, base);
+        OntClass event = model.getOntClass(NS + "Event");
+        List<OntClass> subclasses = event.listSubClasses().toList();
+        assertFalse( subclasses.contains( OWL.Nothing ) );
+        assertEquals(3, subclasses.size());
+    }
 
 }

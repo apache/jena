@@ -1,0 +1,49 @@
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://jena.hpl.hp.com/eg#"
+    xmlns:terror="http://jena.hpl.hp.com/eg#" xml:base="http://jena.hpl.hp.com/eg"
+    xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+
+    <owl:Class rdf:ID="Event">
+        <owl:disjointWith rdf:resource="#Person" />
+    </owl:Class>
+
+    <owl:Class rdf:ID="NewsOrganization">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#associatedWith" />
+                <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">0
+                </owl:maxCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <owl:Class rdf:ID="Killing">
+        <rdfs:subClassOf rdf:resource="#Event" />
+    </owl:Class>
+
+    <owl:Class rdf:ID="TerrorAttack">
+        <rdfs:subClassOf rdf:resource="#Killing" />
+    </owl:Class>
+
+    <owl:Class rdf:ID="AircraftHijacking">
+        <rdfs:subClassOf rdf:resource="#TerrorAttack" />
+    </owl:Class>
+
+    <owl:Class rdf:ID="NewsTopic">
+        <owl:disjointWith rdf:resource="#Person" />
+        <owl:disjointWith rdf:resource="#Event" />
+    </owl:Class>
+
+
+    <owl:ObjectProperty rdf:ID="associatedWith">
+        <rdfs:domain rdf:resource="#Person" />
+    </owl:ObjectProperty>
+
+</rdf:RDF>
