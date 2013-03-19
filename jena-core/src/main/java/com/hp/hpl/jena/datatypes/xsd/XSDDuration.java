@@ -148,10 +148,13 @@ public class XSDDuration extends AbstractDateTime {
                 message.append(negate * data[m]);
                 message.append('M');
             }
-            if (data[s] != 0 && data[ms] != 0) {
+            if (data[s] != 0 || data[ms] != 0) {
                 message.append(negate * data[s]);
-                message.append('.');
-                XSDAbstractDateTimeType.appendFractionalTime(message, negate * data[ms], data[msscale]);
+                if ( data[ms] != 0 )
+                {
+                    message.append('.');
+                    XSDAbstractDateTimeType.appendFractionalTime(message, negate * data[ms], data[msscale]);
+                }
                 message.append('S');
             }
         }
