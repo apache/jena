@@ -366,9 +366,10 @@ public class RETEEngine implements FRuleEngineI {
             logger.debug("Add triple: " + PrintUtil.print(triple));
         }
         if (deletesPending.size() > 0) deletesPending.remove(triple);
-        if (!addsHash.contains(triple))      // Experimental, not sure why it wasn't done before
+        if (!addsHash.contains(triple)) {      // Experimental, not sure why it wasn't done before
             addsPending.add(triple);
             addsHash.add(triple);
+        }
         if (deduction) {
             infGraph.addDeduction(triple);
         }
@@ -411,8 +412,8 @@ public class RETEEngine implements FRuleEngineI {
     protected synchronized Triple nextAddTriple() {
         int size = addsPending.size(); 
         if (size > 0) {
-        	Triple t=addsPending.remove(size - 1);
-        	addsHash.remove(t);
+            Triple t=addsPending.remove(size - 1);
+            addsHash.remove(t);
             return t;
         }
         return null;
