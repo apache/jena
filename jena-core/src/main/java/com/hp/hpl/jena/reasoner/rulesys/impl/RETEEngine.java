@@ -49,8 +49,13 @@ public class RETEEngine implements FRuleEngineI {
     /** Queue of newly added triples waiting to be processed */
     protected List<Triple> addsPending = new ArrayList<Triple>();
     
+    /** A HashSet of pending triples for faster lookup */
+    protected HashSet<Triple> addsHash = new HashSet<Triple>();
+    
+    
     /** Queue of newly deleted triples waiting to be processed */
     protected List<Triple> deletesPending = new ArrayList<Triple>();
+    
     
     /** The conflict set of rules waiting to fire */
     protected RETEConflictSet conflictSet;
@@ -361,8 +366,9 @@ public class RETEEngine implements FRuleEngineI {
             logger.debug("Add triple: " + PrintUtil.print(triple));
         }
         if (deletesPending.size() > 0) deletesPending.remove(triple);
-        if (!addsPending.contains(triple))      // Experimental, not sure why it wasn't done before
+        if (!addsHash.contains(triple))      // Experimental, not sure why it wasn't done before
             addsPending.add(triple);
+            addsHash.add(triple);
         if (deduction) {
             infGraph.addDeduction(triple);
         }
@@ -375,6 +381,7 @@ public class RETEEngine implements FRuleEngineI {
      */
     public synchronized void deleteTriple(Triple triple, boolean deduction) {
         addsPending.remove(triple);
+        addsHash.remove(triple);
         deletesPending.add(triple);
         if (deduction) {
             infGraph.getCurrentDeductionsGraph().delete(triple);
@@ -404,7 +411,9 @@ public class RETEEngine implements FRuleEngineI {
     protected synchronized Triple nextAddTriple() {
         int size = addsPending.size(); 
         if (size > 0) {
-            return addsPending.remove(size - 1);
+        	Triple t=addsPending.remove(size - 1);
+        	addsHash.remove(t);
+            return t;
         }
         return null;
     }
