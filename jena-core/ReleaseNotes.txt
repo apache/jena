@@ -5,6 +5,7 @@ Release Notes
 
 + RIOT is the main way to read and write RDF data.
   http://jena.apache.org/documentation/io/
++ JENA-412 : RETE patch for faster forward rule execution (from Tilo Fischer)
 
 ==== Jena 2.10.0
 
