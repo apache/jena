@@ -531,7 +531,7 @@ public class Query extends Prologue implements Cloneable, Printable
     // Record allocated aggregations.
     // Later: The same aggregation expression used in a query 
     // will always lead to the same aggregator.
-    // For now, allocate a fresh one each time (cause the calcutation
+    // For now, allocate a fresh one each time (cause the calculation
     // to be done multiple times but (1) it's unusual to have repeated 
     // aggregators normally and (2) the actual calculation is cheap. 
         
@@ -539,7 +539,6 @@ public class Query extends Prologue implements Cloneable, Printable
     // Commonality?
     
     private List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
-    // Using a LinkedhashMap does seem to give strong enugh hashCode equality. 
     private Map<Var, ExprAggregator> aggregatorsMap = new HashMap<Var, ExprAggregator>() ;
     
     // Note any E_Aggregator created for reuse.
@@ -551,7 +550,7 @@ public class Query extends Prologue implements Cloneable, Printable
     public Expr allocAggregate(Aggregator agg)
     {
         // We need to track the aggregators in case one aggregator is used twice, e.g. in HAVING and in SELECT expression
-        // (is is that much harm to do twice?  Yes, if distinct.)
+        // (is that much harm to do twice?  Yes, if distinct.)
         String key = agg.key() ;
         
         Var v = aggregatorsAllocated.get(key); 
