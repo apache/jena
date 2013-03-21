@@ -96,10 +96,11 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
      .
 
 # ---- RDFS Inference models
-# Thiese must be incorporate in a dataset in order to use them.
+# These must be incorporate in a dataset in order to use them.
 # All in one file.
 
-<#model_inf_1> rdfs:label "Inf-1" ;
+<#model_inf_1> a ja:InfModel ;
+    rdfs:label "Inf-1" ;
     ja:baseModel 
         [ a ja:MemoryModel ;
           ja:content [ja:externalContent <file:Data/test_data_rdfs.ttl>] ;
@@ -110,7 +111,8 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
 # Separate ABox and TBox
 
-<#model_inf_2> rdfs:label "Inf-2" ;
+<#model_inf_2> a ja:InfModel ;
+    rdfs:label "Inf-2" ;
     ja:baseModel 
         [ a ja:MemoryModel ;
           ja:content [ja:externalContent <file:Data/test_abox.ttl>] ;
