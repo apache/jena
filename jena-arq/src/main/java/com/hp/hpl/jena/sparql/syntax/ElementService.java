@@ -55,7 +55,6 @@ public class ElementService extends Element
     
     public Element getElement() { return element ; } 
     public Node getServiceNode() { return serviceNode ; }
-    public String getServiceURI() { return serviceNode.getURI(); }
     public boolean getSilent() { return silent ; } 
     
     @Override
