@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 
-/** A botton-top application of a transformation of SPARQL algebra */  
+/** A bottom-top application of a transformation of SPARQL algebra */  
 public class Transformer
 {
     private static Transformer singleton = new Transformer();

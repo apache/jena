@@ -23,7 +23,7 @@ import java.util.List ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 
 /** One step in the transformation process.
- *  Used with Transformer, performs a a bottom-up rewrite.
+ *  Used with Transformer, performs a bottom-up rewrite.
  */
 public class TransformCopy implements Transform
 {

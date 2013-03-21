@@ -41,14 +41,14 @@ public class PatternVars
     public static void vars(Element element, PatternVarsVisitor visitor)
     {
         ElementWalker.Walker walker = new WalkerSkipMinus(visitor) ;
-        ElementWalker.walk(element, walker) ;
+        ElementWalker.walk$(element, walker) ;
     }
     
     public static class WalkerSkipMinus extends ElementWalker.Walker
     {
         protected WalkerSkipMinus(ElementVisitor visitor)
         {
-            super(visitor) ;
+            super(visitor, null, null) ;
         }
         
         @Override
