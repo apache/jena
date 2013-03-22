@@ -37,8 +37,6 @@ public class TestStreamManager extends BaseTest
 {
     private static final String directory = "testing/RIOT/StreamManager" ;
     private static final String absDirectory = new File(directory).getAbsolutePath() ;
-
-    
     
     private static StreamManager streamMgrDir ;
     private static StreamManager streamMgrHere ;

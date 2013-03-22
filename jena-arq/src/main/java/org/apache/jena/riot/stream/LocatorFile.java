@@ -75,12 +75,15 @@ public class LocatorFile implements Locator
         String scheme = FileUtils.getScheme(filenameIRI) ;
         String fn = filenameIRI ;
         // Windows : C:\\ is not a scheme name!
-        if ( scheme != null && scheme.length() > 1 )
+        if ( scheme != null ) 
         {
-            if ( ! scheme.equalsIgnoreCase("file") )
-                // Not filename or a file: IRI
-                return null ;
-            fn = IRILib.IRIToFilename(filenameIRI) ;
+            if ( scheme.length() > 1 )
+            {
+                if ( ! scheme.equalsIgnoreCase("file") )
+                    // Not filename or a file: IRI
+                    return null ;
+                fn = IRILib.IRIToFilename(filenameIRI) ;
+            }
         }
         // fn is the file name to use.
         // If it is relative, and we have a different working directory, prepend that.  
