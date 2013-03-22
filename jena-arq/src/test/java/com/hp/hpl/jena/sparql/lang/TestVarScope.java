@@ -44,18 +44,24 @@ public class TestVarScope extends BaseTest
     public void scope_05() { scope("SELECT (?o+1 AS ?x) (?o+1 AS ?x) { ?s ?p ?o }") ; }
 
     @Test public void scope_06() { scope("SELECT (?z+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?z)") ; }
-        
+    
     @Test(expected=QueryException.class)
     public void scope_07() { scope("SELECT (?o+1 AS ?x) { ?s ?p ?o } GROUP BY (?o+5 AS ?x)") ; }
+
+    @Test public void scope_08() { scope("SELECT (count(*) AS ?X) (?X+1 AS ?Z) { ?s ?p ?o }") ; }
+
+    @Test public void scope_09() { scope("SELECT (count(*) AS ?X) (?X+?o AS ?Z) { ?s ?p ?o } GROUP BY ?o") ; }
     
-    @Test public void scope_08() { scope("SELECT (?o+1 AS ?x) { ?s ?p ?o MINUS { ?s ?p ?x} } ") ; }
+    @Test public void scope_10() { scope("SELECT (?o+1 AS ?x) { ?s ?p ?o MINUS { ?s ?p ?x} } ") ; }
     
     @Test(expected=QueryException.class)
-    public void scope_09() { scope("SELECT (?o+1 AS ?x) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ; }
+    public void scope_15() { scope("SELECT (?o+1 AS ?x) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ; }
     
-    @Test public void scope_10() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ; }
-    @Test public void scope_11() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o FILTER(?x > 57)} } } ") ; }
+    @Test public void scope_16() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o } } } ") ; }
+
+    @Test public void scope_17() { scope("SELECT (?o+1 AS ?o) { { SELECT (123 AS ?x) {?s ?p ?o FILTER(?x > 57)} } } ") ; }
     
+
     @Test public void scope_20() { scope("SELECT ?x { ?x ?p ?o } GROUP BY ?x") ; }
     
     @Test (expected=QueryException.class)
