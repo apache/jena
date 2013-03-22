@@ -34,111 +34,24 @@ public class ArgDecl
     private void init(boolean hasValue, String name)
     {
         takesValue = hasValue ;
-        firstName = name ;
+        firstName = canonicalForm(name) ;
     }
     
     /** Create a declaration for a command argument.
      * 
      * @param hasValue  Does it take a value or not?
      * @param name      Name of argument
+     * @param names     Alternative names
      */
     
-    public ArgDecl(boolean hasValue, String name)
+    public ArgDecl(boolean hasValue, String name, String...names)
     {
         init(hasValue, name) ;
         addName(name) ;
+        for ( String n : names )
+            addName(n) ;
     }
 
-    /** Create a declaration for a command argument.
-     * 
-     * @param hasValue  Does it take a value or not?
-     * @param name1      Name of argument
-     * @param name2      Name of argument
-     */
-
-    public ArgDecl(boolean hasValue, String name1, String name2)
-    {
-        init(hasValue, name1) ;
-        addName(name1) ;
-        addName(name2) ;
-    }
-    
-    /** Create a declaration for a command argument.
-     * 
-     * @param hasValue  Does it take a value or not?
-     * @param name1      Name of argument
-     * @param name2      Name of argument
-     * @param name3      Name of argument
-     */
-
-    public ArgDecl(boolean hasValue, String name1, String name2, String name3)
-    {
-        init(hasValue, name1) ;
-        addName(name1) ;
-        addName(name2) ;
-        addName(name3) ;
-    }
-    
-    /** Create a declaration for a command argument.
-     * 
-     * @param hasValue  Does it take a value or not?
-     * @param name1      Name of argument
-     * @param name2      Name of argument
-     * @param name3      Name of argument
-     * @param name4      Name of argument
-     */
-
-    public ArgDecl(boolean hasValue, String name1, String name2, String name3, String name4)
-    {
-        init(hasValue, name1) ;
-        addName(name1) ;
-        addName(name2) ;
-        addName(name3) ;
-        addName(name4) ;
-    }
-    
-    /** Create a declaration for a command argument.
-     * 
-     * @param hasValue  Does it take a value or not?
-     * @param name1      Name of argument
-     * @param name2      Name of argument
-     * @param name3      Name of argument
-     * @param name4      Name of argument
-     * @param name5      Name of argument
-     */
-
-    public ArgDecl(boolean hasValue, String name1, String name2, String name3, String name4, String name5)
-    {
-        init(hasValue, name1) ;
-        addName(name1) ;
-        addName(name2) ;
-        addName(name3) ;
-        addName(name4) ;
-        addName(name5) ;
-    }
-    
-    /** Create a declaration for a command argument.
-     * 
-     * @param hasValue  Does it take a value or not?
-     * @param name1      Name of argument
-     * @param name2      Name of argument
-     * @param name3      Name of argument
-     * @param name4      Name of argument
-     * @param name5      Name of argument
-     * @param name6      Name of argument
-     */
-
-    public ArgDecl(boolean hasValue, String name1, String name2, String name3, String name4, String name5, String name6)
-    {
-        init(hasValue, name1) ;
-        addName(name1) ;
-        addName(name2) ;
-        addName(name3) ;
-        addName(name4) ;
-        addName(name5) ;
-        addName(name6) ;
-    }
-    
     public void addName(String name)
     {
         name = canonicalForm(name) ;

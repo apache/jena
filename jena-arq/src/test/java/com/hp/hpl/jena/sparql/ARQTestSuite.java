@@ -23,6 +23,7 @@ import junit.framework.TestSuite ;
 import org.apache.jena.atlas.TC_Atlas ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.TC_Riot ;
+import arq.TS_Cmd ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
@@ -54,6 +55,8 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(new JUnit4TestAdapter(TC_Atlas.class)) ;
         ts.addTest(new JUnit4TestAdapter(TC_Riot.class)) ;
 
+        ts.addTest(new JUnit4TestAdapter(TS_Cmd.class)) ;
+        
         // Main ARQ internal test suite.
         ts.addTest(new JUnit4TestAdapter(TC_General.class)) ;
         

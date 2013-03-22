@@ -19,20 +19,21 @@
 package arq;
 import java.util.Iterator ;
 
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Test ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdLineArgs ;
 
-public class TestCmdLine extends TestCase
+public class TestCmdLine extends BaseTest
 {
-    public void test_Simple1()
+    @Test public void test_Simple1()
     {
-        String args[] = new String[]{ ""} ;
+        String args[] = new String[]{""} ;
         CmdLineArgs cl = new CmdLineArgs(args) ;
         cl.process() ;
     }
     
-    public void test_Flag1()
+    @Test public void test_Flag1()
     {
         String args[] = new String[]{ ""} ;
         CmdLineArgs cl = new CmdLineArgs(args) ;
@@ -42,7 +43,7 @@ public class TestCmdLine extends TestCase
         assertTrue("-a argument found" , ! cl.contains(argA) ) ; 
     }
     
-    public void test_Flag2()
+    @Test public void test_Flag2()
     {
         String args[] = new String[]{ "-a"} ;
         CmdLineArgs cl = new CmdLineArgs(args) ;
@@ -52,7 +53,7 @@ public class TestCmdLine extends TestCase
         assertTrue("No -a argument found" , cl.contains(argA) ) ; 
     }
 
-    public void test_Flag3()
+    @Test public void test_Flag3()
     {
         String args[] = new String[]{ "-a", "filename"} ;
         CmdLineArgs cl = new CmdLineArgs(args) ;
@@ -62,7 +63,7 @@ public class TestCmdLine extends TestCase
         assertTrue("No -a argument found" , cl.contains(argA) ) ; 
     }
     
-    public void test_Arg1()
+    @Test public void test_Arg1()
     {
         String args[] = new String[]{ ""} ;
         CmdLineArgs cl = new CmdLineArgs(args) ;
@@ -72,11 +73,11 @@ public class TestCmdLine extends TestCase
         assertTrue("-arg argument found" , ! cl.contains(argA) ) ; 
     }
     
-    public void test_Arg2()
+    @Test public void test_Arg2()
     {
         String args[] = new String[]{ "-arg=ARG", "filename"} ;
         CmdLineArgs cl = new CmdLineArgs(args) ;
-        ArgDecl argA = new ArgDecl(true, "-arg") ;
+        ArgDecl argA = new ArgDecl(true, "arg") ;
         cl.add(argA) ;
         cl.process() ;
         assertTrue("No -arg= argument found" , cl.contains(argA) ) ; 
@@ -84,7 +85,7 @@ public class TestCmdLine extends TestCase
         assertEquals("", cl.getArg("arg").getValue() , "ARG") ;
     }
     
-    public void test_nArg1()
+    @Test public void test_nArg1()
     {
         String args[] = new String[]{ "-arg=V1", "--arg=V2", "-v"} ;
         CmdLineArgs cl = new CmdLineArgs(args) ;

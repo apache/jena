@@ -149,7 +149,6 @@ public class IRILib
         if ( fn.startsWith("file:") )
             return normalizeFilenameURI(fn) ;
         return plainFilenameToURL(fn) ;
-        // Also: String fn2 = "file://" + new File(fn).toURI().toString().substring(5);
     }
     
     /** Convert an IRI to a filename */
@@ -179,10 +178,9 @@ public class IRILib
         if ( trailingSlash && ! fn.endsWith("/") )
             fn = fn + "/" ;
         
-        // Temporary
         if ( isWindows )
         {
-            // Char 2, 
+            // C:\ => file:///C:/... 
             if ( fn.length() >= 2 && fn.charAt(1) == ':' )
                 // Windows drive letter - already absolute path.
                 // Make "URI" absolute path
