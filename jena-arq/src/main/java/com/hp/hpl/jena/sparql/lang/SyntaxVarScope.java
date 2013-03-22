@@ -148,7 +148,10 @@ public class SyntaxVarScope
         if ( query.hasGroupBy() )
         {
             VarExprList groupKey = query.getGroupBy() ;
-            List<Var> groupVars = groupKey.getVars() ;
+            
+            // Copy - we need to add variables
+            // SELECT (count(*) AS ?C)  (?C+1 as ?D) 
+            List<Var> inScopeVars = new ArrayList<Var>(groupKey.getVars()) ;
             VarExprList exprList = query.getProject() ;
             
             for ( Iterator<Var> iter = exprList.getVars().iterator() ; iter.hasNext() ; )
@@ -158,7 +161,7 @@ public class SyntaxVarScope
                 Expr e = exprList.getExpr(v) ;
                 if ( e == null )
                 {
-                    if ( ! groupVars.contains(v) )
+                    if ( ! inScopeVars.contains(v) )
                         throw new QueryParseException("Non-group key variable in SELECT: "+v, -1 , -1) ;
                 }
                 else
@@ -166,10 +169,11 @@ public class SyntaxVarScope
                     Set<Var> eVars = e.getVarsMentioned() ;
                     for ( Var v2 : eVars )
                     {
-                        if ( ! groupVars.contains(v2) )
+                        if ( ! inScopeVars.contains(v2) )
                             throw new QueryParseException("Non-group key variable in SELECT: "+v2+" in expression "+e , -1 , -1) ;
                     }
                 }
+                inScopeVars.add(v) ;
             }
         }
     }
