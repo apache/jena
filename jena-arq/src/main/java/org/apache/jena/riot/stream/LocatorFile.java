@@ -40,16 +40,26 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class LocatorFile implements Locator
 {
+    // Implementation note:
+    // Java7: Path.resolve may provide an answer from the intricies of MS Windows
+    
     static Logger log = LoggerFactory.getLogger(LocatorFile.class) ;
     private final String thisDir ;
     private final String thisDirLogStr ;
 
-    /** Create a LocatorFile */
+    /** Create a LocatorFile without a specific working directory.
+     * Relative file names are relative to the working directory of the JVM.
+     */
     public LocatorFile() { this(null) ; }
     
-    /** Create a LocatorFile that uses the argument as it's working directory
+    /** Create a LocatorFile that uses the argument as it's working directory.
+     * <p>
      * The working directory should be a UNIX style file name,
      * (relative or absolute), not a URI.
+     * <p>
+     * For MS Window, if asked to {@linkplain #open} a file name with a drive letter,
+     * the code assumes it is not relative to the working directory
+     * of this {@code LocatorFile}.  
      */
     public LocatorFile(String dir)
     {
@@ -64,12 +74,12 @@ public class LocatorFile implements Locator
         thisDir = dir ;
     }
 
-    // Two LocatorFile are the same if they would look up names to the same files.
-    
-    /** To a File, after processing the filename for file: or relative filename */
+    /** Processing the filename for file: or relative filename
+     *  and return a filename suitable for file operations. 
+     */
     public String toFileName(String filenameIRI)
     {
-        // Do not use : it will ignore the directory. 
+        // Do not use directly : it will ignore the directory. 
         //IRILib.filenameToIRI
         
         String scheme = FileUtils.getScheme(filenameIRI) ;
@@ -77,16 +87,32 @@ public class LocatorFile implements Locator
         // Windows : C:\\ is not a scheme name!
         if ( scheme != null ) 
         {
-            if ( scheme.length() > 1 )
+            if ( scheme.length() == 1 )
+            {
+                // Not perfect for MS Windows but if thisDir is set then
+                // the main use case is resolving relative (no drive)
+                // filenames against thisDir. Treat the presence of a
+                // drive letter as making this a JVM relative filename. 
+                return fn ;
+            }
+            else if ( scheme.length() > 1 )
             {
                 if ( ! scheme.equalsIgnoreCase("file") )
-                    // Not filename or a file: IRI
+                    // Not file: IRI
                     return null ;
                 fn = IRILib.IRIToFilename(filenameIRI) ;
-            }
+                // fall through
+            } 
         }
         // fn is the file name to use.
-        // If it is relative, and we have a different working directory, prepend that.  
+        return absolute(fn) ;
+    }
+
+    /** Make a filename (no URI scheme, no windows drive) absolute if there is
+     * a setting for directory name thisDir  
+     */
+    private String absolute(String fn)
+    {
         if ( thisDir != null && ! fn.startsWith("/") && ! fn.startsWith(File.separator) )
             fn = thisDir+File.separator+fn ;
         return fn ;
@@ -96,6 +122,12 @@ public class LocatorFile implements Locator
     {
         return thisDir ;
     }
+
+    public boolean hasCurrentDir()
+    {
+        return thisDir != null ;
+    }
+
 
     public boolean exists(String fileIRI)
     {
