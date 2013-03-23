@@ -688,7 +688,7 @@ public class RDFDataMgr
     }
 
     /** Open a stream to the destination (URI or filename)
-     * Performs content negotition, including looking at file extension.
+     * Performs content negotiation, including looking at file extension.
      * @param filenameOrURI
      * @return TypedInputStream 
      */
@@ -696,7 +696,7 @@ public class RDFDataMgr
     { return open(filenameOrURI, (Context)null) ; }
     
     /** Open a stream to the destination (URI or filename)
-     * Performs content negotition, including looking at file extension. 
+     * Performs content negotiation, including looking at file extension. 
      * @param filenameOrURI
      * @param context
      * @return TypedInputStream
@@ -715,7 +715,7 @@ public class RDFDataMgr
     }
     
     /** Open a stream to the destination (URI or filename)
-     * Performs content negotition, including looking at file extension. 
+     * Performs content negotiation, including looking at file extension. 
      * @param filenameOrURI
      * @param streamManager
      * @return TypedInputStream
