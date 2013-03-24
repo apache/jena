@@ -56,8 +56,9 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class SPARQL_Update extends SPARQL_Protocol
 {
-    private static String updateParseBase = "http://example/base/" ;
-    private static IRIResolver resolver = IRIResolver.create(updateParseBase) ;
+    // Base URI used to isolate parsing from the current directory of the server. 
+    private static final String UpdateParseBase = "http://example/update-base/" ;
+    private static final IRIResolver resolver = IRIResolver.create(UpdateParseBase) ;
     
     private class HttpActionUpdate extends HttpActionProtocol {
         public HttpActionUpdate(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
@@ -240,7 +241,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             try
             {
                 // TODO implement a spill-to-disk version of this
-                req = UpdateFactory.read(usingList, input, Syntax.syntaxARQ);
+                req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
             }
             catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; return ; }
             catch (QueryParseException ex)  { errorBadRequest(messageForQPE(ex)) ; return ; }
@@ -250,10 +251,9 @@ public class SPARQL_Update extends SPARQL_Protocol
         try
         {
             if (action.isTransactional())
-                UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, Syntax.syntaxARQ);
+                UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, UpdateParseBase, Syntax.syntaxARQ);
             else
                 UpdateAction.execute(req, action.getActiveDSG()) ;
-            
             action.commit() ;
         } 
         catch (UpdateException ex) { action.abort(); errorBadRequest(ex.getMessage()) ; }
