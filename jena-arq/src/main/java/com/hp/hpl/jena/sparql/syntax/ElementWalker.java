@@ -169,14 +169,6 @@ public class ElementWalker
             after(el) ;
         }
 
-        @Override
-        public void visit(ElementFetch el)
-        {
-            before(el) ;
-            proc.visit(el) ;
-            after(el) ;
-        }
-
         // EXISTs, NOT EXISTs also occur in FILTERs via expressions.
         
         @Override

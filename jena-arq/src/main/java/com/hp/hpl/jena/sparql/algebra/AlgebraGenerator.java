@@ -35,8 +35,6 @@ import com.hp.hpl.jena.sparql.core.* ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.PathLib ;
-import com.hp.hpl.jena.sparql.sse.Item ;
-import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -115,9 +113,6 @@ public class AlgebraGenerator
         if ( elt instanceof ElementService )
             return compileElementService((ElementService)elt) ; 
         
-        if ( elt instanceof ElementFetch )
-            return compileElementFetch((ElementFetch)elt) ; 
-
         // This is only here for queries built programmatically
         // (triple patterns not in a group) 
         if ( elt instanceof ElementTriplesBlock )
@@ -353,7 +348,6 @@ public class AlgebraGenerator
         if ( elt instanceof ElementGroup        || 
              elt instanceof ElementNamedGraph   ||
              elt instanceof ElementService      ||
-             elt instanceof ElementFetch        ||
              elt instanceof ElementUnion        || 
              elt instanceof ElementSubQuery     ||
              elt instanceof ElementData         ||
@@ -500,23 +494,6 @@ public class AlgebraGenerator
         return new OpService(serviceNode, sub, eltService, eltService.getSilent()) ;
     }
     
-    private Op compileElementFetch(ElementFetch elt)
-    {
-        Node serviceNode = elt.getFetchNode() ;
-        
-        // Probe to see if enabled.
-        OpExtBuilder builder = OpExtRegistry.builder("fetch") ;
-        if ( builder == null )
-        {
-            Log.warn(this, "Attempt to use OpFetch - need to enable first with a call to OpFetch.enable()") ; 
-            return OpLabel.create("fetch/"+serviceNode, OpTable.unit()) ;
-        }
-        Item item = Item.createNode(elt.getFetchNode()) ;
-        ItemList args = new ItemList() ;
-        args.add(item) ;
-        return builder.make(args) ;
-    }
-
     protected Op compileElementSubquery(ElementSubQuery eltSubQuery)
     {
         AlgebraGenerator gen = new AlgebraGenerator(context, subQueryDepth+1) ;

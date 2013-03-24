@@ -67,9 +67,6 @@ public class ElementVisitorBase implements ElementVisitor
     public void visit(ElementService el)        { }
     
     @Override
-    public void visit(ElementFetch el)          { }
-
-    @Override
     public void visit(ElementSubQuery el)       { }
 
     @Override
