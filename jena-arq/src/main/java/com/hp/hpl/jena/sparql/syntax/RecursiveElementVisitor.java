@@ -82,9 +82,6 @@ public class RecursiveElementVisitor implements ElementVisitor
     public void startElement(ElementService el) {}
     public void endElement  (ElementService el) {}
 
-    public void startElement(ElementFetch el)   {}
-    public void endElement  (ElementFetch el)   {}
-
     public void startElement(ElementExists el)  {}
     public void endElement  (ElementExists el)  {}
     
@@ -201,13 +198,6 @@ public class RecursiveElementVisitor implements ElementVisitor
     {
         startElement(el) ;
         el.getElement().visit(this) ;
-        endElement(el) ;
-    }
-    
-    @Override
-    public final void visit(ElementFetch el)
-    {
-        startElement(el) ;
         endElement(el) ;
     }
     

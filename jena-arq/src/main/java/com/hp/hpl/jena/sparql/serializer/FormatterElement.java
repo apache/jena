@@ -369,17 +369,6 @@ public class FormatterElement extends FormatterBase
         visitNodePattern(x, el.getServiceNode(), el.getElement()) ;
     }
 
-    @Override
-    public void visit(ElementFetch el)
-    {
-        out.print("FETCH") ;
-        out.print(" ") ;
-        String nodeStr = ( el.getFetchNode() == null ) ? "*" : slotToString(el.getFetchNode()) ;
-        out.print(nodeStr) ;
-        //out.print(" ") ;
-    }
-    
-    
     private void visitNodePattern(String label, Node node, Element subElement)
     {
         int len = label.length() ;

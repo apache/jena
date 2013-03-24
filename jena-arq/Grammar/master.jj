@@ -794,10 +794,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 #ifdef ARQ
  |
    el = Assignment()
-#ifdef ARQ_FETCH
- | 
-   el = FetchGraph()
-#endif
  |
    el = ExistsElt()
  |
@@ -924,15 +920,6 @@ Element Assignment() : { Var v ; Expr expr ; }
   <RPAREN>
     { return new ElementAssign(v, expr) ; }
 }
-
-#ifdef ARQ_FETCH
-Element FetchGraph() : { Node n ; }
-{
-  <FETCH>
-  n = VarOrIri() 
-  { return new ElementFetch(n) ; }
-}
-#endif
 
 Element ExistsElt() : { Element el ; }
 {
@@ -2185,7 +2172,6 @@ TOKEN [IGNORE_CASE] :
 
 #ifdef ARQ
 |  < LET:         "let" >
-|  < FETCH:       "fetch" >
 #endif
 |  < EXISTS:      "exists" >
 |  < NOT:         "not" >
