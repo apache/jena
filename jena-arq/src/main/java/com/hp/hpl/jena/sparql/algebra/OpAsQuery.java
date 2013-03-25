@@ -51,8 +51,9 @@ public class OpAsQuery
         //OpWalker.walk(op, v) ;
         op.visit(v) ;
         
-        Set<Var> vars = v.projectVars;
-        query.setQueryResultStar(vars.isEmpty()); // SELECT * unless we are projecting
+        Collection<Var> vars = v.projectVars;
+        query.setQueryResultStar(vars.isEmpty());   // SELECT * unless we are projecting
+
         Iterator<Var> iter = vars.iterator();
         for (; iter.hasNext();) {
             Var var = iter.next();           
@@ -65,9 +66,20 @@ public class OpAsQuery
         ElementGroup eg = v.currentGroup ;
         query.setQueryPattern(eg) ;
         query.setQuerySelectType() ;
-        
-        query.setResultVars() ; 
+        query.setResultVars() ;                     // Variables from the group.
         return query ; 
+    }
+    
+    private static Set<Var> allocProjectVars()
+    {
+        return new LinkedHashSet<Var>() ;
+    }
+
+    private static void addProjectVar(Collection<Var> vars, Var var)
+    {
+        // Must add uniquely.  Couple to allocProjectVars
+        //if (!vars.contains(var)) 
+        vars.add(var) ;
     }
     
     public static class Converter implements OpVisitor
@@ -76,7 +88,7 @@ public class OpAsQuery
         private Element element = null ;
         private ElementGroup currentGroup = null ;
         private Deque<ElementGroup> stack = new ArrayDeque<ElementGroup>() ;
-        private Set<Var> projectVars = Collections.emptySet();
+        private Collection<Var> projectVars = allocProjectVars();
         private Map<Var, Expr> varExpression = new HashMap<Var, Expr>() ;
         
         public Converter(Query query)
@@ -438,8 +450,7 @@ public class OpAsQuery
                         // to the list or otherwise the BIND will not round trip
                         // Note - This does mean top level BIND will manifest as a project expression
                         //        rather than a BIND but this is semantically equivalent so is not an issue
-                        if (projectVars.isEmpty()) projectVars = new HashSet<Var>();
-                        projectVars.add(v);
+                        addProjectVar(projectVars, v) ;
                     }
                     varExpression.put(v, tr);
                 } else {
@@ -471,8 +482,7 @@ public class OpAsQuery
                         // to the list or otherwise the BIND will not round trip
                         // Note - This does mean top level BIND will manifest as a project expression
                         //        rather than a BIND but this is semantically equivalent so is not an issue
-                        if (projectVars.isEmpty()) projectVars = new HashSet<Var>();
-                        projectVars.add(v);
+                        addProjectVar(projectVars, v) ;
                     }
                     varExpression.put(v, tr);
                 } else {
@@ -502,7 +512,8 @@ public class OpAsQuery
         {
             // Defer adding result vars until the end.
             // OpGroup generates dupes otherwise
-            this.projectVars = new HashSet<Var>(opProject.getVars());
+            this.projectVars = allocProjectVars() ;
+            this.projectVars.addAll(opProject.getVars());
             opProject.getSubOp().visit(this) ;
         }
 
