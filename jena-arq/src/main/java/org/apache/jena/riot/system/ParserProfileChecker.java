@@ -27,6 +27,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.checker.CheckerIRI ;
 import org.apache.jena.riot.checker.CheckerLiterals ;
+import org.apache.jena.riot.lang.LabelToNode ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -38,6 +39,11 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
     public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler)
     {
         super(prologue, errorHandler) ;
+    }
+
+    public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler, LabelToNode labelMapping)
+    {
+        super(prologue, errorHandler, labelMapping) ;
     }
 
     @Override

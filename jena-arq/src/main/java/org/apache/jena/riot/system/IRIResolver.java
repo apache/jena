@@ -51,6 +51,13 @@ public abstract class IRIResolver
 //        iriFactory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
 //        iriFactory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
 
+        // Various errors for unicode conditions.
+//        iriFactory.setIsError(ViolationCodes.NOT_NFC, false) ;
+//        iriFactory.setIsError(ViolationCodes.NOT_NFKC, false) ;
+//        iriFactory.setIsError(ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false) ;
+//        iriFactory.setIsError(ViolationCodes.UNASSIGNED_UNICODE_CHARACTER, false) ;
+//        iriFactory.setIsError(ViolationCodes.COMPATIBILITY_CHARACTER, false) ;
+        
         iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
         iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME,false);
     }
@@ -349,7 +356,6 @@ public abstract class IRIResolver
         // Not static - contains relative IRIs
         // Could split into absolute (static, global cached) and relative.
         private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(CacheSize) ;
-
 
         /**
          * Construct an IRIResolver with base as the 

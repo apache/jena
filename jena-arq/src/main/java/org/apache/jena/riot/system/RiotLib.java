@@ -40,6 +40,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.WriterDatasetRIOT ;
+import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
@@ -131,6 +132,10 @@ public class RiotLib
 
     public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
     {
+        LabelToNode labelToNode = true
+            ? LabelToNode.createScopeByDocument() // SyntaxLabels.createNodeToLabel()
+            : LabelToNode.createUseLabelEncoded() ;
+        
         Prologue prologue ;
         if ( resolveIRIs )
             prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.create(baseIRI)) ;
@@ -138,9 +143,9 @@ public class RiotLib
             prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve()) ;
     
         if ( checking )
-            return new ParserProfileChecker(prologue, handler) ;
+            return new ParserProfileChecker(prologue, handler, labelToNode) ;
         else
-            return new ParserProfileBase(prologue, handler) ;
+            return new ParserProfileBase(prologue, handler, labelToNode) ;
     }
 
     public static Collection<Triple> triplesOfSubject(Graph graph, Node subj)

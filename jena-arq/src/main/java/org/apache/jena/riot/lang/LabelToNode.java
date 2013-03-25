@@ -51,14 +51,14 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
      * {@link #createUseLabelEncoded()} for output-input).
      * The reverse operation is provided by {@link NodeToLabel#createBNodeByLabelAsGiven()} */
     public static LabelToNode createUseLabelAsGiven()
-    { return new LabelToNode(new SingleScopePolicy(), nodeMakerByLabel) ; }
+    { return new LabelToNode(new AllocScopePolicy(), nodeMakerByLabel) ; }
     
     /** Allocation using an encoded syntax label 
      * (i.e. _:B&lt;encoded&gt; format from {@link NodeFmtLib#encodeBNodeLabel}).
      * The reverse operation is provided by {@link NodeToLabel#createBNodeByLabelEncoded()}
      */
     public static LabelToNode createUseLabelEncoded()
-    { return new LabelToNode(new SingleScopePolicy(), nodeMakerByLabelEncoded) ; }
+    { return new LabelToNode(new AllocScopePolicy(), nodeMakerByLabelEncoded) ; }
 
     /** Allocation, globally scoped, that uses a incrementing field to create new nodes */  
     public static LabelToNode createIncremental()
@@ -104,6 +104,16 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
         public void clear() { map.clear(); }
     }
 
+    /** No scope - use raw allocator */
+    private static class AllocScopePolicy  implements ScopePolicy<String, Node, Node>
+    { 
+        @Override
+        public Map<String, Node> getScope(Node scope)   { return null ; }
+        @Override
+        public void clear() { }
+    }
+
+    
     // ======== Node Allocators 
     
     private static Allocator<String, Node> nodeMaker = new Allocator<String, Node>()
