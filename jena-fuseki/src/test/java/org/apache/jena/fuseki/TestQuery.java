@@ -30,6 +30,8 @@ import org.junit.Test ;
 import com.hp.hpl.jena.query.DatasetAccessor ;
 import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -64,6 +66,20 @@ public class TestQuery extends BaseServerTest
     @Test public void query_01()
     {
         execQuery("SELECT * {?s ?p ?o}", 1) ;
+    }
+    
+    @Test public void query_recursive_01()
+    {
+        String query = "SELECT * WHERE { SERVICE <" + serviceQuery + "> { ?s ?p ?o . BIND(?o AS ?x) } }";
+        QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query);
+        ResultSet rs = qExec.execSelect();
+        
+        Var x = Var.alloc("x");
+        while (rs.hasNext()) {
+            Binding b = rs.nextBinding();
+            Assert.assertNotNull(b.get(x));
+        }
+        qExec.close();
     }
     
     @Test public void request_id_header_01() throws IOException
