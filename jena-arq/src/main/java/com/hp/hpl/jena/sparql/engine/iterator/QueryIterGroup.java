@@ -23,6 +23,7 @@ import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.Pair ;
@@ -125,7 +126,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                     {
                         // No rows to group, no aggregators.
                         // ==> No result rows.
-                        return new QueryIterNullIterator(execCxt) ;
+                        return Iter.nullIterator() ;
                     }
                     
                     BindingMap binding = BindingFactory.create() ;
@@ -141,8 +142,9 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                         
                     if ( binding == null )
                         // This does not happen if there are any aggregators. 
-                        return new QueryIterNullIterator(execCxt) ;
-                    return QueryIterSingleton.create(binding, execCxt) ;
+                        return Iter.nullIterator() ;
+                    // cast to get the static type inference to work.
+                    return Iter.singletonIter((Binding)binding) ;
                 }
 
                 // Phase 2 : There was input and so there are some groups.
@@ -151,7 +153,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 
                 if ( noAggregators )
                     // We used placeholder so there are always the key. 
-                    return  accumulators.keys().iterator() ;
+                    return accumulators.keys().iterator() ;
                 
                 List<Binding> results = new ArrayList<Binding>() ;
 

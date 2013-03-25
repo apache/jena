@@ -41,7 +41,6 @@ public class QueryIterSingleton extends QueryIterYieldN
     public static QueryIterSingleton create(Binding binding, ExecutionContext execCxt)
     {
         return new QueryIterSingleton(binding, execCxt) ;
-        
     }
 
     private QueryIterSingleton(Binding binding) // Not needed
