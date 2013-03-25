@@ -40,6 +40,9 @@ public abstract class LangTestCase extends EarlTestCase
     final public void setUp()
     {        
         BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerStrictNoLogging) ;
+        // If the test suite is sloppy, with IRIs that are not good practice, you may need
+        // to run with warnings as not-errors ....
+        //BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerStd) ;
         sysRIOT_strictMode = SysRIOT.strictMode ;
         sysRIOT_strictXSDLexicialForms = SysRIOT.StrictXSDLexicialForms ;
         
