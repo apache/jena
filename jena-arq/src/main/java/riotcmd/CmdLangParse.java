@@ -178,8 +178,13 @@ public abstract class CmdLangParse extends CmdGeneral
                 parseFile("-") ;
             else
             {
+                boolean b = super.getPositional().size() > 1 ;
                 for ( String fn : super.getPositional() )
+                {
+                    if ( b && ! super.isQuiet() )
+                        SysRIOT.getLogger().info("File: "+fn) ;
                     parseFile(fn) ;
+                }
             }
         } finally {
             System.err.flush() ;

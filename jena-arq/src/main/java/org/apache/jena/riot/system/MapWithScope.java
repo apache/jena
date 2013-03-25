@@ -20,6 +20,8 @@ package org.apache.jena.riot.system;
 
 import java.util.Map ;
 
+import org.apache.jena.atlas.lib.InternalErrorException ;
+
 /** Maps A's to B's, based on a scope S */
 public class MapWithScope<A, B, S>
 {
@@ -51,6 +53,9 @@ public class MapWithScope<A, B, S>
     /** Get a B object for an A object in scope S object */
     public B get(S scope, A item)
     {
+        if ( item == null )
+            throw new InternalErrorException("null in MapWithScope.get(,null)") ;
+        
         Map<A, B> map = scopePolicy.getScope(scope) ;
         if ( map == null )
             // No map - no item->allocation tracking.
