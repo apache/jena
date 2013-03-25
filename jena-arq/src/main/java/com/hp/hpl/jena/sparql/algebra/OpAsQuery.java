@@ -55,12 +55,7 @@ public class OpAsQuery
         query.setQueryResultStar(vars.isEmpty()); // SELECT * unless we are projecting
         Iterator<Var> iter = vars.iterator();
         for (; iter.hasNext();) {
-            Var var = iter.next();
-            
-            // Depending on where the variable comes from we may already
-            // have added this as a result variable
-            if (query.getResultVars().contains(var)) continue;
-            
+            Var var = iter.next();           
             if (v.varExpression.containsKey(var))
                 query.addResultVar(var, v.varExpression.get(var));
             else
