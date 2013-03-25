@@ -51,11 +51,11 @@ public abstract class ExprFunctionOp extends ExprFunction
     }
     
     @Override
-    public boolean isGraphPattern()    { return true ; }
+    public boolean isGraphPattern()     { return true ; }
     @Override
     public Op getGraphPattern()         { return op ; }
 
-    public Element getElement()       { return element ; }
+    public Element getElement()         { return element ; }
     
     @Override
     public int numArgs() { return 0 ; }
