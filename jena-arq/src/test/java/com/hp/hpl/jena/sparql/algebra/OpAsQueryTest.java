@@ -52,8 +52,10 @@ public class OpAsQueryTest {
     
     @Test
     public void testDoubleCount() {
-        Object[] result = checkQuery("select (count(?s) as ?sc) (count(?p) as ?pc) { ?s ?p ?o }");
-        assertEquals(result[0], result[1]);
+        Query[] result = checkQuery("select (count(?s) as ?sc) (count(?p) as ?pc) { ?s ?p ?o }");
+        assertEquals(2, result[1].getResultVars().size());
+        assertTrue(result[1].getResultVars().contains("sc"));
+        assertTrue(result[1].getResultVars().contains("pc"));
     }
     
     /* JENA-166 */
@@ -63,18 +65,18 @@ public class OpAsQueryTest {
         assertEquals(result[0], result[1]);
     }
     
-    // The next two tests represent an loss of information
-    // I suspect the best solution is to let this pass and the other fail
     @Test
-    public void testProject() {
+    public void testProject1() {
         Object[] result = checkQuery("SELECT (?x + 1 AS ?c) {}");
         assertEquals(result[0], result[1]);
     }
     
-    // Ambiguous, don't bother
-    public void testBind() {
-        Object[] result = checkQuery("SELECT ?c { BIND(?x + 1 AS ?c) }");
-        assertEquals(result[0], result[1]);
+    @Test
+    public void testProject2() {
+        Query[] result = checkQuery("SELECT (?x + 1 AS ?c) ?d {}");
+        assertEquals(2, result[1].getResultVars().size());
+        assertTrue(result[1].getResultVars().contains("c"));
+        assertTrue(result[1].getResultVars().contains("d"));
     }
     
     // This BIND is distinguisable, however
@@ -140,11 +142,34 @@ public class OpAsQueryTest {
         assertEquals(result[0], result[1]);
     }
     
-    public Object[] checkQuery(String query) {
+    @Test
+    public void testExtend1() {
+        //Top Level BIND should now be round trippable
+        Query[] result = checkQuery("SELECT * WHERE { ?s ?p ?o . BIND(?o AS ?x) }");
+        assertNotEquals(result[0], result[1]);
+        assertTrue(result[1].getResultVars().contains("x"));
+    }
+    
+    @Test
+    public void testExtend2() {
+        //Nested BIND should always have been round trippable
+        Query[] result = checkQuery("SELECT * WHERE { GRAPH ?g { ?s ?p ?o . BIND(?o AS ?x) } }");
+        assertEquals(result[0], result[1]);
+    }
+    
+    @Test
+    public void testExtendInService() {
+        //Original test case from JENA-422
+        Query[] result = checkQuery("SELECT * WHERE { SERVICE <http://example/endpoint> { ?s ?p ?o . BIND(?o AS ?x) } }");
+        assertEquals(result[0], result[1]);
+        assertTrue(result[1].toString().contains("BIND"));
+    }
+    
+    public Query[] checkQuery(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);
         Query got = OpAsQuery.asQuery(toReconstruct);
-        Object[] r = { orig, got };
+        Query[] r = { orig, got };
         return r;
     }
     
@@ -153,7 +178,7 @@ public class OpAsQueryTest {
         Op toReconstruct = Algebra.compile(orig);
         toReconstruct = Algebra.toQuadForm(toReconstruct);
         Query got = OpAsQuery.asQuery(toReconstruct);
-        Object[] r = { orig, got };
+        Query[] r = { orig, got };
         return r;
     }
 }

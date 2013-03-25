@@ -51,11 +51,16 @@ public class OpAsQuery
         //OpWalker.walk(op, v) ;
         op.visit(v) ;
         
-        List<Var> vars = v.projectVars;
+        Set<Var> vars = v.projectVars;
         query.setQueryResultStar(vars.isEmpty()); // SELECT * unless we are projecting
         Iterator<Var> iter = vars.iterator();
         for (; iter.hasNext();) {
             Var var = iter.next();
+            
+            // Depending on where the variable comes from we may already
+            // have added this as a result variable
+            if (query.getResultVars().contains(var)) continue;
+            
             if (v.varExpression.containsKey(var))
                 query.addResultVar(var, v.varExpression.get(var));
             else
@@ -76,7 +81,7 @@ public class OpAsQuery
         private Element element = null ;
         private ElementGroup currentGroup = null ;
         private Deque<ElementGroup> stack = new ArrayDeque<ElementGroup>() ;
-        private List<Var> projectVars = Collections.emptyList() ;
+        private Set<Var> projectVars = Collections.emptySet();
         private Map<Var, Expr> varExpression = new HashMap<Var, Expr>() ;
         
         public Converter(Query query)
@@ -419,7 +424,7 @@ public class OpAsQuery
         @Override
         public void visit(OpAssign opAssign)
         {
-	    opAssign.getSubOp().visit(this) ;
+            opAssign.getSubOp().visit(this) ;
             
             // Go through each var and get the assigned expression
             for ( Var v : opAssign.getVarExprList().getVars() )
@@ -432,8 +437,15 @@ public class OpAsQuery
                 
                 // If in top level we defer assignment to SELECT section
                 // This also covers the GROUP recombine
-                // NOTE: this means we can't round trip top-level BINDs
                 if (inTopLevel()) {
+                    if (!inGroupRecombine(opAssign)) {
+                        // If not wrapped over a Group then we need to ensure we add the variable
+                        // to the list or otherwise the BIND will not round trip
+                        // Note - This does mean top level BIND will manifest as a project expression
+                        //        rather than a BIND but this is semantically equivalent so is not an issue
+                        if (projectVars.isEmpty()) projectVars = new HashSet<Var>();
+                        projectVars.add(v);
+                    }
                     varExpression.put(v, tr);
                 } else {
                     Element elt = new ElementAssign(v, e) ;
@@ -458,8 +470,15 @@ public class OpAsQuery
                 
                 // If in top level we defer assignment to SELECT section
                 // This also covers the GROUP recombine
-                // NOTE: this means we can't round trip top-level BINDs
                 if (inTopLevel()) {
+                    if (!inGroupRecombine(opExtend)) {
+                        // If not wrapped over a Group then we need to ensure we add the variable
+                        // to the list or otherwise the BIND will not round trip
+                        // Note - This does mean top level BIND will manifest as a project expression
+                        //        rather than a BIND but this is semantically equivalent so is not an issue
+                        if (projectVars.isEmpty()) projectVars = new HashSet<Var>();
+                        projectVars.add(v);
+                    }
                     varExpression.put(v, tr);
                 } else {
                     Element elt = new ElementBind(v, tr) ;
@@ -488,7 +507,7 @@ public class OpAsQuery
         {
             // Defer adding result vars until the end.
             // OpGroup generates dupes otherwise
-            this.projectVars = opProject.getVars();
+            this.projectVars = new HashSet<Var>(opProject.getVars());
             opProject.getSubOp().visit(this) ;
         }
 
@@ -596,6 +615,32 @@ public class OpAsQuery
         private ElementGroup pop() { return stack.pop(); }
         private void push(ElementGroup el) { stack.push(el); }
         private boolean inTopLevel() { return stack.size() == 0; }
+        
+        private boolean inGroupRecombine(OpExtend op) {
+            Op subOp = op.getSubOp();
+            if (subOp instanceof OpExtend) {
+                return inGroupRecombine((OpExtend)subOp);
+            } else if (subOp instanceof OpAssign) {
+                return inGroupRecombine((OpAssign)subOp);
+            } else if (subOp instanceof OpGroup) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        private boolean inGroupRecombine(OpAssign op) {
+            Op subOp = op.getSubOp();
+            if (subOp instanceof OpExtend) {
+                return inGroupRecombine((OpExtend)subOp);
+            } else if (subOp instanceof OpAssign) {
+                return inGroupRecombine((OpAssign)subOp);
+            } else if (subOp instanceof OpGroup) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
     
     /**
