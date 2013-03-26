@@ -107,7 +107,7 @@ public class BasicPattern implements Iterable<Triple>
         for ( Triple t : triples )
         {
             if ( !first )
-                out.print(" ") ;
+                out.print("\n") ;
             else
                 first = false ;
             // Adds (triple ...)
