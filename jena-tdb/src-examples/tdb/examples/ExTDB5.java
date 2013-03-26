@@ -35,6 +35,8 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
  *  All the Jena APIs work on the model.
  *   
  *  Calling TDBFactory is the only place TDB-specific code is needed.
+ *  
+ *  See also ExTDB_Txn1 for use with transactions.
  */
 
 public class ExTDB5
