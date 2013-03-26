@@ -29,6 +29,12 @@ import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -37,13 +43,9 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
-import com.hp.hpl.jena.sparql.core.DynamicDatasets ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.* ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
@@ -51,21 +53,7 @@ import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphOps ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
-import com.hp.hpl.jena.sparql.modify.request.Target ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateAdd ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateBinaryOp ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateClear ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateCopy ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDataDelete ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDeleteWhere ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDropClear ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateModify ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateMove ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.modify.request.* ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph ;
@@ -73,7 +61,6 @@ import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateException ;
-import com.hp.hpl.jena.util.FileManager ;
 
 /** Implementation of general purpose update request execution */ 
 public class UpdateEngineWorker implements UpdateVisitor
@@ -161,32 +148,41 @@ public class UpdateEngineWorker implements UpdateVisitor
         String source = update.getSource() ;
         Node dest = update.getDest() ;
         try {
-//            // Experimental ; quads reading.  Needs redoing.  No conneg. 
-//            if ( dest == null )
-//            {
-//                // Quads?
-//                Lang guess = Lang.guess(source, Lang.NTRIPLES) ;
-//                if ( guess.isQuads() )
-//                {
-//                   RiotLoader.read(source, graphStore, guess) ;
-//                    return ;
-//                }
-//            }
-            
-            // Read into temporary model to protect against parse errors.
-            Model model = null ;
-            try {
-                model = FileManager.get().loadModel(source) ;
-            } catch (RuntimeException ex) { throw new UpdateException("Failed to LOAD '"+source+"'", ex) ; }     
-            Graph g = graph(graphStore, dest) ;
-            GraphUtil.addInto(g, model.getGraph()) ;
+            // Read into temporary storage to protect against parse errors.
+            TypedInputStream s = RDFDataMgr.open(source) ;
+            Lang lang = RDFLanguages.contentTypeToLang(s.getContentType()) ;
+            if ( RDFLanguages.isTriples(lang) ) {
+                // Triples
+                Graph g = GraphFactory.createGraphMem() ;
+                StreamRDF stream = StreamRDFLib.graph(g) ;
+                RDFDataMgr.parse(stream, s, source) ;
+                Graph g2 = graph(graphStore, dest) ;
+                GraphUtil.addInto(g2, g) ;
+            } else {
+                // Quads
+                if ( dest != null )
+                    throw new UpdateException("Attempt to load quads into a graph") ;
+                DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+                StreamRDF stream = StreamRDFLib.dataset(dsg) ;
+                RDFDataMgr.parse(stream, s, source) ;
+                Iterator<Quad>  iter = dsg.find() ; 
+                for ( ; iter.hasNext() ; )
+                {
+                    Quad q = iter.next() ;
+                    graphStore.add(q) ;
+                }
+            }
         } catch (RuntimeException ex)
         {
             if ( ! update.getSilent() )
-                throw ex ;
+            {
+                if ( ex instanceof UpdateException )
+                    throw (UpdateException)ex ;  
+                throw new UpdateException("Failed to LOAD '"+source+"'", ex) ;
+            }
         }
     }
-
+    
     @Override
     public void visit(UpdateAdd update)
     { 

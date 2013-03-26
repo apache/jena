@@ -269,7 +269,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         assertFalse(graphContains(gStore.getGraph(graphIRI), t2)) ;
         assertTrue(gStore.getDefaultGraph().isIsomorphicWith(gStore.getGraph(graphIRI)));
     }
-
+    
     @Test public void testUpdateScript1()
     {
         GraphStore gStore = getEmptyGraphStore() ;
