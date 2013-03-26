@@ -223,26 +223,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     public StorageConfig getConfig()                       { return config ; }
     
-//    public String getConfigValue(String key)
-//    {
-//        if ( config == null )
-//            return null ;
-//        return config.properties.getProperty(key) ;
-//    }
-//    
-//    public int getConfigValueAsInt(String key, int dftValue)
-//    {
-//        if ( config == null )
-//            return dftValue ;
-//        return PropertyUtils.getPropertyAsInteger(config.properties, key, dftValue) ;
-//    }
-//
-    /**
-     * @deprecate  Use getReorderTransform
-     */
-    @Deprecated
-    public ReorderTransformation getTransform()     { return getReorderTransform() ; }
-    
     public ReorderTransformation getReorderTransform()     { return transform ; }
     
     public DatasetPrefixesTDB getPrefixes()       { return prefixes ; }
