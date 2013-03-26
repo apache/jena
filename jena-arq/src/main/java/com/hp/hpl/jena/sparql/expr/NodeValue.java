@@ -1034,7 +1034,7 @@ public abstract class NodeValue extends ExprNode
     }
 
     // Jena code does not have these types (yet)
-    private static final String dtXSDdateTimeStamp       = XSD+"#dateTimeStamp" ; 
+    private static final String dtXSDdateTimeStamp      = XSD+"#dateTimeStamp" ; 
     private static final String dtXSDdayTimeDuration    = XSD+"#dayTimeDuration" ; 
     private static final String dtXSDyearMonthDuration  = XSD+"#yearMonthDuration" ; 
     private static final String dtXSDprecisionDecimal   = XSD+"#precisionDecimal" ; 
