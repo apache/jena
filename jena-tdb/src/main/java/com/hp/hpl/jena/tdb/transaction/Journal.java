@@ -225,10 +225,10 @@ class Journal implements Sync, Closeable
         Adler32 adler = new Adler32() ;
         adler.update(header.array()) ;
 
-        JournalEntryType type = JournalEntryType.type(typeId) ;
-        FileRef fileRef = FileRef.get(ref) ;
         ByteBuffer bb = ByteBuffer.allocate(len) ;
         lenRead = channel.read(bb) ;
+        if ( lenRead != len)
+            throw new TDBTransactionException("Failed to read the journal entry: wanted "+len+" bytes, got "+lenRead) ;
         adler.update(bb.array()) ;
         bb.rewind() ;
         // checksum
@@ -239,6 +239,9 @@ class Journal implements Sync, Closeable
         int checksum = Bytes.getInt(crcTrailer.array()) ;
         if ( checksum != (int)adler.getValue() )
         	throw new TDBTransactionException("Checksum error reading from the Journal.") ;
+
+        JournalEntryType type = JournalEntryType.type(typeId) ;
+        FileRef fileRef = FileRef.get(ref) ;
 
         Block block = new Block(blockId, bb) ;
         return new JournalEntry(type, fileRef, block) ;

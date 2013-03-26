@@ -159,7 +159,7 @@ public class Transaction
                 SystemTDB.errlog.warn("IOException after commit point : transaction commited but internal status not recorded properly : "+ex.getMessage()) ;
             else
                 SystemTDB.errlog.warn("Exception after commit point : transaction commited but internal status not recorded properly", ex) ;
-            throw new TDBTransactionException("Exc eption after commit point - transaction did commit", ex) ;
+            throw new TDBTransactionException("Exception after commit point - transaction did commit", ex) ;
         }
     }
     
