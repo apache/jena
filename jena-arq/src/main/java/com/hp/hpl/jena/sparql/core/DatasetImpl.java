@@ -262,7 +262,7 @@ public class DatasetImpl implements Dataset
 
     protected Model graph2model(Graph graph)
     { 
-        // Called from readers -- outer synchronation needed.
+        // Outer synchronization needed.
         Model model = cache.get(graph) ;
         if ( model == null )
         {
