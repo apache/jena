@@ -18,20 +18,17 @@
 
 package tdb.examples;
 
+import org.apache.jena.riot.RDFDataMgr ;
+
+import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.shared.JenaException;
-
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
-import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-
-import com.hp.hpl.jena.tdb.assembler.VocabTDB;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
+import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 
 /** 
  * Examples of finding an assembler for a TDB model in a larger collection
@@ -44,7 +41,7 @@ public class ExTDB3
         String assemblerFile = "Store/tdb-assembler.ttl" ;
         
         // Find a particular description in the file where there are several: 
-        Model spec = FileManager.get().loadModel(assemblerFile) ;
+        Model spec = RDFDataMgr.loadModel(assemblerFile) ;
 
         // Find the right starting point for the description in some way.
         Resource root = null ;

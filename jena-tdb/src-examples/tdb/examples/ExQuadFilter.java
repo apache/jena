@@ -18,10 +18,10 @@
 
 package tdb.examples;
 
-import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.iterator.Filter ;
+import org.apache.jena.atlas.lib.Tuple ;
 
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -71,7 +71,7 @@ public class ExQuadFilter
     {
         // Filtering operates at a very low level: 
         // Need to know the internal identifier for the graph name. 
-        final NodeId target = TDBInternal.getNodeId(ds, Node.createURI(graphToHide)) ;
+        final NodeId target = TDBInternal.getNodeId(ds, NodeFactory.createURI(graphToHide)) ;
 
         System.out.println("Hide graph: "+graphToHide+" --> "+target) ;
         
