@@ -20,6 +20,11 @@ package com.hp.hpl.jena.graph.test;
 
 import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.* ;
 
 import com.hp.hpl.jena.graph.* ;
@@ -889,7 +894,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     /** testIsomorphism from file data 
      * @throws FileNotFoundException */
-    public void testIsomorphismFile() throws FileNotFoundException {
+    public void testIsomorphismFile() throws URISyntaxException, MalformedURLException {
         testIsomorphismXMLFile(1,true);
         testIsomorphismXMLFile(2,true);
         testIsomorphismXMLFile(3,true);
@@ -900,17 +905,22 @@ public abstract class AbstractTestGraph extends GraphTestBase
         testIsomorphismNTripleFile(8,false);
 
     }
-    private void testIsomorphismNTripleFile(int i, boolean result) throws FileNotFoundException {
+    private void testIsomorphismNTripleFile(int i, boolean result) throws URISyntaxException, MalformedURLException {
         testIsomorphismFile(i,"N-TRIPLE","nt",result);
     }
 
-    private void testIsomorphismXMLFile(int i, boolean result) throws FileNotFoundException {
+    private void testIsomorphismXMLFile(int i, boolean result) throws URISyntaxException, MalformedURLException {
         testIsomorphismFile(i,"RDF/XML","rdf",result);
 
     }
 
-    String  filebase = "testing/regression/testModelEquals/";
-    private void testIsomorphismFile(int n, String lang, String suffix, boolean result) throws FileNotFoundException {
+    private InputStream getInputStream( int n, int n2, String suffix) throws URISyntaxException, MalformedURLException
+    {
+    	String urlStr = String.format( "regression/testModelEquals/%s-%s.%s", n, n2, suffix);
+    	return AbstractTestGraph.class.getClassLoader().getResourceAsStream(  urlStr );
+    }
+    
+    private void testIsomorphismFile(int n, String lang, String suffix, boolean result) throws URISyntaxException, MalformedURLException {
 
         Graph g1 = getGraph();
         Graph g2 = getGraph();
@@ -918,10 +928,10 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Model m2 = ModelFactory.createModelForGraph(g2);
 
         m1.read(
-                new FileInputStream(filebase + Integer.toString(n) + "-1."+suffix),
+                getInputStream(n, 1, suffix),
                 "http://www.example.org/",lang);
         m2.read(
-                new FileInputStream(filebase + Integer.toString(n) + "-2."+suffix),
+                getInputStream(n, 2, suffix),
                 "http://www.example.org/",lang);
 
         boolean rslt = g1.isIsomorphicWith(g2) == result;

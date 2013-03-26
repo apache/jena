@@ -55,7 +55,7 @@
     <ver.log4j>1.2.16</ver.log4j>
     <ver.junit>4.11</ver.junit>
 
-    <ver.xerces>2.10.0</ver.xerces>
+    <ver.xerces>2.11.0</ver.xerces>
     <ver.httpclient>4.2.3</ver.httpclient>
 
     <jdk.version>1.6</jdk.version>
