@@ -57,6 +57,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkStreamRDF ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 
 /** Build node table - write triples/quads as text file */
 public class CmdNodeTableBuilder extends CmdGeneral
@@ -169,7 +170,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         
         // See Stats class.
         if ( ! location.isMem() )
-            Stats.write(dsg, sink.getCollector()) ;
+            Stats.write(dsg.getLocation().getPath(Names.optStats), sink.getCollector().results()) ;
         
         // ---- Monitor
         long time = monitor.finish() ;
@@ -198,7 +199,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
             this.nodeTable = ntt.getNodeTable() ;
             this.writerTriples = new WriteRows(outputTriples, 3, 20000) ; 
             this.writerQuads = new WriteRows(outputQuads, 4, 20000) ; 
-            this.stats = new StatsCollectorNodeId() ;
+            this.stats = new StatsCollectorNodeId(nodeTable) ;
         }
         
         @Override

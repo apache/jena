@@ -21,6 +21,8 @@ package tdb.cmdline;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -59,6 +61,8 @@ public abstract class CmdTDBGraph extends CmdTDB
         else
             return ds.getDefaultModel() ;
     }
+    
+    public Node getGraphName()  { return graphName == null ? null : NodeFactory.createURI(graphName) ; } 
     
     protected GraphTDB getGraph()
     {

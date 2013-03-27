@@ -18,13 +18,19 @@
 
 package tdb;
 
+import java.util.Iterator ;
+
+import org.apache.jena.atlas.lib.Tuple ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
 
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.solver.stats.Stats ;
-import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
-
+import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId ;
+import com.hp.hpl.jena.tdb.solver.stats.StatsResults ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class tdbstats extends CmdTDBGraph
 {
@@ -45,12 +51,43 @@ public class tdbstats extends CmdTDBGraph
     {
         return null ;
     }
+    
+    public static StatsResults stats(DatasetGraphTDB dsg, Node gn)
+    {
+        NodeTable nt = dsg.getTripleTable().getNodeTupleTable().getNodeTable() ;
+        StatsCollectorNodeId stats = new StatsCollectorNodeId(nt) ;
+        
+        if ( gn == null )
+        {
+            Iterator<Tuple<NodeId>> iter = dsg.getTripleTable().getNodeTupleTable().findAll() ;
+            for ( ; iter.hasNext(); )
+            {
+                Tuple<NodeId> t = iter.next() ;
+                stats.record(null, t.get(0), t.get(1), t.get(2)) ;
+            }
+        }
+        else
+        {
+            NodeId gnid = nt.getNodeIdForNode(gn) ;
+            if ( gnid == null )
+            {}
+            Iterator<Tuple<NodeId>> iter = dsg.getQuadTable().getNodeTupleTable().find(gnid, null, null, null) ;
+            
+            for ( ; iter.hasNext(); )
+            {
+                Tuple<NodeId> t = iter.next() ;
+                stats.record(t.get(0), t.get(1), t.get(2), t.get(3)) ;
+            }
+        }
+        return stats.results() ;
+    }
 
     @Override
     protected void exec()
     {
-        GraphTDB graph = getGraph() ;
-        StatsCollector stats = Stats.gatherTDB(graph) ;
-        Stats.write(System.out, stats) ;
+        DatasetGraphTDB dsg = getDatasetGraphTDB() ;
+        Node gn = getGraphName() ;
+        StatsResults results = stats(dsg, gn) ;
+        Stats.write(System.out, results) ;
     }
 }
