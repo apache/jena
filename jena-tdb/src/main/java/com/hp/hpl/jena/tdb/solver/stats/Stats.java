@@ -24,70 +24,53 @@ import static com.hp.hpl.jena.sparql.sse.Item.createTagged ;
 import java.io.FileOutputStream ;
 import java.io.IOException ;
 import java.io.OutputStream ;
-import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.ItemWriter ;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class Stats
 {
     static Item ZERO = Item.createNode(NodeFactoryExtra.intToNode(0)) ;
 
     /** Write statistics */
-    static public void write(String filename, StatsCollector stats)
+    static public void write(String filename, StatsResults stats)
     {
-        write(filename, stats.getPredicates(), stats.getCount()) ;
+        write(filename, stats.getPredicates(), stats.getTypes(), stats.getCount()) ;
     }
     
     /** Write statistics */
-    static public void write(OutputStream output, StatsCollector stats)
+    static public void write(OutputStream output, StatsResults stats)
     {
-        write(output, stats.getPredicates(), stats.getCount()) ;
+        write(output, stats.getPredicates(), stats.getTypes(), stats.getCount()) ;
     }
     
-    /** Write statistics */
-    static public void write(DatasetGraphTDB dsg, StatsCollectorNodeId statsById)
-    {
-        long statsTotal = statsById.getCount() ;
-        Map<Node, Integer> stats = statsById.asNodeStats(dsg.getTripleTable().getNodeTupleTable().getNodeTable()) ;
-        Item item = format(stats, statsTotal) ; 
-        String filename = dsg.getLocation().getPath(Names.optStats) ;
-        write(filename, stats, statsTotal) ;
-    }
-
-    static private void write(String filename, Map<Node, Integer> stats, long statsTotal)
+    static private void write(String filename, Map<Node, Integer> predicateStats, Map<Node, Integer> typeStats, long statsTotal)
     {
         // Write out the stats
         try {
             OutputStream statsOut = new FileOutputStream(filename) ;
-            write(statsOut, stats, statsTotal) ;
+            write(statsOut, predicateStats, typeStats, statsTotal) ;
             statsOut.close() ;
         } catch (IOException ex)
         { Log.warn(Stats.class, "Problem when writing stats file", ex) ; }
     }
     
-    static private void write(OutputStream output, Map<Node, Integer> stats, long statsTotal)
+    static private void write(OutputStream output, Map<Node, Integer> predicateStats, Map<Node, Integer> typeStats, long statsTotal)
     {
-        Item item = format(stats, statsTotal) ;
+        Item item = format(predicateStats, typeStats, statsTotal) ;
         ItemWriter.write(output, item) ;
     }
     
@@ -107,84 +90,29 @@ public class Stats
         return stats ;
     }
 
-    /** Gather statistics - faster for TDB */
-    public static StatsCollector gatherTDB(GraphTDB graph)
+    public static Item format(StatsResults stats)
     {
-        long count = 0 ;
-        Map<NodeId, Integer> predicateIds = new HashMap<NodeId, Integer>(1000) ;
-        
-        TupleIndex index = graph.getNodeTupleTable().getTupleTable().getIndex(0) ;
-        if ( ! index.getName().equals("SPO") &&
-             ! index.getName().equals("GSPO") )
-            Log.warn(StatsCollector.class, "May not be the right index: "+index.getName()+" mapping="+index.getColumnMap().getLabel()) ;
-        boolean quads = (index.getTupleLength()==4)  ;
-        
-        Iterator<Tuple<NodeId>> iter = graph.getNodeTupleTable().findAll() ;
-        StatsCollectorNodeId collector = new StatsCollectorNodeId() ;
-        
-        for ( ; iter.hasNext() ; )
-        {
-            Tuple<NodeId> tuple = iter.next(); 
-            count++ ;
-            if ( quads )
-                collector.record(tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3)) ;
-            else
-                collector.record(null, tuple.get(0), tuple.get(1), tuple.get(2)) ;
-        }
-        
-        Map<Node, Integer> predicates = collector.asNodeStats(graph.getNodeTupleTable().getNodeTable()) ;
-        return new StatsCollector(count, predicates) ;
-    }
-
-    private static Item statsOutput(NodeTable nodeTable, Map<NodeId, Integer> predicateIds, long total)
-    {
-        Map<Node, Integer> predicates = new HashMap<Node, Integer>(1000) ;
-        for ( NodeId p : predicateIds.keySet() )
-        {
-            Node n = nodeTable.getNodeForNodeId(p) ;
-            
-            // Skip these - they just clog things up!
-            if ( n.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )
-                continue ;
-            
-            predicates.put(n, predicateIds.get(p)) ;
-        }
-        
-        return format(predicates, total) ;
-    }
-
-    public static Item format(StatsCollector stats)
-    {
-        return format(stats.getPredicates(), stats.getCount()) ;
+        return format(stats.getPredicates(), stats.getTypes(), stats.getCount()) ;
     }
     
-    /*
-     *             
-            // Skip these - they just clog things up!
-            if ( n.getURI().startsWith("http://www.w3.org/1999/02/22-rdf-syntax-ns#_") )
-                continue ;
-
-     */
-    
-    private static Item format(Map<Node, Integer> predicates, long count)
+    private static Item format(Map<Node, Integer> predicates, Map<Node, Integer> types, long count)
     {
         Item stats = Item.createList() ;
         ItemList statsList = stats.getList() ;
         statsList.add("stats") ;
 
-//        System.out.printf("Triples  %d\n", count) ;
-//        System.out.println("NodeIds") ;
-//        for ( NodeId p : predicateIds.keySet() )
-//            System.out.printf("%s : %d\n",p, predicateIds.get(p) ) ;
-
-//        System.out.println("Nodes") ;
-        
         Item meta = createTagged(StatsMatcher.META) ;
         addPair(meta.getList(), "timestamp", NodeFactoryExtra.nowAsDateTime()) ;
         addPair(meta.getList(), "run@",  Utils.nowAsString()) ;
         if ( count >= 0 )
             addPair(meta.getList(), StatsMatcher.COUNT, NodeFactoryExtra.intToNode((int)count)) ;
         statsList.add(meta) ;
+        
+        for ( Entry<Node, Integer> entry : types.entrySet() )
+        {
+            Node type = entry.getKey() ;
+            addTypeTriple(statsList, type, NodeFactoryExtra.intToNode(entry.getValue()) ) ;
+        }
         
         for ( Entry<Node, Integer> entry : predicates.entrySet() )
         {
@@ -199,5 +127,14 @@ public class Stats
         addPair(statsList, StatsMatcher.OTHER, ZERO) ;
         
         return stats ;
+    }
+
+    private static void addTypeTriple(ItemList statsList, Node type, Node intCount)
+    {
+        ItemList triple = new ItemList() ;
+        triple.add("VAR") ;
+        triple.add(NodeConst.nodeRDFType) ;
+        triple.add(type) ;
+        addPair(statsList, Item.createList(triple), Item.createNode(intCount)) ;
     }
 }

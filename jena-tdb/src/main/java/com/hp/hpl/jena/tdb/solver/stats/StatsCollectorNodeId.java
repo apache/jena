@@ -22,21 +22,35 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Statistics collector, aggregates based on NodeId */
 public class StatsCollectorNodeId extends StatsCollectorBase<NodeId>
 {
-    public Map<Node, Integer> asNodeStats(NodeTable nodeTable)
+    private NodeTable nodeTable ;
+    
+    public StatsCollectorNodeId(NodeTable nodeTable)
     {
-        Map<NodeId, Integer> predicateIds = super.getPredicates() ;
-        Map<Node, Integer> predicates2 = new HashMap<Node, Integer>(1000) ;
-        for ( NodeId p : predicateIds.keySet() )
+        super(findRDFType(nodeTable)) ;
+        this.nodeTable = nodeTable ;
+    }
+    
+    private static NodeId findRDFType(NodeTable nodeTable2)
+    {
+        return nodeTable2.getAllocateNodeId(NodeConst.nodeRDFType) ;
+    }
+
+    @Override
+    protected Map<Node, Integer> convert(Map<NodeId, Integer> stats)
+    {
+        Map<Node, Integer> statsNodes = new HashMap<Node, Integer>(1000) ;
+        for ( NodeId p : stats.keySet() )
         {
             Node n = nodeTable.getNodeForNodeId(p) ;
-            predicates2.put(n, predicateIds.get(p)) ;
+            statsNodes.put(n, stats.get(p)) ;
         }
-        return predicates2 ;
+        return statsNodes ;
     }
 }

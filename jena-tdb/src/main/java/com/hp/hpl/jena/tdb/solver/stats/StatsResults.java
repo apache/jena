@@ -18,39 +18,36 @@
 
 package com.hp.hpl.jena.tdb.solver.stats;
 
-
-import java.util.HashMap ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
 
-import org.apache.jena.atlas.lib.MapUtils ;
-
-/** Statistics collector, general purpose */
-abstract class StatsCollectorBase<T>
+/** Statistics collector */
+public class StatsResults 
 {
-    private long count = 0 ;
-    private Map<T, Integer> predicates = new HashMap<T, Integer>(10000) ;
-    private Map<T, Integer> types = new HashMap<T, Integer>(10000) ;
-    private T typeTrigger ;
-    
-    protected StatsCollectorBase(T typeTrigger)
+    private final Map<Node, Integer> predicates ;
+    private final Map<Node, Integer> types ;
+    private final long count ;
+
+    StatsResults(Map<Node, Integer> predicates, Map<Node, Integer> types, long count)
     {
-        this.typeTrigger = typeTrigger ;
+        this.count = count ;
+        this.predicates = predicates ;
+        this.types = types ;
     }
 
-    public void record(T g, T s, T p, T o)
+    public Map<Node, Integer> getPredicates()
     {
-        count++ ;
-        MapUtils.increment(predicates, p) ;
-        if ( typeTrigger != null && typeTrigger.equals(p) )
-            MapUtils.increment(types, o) ;
+        return predicates ;
     }
 
-    protected abstract Map<Node, Integer> convert(Map<T, Integer> map) ;
-    
-    public StatsResults results()
+    public Map<Node, Integer> getTypes()
     {
-        return new StatsResults(convert(predicates), convert(types), count) ;
+        return types ;
+    }
+
+    public long getCount()
+    {
+        return count ;
     }
 }

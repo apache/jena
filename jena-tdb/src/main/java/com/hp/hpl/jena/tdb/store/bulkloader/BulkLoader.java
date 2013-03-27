@@ -284,7 +284,7 @@ public class BulkLoader
             if ( ! dsg.getLocation().isMem() && startedEmpty )
             {
                 String filename = dsg.getLocation().getPath(Names.optStats) ;
-                Stats.write(filename, stats) ;
+                Stats.write(filename, stats.results()) ;
             }
             forceSync(dsg) ;
         }
@@ -350,7 +350,7 @@ public class BulkLoader
             if ( ! dsg.getLocation().isMem() && startedEmpty )
             {
                 String filename = dsg.getLocation().getPath(Names.optStats) ;
-                Stats.write(filename, stats) ;
+                Stats.write(filename, stats.results()) ;
             }
             forceSync(dsg) ;
         }

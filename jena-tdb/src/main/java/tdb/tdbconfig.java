@@ -29,6 +29,7 @@ import tdb.cmdline.CmdTDBGraph ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModVersion ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -37,8 +38,8 @@ import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
 import com.hp.hpl.jena.tdb.solver.stats.Stats ;
-import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
+import com.hp.hpl.jena.tdb.solver.stats.StatsResults ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.DatasetControlNone ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
@@ -171,9 +172,10 @@ public class tdbconfig extends CmdSub
         @Override
         protected void exec()
         {
-            GraphTDB graph = getGraph() ;
-            StatsCollector stats = Stats.gatherTDB(graph) ;
-            Stats.write(System.out, stats) ;
+            DatasetGraphTDB dsg = getDatasetGraphTDB() ;
+            Node gn = getGraphName() ;
+            StatsResults results = tdbstats.stats(dsg, gn) ;
+            Stats.write(System.out, results) ;
         }
 
         @Override

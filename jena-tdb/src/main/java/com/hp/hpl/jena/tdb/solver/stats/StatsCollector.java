@@ -21,14 +21,16 @@ package com.hp.hpl.jena.tdb.solver.stats;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 
 /** Statistics collector, general purpose, uses Nodes */
 public class StatsCollector extends StatsCollectorBase<Node>
 {
-    public StatsCollector() { super() ; }
-    
-    public StatsCollector(long count, Map<Node, Integer> predicates)
+    public StatsCollector() { super(NodeConst.nodeRDFType) ; }
+
+    @Override
+    protected Map<Node, Integer> convert(Map<Node, Integer> map)
     {
-        super(count, predicates) ;
+        return map ;
     }
 }
