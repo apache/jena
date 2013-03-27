@@ -110,7 +110,8 @@ public abstract class ValidatorBase extends HttpServlet
     {
         outStream.println("<head>") ;
         outStream.println(" <title>"+title+"</title>") ;
-        outStream.println(" <link rel=\"stylesheet\" type=\"text/css\" href=\""+cssFile+"\" />") ;
+        outStream.println("   <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">") ;
+        outStream.println("   <link rel=\"stylesheet\" type=\"text/css\" href=\""+cssFile+"\" />") ;
         //outStream.println() ;
         outStream.println("</head>") ;
     }
