@@ -3,6 +3,8 @@ ChangeLog for TDB
 
 ==== TDB 0.10.1
 
++ JENA-426 : Default statistics gathering now collects information on rdf:type usage.
+  Large databases, with small numbers of different classes, may benefit from recalculating stats.opt.   
 
 ==== TDB 0.10.0
 
