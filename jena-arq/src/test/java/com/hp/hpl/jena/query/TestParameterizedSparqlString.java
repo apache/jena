@@ -32,6 +32,7 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
@@ -1267,18 +1268,28 @@ public class TestParameterizedSparqlString {
         Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"test\", ?o . }", query.toString());
     }
 
-    @Test(expected=QueryParseException.class)
+    @Test(expected=ARQException.class)
     public void test_param_string_injection_01() {
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ?var2 . }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setIri("var2", "hello> } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye>");
         
         UpdateRequest updates = pss.asUpdate();
-        Assert.fail("Attempt to do SPARQL injection should result in an unparseable update");
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
+    }
+    
+    @Test(expected=ARQException.class)
+    public void test_param_string_injection_02() {
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ?var2 . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setIri("var2", "hello> } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye");
+        
+        UpdateRequest updates = pss.asUpdate();
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
     
     @Test
-    public void test_param_string_injection_02() {
+    public void test_param_string_injection_03() {
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ?var2 . }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var2", "hello\" } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye>");
@@ -1287,18 +1298,18 @@ public class TestParameterizedSparqlString {
         Assert.assertEquals(1, updates.getOperations().size());
     }
     
-    @Test(expected=QueryParseException.class)
-    public void test_param_string_injection_03() {
+    @Test(expected=ARQException.class)
+    public void test_param_string_injection_04() {
         String str = "PREFIX : <http://example/>\nSELECT * WHERE { <s> <p> ?var2 . }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setIri("var2", "hello> . ?s ?p ?o");
         
         Query q = pss.asQuery();
-        Assert.fail("Attempt to do SPARQL injection should result in an unparseable query");
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
     
     @Test
-    public void test_param_string_injection_04() {
+    public void test_param_string_injection_05() {
         String str = "PREFIX : <http://example/>\nSELECT * WHERE { <s> <p> ?var2 . }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var2", "hello\" . ?s ?p ?o");

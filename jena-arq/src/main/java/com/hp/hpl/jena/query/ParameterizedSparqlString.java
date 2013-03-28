@@ -32,6 +32,7 @@ import org.apache.jena.iri.IRI;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -39,6 +40,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
@@ -551,6 +553,16 @@ public class ParameterizedSparqlString implements PrefixMapping {
     public String getBaseUri() {
         return this.baseUri;
     }
+    
+    /**
+     * Helper method which does the validation of the parameters
+     * @param n Node
+     */
+    protected void validateParameterValue(Node n) {
+        if (n.isURI()) {
+            if (n.getURI().contains(">")) throw new ARQException("Value for the parameter attempts SQL injection");
+        }
+    }
 
     /**
      * Sets the Parameters
@@ -584,6 +596,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
         if (index < 0)
             throw new IndexOutOfBoundsException();
         if (n != null) {
+            this.validateParameterValue(n);
             this.positionalParams.put(index, n);
         } else {
             this.positionalParams.remove(index);
@@ -609,6 +622,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
         if (var.startsWith("?") || var.startsWith("$"))
             var = var.substring(1);
         if (n != null) {
+            this.validateParameterValue(n);
             this.params.put(var, n);
         } else {
             this.params.remove(var);
@@ -660,7 +674,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            IRI
      */
     public void setIri(int index, String iri) {
-        this.setParam(index, this.model.createResource(iri));
+        this.setParam(index, NodeFactory.createURI(iri));
     }
 
     /**
@@ -676,7 +690,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            IRI
      */
     public void setIri(String var, String iri) {
-        this.setParam(var, this.model.createResource(iri));
+        this.setParam(var, NodeFactory.createURI(iri));
     }
 
     /**
