@@ -68,7 +68,8 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * You can use JDBC style positional parameters if you prefer, a JDBC style
  * parameter is a single {@code ?} followed by whitespace or certain punctuation
  * characters (currently {@code ; , .}). Positional parameters have a unique
- * index which reflects the order in which they appear in the string.
+ * index which reflects the order in which they appear in the string.  Positional
+ * parameters use a zero based index.
  * </p>
  * <h4>Buffer Usage</h3> </p> Additionally you may use this purely as a
  * {@link StringBuffer} replacement for creating queries since it provides a
