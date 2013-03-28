@@ -1149,6 +1149,28 @@ public class ParameterizedSparqlString implements PrefixMapping {
         this.params.clear();
         this.positionalParams.clear();
     }
+    
+    /**
+     * Helper method which checks whether it is safe to inject to a variable parameter the given value
+     * @param command Current command string
+     * @param var Variable
+     * @param n Value to inject
+     * @throws ARQException Thrown if not safe to inject, error message will describe why it is unsafe to inject
+     */
+    protected void validateSafeToInject(String command, String var, Node n) throws ARQException {
+        // Looks for the known injection attack vectors and throws an error if any
+        // are encountered
+        
+        // A ?var surrounded by " or ' where the variable is a literal is an attack vector
+        Pattern p = Pattern.compile("\"[?$]" + var + "\"|'[?$]" + var + "'");
+
+        if (p.matcher(command).find() && n.isLiteral()) {
+            throw new ARQException(
+                    "Command string is vunerable to injection attack, variable ?"
+                            + var
+                            + " appears surrounded directly by quotes and is bound to a literal which provides a SPARQL injection attack vector");
+        }
+    }
 
     /**
      * This method is where the actual work happens, the original command text
@@ -1169,31 +1191,19 @@ public class ParameterizedSparqlString implements PrefixMapping {
         String command = this.cmd.toString();
         Pattern p;
 
-        // Before we do anything scan for obvious things that can lead to SPARQL
-        // injection attacks
-        // The text "?var" where ?var is bound to a literal is an injection
-        // attack
-        for (Entry<String, Node> entry : this.params.entrySet()) {
-            p = Pattern.compile("\"[?$]" + entry.getKey() + "\"");
-
-            if (p.matcher(command).find() && entry.getValue().isLiteral()) {
-                throw new ARQException(
-                        "Command string is vunerable to injection attack, variable ?"
-                                + entry.getKey()
-                                + " appears surrounded by quotes and is bound to a literal which provides a SPARQL injection attack vector");
-            }
-        }
-
         // Go ahead and inject Variable Parameters
         SerializationContext context = new SerializationContext(this.prefixes);
         context.setBaseIRI(this.baseUri);
         Iterator<String> vars = this.params.keySet().iterator();
         while (vars.hasNext()) {
             String var = vars.next();
+            Node n = this.params.get(var);
+            if (n == null) continue;
+            this.validateSafeToInject(command, var, n);
 
             p = Pattern.compile("([?$]" + var + ")([^\\w]|$)");
             command = p.matcher(command).replaceAll(
-                    Matcher.quoteReplacement(FmtUtils.stringForNode(this.params.get(var), context)) + "$2");
+                    Matcher.quoteReplacement(FmtUtils.stringForNode(n, context)) + "$2");
         }
 
         // Then inject Positional Parameters
