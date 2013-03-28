@@ -40,7 +40,6 @@ public class ExRIOT_out3
     public static void main(String[] args)
     {
         RIOT.init() ;
-        RDFWriterRegistry.init() ;
         
         System.out.println("## Example of a registering a new language with RIOT") ; 
         System.out.println() ;
