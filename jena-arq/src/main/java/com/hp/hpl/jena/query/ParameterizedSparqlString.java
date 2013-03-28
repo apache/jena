@@ -48,8 +48,11 @@ import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 /**
+ * <p>
  * A Parameterized SPARQL String is a SPARQL query/update into which values may
- * be injected. <h3>Injecting Values</h3>
+ * be injected.
+ * </p>
+ * <h3>Injecting Values</h3>
  * <p>
  * Values may be injected in several ways:
  * </p>
@@ -68,7 +71,7 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * You can use JDBC style positional parameters if you prefer, a JDBC style
  * parameter is a single {@code ?} followed by whitespace or certain punctuation
  * characters (currently {@code ; , .}). Positional parameters have a unique
- * index which reflects the order in which they appear in the string.  Positional
+ * index which reflects the order in which they appear in the string. Positional
  * parameters use a zero based index.
  * </p>
  * <h4>Buffer Usage</h3> </p> Additionally you may use this purely as a
@@ -88,7 +91,7 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * value but rather wish to insert constants into the query/update in place of
  * variables</li>
  * <li>Defending against SPARQL injection when creating a query/update using
- * some external input</li>
+ * some external input, see SPARQL Injection notes for limitations.</li>
  * <li>Provide a more convenient way to prepend common prefixes to your query</li>
  * </ul>
  * <p>
@@ -110,6 +113,42 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * sub query which you don't want replaced have distinct names from those in the
  * outer query you do want replaced (or vice versa)</li>
  * </ol>
+ * <h3>SPARQL Injection Notes</h3>
+ * <p>
+ * While this class was in part designed to prevent SPARQL injection it is by no
+ * means foolproof because it works purely at the textual level. The current
+ * version of the code addresses some possible attack vectors that the
+ * developers have identified but we recognize that there are some cases that we
+ * cannot prevent. In particular you should never surround a variable which you
+ * intend to replace with double quotes e.g.
+ * </p>
+ * 
+ * <pre>
+ * String str = &quot;PREFIX : &lt;http://example/&gt;\nINSERT DATA { &lt;s&gt; &lt;p&gt; \&quot;?var\&quot; }&quot;;
+ * ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+ * </pre>
+ * 
+ * <p>
+ * While the class will recognize and prevent this as an error this protection
+ * is trivially defeated by placing some white space around the variable
+ * definition e.g
+ * </p>
+ * 
+ * <pre>
+ * String str = &quot;PREFIX : &lt;http://example/&gt;\nINSERT DATA { &lt;s&gt; &lt;p&gt; \&quot; ?var \&quot; }&quot;;
+ * ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+ * </pre>
+ * 
+ * <p>
+ * This latter case cannot be easily detected and prevented because we can't
+ * easily distinguish between a possible injection vulnerability and a variable
+ * that merely occurs between two literals.
+ * </p>
+ * <p>
+ * Therefore we <strong>strongly</strong> recommend that users concerned about
+ * SPARQL Injection attacks perform their own validation on provided parameters
+ * and test their use of this class to avoid known attack vectors.
+ * </p>
  */
 public class ParameterizedSparqlString implements PrefixMapping {
 
@@ -554,14 +593,17 @@ public class ParameterizedSparqlString implements PrefixMapping {
     public String getBaseUri() {
         return this.baseUri;
     }
-    
+
     /**
      * Helper method which does the validation of the parameters
-     * @param n Node
+     * 
+     * @param n
+     *            Node
      */
     protected void validateParameterValue(Node n) {
         if (n.isURI()) {
-            if (n.getURI().contains(">")) throw new ARQException("Value for the parameter attempts SQL injection");
+            if (n.getURI().contains(">"))
+                throw new ARQException("Value for the parameter attempts SQL injection");
         }
     }
 
@@ -1126,14 +1168,19 @@ public class ParameterizedSparqlString implements PrefixMapping {
     public String toString() {
         String command = this.cmd.toString();
         Pattern p;
-        
-        // Before we do anything scan for obvious things that can lead to SPARQL injection attacks
-        // The text "?var" where ?var is bound to a literal is an injection attack
+
+        // Before we do anything scan for obvious things that can lead to SPARQL
+        // injection attacks
+        // The text "?var" where ?var is bound to a literal is an injection
+        // attack
         for (Entry<String, Node> entry : this.params.entrySet()) {
             p = Pattern.compile("\"[?$]" + entry.getKey() + "\"");
-            
+
             if (p.matcher(command).find() && entry.getValue().isLiteral()) {
-                throw new ARQException("Command string is vunerable to injection attack, variable ?" + entry.getKey() + " appears surrounded by quotes and is bound to a literal which provides a SPARQL injection attack vector");
+                throw new ARQException(
+                        "Command string is vunerable to injection attack, variable ?"
+                                + entry.getKey()
+                                + " appears surrounded by quotes and is bound to a literal which provides a SPARQL injection attack vector");
             }
         }
 
@@ -1165,7 +1212,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
             String nodeStr = FmtUtils.stringForNode(n, context);
             command = command.substring(0, posMatch.start() + adj) + nodeStr + command.substring(posMatch.start() + adj + 1);
-            // Because we are using a matcher over the string state prior to starting replacements we need to
+            // Because we are using a matcher over the string state prior to
+            // starting replacements we need to
             // track the offset adjustments to make
             adj += nodeStr.length() - 1;
         }
@@ -1260,8 +1308,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
                 String var = vars.next();
                 copy.setParam(var, this.getParam(var));
             }
-            for (Entry<Integer, Node> entry : this.positionalParams.entrySet())
-            {
+            for (Entry<Integer, Node> entry : this.positionalParams.entrySet()) {
                 copy.setParam(entry.getKey(), entry.getValue());
             }
         }
