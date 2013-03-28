@@ -1125,22 +1125,33 @@ public class ParameterizedSparqlString implements PrefixMapping {
     @Override
     public String toString() {
         String command = this.cmd.toString();
+        Pattern p;
+        
+        // Before we do anything scan for obvious things that can lead to SPARQL injection attacks
+        // The text "?var" where ?var is bound to a literal is an injection attack
+        for (Entry<String, Node> entry : this.params.entrySet()) {
+            p = Pattern.compile("\"[?$]" + entry.getKey() + "\"");
+            
+            if (p.matcher(command).find() && entry.getValue().isLiteral()) {
+                throw new ARQException("Command string is vunerable to injection attack, variable ?" + entry.getKey() + " appears surrounded by quotes and is bound to a literal which provides a SPARQL injection attack vector");
+            }
+        }
 
-        // First Inject Variable Parameters
+        // Go ahead and inject Variable Parameters
         SerializationContext context = new SerializationContext(this.prefixes);
         context.setBaseIRI(this.baseUri);
         Iterator<String> vars = this.params.keySet().iterator();
         while (vars.hasNext()) {
             String var = vars.next();
 
-            Pattern p = Pattern.compile("([?$]" + var + ")([^\\w]|$)");
+            p = Pattern.compile("([?$]" + var + ")([^\\w]|$)");
             command = p.matcher(command).replaceAll(
                     Matcher.quoteReplacement(FmtUtils.stringForNode(this.params.get(var), context)) + "$2");
         }
 
-        // Then Inject Positional Parameters
+        // Then inject Positional Parameters
         // To do this we need to find the ? we will replace
-        Pattern p = Pattern.compile("(\\?)[\\s;,.]");
+        p = Pattern.compile("(\\?)[\\s;,.]");
         int index = -1;
         int adj = 0;
         Matcher matcher = p.matcher(command);
