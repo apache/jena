@@ -1326,4 +1326,44 @@ public class TestParameterizedSparqlString {
             }
         }
     }
+    
+    @Test(expected=QueryParseException.class)
+    public void test_param_string_injection_06() {
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> '?var' }" ;
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral("var", "hello' . } ; DROP ALL ; INSERT DATA { <s> <p> \"goodbye");
+        
+        UpdateRequest updates = pss.asUpdate();
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
+    }
+    
+    @Test(expected=ARQException.class)
+    public void test_param_string_injection_07() {
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> \"?var\" }" ;
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral("var", " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+        
+        UpdateRequest updates = pss.asUpdate();
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
+    }
+    
+    @Test
+    public void test_param_string_injection_permitted_01() {
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> \" ?var \" }" ;
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral("var", " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+        
+        UpdateRequest updates = pss.asUpdate();
+        Assert.assertEquals(3, updates.getOperations().size());
+    }
+    
+    @Test
+    public void test_param_string_injection_permitted_02() {
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> \"some text ?var other text\" }" ;
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral("var", " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+        
+        UpdateRequest updates = pss.asUpdate();
+        Assert.assertEquals(3, updates.getOperations().size());
+    }
 }
