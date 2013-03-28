@@ -122,23 +122,19 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * cannot prevent. In particular you should never surround a variable which you
  * intend to replace with double quotes e.g.
  * </p>
- * 
  * <pre>
  * String str = &quot;PREFIX : &lt;http://example/&gt;\nINSERT DATA { &lt;s&gt; &lt;p&gt; \&quot;?var\&quot; }&quot;;
  * ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
  * </pre>
- * 
  * <p>
  * While the class will recognize and prevent this as an error this protection
  * is trivially defeated by placing some white space around the variable
  * definition e.g
  * </p>
- * 
  * <pre>
  * String str = &quot;PREFIX : &lt;http://example/&gt;\nINSERT DATA { &lt;s&gt; &lt;p&gt; \&quot; ?var \&quot; }&quot;;
  * ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
  * </pre>
- * 
  * <p>
  * This latter case cannot be easily detected and prevented because we can't
  * easily distinguish between a possible injection vulnerability and a variable
@@ -147,7 +143,9 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * <p>
  * Therefore we <strong>strongly</strong> recommend that users concerned about
  * SPARQL Injection attacks perform their own validation on provided parameters
- * and test their use of this class to avoid known attack vectors.
+ * and test their use of this class to avoid known attack vectors.  We also 
+ * recommend that users do not use easily guessable variable names for their
+ * parameters as these can allow a chained injection attack.
  * </p>
  */
 public class ParameterizedSparqlString implements PrefixMapping {

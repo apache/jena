@@ -1408,8 +1408,7 @@ public class TestParameterizedSparqlString {
     @Test
     public void test_param_string_injection_permitted_01() {
         // This is a case where we cannot detect the different between a valid
-        // parameterized
-        // string and one that is subject to injection
+        // parameterized string and one that is subject to injection
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> \" ?var \" }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
