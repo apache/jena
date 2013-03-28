@@ -20,7 +20,6 @@ package arq.examples.riot;
 
 import static org.apache.jena.riot.RDFLanguages.TRIG ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RIOT ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
@@ -30,10 +29,6 @@ public class ExRIOT_3
 {
     public static void main(String...argv)
     {
-        // Ensure RIOT loaded.
-        // This is only needed to be sure - touching any ARQ code will load RIOT.
-        // This operation can be called several times.
-        RIOT.init() ;
         Dataset ds = null ;
         
         // Read a TriG file into quad storage in-memory.

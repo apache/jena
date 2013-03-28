@@ -23,7 +23,6 @@ import java.io.FileNotFoundException ;
 import java.io.InputStream ;
 
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.* ;
@@ -41,9 +40,6 @@ public class ExRIOT_2
 {
     public static void main(String...argv) throws FileNotFoundException
     {
-        // Ensure RIOT loaded.  Usually this is automatic.
-        RIOT.init() ;
-
         // ---- Parse to a Sink.
         StreamRDF noWhere = StreamRDFLib.sinkNull() ;
 

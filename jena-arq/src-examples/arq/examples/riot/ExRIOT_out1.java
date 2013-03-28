@@ -27,9 +27,6 @@ public class ExRIOT_out1
 {
     public static void main(String[] args)
     {
-        RIOT.init() ;
-        RDFWriterRegistry.init() ;
-        
         Model model = RDFDataMgr.loadModel("D.ttl") ;
         
         System.out.println() ;

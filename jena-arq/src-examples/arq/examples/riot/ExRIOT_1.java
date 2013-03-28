@@ -20,7 +20,6 @@ package arq.examples.riot;
 
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RIOT ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -33,11 +32,6 @@ public class ExRIOT_1
 {
     public static void main(String...argv)
     {
-        // Ensure RIOT loaded.
-        // This is only needed to be sure - touching any ARQ code will load RIOT.
-        // This operation can be called several times.
-        RIOT.init() ;
-                  
         Model m = ModelFactory.createDefaultModel() ;
         // read into the model.
         m.read("data.ttl") ;

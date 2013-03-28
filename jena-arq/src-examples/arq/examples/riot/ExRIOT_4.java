@@ -35,9 +35,6 @@ public class ExRIOT_4
 {
     public static void main(String...argv)
     {
-        // Not needed here as we are using RIOT itself via RDFDataMgr, not indirectly.
-        //RIOT.init() ;
-        
         String filename = "data.ttl" ;
 
         // This is the heart of N-triples printing ... outoput is heavily buffered

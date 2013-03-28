@@ -20,8 +20,6 @@ package arq.examples.riot;
 
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFWriterRegistry ;
-import org.apache.jena.riot.RIOT ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -31,9 +29,6 @@ public class ExRIOT_out2
 {
     public static void main(String[] args)
     {
-        RIOT.init() ;
-        RDFWriterRegistry.init() ;
-        
         Model model = RDFDataMgr.loadModel("D.ttl") ;
         System.out.println() ;
         System.out.println("#### ---- Write as TriG") ;
