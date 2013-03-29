@@ -43,7 +43,10 @@ import com.hp.hpl.jena.sparql.resultset.XMLInput ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
 
-
+/**
+ * A query execution implementation where queries are executed against a remote service
+ *
+ */
 public class QueryEngineHTTP implements QueryExecution
 {
     private static Logger log = LoggerFactory.getLogger(QueryEngineHTTP.class) ;
@@ -115,6 +118,92 @@ public class QueryEngineHTTP implements QueryExecution
         this.service = serviceURI ;
         // Copy the global context to freeze it.
         this.context = new Context(ARQ.getContext()) ;
+        
+        // Apply service configuration if relevant
+        QueryEngineHTTP.applyServiceConfig(serviceURI, this);
+    }
+    
+    /**
+     * <p>
+     * Helper method which applies configuration from the Context to the query engine
+     * if a service context exists for the given URI
+     * </p>
+     * <p>
+     * Based off proposed patch for JENA-405 but modified to apply all relevant configuration, this is in part also
+     * based off of the private {@code configureQuery()} method of the {@link Service} class though it omits
+     * parameter merging since that will be done automatically whenever the {@link QueryEngineHTTP} instance
+     * makes a query for remote submission.
+     * </p>
+     * @param serviceURI Service URI
+     */
+    private static void applyServiceConfig(String serviceURI, QueryEngineHTTP engine) {
+        @SuppressWarnings("unchecked")
+        Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service.serviceContext);
+        if (serviceContextMap != null && serviceContextMap.containsKey(serviceURI)) {
+            Context serviceContext = serviceContextMap.get(serviceURI);
+            if (log.isDebugEnabled())
+                log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
+            
+            // Apply behavioral options
+            engine.setAllowGZip(serviceContext.isTrueOrUndef(Service.queryGzip));
+            engine.setAllowDeflate(serviceContext.isTrueOrUndef(Service.queryDeflate));
+            applyServiceTimeouts(engine, serviceContext);
+
+            // Apply authentication settings
+            String user = serviceContext.getAsString(Service.queryAuthUser);
+            String pwd = serviceContext.getAsString(Service.queryAuthPwd);
+
+            if (user != null || pwd != null) {
+                user = user == null ? "" : user;
+                pwd = pwd == null ? "" : pwd;
+                if (log.isDebugEnabled())
+                    log.debug("Setting basic HTTP authentication for endpoint URI {} with username: {} ", serviceURI, user);
+                engine.setBasicAuthentication(user, pwd.toCharArray());
+            }
+        }
+    }
+    
+    /**
+     * Applies context provided timeouts to the given engine
+     * @param engine Engine
+     * @param context Context
+     */
+    private static void applyServiceTimeouts(QueryEngineHTTP engine, Context context) {
+        if (context.isDefined(Service.queryTimeout)) 
+        {
+            Object obj = context.get(Service.queryTimeout);
+            if (obj instanceof Number) 
+            {
+                int x = ((Number) obj).intValue();
+                engine.setTimeout(-1, x);
+            } 
+            else if (obj instanceof String)
+            {
+                try {
+                    String str = obj.toString();
+                    if (str.contains(",")) {
+                        
+                        String[] a = str.split(",");
+                        int connect = Integer.parseInt(a[0]);
+                        int read = Integer.parseInt(a[1]);
+                        engine.setTimeout(read, connect);
+                    } 
+                    else 
+                    {
+                        int x = Integer.parseInt(str);
+                        engine.setTimeout(-1, x);
+                    }
+                } 
+                catch (NumberFormatException ex) 
+                {
+                    throw new QueryExecException("Can't interpret string for timeout: " + obj);
+                }
+            } 
+            else
+            {
+                throw new QueryExecException("Can't interpret timeout: " + obj);
+            }
+        }
     }
     
 //    public void setParams(Params params)
@@ -181,6 +270,14 @@ public class QueryEngineHTTP implements QueryExecution
         if ( namedGraphURIs == null )
             namedGraphURIs = new ArrayList<String>() ;
         namedGraphURIs.add(name) ;
+    }
+    
+    /**
+     * Gets whether basic authentication credentials have been provided
+     * @return True if basic authentication credentials have been provided
+     */
+    public boolean isUsingBasicAuthentication() {
+        return this.user != null || this.password != null;
     }
     
     /** Set user and password for basic authentication.
@@ -386,7 +483,19 @@ public class QueryEngineHTTP implements QueryExecution
     public long getTimeout1() { return asMillis(readTimeout, readTimeoutUnit) ; } 
     
     @Override
-    public long getTimeout2() { return asMillis(connectTimeout, connectTimeoutUnit) ; } 
+    public long getTimeout2() { return asMillis(connectTimeout, connectTimeoutUnit) ; }
+    
+    /**
+     * Gets whether HTTP requests will indicate to the remote server that GZip encoding of responses is accepted
+     * @return True if GZip encoding will be accepted
+     */
+    public boolean getAllowGZip() { return allowGZip; }
+    
+    /**
+     * Gets whether HTTP requests will indicate to the remote server that Deflate encoding of responses is accepted
+     * @return True if Deflate encoding will be accepted
+     */
+    public boolean getAllowDeflate() { return allowDeflate; }
 
     private static long asMillis(long duration, TimeUnit timeUnit)
     {
