@@ -169,8 +169,8 @@ public class Service
     	httpQuery.merge(QueryEngineHTTP.getServiceParams(uri, context));
     	httpQuery.addParam(HttpParams.pQuery, query.toString());
     	httpQuery.setAccept(WebContent.contentTypeResultsXML);
-    	httpQuery.setAllowGZip(context.isTrue(queryGzip));
-    	httpQuery.setAllowDeflate(context.isTrue(queryDeflate));
+    	httpQuery.setAllowGZip(context.isTrueOrUndef(queryGzip));
+    	httpQuery.setAllowDeflate(context.isTrueOrUndef(queryDeflate));
 
     	String user = context.getAsString(queryAuthUser);
     	String pwd = context.getAsString(queryAuthPwd);
