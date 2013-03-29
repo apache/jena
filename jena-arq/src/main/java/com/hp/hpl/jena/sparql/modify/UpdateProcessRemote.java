@@ -18,70 +18,42 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
-import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * UpdateProcess that send the request to a SPARQL endpoint by using POST of application/sparql-update.  
  */
-public class UpdateProcessRemote implements UpdateProcessor
-{
-    public static final Symbol HTTP_CONTEXT = Symbol.create("httpContext") ;
-    
-    private final UpdateRequest request ;
-    private final String endpoint ;
-    private final Context context ;
-    
-    public UpdateProcessRemote(UpdateRequest request , String endpoint , Context context )
+public class UpdateProcessRemote extends UpdateProcessRemoteBase implements UpdateProcessor
+{    
+    /**
+     * Creates a new remote update processor that uses the application/sparql-update submission method
+     * @param request Update request
+     * @param endpoint Update endpoint
+     * @param context Context
+     */
+    public UpdateProcessRemote(UpdateRequest request, String endpoint, Context context )
     {
-        this.request = request ;
-        this.endpoint = endpoint ;
-        this.context = Context.setupContext(context, null) ;
-    }
-
-    @Override
-    public GraphStore getGraphStore()
-    {
-        return null ;
+        super(request, endpoint, context);
     }
 
     @Override
     public void execute()
     {
-        if ( endpoint == null )
+        // Validation
+        if ( this.getEndpoint() == null )
             throw new ARQException("Null endpoint for remote update") ;
-        String reqStr = request.toString() ;
-        HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, null, null, getHttpContext()) ;
-    }
-
-    @Override
-    public Context getContext()
-    {
-        return context ;
-    }
-    
-    /**
-     * Convenience method to set the {@link HttpContext}
-     * @param httpContext
-     */
-    public void setHttpContext(HttpContext httpContext) {
-        getContext().put(HTTP_CONTEXT, httpContext) ;
-    }
-    
-    /**
-     * Convenience method to get the {@link HttpContext}
-     * @return HttpContext
-     */
-    public HttpContext getHttpContext() {
-        return (HttpContext) getContext().get(HTTP_CONTEXT) ;
+        if ( this.getUpdateRequest() == null )
+            throw new ARQException("Null update request for remote update") ;
+        
+        // Execution
+        String reqStr = this.getUpdateRequest().toString() ;
+        HttpOp.execHttpPost(this.getEndpoint(), WebContent.contentTypeSPARQLUpdate, reqStr, null, null, getHttpContext()) ;
     }
 }
 

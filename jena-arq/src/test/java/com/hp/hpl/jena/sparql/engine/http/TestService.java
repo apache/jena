@@ -34,7 +34,11 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpService;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessRemoteBase;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.update.UpdateExecutionFactory;
+import com.hp.hpl.jena.update.UpdateFactory;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 public class TestService {
     private static final String SERVICE = "http://example.com:40000";
@@ -116,7 +120,7 @@ public class TestService {
     }
 
     @Test
-    public void service_context_application_01() {
+    public void query_service_context_application_01() {
         // This test requires no service context to be set
         @SuppressWarnings("unchecked")
         Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
@@ -138,7 +142,7 @@ public class TestService {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void service_context_application_02() {
+    public void query_service_context_application_02() {
         // This test requires us to set some authentication credentials for the
         // service
         Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
@@ -173,7 +177,7 @@ public class TestService {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void service_context_application_03() {
+    public void query_service_context_application_03() {
         // This test requires us to set some timeouts for the service
         Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
         if (serviceContextMap == null) {
@@ -201,10 +205,10 @@ public class TestService {
             serviceContext.remove(Service.queryTimeout);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
-    public void service_context_application_04() {
+    public void query_service_context_application_04() {
         // This test requires us to set some timeouts for the service
         Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
         if (serviceContextMap == null) {
@@ -232,10 +236,10 @@ public class TestService {
             serviceContext.remove(Service.queryTimeout);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
-    public void service_context_application_05() {
+    public void query_service_context_application_05() {
         // This test requires us to set that GZip and Deflate are permitted
         Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
         if (serviceContextMap == null) {
@@ -263,6 +267,53 @@ public class TestService {
         } finally {
             serviceContext.remove(Service.queryGzip);
             serviceContext.remove(Service.queryDeflate);
+        }
+    }
+
+    @Test
+    public void update_service_context_application_01() {
+        // This test requires no service context to be set
+        @SuppressWarnings("unchecked")
+        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        if (serviceContextMap != null) {
+            serviceContextMap.remove(SERVICE);
+        }
+
+        UpdateRequest updates = UpdateFactory.create("CREATE GRAPH <http://example>");
+        UpdateProcessRemoteBase engine = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, SERVICE);
+        Assert.assertNotNull(engine);
+
+        // Check that no settings were changed
+        Assert.assertFalse(engine.isUsingAuthentication());
+    }
+
+    @Test
+    public void update_service_context_application_02() {
+        // This test requires no service context to be set
+        @SuppressWarnings("unchecked")
+        Map<String, Context> serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        if (serviceContextMap == null) {
+            ARQ.getContext().put(Service.serviceContext, new HashMap<String, Context>());
+            serviceContextMap = (Map<String, Context>) ARQ.getContext().get(Service.serviceContext);
+        }
+        if (serviceContextMap.get(SERVICE) == null) {
+            serviceContextMap.put(SERVICE, new Context(ARQ.getContext()));
+        }
+        Context serviceContext = (Context) serviceContextMap.get(SERVICE);
+        try {
+            serviceContext.put(Service.queryAuthUser, "user");
+            serviceContext.put(Service.queryAuthPwd, "password");
+
+            UpdateRequest updates = UpdateFactory.create("CREATE GRAPH <http://example>");
+            UpdateProcessRemoteBase engine = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, SERVICE);
+            Assert.assertNotNull(engine);
+
+            // Check that auth settings were changed
+            Assert.assertTrue(engine.isUsingAuthentication());
+
+        } finally {
+            serviceContext.remove(Service.queryAuthUser);
+            serviceContext.remove(Service.queryAuthPwd);
         }
     }
 }

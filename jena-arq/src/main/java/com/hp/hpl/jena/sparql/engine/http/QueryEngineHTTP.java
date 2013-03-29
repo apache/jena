@@ -137,6 +137,8 @@ public class QueryEngineHTTP implements QueryExecution
      * @param serviceURI Service URI
      */
     private static void applyServiceConfig(String serviceURI, QueryEngineHTTP engine) {
+        if (engine.context == null) return;
+        
         @SuppressWarnings("unchecked")
         Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service.serviceContext);
         if (serviceContextMap != null && serviceContextMap.containsKey(serviceURI)) {

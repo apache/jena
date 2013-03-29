@@ -44,7 +44,7 @@ public class LocatorURL implements Locator
             return null;
         }
         if ( uri.startsWith("http://") || uri.startsWith("https://"))
-            return HttpOp.execHttpGet(uri, acceptTriples) ;
+            return HttpOp.execHttpGet(uri, acceptTriples, null) ;
         return null ;
     }
 
