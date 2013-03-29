@@ -23,6 +23,8 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.UnsupportedEncodingException ;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.List ;
@@ -30,9 +32,13 @@ import java.util.Map ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.http.HttpEntity ;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse ;
 import org.apache.http.NameValuePair ;
 import org.apache.http.StatusLine ;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.client.methods.HttpGet ;
@@ -42,6 +48,8 @@ import org.apache.http.client.methods.HttpUriRequest ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.http.protocol.HttpContext ;
@@ -54,7 +62,9 @@ import org.apache.jena.web.JenaHttpException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.engine.http.Service;
 
 /** Simplified HTTP operations; simplification means only supporting certain uses of HTTP.
  * The expectation is that the simplified operations in this class can be used by other code to
@@ -95,7 +105,7 @@ public class HttpOp
      *  <p>A Map entry of ("*",....) is used "no handler found".
      *  <p>HTTP responses 400 and 500 become exceptions.   
      */
-    public static void execHttpGet(String url, String acceptHeader, Map<String, HttpResponseHandler> handlers)
+    public static void execHttpGet(String url, String acceptHeader, Map<String, HttpResponseHandler> handlers, HttpContext httpContext)
     {
         try {
             long id = counter.incrementAndGet() ;
@@ -110,7 +120,8 @@ public class HttpOp
                 httpget.addHeader(HttpNames.hAccept, acceptHeader) ;
             
             // Execute
-            HttpClient httpclient = new SystemDefaultHttpClient();
+            DefaultHttpClient httpclient = new SystemDefaultHttpClient();
+            applyAuthentication(httpclient, url, httpContext);
             HttpResponse response = httpclient.execute(httpget) ;
             // Handle response
             httpResponse(id, response, baseIRI, handlers) ;
@@ -121,7 +132,7 @@ public class HttpOp
     /** GET
      * <p>The acceptHeader string is any legal value for HTTP Accept: field.
      */
-    public static TypedInputStreamHttp execHttpGet(String url, String acceptHeader)
+    public static TypedInputStreamHttp execHttpGet(String url, String acceptHeader, HttpContext httpContext)
     {
         try {
             long id = counter.incrementAndGet() ;
@@ -136,7 +147,8 @@ public class HttpOp
                 httpget.addHeader(HttpNames.hAccept, acceptHeader) ;
             
             // Execute
-            HttpClient httpclient = new SystemDefaultHttpClient();        // Pool?
+            DefaultHttpClient httpclient = new SystemDefaultHttpClient();        // Pool?
+            applyAuthentication(httpclient, url, httpContext);
             HttpResponse response = httpclient.execute(httpget) ;
             
             // Response
@@ -172,10 +184,11 @@ public class HttpOp
     }
 
     /** Simple GET - no content negotiation */
-    public static String execHttpGet(String url)
+    public static String execHttpGet(String url, HttpContext httpContext)
     {
         HttpUriRequest httpGet = new HttpGet(url) ;
-        HttpClient httpclient = new SystemDefaultHttpClient() ;
+        DefaultHttpClient httpclient = new SystemDefaultHttpClient() ;
+        applyAuthentication(httpclient, url, httpContext);
         try {
             HttpResponse response = httpclient.execute(httpGet) ;
             int responseCode = response.getStatusLine().getStatusCode() ;
@@ -261,7 +274,7 @@ public class HttpOp
                              
     /** POST with response body.
      * <p>The content for the POST body comes from the HttpEntity.
-     * <p>The response is handled bythe handler map, as per {@link #execHttpGet(String, String, Map)}
+     * <p>The response is handled by the handler map, as per {@link #execHttpGet(String, String, Map)}
      * <p>Additional headers e.g. for authentication can be injected through an {@link HttpContext}
      */
     public static void execHttpPost(String url, HttpEntity provider, String acceptType,
@@ -280,7 +293,8 @@ public class HttpOp
                 log.debug(format("[%d] No content type")) ;
 
             // Execute
-            HttpClient httpclient = new SystemDefaultHttpClient();
+            DefaultHttpClient httpclient = new SystemDefaultHttpClient();
+            applyAuthentication(httpclient, url, context);
             httppost.setEntity(provider) ;
             HttpResponse response = httpclient.execute(httppost, context) ;
             httpResponse(id, response, baseIRI, handlers) ;
@@ -304,14 +318,14 @@ public class HttpOp
         try {
             long id = counter.incrementAndGet() ;
             String requestURI = url ;// determineBaseIRI(url) ;
-            String baseIRI = determineBaseIRI(requestURI) ;
-            //A rat walked over the keyboard:   >n'e q5tas5aaas v            
+            String baseIRI = determineBaseIRI(requestURI) ;        
             HttpPost httppost = new HttpPost(requestURI);
             httppost.setEntity(convertFormParams(params));
             if ( log.isDebugEnabled() )
                 log.debug(format("[%d] %s %s",id ,httppost.getMethod(),httppost.getURI().toString())) ;
 
-            HttpClient httpclient = new SystemDefaultHttpClient();
+            DefaultHttpClient httpclient = new SystemDefaultHttpClient();
+            applyAuthentication(httpclient, url, httpContext);
             HttpResponse response = httpclient.execute(httppost, httpContext) ;
             httpResponse(id, response, baseIRI, handlers) ;
             httpclient.getConnectionManager().shutdown(); 
@@ -319,31 +333,31 @@ public class HttpOp
     }
     
     /** Execute an HTTP PUT operation */
-    public static void execHttpPut(String url, String contentType, String content)
+    public static void execHttpPut(String url, String contentType, String content, HttpContext httpContext)
     {
             StringEntity e = null ;
             try
             {
                 e = new StringEntity(content, "UTF-8") ;
                 e.setContentType(contentType.toString()) ;
-                execHttpPut(url, e) ;
+                execHttpPut(url, e, httpContext) ;
             } catch (UnsupportedEncodingException e1)
             { throw new ARQInternalErrorException("Platform does not support required UTF-8") ; }
             finally { closeEntity(e) ; }
     }
     
     /** Execute an HTTP PUT operation */
-    public static void execHttpPut(String url, String contentType, InputStream input, long length)
+    public static void execHttpPut(String url, String contentType, InputStream input, long length, HttpContext httpContext)
     {
         InputStreamEntity e = new InputStreamEntity(input, length) ;
         e.setContentType(contentType) ;
         e.setContentEncoding("UTF-8") ;
-        try { execHttpPut(url, e) ; }
+        try { execHttpPut(url, e, httpContext) ; }
         finally { closeEntity(e) ; }
     }
     
     /** Execute an HTTP PUT operation */
-    public static void execHttpPut(String url, HttpEntity entity)
+    public static void execHttpPut(String url, HttpEntity entity, HttpContext httpContext)
     {
         try {
             long id = counter.incrementAndGet() ;
@@ -354,7 +368,8 @@ public class HttpOp
                 log.debug(format("[%d] %s %s",id , httpput.getMethod(), httpput.getURI().toString())) ;
             
             httpput.setEntity(entity) ;
-            HttpClient httpclient = new SystemDefaultHttpClient();
+            DefaultHttpClient httpclient = new SystemDefaultHttpClient();
+            applyAuthentication(httpclient, url, httpContext);
             HttpResponse response = httpclient.execute(httpput) ;
             httpResponse(id, response, baseIRI, null) ;
             httpclient.getConnectionManager().shutdown(); 
@@ -365,6 +380,28 @@ public class HttpOp
 InputStreamEntity e = new InputStreamEntity(input, length) ;
         e.setContentType(contentType) ;
         e.setContentEncoding("UTF-8") ;     */
+    
+    private static void applyAuthentication(DefaultHttpClient client, String endpoint, HttpContext context) {
+        if (context == null) return;
+        if (context.getAttribute(Service.queryAuthUser.toString()) != null && context.getAttribute(Service.queryAuthPwd.toString()) != null)
+        {
+            URI uri;
+            try {
+                uri = new URI(endpoint);
+            } catch (URISyntaxException e) {
+                throw new ARQException("Invalid request URI", e);
+            }
+            
+            // Be careful to scope credentials to the specific URI so that HttpClient won't try
+            // and send them to other servers
+            HttpHost host = new HttpHost(uri.getHost(), uri.getPort());
+            CredentialsProvider provider = new BasicCredentialsProvider();
+            
+            String user = context.getAttribute(Service.queryAuthUser.toString()).toString();
+            String pwd = context.getAttribute(Service.queryAuthPwd.toString()).toString();
+            provider.setCredentials(new AuthScope(host), new UsernamePasswordCredentials(user, pwd));
+        }
+    }
     
     private static HttpEntity convertFormParams(List<Pair<String, String>> params)
     {
