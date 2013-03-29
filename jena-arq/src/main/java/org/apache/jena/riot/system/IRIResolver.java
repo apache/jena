@@ -68,42 +68,24 @@ public abstract class IRIResolver
         IRI iri = parseIRI(iriStr);
         return iri.hasViolation(false) ;
     }
-    
+
+    /** Check an IRI string (does not resolve it) - throw exception if not good */
+    public static void validateIRI(String iriStr) throws IRIException
+    {
+        parseIRIex(iriStr);
+    }
+
     /** Parse an IRI (does not resolve it) */
     public static IRI parseIRI(String iriStr)
     {
         return iriFactory.create(iriStr);
     }
 
-//    /**
-//     * Resolve the relative URI str against the current global base.
-//     * @param str
-//     * @return IRI
-//     */
-//    public static IRI resolveGlobal(String str)
-//    {
-//        return globalResolver.resolve(str) ;
-//    }
-//    
-//    /**
-//     * Resolve the relative URI str against the current global base.
-//     * @param str
-//     * @return IRI
-//     */
-//    public static IRI resolveGlobalSilent(String str)
-//    {
-//        return globalResolver.resolveSilent(str) ;
-//    }
-//    
-//    /**
-//     * Resolve the relative URI str against the current global base.
-//     * @param str
-//     * @return String
-//     */
-//    public static String resolveGlobalToString(String str) {
-//        return globalResolver.resolveToString(str) ;
-//    }
-
+    /** Parse an IRI (does not resolve it) - throws exception on a bad IRI */
+    public static IRI parseIRIex(String iriStr) throws IRIException
+    {
+        return iriFactory.construct(iriStr);
+    }
     
     /**
      * The current working directory, as a string.
