@@ -18,29 +18,26 @@
 
 package com.hp.hpl.jena.query;
 
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.Calendar ;
+import java.util.TimeZone ;
 
-import org.apache.jena.iri.IRIFactory;
-import org.junit.Test;
+import org.apache.jena.iri.IRIFactory ;
+import org.junit.Assert ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
-import com.hp.hpl.jena.update.UpdateRequest;
-import com.hp.hpl.jena.vocabulary.XSD;
-
-import org.junit.Assert;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
+import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
+import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class TestParameterizedSparqlString {
 
