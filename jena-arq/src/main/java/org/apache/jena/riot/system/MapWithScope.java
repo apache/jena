@@ -27,15 +27,25 @@ public class MapWithScope<A, B, S>
 {
     // ======== Interfaces
     
-    protected interface ScopePolicy<A, B, S>
+    public interface ScopePolicy<A, B, S>
     {
         Map<A, B> getScope(S scope) ;
         void clear() ;
     }
-    
-    protected interface Allocator<A,B>
+
+    /** Allocate a B, given some A.
+     *  Only called once per instance of B if the ScopePolicy map is non-null.
+     */ 
+    public interface Allocator<A,B>
     {
-        public B create(A item) ;
+        /** Allocate - return the same B for a given A.
+         * "same" means .equals, not == 
+         */
+        public B alloc(A item) ;
+        
+        /** Create a fresh, unique (to within policy) B */  
+        public B create() ;
+        
         public void reset() ;
     }
     
@@ -59,19 +69,19 @@ public class MapWithScope<A, B, S>
         Map<A, B> map = scopePolicy.getScope(scope) ;
         if ( map == null )
             // No map - no item->allocation tracking.
-            return allocator.create(item) ;
+            return allocator.alloc(item) ;
 
         B mappedItem = map.get(item) ;
         if ( mappedItem == null )
         {
-            mappedItem = allocator.create(item) ;
+            mappedItem = allocator.alloc(item) ;
             map.put(item, mappedItem) ;
         }
         return mappedItem ;
     }
     
     /** Create a label that is guaranteed to be fresh */ 
-    public B create() { return allocator.create(null) ; }
+    public B create() { return allocator.create() ; }
     
     /** Clear scope and allocation */
     public void clear() { scopePolicy.clear() ; allocator.reset() ; }

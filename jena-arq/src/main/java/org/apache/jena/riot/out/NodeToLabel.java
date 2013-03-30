@@ -21,6 +21,7 @@ package org.apache.jena.riot.out;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.riot.system.MapWithScope ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
@@ -56,7 +57,6 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
 
     private static final NodeToLabel _internal = createBNodeByLabelEncoded() ;
     public static NodeToLabel labelByInternal() { return _internal ; }  
-    
 
     private NodeToLabel(ScopePolicy<Node, String, Node> scopePolicy, Allocator<Node, String> allocator)
     {
@@ -106,14 +106,21 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         private long counter = 0 ;
         
         @Override
-        public final String create(Node node)
+        public final String alloc(Node node)
         {
             if ( node.isURI() )         return labelForURI(node) ;
             if ( node.isLiteral() )     return labelForLiteral(node) ;
             if ( node.isBlank() )       return labelForBlank(node) ;
             if ( node.isVariable() )    return labelForVar(node) ;
-            
-            // Other??
+            throw new InternalErrorException("Node type not supported: "+node) ; 
+        }
+        
+        @Override
+        public final String create()    { return labelCreate() ; }
+
+        // Just return a fresh label.
+        protected String labelCreate()
+        {
             return Long.toString(counter++) ;
         }
 
