@@ -21,6 +21,7 @@ import static java.lang.String.format ;
 
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.out.NodeFmtLib ;
@@ -43,6 +44,9 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     public static LabelToNode createScopeByDocument()
     { return new LabelToNode(new SingleScopePolicy(), nodeMaker) ; }
 
+    public static LabelToNode createScopeByDocumentHash()
+    { return new LabelToNode(new AllocScopePolicy(), new AllocNodeHash()) ; }
+    
     /** Allocation scoped by graph and label. */
     public static LabelToNode createScopeByGraph()
     { return new LabelToNode(new GraphScopePolicy(), nodeMaker) ; }
@@ -101,7 +105,9 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
             return x ;
         }
         @Override
-        public void clear() { map.clear(); }
+        public void clear() {
+            dftMap.clear() ;
+            map.clear(); }
     }
 
     /** No scope - use raw allocator */
@@ -114,28 +120,52 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     }
 
     
-    // ======== Node Allocators 
+    // ======== Node Allocators
+    
+    // TODO Switch to BlankNodeAllocator and a singel wrapper.
+    // variables if the allocator is reusable across runs
+    // classes if a new one is needed each time.
+    // Shared ones must be thread-safe.
+    
+
+    /** Allocate bnode labels using a per-run see and the label presented.
+     *  This is the most scalable, always legal allocator.
+     *  Not thread safe - not reusable.
+     *  Create a new allocator for each parser run. 
+     */  
+    private static class AllocNodeHash implements Allocator<String, Node> {
+        private BlankNodeAllocator alloc = new BlankNodeAllocatorHash() ;
+        
+        @Override public Node alloc(String label)   { return alloc.alloc(label) ; }
+        @Override public Node create()              { return alloc.create() ; }
+        @Override public void reset()               { alloc.reset() ; }
+    } ;
     
     private static Allocator<String, Node> nodeMaker = new Allocator<String, Node>()
     {
-        @Override
-        public Node create(String label)
-        { return NodeFactory.createAnon() ; }
+        @Override public Node alloc(String label)       { return create() ;}
 
-        @Override
-        public void reset()     {}
+        @Override public Node create()                  { return NodeFactory.createAnon() ; }
+
+        @Override public void reset()                   {}
     } ;
 
     private static Allocator<String, Node> nodeMakerDeterministic = new Allocator<String, Node>()
     {
-        private long counter = 0 ;
+        private AtomicLong counter = new AtomicLong(0) ;
 
         @Override
-        public Node create(String label)
+        public Node alloc(String label)
         {
-            String $ = format("B0x%04X", ++counter) ;
+            return create() ;
+        }
+        
+        @Override public Node create()
+        {
+            String $ = format("B0x%04X", counter.incrementAndGet()) ;
             return NodeFactory.createAnon(new AnonId($)) ;
         }
+
 
         @Override
         public void reset()     {}
@@ -143,33 +173,33 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     
     private static Allocator<String, Node> nodeMakerByLabel = new Allocator<String, Node>()
     {
-        private long counter = 0 ;
+        private AtomicLong counter = new AtomicLong(0) ;
         
         @Override
-        public Node create(String label)
+        public Node alloc(String label)
         {
-            if ( label == null )
-                label = SysRIOT.BNodeGenIdPrefix+counter++ ;
             return NodeFactory.createAnon(new AnonId(label)) ;
         }
 
+        @Override public Node create()      { return alloc(SysRIOT.BNodeGenIdPrefix+(counter.getAndIncrement())) ; } 
+        
         @Override
         public void reset()     {}
     } ;
     
     private static Allocator<String, Node> nodeMakerByLabelEncoded = new Allocator<String, Node>()
     {
-        private long counter = 0 ;
+        private AtomicLong counter = new AtomicLong(0) ;
         
         @Override
-        public Node create(String label)
+        public Node alloc(String label)
         {
-            if ( label == null )
-                label = SysRIOT.BNodeGenIdPrefix+counter++ ;
             return NodeFactory.createAnon(new AnonId(NodeFmtLib.decodeBNodeLabel(label))) ;
         }
 
+        @Override public Node create()      { return alloc(SysRIOT.BNodeGenIdPrefix+(counter.getAndIncrement())) ; }
         @Override
+        
         public void reset()     {}
     } ;
 }

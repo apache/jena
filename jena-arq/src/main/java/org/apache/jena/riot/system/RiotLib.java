@@ -133,7 +133,7 @@ public class RiotLib
     public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
     {
         LabelToNode labelToNode = true
-            ? LabelToNode.createScopeByDocument() // SyntaxLabels.createNodeToLabel()
+            ? SyntaxLabels.createLabelToNode()
             : LabelToNode.createUseLabelEncoded() ;
         
         Prologue prologue ;

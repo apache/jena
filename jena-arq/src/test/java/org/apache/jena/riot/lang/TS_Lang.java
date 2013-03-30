@@ -28,7 +28,10 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
      TestIRI.class
     , TestLang.class
-    , TestNodeAllocator.class
+    , TestBlankNodeAllocator.class
+    , TestNodeAllocator.class       // Older tests 
+    , TestLabelToNode.class         // Newer tests
+    , TestNodeToLabel.class
     , TestTurtleTerms.class
     , TestLangNTriples.class
     , TestLangNQuads.class
@@ -37,6 +40,7 @@ import org.junit.runners.Suite ;
     , TestLangRdfJson.class
     , TestParserFactory.class
     , TestPipedRDFIterators.class
+    
 })
 
 

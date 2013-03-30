@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,20 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.riot.lang;
 
-import org.apache.jena.riot.lang.LabelToNode ;
-import org.apache.jena.riot.out.NodeToLabel ;
+import com.hp.hpl.jena.graph.Node ;
 
-/** Factory for default policies for syntax labels to and from nodes
- * For label to node (parsing) we use a scalable hashing scheme (MD5 of a seed and the label)
- * 
- * For node to label (pretty labels output), we use a unique tracking scheme. 
- * Fully scalable writers use different polices and don't have short, pretty bNode labels.
- */  
-public class SyntaxLabels
+/** Interface to allocators for blank nodes. */
+public interface BlankNodeAllocator
 {
-    /** Default setup - scope by document, relabel BNodes ids to short forms */
-    static public NodeToLabel createNodeToLabel() { return NodeToLabel.createScopeByDocument() ; }
-    static public LabelToNode createLabelToNode() { return LabelToNode.createScopeByDocumentHash() ; }
+    /** Allocate based on a non-null label.
+     * Calling this twice, with the same label will generate equivalent nodes
+     * but they may not be identicial (i.e they are .equals but may not be ==) 
+     */
+    public Node alloc(String label) ;
+    
+    /** Create a fresh blank node, different from anythign generated so far.
+     *  Will not clash with a node allocated by {@linkplain #alloc}
+     */
+    public Node create() ;
+    
+    /** Reset allocation state - calls to {@linkplain #alloc} or {@linkplain #create} */    
+    public void reset() ;
 }
+
