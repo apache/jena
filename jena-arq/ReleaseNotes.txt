@@ -5,6 +5,7 @@ ChangeLog for ARQ
 
 ==== Jena 2.10.1
 
++ JENA-352 : Solution to parsing N-Triples with any number of bnode labels.
 + RIOT is the main way to write RDF data.
   All the writes for Turtle/TriG/N-triples and N-Quads revised.
   http://jena.apache.org/documentation/io/
