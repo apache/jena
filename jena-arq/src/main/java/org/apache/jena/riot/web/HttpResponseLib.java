@@ -25,6 +25,7 @@ import java.util.Map ;
 
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
+import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.riot.RiotReader ;
@@ -40,7 +41,7 @@ import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 
 /** A collection of handlers for response handling.
- * @see HttpOp#execHttpGet(String, String, java.util.Map)
+ * @see HttpOp#execHttpGet(String, String, java.util.Map, HttpContext)
  * @see HttpOp#execHttpPost(String, String, ContentProducer, String, java.util.Map)
  * 
  */

@@ -39,7 +39,6 @@ import org.apache.http.StatusLine ;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient ;
 import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.client.methods.HttpGet ;
 import org.apache.http.client.methods.HttpPost ;
@@ -274,7 +273,7 @@ public class HttpOp
                              
     /** POST with response body.
      * <p>The content for the POST body comes from the HttpEntity.
-     * <p>The response is handled by the handler map, as per {@link #execHttpGet(String, String, Map)}
+     * <p>The response is handled by the handler map, as per {@link #execHttpGet(String, String, Map, HttpContext)}
      * <p>Additional headers e.g. for authentication can be injected through an {@link HttpContext}
      */
     public static void execHttpPost(String url, HttpEntity provider, String acceptType,
