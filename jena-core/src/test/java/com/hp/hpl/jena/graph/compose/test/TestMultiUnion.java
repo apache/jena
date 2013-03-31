@@ -24,15 +24,19 @@ package com.hp.hpl.jena.graph.compose.test;
 // Imports
 ///////////////
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphStatisticsHandler;
+import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.graph.compose.MultiUnion.MultiUnionStatisticsHandler;
-import com.hp.hpl.jena.graph.test.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.graph.test.AbstractTestGraph;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-import java.util.*;
-
-import junit.framework.*;
+import junit.framework.TestSuite;
 
 
 /**
@@ -269,7 +273,7 @@ public class TestMultiUnion extends AbstractTestGraph
     
     
     /* Test using a model to wrap a multi union */
-    public void testModel() {
+    public void testModel()  {
         Graph g0 = graphWith( "x p y" );
         MultiUnion u = new MultiUnion( new Graph[] {g0} );
         
@@ -283,7 +287,7 @@ public class TestMultiUnion extends AbstractTestGraph
         assertEquals( "Model size not correct", 3, m.size() );
         
         // adds one more statement to the model
-        m.read( "file:testing/ontology/list0.rdf" );
+        m.read( getFileName("ontology/list0.rdf") );
         assertEquals( "Model size not correct", 4, m.size() );
         
         // debug m.write( System.out );

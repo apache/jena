@@ -20,8 +20,13 @@ package com.hp.hpl.jena.graph.test;
 
 import java.util.Set;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphMaker;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.shared.AlreadyExistsException;
+import com.hp.hpl.jena.shared.DoesNotExistException;
+
 
 /**
     Abstract base class for testing graph factories. Subclasses define the

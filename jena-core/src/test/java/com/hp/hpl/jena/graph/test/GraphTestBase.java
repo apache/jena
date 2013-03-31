@@ -22,10 +22,25 @@ package com.hp.hpl.jena.graph.test;
     An extension of JenaTestBase (which see) with Graph-specific methods.
 */
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor ;
-import java.util.* ;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
-import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.Factory;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphUtil;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.ontology.impl.TestListSyntaxCategories;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.test.JenaTestBase ;
@@ -35,6 +50,19 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class GraphTestBase extends JenaTestBase
     {
+	protected static String getFileName( String fn )
+   	{
+   		URL u = TestListSyntaxCategories.class.getClassLoader().getResource( fn );
+   		if (u == null)
+   		{
+   			throw new RuntimeException( new FileNotFoundException( fn ));
+   		}
+   		try {
+   			return u.toURI().toString();
+   		} catch (URISyntaxException e) {
+   			throw new RuntimeException( e );
+   		}
+   	}
     public GraphTestBase( String name )
     	{ super( name ); }
     	
