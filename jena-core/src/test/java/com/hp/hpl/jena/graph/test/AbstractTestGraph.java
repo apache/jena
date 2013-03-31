@@ -18,13 +18,28 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import java.io.FileNotFoundException ;
 import java.io.InputStream ;
 import java.net.MalformedURLException ;
 import java.net.URISyntaxException ;
-import java.util.* ;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.Capabilities;
+import com.hp.hpl.jena.graph.Factory;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphEventManager;
+import com.hp.hpl.jena.graph.GraphEvents;
+import com.hp.hpl.jena.graph.GraphListener;
+import com.hp.hpl.jena.graph.GraphStatisticsHandler;
+import com.hp.hpl.jena.graph.GraphUtil;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.TransactionHandler;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.mem.TrackingTripleIterator ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -52,7 +67,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public abstract Graph getGraph();
 
      //public Graph getGraph() { return Factory.createGraphMem(); }
-
+    
     public Graph getGraphWith( String facts )
     {
         Graph g = getGraph();

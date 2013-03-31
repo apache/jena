@@ -18,6 +18,11 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import com.hp.hpl.jena.ontology.impl.TestListSyntaxCategories;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
@@ -33,6 +38,20 @@ import junit.framework.TestCase;
  */
 public abstract class AbstractModelTestBase extends TestCase
 {
+	protected static String getFileName( String fn )
+   	{
+   		URL u = TestListSyntaxCategories.class.getClassLoader().getResource( fn );
+   		if (u == null)
+   		{
+   			throw new RuntimeException( new FileNotFoundException( fn ));
+   		}
+   		try {
+   			return u.toURI().toString();
+   		} catch (URISyntaxException e) {
+   			throw new RuntimeException( e );
+   		}
+   	}
+	
 	public static class LitTestObj
 	{
 		protected long content;

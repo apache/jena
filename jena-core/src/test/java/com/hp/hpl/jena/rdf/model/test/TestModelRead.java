@@ -26,11 +26,13 @@ import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 import com.hp.hpl.jena.shared.ConfigException;
 import com.hp.hpl.jena.shared.JenaException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 
+import org.apache.jena.iri.IRIException;
 import org.junit.Assert;
 
 import org.slf4j.Logger;
@@ -49,7 +51,11 @@ public class TestModelRead extends AbstractModelTestBase
 	{
 		super(modelFactory, name);
 	}
-
+	
+	public TestModelRead() {
+		this( new TestPackage.PlainModelFactory(), "TestModelRead");
+	}
+	
 	public void testContentNegotiation()
 	{
 		try
@@ -74,10 +80,10 @@ public class TestModelRead extends AbstractModelTestBase
 		}
 	}
 
-	public void testDefaultLangXML()
+	public void testDefaultLangXML() throws FileNotFoundException
 	{
 		final Model model = ModelFactory.createDefaultModel();
-		model.read("file:testing/modelReading/plain.rdf", null, null);
+		model.read(getFileName( "modelReading/plain.rdf"), null, null);
 	}
 
 	public void testGRDDLConfigMessage()
@@ -108,37 +114,37 @@ public class TestModelRead extends AbstractModelTestBase
 	// assertIsoModels( expected, model );
 	// }
 
-	public void testLoadsSimpleModel()
+	public void testLoadsSimpleModel() throws FileNotFoundException
 	{
 		final Model expected = createModel();
-		expected.read("file:testing/modelReading/simple.n3", "N3");
+		expected.read( getFileName("modelReading/simple.n3"), "N3");
 		Assert.assertSame(model,
-				model.read("file:testing/modelReading/simple.n3", "base", "N3"));
+				model.read( getFileName("modelReading/simple.n3"), "base", "N3"));
 		ModelHelper.assertIsoModels(expected, model);
 	}
 
-	public void testReturnsSelf()
+	public void testReturnsSelf() throws FileNotFoundException
 	{
 
 		Assert.assertSame(model,
-				model.read("file:testing/modelReading/empty.n3", "base", "N3"));
+				model.read( getFileName("modelReading/empty.n3"), "base", "N3"));
 		Assert.assertTrue(model.isEmpty());
 	}
 
-	public void testSimpleLoadExplicitBase()
+	public void testSimpleLoadExplicitBase() throws FileNotFoundException
 	{
 		final Model mBasedExplicit = createModel();
-		mBasedExplicit.read("file:testing/modelReading/based.n3",
+		mBasedExplicit.read( getFileName("modelReading/based.n3"),
 				"http://example/", "N3");
 		ModelHelper.assertIsoModels(ModelHelper.modelWithStatements(this,
 				"http://example/ ja:predicate ja:object"), mBasedExplicit);
 	}
 
-	public void testSimpleLoadImplictBase()
+	public void testSimpleLoadImplictBase() throws IRIException, FileNotFoundException
 	{
 		final Model mBasedImplicit = createModel();
 		final String fn = IRIResolver
-				.resolveFileURL("file:testing/modelReading/based.n3");
+				.resolveFileURL( getFileName("modelReading/based.n3"));
 		final Model wanted = createModel().add(ModelHelper.resource(fn),
 				ModelHelper.property("ja:predicate"),
 				ModelHelper.resource("ja:object"));

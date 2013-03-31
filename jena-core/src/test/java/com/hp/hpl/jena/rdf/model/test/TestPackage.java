@@ -34,7 +34,7 @@ import junit.framework.TestSuite;
 public class TestPackage extends AbstractTestPackage
 {
 
-	private static class PlainModelFactory implements TestingModelFactory
+	public static class PlainModelFactory implements TestingModelFactory
 	{
 		@Override
 		public Model createModel()

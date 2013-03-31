@@ -216,7 +216,7 @@ public class TestList extends AbstractModelTestBase
 
 		// should be isomorphic with list 5
 		final Model m0 = ModelFactory.createDefaultModel();
-		m0.read("file:testing/ontology/list5.rdf");
+		m0.read( getFileName( "ontology/list5.rdf"));
 
 		Assert.assertTrue("Add'ed and read models should be the same",
 				m0.isIsomorphicWith(model));
@@ -225,7 +225,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testAppend()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		final Resource nil = model.getResource(RDF.nil.getURI());
 		RDFList list = nil.as(RDFList.class);
@@ -263,7 +263,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testApply()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		final RDFList root = getListRoot(model);
 
@@ -289,7 +289,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testConcatenate()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		final Resource nil = model.getResource(RDF.nil.getURI());
 		RDFList list = nil.as(RDFList.class);
@@ -322,7 +322,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testConcatenate2()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		final Resource a = model.createResource(TestList.NS + "a");
 
@@ -377,7 +377,7 @@ public class TestList extends AbstractModelTestBase
 
 		// should be isomorphic with list 5
 		final Model m0 = ModelFactory.createDefaultModel();
-		m0.read("file:testing/ontology/list5.rdf");
+		m0.read(getFileName("ontology/list5.rdf"));
 
 		Assert.assertTrue("Cons'ed and read models should be the same",
 				m0.isIsomorphicWith(model));
@@ -388,7 +388,7 @@ public class TestList extends AbstractModelTestBase
 		for (int i = 0; i <= 5; i++)
 		{
 			model.removeAll();
-			model.read("file:testing/ontology/list" + i + ".rdf");
+			model.read( getFileName("ontology/list" + i + ".rdf"));
 
 			final RDFList l0 = getListRoot(model);
 			Assert.assertEquals("List size should be " + i, i, l0.size());
@@ -398,7 +398,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testHead()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		RDFList l0 = getListRoot(model);
 
@@ -413,7 +413,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testIndex1()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		final Resource[] toGet = new Resource[] {
 				model.createResource(TestList.NS + "a"),
@@ -518,7 +518,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testListGet()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		final Resource[] toGet = new Resource[] {
 				model.createResource(TestList.NS + "a"),
@@ -554,7 +554,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testMap1()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		final RDFList root = getListRoot(model);
 		TestList.iteratorTest(root.mapWith(new Map1<RDFNode, String>() {
@@ -569,7 +569,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testReduce()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		final RDFList root = getListRoot(model);
 
@@ -643,7 +643,7 @@ public class TestList extends AbstractModelTestBase
 
 	public void testReplace()
 	{
-		model.read("file:testing/ontology/list5.rdf");
+		model.read(getFileName("ontology/list5.rdf"));
 
 		final Literal[] toSet = new Literal[] { model.createLiteral("a"),
 				model.createLiteral("b"), model.createLiteral("c"),
@@ -756,7 +756,7 @@ public class TestList extends AbstractModelTestBase
 	{
 		for (int i = 0; i <= 5; i++)
 		{
-			model.read("file:testing/ontology/list" + i + ".rdf");
+			model.read( getFileName("ontology/list" + i + ".rdf"));
 
 			RDFList l0 = getListRoot(model);
 
