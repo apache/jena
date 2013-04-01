@@ -69,7 +69,7 @@ public abstract class AbstractStoreConnections extends BaseTest
         
         File d = new File(DIR) ;
         if ( d.list().length > 2 )  // . and ..
-            throw new RuntimeException("not empty") ;
+            throw new RuntimeException("Unable to clean up existing test directory contents") ;
     }
 
     @After public void after() {} 
