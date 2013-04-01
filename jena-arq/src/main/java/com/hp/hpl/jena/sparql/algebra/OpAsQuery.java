@@ -90,6 +90,7 @@ public class OpAsQuery
         private Deque<ElementGroup> stack = new ArrayDeque<ElementGroup>() ;
         private Collection<Var> projectVars = allocProjectVars();
         private Map<Var, Expr> varExpression = new HashMap<Var, Expr>() ;
+        private int groupDepth = 0;
         
         public Converter(Query query)
         {
@@ -477,14 +478,20 @@ public class OpAsQuery
                 // If in top level we defer assignment to SELECT section
                 // This also covers the GROUP recombine
                 if (inTopLevel()) {
-                    if (!inGroupRecombine(opExtend)) {
-                        // If not wrapped over a Group then we need to ensure we add the variable
-                        // to the list or otherwise the BIND will not round trip
-                        // Note - This does mean top level BIND will manifest as a project expression
-                        //        rather than a BIND but this is semantically equivalent so is not an issue
-                        addProjectVar(projectVars, v) ;
+                    if (groupDepth == 0 || inGroupRecombine(opExtend)) {
+                        if (!inGroupRecombine(opExtend)) {
+                            // If not wrapped over a Group then we need to ensure we add the variable
+                            // to the list or otherwise the BIND will not round trip
+                            // Note - This does mean top level BIND will manifest as a project expression
+                            //        rather than a BIND but this is semantically equivalent so is not an issue
+                            addProjectVar(projectVars, v) ;
+                        }
+                        varExpression.put(v, tr);
+                    } else {
+                        Element elt = new ElementBind(v, tr) ;
+                        ElementGroup g = currentGroup() ;
+                        g.addElement(elt);
                     }
-                    varExpression.put(v, tr);
                 } else {
                     Element elt = new ElementBind(v, tr) ;
                     ElementGroup g = currentGroup() ;
@@ -542,7 +549,7 @@ public class OpAsQuery
         }
 
         @Override
-        public void visit(OpGroup opGroup) {            
+        public void visit(OpGroup opGroup) {               
             List<ExprAggregator> a = opGroup.getAggregators();
             
             // Aggregators are broken up in the algebra, split between a
@@ -568,7 +575,9 @@ public class OpAsQuery
 
                 }
             }
+            groupDepth++;
             opGroup.getSubOp().visit(this);
+            groupDepth--;
         }
 
         @Override
