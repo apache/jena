@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.tdb.base.file;
 
 import java.io.File;
+import java.io.IOException ;
 
 import org.apache.jena.atlas.lib.Lib ;
 
@@ -52,7 +53,6 @@ public class Location
         return loc ;
     }
     
-    
     private Location()
     { }
     
@@ -62,12 +62,12 @@ public class Location
         if ( name != null )
         {
             name = name.replace('\\', '/') ;
-            location.pathname = location.pathname+pathSeparator+name ;
+            location.pathname = location.pathname+'/'+name ;
         }
         else
             location.isMemUnique = true ;
         if ( ! location.pathname.endsWith(pathSeparator) )
-            location.pathname = location.pathname+pathSeparator ;
+            location.pathname = location.pathname+'/' ;
         location.isMem = true ;
         location.metafile = new MetaFile(Names.memName, Names.memName) ;
     }
@@ -81,8 +81,6 @@ public class Location
             return ;
         }
         
-        // Prefer "/"
-        rootname = rootname.replace('\\', '/') ;
         File file = new File(rootname) ;
         
         if ( ! file.exists() )
@@ -93,7 +91,15 @@ public class Location
         else if ( ! file.isDirectory() )
             throw new FileException("Not a directory: "+file.getAbsolutePath()) ;
 
-        pathname = file.getAbsolutePath() ;
+        // MS Windows:
+        // getCanonicalPath is only good enough for existing files.
+        // It leaves the case as it finds it (upper, lower) and lower cases
+        // not-existing segments.  But later creation of a segment with uppercase
+        // changes the exact string returned. 
+        
+        try { pathname = file.getCanonicalPath() ; }
+        catch (IOException ex) { throw new FileException("Failed to get canoncial path: "+file.getAbsolutePath(), ex) ; } 
+        
         if ( ! pathname.endsWith(File.separator) && !pathname.endsWith(pathSeparator) )
             pathname = pathname + pathSeparator ;
         
