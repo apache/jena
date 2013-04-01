@@ -21,6 +21,9 @@ package com.hp.hpl.jena.sparql.algebra;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Query;
+
+import org.apache.jena.atlas.lib.StrUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -158,13 +161,49 @@ public class OpAsQueryTest {
     }
     
     @Test
+    public void testExtend3() {
+        //JENA-429
+        String query = StrUtils.strjoinNL
+                ("PREFIX : <http://www.cipe.accamargo.org.br/ontologias/h2tc.owl#>" ,
+                 "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>" ,
+                 "PREFIX mylib: <java:dateadd.lib.pkgfor.arq.>",
+                 "",
+                 "SELECT ?yearmonth ( count(?document) as ?total )", 
+                 "{" ,
+                 "    ?document a :Document;",
+                 "   :documentDateOfCreation ?date ;",
+                 "   :documentType \"exam results\" ." ,
+                 "    BIND( mylib:DateFormat( xsd:string(?date), \"yyyy-MM\" ) as ?yearmonth )",
+                "} group by ?yearmonth") ;
+        
+        Query[] r = checkQuery(query);
+        // Won't be equal due to lack of prefixes
+        Assert.assertNotEquals(r[0], r[1]);
+        
+        String query2 = r[1].toString();
+        Query q = QueryFactory.create(query2);
+    }
+    
+    @Test
+    public void testExtend4() {
+        //Simplified repo of JENA-429
+        String query  = "SELECT ?key (COUNT(?member) AS ?total) WHERE { ?s ?p ?o . BIND(LCASE(?o) AS ?key) } GROUP BY ?key";
+        
+        Query[] r = checkQuery(query);
+        Assert.assertEquals(r[0], r[1]);
+        
+        String query2 = r[1].toString();
+        Query q = QueryFactory.create(query2);
+    }
+    
+    @Test
     public void testExtendInService() {
         //Original test case from JENA-422
         Query[] result = checkQuery("SELECT * WHERE { SERVICE <http://example/endpoint> { ?s ?p ?o . BIND(?o AS ?x) } }");
         assertEquals(result[0], result[1]);
         assertTrue(result[1].toString().contains("BIND"));
     }
-    
+        
     public Query[] checkQuery(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);
