@@ -23,12 +23,18 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter ;
 
 /** Manage version information for subsystems */
 public class Version
 {
     private List<Class< ? >> classes = new ArrayList<Class< ? >>() ; 
+    
+    /**
+     * Add a class to the version information
+     * @param c Class
+     */
     public void addClass(Class< ? > c)
     {
         if ( ! classes.contains(c) ) 
@@ -37,20 +43,40 @@ public class Version
     
     private static String[] fields = { /*"NAME",*/ "VERSION", "BUILD_DATE" } ;
 
+    /**
+     * Prints version information for all registered classes to Standard Out
+     */
     public void print()
     {    
         for ( Iterator<Class<?>> iter = classes.iterator() ; iter.hasNext() ; )
         {
             Class<?> c = iter.next();
             String x = Utils.classShortName(c) ;
-            fields(x, c) ;    
+            fields(IndentedWriter.stdout, x, c) ;    
         }
     }
     
-    private static void fields(String prefix, Class< ? > cls)
+    /**
+     * Gets version information for all registered classes as a string
+     */
+    @Override
+    public String toString() {
+        IndentedLineBuffer buffer = new IndentedLineBuffer(false);
+        
+        for ( Iterator<Class<?>> iter = classes.iterator() ; iter.hasNext() ; )
+        {
+            Class<?> c = iter.next();
+            String x = Utils.classShortName(c) ;
+            fields(buffer, x, c) ;    
+        }
+        
+        return buffer.asString();
+    }
+    
+    private static void fields(IndentedWriter writer, String prefix, Class< ? > cls)
     {
         for (int i=0; i < fields.length; i++)
-            printField(IndentedWriter.stdout, prefix, fields[i], cls) ;
+            printField(writer, prefix, fields[i], cls) ;
     }
     
     private static String field(String fieldName, Class< ? > cls)
