@@ -26,7 +26,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 @RunWith(Suite.class)
 @SuiteClasses( {
     TestDateTimeParsing.class ,
-    TestList.class
+    TestList.class ,
+    TestVersion.class
 })
 
 public class TS_Util

@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.lang.reflect.Field ;
 import java.util.ArrayList ;
+import java.util.Date;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -41,36 +42,67 @@ public class Version
             classes.add(c) ;
     }
     
-    private static String[] fields = { /*"NAME",*/ "VERSION", "BUILD_DATE" } ;
+    private static String FIELD_VERSION = "VERSION";
+    
+    private static String FIELD_BUILD_DATE = "BUILD_DATE";
+    
+    private static String[] fields = { /*"NAME",*/ FIELD_VERSION, FIELD_BUILD_DATE } ;
 
     /**
      * Prints version information for all registered classes to Standard Out
      */
-    public void print()
+    public void print() {
+        print(IndentedWriter.stdout);
+    }
+    
+    /**
+     * Prints version information for all registered classes to the given writer
+     * @param writer Writer to print version information to
+     */
+    public void print(IndentedWriter writer)
     {    
         for ( Iterator<Class<?>> iter = classes.iterator() ; iter.hasNext() ; )
         {
             Class<?> c = iter.next();
             String x = Utils.classShortName(c) ;
-            fields(IndentedWriter.stdout, x, c) ;    
+            fields(writer, x, c) ;    
         }
     }
     
     /**
-     * Gets version information for all registered classes as a string
+     * Gets user friendly version information for all registered classes as a string
+     * @param singleLine Whether to print to a single line
+     * @return Version information
      */
-    @Override
-    public String toString() {
+    public String toString(boolean singleLine) {
         IndentedLineBuffer buffer = new IndentedLineBuffer(false);
         
-        for ( Iterator<Class<?>> iter = classes.iterator() ; iter.hasNext() ; )
+        Iterator<Class<?>> iter = classes.iterator();
+        while (iter.hasNext())
         {
             Class<?> c = iter.next();
-            String x = Utils.classShortName(c) ;
-            fields(buffer, x, c) ;    
+            String component = Utils.classShortName(c) ;
+            String version = field(FIELD_VERSION, c);
+            String timestamp = field(FIELD_BUILD_DATE, c);
+            buffer.append("%s Version %s (Built %s)", component, version, timestamp);
+            if (iter.hasNext()) {
+                if (!singleLine) {
+                    buffer.println();
+                } else {
+                    buffer.print(", ");
+                }
+            }
         }
         
         return buffer.asString();
+    }
+    
+    /**
+     * Gets user friendly version information for all registered classes as a string
+     */
+    @Override
+    public String toString() {
+        return this.toString(false);
     }
     
     private static void fields(IndentedWriter writer, String prefix, Class< ? > cls)
@@ -100,7 +132,7 @@ public class Version
         }
         return "<error>" ;
     }
-    
+        
     private static void printField(IndentedWriter out, String prefix, String fieldName, Class< ? > cls)
     {
         out.print(prefix) ;
