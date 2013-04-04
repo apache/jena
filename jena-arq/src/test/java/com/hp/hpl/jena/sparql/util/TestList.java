@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sparql.util.graph.GNode ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
+/** Test the graph-level RDF list support used in SPARQL */
 public class TestList extends TestCase
 {
     public static junit.framework.Test suite()
