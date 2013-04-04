@@ -25,6 +25,7 @@ import java.util.Locale ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 
+import com.hp.hpl.jena.graph.GraphEvents ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
@@ -55,15 +56,27 @@ public class RDFReaderRIOT implements RDFReader
     @SuppressWarnings("deprecation")
     @Override
     public void read(Model model, Reader r, String base)
-    { RDFDataMgr.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ; }
+    { 
+        startRead(model) ; 
+        RDFDataMgr.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ;
+        finishRead(model) ;
+    }
 
     @Override
     public void read(Model model, InputStream r, String base)
-    { RDFDataMgr.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ; }
+    { 
+        startRead(model) ; 
+        RDFDataMgr.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ;
+        finishRead(model) ;
+    }
     
     @Override
     public void read(Model model, String url)
-    { RDFDataMgr.read(model, url, RDFLanguages.nameToLang(hintlang)) ; }
+    { 
+        startRead(model) ;
+        RDFDataMgr.read(model, url, RDFLanguages.nameToLang(hintlang)) ;
+        finishRead(model) ;
+    }
 
     @Override
     public Object setProperty(String propName, Object propValue)
@@ -72,6 +85,12 @@ public class RDFReaderRIOT implements RDFReader
         Object oldObj = context.get(sym) ;
         return oldObj ;
     }
+    
+    private void startRead(Model model)
+    { model.notifyEvent( GraphEvents.startRead ); } 
+    
+    private void finishRead(Model model)
+    { model.notifyEvent( GraphEvents.finishRead ) ; }
     
     @Override
     public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
