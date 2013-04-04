@@ -22,12 +22,16 @@ import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.NoSuchElementException;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
@@ -48,6 +52,18 @@ import com.hp.hpl.jena.sparql.util.ResultSetUtils ;
 
 public class TestResultSet extends BaseTest
 {
+    @BeforeClass
+    public static void setup() {
+        // Disable warnings these tests will produce
+        ResultSetPeeking.warnOnSyncErrors = false;
+    }
+    
+    @AfterClass
+    public static void teardown() {
+        // Re-enable warnings
+        ResultSetPeeking.warnOnSyncErrors = true;
+    }
+    
     // Test reading, writing and comparison
     @Test public void test_RS_1()
     {
@@ -281,6 +297,133 @@ public class TestResultSet extends BaseTest
         assertTrue(ResultSetCompare.equalsByValue(rs1, rs2)) ;
     }
     
+    // Peeking
+    @Test 
+    public void test_RS_peeking_1() {
+        ResultSetPeekable rs = makePeekable("x",  NodeFactory.createURI("tag:local"));
+        assertTrue(rs.hasNext());
+        assertNotNull(rs.peek());
+        
+        // Peeking should not move the result set onwards so hasNext() should still report true
+        assertTrue(rs.hasNext());
+        
+        assertNotNull(rs.next());
+        assertFalse(rs.hasNext());
+    }
+    
+    @Test(expected=NoSuchElementException.class)
+    public void test_RS_peeking_2() {
+        ResultSetPeekable rs = makePeekable("x",  NodeFactory.createURI("tag:local"));
+        assertTrue(rs.hasNext());
+        assertNotNull(rs.peek());
+        
+        // Peeking should not move the result set onwards so hasNext() should still report true
+        assertTrue(rs.hasNext());
+        
+        assertNotNull(rs.next());
+        assertFalse(rs.hasNext());
+        
+        // Peeking beyond end of results throws an error
+        rs.peek();
+    }
+    
+    @Test 
+    public void test_RS_peeking_3() {
+        // Expect that a rewindable result set will be peekable
+        ResultSetPeekable rs = (ResultSetPeekable)makeRewindable("x",  NodeFactory.createURI("tag:local"));
+        assertTrue(rs.hasNext());
+        assertNotNull(rs.peek());
+        
+        // Peeking should not move the result set onwards so hasNext() should still report true
+        assertTrue(rs.hasNext());
+        
+        assertNotNull(rs.next());
+        assertFalse(rs.hasNext());
+    }
+    
+    @Test(expected=NoSuchElementException.class)
+    public void test_RS_peeking_4() {
+        // Expect that a rewindable result set will be peekable
+        ResultSetPeekable rs = (ResultSetPeekable) makeRewindable("x",  NodeFactory.createURI("tag:local"));
+        assertTrue(rs.hasNext());
+        assertNotNull(rs.peek());
+        
+        // Peeking should not move the result set onwards so hasNext() should still report true
+        assertTrue(rs.hasNext());
+        
+        assertNotNull(rs.next());
+        assertFalse(rs.hasNext());
+        
+        // Peeking beyond end of results throws an error
+        rs.peek();
+    }
+    
+    @Test 
+    public void test_RS_peeking_5() {
+        // Peeking should be able to cope with people moving on the underlying result set independently
+        ResultSet inner = new ResultSetMem(make("x", NodeFactory.createURI("tag:local")), make("x", NodeFactory.createURI("tag:local")));
+        ResultSetPeekable rs = ResultSetFactory.makePeekable(inner);
+        assertTrue(rs.hasNext());
+        assertNotNull(rs.peek());
+        
+        // Move on the inner result set independently
+        inner.next();
+        
+        // Since we fiddled with the underlying result set there won't be further elements available anymore
+        assertFalse(rs.hasNext());
+    }
+    
+    @Test 
+    public void test_RS_peeking_6() {
+        // Peeking should be able to cope with people moving on the underlying result set independently
+        ResultSet inner = new ResultSetMem(make("x", NodeFactory.createURI("tag:local")), make("x", NodeFactory.createURI("tag:local")), make("x", NodeFactory.createURI("tag:local")));
+        ResultSetPeekable rs = ResultSetFactory.makePeekable(inner);
+        assertTrue(rs.hasNext());
+        assertNotNull(rs.peek());
+        
+        // Move on the inner result set independently
+        inner.next();
+        
+        // Since we fiddled with the underlying result set we'll be out of sync
+        // but there should still be further data available
+        assertTrue(rs.hasNext());
+    }
+    
+    @Test
+    public void test_RS_peeking_7() {
+        // Peeking may fail if someone moves backwards in the result set
+        // If we hadn't moved pass the first item this should be safe
+        ResultSetRewindable inner = makeRewindable("x", NodeFactory.createURI("tag:local"));
+        ResultSetPeekable rs = ResultSetFactory.makePeekable(inner);
+        assertTrue(rs.hasNext());
+        assertNotNull(rs.peek());
+        
+        // Reset the inner result set independently
+        inner.reset();
+        
+        // Since we moved the underlying result set backwards but we hadn't gone anywhere
+        // we should still be able to safely access the underlying results
+        assertTrue(rs.hasNext());
+    }
+    
+    @Test(expected=IllegalStateException.class)
+    public void test_RS_peeking_8() {
+        // Peeking may fail if someone moves backwards in the result set
+        // If we had moved past the first item this should be an error
+        ResultSetRewindable inner = new ResultSetMem(make("x", NodeFactory.createURI("tag:local")), make("x", NodeFactory.createURI("tag:local")));
+        ResultSetPeekable rs = ResultSetFactory.makePeekable(inner);
+        assertTrue(rs.hasNext());
+        assertNotNull(rs.peek());
+        assertNotNull(rs.next());
+        
+        // Reset the inner result set independently
+        inner.reset();
+        
+        // Since we moved the underlying result set backwards and had moved somewhere we
+        // are now in an illegal state
+        rs.hasNext();
+    }
+    
     // ---- Isomorphism.
     
     /* This is from the DAWG test suite.
@@ -307,7 +450,7 @@ public class TestResultSet extends BaseTest
 
     // Right mapping is:
     // b0->c3, b1->c2, b2->c1, b3->c0
-    // Currently we get, workign simply top to bottom, no backtracking:
+    // Currently we get, working simply top to bottom, no backtracking:
     // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails as _:b1 is mapped to c0, b0 to c1 not (c2, c3) 
     
     private static String[] rs1$ = {
@@ -406,4 +549,15 @@ public class TestResultSet extends BaseTest
         return rsw ;
     }
     
+    private ResultSetPeekable makePeekable(String var, Node val) {
+        ResultSet rs = make(var, val);
+        ResultSetPeekable rsp = ResultSetFactory.makePeekable(rs);
+        return rsp;
+    }
+    
+    private ResultSetPeekable make2Peekable(String var1, Node val1, String var2, Node val2) {
+        ResultSet rs = make(var1, val1, var2, val2);
+        ResultSetPeekable rsp = ResultSetFactory.makePeekable(rs);
+        return rsp;
+    }
 }

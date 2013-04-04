@@ -22,6 +22,8 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.atlas.iterator.PeekIterator;
+
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -34,7 +36,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  * keep the result set in memory. */
 
 
-public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
+public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable, ResultSetPeekable
 {
     // ??? Convert to use a ResultSetProcessor
     // The result set in memory
@@ -43,7 +45,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     protected List<String> varNames = null ;
 
     private int rowNumber = 0 ;
-    private Iterator<Binding> iterator = null ;
+    private PeekIterator<Binding> iterator = null ;
     private Model model = null ;
 
     /** Create an in-memory result set from another one
@@ -168,7 +170,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     public void rewind( ) { reset() ; }
 
     @Override
-    public void reset() { iterator = rows.iterator() ; rowNumber = 0 ; }
+    public void reset() { iterator = new PeekIterator<Binding>(rows.iterator()) ; rowNumber = 0 ; }
 
     /** Return the "row" number for the current iterator item
      */
@@ -190,5 +192,15 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
      */
     @Override
     public List<String> getResultVars() { return varNames ; }
+
+    @Override
+    public QuerySolution peek() {
+        return new ResultBinding(model, peekBinding());
+    }
+
+    @Override
+    public Binding peekBinding() {
+        return this.iterator.peek();
+    }
 
 }
