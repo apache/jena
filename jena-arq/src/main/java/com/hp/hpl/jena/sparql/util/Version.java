@@ -20,11 +20,10 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.lang.reflect.Field ;
 import java.util.ArrayList ;
-import java.util.Date;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 
 /** Manage version information for subsystems */
