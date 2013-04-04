@@ -24,6 +24,8 @@ ChangeLog for ARQ
 + JENA-389 : Correct variable scoping transformations of FILTER NOT EXISTS within subquery
 + JENA-423 : Ensure that query iterators that were previously left open in certain circumstances are 
   now closed
++ New ResultSetPeekable interface extends ResultSet with peeking capabilities, ResultSetMem implements
+  this and ResultSetPeeking is provided as an implementing wrapper over an arbitrary ResultSet
 
 ==== Jena 2.10.0
 
