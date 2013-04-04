@@ -13,6 +13,17 @@ ChangeLog for ARQ
   javadoc to note that these protections are not foolproof and that there are known attack vectors.
   Users relying this to prevent SPARQL injection are advised to add their own validation in addition
   to those that the class provides.
++ JENA-429 : Top level BIND may not be restored correctly by OpAsQuery when algebra involves grouping
++ JENA-352 : Improve blank node allocation by RIOT parsers so that large inputs with many blank nodes
+  do not exhaust memory
++ JENA-405 : QueryEngineHTTP respects ServiceContext and uses it to pre-populate authentication and
+  behaviour settings appropriate to the service used where set
++ JENA-422 : SERVICE clause now propagates top level BIND within the query pattern
++ JENA-419 : Calculating a project expression on result of aggregation is no longer incorrectly reported
+  as a scope error
++ JENA-389 : Correct variable scoping transformations of FILTER NOT EXISTS within subquery
++ JENA-423 : Ensure that query iterators that were previously left open in certain circumstances are 
+  now closed
 
 ==== Jena 2.10.0
 
