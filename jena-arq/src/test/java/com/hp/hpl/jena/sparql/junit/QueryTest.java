@@ -40,7 +40,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;

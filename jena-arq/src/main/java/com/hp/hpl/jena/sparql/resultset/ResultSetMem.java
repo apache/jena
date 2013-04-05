@@ -19,10 +19,9 @@
 package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.PeekIterator;
+import org.apache.jena.atlas.iterator.PeekIterator ;
 
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
@@ -33,7 +32,8 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** An in-memory result set.  
  * Also useful for writing input processors which
- * keep the result set in memory. */
+ * keep the result set in memory.
+ */
 
 
 public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable, ResultSetPeekable

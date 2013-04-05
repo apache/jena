@@ -35,6 +35,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
+import com.hp.hpl.jena.query.ResultSetRewindable ;
 
 public class ResultSetCompare
 {

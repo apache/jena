@@ -47,7 +47,7 @@ import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
 import com.hp.hpl.jena.sparql.junit.TestItem ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
+import com.hp.hpl.jena.query.ResultSetRewindable ;
 
 public class QueryTestSDB extends EarlTestCase
 {
