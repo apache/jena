@@ -31,6 +31,7 @@ import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.util.FileUtils ;
+import com.hp.hpl.jena.query.ResultSetRewindable ;
 
 /** <p>Takes a ResultSet object and creates displayable formatted output in plain text.</p>
  *

@@ -18,14 +18,11 @@
 
 package com.hp.hpl.jena.query;
 
-
-public interface ResultSetRewindable extends com.hp.hpl.jena.sparql.resultset.ResultSetRewindable
+public interface ResultSetRewindable extends ResultSet
 {
     /** Move back to the start of the iterator for this instance of results of a query. */
-    @Override
     public void reset() ;
     
     /** return the number of solutions */ 
-    @Override
     public int size() ;
 }
