@@ -424,6 +424,36 @@ public class TestResultSet extends BaseTest
         rs.hasNext();
     }
     
+    @Test 
+    public void test_RS_peeking_9() {
+        // Check that peeking causes the correct row to be returned when we actually access the rows
+        Node first = NodeFactory.createURI("tag:first");
+        Node second = NodeFactory.createURI("tag:second");
+        Var x = Var.alloc("x");
+        
+        ResultSet inner = new ResultSetMem(make("x", first), make("x", second));
+        ResultSetPeekable rs = ResultSetFactory.makePeekable(inner);
+        assertTrue(rs.hasNext());
+        
+        // Peek and check row is as expected
+        Binding peeked = rs.peekBinding();
+        assertNotNull(peeked);
+        assertTrue(first.equals(peeked.get(x)));
+        
+        // Check first row is as expected
+        Binding next = rs.nextBinding();
+        assertNotNull(next);
+        assertTrue(first.equals(next.get(x)));
+        
+        // Repeat for second row
+        peeked = rs.peekBinding();
+        assertNotNull(peeked);
+        assertTrue(second.equals(peeked.get(x)));
+        next = rs.nextBinding();
+        assertNotNull(next);
+        assertTrue(second.equals(next.get(x)));
+    }
+    
     // ---- Isomorphism.
     
     /* This is from the DAWG test suite.
