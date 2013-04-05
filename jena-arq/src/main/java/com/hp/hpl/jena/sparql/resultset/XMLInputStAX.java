@@ -236,7 +236,6 @@ class XMLInputStAX extends SPARQLResult
             ex.printStackTrace(System.err) ;
             staxError("XMLStreamException: "+ex.getMessage(), ex) ;
         }
-        row++ ;
         boolean b = (binding != null) ;
         //parser.close() ; // Some way to close the input stream.
         if (!b)
@@ -258,6 +257,7 @@ class XMLInputStAX extends SPARQLResult
         if ( ! hasNext() )
             throw new NoSuchElementException("End of XML Results") ;
         Binding r = binding ;
+        row++ ;
         binding = null ;
         return r ;
     }
