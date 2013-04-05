@@ -63,9 +63,11 @@ public class ResultSetPeeking implements ResultSetPeekable {
 
     @Override
     public boolean hasNext() {
-        if (this.hasPeeked())
+        if (this.hasPeeked()) {
             return true;
-        return this.results.hasNext();
+        } else {
+            return this.canPeek();
+        }        
     }
 
     @Override
@@ -85,9 +87,11 @@ public class ResultSetPeeking implements ResultSetPeekable {
             this.peeked = null;
             this.rowNumber++;
             return b;
-        } else if (this.results.hasNext()) {
+        } else if (this.canPeek()) {
+            Binding b = this.peekBinding();
+            this.peeked = null;
             this.rowNumber++;
-            return this.results.nextBinding();
+            return b;
         } else {
             throw new NoSuchElementException();
         }
@@ -125,7 +129,7 @@ public class ResultSetPeeking implements ResultSetPeekable {
         } else if (diff >= 1) {
             // If difference between what we think the row number is and that of
             // the underlying result set is > 1 then someone has moved positions
-            // in the underying result set independently
+            // in the underlying result set independently
             // Sync up with current position and report false
             if (warnOnSyncErrors)
                 LOGGER.warn("Underlying result set was moved forward " + (diff - 1)
@@ -142,6 +146,14 @@ public class ResultSetPeeking implements ResultSetPeekable {
                     "Underlying result set position has moved backwards, this result set is no longer usable");
         }
     }
+    
+    /**
+     * Gets whether we can peek
+     * @return True if we can peek, false otherwise
+     */
+    private boolean canPeek() {
+        return this.results.hasNext();
+    }
 
     @Override
     public QuerySolution peek() {
@@ -152,7 +164,7 @@ public class ResultSetPeeking implements ResultSetPeekable {
     public Binding peekBinding() {
         if (this.hasPeeked()) {
             return this.peeked;
-        } else if (this.results.hasNext()) {
+        } else if (this.canPeek()) {
             this.peeked = this.results.nextBinding();
             return this.peeked;
         } else {
