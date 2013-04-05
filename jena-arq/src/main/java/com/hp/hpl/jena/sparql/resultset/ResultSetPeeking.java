@@ -119,10 +119,10 @@ public class ResultSetPeeking implements ResultSetPeekable {
         if (diff == 0) {
             // If no difference we have not peeked
             return false;
-        } else if (diff == 1) {
+        } else if (diff == 1 && this.peeked != null) {
             // If difference is one then we have peeked
             return true;
-        } else if (diff > 1) {
+        } else if (diff >= 1) {
             // If difference between what we think the row number is and that of
             // the underlying result set is > 1 then someone has moved positions
             // in the underying result set independently
