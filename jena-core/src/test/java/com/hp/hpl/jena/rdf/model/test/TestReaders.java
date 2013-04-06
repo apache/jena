@@ -39,24 +39,11 @@ public class TestReaders extends AbstractModelTestBase
 			final String name )
 	{
 		super(modelFactory, name);
-		// TODO Auto-generated constructor stub
 	}
-
-	private InputStream getInputStream( final String prop ) throws IOException
+	
+	public TestReaders()
 	{
-//	    Package p = TestReaders.class.getPackage();
-//		String fqName = String.format("%s/%s",
-//				p.getName().replace(".", "/"), prop);
-	    String fqName = prop ;
-		ClassLoader loader = TestReaders.class.getClassLoader();
-		if (loader == null)
-			throw new SecurityException("Cannot access class loader");
-		final InputStream in = loader.getResourceAsStream(fqName);
-		if (in == null)
-			throw new IllegalArgumentException("Resource: " + fqName
-					+ " not found on class path.");
-		return in;
-
+		this( new TestPackage.PlainModelFactory(), "TestReaders"); 
 	}
 
 	public void testGetNTripleReader()
