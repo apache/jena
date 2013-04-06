@@ -19,6 +19,8 @@
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -38,9 +40,9 @@ import junit.framework.TestCase;
  */
 public abstract class AbstractModelTestBase extends TestCase
 {
-	protected static String getFileName( String fn )
+	protected static String getFileName( final String fn )
    	{
-   		URL u = TestListSyntaxCategories.class.getClassLoader().getResource( fn );
+   		URL u = AbstractModelTestBase.class.getClassLoader().getResource( fn );
    		if (u == null)
    		{
    			throw new RuntimeException( new FileNotFoundException( fn ));
@@ -51,6 +53,18 @@ public abstract class AbstractModelTestBase extends TestCase
    			throw new RuntimeException( e );
    		}
    	}
+	
+	protected InputStream getInputStream( final String fn ) throws IOException
+	{
+		ClassLoader loader = AbstractModelTestBase.class.getClassLoader();
+		if (loader == null)
+			throw new SecurityException("Cannot access class loader");
+		final InputStream in = loader.getResourceAsStream(fn);
+		if (in == null)
+			throw new IllegalArgumentException("Resource: " + fn
+					+ " not found on class path.");
+		return in;
+	}
 	
 	public static class LitTestObj
 	{

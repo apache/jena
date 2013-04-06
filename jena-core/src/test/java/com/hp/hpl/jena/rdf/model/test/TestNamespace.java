@@ -85,8 +85,7 @@ public class TestNamespace extends AbstractModelTestBase
 	 */
 	public void testReadPrefixes()
 	{
-
-		model.read("file:testing/wg/rdf-ns-prefix-confusion/test0014.rdf");
+		model.read(getFileName( "wg/rdf-ns-prefix-confusion/test0014.rdf" ));
 		final Map<String, String> ns = model.getNsPrefixMap();
 		// System.err.println( ">> " + ns );
 		Assert.assertEquals("namespace eg", "http://example.org/", ns.get("eg"));
