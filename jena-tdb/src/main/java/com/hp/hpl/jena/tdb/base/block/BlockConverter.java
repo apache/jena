@@ -22,7 +22,12 @@ import com.hp.hpl.jena.tdb.base.page.Page ;
 
 public interface BlockConverter<T extends Page>
 {
+    /** Create a T, given an existing Block */
     public T fromBlock(Block block) ;
+    
+    /** Make a block, given a T */
     public Block toBlock(T t) ;
+    
+    /** Create a new T from an uninitialized Block */ 
     public T createFromBlock(Block block, BlockType bType) ;
 }
