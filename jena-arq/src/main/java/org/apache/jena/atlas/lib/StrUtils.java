@@ -23,10 +23,8 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.apache.jena.riot.out.EscapeStr ;
 import org.apache.jena.riot.system.RiotChars ;
-
-import com.hp.hpl.jena.n3.turtle.ParserBase ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 
 public class StrUtils //extends StringUtils
@@ -286,12 +284,12 @@ public class StrUtils //extends StringUtils
 
     public static String escapeString(String x)
     {
-        return FmtUtils.stringEsc(x) ;
+        return EscapeStr.stringEsc(x) ;
     }
     
     public static String unescapeString(String x)
     {
-        return ParserBase.unescapeStr(x) ;
+        return EscapeStr.unescapeStr(x) ;
     }
 
 }
