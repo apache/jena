@@ -25,9 +25,7 @@ import org.apache.jena.atlas.json.JsonParseException ;
 import org.apache.jena.atlas.json.io.JSONHandler ;
 import org.apache.jena.atlas.json.io.parserjavacc.javacc.JSON_Parser ;
 import org.apache.jena.atlas.json.io.parserjavacc.javacc.ParseException ;
-
-import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError ;
-
+import org.apache.jena.atlas.json.io.parserjavacc.javacc.TokenMgrError ;
 
 public class JSONParserJavaCC
 {    
