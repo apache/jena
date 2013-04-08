@@ -203,12 +203,15 @@ public class PrefixMapping2 implements PrefixMapping
         if ( other == null )
             return false ;
         
-        if ( ! ( other instanceof PrefixMapping2 ) )
-            return false ;
+        if ( other instanceof PrefixMapping2 )
+        {
+            PrefixMapping2 other2 = (PrefixMapping2)other ;
+            
+            return this.pmapGlobal.samePrefixMappingAs(other2.pmapGlobal) && 
+                   this.pmapLocal.samePrefixMappingAs(other2.pmapLocal) ;
+        }
         
-        PrefixMapping2 other2 = (PrefixMapping2)other ;
-        
-        return this.pmapGlobal.samePrefixMappingAs(other2.pmapGlobal) && 
-               this.pmapLocal.samePrefixMappingAs(other2.pmapLocal) ;
+        // Do by map copy.
+        return getNsPrefixMap().equals( other.getNsPrefixMap() );
     }
 }
