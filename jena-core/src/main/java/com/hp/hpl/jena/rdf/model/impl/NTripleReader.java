@@ -209,9 +209,7 @@ public class NTripleReader extends Object implements RDFReader {
         skipWhiteSpace();
         switch (in.nextChar()) {
             case '"' :
-                return readLiteral(false);
-            case 'x' :
-                return readLiteral(true);
+                return readLiteral();
             case '<' :
             case '_' :
                 return readResource();
@@ -221,16 +219,9 @@ public class NTripleReader extends Object implements RDFReader {
         }
     }
 
-    protected Literal readLiteral(boolean wellFormed)  {
+    protected Literal readLiteral()  {
 
         StringBuffer lit = new StringBuffer(sbLength);
-
-        if (wellFormed) {
-            deprecated("Use ^^rdf:XMLLiteral not xml\"literals\", .");
-
-            if (!expect("xml"))
-                return null;
-        }
 
         if (!expect("\""))
             return null;
@@ -273,12 +264,7 @@ public class NTripleReader extends Object implements RDFReader {
                 } else {
                     lang = "";
                 }
-                if (wellFormed) {
-                    return model.createLiteral(
-                        lit.toString(),
-//                        "",
-                        wellFormed);
-                } else if ('^' == in.nextChar()) {
+                if ('^' == in.nextChar()) {
                     String datatypeURI = null;
                     if (!expect("^^<")) {
                         syntaxError("ill-formed datatype");
@@ -288,7 +274,7 @@ public class NTripleReader extends Object implements RDFReader {
                     if (datatypeURI == null || !expect(">"))
                         return null;
 					if ( lang.length() > 0 )
-					   deprecated("Language tags are not permitted on typed literals.");
+					    deprecated("Language tags are not permitted on typed literals.");
                     
                     return model.createTypedLiteral(
                         lit.toString(),
@@ -296,6 +282,12 @@ public class NTripleReader extends Object implements RDFReader {
                 } else {
                     return model.createLiteral(lit.toString(), lang);
                 }
+            }
+            // Test for some raw characters
+            else if ( inChar == '\n' || inChar == '\r' )
+            {
+                deprecated("Raw NL or CR not permitted in N-Triples data") ;
+                return null ;
             }
             lit = lit.append(inChar);
         }
