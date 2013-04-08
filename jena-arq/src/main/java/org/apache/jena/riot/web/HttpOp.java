@@ -53,7 +53,6 @@ import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.riot.WebContent ;
@@ -63,6 +62,8 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.engine.http.Params;
+import com.hp.hpl.jena.sparql.engine.http.Params.Pair;
 import com.hp.hpl.jena.sparql.engine.http.Service;
 
 /** Simplified HTTP operations; simplification means only supporting certain uses of HTTP.
@@ -304,13 +305,13 @@ public class HttpOp
     }
     
     /** Execute an HTTP POST form operation */
-    public static void execHttpPostForm(String url, List<Pair<String, String>> params,
+    public static void execHttpPostForm(String url, Params params,
                                         Map<String, HttpResponseHandler> handlers)
     {
         execHttpPostForm(url, params, handlers, null) ;
     }
     /** Execute an HTTP POST form operation */
-    public static void execHttpPostForm(String url, List<Pair<String, String>> params,
+    public static void execHttpPostForm(String url, Params params,
                                         Map<String, HttpResponseHandler> handlers,
                                         HttpContext httpContext)
     {
@@ -402,12 +403,12 @@ InputStreamEntity e = new InputStreamEntity(input, length) ;
         }
     }
     
-    private static HttpEntity convertFormParams(List<Pair<String, String>> params)
+    private static HttpEntity convertFormParams(Params params)
     {
         try {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>() ;
-            for (Pair<String, String> p : params)
-                nvps.add(new BasicNameValuePair(p.getLeft(), p.getRight())) ;
+            for (Pair p : params.pairs())
+                nvps.add(new BasicNameValuePair(p.getName(), p.getValue())) ;
             HttpEntity e = new UrlEncodedFormEntity(nvps, "UTF-8") ;
             return e ;
         } catch (UnsupportedEncodingException e)

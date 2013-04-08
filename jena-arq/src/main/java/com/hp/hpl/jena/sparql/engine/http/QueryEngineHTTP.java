@@ -228,7 +228,7 @@ public class QueryEngineHTTP implements QueryExecution
     {
         this.defaultGraphURIs = defaultGraphURIs ;
     }
-
+    
     /**  @param namedGraphURIs The namedGraphURIs to set. */
     public void setNamedGraphURIs(List<String> namedGraphURIs)
     {

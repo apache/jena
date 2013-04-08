@@ -51,9 +51,14 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase implements Upda
         if ( this.getUpdateRequest() == null )
             throw new ARQException("Null update request for remote update") ;
         
+        // Build endpoint URL
+        String endpoint = this.getEndpoint();
+        String querystring = this.getQueryString();
+        endpoint = endpoint.contains("?") ? endpoint + "&" + querystring : endpoint + "?" + querystring;
+        
         // Execution
         String reqStr = this.getUpdateRequest().toString() ;
-        HttpOp.execHttpPost(this.getEndpoint(), WebContent.contentTypeSPARQLUpdate, reqStr, null, null, getHttpContext()) ;
+        HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, null, null, getHttpContext()) ;
     }
 }
 

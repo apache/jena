@@ -25,14 +25,23 @@ public class HttpParams
     /** Parameter for the SPARQL query string */
     public static final String pQuery               = "query" ;
     
+    /** Parameter for the SPARQL update string */
+    public static final String pUpdate              = "update" ;
+    
 //    /** Parameter for a URI pointing to a SPARQL query in a document */
 //    public static final String pQueryUri       = "query-uri" ;
     
-    /** Parameter for a URI identifying the graph (or one of the graphs) */
+    /** Parameter for a URI identifying the default graph (or one of the graphs) for SPARQL queries */
     public static final String pDefaultGraph        = "default-graph-uri" ;
     
-    /** Parameter for a URI identifying the graph (or one of the graphs) */
+    /** Parameter for a URI identifying the named graph (or one of the graphs) for SPARQL queries */
     public static final String pNamedGraph          = "named-graph-uri" ;
+    
+    /** Parameter for a URI identifying the default graph (or one of the graphs) for SPARQL updates */
+    public static final String pUsingGraph          = "using-graph-uri" ;
+    
+    /** Parameter for a URI identifying the named graph (or one of the graphs) for SPARQL updates */
+    public static final String pUsingNamedGraph     = "using-named-graph-uri" ;
     
     // ----------------- Non-SPARQL parameters
 
