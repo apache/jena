@@ -18,12 +18,9 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import java.util.ArrayList ;
 import java.util.HashMap ;
-import java.util.List ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseHandler ;
 import org.apache.jena.riot.web.HttpResponseLib ;
