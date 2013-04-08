@@ -18,20 +18,19 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.rdf.model.impl.NTripleReader;
-import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.NoReaderForLangException;
+import java.io.IOException ;
+import java.net.ConnectException ;
+import java.net.NoRouteToHostException ;
+import java.net.UnknownHostException ;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.ConnectException;
-import java.net.NoRouteToHostException;
-import java.net.UnknownHostException;
+import org.junit.Assert ;
 
-import org.junit.Assert;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
+import com.hp.hpl.jena.rdf.model.impl.NTripleReader ;
+import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.NoReaderForLangException ;
 
 public class TestReaders extends AbstractModelTestBase
 {
