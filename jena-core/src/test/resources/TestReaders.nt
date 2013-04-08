@@ -15,7 +15,6 @@ _:b <http://test/p2> "foo" .
 
 _:c <http://test/p3> "foo\"\\\n\r\tbar" .
 
-_:d <http://test/p4> "foo
-bar" .
+_:d <http://test/p4> "foo\u000Abar" .
 
 
