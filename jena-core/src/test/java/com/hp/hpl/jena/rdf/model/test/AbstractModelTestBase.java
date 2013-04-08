@@ -18,17 +18,16 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.FileNotFoundException ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.net.URISyntaxException ;
+import java.net.URL ;
 
-import com.hp.hpl.jena.ontology.impl.TestListSyntaxCategories;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
+import junit.framework.TestCase ;
 
-import junit.framework.TestCase;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory ;
 
 /**
  * Base for all test cases.
