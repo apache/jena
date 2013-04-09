@@ -127,7 +127,7 @@ public class TSVInputIterator extends QueryIteratorBase
                 this.binding.add(this.vars.get(i), node);
             } catch (RiotException ex)
             {
-                throw new ResultSetException(format("Line %d: %s", lineNum, ex.getMessage()));
+                throw new ResultSetException(format("Line %d: Data %s contains error: %s", lineNum, token, ex.getMessage()));
             }
         }
 
