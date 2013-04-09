@@ -18,22 +18,31 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphViewGraphs ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-})
+/** Test using a view-generating dataset */  
+public class TestGraphOverDatasetMem extends AbstractTestGraphOverDataset
+{
+    @Override
+    protected DatasetGraph createBaseDSG()
+    { 
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        return new DatasetGraphViewGraphs(dsg) ;
+    }
+    
+    @Override
+    protected Graph makeDefaultGraph(DatasetGraph dsg)
+    {
+        return dsg.getDefaultGraph() ;
+    }
 
-public class TS_Core
-{}
-
+    @Override
+    protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
+    {
+        return dsg.getGraph(gn) ;
+    }
+}

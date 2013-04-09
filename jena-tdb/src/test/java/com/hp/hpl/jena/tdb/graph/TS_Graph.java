@@ -29,6 +29,7 @@ import org.junit.runners.Suite ;
     , TestGraphsTDB1.class
     , TestGraphsTDB2.class
     , TestDatasetGraphAccessorTDB.class
+    , TestGraphOverDatasetTDB.class
 })
 public class TS_Graph
 {
