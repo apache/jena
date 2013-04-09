@@ -401,7 +401,38 @@ public class TestIter
     public void last_06()
     {
         List<String> data = Arrays.asList( "11", "AA", "BB", "CC") ;
-        assertEquals(-1, Iter.firstIndex(data, filter)) ;
+        assertEquals(-1, Iter.lastIndex(data, filter)) ;
+    }
+    
+    @Test
+    public void take_01()
+    {
+        List<String> data = Arrays.asList( "1", "A", "B", "CC") ;
+        List<String> data2 = Iter.take(data.iterator(), 2) ;
+        assertEquals(2, data2.size()) ;
+        assertEquals("1", data2.get(0)) ;
+        assertEquals("A", data2.get(1)) ;
+    }
+    
+    
+    @Test
+    public void take_02()
+    {
+        List<String> data = Arrays.asList( "1", "A", "B", "CC") ;
+        List<String> data2 = Iter.take(data.iterator(), 0) ;
+        assertEquals(0, data2.size()) ;
+    }
+
+    @Test
+    public void take_03()
+    {
+        List<String> data = Arrays.asList( "1", "A", "B", "CC") ;
+        List<String> data2 = Iter.take(data.iterator(), 10) ;
+        assertEquals(4, data2.size()) ;
+        assertEquals("1", data2.get(0)) ;
+        assertEquals("A", data2.get(1)) ;
+        assertEquals("B", data2.get(2)) ;
+        assertEquals("CC", data2.get(3)) ;
     }
     
     @Test
