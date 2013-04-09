@@ -18,26 +18,26 @@
 
 package com.hp.hpl.jena.query;
 
-import java.util.Calendar ;
-import java.util.TimeZone ;
+import java.util.Calendar;
+import java.util.TimeZone;
 
-import org.apache.jena.iri.IRIFactory ;
-import org.junit.Assert ;
-import org.junit.Test ;
+import org.apache.jena.iri.IRIFactory;
+import org.junit.Assert;
+import org.junit.Test;
 
-import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.ResourceFactory ;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.syntax.Element ;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
-import com.hp.hpl.jena.update.UpdateRequest ;
-import com.hp.hpl.jena.vocabulary.XSD ;
+import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
+import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 public class TestParameterizedSparqlString {
 
@@ -292,7 +292,7 @@ public class TestParameterizedSparqlString {
         query.setIri("p", "http://predicate");
         query.setLiteral("o", "A test's test");
 
-        Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"A test's test\" . }", query.toString());
+        Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"A test\\'s test\" . }", query.toString());
     }
 
     @Test
@@ -1333,8 +1333,8 @@ public class TestParameterizedSparqlString {
 
     @Test(expected = ARQException.class)
     public void test_param_string_injection_06() {
-        // This injection attempt is prevented by forbidding injection to a variable
-        // parameter immediatedly surrounded by quotes
+        // This injection attempt is prevented by forbidding injection to a
+        // variable parameter immediately surrounded by quotes
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> '?var' }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "hello' . } ; DROP ALL ; INSERT DATA { <s> <p> \"goodbye");
@@ -1354,11 +1354,12 @@ public class TestParameterizedSparqlString {
         UpdateRequest updates = pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
-    
+
     @Test(expected = ARQException.class)
     public void test_param_string_injection_08() {
-        // This injection attempt results in an invalid SPARQL update because you end up with
-        // a double quoted literal inside a single quoted literal
+        // This injection attempt results in an invalid SPARQL update because
+        // you end up with a double quoted literal inside a single quoted
+        // literal
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> '?var' }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "' . } ; DROP ALL ; INSERT DATA { <s> <p> <o> }#");
@@ -1369,9 +1370,9 @@ public class TestParameterizedSparqlString {
 
     @Test
     public void test_param_string_injection_09() {
-        // This injection attempt using comments results in a valid SPARQL update but a failed
-        // injection because the attempt to use comments ends up being a valid string
-        // literal within quotes
+        // This injection attempt using comments results in a valid SPARQL
+        // update but a failed injection because the attempt to use comments
+        // ends up being a valid string literal within quotes
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ?var }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "\" . } ; DROP ALL ; INSERT DATA { <s> <p> <o> }#");
@@ -1379,97 +1380,116 @@ public class TestParameterizedSparqlString {
         UpdateRequest updates = pss.asUpdate();
         Assert.assertEquals(1, updates.getOperations().size());
     }
-    
-    @Test(expected=ARQException.class)
+
+    @Test(expected = ARQException.class)
     public void test_param_string_injection_10() {
-        // This injection attempt tries to chain together injections to achieve an attack, the first
-        // injection appears innocuous and is an attempt to set up an actual injection vector
-        // The injection is prevented because a ?var directly surrounded by quotes is always flagged as
-        // subject to injection because pre-injection validation happens before each variable is injected
+        // This injection attempt tries to chain together injections to achieve
+        // an attack, the first
+        // injection appears innocuous and is an attempt to set up an actual
+        // injection vector
+        // The injection is prevented because a ?var directly surrounded by
+        // quotes is always flagged as
+        // subject to injection because pre-injection validation happens before
+        // each variable is injected
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ?var }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "a");
         pss.setLiteral("var2", "b");
-        
+
         // Figure out which variable will be injected first
         String first = pss.getVars().next();
         String second = first.equals("var") ? "var2" : "var";
-        
+
         pss.setLiteral(first, "?" + second);
         pss.setLiteral(second, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
         UpdateRequest updates = pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
-    
-    @Test
-    public void test_param_string_injection_permitted_01() {
-        // This is a case where we cannot detect the different between a valid
-        // parameterized string and one that is subject to injection
+
+    @Test(expected = ARQException.class)
+    public void test_param_string_injection_11() {
+        // This is a variant on placing a variable bound to a literal inside a
+        // literal resulting in an injection, we are now able to detect and
+        // prevent this
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> \" ?var \" }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
         UpdateRequest updates = pss.asUpdate();
-        Assert.assertEquals(3, updates.getOperations().size());
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
-    @Test
-    public void test_param_string_injection_permitted_02() {
-        // This is a case where we cannot detect the different between a valid
-        // parameterized
-        // string and one that is subject to injection
+    @Test(expected = ARQException.class)
+    public void test_param_string_injection_12() {
+        // This is a variant on placing a variable bound to a literal inside a
+        // literal resulting in an injection, we are now able to detect and
+        // prevent this
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> \"some text ?var other text\" }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
         UpdateRequest updates = pss.asUpdate();
-        Assert.assertEquals(3, updates.getOperations().size());
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
-    
+
     @Test
-    public void test_param_string_injection_permitted_03() {
-        // This is a case where we cannot detect the different between a valid
-        // parameterized string and one that is subject to injection
+    public void test_param_string_injection_13() {
+        // This is a variant on placing a variable bound to a literal inside a
+        // literal resulting in an injection, we now escape ' so prevent this
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ' ?var ' }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "' . } ; DROP ALL ; INSERT DATA { <s> <p> <o> }#");
 
         UpdateRequest updates = pss.asUpdate();
-        Assert.assertEquals(3, updates.getOperations().size());
+        Assert.assertEquals(1, updates.getOperations().size());
     }
 
     @Test
-    public void test_param_string_injection_permitted_04() {
-        // This is a case where we cannot detect the different between a valid
-        // parameterized string and one that is subject to injection
+    public void test_param_string_injection_14() {
+        // This is a variant on placing a variable bound to a literal inside a
+        // literal resulting in an injection, we now escape ' so prevent this
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> 'some text ?var other text' }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "' . } ; DROP ALL ; INSERT DATA { <s> <p> <o> }#");
 
         UpdateRequest updates = pss.asUpdate();
-        Assert.assertEquals(3, updates.getOperations().size());
+        Assert.assertEquals(1, updates.getOperations().size());
     }
-    
-    @Test
-    public void test_param_string_injection_permitted_05() {
-        // This injection attempt tries to chain together injections to achieve an attack, the first
-        // injection appears innocuous and is an attempt to set up an actual injection vector
-        // The injection is prevented because a ?var directly surrounded by quotes is always flagged as
-        // subject to injection because pre-injection validation happens before each variable is injected
+
+    @Test(expected = ARQException.class)
+    public void test_param_string_injection_15() {
+        // This injection attempt tries to chain together injections to achieve
+        // an attack, the first injection appears innocuous and is an attempt to
+        // set up an actual injection vector
+        // Since we not check out delimiters we are not able to detect and
+        // prevent this
         String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ?var }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "a");
         pss.setLiteral("var2", "b");
-        
+
         // Figure out which variable will be injected first
         String first = pss.getVars().next();
         String second = first.equals("var") ? "var2" : "var";
-        
+
         pss.setLiteral(first, " ?" + second + " ");
         pss.setLiteral(second, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
         UpdateRequest updates = pss.asUpdate();
-        Assert.assertEquals(3, updates.getOperations().size());
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
+
+    @Test
+    public void test_param_string_non_injection_01() {
+        // This test checks that a legitimate injection of a literal to a
+        // variable that occurs between two other literals is permitted
+        // Btw this is not a valid query but it serves to illustrate the case
+        String str = "SELECT * { \"subject\" ?var \"object\" . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral("var", "predicate");
+
+        pss.toString();
+    }
+
 }
