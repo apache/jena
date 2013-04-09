@@ -18,22 +18,41 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.graph.Node ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-})
+/** Count changes */
+public class DatasetChangesCounter implements DatasetChanges
+{
+    long countStart = 0 ;
+    long countFinish = 0 ;
+    long countAdd = 0 ;
+    long countDelete = 0 ;
+    long countNoAdd = 0 ;
+    long countNoDelete = 0 ;
+    
+    
+    @Override
+    public void start()
+    {
+        countStart++ ;
+    }
 
-public class TS_Core
-{}
+    @Override
+    public void change(QuadAction qaction, Node g, Node s, Node p, Node o)
+    {
+        switch (qaction)
+        {
+            case ADD:       countAdd++ ; break ;
+            case DELETE:    countDelete++ ; break ;
+            case NO_ADD:    countNoAdd++ ; break ;
+            case NO_DELETE: countNoDelete++ ; break ;
+            //default : break ; 
+        }
+    }
 
+    @Override
+    public void finish()
+    {
+        countFinish++ ;
+    }
+}

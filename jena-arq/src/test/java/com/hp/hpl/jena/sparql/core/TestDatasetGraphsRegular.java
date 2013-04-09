@@ -18,22 +18,30 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphOps ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-})
+/** This is the test suite run over a regular DatasetGraph to check compatibility */
+public class TestDatasetGraphsRegular extends AbstractTestGraphOverDataset
+{
+    @Override
+    protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.createMem() ; }
+    
+    @Override
+    protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
+    {
+        // Knowns about getting special graphs.
+        return GraphOps.getGraph(dsg, gn) ;
+    }
 
-public class TS_Core
-{}
+    @Override
+    protected Graph makeDefaultGraph(DatasetGraph dsg)
+    {
+        return  dsg.getDefaultGraph() ;
+    }
+
+}
 

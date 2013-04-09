@@ -16,24 +16,31 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.core;
+package com.hp.hpl.jena.tdb.graph;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.AbstractTestGraphOverDataset ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-})
+/** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
+public class TestGraphOverDatasetTDB extends AbstractTestGraphOverDataset
+{
+    @Override
+    protected DatasetGraph createBaseDSG() { return TDBFactory.createDatasetGraph() ; }
+    
+    @Override
+    protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
+    {
+        return dsg.getGraph(gn) ;
+    }
 
-public class TS_Core
-{}
+    @Override
+    protected Graph makeDefaultGraph(DatasetGraph dsg)
+    {
+        return  dsg.getDefaultGraph() ;
+    }
+
+}
 

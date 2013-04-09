@@ -18,22 +18,21 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.graph.Node ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-})
-
-public class TS_Core
-{}
-
+/** Interface for notification of changes
+ * (adds and deletes of quads) to a DatasetGraph
+ */
+public interface DatasetChanges //extends Transactional
+{
+    /** Indicator that a sequence of changes is about to start */ 
+    public void start() ;
+    
+    /** A change has occurred 
+     * @see QuadAction 
+     */
+    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) ;
+     
+    /** Indicator that a sequence of changes has now finished */
+    public void finish() ;
+}

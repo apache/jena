@@ -18,22 +18,36 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestContext.class
-    , TestDatasetGraphMem.class
-    , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetMem.class
-    // Not ready , TestDynamicDatasetMem.class
-    , TestDatasetGraphsRegular.class
-    , TestGraphOverDatasetMem.class
-    , TestDatasetGraphViewGraphs.class
-    , TestDatasetMonitor.class
-})
+/** Wrap a DatasetGraph with implementations of
+ * {@linkplain DatasetGraph#getDefaultGraph} and
+ * {@linkplain DatasetGraph#getGraph}
+ * that use the view graph mechanism.
+ * 
+ * @see GraphViewDataset
+ */
 
-public class TS_Core
-{}
+public class DatasetGraphViewGraphs extends DatasetGraphWrapper
+{
+    // Sort of temporary and may not be a good way to do this.
+    // This class is a converter.
+    // may integrate into DatasetGraph hierarchy.
+
+    public DatasetGraphViewGraphs(DatasetGraph dsg)
+    {
+        super(dsg) ;
+    }
+
+    @Override
+    public Graph getDefaultGraph()
+    { return GraphViewDataset.createDefaultGraph(getWrapped()) ; }
+
+    @Override
+    public Graph getGraph(Node graphNode)
+    { return GraphViewDataset.createNamedGraph(getWrapped(), graphNode) ; }
+    
+    
+}
 
