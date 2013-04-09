@@ -19,15 +19,18 @@
 package com.hp.hpl.jena.query;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.iri.IRI;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
@@ -122,19 +125,23 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * cannot prevent. In particular you should never surround a variable which you
  * intend to replace with double quotes e.g.
  * </p>
+ * 
  * <pre>
  * String str = &quot;PREFIX : &lt;http://example/&gt;\nINSERT DATA { &lt;s&gt; &lt;p&gt; \&quot;?var\&quot; }&quot;;
  * ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
  * </pre>
+ * 
  * <p>
  * While the class will recognize and prevent this as an error this protection
  * is trivially defeated by placing some white space around the variable
  * definition e.g
  * </p>
+ * 
  * <pre>
  * String str = &quot;PREFIX : &lt;http://example/&gt;\nINSERT DATA { &lt;s&gt; &lt;p&gt; \&quot; ?var \&quot; }&quot;;
  * ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
  * </pre>
+ * 
  * <p>
  * This latter case cannot be easily detected and prevented because we can't
  * easily distinguish between a possible injection vulnerability and a variable
@@ -143,7 +150,7 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * <p>
  * Therefore we <strong>strongly</strong> recommend that users concerned about
  * SPARQL Injection attacks perform their own validation on provided parameters
- * and test their use of this class to avoid known attack vectors.  We also 
+ * and test their use of this class to avoid known attack vectors. We also
  * recommend that users do not use easily guessable variable names for their
  * parameters as these can allow a chained injection attack.
  * </p>
@@ -601,7 +608,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     protected void validateParameterValue(Node n) {
         if (n.isURI()) {
             if (n.getURI().contains(">"))
-                throw new ARQException("Value for the parameter attempts SQL injection");
+                throw new ARQException("Value for the parameter contains a SPARQL injection risk");
         }
     }
 
@@ -1147,19 +1154,27 @@ public class ParameterizedSparqlString implements PrefixMapping {
         this.params.clear();
         this.positionalParams.clear();
     }
-    
+
     /**
-     * Helper method which checks whether it is safe to inject to a variable parameter the given value
-     * @param command Current command string
-     * @param var Variable
-     * @param n Value to inject
-     * @throws ARQException Thrown if not safe to inject, error message will describe why it is unsafe to inject
+     * Helper method which checks whether it is safe to inject to a variable
+     * parameter the given value
+     * 
+     * @param command
+     *            Current command string
+     * @param var
+     *            Variable
+     * @param n
+     *            Value to inject
+     * @throws ARQException
+     *             Thrown if not safe to inject, error message will describe why
+     *             it is unsafe to inject
      */
     protected void validateSafeToInject(String command, String var, Node n) throws ARQException {
-        // Looks for the known injection attack vectors and throws an error if any
-        // are encountered
-        
-        // A ?var surrounded by " or ' where the variable is a literal is an attack vector
+        // Looks for the known injection attack vectors and throws an error if
+        // any are encountered
+
+        // A ?var surrounded by " or ' where the variable is a literal is an
+        // attack vector
         Pattern p = Pattern.compile("\"[?$]" + var + "\"|'[?$]" + var + "'");
 
         if (p.matcher(command).find() && n.isLiteral()) {
@@ -1168,14 +1183,58 @@ public class ParameterizedSparqlString implements PrefixMapping {
                             + var
                             + " appears surrounded directly by quotes and is bound to a literal which provides a SPARQL injection attack vector");
         }
+
+        // Parse out delimiter info
+        DelimiterInfo delims = this.findDelimiters(command);
+
+        // Check each occurrence of the variable for safety
+        p = Pattern.compile("([?$]" + var + ")([^\\w]|$)");
+        Matcher matcher = p.matcher(command);
+        while (matcher.find()) {
+            MatchResult posMatch = matcher.toMatchResult();
+
+            if (n.isLiteral()) {
+                if (delims.isInsideLiteral(posMatch.start(1), posMatch.end(1))) {
+                    throw new ARQException(
+                            "Command string is vunerable to injection attack, variable ?"
+                                    + var
+                                    + " appears inside of a literal and is bound to a literal which provides a SPARQL injection attack vector");
+                }
+            }
+        }
     }
 
     /**
+     * Helper method which does light parsing on the command string to find the
+     * position of all relevant delimiters
+     * 
+     * @param command
+     *            Command String
+     * @return
+     */
+    protected final DelimiterInfo findDelimiters(String command) {
+        DelimiterInfo delims = new DelimiterInfo();
+        delims.parseFrom(command);
+        return delims;
+    }
+
+    protected final String stringForNode(Node n, SerializationContext context) {
+        String str = FmtUtils.stringForNode(n, context);
+        if (str.contains("'")) {
+            // Should escape ' to avoid a possible injection vulnerability
+            str = str.replace("'", "\\'");
+        }
+        return str;
+    }
+
+    /**
+     * <p>
      * This method is where the actual work happens, the original command text
      * is always preserved and we just generated a temporary command string by
      * prepending the defined Base URI and namespace prefixes at the start of
      * the command and injecting the set parameters into a copy of that base
      * command string and return the resulting command.
+     * </p>
      * <p>
      * This class makes no guarantees about the validity of the returned string
      * for use as a SPARQL Query or Update, for example if a variable parameter
@@ -1183,6 +1242,11 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * a syntax error when you try to parse the query. If you run into issues
      * like this try using a mixture of variable and positional parameters.
      * </p>
+     * 
+     * @throws ARQException
+     *             May be thrown if the code detects a SPARQL Injection
+     *             vulnerability because of the interaction of the command
+     *             string and the injected variables
      */
     @Override
     public String toString() {
@@ -1196,12 +1260,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
         while (vars.hasNext()) {
             String var = vars.next();
             Node n = this.params.get(var);
-            if (n == null) continue;
+            if (n == null)
+                continue;
             this.validateSafeToInject(command, var, n);
 
             p = Pattern.compile("([?$]" + var + ")([^\\w]|$)");
-            command = p.matcher(command).replaceAll(
-                    Matcher.quoteReplacement(FmtUtils.stringForNode(n, context)) + "$2");
+            command = p.matcher(command).replaceAll(Matcher.quoteReplacement(this.stringForNode(n, context)) + "$2");
         }
 
         // Then inject Positional Parameters
@@ -1218,7 +1282,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
             if (n == null)
                 continue;
 
-            String nodeStr = FmtUtils.stringForNode(n, context);
+            String nodeStr = this.stringForNode(n, context);
             command = command.substring(0, posMatch.start() + adj) + nodeStr + command.substring(posMatch.start() + adj + 1);
             // Because we are using a matcher over the string state prior to
             // starting replacements we need to
@@ -1388,4 +1452,188 @@ public class ParameterizedSparqlString implements PrefixMapping {
         return this.prefixes.samePrefixMappingAs(other);
     }
 
+    private class DelimiterInfo {
+        private List<Pair<Integer, String>> starts = new ArrayList<Pair<Integer, String>>();
+        private Map<Integer, Integer> stops = new HashMap<Integer, Integer>();
+
+        public void parseFrom(String command) {
+            this.starts.clear();
+            this.stops.clear();
+
+            char[] cs = command.toCharArray();
+            for (int i = 0; i < cs.length; i++) {
+                switch (cs[i]) {
+                case '"':
+                    // Start of a Literal
+                    // Is it a long literal?
+                    if (i < cs.length - 2 && cs[i + 1] == '"' && cs[i + 2] == '"') {
+                        this.addStart(i, "\"\"\"");
+                        for (int j = i + 3; j < cs.length - 2; j++) {
+                            if (cs[j] == '"' && cs[j + 1] == '"' && cs[j + 2] == '"') {
+                                this.addStop(i, j + 2);
+                                i = j + 2;
+                            }
+                        }
+                        // Was unterminated
+                    } else {
+                        // Normal literal, scan till we see a " which is not
+                        // preceded by a \
+                        this.addStart(i, "\"");
+                        for (int j = i + 1; j < cs.length; j++) {
+                            if (cs[j] == '"' && cs[j - 1] != '\\') {
+                                this.addStop(i, j);
+                                i = j;
+                                continue;
+                            }
+                        }
+                        // Was unterminated
+                    }
+                    break;
+                case '<':
+                    // Start of a URI
+                    this.addStart(i, "<");
+                    for (int j = i + 1; j < cs.length; j++) {
+                        if (cs[j] == '>' && cs[j - 1] != '\\') {
+                            this.addStop(i, j);
+                            i = j;
+                            continue;
+                        }
+                    }
+                    // Was unterminated
+                    break;
+                case '\'':
+                    // Start of alternative literal form
+                    // Start of a Literal
+                    // Is it a long literal?
+                    if (i < cs.length - 2 && cs[i + 1] == '\'' && cs[i + 2] == '\'') {
+                        this.addStart(i, "'''");
+                        for (int j = i + 3; j < cs.length - 2; j++) {
+                            if (cs[j] == '\'' && cs[j + 1] == '\'' && cs[j + 2] == '\'') {
+                                this.addStop(i, j + 2);
+                                i = j + 2;
+                            }
+                        }
+                        // Was unterminated
+                    } else {
+                        // Normal literal, scan till we see a ' which is not
+                        // preceded by a \
+                        this.addStart(i, "'");
+                        for (int j = i + 1; j < cs.length; j++) {
+                            if (cs[j] == '\'' && cs[j - 1] != '\\') {
+                                this.addStop(i, j);
+                                i = j;
+                                continue;
+                            }
+                        }
+                        // Was unterminated
+                    }
+                    break;
+                case '#':
+                    // Start of a comment
+                    // Scan to next newline
+                    this.addStart(i, "#");
+                    for (int j = i + 1; j < cs.length; j++) {
+                        if (cs[j] == '\n' || cs[j] == '\r') {
+                            this.addStop(i, j);
+                            i = j;
+                            continue;
+                        }
+                    }
+                    this.addStop(i, cs.length - 1);
+                    break;
+                case '\n':
+                case '\r':
+                case '.':
+                case ',':
+                case ';':
+                case '(':
+                case ')':
+                case '{':
+                case '}':
+                case '[':
+                case ']':
+                    // Treat various punctuation as delimiters
+                    this.addStart(i, new String(new char[] { cs[i] }));
+                    this.addStop(i, i);
+                    break;
+                }
+            }
+        }
+
+        public void addStart(int index, String delim) {
+            this.starts.add(new Pair<Integer, String>(index, delim));
+        }
+
+        public void addStop(int start, int stop) {
+            this.stops.put(start, stop);
+        }
+
+        public Pair<Integer, String> findBefore(int index) {
+            Pair<Integer, String> found = null;
+            for (Pair<Integer, String> pair : this.starts) {
+                if (pair.getLeft() < index)
+                    found = pair;
+                if (pair.getLeft() >= index)
+                    break;
+            }
+            return found;
+        }
+
+        public Pair<Integer, String> findAfter(int index) {
+            for (Pair<Integer, String> pair : this.starts) {
+                if (pair.getLeft() > index)
+                    return pair;
+            }
+            return null;
+        }
+
+        public boolean isInsideLiteral(int start, int stop) {
+            Pair<Integer, String> pair = this.findBefore(start);
+            if (pair == null)
+                return false;
+            if (pair.getRight().equals("\"")) {
+                Integer nearestStop = this.stops.get(pair.getLeft());
+                if (nearestStop == null)
+                    return true; // Inside unterminated literal
+                return (nearestStop > stop); // May be inside a literal
+            } else {
+                // Not inside a literal
+                return false;
+            }
+        }
+
+        public boolean isInsideAltLiteral(int start, int stop) {
+            Pair<Integer, String> pair = this.findBefore(start);
+            if (pair == null)
+                return false;
+            if (pair.getRight().equals("'")) {
+                Integer nearestStop = this.stops.get(pair.getLeft());
+                if (nearestStop == null)
+                    return true; // Inside unterminated literal
+                return (nearestStop > stop); // May be inside a literal
+            } else {
+                // Not inside a literal
+                return false;
+            }
+        }
+
+        public boolean isBetweenLiterals(int start, int stop) {
+            Pair<Integer, String> pairBefore = this.findBefore(start);
+            if (pairBefore == null)
+                return false;
+            if (pairBefore.getRight().equals("\"")) {
+                Integer stopBefore = this.stops.get(pairBefore.getLeft());
+                if (stopBefore == null)
+                    return false; // Inside unterminated literal
+
+                // We occur after a literal, is there a subsequent literal?
+                Pair<Integer, String> pairAfter = this.findAfter(stop);
+                return pairAfter != null && pairAfter.getRight().equals("\"");
+            } else {
+                // Previous deliminator is not that of a literal
+                return false;
+            }
+        }
+
+    }
 }
