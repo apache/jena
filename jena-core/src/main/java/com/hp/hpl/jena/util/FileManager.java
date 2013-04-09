@@ -23,7 +23,6 @@ import java.util.* ;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import javax.servlet.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.*;
