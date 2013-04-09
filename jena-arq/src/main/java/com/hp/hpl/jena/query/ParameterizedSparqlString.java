@@ -428,7 +428,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     public void appendNode(Node n) {
         SerializationContext context = new SerializationContext(this.prefixes);
         context.setBaseIRI(this.baseUri);
-        this.cmd.append(FmtUtils.stringForNode(n, context));
+        this.cmd.append(this.stringForNode(n, context));
     }
 
     /**
@@ -450,7 +450,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            URI to append
      */
     public void appendIri(String uri) {
-        this.cmd.append(FmtUtils.stringForURI(uri));
+        this.appendNode(NodeFactory.createURI(uri));
     }
 
     /**
@@ -461,7 +461,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            IRI to append
      */
     public void appendIri(IRI iri) {
-        this.appendIri(iri.toString());
+        this.appendNode(NodeFactory.createURI(iri.toString()));
     }
 
     /**
@@ -1220,7 +1220,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     protected final String stringForNode(Node n, SerializationContext context) {
         String str = FmtUtils.stringForNode(n, context);
-        if (str.contains("'")) {
+        if (n.isLiteral() && str.contains("'")) {
             // Should escape ' to avoid a possible injection vulnerability
             str = str.replace("'", "\\'");
         }
@@ -1452,10 +1452,18 @@ public class ParameterizedSparqlString implements PrefixMapping {
         return this.prefixes.samePrefixMappingAs(other);
     }
 
+    /**
+     * Represents information about delimiters in a string
+     *
+     */
     private class DelimiterInfo {
         private List<Pair<Integer, String>> starts = new ArrayList<Pair<Integer, String>>();
         private Map<Integer, Integer> stops = new HashMap<Integer, Integer>();
 
+        /**
+         * Parse delimiters from a string, discards any previously parsed information
+         * @param command Command string
+         */
         public void parseFrom(String command) {
             this.starts.clear();
             this.stops.clear();
@@ -1602,6 +1610,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
             }
         }
 
+        @SuppressWarnings("unused")
         public boolean isInsideAltLiteral(int start, int stop) {
             Pair<Integer, String> pair = this.findBefore(start);
             if (pair == null)
@@ -1617,6 +1626,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
             }
         }
 
+        @SuppressWarnings("unused")
         public boolean isBetweenLiterals(int start, int stop) {
             Pair<Integer, String> pairBefore = this.findBefore(start);
             if (pairBefore == null)
