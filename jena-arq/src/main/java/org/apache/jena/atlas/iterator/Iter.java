@@ -26,8 +26,6 @@ import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
 
-
-
 public class Iter<T> implements Iterable<T>, Iterator<T>
 {
     // First part : the static function library.
@@ -460,6 +458,55 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return filter(iter, new FilterOutNulls<T>()) ;
     }
     
+    /** Take the first N elements of an iterator - stop early if too few */ 
+    public static <T> List<T> take(Iterator<T> iter, int N)
+    {
+        iter = new IteratorN<T>(iter, N) ;
+        List<T> x = new ArrayList<T>(N) ;
+        for ( ; iter.hasNext() ; )
+            x.add(iter.next()) ;
+        return x ;
+    }
+    
+    /** Iterator that only returns upto N items */
+    static class IteratorN<T> implements Iterator<T>
+    {
+        private final Iterator<T> iter ;
+        private final int N ;
+        private int count ;
+
+        IteratorN(Iterator<T> iter, int N) {
+            this.iter = iter ;
+            this.N  = N ;
+            this.count = 0 ;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            if ( count >= N )
+                return false ;
+            return iter.hasNext() ;
+        }
+
+        @Override
+        public T next()
+        {
+            if ( count >= N )
+                throw new NoSuchElementException() ;
+            T x = iter.next() ;
+            count++ ;
+            return x ;
+        }
+
+        @Override
+        public void remove()
+        {
+            // But leave the count as-is.
+            iter.remove() ;
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     public static <T> Iterator<T> convert(Iterator<?> iterator) { return (Iterator<T>)iterator ; }
     
@@ -816,6 +863,12 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return new Iter<T>(IteratorCons.create(iterator, iter)) ;
     }
 
+    /** Return an Iter that yields at most the first N items */
+    public Iter<T> take(int N)
+    {
+        return Iter.iter(take(iterator, N)) ;
+    }
+    
     /** Count the iterator (this is destructive on the iterator) */ 
     public long count()
     {
