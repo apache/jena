@@ -39,7 +39,7 @@ public class PropertyRequiredException extends JenaException
     {
         return 
         "The object " + FmtUtils.stringForResource(root)
-        + " has multiple values for the unique property " + 
+        + " has no value for the required property " + 
         FmtUtils.stringForResource( property )
         ;
     }
