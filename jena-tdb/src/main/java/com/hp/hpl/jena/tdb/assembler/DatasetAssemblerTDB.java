@@ -56,7 +56,6 @@ public class DatasetAssemblerTDB extends DatasetAssembler
 
         String dir = getStringValue(root, pLocation) ;
         Location loc = new Location(dir) ;
-        // ARQ 2.9.0 does not have Dataset.getContext
         DatasetGraph dsg = TDBFactory.createDatasetGraph(loc) ;
         
         if ( root.hasProperty(pUnionDefaultGraph) )

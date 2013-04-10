@@ -229,6 +229,19 @@ public class DatasetFactory
         return assemble(model) ;
     }
     
+    /** Assembler a dataset from the model in a file
+     * 
+     * @param filename      The filename
+     * @param  resourceURI  URI for the dataset to assembler 
+     * @return Dataset
+     */
+    public static Dataset assemble(String filename, String resourceURI)
+    {
+        Model model = FileManager.get().loadModel(filename) ;
+        Resource r = model.createResource(resourceURI) ; 
+        return assemble(r) ;
+    }
+
     /** Assembler a dataset from the model
      * 
      * @param model
