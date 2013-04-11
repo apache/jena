@@ -12,7 +12,7 @@ if ( ! -e "$POM" )
 $M2=$ENV{'M2_REPO'} ;
 print "#!/bin/bash\n" ;
 print "\n" ;
-print 'CP="' ;
+print 'XCP="' ;
 
 open(X, "mvn -f $POM dependency:build-classpath |") ;
 while(<X>)
@@ -25,5 +25,11 @@ while(<X>)
 }
 print "\"\n" ;
 print "\n" ;
-print "echo \"\$CP\"\n"
+
+print "if [ \"\$CP\" != \'\' ]\n" ;
+print "then\n" ;
+print "   XCP=\"\$CP:\$XCP\"\n" ;
+print "fi\n" ;
+print "\n" ;
+print "echo \"\$XCP\"\n"
 
