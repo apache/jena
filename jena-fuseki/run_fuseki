@@ -32,6 +32,7 @@ then
     fi
 
 CP="$(. $FUSEKI_HOME/run_cp)"
+
 if [ -e "$FUSEKI_HOME/classes" ]
 then
     CP="$FUSEKI_HOME/classes:$CP"
