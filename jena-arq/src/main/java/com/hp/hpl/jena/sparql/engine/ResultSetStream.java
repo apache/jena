@@ -22,6 +22,8 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.NoSuchElementException ;
 
+import org.apache.jena.atlas.lib.Closeable ;
+
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -71,23 +73,33 @@ public class ResultSetStream implements ResultSet
         if ( queryExecutionIter == null )
             return false ;
         boolean r = queryExecutionIter.hasNext() ;
+        if ( !r )
+            close() ;
         return r;
     }
 
     @Override
     public Binding nextBinding()
     {
-        if ( queryExecutionIter == null )
-//          ||  
-//           ( queryExecution != null && ! queryExecution.isActive() ) )
-          throw new NoSuchElementException(this.getClass()+".next") ;
-      
-      Binding binding = queryExecutionIter.next() ;
-      if ( binding != null )
-          rowNumber++ ;
-      return binding ;
+        if (queryExecutionIter == null) throw new NoSuchElementException(this.getClass() + ".next") ;
+
+        try {
+            Binding binding = queryExecutionIter.next() ;
+            if (binding != null) rowNumber++ ;
+            return binding ;
+        } catch (NoSuchElementException ex) {
+            close() ;
+            throw ex ;
+        }
     }
     
+    private void close()
+    {
+        // ARQ QueryIterators are org.apache.jena.atlas.lib.Closable.
+        if ( queryExecutionIter instanceof Closeable )
+            ((Closeable)queryExecutionIter).close() ;
+    }
+
     /** Moves onto the next result possibility.
      *  The returned object is actual the binding for this
      *  result.
