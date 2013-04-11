@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
+import java.util.Iterator ;
 import java.util.List ;
 import java.util.NoSuchElementException ;
 
@@ -36,13 +37,13 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 public class ResultSetStream implements ResultSet
 {
     // Could use QueryIteratorWrapper 
-    private QueryIterator queryExecutionIter ;
+    private Iterator<Binding> queryExecutionIter ;
     private List<String> resultVars ;
     private QuerySolution currentQuerySolution ;
     private int rowNumber ;
     private Model model ;
     
-    public ResultSetStream(List<String> resultVars, Model m, QueryIterator iter)
+    public ResultSetStream(List<String> resultVars, Model m, Iterator<Binding> iter)
     {
         queryExecutionIter = iter ;
         this.resultVars = resultVars ;
@@ -81,7 +82,7 @@ public class ResultSetStream implements ResultSet
 //           ( queryExecution != null && ! queryExecution.isActive() ) )
           throw new NoSuchElementException(this.getClass()+".next") ;
       
-      Binding binding = queryExecutionIter.nextBinding() ;
+      Binding binding = queryExecutionIter.next() ;
       if ( binding != null )
           rowNumber++ ;
       return binding ;
