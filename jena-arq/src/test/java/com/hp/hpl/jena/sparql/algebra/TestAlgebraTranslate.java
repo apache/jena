@@ -30,7 +30,7 @@ import org.junit.Test ;
 
 /** Test translation of syntax to algebra - no otpimization */ 
 public class TestAlgebraTranslate extends BaseTest 
-{
+{    
     @Test public void translate_01() { test("?s ?p ?o", "(bgp (triple ?s ?p ?o))") ; }
     
     @Test public void translate_02() { test("?s ?p ?o2 . BIND(?v+1 AS ?v1)", 
@@ -133,13 +133,17 @@ public class TestAlgebraTranslate extends BaseTest
                                             "  [table unit]",
                                             "  [extend ((?z 99)) (table unit)] )" ) ; }
     
+    protected AlgebraGenerator getGenerator() {
+        return new AlgebraGenerator();
+    }
+    
     // Helper.  Prints the test result (check it!)
-    private static void test(String qs)
+    @SuppressWarnings("unused")
+    protected void test(String qs)
     {
         qs = "SELECT * {\n"+qs+"\n}" ;
         Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
-        AlgebraGenerator gen = new AlgebraGenerator() ;
-        Op opActual = gen.compile(query) ;
+        Op opActual = this.getGenerator().compile(query) ;
         String x = opActual.toString() ;
         x = x.replaceAll("\n$", "") ;
         x = x.replace("\n", "\", \n\"") ;
@@ -150,15 +154,14 @@ public class TestAlgebraTranslate extends BaseTest
     }
     
     
-    private static void test(String qs, String... y)
+    protected void test(String qs, String... y)
     {
         qs = "SELECT * {\n"+qs+"\n}" ;
         Query query = QueryFactory.create(qs, Syntax.syntaxARQ) ;
 
         String opStr = StrUtils.strjoinNL(y) ;
         Op opExpected = SSE.parseOp(opStr) ;
-        AlgebraGenerator gen = new AlgebraGenerator() ;
-        Op opActual = gen.compile(query) ;
+        Op opActual = this.getGenerator().compile(query) ;
         assertEquals(opExpected, opActual) ;
     }
 
