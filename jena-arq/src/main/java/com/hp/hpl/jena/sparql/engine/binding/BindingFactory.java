@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
+import java.util.Iterator ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
@@ -45,4 +47,18 @@ public class BindingFactory
     public static BindingMap create(Binding parent) { return new BindingHashMap(parent)  ; }
     
     public static Binding root() { return BindingRoot.create() ; }
+
+    /** Create a new Binding as a copy of an existing one.
+     * Additionally, it guarantees to touch each element of the binding */ 
+    public static Binding materialize(Binding b)
+    {
+        Iterator<Var> vIter = b.vars() ; 
+        BindingMap b2 = create() ; 
+        while( vIter.hasNext() )
+        {
+            Var v = vIter.next();
+            b2.add(v, b.get(v)) ;
+        }
+        return b2 ;
+    }
 }
