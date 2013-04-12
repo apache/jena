@@ -90,7 +90,6 @@ public class OpWalker
         @Override
         protected void visitFilter(OpFilter op)
         {
-            // Treat OpFilter as an Op1 (not perfect - seeJENA 340)
             visit1(op) ;
         }
         
