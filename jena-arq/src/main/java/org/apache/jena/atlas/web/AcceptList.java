@@ -138,15 +138,6 @@ public class AcceptList
         return choice ;
     }
  
-//    private void ensureSorted()
-//    {
-//        // Need to record the position as well to 
-//        if ( sortedRanges == null )
-//        {
-//            sortedRanges = new ArrayList<MediaRange>(ranges) ; 
-//            Collections.sort(sortedRanges, comparator) ;
-//        }
-//    }
     /** Find the best thing in offer list with the proposal 
      *  "best" means highest q value, with left most being better for same q.
      * 
@@ -158,7 +149,6 @@ public class AcceptList
     static public MediaType match(AcceptList proposalList, AcceptList offerList)
     {
         MediaRange choice = null ;  // From offerlist
-        //MediaRange choice2 = null ; // From proposal (q value and text/*)
         
         for ( MediaRange offer : offerList.entries() )
         {
