@@ -115,16 +115,16 @@ public class QueryEngineTDB extends QueryEngineMain
             dsg = ds ;
         }
         QueryIterator results = super.eval(op, dsg, input, context) ;
-        results = new QueryIteratorMaterialize(results) ;
+        results = new QueryIteratorMaterializeBinding(results) ;
         return results ; 
     }
     
     /** Copy from any TDB internal BindingTDB to a Binding that
      *  does not have any connection to the database.   
      */
-    static class QueryIteratorMaterialize extends QueryIteratorWrapper
+    static class QueryIteratorMaterializeBinding extends QueryIteratorWrapper
     {
-        public QueryIteratorMaterialize(QueryIterator qIter)
+        public QueryIteratorMaterializeBinding(QueryIterator qIter)
         {
             super(qIter) ;
         }
