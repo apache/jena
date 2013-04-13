@@ -157,7 +157,7 @@ public class TestSolverTDB extends BaseTest
     {
         Op op = SSE.parseOp(pattern, pmap) ;
         List<Var> vars =  new ArrayList<Var>() ;
-        vars.addAll(OpVars.allVars(op)) ;
+        vars.addAll(OpVars.visibleVars(op)) ;
         QueryIterator qIter = Algebra.exec(op, graph) ;
         return ResultSetFactory.create(qIter, Var.varNames(vars)) ;
     }
