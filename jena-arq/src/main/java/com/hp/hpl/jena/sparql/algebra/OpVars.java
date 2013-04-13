@@ -26,6 +26,7 @@ import java.util.Set ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.SortCondition ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
@@ -37,20 +38,25 @@ import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 
 public class OpVars
 {
-    public static Set<Var> patternVars(Op op)
+    /** @deprecated use {@linkplain #visibleVars} */
+    @Deprecated
+    public static Set<Var> patternVars(Op op) { return visibleVars(op) ; } 
+    
+    public static Set<Var> visibleVars(Op op)
     {
         Set<Var> acc = new HashSet<Var>() ;
-        patternVars(op, acc) ;
+        visibleVars(op, acc) ;
         return acc ; 
     }
     
-    public static void patternVars(Op op, Set<Var> acc)
+    public static void visibleVars(Op op, Set<Var> acc)
     {
-        //OpWalker.walk(op, new OpVarsPattern(acc)) ;
-        OpVisitor visitor = new OpVarsPattern(acc) ;
-        OpWalker.walk(new WalkerVisitorSkipMinus(visitor), op) ;
+        OpVarsPattern visitor = new OpVarsPattern(acc) ;
+        OpWalker.walk(new WalkerVisitorVisible(visitor, acc), op) ;
     }
-    
+
+    /** @deprecated Not stable across scope renaming.  Use {@linkplain #visibleVars} */
+    @Deprecated
     public static Collection<Var> allVars(Op op)
     {
         Set<Var> acc = new HashSet<Var>() ;
@@ -58,9 +64,13 @@ public class OpVars
         return acc ;
     }
 
+    /** @deprecated Not stable across scope renaming.  Use {@linkplain #visibleVars} */
+    @Deprecated
+    // All mentioned variables regardless of scope/visibility.
     public static void allVars(Op op, Set<Var> acc)
     {
-        OpWalker.walk(op, new OpVarsQuery(acc)) ;
+        OpVarsQuery visitor = new OpVarsQuery(acc) ;
+        OpWalker.walk(op, visitor) ;
     }
     
     public static Collection<Var> vars(BasicPattern pattern)
@@ -76,14 +86,27 @@ public class OpVars
             addVarsFromTriple(acc, triple) ;
     }
     
-    /** Don't accumulate RHS of OpMinus*/
-    static class WalkerVisitorSkipMinus extends WalkerVisitor
+
+    /** Do project and don't walk into it. MINUS vars aren't visiible either */
+    private static class WalkerVisitorVisible extends WalkerVisitor
     {
-        public WalkerVisitorSkipMinus(OpVisitor visitor)
+        private final Collection<Var> acc ;
+
+        public WalkerVisitorVisible(OpVarsPattern visitor, Collection<Var> acc)
         {
             super(visitor) ;
+            this.acc = acc ;
         }
-        
+
+        @Override
+        public void visit(OpProject op)
+        {
+            before(op) ;
+            // Skip Project subop.
+            acc.addAll(op.getVars()) ;
+            after(op) ;  
+        }
+
         @Override
         public void visit(OpMinus op)
         {
@@ -95,6 +118,26 @@ public class OpVars
             after(op) ;  
         }
     }
+    
+//    /** Don't accumulate RHS of OpMinus*/
+//    private static class WalkerVisitorVisible extends WalkerVisitorProjectDirect
+//    {
+//        public WalkerVisitorVisible(OpVarsPattern visitor, Collection<Var> acc)
+//        {
+//            super(visitor, acc) ;
+//        }
+//        
+//        @Override
+//        public void visit(OpMinus op)
+//        {
+//            before(op) ;
+//            if ( op.getLeft() != null ) op.getLeft().visit(this) ;
+//            // Skip right.
+//            //if ( op.getRight() != null ) op.getRight().visit(this) ;
+//            if ( visitor != null ) op.visit(visitor) ;      
+//            after(op) ;  
+//        }
+//    }
     
     private static class OpVarsPattern extends OpVisitorBase
     {
@@ -152,12 +195,13 @@ public class OpVars
         
         @Override
         public void visit(OpProject opProject) 
-        {   
-            // Seems a tad wasteful to do all that work then throw it away.
-            // But it needs the walker redone.
-            // Better: extend a Walking visitor - OpWalker.Walker
-            acc.clear() ;
-            acc.addAll(opProject.getVars()) ;
+        {
+            // The walker should have handled this. 
+            throw new ARQInternalErrorException() ;
+            // Code to do it without walker support ...  
+//            // Seems a tad wasteful to do all that work then throw it away.
+//            acc.clear() ;
+//            acc.addAll(opProject.getVars()) ;
         }
         
         @Override
