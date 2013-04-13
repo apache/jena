@@ -40,17 +40,18 @@ public class DEF
    
     public static final MediaType acceptRSXML         = MediaType.create(WebContent.contentTypeResultsXML) ;
 
-    public static final AcceptList rdfOffer           = AcceptList.create(acceptRDFXML, 
-                                                                          acceptTurtle1, acceptTurtle2, acceptTurtle3, 
-                                                                          acceptNTriples, acceptNTriplesAlt, 
+    public static final AcceptList rdfOffer           = AcceptList.create(acceptTurtle1, acceptTurtle2, acceptTurtle3, 
+                                                                          acceptNTriples, acceptNTriplesAlt,
+                                                                          acceptRDFXML, 
                                                                           acceptRDFJSON) ;
     
-    public static final AcceptList quadsOffer         = AcceptList.create(acceptNQuads, acceptNQuadsAlt1, acceptNQuadsAlt2, 
-                                                                          acceptTriG, acceptTriGAlt1, acceptTriGAlt2) ;
+    public static final AcceptList quadsOffer         = AcceptList.create(acceptTriG, acceptTriGAlt1, acceptTriGAlt2,
+                                                                          acceptNQuads, acceptNQuadsAlt1, acceptNQuadsAlt2 
+                                                                          ) ;
     
-    public static final AcceptList rsOffer            = AcceptList.create(WebContent.contentTypeResultsXML, 
-                                                                          WebContent.contentTypeResultsJSON,
+    public static final AcceptList rsOffer            = AcceptList.create(WebContent.contentTypeResultsJSON,
                                                                           WebContent.contentTypeTextCSV,
                                                                           WebContent.contentTypeTextTSV,
+                                                                          WebContent.contentTypeResultsXML,
                                                                           WebContent.contentTypeTextPlain) ;
 }
