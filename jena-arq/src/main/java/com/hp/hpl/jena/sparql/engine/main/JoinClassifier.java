@@ -23,11 +23,7 @@ import java.util.Set ;
 import org.apache.jena.atlas.lib.SetUtils ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDiff ;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
-import com.hp.hpl.jena.sparql.algebra.op.OpMinus ;
-import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 public class JoinClassifier
@@ -44,11 +40,7 @@ public class JoinClassifier
     {
         left = effectiveOp(left) ;
         right = effectiveOp(right) ;
-
-        // Old: Subquery with modifier. Substitution does not apply.
-        // Renaming should make this work.
-        // With SELECT *, it's as if the subquery were just the pattern.
-
+        
         if (right instanceof OpModifier) return false ;
         if (right instanceof OpDiff) return false ;
         if (right instanceof OpMinus) return false ;

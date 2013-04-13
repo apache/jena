@@ -18,12 +18,13 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import static org.apache.jena.atlas.lib.CollectionUtils.disjoint ;
+
 import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.List ;
 import java.util.Set ;
 
-import static org.apache.jena.atlas.lib.CollectionUtils.disjoint ;
 import org.apache.jena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -33,6 +34,7 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.* ;
 
 public class TransformFilterEquality extends TransformCopy
@@ -174,16 +176,17 @@ public class TransformFilterEquality extends TransformCopy
 
     private static boolean safeToTransform(Collection<Var> varsEquality, Op op)
     {
+        // Structure as a visitor?
         if ( op instanceof OpBGP || op instanceof OpQuadPattern )
             return true ;
         
         if ( op instanceof OpFilter )
         {
             OpFilter opf = (OpFilter)op ;
-            
-            Collection<Var> fvars = opf.getExprs().getVarsMentioned() ;
-            if ( ! disjoint(fvars, varsEquality) )
-                return false ;
+            // Expressions are always safe transform by substitution.
+//            Collection<Var> fvars = opf.getExprs().getVarsMentioned() ;
+//            if ( ! disjoint(fvars, varsEquality) )
+//                return false ;
             return safeToTransform(varsEquality, opf.getSubOp()) ;
         }
         
@@ -224,7 +227,7 @@ public class TransformFilterEquality extends TransformCopy
             // Needs more investigation.
             
             Op opLeft = opleftjoin.getLeft() ;
-            Set<Var> varsLeft = OpVars.patternVars(opLeft) ;
+            Set<Var> varsLeft = OpVars.visibleVars(opLeft) ;
             if ( varsLeft.containsAll(varsEquality) )
                 return true ;
             return false ;
@@ -236,7 +239,46 @@ public class TransformFilterEquality extends TransformCopy
             return safeToTransform(varsEquality, opg.getSubOp()) ;
         }
         
+        // Subquery - assume scope rewriting has already been applied.  
+        if ( op instanceof OpModifier )
+        {
+            // ORDER BY?
+            OpModifier opMod = (OpModifier)op ;
+            if ( opMod instanceof OpProject )
+            {
+                OpProject opProject = (OpProject)op ;
+                // Writing "SELECT ?var" for "?var" -> a value would need AS-ification.
+                for ( Var v : opProject.getVars() )
+                {
+                    if ( varsEquality.contains(v) )
+                        return false ;
+                }
+            }
+            return safeToTransform(varsEquality, opMod.getSubOp()) ;
+        }
+                
+        if ( op instanceof OpGroup )
+        {
+            OpGroup opGroup = (OpGroup)op ;
+            VarExprList varExprList = opGroup.getGroupVars() ;
+            return safeToTransform(varsEquality, varExprList) && 
+                   safeToTransform(varsEquality, opGroup.getSubOp()) ;
+        }
+
+        // Op1 - OpGroup
+        // Op1 - OpOrder
+        // Op1 - OpAssign, OpExtend
+        // Op1 - OpFilter - done.
+        // Op1 - OpLabel - easy
+        // Op1 - OpService - no.
+        
         return false ;
+    }
+    
+    private static boolean safeToTransform(Collection<Var> varsEquality, VarExprList varsExprList)
+    {
+        // If the named variable is used, unsafe to rewrite.
+        return disjoint(varsExprList.getVars(), varsEquality) ;
     }
     
     // -- A special case
@@ -244,9 +286,9 @@ public class TransformFilterEquality extends TransformCopy
     private static boolean testSpecialCaseUnused(Op op, List<Pair<Var, NodeValue>> equalities, ExprList remaining)
     {
         // If the op does not contain the var at all, for some equality
-        // then the filter expression wil/ be "eval unbound" i.e. false.
+        // then the filter expression will be "eval unbound" i.e. false.
         // We can return empty table.
-        Set<Var> patternVars = OpVars.patternVars(op) ;
+        Set<Var> patternVars = OpVars.visibleVars(op) ;
         for ( Pair<Var, NodeValue> p : equalities )
         {
             if ( ! patternVars.contains(p.getLeft()))
