@@ -90,7 +90,7 @@ public class AlgebraQuad extends TransformCopy
             
             if ( Var.isVar(gn) )
             {
-                Collection<Var> vars = OpVars.allVars(opGraph.getSubOp()) ;
+                Collection<Var> vars = OpVars.visibleVars(opGraph.getSubOp()) ;
                 if ( vars.contains(gn) )
                     gnQuad = varAlloc.allocVar() ;
             }

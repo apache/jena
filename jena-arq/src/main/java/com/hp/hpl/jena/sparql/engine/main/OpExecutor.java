@@ -279,8 +279,8 @@ public class OpExecutor
         QueryIterator left = executeOp(lhsOp, input) ;
         QueryIterator right = executeOp(rhsOp, root()) ;
 
-        Set<Var> commonVars = OpVars.patternVars(lhsOp) ;
-        commonVars.retainAll(OpVars.patternVars(rhsOp)) ;
+        Set<Var> commonVars = OpVars.visibleVars(lhsOp) ;
+        commonVars.retainAll(OpVars.visibleVars(rhsOp)) ;
 
         return new QueryIterMinus(left, right, commonVars, execCxt) ;
     }
