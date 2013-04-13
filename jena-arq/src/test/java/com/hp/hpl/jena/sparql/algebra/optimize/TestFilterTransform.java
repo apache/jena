@@ -337,7 +337,7 @@ public class TestFilterTransform
              "(filter (exprlist (!= ?x <x>) (!= ?x 2) (!= ?x 3)) (bgp (?s ?p ?x)))") ;
     }
 
-    static void test(String input, Transform transform, String... output)
+    public static void test(String input, Transform transform, String... output)
     {
         Op op1 = SSE.parseOp(input) ;
         Op op2 = Transformer.transform(transform, op1) ;

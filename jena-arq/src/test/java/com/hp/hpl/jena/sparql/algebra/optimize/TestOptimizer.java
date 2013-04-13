@@ -47,7 +47,7 @@ public class TestOptimizer extends BaseTest
             "          (bgp (triple ?/x ?/y ?v))\n" + 
             "          (project (?/w)\n" + 
             "            (bgp (triple ?//a ?//y ?/w))))))))";
-        check(queryString, opExpectedString) ;
+        checkRename(queryString, opExpectedString) ;
     }
 
     @Test public void query_rename_02()
@@ -60,9 +60,9 @@ public class TestOptimizer extends BaseTest
             "    (bgp (triple ?s ?p ?o))\n" + 
             "    (slice _ 50\n" + 
             "      (project (?v)\n" + 
-            "(bgp (triple ?/x ?/y ?v) (triple ?/a ?/y ?/w))" +
-            "))))" ; 
-        check(queryString, opExpectedString) ;
+            "        (join (bgp (triple ?/x ?/y ?v)) (bgp (triple ?/a ?/y ?/w))))" +
+            ")))" ; 
+        checkRename(queryString, opExpectedString) ;
     }
 
     @Test public void query_rename_03()
@@ -77,7 +77,7 @@ public class TestOptimizer extends BaseTest
             "        (bgp (triple ?x ?y ?v))\n" + 
             "        (project (?w)\n" + 
             "          (bgp (triple ?/a ?/y ?w)))))))" ;
-        check(queryString, opExpectedString) ;
+        checkRename(queryString, opExpectedString) ;
     }
 
     @Test public void query_rename_04()
@@ -92,7 +92,7 @@ public class TestOptimizer extends BaseTest
             "        (bgp (triple ?/x ?/y ?v))\n" + 
             "        (project (?/w)\n" + 
             "          (bgp (triple ?//a ?//y ?/w)))))))" ;
-        check(queryString, opExpectedString) ;
+        checkRename(queryString, opExpectedString) ;
     }
 
     @Test public void query_rename_05()
@@ -108,7 +108,7 @@ public class TestOptimizer extends BaseTest
             "          (bgp (triple ?/x ?/y ?v))\n" + 
             "          (project (?/w)\n" + 
             "            (bgp (triple ?//a ?//y ?/w))))))))" ;
-        check(queryString, opExpectedString) ;
+        checkRename(queryString, opExpectedString) ;
     }
 
     @Test public void query_rename_06()
@@ -125,7 +125,7 @@ public class TestOptimizer extends BaseTest
             "          (project (?w)\n" + 
             "            (bgp (triple ?//a ?//y ?w))))))))\n" + 
             "" ;
-        check(queryString, opExpectedString) ;
+        checkRename(queryString, opExpectedString) ;
     }
 
     @Test public void query_rename_07()
@@ -136,7 +136,7 @@ public class TestOptimizer extends BaseTest
             "  (bgp (triple ?s ?p ?o))\n" + 
             "  (project (?w)\n" + 
             "    (bgp (triple ?/x ?/y ?/v))))" ;
-        check(queryString, opExpectedString) ;
+        checkRename(queryString, opExpectedString) ;
     }
     
     @Test public void slice_order_to_topn_01()
@@ -322,8 +322,18 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ; 
     }
 
+    public static void checkRename(String queryString, String opExpectedString)
+    {
+        Op opExpected = SSE.parseOp(opExpectedString) ;
+        queryString = "PREFIX : <http://example/>\n"+queryString ;
+        Query query = QueryFactory.create(queryString) ;
+        Op op = Algebra.compile(query) ;
+        Op opRenamed = TransformScopeRename.transform(op) ;
+        assertEquals(opExpected, opRenamed) ;
+    }
+
     
-    private static void check(String queryString, String opExpectedString)
+    public static void check(String queryString, String opExpectedString)
     {
         queryString = "PREFIX : <http://example/>\n"+queryString ;
         Query query = QueryFactory.create(queryString) ;
