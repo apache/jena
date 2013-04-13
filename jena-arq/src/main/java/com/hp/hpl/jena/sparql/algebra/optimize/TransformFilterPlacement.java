@@ -118,7 +118,7 @@ public class TransformFilterPlacement extends TransformCopy
             return transformFilterConditional(exprs, varsScope, (OpConditional)x) ;
         
         // Not special - advance the variable scope tracking. 
-        OpVars.patternVars(x, varsScope) ;
+        OpVars.visibleVars(x, varsScope) ;
         return x ;
     }
     
