@@ -99,11 +99,7 @@ public class TestClassify extends TestCase
     @Test public void testClassify_Join_21() 
     { classifyJ("{ { {} OPTIONAL { :s :p ?x } } {?s :p ?x } }", true) ; }
 
-    // Not a join by adjacent BGP flattening. 
-//    @Test public void testClassify_Join_30() 
-//    { classifyJ("{ ?x ?y ?z {SELECT * { ?s ?p ?o} } }", true) ; }
-    
-    // Subselect with modifier is handled without linearization
+    // Will become true.
     @Test public void testClassify_Join_31() 
     { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", false) ; }
 
@@ -170,6 +166,7 @@ public class TestClassify extends TestCase
     @Test public void testClassify_LeftJoin_07()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s ?p ?x1 OPTIONAL { ?s ?p ?x2 FILTER(?x) } } }", false)  ; }
 
+    // Can't lineraize into a projection.
     @Test public void testClassify_LeftJoin_10()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { SELECT ?s { ?s ?p ?o } } }", false)  ; }
         

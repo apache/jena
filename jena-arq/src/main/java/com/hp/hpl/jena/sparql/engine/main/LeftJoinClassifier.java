@@ -58,8 +58,7 @@ public class LeftJoinClassifier
         if ( right instanceof OpModifier )
             return false ;
         
-        Set<Var> leftVars = OpVars.patternVars(left) ;
-        
+        Set<Var> leftVars = OpVars.visibleVars(left) ;
         VarFinder vf = new VarFinder(right) ;
         
         Set<Var> optRight = vf.getOpt() ;
@@ -77,7 +76,7 @@ public class LeftJoinClassifier
     {
         Op left = JoinClassifier.effectiveOp(op.getLeft()) ;
         Op right = JoinClassifier.effectiveOp(op.getRight()) ;
-        Set<Var> leftVars = OpVars.patternVars(left) ;
+        Set<Var> leftVars = OpVars.visibleVars(left) ;
         Set<Var> optRight = VarFinder.optDefined(right) ;
 
         return SetUtils.intersection(leftVars, optRight) ;
