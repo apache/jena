@@ -55,19 +55,16 @@ public class OpVars
         OpWalker.walk(new WalkerVisitorVisible(visitor, acc), op) ;
     }
 
-    /** @deprecated Not stable across scope renaming.  Use {@linkplain #visibleVars} */
-    @Deprecated
-    public static Collection<Var> allVars(Op op)
+    // All mentioned variables regardless of scope/visibility.
+    public static Collection<Var> mentionedVars(Op op)
     {
         Set<Var> acc = new HashSet<Var>() ;
-        allVars(op, acc) ;
+        mentionedVars(op, acc) ;
         return acc ;
     }
 
-    /** @deprecated Not stable across scope renaming.  Use {@linkplain #visibleVars} */
-    @Deprecated
     // All mentioned variables regardless of scope/visibility.
-    public static void allVars(Op op, Set<Var> acc)
+    public static void mentionedVars(Op op, Set<Var> acc)
     {
         OpVarsQuery visitor = new OpVarsQuery(acc) ;
         OpWalker.walk(op, visitor) ;
