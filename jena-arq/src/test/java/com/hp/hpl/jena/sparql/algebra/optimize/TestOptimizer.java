@@ -33,112 +33,6 @@ public class TestOptimizer extends BaseTest
 {
     // A lot of the optimizer is tested by using the scripted queries.
     
-    @Test public void query_rename_01()
-    {
-        String queryString =  
-            "SELECT ?x { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }" ;
-        String opExpectedString =
-            "(project (?x)\n" + 
-            "  (join\n" + 
-            "    (bgp (triple ?s ?p ?o))\n" + 
-            "    (slice _ 50\n" + 
-            "      (project (?v)\n" + 
-            "        (join\n" + 
-            "          (bgp (triple ?/x ?/y ?v))\n" + 
-            "          (project (?/w)\n" + 
-            "            (bgp (triple ?//a ?//y ?/w))))))))";
-        checkRename(queryString, opExpectedString) ;
-    }
-
-    @Test public void query_rename_02()
-    {
-        String queryString = 
-            "SELECT ?x { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT * { ?a ?y ?w }}} LIMIT 50 } }"  ;  
-        String opExpectedString = 
-            "(project (?x)\n" + 
-            "  (join\n" + 
-            "    (bgp (triple ?s ?p ?o))\n" + 
-            "    (slice _ 50\n" + 
-            "      (project (?v)\n" + 
-            "        (join (bgp (triple ?/x ?/y ?v)) (bgp (triple ?/a ?/y ?/w))))" +
-            ")))" ; 
-        checkRename(queryString, opExpectedString) ;
-    }
-
-    @Test public void query_rename_03()
-    {
-        String queryString = "SELECT ?x { ?s ?p ?o . { SELECT * { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }" ;  
-        String opExpectedString = 
-            "(project (?x)\n" + 
-            "  (join\n" + 
-            "    (bgp (triple ?s ?p ?o))\n" + 
-            "    (slice _ 50\n" + 
-            "      (join\n" + 
-            "        (bgp (triple ?x ?y ?v))\n" + 
-            "        (project (?w)\n" + 
-            "          (bgp (triple ?/a ?/y ?w)))))))" ;
-        checkRename(queryString, opExpectedString) ;
-    }
-
-    @Test public void query_rename_04()
-    {
-        String queryString = "SELECT * { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }" ;  
-        String opExpectedString = 
-            "(join\n" + 
-            "  (bgp (triple ?s ?p ?o))\n" + 
-            "  (slice _ 50\n" + 
-            "    (project (?v)\n" + 
-            "      (join\n" + 
-            "        (bgp (triple ?/x ?/y ?v))\n" + 
-            "        (project (?/w)\n" + 
-            "          (bgp (triple ?//a ?//y ?/w)))))))" ;
-        checkRename(queryString, opExpectedString) ;
-    }
-
-    @Test public void query_rename_05()
-    {
-        String queryString = "SELECT ?v { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }"    ;  
-        String opExpectedString = 
-            "(project (?v)\n" + 
-            "  (join\n" + 
-            "    (bgp (triple ?s ?p ?o))\n" + 
-            "    (slice _ 50\n" + 
-            "      (project (?v)\n" + 
-            "        (join\n" + 
-            "          (bgp (triple ?/x ?/y ?v))\n" + 
-            "          (project (?/w)\n" + 
-            "            (bgp (triple ?//a ?//y ?/w))))))))" ;
-        checkRename(queryString, opExpectedString) ;
-    }
-
-    @Test public void query_rename_06()
-    {
-        String queryString = "SELECT ?w { ?s ?p ?o . { SELECT ?w { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} } } LIMIT 50" ;  
-        String opExpectedString = 
-            "(slice _ 50\n" + 
-            "  (project (?w)\n" + 
-            "    (join\n" + 
-            "      (bgp (triple ?s ?p ?o))\n" + 
-            "      (project (?w)\n" + 
-            "        (join\n" + 
-            "          (bgp (triple ?/x ?/y ?/v))\n" + 
-            "          (project (?w)\n" + 
-            "            (bgp (triple ?//a ?//y ?w))))))))\n" + 
-            "" ;
-        checkRename(queryString, opExpectedString) ;
-    }
-
-    @Test public void query_rename_07()
-    {
-        String queryString = "SELECT * { ?s ?p ?o . { SELECT ?w { ?x ?y ?v }}}"  ;  
-        String opExpectedString = 
-            "(join\n" + 
-            "  (bgp (triple ?s ?p ?o))\n" + 
-            "  (project (?w)\n" + 
-            "    (bgp (triple ?/x ?/y ?/v))))" ;
-        checkRename(queryString, opExpectedString) ;
-    }
-    
     @Test public void slice_order_to_topn_01()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
@@ -322,17 +216,6 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ; 
     }
 
-    public static void checkRename(String queryString, String opExpectedString)
-    {
-        Op opExpected = SSE.parseOp(opExpectedString) ;
-        queryString = "PREFIX : <http://example/>\n"+queryString ;
-        Query query = QueryFactory.create(queryString) ;
-        Op op = Algebra.compile(query) ;
-        Op opRenamed = TransformScopeRename.transform(op) ;
-        assertEquals(opExpected, opRenamed) ;
-    }
-
-    
     public static void check(String queryString, String opExpectedString)
     {
         queryString = "PREFIX : <http://example/>\n"+queryString ;
