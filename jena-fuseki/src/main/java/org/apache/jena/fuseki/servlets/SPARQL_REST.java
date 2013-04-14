@@ -408,7 +408,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             uri = request.getRequestURL().toString() ;
             if ( request.getRequestURI().equals(desc.name) )
                 // No name 
-                errorBadRequest("Neither default graph nor named graph specificed; no direct name") ;
+                errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
         }
         
         if ( dftGraph )
@@ -419,7 +419,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             // But "named" default
             return Target.createDefault(dsg) ;
         
-        // Strictly, a bit naughthy on the URI resolution.  But more sensible. 
+        // Strictly, a bit naughty on the URI resolution.  But more sensible. 
         // Base is dataset.
         String base = request.getRequestURL().toString() ; //wholeRequestURL(request) ;
         // Make sure it ends in "/", ie. dataset as container.
