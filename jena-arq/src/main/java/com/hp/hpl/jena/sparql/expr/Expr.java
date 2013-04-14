@@ -46,8 +46,9 @@ public interface Expr
      */ 
     public boolean isSatisfied(Binding binding, FunctionEnv execCxt) ;
   
-    // Could use ExprVars directly.
+    /** Variables used by this expression - excludes variables scoped to (NOT)EXISTS*/
     public Set<Var>  getVarsMentioned() ;
+    /** Variables used by this expression - excludes variables scoped to (NOT)EXISTS*/
     public void varsMentioned(Collection<Var> acc) ;
     
     /** Return true iff this constraint is implemened by something in the expr package

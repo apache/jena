@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.junit.Ignore ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.Query ;
@@ -60,7 +59,6 @@ public class TestTransformQuads extends BaseTest
                                         "     (quadpattern (quad ?g ?s1 ?p1 ?o1))))" 
                                         ) ; }
     // Filters
-    @Ignore("This optimization is suspect - improving more common filter-equality usage stops this case")
     @Test public void quads10() { test ("{ GRAPH ?g { ?s ?p ?o FILTER (str(?g) = 'graphURI') } }", 
                                         "(assign ((?g ?*g0))" +
                                         "   (filter (= (str ?g) 'graphURI')" +
@@ -73,7 +71,6 @@ public class TestTransformQuads extends BaseTest
                                         ) ; }
     
     // Nested and filter
-    @Ignore("This optimization is suspect - improving more common filter-equality usage stops this case")
     @Test public void quads20() { test ("{ GRAPH ?g { ?s ?p ?o GRAPH ?g1 { ?s1 ?p1 ?o1 FILTER (str(?g) = 'graphURI') } } }",
                                         "(assign ((?g ?*g0))" +
                                         "   (sequence" +
@@ -82,7 +79,6 @@ public class TestTransformQuads extends BaseTest
                                         "       (quadpattern (quad ?g1 ?s1 ?p1 ?o1)))))"
                                         ) ; }
     
-    @Ignore("This optimization is suspect - improving more common filter-equality usage stops this case")
     @Test public void quads21() { test ("{ GRAPH ?g { ?s ?p ?o GRAPH ?g1 { ?s1 ?p1 ?o1 FILTER (str(?g1) = 'graphURI') } } }",
                                         "(sequence" +
                                         "   (quadpattern (quad ?g ?s ?p ?o))" +
@@ -92,7 +88,6 @@ public class TestTransformQuads extends BaseTest
                                        ) ; }
     
     // Tricky pattern ... twice.
-    @Ignore("This optimization is suspect - improving more common filter-equality usage stops this case")
     @Test public void quads30() { test ( "{ GRAPH ?g { ?s ?p ?o FILTER (str(?g) = 'graphURI') } " +
                                          "  GRAPH ?g { ?s ?p ?o FILTER (str(?g) = 'graphURI') } }",
                                          "(sequence" +
