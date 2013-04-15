@@ -21,6 +21,7 @@ package com.hp.hpl.jena.query;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1122,8 +1123,52 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * 
      * @return Iterator of variable names
      */
+    @Deprecated
     public Iterator<String> getVars() {
         return this.params.keySet().iterator();
+    }
+
+    /**
+     * Gets the map of currently set variable parameters, this will be an
+     * unmodifiable map
+     * 
+     * @return Map of variable names and values
+     */
+    public Map<String, Node> getVariableParameters() {
+        return Collections.unmodifiableMap(this.params);
+    }
+
+    /**
+     * Gets the map of currently set positional parameters, this will be an
+     * unmodifiable map
+     * 
+     * @return Map of positional indexes and values
+     */
+    public Map<Integer, Node> getPositionalParameters() {
+        return Collections.unmodifiableMap(this.positionalParams);
+    }
+
+    // TODO: Detecting eligible variable parameters
+    // public Iterator<String> getEligibleVariableParameters() {
+    //
+    // }
+
+    /**
+     * Gets the eligible positional parameters i.e. detected positional
+     * parameters that may be set in the command string as it currently stands
+     * 
+     * @return Iterator of eligible positional parameters
+     */
+    public Iterator<Integer> getEligiblePositionalParameters() {
+        Pattern p = Pattern.compile("(\\?)[\\s;,.]");
+        List<Integer> positions = new ArrayList<Integer>();
+        int index = 0;
+        Matcher matcher = p.matcher(this.cmd.toString());
+        while (matcher.find()) {
+            positions.add(index);
+            index++;
+        }
+        return positions.iterator();
     }
 
     /**
@@ -1205,6 +1250,38 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
+     * Helper method which checks whether it is safe to inject to a positional
+     * parameter the given value
+     * 
+     * @param command
+     *            Current command string
+     * @param index
+     *            Positional parameter index
+     * @param position
+     *            Position within the command string at which the positional
+     *            parameter occurs
+     * @param n
+     *            Value to inject
+     * @throws ARQException
+     *             Thrown if not safe to inject, error message will describe why
+     *             it is unsafe to inject
+     */
+    protected void validateSafeToInject(String command, int index, int position, Node n) throws ARQException {
+        // Parse out delimiter info
+        DelimiterInfo delims = this.findDelimiters(command);
+
+        // Check each occurrence of the variable for safety
+        if (n.isLiteral()) {
+            if (delims.isInsideLiteral(position, position)) {
+                throw new ARQException(
+                        "Command string is vunerable to injection attack, a positional paramter (index "
+                                + index
+                                + ") appears inside of a literal and is bound to a literal which provides a SPARQL injection attack vector");
+            }
+        }
+    }
+
+    /**
      * Helper method which does light parsing on the command string to find the
      * position of all relevant delimiters
      * 
@@ -1281,6 +1358,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
             Node n = this.positionalParams.get(index);
             if (n == null)
                 continue;
+            this.validateSafeToInject(command, index, posMatch.start(1) + adj, n);
 
             String nodeStr = this.stringForNode(n, context);
             command = command.substring(0, posMatch.start() + adj) + nodeStr + command.substring(posMatch.start() + adj + 1);
@@ -1454,15 +1532,18 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     /**
      * Represents information about delimiters in a string
-     *
+     * 
      */
     private class DelimiterInfo {
         private List<Pair<Integer, String>> starts = new ArrayList<Pair<Integer, String>>();
         private Map<Integer, Integer> stops = new HashMap<Integer, Integer>();
 
         /**
-         * Parse delimiters from a string, discards any previously parsed information
-         * @param command Command string
+         * Parse delimiters from a string, discards any previously parsed
+         * information
+         * 
+         * @param command
+         *            Command string
          */
         public void parseFrom(String command) {
             this.starts.clear();

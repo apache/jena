@@ -19,8 +19,10 @@
 package com.hp.hpl.jena.query;
 
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.TimeZone;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.iri.IRIFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,6 +41,10 @@ import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.vocabulary.XSD;
 
+/**
+ * Tests for the {@link ParameterizedSparqlString}
+ * 
+ */
 public class TestParameterizedSparqlString {
 
     private void test(ParameterizedSparqlString query, String[] expected, String[] notExpected) {
@@ -1264,6 +1270,51 @@ public class TestParameterizedSparqlString {
 
         Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"test\", ?o . }", query.toString());
     }
+    
+    @Test
+    public void test_param_string_positional_eligible_1() {
+        // Test detection of eligible parameters
+        String cmdText = "SELECT * WHERE { ?s ?p ? . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(cmdText);
+        
+        Iterator<Integer> iter = pss.getEligiblePositionalParameters();
+        int count = 0;
+        while (iter.hasNext()) {
+            count++;
+            iter.next();
+        }
+        Assert.assertEquals(1, count);
+    }
+    
+    @Test
+    public void test_param_string_positional_eligible_2() {
+        // Test detection of eligible parameters
+        String cmdText = "SELECT * WHERE { ? ? ? . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(cmdText);
+        
+        Iterator<Integer> iter = pss.getEligiblePositionalParameters();
+        int count = 0;
+        while (iter.hasNext()) {
+            count++;
+            iter.next();
+        }
+        Assert.assertEquals(3, count);
+    }
+    
+    @Test
+    public void test_param_string_positional_eligible_3() {
+        // Test detection of eligible parameters
+        String cmdText = "SELECT * WHERE { ?s ?p ?; ?p1 ?, ?. }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(cmdText);
+        
+        Iterator<Integer> iter = pss.getEligiblePositionalParameters();
+        int count = 0;
+        while (iter.hasNext()) {
+            count++;
+            iter.next();
+        }
+        Assert.assertEquals(3, count);
+    }
 
     @Test(expected = ARQException.class)
     public void test_param_string_injection_01() {
@@ -1488,6 +1539,239 @@ public class TestParameterizedSparqlString {
         String str = "SELECT * { \"subject\" ?var \"object\" . }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("var", "predicate");
+
+        pss.toString();
+    }
+
+    @Test(expected = ARQException.class)
+    public void test_param_string_positional_injection_01() {
+        // This injection is prevented by forbidding the > character in URIs
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ?v . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setIri(0, "hello> } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye>");
+
+        UpdateRequest updates = pss.asUpdate();
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
+    }
+
+    @Test(expected = ARQException.class)
+    public void test_param_string_positional_injection_02() {
+        // This injection is prevented by forbidding the > character in URIs
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ? . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setIri(0, "hello> } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye");
+
+        UpdateRequest updates = pss.asUpdate();
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
+    }
+
+    @Test
+    public void test_param_string_positional_injection_03() {
+        // This injection attempt results in a valid update but a failed
+        // injection
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ? . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, "hello\" } ; DROP ALL ; INSERT DATA { <s> <p> <goodbye>");
+
+        UpdateRequest updates = pss.asUpdate();
+        Assert.assertEquals(1, updates.getOperations().size());
+    }
+
+    @Test(expected = ARQException.class)
+    public void test_param_string_positional_injection_04() {
+        // This injection is prevented by forbidding the > character in URIs
+        String str = "PREFIX : <http://example/>\nSELECT * WHERE { <s> <p> ? . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setIri(0, "hello> . ?s ?p ?o");
+
+        Query q = pss.asQuery();
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
+    }
+
+    @Test
+    public void test_param_string_positional_injection_05() {
+        // This injection attempt results in a valid query but a failed
+        // injection
+        String str = "PREFIX : <http://example/>\nSELECT * WHERE { <s> <p> ? . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, "hello\" . ?s ?p ?o");
+
+        Query q = pss.asQuery();
+        Element el = q.getQueryPattern();
+        if (el instanceof ElementTriplesBlock) {
+            Assert.assertEquals(1, ((ElementTriplesBlock) q.getQueryPattern()).getPattern().size());
+        } else if (el instanceof ElementGroup) {
+            Assert.assertEquals(1, ((ElementGroup) el).getElements().size());
+            el = ((ElementGroup) el).getElements().get(0);
+            if (el instanceof ElementTriplesBlock) {
+                Assert.assertEquals(1, ((ElementTriplesBlock) el).getPattern().size());
+            }
+        }
+    }
+
+    @Test
+    public void test_param_string_positional_injection_06() {
+        // This injection attempt is prevented by forbidding injection to a
+        // variable parameter immediately surrounded by quotes
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> '?' }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, "hello' . } ; DROP ALL ; INSERT DATA { <s> <p> \"goodbye");
+
+        // In the positional case this does not work because the '?' is not
+        // considered an eligible positional parameter due to the lack of
+        // subsequent white space or punctuation
+        Assert.assertFalse(pss.getEligiblePositionalParameters().hasNext());
+    }
+
+    @Test
+    public void test_param_string_positional_injection_07() {
+        // This injection attempt is prevented by forbidding injection of
+        // variable parameters immediately surrounded by quotes
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> \"?\" }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+
+        // In the positional case this does not work because the "?" is not
+        // considered an eligible positional parameter due to the lack of
+        // subsequent white space or punctuation
+        Assert.assertFalse(pss.getEligiblePositionalParameters().hasNext());
+    }
+
+    @Test
+    public void test_param_string_positional_injection_08() {
+        // This injection attempt results in an invalid SPARQL update because
+        // you end up with a double quoted literal inside a single quoted
+        // literal
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> '?' }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, "' . } ; DROP ALL ; INSERT DATA { <s> <p> <o> }#");
+
+        // In the positional case this does not work because the '?' is not
+        // considered an eligible positional parameter due to the lack of
+        // subsequent white space or punctuation
+        Assert.assertFalse(pss.getEligiblePositionalParameters().hasNext());
+    }
+
+    @Test
+    public void test_param_string_positional_injection_09() {
+        // This injection attempt using comments results in a valid SPARQL
+        // update but a failed injection because the attempt to use comments
+        // ends up being a valid string literal within quotes
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ? }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, "\" . } ; DROP ALL ; INSERT DATA { <s> <p> <o> }#");
+
+        UpdateRequest updates = pss.asUpdate();
+        Assert.assertEquals(1, updates.getOperations().size());
+    }
+
+    @Test
+    public void test_param_string_positional_injection_10() {
+        // This injection attempt tries to chain together injections to achieve
+        // an attack, the first
+        // injection appears innocuous and is an attempt to set up an actual
+        // injection vector
+        // The injection is prevented because a ?var directly surrounded by
+        // quotes is always flagged as
+        // subject to injection because pre-injection validation happens before
+        // each variable is injected
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ? }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, "?");
+        pss.setLiteral(1, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+
+        // In the positional parameter case this should fail because there
+        // is only one eligible positional parameter in the string and we cannot introduce additional ones via chained injection
+        Iterator<Integer> params = pss.getEligiblePositionalParameters();
+        Assert.assertTrue(params.hasNext());
+        params.next();
+        Assert.assertFalse(params.hasNext());
+        
+        UpdateRequest u = pss.asUpdate();
+        Assert.assertEquals(1, u.getOperations().size());
+    }
+
+    @Test(expected = ARQException.class)
+    public void test_param_string_positional_injection_11() {
+        // This is a variant on placing a variable bound to a literal inside a
+        // literal resulting in an injection, we are now able to detect and
+        // prevent this
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> \" ? \" }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+
+        UpdateRequest updates = pss.asUpdate();
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
+    }
+
+    @Test(expected = ARQException.class)
+    public void test_param_string_positional_injection_12() {
+        // This is a variant on placing a variable bound to a literal inside a
+        // literal resulting in an injection, we are now able to detect and
+        // prevent this
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> \"some text ? other text\" }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+
+        UpdateRequest updates = pss.asUpdate();
+        Assert.fail("Attempt to do SPARQL injection should result in an exception");
+    }
+
+    @Test
+    public void test_param_string_positional_injection_13() {
+        // This is a variant on placing a variable bound to a literal inside a
+        // literal resulting in an injection, we now escape ' so prevent this
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ' ? ' }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, "' . } ; DROP ALL ; INSERT DATA { <s> <p> <o> }#");
+
+        UpdateRequest updates = pss.asUpdate();
+        Assert.assertEquals(1, updates.getOperations().size());
+    }
+
+    @Test
+    public void test_param_string_positional_injection_14() {
+        // This is a variant on placing a variable bound to a literal inside a
+        // literal resulting in an injection, we now escape ' so prevent this
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> 'some text ? other text' }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, "' . } ; DROP ALL ; INSERT DATA { <s> <p> <o> }#");
+
+        UpdateRequest updates = pss.asUpdate();
+        Assert.assertEquals(1, updates.getOperations().size());
+    }
+
+    @Test
+    public void test_param_string_positional_injection_15() {
+        // This injection attempt tries to chain together injections to achieve
+        // an attack, the first injection appears innocuous and is an attempt to
+        // set up an actual injection vector
+        // Since we not check out delimiters we are not able to detect and
+        // prevent this
+        String str = "PREFIX : <http://example/>\nINSERT DATA { <s> <p> ? }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, " ? ");
+        pss.setLiteral(1, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+
+        // In the positional parameter case this should fail because there
+        // is only one eligible positional parameter in the string and we cannot introduce additional ones via chained injection
+        Iterator<Integer> params = pss.getEligiblePositionalParameters();
+        Assert.assertTrue(params.hasNext());
+        params.next();
+        Assert.assertFalse(params.hasNext());
+        
+        UpdateRequest u = pss.asUpdate();
+        Assert.assertEquals(1, u.getOperations().size());
+    }
+
+    @Test
+    public void test_param_string_positional_non_injection_01() {
+        // This test checks that a legitimate injection of a literal to a
+        // variable that occurs between two other literals is permitted
+        // Btw this is not a valid query but it serves to illustrate the case
+        String str = "SELECT * { \"subject\" ? \"object\" . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral(0, "predicate");
 
         pss.toString();
     }
