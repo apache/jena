@@ -138,7 +138,6 @@ public class TestAlgebraTranslate extends BaseTest
     }
     
     // Helper.  Prints the test result (check it!)
-    @SuppressWarnings("unused")
     protected void test(String qs)
     {
         qs = "SELECT * {\n"+qs+"\n}" ;
