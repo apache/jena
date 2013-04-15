@@ -122,38 +122,16 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * While this class was in part designed to prevent SPARQL injection it is by no
  * means foolproof because it works purely at the textual level. The current
  * version of the code addresses some possible attack vectors that the
- * developers have identified but we recognize that there are some cases that we
- * cannot prevent. In particular you should never surround a variable which you
- * intend to replace with double quotes e.g.
- * </p>
- * 
- * <pre>
- * String str = &quot;PREFIX : &lt;http://example/&gt;\nINSERT DATA { &lt;s&gt; &lt;p&gt; \&quot;?var\&quot; }&quot;;
- * ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
- * </pre>
- * 
- * <p>
- * While the class will recognize and prevent this as an error this protection
- * is trivially defeated by placing some white space around the variable
- * definition e.g
- * </p>
- * 
- * <pre>
- * String str = &quot;PREFIX : &lt;http://example/&gt;\nINSERT DATA { &lt;s&gt; &lt;p&gt; \&quot; ?var \&quot; }&quot;;
- * ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
- * </pre>
- * 
- * <p>
- * This latter case cannot be easily detected and prevented because we can't
- * easily distinguish between a possible injection vulnerability and a variable
- * that merely occurs between two literals.
+ * developers have identified but we do not claim to be sufficiently devious to
+ * have though of and prevented every possible attack vector.
  * </p>
  * <p>
  * Therefore we <strong>strongly</strong> recommend that users concerned about
  * SPARQL Injection attacks perform their own validation on provided parameters
- * and test their use of this class to avoid known attack vectors. We also
- * recommend that users do not use easily guessable variable names for their
- * parameters as these can allow a chained injection attack.
+ * and test their use of this class themselves prior to its use in any security
+ * conscious deployment. We also recommend that users do not use easily
+ * guess-able variable names for their parameters as these can allow a chained
+ * injection attack though generally speaking the code should prevent these.
  * </p>
  */
 public class ParameterizedSparqlString implements PrefixMapping {
