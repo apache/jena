@@ -54,8 +54,12 @@ public class SPARQL_REST_R extends SPARQL_REST
             return null ;
         
         // Mapping a request for GSP needs to find the "best"
-        // (shortest matching) unlike service matching, 
-        // which is a matter of removing the service component.
+        // (longest matching) dataset URI.
+        // This covers local using the URI as a direct name for
+        // a graph, not just using the indirect ?graph= or ?default 
+        // forms.
+        // Service matching, which is a matter of removing the service component,
+        // would only work for indirect. 
 
         String ds = null ;
         Iterator<String> iter = DatasetRegistry.get().keys() ;
@@ -70,7 +74,7 @@ public class SPARQL_REST_R extends SPARQL_REST
                 ds = ds2 ;
                 continue ; 
             }
-            if ( ds.length() > ds2.length() )
+            if ( ds.length() < ds2.length() )
             {
                 ds = ds2 ;
                 continue ;
