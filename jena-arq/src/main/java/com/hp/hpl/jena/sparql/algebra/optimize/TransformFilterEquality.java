@@ -264,6 +264,13 @@ public class TransformFilterEquality extends TransformCopy
             return safeToTransform(varsEquality, varExprList) && 
                    safeToTransform(varsEquality, opGroup.getSubOp()) ;
         }
+        
+        if ( op instanceof OpTable )
+        {
+            OpTable opTable = (OpTable)op ;
+            if ( opTable.isJoinIdentity() )
+                return true ;
+        }
 
         // Op1 - OpGroup
         // Op1 - OpOrder
