@@ -23,22 +23,18 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.UnsupportedEncodingException ;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URI ;
+import java.net.URISyntaxException ;
 import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import org.apache.http.HttpEntity ;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse ;
-import org.apache.http.NameValuePair ;
-import org.apache.http.StatusLine ;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
+import org.apache.http.* ;
+import org.apache.http.auth.AuthScope ;
+import org.apache.http.auth.UsernamePasswordCredentials ;
+import org.apache.http.client.CredentialsProvider ;
 import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.client.methods.HttpGet ;
 import org.apache.http.client.methods.HttpPost ;
@@ -47,8 +43,8 @@ import org.apache.http.client.methods.HttpUriRequest ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider ;
+import org.apache.http.impl.client.DefaultHttpClient ;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.http.protocol.HttpContext ;
@@ -60,11 +56,11 @@ import org.apache.jena.web.JenaHttpException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.engine.http.Params;
-import com.hp.hpl.jena.sparql.engine.http.Params.Pair;
-import com.hp.hpl.jena.sparql.engine.http.Service;
+import com.hp.hpl.jena.sparql.engine.http.Params ;
+import com.hp.hpl.jena.sparql.engine.http.Params.Pair ;
+import com.hp.hpl.jena.sparql.engine.http.Service ;
 
 /** Simplified HTTP operations; simplification means only supporting certain uses of HTTP.
  * The expectation is that the simplified operations in this class can be used by other code to
@@ -466,19 +462,27 @@ InputStreamEntity e = new InputStreamEntity(input, length) ;
             MediaType mt = null ;
             if ( statusLine.getStatusCode() == 200 )
             {
-                String contentType = response.getFirstHeader(HttpNames.hContentType).getValue() ;
-                if ( contentType != null )
-                {
-                    mt = MediaType.create(contentType) ;
-                    ct = mt.getContentType() ;
-                    if ( log.isDebugEnabled() )
-                        log.debug(format("[%d] %d %s :: %s",id, statusLine.getStatusCode(), statusLine.getReasonPhrase() , mt)) ;
-                }
+                String contentType = null ;
+                Header ctHeader = response.getFirstHeader(HttpNames.hContentType) ;
+                if (ctHeader == null) 
+                    log.info(format("[%d] %d %s :: No Content-Type in response", id, statusLine.getStatusCode(), statusLine.getReasonPhrase())) ;
                 else
                 {
-                    if ( log.isDebugEnabled() )
-                        log.debug(format("[%d] %d %s :: (no content type)",id, statusLine.getStatusCode(), statusLine.getReasonPhrase())) ;
+                    contentType = ctHeader.getValue() ;
+                    if (contentType != null)
+                    {
+                        mt = MediaType.create(contentType) ;
+                        ct = mt.getContentType() ;
+                        if (log.isDebugEnabled()) log.debug(format("[%d] %d %s :: %s", id, statusLine.getStatusCode(),
+                                                                   statusLine.getReasonPhrase(), mt)) ;
+                    } else
+                    {
+                        if (log.isDebugEnabled()) log.debug(format("[%d] %d %s :: (no content type: header but no value)", id,
+                                                                   statusLine.getStatusCode(),
+                                                                   statusLine.getReasonPhrase())) ;
+                    }
                 }
+                
                 HttpResponseHandler handler = handlers.get(ct) ;
                 if ( handler == null )
                     // backstop
@@ -488,11 +492,6 @@ InputStreamEntity e = new InputStreamEntity(input, length) ;
                 else
                     log.warn(format("[%d] No handler found for %s", id, ct));
             }
-//            else
-//            {
-//                if ( handlers != null )
-//                    log.warn(format("[%d] No content returned but handlers provided", id));
-//            }
         } finally { closeEntity(response.getEntity()) ; }
     }
 }
