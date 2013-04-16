@@ -140,10 +140,25 @@ public class XSDDateTime extends AbstractDateTime {
         data[AbstractDateTime.h] = cal.get(Calendar.HOUR_OF_DAY);
         data[AbstractDateTime.m] = cal.get(Calendar.MINUTE);
         data[AbstractDateTime.s] = cal.get(Calendar.SECOND);
-        int ms = cal.get(Calendar.MILLISECOND);
-        data[AbstractDateTime.ms] = ms;
-        data[AbstractDateTime.msscale] = (ms == 0) ? 0 : 3;
         data[AbstractDateTime.utc] = 'Z';
+
+        int ms = cal.get(Calendar.MILLISECOND);
+        // Store value in a canonical form - no scale for trailing zeros.
+        // This must align with the string parsing code.
+        if ( ms == 0 ) {
+            data[AbstractDateTime.ms] = 0 ;
+            data[AbstractDateTime.msscale] = 0 ;
+        } else if ( ms % 100 == 0 ) {
+            data[AbstractDateTime.ms] = ms/100;
+            data[AbstractDateTime.msscale] = 1 ;
+        } else if ( ms % 10 == 0 ) {
+            data[AbstractDateTime.ms] = ms/10;
+            data[AbstractDateTime.msscale] = 2 ;
+        } else {
+            data[AbstractDateTime.ms] = ms;
+            data[AbstractDateTime.msscale] = 3;
+        }
+        
         return data;
     }
 
