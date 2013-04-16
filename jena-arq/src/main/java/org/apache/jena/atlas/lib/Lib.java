@@ -91,13 +91,12 @@ public class Lib
         catch (InterruptedException ex) { Log.warn(Lib.class, "interrupted", ex) ; }
     }
     
-    // Confess - these constructors are very cheap (objects are one private int) so this is unnecessary.
-    private static Checksum crc32 = new CRC32() ;
-    private static Checksum adler32 = new Adler32() ;
-    
+    /** 
+     * @see CRC32
+     */
     public static long crc32(byte[] bytes)
     {
-        return crc(crc32, bytes) ;
+        return crc(new CRC32(), bytes) ;
     }
     
     /** Faster than CRC32, nearly as good.
@@ -105,7 +104,7 @@ public class Lib
      */
     public static long adler32(byte[] bytes)
     {
-        return crc(adler32, bytes) ;
+        return crc(new Adler32(), bytes) ;
     }
 
     private static long crc(Checksum alg, byte[] bytes)
