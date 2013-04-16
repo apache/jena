@@ -120,20 +120,20 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
         
          //get miliseconds (ms)
          start = stop;
-         int milisec = buffer.charAt(start) == '.' ? start : -1;
+         int millisec = buffer.charAt(start) == '.' ? start : -1;
 
          //find UTC sign if any
          int sign = findUTCSign(buffer, start, end);
 
          //parse miliseconds
-         if ( milisec != -1 ) {
+         if ( millisec != -1 ) {
              // The end of millisecond part is between . and
              // either the end of the UTC sign
              start = sign < 0 ? end : sign;
              int msEnd = start;
              while (buffer.charAt(msEnd-1) == '0') msEnd--;
-             data[ms]=parseInt(buffer, milisec+1, msEnd);
-             data[msscale] = msEnd - milisec - 1;
+             data[ms]=parseInt(buffer, millisec+1, msEnd);
+             data[msscale] = msEnd - millisec - 1;
          }
 
          //parse UTC time zone (hh:mm)
