@@ -128,18 +128,6 @@ public class XSDDateTime extends AbstractDateTime {
     private static int[] convertCalendar(Calendar date) {
         int[] data = new int[TOTAL_SIZE];
 
-        // JENA-247
-        // code from jena 2.7.1 -- remove if you see this -- commented out, 
-        // not deleted just because it was close to a release and a pragmatic,
-        // Java bug (?) avoiding hack was used.  
-//        int offset = date.get(Calendar.ZONE_OFFSET) + date.get(Calendar.DST_OFFSET);
-//                                        //  Thanks to Greg Shueler for pointing out need for DST offset
-//        Calendar cal = date;
-//        if (offset != 0) {
-//            cal = (Calendar)date.clone();
-//            cal.add(Calendar.MILLISECOND, -offset);
-//        }
-        
         Calendar cal = (Calendar)date.clone();
         // By observation (Sun Java 6), this is necesary (to force internal calculations presumably) ...
         cal.get(Calendar.ZONE_OFFSET) ;
