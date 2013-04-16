@@ -21,18 +21,16 @@ package com.hp.hpl.jena.graph.test;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Calendar;
+import java.util.GregorianCalendar ;
 
 import com.hp.hpl.jena.datatypes.xsd.AbstractDateTime;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.* ;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.junit.Assert ;
 
 /**
  * Tests behaviour of the AbstractDateTime support, specifically for 
@@ -100,7 +98,7 @@ public class TestDateTime extends TestCase {
 
     }
     
-    public void testRoundTripping() {
+    public void testRoundTripping1() {
         Model m = ModelFactory.createDefaultModel();
         Property startTime = m.createProperty("http://jena.hpl.hp.com/test#startTime");
 
@@ -121,6 +119,34 @@ public class TestDateTime extends TestCase {
 
         Literal xsdlit1 = m1.listStatements().next().getObject().as(Literal.class);
         assertEquals(xsdlit0, xsdlit1);
-
     }
+    
+    // Test that the string and calendar versions are the same.  
+    public void testRoundTripping2() {
+        //String lex = "2013-04-16T15:40:07.3Z" ;
+        testCalendarRT(1366126807300L);
+    }
+    
+    public void testRoundTripping3() {
+        //String lex = "2013-04-16T15:40:07.31Z" ;
+        testCalendarRT(1366126807310L);
+    }
+
+    public void testRoundTripping4() {
+        //String lex = "2013-04-16T15:40:07.301Z" ;
+        testCalendarRT(1366126807301L);
+    }
+
+    private static void testCalendarRT(long value)
+    {
+        Calendar cal=GregorianCalendar.getInstance();
+        cal.setTimeInMillis(value);
+        Literal lit1 = ResourceFactory.createTypedLiteral(cal) ;
+        Literal lit2 = ResourceFactory.createTypedLiteral(lit1.getLexicalForm(), lit1.getDatatype()) ;
+
+        Assert.assertEquals("equals: ", lit1, lit2) ;
+        Assert.assertEquals("hash code: ", lit1.hashCode(), lit2.hashCode()); 
+    }
+    
+
 }
