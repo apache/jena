@@ -164,6 +164,36 @@ public class TestFilterTransform
              "     (assign ((?x1 <x>)) (bgp (triple ?s ?p <x>)))",
              "   ))" ) ;
     }
+    
+    // JENA-432 (simplified)
+    @Test public void equality16()
+    {
+        /*
+        SELECT *
+        WHERE {
+          ?test ?p1 ?o1.
+          FILTER ( ?test = <http://localhost/t2> )
+          OPTIONAL {
+            SELECT ?s1
+            { ?s1 ?p2 ?o2 }
+          }
+        } */
+        String qs = StrUtils.strjoinNL
+            ( "(filter (= ?test <http://localhost/t2>)"
+            , "  (leftjoin"
+            , "    (bgp (triple ?test ?p1 ?o1))"
+            , "      (project (?s1)"
+            , "       (bgp (triple ?s1 ?p2 ?o2)))))"
+            ) ;
+        test(qs,
+             t_equality,
+             "(assign ((?test <http://localhost/t2>))" ,
+             "  (leftjoin" ,
+             "    (bgp (triple <http://localhost/t2> ?p1 ?o1))" ,
+             "    (project (?s1)" ,
+             "      (bgp (triple ?s1 ?p2 ?o2)))))"
+            ) ;
+    }
 
     @Test public void disjunction01()
     {
