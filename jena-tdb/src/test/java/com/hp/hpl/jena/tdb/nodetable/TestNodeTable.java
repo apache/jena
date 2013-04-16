@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
-public class TestNodeTable extends TestNodeTableBase
+public class TestNodeTable extends AbstractTestNodeTable
 {
     @Override
     protected NodeTable createEmptyNodeTable()
