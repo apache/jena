@@ -123,7 +123,7 @@ import com.hp.hpl.jena.update.UpdateRequest;
  * means foolproof because it works purely at the textual level. The current
  * version of the code addresses some possible attack vectors that the
  * developers have identified but we do not claim to be sufficiently devious to
- * have though of and prevented every possible attack vector.
+ * have thought of and prevented every possible attack vector.
  * </p>
  * <p>
  * Therefore we <strong>strongly</strong> recommend that users concerned about
