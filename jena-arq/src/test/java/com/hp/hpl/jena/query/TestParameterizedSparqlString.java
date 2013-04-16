@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.TimeZone;
 
-import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.iri.IRIFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -1448,6 +1447,7 @@ public class TestParameterizedSparqlString {
         pss.setLiteral("var2", "b");
 
         // Figure out which variable will be injected first
+        @SuppressWarnings("deprecation")
         String first = pss.getVars().next();
         String second = first.equals("var") ? "var2" : "var";
 
@@ -1521,6 +1521,7 @@ public class TestParameterizedSparqlString {
         pss.setLiteral("var2", "b");
 
         // Figure out which variable will be injected first
+        @SuppressWarnings("deprecation")
         String first = pss.getVars().next();
         String second = first.equals("var") ? "var2" : "var";
 
