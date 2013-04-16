@@ -143,10 +143,10 @@ public abstract class QueryCompilerMain implements QueryCompiler
             else
             {
                 // All variables.
-                Collection<Var> tmp = OpVars.patternVars(opSQL.getOriginal()) ;
+                Collection<Var> tmp = OpVars.visibleVars(opSQL.getOriginal()) ;
                 projectVars = new ArrayList<Var>(tmp) ;
             }
-                    
+
             SqlNode sqlNode = opSQL.getSqlNode() ;
             
             SQLBridgeFactory f = request.getStore().getSQLBridgeFactory() ;
