@@ -38,10 +38,18 @@ public class JoinClassifier
 
     static public boolean isLinear(Op left, Op right)
     {
+        // OpModifier: OpDistinct, OpList, OpOrder, OpProject, OpReduced, OpSlice, OpTopN 
+        // All OK if sub OK.
+        // NB Project: substitution works -- do nothing to project of a substituted variable
+        // because it won't actually occur in the bindings. 
+
         left = effectiveOp(left) ;
         right = effectiveOp(right) ;
         
-        if (right instanceof OpModifier) return false ;
+        // OpExtend, OpAssign, OpGroup - dubious
+        if (right instanceof OpExtend) return false ;
+        if (right instanceof OpAssign) return false ;
+        if (right instanceof OpGroup) return false ;
         if (right instanceof OpDiff) return false ;
         if (right instanceof OpMinus) return false ;
 
@@ -126,10 +134,12 @@ public class JoinClassifier
         return !bad1 && !bad2 ;
     }
 
-    static public Op effectiveOp(Op op)
+    private static Op effectiveOp(Op op)
     {
-        if (op instanceof OpExt) op = ((OpExt) op).effectiveOp() ;
+        if (op instanceof OpExt)
+            op = ((OpExt) op).effectiveOp() ;
+        while(op instanceof OpModifier )
+            op = ((OpModifier)op).getSubOp() ;
         return op ;
     }
-
 }

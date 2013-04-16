@@ -99,9 +99,8 @@ public class TestClassify extends TestCase
     @Test public void testClassify_Join_21() 
     { classifyJ("{ { {} OPTIONAL { :s :p ?x } } {?s :p ?x } }", true) ; }
 
-    // Will become true.
     @Test public void testClassify_Join_31() 
-    { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", false) ; }
+    { classifyJ("{ ?x ?y ?z {SELECT ?s { ?s ?p ?o} } }", true) ; }
 
     // Use of a filter variable not in from the LHS
     @Test public void testClassify_Join_32() 
@@ -166,7 +165,7 @@ public class TestClassify extends TestCase
     @Test public void testClassify_LeftJoin_07()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s ?p ?x1 OPTIONAL { ?s ?p ?x2 FILTER(?x) } } }", false)  ; }
 
-    // Can't lineraize into a projection.
+    // Can't linearize into a projection.
     @Test public void testClassify_LeftJoin_10()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { SELECT ?s { ?s ?p ?o } } }", false)  ; }
         
