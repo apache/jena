@@ -24,6 +24,7 @@ import org.apache.jena.atlas.lib.SetUtils ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -50,8 +51,8 @@ public class LeftJoinClassifier
     }
     static public boolean isLinear(Op left, Op right)
     {
-        left = JoinClassifier.effectiveOp(left) ;
-        right = JoinClassifier.effectiveOp(right) ;
+        left = effectiveOp(left) ;
+        right = effectiveOp(right) ;
         
         // Subquery with modifier.  Substitution does not apply.
         // With SELECT *, it's as if the subquery were just the pattern.
@@ -74,11 +75,19 @@ public class LeftJoinClassifier
     
     static public Set<Var> nonLinearVars(OpLeftJoin op)
     {
-        Op left = JoinClassifier.effectiveOp(op.getLeft()) ;
-        Op right = JoinClassifier.effectiveOp(op.getRight()) ;
+        Op left = effectiveOp(op.getLeft()) ;
+        Op right = effectiveOp(op.getRight()) ;
         Set<Var> leftVars = OpVars.visibleVars(left) ;
         Set<Var> optRight = VarFinder.optDefined(right) ;
 
         return SetUtils.intersection(leftVars, optRight) ;
     }
+    
+    private static Op effectiveOp(Op op)
+    {
+        if (op instanceof OpExt)
+            op = ((OpExt) op).effectiveOp() ;
+        return op ;
+    }
+
 }
