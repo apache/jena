@@ -40,7 +40,10 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
     
     //define constants
     protected final static int CY = 0,  M = 1, D = 2, h = 3,
-    m = 4, s = 5, ms = 6, utc=7, msscale=8, hh=0, mm=1;
+    m = 4, s = 5, ms = 6, utc=7, msscale=8 ;
+    
+    // Timezone constants
+    protected final static int hh=0, mm=1;
         
     //size for all objects must have the same fields:
     //CCYY, MM, DD, h, m, s, ms + timeZone
