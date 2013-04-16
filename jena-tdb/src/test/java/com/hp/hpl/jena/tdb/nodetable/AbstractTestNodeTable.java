@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-public abstract class TestNodeTableBase extends BaseTest
+public abstract class AbstractTestNodeTable extends BaseTest
 {
     protected abstract NodeTable createEmptyNodeTable() ;
     
