@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.sparql.algebra;
 
 
-import com.hp.hpl.jena.sparql.algebra.optimize.TestFilterTransform ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformFilters ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestOptimizer ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformMergeBGPs ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestVarRename ;
@@ -33,7 +33,7 @@ import org.junit.runners.Suite ;
     TestVarFinder.class
     , TestAlgebraTranslate.class
     , TestClassify.class
-    , TestFilterTransform.class
+    , TestTransformFilters.class
     , TestTransformQuads.class
 
     , TestVarRename.class

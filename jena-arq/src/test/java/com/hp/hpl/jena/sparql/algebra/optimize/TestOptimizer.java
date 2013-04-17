@@ -200,6 +200,40 @@ public class TestOptimizer extends BaseTest
         }
     }
     
+    @Test public void subQueryProject_01() {
+        String qs = StrUtils.strjoinNL
+            ( "SELECT *"
+            , "WHERE {"
+            , "    ?test ?p1 ?X." 
+            , "    { SELECT ?s1 ?test { ?test ?p2 ?o2 } }"
+            , "}") ; 
+        
+        String ops = StrUtils.strjoinNL
+            ("(sequence"
+            ,"  (bgp (triple ?test ?p1 ?X))"
+            ,"  (project (?s1 ?test)"
+            ,"    (bgp (triple ?test ?/p2 ?/o2))))"
+            ) ;
+        check(qs, ops) ;
+    }
+
+    @Test public void subQueryProject_02() {
+        String qs = StrUtils.strjoinNL
+            ( "SELECT *"
+            , "WHERE {"
+            , "    ?test ?p1 ?X." 
+            , "    { SELECT ?s1 { ?test ?p2 ?o2 } }"
+            , "}") ; 
+        
+        String ops = StrUtils.strjoinNL
+            ("(sequence"
+            ,"  (bgp (triple ?test ?p1 ?X))"
+            ,"  (project (?s1)"
+            ,"    (bgp (triple ?/test ?/p2 ?/o2))))"
+            ) ;
+        check(qs, ops) ;
+    }
+    
     @Test public void optimize_01()
     { 
         String queryString = "SELECT * { { ?s ?p ?x } UNION { ?s1 ?p1 ?x } FILTER(?x = <urn:x1> || ?x = <urn:x2>) }" ;
