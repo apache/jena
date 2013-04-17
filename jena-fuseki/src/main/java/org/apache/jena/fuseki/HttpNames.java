@@ -34,6 +34,7 @@ public class HttpNames
     public static final String hContentLocation     = "Content-Location" ;
     public static final String hContentRange        = "Content-Range" ;
     public static final String hContentType         = "Content-Type" ;
+    public static final String hRetryAfter          = "Retry-After" ;
     public static final String hServer              = "Server" ;
     public static final String hLocation            = "Location" ; 
     public static final String hVary                = "Vary" ;
