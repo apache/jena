@@ -259,7 +259,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             action.endRead() ; }
     }
 
-    /** Check the query - throw ActionErrorException or call super.error* */
+    /** Check the query - if unacceptable, throw ActionErrorException or call super.error */
     protected abstract void validateQuery(HttpActionQuery action, Query query) ;
 
     protected QueryExecution createQueryExecution(Query query, Dataset dataset)
@@ -276,13 +276,21 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             ResultSet rs = qExec.execSelect() ;
             
             // Force some query execution now.
-            // Do this to force the query to do something that should touch any underlying database,
+            //
+            // If the timeout-first-row goes off, the output stream has not 
+            // been started so the HTTP error code is sent. 
+            //
+            // This also forces the query to do something that should touch any underlying database,
             // and hence ensure the communications layer is working.
             // MySQL can time out after 8 hours of an idle connection
+            
             rs.hasNext() ;
 
-            // Not necessary if we are inside a read transaction or lock until the end of sending results. 
-            // rs = ResultSetFactory.copyResults(rs) ;
+            // If we wanted perfect query time cancellation, we could consume the result now
+            // to see if the timeout-end-of-query goes off.  
+            // Not necessary if we are inside a read transaction or lock until the end of sending results.
+            
+            //rs = ResultSetFactory.copyResults(rs) ;
 
             log.info(format("[%d] exec/select", action.id)) ;
             return new SPARQLResult(rs) ;
