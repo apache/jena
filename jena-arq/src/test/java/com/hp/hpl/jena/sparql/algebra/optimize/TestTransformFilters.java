@@ -34,11 +34,12 @@ import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterEquality ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterPlacement ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public class TestFilterTransform
+/** Tests of transforms related to filters */
+public class TestTransformFilters
 {
     public static junit.framework.Test suite()
     {
-        return new JUnit4TestAdapter(TestFilterTransform.class) ;
+        return new JUnit4TestAdapter(TestTransformFilters.class) ;
     }
     
     private Transform t_equality    = new TransformFilterEquality() ;
@@ -195,6 +196,163 @@ public class TestFilterTransform
             ) ;
     }
 
+    // Related to JENA-432
+    @Test public void optionalEqualitySubQuery_01() {
+        // Presence of ?test in the projection blocks the rewrite.
+        // (this is actually over cautious).
+        String qs = StrUtils.strjoinNL
+            ( "SELECT *"
+            , "WHERE {"
+            , "    ?test ?p1 ?X." 
+            , "    FILTER ( ?test = <http://localhost/t1> )"
+            , "    { SELECT ?s1 ?test { ?test ?p2 ?o2 } }"
+            , "}") ; 
+        
+        String ops = StrUtils.strjoinNL
+            ("(filter (= ?test <http://localhost/t1>)"
+            ,"    (sequence"
+            ,"      (bgp (triple ?test ?p1 ?X))"
+            ,"      (project (?s1 ?test)"
+            ,"        (bgp (triple ?test ?/p2 ?/o2)))))"
+            ) ;
+        TestOptimizer.check(qs, ops) ;
+    }
+    
+    // Related to JENA-432
+    @Test public void optionalEqualitySubQuery_02() {
+        String qs = StrUtils.strjoinNL
+            ( "SELECT *"
+            , "WHERE {"
+            , "    ?test ?p1 ?X." 
+            , "    FILTER ( ?test = <http://localhost/t1> )"
+            , "    { SELECT ?s1 { ?test ?p2 ?o2 } }"
+            , "}") ;
+        String ops = StrUtils.strjoinNL
+            ( "  (assign ((?test <http://localhost/t1>))"
+            , "    (sequence"
+            , "       (bgp (triple <http://localhost/t1> ?p1 ?X))"
+            , "       (project (?s1)"
+            , "         (bgp (triple ?/test ?/p2 ?/o2))) ))"
+            ) ;
+        
+        TestOptimizer.check(qs, ops) ;
+    }
+    
+    // JENA-383, simplified.
+    @Test public void optionalEquality_01() {
+        // Not optimized because the TransformFilterEquality does not notice
+        // ?x is fixed in the expression by the join.  
+        String qs = StrUtils.strjoinNL
+            ( "PREFIX : <http://example/> SELECT * {"
+              , "    OPTIONAL { ?x :q ?o }"
+              , "    FILTER(?x = :x)"
+              , "    ?x :p ?o2"
+              , "}"
+                ) ;
+        String ops = StrUtils.strjoinNL
+            ( "(filter (= ?x <http://example/x>)"
+            , "  (sequence"
+            , "     (conditional"
+            , "        (table unit)"
+            , "        (bgp (triple ?x <http://example/q> ?o)))"
+            , "     (bgp (triple ?x <http://example/p> ?o2))"
+            , " ))" 
+            ) ;
+        TestOptimizer.check(qs, ops) ;
+    }
+    
+    @Test public void optionalEqualityScope_01() {
+        String qs = StrUtils.strjoinNL
+            ( "PREFIX : <http://example/> SELECT * {"
+              , "    OPTIONAL { ?x :q ?o }"
+              , "    FILTER(?x = :x)"
+              , "    ?x :p ?o2"
+              , "}"
+                ) ;
+        // Possible transformation:
+        // Safe to transform:  This (sequence) always defined ?x 
+        String ops = StrUtils.strjoinNL
+            ("(assign ((?x <http://example/x>))"
+            , "   (sequence"
+            , "       (conditional"
+            , "         (table unit)"
+            , "         (bgp (triple <http://example/x> <http://example/q> ?o)))"
+            , "       (bgp (triple <http://example/x> <http://example/p> ?o2))))"
+            ) ;
+        // Currently :
+        String ops1 = StrUtils.strjoinNL
+            ("(filter (= ?x <http://example/x>)"
+            ,"  (sequence"
+            ,"    (conditional"
+            ,"      (table unit)"
+            ,"      (bgp (triple ?x <http://example/q> ?o)) )"
+            ,"    (bgp (triple ?x <http://example/p> ?o2)) ))"
+            ) ;
+        
+        TestOptimizer.check(qs, ops1) ;
+    }
+
+    // JENA-294 part II
+    @Test public void optionalEqualityScope_02() {
+        String qs = StrUtils.strjoinNL
+            ( "PREFIX : <http://example/> SELECT * {"
+              , "    ?x :p ?o2"
+              , "    OPTIONAL { ?x :q ?o }"
+              , "    FILTER(?x = :x)"
+              , "}"
+                ) ;
+        // Safe to transform:  ?x is fixed. 
+        String ops = StrUtils.strjoinNL
+            ( "(assign ((?x <http://example/x>))"
+            , "   (conditional"
+            , "     (bgp (triple <http://example/x> <http://example/p> ?o2))"
+            , "     (bgp (triple <http://example/x> <http://example/q> ?o))"
+            , "   ))"
+            ) ;
+        TestOptimizer.check(qs, ops) ;
+    }
+    
+    // JENA-294 part II
+    @Test public void optionalEqualityScope_03() {
+        String qs = StrUtils.strjoinNL
+            ( "PREFIX : <http://example/> SELECT * {"
+              , "    ?z :p ?o2"
+              , "    OPTIONAL { ?x :q ?o }"
+              , "    FILTER(?x = :x)"
+              , "}"
+                ) ;
+        // Unsafe to transform:  ?x is optional. 
+        String ops = StrUtils.strjoinNL
+            ( "(filter (= ?x <http://example/x>)"
+            , "   (conditional"
+            , "     (bgp (triple ?z <http://example/p> ?o2))"
+            , "     (bgp (triple ?x <http://example/q> ?o))"
+            , "))"
+            ) ;
+        TestOptimizer.check(qs, ops) ;
+    }
+
+    // Scope of variable (optional, defined) cases 
+    @Test public void test_OptEqualityScope_04() {
+        String qs = StrUtils.strjoinNL
+            ( "PREFIX : <http://example/> SELECT * {"
+              , "    OPTIONAL { ?x :q ?o }"
+              , "    FILTER(?x = :x)"
+              , "}"
+                ) ;
+        // Unsafe to transform:  This may not defined ?x, then FILTER -> unbound -> error -> false
+        String ops1 = StrUtils.strjoinNL
+            ("(filter (= ?x <http://example/x>)"
+            ,"    (conditional"
+            ,"      (table unit)"
+            ,"      (assign ((?x <http://example/x>))"
+            ,"        (bgp (triple <http://example/x> <http://example/q> ?o)))))"
+            ) ;
+        
+        TestOptimizer.check(qs, ops1) ;
+    }
+
+    
     @Test public void disjunction01()
     {
         test("(filter (|| (= ?x <x>) (= ?x <y>)) (bgp ( ?s ?p ?x)) )",
