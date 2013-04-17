@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.commons.lang.StringUtils ;
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
@@ -39,7 +40,9 @@ import static org.apache.jena.atlas.lib.Lib.equal ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 
@@ -161,21 +164,28 @@ public class ResponseResultSet
                     }
                 }, request, response) ;
             }
+            catch (QueryCancelledException ex)
+            { 
+                // Bother.  Status code 200 already sent.
+                // 
+                log.info("") ; }
             // This catches things like NIO exceptions.
             catch (Exception ex) { log.debug("Exception [SELECT/JSON] "+ex, ex) ; } 
             return ;
         }
 
         // ---- Form: text
+        // Text is not streaming.
         if ( equal(serializationType, WebContent.contentTypeTextPlain) )
         {
             try {
+                final ResultSet rs = (resultSet != null ) ? ResultSetFactory.makeRewindable(resultSet) : null ;
                 textOutput(contentType, new OutputContent(){
                     @Override
                     public void output(ServletOutputStream out)
                     {
-                        if ( resultSet != null )
-                            ResultSetFormatter.out(out, resultSet, qPrologue) ;
+                        if ( rs != null )
+                            ResultSetFormatter.out(out, rs, qPrologue) ;
                         if (  booleanResult != null )
                             ResultSetFormatter.out(out, booleanResult.booleanValue()) ;
                     }
@@ -188,6 +198,13 @@ public class ResponseResultSet
 //                else
 //                    log.debug("IOException [SELECT/Text] (ignored) "+ioEx, ioEx) ;
 //            }
+            catch (QueryCancelledException ex)
+            {
+                log.info("[SELECT/Text] Query timeout during execution") ;
+                try {
+                    response.sendError(HttpSC.SERVICE_UNAVAILABLE_503, "Query timeout during execution") ;
+                } catch (IOException ex2) { IO.exception(ex2) ; }
+            }
             // This catches things like NIO exceptions.
             catch (Exception ex) { log.debug("Exception [SELECT/Text] "+ex, ex) ; } 
             return ;
@@ -250,11 +267,22 @@ public class ResponseResultSet
             setHttpResponse(httpRequest, httpResponse, contentType, charset) ; 
             httpResponse.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = httpResponse.getOutputStream() ;
-            proc.output(out) ;
+            try
+            {
+                proc.output(out) ;
+            } catch (QueryCancelledException ex)
+            {
+                out.println() ;
+                out.println("##  Query cancelled due to timeout during execution   ##") ;
+                out.println("##  ****          Incomplete results           ****   ##") ;
+                out.flush() ;
+                errorOccurred(ex) ;
+            }
             out.flush() ;
             // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
             // then the JSON callback closing details can't be added. 
-        } catch (IOException ex) { errorOccurred(ex) ; }
+        } 
+        catch (IOException ex) { errorOccurred(ex) ; }
     }
 
     public static void setHttpResponse(HttpServletRequest httpRequest,
