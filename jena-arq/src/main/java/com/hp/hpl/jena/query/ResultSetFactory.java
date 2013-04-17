@@ -403,13 +403,20 @@ public class ResultSetFactory {
     }
 
     /**
-     * Turn an existing result set into a rewindable one. May take a copy - uses
-     * up the result set passed in.
+     * Turn an existing result set into a rewindable one.
+     * May take a copy but this is not guarantted
+     * Uses up the result set passed in which is no longer valid as a ResultSet.
      * 
      * @param resultSet
      * @return ResultSetRewindable
      */
     static public ResultSetRewindable makeRewindable(ResultSet resultSet) {
+        if ( resultSet instanceof ResultSetRewindable )
+        {
+            ResultSetRewindable rsw = (ResultSetRewindable)resultSet ;
+            rsw.reset() ;
+            return rsw ;
+        }
         return new ResultSetMem(resultSet);
     }
 
@@ -435,6 +442,7 @@ public class ResultSetFactory {
     }
 
     /**
+     * @deprecated This will be removed.
      * Sort an existing result set. Experimental. The list of variables is a
      * list of names (strings), with "x" for ascending in variable "x" and "-x"
      * for descending in variable "x"
@@ -443,6 +451,7 @@ public class ResultSetFactory {
      * @param conditions
      * @return ResultSet
      */
+    @Deprecated
     static public ResultSet makeSorted(ResultSet resultSet, List<SortCondition> conditions) {
         return new SortedResultSet(resultSet, conditions);
     }
