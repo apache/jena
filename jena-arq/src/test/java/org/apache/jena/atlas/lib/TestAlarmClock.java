@@ -19,6 +19,9 @@
 package org.apache.jena.atlas.lib;
 
 import static org.apache.jena.atlas.lib.Lib.sleep ;
+
+import java.util.concurrent.atomic.AtomicInteger ;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.AlarmClock ;
 import org.apache.jena.atlas.lib.Callback ;
@@ -27,8 +30,20 @@ import org.junit.Test ;
 
 public class TestAlarmClock extends BaseTest
 {
-    Callback<?> callback = new Callback<Object>() { @Override
-    public void proc(Object arg) {} } ; 
+    static class CallbackTest implements Callback<Object> 
+    {
+        AtomicInteger count = new AtomicInteger(0) ;
+        
+        public int getCount() { return count.get() ; }
+        
+        @Override
+        public void proc(Object arg)
+        {
+            count.getAndIncrement() ;
+        }
+    } ;
+    
+    CallbackTest callback = new CallbackTest() ;
     
     @Test public void alarm_01()
     {
@@ -39,6 +54,8 @@ public class TestAlarmClock extends BaseTest
         assertEquals(1, alarmClock.getCount()) ;
         alarmClock.cancel(ping) ;
         assertEquals(0, alarmClock.getCount()) ;
+        assertEquals(0, callback.getCount()) ;
+        alarmClock.release() ;
     }
     
     @Test public void alarm_02()
@@ -49,10 +66,12 @@ public class TestAlarmClock extends BaseTest
         Pingback<?> ping = alarmClock.add(callback, 10) ;
         sleep(100) ;
         assertEquals(0, alarmClock.getCount()) ;
+        assertEquals(1, callback.getCount()) ;
         
         // try to cancel anyway.
-        alarmClock.cancel(ping) ;
+        ping.cancel() ;
         assertEquals(0, alarmClock.getCount()) ;
+        alarmClock.release() ;
     }
 
     @Test public void alarm_03()
@@ -65,13 +84,31 @@ public class TestAlarmClock extends BaseTest
         sleep(200) ;
         // ping1 went off.
         assertEquals(1, alarmClock.getCount()) ;
-        alarmClock.cancel(ping1) ;
+        assertEquals(1, callback.getCount()) ;
+        ping1.cancel() ;
+        
         assertEquals(1, alarmClock.getCount()) ;
         alarmClock.cancel(ping2) ;
         assertEquals(0, alarmClock.getCount()) ;
+        assertEquals(1, callback.getCount()) ;
+        alarmClock.release() ;
     }
 
     @Test public void alarm_04()
+    {
+        AlarmClock alarmClock = new AlarmClock() ;
+        assertEquals(0, alarmClock.getCount()) ;
+        Pingback<?> ping1 = alarmClock.add(callback, 10) ;
+        Pingback<?> ping2 = alarmClock.add(callback, 20) ;
+        assertEquals(2, alarmClock.getCount()) ;
+        sleep(200) ;
+        // ping1 went off.  ping2 went off.
+        assertEquals(0, alarmClock.getCount()) ;
+        assertEquals(2, callback.getCount()) ;
+        alarmClock.release() ;
+    }
+
+    @Test public void alarm_05()
     {
         AlarmClock alarmClock = new AlarmClock() ;
         assertEquals(0, alarmClock.getCount()) ;
@@ -81,9 +118,10 @@ public class TestAlarmClock extends BaseTest
         assertEquals(1, alarmClock.getCount()) ;
         sleep(100) ;
         assertEquals(1, alarmClock.getCount()) ;
+        alarmClock.release() ;
     }
     
-    @Test public void alarm_05()
+    @Test public void alarm_06()
     {
         AlarmClock alarmClock = new AlarmClock() ;
         assertEquals(0, alarmClock.getCount()) ;
@@ -92,8 +130,10 @@ public class TestAlarmClock extends BaseTest
         assertEquals(2, alarmClock.getCount()) ;
         alarmClock.reset(ping1, 2000) ;
         assertEquals(2, alarmClock.getCount()) ;
-        sleep(200) ;    // ping2 goes off.
+        sleep(200) ;    // just ping2 goes off.
+        assertEquals(1, callback.getCount()) ;
         assertEquals(1, alarmClock.getCount()) ;
+        alarmClock.release() ;
     }
     
 }
