@@ -64,7 +64,7 @@ public class TestQueryExecutionTimeout extends BaseTest
 
     static private String prefix = "PREFIX f: <http://example/ns#>" ;
 
-    // Numbers all a bit iffy - but don't want test to be to slow ...
+    // Numbers all a bit iffy - but don't want testing to be to slow ...
 
     @Test
     public void timeout_01()
