@@ -23,11 +23,13 @@ import java.util.Set ;
 import java.util.Timer ;
 
 /** An AlarmClock is an object that will make a call back at a preset time.
- * It addes to java.util.Timer by having an active Timer (and its thread)
- * only when callbacks are outstanding.  The Timer's thread can stop the JVM exiting.
+ * It adds tracking to a java.util.Time and also by having
+ * an active Timer (and its thread) only when callbacks are outstanding. 
+ * The Timer's thread can stop the JVM exiting.
  */
 public class AlarmClock
 {
+    // ** Switch to ScheduledThreadPoolExecutor
     // Our callback-later instance
     // Wrap a TimerTask so that the TimerTask.cancel operation can not be called
     // directly by the app. We need to go via AlarmClock tracking of callbacks so
@@ -89,13 +91,32 @@ public class AlarmClock
         if ( timer == null )
             // Nothing outstanding.
             return ;
-        outstanding.remove(pingback) ;
+        // Calls remove$
+        pingback.cancel();
         // Throw timer, and it's thread, away if no outstanding pingbacks.
-        // This helps apps exit properly (daemon threads don't always seem to be as clean as porimised)
-        // but may be troublesome in large systems.  May reconsider. 
+        // This helps apps exit properly but may be troublesome in large systems.
+        // May reconsider. 
         if ( clearTimer && getCount() == 0 )
         {
-            timer.cancel();
+            release() ;
+        }
+    }
+    
+    /*package*/ void remove$(Pingback<?> pingback)
+    {
+        outstanding.remove(pingback) ;
+    }
+    
+    public synchronized void release() 
+    {
+        release$() ;
+    }
+    
+    private void release$()
+    {
+        if ( timer != null )
+        {
+            timer.cancel() ;
             timer = null ;
         }
     }
@@ -106,6 +127,5 @@ public class AlarmClock
             timer = new Timer(true) ;
         return timer ;
     }
-    
-    public long timeStart = System.currentTimeMillis() ;
-}
+}  
+ 
