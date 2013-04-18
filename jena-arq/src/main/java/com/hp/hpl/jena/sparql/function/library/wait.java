@@ -34,6 +34,6 @@ public class wait extends FunctionBase1 {
             throw new ExprEvalException("Not an integer") ;
         int x = nv.getInteger().intValue() ;
         Lib.sleep(x) ;
-        return nv ;
+        return NodeValue.TRUE ;
     }
 }
