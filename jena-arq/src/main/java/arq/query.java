@@ -32,12 +32,7 @@ import arq.cmdline.ModQueryIn ;
 import arq.cmdline.ModResultsOut ;
 import arq.cmdline.ModTime ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryException ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
@@ -189,7 +184,9 @@ public class query extends CmdARQ
                 System.err.println("Dataset not specified in query nor provided on command line.");
                 throw new TerminationException(1) ;
             }
-            QueryExecUtils.executeQuery(query, qe,fmt) ;
+            try { QueryExecUtils.executeQuery(query, qe, fmt) ; } 
+            catch (QueryCancelledException ex) { System.err.println("Query timed out") ; }
+            
             long time = modTime.endTimer() ;
             if ( timed )
             {
