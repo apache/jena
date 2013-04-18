@@ -185,7 +185,10 @@ public class query extends CmdARQ
                 throw new TerminationException(1) ;
             }
             try { QueryExecUtils.executeQuery(query, qe, fmt) ; } 
-            catch (QueryCancelledException ex) { System.err.println("Query timed out") ; }
+            catch (QueryCancelledException ex) { 
+                System.out.flush() ;
+                System.err.println("Query timed out") ;
+            }
             
             long time = modTime.endTimer() ;
             if ( timed )
