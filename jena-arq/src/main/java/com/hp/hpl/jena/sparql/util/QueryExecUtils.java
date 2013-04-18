@@ -199,7 +199,6 @@ public class QueryExecUtils
         outputResultSet(results, query, outputFormat) ;
     }
 
-
     private static void doDescribeQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
     {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
