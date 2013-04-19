@@ -117,7 +117,6 @@ public class TestQueryExecutionCancel extends BaseTest {
 
     class CancelThreadRunner extends Thread 
     {
-
     	private QueryExecution qExec = null ;
     	private int count = 0 ;
 
@@ -150,7 +149,5 @@ public class TestQueryExecutionCancel extends BaseTest {
     	{
     		return count ;
     	}
-
     }
-    
 }
