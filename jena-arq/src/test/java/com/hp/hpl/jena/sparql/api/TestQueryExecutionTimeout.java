@@ -62,10 +62,16 @@ public class TestQueryExecutionTimeout extends BaseTest
         FunctionRegistry.get().remove(ns + "wait") ;
     }
 
-    static private String prefix = "PREFIX f: <http://example/ns#>" ;
+    static private String prefix = 
+        "PREFIX f:       <http://example/ns#>\n"+
+        "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>\n" ;
 
-    // Numbers all a bit iffy - but don't want testing to be to slow ...
-
+    // Numbers all a bit iffy aand can result in test failures
+    // on a heavily loaded CI system.
+    // But we don't want testing to be to slow when used in general
+    // development.  Could split into development and integration
+    // level checking.
+    
     @Test
     public void timeout_01()
     {
