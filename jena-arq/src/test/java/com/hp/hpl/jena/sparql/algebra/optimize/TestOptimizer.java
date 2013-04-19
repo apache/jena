@@ -200,6 +200,18 @@ public class TestOptimizer extends BaseTest
         }
     }
     
+    @Test public void distinct_to_reduced_03()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+        String queryString = "SELECT DISTINCT ?p { ?s ?p ?o } ORDER BY ?p ?o"  ;  
+        String opExpectedString = 
+            "(reduced\n" + 
+            "  (project (?p)\n" +
+            "    (order (?p ?o)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
     @Test public void distinct_order_by_application_01()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
@@ -216,6 +228,7 @@ public class TestOptimizer extends BaseTest
     {
         try {
             ARQ.setFalse(ARQ.optOrderByDistinctApplication) ;
+            ARQ.setFalse(ARQ.optDistinctToReduced) ;
             assertTrue(ARQ.isFalse(ARQ.optOrderByDistinctApplication)) ;
             String queryString = "SELECT DISTINCT ?p { ?s ?p ?o } ORDER BY ?p";
             String opExpectedString =
@@ -226,6 +239,7 @@ public class TestOptimizer extends BaseTest
             check(queryString, opExpectedString) ;
         } finally {
             ARQ.unset(ARQ.optOrderByDistinctApplication);
+            ARQ.unset(ARQ.optDistinctToReduced);
         }
     }
     
@@ -276,10 +290,11 @@ public class TestOptimizer extends BaseTest
         // provided every variable used in an expression appears in the project list
         // In this case it should not apply because the condition used a variable that
         // does not appear in the project list
+        // However the DISTINCT to REDUCED optimization does apply
         assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
         String queryString = "SELECT DISTINCT ?p { ?s ?p ?o } ORDER BY LCASE(CONCAT(?s, ?p))";
         String opExpectedString =
-            "  (distinct\n" +
+            "  (reduced\n" +
             "    (project (?p)\n" +
             "      (order ((lcase (concat ?s ?p)))\n" +
             "      (bgp (triple ?s ?p ?o)))))" ;
