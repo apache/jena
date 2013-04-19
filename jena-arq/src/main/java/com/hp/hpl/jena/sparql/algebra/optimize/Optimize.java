@@ -186,12 +186,19 @@ public class Optimize implements Rewrite
         
         if ( context.isTrueOrUndef(ARQ.optTopNSorting) )
         	op = apply("TopN Sorting", new TransformTopN(), op) ;
+        
+        // ORDER BY+DISTINCT optimizations
+        // We apply the one that changes evaluation order first since when it does apply it will give much
+        // better performance than just transforming DISTINCT to REDUCED
+        
+        if ( context.isTrueOrUndef(ARQ.optOrderByDistinctApplication) )
+            op = apply("Apply DISTINCT prior to ORDER BY where possible", new TransformOrderByDistinctAppplication(), op);
 
         if ( context.isTrueOrUndef(ARQ.optDistinctToReduced) )
             op = apply("Distinct replaced with reduced", new TransformDistinctToReduced(), op) ;
         
         // Convert paths to triple patterns. 
-        // Also done in the AlgebraGenerator so this transform step catches programattically built op expressions 
+        // Also done in the AlgebraGenerator so this transform step catches programmatically built op expressions 
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
         
         // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).

@@ -200,6 +200,48 @@ public class TestOptimizer extends BaseTest
         }
     }
     
+    @Test public void distinct_order_by_application_01()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
+        String queryString = "SELECT DISTINCT ?p { ?s ?p ?o } ORDER BY ?p";
+        String opExpectedString =
+            "(order (?p)\n" +
+            "  (distinct\n" +
+            "    (project (?p)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ;
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void distinct_order_by_application_02()
+    {
+        try {
+            ARQ.setFalse(ARQ.optOrderByDistinctApplication) ;
+            assertTrue(ARQ.isFalse(ARQ.optOrderByDistinctApplication)) ;
+            String queryString = "SELECT DISTINCT ?p { ?s ?p ?o } ORDER BY ?p";
+            String opExpectedString =
+                "(distinct\n" +
+                "  (project (?p)\n" +
+                "    (order (?p)\n" +
+                "      (bgp (triple ?s ?p ?o)))))" ;
+            check(queryString, opExpectedString) ;
+        } finally {
+            ARQ.unset(ARQ.optOrderByDistinctApplication);
+        }
+    }
+    
+    @Test public void distinct_order_by_application_03()
+    {
+        // Evaluation reordering optimization doesn't apply if it's a SELECT *
+        // However the DISTINCT to REDUCED transformation still applies
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
+        String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p";
+        String opExpectedString =
+            "  (reduced\n" +
+            "    (order (?p)\n" +
+            "      (bgp (triple ?s ?p ?o))))" ;
+        check(queryString, opExpectedString) ;
+    }
+    
     @Test public void subQueryProject_01() {
         String qs = StrUtils.strjoinNL
             ( "SELECT *"
@@ -263,6 +305,7 @@ public class TestOptimizer extends BaseTest
         Op opOptimize = Algebra.optimize(opToOptimize) ;
         Op opExpected = SSE.parseOp(opExpectedString) ;
         assertEquals(opExpected, opOptimize) ;
+
     }
     
 }
