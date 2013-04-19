@@ -242,6 +242,79 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
     
+    @Test public void distinct_order_by_application_04()
+    {
+        // The optimization still applies when order conditions are not simple variables
+        // provided every variable used in an expression appears in the project list
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
+        String queryString = "SELECT DISTINCT ?p { ?s ?p ?o } ORDER BY LCASE(STR(?p))";
+        String opExpectedString =
+            "(order ((lcase (str (?p))))\n" +
+            "  (distinct\n" +
+            "    (project (?p)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ;
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void distinct_order_by_application_05()
+    {
+        // The optimization still applies when order conditions are not simple variables
+        // provided every variable used in an expression appears in the project list
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
+        String queryString = "SELECT DISTINCT ?s ?p { ?s ?p ?o } ORDER BY LCASE(CONCAT(?s, ?p))";
+        String opExpectedString =
+            "(order ((lcase (concat ?s ?p)))\n" +
+            "  (distinct\n" +
+            "    (project (?s ?p)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ;
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void distinct_order_by_application_06()
+    {
+        // The optimization can apply when order conditions are not simple variables
+        // provided every variable used in an expression appears in the project list
+        // In this case it should not apply because the condition used a variable that
+        // does not appear in the project list
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
+        String queryString = "SELECT DISTINCT ?p { ?s ?p ?o } ORDER BY LCASE(CONCAT(?s, ?p))";
+        String opExpectedString =
+            "  (distinct\n" +
+            "    (project (?p)\n" +
+            "      (order ((lcase (concat ?s ?p)))\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ;
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void reduced_order_by_application_01()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
+        String queryString = "SELECT REDUCED ?p { ?s ?p ?o } ORDER BY ?p";
+        String opExpectedString =
+            "(order (?p)\n" +
+            "  (reduced\n" +
+            "    (project (?p)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ;
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void reduced_order_by_application_02()
+    {
+        try {
+            ARQ.setFalse(ARQ.optOrderByDistinctApplication) ;
+            assertTrue(ARQ.isFalse(ARQ.optOrderByDistinctApplication)) ;
+            String queryString = "SELECT REDUCED ?p { ?s ?p ?o } ORDER BY ?p";
+            String opExpectedString =
+                "(reduced\n" +
+                "  (project (?p)\n" +
+                "    (order (?p)\n" +
+                "      (bgp (triple ?s ?p ?o)))))" ;
+            check(queryString, opExpectedString) ;
+        } finally {
+            ARQ.unset(ARQ.optOrderByDistinctApplication);
+        }
+    }
+    
     @Test public void subQueryProject_01() {
         String qs = StrUtils.strjoinNL
             ( "SELECT *"
