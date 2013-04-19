@@ -24,6 +24,8 @@ ChangeLog for ARQ
   now closed
 + New ResultSetPeekable interface extends ResultSet with peeking capabilities, ResultSetMem implements
   this and ResultSetPeeking is provided as an implementing wrapper over an arbitrary ResultSet
++ JENA-441 : New optimizations for ORDER BY + DISTINCT/REDUCED combinations that gives substantially better
+  performance for some queries
 
 ==== Jena 2.10.0
 
