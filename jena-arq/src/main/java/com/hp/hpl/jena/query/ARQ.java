@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformOrderByDistinctAppplication;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
@@ -285,10 +286,20 @@ public class ARQ
     public static final Symbol optTopNSorting = ARQConstants.allocSymbol("optTopNSorting") ;
     
     /** 
-     *  Context key controlling whether a DISTINCT-ORDER BY query is done replacing the distinct with a reduced.
+     *  Context key controlling whether a DISTINCT-ORDER BY query is done by replacing the distinct with a reduced.
      *  Default is "true" - the reduced operator does not need to keep a data structure with all previously seen bindings.
      */  
     public static final Symbol optDistinctToReduced = ARQConstants.allocSymbol("optDistinctToReduced") ;
+    
+    /**
+     * Context key controlling whether a DISTINCT-ORDER BY query is done by applying the ORDER BY after the DISTINCT
+     * when default SPARQL semantics usually mean ORDER BY applies before DISTINCT.  This optimization applies only
+     * in a subset of cases unlike the more general {@link #optDistinctToReduced} optimization.
+     * <p>
+     * See {@link TransformOrderByDistinctAppplication} for more discussion on exactly when this may apply
+     * </p>
+     */
+    public static final Symbol optOrderByDistinctApplication = ARQConstants.allocSymbol("optOrderByDistinctApplication");
 
     /** 
      *  Context key controlling whether the standard optimizer applies
