@@ -18,12 +18,9 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.* ;
+
+import org.apache.jena.atlas.lib.Callback ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
@@ -39,7 +36,7 @@ public class Context
     public static final Context emptyContext = new Context(true) ;
     
     protected Map<Symbol, Object> context = new HashMap<Symbol, Object>() ;
-    protected List<Callback> callbacks = new ArrayList<Callback>() ;
+    protected List<Callback<Symbol>> callbacks = new ArrayList<Callback<Symbol>>() ;
     protected boolean readonly = false ;
     
     /** Create an empty context */
@@ -269,16 +266,15 @@ public class Context
 //    }
     
     // ---- Callbacks
-    public void addCallback(Callback m) { callbacks.add(m) ; }
-    public void removeCallback(Callback m) { callbacks.remove(m) ; }
-    public List<Callback> getCallbacks() { return callbacks ; }
+    public void addCallback(Callback<Symbol> m) { callbacks.add(m) ; }
+    public void removeCallback(Callback<Symbol> m) { callbacks.remove(m) ; }
+    public List<Callback<Symbol>> getCallbacks() { return callbacks ; }
     
     private void doCallbacks(Symbol symbol)
     {
-        for ( Iterator<Callback> iter = callbacks.iterator() ; iter.hasNext() ; )
+        for ( Callback<Symbol> c : callbacks )
         {
-            Callback m = iter.next() ;
-            m.event(symbol) ;
+            c.proc(symbol) ;
         }
     }
     
