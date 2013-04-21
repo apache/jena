@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import org.apache.jena.atlas.lib.Callback ;
+
 import com.hp.hpl.jena.query.ARQ ;
 
 
@@ -36,10 +38,10 @@ public class RefBoolean
     {
         value = initialValue ;
         context.addCallback(
-            new Callback()
+            new Callback<Symbol>()
             {
                 @Override
-                public synchronized void event(Symbol property)
+                public synchronized void proc(Symbol property)
                 {
                     if ( property.equals(monitoredProperty) )
                         value = context.isTrue(monitoredProperty) ;
