@@ -22,10 +22,7 @@ import static com.hp.hpl.jena.tdb.lib.Lib2.printAbbrev ;
 
 import java.util.* ;
 
-import org.apache.jena.atlas.iterator.Filter ;
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorWrapper ;
-import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.iterator.* ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -328,6 +325,27 @@ public class SolverLib
             graphIds.add(nt.getNodeIdForNode(n)) ;
         return graphIds ;
     }
+
+    public static Iterator<Tuple<NodeId>> unionGraph(NodeTupleTable ntt)
+    {
+        Iterator<Tuple<NodeId>> iter = ntt.find((NodeId)null, null, null, null) ;
+        iter = Iter.operate(iter, quadsToAnyTriples) ;
+        //iterMatches = Iter.distinct(iterMatches) ;
+        
+        // This depends on the way indexes are choose and
+        // the indexing pattern. It assumes that the index 
+        // chosen ends in G so same triples are adjacent 
+        // in a union query.
+        /// See TupleTable.scanAllIndex that ensures this.
+        iter = Iter.distinctAdjacent(iter) ;
+        return iter ;
+    }
     
+    // -- Mutating "transform in place"
+    private static Action<Tuple<NodeId>> quadsToAnyTriples = new Action<Tuple<NodeId>>(){
+        @Override
+        public void apply(Tuple<NodeId> item)
+        { item.tuple()[0] = NodeId.NodeIdAny ; }
+    } ;
 
 }
