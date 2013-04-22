@@ -56,7 +56,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         this.anyGraphs = anyGraphs ; 
     }
 
-    /** Prepare a pattern (tuple of nodes), and an existing binding of NodeId, into NodesIds and Variables. 
+    /** Prepare a pattern (tuple of nodes), and an existing binding of NodeId, into NodeIds and Variables. 
      *  A variable in the pattern is replaced by its binding or null in the Nodeids.
      *  A variable that is not bound by the binding is placed in the var array.
      */
@@ -88,7 +88,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
 
         prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, var) ;
         
-        Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.find(Tuple.create(ids)) ;
+        Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.find(Tuple.create(ids)) ;  
         
         // ** Allow a triple or quad filter here.
         if ( filter != null )
@@ -102,7 +102,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         // Assumes that tuples are not shared.
         if ( anyGraphs )
         {
-            iterMatches = Iter.operate(iterMatches, quadsToTriples) ;
+            iterMatches = Iter.operate(iterMatches, quadsToAnyTriples) ;
             // If any slots were set, then the index would be ???G and we can use distinctAdjacent.
             // If all slots are unset, the index is probably GSPO (SPOG would be better in this one case). 
             // This is a safe, if potentially costly, choice. 
@@ -135,7 +135,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
                     if ( v == null )
                         continue ;
                     NodeId id = tuple.get(i) ;
-                    if ( reject(output, v,id) )
+                    if ( reject(output, v, id) )
                         return null ;
                     output.put(v, id) ;
                 }
@@ -146,13 +146,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         return Iter.iter(iterMatches).map(binder).removeNulls() ;
     }
     
-    // -- Mutating "transform in place"
-    private static Action<Tuple<NodeId>> quadsToTriples = new Action<Tuple<NodeId>>(){
-        @Override
-        public void apply(Tuple<NodeId> item)
-        { item.tuple()[0] = NodeId.NodeIdAny ; }
-    } ;
-    
+   
     // -- Copying
     private static Transform<Tuple<NodeId>,Tuple<NodeId>> projectToTriples = new Transform<Tuple<NodeId>,Tuple<NodeId>>(){
         @Override
@@ -212,4 +206,11 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         // May return NodeId.NodeDoesNotExist which must not be null. 
         return nodeTable.getNodeIdForNode(node) ;
     }
+    
+    // -- Mutating "transform in place"
+    private static Action<Tuple<NodeId>> quadsToAnyTriples = new Action<Tuple<NodeId>>(){
+        @Override
+        public void apply(Tuple<NodeId> item)
+        { item.tuple()[0] = NodeId.NodeIdAny ; }
+    } ;
 }

@@ -21,11 +21,15 @@ package tdb;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.solver.SolverLib ;
 import com.hp.hpl.jena.tdb.solver.stats.Stats ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsResults ;
@@ -65,14 +69,21 @@ public class tdbstats extends CmdTDBGraph
                 Tuple<NodeId> t = iter.next() ;
                 stats.record(null, t.get(0), t.get(1), t.get(2)) ;
             }
-        }
-        else
-        {
-            NodeId gnid = nt.getNodeIdForNode(gn) ;
-            if ( gnid == null )
-            {}
-            Iterator<Tuple<NodeId>> iter = dsg.getQuadTable().getNodeTupleTable().find(gnid, null, null, null) ;
-            
+        } else {
+            // If the union graph, then we need to scan all quads but with uniqueness.
+            boolean unionGraph = Quad.isUnionGraph(gn) ;
+            NodeId gnid = null ;
+            if ( ! unionGraph )
+            {
+                gnid = nt.getNodeIdForNode(gn) ;
+                if ( NodeId.isDoesNotExist(gnid) )
+                Log.warn(tdbstats.class, "No such graph: "+gn) ;
+            }
+                
+            NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
+            Iterator<Tuple<NodeId>> iter = unionGraph
+                ? SolverLib.unionGraph(ntt)
+                : ntt.find(gnid, null, null, null) ;
             for ( ; iter.hasNext(); )
             {
                 Tuple<NodeId> t = iter.next() ;
