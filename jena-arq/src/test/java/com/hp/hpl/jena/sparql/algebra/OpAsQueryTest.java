@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.Map;
+
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Query;
@@ -175,25 +177,14 @@ public class OpAsQueryTest {
                  "   :documentType \"exam results\" ." ,
                  "    BIND( mylib:DateFormat( xsd:string(?date), \"yyyy-MM\" ) as ?yearmonth )",
                 "} group by ?yearmonth") ;
-        
-        Query[] r = checkQuery(query);
-        // Won't be equal due to lack of prefixes
-        Assert.assertNotEquals(r[0], r[1]);
-        
-        String query2 = r[1].toString();
-        Query q = QueryFactory.create(query2);
+        checkQueryParseable(query, true);
     }
     
     @Test
     public void testExtend4() {
         //Simplified repo of JENA-429
         String query  = "SELECT ?key (COUNT(?member) AS ?total) WHERE { ?s ?p ?o . BIND(LCASE(?o) AS ?key) } GROUP BY ?key";
-        
-        Query[] r = checkQuery(query);
-        Assert.assertEquals(r[0], r[1]);
-        
-        String query2 = r[1].toString();
-        Query q = QueryFactory.create(query2);
+        checkQueryParseable(query, true);
     }
     
     @Test
@@ -202,6 +193,34 @@ public class OpAsQueryTest {
         Query[] result = checkQuery("SELECT * WHERE { SERVICE <http://example/endpoint> { ?s ?p ?o . BIND(?o AS ?x) } }");
         assertEquals(result[0], result[1]);
         assertTrue(result[1].toString().contains("BIND"));
+    }
+    
+    @Test
+    public void testSubQuery1() {
+        String query = "SELECT ?s WHERE { { SELECT ?s ?p WHERE { ?s ?p ?o } } }";
+        checkQueryParseable(query, true);
+    }
+    
+    @Test
+    public void testSubQuery2() {
+        String query = "SELECT ?s ?x WHERE { { SELECT ?s ?p WHERE { ?s ?p ?o } } { SELECT ?x WHERE { ?x ?p ?o } } }";
+        //These end up being non-equal queries because the nesting in the final query is a little funky
+        //but the results should still be semantically equivalent
+        checkQueryParseable(query, false);
+    }
+    
+    @Test
+    public void testAggregatesInSubQuery1() {
+        //Simplified form of a test case provided via the mailing list
+        String query = "SELECT ?key ?agg WHERE { { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key } }";
+        checkQueryParseable(query, true);
+    }
+    
+    @Test
+    public void testAggregatesInSubQuery2() {
+        //Simplified form of a test case provided via the mailing list
+        String query = "SELECT * WHERE { { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key } }";
+        checkQueryParseable(query, false);
     }
         
     public Query[] checkQuery(String query) {
@@ -212,12 +231,37 @@ public class OpAsQueryTest {
         return r;
     }
     
-    public Object[] checkQuadQuery(String query) {
+    public Query[] checkQuadQuery(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);
         toReconstruct = Algebra.toQuadForm(toReconstruct);
         Query got = OpAsQuery.asQuery(toReconstruct);
         Query[] r = { orig, got };
         return r;
+    }
+    
+    public Query[] checkQueryParseable(String query, boolean expectEquals) {
+        Query[] r = checkQuery(query);
+        
+        //Strip namespaces and Base URI from each so comparison is not affected by those
+        stripNamespacesAndBase(r[0]);
+        stripNamespacesAndBase(r[1]);
+        
+        if (expectEquals) {
+            Assert.assertEquals(r[0], r[1]);
+        } else {
+            Assert.assertNotEquals(r[0], r[1]);
+        }
+        String query2 = r[1].toString();
+        Query q = QueryFactory.create(query2);
+        return r;
+    }
+    
+    protected void stripNamespacesAndBase(Query q) {
+        Map<String, String> prefixes = q.getPrefixMapping().getNsPrefixMap();
+        for (String prefix : prefixes.keySet()) {
+            q.getPrefixMapping().removeNsPrefix(prefix);
+        }
+        q.setBaseURI((String)null);
     }
 }
