@@ -44,30 +44,9 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 public class OpAsQuery
 {
     public static Query asQuery(Op op)
-    {
-        Query query = QueryFactory.make() ;
-        
-        Converter v = new Converter(query) ;
-        //OpWalker.walk(op, v) ;
-        op.visit(v) ;
-        
-        Collection<Var> vars = v.projectVars;
-        query.setQueryResultStar(vars.isEmpty());   // SELECT * unless we are projecting
-
-        Iterator<Var> iter = vars.iterator();
-        for (; iter.hasNext();) {
-            Var var = iter.next();           
-            if (v.varExpression.containsKey(var))
-                query.addResultVar(var, v.varExpression.get(var));
-            else
-                query.addResultVar(var);
-        }
-        
-        ElementGroup eg = v.currentGroup ;
-        query.setQueryPattern(eg) ;
-        query.setQuerySelectType() ;
-        query.setResultVars() ;                     // Variables from the group.
-        return query ; 
+    {        
+        Converter converter = new Converter(op) ;
+        return converter.convert();
     }
     
     private static Set<Var> allocProjectVars()
@@ -85,17 +64,51 @@ public class OpAsQuery
     public static class Converter implements OpVisitor
     {
         private Query query ;
+        private Op op ;
         private Element element = null ;
         private ElementGroup currentGroup = null ;
         private Deque<ElementGroup> stack = new ArrayDeque<ElementGroup>() ;
         private Collection<Var> projectVars = allocProjectVars();
         private Map<Var, Expr> varExpression = new HashMap<Var, Expr>() ;
         private int groupDepth = 0;
+        private boolean inProject = false;
+        private boolean hasRun = false;
         
-        public Converter(Query query)
+        public Converter(Op op)
         {
-            this.query = query ;
+            this.query = QueryFactory.create() ;
+            this.op = op;
             currentGroup = new ElementGroup() ;
+        }
+        
+        Query convert() {
+            if (hasRun) {
+                return this.query;
+            } else {
+                try {
+                    op.visit(this) ;
+                    
+                    Collection<Var> vars = this.projectVars;
+                    query.setQueryResultStar(vars.isEmpty());   // SELECT * unless we are projecting
+        
+                    Iterator<Var> iter = vars.iterator();
+                    for (; iter.hasNext();) {
+                        Var var = iter.next();           
+                        if (this.varExpression.containsKey(var))
+                            query.addResultVar(var, this.varExpression.get(var));
+                        else
+                            query.addResultVar(var);
+                    }
+                    
+                    ElementGroup eg = this.currentGroup ;                   
+                    query.setQueryPattern(eg) ;
+                    query.setQuerySelectType() ;
+                    query.setResultVars() ;                     // Variables from the group.
+                    return query ; 
+                } finally {
+                    this.hasRun = true;
+                }
+            }
         }
 
         Element asElement(Op op)
@@ -517,11 +530,22 @@ public class OpAsQuery
         @Override
         public void visit(OpProject opProject)
         {
-            // Defer adding result vars until the end.
-            // OpGroup generates dupes otherwise
-            this.projectVars = allocProjectVars() ;
-            this.projectVars.addAll(opProject.getVars());
-            opProject.getSubOp().visit(this) ;
+            if (inProject) {
+                // If we've already inside a project then we are reconstructing a sub-query
+                // Create a new converter and call on the sub-op to get the sub-query
+                Converter subConverter = new Converter(opProject);
+                ElementSubQuery subQuery = new ElementSubQuery(subConverter.convert());
+                ElementGroup g = currentGroup();
+                g.addElement(subQuery);
+            } else {
+                // Defer adding result vars until the end.
+                // OpGroup generates dupes otherwise
+                this.projectVars = allocProjectVars() ;
+                this.projectVars.addAll(opProject.getVars());
+                inProject = true;
+                opProject.getSubOp().visit(this) ;
+                inProject = false;
+            }
         }
 
         @Override
