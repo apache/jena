@@ -567,16 +567,9 @@ public class OntClassImpl
     // other utility methods
 
     /**
-     * <p>Answer an iteration of the properties associated with a frame-like
-     * view of this class. Note that many cases of determining whether a
-     * property is associated with a class depends on RDFS or OWL reasoning.
-     * This method may therefore return complete results only in models that
-     * have an attached reasoner.
-     * See the
-     * <a href="../../../../../../how-to/rdf-frames.html">RDF frames how-to</a>
-     * for full details.<p>
-     * @return An iteration of the properties that are associated with this class
-     * by their domain.
+     * Equivalent to calling {@link #listDeclaredProperties(boolean)} with
+     * default value <code>direct = false</code>.
+     *
      */
     @Override
     public ExtendedIterator<OntProperty> listDeclaredProperties() {
@@ -585,15 +578,26 @@ public class OntClassImpl
 
 
     /**
-     * <p>Answer an iteration of the properties associated with a frame-like
-     * view of this class. Note that many cases of determining whether a
+     * <p>Return an iterator over the properties associated with a frame-like
+     * view of this class. This captures an intuitive notion of the <em>
+     * properties of a class</em>. This can be useful in presenting an ontology
+     * class in a user interface, for example by automatically constructing a
+     * form to instantiate instances of the class. The properties in the frame-like
+     * view of the class are determined by comparing the domain of properties in
+     * this class's {@link OntModel} with the class itself.  See:
+     * <a href="/documentation/notes/rdf-frames.html">Presenting RDF as frames</a>
+     * for more details.
+     * </p>
+     * <p>
+     * Note that many cases of determining whether a
      * property is associated with a class depends on RDFS or OWL reasoning.
      * This method may therefore return complete results only in models that
-     * have an attached reasoner. See the
-     * <a href="../../../../../../how-to/rdf-frames.html">RDF frames how-to</a>
-     * for full details.<p>
-     * @param direct If true, restrict the properties returned to those directly
-     * associated with this class.
+     * have an attached reasoner.
+     * </p>
+     *
+     * @param direct If <code>true</code>, restrict the properties returned to those directly
+     * associated with this class. If <code>false</code>, the properties of super-classes of
+     * this class will not be listed among the declared properties of this class.
      * @return An iteration of the properties that are associated with this class
      * by their domain.
      */
