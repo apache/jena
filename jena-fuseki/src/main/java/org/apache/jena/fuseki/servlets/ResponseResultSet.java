@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static java.lang.String.format ;
 import static org.apache.jena.fuseki.servlets.ServletBase.* ;
 import java.io.IOException ;
 import java.util.HashMap ;
@@ -34,6 +35,7 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
+import org.apache.jena.fuseki.servlets.SPARQL_Query.HttpActionQuery ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.web.HttpSC ;
 import static org.apache.jena.atlas.lib.Lib.equal ;
@@ -49,7 +51,8 @@ import com.hp.hpl.jena.sparql.core.Prologue ;
 /** This is the content negotiation for each kind of SPARQL query result */ 
 public class ResponseResultSet
 {
-    private static Logger log = LoggerFactory.getLogger(ResponseResultSet.class) ;
+    private static Logger xlog = LoggerFactory.getLogger(ResponseResultSet.class) ;
+    private static Logger slog = ServletBase.log ;
 
     // Short names for "output="
     private static final String contentOutputJSON          = "json" ;
@@ -76,31 +79,36 @@ public class ResponseResultSet
     static AcceptList prefContentTypeResultSet     = DEF.rsOffer ; 
     static AcceptList prefContentTypeRDF           = DEF.rdfOffer ;
 
-    public static void doResponseResultSet(Boolean booleanResult, HttpServletRequest request, HttpServletResponse response)
+    public static void doResponseResultSet(HttpActionQuery action, Boolean booleanResult)
     {
-        doResponseResultSet$(null, booleanResult, null, request, response) ;
+        doResponseResultSet$(action, null, booleanResult, null) ;
     }
 
-    public static void doResponseResultSet(ResultSet resultSet, Prologue qPrologue , HttpServletRequest request, HttpServletResponse response)
+    public static void doResponseResultSet(HttpActionQuery action, ResultSet resultSet, Prologue qPrologue)
     {
-        doResponseResultSet$(resultSet, null, qPrologue, request, response) ;
+        doResponseResultSet$(action, resultSet, null, qPrologue) ;
     }
     
     // If we refactor the conneg into a single function, we can split boolean and result set handling. 
     
     // One or the other argument must be null
-    private static void doResponseResultSet$(final ResultSet resultSet, final Boolean booleanResult, final Prologue qPrologue , 
-                                             HttpServletRequest request, HttpServletResponse response)
+    private static void doResponseResultSet$(HttpActionQuery action,
+                                             final ResultSet resultSet, final Boolean booleanResult, 
+                                             final Prologue qPrologue) 
     {
+        HttpServletRequest request = action.request ;
+        HttpServletResponse response = action.response ;
+        long id = action.id ;
+        
         if ( resultSet == null && booleanResult == null )
         {
-            log.warn("doResponseResult: Both result set and boolean result are null") ; 
+            xlog.warn("doResponseResult: Both result set and boolean result are null") ; 
             throw new FusekiException("Both result set and boolean result are null") ;
         }
         
         if ( resultSet != null && booleanResult != null )
         {
-            log.warn("doResponseResult: Both result set and boolean result are set") ; 
+            xlog.warn("doResponseResult: Both result set and boolean result are set") ; 
             throw new FusekiException("Both result set and boolean result are set") ;
         }
 
@@ -134,7 +142,7 @@ public class ResponseResultSet
         if ( equal(serializationType, WebContent.contentTypeResultsXML) )
         {
             try {
-                sparqlXMLOutput(contentType, new OutputContent(){
+                sparqlXMLOutput(action, contentType, new OutputContent(){
                     @Override
                     public void output(ServletOutputStream out)
                     {
@@ -143,7 +151,7 @@ public class ResponseResultSet
                         if ( booleanResult != null )
                             ResultSetFormatter.outputAsXML(out, booleanResult.booleanValue(), stylesheetURL) ;
                     }
-                }, request, response) ;
+                }) ;
             }
             catch (Exception ex) { log.debug("Exception [SELECT/XML]"+ex, ex) ; } 
             return ;
@@ -153,7 +161,7 @@ public class ResponseResultSet
         if ( equal(serializationType, WebContent.contentTypeResultsJSON) )
         {
             try {
-                jsonOutput(contentType, new OutputContent(){
+                jsonOutput(action, contentType, new OutputContent(){
                     @Override
                     public void output(ServletOutputStream out)
                     {
@@ -162,15 +170,11 @@ public class ResponseResultSet
                         if (  booleanResult != null )
                             ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue()) ;
                     }
-                }, request, response) ;
+                }) ;
             }
-            catch (QueryCancelledException ex)
-            { 
-                // Bother.  Status code 200 already sent.
-                // 
-                log.info("") ; }
             // This catches things like NIO exceptions.
-            catch (Exception ex) { log.debug("Exception [SELECT/JSON] "+ex, ex) ; } 
+            catch (Exception ex) 
+            { log.info(format("[%d] Exception [SELECT/JSON] %s", id, ex), ex) ; } 
             return ;
         }
 
@@ -180,7 +184,7 @@ public class ResponseResultSet
         {
             try {
                 final ResultSet rs = (resultSet != null ) ? ResultSetFactory.makeRewindable(resultSet) : null ;
-                textOutput(contentType, new OutputContent(){
+                textOutput(action, contentType, new OutputContent(){
                     @Override
                     public void output(ServletOutputStream out)
                     {
@@ -189,7 +193,7 @@ public class ResponseResultSet
                         if (  booleanResult != null )
                             ResultSetFormatter.out(out, booleanResult.booleanValue()) ;
                     }
-                }, request, response) ;
+                }) ;
             }
 //            catch (IOException ioEx)
 //            {
@@ -200,13 +204,13 @@ public class ResponseResultSet
 //            }
             catch (QueryCancelledException ex)
             {
-                log.info("[SELECT/Text] Query timeout during execution") ;
+                slog.info("[%d] SELECT/Text : Query timeout during execution", id) ;
                 try {
                     response.sendError(HttpSC.SERVICE_UNAVAILABLE_503, "Query timeout during execution") ;
                 } catch (IOException ex2) { IO.exception(ex2) ; }
             }
             // This catches things like NIO exceptions.
-            catch (Exception ex) { log.debug("Exception [SELECT/Text] "+ex, ex) ; } 
+            catch (Exception ex) { xlog.debug("[%d] Exception [SELECT/Text] "+ex, ex, id) ; } 
             return ;
         }
         
@@ -241,7 +245,7 @@ public class ResponseResultSet
                         }
                     } ;
                 }
-                textOutput(contentType, output, request, response) ;
+                textOutput(action, contentType, output) ;
                 response.flushBuffer() ;
             }
 //            catch (IOException ioEx)
@@ -252,7 +256,7 @@ public class ResponseResultSet
 //                    log.debug("IOException [SELECT/CSV-TSV] (ignored) "+ioEx, ioEx) ;
 //            }
             // This catches things like NIO exceptions.
-            catch (Exception ex) { log.debug("Exception [SELECT/CSV-TSV] "+ex, ex) ; } 
+            catch (Exception ex) { log.debug(format("[%d] Exception [SELECT/CSV-TSV] %s",id, ex), ex) ; } 
             return ;
         }
         
@@ -260,25 +264,27 @@ public class ResponseResultSet
     }
     
     
-    private static void output(String contentType, String charset, OutputContent proc, 
-                               HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    private static void output(HttpAction action, String contentType, String charset, OutputContent proc) 
     {
         try {
-            setHttpResponse(httpRequest, httpResponse, contentType, charset) ; 
-            httpResponse.setStatus(HttpSC.OK_200) ;
-            ServletOutputStream out = httpResponse.getOutputStream() ;
+            setHttpResponse(action.request, action.response, contentType, charset) ; 
+            action.response.setStatus(HttpSC.OK_200) ;
+            ServletOutputStream out = action.response.getOutputStream() ;
             try
             {
                 proc.output(out) ;
+                out.flush() ;
             } catch (QueryCancelledException ex)
             {
+                // Bother.  Status code 200 already sent.
+                slog.info(format("[%d] Query Cancelled - results truncated (but 200 already sent)", action.id)) ;
                 out.println() ;
                 out.println("##  Query cancelled due to timeout during execution   ##") ;
                 out.println("##  ****          Incomplete results           ****   ##") ;
                 out.flush() ;
-                errorOccurred(ex) ;
+                // No point raising an exception - 200 was sent already.  
+                //errorOccurred(ex) ;
             }
-            out.flush() ;
             // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
             // then the JSON callback closing details can't be added. 
         } 
@@ -313,47 +319,34 @@ public class ResponseResultSet
             || contentType.equals(WebContent.contentTypeXML) ; 
     }
 
-    private static void sparqlXMLOutput(String contentType, OutputContent proc,
-                                   HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    private static void sparqlXMLOutput(HttpAction action, String contentType, OutputContent proc)
     {
-        try {
-            output(contentType, null, proc, httpRequest, httpResponse) ;
-            httpResponse.flushBuffer() ;
-        } catch (IOException ex) { errorOccurred(ex) ; }
+        output(action, contentType, null, proc) ;
     }
     
-    private static void jsonOutput(String contentType, OutputContent proc,
-                                   HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    private static void jsonOutput(HttpAction action, String contentType, OutputContent proc)
     {
         try {
-            String callback = ResponseOps.paramCallback(httpRequest) ;
-            callback = StringUtils.replaceChars(callback, "\r", "") ;
-            callback = StringUtils.replaceChars(callback, "\n", "") ;
-            ServletOutputStream out = httpResponse.getOutputStream() ;
+            String callback = ResponseOps.paramCallback(action.request) ;
+            ServletOutputStream out = action.response.getOutputStream() ;
 
             if ( callback != null )
             {
+                callback = StringUtils.replaceChars(callback, "\r", "") ;
+                callback = StringUtils.replaceChars(callback, "\n", "") ;
                 out.print(callback) ;
                 out.println("(") ;
             }
 
-            output(contentType, WebContent.charsetUTF8, proc, httpRequest, httpResponse) ;
+            output(action, contentType, WebContent.charsetUTF8, proc) ;
 
             if ( callback != null )
                 out.println(")") ;
-            httpResponse.flushBuffer();
-
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
-    private static void textOutput(String contentType, OutputContent proc, 
-                                   HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    private static void textOutput(HttpAction action, String contentType, OutputContent proc)
     {
-        try {
-            ServletOutputStream out = httpResponse.getOutputStream() ;
-            output(contentType, WebContent.charsetUTF8, proc, httpRequest, httpResponse) ;
-            out.flush() ;
-            httpResponse.flushBuffer();
-        } catch (IOException ex) { errorOccurred(ex) ; }
+        output(action, contentType, WebContent.charsetUTF8, proc) ;
     }
 }

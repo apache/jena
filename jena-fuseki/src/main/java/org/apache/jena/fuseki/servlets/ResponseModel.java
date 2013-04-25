@@ -59,8 +59,11 @@ public class ResponseModel
         ResponseOps.put(shortNamesModel, contentOutputNT,   WebContent.contentTypeNTriples) ;
     }
 
-    public static void doResponseModel(Model model, HttpServletRequest request, HttpServletResponse response)
+    public static void doResponseModel(HttpAction action, Model model) 
     {
+        HttpServletRequest request = action.request ;
+        HttpServletResponse response = action.response ;
+        
         String mimeType = null ;        // Header request type 
 
         // TODO Use MediaType throughout.
