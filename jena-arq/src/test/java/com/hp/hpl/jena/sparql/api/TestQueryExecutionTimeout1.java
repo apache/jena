@@ -77,9 +77,9 @@ public class TestQueryExecutionTimeout1 extends BaseTest
     {
         String qs = prefix + "SELECT * { ?s ?p ?o }" ;
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
-        qExec.setTimeout(10, TimeUnit.MILLISECONDS) ;
+        qExec.setTimeout(50, TimeUnit.MILLISECONDS) ;
         ResultSet rs = qExec.execSelect() ;
-        sleep(20) ;
+        sleep(100) ;
         exceptionExpected(rs) ; 
     }
 
@@ -201,7 +201,6 @@ public class TestQueryExecutionTimeout1 extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         qExec.setTimeout(-1, TimeUnit.MILLISECONDS, 100, TimeUnit.MILLISECONDS) ;
         ResultSet rs = qExec.execSelect() ;
-        sleep(200) ;
         rs.next() ; // First timeout does not go off. Resets timer.
         rs.next() ; // Second timeout does not go off
         sleep(200) ;

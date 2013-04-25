@@ -77,10 +77,6 @@ public class QueryExecutionBase implements QueryExecution
     private final Object        lockTimeout = new Object() ;     // synchronization.  
     private static final long   TIMEOUT_UNSET = -1 ;
     private static final long   TIMEOUT_INF = -2 ;
-    private static boolean isTimeoutSet(long x)
-    { 
-        return x >= 0 ;
-    }
     private long                timeout1 = TIMEOUT_UNSET ;
     private long                timeout2 = TIMEOUT_UNSET ;
     private final AlarmClock    alarmClock = AlarmClock.get() ;  
@@ -399,6 +395,11 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public long getTimeout2() { return timeout2 ; }
     
+    private static boolean isTimeoutSet(long x)
+    { 
+        return x >= 0 ;
+    }
+
     class TimeoutCallback implements Runnable
     {
         @Override
