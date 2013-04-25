@@ -18,114 +18,52 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.util.HashSet ;
-import java.util.Set ;
-import java.util.Timer ;
+import java.util.concurrent.ScheduledThreadPoolExecutor ;
+import java.util.concurrent.TimeUnit ;
 
-/** An AlarmClock is an object that will make a call back at a preset time.
- * It adds tracking to a java.util.Time and also by having
- * an active Timer (and its thread) only when callbacks are outstanding. 
- * The Timer's thread can stop the JVM exiting.
+/** An AlarmClock is an object that will make a callback (with a vaklue)  at a preset time.
+ * Simple abstraction of add/reset/cancel of a Runnable.
+ * Currently, backed by {@linkplain ScheduledThreadPoolExecutor}
  */
 public class AlarmClock
 {
-    // ** Switch to ScheduledThreadPoolExecutor
-    // Our callback-later instance
-    // Wrap a TimerTask so that the TimerTask.cancel operation can not be called
-    // directly by the app. We need to go via AlarmClock tracking of callbacks so
-    // we can release the Timer in AlarmClock.
+    ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(1) ;
 
-    public Timer timer = null ;
-    public Set<Pingback<?>> outstanding = new HashSet<Pingback<?>>() ;
+    /*package*/ AlarmClock() {}
     
-    public AlarmClock() {}
-    
-    static private AlarmClock singleton = new AlarmClock() ; ;
+    static private AlarmClock singleton = new AlarmClock() ;
     /** Global singleton for general use */ 
     static public AlarmClock get()
     {
         return singleton ;
     }
 
-    synchronized public long getCount() { return outstanding.size() ; }
-    
-    synchronized public Pingback<?> add(Callback<?> callback, long delay)
-    {
-        return add(callback, null, delay) ;
-    }
-    
-    synchronized public <T> Pingback<T> add(Callback<T> callback, T argument, long delay)
+    public void add(Runnable task, long delay)
     {    
-        Pingback<T> x = new Pingback<T>(this, callback, argument) ;
-        add$(x, delay) ;
-        return x ;
-    }
-    
-    private <T> void add$(Pingback<T> pingback, long delay)
-    {
-        if ( outstanding.contains(pingback) )
-            throw new InternalErrorException("Pingback already in use") ;
-        getTimer().schedule(pingback.timerTask, delay) ;
-        outstanding.add(pingback) ;
+        if ( task == null )
+            throw new IllegalArgumentException("Task is null") ;
+        timer.schedule(task, delay, TimeUnit.MILLISECONDS) ;
     }
 
-    synchronized public <T> Pingback<T> reset(Pingback<T> pingback, long delay)
+    public void reset(Runnable task, long delay)
     {
-        if ( timer != null )
-            cancel$(pingback, false) ;
-        // Experimentation shows we need to create a new TimerTask. 
-        pingback = new Pingback<T>(this, pingback.callback, pingback.arg) ;
-        add$(pingback, delay) ;
-        return pingback ;
+        if ( task == null )
+            throw new IllegalArgumentException("Task is null") ;
+        cancel(task) ;
+        add(task, delay) ;
     }
 
-    synchronized public void cancel(Pingback<?> pingback)
+    public void cancel(Runnable task)
     {
-        if ( pingback == null )
-            return ;
-        cancel$(pingback, true) ;
+        if ( task == null )
+            throw new IllegalArgumentException("Task is null") ;
+        timer.remove(task) ;
     }
     
-    private void cancel$(Pingback<?> pingback, boolean clearTimer)
-    {
-        if ( timer == null )
-            // Nothing outstanding.
-            return ;
-        // Calls remove$
-        pingback.cancel();
-        // Throw timer, and it's thread, away if no outstanding pingbacks.
-        // This helps apps exit properly but may be troublesome in large systems.
-        // May reconsider. 
-        if ( clearTimer && getCount() == 0 )
-        {
-            release() ;
-        }
-    }
+    //public int getCount() { return timer.getQueue().size(); }
     
-    /*package*/ void remove$(Pingback<?> pingback)
+    public void release()
     {
-        outstanding.remove(pingback) ;
+        timer.shutdownNow() ;
     }
-    
-    public synchronized void release() 
-    {
-        release$() ;
-    }
-    
-    private void release$()
-    {
-        if ( timer != null )
-        {
-            timer.cancel() ;
-            timer = null ;
-        }
-    }
-    
-    /*synchronized*/ private Timer getTimer()
-    {
-        if ( timer == null )
-            timer = new Timer(true) ;
-        return timer ;
-    }
-}  
- 
+} 

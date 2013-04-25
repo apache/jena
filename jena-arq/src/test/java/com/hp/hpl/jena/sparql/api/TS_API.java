@@ -26,7 +26,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses( {
     TestAPI.class
     , TestQueryExecutionCancel.class
-    , TestQueryExecutionTimeout.class
+    , TestQueryExecutionTimeout1.class
+    , TestQueryExecutionTimeout2.class
 })
 
 public class TS_API

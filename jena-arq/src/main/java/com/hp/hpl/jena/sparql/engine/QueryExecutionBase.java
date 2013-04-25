@@ -25,8 +25,6 @@ import java.util.Set ;
 import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.lib.AlarmClock ;
-import org.apache.jena.atlas.lib.Callback ;
-import org.apache.jena.atlas.lib.Pingback ;
 import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -61,19 +59,32 @@ public class QueryExecutionBase implements QueryExecution
     // Initial bindings.
     // Split : QueryExecutionGraph already has the dataset.
 
-    private Query              query ;
-    private Dataset            dataset ;
-    private QueryEngineFactory qeFactory ;
-    private QueryIterator      queryIterator = null ;
-    private Plan               plan = null ;
-    private Context            context ;
-    private FileManager        fileManager = FileManager.get() ;
-    private QuerySolution      initialBinding = null ;      
-    private Object             lockTimeout = new Object() ;     // syncrhonization.  
-
-    // has cancel() been called?
-    private volatile boolean   cancel = false ;
+    private Query               query ;
+    private Dataset             dataset ;
+    private QueryEngineFactory  qeFactory ;
+    private QueryIterator       queryIterator = null ;
+    private Plan                plan = null ;
+    private Context             context ;
+    private FileManager         fileManager = FileManager.get() ;
+    private QuerySolution       initialBinding = null ; 
     
+    // Set if QueryIterator.cancel has been called 
+    private volatile boolean    isCancelled = false ;
+    private volatile TimeoutCallback expectedCallback = null ;    
+    private TimeoutCallback timeout1Callback = null ;
+    private TimeoutCallback timeout2Callback = null ;
+    
+    private final Object        lockTimeout = new Object() ;     // synchronization.  
+    private static final long   TIMEOUT_UNSET = -1 ;
+    private static final long   TIMEOUT_INF = -2 ;
+    private static boolean isTimeoutSet(long x)
+    { 
+        return x >= 0 ;
+    }
+    private long                timeout1 = TIMEOUT_UNSET ;
+    private long                timeout2 = TIMEOUT_UNSET ;
+    private final AlarmClock    alarmClock = AlarmClock.get() ;  
+
     public QueryExecutionBase(Query query, 
                               Dataset dataset,
                               Context context,
@@ -92,6 +103,10 @@ public class QueryExecutionBase implements QueryExecution
         context = Context.setupContext(context, dsg) ;
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query) ;
+        // NB: Settign timeouts via the context after creating a QueryExecutionBase 
+        // will not work.
+        // But we can't move it until the point the execution starts because of
+        // get and set timeout oeprations on this object.   
         setAnyTimeouts() ;
     }
     
@@ -125,7 +140,6 @@ public class QueryExecutionBase implements QueryExecution
             if ( obj instanceof Number )
             {
                 long x = ((Number)obj).longValue() ;
-                //System.err.println("timeout("+x+")") ;
                 setTimeout(x) ;
             } else if ( obj instanceof String )
             {
@@ -136,13 +150,11 @@ public class QueryExecutionBase implements QueryExecution
                         String[] a = str.split(",") ;
                         long x1 = Long.parseLong(a[0]) ;
                         long x2 = Long.parseLong(a[1]) ;
-                        //System.err.println("timeout("+x1+", "+x2+")") ;
                         setTimeout(x1, x2) ;
                     }
                     else
                     {
                         long x = Long.parseLong(str) ;
-                        //System.err.println("timeout("+x+")") ;
                         setTimeout(x) ;
                     }
                 } catch (RuntimeException ex) { Log.warn(this, "Can't interpret string for timeout: "+obj) ; }
@@ -159,12 +171,15 @@ public class QueryExecutionBase implements QueryExecution
             queryIterator.close() ;
         if ( plan != null )
             plan.close() ;
-        cancelPingback() ;
+        if ( timeout1Callback != null )
+            alarmClock.cancel(timeout1Callback) ;
+        if ( timeout2Callback != null )
+            alarmClock.cancel(timeout2Callback) ;
     }
 
     @Override
     public void abort()
-	{
+    {
         synchronized(lockTimeout)
         {
             // This is called asynchronously to the execution.
@@ -174,9 +189,9 @@ public class QueryExecutionBase implements QueryExecution
                 // we notify the chain of iterators, however, we do *not* close the iterators. 
                 // That happens after the cancellation is properly over.
                 queryIterator.cancel() ;
-            cancel = true ;
+            isCancelled = true ;
         }
-	}
+    }
     
     @Override
     public ResultSet execSelect()
@@ -343,9 +358,10 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public void setTimeout(long timeout, TimeUnit timeUnit)
     {
+        // Overall timeout - recorded as (UNSET,N)
         long x = asMillis(timeout, timeUnit) ;
-        this.timeout1 = x ;
-        this.timeout2 = TIMEOUT_UNSET ;
+        this.timeout1 = TIMEOUT_UNSET ;
+        this.timeout2 = x ;
     }
 
     @Override
@@ -357,11 +373,12 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2)
     {
+        // Two timeouts.
         long x1 = asMillis(timeout1, timeUnit1) ;
         long x2 = asMillis(timeout2, timeUnit2) ;
         this.timeout1 = x1 ;
         if ( timeout2 < 0 )
-            this.timeout2 = TIMEOUT_INF ;
+            this.timeout2 = TIMEOUT_UNSET ;
         else
             this.timeout2 = x2 ;
     }
@@ -382,33 +399,20 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public long getTimeout2() { return timeout2 ; }
     
-    private static final long TIMEOUT_UNSET = -1 ;
-    private static final long TIMEOUT_INF = -2 ;
-    private long timeout1 = TIMEOUT_UNSET ;
-    private long timeout2 = TIMEOUT_UNSET ;
-    
-    private static AlarmClock alarmClock = AlarmClock.get() ; 
-    private static final Callback<QueryExecution> callback = 
-        new Callback<QueryExecution>() {
-            @Override
-            public void proc(QueryExecution qExec)
-            {
-                qExec.abort() ;
-            }
-        } ;
-        
-    private Pingback<QueryExecution> pingback = null ;
-    
-    private void initTimeout1()
+    class TimeoutCallback implements Runnable
     {
-        if ( timeout1 == TIMEOUT_UNSET ) return ;
-        
-        if ( pingback != null )
-            alarmClock.reset(pingback, timeout1) ;
-        else
-            pingback = alarmClock.add(callback, this, timeout1) ;
-        return ;
-        // Second timeout done by wrapping the iterator.
+        @Override
+        public void run()
+        {
+            synchronized(lockTimeout)
+            {
+                // Abort query if and only if we are the expected callback.
+                // If the first row has appeared, and we are removing timeout1 callback,
+                // it still may go off so it needs to check here it's still wanted.
+                if ( expectedCallback == this )
+                    QueryExecutionBase.this.abort() ;
+            }
+        }
     }
     
     private class QueryIteratorTimer2 extends QueryIteratorWrapper
@@ -425,51 +429,38 @@ public class QueryExecutionBase implements QueryExecution
         { 
             Binding b = super.moveToNextBinding() ;
             yieldCount++ ;
+            
             if ( ! resetDone )
             {
-                // Synchronize with abort.
+                // Sync on calls of .abort.
+                // So nearly not needed.
                 synchronized(lockTimeout)
                 {
-                    if ( cancel )
+                    expectedCallback = timeout2Callback ;
+                    // Lock against calls of .abort() nor of timeout1Callback. 
+                    
+                    // Update/check the volatiles in a careful order.
+                    // This cause timeout1 not to call .abort and hence not set isCancelled 
+
+                    // But if timeout1 went off after moveToNextBinding, before expectedCallback is set,
+                    // then formget the row and cacnel the query. 
+                    if ( isCancelled )
                         // timeout1 went off after the binding was yielded but 
                         // before we got here.
                         throw new QueryCancelledException() ;
-                    
-                    // Cancel timeout1?
-                    if ( pingback == null )
-                    {
-                        if ( timeout2 > 0 )
-                            // Not first timeout - finite second timeout. 
-                            pingback = alarmClock.add(callback, QueryExecutionBase.this, timeout2) ;
-                    }
-                    else
-                    {
-                        // We have moved for the first time.
-                        // Reset the timer if finite timeout2 else cancel.
-                        if ( timeout2 < 0 )
-                            alarmClock.cancel(pingback) ;
-                        else
-                            pingback = alarmClock.reset(pingback, timeout2) ;
-                    }
+                    if ( timeout1Callback != null )
+                        alarmClock.cancel(timeout1Callback) ;
+                        timeout1Callback = null ;
+
+                    // Now arm the second timeout, if any.
+                    if ( timeout2 > 0 )
+                        // Not first timeout - finite second timeout. 
+                        alarmClock.add(timeout2Callback, timeout2) ;
                     resetDone = true ;
                 }
             }
             return b ;
         }
-    }
-    
-    private QueryIterator initTimeout2(QueryIterator queryIterator)
-    {
-        if ( timeout2 < 0 || timeout2 == TIMEOUT_INF )
-            return queryIterator ;
-        // Wrap with a resetter.
-        return new QueryIteratorTimer2(queryIterator) ;
-    }
-    
-    private void cancelPingback()
-    {
-        if ( pingback != null )
-            alarmClock.cancel(pingback) ;
     }
     
     protected void execInit() { }
@@ -486,19 +477,60 @@ public class QueryExecutionBase implements QueryExecution
         return rStream ;
     }
     
+    /** Start the query iterator, setting timeouts as needed. */ 
     private void startQueryIterator()
     {
         execInit() ;
         if ( queryIterator != null )
             Log.warn(this, "Query iterator has already been started") ;
-        initTimeout1() ;
+        
+        /* Timeouts:
+         * -1,-1                No timeouts
+         * N, same as -1,N      Overall timeout only.  No wrapper needed.
+         * N,-1                 Timeout on first row only. Need to cancel on first row. 
+         * N,M                  First/overall timeout. Need to reset on first row.
+         */
+        
+        if ( ! isTimeoutSet(timeout1) && ! isTimeoutSet(timeout2) )
+        {
+            // Case -1,-1
+            queryIterator = getPlan().iterator() ;
+            return ;
+        }
+        
+        if ( ! isTimeoutSet(timeout1) && isTimeoutSet(timeout2) )
+        {
+            // Single overall timeout.
+            timeout2Callback = new TimeoutCallback() ; 
+            expectedCallback = timeout2Callback ; 
+            alarmClock.add(timeout2Callback, timeout2) ;
+            // Start the query.
+            queryIterator = getPlan().iterator() ;
+            // But don't add resetter.
+            return ;
+        }
+
+        // Case isTimeoutSet(timeout1)
+        // Add timeout to first row.
+        timeout1Callback = new TimeoutCallback() ; 
+        alarmClock.add(timeout1Callback, timeout1) ;
+        expectedCallback = timeout1Callback ;
+
         // We don't know if getPlan().iterator() does a lot of work or not
         // (ideally it shouldn't start executing the query but in some sub-systems 
         // it might be necessary)
         queryIterator = getPlan().iterator() ;
-        // Add the second timeout wrapper.
-        queryIterator = initTimeout2(queryIterator) ;
-        if ( cancel ) queryIterator.cancel() ;
+        
+        // Add the timeout resetter wrapper.
+        timeout2Callback = new TimeoutCallback() ; 
+        // Wrap with a resetter.
+        queryIterator = new QueryIteratorTimer2(queryIterator) ;
+
+        // Minor optimization - the first call of hasNext() or next() will
+        // throw QueryCancelledExcetion anyway.  This just makes it a bit earlier
+        // in the case when the timeout (timoeut1) is so short it's gone off already.
+        
+        if ( isCancelled ) queryIterator.cancel() ;
     }
     
     private ResultSet execResultSet()
@@ -574,12 +606,10 @@ public class QueryExecutionBase implements QueryExecution
         if ( baseURI == null )
             baseURI = IRIResolver.chooseBaseURI() ;
         
-        DatasetGraph dsg =
-            DatasetUtils.createDatasetGraph(query.getDatasetDescription(),
-                                            fileManager, baseURI ) ;
+        DatasetGraph dsg = DatasetUtils.createDatasetGraph(query.getDatasetDescription(),
+                                                           fileManager, baseURI ) ;
         return dsg ;
     }
-
     
     @Override
     public void setFileManager(FileManager fm) { fileManager = fm ; }
@@ -589,7 +619,6 @@ public class QueryExecutionBase implements QueryExecution
     { 
         initialBinding = startSolution ;
     }
-
     
     //protected QuerySolution getInputBindings() { return initialBinding ; }
 

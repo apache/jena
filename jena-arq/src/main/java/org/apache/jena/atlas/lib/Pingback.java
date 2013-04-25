@@ -18,41 +18,21 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.util.TimerTask ;
-
-/** Wrapper around a TimerTask, adding a callback with argument. */
-public class Pingback<T>
+/** Binding of a value to a Callback as a Runnable */
+public class Pingback<T> implements Runnable
 {
-    private final AlarmClock alarmClock ;
-    final TimerTask timerTask ;
-    final Callback<T> callback ;
-    final T arg ;
-    // As good as an AtomicBoolean which is implemented as a volative int for get/set.
-    private volatile boolean cancelled = false ;
+    private final T arg ;
+    private final Callback<T> callback ; 
 
-    Pingback(final AlarmClock alarmClock, final Callback<T> callback, T argument)
+    private Pingback(Callback<T> callback, T arg)
     {
-        this.alarmClock = alarmClock ;
+        this.arg = arg ;
         this.callback = callback ;
-        this.arg = argument ;
-        this.timerTask = new TimerTask() {
-            @Override
-            public void run()
-            {
-                if ( cancelled )
-                    return ;
-                cancelled = true ;
-                alarmClock.remove$(Pingback.this) ;
-                callback.proc(arg) ;
-            }
-        } ;
     }
-    
-    void cancel()
+
+    @Override
+    public void run()
     {
-        timerTask.cancel() ;
-        cancelled = true ;
-        alarmClock.remove$(this) ;
+        callback.proc(arg) ;
     }
 }
-
