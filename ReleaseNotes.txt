@@ -2,6 +2,11 @@
 
 == Fuseki 0.2.7
 
++ JENA-440 : Query timeouts fixed.  Fuseki behavior may change
+             to the reflect the fixes to ARQ in this area.
++ Exact layout in output format Turtle may vary due to changes in Jena.
++ JENA-439 : Return 503, not 408, on query timeout.
++ JENA-433 : Absent Accept header could cause NPE.
 
 == Fuseki 0.2.6
 
