@@ -24,6 +24,7 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestSolverTDB.class     // Tests the TDB connectivity
+    , TestStats.class
 })
 
 public class TS_SolverTDB
