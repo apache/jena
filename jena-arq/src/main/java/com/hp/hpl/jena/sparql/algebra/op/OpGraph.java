@@ -26,9 +26,8 @@ import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class OpGraph extends Op1
-    // Must override evaluation - need to flip the execution context on the way down
 {
-    Node node ;
+    private final Node node ;
 
     public OpGraph(Node node, Op pattern)
     { 
