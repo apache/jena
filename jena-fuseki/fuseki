@@ -39,14 +39,16 @@
 # FUSEKI_PID
 #   The FUSEKI PID file, defaults to $FUSEKI_RUN/fuseki.pid
 #
+# FUSEKI_ARGS
+#   The arguments to pass to the Fuseki server on the command line, overrides FUSEKI_CONF and FUSEKI_DATA_DIR settings
+#
 # FUSEKI_CONF
 #   The FUSEKI Configuration file
 #
 # FUSEKI_USER
 #   If set, the server will be run as this user
 #
-# TODO:
-#   - A way to specify arguments to Fuseki (FUSEKI_ARGS)
+#
 
 usage()
 {
