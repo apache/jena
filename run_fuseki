@@ -42,12 +42,24 @@ then
 fi
 
 # Prepend any development directories here
-# CP="$FUSEKI_HOME/../jena-tdb/classes:$CP"
-# CP="$FUSEKI_HOME/../jena-arq/classes:$CP"
+CP1="$FUSEKI_HOME/../jena-tdb/classes"
+CP2="$FUSEKI_HOME/../jena-arq/classes"
+
+if [ -e "$CP1" ]
+then
+    CP="$CP1:$CP"
+fi
+if [ -e "$CP2" ]
+then
+    CP="$CP2:$CP"
+fi
+
 
 FUSEKI_LOG=${FUSEKI_LOG:-} # "-D-Dlog4j.configuration=file:$FUSEKI_HOME/log4j.properties"
 JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 #JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize=1G"
+
+# echo $CP
 
 exec java -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.FusekiCmd \
     --home="$FUSEKI_HOME" "$@"
