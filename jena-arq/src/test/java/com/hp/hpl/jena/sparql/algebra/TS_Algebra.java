@@ -44,7 +44,7 @@ import org.junit.runners.Suite ;
 //    , TestUnionGraph.class
 //    , TestUnionTransformTriples.class
 //    , TestUnionTransformQuads.class
-    , OpAsQueryTest.class
+    , TestOpAsQuery.class
 })
 
 public class TS_Algebra extends TestSuite

@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for {@link OpAsQuery}
  */
-public class OpAsQueryTest {
+public class TestOpAsQuery {
 
     /**
      * Test of asQuery method, of class OpAsQuery.
@@ -222,7 +222,21 @@ public class OpAsQueryTest {
         String query = "SELECT * WHERE { { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key } }";
         checkQueryParseable(query, false);
     }
+    
+    @Test
+    public void testPathExpressions1() {
+        // test that the query after serialization is legal (as much a test of the serializer as way OpAsQuery works)
+        String query = "PREFIX : <http://example/> SELECT * { ?s :p* ?o . ?x :r 123 . }" ;
+        Query r[] = checkQueryParseable(query, false);
+    }
         
+    @Test
+    public void testPathExpressions2() {
+        // test that the query  
+        String query = "PREFIX : <http://example/> SELECT * { ?s :p*/:q ?o . ?x :r 123 . }" ;
+        Query r[] = checkQueryParseable(query, false);
+    }
+
     public Query[] checkQuery(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);
