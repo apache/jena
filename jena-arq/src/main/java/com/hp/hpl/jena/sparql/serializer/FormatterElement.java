@@ -298,15 +298,6 @@ public class FormatterElement extends FormatterBase
             return ;
         }
 
-//        if ( el.getElements().size() == 1 )
-//        {
-//            if ( el.getElements().get(0) instanceof ElementSubQuery )
-//            {
-//                visit((ElementSubQuery)el.getElements().get(0)) ;
-//                return ;
-//            }
-//        }
-        
         out.print("{") ;
         out.incIndent(INDENT) ;
         if ( GROUP_FIRST_ON_SAME_LINE )
@@ -316,31 +307,45 @@ public class FormatterElement extends FormatterBase
         out.pad() ;
     
         boolean first = true ;
-        
-        for ( Iterator<Element> iter = el.getElements().listIterator() ; iter.hasNext() ;)
+        Element lastElt = null ;
+
+        for ( Element subElement : el.getElements())
         {
-            Element subElement = iter.next() ;
-           if ( ! first )
+            // Some adjacent elements need a DOT:
+            // ElementTriplesBlock, ElementPathBlock
+            if ( ! first )
             {
                 // Need to move on after the last thing printed.
-                if ( GROUP_SEP_DOT )
+                // Check for necessary DOT as separator
+                if ( GROUP_SEP_DOT || needsDotSeparator(lastElt, subElement) )
                     out.print(" . ") ;
                 out.newline() ;    
             }
             subElement.visit(this) ;
             first = false ;
+            lastElt = subElement ;
         }
         out.decIndent(INDENT) ;
-        
+
         // Where to put the closing "}"
         int row2 = out.getRow() ;
         if ( row1 != row2 )
             out.newline() ;
         else
             out.print(' ') ;
-        
+
         // Finally, close the group.
         out.print("}") ;
+    }
+
+    private static boolean needsDotSeparator(Element el1, Element el2)
+    {
+        return needsDotSeparator(el1) && needsDotSeparator(el2) ;
+    }
+    
+    private static boolean needsDotSeparator(Element el)
+    {
+        return ( el instanceof ElementTriplesBlock ) || ( el instanceof ElementPathBlock ) ;
     }
 
     @Override
