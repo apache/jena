@@ -431,13 +431,17 @@ public class HttpQuery extends Params
             {
                 
                 InputStream x = httpConnection.getErrorStream() ;
+                String str = null ;
                 if ( x != null )
                 {
                     //String ct = httpConnection.getContentType() ;
                     //httpConnection.getContentEncoding() ;
-                    String str = FileUtils.readWholeFileAsUTF8(x) ;
-                    throw new QueryExceptionHTTP(responseCode, responseMessage+"\n"+str) ;
+                    
+                    try { str = FileUtils.readWholeFileAsUTF8(x) ; }
+                    catch (Throwable ex) {}
                 }
+                if ( str != null )
+                    throw new QueryExceptionHTTP(responseCode, responseMessage+"\n"+str) ;
                 else
                     throw new QueryExceptionHTTP(responseCode, responseMessage) ;
             }
