@@ -257,14 +257,22 @@ public class TestOpAsQuery {
     public Query[] checkQueryParseable(String query, boolean expectEquals) {
         Query[] r = checkQuery(query);
         
-        //Strip namespaces and Base URI from each so comparison is not affected by those
+        // Strip namespaces and Base URI from each so comparison is not affected by those
         stripNamespacesAndBase(r[0]);
         stripNamespacesAndBase(r[1]);
         
         if (expectEquals) {
+            // Expecting the string forms of the queries to be equal
+            // If the strings forms are equal their algebras will be
             Assert.assertEquals(r[0], r[1]);
         } else {
+            // Even if the strings come out as non-equal because of the translatation from algebra to query
+            // the algebras should be equal
+            // i.e. the queries should remain semantically equivalent
             Assert.assertNotEquals(r[0], r[1]);
+            Op a1 = Algebra.compile(r[0]);
+            Op a2 = Algebra.compile(r[1]);
+            Assert.assertEquals(a1, a2);
         }
         String query2 = r[1].toString();
         Query q = QueryFactory.create(query2);
