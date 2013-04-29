@@ -210,6 +210,14 @@ public class TestOpAsQuery {
     }
     
     @Test
+    public void testSubQuery3() {
+        String query = "SELECT * WHERE { { SELECT ?s ?p WHERE { ?s ?p ?o } } { SELECT ?x WHERE { ?x ?p ?o } } }";
+        //In this case there is insufficient information to correctly reverse translate the algebra so this query
+        //will not round trip
+        checkQueryNonRecoverable(query);
+    }
+    
+    @Test
     public void testAggregatesInSubQuery1() {
         //Simplified form of a test case provided via the mailing list
         String query = "SELECT ?key ?agg WHERE { { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key } }";
@@ -276,6 +284,24 @@ public class TestOpAsQuery {
         }
         String query2 = r[1].toString();
         Query q = QueryFactory.create(query2);
+        return r;
+    }
+    
+    public Query[] checkQueryNonRecoverable(String query) {
+        Query[] r = checkQuery(query);
+        
+        // Strip namespaces and Base URI from each so comparison is not affected by those
+        stripNamespacesAndBase(r[0]);
+        stripNamespacesAndBase(r[1]);
+        
+        // If this method is being called then we expect the strings to be non-equal and also
+        // the algebras to be non-equivalent because there will be insufficient information
+        // in the algebra to allow it to be translated back into a semantically equivalent query
+        Assert.assertNotEquals(r[0], r[1]);
+        Op a1 = Algebra.compile(r[0]);
+        Op a2 = Algebra.compile(r[1]);
+        Assert.assertNotEquals(a1, a2);
+        
         return r;
     }
     
