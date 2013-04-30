@@ -34,7 +34,6 @@ import com.hp.hpl.jena.graph.TransactionHandler ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -66,10 +65,7 @@ public abstract class GraphTDBBase extends GraphBase implements GraphTDB
     
     @Override
     public final DatasetGraphTDB getDataset()                   { return dataset ; }
-    
-    @Override
-    public Lock getLock()                                       { return dataset.getLock() ; }
-    
+
     // Intercept performAdd/preformDelete and bracket in start/finish markers   
     
     @Override
@@ -174,14 +170,10 @@ public abstract class GraphTDBBase extends GraphBase implements GraphTDB
     /** Iterator over something that, when counted, is the graph size. */
     protected abstract Iterator<?> countThis() ;
 
-    @Override
     public void startRead()             { dataset.startRead() ; }
-    @Override
     public void finishRead()            { dataset.finishRead() ; }
 
-    @Override
     public final void startUpdate()     { dataset.startUpdate() ; }
-    @Override
     public final void finishUpdate()    { dataset.finishUpdate() ; }
 
     @Override

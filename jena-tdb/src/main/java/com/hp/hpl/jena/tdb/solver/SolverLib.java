@@ -70,7 +70,8 @@ public class SolverLib
                                         QueryIterator input, Filter<Tuple<NodeId>> filter,
                                         ExecutionContext execCxt)
     {
-        return execute(graph.getNodeTupleTable(), null, pattern, input, filter, execCxt) ;
+        NodeTupleTable ntt = graph.getNodeTupleTable() ;
+        return execute(ntt, null, pattern, input, filter, execCxt) ;
     }
     
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input.

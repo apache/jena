@@ -100,12 +100,9 @@ public class TestTDBAssembler extends BaseTest
         
         assertTrue(thing instanceof Model) ;
         Graph graph = ((Model)thing).getGraph() ;
-        
         assertTrue(graph instanceof GraphTDB) ; 
-        assertTrue(graph instanceof GraphTriplesTDB) ;
-        assertFalse(graph instanceof GraphNamedTDB) ;
 
-        DatasetGraphTDB ds = ((GraphTDBBase)graph).getDataset() ;
+        DatasetGraphTDB ds = ((GraphTDB)graph).getDataset() ;
         if ( ds != null )
             ds.close();
     }
@@ -135,23 +132,12 @@ public class TestTDBAssembler extends BaseTest
             throw e ;
         }
 
-
         assertTrue(thing instanceof Model) ;
         Graph graph = ((Model)thing).getGraph() ;
         
         assertTrue(graph instanceof GraphTDB) ; 
-        if ( named )
-        {
-            assertFalse( graph instanceof GraphTriplesTDB) ;
-            assertTrue(graph instanceof GraphNamedTDB) ;
-        }
-        else
-        {
-            assertTrue( graph instanceof GraphTriplesTDB) ;
-            assertFalse(graph instanceof GraphNamedTDB) ;
-        }
         
-        DatasetGraphTDB ds = ((GraphTDBBase)graph).getDataset() ;
+        DatasetGraphTDB ds = ((GraphTDB)graph).getDataset() ;
         if ( ds != null )
             ds.close();
     }

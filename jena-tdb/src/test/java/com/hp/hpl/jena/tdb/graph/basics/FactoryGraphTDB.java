@@ -43,11 +43,7 @@ import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
-import com.hp.hpl.jena.tdb.store.QuadTable ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
 import com.hp.hpl.jena.tdb.sys.Names ;
@@ -71,14 +67,14 @@ class FactoryGraphTDB
     public final static RecordFactory nodeRecordFactory = new RecordFactory(LenNodeHash, SizeOfNodeId) ;
     
     /** Create a TDB graph using a specifc index builder - mainly for testing */
-    public static GraphTriplesTDB createGraph(IndexBuilder indexBuilder, Location location)
+    public static GraphTDB createGraph(IndexBuilder indexBuilder, Location location)
     {
         DatasetGraphTDB ds = _createDatasetGraph(indexBuilder, location, tripleIndexes, quadIndexes) ;
-        return (GraphTriplesTDB)ds.getDefaultGraph() ;
+        return (GraphTDB)ds.getDefaultGraph() ;
     }  
 
     /** Create a TDB graph in-memory - for testing */
-    public static GraphTriplesTDB createGraphMem(IndexBuilder indexBuilder)
+    public static GraphTDB createGraphMem(IndexBuilder indexBuilder)
     {
         return createGraph(indexBuilder, Location.mem()) ;
     }

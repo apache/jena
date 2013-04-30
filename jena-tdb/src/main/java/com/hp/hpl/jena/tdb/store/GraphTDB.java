@@ -23,16 +23,12 @@ import org.apache.jena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.sys.Session ;
 
-public interface GraphTDB extends Graph, Closeable, Sync, Session
+public interface GraphTDB extends Graph, Closeable, Sync
 {
+    /** The NodeTupleTable for this graph */ 
     public NodeTupleTable getNodeTupleTable() ;
-    
-    /** Get a lock that is shared for all graphs from the same dataset (it is the dataset lock) */
-    public Lock getLock() ;
     
     /**
      * Return the graph node for this graph if it's in a quad table, else return

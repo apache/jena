@@ -25,7 +25,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 
@@ -33,17 +32,13 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 public class GraphTriplesTDB extends GraphTDBBase
 {
     // Collapse this into GraphTDBBase and have one class, no interface.
+    // GraphNamedTDB should work.
     
     private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
     
-    private final DatasetPrefixStorage prefixes ;
-    
-    public GraphTriplesTDB(DatasetGraphTDB dataset,
-                           TripleTable tripleTable,
-                           DatasetPrefixStorage prefixes)
+    public GraphTriplesTDB(DatasetGraphTDB dataset)
     {
         super(dataset, null) ;
-        this.prefixes = prefixes ;
     }
 
     @Override
@@ -64,7 +59,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     protected PrefixMapping createPrefixMapping()
     {
-        return prefixes.getPrefixMapping() ;
+        return dataset.getPrefixes().getPrefixMapping() ;
     }
 
     @Override

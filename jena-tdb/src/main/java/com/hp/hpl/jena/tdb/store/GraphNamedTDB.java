@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
@@ -40,12 +39,11 @@ import com.hp.hpl.jena.tdb.sys.TDBInternal ;
 public class GraphNamedTDB extends GraphTDBBase
 {
     // Collapse this into GraphTDBBase and have one class, no interface.
-    
-    /*
-        Quad.unionGraph
-        Quad.defaultGraphIRI
-        Quad.defaultGraphNodeGenerated
-    */
+    // This copes with
+    //    null for graphName (= default graph).
+    //    Quad.unionGraph
+    //    Quad.defaultGraphIRI
+    //    Quad.defaultGraphNodeGenerated
     private static Logger log = LoggerFactory.getLogger(GraphNamedTDB.class) ;
     
     private NodeId graphNodeId = null ;
@@ -54,23 +52,23 @@ public class GraphNamedTDB extends GraphTDBBase
     {
         super(dataset, graphName) ;
 
-        if ( graphName == null )
-            throw new TDBException("GraphNamedTDB: Null graph name") ; 
-        if ( ! graphName.isURI() )
+        if ( graphName != null && ! graphName.isURI() )
             throw new TDBException("GraphNamedTDB: Graph name not a URI - " + graphName.toString()) ; 
     }
 
     @Override
     protected PrefixMapping createPrefixMapping()
     {
-        return dataset.getPrefixes().getPrefixMapping(graphNode.getURI()) ;
+        if ( isDefaultGraph() )
+            return dataset.getPrefixes().getPrefixMapping() ;
+        else
+            return dataset.getPrefixes().getPrefixMapping(graphNode.getURI()) ;
     }
-
 
     @Override
     protected Iterator<Tuple<NodeId>> countThis()
     {
-        if ( isDefaultGraph(graphNode) ) 
+        if ( isDefaultGraph() ) 
             return dataset.getTripleTable().getNodeTupleTable().findAll() ;
         
         NodeId gn = isUnionGraph(graphNode) ? null : getGraphNodeId() ; 
@@ -110,6 +108,10 @@ public class GraphNamedTDB extends GraphTDBBase
         return graphNodeId ;
     }
 
+    private boolean isDefaultGraph() {
+        return isDefaultGraph(graphNode) ;
+    }
+    
     @Override
     protected final Logger getLog() { return log ; }
     
@@ -117,11 +119,15 @@ public class GraphNamedTDB extends GraphTDBBase
     public NodeTupleTable getNodeTupleTable()
     {
         // Concrete default graph.
-        if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
+        if ( isDefaultGraph() )
             return dataset.getTripleTable().getNodeTupleTable() ;
         return dataset.getQuadTable().getNodeTupleTable() ;
     }
 
     @Override
-    public String toString() { return Utils.className(this)+":<"+this.graphNode+">" ; }
+    public String toString() { 
+        String x = ":defaultGraph" ;
+        if ( graphNode != null )
+            x = ":<"+this.graphNode+">" ;
+        return Utils.className(this)+x ; }
 }
