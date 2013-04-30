@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.graph.basics;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder ;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree ;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Place to put various "making" explicitly for testing */
@@ -31,7 +31,7 @@ class GraphTDBFactoryTesting
     // This class and FactoryGraphTDB are old ways of making graphs and datasets 
     
     /** Create a graph backed with storage at a location using B+Tree indexes (testing) */
-    public static GraphTriplesTDB createBPlusTree(Location location)
+    public static GraphTDB createBPlusTree(Location location)
     { 
         IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(SystemTDB.BlockSizeTest) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 
@@ -39,7 +39,7 @@ class GraphTDBFactoryTesting
     }
 
     /** Create a graph backed with storage and B+Tree indexes in-memory (testing) */
-    public static GraphTriplesTDB createBPlusTreeMem()
+    public static GraphTDB createBPlusTreeMem()
     { 
         IndexFactoryBPlusTree idxFactory = new IndexFactoryBPlusTree(SystemTDB.BlockSizeTestMem) ;
         IndexBuilder builder = new IndexBuilder(idxFactory,idxFactory) ; 

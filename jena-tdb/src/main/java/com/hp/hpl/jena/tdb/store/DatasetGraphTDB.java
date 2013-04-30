@@ -90,10 +90,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public QuadTable getQuadTable()         { return quadTable ; }
     public TripleTable getTripleTable()     { return tripleTable ; }
     
-//    private Lock lock = new MRSWLite() ;
-//    @Override 
-//    public Lock getLock()                   { return lock ; }
-    
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
     {
@@ -208,7 +204,9 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     protected Graph _createDefaultGraph()
     {
-        return new GraphTriplesTDB(this, tripleTable, prefixes) ; 
+        return new GraphTriplesTDB(this) ;
+        // This also works - but it's close to a release so leave as is. 
+        //return new GraphNamedTDB(this,  null) ; 
     }
 
     @Override
