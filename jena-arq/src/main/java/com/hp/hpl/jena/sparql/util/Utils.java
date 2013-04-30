@@ -95,6 +95,11 @@ public class Utils
         return calendarToXSDString(cal, "yyyy-MM-dd") ;
     }
     
+    public static String calendarToXSDTimeString(Calendar cal)
+    {
+        return calendarToXSDString(cal, "HH:mm:ss.SSS");
+    }
+    
     private static String calendarToXSDString(Calendar cal, String fmt)
     {
         // c.f. Constructor on Jena's XSDDateTime
