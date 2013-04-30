@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.Calendar;
+
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
@@ -33,11 +35,22 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
+/**
+ * Various convenience helper methods for converting to and from nodes
+ *
+ */
 public class NodeFactoryExtra
 {
     private static final PrefixMap prefixMappingDefault = PrefixMapFactory.createForInput(SSE.getDefaultPrefixMapRead()) ; 
     
-    /** Parse a node - with convenience prefix mapping */ 
+    /** 
+     * Parse a node - with convenience prefix mapping 
+     * <p>
+     * Allows surrounding white space
+     * </p>
+     * @param nodeString Node string to parse
+     *  
+     */ 
     public static Node parseNode(String nodeString)
     {
         return parseNode(nodeString, prefixMappingDefault) ;
@@ -46,8 +59,13 @@ public class NodeFactoryExtra
     private static PrefixMap pmapEmpty = PrefixMapFactory.create() ; 
 
     /** Parse a string into a node. 
-     * Pass null for the prefix mapping to indicate using no defined mappings
+     * <p>
      * Allows surrounding white space.
+     * </p>
+     * @param nodeString Node string to parse
+     * @param pmap Prefix Map, null to use no prefix mappings
+     * @return Parsed Node
+     * @throws RiotException Thrown if a valid node cannot be parsed
      */ 
     public static Node parseNode(String nodeString, PrefixMap pmap)
     {
@@ -150,6 +168,24 @@ public class NodeFactoryExtra
     public static Node doubleToNode(double value)
     {
         return com.hp.hpl.jena.graph.NodeFactory.createLiteral(Double.toString(value), "", XSDDatatype.XSDdouble) ;
+    }
+    
+    public static Node dateTimeToNode(Calendar c)
+    {
+        String lex = Utils.calendarToXSDDateTimeString(c);
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime);
+    }
+    
+    public static Node dateToNode(Calendar c)
+    {
+        String lex = Utils.calendarToXSDDateString(c);
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate);
+    }
+    
+    public static Node timeToNode(Calendar c)
+    {
+        String lex = Utils.calendarToXSDTimeString(c);
+        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDtime);
     }
 
     public static Node nowAsDateTime()

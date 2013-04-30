@@ -100,6 +100,14 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		// ensure the ont doc manager is in a consistent state
 		OntDocumentManager.getInstance().reset(true);
 	}
+	
+   public void testXMLProperty() throws IOException {
+        Model m = createMemModel();
+        InputStream in = new FileInputStream("testing/arp/xml-prop.rdf");
+        m.read(in, "");
+        assertEquals(1, m.size());
+    }
+
 
 	public void testWineDefaultNS() throws IOException {
 		testWineNS(createMemModel());
@@ -113,7 +121,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		assertEquals("http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#", m
 				.getNsPrefixURI(""));
 	}
-
+	
 	public void testLatin1() throws IOException {
 		Model m = createMemModel();
 		RDFReader rdr = m.getReader();
