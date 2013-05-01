@@ -27,15 +27,19 @@ public class IO_Jena
 {
     private static String riotBase = "http://jena.apache.org/riot/" ; 
     private static String streamManagerSymbolStr = riotBase+"streammanager" ; 
-    public static Symbol streamManagerSymbol = Symbol.create(streamManagerSymbolStr) ; 
+    public static Symbol streamManagerSymbol = Symbol.create(streamManagerSymbolStr) ;
 
     public static void wireIntoJena()
     {
         IO_JenaReaders.wireIntoJena() ;
         IO_JenaWriters.wireIntoJena() ;
     }
+
+    /** @deprecated Use {@linkplain #resetJena} */
+    @Deprecated
+    public static void resetJenaReaders() { resetJena() ; }
     
-    public static void resetJenaReaders()
+    public static void resetJena()
     {
         IO_JenaReaders.resetJena() ;
         IO_JenaWriters.resetJena() ;
