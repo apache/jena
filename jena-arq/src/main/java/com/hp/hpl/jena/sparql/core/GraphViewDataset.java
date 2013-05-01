@@ -107,7 +107,9 @@ public class GraphViewDataset extends GraphBase
 
     protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o)
     {
-        // Implementation may wish to do better so this is separated out.
+        // Implementations may wish to do better so this is separated out.
+        // For example, Iter.distinctAdjacent is a lot cheaper than Iter.distinct
+        // but assumes thing come back in a particular order
         Iterator<Triple> iter = GLib.quads2triples(dsg.find(gn, s, p, o)) ;
         // Suppress duplicates after projecting to triples.
         iter = Iter.distinct(iter) ;
