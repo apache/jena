@@ -69,10 +69,16 @@ public class RDFReaderRIOT_ARP implements RDFReader
 
         if ( scheme != null )
         {
-            if ( scheme.equals("file") || (isWindows && scheme.length() == 1) )
-                return IRILib.filenameToIRI(url) ;
+            // Skip any scheme that is not file: and not a windows drive letter.
+            if ( ! scheme.equals("file") && ! isWindowsDrive(scheme) )
+                return url ;
         }
-        return url ;
+        return IRILib.filenameToIRI(url) ;
+    }
+    
+    private static boolean isWindowsDrive(String scheme)
+    {
+        return  (isWindows && scheme.length() == 1) ;
     }
 
     @Override
