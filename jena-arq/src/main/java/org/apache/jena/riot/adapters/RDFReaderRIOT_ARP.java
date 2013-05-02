@@ -22,6 +22,8 @@ import java.io.File ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
+import org.apache.jena.atlas.lib.IRILib ;
+
 import com.hp.hpl.jena.rdf.arp.JenaReader ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
@@ -55,42 +57,22 @@ public class RDFReaderRIOT_ARP implements RDFReader
     @Override
     public void read(Model model, String url)
     {
-        String base = chooseBaseURI(url) ;
-        reader.read(model, base) ;
+        url = fixupURL(url) ;
+        reader.read(model, url) ;
     }
 
-    private static String chooseBaseURI(String baseURI)
+    private static final boolean isWindows = ( File.separatorChar == '\\' ) ;
+    /** Sort out filename-like URLs: file:, X: and plain filename */ 
+    private static String fixupURL(String url)
     {
-        String scheme = FileUtils.getScheme(baseURI) ;
+        String scheme = FileUtils.getScheme(url) ;
 
         if ( scheme != null )
         {
-            if ( scheme.equals("file") )
-            {
-                if ( ! baseURI.startsWith("file:///") )
-                {
-                    try {
-                        // Fix up file URIs.  Yuk.
-                        String tmp = baseURI.substring("file:".length()) ;
-                        File f = new File(tmp) ;
-                        baseURI = "file:///"+f.getCanonicalPath() ;
-                        baseURI = baseURI.replace('\\','/') ;
-
-//                            baseURI = baseURI.replace(" ","%20");
-//                            baseURI = baseURI.replace("~","%7E");
-                        // Convert to URI.  Except that it removes ///
-                        // Could do that and fix up (again)
-                        //java.net.URL u = new java.net.URL(baseURI) ;
-                        //baseURI = u.toExternalForm() ;
-                    } catch (Exception ex) {}
-                }
-            }
-            return baseURI ;
+            if ( scheme.equals("file") || (isWindows && scheme.length() == 1) )
+                return IRILib.filenameToIRI(url) ;
         }
-
-        if ( baseURI.startsWith("/") )
-            return "file://"+baseURI ;
-        return "file:"+baseURI ;
+        return url ;
     }
 
     @Override

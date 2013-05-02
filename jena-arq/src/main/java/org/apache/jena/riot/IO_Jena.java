@@ -18,19 +18,25 @@
 
 package org.apache.jena.riot;
 
+import org.apache.jena.riot.adapters.AdapterFileManager ;
 import org.apache.jena.riot.system.IO_JenaReaders ;
 import org.apache.jena.riot.system.IO_JenaWriters ;
 
 import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class IO_Jena
 {
     private static String riotBase = "http://jena.apache.org/riot/" ; 
     private static String streamManagerSymbolStr = riotBase+"streammanager" ; 
     public static Symbol streamManagerSymbol = Symbol.create(streamManagerSymbolStr) ;
+    private static FileManager coreFileManager = null ;
 
     public static void wireIntoJena()
     {
+        if ( coreFileManager == null )
+            coreFileManager = FileManager.get() ;
+        FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
         IO_JenaReaders.wireIntoJena() ;
         IO_JenaWriters.wireIntoJena() ;
     }
@@ -41,6 +47,8 @@ public class IO_Jena
     
     public static void resetJena()
     {
+        if ( coreFileManager != null )
+            FileManager.setGlobalFileManager(coreFileManager) ;
         IO_JenaReaders.resetJena() ;
         IO_JenaWriters.resetJena() ;
     }
