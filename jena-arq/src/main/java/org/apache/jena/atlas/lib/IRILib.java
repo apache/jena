@@ -62,8 +62,9 @@ public class IRILib
     }
     
     
-    private static boolean isWindows = (File.pathSeparatorChar == ';' ) ;
-    //public static void setIsWindowsForTesting(boolean val) { isWindows = val ; }
+    private static final boolean isWindows = (File.pathSeparatorChar == ';' ) ;
+    // Does not help - we use file.getCanonicalPath
+    // /*package*/ public static void setIsWindowsForTesting(boolean val) { isWindows = val ; }
 
     // http://www.w3.org/TR/xpath-functions/#func-encode-for-uri
     // Encodes delimiters.
@@ -75,8 +76,6 @@ public class IRILib
      * sub-delims  = "!" / "$" / "&" / "'" / "(" / ")"
                     / "*" / "+" / "," / ";" / "="
      */
-    
-    // XXX Append(char[], char[])
     
     private static char uri_reserved[] = 
     { 
@@ -130,13 +129,15 @@ public class IRILib
     }
     
     // See also IRIResolver
-    /** Return a string that is a IRI for the filename.*/
+    /** Return a string that is an IRI for the filename.*/
     public static String fileToIRI(File f)
     {
         return filenameToIRI(f.getAbsolutePath()) ;
     }
     
     /** Create a string that is a IRI for the filename.
+     *  The file name may already have file:.
+     *  The file name may be relative. 
      *  Encode using the rules for a path (e.g. ':' and'/' do not get encoded)
      */
     public static String filenameToIRI(String fn)
@@ -144,7 +145,6 @@ public class IRILib
         if ( fn == null ) return cwdURL ;
         
         if ( fn.length() == 0 ) return cwdURL ;
-        if ( fn.length() == 1 ) {}
         
         if ( fn.startsWith("file:") )
             return normalizeFilenameURI(fn) ;
@@ -165,6 +165,7 @@ public class IRILib
         return decode(fn) ;
     }
     
+    /** Convert a plain file name (no file:) to a file: URL */
     private static String plainFilenameToURL(String fn)
     {
         // No "file:"
@@ -173,8 +174,8 @@ public class IRILib
         File file = new File(fn) ;
         
         try { fn = file.getCanonicalPath() ; }
-        catch (IOException e)
-        { fn = file.getAbsolutePath() ; } 
+        catch (IOException e) { fn = file.getAbsolutePath() ; }
+        
         if ( trailingSlash && ! fn.endsWith("/") )
             fn = fn + "/" ;
         
@@ -195,17 +196,17 @@ public class IRILib
     }
     
     
-    // Sanitize a "file:" URL.
+    /** Sanitize a "file:" URL. Must start "file:" */
     private static String normalizeFilenameURI(String fn)
     {
-        String path = fn.substring("file:".length()) ;
         if ( ! fn.startsWith("file:/") )
         {
+            // Relative path.
             String fn2 = fn.substring("file:".length()) ;
             return plainFilenameToURL(fn2) ;
         }
-        // starts file:/
         
+        // Starts file:///
         if ( fn.startsWith("file:///") )
             // Good.
             return encodeFileURL(fn) ;
