@@ -41,13 +41,12 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
 {
     /* Initially, the app can use this DatasetGraph non-transactionally.
      * But as soon as it starts a transaction, the dataset can only be used
-     * inside transactions. 
+     * inside transactions.
+     * 
+     * There are two per-thread state variables:
+     *    txn: ThreadLocalTxn -- the transactional , one time use dataset
+     *    isInTransactionB: ThreadLocalBoolean -- flags true between begin and commit/abort, and end for read transactions.
      */
-    
-    
-    // Two per-thread state variables:
-    //   txn: ThreadLocalTxn -- the transactional , one time use dataset
-    //   isInTransactionB: ThreadLocalBoolean -- flags true between begin and commit/abort, and end for read transactions.
 
     static class ThreadLocalTxn extends ThreadLocal<DatasetGraphTxn>
     {
