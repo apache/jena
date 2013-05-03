@@ -31,7 +31,6 @@ import arq.cmdline.ModEngine ;
 import arq.cmdline.ModSymbol ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -48,7 +47,6 @@ import com.hp.hpl.jena.vocabulary.DC ;
 import com.hp.hpl.jena.vocabulary.DCTerms ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.XSD ;
-
 
 /** A program to execute RDF language test suites
  * 
@@ -127,10 +125,7 @@ public class rdflangtest extends CmdGeneral
         E_Function.WarnOnUnknownFunction = false ;
         
         for ( String fn : getPositional() )
-        {
-            String testfile = IRIResolver.resolveGlobal(fn) ;
-            exec1(testfile) ;
-        }
+            exec1(fn) ;
     }
     
     protected void exec1(String manifest)

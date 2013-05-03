@@ -28,7 +28,6 @@ import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModEngine ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -75,7 +74,7 @@ public class qtest extends CmdARQ
     protected TestSuite suite = null;
     protected boolean execAllTests = false;
     protected boolean execDAWGTests = false;
-    protected String testfileAbs = null;
+    protected String testfile = null;
     protected boolean createEarlReport = false;
     
     public static void main (String... argv)
@@ -150,9 +149,7 @@ public class qtest extends CmdARQ
             if ( ! hasPositional() )
                 throw new CmdException("No manifest file") ;
 
-            String testfile = getPositionalArg(0) ;
-            testfileAbs = IRIResolver.resolveGlobal(testfile) ;
-            
+            testfile = getPositionalArg(0) ;
             createEarlReport = contains(earlDecl) ;
         }
     }
@@ -177,9 +174,9 @@ public class qtest extends CmdARQ
             E_Function.WarnOnUnknownFunction = false ;
             
             if ( createEarlReport )
-                oneManifestEarl(testfileAbs) ;
+                oneManifestEarl(testfile) ;
             else
-                oneManifest(testfileAbs) ;
+                oneManifest(testfile) ;
         }
     }
     

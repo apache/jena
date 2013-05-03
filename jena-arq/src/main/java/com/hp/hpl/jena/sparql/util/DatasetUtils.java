@@ -22,9 +22,10 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.riot.system.IRIResolver ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -102,9 +103,9 @@ public class DatasetUtils
                 String sourceURI = iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = IRIResolver.resolve(sourceURI, baseURI) ;
+                    absURI = IRIResolver.resolveString(sourceURI, baseURI) ;
                 else
-                    absURI = IRIResolver.resolveGlobal(sourceURI) ;
+                    absURI = IRIResolver.resolveString(sourceURI) ;
                 fileManager.readModel(ds.getDefaultModel(), sourceURI, absURI, null) ;
             }
         }
@@ -116,9 +117,9 @@ public class DatasetUtils
                 String sourceURI = iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = IRIResolver.resolve(sourceURI, baseURI) ;
+                    absURI = IRIResolver.resolveString(sourceURI, baseURI) ;
                 else
-                    absURI = IRIResolver.resolveGlobal(sourceURI) ;
+                    absURI = IRIResolver.resolveString(sourceURI) ;
                 Model m = GraphFactory.makeDefaultModel() ;
                 fileManager.readModel(m, sourceURI, absURI, null) ;
                 ds.addNamedModel(absURI, m) ;
@@ -167,9 +168,9 @@ public class DatasetUtils
                 String sourceURI = iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = IRIResolver.resolve(sourceURI, baseURI) ;
+                    absURI = IRIResolver.resolveString(sourceURI, baseURI) ;
                 else
-                    absURI = IRIResolver.resolveGlobal(sourceURI) ;
+                    absURI = IRIResolver.resolveString(sourceURI) ;
                 // FileManager.readGraph?
                 fileManager.readModel(m, sourceURI, absURI, null) ;
             }
@@ -187,9 +188,9 @@ public class DatasetUtils
                 String sourceURI = iter.next();
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = IRIResolver.resolve(baseURI, sourceURI) ;
+                    absURI = IRIResolver.resolveString(baseURI, sourceURI) ;
                 else
-                    absURI = IRIResolver.resolveGlobal(sourceURI) ;
+                    absURI = IRIResolver.resolveString(sourceURI) ;
                 Model m = fileManager.loadModel(sourceURI, absURI, null) ;
                 Node gn = NodeFactory.createURI(sourceURI) ;
                 ds.addGraph(gn, m.getGraph()) ;

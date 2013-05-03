@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping ;
 
-
 /** Resolve syntacic forms like (base ...) and (prefix...)
  *  where the syntax modifies the enclosed sub term.
  *  
@@ -58,7 +57,6 @@ public class ParseHandlerResolver extends ParseHandlerForm
     {
         prologue = p ;
     }
-
     
     @Override
     protected void declItem(ItemList list, Item item)
