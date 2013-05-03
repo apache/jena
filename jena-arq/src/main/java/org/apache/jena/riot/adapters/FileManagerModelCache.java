@@ -18,18 +18,19 @@
 
 package org.apache.jena.riot.adapters;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.lib.CacheFactory ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 
 // Legacy support.
 class FileManagerModelCache {
-    
+
+    private static final int CacheSize = 500 ; 
     public FileManagerModelCache() {}
     
     boolean cacheModelLoads = false ;
-    Map<String, Model> modelCache = null ;
+    Cache<String, Model> modelCache = null ;
     // -------- Cache operations
     
     /** Reset the model cache */
@@ -44,7 +45,7 @@ class FileManagerModelCache {
     {
         cacheModelLoads = state ;
         if ( cacheModelLoads && modelCache == null )
-            modelCache = new HashMap<String, Model>() ;
+            modelCache = CacheFactory.createCache(CacheSize) ;
     }
     
     /** return whether caching is on of off */
