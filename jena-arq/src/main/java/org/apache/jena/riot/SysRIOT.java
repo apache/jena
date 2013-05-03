@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;

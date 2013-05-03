@@ -48,32 +48,32 @@ class FileManagerModelCache {
     }
     
     /** return whether caching is on of off */
-    public boolean getCachingModels() { return cacheModelLoads ; }
+    public boolean isCachingModels() { return cacheModelLoads ; }
     
     /** Read out of the cache - return null if not in the cache */ 
     public Model getFromCache(String filenameOrURI)
     { 
-        if ( ! getCachingModels() )
+        if ( ! isCachingModels() )
             return null; 
         return modelCache.get(filenameOrURI) ;
     }
     
     public boolean hasCachedModel(String filenameOrURI)
     { 
-        if ( ! getCachingModels() )
+        if ( ! isCachingModels() )
             return false ; 
         return modelCache.containsKey(filenameOrURI) ;
     }
     
     public void addCacheModel(String uri, Model m)
     { 
-        if ( getCachingModels() )
+        if ( isCachingModels() )
             modelCache.put(uri, m) ;
     }
 
     public void removeCacheModel(String uri)
     { 
-        if ( getCachingModels() )
+        if ( isCachingModels() )
             modelCache.remove(uri) ;
     }
 

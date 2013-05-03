@@ -35,13 +35,13 @@ import org.apache.http.params.BasicHttpParams ;
 import org.apache.http.params.HttpConnectionParams ;
 import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
-import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.system.IRILib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

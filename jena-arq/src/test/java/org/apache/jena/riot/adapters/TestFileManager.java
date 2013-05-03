@@ -183,6 +183,8 @@ public class TestFileManager extends TestCase
     
     public void testCache2()
     {
+        FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
+        
         FileManager fileManager = FileManager.get() ;
         fileManager.addLocatorFile(testingDir) ;
         fileManager.setModelCaching(true) ;

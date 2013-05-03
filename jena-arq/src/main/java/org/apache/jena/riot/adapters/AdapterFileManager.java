@@ -22,9 +22,9 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.stream.* ;
+import org.apache.jena.riot.system.IRILib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -232,7 +232,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     
     /** return whether caching is on of off */
     @Override
-    public boolean getCachingModels()               { return modelCache.getCachingModels() ; }
+    public boolean isCachingModels()               { return modelCache.isCachingModels() ; }
     
     /** Read out of the cache - return null if not in the cache */ 
     @Override
