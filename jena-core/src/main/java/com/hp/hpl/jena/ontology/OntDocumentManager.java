@@ -524,7 +524,7 @@ public class OntDocumentManager
      * @param replace If true, replace any existing entry with this one.
      */
     public void addModel( String docURI, Model model, boolean replace ) {
-        if (getFileManager().getCachingModels() &&
+        if (getFileManager().isCachingModels() &&
             (replace || !getFileManager().hasCachedModel( docURI )))
         {
             getFileManager().addCacheModel( docURI, model );
@@ -612,7 +612,7 @@ public class OntDocumentManager
      * @return If true, a cache is maintained of loaded models from their URI's.
      */
     public boolean getCacheModels() {
-        return getFileManager().getCachingModels();
+        return getFileManager().isCachingModels();
     }
 
 
