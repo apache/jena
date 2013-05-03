@@ -28,6 +28,7 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.checker.CheckerIRI ;
 import org.apache.jena.riot.system.Checker ;
 import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.junit.Test ;
 
@@ -38,23 +39,23 @@ public class TestIRI extends BaseTest
     
     static IRIFactory factory = IRIFactory.iriImplementation() ;
     
-    @Test public void iri1()  { test("http://example/") ; }
+    @Test public void iri1()  { testIRI("http://example/") ; }
     
     @Test(expected=ErrorHandlerTestLib.ExError.class)
     // No relative IRIs
-    public void iri2()  { test("example") ; }
+    public void iri2()  { testIRI("example") ; }
     
     @Test(expected=ExWarning.class) 
     public void iriErr1()  
-    { test("http:") ; }
+    { testIRI("http:") ; }
 
     @Test(expected=ExWarning.class) 
-    public void iriErr2()  { test("http:///::") ; }
+    public void iriErr2()  { testIRI("http:///::") ; }
 
     @Test(expected=ExWarning.class) 
-    public void iriErr3()  { test("http://example/.") ; }
+    public void iriErr3()  { testIRI("http://example/.") ; }
     
-    private void test(String uriStr)
+    private void testIRI(String uriStr)
     {
         IRI iri = factory.create(uriStr) ;
         CheckerIRI.iriViolations(iri, handler) ;
@@ -74,4 +75,37 @@ public class TestIRI extends BaseTest
         assertEquals("abc", n.getURI()) ;
     }
     
+    @Test public void fileIRI_1()
+    {
+        String uri = testFileIRI("D.ttl"); ; 
+        assertTrue(uri.endsWith("D.ttl")) ;
+    }
+    
+    @Test public void fileIRI_2()
+    {
+        String uri = testFileIRI("file:/D.ttl") ; 
+        assertTrue(uri.endsWith("D.ttl")) ;
+    }
+    
+    @Test public void fileIRI_3()
+    {
+        String uri = testFileIRI("file://D.ttl") ; 
+        assertTrue(uri.endsWith("D.ttl")) ;
+    }
+
+    @Test public void fileIRI_4()
+    {
+        String iri = testFileIRI("file:///D.ttl") ;
+        // Even on windows, this is used as-is so no drive letter. 
+        assertEquals("file:///D.ttl", iri) ;
+    }
+    
+    private static String testFileIRI(String fn)
+    {
+        String uri1 = IRILib.filenameToIRI(fn) ;
+        assertTrue(uri1.startsWith("file:///")) ;
+        String uri2 = IRILib.filenameToIRI(uri1) ;
+        assertEquals(uri1, uri2) ;
+        return uri1 ;
+    }
 }

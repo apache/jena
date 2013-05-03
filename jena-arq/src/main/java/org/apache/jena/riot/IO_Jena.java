@@ -34,12 +34,9 @@ public class IO_Jena
 
     public static void wireIntoJena()
     {
-        if ( false )
-        {
-            if ( coreFileManager == null )
-                coreFileManager = FileManager.get() ;
-            FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
-        }
+        if ( coreFileManager == null )
+            coreFileManager = FileManager.get() ;
+        FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
         IO_JenaReaders.wireIntoJena() ;
         IO_JenaWriters.wireIntoJena() ;
     }

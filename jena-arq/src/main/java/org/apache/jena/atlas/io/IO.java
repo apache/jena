@@ -23,8 +23,8 @@ import java.nio.charset.Charset ;
 import java.util.zip.GZIPInputStream ;
 
 import org.apache.jena.atlas.AtlasException ;
-import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.system.IRILib ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
