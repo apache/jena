@@ -77,8 +77,6 @@ public class FileManager
     static boolean logAllLookups = true ; 
     List<Locator> handlers = new ArrayList<Locator>() ;
     LocationMapper mapper = null ;
-    boolean cacheModelLoads = false ;
-    Map<String, Model> modelCache = null ;
     
     /** Get the global file manager.
      * @return the global file manager
@@ -193,6 +191,8 @@ public class FileManager
     public void remove(Locator loc) { handlers.remove(loc) ; }
 
     // -------- Cache operations
+    boolean cacheModelLoads = false ;
+    Map<String, Model> modelCache = null ;
     
     /** Reset the model cache */
     public void resetCache()
@@ -208,9 +208,13 @@ public class FileManager
         if ( cacheModelLoads && modelCache == null )
             modelCache = new HashMap<String, Model>() ;
     }
+
+    /** @deprecated Use {@linkplain #isCachingModels} */
+    @Deprecated
+    public boolean getCachingModels() { return isCachingModels() ; }
     
     /** return whether caching is on of off */
-    public boolean getCachingModels() { return cacheModelLoads ; }
+    public boolean isCachingModels() { return cacheModelLoads ; }
     
     /** Read out of the cache - return null if not in the cache */ 
     public Model getFromCache(String filenameOrURI)
@@ -294,18 +298,18 @@ public class FileManager
 
     private Model loadModelWorker(String filenameOrURI, String baseURI, String rdfSyntax)
     {
-        if ( modelCache != null && modelCache.containsKey(filenameOrURI) )
+        if ( hasCachedModel(filenameOrURI) )
         {
             if ( log.isDebugEnabled() )
                 log.debug("Model cache hit: "+filenameOrURI) ;
-            return modelCache.get(filenameOrURI) ;
+            return getFromCache(filenameOrURI) ;
         }
 
         Model m = ModelFactory.createDefaultModel() ;
         readModelWorker(m, filenameOrURI, baseURI, rdfSyntax) ;
         
-        if ( this.cacheModelLoads )
-            modelCache.put(filenameOrURI, m) ;
+        if ( isCachingModels() )
+            addCacheModel(filenameOrURI, m) ;
         return m ;
     }
     
