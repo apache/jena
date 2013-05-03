@@ -28,42 +28,6 @@ import org.apache.jena.atlas.lib.StrUtils ;
 /** Operations related to IRIs */
 public class IRILib
 {
-    /** Encode using the rules for a component (e.g. ':' and '/' get encoded) 
-     * Does not encode non-ASCII characters 
-     */
-    public static String encodeUriComponent(String string)
-    {
-        String encStr = StrUtils.encodeHex(string,'%', charsComponent) ;
-        return encStr ;
-    }
-    
-    /** Encode using the rules for a file: URL.  Same as encodeUriPath except
-     * add "~" to the encoded set.
-     *  Does not encode non-ASCII characters
-     *   
-     */
-    public static String encodeFileURL(String string)
-    {
-        String encStr = StrUtils.encodeHex(string,'%', charsFilename) ;
-        return encStr ;
-    }
-    
-    /** Encode using the rules for a path (e.g. ':' and '/' do not get encoded) */
-    public static String encodeUriPath(String uri)
-    {
-        // Not perfect.
-        // Encode path.
-        // %-encode chars.
-        uri = StrUtils.encodeHex(uri, '%', charsPath) ;
-        return uri ;
-    }
-    
-    public static String decode(String string)
-    {
-        return StrUtils.decodeHex(string, '%') ;
-    }
-    
-    
     private static final boolean isWindows = (File.pathSeparatorChar == ';' ) ;
     // Does not help - we use file.getCanonicalPath
     // /*package*/ public static void setIsWindowsForTesting(boolean val) { isWindows = val ; }
@@ -100,7 +64,9 @@ public class IRILib
     
     private static char[] charsFilename =
         // reserved, + non-chars + nasties.
-        { '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
+        // Leave : (Windows drive charcater) and / (separator) alone
+        // include SPC and ~
+        { '!', '*', '"', '\'', '(', ')', ';', /*':',*/ '@', '&', 
           '=', '+', '$', ',', /*'/',*/ '?', '%', '#', '[', ']',
           '{', '}', '|', '\\', '`', '^',
           ' ', '<', '>', '\n', '\r', '\t',
@@ -222,6 +188,39 @@ public class IRILib
         // Must be file:/
         String fn2 = fn.substring("file:".length()) ;
         return plainFilenameToURL(fn2) ;
+    }
+
+    /** Encode using the rules for a component (e.g. ':' and '/' get encoded) 
+     * Does not encode non-ASCII characters 
+     */
+    public static String encodeUriComponent(String string)
+    {
+        String encStr = StrUtils.encodeHex(string,'%', charsComponent) ;
+        return encStr ;
+    }
+
+    /** Encode using the rules for a file: URL.  
+     *  Does not encode non-ASCII characters
+     */
+    public static String encodeFileURL(String string)
+    {
+        String encStr = StrUtils.encodeHex(string,'%', charsFilename) ;
+        return encStr ;
+    }
+
+    /** Encode using the rules for a path (e.g. ':' and '/' do not get encoded) */
+    public static String encodeUriPath(String uri)
+    {
+        // Not perfect.
+        // Encode path.
+        // %-encode chars.
+        uri = StrUtils.encodeHex(uri, '%', charsPath) ;
+        return uri ;
+    }
+
+    public static String decode(String string)
+    {
+        return StrUtils.decodeHex(string, '%') ;
     }
 
     public static String encodeNonASCII(String string)
