@@ -18,10 +18,10 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
+import org.apache.jena.riot.system.IRIResolver ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.n3.IRIResolver ;
-
 
 public class SystemInfo implements SystemInfoMBean
 {
@@ -41,7 +41,7 @@ public class SystemInfo implements SystemInfoMBean
     private static Node createIRI(String iriStr)
     {
         try {
-            return NodeFactory.createURI(IRIResolver.resolveGlobal(iriStr)) ;
+            return NodeFactory.createURI(IRIResolver.resolveString(iriStr)) ;
         } catch (RuntimeException ex) { return null ; }
     }
         
