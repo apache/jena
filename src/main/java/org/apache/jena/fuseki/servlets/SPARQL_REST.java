@@ -59,7 +59,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     
     protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
 
-    public static class HttpActionREST extends HttpAction
+    protected static class HttpActionREST extends HttpAction
     {
         HttpActionREST(long id, DatasetRef desc, String absUri, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
