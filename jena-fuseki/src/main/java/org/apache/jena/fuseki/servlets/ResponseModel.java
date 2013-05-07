@@ -18,7 +18,10 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static org.apache.jena.fuseki.servlets.ServletBase.* ;
+import static org.apache.jena.fuseki.servlets.ServletBase.error ;
+import static org.apache.jena.fuseki.servlets.ServletBase.errorBadRequest ;
+import static org.apache.jena.fuseki.servlets.ServletBase.errorOccurred ;
+
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -35,11 +38,13 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.web.HttpSC ;
+import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 
 public class ResponseModel
 {
+    private static Logger slog = ServletBase.log ;
 
     // Short names for "output="
     private static final String contentOutputJSON          = "json" ;
@@ -124,7 +129,10 @@ public class ResponseModel
             RDFDataMgr.write(out, model, lang) ;
             out.flush() ;
         }
-        catch (Exception ex) { errorOccurred(ex) ; }
+        catch (Exception ex) { 
+            slog.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
+            errorOccurred(ex) ;
+        }
     }
 }
 
