@@ -463,6 +463,15 @@
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-order-07.rq> ; 
       ]
+      [  mf:name    "syntax-order-08.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-order-08.rq> ; 
+      ]
+      [  mf:name    "syntax-order-09.rq" ;
+         rdf:type   mfx:TestSerialization ;
+         mf:action  <syntax-order-09.rq> ; 
+      ]
+
       [  mf:name    "syntax-pat-01.rq" ;
          rdf:type   mfx:TestSerialization ;
          mf:action  <syntax-pat-01.rq> ; 
