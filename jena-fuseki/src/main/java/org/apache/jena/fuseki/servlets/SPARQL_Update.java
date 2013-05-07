@@ -256,8 +256,15 @@ public class SPARQL_Update extends SPARQL_Protocol
                 UpdateAction.execute(req, action.getActiveDSG()) ;
             action.commit() ;
         } 
-        catch (UpdateException ex) { action.abort(); errorBadRequest(ex.getMessage()) ; }
+        catch (UpdateException ex)      { action.abort(); errorBadRequest(ex.getMessage()) ; }
         catch (QueryParseException ex)  { action.abort(); errorBadRequest(messageForQPE(ex)) ; }
+        catch (Throwable ex) {
+            if ( ! ( ex instanceof ActionErrorException ) )
+            {
+                try { action.abort() ; } catch (Exception ex2) {}
+                errorOccurred(ex.getMessage(), ex) ;
+            }
+        }
         finally { action.endWrite(); }
     }
 
