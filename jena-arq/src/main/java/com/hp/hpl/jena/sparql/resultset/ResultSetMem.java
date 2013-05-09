@@ -200,7 +200,8 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable, 
 
     @Override
     public Binding peekBinding() {
-        return this.iterator.peek();
+        //PeekIterator.element() is the one that throws NoSuchElementException.
+        return iterator.element();
     }
 
 }

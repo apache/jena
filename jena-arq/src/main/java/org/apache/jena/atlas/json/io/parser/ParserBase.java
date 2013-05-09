@@ -62,7 +62,7 @@ public class ParserBase
     
     final protected boolean lookingAt(TokenType tokenType)
     {
-        Token t = peekTokens.peekOrNull() ;
+        Token t = peekTokens.peek() ;
         if ( t == null  )
             return tokenType == EOF ;
         return t.hasType(tokenType) ;
@@ -70,7 +70,7 @@ public class ParserBase
     
     final protected boolean lookingAtString()
     {
-        Token t = peekTokens.peekOrNull() ;
+        Token t = peekTokens.peek() ;
         if ( t == null  )
             return false ;
         if ( t.hasType(TokenType.STRING1) ) return true ;
@@ -82,7 +82,7 @@ public class ParserBase
     
     final protected boolean lookingAtNumber()
     {
-        Token t = peekTokens.peekOrNull() ;
+        Token t = peekTokens.peek() ;
         if ( t == null  )
             return false ;
         if ( t.hasType(TokenType.INTEGER) ) return true ;
@@ -96,16 +96,13 @@ public class ParserBase
     {
         // Avoid repeating.
         if ( eof() ) return tokenEOF ;
-        return peekTokens.peek() ;
+        return peekTokens.element() ;
     }
     
     final protected Token nextToken()
     {
         if ( eof() )
-        {
-//            if ( VERBOSE ) log.info("Move: EOF") ;
             return tokenEOF ;
-        }
         
         Token t = peekTokens.next() ;
         currLine = t.getLine() ;

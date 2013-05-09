@@ -20,6 +20,7 @@ package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
+import java.util.Queue ;
 
 /** PeekIterator - is one slot ahead from the wrapped iterator */ 
 public class PeekIterator<T> implements Iterator<T>
@@ -63,19 +64,21 @@ public class PeekIterator<T> implements Iterator<T>
         return true ;
     }
 
-    /** Peek the next element or throw NoSuchElementException */
+    /** Peek the next element or return null
+     *  @see Queue#peek
+     */
     public T peek()
     {
         if ( finished )
-            throw new NoSuchElementException() ;
+            return null  ;
         return slot ;
     }
     
-    /** Peek the next element or return null */
-    public T peekOrNull()
+    /** Peek the next element or throw  NoSuchElementException */
+    public T element()
     {
         if ( finished )
-            return null  ;
+            throw new NoSuchElementException() ;
         return slot ;
     }
     

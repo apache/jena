@@ -40,7 +40,7 @@ public interface ResultSetPeekable extends ResultSet {
     /**
      * Peek at the next binding
      * @return Next binding if available
-     * @throws NoSuchElementException THrown if attempting to peek when there are no further elements
+     * @throws NoSuchElementException Thrown if attempting to peek when there are no further elements
      */
     public Binding peekBinding();
 }
