@@ -64,7 +64,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     
     private GraphTDB effectiveDefaultGraph ;
     private boolean closed = false ;
-    private boolean readOnly = false ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
                            ReorderTransformation transform, StorageConfig config)
