@@ -150,11 +150,11 @@ public class DatasetBuilderStd implements DatasetBuilder
         // Ensure that there is global synchronization
         synchronized(DatasetBuilderStd.class)
         {
-            return _build(location, params, null) ;
+            return _build(location, params, true, null) ;
         }
     }
     
-    public DatasetGraphTDB _build(Location location, SystemParams _params, ReorderTransformation _transform)
+    public DatasetGraphTDB _build(Location location, SystemParams _params, boolean readonly, ReorderTransformation _transform)
     {
         params = _params ;
         init(location) ;
@@ -170,7 +170,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         ReorderTransformation transform = (_transform==null) ? chooseReorderTransformation(location) : _transform ;
         
-        StorageConfig storageConfig = new StorageConfig(location, params, blockMgrs, bufferChannels, nodeTables) ;
+        StorageConfig storageConfig = new StorageConfig(location, params, readonly, blockMgrs, bufferChannels, nodeTables) ;
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storageConfig) ;
         return dsg ;
     }

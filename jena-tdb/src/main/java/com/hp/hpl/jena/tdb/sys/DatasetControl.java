@@ -20,7 +20,6 @@ package com.hp.hpl.jena.tdb.sys;
 
 import java.util.Iterator ;
 
-// Rename as LockManager? 
 /** A DatasetControl is an encapsulation of what to do on reads and writes.
  *  In addition, iterators returned can be tied back to the original request
  *  to check they are still valid.  

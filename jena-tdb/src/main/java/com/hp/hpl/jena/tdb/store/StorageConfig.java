@@ -34,8 +34,9 @@ public class StorageConfig
     public final Map<FileRef, BufferChannel> bufferChannels ;
     public final Map<FileRef, NodeTable> nodeTables ;
     public final Location location ;
+    public final boolean writeable ;
 
-    public StorageConfig(Location location, SystemParams params, 
+    public StorageConfig(Location location, SystemParams params, boolean writeable, 
                        Map<FileRef, BlockMgr> blockMgrs, 
                        Map<FileRef, BufferChannel> bufferChannels,
                        Map<FileRef, NodeTable> nodeTables)
@@ -45,6 +46,7 @@ public class StorageConfig
         this.blockMgrs = blockMgrs ;
         this.bufferChannels = bufferChannels ;
         this.nodeTables = nodeTables ;
+        this.writeable = writeable ;
     }
     
 }
