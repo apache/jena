@@ -31,7 +31,7 @@
   <url>http://jena.apache.org/</url>
 
   <properties>
-    <ver.jena>2.10.1-SNAPSHOT</ver.jena>
+    <ver.jena>2.10.2-SNAPSHOT</ver.jena>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -43,7 +43,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>appache-jena-libs</artifactId>
+      <artifactId>apache-jena-libs</artifactId>
       <version>${ver.jena}</version>
     </dependency>
     <dependency>
