@@ -153,11 +153,15 @@ public class OntModelImpl extends ModelCom implements OntModel
 
         // set the default prefixes
         if (spec != null && spec.getKnownPrefixes() != null) {
-            String[][] p = spec.getKnownPrefixes();
-            for (int i = 0; i < p.length; i++) {
-                String[] pair = p[i];
-                setNsPrefix( pair[0], pair[1] );
-            }
+            try {
+                // Protect in case the graph is read-only.
+                // Prefixes are hints
+                String[][] p = spec.getKnownPrefixes();
+                for (int i = 0; i < p.length; i++) {
+                    String[] pair = p[i];
+                    setNsPrefix( pair[0], pair[1] );
+                }
+            } catch (Exception ex) {}
         }
 
         // force the inference engine, if we have one, to see the new graph data
