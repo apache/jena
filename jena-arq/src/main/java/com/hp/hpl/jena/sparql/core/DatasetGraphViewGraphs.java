@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.Node ;
  * {@linkplain DatasetGraph#getGraph}
  * that use the view graph mechanism.
  * 
- * @see GraphViewDataset
+ * @see GraphView
  */
 
 public class DatasetGraphViewGraphs extends DatasetGraphWrapper
@@ -42,11 +42,11 @@ public class DatasetGraphViewGraphs extends DatasetGraphWrapper
 
     @Override
     public Graph getDefaultGraph()
-    { return GraphViewDataset.createDefaultGraph(getWrapped()) ; }
+    { return GraphView.createDefaultGraph(getWrapped()) ; }
 
     @Override
     public Graph getGraph(Node graphNode)
-    { return GraphViewDataset.createNamedGraph(getWrapped(), graphNode) ; }
+    { return GraphView.createNamedGraph(getWrapped(), graphNode) ; }
     
     
 }

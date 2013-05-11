@@ -23,7 +23,6 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.riot.other.GLib ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
@@ -36,9 +35,9 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 /** Implement a Graph as a view of the DatasetGraph.
  * 
- *  - maps graph operations to quad operations. */ 
+ *  It maps graph operations to quad operations. */ 
 
-public class GraphViewDataset extends GraphBase
+public class GraphView extends GraphBase
 {
     // Beware this implements union graph - implementation may wish
     // to do better so see protected method below.
@@ -54,37 +53,47 @@ public class GraphViewDataset extends GraphBase
     private final DatasetGraph dsg ;
     private final Node gn ;                 // null for default graph.
 
-    protected GraphViewDataset(DatasetGraph dsg, Node gn)
+    // Factory style.
+    public static GraphView createDefaultGraph(DatasetGraph dsg)
+    { return new GraphView(dsg, Quad.defaultGraphNodeGenerated) ; }
+    
+    public static GraphView createNamedGraph(DatasetGraph dsg, Node graphIRI)
+    { return new GraphView(dsg, graphIRI) ; }
+    
+    // If inherited.
+    protected GraphView(DatasetGraph dsg, Node gn)
     { 
         this.dsg = dsg ; 
-        if ( gn == null )
-            gn = Quad.defaultGraphNodeGenerated ;
         this.gn = gn ;
     }
     
-    public static Graph createDefaultGraph(DatasetGraph dsg)
-    { return new GraphViewDataset(dsg, Quad.defaultGraphNodeGenerated) ; }
+    /** Return the graph name for this graph in the dataset it is a view of.
+     *  Returns {@code null} for the default graph. 
+     */
+    public Node getGraphName()
+    {
+        return ( gn == Quad.defaultGraphNodeGenerated ) ? null : gn ; 
+    }
     
-    public static Graph createNamedGraph(DatasetGraph dsg, Node graphIRI)
-    { return new GraphViewDataset(dsg, graphIRI) ; }
+    /** Return the DatasetGraph we are viewing. */
+    public DatasetGraph getDataset()       
+    {
+        return dsg ;
+    }
     
-    private final boolean isDefaultGraph() { return Quad.isDefaultGraph(gn) ; }
+    
+    protected final boolean isDefaultGraph() { return isDefaultGraph(gn) ; }
+    protected final boolean isUnionGraph()   { return isUnionGraph(gn) ; }
 
+    protected static final boolean isDefaultGraph(Node gn) { return gn == null || Quad.isDefaultGraph(gn) ; }
+    protected static final boolean isUnionGraph(Node gn)   { return Quad.isUnionGraph(gn) ; }
+    
     @Override
     protected PrefixMapping createPrefixMapping()
     {
-        // TODO Unsatisfactory - need PrefixMap support by DSGs then POeefixMap -> PrefixMapping
+        // TODO Unsatisfactory - need PrefixMap support by DSGs then PrefixMap -> PrefixMapping
         return new PrefixMappingImpl() ; 
     }
-
-//    private Graph baseGraph()
-//    {
-//        // TODO Be able to by pass already wrapped DSGs.
-//        if ( isDefaultGraph() ) 
-//            return dsg.getBase().getDefaultGraph() ;
-//        else
-//            return dsg.getBase().getGraph(gn) ;
-//    }
 
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
@@ -99,44 +108,53 @@ public class GraphViewDataset extends GraphBase
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Node s, Node p, Node o)
     {
-        Iterator<Triple> iter = GLib.quads2triples(dsg.find(gn, s, p, o)) ;
+        Node g = graphNode(gn) ;
+        Iterator<Triple> iter = GLib.quads2triples(dsg.find(g, s, p, o)) ;
         if ( Quad.isUnionGraph(gn) )
             return graphUnionFind(s, p, o) ;
         return WrappedIterator.createNoRemove(iter) ;
     }
 
+    private static Node graphNode(Node gn)
+    {
+        return ( gn == null ) ? Quad.defaultGraphNodeGenerated : gn ;
+    }
+
     protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o)
     {
+        Node g = graphNode(gn) ;
         // Implementations may wish to do better so this is separated out.
         // For example, Iter.distinctAdjacent is a lot cheaper than Iter.distinct
         // but assumes thing come back in a particular order
-        Iterator<Triple> iter = GLib.quads2triples(dsg.find(gn, s, p, o)) ;
+        Iterator<Quad> iterQuads = getDataset().find(g, s, p, o) ;
+        Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
         // Suppress duplicates after projecting to triples.
         iter = Iter.distinct(iter) ;
         return WrappedIterator.createNoRemove(iter) ;
     }
     
-    
     @Override
     public void performAdd( Triple t )
     { 
-        if ( Quad.isUnionGraph(gn) )
+        Node g = graphNode(gn) ;
+        if ( Quad.isUnionGraph(g) )
             throw new GraphViewException("Can't update the default union graph of a dataset") ; 
         Node s = t.getSubject() ;
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
-        dsg.add(gn, s, p, o) ;
+        dsg.add(g, s, p, o) ;
     }
 
     @Override
     public void performDelete( Triple t ) 
     {
-        if ( Quad.isUnionGraph(gn) )
+        Node g = graphNode(gn) ;
+        if ( Quad.isUnionGraph(g) )
             throw new GraphViewException("Can't update the default union graph of a dataset") ; 
         Node s = t.getSubject() ;
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
-        dsg.delete(gn, s, p, o) ;
+        dsg.delete(g, s, p, o) ;
     }
 }
 
