@@ -18,11 +18,14 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import org.junit.Test ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.GraphViewDataset ;
+import com.hp.hpl.jena.sparql.core.GraphView ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Directly call the view mechanism */
 public class TestDatasetGraphViewGraphs extends AbstractTestGraphOverDataset
@@ -33,12 +36,31 @@ public class TestDatasetGraphViewGraphs extends AbstractTestGraphOverDataset
     @Override
     protected Graph makeDefaultGraph(DatasetGraph dsg)
     {
-        return GraphViewDataset.createDefaultGraph(dsg) ;
+        return GraphView.createDefaultGraph(dsg) ;
     }
 
     @Override
     protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
     {
-        return GraphViewDataset.createNamedGraph(dsg, gn) ;
+        return GraphView.createNamedGraph(dsg, gn) ;
+    }
+    
+    @Test public void graphDSG_basic_1()
+    {
+        Graph g = makeDefaultGraph(baseDSG) ;
+        assertTrue(g instanceof GraphView) ;
+        GraphView gv = (GraphView)g ;
+        assertEquals(baseDSG, gv.getDataset()) ; 
+        assertEquals(null, gv.getGraphName()) ;
+    }
+    
+    @Test public void graphDSG_basic_2()
+    {
+        Node gn1 = SSE.parseNode("<g1>") ;
+        Graph g = makeNamedGraph(baseDSG, gn1) ;
+        assertTrue(g instanceof GraphView) ;
+        GraphView gv = (GraphView)g ;
+        assertEquals(baseDSG, gv.getDataset()) ; 
+        assertEquals(gn1, gv.getGraphName()) ;
     }
 }

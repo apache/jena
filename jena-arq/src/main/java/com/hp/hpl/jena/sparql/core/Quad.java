@@ -104,7 +104,7 @@ public class Quad
     /** Default, concrete graph (either generated or explicitly named) -- not triple-in-quad*/
     public static boolean isDefaultGraph(Node node)
     {
-        return isDefaultGraphGenerated(node) ||isDefaultGraphExplicit(node) ; 
+        return isDefaultGraphGenerated(node) || isDefaultGraphExplicit(node) ; 
     }
 
     /** Default, concrete graph (either generated or explicitly named) -- not triple-in-quad*/
