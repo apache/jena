@@ -45,9 +45,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphNamedTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** TDB executor for algebra expressions.  It is the standard ARQ executor
@@ -170,11 +168,11 @@ public class OpExecutorTDB extends OpExecutor
                                             ExecutionContext execCxt)
     {
         // Is it the real default graph (normal route or explicitly named)?
-        if ( ! isDefaultGraphStorage(graph.getGraphNode()))
+        if ( ! isDefaultGraphStorage(graph.getGraphName()))
         {
             // Not default storage - it's a named graph in storage. 
-            DatasetGraphTDB ds = graph.getDataset() ;
-            return optimizeExecuteQuads(ds, input, graph.getGraphNode(), opBGP.getPattern(), exprs, execCxt) ;
+            DatasetGraphTDB ds = graph.getDSG() ;
+            return optimizeExecuteQuads(ds, input, graph.getGraphName(), opBGP.getPattern(), exprs, execCxt) ;
         }
         
         // Execute a BGP on the real default graph
@@ -194,7 +192,7 @@ public class OpExecutorTDB extends OpExecutor
         if ( pattern.size() >= 2 )
         {
             // Must be 2 or triples to reorder. 
-            ReorderTransformation transform = graph.getDataset().getReorderTransform() ;
+            ReorderTransformation transform = graph.getDSG().getReorderTransform() ;
             if ( transform != null )
             {
                 QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
@@ -375,7 +373,10 @@ public class OpExecutorTDB extends OpExecutor
                 BasicPattern bgp = opBGP.getPattern() ;
                 Explain.explain("Execute", bgp, execCxt.getContext()) ;
                 // Triple-backed (but may be named as explicit default graph).
-                return SolverLib.execute((GraphTDB)g, bgp, input, filter, execCxt) ;
+                //return SolverLib.execute((GraphTDB)g, bgp, input, filter, execCxt) ;
+                GraphTDB gtdb = (GraphTDB)g ;
+                Node gn = decideGraphNode(gtdb.getGraphName(), execCxt) ;
+                return SolverLib.execute(gtdb.getDSG(), gn, bgp, input, filter, execCxt) ;
             }
             Log.warn(this, "Non-GraphTDB passed to OpExecutorPlainTDB") ;
             return super.execute(opBGP, input) ;
@@ -398,23 +399,12 @@ public class OpExecutorTDB extends OpExecutor
             Graph g = execCxt.getActiveGraph() ;
             if ( g instanceof GraphTDB )
             {
-                if ( g instanceof GraphTriplesTDB )
-                {
-                    // Triples graph from TDB (which is the default graph of the dataset),
-                    // used a named graph in a composite dataset.
-                    BasicPattern bgp = opQuadPattern.getBasicPattern() ;
-                    Explain.explain("Execute", bgp, execCxt.getContext()) ;
-                    return SolverLib.execute((GraphTDB)g, bgp, input, filter, execCxt) ;
-                }
-                
-                if ( g instanceof GraphNamedTDB )
-                {
-                    // Legacy?/ Does not now happen?
-                    Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext()) ;
-                    // Quad-backed graph
-                    return SolverLib.execute(((GraphTDB)g).getDataset(), opQuadPattern.getGraphNode(), opQuadPattern.getBasicPattern(), 
-                                             input, filter, execCxt) ;
-                }
+                // Triples graph from TDB (which is the default graph of the dataset),
+                // used a named graph in a composite dataset.
+                BasicPattern bgp = opQuadPattern.getBasicPattern() ;
+                Explain.explain("Execute", bgp, execCxt.getContext()) ;
+                // Don't pass in G -- gn may be different.
+                return SolverLib.execute(((GraphTDB)g).getDSG(), gn, bgp, input, filter, execCxt) ;
             }
             Log.warn(this, "Non-DatasetGraphTDB passed to OpExecutorPlainTDB") ;
             return super.execute(opQuadPattern, input) ;

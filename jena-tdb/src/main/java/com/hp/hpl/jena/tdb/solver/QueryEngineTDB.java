@@ -38,7 +38,7 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.migrate.A2 ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphNamedTDB ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 // This exists to intercept the query execution setup.
@@ -110,7 +110,7 @@ public class QueryEngineTDB extends QueryEngineMain
             // Rewrite so that any explicitly named "default graph" is union graph.
             // And set the default graph to be the union graph as well.
             DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
-            ds.setEffectiveDefaultGraph(new GraphNamedTDB(ds, Quad.unionGraph)) ;
+            ds.setEffectiveDefaultGraph(new GraphTDB(ds, Quad.unionGraph)) ;
             Explain.explain("REWRITE(Union default graph)", op, context) ;
             dsg = ds ;
         }

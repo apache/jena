@@ -18,14 +18,22 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import java.util.Iterator ;
+
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -60,18 +68,18 @@ public class TestDatasetTDB extends BaseTest
     
     private static void load2(Model model)
     {
-        Resource r1 = model.createResource(base1+"r2") ;
+        Resource r2 = model.createResource(base1+"r2") ;
         Property p1 = model.createProperty(baseNS+"p1") ;
-        model.add(r1, p1, "x1") ;
-        model.add(r1, p1, "x2") ;
+        model.add(r2, p1, "x1") ;
+        model.add(r2, p1, "x2") ;
     }
 
     private static void load3(Model model)
     {
-        Resource r1 = model.createResource(base1+"r3") ;
+        Resource r3 = model.createResource(base1+"r3") ;
         Property p1 = model.createProperty(baseNS+"p2") ;
-        model.add(r1, p1, "x1") ;
-        model.add(r1, p1, "x2") ;
+        model.add(r3, p1, "x1") ;
+        model.add(r3, p1, "x2") ;
     }
 
     @Test public void prefix1()
@@ -184,6 +192,24 @@ public class TestDatasetTDB extends BaseTest
         }
         assertTrue(m.isIsomorphicWith(m2)) ;
     }
+
+    @Test public void special_debug()
+    {
+        Dataset ds = create() ;
+
+        load1(ds.getDefaultModel()) ;
+        load2(ds.getNamedModel("http://example/graph1")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;
+        
+        DatasetGraph dsg = ds.asDatasetGraph() ;
+        Node s = null ;
+        Node p = NodeFactory.createURI(baseNS+"p1") ;
+        Node o = SSE.parseNode("'x1'") ;
+        
+        Iterator<Quad> iter = dsg.find(Node.ANY, s,p,o) ;  
+        Iter.print(iter) ;
+    }
+    
     
     @Test public void special4()
     {
@@ -196,18 +222,39 @@ public class TestDatasetTDB extends BaseTest
         Model m = ModelFactory.createDefaultModel() ;
         load2(m) ;
         load3(m) ;
-        TDB.sync(ds) ;
         
         String qs = "PREFIX : <"+baseNS+"> SELECT (COUNT(?x) as ?c) WHERE { ?x (:p1|:p2) 'x1' }" ;
-        Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ; 
-        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
+        Query q = QueryFactory.create(qs) ;
+        
+        // Model
+        QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
+        long c_m = qExec.execSelect().next().getLiteral("c").getLong() ;
+
+        // dataset
+        qExec = QueryExecutionFactory.create(q, ds) ;
         qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
-        long c1 = qExec.execSelect().next().getLiteral("c").getLong() ;
+        long c_ds = qExec.execSelect().next().getLiteral("c").getLong() ;
         qExec.close() ;
         
-        qExec = QueryExecutionFactory.create(q, m) ;
-        long c2 = qExec.execSelect().next().getLiteral("c").getLong() ;
-        assertEquals(c1, c2) ; 
+        // --------
+        SSE.write(m) ;
+        System.out.println() ;
+        SSE.write(ds) ;
+        
+        String qs2 = "PREFIX : <"+baseNS+"> SELECT * WHERE { ?x (:p1|:p2) 'x1' }" ;
+        Query q2 = QueryFactory.create(qs2) ;
+        System.out.println("Dataset") ;
+        qExec = QueryExecutionFactory.create(q2, ds) ;
+        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        
+        System.out.println("Model") ;
+        qExec = QueryExecutionFactory.create(q2, m) ;
+        ResultSetFormatter.out(qExec.execSelect()) ;
+        // --------
+        
+        
+        assertEquals(c_m, c_ds) ; 
         qExec.close() ;
     }
     
@@ -259,6 +306,16 @@ public class TestDatasetTDB extends BaseTest
         Query q = QueryFactory.create(qs) ;
         QueryExecution qExec = QueryExecutionFactory.create(q, ds2) ;
         Model m2 = qExec.execConstruct() ;
+        if ( ! m.isIsomorphicWith(m2) )
+        {
+            System.out.println(m.getGraph().getClass().getSimpleName()+"/"+m.size()+" : "+m2.getGraph().getClass().getSimpleName()+"/"+m2.size()) ;
+            System.out.println("---- Different:" ) ;
+            RDFDataMgr.write(System.out, m, Lang.TTL) ;
+            System.out.println("---- ----" ) ;
+            RDFDataMgr.write(System.out, m2, Lang.TTL) ;
+            System.out.println("---- ----") ;
+        }
+        
         assertTrue(m.isIsomorphicWith(m2)) ;
     }
     

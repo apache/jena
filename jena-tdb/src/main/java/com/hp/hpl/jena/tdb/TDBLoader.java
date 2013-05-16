@@ -119,8 +119,6 @@ public class TDBLoader
         loadModel(model, url, false) ;
     }
     
-
-    
     /** Load the contents of URL into a model - may not be as efficient as bulk loading into a TDB graph  */
     public static void loadModel(Model model, String url, boolean showProgress)
     {
@@ -240,21 +238,21 @@ public class TDBLoader
                     throw new TDBException("Not a triples language") ;
             }
         }
-        
-        if ( graph.getGraphNode() == null )
-            loadDefaultGraph$(graph.getDataset(), urls, showProgress) ;
+
+        if ( graph.getGraphName() == null )
+            loadDefaultGraph$(graph.getDSG(), urls, showProgress) ;
         else
-            loadNamedGraph$(graph.getDataset(), graph.getGraphNode(), urls, showProgress) ;
+            loadNamedGraph$(graph.getDSG(), graph.getGraphName(), urls, showProgress) ;
     }
 
     // These are the basic operations for TDBLoader.
 
     private static void loadGraph$(GraphTDB graph, InputStream input, boolean showProgress)
     {
-        if ( graph.getGraphNode() == null )
-            loadDefaultGraph$(graph.getDataset(), input, showProgress) ;
+        if ( graph.getGraphName() == null )
+            loadDefaultGraph$(graph.getDSG(), input, showProgress) ;
         else
-            loadNamedGraph$(graph.getDataset(), graph.getGraphNode(), input, showProgress) ;
+            loadNamedGraph$(graph.getDSG(), graph.getGraphName(), input, showProgress) ;
     }
 
     private static void loadDefaultGraph$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)

@@ -113,7 +113,5 @@ public class TDBInternal
             return ((DatasetGraphTransaction)datasetGraph).getBaseDatasetGraph() ;
         throw new TDBException("Not a suitable DatasetGraph to get it's base storage: "+Utils.classShortName(datasetGraph.getClass())) ; 
     }
-    
-
 }
 

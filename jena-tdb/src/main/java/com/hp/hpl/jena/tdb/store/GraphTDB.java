@@ -18,24 +18,298 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import java.util.Iterator ;
+
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.other.GLib ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.core.GraphView ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB ;
+import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
-public interface GraphTDB extends Graph, Closeable, Sync
+/** General operations for TDB graphs (free-standing graph, default graph and named graphs) */
+public class GraphTDB extends GraphView implements Closeable, Sync
 {
+    private final BulkUpdateHandler bulkUpdateHandler = new BulkUpdateHandlerTDB(this) ;
+    private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
+    
+    // Switch this to DatasetGraphTransaction
+    private final DatasetGraphTDB dataset ;
+    
+    public GraphTDB(DatasetGraphTDB dataset, Node graphName)
+    { 
+        super(dataset, graphName) ;
+        this.dataset = dataset ;
+    }
+    
+    
+    /** get the current TDB dataset graph - changes for transactions */  
+    public DatasetGraphTDB getDSG()
+    //{ return dataset.get() ; }
+    { return dataset ; }
+
     /** The NodeTupleTable for this graph */ 
-    public NodeTupleTable getNodeTupleTable() ;
+    public NodeTupleTable getNodeTupleTable()
+    {
+        return chooseNodeTupleTable(getDSG(), getGraphName()) ;
+    }
     
-    /**
-     * Return the graph node for this graph if it's in a quad table, else return
-     * null for a triple table based (e.g. the default graph of a dataset)
-     */ 
-    public Node getGraphNode() ;
+    public static NodeTupleTable chooseNodeTupleTable(DatasetGraphTDB dsg, Node graphNode)
+    {
+        if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
+            return dsg.getTripleTable().getNodeTupleTable() ;
+        else
+            // Includes Node.ANY and union graph
+            return dsg.getQuadTable().getNodeTupleTable() ;
+    }
     
-    /** Return the TDB-backed dataset for this graph */
-    public DatasetGraphTDB getDataset() ;
+    @Override
+    protected PrefixMapping createPrefixMapping()
+    {
+        if ( isDefaultGraph() )
+            return getDSG().getPrefixes().getPrefixMapping() ;
+        if ( isUnionGraph() )
+            return getDSG().getPrefixes().getPrefixMapping() ;
+        return getDSG().getPrefixes().getPrefixMapping(getGraphName().getURI()) ;
+    }
+    
+    @Override
+    public final void performAdd(Triple triple)
+    { 
+        startUpdate() ;
+        super.performAdd(triple) ;
+        finishUpdate() ;
+    }
+
+    @Override
+    public final void performDelete(Triple triple)
+    {
+        startUpdate() ;
+        super.performDelete(triple) ;
+        finishUpdate() ;
+    }
+    
+    @Override
+    public final void sync()        { dataset.sync(); }
+    
+    @Override
+    final public void close()       { sync() ; }
+    
+    protected static ExtendedIterator<Triple> graphBaseFindDft(DatasetGraphTDB dataset, TripleMatch m)
+    {
+        Iterator<Quad> iterQuads = dataset.find(Quad.defaultGraphIRI, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+        if ( iterQuads == null )
+            return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
+        // Can't be duplicates - fixed graph node..
+        Iterator<Triple> iterTriples = new ProjectQuadsToTriples(Quad.defaultGraphIRI , iterQuads) ;
+        return WrappedIterator.createNoRemove(iterTriples) ;
+    }
+    
+    protected static ExtendedIterator<Triple> graphBaseFindNG(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
+    {
+        Node gn = graphNode ;
+        // Explicitly named union graph. 
+        if ( isUnionGraph(gn) )
+            gn = Node.ANY ;
+
+        Iterator<Quad> iter = dataset.getQuadTable().find(gn, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+        if ( iter == null )
+            return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
+        
+        Iterator<Triple> iterTriples = new ProjectQuadsToTriples((gn == Node.ANY ? null : gn) , iter) ;
+        
+        if ( gn == Node.ANY )
+            iterTriples = Iter.distinct(iterTriples) ;
+        return WrappedIterator.createNoRemove(iterTriples) ;
+    }
+    
+    @Override
+    protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o)
+    {
+        Node g = Quad.unionGraph ;
+        Iterator<Quad> iterQuads = getDSG().find(g, s, p, o) ;
+        Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
+        // Suppress duplicates after projecting to triples.
+        // TDB guarantees that duplicates are adjacent.
+        // See SolverLib.
+        iter = Iter.distinctAdjacent(iter) ;
+        return WrappedIterator.createNoRemove(iter) ;
+    }
+    
+    public void startRead()             { getDSG().startRead() ; }
+    public void finishRead()            { getDSG().finishRead() ; }
+
+    public final void startUpdate()     { getDSG().startUpdate() ; }
+    public final void finishUpdate()    { getDSG().finishUpdate() ; }
+
+    @Override
+    protected final int graphBaseSize()
+    {
+        if ( isDefaultGraph() )
+            return (int)getNodeTupleTable().size() ;
+        
+        Node gn = getGraphName() ;
+        boolean unionGraph = isUnionGraph(gn) ; 
+        gn =  unionGraph ? Node.ANY : gn ;
+        Iterator<Tuple<NodeId>> iter = getDSG().getQuadTable().getNodeTupleTable().findAsNodeIds(gn, null, null, null) ;
+        if ( unionGraph ) 
+        {
+            iter = Iter.map(iter, project4TupleTo3Tuple) ;
+            iter = Iter.distinctAdjacent(iter) ;
+        }
+        return (int)Iter.count(iter) ;
+    }
+    
+    private static Transform<Tuple<NodeId>, Tuple<NodeId>> project4TupleTo3Tuple = new Transform<Tuple<NodeId>, Tuple<NodeId>>(){
+        @Override
+        public Tuple<NodeId> convert(Tuple<NodeId> item)
+        {
+            if ( item.size() != 4 )
+                throw new TDBException("Expected a Tuple of 4, got: "+item) ;
+            return Tuple.create(item.get(1), item.get(2), item.get(3)) ;
+        }} ; 
+    
+    // Convert from Iterator<Quad> to Iterator<Triple>
+    static class ProjectQuadsToTriples implements Iterator<Triple>
+    {
+        private final Iterator<Quad> iter ;
+        private final Node graphNode ;
+        /** Project quads to triples - check the graphNode is as expected if not null */
+        ProjectQuadsToTriples(Node graphNode, Iterator<Quad> iter) { this.graphNode = graphNode ; this.iter = iter ; }
+        @Override
+        public boolean hasNext() { return iter.hasNext() ; }
+        
+        @Override
+        public Triple next()
+        { 
+            Quad q = iter.next();
+            if ( graphNode != null && ! q.getGraph().equals(graphNode))
+                throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph (expected="+graphNode+", got="+q.getGraph()+")") ;
+            return q.asTriple() ;
+        }
+        @Override
+        public void remove() { iter.remove(); }
+    }
+    
+    @Override
+    public Capabilities getCapabilities()
+    {
+        if ( capabilities == null )
+            capabilities = new Capabilities(){
+                @Override
+                public boolean sizeAccurate() { return true; }
+                @Override
+                public boolean addAllowed() { return true ; }
+                @Override
+                public boolean addAllowed( boolean every ) { return true; } 
+                @Override
+                public boolean deleteAllowed() { return true ; }
+                @Override
+                public boolean deleteAllowed( boolean every ) { return true; } 
+                @Override
+                public boolean canBeEmpty() { return true; }
+                @Override
+                public boolean iteratorRemoveAllowed() { return false; } /* ** */
+                @Override
+                public boolean findContractSafe() { return true; }
+                @Override
+                public boolean handlesLiteralTyping() { return false; } /* ** */
+            } ; 
+        
+        return super.getCapabilities() ;
+    }
+    
+    @Deprecated
+    @Override
+    public BulkUpdateHandler getBulkUpdateHandler()
+    { return bulkUpdateHandler ; }
+    
+    @Override
+    public TransactionHandler getTransactionHandler()
+    { return transactionHandler ; }
+
+    @Override
+    public void clear()
+    {
+        removeWorker(this, Node.ANY, Node.ANY, Node.ANY) ;
+        getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
+    }
+    
+    @Override
+    public void remove( Node s, Node p, Node o )
+    {
+        if ( getEventManager().listening() )
+        {
+            // Have to do it the hard way so that triple events happen.
+            super.remove(s, p, o) ;
+            return ;
+        }
+        
+        removeWorker(this, s, p, o) ;
+        // We know no one is listening ...
+        //getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
+    }
+
+    private static final int sliceSize = 1000 ;
+
+    public static void removeWorker(GraphTDB gv, Node s, Node p, Node o)
+    {
+        NodeTupleTable t = gv.getNodeTupleTable() ;
+        DatasetGraphTDB dsg = gv.getDSG() ;
+        dsg.startUpdate() ;
+        Node gn = gv.getGraphName() ;
+
+        // Delete in batches.
+        // That way, there is no active iterator when a delete 
+        // from the indexes happens.
+        
+        @SuppressWarnings("unchecked")
+        Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
+        
+        while (true)
+        {
+            // Convert/cache s,p,o?
+            // The Node Cache will catch these so don't worry unduely. 
+            Iterator<Tuple<NodeId>> iter = null ;
+            if ( gn == null )
+                iter = t.findAsNodeIds(s, p, o) ;
+            else
+                iter = t.findAsNodeIds(gn, s, p, o) ;
+            
+            if ( iter == null )
+                // Finished?
+                return ;
+            
+            // Get a slice
+            int len = 0 ;
+            for ( ; len < sliceSize ; len++ )
+            {
+                if ( !iter.hasNext() ) break ;
+                array[len] = iter.next() ;
+            }
+            
+            // Delete them.
+            for ( int i = 0 ; i < len ; i++ )
+            {
+                t.getTupleTable().delete(array[i]) ;
+                array[i] = null ;
+            }
+            // Finished?
+            if ( len < sliceSize )
+                break ;
+        }
+        
+        dsg.finishUpdate() ;
+    }
 }

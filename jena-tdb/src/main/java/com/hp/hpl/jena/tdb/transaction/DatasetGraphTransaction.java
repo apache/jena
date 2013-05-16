@@ -83,14 +83,16 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
         return get() ;
     }
     
+    /** Access the base storage - use with care */
     public DatasetGraphTDB getBaseDatasetGraph()
     {
         checkNotClosed() ;
         return sConn.getBaseDataset() ;
     }
 
+    /** Get the current DatasetGraphTDB */
     @Override
-    protected DatasetGraphTDB get()
+    public DatasetGraphTDB get()
     {
         if ( isInTransaction() )
         {
