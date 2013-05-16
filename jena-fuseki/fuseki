@@ -20,7 +20,9 @@
 #
 # Startup script for Fuseki under *nix systems (works with cygwin too)
 #
-# Configuration:
+# Configuration
+# -------------
+# Default values are loaded from /etc/default/fuseki, if it exists.
 #
 # JAVA
 #   Command to invoke Java. If not set, java (from the PATH) will be used.
@@ -40,15 +42,36 @@
 #   The FUSEKI PID file, defaults to $FUSEKI_RUN/fuseki.pid
 #
 # FUSEKI_ARGS
-#   The arguments to pass to the Fuseki server on the command line, overrides FUSEKI_CONF and FUSEKI_DATA_DIR settings
+#   The arguments to pass to the Fuseki server on the command line. Defaults to:
+#    --update --loc=$FUSKEI_DATA_DIR /ds    # if FUSEKI_CONF is not set
+#    --config=$FUSEKI_CONF                  # if FUSEKI_CONF is set
 #
 # FUSEKI_CONF
-#   The FUSEKI Configuration file
+#   The Fuseki configuration file, usually in RDF Turtle notation.
 #
 # FUSEKI_USER
 #   If set, the server will be run as this user
 #
+# FUSEKI_DATA_DIR
+#   The location of the data directory Fuseki will use (i.e. the value of --loc).
+#   Defaults to $FUSEKI_HOME/DB
 #
+# FUSEKI_LOGS
+#   Directory where logs will be generated. Defaults to $FUSEKI_HOME/log
+#
+# FUSEKI_LOGS_STDERROUT
+#   Log file with stderr and stdout log output from Fuseki. Defaults to
+#   $FUSEKI_LOGS/stderrout.log
+
+### BEGIN INIT INFO
+# Provides:          fuseki
+# Required-Start:    $remote_fs $network
+# Required-Stop:     $remote_fs $network
+# Default-Start:     3 4 5
+# Default-Stop:      0 1 2 6
+# Short-Description: Start Jena Fuseki at boot time
+# Description:       Jena Fuseki is a service that provides a SPARQL API over HTTP to one more RDF triple stores
+### END INIT INFO
 
 usage()
 {
@@ -64,10 +87,10 @@ findDirectory()
   local L OP=$1
   shift
   for L in "$@"; do
-    [ "$OP" "$L" ] || continue 
+    [ "$OP" "$L" ] || continue
     printf %s "$L"
     break
-  done 
+  done
 }
 
 running()
@@ -122,31 +145,31 @@ fi
 
 
 # Find a location for the pid file
-if [ -z "$FUSEKI_RUN" ] 
+if [ -z "$FUSEKI_RUN" ]
 then
   FUSEKI_RUN=$(findDirectory -w /var/run /usr/var/run $FUSEKI_HOME /tmp)
 fi
 
 # Get PID file name
-if [ -z "$FUSEKI_PID" ] 
+if [ -z "$FUSEKI_PID" ]
 then
   FUSEKI_PID="$FUSEKI_RUN/fuseki.pid"
 fi
 
 # Log directory
-if [ -z "$FUSEKI_LOGS" ] 
+if [ -z "$FUSEKI_LOGS" ]
 then
   FUSEKI_LOGS="$FUSEKI_HOME/log"
 fi
 
 # Std Err and Out log
-if [ -z "$FUSEKI_LOGS_STDERROUT" ] 
+if [ -z "$FUSEKI_LOGS_STDERROUT" ]
 then
   FUSEKI_LOGS_STDERROUT="$FUSEKI_LOGS/stderrout.log"
 fi
 
 # Data directory
-if [ -z "$FUSEKI_DATA_DIR" ] 
+if [ -z "$FUSEKI_DATA_DIR" ]
 then
   FUSEKI_DATA_DIR="$FUSEKI_HOME/DB"
 fi
@@ -190,7 +213,7 @@ fi
 if [ -z "$FUSEKI_ARGS" ]
 then
   if [ -z "$FUSEKI_CONF" ]
-  then  
+  then
     FUSEKI_ARGS="--update --loc=$DATA_DIR /ds"
   else
     FUSEKI_ARGS="--config=$FUSEKI_CONF"
@@ -206,7 +229,7 @@ RUN_CMD=("$JAVA" ${RUN_ARGS[@]})
 #######################################
 
 #####################################################
-# Comment these out after you're happy with what 
+# Comment these out after you're happy with what
 # the script is doing.
 #####################################################
 if (( DEBUG ))
@@ -229,7 +252,7 @@ NO_START=0
 # Life cycle functions
 start() {
 
-  if (( NO_START )); then 
+  if (( NO_START )); then
     echo "Not starting Fuseki - NO_START=1";
     exit
   fi
@@ -239,7 +262,7 @@ start() {
   mkdir -p "$FUSEKI_LOGS"
 
   echo -n "Starting Fuseki: "
-  if type start-stop-daemon > /dev/null 2>&1 
+  if type start-stop-daemon > /dev/null 2>&1
   then
     unset CH_USER
     if [ -n "$FUSEKI_USER" ]
@@ -265,7 +288,7 @@ start() {
         # dead pid file - remove
         rm -f "$FUSEKI_PID"
     fi
-    if [ "$FUSEKI_USER" ] 
+    if [ "$FUSEKI_USER" ]
     then
       touch "$FUSEKI_PID"
       chown "$FUSEKI_USER" "$FUSEKI_PID"
@@ -280,7 +303,7 @@ start() {
       disown $!
       echo $! > "$FUSEKI_PID"
     fi
-    
+
     print_started
   fi
 }
@@ -294,7 +317,7 @@ print_failed() {
   echo "FAILED to start Fuseki `date`"
 }
 
-delete_fuseki_pid_file() { 
+delete_fuseki_pid_file() {
   rm -f "$FUSEKI_PID"
 }
 
@@ -312,7 +335,7 @@ stop() {
   ###############################################################
   if type start-stop-daemon > /dev/null 2>&1; then
     start-stop-daemon --stop --pidfile "$FUSEKI_PID" --chdir "$FUSEKI_HOME" --startas "$JAVA" --signal HUP
-    
+
     ## Die after a 30 second timeout
     TIMEOUT=30
     while running "$FUSEKI_PID"; do
@@ -326,7 +349,7 @@ stop() {
   else
     PID=$(cat "$FUSEKI_PID" 2>/dev/null)
     kill "$PID" 2>/dev/null
-  
+
     TIMEOUT=30
     while running $FUSEKI_PID; do
       if (( TIMEOUT-- == 0 )); then
