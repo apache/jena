@@ -19,8 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 import java.io.IOException ;
-import java.util.HashMap ;
-import java.util.Map ;
 
 import javax.servlet.http.HttpServletResponse ;
 import javax.servlet.http.HttpServletResponseWrapper ;
@@ -31,30 +29,27 @@ import org.apache.jena.atlas.logging.Log ;
 
 public class HttpServletResponseTracker extends HttpServletResponseWrapper
 {
-    Map <String, String> headers = new HashMap<String, String>() ;
-    int statusCode = -1 ;
-    String message = null ;
-    int contentLength = -1 ;
-    String contentType = null ;
+    private final WebRequest webRequest ;
 
-    public HttpServletResponseTracker(HttpServletResponse response)
+    public HttpServletResponseTracker(WebRequest webRequest, HttpServletResponse response)
     {
         super(response) ;
+        this.webRequest = webRequest ;
     }
 
     @Override
     public void sendError(int sc, String msg) throws IOException
     {
-        statusCode = sc ;
-        message = msg ;
+        webRequest.statusCode = sc ;
+        webRequest.message = msg ;
         super.sendError(sc, msg) ;
     }
 
     @Override
     public void sendError(int sc) throws IOException
     {
-        statusCode = sc ;
-        message = null ;
+        webRequest.statusCode = sc ;
+        webRequest.message = null ;
         super.sendError(sc) ;
     }
 
@@ -62,6 +57,7 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
     public void setHeader(String name, String value)
     {
         super.setHeader(name, value) ;
+        webRequest.headers.put(name, value) ;
     }
 
     @Override
@@ -73,8 +69,8 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
     @Override
     public void setStatus(int sc) 
     {
-        statusCode = sc ;
-        message = null ;
+        webRequest.statusCode = sc ;
+        webRequest.message = null ;
         super.setStatus(sc) ;
     }
 
@@ -82,22 +78,22 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
     @Deprecated
     public void setStatus(int sc, String sm)
     {
-        statusCode = sc ;
-        message = sm ;
+        webRequest.statusCode = sc ;
+        webRequest.message = sm ;
         super.setStatus(sc, sm) ;
     }
 
     @Override
     public void setContentLength(int len)
     {
-        contentLength = len ;
+        webRequest.contentLength = len ;
         super.setContentLength(len) ;
     }
 
     @Override
     public void setContentType(String type)
     {
-        contentType = type ;
+        webRequest.contentType = type ;
         super.setContentType(type) ;
     }
       

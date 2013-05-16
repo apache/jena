@@ -54,38 +54,54 @@ public abstract class SPARQL_ServletBase extends ServletBase
     protected void doCommon(HttpServletRequest request, HttpServletResponse response)
     //throws ServletException, IOException
     {
-        long id = allocRequestId(request, response);
-        printRequest(id, request) ;
-        
-        HttpServletResponseTracker responseTracked = new HttpServletResponseTracker(response) ;
-        response = responseTracked ;
-        initResponse(request, response) ;
-        Context cxt = ARQ.getContext() ;
-
         try {
-            validate(request) ;
-            doCommonWorker(id, request, response) ;
-        } catch (QueryCancelledException ex) {
-            // Also need the per query info ...
-            String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
-            // Possibility :: response.setHeader("Retry-after", "600") ;    // 5 minutes
-            responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
-        } catch (ActionErrorException ex) {
-            if ( ex.exception != null )
-                ex.exception.printStackTrace(System.err) ;
-            // Log message done by printResponse in a moment.
-            if ( ex.message != null )
-                responseSendError(response, ex.rc, ex.message) ;
-            else
-                responseSendError(response, ex.rc) ;
-        } catch (Throwable ex) {
-            // This should not happen.
-            //ex.printStackTrace(System.err) ;
-            log.warn(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
-            responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
+            long id = allocRequestId(request, response);
+            
+            // Lifecycle
+            WebRequest wRequest = allocWebAction(id, request, response) ;
+            // then add to doCommonWorker
+            // work with HttpServletResponseTracker
+            
+            printRequest(wRequest) ;
+            wRequest.setStartTime() ;
+            
+            response = wRequest.getResponse() ;
+            initResponse(request, response) ;
+            Context cxt = ARQ.getContext() ;
+    
+            try {
+                validate(request) ;
+                doCommonWorker(id, request, response) ;
+            } catch (QueryCancelledException ex) {
+                // Also need the per query info ...
+                String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
+                // Possibility :: response.setHeader("Retry-after", "600") ;    // 5 minutes
+                responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
+            } catch (ActionErrorException ex) {
+                if ( ex.exception != null )
+                    ex.exception.printStackTrace(System.err) ;
+                // Log message done by printResponse in a moment.
+                if ( ex.message != null )
+                    responseSendError(response, ex.rc, ex.message) ;
+                else
+                    responseSendError(response, ex.rc) ;
+            } catch (Throwable ex) {
+                // This should not happen.
+                //ex.printStackTrace(System.err) ;
+                log.warn(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
+                responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
+            }
+    
+            wRequest.setFinishTime() ;
+            printResponse(wRequest) ;
+        } catch (Throwable th) {
+            log.error("Internal error", th) ;
         }
+    }
 
-        printResponse(id, responseTracked) ;
+    /** Return a fresh WebAction for this request */
+    protected WebRequest allocWebAction(long id, HttpServletRequest request, HttpServletResponse response) {
+        return new WebRequest(id, request, response) ;
     }
 
     protected abstract void validate(HttpServletRequest request) ;
@@ -121,25 +137,25 @@ public abstract class SPARQL_ServletBase extends ServletBase
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "HTTP PATCH not supported");
     }
     
-    private void printRequest(long id, HttpServletRequest request)
+    private void printRequest(WebRequest wAction)
     {
-        String url = wholeRequestURL(request) ;
-        String method = request.getMethod() ;
+        String url = wholeRequestURL(wAction.getRequest()) ;
+        String method = wAction.getRequest().getMethod() ;
 
-        log.info(format("[%d] %s %s", id, method, url)) ; 
+        log.info(format("[%d] %s %s", wAction.id, method, url)) ; 
         if ( verbose_debug )
         {
-            Enumeration<String> en = request.getHeaderNames() ;
+            Enumeration<String> en = wAction.getRequest().getHeaderNames() ;
             for ( ; en.hasMoreElements() ; )
             {
                 String h = en.nextElement() ;
-                Enumeration<String> vals = request.getHeaders(h) ;
+                Enumeration<String> vals = wAction.getRequest().getHeaders(h) ;
                 if ( ! vals.hasMoreElements() )
-                    log.info(format("[%d]   ",id, h)) ;
+                    log.info(format("[%d]   ", wAction.id, h)) ;
                 else
                 {
                     for ( ; vals.hasMoreElements() ; )
-                        log.info(format("[%d]   %-20s %s", id, h, vals.nextElement())) ;
+                        log.info(format("[%d]   %-20s %s", wAction.id, h, vals.nextElement())) ;
                 }
             }
         }
@@ -154,24 +170,37 @@ public abstract class SPARQL_ServletBase extends ServletBase
             setVaryHeader(response) ;
     }
     
-    private void printResponse(long id, HttpServletResponseTracker response)
+    private void printResponse(WebRequest wRequest)
     {
+        long time = wRequest.getTime() ;
+        
+        HttpServletResponseTracker response = wRequest.getResponse() ;
         if ( verbose_debug )
         {
-            if ( response.contentType != null )
-                log.info(format("[%d]   %-20s %s", id, HttpNames.hContentType, response.contentType)) ;
-            if ( response.contentLength != -1 )
-                log.info(format("[%d]   %-20s %d", id, HttpNames.hContentLengh, response.contentLength)) ;
-            for ( Map.Entry<String, String> e: response.headers.entrySet() )
-                log.info(format("[%d]   %-20s %s", id, e.getKey(), e.getValue())) ;
+            if ( wRequest.contentType != null )
+                log.info(format("[%d]   %-20s %s", wRequest.id, HttpNames.hContentType, wRequest.contentType)) ;
+            if ( wRequest.contentLength != -1 )
+                log.info(format("[%d]   %-20s %d", wRequest.id, HttpNames.hContentLengh, wRequest.contentLength)) ;
+            for ( Map.Entry<String, String> e: wRequest.getHeaders().entrySet() )
+                log.info(format("[%d]   %-20s %s", wRequest.id, e.getKey(), e.getValue())) ;
         }
-        
-        if ( response.message == null )
-            log.info(String.format("[%d] %d %s", id, response.statusCode, HttpSC.getMessage(response.statusCode))) ;
+
+        String timeStr = fmtMillis(time) ;
+
+        if ( wRequest.message == null )
+            log.info(String.format("[%d] %d %s (%s) ", wRequest.id, wRequest.statusCode, HttpSC.getMessage(wRequest.statusCode), timeStr)) ;
         else
-            log.info(String.format("[%d] %d %s", id, response.statusCode, response.message)) ;
+            log.info(String.format("[%d] %d %s (%s) ", wRequest.id, wRequest.statusCode, wRequest.message, timeStr)) ;
     }
     
+    private static String fmtMillis(long time)
+    {
+        // Millis only? seconds only?
+        if ( time < 1000 )
+            return String.format("%,d ms", time) ;
+        return String.format("%,.3f s", time/1000.0) ;
+    }
+
     /** Map request to uri in the registry.
      *  null means no mapping done (passthrough). 
      */
