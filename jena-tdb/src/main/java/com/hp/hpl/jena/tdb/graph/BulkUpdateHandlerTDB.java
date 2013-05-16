@@ -22,13 +22,12 @@ import com.hp.hpl.jena.graph.BulkUpdateHandler ;
 import com.hp.hpl.jena.graph.GraphEvents ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler ;
-import com.hp.hpl.jena.tdb.store.GraphTDBBase ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
 public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements BulkUpdateHandler
 {
-    GraphTDBBase graphTDB ;
-    
-    public BulkUpdateHandlerTDB(GraphTDBBase graph)
+    private final GraphTDB graphTDB ; 
+    public BulkUpdateHandlerTDB(GraphTDB graph)
     {
         super(graph) ;
         this.graphTDB = graph ;
@@ -41,7 +40,7 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
         s = fix(s) ;
         p = fix(p) ;
         o = fix(o) ;
-        GraphTDBBase.removeWorker(graphTDB, s,p,o) ;
+        graphTDB.remove(s, p, o) ;
         manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) );
     }
 
@@ -51,7 +50,7 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
     @Override
     public void removeAll()
     {
-        GraphTDBBase.removeWorker(graphTDB, null, null, null) ;
-         notifyRemoveAll(); 
+        graphTDB.remove(null, null, null) ;
+        notifyRemoveAll(); 
     }
 }

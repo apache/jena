@@ -70,8 +70,9 @@ public class SolverLib
                                         QueryIterator input, Filter<Tuple<NodeId>> filter,
                                         ExecutionContext execCxt)
     {
+        // Maybe default graph or named graph.
         NodeTupleTable ntt = graph.getNodeTupleTable() ;
-        return execute(ntt, null, pattern, input, filter, execCxt) ;
+        return execute(ntt, graph.getGraphName(), pattern, input, filter, execCxt) ;
     }
     
     /** Non-reordering execution of a quad pattern, given a iterator of bindings as input.
@@ -82,7 +83,8 @@ public class SolverLib
                                         QueryIterator input, Filter<Tuple<NodeId>> filter,
                                         ExecutionContext execCxt)
     {
-        return execute(ds.getQuadTable().getNodeTupleTable(), graphNode, pattern, input, filter, execCxt) ;
+        NodeTupleTable ntt = GraphTDB.chooseNodeTupleTable(ds, graphNode) ;
+        return execute(ntt, graphNode, pattern, input, filter, execCxt) ;
     }
     
     public static Iterator<BindingNodeId> convertToIds(Iterator<Binding> iterBindings, NodeTable nodeTable)
@@ -93,7 +95,7 @@ public class SolverLib
     
     // The worker.  Callers choose the NodeTupleTable.  
     //     graphNode may be Node.ANY, meaning we should make triples unique.
-    //     graphNode may be null, meaning we should make triples unique.
+    //     graphNode may be null, meaning default graph
 
     private static QueryIterator execute(NodeTupleTable nodeTupleTable, Node graphNode, BasicPattern pattern, 
                                          QueryIterator input, Filter<Tuple<NodeId>> filter,

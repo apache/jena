@@ -18,17 +18,18 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import com.hp.hpl.jena.graph.impl.TransactionHandlerBase;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.impl.TransactionHandlerBase ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-
-/** TDB does not support ACID transactions - it uses the SPARQL/Update events.  
- *  It (weakly) flushes if commit is called although it denies supporting transactions
+/** Support for when TDB is used non-transactionally.does not support ACID transactions.  
+ *  Flushes if commit is called although it denies supporting transactions
  */
 
 public class TransactionHandlerTDB extends TransactionHandlerBase //implements TransactionHandler 
 {
-    private final GraphTDB graph ;
+    private final Graph graph ;
 
     public TransactionHandlerTDB(GraphTDB graph)
     {
@@ -38,6 +39,7 @@ public class TransactionHandlerTDB extends TransactionHandlerBase //implements T
     @Override
     public void abort()
     {
+        // Not the Jena old-style transaction interface
         throw new UnsupportedOperationException("TDB: 'abort' of a transaction not supported") ;
         //log.warn("'Abort' of a transaction not supported - ignored") ;
     }
@@ -49,7 +51,7 @@ public class TransactionHandlerTDB extends TransactionHandlerBase //implements T
     @Override
     public void commit()
     {
-        graph.sync() ;
+        TDB.sync(graph) ;
     }
 
     @Override

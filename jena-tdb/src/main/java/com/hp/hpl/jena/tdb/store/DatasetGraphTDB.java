@@ -203,26 +203,24 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     protected Graph _createDefaultGraph()
     {
-        return new GraphTriplesTDB(this) ;
-        // This also works - but it's close to a release so leave as is. 
-        //return new GraphNamedTDB(this,  null) ; 
+        return new GraphTDB(this, null) ;
     }
 
     @Override
     protected Graph _createNamedGraph(Node graphNode)
     {
-        return new GraphNamedTDB(this, graphNode) ;
+        return new GraphTDB(this, graphNode) ;
     }
 
-    public void setEffectiveDefaultGraph(GraphTDB g)    { effectiveDefaultGraph = g ; }
+    public void setEffectiveDefaultGraph(GraphTDB g)       { effectiveDefaultGraph = g ; }
 
-    public GraphTDB getEffectiveDefaultGraph()          { return effectiveDefaultGraph ; }
+    public GraphTDB getEffectiveDefaultGraph()             { return effectiveDefaultGraph ; }
 
-    public StorageConfig getConfig()                       { return config ; }
+    public StorageConfig getConfig()                        { return config ; }
     
-    public ReorderTransformation getReorderTransform()     { return transform ; }
+    public ReorderTransformation getReorderTransform()      { return transform ; }
     
-    public DatasetPrefixesTDB getPrefixes()       { return prefixes ; }
+    public DatasetPrefixesTDB getPrefixes()                 { return prefixes ; }
 
     static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
     {
