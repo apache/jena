@@ -29,6 +29,7 @@ import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** TriG language: http://www4.wiwiss.fu-berlin.de/bizer/TriG/
@@ -48,9 +49,9 @@ public class LangTriG extends LangTurtleBase<Quad>
         We may add:
         statement   ::=     directive ws* '.' | graph | quad
         quad        ::=     subject predicate object resource?
-          (i.e. raw inline nquads except with preifx names.
-        
+          (i.e. raw inline nquads except with prefix names)
      */
+    
     public LangTriG(Tokenizer tokens, ParserProfile profile, StreamRDF dest) 
     {
         super(tokens, profile, dest) ;
@@ -67,34 +68,48 @@ public class LangTriG extends LangTurtleBase<Quad>
     
     protected final void oneNamedGraphBlock()
     {
-        // Directives are only between graphs.
-        Node graphNode = Quad.tripleInQuad ;
+        // Directives are only between graph blocks.
+        Node graphNode = null ;
         Token token = peekToken() ;
-
-        // <foo> = { ... } or just { ... }
-        if ( token.isNode() )
-        {
-            Token t = token ;   // Keep for error message. 
-            graphNode = node() ;
+        Token t = token ;   // Keep for error message.
+        
+        // Sort out the graph node if any.
+        // This code pasres bNodes as graph labels correctly, then checks whether 
+        
+        if (token.getType() == TokenType.LBRACKET) {
             nextToken() ;
             token = peekToken() ;
+            if (token.getType() != TokenType.RBRACKET) 
+                exception(t, "Broken term: [ not followed by ]") ;
 
-            if ( graphNode.isURI() )
-                setCurrentGraph(graphNode) ; 
-            else
-                exception(t, "Not a legal graph name: "+graphNode) ;
+            graphNode = NodeFactory.createAnon() ;
+            nextToken() ;
+        } else {
+            if (token.isNode()) {
+                graphNode = node() ;
+                nextToken() ;
+            }
         }
-        else
+        
+        if (graphNode != null)
+        {
+            if (graphNode.isURI() || graphNode.isBlank())
+                setCurrentGraph(graphNode) ;
+            else
+                exception(t, "Not a legal graph name: " + graphNode) ;
+        } else
             setCurrentGraph(Quad.tripleInQuad) ;
 
-        // = is optional
-        if ( token.getType() == TokenType.EQUALS )
-        {
+        token = peekToken() ;
+        
+        // = is optional and old style.
+        if (token.getType() == TokenType.EQUALS) {
+            if (profile.isStrictMode()) exception(token, "Use of = {} is not part of standard TriG: " + graphNode) ;
             // Skip.
             nextToken() ;
             token = peekToken() ;
         }
-        
+
         if ( token.getType() != TokenType.LBRACE )
             exception(token, "Expected start of graph: got %s", peekToken()) ;
         nextToken() ;

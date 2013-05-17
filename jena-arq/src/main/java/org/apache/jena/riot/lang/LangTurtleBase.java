@@ -67,23 +67,9 @@ public abstract class LangTurtleBase<X> extends LangBase
 
     public final void setCurrentGraph(Node graph)
     {
-        // The syntax of the language determines this. 
-//        if ( graph != null )
-//            checker.check(graph, -1, -1) ;
         this.currentGraph = graph ;
     }
 
-//    /** Provide access to the prologue.  
-//     * Use with care.
-//     */
-//    public Prologue getPrologue()        { return profile ; }
-//
-//    /** Provide access to the prefix map.  
-//     * Note this parser uses a custom, lightweight prefix mapping implementation.
-//     * Use with care.
-//     */
-//    public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
-    
     protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest)
     { 
         super(tokens, profile, dest) ;

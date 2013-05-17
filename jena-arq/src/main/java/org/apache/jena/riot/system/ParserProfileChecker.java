@@ -30,6 +30,7 @@ import org.apache.jena.riot.checker.CheckerLiterals ;
 import org.apache.jena.riot.lang.LabelToNode ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class ParserProfileChecker extends ParserProfileBase //implements ParserProfile 
 {
@@ -97,9 +98,9 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
     
     private void checkQuad(Node graph, Node subject, Node predicate, Node object, long line, long col)
     {
-        if ( graph != null && ! graph.isURI() )
+        if ( graph != null && ! graph.isURI() && ! graph.isBlank() )    // Allow blank nodes - syntax may restrict more. 
         {
-            errorHandler.error("Graph name is not a URI", line, col) ;
+            errorHandler.error("Graph name is not a URI or blank node: "+FmtUtils.stringForNode(graph), line, col) ;
             throw new RiotException("Bad graph name: "+graph) ;
         }        
         checkTriple(subject,predicate,object,line,col) ;
