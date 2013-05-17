@@ -54,8 +54,10 @@ public class RDFWriterRegistry
                 return RiotWriter.createTurtleStreaming() ;
             if ( Lib.equal(RDFFormat.TURTLE_FLAT, serialization) )
                 return RiotWriter.createTurtleFlat() ;
-            if ( Lib.equal(RDFFormat.NTRIPLES, serialization) )
+            if ( Lib.equal(RDFFormat.NTRIPLES_UTF8, serialization) )
                 return RiotWriter.createNTriples() ;
+            if ( Lib.equal(RDFFormat.NTRIPLES_ASCII, serialization) )
+                return RiotWriter.createNTriplesASCII() ;
             if ( Lib.equal(RDFFormat.RDFJSON, serialization) )
                 return RiotWriter.createRDFJSON() ;
             if ( Lib.equal(RDFFormat.RDFXML_PRETTY, serialization) )
@@ -81,8 +83,10 @@ public class RDFWriterRegistry
                 return RiotWriter.createTrigStreaming() ;
             if ( Lib.equal(RDFFormat.TRIG_FLAT, serialization) )
                 return RiotWriter.createTrigFlat() ;
-            if ( Lib.equal(RDFFormat.NQUADS, serialization) )
+            if ( Lib.equal(RDFFormat.NQUADS_UTF8, serialization) )
                 return RiotWriter.createNQuads() ;
+            if ( Lib.equal(RDFFormat.NQUADS_ASCII, serialization) )
+                return RiotWriter.createNQuadsASCII() ;
             if ( Lib.equal(RDFFormat.RDFNULL, serialization) )
                 return RiotWriter.createRDFNULL() ;
             return null ;
@@ -109,6 +113,7 @@ public class RDFWriterRegistry
          register(RDFFormat.TURTLE_FLAT,    wgfactory) ;
 
          register(RDFFormat.NTRIPLES,       wgfactory) ;
+         register(RDFFormat.NTRIPLES_ASCII, wgfactory) ;
          register(RDFFormat.RDFJSON,        wgfactory) ;
 
          register(RDFFormat.RDFXML_PRETTY,  wgfactory) ;
@@ -120,6 +125,7 @@ public class RDFWriterRegistry
          register(RDFFormat.TRIG_FLAT,      wgfactory) ;
 
          register(RDFFormat.NQUADS,         wgfactory) ;
+         register(RDFFormat.NQUADS_ASCII,   wgfactory) ;
          register(RDFFormat.RDFNULL,        wgfactory) ;
          
          // Datasets
@@ -128,6 +134,7 @@ public class RDFWriterRegistry
          register(RDFFormat.TRIG_FLAT,      wdsfactory) ;
 
          register(RDFFormat.NQUADS,         wdsfactory) ;
+         register(RDFFormat.NQUADS_ASCII,   wdsfactory) ;
          register(RDFFormat.RDFNULL,        wdsfactory) ;
      }
     

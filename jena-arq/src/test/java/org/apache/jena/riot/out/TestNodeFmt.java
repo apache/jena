@@ -36,7 +36,8 @@ public class TestNodeFmt extends BaseTest
         prefixMap.add(":", "http://example/p") ;
         prefixMap.add("ex", "http://example/ex/") ;
     }
-    private static NodeFormatter nodeFormatterNT = new NodeFormatterNT() ;
+    private static NodeFormatter nodeFormatterNTutf8 = new NodeFormatterNT(CharSpace.UTF8) ;
+    private static NodeFormatter nodeFormatterNTascii = new NodeFormatterNT(CharSpace.ASCII) ;
     private static NodeFormatter nodeFormatterTTL = new NodeFormatterTTL(base, prefixMap) ;
     
     public static void test(NodeFormatter nodeFormatter, String str)
@@ -58,18 +59,19 @@ public class TestNodeFmt extends BaseTest
         assertEquals(str, str2) ;
     }
 
-    @Test public void nodefmt_nt_01()  { test(nodeFormatterNT, "?x") ; }
-    @Test public void nodefmt_nt_02()  { test(nodeFormatterNT, "?xyz") ; }
-    @Test public void nodefmt_nt_03()  { test(nodeFormatterNT, Var.alloc(""), "?") ; }
-    @Test public void nodefmt_nt_04()  { test(nodeFormatterNT, Var.alloc("?"), "??") ; }
+    @Test public void nodefmt_nt_01()  { test(nodeFormatterNTutf8, "?x") ; }
+    @Test public void nodefmt_nt_02()  { test(nodeFormatterNTutf8, "?xyz") ; }
+    @Test public void nodefmt_nt_03()  { test(nodeFormatterNTutf8, Var.alloc(""), "?") ; }
+    @Test public void nodefmt_nt_04()  { test(nodeFormatterNTutf8, Var.alloc("?"), "??") ; }
 
-    @Test public void nodefmt_nt_05()  { test(nodeFormatterNT, "\"abc\"") ; }
-    @Test public void nodefmt_nt_06()  { test(nodeFormatterNT, "\"\"") ; }
-    @Test public void nodefmt_nt_07()  { test(nodeFormatterNT, "\"abc\"@en") ; }
-    @Test public void nodefmt_nt_08()  { test(nodeFormatterNT, "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>" ) ; }
-    @Test public void nodefmt_nt_09()  { test(nodeFormatterNT, Node.ANY, "ANY") ; }
+    @Test public void nodefmt_nt_05()  { test(nodeFormatterNTutf8, "\"abc\"") ; }
+    @Test public void nodefmt_nt_06()  { test(nodeFormatterNTutf8, "\"\"") ; }
+    @Test public void nodefmt_nt_07()  { test(nodeFormatterNTutf8, "\"abc\"@en") ; }
+    @Test public void nodefmt_nt_08()  { test(nodeFormatterNTutf8, "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>" ) ; }
+    @Test public void nodefmt_nt_09()  { test(nodeFormatterNTutf8, Node.ANY, "ANY") ; }
     
-    @Test public void nodefmt_nt_10()  { test(nodeFormatterNT, "'Ω'", "\"\\u03A9\"") ; }
+    @Test public void nodefmt_nt_10()  { test(nodeFormatterNTutf8, "'Ω'", "\"Ω\"") ; }
+    @Test public void nodefmt_nt_11()  { test(nodeFormatterNTascii, "'Ω'", "\"\\u03A9\"") ; }
     
     @Test public void nodefmt_ttl_01()  { test(nodeFormatterTTL, "?x") ; }
     @Test public void nodefmt_ttl_02()  { test(nodeFormatterTTL, "?xyz") ; }

@@ -30,17 +30,26 @@ public class RDFFormat
     /** Print out one per line */
     public static RDFFormatVariant FLAT         = new RDFFormatVariant("flat" ) ;
     
+    /** Use ASCII output (N-triples, N-Quads) */
+    public static RDFFormatVariant ASCII        = new RDFFormatVariant("ascii") ;
+    /** Use UTF-8 output (N-triples, N-Quads) */
+    public static RDFFormatVariant UTF8         = new RDFFormatVariant("utf-8") ;
+    
     public static RDFFormat TURTLE_PRETTY       = new RDFFormat(Lang.TURTLE, PRETTY) ;
     public static RDFFormat TURTLE              = TURTLE_PRETTY ;
     public static RDFFormat TTL                 = TURTLE_PRETTY ;
     public static RDFFormat TURTLE_BLOCKS       = new RDFFormat(Lang.TURTLE, BLOCKS) ;
     public static RDFFormat TURTLE_FLAT         = new RDFFormat(Lang.TURTLE, FLAT) ;
     
-    public static RDFFormat NTRIPLES            = new RDFFormat(Lang.NTRIPLES) ;
+    public static RDFFormat NTRIPLES_UTF8       = new RDFFormat(Lang.NTRIPLES, UTF8) ;
+    public static RDFFormat NTRIPLES            = NTRIPLES_UTF8 ;
     public static RDFFormat NT                  = NTRIPLES ;
+    public static RDFFormat NTRIPLES_ASCII      = new RDFFormat(Lang.NTRIPLES, ASCII) ;
     
-    public static RDFFormat NQUADS              = new RDFFormat(Lang.NQUADS) ;
+    public static RDFFormat NQUADS_UTF8         = new RDFFormat(Lang.NQUADS, UTF8) ;
+    public static RDFFormat NQUADS              = NQUADS_UTF8 ;
     public static RDFFormat NQ                  = NQUADS ;
+    public static RDFFormat NQUADS_ASCII        = new RDFFormat(Lang.NQUADS, ASCII) ;
     
     public static RDFFormat TRIG_PRETTY         = new RDFFormat(Lang.TRIG, PRETTY) ;
     public static RDFFormat TRIG                = TRIG_PRETTY ;
@@ -48,9 +57,9 @@ public class RDFFormat
     public static RDFFormat TRIG_FLAT           = new RDFFormat(Lang.TRIG, FLAT) ;
     
     /** RDF/XML ABBREV variant*/
-    public static RDFFormatVariant ABBREV       = new RDFFormatVariant("pretty" ) ;
+    public static RDFFormatVariant ABBREV       = new RDFFormatVariant("pretty") ;
     /** Basic RDF/XML variant */
-    public static RDFFormatVariant PLAIN        = new RDFFormatVariant("plain" ) ;
+    public static RDFFormatVariant PLAIN        = new RDFFormatVariant("plain") ;
     
     public static RDFFormat RDFXML_PRETTY       = new RDFFormat(Lang.RDFXML, ABBREV) ;
     public static RDFFormat RDFXML_ABBREV       = RDFXML_PRETTY ;

@@ -28,15 +28,15 @@ public class NodeFormatterNT extends NodeFormatterBase
 
     private final EscapeStr escapeProc ; 
 
-    public NodeFormatterNT() { this(true) ; }
+    public NodeFormatterNT() { this(CharSpace.UTF8) ; }
 
-    protected NodeFormatterNT(boolean asciiOnly) { escapeProc = new EscapeStr(asciiOnly) ;}
+    public NodeFormatterNT(CharSpace charSpace) { escapeProc = new EscapeStr(charSpace) ;}
 
     @Override
     public void formatURI(AWriter w, String uriStr)
     {
         w.print('<') ;
-        w.print(uriStr) ;
+        escapeProc.writeURI(w, uriStr) ;
         w.print('>') ;
     }
 
@@ -44,7 +44,7 @@ public class NodeFormatterNT extends NodeFormatterBase
     public void formatVar(AWriter w, String name)
     {
         w.print('?') ;
-        w.print(name) ;
+        escapeProc.writeStr(w, name) ;
     }
 
     @Override

@@ -23,6 +23,7 @@ import java.io.Writer ;
 import java.util.Iterator ;
 
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -36,19 +37,32 @@ public class NQuadsWriter extends WriterDatasetRIOTBase
     public static void write(OutputStream out, Iterator<Quad> iter)
     {
         StreamRDF s = StreamRDFLib.writer(out) ;
-        s.start() ;
-        StreamRDFLib.quadsToStream(s, iter) ;
-        s.finish();
+        write$(s, iter) ;
     }
     
     public static void write(Writer out, Iterator<Quad> iter)
     {
         StreamRDF s = StreamRDFLib.writer(out) ;
+        write$(s, iter) ;
+    }
+
+    private static void write$(StreamRDF s, Iterator<Quad> iter)
+    {
         s.start() ;
         StreamRDFLib.quadsToStream(s, iter) ;
         s.finish();
     }
-
+    
+    private final CharSpace charSpace ;
+    
+    public NQuadsWriter()
+    { this(CharSpace.UTF8); }  
+    
+    public NQuadsWriter(CharSpace charSpace)
+    { 
+        this.charSpace = charSpace ;
+    }
+    
     @Override
     public Lang getLang()
     {
