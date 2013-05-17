@@ -18,11 +18,16 @@
 
 package org.apache.jena.riot.writer;
 
+import static org.apache.jena.riot.out.CharSpace.ASCII ;
+import static org.apache.jena.riot.out.CharSpace.UTF8 ;
+
 import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -36,17 +41,30 @@ public class NTriplesWriter extends WriterGraphRIOTBase
     public static void write(OutputStream out, Iterator<Triple> iter)
     {
         StreamRDF s = StreamRDFLib.writer(out) ;
-        s.start() ;
-        StreamRDFLib.triplesToStream(s, iter) ;
-        s.finish();
+        write$(s, iter) ;
     }
     
     public static void write(Writer out, Iterator<Triple> iter)
     {
         StreamRDF s = StreamRDFLib.writer(out) ;
+        write$(s, iter) ;
+    }
+
+    private static void write$(StreamRDF s, Iterator<Triple> iter)
+    {
         s.start() ;
         StreamRDFLib.triplesToStream(s, iter) ;
         s.finish();
+    }
+
+    private final CharSpace charSpace ;
+
+    public NTriplesWriter()
+    { this(UTF8); }  
+    
+    public NTriplesWriter(CharSpace charSpace)
+    { 
+        this.charSpace = charSpace ;
     }
 
     @Override
@@ -58,12 +76,27 @@ public class NTriplesWriter extends WriterGraphRIOTBase
     @Override
     public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
     {
-        write(out, graph.find(null, null, null)) ;
+        Iterator<Triple> iter = graph.find(null, null, null) ;
+        if ( charSpace == UTF8 )
+            write(out, iter) ;
+        else
+        {
+            StreamRDF s = new WriterStreamRDFTuples(IO.wrap(out), ASCII) ;
+            write$(s, iter) ;
+        }
     }
 
     @Override
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
     {
-        write(out, graph.find(null, null, null)) ;
+        Iterator<Triple> iter = graph.find(null, null, null) ;
+        if ( charSpace == UTF8 )
+            write(out, iter) ;
+        else
+        {
+            StreamRDF s = new WriterStreamRDFTuples(IO.wrapASCII(out), ASCII) ;
+            write$(s, iter) ;
+        }
+     
     }
 }

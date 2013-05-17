@@ -21,6 +21,7 @@ package org.apache.jena.riot.writer;
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterNT ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -36,26 +37,30 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 
 public class WriterStreamRDFTuples implements StreamRDF
 {
+    // This class is the overall structure - the NodeFormatter controls the
+    // appearance of the Nodes themselves.
+
     private final AWriter out ;
     
-//    public WriterStreamRDFTuples(OutputStream outs)
-//    {
-//        this(IO.wrapUTF8(outs)) ;
-//    }
-//
-//    public WriterStreamRDFTuples(Writer w)
-//    {
-//        this(IO.wrap(w)) ;
-//    }
-//
-    /**
-     * See {@linkplain StreamRDFLib#writer} for ways to create a writer stream.
+    private final NodeFormatter nodeFmt ; 
+
+    /** Output tuples, using UTF8 output 
+     * See {@linkplain StreamRDFLib#writer} for ways to create a AWriter object.
      */
     public WriterStreamRDFTuples(AWriter w)
     {
-        out = w ;
+        this(w, CharSpace.UTF8) ;
     }
     
+    /** Output tuples, choosing ASCII or UTF8
+     * See {@linkplain StreamRDFLib#writer} for ways to create a AWriter object.
+     */
+    public WriterStreamRDFTuples(AWriter w, CharSpace charSpace)
+    {
+        out = w ;
+        nodeFmt = new NodeFormatterNT(charSpace) ;
+    }
+
     @Override
     public void start()
     {}
@@ -114,8 +119,6 @@ public class WriterStreamRDFTuples implements StreamRDF
         }
         out.print(" .\n") ;
     }
-
-    private static final NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
     private void format(Node n)
     {

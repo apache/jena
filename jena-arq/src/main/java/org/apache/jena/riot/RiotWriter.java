@@ -22,6 +22,7 @@ import java.io.OutputStream ;
 import java.util.Iterator ;
 
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.writer.* ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -66,135 +67,6 @@ public class RiotWriter
         RDFDataMgr.write(out, graph, Lang.RDFJSON) ;
     }
 
-    // Remove after release ... no one should be using this code unless
-    // they used the off-trunk development code. 
-    
-//    /** Write as Turtle
-//     * @param out   OutputStream
-//     * @param model Model to write 
-//     */
-//    public static void writeTurtle(OutputStream out, Model model)
-//    { writeTurtle(out, model.getGraph()) ; }
-//    
-//    /** Write as Turtle
-//     * @param out   OutputStream
-//     * @param graph Graph to write 
-//     */
-//    public static void writeTurtle(OutputStream out, Graph graph)
-//    { createTurtle().write(out, graph) ; }
-//
-//    /** Write as Turtle, using a streaming writer
-//     * @param out   OutputStream
-//     * @param model Model to write 
-//     */
-//    public static void writeTurtleStreaming(OutputStream out,  Model model)
-//    { writeTurtleStreaming(out, model.getGraph()) ; }
-//    
-//    /** Write as Turtle, using a streaming writer
-//     * @param out   OutputStream
-//     * @param graph Graph to write 
-//     */
-//    public static void writeTurtleStreaming(OutputStream out, Graph graph)
-//    { createTurtleStreaming().write(out, graph) ; }
-//
-//    /** Write a model as NTriples
-//     * @param out       OutputStream
-//     * @param model     Model to write 
-//     */
-//    public static void writeNTriples(OutputStream out, Model model)
-//    { writeNTriples(out, model.getGraph()) ; }
-//    
-//    /** Write a graph as NTriples
-//     * @param out       OutputStream
-//     * @param graph     Graph to write 
-//     */
-//    public static void writeNTriples(OutputStream out, Graph graph)
-//    { createNTriples().write(out, graph) ; }
-//
-//    /** Write a model as RDF/XML
-//     * @param out       OutputStream
-//     * @param model     Model to write 
-//     */
-//    public static void writeRDFXML(OutputStream out, Model model)
-//    { writeRDFXML(out, model.getGraph()) ; }
-//    
-//    /** Write a graph as RDF/XML
-//     * @param out       OutputStream
-//     * @param graph     Graph to write 
-//     */
-//    public static void writeRDFXML(OutputStream out, Graph graph)
-//    { createRDFXMLAbbrev().write(out, graph) ; }
-//    
-//    /** Write a model as RDF/XML
-//     * @param out       OutputStream
-//     * @param model     Model to write 
-//     */
-//    public static void writeRDFXMLStreaming(OutputStream out, Model model)
-//    { writeRDFXMLStreaming(out, model.getGraph()) ; }
-//    
-//    /** Write a graph as RDF/XML
-//     * @param out       OutputStream
-//     * @param graph     Graph to write 
-//     */
-//    public static void writeRDFXMLStreaming(OutputStream out, Graph graph)
-//    { createRDFXMLPlain().write(out, graph) ; }
-//    
-//    /** Write a model as RDF/JSON (this is not JSON-LD)
-//     * @param out       OutputStream
-//     * @param model     Model to write 
-//     */
-//    public static void writeRDFJSON(OutputStream out, Model model)
-//    { writeRDFJSON(out, model.getGraph()) ; }
-//    
-//    /** Write a graph as RDF/JSON (this is not JSON-LD)
-//     * @param out       OutputStream
-//     * @param graph     Graph to write 
-//     */
-//    public static void writeRDFJSON(OutputStream out, Graph graph)
-//    { createRDFJSON().write(out, graph) ; }
-//    
-//    /** Write a dataset as TriG
-//     * @param out       OutputStream
-//     * @param dataset   Dataset to write 
-//     */
-//    public static void writeTrig(OutputStream out, Dataset dataset)
-//    { writeTrig(out, dataset.asDatasetGraph()) ; }
-//
-//    /** Write a dataset as TriG
-//     * @param out       OutputStream
-//     * @param dataset   Dataset to write 
-//     */
-//    public static void writeTrig(OutputStream out, DatasetGraph dataset)
-//    { createTrig().write(out, dataset) ; }
-//    
-//    /** Write a dataset as TriG, using a streaming writer
-//     * @param out       OutputStream
-//     * @param dataset   Dataset to write 
-//     */
-//    public static void writeTrigStreaming(OutputStream out, Dataset dataset)
-//    { writeTrigStreaming(out, dataset.asDatasetGraph()) ; }
-//
-//    /** Write a dataset as TriG, using a streaming writer
-//     * @param out       OutputStream
-//     * @param dataset   Dataset to write 
-//     */
-//    public static void writeTrigStreaming(OutputStream out, DatasetGraph dataset)
-//    { createTrigStreaming().write(out, dataset) ; }
-//    
-//    /** Write a dataset as NQuads
-//     * @param out       OutputStream
-//     * @param dataset   Dataset to write 
-//     */
-//    public static void writeNQuads(OutputStream out, Dataset dataset)
-//    { writeNQuads(out, dataset.asDatasetGraph()) ; }
-//    
-//    /** Write a dataset as NQuads
-//     * @param out       OutputStream
-//     * @param dataset   Dataset to write 
-//     */
-//    public static void writeNQuads(OutputStream out, DatasetGraph dataset)
-//    { createNQuads().write(out, dataset) ; }
-//    
     // ---- Create writers
 
     /** Create a Turtle writer */
@@ -208,6 +80,11 @@ public class RiotWriter
 
     /** Create an N-Triples writer */
     public static WriterGraphRIOT createNTriples()          { return new NTriplesWriter() ; }
+
+    /** Create an N-Triples writer, restricted to ASCII characters in the output. 
+     * Other chars escaped in \ u sequences.
+     */
+    public static WriterGraphRIOT createNTriplesASCII()     { return new NTriplesWriter(CharSpace.ASCII) ; }
 
     /** Create an RDF/XML writer which pretty-prints */
     public static WriterGraphRIOT createRDFXMLAbbrev()      { return new RDFXMLAbbrevWriter() ; }
@@ -227,9 +104,15 @@ public class RiotWriter
     /** Create a TriG writer that writes one quad per line in Trig, using abbreviated forms */ 
     public static WriterDatasetRIOT createTrigFlat()        { return new TriGWriterFlat() ; }
 
-    /** Create an NQuads writer */
+    /** Create an N-Quads writer */
     public static WriterDatasetRIOT createNQuads()          { return new NQuadsWriter() ; }
+    
+    /** Create an N-Quads writer, restricted to ASCII characters in the output. 
+     * Other chars escaped in \ u sequences.
+     */
+    public static WriterDatasetRIOT createNQuadsASCII()     { return new NQuadsWriter(CharSpace.ASCII) ; }
 
+    /** Create a sink writer */
     public static WriterDatasetRIOT createRDFNULL()         { return NullWriter.factory.create(RDFFormat.RDFNULL) ; }           
 }
 

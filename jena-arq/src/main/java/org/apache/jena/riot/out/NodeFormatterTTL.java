@@ -47,7 +47,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     
    public NodeFormatterTTL(String baseIRI , PrefixMap prefixMap, NodeToLabel nodeToLabel)
    {
-       super(false) ;
+       super(CharSpace.UTF8) ;
        this.nodeToLabel = nodeToLabel ;
        if ( prefixMap == null )
            prefixMap = PrefixMapFactory.create() ;

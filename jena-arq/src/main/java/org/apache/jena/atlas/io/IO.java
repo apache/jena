@@ -122,6 +122,11 @@ public class IO
         return new OutputStreamWriter(out, utf8.newEncoder());
     }
 
+    /** Create a writer that uses ASCII encoding */ 
+    static public Writer asASCII(OutputStream out) {
+        return new OutputStreamWriter(out, ascii.newEncoder());
+    }
+
     /** Create a writer that uses UTF-8 encoding and is buffered. */ 
     static public Writer asBufferedUTF8(OutputStream out) {
         Writer w =  new OutputStreamWriter(out, utf8.newEncoder());
@@ -129,14 +134,16 @@ public class IO
     }
 
     /** Wrap in a general writer interface */ 
-    static public AWriter wrap(Writer w)            
-    { 
+    static public AWriter wrap(Writer w) { 
         return Writer2.wrap(w) ;
     }
     
     /** Wrap in a general writer interface */ 
-    static public AWriter wrapUTF8(OutputStream out)    { return wrap(asUTF8(out)); } 
+    static public AWriter wrapUTF8(OutputStream out)        { return wrap(asUTF8(out)); } 
     
+    /** Wrap in a general writer interface */ 
+    static public AWriter wrapASCII(OutputStream out)       { return wrap(asASCII(out)); } 
+
     /** Create a print writer that uses UTF-8 encoding */ 
     static public PrintWriter asPrintWriterUTF8(OutputStream out) {
         return new PrintWriter(asUTF8(out)); 

@@ -29,7 +29,7 @@ public class EscapeStr
     // See also OutputLangUtils.outputEsc.
     private final boolean ascii ;
 
-    public EscapeStr(boolean asciiOnly) { this.ascii = asciiOnly ; }
+    public EscapeStr(CharSpace charSpace) { this.ascii = ( charSpace == CharSpace.ASCII ) ; } 
 
     public void writeURI(AWriter w, String s)
     {
