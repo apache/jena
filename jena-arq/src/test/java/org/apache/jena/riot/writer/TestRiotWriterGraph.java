@@ -40,6 +40,8 @@ public class TestRiotWriterGraph extends AbstractWriterTest
         return Arrays.asList(new Object[][] {
             { RDFFormat.RDFNULL }
             
+            , { RDFFormat.NTRIPLES_UTF8 }
+            , { RDFFormat.NTRIPLES_ASCII }
             , { RDFFormat.NTRIPLES }
             , { RDFFormat.TURTLE }
             , { RDFFormat.TURTLE_PRETTY }
@@ -55,6 +57,8 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.TRIG_PRETTY }
             , { RDFFormat.TRIG_BLOCKS }
             , { RDFFormat.TRIG_FLAT }
+            , { RDFFormat.NQUADS_UTF8}
+            , { RDFFormat.NQUADS_ASCII}
             , { RDFFormat.NQUADS}
         }) ; 
     }
