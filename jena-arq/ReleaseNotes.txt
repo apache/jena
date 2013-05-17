@@ -2,12 +2,14 @@ ChangeLog for ARQ
 =================
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
+==== Jena 2.10.2
+
 
 ==== Jena 2.10.1
 
 + JENA-352 : Solution to parsing N-Triples with any number of bnode labels.
 + RIOT is the main way to write RDF data.
-  All the writes for Turtle/TriG/N-triples and N-Quads revised.
+  All the writers for Turtle/TriG/N-triples and N-Quads revised.
   http://jena.apache.org/documentation/io/
 + Improve ParameterizedSparqlString to prevent some identified SPARQL Injection attacks, revised the
   javadoc to note that these protections are not foolproof and that there are known attack vectors.
