@@ -44,8 +44,14 @@ public class TestWriterRegistration extends BaseTest
     @Test public void registration_22() { testregistration(RDFFormat.TTL) ; }
     @Test public void registration_23() { testregistration(RDFFormat.TURTLE_BLOCKS) ; }
     @Test public void registration_24() { testregistration(RDFFormat.TURTLE_FLAT) ; }
+    
     @Test public void registration_25() { testregistration(RDFFormat.NTRIPLES) ; }
     @Test public void registration_26() { testregistration(RDFFormat.NQUADS) ; }
+    @Test public void registration_25a() { testregistration(RDFFormat.NTRIPLES_UTF8) ; }
+    @Test public void registration_26a() { testregistration(RDFFormat.NQUADS_UTF8) ; }
+    @Test public void registration_25b() { testregistration(RDFFormat.NTRIPLES_ASCII) ; }
+    @Test public void registration_26b() { testregistration(RDFFormat.NQUADS_ASCII) ; }
+
     @Test public void registration_27() { testregistration(RDFFormat.TRIG_PRETTY) ; }
     @Test public void registration_28() { testregistration(RDFFormat.TRIG) ; }
     @Test public void registration_29() { testregistration(RDFFormat.TRIG_BLOCKS) ; }
