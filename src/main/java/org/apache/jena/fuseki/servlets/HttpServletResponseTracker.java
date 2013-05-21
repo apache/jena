@@ -29,27 +29,27 @@ import org.apache.jena.atlas.logging.Log ;
 
 public class HttpServletResponseTracker extends HttpServletResponseWrapper
 {
-    private final WebRequest webRequest ;
+    private final HttpAction action ;
 
-    public HttpServletResponseTracker(WebRequest webRequest, HttpServletResponse response)
+    public HttpServletResponseTracker(HttpAction action, HttpServletResponse response)
     {
         super(response) ;
-        this.webRequest = webRequest ;
+        this.action = action ;
     }
 
     @Override
     public void sendError(int sc, String msg) throws IOException
     {
-        webRequest.statusCode = sc ;
-        webRequest.message = msg ;
+        action.statusCode = sc ;
+        action.message = msg ;
         super.sendError(sc, msg) ;
     }
 
     @Override
     public void sendError(int sc) throws IOException
     {
-        webRequest.statusCode = sc ;
-        webRequest.message = null ;
+        action.statusCode = sc ;
+        action.message = null ;
         super.sendError(sc) ;
     }
 
@@ -57,7 +57,7 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
     public void setHeader(String name, String value)
     {
         super.setHeader(name, value) ;
-        webRequest.headers.put(name, value) ;
+        action.headers.put(name, value) ;
     }
 
     @Override
@@ -69,8 +69,8 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
     @Override
     public void setStatus(int sc) 
     {
-        webRequest.statusCode = sc ;
-        webRequest.message = null ;
+        action.statusCode = sc ;
+        action.message = null ;
         super.setStatus(sc) ;
     }
 
@@ -78,22 +78,22 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
     @Deprecated
     public void setStatus(int sc, String sm)
     {
-        webRequest.statusCode = sc ;
-        webRequest.message = sm ;
+        action.statusCode = sc ;
+        action.message = sm ;
         super.setStatus(sc, sm) ;
     }
 
     @Override
     public void setContentLength(int len)
     {
-        webRequest.contentLength = len ;
+        action.contentLength = len ;
         super.setContentLength(len) ;
     }
 
     @Override
     public void setContentType(String type)
     {
-        webRequest.contentType = type ;
+        action.contentType = type ;
         super.setContentType(type) ;
     }
       

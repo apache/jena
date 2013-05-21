@@ -34,7 +34,6 @@ import org.apache.commons.fileupload.util.Streams ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
@@ -50,13 +49,6 @@ import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 public class SPARQL_Upload extends SPARQL_ServletBase 
 {
     private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
-    
-    private static class HttpActionUpload extends HttpAction {
-        public HttpActionUpload(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
-        {
-            super(id, desc, request, response, verbose) ;
-        }
-    }
     
     public SPARQL_Upload(boolean verbose_debug)
     {
@@ -79,14 +71,10 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     }
     
     @Override
-    protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
+    protected void perform(HttpAction action)
     {
         // Only allows one file in the upload.
-        
-        validate(request) ;
-        HttpActionUpload action = new HttpActionUpload(id, desc, request, response, verbose_debug) ;
-        
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
         if ( ! isMultipart )
             error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
         
@@ -115,16 +103,16 @@ public class SPARQL_Upload extends SPARQL_ServletBase
         } 
         finally { action.endWrite() ; }
         try {
-            response.setContentType("text/plain") ;
-            response.getOutputStream().print("Triples = "+tripleCount) ;
+            action.response.setContentType("text/plain") ;
+            action.response.getOutputStream().print("Triples = "+tripleCount) ;
             success(action) ;
         }
         catch (Exception ex) { errorOccurred(ex) ; }
     }
-    
-    static public Graph upload(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, String destination)
+
+    // Used by SPARQL_REST
+    static public Graph upload(HttpAction action, String destination)
     {
-        HttpActionUpload action = new HttpActionUpload(id, desc, request, response, false) ;
         // We read into a in-memory graph, then (if successful) update the dataset.
         // This isolates errors.
         Graph graphTmp = GraphFactory.createDefaultGraph() ;
@@ -135,7 +123,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     /** @return any graph name found.
      */
     
-    static private String upload(HttpActionUpload action, Graph graphDst, String base)
+    static private String upload(HttpAction action, Graph graphDst, String base)
     {
         ServletFileUpload upload = new ServletFileUpload();
         // Locking only needed over the insert into the dataset
@@ -217,6 +205,6 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     }            
 
     @Override
-    protected void validate(HttpServletRequest request)
+    protected void validate(HttpAction action)
     {}
 }

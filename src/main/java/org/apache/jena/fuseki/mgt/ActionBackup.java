@@ -84,20 +84,22 @@ public class ActionBackup extends ServletBase
             return ;
         }
 
-        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
+        
         long id = allocRequestId(request, response);
-        HttpAction action = new HttpAction(id, ref, request, response, false) ;
-        scheduleBackup(action, dataset) ;
+        HttpAction action = new HttpAction(id, request, response, false) ;
+        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
+        scheduleBackup(action) ;
     }
 
     static final String BackupArea = "backups" ;  
     
-    private void scheduleBackup(final HttpAction action, String dataset)
+    private void scheduleBackup(final HttpAction action)
     {
-        final String ds = dataset.startsWith("/")? dataset : "/"+dataset ;
+        String dsName = action.desc.name ;
+        final String ds = dsName.startsWith("/")? dsName : "/"+dsName ;
         
         String timestamp = Utils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
-        final String filename = BackupArea + dataset + "_" + timestamp ;
+        final String filename = BackupArea + ds + "_" + timestamp ;
         FileOps.ensureDir(BackupArea) ;
         
         try {
@@ -122,7 +124,7 @@ public class ActionBackup extends ServletBase
                     return Boolean.TRUE ;
                 }} ;
             
-            log.info(format("[%d] Schedule backup %s to '%s'", action.id, dataset, filename)) ;                
+            log.info(format("[%d] Schedule backup %s to '%s'", action.id, ds, filename)) ;                
             backupService.submit(task) ;
         } 
         //catch (FusekiException ex)

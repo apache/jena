@@ -21,14 +21,12 @@ package org.apache.jena.fuseki.servlets;
 import static java.lang.String.format ;
 
 import java.io.IOException ;
-import java.util.Iterator ;
 
 import javax.servlet.ServletOutputStream ;
 
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.WebContent ;
@@ -48,43 +46,10 @@ public class SPARQL_REST_R extends SPARQL_REST
     
     
     @Override
-    protected String mapRequestToDataset(String uri) 
-    {
-        if ( uri == null )
-            return null ;
-        
-        // Mapping a request for GSP needs to find the "best"
-        // (longest matching) dataset URI.
-        // This covers local using the URI as a direct name for
-        // a graph, not just using the indirect ?graph= or ?default 
-        // forms.
-        // Service matching, which is a matter of removing the service component,
-        // would only work for indirect. 
-
-        String ds = null ;
-        Iterator<String> iter = DatasetRegistry.get().keys() ;
-        while(iter.hasNext())
-        {
-            String ds2 = iter.next();
-            if ( ! uri.startsWith(ds2) )
-                continue ;
-
-            if ( ds == null )
-            {
-                ds = ds2 ;
-                continue ; 
-            }
-            if ( ds.length() < ds2.length() )
-            {
-                ds = ds2 ;
-                continue ;
-            }
-        }
-        return ds ;
-    }
+    protected String mapRequestToDataset(String uri) { return mapRequestToDatasetLongest$(uri) ; } 
 
     @Override
-    protected void doGet(HttpActionREST action)
+    protected void doGet(HttpAction action)
     {
         // Assume success - do the set up before grabbing the lock.
         // Sets content type.
@@ -102,17 +67,19 @@ public class SPARQL_REST_R extends SPARQL_REST
                                   action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
 
         action.beginRead() ;
+
         try {
+            Target target = determineTarget(action) ;
             if ( log.isDebugEnabled() )
-                log.debug("GET->"+action.getTarget()) ;
-            boolean exists = action.getTarget().exists() ;
+                log.debug("GET->"+target) ;
+            boolean exists = target.exists() ;
             if ( ! exists )
-                errorNotFound("No such graph: <"+action.getTarget().name+">") ;
+                errorNotFound("No such graph: <"+target.name+">") ;
             // If we want to set the Content-Length, we need to buffer.
             //response.setContentLength(??) ;
             String ct = WebContent.mapLangToContentType(lang) ;
             action.response.setContentType(ct) ;
-            Graph g = action.getTarget().graph() ;
+            Graph g = target.graph() ;
             Model model = ModelFactory.createModelForGraph(g) ;
             RDFDataMgr.write(out, model, lang) ;
             success(action) ;
@@ -120,7 +87,7 @@ public class SPARQL_REST_R extends SPARQL_REST
     }
     
     @Override
-    protected void doOptions(HttpActionREST action)
+    protected void doOptions(HttpAction action)
     {
         action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS") ;
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
@@ -128,13 +95,14 @@ public class SPARQL_REST_R extends SPARQL_REST
     }
 
     @Override
-    protected void doHead(HttpActionREST action)
+    protected void doHead(HttpAction action)
     {
         action.beginRead() ;
         try { 
+            Target target = determineTarget(action) ;
             if ( log.isDebugEnabled() )
-                log.debug("HEAD->"+action.getTarget()) ;
-            if ( ! action.getTarget().exists() )
+                log.debug("HEAD->"+target) ;
+            if ( ! target.exists() )
             {
                 successNotFound(action) ;
                 return ;
@@ -145,18 +113,18 @@ public class SPARQL_REST_R extends SPARQL_REST
     }
 
     @Override
-    protected void doPost(HttpActionREST action)
+    protected void doPost(HttpAction action)
     { errorMethodNotAllowed("POST") ; }
 
     @Override
-    protected void doDelete(HttpActionREST action)
+    protected void doDelete(HttpAction action)
     { errorMethodNotAllowed("DELETE") ; }
 
     @Override
-    protected void doPut(HttpActionREST action)
+    protected void doPut(HttpAction action)
     { errorMethodNotAllowed("PUT") ; }
 
     @Override
-    protected void doPatch(HttpActionREST action)
+    protected void doPatch(HttpAction action)
     { errorMethodNotAllowed("PATCH") ; }
 }

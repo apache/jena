@@ -23,7 +23,6 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 
 import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
@@ -49,13 +48,13 @@ public class REST_Quads extends SPARQL_REST
     { super(verbose) ; }
     
     @Override
-    protected void validate(HttpServletRequest request)
+    protected void validate(HttpAction action)
     {
         // already checked?
     }
     
     @Override
-    protected void doGet(HttpActionREST action)
+    protected void doGet(HttpAction action)
     {
         MediaType mediaType = HttpAction.contentNegotationQuads(action) ;
         ServletOutputStream output ;
@@ -82,7 +81,7 @@ public class REST_Quads extends SPARQL_REST
     }
     
     @Override
-    protected void doOptions(HttpActionREST action)
+    protected void doOptions(HttpAction action)
     {
         action.response.setHeader(HttpNames.hAllow, "GET, HEAD, OPTIONS") ;
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
@@ -90,7 +89,7 @@ public class REST_Quads extends SPARQL_REST
     }
 
     @Override
-    protected void doHead(HttpActionREST action)
+    protected void doHead(HttpAction action)
     {
         action.beginRead() ;
         try { 
@@ -101,7 +100,7 @@ public class REST_Quads extends SPARQL_REST
 
     static int counter = 0 ;
     @Override
-    protected void doPost(HttpActionREST action)
+    protected void doPost(HttpAction action)
     { 
         if ( ! action.getDatasetRef().allowDatasetUpdate )
             errorMethodNotAllowed("POST") ;
@@ -137,7 +136,7 @@ public class REST_Quads extends SPARQL_REST
             errorBadRequest("Not a triples or quads format: "+mediaType) ;
     }
         
-    protected void doPostQuads(HttpActionREST action, Lang lang)
+    protected void doPostQuads(HttpAction action, Lang lang)
     {
         action.beginWrite() ;
         try {
@@ -154,7 +153,7 @@ public class REST_Quads extends SPARQL_REST
     
   
     // POST triples to dataset -- send to default graph.  
-    protected void doPostTriples(HttpActionREST action, Lang lang) 
+    protected void doPostTriples(HttpAction action, Lang lang) 
     {
         action.beginWrite() ;
         try {
@@ -172,7 +171,7 @@ public class REST_Quads extends SPARQL_REST
         finally { action.endWrite() ; }
     }
     
-    protected void doPostTriplesGSP(HttpActionREST action, Lang lang) 
+    protected void doPostTriplesGSP(HttpAction action, Lang lang) 
     {
         action.beginWrite() ;
         try {
@@ -197,15 +196,15 @@ public class REST_Quads extends SPARQL_REST
     }
 
     @Override
-    protected void doDelete(HttpActionREST action)
+    protected void doDelete(HttpAction action)
     { errorMethodNotAllowed("DELETE") ; }
 
     @Override
-    protected void doPut(HttpActionREST action)
+    protected void doPut(HttpAction action)
     { errorMethodNotAllowed("PUT") ; }
 
     @Override
-    protected void doPatch(HttpActionREST action)
+    protected void doPatch(HttpAction action)
     { errorMethodNotAllowed("PATCH") ; }
 }
 
