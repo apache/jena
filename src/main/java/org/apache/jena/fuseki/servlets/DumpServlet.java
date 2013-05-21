@@ -239,10 +239,8 @@ public class DumpServlet extends HttpServlet
     
     /**
      * <code>dumpEnvironment</code>
-     * @return String that is the HTML of the System properties as 
-name/value pairs.
-     * The values are with single quotes independent of whether or not 
-the value has
+     * @return String that is the HTML of the System properties as name/value pairs.
+     * The values are with single quotes independent of whether or not the value has
      * single quotes in it.
      */
     static public String dumpEnvironment()

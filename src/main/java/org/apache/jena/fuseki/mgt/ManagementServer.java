@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.FusekiErrorHandler ;
+import org.apache.jena.fuseki.servlets.DumpServlet ;
+import org.apache.jena.fuseki.servlets.StatsServlet ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
@@ -56,7 +58,9 @@ public class ManagementServer
         server.setHandler(context);
         
         // Add the server control servlet
-        addServlet(context, new MgtCmdServlet(), "/mgt") ;
+        addServlet(context, new MgtCmdServlet(),    "/mgt") ;
+        addServlet(context, new DumpServlet(),      "/dump") ;
+        addServlet(context, new StatsServlet(),     "/stats") ;
         
         return server ; 
         // Old plan
