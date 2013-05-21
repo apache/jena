@@ -52,7 +52,7 @@ public class RunFuseki
     private static void main1()
     {
         FusekiCmd.main(
-                     "--update", "--mem", "/ds"
+                     "--update", "--mem", "--mgtPort=3131", "/ds"
                      
                      //"--update", "--mem", "/ds"
                      
