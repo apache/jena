@@ -51,9 +51,9 @@
         <br/>
 
         Output: <select name="output">
+          <option value="text">Text</option>
           <option value="json">JSON</option>
           <option value="xml">XML</option>
-          <option value="text">Text</option>
           <option value="csv">CSV</option>
           <option value="tsv">TSV</option>
         </select>
@@ -62,7 +62,7 @@
         <input name="stylesheet" size="20" value="/xml-to-html.xsl" />
         <br/>
         <input type="checkbox" name="force-accept" value="text/plain"/>
-        Force the accept header to <tt>text/plain</tt> regardless 
+        Force the accept header to <tt>text/plain</tt> regardless.
 	    <br/>
 	    <input type="submit" value="Get Results" />
       </form>
