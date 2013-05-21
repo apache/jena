@@ -188,6 +188,7 @@ public class SPARQLServer
             HttpServlet validateData = new DataValidator() ;    
             HttpServlet validateIRI = new IRIValidator() ;
             
+            HttpServlet statsService = new StatsServlet() ;
             HttpServlet dumpService = new DumpServlet() ;
             HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
             // TODO Name management 
@@ -195,7 +196,7 @@ public class SPARQLServer
             addServlet(context, validateUpdate, validationRoot+"/update", false) ;
             addServlet(context, validateData, validationRoot+"/data", false) ;
             addServlet(context, validateIRI, validationRoot+"/iri", false) ;
-            addServlet(context, dumpService, "/dump", false) ;
+            
             // general query processor.
             addServlet(context, generalQueryService, sparqlProcessor, enableCompression) ;
         }
