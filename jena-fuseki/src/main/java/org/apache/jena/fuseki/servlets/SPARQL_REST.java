@@ -19,7 +19,15 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.HttpNames.* ;
+import static org.apache.jena.fuseki.HttpNames.HEADER_LASTMOD ;
+import static org.apache.jena.fuseki.HttpNames.METHOD_DELETE ;
+import static org.apache.jena.fuseki.HttpNames.METHOD_GET ;
+import static org.apache.jena.fuseki.HttpNames.METHOD_HEAD ;
+import static org.apache.jena.fuseki.HttpNames.METHOD_OPTIONS ;
+import static org.apache.jena.fuseki.HttpNames.METHOD_PATCH ;
+import static org.apache.jena.fuseki.HttpNames.METHOD_POST ;
+import static org.apache.jena.fuseki.HttpNames.METHOD_PUT ;
+import static org.apache.jena.fuseki.HttpNames.METHOD_TRACE ;
 
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
@@ -34,7 +42,6 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotReader ;
@@ -59,41 +66,45 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     
     protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
 
-    protected static class HttpActionREST extends HttpAction
+    protected final static Target determineTarget(HttpAction action) 
     {
-        HttpActionREST(long id, DatasetRef desc, String absUri, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+        // Delayed until inside a transaction.
+        if ( action.getActiveDSG() == null )
+                errorOccurred("Internal error : No action graph (not in a transaction?)") ;
+        
+        boolean dftGraph = getOneOnly(action.request, HttpNames.paramGraphDefault) != null ;
+        String uri = getOneOnly(action.request, HttpNames.paramGraph) ;
+        
+        if ( !dftGraph && uri == null )
         {
-            super(id, desc, request, response, verbose) ;
-            Node gn = NodeFactory.createURI(absUri) ;
-            _target = Target.createNamed(desc.dataset, absUri, gn) ; 
+            // Direct naming or error.
+            uri = action.request.getRequestURL().toString() ;
+            if ( action.request.getRequestURI().equals(action.getDatasetRef().name) )
+                // No name 
+                errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
         }
         
-        private Target _target = null ; 
-        protected HttpActionREST(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
-        {
-            super(id, desc, request, response, verbose) ;
-        }
-
-        protected final boolean hasTarget()
-        {
-            return true ;
-//                request.getParameter(HttpNames.paramGraphDefault) == null &&
-//                request.getParameter(HttpNames.paramGraph) == null ;
-        }
+        if ( dftGraph )
+            return Target.createDefault(action.getActiveDSG()) ;
         
-        protected final Target getTarget() 
-        {
-            // Delayed until inside a transaction.
-            if ( _target == null )
-            {
-                if ( super.getActiveDSG() == null )
-                    errorOccurred("Internal error : No action graph (not in a transaction?)") ;
-                _target = targetGraph(request, super.getDatasetRef(), super.getActiveDSG() ) ;
-            }
-            return _target ;
-        }
+        // Named graph
+        if ( uri.equals(HttpNames.valueDefault ) )
+            // But "named" default
+            return Target.createDefault(action.getActiveDSG()) ;
+        
+        // Strictly, a bit naughty on the URI resolution.  But more sensible. 
+        // Base is dataset.
+        String base = action.request.getRequestURL().toString() ; //wholeRequestURL(request) ;
+        // Make sure it ends in "/", ie. dataset as container.
+        if ( action.request.getQueryString() != null && ! base.endsWith("/") )
+            base = base + "/" ;
+        
+        String absUri = IRIResolver.resolveString(uri, base) ;
+        Node gn = NodeFactory.createURI(absUri) ;
+        return Target.createNamed(action.getActiveDSG(), absUri, gn) ;
     }
     
+
     // struct for target
     protected static final class Target
     {
@@ -185,14 +196,12 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     }
     
     @Override
-    protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
+    protected void perform(HttpAction action)
     {
-        validate(request) ;
-        HttpActionREST action = new HttpActionREST(id, desc, request, response, verbose_debug) ;
         dispatch(action) ;
     }
 
-    private void dispatch(HttpActionREST action)
+    private void dispatch(HttpAction action)
     {
         HttpServletRequest req = action.request ;
         HttpServletResponse resp = action.response ;
@@ -222,20 +231,21 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             errorNotImplemented("Unknown method: "+method) ;
     }
         
-    protected abstract void doGet(HttpActionREST action) ;
-    protected abstract void doHead(HttpActionREST action) ;
-    protected abstract void doPost(HttpActionREST action) ;
-    protected abstract void doPatch(HttpActionREST action) ;
-    protected abstract void doDelete(HttpActionREST action) ;
-    protected abstract void doPut(HttpActionREST action) ;
-    protected abstract void doOptions(HttpActionREST action) ;
+    protected abstract void doGet(HttpAction action) ;
+    protected abstract void doHead(HttpAction action) ;
+    protected abstract void doPost(HttpAction action) ;
+    protected abstract void doPatch(HttpAction action) ;
+    protected abstract void doDelete(HttpAction action) ;
+    protected abstract void doPut(HttpAction action) ;
+    protected abstract void doOptions(HttpAction action) ;
 
-    protected static void deleteGraph(HttpActionREST action)
+    protected static void deleteGraph(HttpAction action)
     {
-        if ( action.getTarget().isDefault )
-            action.getTarget().graph().clear() ;
+        Target target = determineTarget(action) ;
+        if ( target.isDefault )
+            target.graph().clear() ;
         else
-            action.getActiveDSG().removeGraph(action.getTarget().graphName) ;
+            action.getActiveDSG().removeGraph(target.graphName) ;
     }
 
     protected static void clearGraph(Target target)
@@ -247,11 +257,11 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         }
     }
 
-    protected static void addDataInto(Graph data, HttpActionREST action)
+    protected static void addDataInto(Graph data, HttpAction action)
     {   
         try
         {
-            Target dest = action.getTarget() ;
+            Target dest = determineTarget(action) ;
             FusekiLib.addDataInto(data, dest.dsg, dest.graphName) ;
             
 //            Graph g = dest.graph() ;
@@ -275,7 +285,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         }
     }
     
-    protected static DatasetGraph parseBody(HttpActionREST action)
+    protected static DatasetGraph parseBody(HttpAction action)
     {
         String contentTypeHeader = action.request.getContentType() ;
         
@@ -292,7 +302,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         {
 //            //log.warn("multipart/form-data not supported (yet)") ;
 //            error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/form-data not supported") ;
-            Graph graphTmp = SPARQL_Upload.upload(action.id,  action.getDatasetRef(), action.request, action.response, base) ;
+            Graph graphTmp = SPARQL_Upload.upload(action, base) ;
             return DatasetGraphFactory.create(graphTmp) ;
         }
         
@@ -347,7 +357,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         } catch (IOException ex) { errorOccurred(ex) ; return null ; }
     }
 
-    private static DatasetGraph parse(HttpActionREST action, Lang lang, String base, InputStream input)
+    private static DatasetGraph parse(HttpAction action, Lang lang, String base, InputStream input)
     {
         Graph graphTmp = GraphFactory.createGraphMem() ;
         
@@ -361,8 +371,9 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     }
     
     @Override
-    protected void validate(HttpServletRequest request)
+    protected void validate(HttpAction action)
     {
+        HttpServletRequest request = action.request ;
         // Direct naming.
         if ( request.getQueryString() == null )
             //errorBadRequest("No query string") ;
@@ -397,40 +408,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         }
     }
 
-    protected static Target targetGraph(HttpServletRequest request, DatasetRef desc, DatasetGraph dsg)
-    {
-        boolean dftGraph = getOneOnly(request, HttpNames.paramGraphDefault) != null ;
-        String uri = getOneOnly(request, HttpNames.paramGraph) ;
-        
-        if ( !dftGraph && uri == null )
-        {
-            // Direct naming or error.
-            uri = request.getRequestURL().toString() ;
-            if ( request.getRequestURI().equals(desc.name) )
-                // No name 
-                errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
-        }
-        
-        if ( dftGraph )
-            return Target.createDefault(dsg) ;
-        
-        // Named graph
-        if ( uri.equals(HttpNames.valueDefault ) )
-            // But "named" default
-            return Target.createDefault(dsg) ;
-        
-        // Strictly, a bit naughty on the URI resolution.  But more sensible. 
-        // Base is dataset.
-        String base = request.getRequestURL().toString() ; //wholeRequestURL(request) ;
-        // Make sure it ends in "/", ie. dataset as container.
-        if ( request.getQueryString() != null && ! base.endsWith("/") )
-            base = base + "/" ;
-        
-        String absUri = IRIResolver.resolveString(uri, base) ;
-        Node gn = NodeFactory.createURI(absUri) ;
-        return Target.createNamed(dsg, absUri, gn) ;
-    }
-    
     protected static String getOneOnly(HttpServletRequest request, String name)
     {
         String[] values = request.getParameterValues(name) ;

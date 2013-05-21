@@ -22,7 +22,9 @@ import static java.lang.String.format ;
 
 import java.io.IOException ;
 import java.util.Enumeration ;
+import java.util.Iterator ;
 import java.util.Map ;
+import java.util.concurrent.atomic.AtomicLong ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -58,20 +60,19 @@ public abstract class SPARQL_ServletBase extends ServletBase
             long id = allocRequestId(request, response);
             
             // Lifecycle
-            WebRequest wRequest = allocWebAction(id, request, response) ;
+            HttpAction action = allocHttpAction(id, request, response) ;
             // then add to doCommonWorker
             // work with HttpServletResponseTracker
             
-            printRequest(wRequest) ;
-            wRequest.setStartTime() ;
+            printRequest(action) ;
+            action.setStartTime() ;
             
-            response = wRequest.getResponse() ;
+            response = action.response ;
             initResponse(request, response) ;
             Context cxt = ARQ.getContext() ;
     
             try {
-                validate(request) ;
-                doCommonWorker(id, request, response) ;
+                execCommonWorker(action) ;
             } catch (QueryCancelledException ex) {
                 // Also need the per query info ...
                 String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
@@ -92,44 +93,98 @@ public abstract class SPARQL_ServletBase extends ServletBase
                 responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
             }
     
-            wRequest.setFinishTime() ;
-            printResponse(wRequest) ;
+            action.setFinishTime() ;
+            printResponse(action) ;
+            archiveHttpAction(action) ;
         } catch (Throwable th) {
             log.error("Internal error", th) ;
         }
     }
 
+
+    // ---- Operation lifecycle
+
     /** Return a fresh WebAction for this request */
-    protected WebRequest allocWebAction(long id, HttpServletRequest request, HttpServletResponse response) {
-        return new WebRequest(id, request, response) ;
+    protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
+        return new HttpAction(id, request, response, verbose_debug) ;
     }
 
-    protected abstract void validate(HttpServletRequest request) ;
+//XXX     protected abstract void startRequest(HttpAction action) ;
+    protected void startRequest(HttpAction action) {}
+
+    protected abstract void validate(HttpAction action) ;
+    protected abstract void perform(HttpAction action) ;
     
-    protected void doCommonWorker(long id, HttpServletRequest request, HttpServletResponse response)
+//XXX     protected abstract void finishRequest(HttpAction action) ;
+    protected void finishRequest(HttpAction action) {}
+
+    private void archiveHttpAction(HttpAction action)
+    {
+        action.minimize() ;
+    }
+
+    private void execCommonWorker(HttpAction action)
     {
         DatasetRef desc = null ;
-        String uri = request.getRequestURI() ;
+        String uri = action.request.getRequestURI() ;
 
         uri = mapRequestToDataset(uri) ;
 
-        if ( uri != null )
-        {
+        if ( uri != null ) {
             desc = DatasetRegistry.get().get(uri) ;
-            if ( desc == null )
-            {
+            if ( desc == null ) {
                 errorNotFound("No dataset for URI: "+uri) ;
                 return ;
             }
-            //cxt = desc.dataset.getContext() ;
-        }
-        else {
+        } else {
             desc = new DatasetRef();
             desc.dataset = dummyDSG;
         }
-        perform(id, desc, request, response) ;
+        action.setDataset(desc) ;
+        executeAction(action) ;
+    }
+        
+    protected void inc(AtomicLong x)
+    {
+        x.incrementAndGet() ;
     }
 
+    // Execute - no stats.
+    // Intecept point for the UberServlet 
+    protected void executeAction(HttpAction action)
+    {
+        executeLifecycle(action) ;
+    }
+    
+    // This is the service request lifecycle.
+    // Called directly by the UberServlet which as not done any stats by this point.
+    protected void executeLifecycle(HttpAction action)
+    {
+        // Fits with uberservlet?
+        inc(action.desc.countServiceRequests) ;
+        startRequest(action) ;
+        try {
+            validate(action) ;
+        } catch (ActionErrorException ex) {
+            inc(action.desc.countServiceRequestsBad) ;
+            throw ex ;
+        }
+
+        try {
+            perform(action) ;
+            // Success
+            inc(action.desc.countServiceRequestsOK) ;
+        } catch (ActionErrorException ex) {
+            inc(action.desc.countServiceRequestsBad) ;
+            throw ex ;
+        } catch (QueryCancelledException ex) {
+            inc(action.desc.countServiceRequestsBad) ;
+            throw ex ;
+        }
+
+        finishRequest(action) ;
+    }
+   
     @SuppressWarnings("unused") // ServletException
     protected void doPatch(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
@@ -137,25 +192,22 @@ public abstract class SPARQL_ServletBase extends ServletBase
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "HTTP PATCH not supported");
     }
     
-    private void printRequest(WebRequest wAction)
+    private void printRequest(HttpAction action)
     {
-        String url = wholeRequestURL(wAction.getRequest()) ;
-        String method = wAction.getRequest().getMethod() ;
+        String url = wholeRequestURL(action.request) ;
+        String method = action.request.getMethod() ;
 
-        log.info(format("[%d] %s %s", wAction.id, method, url)) ; 
-        if ( verbose_debug )
-        {
-            Enumeration<String> en = wAction.getRequest().getHeaderNames() ;
-            for ( ; en.hasMoreElements() ; )
-            {
+        log.info(format("[%d] %s %s", action.id, method, url)) ;
+        if (verbose_debug) {
+            Enumeration<String> en = action.request.getHeaderNames() ;
+            for (; en.hasMoreElements();) {
                 String h = en.nextElement() ;
-                Enumeration<String> vals = wAction.getRequest().getHeaders(h) ;
-                if ( ! vals.hasMoreElements() )
-                    log.info(format("[%d]   ", wAction.id, h)) ;
-                else
-                {
-                    for ( ; vals.hasMoreElements() ; )
-                        log.info(format("[%d]   %-20s %s", wAction.id, h, vals.nextElement())) ;
+                Enumeration<String> vals = action.request.getHeaders(h) ;
+                if (!vals.hasMoreElements())
+                    log.info(format("[%d]   ", action.id, h)) ;
+                else {
+                    for (; vals.hasMoreElements();)
+                        log.info(format("[%d]   %-20s %s", action.id, h, vals.nextElement())) ;
                 }
             }
         }
@@ -170,27 +222,27 @@ public abstract class SPARQL_ServletBase extends ServletBase
             setVaryHeader(response) ;
     }
     
-    private void printResponse(WebRequest wRequest)
+    private void printResponse(HttpAction action)
     {
-        long time = wRequest.getTime() ;
+        long time = action.getTime() ;
         
-        HttpServletResponseTracker response = wRequest.getResponse() ;
+        HttpServletResponseTracker response = action.response ;
         if ( verbose_debug )
         {
-            if ( wRequest.contentType != null )
-                log.info(format("[%d]   %-20s %s", wRequest.id, HttpNames.hContentType, wRequest.contentType)) ;
-            if ( wRequest.contentLength != -1 )
-                log.info(format("[%d]   %-20s %d", wRequest.id, HttpNames.hContentLengh, wRequest.contentLength)) ;
-            for ( Map.Entry<String, String> e: wRequest.getHeaders().entrySet() )
-                log.info(format("[%d]   %-20s %s", wRequest.id, e.getKey(), e.getValue())) ;
+            if ( action.contentType != null )
+                log.info(format("[%d]   %-20s %s", action.id, HttpNames.hContentType, action.contentType)) ;
+            if ( action.contentLength != -1 )
+                log.info(format("[%d]   %-20s %d", action.id, HttpNames.hContentLengh, action.contentLength)) ;
+            for ( Map.Entry<String, String> e: action.headers.entrySet() )
+                log.info(format("[%d]   %-20s %s", action.id, e.getKey(), e.getValue())) ;
         }
 
         String timeStr = fmtMillis(time) ;
 
-        if ( wRequest.message == null )
-            log.info(String.format("[%d] %d %s (%s) ", wRequest.id, wRequest.statusCode, HttpSC.getMessage(wRequest.statusCode), timeStr)) ;
+        if ( action.message == null )
+            log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, HttpSC.getMessage(action.statusCode), timeStr)) ;
         else
-            log.info(String.format("[%d] %d %s (%s) ", wRequest.id, wRequest.statusCode, wRequest.message, timeStr)) ;
+            log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, action.message, timeStr)) ;
     }
     
     private static String fmtMillis(long time)
@@ -229,5 +281,41 @@ public abstract class SPARQL_ServletBase extends ServletBase
         return uri.substring(0, i) ;
     }
     
-    protected abstract void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response) ;
+    /** Implementation of mapRequestToDataset(String) that looks for the longest match.
+     *  This includes use in direct naming GSP. 
+     */
+    protected static String mapRequestToDatasetLongest$(String uri) 
+    {
+        if ( uri == null )
+            return null ;
+        
+        // Mapping a request for GSP needs to find the "best"
+        // (longest matching) dataset URI.
+        // This covers local, using the URI as a direct name for
+        // a graph, not just using the indirect ?graph= or ?default 
+        // forms.
+        // Service matching, which is a matter of removing the service component,
+        // would only work for indirect. 
+
+        String ds = null ;
+        Iterator<String> iter = DatasetRegistry.get().keys() ;
+        while(iter.hasNext())
+        {
+            String ds2 = iter.next();
+            if ( ! uri.startsWith(ds2) )
+                continue ;
+
+            if ( ds == null )
+            {
+                ds = ds2 ;
+                continue ; 
+            }
+            if ( ds.length() < ds2.length() )
+            {
+                ds = ds2 ;
+                continue ;
+            }
+        }
+        return ds ;
+    }
 }

@@ -48,6 +48,47 @@ public class DatasetRef
     /** Cumulative counter of writer transactions */
     public AtomicLong   totalWriteTxn           = new AtomicLong(0) ;
     
+    /** Count of requests received - any service */
+    public AtomicLong   countServiceRequests    = new AtomicLong(0) ;
+    /** Count of requests received that fail in some way */
+    public AtomicLong   countServiceRequestsBad = new AtomicLong(0) ;
+    /** Count of requests received that fail in some way */
+    public AtomicLong   countServiceRequestsOK  = new AtomicLong(0) ;
+
+    // SPARQL Query
+    
+    /** Count of SPARQL Queries successfully executed */
+    public AtomicLong   countQueryOK            = new AtomicLong(0) ;
+    /** Count of SPARQL Queries with syntax errors */
+    public AtomicLong   countQueryBadSyntax     = new AtomicLong(0) ;
+    /** Count of SPARQL Queries with timeout on execution */
+    public AtomicLong   countQueryTimeout       = new AtomicLong(0) ;
+    /** Count of SPARQL Queries with execution errors (not timeouts) */
+    public AtomicLong   countQueryBadExecution  = new AtomicLong(0) ;
+
+    // SPARQL Update
+
+    /** Count of SPARQL Update */
+    public AtomicLong   countUpdate             = new AtomicLong(0) ;
+    
+    // File upload
+    
+    /** Count of Uploads */
+    public AtomicLong   countUpload             = new AtomicLong(0) ;
+    
+    // SPARQL Graph Store Protocol:
+
+    /** Count of GSP GET */
+    public AtomicLong   countGET                = new AtomicLong(0) ;
+    /** Count of GSP POST */
+    public AtomicLong   countPOST               = new AtomicLong(0) ;
+    /** Count of GSP PUT */
+    public AtomicLong   countPUT                = new AtomicLong(0) ;
+    /** Count of GSP DELETE */
+    public AtomicLong   countDELETE             = new AtomicLong(0) ;
+    /** Count of GSP HEAD */
+    public AtomicLong   countHEAD               = new AtomicLong(0) ;
+    
     public void startTxn(ReadWrite mode)
     {
         switch(mode)

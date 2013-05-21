@@ -22,8 +22,6 @@ import static java.lang.String.format ;
 
 import java.util.List ;
 
-import javax.servlet.http.HttpServletRequest ;
-
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.migrate.GraphLoadUtils ;
 import org.apache.jena.riot.RiotException ;
@@ -48,21 +46,19 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     { this(false) ; }
 
     @Override
-    protected void validateRequest(HttpServletRequest request) {}
+    protected void validateRequest(HttpAction action) {}
 
     @Override
-    protected void validateQuery(HttpActionQuery action, Query query) {}
+    protected void validateQuery(HttpAction action, Query query) {}
     
     @Override
     protected String mapRequestToDataset(String uri)
     { return null ; }
     
     @Override
-    protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
+    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) 
     {
-        action.datasetDesc = getDatasetDescription(action) ;
-        // To the context.
-        DatasetDescription datasetDesc = action.datasetDesc ;
+        DatasetDescription datasetDesc = getDatasetDescription(action) ;
         if ( datasetDesc == null )
             datasetDesc = getDatasetDescription(query) ;
         if ( datasetDesc == null )
@@ -75,7 +71,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
      * Construct a Dataset based on a dataset description.
      */
     
-    protected static Dataset datasetFromDescription(HttpActionQuery action, DatasetDescription datasetDesc)
+    protected static Dataset datasetFromDescription(HttpAction action, DatasetDescription datasetDesc)
     {
         try {
             if ( datasetDesc == null )
