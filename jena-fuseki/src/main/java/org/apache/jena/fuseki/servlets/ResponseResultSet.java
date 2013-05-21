@@ -19,7 +19,11 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.servlets.ServletBase.* ;
+import static org.apache.jena.atlas.lib.Lib.equal ;
+import static org.apache.jena.fuseki.servlets.ServletBase.errorBadRequest ;
+import static org.apache.jena.fuseki.servlets.ServletBase.errorOccurred ;
+import static org.apache.jena.fuseki.servlets.ServletBase.log ;
+
 import java.io.IOException ;
 import java.util.HashMap ;
 import java.util.Map ;
@@ -35,10 +39,8 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
-import org.apache.jena.fuseki.servlets.SPARQL_Query.HttpActionQuery ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.web.HttpSC ;
-import static org.apache.jena.atlas.lib.Lib.equal ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -79,12 +81,12 @@ public class ResponseResultSet
     static AcceptList prefContentTypeResultSet     = DEF.rsOffer ; 
     static AcceptList prefContentTypeRDF           = DEF.rdfOffer ;
 
-    public static void doResponseResultSet(HttpActionQuery action, Boolean booleanResult)
+    public static void doResponseResultSet(HttpAction action, Boolean booleanResult)
     {
         doResponseResultSet$(action, null, booleanResult, null) ;
     }
 
-    public static void doResponseResultSet(HttpActionQuery action, ResultSet resultSet, Prologue qPrologue)
+    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue)
     {
         doResponseResultSet$(action, resultSet, null, qPrologue) ;
     }
@@ -92,7 +94,7 @@ public class ResponseResultSet
     // If we refactor the conneg into a single function, we can split boolean and result set handling. 
     
     // One or the other argument must be null
-    private static void doResponseResultSet$(HttpActionQuery action,
+    private static void doResponseResultSet$(HttpAction action,
                                              final ResultSet resultSet, final Boolean booleanResult, 
                                              final Prologue qPrologue) 
     {

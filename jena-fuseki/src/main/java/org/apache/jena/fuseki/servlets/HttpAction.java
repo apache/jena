@@ -21,6 +21,9 @@ package org.apache.jena.fuseki.servlets;
 import static com.hp.hpl.jena.query.ReadWrite.READ ;
 import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
 
+import java.util.HashMap ;
+import java.util.Map ;
+
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -40,16 +43,35 @@ import com.hp.hpl.jena.sparql.core.Transactional ;
 public class HttpAction
 {
     public  final long id ;
+    public final boolean verbose ;
+    
+    
+    // Phase two items - set and valida after the datasetRef is known.  
     private DatasetGraph dsg ;                  // The data
-    private final Transactional transactional ;
-    private final boolean isTransactional;
-    private final DatasetRef desc ;
+    public DatasetRef desc ;
+    
+    private Transactional transactional ;
+    private boolean isTransactional;
     private DatasetGraph    activeDSG ;             // Set when inside begin/end.
     private ReadWrite       activeMode ;            // Set when inside begin/end.
     
-    public final HttpServletRequest request;
-    public final HttpServletResponse response ;
-    public final boolean verbose ;
+    private boolean startTimeIsSet = false ;
+    private boolean finishTimeIsSet = false ;
+
+    private long startTime = -2 ;
+    private long finishTime = -2 ;
+    
+    // Outcome.
+    int statusCode = -1 ;
+    String message = null ;
+    int contentLength = -1 ;
+    String contentType = null ;
+    
+    // Cleared to archive:
+    Map <String, String> headers = new HashMap<String, String>() ;
+    public HttpServletRequest request;
+    public HttpServletResponseTracker response ;
+
     
 //    // ---- Concurrency checking.
 //    private static Map<Lock, ConcurrencyPolicyMRSW> lockCounters = new HashMap<Lock, ConcurrencyPolicyMRSW>() ;
@@ -67,9 +89,16 @@ public class HttpAction
 //        }
 //    }
 
-    public HttpAction(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+    public HttpAction(long id, HttpServletRequest request, HttpServletResponse response, boolean verbose)
     {
         this.id = id ;
+        this.request = request ;
+        this.response = new HttpServletResponseTracker(this, response) ;
+        this.verbose = verbose ;
+    }
+
+    public void setDataset(DatasetRef desc)
+    {
         this.desc = desc ;
         this.dsg = desc.dataset ;
 
@@ -87,9 +116,6 @@ public class HttpAction
             isTransactional = false ;
             dsg = dsglock ;
         }
-        this.request = request ;
-        this.response = response ;
-        this.verbose = verbose ;
     }
     
     /**
@@ -161,17 +187,60 @@ public class HttpAction
         return desc ;
     }
     
-    // External, additional lock.
-    private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
+    /** Reduce to a size that can be kept around for sometime */  
+    public void minimize()
     {
-        if ( lock == null && dsg == null )
-            return ;
-        if ( lock == null )
-            lock = dsg.getLock() ;
-        if ( lock == null )
-            return ;
-        lock.enterCriticalSection(readLock) ;
+        this.request = null ;
+        this.response = null ;
     }
+
+    public void setStartTime() {
+        if ( startTimeIsSet ) 
+            Log.warn(this,  "Start time reset") ;
+        startTimeIsSet = true ;
+        this.startTime = System.nanoTime() ;
+    }
+
+    public void setFinishTime() {
+        if ( finishTimeIsSet ) 
+            Log.warn(this,  "Finish time reset") ;
+        finishTimeIsSet = true ;
+        this.finishTime = System.nanoTime() ;
+    }
+    
+
+//    public Map <String, String> getHeaders()    { return headers ; } 
+//    
+//    public HttpServletRequest getRequest()      { return request ; }
+//
+//    public HttpServletResponseTracker getResponse()    { return response ; }
+    
+
+    /** Return the recorded time taken in milliseconds. 
+     *  {@linkplain #setStartTime} and {@linkplain #setFinishTime}
+     *  must have been called.
+     */
+    public long getTime()
+    {
+        if ( ! startTimeIsSet ) 
+            Log.warn(this,  "Start time not set") ;
+        if ( ! finishTimeIsSet ) 
+            Log.warn(this,  "Finish time not set") ;
+        return (finishTime-startTime)/(1000*1000) ;
+    }
+
+    
+//    // External, additional lock.
+//    private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
+//    {
+//        if ( lock == null && dsg == null )
+//            return ;
+//        if ( lock == null )
+//            lock = dsg.getLock() ;
+//        if ( lock == null )
+//            return ;
+//        lock.enterCriticalSection(readLock) ;
+//    }
     
     private void leave(DatasetGraph dsg, Lock lock, boolean readLock)
     {

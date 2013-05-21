@@ -44,30 +44,17 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
-    protected class HttpActionQuery extends HttpActionProtocol {
-        
-        // Used if the protocol or query has a dataset description.
-        DatasetDescription datasetDesc = null ;
-        
-        public HttpActionQuery(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
-        {
-            super(id, desc, request, response, verbose) ;
-        }
-    }
-    
     public SPARQL_Query(boolean verbose)
     { super(verbose) ; }
 
@@ -97,17 +84,16 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
     
     @Override
-    protected final void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
+    protected final void perform(HttpAction action)
     {
-        HttpActionQuery action = new HttpActionQuery(id, desc, request, response, verbose_debug) ;
         // GET
-        if ( request.getMethod().equals(HttpNames.METHOD_GET) )
+        if ( action.request.getMethod().equals(HttpNames.METHOD_GET) )
         {
             executeWithParameter(action) ;
             return ;
         }
 
-        MediaType ct = FusekiLib.contentType(request) ;
+        MediaType ct = FusekiLib.contentType(action.request) ;
         String incoming = ct.getContentType() ;
         
         // POST application/sparql-query
@@ -138,27 +124,33 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                                              paramForceAccept,
                                                              paramTimeout) ;
     
+    @Override
+    protected void startRequest(HttpAction action)
+    {
+    }
+    
     /** Called to validate arguments */
     @Override
-    protected void validate(HttpServletRequest request)
+    protected void validate(HttpAction action)
     {
-        String method = request.getMethod().toUpperCase(Locale.ENGLISH) ;
+        String method = action.request.getMethod().toUpperCase(Locale.ENGLISH) ;
         
         if ( ! HttpNames.METHOD_POST.equals(method) && ! HttpNames.METHOD_GET.equals(method) )
             errorMethodNotAllowed("Not a GET or POST request") ;
             
-        if ( HttpNames.METHOD_GET.equals(method) && request.getQueryString() == null )
+        if ( HttpNames.METHOD_GET.equals(method) && action.request.getQueryString() == null )
         {
-            warning("Service Description / SPARQL Query / "+request.getRequestURI()) ;
-            errorNotFound("Service Description: "+request.getRequestURI()) ;
+            warning("Service Description / SPARQL Query / "+action.request.getRequestURI()) ;
+            errorNotFound("Service Description: "+action.request.getRequestURI()) ;
         }
             
         // Use of the dataset describing parameters is check later.
-        validate(request, allParams) ;
-        validateRequest(request) ;
+        validate(action.request, allParams) ;
+        validateRequest(action) ;
     }
     
-    protected abstract void validateRequest(HttpServletRequest request) ;
+    /** Validate the request after checking HTTP method and HTTP Parameters */ 
+    protected abstract void validateRequest(HttpAction action) ;
     
     /** Helper for validating request */
     protected void validate(HttpServletRequest request, Collection<String> params)
@@ -209,13 +201,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         }
     }
 
-    private void executeWithParameter(HttpActionQuery action)
+    private void executeWithParameter(HttpAction action)
     {
         String queryString = action.request.getParameter(paramQuery) ;
         execute(queryString, action) ;
     }
 
-    private void executeBody(HttpActionQuery action)
+    private void executeBody(HttpAction action)
     {
         String queryString = null ;
         try { 
@@ -226,7 +218,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         execute(queryString, action) ;
     }
 
-    private void execute(String queryString, HttpActionQuery action)
+    private void execute(String queryString, HttpAction action)
     {
         String queryStringLog = formatForLog(queryString) ;
         if ( super.verbose_debug || action.verbose )
@@ -260,14 +252,14 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     /** Check the query - if unacceptable, throw ActionErrorException or call super.error */
-    protected abstract void validateQuery(HttpActionQuery action, Query query) ;
+    protected abstract void validateQuery(HttpAction action, Query query) ;
 
     protected QueryExecution createQueryExecution(Query query, Dataset dataset)
     {
         return QueryExecutionFactory.create(query, dataset) ;
     }
 
-    protected SPARQLResult executeQuery(HttpActionQuery action, QueryExecution qExec, Query query, String queryStringLog)
+    protected SPARQLResult executeQuery(HttpAction action, QueryExecution qExec, Query query, String queryStringLog)
     {
         setAnyTimeouts(qExec, action);
 
@@ -321,7 +313,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return null ;
     }
 
-    private void setAnyTimeouts(QueryExecution qexec, HttpActionQuery action) {
+    private void setAnyTimeouts(QueryExecution qexec, HttpAction action) {
         if (!(action.getDatasetRef().allowTimeoutOverride))
             return;
 
@@ -347,9 +339,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             qexec.setTimeout(desiredTimeout);
     }
 
-    protected abstract Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) ;
+    protected abstract Dataset decideDataset(HttpAction action, Query query, String queryStringLog) ;
 
-    protected void sendResults(HttpActionQuery action, SPARQLResult result, Prologue qPrologue)
+    protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue)
     {
         if ( result.isResultSet() )
             ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue) ;

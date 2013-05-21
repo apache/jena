@@ -18,8 +18,6 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import javax.servlet.http.HttpServletRequest ;
-
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -36,15 +34,15 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     { this(false) ; }
     
     @Override
-    protected void validateRequest(HttpServletRequest request) 
+    protected void validateRequest(HttpAction action) 
     { }
 
     @Override
-    protected void validateQuery(HttpActionQuery action, Query query) 
+    protected void validateQuery(HttpAction action, Query query) 
     { }
    
     @Override
-    protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
+    protected Dataset decideDataset(HttpAction action, Query query, String queryStringLog) 
     { 
         DatasetGraph dsg = action.getActiveDSG() ;
         

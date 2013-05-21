@@ -26,13 +26,10 @@ import java.util.Collections ;
 import java.util.List ;
 
 import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.fuseki.server.DatasetRef ;
-import org.apache.jena.fuseki.servlets.SPARQL_Query.HttpActionQuery ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
@@ -42,14 +39,6 @@ import com.hp.hpl.jena.sparql.core.DatasetDescription ;
  */
 public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
 {
-    protected static class HttpActionProtocol extends HttpAction {
-
-        public HttpActionProtocol(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
-        {
-            super(id, desc, request, response, verbose) ;
-        }
-    }
-    
     protected SPARQL_Protocol(boolean verbose_debug)
     {
         super(verbose_debug) ;
@@ -64,7 +53,7 @@ public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
         return null ;
     }
     
-    protected static DatasetDescription getDatasetDescription(HttpActionQuery action)
+    protected static DatasetDescription getDatasetDescription(HttpAction action)
     {
         List<String> graphURLs = toStrList(action.request.getParameterValues(paramDefaultGraphURI)) ;
         List<String> namedGraphs = toStrList(action.request.getParameterValues(paramNamedGraphURI)) ;

@@ -32,7 +32,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     { this(false) ; }
 
     @Override
-    protected void doOptions(HttpActionREST action)
+    protected void doOptions(HttpAction action)
     {
         action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,PUT,DELETE,POST");
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
@@ -40,18 +40,19 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     }
     
     @Override
-    protected void doDelete(HttpActionREST action)
+    protected void doDelete(HttpAction action)
     {
         action.beginWrite() ;
         try {
+            Target target = determineTarget(action) ;
             if ( log.isDebugEnabled() )
-                log.debug("DELETE->"+action.getTarget()) ;
-            boolean existedBefore = action.getTarget().exists() ; 
+                log.debug("DELETE->"+target) ;
+            boolean existedBefore = target.exists() ; 
             if ( ! existedBefore)
             {
                 // commit, not abort, because locking "transactions" don't support abort. 
                 action.commit() ;
-                errorNotFound("No such graph: "+action.getTarget().name) ;
+                errorNotFound("No such graph: "+target.name) ;
             }
             deleteGraph(action) ;
             action.commit() ;
@@ -61,17 +62,18 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     }
 
     @Override
-    protected void doPut(HttpActionREST action)
+    protected void doPut(HttpAction action)
     {
         DatasetGraph body = parseBody(action) ;
         action.beginWrite() ;
         boolean existedBefore = false ;
         try {
+            Target target = determineTarget(action) ;
             if ( log.isDebugEnabled() )
-                log.debug("PUT->"+action.getTarget()) ;
-            existedBefore = action.getTarget().exists() ; 
+                log.debug("PUT->"+target) ;
+            existedBefore = target.exists() ; 
             if ( existedBefore )
-                clearGraph(action.getTarget()) ;
+                clearGraph(target) ;
             addDataInto(body.getDefaultGraph(), action) ;
             action.commit() ;
         } finally { action.endWrite() ; }
@@ -83,15 +85,16 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     }
 
     @Override
-    protected void doPost(HttpActionREST action)
+    protected void doPost(HttpAction action)
     {
         DatasetGraph body = parseBody(action) ;
         action.beginWrite() ;
         boolean existedBefore ; 
         try {
+            Target target = determineTarget(action) ;
             if ( log.isDebugEnabled() )
-                log.debug("POST->"+action.getTarget()) ;
-            existedBefore = action.getTarget().exists() ; 
+                log.debug("POST->"+target) ;
+            existedBefore = target.exists() ; 
             addDataInto(body.getDefaultGraph(), action) ;
             action.commit() ;
         } finally { action.endWrite() ; }

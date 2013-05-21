@@ -28,7 +28,10 @@ import static org.apache.jena.fuseki.HttpNames.paramUsingNamedGraphURI ;
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.util.* ;
+import java.util.Arrays ;
+import java.util.Collection ;
+import java.util.Enumeration ;
+import java.util.List ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -38,7 +41,6 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.IRIResolver ;
@@ -59,13 +61,6 @@ public class SPARQL_Update extends SPARQL_Protocol
     // Base URI used to isolate parsing from the current directory of the server. 
     private static final String UpdateParseBase = "http://example/update-base/" ;
     private static final IRIResolver resolver = IRIResolver.create(UpdateParseBase) ;
-    
-    private class HttpActionUpdate extends HttpActionProtocol {
-        public HttpActionUpdate(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
-        {
-            super(id, desc, request, response, verbose) ;
-        }
-    }
     
     public SPARQL_Update(boolean verbose)
     { super(verbose) ; }
@@ -95,16 +90,12 @@ public class SPARQL_Update extends SPARQL_Protocol
     }
 
     @Override
-    protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
+    protected void perform(HttpAction action)
     {
-        // validate -> action.
-        validate(request) ;
-        HttpActionUpdate action = new HttpActionUpdate(id, desc, request, response, verbose_debug) ;
-        
         // WebContent needs to migrate to using ContentType.
         String ctStr ;
         {
-            MediaType incoming = FusekiLib.contentType(request) ;
+            MediaType incoming = FusekiLib.contentType(action.request) ;
             if ( incoming == null )
                 ctStr = WebContent.contentTypeSPARQLUpdate ;
             else
@@ -121,7 +112,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             executeForm(action) ;
             return ;
         }
-        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + request.getContentType()) ;
+        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + action.request.getContentType()) ;
     }
 
     protected static List<String> paramsForm = Arrays.asList(paramRequest, paramUpdate, 
@@ -129,19 +120,15 @@ public class SPARQL_Update extends SPARQL_Protocol
     protected static List<String> paramsPOST = Arrays.asList(paramUsingGraphURI, paramUsingNamedGraphURI) ;
     
     @Override
-    protected void validate(HttpServletRequest request)
+    protected void validate(HttpAction action)
     {
+        HttpServletRequest request = action.request ;
+        
         if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(request.getMethod()) )
             errorMethodNotAllowed("SPARQL Update : use POST") ;
         
-        String ctStr ;
-        {
-            MediaType incoming = FusekiLib.contentType(request) ;
-            if ( incoming == null )
-                ctStr = WebContent.contentTypeSPARQLUpdate ;
-            else
-                ctStr = incoming.getContentType() ;
-        }
+        MediaType incoming = FusekiLib.contentType(request) ;
+        String ctStr = ( incoming == null ) ? WebContent.contentTypeSPARQLUpdate : incoming.getContentType() ;
         // ----
         
         if ( WebContent.contentTypeSPARQLUpdate.equals(ctStr) )
@@ -155,7 +142,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         
         if ( WebContent.contentTypeForm.equals(ctStr) )
         {
-            int x = countParamOccurences(request,paramUpdate) + countParamOccurences(request, paramRequest) ;
+            int x = countParamOccurences(request, paramUpdate) + countParamOccurences(request, paramRequest) ;
             if ( x == 0 )
                 errorBadRequest("SPARQL Update: No 'update=' parameter") ;
             if ( x != 1 )
@@ -187,7 +174,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         }
     }
 
-    private void executeBody(HttpActionUpdate action)
+    private void executeBody(HttpAction action)
     {
         InputStream input = null ;
         try { input = action.request.getInputStream() ; }
@@ -209,7 +196,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         successNoContent(action) ;
     }
 
-    private void executeForm(HttpActionUpdate action)
+    private void executeForm(HttpAction action)
     {
         String requestStr = action.request.getParameter(paramUpdate) ;
         if ( requestStr == null )
@@ -228,7 +215,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         successPage(action,"Update succeeded") ;
     }
     
-    private void execute(HttpActionUpdate action, InputStream input)
+    private void execute(HttpAction action, InputStream input)
     {
         UsingList usingList = processProtocol(action.request) ;
         
