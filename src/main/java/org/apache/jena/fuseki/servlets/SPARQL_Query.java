@@ -143,10 +143,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             warning("Service Description / SPARQL Query / "+action.request.getRequestURI()) ;
             errorNotFound("Service Description: "+action.request.getRequestURI()) ;
         }
-            
+        
         // Use of the dataset describing parameters is check later.
-        validate(action.request, allParams) ;
-        validateRequest(action) ;
+        try {
+            validate(action.request, allParams) ;
+            validateRequest(action) ; 
+        } catch (ActionErrorException ex) { inc(action.desc.countQueryBadSyntax) ; throw ex ; } 
     }
     
     /** Validate the request after checking HTTP method and HTTP Parameters */ 
@@ -244,11 +246,18 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             Dataset dataset = decideDataset(action, query, queryStringLog) ; 
             qExec = createQueryExecution(query, dataset) ;
             SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
+            
+            // Deals with exceptions itself.
             sendResults(action, result, query.getPrologue()) ;
-        } finally { 
+            inc(action.desc.countQueryOK) ;
+        } 
+        catch (QueryCancelledException ex) { inc(action.desc.countQueryTimeout) ; throw ex ; } 
+        catch (QueryExecException ex)      { inc(action.desc.countQueryBadExecution) ; throw ex ; } 
+        finally { 
             if ( qExec != null )
                 qExec.close() ;
-            action.endRead() ; }
+            action.endRead() ;
+        }
     }
 
     /** Check the query - if unacceptable, throw ActionErrorException or call super.error */
