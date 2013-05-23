@@ -40,8 +40,8 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 /** Machinary */
 public abstract class ReorderTransformationBase implements ReorderTransformation
 {
-    protected static final boolean DEBUG = false ;  
     static public final Logger log = LoggerFactory.getLogger(ReorderTransformationBase.class) ;
+    private final boolean DEBUG = log.isDebugEnabled() ;  
     
     @Override
     public BasicPattern reorder(BasicPattern pattern)
@@ -81,7 +81,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         int indexes[] = new int[N] ;
 
         if ( DEBUG )
-            log.info("Reorder: "+Iter.asString(components, formatter)) ;
+            log.debug("Reorder: "+Iter.asString(components, formatter)) ;
         
         int idx = 0 ;
         for ( ; idx < numReorder ; idx++ )
@@ -137,7 +137,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
                 buff.append(String.format("    %d %8.0f : %s\n", i, w2, printAbbrev(pt))) ;
             }
             String x = StrUtils.noNewlineEnding(buff.toString());
-            log.info(">> Input\n"+x) ;
+            log.debug(">> Input\n"+x) ;
         }
         
         int idx = processPTriples(pTriples, null) ; 
@@ -146,7 +146,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         {
             String x = printAbbrev(pTriples.get(idx)) ;
             x = StrUtils.noNewlineEnding(x) ;
-            log.info("<< Output\n    "+x) ;
+            log.debug("<< Output\n    "+x) ;
         }
         return idx ;
     }
