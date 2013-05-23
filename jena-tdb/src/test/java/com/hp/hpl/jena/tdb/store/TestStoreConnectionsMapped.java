@@ -27,9 +27,19 @@ import com.hp.hpl.jena.tdb.sys.TestOps ;
 
 public class TestStoreConnectionsMapped extends AbstractStoreConnections
 {
-    static FileMode mode = SystemTDB.fileMode() ;  
-    @BeforeClass public static void beforeClassFileMode() { TestOps.setFileMode(FileMode.mapped) ; }
-    @AfterClass  public static void afterClassFileMode()  { TestOps.setFileMode(mode) ; }
+    static FileMode mode ;   
 
+    @BeforeClass
+    public static void beforeClassFileMode()
+    {
+        mode = SystemTDB.fileMode() ;
+        TestOps.setFileMode(FileMode.mapped) ;
+    }
+
+    @AfterClass
+    public static void afterClassFileMode()
+    {
+        TestOps.setFileMode(mode) ;
+    }
 }
 

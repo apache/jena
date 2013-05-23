@@ -19,11 +19,13 @@
 package com.hp.hpl.jena.tdb.store;
 
 import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.TestOps ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -45,10 +47,18 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 } )
 public class TS_Store
 { 
-    @AfterClass
-    public static void doubleCheck()
+    static FileMode mode ; 
+    
+    @BeforeClass
+    public static void beforeClass()
     {
-        if (SystemTDB.fileMode() != FileMode.mapped)
-            System.err.println("Wrong mode") ;
+        mode = SystemTDB.fileMode() ;
+    }
+    
+    @AfterClass
+    public static void afterClass()
+    {
+        if ( ! SystemTDB.fileMode().equals(mode) )
+            TestOps.setFileMode(mode) ;    
     }
 }
