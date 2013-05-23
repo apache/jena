@@ -18,22 +18,16 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.Iterator ;
-
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -193,31 +187,13 @@ public class TestDatasetTDB extends BaseTest
         assertTrue(m.isIsomorphicWith(m2)) ;
     }
 
-    @Test public void special_debug()
-    {
-        Dataset ds = create() ;
-
-        load1(ds.getDefaultModel()) ;
-        load2(ds.getNamedModel("http://example/graph1")) ;
-        load3(ds.getNamedModel("http://example/graph2")) ;
-        
-        DatasetGraph dsg = ds.asDatasetGraph() ;
-        Node s = null ;
-        Node p = NodeFactory.createURI(baseNS+"p1") ;
-        Node o = SSE.parseNode("'x1'") ;
-        
-        Iterator<Quad> iter = dsg.find(Node.ANY, s,p,o) ;  
-        Iter.print(iter) ;
-    }
-    
-    
     @Test public void special4()
     {
         Dataset ds = create() ;
 
         load1(ds.getDefaultModel()) ;
         load2(ds.getNamedModel("http://example/graph1")) ;
-        load3(ds.getNamedModel("http://example/graph2")) ;
+        load3(ds.getNamedModel("http://example/graph2")) ;        
         
         Model m = ModelFactory.createDefaultModel() ;
         load2(m) ;
@@ -232,27 +208,20 @@ public class TestDatasetTDB extends BaseTest
 
         // dataset
         qExec = QueryExecutionFactory.create(q, ds) ;
-        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;        
+
         long c_ds = qExec.execSelect().next().getLiteral("c").getLong() ;
         qExec.close() ;
         
+//        String qs2 = "PREFIX : <"+baseNS+"> SELECT * WHERE { ?x (:p1|:p2) 'x1' }" ;
+//        Query q2 = QueryFactory.create(qs2) ;
+//        qExec = QueryExecutionFactory.create(q2, ds) ;
+//        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
+//        ResultSetFormatter.out(qExec.execSelect()) ;
+//        
+//        qExec = QueryExecutionFactory.create(q2, m) ;
+//        ResultSetFormatter.out(qExec.execSelect()) ;
         // --------
-        SSE.write(m) ;
-        System.out.println() ;
-        SSE.write(ds) ;
-        
-        String qs2 = "PREFIX : <"+baseNS+"> SELECT * WHERE { ?x (:p1|:p2) 'x1' }" ;
-        Query q2 = QueryFactory.create(qs2) ;
-        System.out.println("Dataset") ;
-        qExec = QueryExecutionFactory.create(q2, ds) ;
-        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
-        ResultSetFormatter.out(qExec.execSelect()) ;
-        
-        System.out.println("Model") ;
-        qExec = QueryExecutionFactory.create(q2, m) ;
-        ResultSetFormatter.out(qExec.execSelect()) ;
-        // --------
-        
         
         assertEquals(c_m, c_ds) ; 
         qExec.close() ;
