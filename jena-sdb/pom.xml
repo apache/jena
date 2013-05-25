@@ -16,30 +16,28 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-sdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SDB (SQL based triple store)</name>
-  <version>1.3.6-SNAPSHOT</version>
+  <version>1.3.6</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
     <!-- Use a released parent POM -->
     <version>6</version>
-    <relativePath></relativePath>
+    <relativePath />
   </parent> 
 
   <description>SDB is a persistence layer for use with Apache Jena that uses an SQL database to store triples/quads.</description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-sdb/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-sdb/</developerConnection>
-    <url>http://svn.apache.org/viewvc/jena/trunk/jena-sdb</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-sdb-1.3.6</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-sdb-1.3.6</developerConnection>
+    <url>http://svn.apache.org/viewvc/jena/tags/jena-sdb-1.3.6</url>
   </scm>
 
   <properties>
