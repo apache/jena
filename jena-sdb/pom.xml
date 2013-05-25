@@ -30,7 +30,7 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
     <!-- Use a released parent POM -->
-    <version>5</version>
+    <version>6</version>
     <relativePath></relativePath>
   </parent> 
 
@@ -44,8 +44,8 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <ver.jena>2.10.1-SNAPSHOT</ver.jena>
-    <ver.arq>2.10.1-SNAPSHOT</ver.arq>
+    <ver.jena>2.10.1</ver.jena>
+    <ver.arq>${ver.jena}</ver.arq>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
