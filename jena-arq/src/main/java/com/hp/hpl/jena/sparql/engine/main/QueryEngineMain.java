@@ -71,12 +71,6 @@ public class QueryEngineMain extends QueryEngineBase
         return qIter ;
     }
     
-//    protected Op createOp(Query query, AlgebraGenerator gen)
-//    {
-//        Op op = super.createOp(query, gen) ;
-//        return op ;
-//    }
-    
     @Override
     protected Op modifyOp(Op op)
     { 
@@ -87,16 +81,10 @@ public class QueryEngineMain extends QueryEngineBase
     
     protected Op minimalModifyOp(Op op)
     {
-        // Must always do this for QueryEngineMain
+        // Must always do this for QueryEngineMain.
         // The optimizer does do this.
         return TransformScopeRename.transform(op) ;
     }
-    
-//    @Override
-//    public void close()
-//    { 
-//        super.close() ; 
-//    }
     
     // -------- Factory
     

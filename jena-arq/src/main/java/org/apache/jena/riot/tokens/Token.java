@@ -189,6 +189,20 @@ public final class Token
         this.column         = token.column ;
     }
     
+    // Convenience operations for accessing tokens. 
+    
+    public String asString() {
+        switch (tokenType)
+        {
+            case STRING: 
+            case STRING1: case STRING2: 
+            case LONG_STRING1: case LONG_STRING2:
+                return getImage() ;
+            default:
+                return null ;
+        }
+    }
+    
     public int asInt() {
         if ( ! hasType(TokenType.INTEGER) ) return -1 ;
         return Integer.valueOf(tokenImage);
@@ -205,7 +219,7 @@ public final class Token
         {
             case INTEGER:   return Long.valueOf(tokenImage) ;
             case HEX:       return Long.valueOf(tokenImage, 16) ;
-             default:
+            default:
                  return dft ;
         }
     }

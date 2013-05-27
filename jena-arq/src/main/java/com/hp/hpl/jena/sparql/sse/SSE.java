@@ -153,7 +153,6 @@ public class SSE
         return BuilderGraph.buildGraph(item) ;
     }
 
-    
     /** Read in a file, parse, and obtain a graph */
     public static Graph readGraph(String filename) { return readGraph(filename, null) ; }
     
@@ -174,6 +173,37 @@ public class SSE
         BuilderGraph.buildGraph(graph, item) ;
     }
     
+    /** Parse a string, and obtain a DatasetGraph */
+    public static DatasetGraph parseDatasetGraph(String string) { return parseDatasetGraph(string, null) ; }
+    
+    /** Parse a string, and obtain a graph */
+    public static DatasetGraph parseDatasetGraph(String string, PrefixMapping pmap)
+    { 
+        Item item = parse(string, pmap) ;
+        return BuilderGraph.buildDataset(item) ;
+    }
+
+    /** Read in a file, parse, and obtain a graph */
+    public static DatasetGraph readDatasetGraph(String filename) { return readDatasetGraph(filename, null) ; }
+    
+    /** Read in a file, parse, and obtain a DatasetGraph */
+    public static DatasetGraph readDatasetGraph(String filename, PrefixMapping pmap)
+    {
+        Item item = readFile(filename, pmap) ;
+        return BuilderGraph.buildDataset(item) ;
+    }
+    
+    /** Read in a file, parse, and obtain a DatasetGraph */
+    public static void readDatasetGraph(DatasetGraph dsg, String filename) { readDatasetGraph(dsg, filename, null) ; }
+    
+    /** Read in a file, parse, and obtain a DatasetGraph */
+    public static void readDatasetGraph(DatasetGraph dsg, String filename, PrefixMapping pmap)
+    {
+        Item item = readFile(filename, pmap) ;
+        BuilderGraph.buildDataset(dsg, item) ;
+    }
+    
+
     /** Read in a file, parse, and obtain a SPARQL algebra op */
     public static Op readOp(String filename) { return Algebra.read(filename) ; }
     
