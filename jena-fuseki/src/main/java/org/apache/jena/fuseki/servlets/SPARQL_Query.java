@@ -19,17 +19,7 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.HttpNames.paramAccept ;
-import static org.apache.jena.fuseki.HttpNames.paramCallback ;
-import static org.apache.jena.fuseki.HttpNames.paramDefaultGraphURI ;
-import static org.apache.jena.fuseki.HttpNames.paramForceAccept ;
-import static org.apache.jena.fuseki.HttpNames.paramNamedGraphURI ;
-import static org.apache.jena.fuseki.HttpNames.paramOutput1 ;
-import static org.apache.jena.fuseki.HttpNames.paramOutput2 ;
-import static org.apache.jena.fuseki.HttpNames.paramQuery ;
-import static org.apache.jena.fuseki.HttpNames.paramQueryRef ;
-import static org.apache.jena.fuseki.HttpNames.paramStyleSheet ;
-import static org.apache.jena.fuseki.HttpNames.paramTimeout ;
+import static org.apache.jena.fuseki.HttpNames.* ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -95,7 +85,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
         MediaType ct = FusekiLib.contentType(action.request) ;
         String incoming = ct.getContentType() ;
-        
+
         // POST application/sparql-query
         if (WebContent.contentTypeSPARQLQuery.equals(incoming))
         {
@@ -146,16 +136,17 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         
         // Use of the dataset describing parameters is check later.
         try {
-            validate(action.request, allParams) ;
+            validateParams(action.request, allParams) ;
             validateRequest(action) ; 
         } catch (ActionErrorException ex) { inc(action.desc.countQueryBadSyntax) ; throw ex ; } 
+        // Query not yet parsed.
     }
     
     /** Validate the request after checking HTTP method and HTTP Parameters */ 
     protected abstract void validateRequest(HttpAction action) ;
     
     /** Helper for validating request */
-    protected void validate(HttpServletRequest request, Collection<String> params)
+    protected void validateParams(HttpServletRequest request, Collection<String> params)
     {
         MediaType ct = FusekiLib.contentType(request) ;
         boolean mustHaveQueryParam = true ;
@@ -233,11 +224,19 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             // NB syntax is ARQ (a superset of SPARQL)
             query = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
             queryStringLog = formatForLog(query) ;
+            validateQuery(action, query) ;
+        } catch (ActionErrorException ex) {
+            inc(action.desc.countQueryBadSyntax) ;
+            throw ex ;
+        } catch (QueryParseException ex) {
+            inc(action.desc.countQueryBadSyntax) ;
+            errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
         }
-        catch (QueryParseException ex) { errorBadRequest("Parse error: \n"+queryString +"\n\r" + messageForQPE(ex)) ; }
         // Should not happen.
-        catch (QueryException ex) { errorBadRequest("Error: \n"+queryString +"\n\r" + ex.getMessage()) ; }
-        validateQuery(action, query) ;
+        catch (QueryException ex) {
+            inc(action.desc.countQueryBadSyntax) ;
+            errorBadRequest("Error: \n" + queryString + "\n\r" + ex.getMessage()) ;
+        }
         
         // Assumes finished whole thing by end of sendResult. 
         action.beginRead() ;

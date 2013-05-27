@@ -40,7 +40,6 @@ public class StatsServlet extends HttpServlet
             resp.setContentType("text/plain");
             
             Iterator<String> iter = DatasetRegistry.get().keys() ;
-            
             while(iter.hasNext())
             {
                 String ds = iter.next() ;
@@ -67,14 +66,14 @@ public class StatsServlet extends HttpServlet
         out.println("    Timeouts   = "+desc.countQueryTimeout) ;
         out.println("    Bad exec   = "+desc.countQueryBadExecution);
         out.println("  SPARQL Update:") ;
-        out.println("    Updates    = "+desc.countUpdate) ;    
-        out.println("  Upload:") ;
-        out.println("    Uploads    = "+desc.countUpload) ;
-        out.println("  SPARQL Graph Store Protocol:") ;
-        out.println("    GETs       = "+desc.countGET) ;
-        out.println("    POSTs      = "+desc.countPOST) ;
-        out.println("    PUTs       = "+desc.countPUT) ;
-        out.println("    DELETEs    = "+desc.countDELETE) ;
+//        out.println("    Updates    = "+desc.update.    
+//        out.println("  Upload:") ;
+//        out.println("    Uploads    = "+desc.countUpload) ;
+//        out.println("  SPARQL Graph Store Protocol:") ;
+//        out.println("    GETs       = "+desc.countGET) ;
+//        out.println("    POSTs      = "+desc.countPOST) ;
+//        out.println("    PUTs       = "+desc.countPUT) ;
+//        out.println("    DELETEs    = "+desc.countDELETE) ;
         //out.println("   HEADs     = "+desc.countHEAD) ;
     }
     

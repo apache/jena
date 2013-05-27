@@ -86,23 +86,23 @@ public class FusekiConfig
     
     public static ServerConfig defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate)
     {
-        DatasetRef sDesc = new DatasetRef() ;
-        sDesc.name = datasetPath ;
-        sDesc.dataset = dsg ;
-        sDesc.queryEP.add(HttpNames.ServiceQuery) ;
-        sDesc.queryEP.add(HttpNames.ServiceQueryAlt) ;
+        DatasetRef dbDesc = new DatasetRef() ;
+        dbDesc.name = datasetPath ;
+        dbDesc.dataset = dsg ;
+        dbDesc.query.endpoints.add(HttpNames.ServiceQuery) ;
+        dbDesc.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
 
         if ( allowUpdate )
         {
-            sDesc.updateEP.add(HttpNames.ServiceUpdate) ;
-            sDesc.uploadEP.add(HttpNames.ServiceUpload) ;
-            sDesc.readWriteGraphStoreEP.add(HttpNames.ServiceData) ;
-            sDesc.allowDatasetUpdate = true ;
+            dbDesc.update.endpoints.add(HttpNames.ServiceUpdate) ;
+            dbDesc.upload.endpoints.add(HttpNames.ServiceUpload) ;
+            dbDesc.readWriteGraphStore.endpoints.add(HttpNames.ServiceData) ;
+            dbDesc.allowDatasetUpdate = true ;
         }
         else
-            sDesc.readGraphStoreEP.add(HttpNames.ServiceData) ;
+            dbDesc.readGraphStore.endpoints.add(HttpNames.ServiceData) ;
         ServerConfig config = new ServerConfig() ;
-        config.services = Arrays.asList(sDesc) ;
+        config.datasets = Arrays.asList(dbDesc) ;
         config.port = 3030 ;
         config.mgtPort = 3031 ;
         config.pagesPort = config.port ;
@@ -149,7 +149,7 @@ public class FusekiConfig
         
         // TODO Properties for the other fields.
         ServerConfig config = new ServerConfig() ;
-        config.services = services ;
+        config.datasets = services ;
         config.port = 3030 ;
         config.mgtPort = 3031 ;
         config.pagesPort = config.port ;
@@ -215,11 +215,11 @@ public class FusekiConfig
         sDesc.name = ((Literal)getOne(svc, "fu:name")).getLexicalForm() ;
         log.info("  name = "+sDesc.name) ;
 
-        addServiceEP("query", sDesc.name, sDesc.queryEP, svc, "fu:serviceQuery") ; 
-        addServiceEP("update", sDesc.name, sDesc.updateEP, svc, "fu:serviceUpdate") ; 
-        addServiceEP("upload", sDesc.name, sDesc.uploadEP, svc, "fu:serviceUpload") ; 
-        addServiceEP("graphStore(RW)", sDesc.name, sDesc.readWriteGraphStoreEP, svc, "fu:serviceReadWriteGraphStore") ;
-        addServiceEP("graphStore(R)", sDesc.name, sDesc.readGraphStoreEP, svc, "fu:serviceReadGraphStore") ;
+        addServiceEP("query", sDesc.name, sDesc.query, svc, "fu:serviceQuery") ; 
+        addServiceEP("update", sDesc.name, sDesc.update, svc, "fu:serviceUpdate") ; 
+        addServiceEP("upload", sDesc.name, sDesc.upload, svc, "fu:serviceUpload") ; 
+        addServiceEP("graphStore(RW)", sDesc.name, sDesc.readWriteGraphStore, svc, "fu:serviceReadWriteGraphStore") ;
+        addServiceEP("graphStore(R)", sDesc.name, sDesc.readGraphStore, svc, "fu:serviceReadGraphStore") ;
 
         // Extract timeout overriding configuration if present.
         if (svc.hasProperty(FusekiVocab.pAllowTimeoutOverride)) {
@@ -259,14 +259,14 @@ public class FusekiConfig
         return Iter.toList(rIter) ;
     }
 
-    private static void addServiceEP(String label, String name, List<String> output, Resource svc, String property)
+    private static void addServiceEP(String label, String name, ServiceRef service, Resource svc, String property)
     {
         ResultSet rs = query("SELECT * { ?svc "+property+" ?ep}", svc.getModel(), "svc", svc) ;
         for ( ; rs.hasNext() ; )
         {
             QuerySolution soln = rs.next() ;
             String epName = soln.getLiteral("ep").getLexicalForm() ;
-            output.add(epName) ;
+            service.endpoints.add(epName) ;
             log.info("  "+label+" = /"+name+"/"+epName) ;
         }
     }

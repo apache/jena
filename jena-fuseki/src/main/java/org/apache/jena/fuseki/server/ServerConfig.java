@@ -37,8 +37,8 @@ public class ServerConfig
     public String jettyConfigFile ;
     /** The local directory for serving the static pages */ 
     public String pages ;
-    /** The list of services */
-    public List<DatasetRef> services ;
+    /** The list of datasets */
+    public List<DatasetRef> datasets ;
     /** Enable Accept-Encoding compression */
     public boolean enableCompression = false ;
     

@@ -70,7 +70,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
             response = action.response ;
             initResponse(request, response) ;
             Context cxt = ARQ.getContext() ;
-    
+            
             try {
                 execCommonWorker(action) ;
             } catch (QueryCancelledException ex) {
@@ -137,6 +137,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
                 return ;
             }
         } else {
+            // ????
             desc = new DatasetRef();
             desc.dataset = dummyDSG;
         }
