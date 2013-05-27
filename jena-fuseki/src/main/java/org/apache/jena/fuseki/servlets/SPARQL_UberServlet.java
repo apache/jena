@@ -31,6 +31,7 @@ import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.fuseki.server.ServiceRef ;
 import org.apache.jena.riot.WebContent ;
 
 /** This servlet can be attached to a dataset location
@@ -71,15 +72,15 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     public static class AccessByConfig extends SPARQL_UberServlet
     {
         public AccessByConfig(boolean verbose_debug) { super(verbose_debug) ; }
-        @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action.desc.queryEP) ; }
-        @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action.desc.updateEP) ; }
-        @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action.desc.readGraphStoreEP) || allowREST_W(action); }
-        @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action.desc.readWriteGraphStoreEP) ; }
+        @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action.desc.query) ; }
+        @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action.desc.update) ; }
+        @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action.desc.readGraphStore) || allowREST_W(action); }
+        @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action.desc.readWriteGraphStore) ; }
         // Quad operations tied to presence/absence of GSP.
-        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action.desc.readGraphStoreEP) ; }
-        @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action.desc.readWriteGraphStoreEP) ; }
+        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action.desc.readGraphStore) ; }
+        @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action.desc.readWriteGraphStore) ; }
 
-        private boolean isEnabled(List<String> ep) { return ep.size() > 0 ; } 
+        private boolean isEnabled(ServiceRef service) { return service.isActive() ; } 
     }
     
     /*  This can be used for a single servlet for everything (über-servlet)
@@ -181,7 +182,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
                 // SPARQL Query
                 if ( ! allowQuery(action))
                     errorForbidden("Forbidden: SPARQL query") ; 
-                executeRequest(action, queryServlet, desc.queryEP) ;
+                executeRequest(action, queryServlet, desc.query) ;
                 return ;
             }
                  
@@ -190,7 +191,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
                 // SPARQL Update
                 if ( ! allowQuery(action))
                     errorForbidden("Forbidden: SPARQL query") ; 
-                executeRequest(action, updateServlet, desc.updateEP) ;
+                executeRequest(action, updateServlet, desc.update) ;
                 return ;
             }
             
@@ -201,6 +202,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
             }
             
             errorBadRequest("Malformed request") ;
+            errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
         }
         
         final boolean checkForPossibleService = true ;
@@ -209,11 +211,11 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
             // There is a trailing part.
             // Check it's not the same name as a registered service.
             // If so, dispatch to that service.
-            if ( checkDispatch(action, desc.queryEP, trailing, queryServlet) ) return ; 
-            if ( checkDispatch(action, desc.updateEP, trailing, updateServlet) ) return ; 
-            if ( checkDispatch(action, desc.uploadEP, trailing, uploadServlet) ) return ; 
-            if ( checkDispatch(action, desc.readGraphStoreEP, trailing, restServlet_R) ) return ; 
-            if ( checkDispatch(action, desc.readWriteGraphStoreEP, trailing, restServlet_RW) ) return ; 
+            if ( checkDispatch(action, desc.query, trailing, queryServlet) ) return ; 
+            if ( checkDispatch(action, desc.update, trailing, updateServlet) ) return ; 
+            if ( checkDispatch(action, desc.upload, trailing, uploadServlet) ) return ; 
+            if ( checkDispatch(action, desc.readGraphStore, trailing, restServlet_R) ) return ; 
+            if ( checkDispatch(action, desc.readWriteGraphStore, trailing, restServlet_RW) ) return ; 
         }       
         // There is a trailing part - params are illegal by this point.
         if ( hasParams )
@@ -234,13 +236,12 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
              HttpNames.METHOD_HEAD.equalsIgnoreCase(method) ) 
        {
            if ( ! allowREST_R(action))
-               errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
            // Graphs Store Protocol, indirect naming, read
            // Indirect naming. Prefer the R service if available.
-           if ( desc.readGraphStoreEP.size() > 0 )
-               executeRequest(action, restServlet_R, desc.readGraphStoreEP) ;
-           else if ( desc.readWriteGraphStoreEP.size() > 0 )
-               executeRequest(action, restServlet_RW, desc.readWriteGraphStoreEP) ;
+           if ( desc.readGraphStore.isActive() )
+               executeRequest(action, restServlet_R, desc.readGraphStore) ;
+           else if ( desc.readWriteGraphStore.isActive() )
+               executeRequest(action, restServlet_RW, desc.readWriteGraphStore) ;
            else
                errorMethodNotAllowed(method) ;
            return ;
@@ -249,13 +250,13 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
        // Graphs Store Protocol, indirect naming, write
        if ( ! allowREST_W(action))
            errorForbidden("Forbidden: SPARQL Graph Store Protocol : Write operation : "+method) ;
-       executeRequest(action, restServlet_RW, desc.readWriteGraphStoreEP) ;
+       executeRequest(action, restServlet_RW, desc.readWriteGraphStore) ;
        return ;
     }
 
-    private void executeRequest(HttpAction action, SPARQL_ServletBase servlet, List<String> endpointList)
+    private void executeRequest(HttpAction action, SPARQL_ServletBase servlet, ServiceRef service)
     {
-        if ( endpointList == null || endpointList.size() == 0 )
+        if ( service.endpoints.size() == 0 )
             errorMethodNotAllowed(action.request.getMethod()) ;
         servlet.executeLifecycle(action) ;
     }
@@ -290,9 +291,9 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         return mt ;
     }
 
-    private boolean checkDispatch(HttpAction action, List<String> endpointNames, String srvName , SPARQL_ServletBase servlet)
+    private boolean checkDispatch(HttpAction action, ServiceRef service, String srvName , SPARQL_ServletBase servlet)
     {
-        if ( ! endpointNames.contains(srvName) )
+        if ( ! service.endpoints.contains(srvName) )
             return false ;
         servlet.executeLifecycle(action) ;
         return true ;

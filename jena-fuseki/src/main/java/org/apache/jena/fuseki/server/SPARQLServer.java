@@ -75,8 +75,8 @@ public class SPARQLServer
         
         ServletContextHandler context = buildServer(serverConfig.jettyConfigFile, config.enableCompression) ;
         // Build them all.
-        for ( DatasetRef sDesc : serverConfig.services )
-            configureOneDataset(context, sDesc,  config.enableCompression) ;
+        for ( DatasetRef dsDesc : serverConfig.datasets )
+            configureOneDataset(context, dsDesc,  config.enableCompression) ;
     }
     
     public void start()
@@ -111,7 +111,7 @@ public class SPARQLServer
     }
     
     public Server getServer() { return server ; }
-    public List<DatasetRef> getDatasets() { return serverConfig.services ; }
+    public List<DatasetRef> getDatasets() { return serverConfig.datasets ; }
     
     public ServerConfig getServerConfig()
     {
@@ -218,9 +218,9 @@ public class SPARQLServer
     public static boolean überServlet = false ;
     private static List<String> ListOfEmptyString = Arrays.asList("") ;
     
-    private void configureOneDataset(ServletContextHandler context, DatasetRef sDesc, boolean enableCompression)
+    private void configureOneDataset(ServletContextHandler context, DatasetRef dsDesc, boolean enableCompression)
     {
-        String datasetPath = sDesc.name ;
+        String datasetPath = dsDesc.name ;
         if ( datasetPath.equals("/") )
             datasetPath = "" ;
         else if ( ! datasetPath.startsWith("/") )
@@ -229,7 +229,7 @@ public class SPARQLServer
         if ( datasetPath.endsWith("/") )
             datasetPath = datasetPath.substring(0, datasetPath.length()-1) ; 
 
-        DatasetRegistry.get().put(datasetPath, sDesc) ;
+        DatasetRegistry.get().put(datasetPath, dsDesc) ;
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
         
         HttpServlet sparqlQuery     = new SPARQL_QueryDataset(verboseLogging) ;
@@ -243,11 +243,11 @@ public class SPARQLServer
         {
             // If uberserver, these are unnecessary but can be used.
             // If just means the überservlet isn't handling these operations. 
-            addServlet(context, datasetPath, sparqlQuery,   sDesc.queryEP,    enableCompression) ;
-            addServlet(context, datasetPath, sparqlUpdate,  sDesc.updateEP,   false) ;
-            addServlet(context, datasetPath, sparqlUpload,  sDesc.uploadEP,   false) ;    // No point - no results of any size.
-            addServlet(context, datasetPath, sparqlHttpR,   sDesc.readGraphStoreEP,       enableCompression) ;
-            addServlet(context, datasetPath, sparqlHttpRW,  sDesc.readWriteGraphStoreEP,  enableCompression) ;
+            addServlet(context, datasetPath, sparqlQuery,   dsDesc.query,    enableCompression) ;
+            addServlet(context, datasetPath, sparqlUpdate,  dsDesc.update,   false) ;
+            addServlet(context, datasetPath, sparqlUpload,  dsDesc.upload,   false) ;    // No point - no results of any size.
+            addServlet(context, datasetPath, sparqlHttpR,   dsDesc.readGraphStore,       enableCompression) ;
+            addServlet(context, datasetPath, sparqlHttpRW,  dsDesc.readWriteGraphStore,  enableCompression) ;
             // This adds direct operations on the dataset itself. 
             //addServlet(context, datasetPath, sparqlDataset, ListOfEmptyString, enableCompression) ;
         }
@@ -318,6 +318,12 @@ public class SPARQLServer
         //a built-in GZip capability that is better for static content than the mechanism the
         //GzipFilter uses for dynamic content
         addServlet(context, staticContent, pathSpec, false) ;
+    }
+
+    private void addServlet(ServletContextHandler context, String datasetPath, HttpServlet servlet,
+                            ServiceRef serviceRef, boolean enableCompression)
+    {
+        addServlet(context, datasetPath, servlet, serviceRef.endpoints, enableCompression) ;
     }
 
     // SHARE

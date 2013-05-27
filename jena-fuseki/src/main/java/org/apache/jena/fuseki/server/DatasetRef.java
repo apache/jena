@@ -18,8 +18,6 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.util.ArrayList ;
-import java.util.List ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -28,14 +26,20 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 public class DatasetRef
 {
     public String name                          = null ;
-    
-    public List<String> queryEP                 = new ArrayList<String>() ;
-    public List<String> updateEP                = new ArrayList<String>() ;
-    public List<String> uploadEP                = new ArrayList<String>() ;
-    public List<String> readGraphStoreEP        = new ArrayList<String>() ;
-    public List<String> readWriteGraphStoreEP   = new ArrayList<String>() ;
     public DatasetGraph dataset                 = null ;
 
+    public ServiceRef query                     = new ServiceRef("query") ;
+    public ServiceRef update                    = new ServiceRef("update") ;
+    public ServiceRef upload                    = new ServiceRef("upload") ;
+    public ServiceRef readGraphStore            = new ServiceRef("gspRead") ;
+    public ServiceRef readWriteGraphStore       = new ServiceRef("gspReadWrite") ; 
+    
+//    public List<String> queryEP                 = new ArrayList<String>() ;
+//    public List<String> updateEP                = new ArrayList<String>() ;
+//    public List<String> uploadEP                = new ArrayList<String>() ;
+//    public List<String> readGraphStoreEP        = new ArrayList<String>() ;
+//    public List<String> readWriteGraphStoreEP   = new ArrayList<String>() ;
+ 
     /** Counter of active read transactions */
     public AtomicLong   activeReadTxn           = new AtomicLong(0) ;
     
@@ -66,29 +70,6 @@ public class DatasetRef
     /** Count of SPARQL Queries with execution errors (not timeouts) */
     public AtomicLong   countQueryBadExecution  = new AtomicLong(0) ;
 
-    // SPARQL Update
-
-    /** Count of SPARQL Update */
-    public AtomicLong   countUpdate             = new AtomicLong(0) ;
-    
-    // File upload
-    
-    /** Count of Uploads */
-    public AtomicLong   countUpload             = new AtomicLong(0) ;
-    
-    // SPARQL Graph Store Protocol:
-
-    /** Count of GSP GET */
-    public AtomicLong   countGET                = new AtomicLong(0) ;
-    /** Count of GSP POST */
-    public AtomicLong   countPOST               = new AtomicLong(0) ;
-    /** Count of GSP PUT */
-    public AtomicLong   countPUT                = new AtomicLong(0) ;
-    /** Count of GSP DELETE */
-    public AtomicLong   countDELETE             = new AtomicLong(0) ;
-    /** Count of GSP HEAD */
-    public AtomicLong   countHEAD               = new AtomicLong(0) ;
-    
     public void startTxn(ReadWrite mode)
     {
         switch(mode)
@@ -125,10 +106,11 @@ public class DatasetRef
     
     public boolean isReadOnly()
     {
-        return updateEP.size() == 0 && 
-               uploadEP.size() == 0 &&
-               readWriteGraphStoreEP.size() == 0 &&
-               !allowDatasetUpdate ;
+        return ! allowDatasetUpdate &&
+               ! update.isActive() && 
+               ! upload.isActive() &&
+               ! readWriteGraphStore.isActive()
+               ;
     }
     
 }
