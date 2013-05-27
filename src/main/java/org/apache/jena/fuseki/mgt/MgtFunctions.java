@@ -28,6 +28,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.fuseki.server.ServiceRef ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -88,7 +89,7 @@ public class MgtFunctions
         DatasetRef ref = getFromRegistry(dataset) ;
         if ( ref == null )
             return dft ;
-        return serviceNameOrDefault(ref.queryEP, dft) ;
+        return serviceNameOrDefault(ref.query, dft) ;
     }
     
     /** Return a SPARQL update service name for the dataset */
@@ -98,7 +99,7 @@ public class MgtFunctions
         DatasetRef ref = getFromRegistry(dataset) ;
         if ( ref == null )
             return dft ;
-        return serviceNameOrDefault(ref.updateEP, dft) ;
+        return serviceNameOrDefault(ref.update, dft) ;
     }
     
     /** Return a SPARQL upload service name for the dataset */
@@ -108,7 +109,7 @@ public class MgtFunctions
         DatasetRef ref = getFromRegistry(dataset) ;
         if ( ref == null )
             return dft ;
-        return serviceNameOrDefault(ref.uploadEP, dft) ;
+        return serviceNameOrDefault(ref.upload, dft) ;
     }
 
     /** Return a SPARQL Graph Store Protocol (Read) service name for the dataset */
@@ -118,7 +119,7 @@ public class MgtFunctions
         DatasetRef ref = getFromRegistry(dataset) ;
         if ( ref == null )
             return dft ;
-        return serviceNameOrDefault(ref.readGraphStoreEP, dft) ;
+        return serviceNameOrDefault(ref.readGraphStore, dft) ;
     }
 
     /** Return a SPARQL Graph Store Protocol (Read-Write) service name for the dataset */
@@ -128,7 +129,7 @@ public class MgtFunctions
         DatasetRef ref = getFromRegistry(dataset) ;
         if ( ref == null )
             return dft ;
-        return serviceNameOrDefault(ref.readWriteGraphStoreEP, dft) ;
+        return serviceNameOrDefault(ref.readWriteGraphStore, dft) ;
     }
 
     private static DatasetRef getFromRegistry(String dataset)
@@ -146,11 +147,11 @@ public class MgtFunctions
         return ref ;
     }
 
-    private static String serviceNameOrDefault(List<String> services, String defaultValue)
+    private static String serviceNameOrDefault(ServiceRef service, String defaultValue)
     {
-        if ( services.isEmpty() )
+        if ( service.endpoints.isEmpty() )
             return defaultValue ;
-        String x = services.get(0) ;
+        String x = service.endpoints.get(0) ;
         if ( x.startsWith("/") )
             x = x.substring(1) ;
         return x ;

@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.commons.lang.StringUtils ;
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
@@ -139,69 +138,18 @@ public class ResponseResultSet
             contentType = WebContent.contentTypeTextPlain ;
 
         // Better : dispatch on MediaType
-        // ---- Form: XML
         if ( equal(serializationType, WebContent.contentTypeResultsXML) )
-        {
-            try {
-                sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, null) ;
-            }
-            catch (Exception ex) { 
-                log.debug("Exception [SELECT/XML]"+ex, ex) ;
-                // 200 already sent :-(
-                errorOccurred(ex) ;
-            } 
-            return ;
-        }
-
-        // ---- Form: JSON
-        if ( equal(serializationType, WebContent.contentTypeResultsJSON) )
-        {
-            try {
-                jsonOutput(action, contentType, resultSet, booleanResult) ;
-            }
-            // This catches things like NIO exceptions.
-            catch (Exception ex) { 
-                log.info(format("[%d] Exception [SELECT/JSON] %s", id, ex), ex) ;
-                errorOccurred(ex) ;
-            } 
-            return ;
-        }
-
-        // ---- Form: text
-        // Text is not streaming.
-        if ( equal(serializationType, WebContent.contentTypeTextPlain) )
-        {
-            try {
-                textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
-            }
-            catch (QueryCancelledException ex)
-            {
-                slog.info("[%d] SELECT/Text : Query timeout during execution", id) ;
-                try {
-                    response.sendError(HttpSC.SERVICE_UNAVAILABLE_503, "Query timeout during execution") ;
-                } catch (IOException ex2) { IO.exception(ex2) ; }
-                errorOccurred(ex) ;
-            }
-            // This catches things like NIO exceptions.
-            catch (Exception ex) { 
-                xlog.debug("[%d] Exception [SELECT/Text] "+ex, ex, id) ;
-                errorOccurred(ex) ;
-            } 
-            return ;
-        }
-        
-        if ( equal(serializationType, WebContent.contentTypeTextCSV) || 
-             equal(serializationType, WebContent.contentTypeTextTSV) )
-        {
-            try {
-                csvtsvOutput(action, contentType, serializationType, resultSet, booleanResult) ;
-            }
-            // This catches things like NIO exceptions.
-            catch (Exception ex) { log.debug(format("[%d] Exception [SELECT/CSV-TSV] %s",id, ex), ex) ; } 
-            return ;
-        }
-        
-        errorBadRequest("Can't determine output serialization: "+serializationType) ;
+            sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
+        else if ( equal(serializationType, WebContent.contentTypeResultsJSON) )
+            jsonOutput(action, contentType, resultSet, booleanResult) ;
+        else if ( equal(serializationType, WebContent.contentTypeTextPlain) )
+            textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
+        else if ( equal(serializationType, WebContent.contentTypeTextCSV) ) 
+            csvOutput(action, contentType, resultSet, booleanResult) ;
+        else if (equal(serializationType, WebContent.contentTypeTextTSV) )
+            tsvOutput(action, contentType, resultSet, booleanResult) ;
+        else
+            errorBadRequest("Can't determine output serialization: "+serializationType) ;
     }
     
     
@@ -282,6 +230,7 @@ public class ResponseResultSet
     
     private static void textOutput(HttpAction action, String contentType, final ResultSet resultSet, final Prologue qPrologue, final Boolean booleanResult)
     {
+        // Text is not streaming.
         OutputContent proc =  new OutputContent(){
             @Override
             public void output(ServletOutputStream out)
@@ -296,36 +245,32 @@ public class ResponseResultSet
         output(action, contentType, WebContent.charsetUTF8, proc) ;
     }
 
-    private static void csvtsvOutput(HttpAction action, String contentType, String serializationType, 
-                                     final ResultSet resultSet, final Boolean booleanResult) {
-        OutputContent proc ;
-        if ( serializationType.equals(WebContent.contentTypeTextCSV) )
-        {
-            proc = new OutputContent(){
-                @Override
-                public void output(ServletOutputStream out)
-                {
-                    if ( resultSet != null )
-                        ResultSetFormatter.outputAsCSV(out, resultSet) ;
-                    if (  booleanResult != null )
-                        ResultSetFormatter.outputAsCSV(out, booleanResult.booleanValue()) ;
-                }
-            } ;
-        }
-        else
-        {
-            proc = new OutputContent(){
-                @Override
-                public void output(ServletOutputStream out)
-                {
-                    if ( resultSet != null )
-                        ResultSetFormatter.outputAsTSV(out, resultSet) ;
-                    if (  booleanResult != null )
-                        ResultSetFormatter.outputAsTSV(out, booleanResult.booleanValue()) ;
-                }
-            } ;
-        }
-        output(action, contentType, WebContent.charsetUTF8, proc) ;
+    private static void csvOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
+        OutputContent proc = new OutputContent(){
+            @Override
+            public void output(ServletOutputStream out)
+            {
+                if ( resultSet != null )
+                    ResultSetFormatter.outputAsCSV(out, resultSet) ;
+                if (  booleanResult != null )
+                    ResultSetFormatter.outputAsCSV(out, booleanResult.booleanValue()) ;
+            }
+        } ;
+        output(action, contentType, WebContent.charsetUTF8, proc) ; 
+    }
+
+    private static void tsvOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
+        OutputContent proc = new OutputContent(){
+            @Override
+            public void output(ServletOutputStream out)
+            {
+                if ( resultSet != null )
+                    ResultSetFormatter.outputAsTSV(out, resultSet) ;
+                if (  booleanResult != null )
+                    ResultSetFormatter.outputAsTSV(out, booleanResult.booleanValue()) ;
+            }
+        } ;
+        output(action, contentType, WebContent.charsetUTF8, proc) ; 
     }
 
     private static void output(HttpAction action, String contentType, String charset, OutputContent proc) 
