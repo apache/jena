@@ -101,6 +101,16 @@ public class BuilderGraph
 
     public static DatasetGraph buildDataset(Item item)
     {
+        return buildDataset(DatasetGraphFactory.createMem(), item) ; 
+    }
+    
+    public static DatasetGraph buildDataset(ItemList list)
+    {
+        return buildDataset(DatasetGraphFactory.createMem(), list) ; 
+    }
+
+    public static DatasetGraph buildDataset(DatasetGraph dsg, Item item)
+    {
         if (item.isNode() )
             BuilderLib.broken(item, "Attempt to build dataset from a plain node") ;
 
@@ -115,14 +125,13 @@ public class BuilderGraph
         
         if ( ! item.isTagged(Tags.tagDataset) )
             BuilderLib.broken(item, "Wanted ("+Tags.tagDataset+"...)" );
-        return buildDataset(item.getList()) ;
+        return buildDataset(dsg, item.getList()) ;
     }
     
-    public static DatasetGraph buildDataset(ItemList list)
+    public static DatasetGraph buildDataset(DatasetGraph dsg, ItemList list)
     {
         BuilderLib.checkTag(list, Tags.tagDataset) ;
         list = list.cdr();
-        DatasetGraph ds = DatasetGraphFactory.createMem() ;
         
         for (Item item : list)
         {
@@ -141,25 +150,25 @@ public class BuilderGraph
             Graph g ;
             if ( name == null )
             {
-                g = ds.getDefaultGraph() ;
+                g = dsg.getDefaultGraph() ;
                 if ( g == null )
                 {
                     g = GraphFactory.createDefaultGraph() ;
-                    ds.setDefaultGraph(g) ;
+                    dsg.setDefaultGraph(g) ;
                 }
             }
             else
             {
-                g = ds.getGraph(name) ;
+                g = dsg.getGraph(name) ;
                 if ( g == null )
                 {
                     g = GraphFactory.createDefaultGraph() ;
-                    ds.addGraph(name, g) ;
+                    dsg.addGraph(name, g) ;
                 }
             }
             BuilderGraph.buildGraph(g, graphContent) ;
         }
-        return ds ;
+        return dsg ;
     }
     
     

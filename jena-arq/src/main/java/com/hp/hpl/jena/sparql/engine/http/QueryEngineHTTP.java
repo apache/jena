@@ -648,7 +648,7 @@ public class QueryEngineHTTP implements QueryExecution
         if (lang == null) 
             throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not supported by RIOT") ;
         if (!RDFLanguages.isTriples(lang)) 
-            throw new IllegalArgumentException("Given Content Type '" + contentType + " is not a RDF Graph format") ;
+            throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a RDF Graph format") ;
         modelContentType = contentType ;
     }
 }
