@@ -131,7 +131,7 @@ public class ResponseModel
         }
         catch (Exception ex) { 
             slog.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
-            errorOccurred(ex) ;
+            errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
         }
     }
 }
