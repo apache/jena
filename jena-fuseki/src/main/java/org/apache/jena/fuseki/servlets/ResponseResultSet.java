@@ -72,7 +72,6 @@ public class ResponseResultSet
         ResponseOps.put(shortNamesResultSet, contentOutputCSV,    WebContent.contentTypeTextCSV) ;
         ResponseOps.put(shortNamesResultSet, contentOutputTSV,    WebContent.contentTypeTextTSV) ;
     }
-
     
     interface OutputContent { void output(ServletOutputStream out) ; }
 
@@ -295,7 +294,6 @@ public class ResponseResultSet
             }
         // Includes client gone.
         } catch (IOException ex) 
- 
         { errorOccurred(ex) ; }
         // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
         // then the JSON callback closing details can't be added. 
