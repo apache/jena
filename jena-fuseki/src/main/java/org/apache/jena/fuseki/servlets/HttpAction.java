@@ -32,6 +32,7 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.fuseki.server.ServiceRef ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
@@ -42,13 +43,13 @@ import com.hp.hpl.jena.sparql.core.Transactional ;
 
 public class HttpAction
 {
-    public  final long id ;
+    public final long id ;
     public final boolean verbose ;
-    
     
     // Phase two items - set and valida after the datasetRef is known.  
     private DatasetGraph dsg ;                  // The data
-    public DatasetRef desc ;
+    public DatasetRef dsRef ;
+    public ServiceRef srvRef ;
     
     private Transactional transactional ;
     private boolean isTransactional;
@@ -61,6 +62,9 @@ public class HttpAction
     private long startTime = -2 ;
     private long finishTime = -2 ;
     
+    // Incoming
+    //public final 
+    
     // Outcome.
     int statusCode = -1 ;
     String message = null ;
@@ -71,6 +75,7 @@ public class HttpAction
     Map <String, String> headers = new HashMap<String, String>() ;
     public HttpServletRequest request;
     public HttpServletResponseTracker response ;
+    
 
     
 //    // ---- Concurrency checking.
@@ -99,7 +104,7 @@ public class HttpAction
 
     public void setDataset(DatasetRef desc)
     {
-        this.desc = desc ;
+        this.dsRef = desc ;
         this.dsg = desc.dataset ;
 
         if ( dsg instanceof Transactional )
@@ -118,6 +123,10 @@ public class HttpAction
         }
     }
     
+    public void setService(ServiceRef srvRef) {
+        this.srvRef = srvRef ; 
+    }
+    
     /**
      * Returns whether or not the underlying DatasetGraph is fully transactional (supports rollback)
      */
@@ -131,12 +140,12 @@ public class HttpAction
         activeMode = READ ;
         transactional.begin(READ) ;
         activeDSG = dsg ;
-        desc.startTxn(READ) ;
+        dsRef.startTxn(READ) ;
     }
 
     public void endRead()
     {
-        desc.finishTxn(READ) ;
+        dsRef.finishTxn(READ) ;
         activeMode = null ;
         transactional.end() ;
         activeDSG = null ;
@@ -147,7 +156,7 @@ public class HttpAction
         transactional.begin(WRITE) ;
         activeMode = WRITE ;
         activeDSG = dsg ;
-        desc.startTxn(WRITE) ;
+        dsRef.startTxn(WRITE) ;
     }
 
     public void commit()
@@ -164,7 +173,7 @@ public class HttpAction
 
     public void endWrite()
     {
-        desc.finishTxn(WRITE) ;
+        dsRef.finishTxn(WRITE) ;
         activeMode = null ;
 
         if (transactional.isInTransaction())
@@ -176,15 +185,13 @@ public class HttpAction
         transactional.end() ;
         activeDSG = null ;
     }
-
-    public final DatasetGraph getActiveDSG()
-    {
+    
+    public final DatasetGraph getActiveDSG() {
         return activeDSG ;
     }
-    
-    public final DatasetRef getDatasetRef()
-    {
-        return desc ;
+
+    public final DatasetRef getDatasetRef() {
+        return dsRef ;
     }
     
     /** Reduce to a size that can be kept around for sometime */  

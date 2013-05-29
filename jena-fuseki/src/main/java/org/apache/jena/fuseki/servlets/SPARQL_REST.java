@@ -348,7 +348,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
                     // Without content length, reading to end of file is occassionaly fraught.
                     // Reason unknown - maybe some client mishandling of the stream. 
                     String x = FileUtils.readWholeFileAsUTF8(input) ;
-                    //System.out.println(x) ;
                     input = new ByteArrayInputStream(x.getBytes("UTF-8")) ; 
                 }
             }
