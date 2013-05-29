@@ -109,6 +109,7 @@ public class FusekiConfig
         config.jettyConfigFile = null ;
         config.pages = Fuseki.PagesStatic ;
         config.enableCompression = true ;
+        dbDesc.init() ;
         return config ;
     }
     
@@ -209,18 +210,16 @@ public class FusekiConfig
 
     private static DatasetRef processService(Resource svc)
     {
-        DatasetRef sDesc = new DatasetRef() ;
         log.info("Service: "+nodeLabel(svc)) ;
-        
+        DatasetRef sDesc = new DatasetRef() ;
         sDesc.name = ((Literal)getOne(svc, "fu:name")).getLexicalForm() ;
         log.info("  name = "+sDesc.name) ;
 
         addServiceEP("query", sDesc.name, sDesc.query, svc, "fu:serviceQuery") ; 
         addServiceEP("update", sDesc.name, sDesc.update, svc, "fu:serviceUpdate") ; 
-        addServiceEP("upload", sDesc.name, sDesc.upload, svc, "fu:serviceUpload") ; 
+        addServiceEP("upload", sDesc.name, sDesc.upload, svc, "fu:serviceUpload") ;
         addServiceEP("graphStore(RW)", sDesc.name, sDesc.readWriteGraphStore, svc, "fu:serviceReadWriteGraphStore") ;
         addServiceEP("graphStore(R)", sDesc.name, sDesc.readGraphStore, svc, "fu:serviceReadGraphStore") ;
-
         // Extract timeout overriding configuration if present.
         if (svc.hasProperty(FusekiVocab.pAllowTimeoutOverride)) {
             sDesc.allowTimeoutOverride = svc.getProperty(FusekiVocab.pAllowTimeoutOverride).getObject().asLiteral().getBoolean();

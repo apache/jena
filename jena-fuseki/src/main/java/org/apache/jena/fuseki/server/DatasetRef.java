@@ -18,7 +18,11 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.util.HashMap ;
+import java.util.Map ;
 import java.util.concurrent.atomic.AtomicLong ;
+
+import org.apache.jena.fuseki.Fuseki ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -33,13 +37,44 @@ public class DatasetRef
     public ServiceRef upload                    = new ServiceRef("upload") ;
     public ServiceRef readGraphStore            = new ServiceRef("gspRead") ;
     public ServiceRef readWriteGraphStore       = new ServiceRef("gspReadWrite") ; 
+
+    // Dataset-level counters.
+    public final CounterSet counters            = new CounterSet() ;
+    private Map<String, ServiceRef> serviceRefs = new HashMap<String, ServiceRef>() ;
+    private boolean initialized = false ;
     
-//    public List<String> queryEP                 = new ArrayList<String>() ;
-//    public List<String> updateEP                = new ArrayList<String>() ;
-//    public List<String> uploadEP                = new ArrayList<String>() ;
-//    public List<String> readGraphStoreEP        = new ArrayList<String>() ;
-//    public List<String> readWriteGraphStoreEP   = new ArrayList<String>() ;
- 
+    // Two step initiation (c.f. Builder pattern)
+    // Create object - incrementally set state - call init to calculate internal datastructures.
+    public DatasetRef() {}
+    public void init() {
+        if ( initialized )
+            Fuseki.serverLog.warn("Already initialized: dataset = "+name) ;
+        initialized = true ;
+        initServices() ;
+    }
+    
+    private void initServices() {
+        add(serviceRefs, query) ;
+        add(serviceRefs, update) ;
+        add(serviceRefs, upload) ;
+        add(serviceRefs, readGraphStore) ;
+        add(serviceRefs, readWriteGraphStore) ;
+    }
+    
+    private static void add(Map<String, ServiceRef> serviceRefs, ServiceRef srvRef)
+    {
+        for ( String ep : srvRef.endpoints )
+            serviceRefs.put(ep, srvRef) ; 
+    }
+
+    public ServiceRef getServiceRef(String service) {
+        if ( ! initialized )
+            Fuseki.serverLog.error("Not initialized: dataset = "+name) ;
+        if ( service.startsWith("/") )
+            service = service.substring(1, service.length()) ; 
+        return serviceRefs.get(service) ;
+    }
+
     /** Counter of active read transactions */
     public AtomicLong   activeReadTxn           = new AtomicLong(0) ;
     
@@ -52,23 +87,23 @@ public class DatasetRef
     /** Cumulative counter of writer transactions */
     public AtomicLong   totalWriteTxn           = new AtomicLong(0) ;
     
-    /** Count of requests received - any service */
-    public AtomicLong   countServiceRequests    = new AtomicLong(0) ;
-    /** Count of requests received that fail in some way */
-    public AtomicLong   countServiceRequestsBad = new AtomicLong(0) ;
-    /** Count of requests received that fail in some way */
-    public AtomicLong   countServiceRequestsOK  = new AtomicLong(0) ;
-
-    // SPARQL Query
-    
-    /** Count of SPARQL Queries successfully executed */
-    public AtomicLong   countQueryOK            = new AtomicLong(0) ;
-    /** Count of SPARQL Queries with syntax errors */
-    public AtomicLong   countQueryBadSyntax     = new AtomicLong(0) ;
-    /** Count of SPARQL Queries with timeout on execution */
-    public AtomicLong   countQueryTimeout       = new AtomicLong(0) ;
-    /** Count of SPARQL Queries with execution errors (not timeouts) */
-    public AtomicLong   countQueryBadExecution  = new AtomicLong(0) ;
+//    /** Count of requests received - anyzservice */
+//    public AtomicLong   countServiceRequests    = new AtomicLong(0) ;
+//    /** Count of requests received that fail in some way */
+//    public AtomicLong   countServiceRequestsBad = new AtomicLong(0) ;
+//    /** Count of requests received that fail in some way */
+//    public AtomicLong   countServiceRequestsOK  = new AtomicLong(0) ;
+//
+//    // SPARQL Query
+//    
+//    /** Count of SPARQL Queries successfully executed */
+//    public AtomicLong   countQueryOK            = new AtomicLong(0) ;
+//    /** Count of SPARQL Queries with syntax errors */
+//    public AtomicLong   countQueryBadSyntax     = new AtomicLong(0) ;
+//    /** Count of SPARQL Queries with timeout on execution */
+//    public AtomicLong   countQueryTimeout       = new AtomicLong(0) ;
+//    /** Count of SPARQL Queries with execution errors (not timeouts) */
+//    public AtomicLong   countQueryBadExecution  = new AtomicLong(0) ;
 
     public void startTxn(ReadWrite mode)
     {
@@ -112,5 +147,4 @@ public class DatasetRef
                ! readWriteGraphStore.isActive()
                ;
     }
-    
 }

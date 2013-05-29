@@ -20,32 +20,23 @@ package org.apache.jena.fuseki.server;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import java.util.concurrent.atomic.AtomicLong ;
 
 /** Configuration of an individual service */
 public class ServiceRef
 {
     public final String name ;
-    
+    // Service-level counters.
+    public final CounterSet counters           = new CounterSet() ;
+
     /** Endpoints (as absolute path URLs) */
     public List<String> endpoints               = new ArrayList<String>() ;
     
     // Attach counters to services or datasets 
     // Can we have a counter of the same name on different services?
     // Cost : number of maps.
+    // +ve: Multiple services with the same name counter
     
-    
-    /** Count of requests received - good or bad */
-    public AtomicLong   countRequests           = new AtomicLong(0) ;
-    /** Count of requests received that fail request checking in some way */
-    public AtomicLong   countRequestsBad        = new AtomicLong(0) ;
-    /** Count of requests that are cancelled (e..g timeouts) */
-    public AtomicLong   countRequestsCancelled  = new AtomicLong(0) ;
-    /** Count of requests that fail because of internal server issues (bugs) */
-    public AtomicLong   countRequestsOK         = new AtomicLong(0) ;
-
-    public ServiceRef(String serviceName)
-    {
+    public ServiceRef(String serviceName) {
         this.name = serviceName ;
     }
     

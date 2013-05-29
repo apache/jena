@@ -34,6 +34,7 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import static org.apache.jena.fuseki.server.CounterName.* ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
@@ -115,8 +116,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                                              paramTimeout) ;
     
     @Override
-    protected void startRequest(HttpAction action)
-    {
+    protected void startRequest(HttpAction action) {
+        action.srvRef.counters.inc(QueryRequests) ;
     }
     
     /** Called to validate arguments */
@@ -138,7 +139,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         try {
             validateParams(action.request, allParams) ;
             validateRequest(action) ; 
-        } catch (ActionErrorException ex) { inc(action.desc.countQueryBadSyntax) ; throw ex ; } 
+        } catch (ActionErrorException ex) { 
+            action.srvRef.counters.inc(QueryRequestsBad) ;
+            throw ex ; 
+        } 
         // Query not yet parsed.
     }
     
@@ -226,15 +230,15 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             queryStringLog = formatForLog(query) ;
             validateQuery(action, query) ;
         } catch (ActionErrorException ex) {
-            inc(action.desc.countQueryBadSyntax) ;
+            action.srvRef.counters.inc(QueryRequestsBad) ;
             throw ex ;
         } catch (QueryParseException ex) {
-            inc(action.desc.countQueryBadSyntax) ;
+            action.srvRef.counters.inc(QueryRequestsBad) ;
             errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
         }
         // Should not happen.
         catch (QueryException ex) {
-            inc(action.desc.countQueryBadSyntax) ;
+            action.srvRef.counters.inc(QueryRequestsBad) ;
             errorBadRequest("Error: \n" + queryString + "\n\r" + ex.getMessage()) ;
         }
         
@@ -248,11 +252,14 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             
             // Deals with exceptions itself.
             sendResults(action, result, query.getPrologue()) ;
-            inc(action.desc.countQueryOK) ;
-        } 
-        catch (QueryCancelledException ex) { inc(action.desc.countQueryTimeout) ; throw ex ; } 
-        catch (QueryExecException ex)      { inc(action.desc.countQueryBadExecution) ; throw ex ; } 
-        finally { 
+            action.srvRef.counters.inc(QueryRequestsGood) ;
+        } catch (QueryCancelledException ex) { 
+            action.srvRef.counters.inc(QueryTimeouts) ; 
+            throw ex ; 
+        } catch (QueryExecException ex) { 
+            action.srvRef.counters.inc(QueryExecErrors) ; 
+            throw ex ; 
+        } finally { 
             if ( qExec != null )
                 qExec.close() ;
             action.endRead() ;

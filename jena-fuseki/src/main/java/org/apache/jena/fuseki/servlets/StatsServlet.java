@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.server.CounterName ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 
@@ -57,25 +58,43 @@ public class StatsServlet extends HttpServlet
     private void stats(PrintWriter out, DatasetRef desc)
     {
         out.println("Dataset: "+desc.name) ;
-        out.println("    Requests   = "+desc.countServiceRequests) ;
-        out.println("    Good       = "+desc.countServiceRequestsOK) ;
-        out.println("    Bad        = "+desc.countServiceRequestsBad) ;
+        out.println("    Requests      = "+desc.counters.value(CounterName.DatasetRequests)) ;
+        out.println("    Good          = "+desc.counters.value(CounterName.DatasetRequestsGood)) ;
+        out.println("    Bad           = "+desc.counters.value(CounterName.DatasetRequestsBad)) ;
+
         out.println("  SPARQL Query:") ;
-        out.println("    OK         = "+desc.countQueryOK) ;
-        out.println("    Bad Syntax = "+desc.countQueryBadSyntax) ;
-        out.println("    Timeouts   = "+desc.countQueryTimeout) ;
-        out.println("    Bad exec   = "+desc.countQueryBadExecution);
+        out.println("    Request       = "+desc.query.counters.value(CounterName.QueryRequests)) ;
+        out.println("    Good          = "+desc.query.counters.value(CounterName.QueryRequestsGood)) ;
+        out.println("    Bad requests  = "+desc.query.counters.value(CounterName.QueryRequestsBad)) ;
+        out.println("    Timeouts      = "+desc.query.counters.value(CounterName.QueryTimeouts)) ;
+        out.println("    Bad exec      = "+desc.query.counters.value(CounterName.QueryExecErrors)) ;
+
         out.println("  SPARQL Update:") ;
-//        out.println("    Updates    = "+desc.update.    
-//        out.println("  Upload:") ;
-//        out.println("    Uploads    = "+desc.countUpload) ;
-//        out.println("  SPARQL Graph Store Protocol:") ;
-//        out.println("    GETs       = "+desc.countGET) ;
-//        out.println("    POSTs      = "+desc.countPOST) ;
-//        out.println("    PUTs       = "+desc.countPUT) ;
-//        out.println("    DELETEs    = "+desc.countDELETE) ;
-        //out.println("   HEADs     = "+desc.countHEAD) ;
+        out.println("    Request       = "+desc.update.counters.value(CounterName.UpdateRequests)) ;
+        out.println("    Good          = "+desc.update.counters.value(CounterName.UpdateRequestsGood)) ;
+        out.println("    Bad requests  = "+desc.update.counters.value(CounterName.UpdateRequestsBad)) ;
+        out.println("    Bad exec      = "+desc.update.counters.value(CounterName.UpdateExecErrors)) ;
+        
+        out.println("  Upload:") ;
+        out.println("    Requests      = "+desc.upload.counters.value(CounterName.UploadRequests)) ;
+        out.println("    Good          = "+desc.upload.counters.value(CounterName.UploadRequestsGood)) ;
+        out.println("    Bad           = "+desc.upload.counters.value(CounterName.UploadRequestsBad)) ;
+        
+        out.println("  SPARQL Graph Store Protocol:") ;
+        out.println("    GETs          = "+gspValue(desc, CounterName.GSPget)+ " (good="+gspValue(desc, CounterName.GSPgetGood)+"/bad="+gspValue(desc, CounterName.GSPgetBad)+")") ;
+        out.println("    PUTs          = "+gspValue(desc, CounterName.GSPput)+ " (good="+gspValue(desc, CounterName.GSPputGood)+"/bad="+gspValue(desc, CounterName.GSPputBad)+")") ;
+        out.println("    POSTs         = "+gspValue(desc, CounterName.GSPpost)+ " (good="+gspValue(desc, CounterName.GSPpostGood)+"/bad="+gspValue(desc, CounterName.GSPpostBad)+")") ;
+        out.println("    DELETEs       = "+gspValue(desc, CounterName.GSPdelete)+ " (good="+gspValue(desc, CounterName.GSPdeleteGood)+"/bad="+gspValue(desc, CounterName.GSPdeleteBad)+")") ;
+        out.println("    HEADs         = "+gspValue(desc, CounterName.GSPhead)+ " (good="+gspValue(desc, CounterName.GSPheadGood)+"/bad="+gspValue(desc, CounterName.GSPheadBad)+")") ;
     }
     
+    private long gspValue(DatasetRef desc, CounterName cn) {
+        long x1 = desc.readGraphStore.counters.value(cn) ;
+        long x2 = desc.readWriteGraphStore.counters.value(cn) ;
+        return x1+x2 ;
+    }
+    
+    
 }
+
 

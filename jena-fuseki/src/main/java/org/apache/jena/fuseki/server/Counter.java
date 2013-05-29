@@ -18,7 +18,17 @@
 
 package org.apache.jena.fuseki.server;
 
-public class Stats
+import java.util.concurrent.atomic.AtomicLong ;
+
+/** A statistics counter */
+public class Counter
 {
+    private AtomicLong counter = new AtomicLong(0) ;
+    
+    public Counter()    {}
+    
+    public void inc()   { counter.incrementAndGet() ; } 
+    public void dec()   { counter.decrementAndGet() ; } 
+    public long value() { return counter.get() ; } 
 }
 
