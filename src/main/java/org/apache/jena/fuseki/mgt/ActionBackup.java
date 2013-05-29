@@ -95,7 +95,7 @@ public class ActionBackup extends ServletBase
     
     private void scheduleBackup(final HttpAction action)
     {
-        String dsName = action.desc.name ;
+        String dsName = action.dsRef.name ;
         final String ds = dsName.startsWith("/")? dsName : "/"+dsName ;
         
         String timestamp = Utils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;

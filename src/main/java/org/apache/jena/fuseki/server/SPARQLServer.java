@@ -228,7 +228,10 @@ public class SPARQLServer
         
         if ( datasetPath.endsWith("/") )
             datasetPath = datasetPath.substring(0, datasetPath.length()-1) ; 
-
+        
+        addCounters(dsDesc) ;
+        dsDesc.init() ;
+        
         DatasetRegistry.get().put(datasetPath, dsDesc) ;
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
         
@@ -366,6 +369,65 @@ public class SPARQLServer
 
         if (enableCompression)
             context.addFilter(GzipFilter.class, pathSpec, EnumSet.allOf(DispatcherType.class));
+    }
+
+    private static void addCounters(DatasetRef sDesc) {
+        sDesc.counters.add(CounterName.DatasetRequests) ;
+        sDesc.counters.add(CounterName.DatasetRequestsGood) ;
+        sDesc.counters.add(CounterName.DatasetRequestsBad) ;
+        
+        sDesc.counters.add(CounterName.GSPrequests) ;
+        sDesc.counters.add(CounterName.GSPrequestsGood) ;
+        sDesc.counters.add(CounterName.GSPrequestsBad) ;
+        
+        sDesc.query.counters.add(CounterName.QueryRequests) ;
+        sDesc.query.counters.add(CounterName.QueryRequestsGood) ;
+        sDesc.query.counters.add(CounterName.QueryRequestsBad) ; 
+        sDesc.query.counters.add(CounterName.QueryTimeouts) ; 
+        sDesc.query.counters.add(CounterName.QueryExecErrors) ;
+        
+        sDesc.update.counters.add(CounterName.UpdateRequests) ;
+        sDesc.update.counters.add(CounterName.UpdateRequestsGood) ;
+        sDesc.update.counters.add(CounterName.UpdateRequestsBad) ; 
+        sDesc.update.counters.add(CounterName.UpdateExecErrors) ;
+        
+        sDesc.upload.counters.add(CounterName.UploadRequests) ;
+        sDesc.upload.counters.add(CounterName.UploadRequestsGood) ;
+        sDesc.upload.counters.add(CounterName.UploadRequestsBad) ; 
+        
+        addCountersForGSP(sDesc.readGraphStore.counters, true) ;
+        addCountersForGSP(sDesc.readWriteGraphStore.counters, false) ;
+        sDesc.init() ;
+    }
+
+    private static void addCountersForGSP(CounterSet cs, boolean readWrite) {
+        cs.add(CounterName.GSPget) ;
+        cs.add(CounterName.GSPgetGood) ;
+        cs.add(CounterName.GSPgetBad) ;
+
+        cs.add(CounterName.GSPhead) ;
+        cs.add(CounterName.GSPheadGood) ;
+        cs.add(CounterName.GSPheadBad) ;
+
+        // Add anyway.
+//        if ( ! readWrite )
+//            return ;
+        
+        cs.add(CounterName.GSPput) ;
+        cs.add(CounterName.GSPputGood) ;
+        cs.add(CounterName.GSPputBad) ;
+
+        cs.add(CounterName.GSPpost) ;
+        cs.add(CounterName.GSPpostGood) ;
+        cs.add(CounterName.GSPpostBad) ;
+
+        cs.add(CounterName.GSPdelete) ;
+        cs.add(CounterName.GSPdeleteGood) ;
+        cs.add(CounterName.GSPdeleteBad) ;
+
+        cs.add(CounterName.GSPpatch) ;
+        cs.add(CounterName.GSPpatchGood) ;
+        cs.add(CounterName.GSPpatchBad) ;
     }
 
 }

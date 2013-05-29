@@ -72,13 +72,13 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     public static class AccessByConfig extends SPARQL_UberServlet
     {
         public AccessByConfig(boolean verbose_debug) { super(verbose_debug) ; }
-        @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action.desc.query) ; }
-        @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action.desc.update) ; }
-        @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action.desc.readGraphStore) || allowREST_W(action); }
-        @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action.desc.readWriteGraphStore) ; }
+        @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action.dsRef.query) ; }
+        @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action.dsRef.update) ; }
+        @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action.dsRef.readGraphStore) || allowREST_W(action); }
+        @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action.dsRef.readWriteGraphStore) ; }
         // Quad operations tied to presence/absence of GSP.
-        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action.desc.readGraphStore) ; }
-        @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action.desc.readWriteGraphStore) ; }
+        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action.dsRef.readGraphStore) ; }
+        @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action.dsRef.readWriteGraphStore) ; }
 
         private boolean isEnabled(ServiceRef service) { return service.isActive() ; } 
     }
@@ -130,7 +130,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     }
     
 
-    /** Intercept the processing cycle at the  point where the action has been set up,
+    /** Intercept the processing cycle at the point where the action has been set up,
      *  the dataset target decided but no validation or execution has been done, 
      *  nor any stats have been done.
      */
@@ -142,7 +142,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         HttpServletResponse response = action.response ;
         String uri = request.getRequestURI() ;
         String method = request.getMethod() ;
-        DatasetRef desc = action.desc ;
+        DatasetRef desc = action.dsRef ;
         
         String trailing = findTrailing(uri, desc.name) ;
         String qs = request.getQueryString() ;
@@ -211,11 +211,11 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
             // There is a trailing part.
             // Check it's not the same name as a registered service.
             // If so, dispatch to that service.
-            if ( checkDispatch(action, desc.query, trailing, queryServlet) ) return ; 
-            if ( checkDispatch(action, desc.update, trailing, updateServlet) ) return ; 
-            if ( checkDispatch(action, desc.upload, trailing, uploadServlet) ) return ; 
-            if ( checkDispatch(action, desc.readGraphStore, trailing, restServlet_R) ) return ; 
-            if ( checkDispatch(action, desc.readWriteGraphStore, trailing, restServlet_RW) ) return ; 
+            if ( serviceDispatch(action, desc.query, trailing, queryServlet) ) return ; 
+            if ( serviceDispatch(action, desc.update, trailing, updateServlet) ) return ; 
+            if ( serviceDispatch(action, desc.upload, trailing, uploadServlet) ) return ; 
+            if ( serviceDispatch(action, desc.readGraphStore, trailing, restServlet_R) ) return ; 
+            if ( serviceDispatch(action, desc.readWriteGraphStore, trailing, restServlet_RW) ) return ; 
         }       
         // There is a trailing part - params are illegal by this point.
         if ( hasParams )
@@ -229,7 +229,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     private void doGraphStoreProtocol(HttpAction action)
     {
         // The GSP servlets handle direct and indirect naming. 
-        DatasetRef desc = action.desc ;
+        DatasetRef desc = action.dsRef ;
         String method = action.request.getMethod() ;
         
         if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) ||
@@ -291,7 +291,8 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         return mt ;
     }
 
-    private boolean checkDispatch(HttpAction action, ServiceRef service, String srvName , SPARQL_ServletBase servlet)
+    /** return true if dispatched */
+    private boolean serviceDispatch(HttpAction action, ServiceRef service, String srvName , SPARQL_ServletBase servlet)
     {
         if ( ! service.endpoints.contains(srvName) )
             return false ;

@@ -31,8 +31,10 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.HttpNames ;
+import static org.apache.jena.fuseki.server.CounterName.* ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.fuseki.server.ServiceRef ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -109,7 +111,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
         return new HttpAction(id, request, response, verbose_debug) ;
     }
 
-//XXX     protected abstract void startRequest(HttpAction action) ;
+    //protected abstract void startRequest(HttpAction action) ;
     protected void startRequest(HttpAction action) {}
 
     protected abstract void validate(HttpAction action) ;
@@ -125,23 +127,30 @@ public abstract class SPARQL_ServletBase extends ServletBase
 
     private void execCommonWorker(HttpAction action)
     {
-        DatasetRef desc = null ;
+        DatasetRef dsRef = null ;
         String uri = action.request.getRequestURI() ;
 
-        uri = mapRequestToDataset(uri) ;
-
-        if ( uri != null ) {
-            desc = DatasetRegistry.get().get(uri) ;
-            if ( desc == null ) {
-                errorNotFound("No dataset for URI: "+uri) ;
+        String datasetUri = mapRequestToDataset(uri) ;
+        
+        if ( datasetUri != null ) {
+            dsRef = DatasetRegistry.get().get(datasetUri) ;
+            if ( dsRef == null ) {
+                errorNotFound("No dataset for URI: "+datasetUri) ;
                 return ;
             }
         } else {
-            // ????
-            desc = new DatasetRef();
-            desc.dataset = dummyDSG;
+            // General SPARQL processor
+            // - is this the right way to do it?
+            // = or make it a completely separate servlet. 
+            dsRef = new DatasetRef();
+            dsRef.dataset = dummyDSG;
+            dsRef.init() ;
         }
-        action.setDataset(desc) ;
+        
+        action.setDataset(dsRef) ;
+        String serviceName = mapRequestToService(dsRef, uri, datasetUri) ;
+        ServiceRef srvRef = dsRef.getServiceRef(serviceName) ;
+        action.setService(srvRef) ;
         executeAction(action) ;
     }
         
@@ -158,28 +167,27 @@ public abstract class SPARQL_ServletBase extends ServletBase
     }
     
     // This is the service request lifecycle.
-    // Called directly by the UberServlet which as not done any stats by this point.
+    // Called directly by the UberServlet which has not done any stats by this point.
     protected void executeLifecycle(HttpAction action)
     {
-        // Fits with uberservlet?
-        inc(action.desc.countServiceRequests) ;
+        action.dsRef.counters.inc(DatasetRequests) ;
         startRequest(action) ;
         try {
             validate(action) ;
         } catch (ActionErrorException ex) {
-            inc(action.desc.countServiceRequestsBad) ;
+            action.dsRef.counters.inc(DatasetRequestsBad) ;
             throw ex ;
         }
 
         try {
             perform(action) ;
             // Success
-            inc(action.desc.countServiceRequestsOK) ;
+            action.dsRef.counters.inc(DatasetRequestsGood) ;
         } catch (ActionErrorException ex) {
-            inc(action.desc.countServiceRequestsBad) ;
+            action.dsRef.counters.inc(DatasetRequestsBad) ;
             throw ex ;
         } catch (QueryCancelledException ex) {
-            inc(action.desc.countServiceRequestsBad) ;
+            action.dsRef.counters.inc(DatasetRequestsBad) ;
             throw ex ;
         }
 
@@ -269,7 +277,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
     protected static String mapRequestToDataset$(String uri)
     {
         // Chop off trailing part - the service selector
-        // e.f. /dataset/sparql => /dataset 
+        // e.g. /dataset/sparql => /dataset 
         int i = uri.lastIndexOf('/') ;
         if ( i == -1 )
             return null ;
@@ -280,6 +288,23 @@ public abstract class SPARQL_ServletBase extends ServletBase
         }
         
         return uri.substring(0, i) ;
+    }    /** Find the dataset name even if direct naming */ 
+    protected static String findTrailing(String uri, String dsname) 
+    {
+        if ( dsname.length() >= uri.length() )
+            return "" ;
+        return uri.substring(dsname.length()+1) ;   // Skip the separating "/"
+    }
+
+    
+
+    
+    protected static String mapRequestToService(DatasetRef dsRef, String uri, String serviceName)
+    {
+        if ( dsRef.name.length() >= uri.length() )
+            return "" ;
+        return uri.substring(dsRef.name.length()+1) ;   // Skip the separating "/"
+        
     }
     
     /** Implementation of mapRequestToDataset(String) that looks for the longest match.
