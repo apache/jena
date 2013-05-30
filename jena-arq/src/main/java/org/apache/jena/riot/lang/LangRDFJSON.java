@@ -436,22 +436,16 @@ public class LangRDFJSON extends LangBase
     {
     	Token t = null;
     	if (lookingAt(TokenType.STRING1) || lookingAt(TokenType.STRING2))
-    	{
     		t = nextToken();
-    	}
     	else
-    	{
     		exception(peekToken(), "JSON Values given for properties for an Object must be Strings") ;
-    	}
     	return t;
     }
 
 	private void checkColon()
 	{
 		if (!lookingAt(TokenType.COLON))
-		{
 			exception(peekToken(), "Expected a : character after a JSON Property Name but got %s", peekToken()) ;
-		}
 		nextToken() ;
 	}
 

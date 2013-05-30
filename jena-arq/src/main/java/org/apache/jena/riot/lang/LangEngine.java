@@ -82,16 +82,6 @@ public class LangEngine
             return tokenType == EOF ;
         if ( tokenType == NODE )
             return peekToken().isNode() ;
-//        if ( tokenType == KEYWORD )
-//        {
-//            String image = tokenRaw().getImage() ;
-//            if ( image.equals(KW_TRUE) )
-//                return true ;
-//            if ( image.equals(KW_FALSE) )
-//                return true ;
-//            return false ; 
-//        }
-        // NB IRIs and PREFIXED_NAMEs
         return peekToken().hasType(tokenType) ;
     }
     
@@ -138,9 +128,13 @@ public class LangEngine
         expect(msg, tokenType) ;
     }
     
+    protected final void skipIf(TokenType ttype) {
+        if ( lookingAt(ttype) )
+            nextToken() ;
+    }
+    
     protected final void expect(String msg, TokenType ttype)
     {
-        
         if ( ! lookingAt(ttype) )
         {
             Token location = peekToken() ;
