@@ -115,11 +115,6 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                                              paramForceAccept,
                                                              paramTimeout) ;
     
-    @Override
-    protected void startRequest(HttpAction action) {
-        action.srvRef.counters.inc(QueryRequests) ;
-    }
-    
     /** Called to validate arguments */
     @Override
     protected void validate(HttpAction action)
@@ -140,7 +135,6 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             validateParams(action.request, allParams) ;
             validateRequest(action) ; 
         } catch (ActionErrorException ex) { 
-            action.srvRef.counters.inc(QueryRequestsBad) ;
             throw ex ; 
         } 
         // Query not yet parsed.
@@ -230,15 +224,14 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             queryStringLog = formatForLog(query) ;
             validateQuery(action, query) ;
         } catch (ActionErrorException ex) {
-            action.srvRef.counters.inc(QueryRequestsBad) ;
+            action.srvRef.counters.inc(RequestsBad) ;
             throw ex ;
         } catch (QueryParseException ex) {
-            action.srvRef.counters.inc(QueryRequestsBad) ;
+            action.srvRef.counters.inc(RequestsBad) ;
             errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
         }
         // Should not happen.
         catch (QueryException ex) {
-            action.srvRef.counters.inc(QueryRequestsBad) ;
             errorBadRequest("Error: \n" + queryString + "\n\r" + ex.getMessage()) ;
         }
         
@@ -252,11 +245,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             
             // Deals with exceptions itself.
             sendResults(action, result, query.getPrologue()) ;
-            action.srvRef.counters.inc(QueryRequestsGood) ;
-        } catch (QueryCancelledException ex) { 
+        } catch (QueryCancelledException ex) {
+            // Additional counter information.
             action.srvRef.counters.inc(QueryTimeouts) ; 
             throw ex ; 
         } catch (QueryExecException ex) { 
+            // Additional counter information.
             action.srvRef.counters.inc(QueryExecErrors) ; 
             throw ex ; 
         } finally { 
