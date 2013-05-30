@@ -372,28 +372,24 @@ public class SPARQLServer
     }
 
     private static void addCounters(DatasetRef sDesc) {
-        sDesc.counters.add(CounterName.DatasetRequests) ;
-        sDesc.counters.add(CounterName.DatasetRequestsGood) ;
-        sDesc.counters.add(CounterName.DatasetRequestsBad) ;
+        sDesc.counters.add(CounterName.Requests) ;
+        sDesc.counters.add(CounterName.RequestsGood) ;
+        sDesc.counters.add(CounterName.RequestsBad) ;
         
-        sDesc.counters.add(CounterName.GSPrequests) ;
-        sDesc.counters.add(CounterName.GSPrequestsGood) ;
-        sDesc.counters.add(CounterName.GSPrequestsBad) ;
-        
-        sDesc.query.counters.add(CounterName.QueryRequests) ;
-        sDesc.query.counters.add(CounterName.QueryRequestsGood) ;
-        sDesc.query.counters.add(CounterName.QueryRequestsBad) ; 
+        sDesc.query.counters.add(CounterName.Requests) ;
+        sDesc.query.counters.add(CounterName.RequestsGood) ;
+        sDesc.query.counters.add(CounterName.RequestsBad) ; 
         sDesc.query.counters.add(CounterName.QueryTimeouts) ; 
         sDesc.query.counters.add(CounterName.QueryExecErrors) ;
         
-        sDesc.update.counters.add(CounterName.UpdateRequests) ;
-        sDesc.update.counters.add(CounterName.UpdateRequestsGood) ;
-        sDesc.update.counters.add(CounterName.UpdateRequestsBad) ; 
+        sDesc.update.counters.add(CounterName.Requests) ;
+        sDesc.update.counters.add(CounterName.RequestsGood) ;
+        sDesc.update.counters.add(CounterName.RequestsBad) ; 
         sDesc.update.counters.add(CounterName.UpdateExecErrors) ;
         
-        sDesc.upload.counters.add(CounterName.UploadRequests) ;
-        sDesc.upload.counters.add(CounterName.UploadRequestsGood) ;
-        sDesc.upload.counters.add(CounterName.UploadRequestsBad) ; 
+        sDesc.upload.counters.add(CounterName.Requests) ;
+        sDesc.upload.counters.add(CounterName.RequestsGood) ;
+        sDesc.upload.counters.add(CounterName.RequestsBad) ; 
         
         addCountersForGSP(sDesc.readGraphStore.counters, true) ;
         addCountersForGSP(sDesc.readWriteGraphStore.counters, false) ;

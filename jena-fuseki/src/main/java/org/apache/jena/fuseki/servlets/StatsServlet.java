@@ -58,27 +58,27 @@ public class StatsServlet extends HttpServlet
     private void stats(PrintWriter out, DatasetRef desc)
     {
         out.println("Dataset: "+desc.name) ;
-        out.println("    Requests      = "+desc.counters.value(CounterName.DatasetRequests)) ;
-        out.println("    Good          = "+desc.counters.value(CounterName.DatasetRequestsGood)) ;
-        out.println("    Bad           = "+desc.counters.value(CounterName.DatasetRequestsBad)) ;
+        out.println("    Requests      = "+desc.counters.value(CounterName.Requests)) ;
+        out.println("    Good          = "+desc.counters.value(CounterName.RequestsGood)) ;
+        out.println("    Bad           = "+desc.counters.value(CounterName.RequestsBad)) ;
 
         out.println("  SPARQL Query:") ;
-        out.println("    Request       = "+desc.query.counters.value(CounterName.QueryRequests)) ;
-        out.println("    Good          = "+desc.query.counters.value(CounterName.QueryRequestsGood)) ;
-        out.println("    Bad requests  = "+desc.query.counters.value(CounterName.QueryRequestsBad)) ;
+        out.println("    Request       = "+desc.query.counters.value(CounterName.Requests)) ;
+        out.println("    Good          = "+desc.query.counters.value(CounterName.RequestsGood)) ;
+        out.println("    Bad requests  = "+desc.query.counters.value(CounterName.RequestsBad)) ;
         out.println("    Timeouts      = "+desc.query.counters.value(CounterName.QueryTimeouts)) ;
         out.println("    Bad exec      = "+desc.query.counters.value(CounterName.QueryExecErrors)) ;
 
         out.println("  SPARQL Update:") ;
-        out.println("    Request       = "+desc.update.counters.value(CounterName.UpdateRequests)) ;
-        out.println("    Good          = "+desc.update.counters.value(CounterName.UpdateRequestsGood)) ;
-        out.println("    Bad requests  = "+desc.update.counters.value(CounterName.UpdateRequestsBad)) ;
+        out.println("    Request       = "+desc.update.counters.value(CounterName.Requests)) ;
+        out.println("    Good          = "+desc.update.counters.value(CounterName.RequestsGood)) ;
+        out.println("    Bad requests  = "+desc.update.counters.value(CounterName.RequestsBad)) ;
         out.println("    Bad exec      = "+desc.update.counters.value(CounterName.UpdateExecErrors)) ;
         
         out.println("  Upload:") ;
-        out.println("    Requests      = "+desc.upload.counters.value(CounterName.UploadRequests)) ;
-        out.println("    Good          = "+desc.upload.counters.value(CounterName.UploadRequestsGood)) ;
-        out.println("    Bad           = "+desc.upload.counters.value(CounterName.UploadRequestsBad)) ;
+        out.println("    Requests      = "+desc.upload.counters.value(CounterName.Requests)) ;
+        out.println("    Good          = "+desc.upload.counters.value(CounterName.RequestsGood)) ;
+        out.println("    Bad           = "+desc.upload.counters.value(CounterName.RequestsBad)) ;
         
         out.println("  SPARQL Graph Store Protocol:") ;
         out.println("    GETs          = "+gspValue(desc, CounterName.GSPget)+ " (good="+gspValue(desc, CounterName.GSPgetGood)+"/bad="+gspValue(desc, CounterName.GSPgetBad)+")") ;
