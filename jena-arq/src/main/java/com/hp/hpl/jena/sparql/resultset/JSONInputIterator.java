@@ -34,10 +34,11 @@ import org.apache.jena.atlas.iterator.PeekIterator;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
-import org.openjena.riot.RiotParseException;
+import org.apache.jena.riot.RiotParseException ;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -542,17 +543,17 @@ public class JSONInputIterator extends QueryIteratorBase {
 			
 			//Generate a Node based on the properties we saw
 			if (type.equals("uri")) {
-				return Node.createURI(value);
+				return NodeFactory.createURI(value);
 			} else if (type.equals("literal")) {
 				if (datatype != null) {
-					return Node.createLiteral(value, TypeMapper.getInstance().getSafeTypeByName(datatype));
+					return NodeFactory.createLiteral(value, TypeMapper.getInstance().getSafeTypeByName(datatype));
 				} else if (lang != null) {
-					return Node.createLiteral(value, lang, false);
+					return NodeFactory.createLiteral(value, lang, false);
 				} else {
-					return Node.createLiteral(value);
+					return NodeFactory.createLiteral(value);
 				}
 			} else if (type.equals("bnode")) {
-				return Node.createAnon(new AnonId(value));
+				return NodeFactory.createAnon(new AnonId(value));
 			} else {
 				exception(pos, "Encountered a Node object with an invalid type value '%s', expected one of uri, literal or bnode", type);
 			}
