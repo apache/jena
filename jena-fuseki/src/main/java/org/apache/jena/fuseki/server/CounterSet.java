@@ -21,11 +21,14 @@ package org.apache.jena.fuseki.server;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.fuseki.Fuseki ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 /** A collection of counters */
 public class CounterSet
 {
+    private static Logger log = LoggerFactory.getLogger(CounterSet.class) ;
+    
     private Map<CounterName, Counter> counters = new HashMap<CounterName, Counter>() ;
     
     public CounterSet()    {}
@@ -36,7 +39,7 @@ public class CounterSet
 
     public void add(CounterName counterName) {
         if ( counters.containsKey(counterName) ) {
-            Fuseki.serverLog.warn("Duplicate counter in counter set: "+counterName) ;
+            log.warn("Duplicate counter in counter set: "+counterName) ;
             return ;
         }
         counters.put(counterName, new Counter()) ;
@@ -45,8 +48,7 @@ public class CounterSet
     private Counter get(CounterName cn) {
         Counter c = counters.get(cn) ; 
         if ( c == null )
-            Fuseki.serverLog.warn("No counter in counter set: "+cn) ;
-            
+            log.warn("No counter in counter set: "+cn) ;
         return c ;
     }
 }
