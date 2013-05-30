@@ -24,6 +24,7 @@ import static org.apache.jena.fuseki.HttpNames.paramRequest ;
 import static org.apache.jena.fuseki.HttpNames.paramUpdate ;
 import static org.apache.jena.fuseki.HttpNames.paramUsingGraphURI ;
 import static org.apache.jena.fuseki.HttpNames.paramUsingNamedGraphURI ;
+import static org.apache.jena.fuseki.server.CounterName.UpdateExecErrors ;
 
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
@@ -242,17 +243,21 @@ public class SPARQL_Update extends SPARQL_Protocol
             else
                 UpdateAction.execute(req, action.getActiveDSG()) ;
             action.commit() ;
-        } 
-        catch (UpdateException ex)      { action.abort(); errorBadRequest(ex.getMessage()) ; }
-        catch (QueryParseException ex)  { action.abort(); errorBadRequest(messageForQPE(ex)) ; }
-        catch (Throwable ex) {
+        } catch (UpdateException ex) {
+            action.abort() ;
+            action.srvRef.counters.inc(UpdateExecErrors) ;
+            errorBadRequest(ex.getMessage()) ;
+        } catch (QueryParseException ex) {
+            action.abort() ;
+            action.srvRef.counters.inc(UpdateExecErrors) ;
+            errorBadRequest(messageForQPE(ex)) ;
+        } catch (Throwable ex) {
             if ( ! ( ex instanceof ActionErrorException ) )
             {
                 try { action.abort() ; } catch (Exception ex2) {}
                 errorOccurred(ex.getMessage(), ex) ;
             }
-        }
-        finally { action.endWrite(); }
+        } finally { action.endWrite(); }
     }
 
     /* [It is an error to supply the using-graph-uri or using-named-graph-uri parameters 

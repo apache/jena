@@ -20,54 +20,62 @@ package org.apache.jena.fuseki.server;
 
 /** Names for all counters */ 
 public enum CounterName {
-    // Per datasset
-    DatasetRequests("requests"),
-    DatasetRequestsGood("requests.good"),
-    DatasetRequestsBad("requests.bad") ,
+    // There are generic names - apply to all services and datasets
+    // and specific ones.
+
     
-    // Service specific
-    QueryRequests("query.requests") ,  
-    QueryRequestsGood("query.requests.good") ,
-    QueryRequestsBad("query.requests.bad") ,
+    // Total request received
+    Requests("requests"),
+    // .. of which some and "good" and some are "bad".
+    // #"good" + #"bad" roughly equals #"requests"
+    // except that the total is incremented at the start, and the outcome at the end.
+    // There may also be short term consistency issues.
+    RequestsGood("requests.good"),
+    RequestsBad("requests.bad") ,
+    
+    // SPARQL Protocol - query and update - together with upload.  
+    
+    // Query - standard and ... 
     QueryTimeouts("query.timeouts") ,
     QueryExecErrors("query.execerrors") ,
     
-    UpdateRequests("update.requests") ,
-    UpdateRequestsGood("update.requests.good") ,
-    UpdateRequestsBad("update.requests.bsd") ,
+    // Update - standard and ...
     UpdateExecErrors("update.execerrors"),
     
-    GSPrequests("gsp.requests") ,
-    GSPrequestsGood("gsp.requests.good") ,
-    GSPrequestsBad("gsp.requests.bad") ,
+    // Upload ... standard counters
+    
+    // Graph Store Protocol.
 
-    GSPget("gsp.requests.get") ,
-    GSPgetGood("gsp.requests.get.good") ,
-    GSPgetBad("gsp.requests.get.bad") ,
+//    // Total operations.
+//    GSPrequests("gsp.requests") ,
+//    GSPrequestsGood("gsp.requests.good") ,
+//    GSPrequestsBad("gsp.requests.bad") ,
 
-    GSPpost("gsp.requests.post") ,
-    GSPpostGood("gsp.requests.post.good") ,
-    GSPpostBad("gsp.requests.post.bad") ,
-    
-    GSPdelete("gsp.requests.delete") ,
-    GSPdeleteGood("gsp.requests.delete.good") ,
-    GSPdeleteBad("gsp.requests.delete.bad") ,
-    
-    GSPput("gsp.requests.put") ,
-    GSPputGood("gsp.requests.put.good") ,
-    GSPputBad("gsp.requests.put.bad") ,
-    
-    GSPhead("gsp.requests.head") ,
-    GSPheadGood("gsp.requests.head.good") ,
-    GSPheadBad("gsp.requests.head.bad") ,
-    
-    GSPpatch("gsp.requests.patch") ,
-    GSPpatchGood("gsp.requests.patch.good") ,
-    GSPpatchBad("gsp.requests.patch.bad") ,
-    
-    UploadRequests("upload.requests") ,
-    UploadRequestsGood("upload.requests.good") ,
-    UploadRequestsBad("upload.requests.bad") ,
+    // For each HTTP method
+    GSPget("gsp.get.requests") ,
+    GSPgetGood("gsp.get.requests.good") ,
+    GSPgetBad("gsp.get.requests.bad") ,
+
+    GSPpost("gsp.post.requests") ,
+    GSPpostGood("gsp.post.requests.good") ,
+    GSPpostBad("gsp.post.requests.bad") ,
+
+    GSPdelete("gsp.delete.requests") ,
+    GSPdeleteGood("gsp.delete.requests.good") ,
+    GSPdeleteBad("gsp.delete.requests.bad") ,
+
+    GSPput("gsp.put.requests") ,
+    GSPputGood("gsp.put.requests.good") ,
+    GSPputBad("gsp.put.requests.bad") ,
+
+    GSPhead("gsp.head.requests") ,
+    GSPheadGood("gsp.head.requests.good") ,
+    GSPheadBad("gsp.head.requests.bad") ,
+
+    GSPpatch("gsp.patch.requests") ,
+    GSPpatchGood("gsp.patch.requests.good") ,
+    GSPpatchBad("gsp.patch.requests.bad") ,
+
     
     ;
     

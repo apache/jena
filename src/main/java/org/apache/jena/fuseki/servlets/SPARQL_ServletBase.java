@@ -111,15 +111,16 @@ public abstract class SPARQL_ServletBase extends ServletBase
         return new HttpAction(id, request, response, verbose_debug) ;
     }
 
-    //protected abstract void startRequest(HttpAction action) ;
-    protected void startRequest(HttpAction action) {}
 
     protected abstract void validate(HttpAction action) ;
     protected abstract void perform(HttpAction action) ;
-    
-//XXX     protected abstract void finishRequest(HttpAction action) ;
-    protected void finishRequest(HttpAction action) {}
 
+    // Default start/finish steps. 
+    protected void startRequest(HttpAction action) {
+    }
+    
+    protected void finishRequest(HttpAction action) { }
+    
     private void archiveHttpAction(HttpAction action)
     {
         action.minimize() ;
@@ -170,28 +171,33 @@ public abstract class SPARQL_ServletBase extends ServletBase
     // Called directly by the UberServlet which has not done any stats by this point.
     protected void executeLifecycle(HttpAction action)
     {
-        action.dsRef.counters.inc(DatasetRequests) ;
+        action.dsRef.counters.inc(Requests) ;
+        action.srvRef.counters.inc(Requests) ;
+
         startRequest(action) ;
         try {
             validate(action) ;
         } catch (ActionErrorException ex) {
-            action.dsRef.counters.inc(DatasetRequestsBad) ;
+            action.dsRef.counters.inc(RequestsBad) ;
             throw ex ;
         }
 
         try {
             perform(action) ;
             // Success
-            action.dsRef.counters.inc(DatasetRequestsGood) ;
+            action.srvRef.counters.inc(RequestsGood) ;
+            action.dsRef.counters.inc(RequestsGood) ;
         } catch (ActionErrorException ex) {
-            action.dsRef.counters.inc(DatasetRequestsBad) ;
+            action.srvRef.counters.inc(RequestsBad) ;
+            action.dsRef.counters.inc(RequestsBad) ;
             throw ex ;
         } catch (QueryCancelledException ex) {
-            action.dsRef.counters.inc(DatasetRequestsBad) ;
+            action.srvRef.counters.inc(RequestsBad) ;
+            action.dsRef.counters.inc(RequestsBad) ;
             throw ex ;
+        } finally {
+            finishRequest(action) ;
         }
-
-        finishRequest(action) ;
     }
    
     @SuppressWarnings("unused") // ServletException
