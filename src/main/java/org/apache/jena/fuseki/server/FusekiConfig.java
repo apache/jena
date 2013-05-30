@@ -109,7 +109,6 @@ public class FusekiConfig
         config.jettyConfigFile = null ;
         config.pages = Fuseki.PagesStatic ;
         config.enableCompression = true ;
-        dbDesc.init() ;
         return config ;
     }
     

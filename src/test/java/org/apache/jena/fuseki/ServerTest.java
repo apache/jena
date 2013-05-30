@@ -22,8 +22,6 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
@@ -49,14 +47,14 @@ public class ServerTest extends BaseServerTest
     
     // If not inheriting from this class, call:
     
-    @BeforeClass static public void allocServer()
+    static public void allocServer()
     { 
         if ( referenceCount == 0 )
             serverStart() ;
         referenceCount ++ ;
     }
     
-    @AfterClass static public void freeServer() 
+    static public void freeServer() 
     { 
         referenceCount -- ;
         if ( referenceCount == 0 )
@@ -88,6 +86,7 @@ public class ServerTest extends BaseServerTest
         Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
         Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
+        server = null ;
     }
     
     public static void resetServer()
