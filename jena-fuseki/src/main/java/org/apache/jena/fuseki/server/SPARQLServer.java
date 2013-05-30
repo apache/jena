@@ -393,10 +393,13 @@ public class SPARQLServer
         
         addCountersForGSP(sDesc.readGraphStore.counters, true) ;
         addCountersForGSP(sDesc.readWriteGraphStore.counters, false) ;
-        sDesc.init() ;
     }
 
     private static void addCountersForGSP(CounterSet cs, boolean readWrite) {
+        cs.add(CounterName.Requests) ;
+        cs.add(CounterName.RequestsGood) ;
+        cs.add(CounterName.RequestsBad) ;
+        
         cs.add(CounterName.GSPget) ;
         cs.add(CounterName.GSPgetGood) ;
         cs.add(CounterName.GSPgetBad) ;
