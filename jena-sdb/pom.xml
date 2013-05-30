@@ -188,8 +188,8 @@
           <show>public</show>
           <quiet>true</quiet>
           <encoding>UTF-8</encoding>
-          <windowtitle>${project.name}</windowtitle>
-          <doctitle>${project.name}</doctitle>
+          <windowtitle>Apache Jena SDB</windowtitle>
+          <doctitle>Apache Jena SDB ${project.version}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
