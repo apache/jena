@@ -83,7 +83,7 @@ public abstract class LangTurtleBase<X> extends LangBase
             Token t = peekToken() ;
             if ( lookingAt(DIRECTIVE) )
             {
-                directive() ;
+                directive() ;       // @form.
                 continue ;
             }
             
@@ -136,14 +136,16 @@ public abstract class LangTurtleBase<X> extends LangBase
         if ( x.equals("base") )
         {
             directiveBase() ;
-            expect("Base directive not terminated by a dot", DOT) ;
+            skipIf(DOT) ;
+            //expect("Base directive not terminated by a dot", DOT) ;
             return ;
         }
         
         if ( x.equals("prefix") )
         {
             directivePrefix() ;
-            expect("Prefix directive not terminated by a dot", DOT) ;
+            skipIf(DOT) ;
+            //expect("Prefix directive not terminated by a dot", DOT) ;
             return ;
         }
         exception(t, "Unrecognized directive: %s", x) ;
@@ -177,6 +179,7 @@ public abstract class LangTurtleBase<X> extends LangBase
         String baseStr = token.getImage() ;
         dest.base(baseStr) ;
         IRI baseIRI = profile.makeIRI(baseStr, currLine, currCol) ;
+        skipIf(DOT) ;
         nextToken() ;
         profile.getPrologue().setBaseURI(baseIRI) ;
     }
