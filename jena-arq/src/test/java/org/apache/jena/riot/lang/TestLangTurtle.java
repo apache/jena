@@ -44,6 +44,8 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
@@ -86,6 +88,26 @@ public class TestLangTurtle extends BaseTest
         assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
     }
     
+    @Test public void optionalDotInPrefix()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        StringReader reader = new StringReader("@prefix x: <http://example/x>") ;
+        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE) ;
+        assertEquals(1, model.getNsPrefixMap().size()) ;
+        assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
+    }
+
+    @Test public void optionalDotInBase()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        StringReader reader = new StringReader("@base <http://example/> <x> <p> <o> .") ;
+        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE) ;
+        assertEquals(1, model.size()) ;
+        Resource r = model.createResource("http://example/x") ;
+        Property p = model.createProperty("http://example/p") ;
+        assertTrue(model.contains(r,p)) ;
+    }
+
     private static ErrorHandler errorhandler = null ;
     @BeforeClass public static void beforeClass()
     { 
