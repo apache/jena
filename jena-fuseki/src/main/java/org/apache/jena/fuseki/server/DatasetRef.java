@@ -31,23 +31,18 @@ public class DatasetRef implements DatasetMXBean
     public String name                          = null ;
     public DatasetGraph dataset                 = null ;
 
-    private List<ServiceRef> serviceRefs         = new ArrayList<ServiceRef>() ;
-    private ServiceRef createService(String name) {
-        ServiceRef sr = new ServiceRef(name) ; 
-        serviceRefs.add(sr) ;
-        return sr ;
-    }
     
-    public ServiceRef query                     = createService("query") ;
-    public ServiceRef update                    = createService("update") ;
-    public ServiceRef upload                    = createService("upload") ;
-    public ServiceRef readGraphStore            = createService("gspRead") ;
-    public ServiceRef readWriteGraphStore       = createService("gspReadWrite") ; 
+    public ServiceRef query                     = new ServiceRef("query") ;
+    public ServiceRef update                    = new ServiceRef("update") ;
+    public ServiceRef upload                    = new ServiceRef("upload") ;
+    public ServiceRef readGraphStore            = new ServiceRef("gspRead") ;
+    public ServiceRef readWriteGraphStore       = new ServiceRef("gspReadWrite") ; 
     
     
     // Dataset-level counters.
     public final CounterSet counters            = new CounterSet() ;
     private Map<String, ServiceRef> endpoints   = new HashMap<String, ServiceRef>() ;
+    private List<ServiceRef> serviceRefs        = new ArrayList<ServiceRef>() ;
     private boolean initialized = false ;
     
     // Two step initiation (c.f. Builder pattern)
@@ -61,17 +56,17 @@ public class DatasetRef implements DatasetMXBean
     }
     
     private void initServices() {
-        add(endpoints, query) ;
-        add(endpoints, update) ;
-        add(endpoints, upload) ;
-        add(endpoints, readGraphStore) ;
-        add(endpoints, readWriteGraphStore) ;
+        add(query) ;
+        add(update) ;
+        add(upload) ;
+        add(readGraphStore) ;
+        add(readWriteGraphStore) ;
     }
     
-    private static void add(Map<String, ServiceRef> serviceRefs, ServiceRef srvRef)
-    {
+    private void add(ServiceRef srvRef) {
+        serviceRefs.add(srvRef) ;
         for ( String ep : srvRef.endpoints )
-            serviceRefs.put(ep, srvRef) ; 
+            endpoints.put(ep, srvRef) ;
     }
 
     public ServiceRef getServiceRef(String service) {
@@ -80,10 +75,6 @@ public class DatasetRef implements DatasetMXBean
         if ( service.startsWith("/") )
             service = service.substring(1, service.length()) ; 
         return endpoints.get(service) ;
-    }
-
-    public Collection<String> ZgetEndpoints() {
-        return endpoints.keySet() ;
     }
 
     public Collection<ServiceRef> getServiceRefs() {
