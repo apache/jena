@@ -31,11 +31,19 @@ public class DatasetRef implements DatasetMXBean
     public String name                          = null ;
     public DatasetGraph dataset                 = null ;
 
-    public ServiceRef query                     = new ServiceRef("query") ;
-    public ServiceRef update                    = new ServiceRef("update") ;
-    public ServiceRef upload                    = new ServiceRef("upload") ;
-    public ServiceRef readGraphStore            = new ServiceRef("gspRead") ;
-    public ServiceRef readWriteGraphStore       = new ServiceRef("gspReadWrite") ; 
+    private List<ServiceRef> serviceRefs         = new ArrayList<ServiceRef>() ;
+    private ServiceRef createService(String name) {
+        ServiceRef sr = new ServiceRef(name) ; 
+        serviceRefs.add(sr) ;
+        return sr ;
+    }
+    
+    public ServiceRef query                     = createService("query") ;
+    public ServiceRef update                    = createService("update") ;
+    public ServiceRef upload                    = createService("upload") ;
+    public ServiceRef readGraphStore            = createService("gspRead") ;
+    public ServiceRef readWriteGraphStore       = createService("gspReadWrite") ; 
+    
     
     // Dataset-level counters.
     public final CounterSet counters            = new CounterSet() ;
@@ -74,8 +82,12 @@ public class DatasetRef implements DatasetMXBean
         return endpoints.get(service) ;
     }
 
-    public Collection<String> getEndpoints() {
+    public Collection<String> ZgetEndpoints() {
         return endpoints.keySet() ;
+    }
+
+    public Collection<ServiceRef> getServiceRefs() {
+        return serviceRefs ;
     }
 
     /** Counter of active read transactions */
