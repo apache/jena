@@ -103,15 +103,15 @@ public class ARQMgt
 
         } catch (NotCompliantMBeanException ex)
         {
-            log.warn("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage()) ;
+            log.warn("Failed to register (NotCompliantMBeanException)'"+objName.getCanonicalName()+"': "+ex.getMessage()) ;
             throw new ARQException("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage(), ex) ;
         } catch (InstanceAlreadyExistsException ex)
         {
-            log.warn("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage()) ;
+            log.warn("Failed to register (InstanceAlreadyExistsException)'"+objName.getCanonicalName()+"': "+ex.getMessage()) ;
             throw new ARQException("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage(), ex) ;
         } catch (MBeanRegistrationException ex)
         {
-            log.warn("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage()) ;
+            log.warn("Failed to register (MBeanRegistrationException)'"+objName.getCanonicalName()+"': "+ex.getMessage()) ;
             throw new ARQException("Failed to register '"+objName.getCanonicalName()+"': "+ex.getMessage(), ex) ;
         }
     }
