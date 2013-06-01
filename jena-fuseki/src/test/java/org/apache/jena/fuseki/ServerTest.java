@@ -42,13 +42,20 @@ public class ServerTest extends BaseServerTest
     // Abstraction that runs one server.
     // Inherit from this class to add starting/stopping a server.  
     
-    private static int referenceCount = 0 ;
-    private static SPARQLServer server = null ; 
+    private static SPARQLServer server = null ;
+    static { setupServer() ; }
+    
+    private static int referenceCount = 0 ; 
     
     // If not inheriting from this class, call:
     
     static public void allocServer()
-    { 
+    {
+//        if ( server == null )
+//            setupServer() ;
+//        else
+//            System.err.println("server not null") ;
+        
         if ( referenceCount == 0 )
             serverStart() ;
         referenceCount ++ ;
@@ -61,12 +68,12 @@ public class ServerTest extends BaseServerTest
             serverStop() ;
     }
     
-    protected static void serverStart()
+    protected static void setupServer()
     {
         Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        
+
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         // This must agree with BaseServerTest
         ServerConfig conf = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
@@ -80,13 +87,18 @@ public class ServerTest extends BaseServerTest
         server.start() ;
     }
     
-    protected static void serverStop()
-    {
-        server.stop() ;
+    protected static void serverStart() {
+        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
+        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
+        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
+    }
+    
+    protected static void serverStop() {
+//        server.stop() ;
         Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
         Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
-        server = null ;
+//        server = null ;
     }
     
     public static void resetServer()
