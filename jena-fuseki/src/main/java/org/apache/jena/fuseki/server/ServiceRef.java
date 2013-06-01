@@ -22,7 +22,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 /** Configuration of an individual service */
-public class ServiceRef
+public class ServiceRef implements ServiceMXBean
 {
     public final String name ;
     // Service-level counters.
@@ -41,5 +41,20 @@ public class ServiceRef
     }
     
     public boolean isActive() { return endpoints.isEmpty() ; }
+
+    @Override
+    public String getName()     { return name ; }
+
+    @Override public long getRequests() { 
+        return counters.value(CounterName.Requests) ;
+    }
+    @Override
+    public long getRequestsGood() {
+        return counters.value(CounterName.RequestsGood) ;
+    }
+    @Override
+    public long getRequestsBad() {
+        return counters.value(CounterName.RequestsBad) ;
+    }
 }
 

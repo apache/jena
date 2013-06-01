@@ -46,11 +46,6 @@ public enum CounterName {
     
     // Graph Store Protocol.
 
-//    // Total operations.
-//    GSPrequests("gsp.requests") ,
-//    GSPrequestsGood("gsp.requests.good") ,
-//    GSPrequestsBad("gsp.requests.bad") ,
-
     // For each HTTP method
     GSPget("gsp.get.requests") ,
     GSPgetGood("gsp.get.requests.good") ,
@@ -76,6 +71,9 @@ public enum CounterName {
     GSPpatchGood("gsp.patch.requests.good") ,
     GSPpatchBad("gsp.patch.requests.bad") ,
 
+    GSPoptions("gsp.options.requests") ,
+    GSPoptionsGood("gsp.options.requests.good") ,
+    GSPoptionsBad("gsp.options.requests.bad") ,
     
     ;
     

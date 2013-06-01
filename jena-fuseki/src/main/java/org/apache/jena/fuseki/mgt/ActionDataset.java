@@ -20,7 +20,6 @@ package org.apache.jena.fuseki.mgt;
 
 import java.io.IOException ;
 import java.io.UnsupportedEncodingException ;
-import java.util.Iterator ;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServlet ;
@@ -69,10 +68,7 @@ public class ActionDataset extends HttpServlet
             ServletOutputStream out = response.getOutputStream() ;
             out.print("<p>"+dataset+"("+known+")</p>") ;
 
-            Iterator<String> iter = DatasetRegistry.get().keys() ;
-            for ( ; iter.hasNext() ; )
-            {
-                String name = iter.next() ;
+            for ( String name : DatasetRegistry.get().keys() ) {
                 out.print("<li>") ;
                 out.print(name) ;
                 out.println("</li>") ;
