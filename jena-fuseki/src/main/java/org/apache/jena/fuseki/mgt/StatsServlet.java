@@ -16,19 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki.mgt;
 
 import java.io.IOException ;
-import java.io.PrintWriter ;
 import java.util.Iterator ;
 
+import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.fuseki.server.CounterName ;
-import org.apache.jena.fuseki.server.DatasetRef ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonObject ;
+import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.riot.WebContent ;
 
 public class StatsServlet extends HttpServlet
 {
@@ -37,25 +38,83 @@ public class StatsServlet extends HttpServlet
         //throws ServletException, IOException
     {
         try {
-            PrintWriter out = resp.getWriter() ;
-            resp.setContentType("text/plain");
-            
-            Iterator<String> iter = DatasetRegistry.get().keys() ;
-            while(iter.hasNext())
-            {
-                String ds = iter.next() ;
-                DatasetRef desc = DatasetRegistry.get().get(ds) ;
-                stats(out, desc) ;
-                if ( iter.hasNext() )
-                    out.println() ;
-            }
-            
-            out.flush() ;
+            // Conneg etc.
+            statsJSON(req, resp) ;
         } catch (IOException e)
         { }
     }
     
-    private void stats(PrintWriter out, DatasetRef desc)
+    private void statsJSON(HttpServletRequest req, HttpServletResponse resp) throws IOException
+    {
+        ServletOutputStream out = resp.getOutputStream() ;
+        resp.setContentType(WebContent.contentTypeJSON);
+        resp.setCharacterEncoding(WebContent.charsetUTF8) ;
+
+        /*
+         * { "server" : ....   
+         *    "datasets" : {
+         *       "ds1": { counters... }
+         *       GSP stucture?
+         *         
+         */
+        
+        JsonObject obj = new JsonObject() ;
+        JsonObject datasets = new JsonObject() ;
+        JsonObject server = new JsonObject() ;
+        server.put("host", req.getLocalName()+":"+req.getLocalPort()) ;
+        
+        for ( String ds : DatasetRegistry.get().keys() )
+            statsJSON(datasets, ds) ; 
+        
+        obj.put("server", server) ;
+        obj.put("datasets", datasets) ;
+        
+        JSON.write(out, obj) ;
+        out.flush() ;
+    }
+    
+    private void statsJSON(JsonObject datasets, String ds) {
+        DatasetRef desc = DatasetRegistry.get().get(ds) ;
+        JsonObject stats = new JsonObject() ;
+        datasets.put(ds, stats) ;
+        stats.put(CounterName.Requests.name(),      desc.counters.value(CounterName.Requests)) ;
+        stats.put(CounterName.RequestsGood.name(),  desc.counters.value(CounterName.RequestsGood)) ;
+        stats.put(CounterName.RequestsBad.name(),   desc.counters.value(CounterName.RequestsBad)) ;
+        JsonObject endpoints = new JsonObject() ;
+        for ( String endpoint : desc.getEndpoints() ) {
+            ServiceRef srvRef = desc.getServiceRef(endpoint) ;
+            JsonObject epStats = new JsonObject() ;
+            statsJSON(epStats, srvRef) ;
+            endpoints.put(endpoint, epStats) ;
+        }
+        stats.put("endpoints", endpoints) ;
+    }
+
+    private void statsJSON(JsonObject epStats, ServiceRef srvRef) {
+        for (CounterName cn : srvRef.counters.counters()) {
+            Counter c = srvRef.counters.get(cn) ;
+            epStats.put(cn.name(), c.value()) ;
+        }
+    }
+
+    private void statsTxt(HttpServletResponse resp) throws IOException
+    {
+        ServletOutputStream out = resp.getOutputStream() ;
+        resp.setContentType(WebContent.contentTypeTextPlain);
+        resp.setCharacterEncoding(WebContent.charsetUTF8) ;
+
+        Iterator<String> iter = DatasetRegistry.get().keys().iterator() ;
+        while(iter.hasNext())
+        {
+            String ds = iter.next() ;
+            DatasetRef desc = DatasetRegistry.get().get(ds) ;
+            statsTxt(out, desc) ;
+            if ( iter.hasNext() )
+                out.println() ;
+        }
+        out.flush() ;
+    }
+    private void statsTxt(ServletOutputStream out, DatasetRef desc) throws IOException
     {
         out.println("Dataset: "+desc.name) ;
         out.println("    Requests      = "+desc.counters.value(CounterName.Requests)) ;

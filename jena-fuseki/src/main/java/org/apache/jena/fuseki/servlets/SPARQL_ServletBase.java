@@ -19,10 +19,12 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
+import static org.apache.jena.fuseki.server.CounterName.Requests ;
+import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
+import static org.apache.jena.fuseki.server.CounterName.RequestsGood ;
 
 import java.io.IOException ;
 import java.util.Enumeration ;
-import java.util.Iterator ;
 import java.util.Map ;
 import java.util.concurrent.atomic.AtomicLong ;
 
@@ -31,7 +33,6 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.HttpNames ;
-import static org.apache.jena.fuseki.server.CounterName.* ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.ServiceRef ;
@@ -330,10 +331,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
         // would only work for indirect. 
 
         String ds = null ;
-        Iterator<String> iter = DatasetRegistry.get().keys() ;
-        while(iter.hasNext())
-        {
-            String ds2 = iter.next();
+        for ( String ds2 : DatasetRegistry.get().keys() ) {
             if ( ! uri.startsWith(ds2) )
                 continue ;
 

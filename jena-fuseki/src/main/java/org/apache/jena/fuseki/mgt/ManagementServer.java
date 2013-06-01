@@ -27,28 +27,28 @@ import javax.servlet.http.HttpServlet ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.FusekiErrorHandler ;
 import org.apache.jena.fuseki.servlets.DumpServlet ;
-import org.apache.jena.fuseki.servlets.StatsServlet ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
-import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
+import org.eclipse.jetty.server.nio.SelectChannelConnector ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 
 public class ManagementServer
 {
-
     public static Server createManagementServer(int mgtPort)
     {
         Fuseki.serverLog.info("Adding management functions") ;
-        // This is actually a separate Jetty server
+        
+        // Separate Jetty server
         Server server = new Server() ;
         
-        BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;
-        //bcConnector.setUseDirectBuffers(false) ;
+//        BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;
+//        bcConnector.setUseDirectBuffers(false) ;
+//        Connector connector = bcConnector ;
         
-        Connector connector = bcConnector ;
-        // Ignore. If set, then if this goes off, it keeps going off 
-        // and you get a lot of log messages.
+        Connector connector = new SelectChannelConnector() ;
+        // Ignore idle time. 
+        // If set, then if this goes off, it keeps going off and you get a lot of log messages.
         connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
         connector.setPort(mgtPort);
         server.addConnector(connector) ;
@@ -67,8 +67,6 @@ public class ManagementServer
 //      // Development : server control panel.
 //      addServlet(context, new ServerServlet(), "/server") ;
 //      addServlet(context, new ActionBackup(), "/backup") ;
-
-        
     }
 
     // SHARE

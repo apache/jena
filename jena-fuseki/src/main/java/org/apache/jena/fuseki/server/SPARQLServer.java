@@ -45,11 +45,10 @@ import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
 import org.eclipse.jetty.servlet.DefaultServlet ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
+import org.eclipse.jetty.servlets.GzipFilter ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
 
-import org.eclipse.jetty.servlets.GzipFilter;
-
-
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class SPARQLServer
@@ -188,7 +187,6 @@ public class SPARQLServer
             HttpServlet validateData = new DataValidator() ;    
             HttpServlet validateIRI = new IRIValidator() ;
             
-            HttpServlet statsService = new StatsServlet() ;
             HttpServlet dumpService = new DumpServlet() ;
             HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
             // TODO Name management 
@@ -209,7 +207,6 @@ public class SPARQLServer
         }
         
         return context ; 
-        
     }
     
     // Experimental - off by default.
@@ -231,7 +228,7 @@ public class SPARQLServer
         
         addCounters(dsDesc) ;
         dsDesc.init() ;
-        
+
         DatasetRegistry.get().put(datasetPath, dsDesc) ;
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
         
@@ -263,6 +260,17 @@ public class SPARQLServer
             // It also checks for a request that looks like a service request and passes it
             // on to the service (this takes precedence over direct naming).
             addServlet(context, datasetPath, sparqlDataset, epDataset, enableCompression) ;
+        }
+        
+        // JMX
+        String x = dsDesc.name ;
+//        if ( x.startsWith("/") )
+//            x = x.substring(1) ;
+        ARQMgt.register(Fuseki.PATH+".dataset:name="+x, dsDesc) ;
+        // For all endpoints 
+        for ( String endpoint : dsDesc.getEndpoints() ) {
+            ServiceRef sRef = dsDesc.getServiceRef(endpoint) ;
+            ARQMgt.register(Fuseki.PATH+".dataset:name="+x+"/"+endpoint, sRef) ;
         }
     }
     
@@ -391,8 +399,9 @@ public class SPARQLServer
         sDesc.upload.counters.add(CounterName.RequestsGood) ;
         sDesc.upload.counters.add(CounterName.RequestsBad) ; 
         
-        addCountersForGSP(sDesc.readGraphStore.counters, true) ;
         addCountersForGSP(sDesc.readWriteGraphStore.counters, false) ;
+        if ( sDesc.readGraphStore != sDesc.readGraphStore )
+            addCountersForGSP(sDesc.readGraphStore.counters, true) ;
     }
 
     private static void addCountersForGSP(CounterSet cs, boolean readWrite) {
@@ -427,6 +436,10 @@ public class SPARQLServer
         cs.add(CounterName.GSPpatch) ;
         cs.add(CounterName.GSPpatchGood) ;
         cs.add(CounterName.GSPpatchBad) ;
+
+        cs.add(CounterName.GSPoptions) ;
+        cs.add(CounterName.GSPoptionsGood) ;
+        cs.add(CounterName.GSPoptionsBad) ;
     }
 
 }

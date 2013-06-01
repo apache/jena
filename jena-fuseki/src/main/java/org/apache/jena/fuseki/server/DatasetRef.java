@@ -18,8 +18,7 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.* ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.fuseki.Fuseki ;
@@ -27,7 +26,7 @@ import org.apache.jena.fuseki.Fuseki ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public class DatasetRef
+public class DatasetRef implements DatasetMXBean
 {
     public String name                          = null ;
     public DatasetGraph dataset                 = null ;
@@ -37,10 +36,10 @@ public class DatasetRef
     public ServiceRef upload                    = new ServiceRef("upload") ;
     public ServiceRef readGraphStore            = new ServiceRef("gspRead") ;
     public ServiceRef readWriteGraphStore       = new ServiceRef("gspReadWrite") ; 
-
+    
     // Dataset-level counters.
     public final CounterSet counters            = new CounterSet() ;
-    private Map<String, ServiceRef> serviceRefs = new HashMap<String, ServiceRef>() ;
+    private Map<String, ServiceRef> endpoints   = new HashMap<String, ServiceRef>() ;
     private boolean initialized = false ;
     
     // Two step initiation (c.f. Builder pattern)
@@ -54,11 +53,11 @@ public class DatasetRef
     }
     
     private void initServices() {
-        add(serviceRefs, query) ;
-        add(serviceRefs, update) ;
-        add(serviceRefs, upload) ;
-        add(serviceRefs, readGraphStore) ;
-        add(serviceRefs, readWriteGraphStore) ;
+        add(endpoints, query) ;
+        add(endpoints, update) ;
+        add(endpoints, upload) ;
+        add(endpoints, readGraphStore) ;
+        add(endpoints, readWriteGraphStore) ;
     }
     
     private static void add(Map<String, ServiceRef> serviceRefs, ServiceRef srvRef)
@@ -72,7 +71,11 @@ public class DatasetRef
             Fuseki.serverLog.error("Not initialized: dataset = "+name) ;
         if ( service.startsWith("/") )
             service = service.substring(1, service.length()) ; 
-        return serviceRefs.get(service) ;
+        return endpoints.get(service) ;
+    }
+
+    public Collection<String> getEndpoints() {
+        return endpoints.keySet() ;
     }
 
     /** Counter of active read transactions */
@@ -146,5 +149,22 @@ public class DatasetRef
                ! upload.isActive() &&
                ! readWriteGraphStore.isActive()
                ;
+    }
+    
+    // MBean
+    
+    @Override
+    public String getName()     { return name ; }
+
+    @Override public long getRequests() { 
+        return counters.value(CounterName.Requests) ;
+    }
+    @Override
+    public long getRequestsGood() {
+        return counters.value(CounterName.RequestsGood) ;
+    }
+    @Override
+    public long getRequestsBad() {
+        return counters.value(CounterName.RequestsBad) ;
     }
 }
