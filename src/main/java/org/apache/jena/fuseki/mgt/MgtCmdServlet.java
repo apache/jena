@@ -45,6 +45,7 @@ import com.hp.hpl.jena.tdb.TDB ;
 
 public class MgtCmdServlet extends HttpServlet
 {
+    // Experimental - likely to change. 
     private static Logger log = Fuseki.serverLog ;
 
     public MgtCmdServlet()
@@ -61,8 +62,7 @@ public class MgtCmdServlet extends HttpServlet
     public static String paramCmd     = "cmd" ;
     public static String cmdBackup    = "backup" ;          // &dataset=/datasetname
     public static String cmdRestart   = "restart" ;         // Not implemented.
-    public static String cmdShutdown  = "shutdown" ;        // Server stops, no
-                                                            // questions asked.
+    public static String cmdShutdown  = "shutdown" ;        // Server stops, no questions asked. (Not implemented)
 
     ActionBackup         actionBackup = new ActionBackup() ;
 

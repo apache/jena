@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -32,10 +33,13 @@ public class CounterSet
     private Map<CounterName, Counter> counters = new HashMap<CounterName, Counter>() ;
     
     public CounterSet()    {}
+
+    public Collection<CounterName> counters()
+    { return counters.keySet() ; }
     
-    public void inc(CounterName c)   { get(c).inc() ; } 
-    public void dec(CounterName c)   { get(c).dec() ; } 
-    public long value(CounterName c) { return get(c).value() ; }
+    public void inc(CounterName c)          { get(c).inc() ; } 
+    public void dec(CounterName c)          { get(c).dec() ; } 
+    public long value(CounterName c)        { return get(c).value() ; }
 
     public void add(CounterName counterName) {
         if ( counters.containsKey(counterName) ) {
@@ -45,7 +49,7 @@ public class CounterSet
         counters.put(counterName, new Counter()) ;
     }
     
-    private Counter get(CounterName cn) {
+    public Counter get(CounterName cn) {
         Counter c = counters.get(cn) ; 
         if ( c == null )
             log.warn("No counter in counter set: "+cn) ;

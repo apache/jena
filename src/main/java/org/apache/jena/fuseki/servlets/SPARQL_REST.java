@@ -42,6 +42,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.fuseki.server.CounterName ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotReader ;
@@ -66,17 +67,15 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     
     protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
 
-    protected final static Target determineTarget(HttpAction action) 
-    {
+    protected final static Target determineTarget(HttpAction action) {
         // Delayed until inside a transaction.
         if ( action.getActiveDSG() == null )
-                errorOccurred("Internal error : No action graph (not in a transaction?)") ;
+            errorOccurred("Internal error : No action graph (not in a transaction?)") ;
         
         boolean dftGraph = getOneOnly(action.request, HttpNames.paramGraphDefault) != null ;
         String uri = getOneOnly(action.request, HttpNames.paramGraph) ;
         
-        if ( !dftGraph && uri == null )
-        {
+        if ( !dftGraph && uri == null ) {
             // Direct naming or error.
             uri = action.request.getRequestURL().toString() ;
             if ( action.request.getRequestURI().equals(action.getDatasetRef().name) )
@@ -114,18 +113,15 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         final String name ;
         final Node graphName ;
 
-        static Target createNamed(DatasetGraph dsg, String name, Node graphName)
-        {
+        static Target createNamed(DatasetGraph dsg, String name, Node graphName) {
             return new Target(false, dsg, name, graphName) ;
         }
 
-        static Target createDefault(DatasetGraph dsg)
-        {
+        static Target createDefault(DatasetGraph dsg) {
             return new Target(true, dsg, null, null) ;
         }
 
-        private Target(boolean isDefault, DatasetGraph dsg, String name, Node graphName)
-        {
+        private Target(boolean isDefault, DatasetGraph dsg, String name, Node graphName) {
             this.isDefault = isDefault ;
             this.dsg = dsg ;
             this._graph = null ;
@@ -145,8 +141,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         }
 
         /** Get a graph for the action - this may create a graph in the dataset - this is not a test for graph existence */
-        public Graph graph()
-        {
+        public Graph graph() {
             if ( ! isGraphSet() )
             {
                 if ( isDefault ) 
@@ -183,54 +178,126 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     { this(false) ; }
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Direct all verbs to our common framework.
         doCommon(request, response) ;
     }
     
-    private void maybeSetLastModified(HttpServletResponse resp, long lastModified)
-    {
+    private void maybeSetLastModified(HttpServletResponse resp, long lastModified) {
         if (resp.containsHeader(HEADER_LASTMOD)) return ;
         if (lastModified >= 0) resp.setDateHeader(HEADER_LASTMOD, lastModified);
     }
     
     @Override
-    protected void perform(HttpAction action)
-    {
+    protected void perform(HttpAction action) {
         dispatch(action) ;
     }
 
-    private void dispatch(HttpAction action)
-    {
+    private void dispatch(HttpAction action) {
         HttpServletRequest req = action.request ;
         HttpServletResponse resp = action.response ;
         String method = req.getMethod().toUpperCase(Locale.ENGLISH) ;
 
-        // See HttpServlet.service.
-        // We dispatch by REQUEST
-        
         if (method.equals(METHOD_GET))
-            doGet(action);
+            doGet$(action);
         else if (method.equals(METHOD_HEAD))
-            doHead(action);
+            doHead$(action);
         else if (method.equals(METHOD_POST))
-            doPost(action);
+            doPost$(action);
         else if (method.equals(METHOD_PATCH))
-            doPatch(action) ;
+            doPatch$(action) ;
         else if (method.equals(METHOD_OPTIONS))
-            doOptions(action) ;
+            doOptions$(action) ;
         else if (method.equals(METHOD_TRACE))
             //doTrace(action) ;
             errorMethodNotAllowed("TRACE") ;
         else if (method.equals(METHOD_PUT))
-            doPut(action) ;   
+            doPut$(action) ;   
         else if (method.equals(METHOD_DELETE))
-            doDelete(action) ;
+            doDelete$(action) ;
         else
             errorNotImplemented("Unknown method: "+method) ;
     }
-        
+
+    // Counter wrappers
+    
+    protected void doGet$(HttpAction action) {
+        action.srvRef.counters.inc(CounterName.GSPget) ;
+        try {
+            doGet(action) ;
+            action.srvRef.counters.inc(CounterName.GSPgetGood) ;
+        } catch ( ActionErrorException ex) {
+            action.srvRef.counters.inc(CounterName.GSPgetBad) ;
+            throw ex ;
+        }
+    }
+
+    protected void doHead$(HttpAction action) {
+        action.srvRef.counters.inc(CounterName.GSPhead) ;
+        try {
+            doHead(action) ;
+            action.srvRef.counters.inc(CounterName.GSPheadGood) ;
+        } catch ( ActionErrorException ex) {
+            action.srvRef.counters.inc(CounterName.GSPheadBad) ;
+            throw ex ;
+        }
+    }
+
+    protected void doPost$(HttpAction action) {
+        action.srvRef.counters.inc(CounterName.GSPpost) ;
+        try {
+            doPost(action) ;
+            action.srvRef.counters.inc(CounterName.GSPpostGood) ;
+        } catch ( ActionErrorException ex) {
+            action.srvRef.counters.inc(CounterName.GSPpostBad) ;
+            throw ex ;
+        }
+    }
+
+    protected void doPatch$(HttpAction action) {
+        action.srvRef.counters.inc(CounterName.GSPpatch) ;
+        try {
+            doPatch(action) ;
+            action.srvRef.counters.inc(CounterName.GSPpatchGood) ;
+        } catch ( ActionErrorException ex) {
+            action.srvRef.counters.inc(CounterName.GSPpatchBad) ;
+            throw ex ;
+        }
+    }
+
+    protected void doDelete$(HttpAction action) {
+        action.srvRef.counters.inc(CounterName.GSPdelete) ;
+        try {
+            doDelete(action) ;
+            action.srvRef.counters.inc(CounterName.GSPdeleteGood) ;
+        } catch ( ActionErrorException ex) {
+            action.srvRef.counters.inc(CounterName.GSPdeleteBad) ;
+            throw ex ;
+        }
+    }
+
+    protected void doPut$(HttpAction action) {
+        action.srvRef.counters.inc(CounterName.GSPput) ;
+        try {
+            doPut(action) ;
+            action.srvRef.counters.inc(CounterName.GSPputGood) ;
+        } catch ( ActionErrorException ex) {
+            action.srvRef.counters.inc(CounterName.GSPputBad) ;
+            throw ex ;
+        }
+    }
+
+    protected void doOptions$(HttpAction action) {
+        action.srvRef.counters.inc(CounterName.GSPoptions) ;
+        try {
+            doOptions(action) ;
+            action.srvRef.counters.inc(CounterName.GSPoptionsGood) ;
+        } catch ( ActionErrorException ex) {
+            action.srvRef.counters.inc(CounterName.GSPoptionsBad) ;
+            throw ex ;
+        }
+    }
+    
     protected abstract void doGet(HttpAction action) ;
     protected abstract void doHead(HttpAction action) ;
     protected abstract void doPost(HttpAction action) ;
