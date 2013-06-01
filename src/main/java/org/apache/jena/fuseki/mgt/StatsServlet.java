@@ -82,13 +82,19 @@ public class StatsServlet extends HttpServlet
         stats.put(CounterName.RequestsGood.name(),  desc.counters.value(CounterName.RequestsGood)) ;
         stats.put(CounterName.RequestsBad.name(),   desc.counters.value(CounterName.RequestsBad)) ;
         JsonObject services = new JsonObject() ;
+
+//        JsonArray endpoints = new JsonArray() ;
+//        services.put("endpoints", endpoints) ;
+//        JsonArray srvNames = new JsonArray() ;
+//        services.put("names", srvNames) ;
+        
         // There can be several endpoints for one service.
         for ( ServiceRef srvRef : desc.getServiceRefs() ) {
             JsonObject epStats = new JsonObject() ;
             statsJSON(epStats, srvRef) ;
             services.put(srvRef.name, epStats) ;
             JsonArray endpoints = new JsonArray() ;
-            services.put("endpoints", endpoints) ;
+            epStats.put("endpoints", endpoints) ;
             for ( String ep : srvRef.endpoints) {
                 endpoints.add(ep) ;
             }
