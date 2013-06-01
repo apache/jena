@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.WebContent ;
@@ -80,14 +81,19 @@ public class StatsServlet extends HttpServlet
         stats.put(CounterName.Requests.name(),      desc.counters.value(CounterName.Requests)) ;
         stats.put(CounterName.RequestsGood.name(),  desc.counters.value(CounterName.RequestsGood)) ;
         stats.put(CounterName.RequestsBad.name(),   desc.counters.value(CounterName.RequestsBad)) ;
-        JsonObject endpoints = new JsonObject() ;
-        for ( String endpoint : desc.getEndpoints() ) {
-            ServiceRef srvRef = desc.getServiceRef(endpoint) ;
+        JsonObject services = new JsonObject() ;
+        // There can be several endpoints for one service.
+        for ( ServiceRef srvRef : desc.getServiceRefs() ) {
             JsonObject epStats = new JsonObject() ;
             statsJSON(epStats, srvRef) ;
-            endpoints.put(endpoint, epStats) ;
+            services.put(srvRef.name, epStats) ;
+            JsonArray endpoints = new JsonArray() ;
+            services.put("endpoints", endpoints) ;
+            for ( String ep : srvRef.endpoints) {
+                endpoints.add(ep) ;
+            }
         }
-        stats.put("endpoints", endpoints) ;
+        stats.put("services", services) ;
     }
 
     private void statsJSON(JsonObject epStats, ServiceRef srvRef) {

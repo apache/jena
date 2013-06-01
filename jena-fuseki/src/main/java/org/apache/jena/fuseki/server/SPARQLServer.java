@@ -268,9 +268,8 @@ public class SPARQLServer
 //            x = x.substring(1) ;
         ARQMgt.register(Fuseki.PATH+".dataset:name="+x, dsDesc) ;
         // For all endpoints 
-        for ( String endpoint : dsDesc.getEndpoints() ) {
-            ServiceRef sRef = dsDesc.getServiceRef(endpoint) ;
-            ARQMgt.register(Fuseki.PATH+".dataset:name="+x+"/"+endpoint, sRef) ;
+        for ( ServiceRef sRef : dsDesc.getServiceRefs() ) {
+            ARQMgt.register(Fuseki.PATH+".dataset:name="+x+"/"+sRef.name, sRef) ;
         }
     }
     
