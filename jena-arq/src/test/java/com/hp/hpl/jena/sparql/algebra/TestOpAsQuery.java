@@ -272,6 +272,19 @@ public class TestOpAsQuery {
         Query r[] = checkQueryParseable(query, false);
     }
 
+    @Test
+    public void testMinus1() {
+        String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o MINUS { ?s :q ?v .FILTER(?v<5) } }" ; 
+        Query r[] = checkQueryParseable(query, true);
+    }
+    
+    @Test
+    public void testMinus2() {
+        // query gains a level of {} but the meaning is the same. 
+        String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o OPTIONAL { ?s :x ?2 } MINUS { ?s :q ?v .FILTER(?v<5) } }" ; 
+        Query r[] = checkQueryParseable(query, false);
+    }
+    
     public Query[] checkQuery(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);

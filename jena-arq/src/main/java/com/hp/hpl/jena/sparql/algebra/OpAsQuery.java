@@ -325,8 +325,15 @@ public class OpAsQuery
         { throw new ARQNotImplemented("OpDiff") ; }
 
         @Override
-        public void visit(OpMinus opMinus)
-        { throw new ARQNotImplemented("OpMinus") ; }
+        public void visit(OpMinus opMinus) {
+            Element eLeft = asElement(opMinus.getLeft()) ;
+            Element eRight = asElementGroup(opMinus.getRight()) ;
+            ElementMinus elMinus = new ElementMinus(eRight) ;
+            ElementGroup g = currentGroup() ;
+            if ( ! emptyGroup(eLeft) )
+                g.addElement(eLeft) ;
+            g.addElement(elMinus) ;
+        }
 
         @Override
         public void visit(OpUnion opUnion)
