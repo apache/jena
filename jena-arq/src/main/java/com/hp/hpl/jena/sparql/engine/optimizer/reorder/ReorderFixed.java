@@ -46,7 +46,7 @@ public class ReorderFixed extends ReorderTransformationBase
         
         //matcher.addPattern(new Pattern(1,   TERM, TERM, TERM)) ;     // SPO - built-in - not needed a s a rule
         
-        // Numbers choosen as an approximation for a graph of 100 triples
+        // Numbers choosen as an approximation ratios for a graph of 100 triples
         matcher.addPattern(new Pattern(2,   TERM, TERM, VAR)) ;     // SP?
         matcher.addPattern(new Pattern(5,   TERM, type, TERM)) ;    // ? type O -- worse than ?PO
         matcher.addPattern(new Pattern(3,   VAR,  TERM, TERM)) ;    // ?PO
