@@ -125,11 +125,14 @@
 
     <!-- Examples : needs tidying up -->
     <fileSet>
-      <outputDirectory>src-examples</outputDirectory>
-      <directory>../jena-examples/src/main/java/</directory>
+      <outputDirectory>src-examples/jena-examples</outputDirectory>
+      <directory>../jena-examples</directory>
       <includes>
 	<include>**</include>
       </includes>
+      <excludes>
+	<exclude>**/target/**</exclude>
+      </excludes>
       <fileMode>0622</fileMode>
       <directoryMode>0755</directoryMode>
       <filtered>false</filtered>
