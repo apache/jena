@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.engine.optimizer;
 
 import static com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternElements.* ;
 
-import java.io.PrintStream ;
+import java.io.OutputStream ;
 import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.List ;
@@ -495,7 +495,7 @@ public final class StatsMatcher
         return $ ;
     }
     
-    public void printSSE(PrintStream ps)
+    public void printSSE(OutputStream ps)
     {
         IndentedWriter out = new IndentedWriter(ps) ;
         out.println("(stats") ;
