@@ -56,7 +56,7 @@ public class UpdateExecuteOperations
         String cmd = StrUtils.strjoin(" ;\n",
                                       "DROP ALL",
                                       "CREATE GRAPH <http://example/g2>",
-                                      "LOAD <file:etc/update-data.ttl> INTO <http://example/g2>") ;
+                                      "LOAD <file:etc/update-data.ttl> INTO GRAPH <http://example/g2>") ;
         // check string created
         System.out.println(cmd) ;
         UpdateAction.parseExecute(cmd, graphStore) ;
@@ -71,7 +71,7 @@ public class UpdateExecuteOperations
                .add("CREATE GRAPH <http://example/g2>") ;
         // Different style.
         // Equivalent to request.add("...")
-        UpdateFactory.parse(request, "LOAD <file:etc/update-data.ttl> INTO <http://example/g2>") ;
+        UpdateFactory.parse(request, "LOAD <file:etc/update-data.ttl> INTO GRAPH <http://example/g2>") ;
         
         // And perform the operations.
         UpdateAction.execute(request, graphStore) ;
