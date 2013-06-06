@@ -22,10 +22,10 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.ActionKeyValue ;
 import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.lib.CacheFactory ;
 
 
-
-/** This class is not thread-safe. Add a synchronization wrapper if needed (@link{CacheFcatory.createSync)}  */
+/** This class is not thread-safe. Add a synchronization wrapper if needed ({@linkplain CacheFactory#createSync})  */
 
 public class CacheLRU<K,V> implements Cache<K,V>
 {
