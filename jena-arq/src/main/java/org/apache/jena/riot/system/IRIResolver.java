@@ -89,9 +89,15 @@ public abstract class IRIResolver
     /**
      * The current working directory, as a string.
      */
-    static private String globalBase = IRILib.filenameToIRI("./") ; // FileUtils.toURL(".").replace("/./", "/") ;
+    static private String globalBase = IRILib.filenameToIRI("./") ;
+    
+    // The global resolver may be accessed by multiple threads
+    // but also some actions need consistency across more than one access
+    // so just sync'd access to  globalResolver is not enough, and we need
+    // a lock object.
     static private Object globalResolverLock = new Object() ;
-    private static IRIResolver globalResolver ; 
+    private static IRIResolver globalResolver ;
+    // Don't pass out - use the statics here.
     //public static IRIResolver get() { return globalResolver ; }
     
     /**
@@ -356,7 +362,9 @@ public abstract class IRIResolver
             if (baseS == null)
                 base = chooseBaseURI();
             else
-                base = globalResolver.resolveSilent(baseS) ;
+                synchronized(globalResolverLock) {
+                    base = globalResolver.resolveSilent(baseS) ;
+                }
         }
 
         public IRIResolverNormal(IRI baseIRI) {
