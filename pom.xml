@@ -56,10 +56,10 @@
     <module>jena-core</module>
     <module>jena-arq</module>
     <module>jena-tdb</module>
+    <module>jena-text</module>
     <module>jena-fuseki</module>
     <!--
     <module>jena-sdb</module>
-    <module>jena-larq</module>
     -->
     <!-- Convenience modules -->
     <module>apache-jena-libs</module>
