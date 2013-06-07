@@ -1,0 +1,46 @@
+ ## Example of a TDB dataset and text index
+
+@prefix :        <http://localhost/jena_example/#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix text:    <http://jena.apache.org/text#> .
+
+# TDB
+[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+
+# Text
+[] ja:loadClass "org.apache.jena.query.text.TextQuery" .
+text:TextDataset      rdfs:subClassOf   ja:RDFDataset .
+#text:TextIndexSolr    rdfs:subClassOf   text:TextIndex .
+text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
+
+## ---------------------------------------------------------------
+## This URI must be fixed - it's used to assemble the text dataset.
+
+:text_dataset rdf:type     text:TextDataset ;
+    text:dataset   <#dataset> ;
+    ##text:index   <#indexSolr> ;
+    text:index     <#indexLucene> ;
+    .
+
+<#dataset> rdf:type      tdb:DatasetTDB ;
+    tdb:location "--mem--" ;
+    tdb:unionDefaultGraph true ;
+    .
+
+<#indexLucene> a text:TextIndexLucene ;
+    text:directory "mem" ;
+    text:entityMap <#entMap> ;
+    .
+
+<#entMap> a text:EntityMap ;
+    text:entityField      "uri" ;
+    text:defaultField     "text" ; ## Must be defined in the text:maps
+    text:map (
+         # rdfs:label            
+         [ text:field "text" ; text:predicate rdfs:label ]
+         ) .
