@@ -1,0 +1,794 @@
+diff --git a/src/main/java/org/apache/jena/query/text/QueryPF.java b/src/main/java/org/apache/jena/query/text/QueryPF.java
+index 9f6533e..d5ad2ae 100644
+--- a/src/main/java/org/apache/jena/query/text/QueryPF.java
++++ b/src/main/java/org/apache/jena/query/text/QueryPF.java
+@@ -1,29 +1,34 @@
+ package org.apache.jena.query.text;
+ 
+-import java.util.List ;
+-import java.util.Map ;
+-
+-import org.apache.jena.atlas.iterator.Iter ;
+-import org.apache.jena.atlas.lib.InternalErrorException ;
+-import org.apache.jena.atlas.logging.Log ;
+-
+-import com.hp.hpl.jena.datatypes.RDFDatatype ;
+-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+-import com.hp.hpl.jena.graph.Node ;
+-import com.hp.hpl.jena.query.QueryBuildException ;
+-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+-import com.hp.hpl.jena.sparql.core.Var ;
+-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar ;
+-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice ;
+-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
+-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase ;
+-import com.hp.hpl.jena.sparql.util.IterLib ;
+-import com.hp.hpl.jena.sparql.util.NodeFactory ;
+-
+-/** property function that accesses a Solr server */ 
++import java.util.ArrayList;
++import java.util.Iterator;
++import java.util.List;
++import java.util.Map;
++
++import org.apache.jena.atlas.iterator.Iter;
++import org.apache.jena.atlas.logging.Log;
++
++import com.hp.hpl.jena.datatypes.RDFDatatype;
++import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
++import com.hp.hpl.jena.graph.Node;
++import com.hp.hpl.jena.query.QueryBuildException;
++import com.hp.hpl.jena.sparql.core.DatasetGraph;
++import com.hp.hpl.jena.sparql.core.Var;
++import com.hp.hpl.jena.sparql.engine.ExecutionContext;
++import com.hp.hpl.jena.sparql.engine.QueryIterator;
++import com.hp.hpl.jena.sparql.engine.binding.Binding;
++import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
++import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
++import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice;
++import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
++import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase;
++import com.hp.hpl.jena.sparql.util.IterLib;
++import com.hp.hpl.jena.sparql.util.NodeFactory;
++
++/**
++ *  property function that accesses a text index server 
++ *  
++ */ 
+ public class QueryPF extends PropertyFunctionBase
+ {
+     private TextIndex server = null ;  
+@@ -31,6 +36,20 @@ public class QueryPF extends PropertyFunctionBase
+     
+     public QueryPF() { } 
+ 
++    /**
++     * Construct the property function
++     * 
++     * The subject of the property function  may be either:
++     *     ?var              bound to a resource matching the search
++     *     ( ?var ?score? )
++     *     ( ?var ?score)   ?var is bound to a matching resource,
++     *                      ?score is bound to the score assigned to the match
++     *                    
++     * The object of the property may be either:
++     *     "literal"                   A solr/lucene search expression
++     *     ( prop? "literal" limit? )  optional ?prop is the property to search
++     *                                 optional limit is an integer limiting the number of results
++     */
+     @Override
+     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+     {
+@@ -39,8 +58,14 @@ public class QueryPF extends PropertyFunctionBase
+         DatasetGraph dsg = execCxt.getDataset() ;
+         server = chooseTextIndex(dsg) ;
+         
+-        if ( ! argSubject.isNode() )
+-            throw new QueryBuildException("Subject is not a single node: "+argSubject) ;
++        if ( argSubject.isList()) {
++        	List<Node> list = argSubject.getArgList();
++        	if (list.size() == 0) {
++        		throw new QueryBuildException(predicate + ": has empty subject list");
++        	} else if (list.size() > 2) {
++        		throw new QueryBuildException(predicate + ": subject list too long");
++        	}
++        }
+         
+         if ( argObject.isList() )
+         {
+@@ -48,7 +73,7 @@ public class QueryPF extends PropertyFunctionBase
+             if ( list.size() == 0 )
+                 throw new QueryBuildException("Zero-length argument list") ;
+ 
+-            if ( list.size() > 4 )
++            if ( list.size() > 3 )
+                 throw new QueryBuildException("Too many arguments in list : "+list) ;
+         }
+     }
+@@ -66,14 +91,16 @@ public class QueryPF extends PropertyFunctionBase
+         private final String queryString ;
+         private final int limit ;
+         private final float scoreLimit ;
++        private final Node scoreVar;
+ 
+-        public StrMatch(Node property, String queryString, int limit, float scoreLimit)
++        public StrMatch(Node property, String queryString, int limit, float scoreLimit, Node scoreVar)
+         {
+             super() ;
+             this.property = property ;
+             this.queryString = queryString ;
+             this.limit = limit ;
+             this.scoreLimit = scoreLimit ;
++            this.scoreVar = scoreVar;
+         }
+ 
+         public Node getProperty()           { return property ; }
+@@ -83,6 +110,8 @@ public class QueryPF extends PropertyFunctionBase
+         public int getLimit()               { return limit ; }
+ 
+         public float getScoreLimit()        { return scoreLimit ; }
++        
++        public Node getScoreVar()           { return scoreVar ; }
+     }
+     
+     private static TextIndex chooseTextIndex(DatasetGraph dsg)
+@@ -118,18 +147,31 @@ public class QueryPF extends PropertyFunctionBase
+             return IterLib.result(binding, execCxt) ;
+         }
+      
+-        DatasetGraph dsg = execCxt.getDataset() ;
+-        
+-        if ( ! argSubject.isNode() )
+-            throw new InternalErrorException("Subject is not a node (it was earlier!)") ;
+-            
+-        Node s = argSubject.getArg() ;
++ //       DatasetGraph dsg = execCxt.getDataset() ;
+         
++        Node s;
++        Node scoreVar = null;
++        if (argSubject.isNode() )
++        {
++        	s = argSubject.getArg() ;
++        } else {
++        	List<Node> list = argSubject.getArgList();
++        	if (list.size() == 0 || list.size() > 2) {
++        		throw new TextIndexException(predicate + ": change in subject list size");
++        	}
++        	s = list.get(0);
++        	if (list.size() == 2) {
++        		scoreVar = list.get(1);
++        		// this could have been picked up at query build time
++        		if (! scoreVar.isVariable())
++        			throw new TextIndexException(predicate + ": score variable is not a variable");
++        	}
++        }
+         if ( s.isLiteral() )
+             // Does not match
+             return IterLib.noResults(execCxt) ;
+         
+-        StrMatch match = objectToStruct(argObject) ;
++        StrMatch match = objectToStruct(scoreVar, argObject) ;
+ 
+         // ----
+         
+@@ -142,13 +184,18 @@ public class QueryPF extends PropertyFunctionBase
+         return qIter ;
+     }
+ 
+-    private QueryIterator variableSubject(Binding binding, Node s, StrMatch match, ExecutionContext execCxt )
++    private QueryIterator variableSubject(Binding binding, Node subject, StrMatch match, ExecutionContext execCxt )
+     {
+-        Var v = Var.alloc(s) ;
+-        List<Node> r = server.query(match.getQueryString(), match.getLimit()) ;
++        List<Var> vars = new ArrayList<Var>();
++        vars.add(Var.alloc(subject));
++        if (match.getScoreVar() != null)
++            vars.add(Var.alloc(match.getScoreVar()));
++        
++//        List<Node> r = server.query(match.getQueryString(), match.getLimit()) ;
++        List<TextIndex.NodeAndScore> r = server.queryWithScore(match.getQueryString(), match.getLimit());
+         // Make distinct.  Note interaction with limit is imperfect
+         r = Iter.iter(r).distinct().toList() ;
+-        QueryIterator qIter = new QueryIterExtendByVar(binding, v, r.iterator(), execCxt) ;
++        QueryIterator qIter = new QueryIterExtendByVars(binding, vars, new NodeAndScoreToListIterator(r.iterator()), execCxt) ;
+         return qIter ;
+     }
+ 
+@@ -169,9 +216,8 @@ public class QueryPF extends PropertyFunctionBase
+     }
+ 
+     /** Deconstruct the node or list object argument and make a StrMatch */ 
+-    private StrMatch objectToStruct(PropFuncArg argObject)
++    private StrMatch objectToStruct(Node scoreVar, PropFuncArg argObject)
+     {
+-        
+         EntityDefinition docDef = server.getDocDef()  ;
+         if ( argObject.isNode() )
+         {
+@@ -185,7 +231,7 @@ public class QueryPF extends PropertyFunctionBase
+             { System.err.println("Bad") ; }
+                 
+             String qs = o.getLiteralLexicalForm() ;
+-            return new StrMatch(docDef.getPrimaryPredicate(), qs, -1, 0) ; 
++            return new StrMatch(docDef.getPrimaryPredicate(), qs, -1, 0, scoreVar) ; 
+         }
+          
+         List<Node> list = argObject.getArgList() ;
+@@ -226,12 +272,101 @@ public class QueryPF extends PropertyFunctionBase
+             int v = NodeFactory.nodeToInt(x) ;
+             limit = ( v < 0 ) ? -1 : v ; 
+         }
+-
++        
+         String qs = queryString ;
+         if ( field != null )
+             qs = field+":"+qs ;
+         
+-        return new StrMatch(p, qs, limit, score) ;
++        return new StrMatch(p, qs, limit, score, scoreVar) ;
++    }
++    
++    //
++    // turn a NodeAndScoreIterator into an List<Node> iterator
++    //
++    private class NodeAndScoreToListIterator implements Iterator<List<Node>> {
++    	
++    	private Iterator<TextIndex.NodeAndScore> iter;
++    	
++    	NodeAndScoreToListIterator(Iterator<TextIndex.NodeAndScore> iter) {
++    		this.iter = iter;
++    	}
++
++		@Override
++		public boolean hasNext() {
++			return iter.hasNext();
++		}
++
++		@Override
++		public List<Node> next() {
++			List<Node> result = new ArrayList<Node>();
++			TextIndex.NodeAndScore ns = iter.next();
++			result.add(ns.getNode());
++			result.add(Node.createLiteral(Float.toString(ns.getScore()), XSDDatatype.XSDfloat));
++			return result;
++		}
++
++		@Override
++		public void remove() {
++			iter.remove();			
++		}   	
++    }
++    
++    /**
++     * Yield new bindings, with a fixed parent, with multiple variables from an iterator. 
++     */
++    
++    // this code is cloned from QueryIterExtendByVar (not singular Var)
++    // and generalized to handle a list of vars and nodes to bind.
++    // Not being familiar with the internals of ARQ, there may be an existing
++    // query iterator it would be better to use, but bwm didn't find it.
++    
++    private class QueryIterExtendByVars extends QueryIter
++    {
++        // Use QueryIterProcessBinding?
++        private Binding binding ;
++        private List<Var> vars ;
++        private Iterator<List<Node>> members ;
++        
++        QueryIterExtendByVars(Binding binding, List<Var> vars, Iterator<List<Node>> members, ExecutionContext execCxt)
++        {
++            super(execCxt) ;
++            this.binding = binding ;
++            this.vars = vars ;
++            this.members = members ;
++        }
++
++        @Override
++        protected boolean hasNextBinding()
++        {
++            return members.hasNext() ;
++        }
++
++        @Override
++        protected Binding moveToNextBinding()
++        {
++            List<Node> nodes = members.next() ;
++            
++            // silently ignore differences in the number of nodes and vars to bind them to
++            // bind as many vars as there is data
++            // ignore any nodes for which there are no variables
++         
++            Iterator<Node> nodeIter = nodes.iterator();
++            Iterator<Var> varIter = vars.iterator();
++            Binding b = binding;
++            for ( ; nodeIter.hasNext() && varIter.hasNext(); )
++            {
++                b = BindingFactory.binding(b, varIter.next(), nodeIter.next()) ;
++            }
++            return b ;
++        }
++
++        @Override
++        protected void closeIterator()
++        { }
++        
++        @Override
++        protected void requestCancel()
++        { }
+     }
+ }
+ 
+diff --git a/src/main/java/org/apache/jena/query/text/TextIndex.java b/src/main/java/org/apache/jena/query/text/TextIndex.java
+index 8806eb6..a7f995f 100644
+--- a/src/main/java/org/apache/jena/query/text/TextIndex.java
++++ b/src/main/java/org/apache/jena/query/text/TextIndex.java
+@@ -23,4 +23,24 @@ public interface TextIndex extends Closeable //, Transactional
+     public abstract List<Node> query(String qs) ;
+ 
+     public abstract EntityDefinition getDocDef() ;
++    
++    //
++    // methods which return score for each result
++    // At some point may refactor these to replace the methods without score
++    //
++    public abstract List<NodeAndScore> queryWithScore(String qs, int limit);
++    public abstract List<NodeAndScore> queryWithScore(String qs) ;
++    
++    public class NodeAndScore {
++    	private Node node;
++    	private float score;
++    	
++    	public NodeAndScore(Node node, float score) {
++    		this.node = node;
++    		this.score = score;
++    	}
++    	
++    	public Node getNode() { return node ; }
++    	public float getScore() { return score ; }
++    }
+ }
+diff --git a/src/main/java/org/apache/jena/query/text/TextIndexLucene.java b/src/main/java/org/apache/jena/query/text/TextIndexLucene.java
+index c29caf7..2ea1aa9 100644
+--- a/src/main/java/org/apache/jena/query/text/TextIndexLucene.java
++++ b/src/main/java/org/apache/jena/query/text/TextIndexLucene.java
+@@ -159,7 +159,7 @@ public class TextIndexLucene implements TextIndex
+ 
+ 
+     @Override
+-    public List<Node> query(String qs) { return query(qs, MAX_N) ; } 
++    public List<Node> query(String qs) { return query(qs, MAX_N) ; }
+     
+     @Override
+     public List<Node> query(String qs, int limit)
+@@ -195,7 +195,50 @@ public class TextIndexLucene implements TextIndex
+             }
+         }
+         return results ;
++    } 
++    
++    public List<NodeAndScore> queryWithScore(String qs) { return queryWithScore(qs, 0) ; }
++    
++    public List<NodeAndScore> queryWithScore(String qs, int limit) {
++        try {
++            // Upgrade at Java7 ... 
++            IndexReader indexReader = DirectoryReader.open(directory) ;
++            try { 
++            	return queryWithScore$(indexReader, qs, limit) ;
++           } finally { 
++        	   indexReader.close() ; 
++           }
++        } catch (ParseException | IOException ex) { 
++        	exception(ex) ; 
++        	return null ; 
++        } 
+     }
++    
++    public List<NodeAndScore> queryWithScore$(IndexReader indexReader , String qs, int limit) throws ParseException, IOException {
++	    IndexSearcher indexSearcher = new IndexSearcher(indexReader);
++	    QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer);
++	    Query query = queryParser.parse(qs);
++	    
++	    if ( limit <= 0 )
++	        limit = MAX_N ;
++	    ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
++	    
++	    List<NodeAndScore> results = new ArrayList<>() ;
++	    
++	    // Align and DRY with Solr.
++	    for ( ScoreDoc sd : sDocs )
++	    {
++	        Document doc = indexSearcher.doc(sd.doc) ;
++	        String[] values = doc.getValues(docDef.getEntityField()) ;
++	        float score = sd.score;
++	        for ( String v : values )
++	        {
++	            Node n = Node.createURI(v);
++	            results.add(new NodeAndScore(n, score)) ;
++	        }
++	    }
++	    return results ;
++    } 
+ 
+     
+     @Override
+diff --git a/src/main/java/org/apache/jena/query/text/TextIndexSolr.java b/src/main/java/org/apache/jena/query/text/TextIndexSolr.java
+index 5491eb5..b528d48 100644
+--- a/src/main/java/org/apache/jena/query/text/TextIndexSolr.java
++++ b/src/main/java/org/apache/jena/query/text/TextIndexSolr.java
+@@ -160,9 +160,35 @@ public class TextIndexSolr implements TextIndex
+         return results ; 
+     }
+     
++    @Override
++    public List<NodeAndScore> queryWithScore(String qs) { return queryWithScore(qs, 0) ; }
++    
++    @Override
++    public List<NodeAndScore> queryWithScore(String qs, int limit)
++    {
++        SolrDocumentList solrResults = solrQuery(qs, limit) ;
++        List<NodeAndScore> results = new ArrayList<>() ;
++
++        for ( SolrDocument sd : solrResults )
++        {
++            String uriStr = (String)sd.getFieldValue(docDef.getEntityField()) ;
++            float score = (float) sd.getFieldValue("score");
++            //log.info("Entity: "+uriStr) ;
++            results.add(new NodeAndScore(Node.createURI(uriStr), score)) ;
++        }
++
++        if ( limit > 0 && results.size() > limit )
++            results = results.subList(0, limit) ;
++        
++        return results ; 
++    }
++    
+     private SolrDocumentList solrQuery(String qs, int limit)
+     {
+         SolrQuery sq = new SolrQuery(qs) ;
++        // include score in results
++        sq.addField(docDef.getEntityField())
++          .addField("score");
+         try {
+             QueryResponse rsp = solrServer.query( sq ) ;
+             SolrDocumentList docs = rsp.getResults();
+diff --git a/src/test/java/org/apache/jena/query/text/AbstractTestDatasetWithTextIndex.java b/src/test/java/org/apache/jena/query/text/AbstractTestDatasetWithTextIndex.java
+index 0b851f3..b14b1c3 100644
+--- a/src/test/java/org/apache/jena/query/text/AbstractTestDatasetWithTextIndex.java
++++ b/src/test/java/org/apache/jena/query/text/AbstractTestDatasetWithTextIndex.java
+@@ -8,6 +8,7 @@ import java.io.Reader;
+ import java.io.StringReader;
+ import java.util.Arrays;
+ import java.util.HashSet;
++import java.util.Iterator;
+ import java.util.Set;
+ 
+ import org.apache.jena.atlas.lib.StrUtils;
+@@ -17,6 +18,7 @@ import com.hp.hpl.jena.query.Query;
+ import com.hp.hpl.jena.query.QueryExecution;
+ import com.hp.hpl.jena.query.QueryExecutionFactory;
+ import com.hp.hpl.jena.query.QueryFactory;
++import com.hp.hpl.jena.query.QuerySolution;
+ import com.hp.hpl.jena.query.ReadWrite;
+ import com.hp.hpl.jena.query.ResultSet;
+ import com.hp.hpl.jena.rdf.model.Model;
+@@ -43,6 +45,7 @@ public abstract class AbstractTestDatasetWithTextIndex {
+ 						);
+ 	
+ 	public void testOneSimpleResult() {
++		final String label = "testOneSimpleResults";
+ 		final String turtle = StrUtils.strjoinNL(
+ 				TURTLE_PROLOG,
+ 				"<" + RESOURCE_BASE + "testOneSimpleResult>",
+@@ -58,7 +61,7 @@ public abstract class AbstractTestDatasetWithTextIndex {
+ 				);
+ 		Set<String> expectedURIs = (new HashSet<String>());
+ 		expectedURIs.addAll( Arrays.asList((new String[] {"http://example.org/data/resource/testOneSimpleResult"})));
+-		doTestSearch(turtle, queryString, expectedURIs);
++		doTestSearch(label, turtle, queryString, expectedURIs);
+ 	}
+ 
+ 	public void testMultipleResults() {
+@@ -86,7 +89,7 @@ public abstract class AbstractTestDatasetWithTextIndex {
+ 			    "http://example.org/data/resource/" + label + "2"
+ 				}
+ 		)));
+-		doTestSearch(turtle, queryString, expectedURIs);
++		doTestSearch(label, turtle, queryString, expectedURIs);
+ 	}
+ 
+ 	public void testSearchCorrectField() {
+@@ -199,16 +202,49 @@ public abstract class AbstractTestDatasetWithTextIndex {
+ 		)));
+ 		doTestSearch("default field:", turtle, queryString, expectedURIs, 3 );
+ 	}
++
++
++	public void testReturnsScore() {
++		String label = "testReturnsScore";
++		final String turtle = StrUtils.strjoinNL(
++				TURTLE_PROLOG,
++				"<" + RESOURCE_BASE + label +"1>",
++				"  rdfs:label \"" + label + "1\"",
++				".",
++				"<" + RESOURCE_BASE + label + "2>",
++				"  rdfs:label \"" + label + "2\"",
++				"."
++				);
++		String queryString = StrUtils.strjoinNL(
++				QUERY_PROLOG,
++				"SELECT ?s ?score",
++				"WHERE {",
++				"    (?s ?score) text:query ( rdfs:label \"" + label + "?\" 10 ) .",
++				"}"
++				);
++		Set<String> expectedURIs = (new HashSet<String>());
++		expectedURIs.addAll( Arrays.asList((new String[]
++				{
++			    "http://example.org/data/resource/" + label + "1",
++			    "http://example.org/data/resource/" + label + "2"
++				}
++		)));
++		doTestSearch(label, turtle, queryString, expectedURIs, "score");
++	}
++	
++	protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs) {
++		doTestSearch(label, turtle, queryString, expectedEntityURIs, null);
++	}
+ 	
+-	protected void doTestSearch(String turtle, String queryString, Set<String> expectedEntityURIs) {
+-		doTestSearch("", turtle, queryString, expectedEntityURIs);
++	protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
++		doTestSearch(label, turtle, queryString, expectedEntityURIs, expectedNumResults, null);
+ 	}
+ 	
+-	private void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs) {
+-		doTestSearch(label, turtle, queryString, expectedEntityURIs, expectedEntityURIs.size());
++	protected void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, String scoreVarName) {
++		doTestSearch(label, turtle, queryString, expectedEntityURIs, expectedEntityURIs.size(), scoreVarName);
+ 	}
+ 	
+-	private void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
++	private void doTestSearch(String label, String turtle, String queryString, Set<String> expectedEntityURIs, int expectedNumResults, String scoreVarName) {
+ 		Model model = dataset.getDefaultModel();
+ 		Reader reader = new StringReader(turtle);
+ 		dataset.begin(ReadWrite.WRITE);
+@@ -222,9 +258,13 @@ public abstract class AbstractTestDatasetWithTextIndex {
+ 		    ResultSet results = qexec.execSelect() ;
+ 		    assertEquals(label, expectedNumResults > 0, results.hasNext());
+ 		    int count;
+-		    for (count=0; results.hasNext(); count++) {
+-		    	String entityURI = results.next().getResource("s").getURI();
++		    for (count=0; results.hasNext(); count++)
++		    {
++		    	QuerySolution soln = results.next();
++		    	String entityURI = soln.getResource("s").getURI();
+ 		        assertTrue(label, expectedEntityURIs.contains(entityURI));
++		        if (scoreVarName != null)
++		            assertTrue(label, soln.contains(scoreVarName));
+ 		    }
+ 		    assertEquals(label, expectedNumResults, count);
+ 		} finally { qexec.close() ; dataset.end() ; }		
+diff --git a/src/test/java/org/apache/jena/query/text/TestDatasetWithEmbeddedSolrTextIndex.java b/src/test/java/org/apache/jena/query/text/TestDatasetWithEmbeddedSolrTextIndex.java
+index 113785d..d5c4ccb 100644
+--- a/src/test/java/org/apache/jena/query/text/TestDatasetWithEmbeddedSolrTextIndex.java
++++ b/src/test/java/org/apache/jena/query/text/TestDatasetWithEmbeddedSolrTextIndex.java
+@@ -84,25 +84,17 @@ public class TestDatasetWithEmbeddedSolrTextIndex extends AbstractTestDatasetWit
+ 		deleteOldFiles();
+ 	}
+ 
+-	@Test public void testOneSimpleResult() {
+-		super.testOneSimpleResult();
+-	}
++	@Test public void testOneSimpleResult() 	{ super.testOneSimpleResult(); }
+ 
+-	@Test public void testMultipleResults() {
+-		super.testMultipleResults();
+-	}
++	@Test public void testMultipleResults() 	{ super.testMultipleResults(); }
+ 
+-	@Test public void testSearchCorrectField() {
+-		super.testSearchCorrectField();
+-	}
++	@Test public void testSearchCorrectField() 	{ super.testSearchCorrectField(); }
+ 
+-	@Test public void testSearchDefaultField() {
+-		super.testSearchDefaultField();
+-	}
++	@Test public void testSearchDefaultField() 	{ super.testSearchDefaultField();	}
+ 
+-	@Test public void testSearchLimitsResults() {
+-		super.testSearchLimitsResults(); 
+-	}
++	@Test public void testSearchLimitsResults()	{ super.testSearchLimitsResults(); }
++	
++	@Test public void testReturnsScore() 		{ super.testReturnsScore() ; }
+ 	
+ 	public static void deleteOldFiles() {
+ 		if (indexDir.exists()) emptyAndDeleteDirectory(indexDir);
+diff --git a/src/test/java/org/apache/jena/query/text/TestDatasetWithLuceneTextIndex.java b/src/test/java/org/apache/jena/query/text/TestDatasetWithLuceneTextIndex.java
+index c88343b..6abb19d 100644
+--- a/src/test/java/org/apache/jena/query/text/TestDatasetWithLuceneTextIndex.java
++++ b/src/test/java/org/apache/jena/query/text/TestDatasetWithLuceneTextIndex.java
+@@ -14,23 +14,16 @@ public class TestDatasetWithLuceneTextIndex extends AbstractTestDatasetWithLucen
+ 		deleteOldFiles();
+ 	}
+ 
+-	@Test public void testOneSimpleResult() {
+-		super.testOneSimpleResult();
+-	}
++	@Test public void testOneSimpleResult() 	{ super.testOneSimpleResult(); }
+ 
+-	@Test public void testMultipleResults() {
+-		super.testMultipleResults();
+-	}
++	@Test public void testMultipleResults() 	{ super.testMultipleResults(); }
+ 
+-	@Test public void testSearchCorrectField() {
+-		super.testSearchCorrectField();
+-	}
++	@Test public void testSearchCorrectField() 	{ super.testSearchCorrectField(); }
+ 
+-	@Test public void testSearchDefaultField() {
+-		super.testSearchDefaultField();
+-	}
++	@Test public void testSearchDefaultField()	{ super.testSearchDefaultField(); }
++	
++	@Test public void testSearchLimitsResults() { super.testSearchLimitsResults(); }
++	
++	@Test public void testReturnsScore() 		{ super.testReturnsScore() ; }
+ 
+-	@Test public void testSearchLimitsResults() {
+-		super.testSearchLimitsResults(); 
+-	}
+ }
+diff --git a/src/test/java/org/apache/jena/query/text/TestSearchBeforeWriteOnDatasetWithLuceneTextIndex.java b/src/test/java/org/apache/jena/query/text/TestSearchBeforeWriteOnDatasetWithLuceneTextIndex.java
+index f2288bf..d692bb7 100644
+--- a/src/test/java/org/apache/jena/query/text/TestSearchBeforeWriteOnDatasetWithLuceneTextIndex.java
++++ b/src/test/java/org/apache/jena/query/text/TestSearchBeforeWriteOnDatasetWithLuceneTextIndex.java
+@@ -18,6 +18,7 @@ public class TestSearchBeforeWriteOnDatasetWithLuceneTextIndex extends AbstractT
+ 	}
+ 	
+ 	@Test public void testNoResultsOnFirstCreateIndex(){
++		String label = "testNoResultsOnFirstCreateIndex";
+ 		String turtle = "";
+ 		String queryString = StrUtils.strjoinNL(
+ 				QUERY_PROLOG,
+@@ -26,6 +27,6 @@ public class TestSearchBeforeWriteOnDatasetWithLuceneTextIndex extends AbstractT
+ 				"    ?s text:query ( rdfs:label \"a* OR b* OR c* OR d* OR e* OR f* OR g* OR h* OR i* OR j* OR k* OR l* OR m* OR n* OR o* OR p* OR q* OR r* OR s* OR t* OR u* OR v* OR w* OR x* OR y* OR z*\" 10 ) .",
+ 				"}"
+ 				);
+-		doTestSearch(turtle, queryString, new HashSet<String>());
++		doTestSearch(label, turtle, queryString, new HashSet<String>());
+ 	}
+ }
+diff --git a/src/test/java/org/apache/jena/query/text/TestTextSearchQueryForms.java b/src/test/java/org/apache/jena/query/text/TestTextSearchQueryForms.java
+new file mode 100644
+index 0000000..a426588
+--- /dev/null
++++ b/src/test/java/org/apache/jena/query/text/TestTextSearchQueryForms.java
+@@ -0,0 +1,122 @@
++package org.apache.jena.query.text;
++
++import static org.junit.Assert.fail;
++
++import java.util.HashSet;
++import java.util.Set;
++
++import org.apache.jena.atlas.lib.StrUtils;
++import org.junit.AfterClass;
++import org.junit.BeforeClass;
++import org.junit.Test;
++
++public class TestTextSearchQueryForms extends AbstractTestDatasetWithLuceneTextIndex {
++	public static final String RESOURCE_BASE="http://example.org/testTextSearchQueryForms/resource/";
++	final String turtle = StrUtils.strjoinNL(
++			TURTLE_PROLOG,
++			"<" + RESOURCE_BASE + "testOneSimpleResult>",
++			"  rdfs:label \"bar foobar barfoo foo\"",
++			"."
++			);
++	
++	@BeforeClass public static void beforeClass() {
++		init();
++	}	
++	
++	@AfterClass public static void afterClass() {
++		deleteOldFiles();
++	}
++	
++	@Test public void testSubjecttListTooShort() {
++		final String label = "subjectListTooShort";
++		String queryString = StrUtils.strjoinNL(
++				QUERY_PROLOG,
++				"SELECT ?s",
++				"WHERE {",
++				"    () text:query \"foobar\" .",
++				"}"
++				);
++        testBadQuery(label, queryString);
++	}
++	
++	@Test public void testSubjectListTooLong() {
++		final String label = "subjectListTooLong";
++		String queryString = StrUtils.strjoinNL(
++				QUERY_PROLOG,
++				"SELECT ?s",
++				"WHERE {",
++				"    (?s ?score ?another) text:query \"foobar\" .",
++				"}"
++				);
++		testBadQuery(label, queryString);
++	}
++	
++	@Test public void testScoreIsNotAVariable() {
++		final String label = "scoreIsNotAVariable";
++		String queryString = StrUtils.strjoinNL(
++				QUERY_PROLOG,
++				"SELECT ?s",
++				"WHERE {",
++				"    (?s 1) text:query \"foobar\" .",
++				"}"
++				);
++		testBadQuery(label, queryString);
++	}
++	
++	@Test public void testSubjectIsALiteral() {
++		final String label = "testSubjectIsALiteral";
++		String queryString = StrUtils.strjoinNL(
++				QUERY_PROLOG,
++				"SELECT ?s",
++				"WHERE {",
++				"    \"foo\" text:query \"foobar\" .",
++				"}"
++				);
++		Set<String> expectedURIs = (new HashSet<String>());
++		doTestSearch(label, turtle, queryString, expectedURIs);
++	}
++		
++	@Test public void testObjectListTooShort() {
++		final String label = "objectListTooShort";
++		String queryString = StrUtils.strjoinNL(
++				QUERY_PROLOG,
++				"SELECT ?s",
++				"WHERE {",
++				"    ?s text:query ( ) .",
++				"}"
++				);
++		testBadQuery(label, queryString);
++	}
++	
++	@Test public void testObjectListTooLong() {
++		final String label = "objectListTooLong";
++		String queryString = StrUtils.strjoinNL(
++				QUERY_PROLOG,
++				"SELECT ?s",
++				"WHERE {",
++				"    ?s text:query (?a ?b ?c ?d ) .",
++				"}"
++				);
++		testBadQuery(label, queryString);
++	}
++	
++	@Test public void testNoQueryString() {
++		final String label = "noQueryString";
++		String queryString = StrUtils.strjoinNL(
++				QUERY_PROLOG,
++				"SELECT ?s",
++				"WHERE {",
++				"    ?s text:query (rdfs:label) .",
++				"}"
++				);
++		testBadQuery(label, queryString);
++	}
++	
++	private void testBadQuery(String label, String queryString) {
++		Set<String> expectedURIs = (new HashSet<String>());
++        try {
++		    doTestSearch(label, turtle, queryString, expectedURIs);
++		    fail("object list too long should have thrown exception");
++		} catch (Exception e) {}
++	}
++}
