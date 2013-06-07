@@ -92,7 +92,6 @@
       <artifactId>solr-solrj</artifactId>
       <groupId>org.apache.solr</groupId>
       <version>${ver.solr}</version>
-      <optional>true</optional>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
