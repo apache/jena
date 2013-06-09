@@ -18,10 +18,7 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.Set ;
+import java.util.* ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -42,9 +39,12 @@ public class OpVars
     @Deprecated
     public static Set<Var> patternVars(Op op) { return visibleVars(op) ; } 
     
+    // Choose the default collector - LinkedHashSet is predictable and keeps the "found" order   
+    private static Set<Var> collector() { return new LinkedHashSet<Var>() ; }
+    
     public static Set<Var> visibleVars(Op op)
     {
-        Set<Var> acc = new HashSet<Var>() ;
+        Set<Var> acc = collector() ;
         visibleVars(op, acc) ;
         return acc ; 
     }
@@ -58,7 +58,7 @@ public class OpVars
     // All mentioned variables regardless of scope/visibility.
     public static Collection<Var> mentionedVars(Op op)
     {
-        Set<Var> acc = new HashSet<Var>() ;
+        Set<Var> acc = collector() ;
         mentionedVars(op, acc) ;
         return acc ;
     }
@@ -72,7 +72,7 @@ public class OpVars
     
     public static Collection<Var> vars(BasicPattern pattern)
     {
-        Set<Var> acc = new HashSet<Var>() ;
+        Set<Var> acc = collector() ;
         vars(pattern, acc) ;
         return acc ;
     }
