@@ -274,7 +274,6 @@ See http://www.jcip.net and the Creative Commons Attribution License
 
 From Apache Lucene
 
-
 Some code in core/src/java/org/apache/lucene/util/UnicodeUtil.java was
 derived from unicode conversion examples available at
 http://www.unicode.org/Public/PROGRAMS/CVTUTF.  Here is the copyright
