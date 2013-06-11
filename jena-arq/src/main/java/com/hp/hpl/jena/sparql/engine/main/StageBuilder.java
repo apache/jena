@@ -22,7 +22,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDistinguishedVars ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriples ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /** The stage builder (there is only one) is a library that encapsulates
@@ -45,24 +45,24 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 public class StageBuilder
 {
-    public static QueryIterator execute(BasicPattern pattern, 
-                                        QueryIterator input, 
-                                        ExecutionContext execCxt)
-    {
-        if ( pattern.isEmpty() )
-            return input ;
-        
-        boolean hideBNodeVars = execCxt.getContext().isTrue(ARQ.hideNonDistiguishedVariables) ;
-        
-        StageGenerator gen = chooseStageGenerator(execCxt.getContext()) ;
-        QueryIterator qIter = gen.execute(pattern, input, execCxt) ;
-
-        // Remove non-distinguished variables here.
-        // Project out only named variables.
-        if ( hideBNodeVars )
-            qIter = new QueryIterDistinguishedVars(qIter, execCxt) ;
-        return qIter ;
-    }
+//    public static QueryIterator execute(BasicPattern pattern, 
+//                                        QueryIterator input, 
+//                                        ExecutionContext execCxt)
+//    {
+//        if ( pattern.isEmpty() )
+//            return input ;
+//        
+//        boolean hideBNodeVars = execCxt.getContext().isTrue(ARQ.hideNonDistiguishedVariables) ;
+//        
+//        StageGenerator gen = chooseStageGenerator(execCxt.getContext()) ;
+//        QueryIterator qIter = gen.execute(pattern, input, execCxt) ;
+//
+//        // Remove non-distinguished variables here.
+//        // Project out only named variables.
+//        if ( hideBNodeVars )
+//            qIter = new QueryIterDistinguishedVars(qIter, execCxt) ;
+//        return qIter ;
+//    }
     
     // -------- Initialize
     
@@ -76,6 +76,14 @@ public class StageBuilder
         }
     }
     
+    /** The plain StageGenerator, no reordring */
+    public static StageGenerator executeInline = new StageGenerator() {
+        @Override
+        public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+        {
+                return QueryIterBlockTriples.create(input, pattern, execCxt) ;
+        }} ;
+        
     // -------- Manage StageGenerator registration
     
     public static void setGenerator(Context context, StageGenerator builder)
@@ -100,11 +108,11 @@ public class StageBuilder
         return new StageGeneratorGeneric() ;
     }
     
-    private static StageGenerator chooseStageGenerator(Context context)
+    public static StageGenerator chooseStageGenerator(Context context)
     {
         StageGenerator gen = getGenerator(context) ;
         if ( gen == null )
-            gen = getGenerator() ;
+            gen = new StageGeneratorGeneric() ;
         return gen ; 
     }
 }
