@@ -56,14 +56,14 @@ public class StageGeneratorGeneric implements StageGenerator
         if ( graph instanceof GraphMem  )            // Jena in-memory graph
         {
             reorder = reorderBasicStats(graph) ;
-            executor = executeInline ; 
+            executor = StageBuilder.executeInline ; ; 
         }
         else
         {
             // When in doubt ... use the general pass-through to graph query handler matcher.
             // Includes union graphs, InfGraphs and other composite or unusual kinds.
             reorder = null ;
-            executor = executeInline ;
+            executor = StageBuilder.executeInline ;
         }
 
         return execute(pattern, reorder, executor, input, execCxt) ;
@@ -87,13 +87,6 @@ public class StageGeneratorGeneric implements StageGenerator
         return execution.execute(pattern, input, execCxt) ; 
     }
     
-    private static StageGenerator executeInline = new StageGenerator() {
-        @Override
-        public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-        {
-                return QueryIterBlockTriples.create(input, pattern, execCxt) ;
-        }} ;
-        
     // ---- Reorder policies
         
     // Fixed - Variable counting only. 

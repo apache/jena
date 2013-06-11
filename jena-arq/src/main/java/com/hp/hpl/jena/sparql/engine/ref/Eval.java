@@ -24,6 +24,7 @@ import java.util.List ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Table ;
@@ -42,9 +43,11 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDistinguishedVars ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
 
 // Spit out a few of the longer ops.
 public class Eval
@@ -152,7 +155,7 @@ public class Eval
             if ( g == null )
                 return new TableEmpty() ;
             ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
-            QueryIterator qIter = StageBuilder.execute(pattern, QueryIterRoot.create(cxt2), cxt2) ;
+            QueryIterator qIter = executeBGP(pattern, QueryIterRoot.create(cxt2), cxt2) ;
             return TableFactory.create(qIter) ;
         }
         else
@@ -173,7 +176,7 @@ public class Eval
                 // Eval the pattern, eval the variable, join.
                 // Pattern may be non-linear in the variable - do a pure execution.  
                 Table t1 = TableFactory.create(gVar, gn) ;
-                QueryIterator qIter = StageBuilder.execute(pattern, QueryIterRoot.create(cxt2), cxt2) ;
+                QueryIterator qIter = executeBGP(pattern, QueryIterRoot.create(cxt2), cxt2) ;
                 Table t2 = TableFactory.create(qIter) ;
                 Table t3 = evaluator.join(t1, t2) ;
                 concat.add(t3.iterator(cxt2)) ;
@@ -182,6 +185,22 @@ public class Eval
         }
     }
 
+    private static QueryIterator executeBGP(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt) {
+        if (pattern.isEmpty())
+            return input ;
+
+        boolean hideBNodeVars = execCxt.getContext().isTrue(ARQ.hideNonDistiguishedVariables) ;
+
+        StageGenerator gen = StageBuilder.executeInline ;
+        QueryIterator qIter = gen.execute(pattern, input, execCxt) ;
+
+        // Remove non-distinguished variables here.
+        // Project out only named variables.
+        if (hideBNodeVars)
+            qIter = new QueryIterDistinguishedVars(qIter, execCxt) ;
+        return qIter ;
+    }
+    
     // This is for an arbitrary quad collection.
     // Downside is that each quad is solved separtely, not in a BGP.
     // This breaks property functions with list arguments
