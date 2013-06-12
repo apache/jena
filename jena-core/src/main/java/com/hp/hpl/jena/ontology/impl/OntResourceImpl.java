@@ -830,7 +830,7 @@ public class OntResourceImpl
             return i.hasNext() ? i.next(): null;
         }
         finally {
-            i.close();
+            if ( i != null ) i.close();
         }
     }
 
@@ -918,7 +918,7 @@ public class OntResourceImpl
                 return false;
             }
             finally {
-                i.close();
+                if ( i != null ) i.close();
             }
         }
     }
