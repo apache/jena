@@ -159,16 +159,10 @@ public class OpExecutor
             return execute(subOp, input, cxt2) ;
         }
 
-        if (gn == Quad.unionGraph)
+        if ( Quad.isUnionGraph(gn) )
             Log.warn(this, "Not implemented yet: union default graph in general OpExecutor") ;
 
-        if (true)
-            return null ;
-
-        /*
-         * Bad if ( gn == Quad.tripleInQuad ) {}
-         */
-
+        // Bad news -- if ( Lib.equals(gn, Quad.tripleInQuad) ) {}
         return null ;
     }
 
