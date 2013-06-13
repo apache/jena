@@ -1,5 +1,10 @@
 ==== Fuseki
 
+== Fuseki 0.2.8
+
++ jena-text added to the server : Lucene/solr backed search:
+  http://jena.apache.org/documentation/query/text-query.html
+
 == Fuseki 0.2.7
 
 + JENA-422 : Improved service startup script (Linux)
