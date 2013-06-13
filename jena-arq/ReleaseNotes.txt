@@ -4,6 +4,7 @@ ChangeLog for ARQ
 
 ==== Jena 2.10.2
 
++ JENA-470 : Enable optimization of mixtures of disjunctions with equality and other expressions. 
 
 ==== Jena 2.10.1
 
