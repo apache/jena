@@ -23,6 +23,8 @@ import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
 
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDisjunction ;
@@ -87,15 +89,28 @@ public class TransformFilterDisjunction extends TransformCopy
 
         if ( exprList2.isEmpty() )
             return newOp ;
-        
-        // Failed.  These a was one or more expressions we coudln't handle.
+
+        // There should have been at least on disjunction.
+        if ( newOp == subOp ) {
+            Log.warn(this, "FilterDisjunction assumption failure: didn't find a disjunction after all") ;
+            return super.transform(opFilter, subOp) ;
+        }
+            
+
+        // Failed.  These a was one or more expressions we couldn't handle.
         // So the full pattern is going to be executed anyway. 
-        return super.transform(opFilter, subOp) ;
+        //return super.transform(super.transform(opFilter, subOp)) ;
         
-//        // Put the non-disjunctions outside the disjunction and the pattern rewrite. 
-//        Op opNew = OpFilter.filter(exprList2, subOp) ;
-//        return opNew ;
-        //return super.transform((OpFilter)opNew, subOp) ;
+        
+        // Put the non-disjunctions outside the disjunction and the pattern rewrite. 
+        Op opOther = OpFilter.filter(exprList2, newOp) ;
+        if ( opOther instanceof OpFilter) {
+            return opOther ;
+        }
+            
+        // opOther is not a filter any more - should not happen but to isolate from future changes ...
+        Log.warn(this, "FilterDisjunction assumption failure: not a filter after processing disjunction/other mix") ;
+        return super.transform(opFilter, subOp) ;
     }
     
     private boolean isDisjunction(Expr expr)
