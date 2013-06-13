@@ -232,7 +232,8 @@ public class UpdateWriter implements Closeable
     
     public static void output(UpdateRequest request, IndentedWriter out)
     {
-        output(request, out, null);
+        SerializationContext sCxt = new SerializationContext(request.getPrefixMapping()) ; 
+        output(request, out, sCxt);
     }
     
     public static void output(UpdateRequest request, IndentedWriter out, SerializationContext sCxt)
