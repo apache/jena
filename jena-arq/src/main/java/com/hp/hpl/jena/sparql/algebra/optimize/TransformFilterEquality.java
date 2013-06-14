@@ -40,7 +40,7 @@ import com.hp.hpl.jena.sparql.expr.* ;
 public class TransformFilterEquality extends TransformCopy
 {
     // The approach taken for { OPTIONAL{} OPTIONAL{} } is more general ... and better?
-    // Still need to be careful of double-nested OPTIONALS as intermedates of a different
+    // Still need to be careful of double-nested OPTIONALS as intermediates of a different
     // value can block overall results so don't mask immediately.
     public TransformFilterEquality()
     { }
@@ -69,7 +69,7 @@ public class TransformFilterEquality extends TransformCopy
         Op op = subOp ;
         
         // Special case : deduce that the filter will always "eval unbound"
-        // hence elimate all rows.  Return the empty table. 
+        // hence eliminate all rows.  Return the empty table. 
         
         if ( testSpecialCaseUnused(subOp, equalities, remaining))
             return OpTable.empty() ;
