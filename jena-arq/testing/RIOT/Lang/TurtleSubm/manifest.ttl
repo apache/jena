@@ -26,7 +26,9 @@
     rdfs:comment "Turtle test cases - from the Turtle submission then cleaned up" ;
     mf:entries
     (
-<#testeval00>
+## Omit because the results depend on the base URI.
+## The substance of these tests is checked in the W3C standard test suite.
+## <#testeval00>
 <#testeval01>
 <#testeval02>
 <#testeval03>
@@ -56,11 +58,14 @@
 <#testeval27>
 <#testeval28>
 # <#testeval29>
-<#testeval30>
+
+## Omit because the results depend on the base URI.
+## <#testeval30>
 
 <#testeval-misc1>
 <#testeval-misc2>
-<#testeval-misc3>
+## Omit because the results depend on the base URI.
+## <#testeval-misc3>
 
 <#testsynbad00>
 <#testsynbad01>

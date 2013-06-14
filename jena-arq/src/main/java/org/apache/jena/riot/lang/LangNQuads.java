@@ -83,8 +83,9 @@ public class LangNQuads extends LangNTuple<Quad>
         if ( xToken.getType() != TokenType.DOT )
         {
             // Allow bNodes for graph names.
-            //checkIRIOrBNode(xToken) ;
-            checkIRI(xToken) ;
+            checkIRIOrBNode(xToken) ;
+            // Allow only IRIs
+            //checkIRI(xToken) ;
             c = tokenAsNode(xToken) ;
             xToken = nextToken() ;
             currentGraph = c ;

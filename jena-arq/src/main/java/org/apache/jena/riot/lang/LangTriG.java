@@ -151,7 +151,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         // It is not in N3 and SPARQL.
         
         // No trailing DOT is allowed by strict TriG.
-        if ( false /*strict*/ )
+        if ( profile.isStrictMode() )
         {
             expect("Triples not terminated by DOT", DOT) ;
             return ;

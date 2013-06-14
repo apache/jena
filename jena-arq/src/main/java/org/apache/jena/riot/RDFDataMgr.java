@@ -432,7 +432,7 @@ public class RDFDataMgr
      */
     public static void read(DatasetGraph dataset, String uri)
     {
-        read(dataset, uri, null, null) ;
+        read(dataset, uri, null) ;
     }
 
     /** Read quads or triples into a Dataset from the given location, with hint of language.
@@ -456,6 +456,31 @@ public class RDFDataMgr
     {
         read(dataset, uri, hintLang, null) ;
     }
+
+    /** Read quads or triples into a Dataset from the given location, with hint of language.
+     * @see #read(Dataset, String, String, Lang, Context) 
+     * @param dataset   Destination
+     * @param uri       URI to read from (includes file: and a plain file name).
+     * @param base      Base URI (defaults to uri).
+     * @param hintLang  Language syntax
+     */
+    public static void read(Dataset dataset, String uri, String base, Lang hintLang)
+    {
+        read(dataset.asDatasetGraph(), uri, base, hintLang) ;
+    }
+
+    /** Read quads or triples into a Dataset from the given location, with hint of language.
+     * @see #read(DatasetGraph, String, String, Lang, Context) 
+     * @param dataset   Destination
+     * @param uri       URI to read from (includes file: and a plain file name).
+     * @param base      Base URI (defaults to uri).
+     * @param hintLang  Language syntax
+     */
+    public static void read(DatasetGraph dataset, String uri, String base, Lang hintLang)
+    {
+        read(dataset, uri, base, hintLang, null) ;
+    }
+
 
     /** Read quads or triples into a Dataset from the given location. 
      * @see #read(Dataset, String, String, Lang, Context) 
@@ -483,6 +508,7 @@ public class RDFDataMgr
      * @see #read(Dataset, String, String, Lang, Context) 
      * @param dataset   Destination
      * @param uri       URI to read from (includes file: and a plain file name).
+     * @param base      Base URI (defaults to uri).
      * @param hintLang  Language syntax
 	 * @param context   Context for the reader
 	 * @throws RiotNotFoundException if the location is not found - the dataset is unchanged.
@@ -498,6 +524,7 @@ public class RDFDataMgr
      * @see #read(Dataset, String, String, Lang, Context) 
      * @param dataset   Destination
      * @param uri       URI to read from (includes file: and a plain file name).
+     * @param base      Base URI (defaults to uri).
      * @param hintLang  Language syntax
 	 * @param context   Context for the reader
 	 * @throws RiotNotFoundException if the location is not found - the dataset is unchanged.

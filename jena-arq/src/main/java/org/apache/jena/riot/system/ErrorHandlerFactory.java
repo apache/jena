@@ -31,6 +31,9 @@ public class ErrorHandlerFactory
     /** Standard error handler - logs to stdLogger */
     static public final ErrorHandler errorHandlerStd          = errorHandlerStd(stdLogger) ;
 
+    /** Error handler (no wanrings) - logs to stdLogger */
+    static public final ErrorHandler errorHandlerNoWarnings   = errorHandlerNoWarnings(stdLogger) ;
+
     /** Strict error handler - logs to stdLogger - exceptions for warnings */
     static public final ErrorHandler errorHandlerStrict       = errorHandlerStrict(stdLogger) ;
     
@@ -43,11 +46,12 @@ public class ErrorHandlerFactory
     /** Silent, strict error handler */
     static public final ErrorHandler errorHandlerStrictNoLogging    = errorHandlerStrictSilent() ;
 
-    public static ErrorHandler errorHandlerStrictSilent()       { return new ErrorHandlerStrict(null) ; }
-    public static ErrorHandler errorHandlerStrict(Logger log)   { return new ErrorHandlerStrict(log) ; }
-    public static ErrorHandler errorHandlerStd(Logger log)      { return new ErrorHandlerStd(log) ; }
-    public static ErrorHandler errorHandlerWarning(Logger log)  { return new ErrorHandlerWarning(log) ; }
-    public static ErrorHandler errorHandlerSimple()             { return new ErrorHandlerSimple() ; }
+    public static ErrorHandler errorHandlerStrictSilent()           { return new ErrorHandlerStrict(null) ; }
+    public static ErrorHandler errorHandlerStrict(Logger log)       { return new ErrorHandlerStrict(log) ; }
+    public static ErrorHandler errorHandlerStd(Logger log)          { return new ErrorHandlerStd(log) ; }
+    public static ErrorHandler errorHandlerNoWarnings(Logger log)   { return new ErrorHandlerNoWarnings(log) ; }
+    public static ErrorHandler errorHandlerWarning(Logger log)      { return new ErrorHandlerWarning(log) ; }
+    public static ErrorHandler errorHandlerSimple()                 { return new ErrorHandlerSimple() ; }
     
     private static ErrorHandler defaultErrorHandler = errorHandlerStd ;
     /** Get the current default error handler */ 
@@ -133,6 +137,36 @@ public class ErrorHandlerFactory
         }
     }
     
+    /** An error handler that logs message then throws exceptions for errors but not warnings */ 
+    private static class ErrorHandlerNoWarnings extends ErrorLogger implements ErrorHandler
+    {
+        public ErrorHandlerNoWarnings(Logger log)
+        {
+            super(log) ;
+        }
+        
+        /** report a warning */
+        @Override
+        public void warning(String message, long line, long col)
+        { } //logWarning(message, line, col) ;
+        
+        /** report an error */
+        @Override
+        public void error(String message, long line, long col)
+        { 
+            logError(message, line, col) ;
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+
+        /** report a fatal error - does not return */
+        @Override
+        public void fatal(String message, long line, long col)
+        {
+            logFatal(message, line, col) ;
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+    }
+
     /** An error handler that logs message for errors and warnings and throw exceptions on either */ 
     private static class ErrorHandlerStrict extends ErrorLogger implements ErrorHandler
     {
