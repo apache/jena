@@ -39,10 +39,13 @@ public abstract class LangTestCase extends EarlTestCase
     @Override
     final public void setUp()
     {        
-        //BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerStrictNoLogging) ;
+        // The W3C Turtle and TriG test suites contain IRIs that generate warnings.
+        // They are bad NFC for the version of UTF-8 that Java6 understands.
+        BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerNoWarnings) ;
+
         // If the test suite is sloppy, with IRIs that are not good practice, you may need
         // to run with warnings as not-errors ....
-        BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerStd) ;
+        //BaseTest.setTestLogging(ErrorHandlerFactory.errorHandlerStd) ;
         sysRIOT_strictMode = SysRIOT.strictMode ;
         sysRIOT_strictXSDLexicialForms = SysRIOT.StrictXSDLexicialForms ;
         

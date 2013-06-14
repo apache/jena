@@ -7,12 +7,12 @@
 	rdfs:label "RDF Language tests" ;
 	mf:include (
         <N-Triples/manifest.ttl>
-#        <N-Quads/manifest.ttl>
+        <N-Quads/manifest.ttl>
 
-        <Turtle/manifest.ttl>
+        <TurtleStd/manifest.ttl>
         <Turtle2/manifest.ttl>      ## Long tests
         <TurtleSubm/manifest.ttl>
 
         <RDF-JSON/manifest.ttl>
-#        <TriG/manifest.ttl>
+        <TriG/manifest.ttl>
 	).

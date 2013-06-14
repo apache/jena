@@ -1,3 +1,0 @@
-# @base without URI.
-BASE <http://example/> .
-<s> <p> <o> .

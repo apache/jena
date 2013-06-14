@@ -131,29 +131,6 @@ public class TestItem
 
     public String getResultFile() { return resultFile ; }
     
-//    /** Load a model that is the results - need not be a result set */ 
-//    public Model getResultModel()
-//    {
-//        if ( resultFile == null )
-//            return null ;
-//        Model model = GraphFactory.makeJenaDefaultModel() ;
-//        
-//        ResultSetFormat format = ResultSetFormat.guessSyntax(resultFile) ;
-//        
-//        if ( ! format.isRDFGraphSyntax() )
-//            return null ;
-//        
-//        // Like ResultSetFactory.loadAsModel(filename) except we have control of the model type.
-//        try { 
-//            ResultSetFactory.loadAsModel(model, resultFile) ;
-//        } catch (RuntimeException ex)
-//        {
-//            System.err.println("Failed to read results: "+resultFile) ;
-//            ex.printStackTrace(System.err) ;
-//        }
-//        return model ; 
-//    }
-    
     /** Load results as a SPARQLResult.  If the results are a model, 
      * no conversion to a result set is attempted here.  
      */
