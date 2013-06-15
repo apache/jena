@@ -1,4 +1,0 @@
-<http://example/x> <http://example/p> "123"^^<http://www.w3.org/2001/XMLSchema#integer> .
-<http://example/x> <http://example/p> "456"^^<http://www.w3.org/2001/XMLSchema#integer> <http://example/g> .
-<http://example/x> <http://example/p> "789"^^<http://www.w3.org/2001/XMLSchema#integer> .
-<http://example/x> <http://example/p> "abc" <http://example/g> .
