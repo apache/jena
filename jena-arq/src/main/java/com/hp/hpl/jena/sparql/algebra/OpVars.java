@@ -18,12 +18,14 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.* ;
+import java.util.Collection ;
+import java.util.Iterator ;
+import java.util.LinkedHashSet ;
+import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.SortCondition ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
@@ -51,7 +53,7 @@ public class OpVars
     
     public static void visibleVars(Op op, Set<Var> acc)
     {
-        OpVarsPattern visitor = new OpVarsPattern(acc) ;
+        OpVarsPattern visitor = new OpVarsPattern(acc, true) ;
         OpWalker.walk(new WalkerVisitorVisible(visitor, acc), op) ;
     }
 
@@ -66,7 +68,7 @@ public class OpVars
     // All mentioned variables regardless of scope/visibility.
     public static void mentionedVars(Op op, Set<Var> acc)
     {
-        OpVarsQuery visitor = new OpVarsQuery(acc) ;
+        OpVarsMentioned visitor = new OpVarsMentioned(acc) ;
         OpWalker.walk(op, visitor) ;
     }
     
@@ -140,8 +142,12 @@ public class OpVars
     {
         // The possibly-set-vars
         protected Set<Var> acc ;
+        final boolean visibleOnly ;
 
-        OpVarsPattern(Set<Var> acc) { this.acc = acc ; }
+        OpVarsPattern(Set<Var> acc, boolean visibleOnly) {
+            this.acc = acc ;
+            this.visibleOnly = visibleOnly ;
+        }
 
         @Override
         public void visit(OpBGP opBGP)
@@ -193,26 +199,24 @@ public class OpVars
         @Override
         public void visit(OpProject opProject) 
         {
-            // The walker should have handled this. 
-            throw new ARQInternalErrorException() ;
-            // Code to do it without walker support ...  
-//            // Seems a tad wasteful to do all that work then throw it away.
-//            acc.clear() ;
-//            acc.addAll(opProject.getVars()) ;
+            // The walker (WalerVisitorVisible) handles this
+            // for visible variables, not mentioned variable colelcting.
+            // The visibleOnly/clear is simply to be as general as possible. 
+            if ( visibleOnly )
+                acc.clear() ;
+            acc.addAll(opProject.getVars()) ;
         }
         
         @Override
         public void visit(OpAssign opAssign)
         {
             acc.addAll(opAssign.getVarExprList().getVars()) ;
-            //opAssign.getSubOp().visit(this) ;
         }
         
         @Override
         public void visit(OpExtend opExtend)
         {
             acc.addAll(opExtend.getVarExprList().getVars()) ;
-            //opAssign.getSubOp().visit(this) ;
         }
         
         @Override
@@ -241,9 +245,9 @@ public class OpVars
 
     }
     
-    private static class OpVarsQuery extends OpVarsPattern
+    private static class OpVarsMentioned extends OpVarsPattern
     {
-        OpVarsQuery(Set<Var> acc) { super(acc) ; }
+        OpVarsMentioned(Set<Var> acc) { super(acc, false) ; }
 
         @Override
         public void visit(OpFilter opFilter)
