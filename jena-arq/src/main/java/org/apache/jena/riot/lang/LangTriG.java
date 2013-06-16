@@ -148,24 +148,22 @@ public class LangTriG extends LangTurtleBase<Quad>
     protected void expectEndOfTriples()
     {
         // The DOT is required by Turtle (strictly).
-        // It is not in N3 and SPARQL.
+        // It is not in N3 and SPARQL or TriG
         
-        // No trailing DOT is allowed by strict TriG.
-        if ( profile.isStrictMode() )
-        {
-            expect("Triples not terminated by DOT", DOT) ;
-            return ;
-        }
+//        // To make trailing DOT illegal in strict TriG.
+//        if ( profile.isStrictMode() ) {
+//            expect("Triples not terminated by DOT", DOT) ;
+//            return ;
+//        }
         
-        if ( lookingAt(DOT) )
-        {
+        if ( lookingAt(DOT) ) {
             nextToken() ;
             return ;
         }
         
         // Loose - DOT optional.
         if ( lookingAt(RBRACE) )
-            // Don't consume the RBRACE
+            // Don't consume the RBRACE - used to break the loop of triples blocks.
             return ;
         exception(peekToken(), "Triples not terminated properly: expected '.', '}' or EOF: got %s", peekToken()) ;
     }
