@@ -18,17 +18,12 @@
 
 package org.apache.jena.riot.langsuite;
 
-import java.util.List ;
-
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.common.IsoMatcher ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -110,38 +105,32 @@ public class UnitTestEval extends LangTestCase
             throw ex ; }
     }
 
-    // Imperfect.
     private boolean isomorphic(DatasetGraph dsg1, DatasetGraph dsg2) {
-        boolean b1 = isomorphicX(dsg1, dsg2) ;
-        boolean b2 = IsoMatcher.isomorphic(dsg1, dsg2) ;
-        if ( b1 != b2 )
-             System.out.println("Unequal isomorphisms") ;
-        return b2 ;
+        return IsoMatcher.isomorphic(dsg1, dsg2) ;
     }
-        
-    private boolean isomorphicX(DatasetGraph dsg1, DatasetGraph dsg2) {
-        {
-            Graph g1 = dsg1.getDefaultGraph() ;
-            Graph g2 = dsg2.getDefaultGraph() ;
-            boolean b = g1.isIsomorphicWith(g2) ;
-            if ( !b ) return false ;
-        }
-        List<Node> names1 = Iter.toList(dsg1.listGraphNodes()) ;
-        List<Node> names2 = Iter.toList(dsg2.listGraphNodes()) ;
-        if ( names1.size() != names2.size() )
-            return false ;
-        
-        for ( Node gn : names1 ) {
-            Graph g1 = dsg1.getGraph(gn) ;
-            Graph g2 = dsg2.getGraph(gn) ;
-            if ( g1 == null || g2 == null )
-                return false ;
-            boolean b = g1.isIsomorphicWith(g2) ;
-            if ( !b ) return false ;
-        }
-        return true ;
-    }
-    
+
+//    private boolean isomorphicX(DatasetGraph dsg1, DatasetGraph dsg2) {
+//        {
+//            Graph g1 = dsg1.getDefaultGraph() ;
+//            Graph g2 = dsg2.getDefaultGraph() ;
+//            boolean b = g1.isIsomorphicWith(g2) ;
+//            if ( !b ) return false ;
+//        }
+//        List<Node> names1 = Iter.toList(dsg1.listGraphNodes()) ;
+//        List<Node> names2 = Iter.toList(dsg2.listGraphNodes()) ;
+//        if ( names1.size() != names2.size() )
+//            return false ;
+//        
+//        for ( Node gn : names1 ) {
+//            Graph g1 = dsg1.getGraph(gn) ;
+//            Graph g2 = dsg2.getGraph(gn) ;
+//            if ( g1 == null || g2 == null )
+//                return false ;
+//            boolean b = g1.isIsomorphicWith(g2) ;
+//            if ( !b ) return false ;
+//        }
+//        return true ;
+//    }
     
     // Triples test.
     private void run3() {     
