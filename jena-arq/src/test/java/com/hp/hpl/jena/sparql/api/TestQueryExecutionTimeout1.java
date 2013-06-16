@@ -66,7 +66,7 @@ public class TestQueryExecutionTimeout1 extends BaseTest
         "PREFIX f:       <http://example/ns#>\n"+
         "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>\n" ;
 
-    // Numbers all a bit iffy aand can result in test failures
+    // Numbers all a bit iffy and can result in test failures
     // on a heavily loaded CI system.
     // But we don't want testing to be to slow when used in general
     // development.  Could split into development and integration
@@ -79,7 +79,7 @@ public class TestQueryExecutionTimeout1 extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
         qExec.setTimeout(50, TimeUnit.MILLISECONDS) ;
         ResultSet rs = qExec.execSelect() ;
-        sleep(100) ;
+        sleep(120) ;
         exceptionExpected(rs) ; 
     }
 
