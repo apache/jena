@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.junit.Ignore;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.Query ;
