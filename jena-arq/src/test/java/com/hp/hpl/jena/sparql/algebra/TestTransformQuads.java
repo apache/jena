@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.junit.Ignore;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.Query ;
@@ -112,6 +113,11 @@ public class TestTransformQuads extends BaseTest
                                          "   (quadpattern (quad ?g1 ?s1 ?p ?o1)))",
                                          "  (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?s ?p ?o)))"
                                          ) ; }
+    
+    // Regression in toQuadForm() - currently disable as the test fails with an ARQInternalErrorException
+    @Test public void quads33() { test ( "{ GRAPH ?g { { SELECT ?x WHERE { ?x ?p ?g } } } }",
+                                          "(project (?x)",
+                                          "  (quadpattern (quad ?g ?x ?/p ?/g)))") ; }
     
     private static void test(String patternString, String... strExpected)
     {
