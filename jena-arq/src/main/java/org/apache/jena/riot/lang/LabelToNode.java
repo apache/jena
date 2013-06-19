@@ -41,7 +41,8 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
      */
     public static LabelToNode createScopeByDocumentHash()
     { return new LabelToNode(new AllocScopePolicy(), nodeAllocatorHash()) ; }
-    
+
+    /** The policy upto jena 2.10.0 - problems at very large scale */
     public static LabelToNode createScopeByDocumentOld()
     { return new LabelToNode(new SingleScopePolicy(), nodeAllocatorTraditional()) ; }
 
