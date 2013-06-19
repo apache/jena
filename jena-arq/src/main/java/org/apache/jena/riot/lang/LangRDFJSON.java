@@ -412,7 +412,7 @@ public class LangRDFJSON extends LangBase
 				}
 				else
 				{
-					obj = profile.createPlainLiteral(value.getImage(), value.getLine(), value.getColumn()) ;
+					obj = profile.createStringLiteral(value.getImage(), value.getLine(), value.getColumn()) ;
 				}
 			}
 			else

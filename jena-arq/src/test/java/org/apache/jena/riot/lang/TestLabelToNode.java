@@ -45,10 +45,15 @@ public class TestLabelToNode extends BaseTest
             @Override public LabelToNode create() { return SyntaxLabels.createLabelToNode() ; }
             @Override public String toString() { return "SyntaxLabels.createLabelToNode" ; }
         } ;
+        
+        LabelToNodeFactory fScopeDocumentHash = new LabelToNodeFactory() {
+            @Override public LabelToNode create() { return LabelToNode.createScopeByDocumentHash() ; }
+            @Override public String toString() { return "ScopeByDocumentHash" ; }
+        } ;
 
         LabelToNodeFactory fScopeByDocument = new LabelToNodeFactory() {
-                @Override public LabelToNode create() { return LabelToNode.createScopeByDocument() ; }
-                @Override public String toString() { return "ScopeByDocument" ; }
+                @Override public LabelToNode create() { return LabelToNode.createScopeByDocumentOld() ; }
+                @Override public String toString() { return "ScopeByDocumentOld" ; }
         } ;
         LabelToNodeFactory fScopeByGraph = new LabelToNodeFactory() {
             @Override public LabelToNode create() { return LabelToNode.createScopeByGraph() ; }
@@ -67,19 +72,14 @@ public class TestLabelToNode extends BaseTest
             @Override public String toString() { return "Incremental" ; }
         } ;
 
-        LabelToNodeFactory fScopeDocumentHash = new LabelToNodeFactory() {
-            @Override public LabelToNode create() { return LabelToNode.createScopeByDocumentHash() ; }
-            @Override public String toString() { return "ScopeByDocumentHash" ; }
-        } ;
-
         // (1) Factory, whether DocScoped, (2) whether unique in a document (or graph) (3) whether unique per run 
         x.add(new Object[]{fSyntaxLabels,       true, true}) ;
+        x.add(new Object[]{fScopeDocumentHash,  true, true}) ;
         x.add(new Object[]{fScopeByDocument,    true, true}) ;
         x.add(new Object[]{fScopeByGraph,       false, true}) ;
         x.add(new Object[]{fUseLabelAsGiven,    true, false}) ;
         x.add(new Object[]{fUseLabelEncoded,    true, false}) ;
-        x.add(new Object[]{fIncremental,        true, true}) ;
-        x.add(new Object[]{fScopeDocumentHash,  true, true}) ;
+        x.add(new Object[]{fIncremental,        true, false}) ;
         return x ; 
     }
 
@@ -120,7 +120,8 @@ public class TestLabelToNode extends BaseTest
         Node n2 = mapper2.create() ;
         assertNotNull(n1) ;
         assertNotNull(n2) ;
-        assertNotEquals(n1, n2) ;
+        if ( unique )
+            assertNotEquals(n1, n2) ;
     }
     
     @Test public void label2node_Label1()
@@ -208,8 +209,12 @@ public class TestLabelToNode extends BaseTest
         Node n2 = mapper.get(null, "label1") ;
         assertNotNull(n1) ;
         assertNotNull(n2) ;
-        if ( unique )
+        if ( unique ) {
+            if ( n1.equals(n2) )
+                System.err.println("equals") ;
+            
             assertNotEquals(n1,n2) ;
+        }
         else
             assertEquals(n1,n2) ;
     }

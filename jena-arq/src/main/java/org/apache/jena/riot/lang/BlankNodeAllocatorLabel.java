@@ -18,42 +18,42 @@
 
 package org.apache.jena.riot.lang;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.concurrent.atomic.AtomicLong ;
+
+import org.apache.jena.riot.out.NodeToLabel ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
 
-/** Allocate blank ndoes according to the traditional policy (up to jena 2.10.0)
- *  This allocator has arbitrary sized state. 
- *  Create a fresh one for each parser run.
+/** Allocate blank nodes according to the label given.
+ *  The reverse operation is {@link NodeToLabel#createBNodeByLabelAsGiven()}
+ *  but it is unsafe in general.
+ *  
+ *  Use {@linkplain BlankNodeAllocatorLabelEncoded} and {@linkplain NodeToLabel#createBNodeByLabelEncoded()}
+ *  for round-tripping output-input.
  */
 
-public class BlankNodeAllocatorTraditional implements BlankNodeAllocator
+public class BlankNodeAllocatorLabel implements BlankNodeAllocator
 {
-    Map<String, Node> map = new HashMap<String, Node>() ;
+    private AtomicLong counter = new AtomicLong(0) ;
     
-    public BlankNodeAllocatorTraditional()  {}
+    public BlankNodeAllocatorLabel()  {}
 
     @Override
-    public void reset()         { map.clear() ; }
+    public void reset()         { counter = new AtomicLong(0) ; }
 
     @Override
-    public Node alloc(String label)
-    {
-        Node b = map.get(label) ;
-        if ( b == null )
-        {
-            b = create() ;
-            map.put(label, b) ;
-        }
-        return b ;
+    public Node alloc(String label) { return create(label) ; }
+    
+    @Override
+    public Node create() {
+        long x = counter.getAndIncrement() ;
+        Node n = create("@" + x) ;
+        return n ;
     }
     
-    
-    @Override
-    public Node create()
-    {
-        return NodeFactory.createAnon() ;
+    private Node create(String label) {
+        return NodeFactory.createAnon(new AnonId(label)) ;
     }
 }

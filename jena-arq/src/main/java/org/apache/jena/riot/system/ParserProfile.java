@@ -33,13 +33,28 @@ public interface ParserProfile
     public String resolveIRI(String uriStr, long line, long col) ;
     public IRI makeIRI(String uriStr, long line, long col) ;
     
+    /** Create a triple */
     public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) ;
-    public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) ;    
+
+    /** Create a Quad */
+    public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) ;
+    
+    /** Create a URI Node */
     public Node createURI(String uriStr, long line, long col) ;
+    
+    /** Create a literal for a string+datatype */
     public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) ;
+    
+    /** Create a literal for a string+language */
     public Node createLangLiteral(String lexical, String langTag, long line, long col) ;
-    public Node createPlainLiteral(String lexical, long line, long col) ;
+    
+    /** Create a literal for a string */ 
+    public Node createStringLiteral(String lexical, long line, long col) ;
+    
+    /** Create a fresh blank node based on scope and label */ 
     public Node createBlankNode(Node scope, String label, long line, long col) ;
+    /** Create a fresh blank node */ 
+    public Node createBlankNode(Node scope, long line, long col) ;
     
     /** Make a node from a token - called after all else has been tried - return null for no such node */
     public Node createNodeFromToken(Node scope, Token token, long line, long col) ;

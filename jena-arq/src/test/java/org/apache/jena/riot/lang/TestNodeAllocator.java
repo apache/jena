@@ -20,6 +20,7 @@ package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.lang.LabelToNode ;
+import org.apache.jena.riot.system.SyntaxLabels ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -30,20 +31,19 @@ public class TestNodeAllocator extends BaseTest
     static Node gragh1 = NodeFactory.createURI("g1") ;
     static Node gragh2 = NodeFactory.createURI("g2") ;
     
-    // ---- One Scope
+    // ---- Glaobl default policy needed for RDF parsing
     @Test public void allocOneScope1()
     {
-        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh1, "xyz" ) ;
         // SAME
         assertEquals(b1,b2) ;
-        assertSame(b1,b2) ;
     }
     
     @Test public void allocOneScope2()
     {
-        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh1, "123" ) ;
         // DIFFERENT
@@ -52,7 +52,7 @@ public class TestNodeAllocator extends BaseTest
 
     @Test public void allocOneScope3()
     {
-        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
         Node b1 = alloc.get(gragh1, "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // SAME
@@ -61,8 +61,8 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocOneScope4()
     {
-        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
-        Node b1 = alloc.get(null, "xyz" ) ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
+        Node b1 = alloc.get(null,   "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // SAME
         assertEquals(b1,b2) ;
@@ -70,7 +70,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocOneScope5()
     {
-        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(null, "xyz" ) ;
         // SAME
@@ -108,8 +108,8 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocGraphScope4()
     {
-        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
-        Node b1 = alloc.get(null, "xyz" ) ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
+        Node b1 = alloc.get(null,   "xyz" ) ;
         Node b2 = alloc.get(gragh2, "xyz" ) ;
         // DIFFERENT
         assertEquals(b1,b2) ;
@@ -117,7 +117,7 @@ public class TestNodeAllocator extends BaseTest
     
     @Test public void allocGraphScope5()
     {
-        LabelToNode alloc = LabelToNode.createScopeByDocument() ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
         Node b1 = alloc.get(null, "xyz" ) ;
         Node b2 = alloc.get(null, "xyz" ) ;
         // SAME

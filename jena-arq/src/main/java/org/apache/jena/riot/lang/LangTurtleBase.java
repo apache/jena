@@ -424,8 +424,8 @@ public abstract class LangTurtleBase<X> extends LangBase
     
     protected final Node triplesBlankNode()
     {
-        nextToken() ;        // Skip [
-        Node subject = NodeFactory.createAnon() ;
+        Token t = nextToken() ;        // Skip [
+        Node subject =  profile.createBlankNode(currentGraph, t.getLine(), t.getColumn()) ;
 
         if ( peekPredicate() )
             predicateObjectList(subject) ;
