@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.lang ;
 
 import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
@@ -32,64 +32,65 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 
-/** Allocate bnode labels using a per-run seed and the label presented.
+/**
+ * Allocate bnode labels using a per-run seed and the label presented.
  * <p>
  * This is the most scalable, always legal allocator.
  * <p>
- * New allocators must be created per parser run, or .reset() called.
- * These are fed to a digest to gve a bit string, (currently MD5, to get a 128bit bit string)
- * that is used to form a bNode AnonId of hex digits.
- * <p>  
- * In addition there is a cache of label->node allocations,
- * using the natural tendendency to locality in a database dump.
- * (subject bNodes, bNodes in lists and other datavalues structures like
- * unit values).
+ * New allocators must be created per parser run, or .reset() called. These are
+ * fed to a digest to gve a bit string, (currently MD5, to get a 128bit bit
+ * string) that is used to form a bNode AnonId of hex digits.
  * <p>
- * Not thread safe. 
+ * In addition there is a cache of label->node allocations, using the natural
+ * tendendency to locality in a database dump. (subject bNodes, bNodes in lists
+ * and other datavalues structures like unit values).
+ * <p>
+ * Not thread safe.
  */
 
-public class BlankNodeAllocatorHash implements BlankNodeAllocator
-{
-    private static String DigestAlgorithm = "MD5" ;
-    private static int CacheSize = 1000 ;
-    private MessageDigest mDigest ;
-    private byte[] seedBytes ;
-    private byte[] counterBytes = new byte[10] ;    // long+2 bytes to distinguish from UTF-8 bytes.   
+public class BlankNodeAllocatorHash implements BlankNodeAllocator {
+    private static String       DigestAlgorithm = "MD5" ;
+    private static int          CacheSize       = 1000 ;
+    private MessageDigest       mDigest ;
+    private byte[]              seedBytes ;
+    // long+2 bytes to distinguish from UTF-8 bytes.
+    private byte[]              counterBytes    = new byte[10] ; 
     private Cache<String, Node> cache ;
-    private long counter = 0 ;
-    
-    public BlankNodeAllocatorHash()
-    {
+    private long                counter         = 0 ;
+
+    public BlankNodeAllocatorHash() {
         reset() ;
-        try { mDigest = MessageDigest.getInstance(DigestAlgorithm) ; }
-        catch (NoSuchAlgorithmException e) { throw new InternalErrorException("failed to create message digest", e) ; }
-        
+        try {
+            mDigest = MessageDigest.getInstance(DigestAlgorithm) ;
+        } catch (NoSuchAlgorithmException e) {
+            throw new InternalErrorException("failed to create message digest", e) ;
+        }
+
         Getter<String, Node> getter = new Getter<String, Node>() {
-            @Override public Node get(String key) { return alloc(key) ; }
+            @Override
+            public Node get(String key) {
+                return alloc(key) ;
+            }
         } ;
         Cache<String, Node> cache1 = CacheFactory.createCache(CacheSize) ;
         cache = CacheFactory.createCacheWithGetter(cache1, getter) ;
-    }                                       
+    }
 
     @Override
-    public void reset()
-    {
+    public void reset() {
         UUID seed = UUID.randomUUID() ;
-        seedBytes = new byte[128/8] ;
+        seedBytes = new byte[128 / 8] ;
         Bytes.setLong(seed.getMostSignificantBits(), seedBytes, 0) ;
         Bytes.setLong(seed.getLeastSignificantBits(), seedBytes, 8) ;
     }
 
     @Override
-    public Node alloc(String label)
-    {
+    public Node alloc(String label) {
         return alloc(Bytes.string2bytes(label)) ;
     }
-    
-    
+
     @Override
-    public Node create()
-    {
+    public Node create() {
         counter++ ;
         // Make illegal string bytes so can't clash with alloc(String)
         counterBytes[0] = 0 ;
@@ -98,11 +99,10 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator
         return alloc(counterBytes) ;
     }
 
-    private Node alloc(byte[] labelBytes)
-    {
+    private Node alloc(byte[] labelBytes) {
         mDigest.update(seedBytes) ;
         mDigest.update(labelBytes) ;
-        byte[] bytes = mDigest.digest() ;   // resets
+        byte[] bytes = mDigest.digest() ; // resets
         String hexString = Bytes.asHexLC(bytes) ;
         return NodeFactory.createAnon(new AnonId(hexString)) ;
     }

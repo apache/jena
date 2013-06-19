@@ -151,7 +151,7 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
     }
     
     @Override
-    public Node createPlainLiteral(String lexical, long line, long col)
+    public Node createStringLiteral(String lexical, long line, long col)
     {
         return NodeFactory.createLiteral(lexical) ;
     }

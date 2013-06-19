@@ -36,12 +36,12 @@ public class MapWithScope<A, B, S>
     /** Allocate a B, given some A.
      *  Only called once per instance of B if the ScopePolicy map is non-null.
      */ 
-    public interface Allocator<A,B>
+    public interface Allocator<A,B,S>
     {
         /** Allocate - return the same B for a given A.
          * "same" means .equals, not == 
          */
-        public B alloc(A item) ;
+        public B alloc(S scope, A item) ;
         
         /** Create a fresh, unique (to within policy) B */  
         public B create() ;
@@ -50,11 +50,13 @@ public class MapWithScope<A, B, S>
     }
     
     // ======== The Object
-
+    // To be fully general, we should have an allocator per scope (and have an allocator factory).
+    // But we don't need that complexity.
+    
     private final ScopePolicy<A,B,S> scopePolicy ;
-    private final Allocator<A,B> allocator ;
+    private final Allocator<A,B,S> allocator ;
 
-    protected MapWithScope(ScopePolicy<A,B,S> scopePolicy, Allocator<A,B> allocator)
+    protected MapWithScope(ScopePolicy<A,B,S> scopePolicy, Allocator<A,B,S> allocator)
     {
         this.scopePolicy = scopePolicy ;
         this.allocator = allocator ;
@@ -69,12 +71,12 @@ public class MapWithScope<A, B, S>
         Map<A, B> map = scopePolicy.getScope(scope) ;
         if ( map == null )
             // No map - no item->allocation tracking.
-            return allocator.alloc(item) ;
+            return allocator.alloc(scope, item) ;
 
         B mappedItem = map.get(item) ;
         if ( mappedItem == null )
         {
-            mappedItem = allocator.alloc(item) ;
+            mappedItem = allocator.alloc(scope, item) ;
             map.put(item, mappedItem) ;
         }
         return mappedItem ;

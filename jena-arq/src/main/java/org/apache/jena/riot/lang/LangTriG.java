@@ -29,7 +29,6 @@ import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** TriG language: http://www4.wiwiss.fu-berlin.de/bizer/TriG/
@@ -82,7 +81,7 @@ public class LangTriG extends LangTurtleBase<Quad>
             if (token.getType() != TokenType.RBRACKET) 
                 exception(t, "Broken term: [ not followed by ]") ;
 
-            graphNode = NodeFactory.createAnon() ;
+            graphNode = profile.createBlankNode(graphNode, t.getLine(), t.getColumn()) ;
             nextToken() ;
         } else {
             if (token.isNode()) {

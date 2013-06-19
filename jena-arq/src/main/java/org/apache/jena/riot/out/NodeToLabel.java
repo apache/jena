@@ -58,7 +58,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     private static final NodeToLabel _internal = createBNodeByLabelEncoded() ;
     public static NodeToLabel labelByInternal() { return _internal ; }  
 
-    private NodeToLabel(ScopePolicy<Node, String, Node> scopePolicy, Allocator<Node, String> allocator)
+    private NodeToLabel(ScopePolicy<Node, String, Node> scopePolicy, Allocator<Node, String, Node> allocator)
     {
         super(scopePolicy, allocator) ;
     }
@@ -100,13 +100,13 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     // ======== Allocators 
 
     /** Allocator and some default policies. */
-    private abstract static class AllocatorBase implements Allocator<Node, String>
+    private abstract static class AllocatorBase implements Allocator<Node, String, Node>
     {
         // abstract to make you think about the policy!
         private long counter = 0 ;
         
         @Override
-        public final String alloc(Node node)
+        public final String alloc(Node scope, Node node)
         {
             if ( node.isURI() )         return labelForURI(node) ;
             if ( node.isLiteral() )     return labelForLiteral(node) ;
