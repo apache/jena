@@ -42,6 +42,7 @@ import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.lang.LabelToNode ;
+import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
@@ -217,7 +218,7 @@ public class JSONInput extends SPARQLResult
         return vars ;
     }
 
-    LabelToNode labelMap = LabelToNode.createScopeByDocument() ;
+    LabelToNode labelMap = SyntaxLabels.createLabelToNode() ;
     private Node parseOneTerm(JsonObject term)
     {
         checkContains(term, kType, kValue, kXmlLang, kDatatype) ;
