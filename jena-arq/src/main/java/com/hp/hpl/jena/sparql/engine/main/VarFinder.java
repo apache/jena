@@ -75,6 +75,7 @@ public class VarFinder
     
     public Set<Var> getOpt() { return varUsageVisitor.optDefines ; }
     public Set<Var> getFilter() { return varUsageVisitor.filterMentions ; }
+    public Set<Var> getAssign() { return varUsageVisitor.assignMentions ; }
     public Set<Var> getFixed() { return varUsageVisitor.defines ; }
     
     private static class VarUsageVisitor extends OpVisitorBase //implements OpVisitor
@@ -89,19 +90,22 @@ public class VarFinder
         Set<Var> defines = null ;
         Set<Var> optDefines = null ;
         Set<Var> filterMentions = null ;
+        Set<Var> assignMentions = null ;
 
         VarUsageVisitor()
         {
             defines = new HashSet<Var>() ;   
             optDefines = new HashSet<Var>() ;
             filterMentions = new HashSet<Var>() ;
+            assignMentions = new HashSet<Var>() ;
         }
         
-        VarUsageVisitor(Set<Var> _defines, Set<Var> _optDefines, Set<Var> _filterMentions)
+        VarUsageVisitor(Set<Var> _defines, Set<Var> _optDefines, Set<Var> _filterMentions, Set<Var> _assignMentions)
         {
             defines = _defines ;
             optDefines = _optDefines ;
             filterMentions = _filterMentions ;
+            assignMentions = _assignMentions ;
         }
         
         @Override
@@ -168,10 +172,12 @@ public class VarFinder
             defines.addAll(leftUsage.defines) ;
             optDefines.addAll(leftUsage.optDefines) ;
             filterMentions.addAll(leftUsage.filterMentions) ;
+            assignMentions.addAll(leftUsage.assignMentions) ;
             
             optDefines.addAll(rightUsage.defines) ;     // Asymmetric.
             optDefines.addAll(rightUsage.optDefines) ;
             filterMentions.addAll(rightUsage.filterMentions) ;
+            assignMentions.addAll(rightUsage.assignMentions) ;
             
             // Remove any definites that are in the optionals 
             // as, overall, they are definites 
@@ -193,9 +199,11 @@ public class VarFinder
             defines.addAll(leftUsage.defines) ;
             optDefines.addAll(leftUsage.optDefines) ;
             filterMentions.addAll(leftUsage.filterMentions) ;
+            assignMentions.addAll(leftUsage.assignMentions) ;
             defines.addAll(rightUsage.defines) ;
             optDefines.addAll(rightUsage.optDefines) ;
             filterMentions.addAll(rightUsage.filterMentions) ;
+            assignMentions.addAll(rightUsage.assignMentions) ;
         }
 
         @Override
@@ -233,7 +241,7 @@ public class VarFinder
             for ( Entry<Var, Expr> e : map.entrySet() )
             {
                 defines.add(e.getKey()) ;
-                e.getValue().varsMentioned(filterMentions);
+                e.getValue().varsMentioned(assignMentions);
             }
         }
         
@@ -249,6 +257,7 @@ public class VarFinder
             defines.addAll(subUsage.defines) ;
             optDefines.addAll(subUsage.optDefines) ;
             filterMentions.addAll(subUsage.filterMentions) ;
+            assignMentions.addAll(subUsage.assignMentions) ;
         }
 
         @Override

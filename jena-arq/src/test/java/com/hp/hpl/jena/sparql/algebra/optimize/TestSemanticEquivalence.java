@@ -141,7 +141,7 @@ public class TestSemanticEquivalence {
         String alg2 = "(leftjoin (bgp (?x <http://p1> ?o1)) (bgp (?y <http://p2> ?o2)) (&& (= ?y ?x)(> ?o1 ?o2)))";
         testAsAlgebra(alg2, implJoin, ARQ.optFilterImplicitJoin, 3);
     }
-
+    
     /**
      * Tests whether a query gives the same results when run both with and
      * without a given optimizer
