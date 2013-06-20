@@ -46,6 +46,8 @@ public class TestTransformFilters
     private Transform t_disjunction = new TransformFilterDisjunction() ;
     private Transform t_placement   = new TransformFilterPlacement() ;
     private Transform t_expandOneOf = new TransformExpandOneOf() ;
+    private Transform t_implicitJoin = new TransformFilterImplicitJoin() ;
+    private Transform t_implicitLeftJoin = new TransformImplicitLeftJoin() ;
     
     @Test public void equality01()
     {
@@ -531,7 +533,206 @@ public class TestTransformFilters
              t_expandOneOf,
              "(filter (exprlist (!= ?x <x>) (!= ?x 2) (!= ?x 3)) (bgp (?s ?p ?x)))") ;
     }
-
+    
+    @Test public void implicitJoin1()
+    {
+        test(
+             "(filter (= ?x ?y) (bgp (?x ?p ?o)(?y ?p1 ?o1)))",
+             t_implicitJoin,
+             "(assign ((?x ?y)) (bgp (?y ?p ?o)(?y ?p1 ?o1)))");
+    }
+    
+    @Test public void implicitJoin2()
+    {
+        test(
+             "(filter (= ?x ?y) (bgp (?x ?p ?o)))",
+             t_implicitJoin,
+             "(table empty)");
+    }
+    
+    @Test public void implicitJoin3()
+    {
+        // Still safe to transform as at least one is guaranteed non-literal
+        test(
+             "(filter (= ?x ?y) (bgp (?x ?p ?o)(?a ?b ?y)))",
+             t_implicitJoin,
+             "(assign ((?x ?y)) (bgp (?y ?p ?o)(?a ?b ?y)))");
+    }
+    
+    @Test public void implicitJoin4()
+    {
+        // Not safe to transform as both may be literals
+        test(
+             "(filter (= ?x ?y) (bgp (?a ?b ?x)(?c ?d ?y)))",
+             t_implicitJoin,
+             "(filter (= ?x ?y) (bgp (?a ?b ?x)(?c ?d ?y)))");
+    }
+    
+    @Test public void implicitJoin5()
+    {
+        // Safe to transform as although both may be literals we are using sameTerm so already relying on term equality
+        test(
+             "(filter (sameTerm ?x ?y) (bgp (?a ?b ?x)(?c ?d ?y)))",
+             t_implicitJoin,
+             "(assign ((?x ?y)) (bgp (?a ?b ?y)(?c ?d ?y)))");
+    }
+    
+    @Test public void implicitJoin6()
+    {
+        // Not safe to transform as equality on same variable
+        test(
+             "(filter (= ?x ?x) (bgp (?x ?p ?o)(?y ?p1 ?o1)))",
+             t_implicitJoin,
+             null);
+    }
+        
+    @Test public void implicitLeftJoin1()
+    {
+        // Possible to optimize some cases where it's an implicit left join
+        
+        // Covers the case with one variable on left and other on right
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1)) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))");
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+                "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1)) ((= ?y ?x)))",
+                t_implicitLeftJoin,
+                "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))");
+    }
+    
+    @Test public void implicitLeftJoin2()
+    {
+        // Possible to optimize some cases where it's an implicit left join
+        
+        // Covers the case with one variable on left and other on right
+        test(
+             "(leftjoin (bgp (?y ?p ?o)) (bgp (?x ?p1 ?o1)) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?y ?p ?o)) (assign ((?x ?y)) (bgp (?y ?p1 ?o1))))");
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+                "(leftjoin (bgp (?y ?p ?o)) (bgp (?x ?p1 ?o1)) ((= ?y ?x)))",
+                t_implicitLeftJoin,
+                "(leftjoin (bgp (?y ?p ?o)) (assign ((?x ?y)) (bgp (?y ?p1 ?o1))))");
+    }
+    
+    @Test public void implicitLeftJoin3()
+    {
+        // Possible to optimize some cases where it's an implicit left join
+        
+        // Covers the case with one variable on left and both on right
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (bgp (?x <http://type> ?type)(?y ?p1 ?o1)) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x <http://type> ?type)(?x ?p1 ?o1))))");
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+                "(leftjoin (bgp (?x ?p ?o)) (bgp (?x <http://type> ?type)(?y ?p1 ?o1)) ((= ?y ?x)))",
+                t_implicitLeftJoin,
+                "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x <http://type> ?type)(?x ?p1 ?o1))))");
+    }
+    
+    @Test public void implicitLeftJoin4()
+    {
+        // Possible to optimize some cases where it's an implicit left join
+        
+        // Covers the case with one variable on left and both on right
+        test(
+             "(leftjoin (bgp (?y ?p ?o)) (bgp (?x <http://type> ?type)(?y ?p1 ?o1)) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?y ?p ?o)) (assign ((?x ?y)) (bgp (?y <http://type> ?type)(?y ?p1 ?o1))))");
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+                "(leftjoin (bgp (?y ?p ?o)) (bgp (?x <http://type> ?type)(?y ?p1 ?o1)) ((= ?y ?x)))",
+                t_implicitLeftJoin,
+                "(leftjoin (bgp (?y ?p ?o)) (assign ((?x ?y)) (bgp (?y <http://type> ?type)(?y ?p1 ?o1))))");
+    }
+    
+    @Test public void implicitLeftJoin5()
+    {
+        // Possible to optimize some cases where it's an implicit left join
+        
+        // Covers the case of both variables on left and only one on right
+        test(
+             "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (bgp (?y ?p1 ?o1)) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))");
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+                "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (bgp (?y ?p1 ?o1)) ((= ?y ?x)))",
+                t_implicitLeftJoin,
+                "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))");
+    }
+    
+    @Test public void implicitLeftJoin6()
+    {
+        // Possible to optimize some cases where it's an implicit left join
+        
+        // Covers the case of both variables on left and only one on right
+        test(
+             "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (bgp (?x ?p1 ?o1)) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?x ?y)) (bgp (?y ?p1 ?o1))))");
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+                "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (bgp (?x ?p1 ?o1)) ((= ?y ?x)))",
+                t_implicitLeftJoin,
+                "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?x ?y)) (bgp (?y ?p1 ?o1))))");
+    }
+    
+    @Test public void implicitLeftJoin7()
+    {
+        // Possible to optimize some cases where it's an implicit left join
+        
+        // Covers the case of both variables on both sides
+        test(
+             "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (bgp (?x <http://type> ?type)(?y ?p1 ?o1)) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?x ?y)) (bgp (?y <http://type> ?type)(?y ?p1 ?o1))))");
+        
+        // Swapping the order of the equality expression will make a difference in this case
+        test(
+                "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (bgp (?x <http://type> ?type)(?y ?p1 ?o1)) ((= ?y ?x)))",
+                t_implicitLeftJoin,
+                "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?y ?x)) (bgp (?x <http://type> ?type)(?x ?p1 ?o1))))");
+    }
+    
+    @Test public void implicitJoin8()
+    {
+        // We don't currently optimize the case where the filter will evaluate to false
+        // for all solutions because neither variable in on the RHS
+        test(
+             "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (bgp (?a ?b ?c)) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             null);
+    }
+    
+    @Test public void implicitLeftJoin9()
+    {
+        // && means both conditions must hold so can optimize out the implicit join
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1)) (&& (= ?x ?y) (> ?o1 ?o2)))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))) (> ?o1 ?o2))");
+    }
+    
+    @Test public void implicitLeftJoin10()
+    {
+        // Unsafe to optimize
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1)) (|| (= ?x ?y) (> ?o1 ?o2)))",
+             t_implicitLeftJoin,
+             null);
+    }
+        
     public static void test(String input, Transform transform, String... output)
     {
         Op op1 = SSE.parseOp(input) ;
@@ -546,5 +747,5 @@ public class TestTransformFilters
         Op op3 = SSE.parseOp(StrUtils.strjoinNL(output)) ;
         Assert.assertEquals(op3, op2) ;
     }
-    
+        
 }

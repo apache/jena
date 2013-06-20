@@ -308,6 +308,18 @@ public class ARQ
      *  there is a potential risk of changing query semantics. 
      */  
     public static final Symbol optFilterEquality = ARQConstants.allocSymbol("optFilterEquality") ;
+    
+    /**
+     * Context key controlling whether the standard optimizer applies optimizations to implicit joins in FILTERs.
+     * This optimization is conservative - it does not take place if there is a potential risk of changing query semantics.
+     */
+    public static final Symbol optFilterImplicitJoin = ARQConstants.allocSymbol("optFilterImplicitJoin");
+    
+    /**
+     * Context key controlling whether the standard optimizer applies optimizations to implicit left joins.
+     * This optimization is conservative - it does not take place if there is a potential risk of changing query semantics.
+     */
+    public static final Symbol optImplicitLeftJoin = ARQConstants.allocSymbol("optImplicitLeftJoin");
 
     /** 
      *  Context key for a declaration that xsd:strings and simple literals are

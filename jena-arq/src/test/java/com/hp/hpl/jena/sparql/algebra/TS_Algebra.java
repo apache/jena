@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.algebra;
 
 
+import com.hp.hpl.jena.sparql.algebra.optimize.TestSemanticEquivalence;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformFilters ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestOptimizer ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformMergeBGPs ;
@@ -35,6 +36,7 @@ import org.junit.runners.Suite ;
     , TestClassify.class
     , TestTransformFilters.class
     , TestTransformQuads.class
+    , TestSemanticEquivalence.class
 
     , TestVarRename.class
     , TestOptimizer.class

@@ -171,6 +171,14 @@ public class Optimize implements Rewrite
         // Either, do filter placement and other sequence generating transformations.
         // or improve to place in a sequence (latter is better?)
         
+        // Currently implicit join optimizations must be explicitly enabled
+        
+        if ( context.isTrue(ARQ.optFilterImplicitJoin) )
+            op = apply("Filter Implicit Join", new TransformFilterImplicitJoin(), op);
+        
+        if ( context.isTrue(ARQ.optImplicitLeftJoin) )
+            op = apply("Implicit Left Join", new TransformImplicitLeftJoin(), op);
+        
         if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
         {
             //boolean termStrings = context.isDefined(ARQ.optTermStrings) ;

@@ -18,10 +18,14 @@
 
 package com.hp.hpl.jena.sparql.algebra ;
 
+import java.util.ArrayList;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.LinkedHashSet ;
+import java.util.List;
 import java.util.Set ;
+
+import org.apache.jena.atlas.lib.Tuple;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -59,6 +63,30 @@ public class OpVars
         OpVarsPattern visitor = new OpVarsPattern(acc, true) ;
         OpWalker.walk(new WalkerVisitorVisible(visitor, acc), op) ;
     }
+    
+    public static Tuple<Set<Var>> mentionedVarsByPosition(Op op) {
+        Set<Var> graphAcc = collector() ;
+        Set<Var> subjAcc = collector() ;
+        Set<Var> predAcc = collector() ;
+        Set<Var> objAcc = collector() ;
+        Set<Var> unknownAcc = collector() ;
+        OpVarsPatternWithPositions visitor = new OpVarsPatternWithPositions(graphAcc, subjAcc, predAcc, objAcc, unknownAcc, false);
+        OpWalker.walk(op, visitor);
+        return Tuple.create(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
+    }
+    
+    public static Tuple<Set<Var>> mentionedVarsByPosition(Op... ops) {
+        Set<Var> graphAcc = collector() ;
+        Set<Var> subjAcc = collector() ;
+        Set<Var> predAcc = collector() ;
+        Set<Var> objAcc = collector() ;
+        Set<Var> unknownAcc = collector() ;
+        OpVarsPatternWithPositions visitor = new OpVarsPatternWithPositions(graphAcc, subjAcc, predAcc, objAcc, unknownAcc, false);
+        for (Op op : ops) {
+            OpWalker.walk(op, visitor);
+        }
+        return Tuple.create(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
+    }
 
     // All mentioned variables regardless of scope/visibility.
     public static Collection<Var> mentionedVars(Op op) {
@@ -84,7 +112,7 @@ public class OpVars
             addVarsFromTriple(acc, triple) ;
     }
 
-    /** Do project and don't walk into it. MINUS vars aren't visiible either */
+    /** Do project and don't walk into it. MINUS vars aren't visible either */
     private static class WalkerVisitorVisible extends WalkerVisitor
     {
         private final Collection<Var> acc ;
@@ -208,6 +236,134 @@ public class OpVars
         }
 
     }
+    
+    private static class OpVarsPatternWithPositions extends OpVisitorBase
+    {
+        // The possibly-set-vars
+        protected Set<Var> graphAcc, subjAcc, predAcc, objAcc, unknownAcc ;
+        final boolean      visibleOnly ;
+
+        OpVarsPatternWithPositions(Set<Var> graphAcc, Set<Var> subjAcc, Set<Var> predAcc, Set<Var> objAcc, Set<Var> unknownAcc, boolean visibleOnly) {
+            this.graphAcc = graphAcc;
+            this.subjAcc = subjAcc;
+            this.predAcc = predAcc;
+            this.objAcc = objAcc;
+            this.unknownAcc = unknownAcc;
+            this.visibleOnly = visibleOnly ;
+        }
+
+        @Override
+        public void visit(OpBGP opBGP) {
+            vars(opBGP.getPattern()) ;
+        }
+
+        @Override
+        public void visit(OpPath opPath) {
+            addVar(subjAcc, opPath.getTriplePath().getSubject()) ;
+            addVar(objAcc, opPath.getTriplePath().getObject()) ;
+        }
+
+        @Override
+        public void visit(OpQuadPattern quadPattern) {
+            addVar(graphAcc, quadPattern.getGraphNode()) ;
+            vars(quadPattern.getBasicPattern()) ;
+        }
+
+        @Override
+        public void visit(OpGraph opGraph) {
+            addVar(graphAcc, opGraph.getNode()) ;
+        }
+
+        @Override
+        public void visit(OpDatasetNames dsNames) {
+            addVar(graphAcc, dsNames.getGraphNode()) ;
+        }
+
+        @Override
+        public void visit(OpTable opTable) {
+            // Only the variables with values in the tables
+            // (When building, undefs didn't get into bindings so no variable
+            // mentioned)
+            Table t = opTable.getTable() ;
+            // Treat as unknown position
+            unknownAcc.addAll(t.getVars()) ;
+        }
+
+        @Override
+        public void visit(OpProject opProject) {
+            // The walker (WalkerVisitorVisible) handles this
+            // for visible variables, not mentioned variable collecting.
+            // The visibleOnly/clear is simply to be as general as possible.
+            List<Var> vs = opProject.getVars();
+            if (visibleOnly) {
+                clear(graphAcc, vs);
+                clear(subjAcc, vs);
+                clear(predAcc, vs);
+                clear(objAcc, vs);
+                
+            }
+            for (Var v : vs) {
+                if (!graphAcc.contains(v) && !subjAcc.contains(v) && !predAcc.contains(v) && !objAcc.contains(v)) {
+                    addVar(unknownAcc, v);
+                }
+            }
+        }
+
+        @Override
+        public void visit(OpAssign opAssign) {
+            // Unknown position
+            unknownAcc.addAll(opAssign.getVarExprList().getVars()) ;
+        }
+
+        @Override
+        public void visit(OpExtend opExtend) {
+            // Unknown position
+            unknownAcc.addAll(opExtend.getVarExprList().getVars()) ;
+        }
+
+        @Override
+        public void visit(OpPropFunc opPropFunc) {
+            addvars(subjAcc, opPropFunc.getSubjectArgs()) ;
+            addvars(objAcc, opPropFunc.getObjectArgs()) ;
+        }
+
+        private void addvars(Set<Var> acc, PropFuncArg pfArg) {
+            if (pfArg.isNode()) {
+                addVar(acc, pfArg.getArg()) ;
+                return ;
+            }
+            for (Node n : pfArg.getArgList())
+                addVar(acc, n) ;
+        }
+
+        @Override
+        public void visit(OpProcedure opProc) {
+            unknownAcc.addAll(OpVars.mentionedVars(opProc));
+        }
+        
+        private void vars(BasicPattern bp) {
+            for (Triple t : bp.getList())
+            {
+                addVar(subjAcc, t.getSubject());
+                addVar(predAcc, t.getPredicate());
+                addVar(objAcc, t.getObject());
+            }
+        }
+        
+        private void clear(Set<Var> acc, List<Var> visible) {
+            List<Var> toRemove = new ArrayList<Var>();
+            for (Var found : acc)
+            {
+                if (!visible.contains(found)) {
+                    toRemove.add(found);
+                }
+            }
+            for (Var v : toRemove) {
+                acc.remove(v);
+            }
+        }
+
+    }
 
     private static class OpVarsMentioned extends OpVarsPattern
     {
@@ -236,6 +392,7 @@ public class OpVars
         addVar(acc, t.getObject()) ;
     }
 
+    @SuppressWarnings("unused")
     private static void addVarsFromQuad(Collection<Var> acc, Quad q) {
         addVar(acc, q.getSubject()) ;
         addVar(acc, q.getPredicate()) ;
