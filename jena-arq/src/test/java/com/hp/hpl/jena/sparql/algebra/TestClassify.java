@@ -168,6 +168,30 @@ public class TestClassify extends TestCase
     // Can't linearize into a projection.
     @Test public void testClassify_LeftJoin_10()
     { classifyLJ("{ ?s ?p ?x OPTIONAL { SELECT ?s { ?s ?p ?o } } }", false)  ; }
+    
+    /**
+     * Can linearize with BIND present provided mentioned vars are also on RHS
+     */
+    @Test public void testClassify_LeftJoin_11()
+    { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?x . BIND(?x AS ?test) } }", true)  ; }
+        
+    /**
+     * Can't linearize with BIND present provided if any mentioned vars are not on RHS
+     */
+    @Test public void testClassify_LeftJoin_12()
+    { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?x . BIND(?s AS ?test) } }", false)  ; }
+    
+    /**
+     * Can't linearize with BIND present provided if any mentioned vars are not on RHS
+     */
+    @Test public void testClassify_LeftJoin_13()
+    { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?x . BIND(CONCAT(?s, ?x) AS ?test) } }", false)  ; }
+    
+    /**
+     * Can't linearize with BIND present provided if any mentioned vars are not on RHS
+     */
+    @Test public void testClassify_LeftJoin_14()
+    { classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?x . BIND(CONCAT(?s1, ?p1, ?p2, ?x) AS ?test) } }", false)  ; }
         
     
     private void classifyLJ(String pattern, boolean expected)

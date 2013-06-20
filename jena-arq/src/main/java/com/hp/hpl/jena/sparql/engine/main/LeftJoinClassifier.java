@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
+import java.util.HashSet;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.SetUtils ;
@@ -31,6 +32,8 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 public class LeftJoinClassifier
 {
+    static /*final*/ public boolean print = false ;
+    
     // Test for the "well-formed" criterion of left joins whereby they can
     // be executed against a current set of bindings.  If not, the left join
     // has to be done by execution of the left, executing the right without
@@ -42,7 +45,7 @@ public class LeftJoinClassifier
     // RHS pattern (hence they are nested in someway) that also occur in the LHS
     // of the LeftJoin being considered.
     
-    // Need also worry about filters in the right (not in the LJ condidtion)
+    // Need also worry about filters in the right (not in the LJ condition)
     // which use vars from the left. 
 
     static public boolean isLinear(OpLeftJoin op)
@@ -63,14 +66,40 @@ public class LeftJoinClassifier
         VarFinder vf = new VarFinder(right) ;
         
         Set<Var> optRight = vf.getOpt() ;
-        //Set<Var> fixedRight = vf.getFixed() ;
+        Set<Var> fixedRight = vf.getFixed() ;
         Set<Var> filterVarsRight = vf.getFilter() ; 
+        Set<Var> assignVarsRight = vf.getAssign() ;
         
+        if (print) {
+            System.err.println("Left/visible: " + leftVars) ;
+            System.err.println("Right/fixed:  " + fixedRight) ;
+            System.err.println("Right/opt:    " + optRight) ;
+            System.err.println("Right/filter: " + filterVarsRight) ;
+            System.err.println("Right/assign: " + assignVarsRight) ;
+        }
+        
+        // Case 1
+        // A variable is nested in an optional on the RHS and on the LHS
+        // Cannot linearize as we must preserve scope
         boolean b1 = SetUtils.intersectionP(leftVars, optRight) ;
-        boolean b2 = SetUtils.intersectionP(leftVars, filterVarsRight) ;        
+        if (print) System.err.println("Case 1 - " + b1);
+        
+        // Case 2
+        // A variable mentioned in a filter within the RHS already exists on the LHS
+        // Cannot linearize as would change filter evaluation
+        boolean b2 = SetUtils.intersectionP(leftVars, filterVarsRight) ;
+        if (print) System.err.println("Case 2 - " + b2);
+        
+        // Case 3
+        // A variable mentioned in the assign is not introduced on the RHS
+        // Cannot linearize as would change bind evaluation
+        Set<Var> unsafeAssign = new HashSet<Var>(assignVarsRight);
+        unsafeAssign.removeAll(fixedRight);
+        boolean b3 = unsafeAssign.size() > 0 ;
+        if (print) System.err.println("Case 3 - " + b3);
 
-        // Safe for linear execution if there are no  
-        return ! SetUtils.intersectionP(leftVars, optRight) && ! SetUtils.intersectionP(leftVars, filterVarsRight) ;
+        // Linear if all conditions are false
+        return ! b1 && ! b2 && ! b3 ;
     }
     
     static public Set<Var> nonLinearVars(OpLeftJoin op)

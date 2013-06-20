@@ -80,28 +80,31 @@ public class JoinClassifier
         Set<Var> vRightFixed = vfRight.getFixed() ;
         Set<Var> vRightOpt = vfRight.getOpt() ;
         Set<Var> vRightFilter = vfRight.getFilter() ;
+        Set<Var> vRightAssign = vfRight.getAssign() ;
 
         if (print) System.err.println("Right/fixed:   " + vRightFixed) ;
         if (print) System.err.println("Right/opt:     " + vRightOpt) ;
         if (print) System.err.println("Right/filter:  " + vRightFilter) ;
+        if (print) System.err.println("Right/assign:  " + vRightAssign) ;
 
         // Step 1 : remove any variable definitely fixed from the floating sets
         // because the nature of the "join" will deal with that.
         vLeftOpt = SetUtils.difference(vLeftOpt, vLeftFixed) ;
         vRightOpt = SetUtils.difference(vRightOpt, vRightFixed) ;
 
-        // And also filter variables in the RHS which are always defined in the
+        // And also assign/filter variables in the RHS which are always defined in the
         // RHS.  Leaves any potentially free variables in RHS filter. 
         vRightFilter = SetUtils.difference(vRightFilter, vRightFixed) ;
+        vRightAssign = SetUtils.difference(vRightAssign, vRightFixed) ;
 
         if (print) System.err.println() ;
         if (print) System.err.println("Left/opt:      " + vLeftOpt) ;
         if (print) System.err.println("Right/opt:     " + vRightOpt) ;
         if (print) System.err.println("Right/filter:  " + vRightFilter) ;
+        if (print) System.err.println("Right/assign:  " + vRightAssign) ;
 
         // Step 2 : check whether any variables in the right are optional or
-        // filter vars
-        // which are also optional in the left side.
+        // filter vars which are also optional in the left side.
 
         // Two cases to consider::
         // Case 1 : a variable in the RHS is optional 
@@ -118,7 +121,7 @@ public class JoinClassifier
 
         boolean bad1 = r11 || r12 ;
 
-        if (print) System.err.println("bad1 = " + bad1) ;
+        if (print) System.err.println("Case 1 = " + bad1) ;
 
         // Case 2 : a filter in the RHS is uses a variable from the LHS (whether
         // fixed or optional)
@@ -128,10 +131,20 @@ public class JoinClassifier
         // unfixed vars)
 
         boolean bad2 = SetUtils.intersectionP(vRightFilter, vLeftFixed) ;
-        if (print) System.err.println("bad2 = " + bad2) ;
+        if (print) System.err.println("Case 2 = " + bad2) ;
+        
+        // Case 3 : an assign in the RHS uses a variable not introduced
+        // Scoping means we must hide the LHS value from the RHS
+        
+        // TODO Think this may be slightly relaxed, using variables in an 
+        // assign on the RHS is in principal fine if they're also available on the RHS
+        //vRightAssign.removeAll(vRightFixed);
+        //boolean bad3 = vRightAssign.size() > 0;
+        boolean bad3 = SetUtils.intersectionP(vRightAssign, vLeftFixed) ;
+        if (print) System.err.println("Case 3 = " + bad3) ;
 
-        // Linear if both intersections are empty.
-        return !bad1 && !bad2 ;
+        // Linear if all conditions are false
+        return !bad1 && !bad2 && !bad3;
     }
 
     private static Op effectiveOp(Op op)

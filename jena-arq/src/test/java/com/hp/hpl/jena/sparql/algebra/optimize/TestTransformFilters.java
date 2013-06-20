@@ -732,6 +732,15 @@ public class TestTransformFilters
              t_implicitLeftJoin,
              null);
     }
+    
+    @Test public void implicitLeftJoinConditional1()
+    {
+        // Can be optimized because not all assigns block linearization
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))",
+             new TransformJoinStrategy(),
+             "(conditional (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))");
+    }
         
     public static void test(String input, Transform transform, String... output)
     {
