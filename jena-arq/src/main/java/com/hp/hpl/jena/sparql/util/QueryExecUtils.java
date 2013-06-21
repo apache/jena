@@ -358,7 +358,14 @@ public class QueryExecUtils
             QuerySolution qs = rs.nextSolution() ;
             RDFNode r = qs.get(varname) ;
             if ( rs.hasNext() )
-                throw new ARQException("More than one: var ?"+varname) ;
+            {
+                QuerySolution qs2 = rs.next();
+                RDFNode r2 = qs2.get(varname) ;
+                if ( rs.hasNext() )
+                    throw new ARQException("More than one: var ?"+varname+ " -> "+r+", "+r2+", ...") ;
+                else
+                    throw new ARQException("Found two matches: var ?"+varname+ " -> "+r+", "+r2) ;
+            }
             return r ;
         } finally { qExec.close() ; }
     }
