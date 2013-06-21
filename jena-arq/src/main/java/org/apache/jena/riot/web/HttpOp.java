@@ -396,6 +396,8 @@ InputStreamEntity e = new InputStreamEntity(input, length) ;
             String user = context.getAttribute(Service.queryAuthUser.toString()).toString();
             String pwd = context.getAttribute(Service.queryAuthPwd.toString()).toString();
             provider.setCredentials(new AuthScope(host), new UsernamePasswordCredentials(user, pwd));
+            
+            client.setCredentialsProvider(provider);
         }
     }
     
