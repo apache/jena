@@ -48,6 +48,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.util.FileUtils;
 
+// THESE DO NOT WORK.
+// And aren't part of the test suite.
+
 public class TestTextIndexer {
 	private static final String RESOURCE_BASE = "http://example.org/data/resource/";
 	private static final String INDEX_PATH = "target/test/simpleLuceneIndex";
@@ -81,11 +84,8 @@ public class TestTextIndexer {
 		TextSearchUtil.emptyAndDeleteDirectory(tdbDir);
 	}
 	
-	@Test public void testDetectsNoDataset() {
-		try {
-			textindexer.testMain( new String[] {} );
-			fail("should have thrown an exception with no dataset");
-		} catch (CmdException e) {}		
+	@Test(expected=CmdException.class) public void testDetectsNoDataset() {
+	    textindexer.testMain( new String[] {} );
 	}
 	
 	@Test public void testDetectsNotTextIndexedDataset() {
