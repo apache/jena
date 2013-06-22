@@ -11,227 +11,236 @@
 	language governing permissions and limitations under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.jena</groupId>
-	<artifactId>jena-text</artifactId>
-	<packaging>jar</packaging>
-	<name>Apache Jena - SPARQL and Lucene/Solr</name>
-	<version>1.0.0-SNAPSHOT</version>
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.jena</groupId>
+  <artifactId>jena-text</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache Jena - SPARQL and Lucene/Solr</name>
+  <version>1.0.0-SNAPSHOT</version>
 
-	<parent>
-		<groupId>org.apache.jena</groupId>
-		<artifactId>jena-parent</artifactId>
-		<version>7-SNAPSHOT</version>
-		<relativePath>../jena-parent</relativePath>
-	</parent>
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-parent</artifactId>
+    <version>7-SNAPSHOT</version>
+    <relativePath>../jena-parent</relativePath>
+  </parent>
 
-	<properties>
-		<ver.jena>2.10.2-SNAPSHOT</ver.jena>
-		<ver.lucene>4.2.1</ver.lucene>
-		<ver.solr>4.2.1</ver.solr>
+  <properties>
+    <ver.jena>2.10.2-SNAPSHOT</ver.jena>
+    <ver.lucene>4.2.1</ver.lucene>
+    <ver.solr>4.2.1</ver.solr>
 
-		<this.root>${project.artifactId}-${project.version}</this.root>
-		<server.jar.name>${this.root}-fuseki</server.jar.name>
+    <this.root>${project.artifactId}-${project.version}</this.root>
+    <server.jar.name>${this.root}-fuseki</server.jar.name>
 
-		<jdk.version>1.6</jdk.version>
-		<targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-		<build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-	</properties>
+    <jdk.version>1.6</jdk.version>
+    <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
+  </properties>
 
-	<dependencies>
+  <dependencies>
 
-		<!-- All Jena libs (not Fuseki) -->
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>apache-jena-libs</artifactId>
-			<version>${ver.jena}</version>
-			<type>pom</type>
-		</dependency>
+    <!-- All Jena libs (not Fuseki) -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>apache-jena-libs</artifactId>
+      <version>${ver.jena}</version>
+      <type>pom</type>
+    </dependency>
 
-		<!-- Testing support -->
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-arq</artifactId>
-			<version>${ver.jena}</version>
-			<type>jar</type>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
+    <!-- Testing support -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>${ver.jena}</version>
+      <type>jar</type>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
 
-		<!-- Lucene dependencies -->
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>${ver.lucene}</version>
-			<type>jar</type>
-		</dependency>
+    <!-- Lucene dependencies -->
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>${ver.lucene}</version>
+      <type>jar</type>
+    </dependency>
 
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers-common</artifactId>
-			<version>${ver.lucene}</version>
-			<type>jar</type>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
+      <version>${ver.lucene}</version>
+      <type>jar</type>
+    </dependency>
 
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-queryparser</artifactId>
-			<version>${ver.lucene}</version>
-			<type>jar</type>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queryparser</artifactId>
+      <version>${ver.lucene}</version>
+      <type>jar</type>
+    </dependency>
 
-		<!-- Solr client -->
-		<!-- Exclusion of slf4: Necessary otherwise maven complains about a "Dependency 
-			convergence error" of slf4j-api 1.6.1 (from zookeeper) vs 1.6.4 (Jena) possibly 
-			due to the use of scope-test -->
+    <!-- Solr client -->
+    <!-- Exclusion of slf4: Necessary otherwise maven complains about a "Dependency 
+	 convergence error" of slf4j-api 1.6.1 (from zookeeper) vs 1.6.4 (Jena) possibly 
+	 due to the use of scope-test -->
 
-		<dependency>
-			<artifactId>solr-solrj</artifactId>
-			<groupId>org.apache.solr</groupId>
-			<version>${ver.solr}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-jdk14</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+    <dependency>
+      <artifactId>solr-solrj</artifactId>
+      <groupId>org.apache.solr</groupId>
+      <version>${ver.solr}</version>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-api</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-jdk14</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
 
-		<!-- Embedded server / testing -->
-		<dependency>
-			<artifactId>solr-core</artifactId>
-			<groupId>org.apache.solr</groupId>
-			<version>${ver.solr}</version>
-			<type>jar</type>
-			<scope>test</scope>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-jdk14</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+    <!-- Embedded server / testing -->
+    <dependency>
+      <artifactId>solr-core</artifactId>
+      <groupId>org.apache.solr</groupId>
+      <version>${ver.solr}</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>true</optional>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-api</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-jdk14</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
 
-		<!-- Embedded Solr server -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>test</scope>
-		</dependency>
+    <!-- Embedded Solr server -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>test</scope>
+    </dependency>
 
-	</dependencies>
+  </dependencies>
 
-	<build>
+  <build>
+    
+    <resources>
+      <resource>
+	<filtering>true</filtering>
+	<directory>src/main/resources</directory>
+	<includes>
+	  <include>org/apache/jena/query/text/properties.xml</include>
+	</includes>
+      </resource>
+      <resource>
+	<filtering>false</filtering>
+	<directory>src/main/resources</directory>
+	<excludes>
+	  <exclude>org/apache/jena/query/text/properties.xml</exclude>
+	</excludes>
+      </resource>
+    </resources>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<includes>
-						<include>**/TS_*.java</include>
-					</includes>
-				</configuration>
-			</plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<configuration>
+	  <includes>
+	    <include>**/TS_*.java</include>
+	  </includes>
+	</configuration>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-			</plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-					<!-- Only material in the main jar <execution> <id>attach-sources-test</id> 
-						<goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
-				</executions>
-			</plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-source-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>attach-sources</id>
+	    <goals>
+	      <goal>jar-no-fork</goal>
+	    </goals>
+	  </execution>
+	  <!-- Only material in the main jar <execution> <id>attach-sources-test</id> 
+	       <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
+	</executions>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<version>true</version>
-					<show>public</show>
-					<quiet>true</quiet>
-					<encoding>UTF-8</encoding>
-					<windowtitle>${project.name} ${project.version}</windowtitle>
-					<doctitle>${project.name} ${project.version}</doctitle>
-					<bottom>Licenced under the Apache License, Version 2.0</bottom>
-				</configuration>
-			</plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-javadoc-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>attach-javadocs</id>
+	    <goals>
+	      <goal>jar</goal>
+	    </goals>
+	  </execution>
+	</executions>
+	<configuration>
+	  <version>true</version>
+	  <show>public</show>
+	  <quiet>true</quiet>
+	  <encoding>UTF-8</encoding>
+	  <windowtitle>${project.name} ${project.version}</windowtitle>
+	  <doctitle>${project.name} ${project.version}</doctitle>
+	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
+	</configuration>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-resources-plugin</artifactId>
+	<configuration>
+	  <encoding>UTF-8</encoding>
+	</configuration>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<configuration>
-					<overWriteReleases>false</overWriteReleases>
-					<overWriteIfNewer>true</overWriteIfNewer>
-				</configuration>
-			</plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-dependency-plugin</artifactId>
+	<configuration>
+	  <overWriteReleases>false</overWriteReleases>
+	  <overWriteIfNewer>true</overWriteIfNewer>
+	</configuration>
+      </plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<!-- By default, have separate Eclipse and maven build areas -->
-					<buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-				</configuration>
-			</plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-eclipse-plugin</artifactId>
+	<configuration>
+	  <!-- By default, have separate Eclipse and maven build areas -->
+	  <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
+	  <downloadSources>true</downloadSources>
+	  <downloadJavadocs>false</downloadJavadocs>
+	</configuration>
+      </plugin>
 
-		</plugins>
+    </plugins>
 
-	</build>
-
-	<repositories>
-		<repository>
-			<id>maven-restlet</id>
-			<name>Public online Restlet repository</name>
-			<url>http://maven.restlet.org</url>
-		</repository>
-	</repositories>
+  </build>
 
 </project>
