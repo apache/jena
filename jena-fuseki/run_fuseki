@@ -42,18 +42,15 @@ then
 fi
 
 # Prepend any development directories here
-CP1="$FUSEKI_HOME/../jena-tdb/classes"
-CP2="$FUSEKI_HOME/../jena-arq/classes"
-
-if [ -e "$CP1" ]
-then
-    CP="$CP1:$CP"
-fi
-if [ -e "$CP2" ]
-then
-    CP="$CP2:$CP"
-fi
-
+DEVDIRS="jena-core jena-tdb jena-arq jena-text"
+for X in $DEVDIRS
+do
+    CPX="$FUSEKI_HOME/../$X/classes"
+    if [ -e "$CPX" ]
+    then
+	CP="$CPX:$CP"
+    fi
+done
 
 FUSEKI_LOG=${FUSEKI_LOG:-} # "-D-Dlog4j.configuration=file:$FUSEKI_HOME/log4j.properties"
 JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
