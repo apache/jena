@@ -16,56 +16,79 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text ;
 
 import java.util.Collection ;
 import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.jena.atlas.lib.MultiMap ;
+
 import com.hp.hpl.jena.graph.Node ;
 
-/** Definition of a "document"
+/**
+ * Definition of a "document"
  */
-public class EntityDefinition
-{
-    private final Map<Node, String> predicateToField = new HashMap<Node, String>() ;
-    private final Map<String, Node> fieldToPredicate = new HashMap<String, Node>() ;
-    private final Collection<String> fields = Collections.unmodifiableCollection(fieldToPredicate.keySet()) ;
-    private final String entityField ;
-    private final String primaryField ;
-    
-    /** 
-     * @param entityField       The entity being indexed (e.g. it's URI). 
-     * @param primaryField      The primary/default field to search
-     * @param primaryProperty   The property associated with the primary/default field
+public class EntityDefinition {
+    private final Map<Node, String>      predicateToField = new HashMap<Node, String>() ;
+    private final MultiMap<String, Node> fieldToPredicate = MultiMap.createMapList() ;
+    private final Collection<String>     fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
+    // private final Collection<String> fields =
+    // Collections.unmodifiableCollection(fieldToPredicate.keySet()) ;
+    private final String                 entityField ;
+    private final String                 primaryField ;
+    private final Node                   primaryPredicate ;
+
+    /**
+     * @param entityField
+     *            The entity being indexed (e.g. it's URI).
+     * @param primaryField
+     *            The primary/default field to search
+     * @param primaryPredicate
+     *            The property associated with the primary/default field
      */
-    public EntityDefinition(String entityField, String primaryField, Node primaryProperty)
-    { 
+    public EntityDefinition(String entityField, String primaryField, Node primaryPredicate) {
         this.entityField = entityField ;
         this.primaryField = primaryField ;
-        set(primaryField, primaryProperty) ;
+        this.primaryPredicate = primaryPredicate ;
+        if (primaryField == null && primaryPredicate != null)
+            throw new IllegalArgumentException("primaryField null but primaryPredicate not null") ;
+        if (primaryField != null && primaryPredicate == null)
+            throw new IllegalArgumentException("primaryField not null but primaryPredicate null") ;
+        if (primaryField != null && primaryPredicate != null)
+            set(primaryField, primaryPredicate) ;
     }
-    
-    public String getEntityField() { return entityField ; }
-    
+
+    public String getEntityField() {
+        return entityField ;
+    }
+
     public void set(String field, Node predicate) {
         predicateToField.put(predicate, field) ;
-        fieldToPredicate.put(field, predicate) ;
+        // Add uniquely.
+        Collection<Node> c = fieldToPredicate.get(field) ;
+        if (c == null || !c.contains(predicate))
+            fieldToPredicate.put(field, predicate) ;
     }
-    
-    public Node getPredicate(String field) {
+
+    public Collection<Node> getPredicates(String field) {
         return fieldToPredicate.get(field) ;
     }
-    
+
     public String getField(Node predicate) {
         return predicateToField.get(predicate) ;
     }
 
-    public Node getPrimaryPredicate()   { return fieldToPredicate.get(primaryField) ; }
-    
-    public String getPrimaryField()     { return primaryField ; }  
-    
-    public Collection<String> fields()  { return fields ; }
-}
+    public Node getPrimaryPredicate() {
+        return primaryPredicate ;
+    }
 
+    public String getPrimaryField() {
+        return primaryField ;
+    }
+
+    public Collection<String> fields() {
+        return fields ;
+    }
+}

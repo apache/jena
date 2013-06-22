@@ -34,7 +34,6 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 public class TestBuildTextDataset extends BaseTest
 {
     static final String DIR = "testing/TextQuery" ;
-    
 
     // Ensure assembler initialized. 
     @BeforeClass public static void setupClass() { TextQuery.init() ; } 

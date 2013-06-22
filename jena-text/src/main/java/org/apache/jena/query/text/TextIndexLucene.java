@@ -108,7 +108,8 @@ public class TextIndexLucene implements TextIndex
     @Override
     public void addEntity(Entity entity)
     {
-        log.info("Add entity: "+entity) ;
+        if ( log.isDebugEnabled() )
+            log.debug("Add entity: "+entity) ;
         try {
             Document doc = doc(entity) ;
             indexWriter.addDocument(doc) ;
