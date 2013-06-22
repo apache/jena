@@ -132,8 +132,12 @@ public class textindexer extends CmdARQ {
 
     private Set<Node> getIndexedProperties() {
         Set<Node> result = new HashSet<Node>() ;
-        for (Iterator<String> iter = entityDefinition.fields().iterator(); iter.hasNext();) {
-            result.add(entityDefinition.getPredicate(iter.next())) ;
+        for (String f : entityDefinition.fields()) {
+            System.out.println("-- "+f) ;
+            for ( Node p : entityDefinition.getPredicates(f) ) {
+                System.out.println("---- "+p) ;
+                result.add(p) ;
+            }
         }
         return result ;
     }
@@ -216,7 +220,7 @@ public class textindexer extends CmdARQ {
         void close() {
             long overallDuration = System.currentTimeMillis() - startTime ;
             String message = progressCount + " (" + progressCount / Math.max(overallDuration / 1000, 1)
-                             + " per second)" + progressMessage ;
+                             + " per second) " + progressMessage ;
             log.info(message) ;
         }
     }

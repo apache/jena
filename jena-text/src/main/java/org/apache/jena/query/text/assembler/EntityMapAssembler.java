@@ -20,8 +20,10 @@ package org.apache.jena.query.text.assembler;
 
 import static org.apache.jena.query.text.assembler.TextVocab.NS ;
 
+import java.util.Collection ;
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextIndexException ;
@@ -67,8 +69,11 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
         String qs1 = StrUtils.strjoinNL(prologue,
                                         "SELECT * {" ,
                                         "  ?eMap  :entityField  ?entityField ;" ,
-                                        "         :defaultField ?dftField ;" , 
                                         "         :map ?map" ,
+                                        "  OPTIONAL {" ,
+                                        "     ?eMap :defaultField ?dftField" , 
+                                        "     OPTIONAL { ?eMap :defaultPredicate ?dftPredicate } " ,
+                                        "  }",
                                          "}") ;
         ParameterizedSparqlString pss = new ParameterizedSparqlString(qs1) ;
         pss.setIri("eMap", root.getURI()) ;
@@ -82,7 +87,9 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
         
         QuerySolution qsol1 = results.get(0) ;
         String entityField = qsol1.getLiteral("entityField").getLexicalForm() ;
+        
         String defaultField = qsol1.contains("dftField") ? qsol1.getLiteral("dftField").getLexicalForm() : null ;
+        Node defaultPredicate = qsol1.contains("dftPredicate") ? qsol1.get("dftPredicate").asNode() : null ;
         
         String qs2 = StrUtils.strjoinNL("SELECT * {",
                                         "  ?map list:member [ :field ?field ; :predicate ?predicate ]" ,
@@ -103,15 +110,34 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
             }
         }
         
-        if ( primaryProperty == null )
-            throw new TextIndexException("No definition of primary field '"+defaultField+"'") ; 
-        
-        EntityDefinition docDef = new EntityDefinition(entityField, defaultField, null) ;
-        for ( QuerySolution qsol : mapEntries )
-        {
+        MultiMap<String, Node> mapDefs = MultiMap.createMapList() ; 
+        for ( QuerySolution qsol : mapEntries ) {
             String field =  qsol.getLiteral("field").getLexicalForm() ;
             Resource p = qsol.getResource("predicate") ;
-            docDef.set(field, p.asNode()) ;
+            mapDefs.put(field, p.asNode()) ;
+        }
+        
+        // Primary field/predicate
+        if ( defaultField != null ) {
+            Collection<Node> c = mapDefs.get(defaultField) ;
+            if ( c == null )
+                throw new TextIndexException("No definition of primary field '"+defaultField+"'") ;
+            if ( defaultPredicate == null ) {
+                if ( c.size() != 1 )
+                    throw new TextIndexException("No single definition of primary predicate for primary field '"+defaultField+"'") ;
+                // Set default predicate
+                defaultPredicate = c.iterator().next() ;
+            } else {
+                if ( ! c.contains(defaultPredicate) )
+                    throw new TextIndexException("Primary field '"+defaultField+"' not asscoiated with property <"+defaultPredicate.getURI()+">" ) ;
+            }
+        }
+        
+        
+        EntityDefinition docDef = new EntityDefinition(entityField, defaultField, defaultPredicate) ;
+        for ( String f : mapDefs.keys() ) {
+            for ( Node p : mapDefs.get(f)) 
+                docDef.set(f, p) ;
         }
         return docDef ;
     }

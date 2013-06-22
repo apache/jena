@@ -18,20 +18,20 @@
 
 package org.apache.jena.query.text.assembler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertTrue ;
+import static org.junit.Assert.fail ;
 
-import org.apache.jena.query.text.EntityDefinition;
-import org.apache.jena.query.text.TextIndexException;
-import org.junit.Test;
+import java.util.Collection ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.query.text.EntityDefinition ;
+import org.apache.jena.query.text.TextIndexException ;
+import org.junit.Test ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 /**
  * Test assembler for EntityMap
@@ -61,14 +61,23 @@ public class TestEntityMapAssembler {
 	@Test public void EntityHasMapEntries() {
 		EntityMapAssembler emAssembler = new EntityMapAssembler();
 		EntityDefinition entityDef = emAssembler.open(null, spec1, null);
-		assertEquals(entityDef.getPredicate(SPEC1_DEFAULT_FIELD), SPEC1_PREDICATE.asNode());
+		assertEquals(SPEC1_PREDICATE.asNode(), getOne(entityDef,SPEC1_DEFAULT_FIELD));
 	}
 	
-	@Test public void EntityHasMultipleMapEntries() {
+	private Object getOne(EntityDefinition entityDef, String field) {
+	    Collection<Node> x = entityDef.getPredicates(field) ;
+	    if ( x == null || x.size() == 0 )
+	        return null ;
+	    if ( x.size() != 1 )
+	        throw new InternalErrorException("Not unique: "+field) ;
+        return x.iterator().next() ; 
+    }
+
+    @Test public void EntityHasMultipleMapEntries() {
 		EntityMapAssembler emAssembler = new EntityMapAssembler();
 		EntityDefinition entityDef = emAssembler.open(null, spec2, null);
-		assertEquals(entityDef.getPredicate(SPEC2_DEFAULT_FIELD), SPEC2_PREDICATE1.asNode());
-		assertEquals(entityDef.getPredicate(SPEC2_FIELD2), SPEC2_PREDICATE2.asNode());
+		assertEquals(SPEC2_PREDICATE1.asNode(), getOne(entityDef,SPEC2_DEFAULT_FIELD));
+		assertEquals(SPEC2_PREDICATE2.asNode(), getOne(entityDef, SPEC2_FIELD2));
 	}
 	
 	@Test public void errorOnNoEntityField() {
