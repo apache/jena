@@ -29,6 +29,8 @@ import java.util.Set ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorConcat ;
 
+/* Map from K to collection of V */
+
 public abstract class MultiMap<K, V>
 {
     // size
@@ -44,10 +46,10 @@ public abstract class MultiMap<K, V>
     
     static class MultiMapToList<K,V> extends MultiMap<K,V> {
         @Override
-        protected Collection<V> create()
-        {
+        protected Collection<V> create() {
             return new ArrayList<V>() ;
-        }}
+        }
+    }
     
     static class MultiMapToSet<K,V> extends MultiMap<K,V> {
         @Override
@@ -63,6 +65,13 @@ public abstract class MultiMap<K, V>
     
     public Collection<V> get(K key) { 
         return map.get(key) ; } 
+    
+//    public V getOne(K key) { 
+//        Collection<V> c = map.get(key) ;
+//        if ( c == null || c.size() == 0 ) 
+//            return null ;
+//        return c.iterator().next() ;
+//    }
     
     public void putAll(K key, V ... values)
     {
