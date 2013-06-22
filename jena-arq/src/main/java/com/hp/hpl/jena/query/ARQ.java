@@ -465,10 +465,8 @@ public class ARQ
             MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS) ;
             
             // This is the pattern for any subsystem to register. 
-            String NS = ARQ.PATH ;
-
             SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
-            ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
+            ARQMgt.register(PATH+".system:type=SystemInfo", sysInfo) ;
             SystemARQ.registerSubSystem(sysInfo) ;
 
             // Register RIOT details here, not earlier, to avoid
