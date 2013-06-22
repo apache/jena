@@ -70,7 +70,8 @@ text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
 
 <#entMap> a text:EntityMap ;
     text:entityField      "uri" ;
-    text:defaultField     "text" ; ## Must be defined in the text:maps
+    text:defaultField       "text" ;        ## Can be defined in the text:map if 
+    # text:defaultPredicate   rdfs:label ;   ## or define here.
     text:map (
          # rdfs:label            
          [ text:field "text" ; text:predicate rdfs:label ]
