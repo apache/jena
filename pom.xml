@@ -51,6 +51,7 @@
   </scm>
 
   <modules>
+
     <module>jena-parent</module>
     <module>jena-iri</module>
     <module>jena-core</module>
@@ -59,12 +60,9 @@
     <module>jena-text</module>
     <module>jena-sdb</module>
     <module>jena-fuseki</module>
-    <!--
-    <module>jena-sdb</module>
-    -->
-    <!-- Convenience modules -->
-    <module>apache-jena-libs</module>
+
     <!-- Delivery modules - after build modules --> 
+    <module>apache-jena-libs</module>
     <module>apache-jena</module>
   </modules>
 
