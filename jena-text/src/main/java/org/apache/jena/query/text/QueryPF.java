@@ -38,6 +38,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice ;
+import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
@@ -125,10 +126,9 @@ public class QueryPF extends PropertyFunctionBase {
 
         // ----
 
-        QueryIterator qIter = (Var.isVar(s)) ? variableSubject(binding, s, match, execCxt) : concreteSubject(binding,
-                                                                                                             s, match,
-                                                                                                             execCxt) ;
-
+        QueryIterator qIter = (Var.isVar(s)) 
+            ? variableSubject(binding, s, match, execCxt) 
+            : concreteSubject(binding, s, match, execCxt) ;
         if (match.getLimit() >= 0)
             qIter = new QueryIterSlice(qIter, 0, match.getLimit(), execCxt) ;
         return qIter ;
@@ -136,7 +136,7 @@ public class QueryPF extends PropertyFunctionBase {
 
     private QueryIterator variableSubject(Binding binding, Node s, StrMatch match, ExecutionContext execCxt) {
         Var v = Var.alloc(s) ;
-        List<Node> r = query(match.getQueryString(), match.getLimit()) ;
+        List<Node> r = query(match.getQueryString(), match.getLimit(), execCxt) ;
         // Make distinct. Note interaction with limit is imperfect
         r = Iter.iter(r).distinct().toList() ;
         QueryIterator qIter = new QueryIterExtendByVar(binding, v, r.iterator(), execCxt) ;
@@ -154,28 +154,28 @@ public class QueryPF extends PropertyFunctionBase {
         // Restrict to matching and entity field be right.
         String qs = match.getQueryString() ;
         if ( false ) {
-            // This should work but it doesn't
+            // This should work but it doesn't. Why?
             String escaped = QueryParser.escape(uri) ;
             String qs2 = server.getDocDef().getEntityField() + ":" + escaped ;
             qs = qs2 + " AND " + qs ;
-            List<Node> x = query(qs, 1) ;
+            List<Node> x = query(qs, 1, execCxt) ;
             if (x == null || x.isEmpty())
                 return IterLib.noResults(execCxt) ;
             else
                 return IterLib.result(binding, execCxt) ;
         }
         // Crude.
-        List<Node> x = query(qs, -1) ;
+        List<Node> x = query(qs, -1, execCxt) ;
         if ( x == null || ! x.contains(s) )
             return IterLib.noResults(execCxt) ;
         else
             return IterLib.result(binding, execCxt) ;
     }
 
-    private List<Node> query(String queryString, int limit) {
-        // Explain
-        if ( log.isInfoEnabled())
-            log.info("Text query: {} ({})", queryString,limit) ;
+    private List<Node> query(String queryString, int limit, ExecutionContext execCxt) {
+        Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
+        if ( log.isDebugEnabled())
+            log.debug("Text query: {} ({})", queryString,limit) ;
         return server.query(queryString, limit) ;
     }
     
