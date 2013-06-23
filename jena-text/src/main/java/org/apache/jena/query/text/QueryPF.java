@@ -16,14 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text ;
 
 import java.util.List ;
-import java.util.Map ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.lucene.queryparser.classic.QueryParser ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -39,82 +41,52 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
-/** property function that accesses a Solr server */ 
-public class QueryPF extends PropertyFunctionBase
-{
-    private TextIndex server = null ;  
-    private boolean warningIssued = false ;
-    
-    public QueryPF() { } 
+/** property function that accesses a Solr server */
+public class QueryPF extends PropertyFunctionBase {
+    private static Logger log           = LoggerFactory.getLogger(QueryPF.class) ;
+    /*
+     * ?uri :queryPF (property? "string" limit? score?) score? not implemented
+     */
+
+    private TextIndex     server        = null ;
+    private boolean       warningIssued = false ;
+
+    public QueryPF() {}
 
     @Override
-    public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-    {
+    public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt) ;
-        
+
         DatasetGraph dsg = execCxt.getDataset() ;
         server = chooseTextIndex(dsg) ;
-        
-        if ( ! argSubject.isNode() )
-            throw new QueryBuildException("Subject is not a single node: "+argSubject) ;
-        
-        if ( argObject.isList() )
-        {
+
+        if (!argSubject.isNode())
+            throw new QueryBuildException("Subject is not a single node: " + argSubject) ;
+
+        if (argObject.isList()) {
             List<Node> list = argObject.getArgList() ;
-            if ( list.size() == 0 )
+            if (list.size() == 0)
                 throw new QueryBuildException("Zero-length argument list") ;
 
-            if ( list.size() > 4 )
-                throw new QueryBuildException("Too many arguments in list : "+list) ;
+            if (list.size() > 4)
+                throw new QueryBuildException("Too many arguments in list : " + list) ;
         }
     }
 
-    /*
-     * ?uri :queryPF (property? "string" limit? score?)
-     * score? not implemented
-     */
-    
-    // score limit - float : new IteratorTruncate<SolrDocument>(...., iter) ; 
-    
-    static class StrMatch
-    {
-        private final Node property ;
-        private final String queryString ;
-        private final int limit ;
-        private final float scoreLimit ;
-
-        public StrMatch(Node property, String queryString, int limit, float scoreLimit)
-        {
-            super() ;
-            this.property = property ;
-            this.queryString = queryString ;
-            this.limit = limit ;
-            this.scoreLimit = scoreLimit ;
-        }
-
-        public Node getProperty()           { return property ; }
-
-        public String getQueryString()      { return queryString ; }
-
-        public int getLimit()               { return limit ; }
-
-        public float getScoreLimit()        { return scoreLimit ; }
-    }
-    
-    private static TextIndex chooseTextIndex(DatasetGraph dsg)
-    {
+    private static TextIndex chooseTextIndex(DatasetGraph dsg) {
         Object obj = dsg.getContext().get(TextQuery.textIndex) ;
 
-        if ( obj != null )
-        {
-            try { return (TextIndex)obj ; } 
-            catch (ClassCastException ex) { Log.warn(QueryPF.class, "Context setting '"+TextQuery.textIndex+"'is not a TextIndex") ; }
+        if (obj != null) {
+            try {
+                return (TextIndex)obj ;
+            } catch (ClassCastException ex) {
+                Log.warn(QueryPF.class, "Context setting '" + TextQuery.textIndex + "'is not a TextIndex") ;
+            }
         }
 
-        if ( dsg instanceof DatasetGraphText )
-        {
+        if (dsg instanceof DatasetGraphText) {
             DatasetGraphText x = (DatasetGraphText)dsg ;
             return x.getTextIndex() ;
         }
@@ -123,134 +95,191 @@ public class QueryPF extends PropertyFunctionBase
     }
 
     @Override
-    public QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-    {
-        if ( server == null )
-        {
-            if ( ! warningIssued )
-            {
+    public QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
+                              ExecutionContext execCxt) {
+        if (server == null) {
+            if (!warningIssued) {
                 Log.warn(getClass(), "No text index - no text search performed") ;
                 warningIssued = true ;
             }
             // Not a text dataset - no-op
             return IterLib.result(binding, execCxt) ;
         }
-     
+
         DatasetGraph dsg = execCxt.getDataset() ;
-        
-        if ( ! argSubject.isNode() )
+
+        if (!argSubject.isNode())
             throw new InternalErrorException("Subject is not a node (it was earlier!)") ;
-            
+
         Node s = argSubject.getArg() ;
-        
-        if ( s.isLiteral() )
+
+        if (s.isLiteral())
             // Does not match
             return IterLib.noResults(execCxt) ;
-        
+
         StrMatch match = objectToStruct(argObject) ;
+        if (match == null) {
+            // can't match
+            return IterLib.noResults(execCxt) ;
+        }
 
         // ----
-        
-        QueryIterator qIter =  ( Var.isVar(s) ) 
-            ? variableSubject(binding, s, match, execCxt)
-            : concreteSubject(binding, s, match, execCxt) ;
-        
-        if ( match.getLimit() >= 0 )
+
+        QueryIterator qIter = (Var.isVar(s)) ? variableSubject(binding, s, match, execCxt) : concreteSubject(binding,
+                                                                                                             s, match,
+                                                                                                             execCxt) ;
+
+        if (match.getLimit() >= 0)
             qIter = new QueryIterSlice(qIter, 0, match.getLimit(), execCxt) ;
         return qIter ;
     }
 
-    private QueryIterator variableSubject(Binding binding, Node s, StrMatch match, ExecutionContext execCxt )
-    {
+    private QueryIterator variableSubject(Binding binding, Node s, StrMatch match, ExecutionContext execCxt) {
         Var v = Var.alloc(s) ;
-        List<Node> r = server.query(match.getQueryString(), match.getLimit()) ;
-        // Make distinct.  Note interaction with limit is imperfect
+        List<Node> r = query(match.getQueryString(), match.getLimit()) ;
+        // Make distinct. Note interaction with limit is imperfect
         r = Iter.iter(r).distinct().toList() ;
         QueryIterator qIter = new QueryIterExtendByVar(binding, v, r.iterator(), execCxt) ;
         return qIter ;
     }
 
-    private QueryIterator concreteSubject(Binding binding, Node s, StrMatch match, ExecutionContext execCxt )
-    {
-        if ( ! s.isURI() )
-        {
-            Log.warn(this, "Subject not a URI: "+s) ;
-            return IterLib.noResults(execCxt) ; 
+    private QueryIterator concreteSubject(Binding binding, Node s, StrMatch match, ExecutionContext execCxt) {
+        if (!s.isURI()) {
+            log.warn("Subject not a URI: " + s) ;
+            return IterLib.noResults(execCxt) ;
         }
-        
+
         String uri = s.getURI() ;
-        Map<String, Node> x = server.get(uri) ;
-        if ( x == null || x.isEmpty() )
+        
+        // Restrict to matching and entity field be right.
+        String qs = match.getQueryString() ;
+        if ( false ) {
+            // This should work but it doesn't
+            String escaped = QueryParser.escape(uri) ;
+            String qs2 = server.getDocDef().getEntityField() + ":" + escaped ;
+            qs = qs2 + " AND " + qs ;
+            List<Node> x = query(qs, 1) ;
+            if (x == null || x.isEmpty())
+                return IterLib.noResults(execCxt) ;
+            else
+                return IterLib.result(binding, execCxt) ;
+        }
+        // Crude.
+        List<Node> x = query(qs, -1) ;
+        if ( x == null || ! x.contains(s) )
             return IterLib.noResults(execCxt) ;
         else
             return IterLib.result(binding, execCxt) ;
     }
 
-    /** Deconstruct the node or list object argument and make a StrMatch */ 
-    private StrMatch objectToStruct(PropFuncArg argObject)
-    {
-        
-        EntityDefinition docDef = server.getDocDef()  ;
-        if ( argObject.isNode() )
-        {
+    private List<Node> query(String queryString, int limit) {
+        // Explain
+        if ( log.isInfoEnabled())
+            log.info("Text query: {} ({})", queryString,limit) ;
+        return server.query(queryString, limit) ;
+    }
+    
+    /** Deconstruct the node or list object argument and make a StrMatch */
+    private StrMatch objectToStruct(PropFuncArg argObject) {
+        EntityDefinition docDef = server.getDocDef() ;
+        if (argObject.isNode()) {
             Node o = argObject.getArg() ;
-            
-            if ( ! o.isLiteral() )
-            { System.err.println("Bad/4") ; }
-            
+
+            if (!o.isLiteral()) {
+                log.warn("Object to text query is not a literal") ;
+                return null ;
+            }
+
             RDFDatatype dt = o.getLiteralDatatype() ;
-            if ( dt != null && dt != XSDDatatype.XSDstring )
-            { System.err.println("Bad") ; }
-                
+            if (dt != null && dt != XSDDatatype.XSDstring) {
+                log.warn("Object to text query is not a string") ;
+                return null ;
+            }
+
             String qs = o.getLiteralLexicalForm() ;
-            return new StrMatch(docDef.getPrimaryPredicate(), qs, -1, 0) ; 
+            return new StrMatch(docDef.getPrimaryPredicate(), qs, -1, 0) ;
         }
-         
+
         List<Node> list = argObject.getArgList() ;
-        if ( list.size() == 0 || list.size() > 3 )
-            throw new TextIndexException("Change in object list size") ; 
+        if (list.size() == 0 || list.size() > 3)
+            throw new TextIndexException("Change in object list size") ;
 
         Node p = docDef.getPrimaryPredicate() ;
         String field = docDef.getPrimaryField() ;
         int idx = 0 ;
         Node x = list.get(0) ;
         // Property?
-        if ( x.isURI() )
-        {
+        if (x.isURI()) {
             p = x ;
             idx++ ;
-            if ( idx >= list.size() )
-                throw new TextIndexException("Property specificied but no query string : "+list) ;
+            if (idx >= list.size())
+                throw new TextIndexException("Property specificied but no query string : " + list) ;
             x = list.get(idx) ;
-            field = docDef.getField(p) ; 
+            field = docDef.getField(p) ;
+            if (field == null) {
+                log.warn("Predicate not indexed: " + p) ;
+                return null ;
+            }
         }
-        
+
         // String!
-        if ( ! x.isLiteral() )
-            throw new TextIndexException("Query isn't a literal string : "+list) ;
-        if ( x.getLiteralDatatype() != null && ! x.getLiteralDatatype().equals(XSDDatatype.XSDstring) )
-            throw new TextIndexException("Query isn't a string : "+list) ;
-        String queryString = x.getLiteralLexicalForm() ;  
+        if (!x.isLiteral()) {
+            log.warn("Text query string is not a literal " + list) ;
+            return null ;
+        }
+        if (x.getLiteralDatatype() != null && !x.getLiteralDatatype().equals(XSDDatatype.XSDstring)) {
+            log.warn("Text query is not a string " + list) ;
+            return null ;
+        }
+        String queryString = x.getLiteralLexicalForm() ;
         idx++ ;
-        
+
         int limit = -1 ;
         float score = 0 ;
-        
-        if ( idx < list.size() )
-        {        
+
+        if (idx < list.size()) {
             // Limit?
             x = list.get(idx) ;
             idx++ ;
             int v = NodeFactoryExtra.nodeToInt(x) ;
-            limit = ( v < 0 ) ? -1 : v ; 
+            limit = (v < 0) ? -1 : v ;
         }
 
         String qs = queryString ;
-        if ( field != null )
-            qs = field+":"+qs ;
-        
+        if (field != null)
+            qs = field + ":" + qs ;
+
         return new StrMatch(p, qs, limit, score) ;
     }
+
+    class StrMatch {
+        private final Node   property ;
+        private final String queryString ;
+        private final int    limit ;
+        private final float  scoreLimit ;
+
+        public StrMatch(Node property, String queryString, int limit, float scoreLimit) {
+            super() ;
+            this.property = property ;
+            this.queryString = queryString ;
+            this.limit = limit ;
+            this.scoreLimit = scoreLimit ;
+        }
+
+        public Node getProperty() {
+            return property ;
+        }
+
+        public String getQueryString() {
+            return queryString ;
+        }
+
+        public int getLimit() {
+            return limit ;
+        }
+
+        public float getScoreLimit() {
+            return scoreLimit ;
+        }
+    }
 }
-
-
