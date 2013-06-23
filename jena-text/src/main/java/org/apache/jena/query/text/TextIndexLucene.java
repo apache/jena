@@ -18,45 +18,52 @@
 
 package org.apache.jena.query.text;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.io.IOException ;
+import java.util.* ;
+import java.util.Map.Entry ;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.util.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.lucene.analysis.Analyzer ;
+import org.apache.lucene.analysis.standard.StandardAnalyzer ;
+import org.apache.lucene.document.Document ;
+import org.apache.lucene.document.Field ;
+import org.apache.lucene.document.FieldType ;
+import org.apache.lucene.document.TextField ;
+import org.apache.lucene.index.DirectoryReader ;
+import org.apache.lucene.index.IndexReader ;
+import org.apache.lucene.index.IndexWriter ;
+import org.apache.lucene.index.IndexWriterConfig ;
+import org.apache.lucene.queryparser.classic.ParseException ;
+import org.apache.lucene.queryparser.classic.QueryParser ;
+import org.apache.lucene.search.IndexSearcher ;
+import org.apache.lucene.search.Query ;
+import org.apache.lucene.search.ScoreDoc ;
+import org.apache.lucene.store.Directory ;
+import org.apache.lucene.util.Version ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TextIndexLucene implements TextIndex
 {
     private static Logger log = LoggerFactory.getLogger(TextIndexLucene.class) ;
     
     private static int MAX_N = 10000 ;
-    private static final Version VER = Version.LUCENE_41 ;
-    static FieldType ftIndexedStored = TextField.TYPE_STORED ; 
-    static FieldType ftIndexed = TextField.TYPE_NOT_STORED ;
+    public static final Version VER = Version.LUCENE_41 ;
+    
+    public static final FieldType ftIRI ;
+    static {
+        ftIRI = new FieldType() ;
+        ftIRI.setTokenized(false) ;
+        ftIRI.setStored(true) ;
+        ftIRI.setIndexed(true) ;
+        ftIRI.freeze() ;
+    }
+    //public static final FieldType ftText = TextField.TYPE_NOT_STORED ;
+    // Bigger index, easier to debug!
+    public static final FieldType ftText = TextField.TYPE_STORED ;
     
     private final EntityDefinition docDef ;
     private final Directory directory ;
@@ -70,10 +77,13 @@ public class TextIndexLucene implements TextIndex
         this.docDef = def ;
         
         // force creation of the index if it don't exist
-        // othewise if we get a search before data is written we get an exception
+        // otherwise if we get a search before data is written we get an exception
         startIndexing();
         finishIndexing();
     }
+    
+    public Directory getDirectory()     { return directory ; }
+    public Analyzer getAnalyzer()       { return analyzer ; }
     
     @Override
     public void startIndexing()
@@ -119,12 +129,12 @@ public class TextIndexLucene implements TextIndex
     private Document doc(Entity entity)
     {
         Document doc = new Document() ;
-        Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIndexedStored) ;
+        Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIRI) ;
         doc.add(entField) ;
         
         for ( Entry<String, Object> e : entity.getMap().entrySet() )
         {
-            Field field = new Field(e.getKey(), (String)e.getValue(), ftIndexed) ;
+            Field field = new Field(e.getKey(), (String)e.getValue(), ftText) ;
             doc.add(field) ;
         }
         return doc ;
@@ -144,13 +154,13 @@ public class TextIndexLucene implements TextIndex
         } catch (Exception ex) { exception(ex) ; return null ; } 
     }
     
-    private List<Map<String, Node>> get$(IndexReader indexReader , String uri)  throws ParseException, IOException {
+    private List<Map<String, Node>> get$(IndexReader indexReader, String uri)  throws ParseException, IOException {
         String escaped = QueryParser.escape(uri);
         String qs = docDef.getEntityField()+":"+escaped ;
         QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer);
         Query query = queryParser.parse(qs);
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-        ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;   // Only need one hit.    
+        ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;    
         List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
 
         // Align and DRY with Solr.
@@ -195,7 +205,7 @@ public class TextIndexLucene implements TextIndex
         } catch (Exception ex) { exception(ex) ; return null ; } 
     }
         
-    public List<Node> query$(IndexReader indexReader , String qs, int limit) throws ParseException, IOException {
+    private List<Node> query$(IndexReader indexReader , String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer);
         Query query = queryParser.parse(qs);

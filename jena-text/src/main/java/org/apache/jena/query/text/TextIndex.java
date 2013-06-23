@@ -25,13 +25,17 @@ import org.apache.jena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.graph.Node ;
 
+/** TextIndex abstraction */ 
 public interface TextIndex extends Closeable //, Transactional 
 {
+    // Update operations
     public abstract void startIndexing() ;
     public abstract void addEntity(Entity entity) ;
     public abstract void finishIndexing() ;
     public abstract void abortIndexing() ;
     
+    // read operations
+    /** Get all entries for uri */
     public abstract Map<String, Node> get(String uri) ;
 
     /** Access the index - limit if -1 for as many as possible */ 

@@ -65,7 +65,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase
             if ( n.isLiteral() )
             {
                 if ( ! "mem".equals(n.asLiteral().getLexicalForm()) )
-                    throw new TextIndexException("No 'text:directory' property on "+root+ " is a liteal and not \"mem\"") ;
+                    throw new TextIndexException("No 'text:directory' property on "+root+ " is a literal and not \"mem\"") ;
                  directory = new RAMDirectory() ;
             }
             else
