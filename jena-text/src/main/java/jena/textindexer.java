@@ -115,8 +115,8 @@ public class textindexer extends CmdARQ {
         // but each entity may be updated several times
 
         for (Iterator<Node> propIter = properties.iterator(); propIter.hasNext();) {
-            Node p = propIter.next() ;
-            Iterator<Quad> quadIter = dataset.find(Node.ANY, Node.ANY, p, Node.ANY) ;
+            Node property = propIter.next() ;
+            Iterator<Quad> quadIter = dataset.find(Node.ANY, Node.ANY, property, Node.ANY) ;
             for (; quadIter.hasNext();) {
                 Quad quad = quadIter.next() ;
                 Entity entity = createEntity(quad) ;
@@ -133,11 +133,8 @@ public class textindexer extends CmdARQ {
     private Set<Node> getIndexedProperties() {
         Set<Node> result = new HashSet<Node>() ;
         for (String f : entityDefinition.fields()) {
-            System.out.println("-- "+f) ;
-            for ( Node p : entityDefinition.getPredicates(f) ) {
-                System.out.println("---- "+p) ;
+            for ( Node p : entityDefinition.getPredicates(f) )
                 result.add(p) ;
-            }
         }
         return result ;
     }
