@@ -61,9 +61,9 @@ public class TextIndexLucene implements TextIndex
         ftIRI.setIndexed(true) ;
         ftIRI.freeze() ;
     }
-    //public static final FieldType ftText = TextField.TYPE_NOT_STORED ;
+    public static final FieldType ftText = TextField.TYPE_NOT_STORED ;
     // Bigger index, easier to debug!
-    public static final FieldType ftText = TextField.TYPE_STORED ;
+    // public static final FieldType ftText = TextField.TYPE_STORED ;
     
     private final EntityDefinition docDef ;
     private final Directory directory ;
