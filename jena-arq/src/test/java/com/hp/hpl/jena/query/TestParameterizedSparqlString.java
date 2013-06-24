@@ -1777,4 +1777,43 @@ public class TestParameterizedSparqlString {
         pss.toString();
     }
 
+    @Test
+    public void test_param_string_bug_01() {
+        // Tests a bug reported with setting literals
+        String str = "SELECT * WHERE { ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral("o", "has$sign");
+        
+        pss.toString();
+    }
+    
+    @Test
+    public void test_param_string_bug_02() {
+        // Tests a bug reported with setting literals
+        String str = "SELECT * WHERE { ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral("o", "has$1sign");
+        
+        pss.toString();
+    }
+    
+    @Test
+    public void test_param_string_bug_03() {
+        // Tests a bug reported with setting literals
+        String str = "SELECT * WHERE { ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral("o", "has$5sign");
+        
+        pss.toString();
+    }
+    
+    @Test
+    public void test_param_string_bug_04() {
+        // Tests a bug reported with setting literals
+        String str = "SELECT * WHERE { ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setLiteral("o", "has $9 sign");
+        
+        pss.toString();
+    }
 }
