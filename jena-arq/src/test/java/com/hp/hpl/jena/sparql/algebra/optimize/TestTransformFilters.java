@@ -592,12 +592,43 @@ public class TestTransformFilters
              (String[])null);
     }
     
-    @Test public void implicitJoin9()
+    @Test public void implicitJoin7()
     {
         test(
              "(filter ((= ?x ?y) (= ?x ?z)) (bgp (?x ?p ?o)(?y ?p1 ?z)))",
              t_implicitJoin,
              (String[])null);
+    }
+    
+    @Test public void implicitJoin8()
+    {
+        test(
+             "(filter (= ?x ?y) (join (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1))))",
+             t_implicitJoin,
+             "(assign ((?x ?y)) (join (bgp (?y ?p ?o)) (bgp (?y ?p1 ?o1))))");
+        
+        test(
+                "(filter (= ?y ?x) (join (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1))))",
+                t_implicitJoin,
+                "(assign ((?y ?x)) (join (bgp (?x ?p ?o)) (bgp (?x ?p1 ?o1))))");
+    }
+    
+    @Test public void implicitJoin9()
+    {
+        // A variable introduced by an assign cannot be considered safe
+        test(
+             "(filter (= ?x ?y) (assign ((?x <http://constant>)) (bgp (?y ?p ?o))))",
+             t_implicitJoin,
+             (String[])null);
+    }
+    
+    @Test public void implicitJoin10()
+    {
+        // A variable not necessarily fixed makes the transform unsafe
+        test(
+            "(filter (= ?x ?y) (leftjoin (leftjoin (bgp (?s <http://pred> ?o)) (bgp (?x ?p ?o))) (bgp (?y ?p1 ?o1))))",
+            t_implicitJoin,
+            (String[])null);
     }
         
     @Test public void implicitLeftJoin1()
