@@ -70,7 +70,8 @@ import com.hp.hpl.jena.sparql.expr.*;
  * }
  * </pre>
  * <p>
- * The optimizer does not cover the implicit left join case, for that see {@link TransformImplicitLeftJoin}
+ * The optimizer does not cover the implicit left join case, for that see
+ * {@link TransformImplicitLeftJoin}
  * </p>
  * <h3>Applicability</h3>
  * <p>
@@ -84,7 +85,8 @@ import com.hp.hpl.jena.sparql.expr.*;
  * </p>
  * <h3>Known Limitations/To Do</h3>
  * <ul>
- * <li>Application to implicit joins may block the sequence transform which means the potential benefits of the optimization are negated</li>
+ * <li>Application to implicit joins may block the sequence transform which
+ * means the potential benefits of the optimization are negated</li>
  * </ul>
  */
 public class TransformFilterImplicitJoin extends TransformCopy {
@@ -106,6 +108,16 @@ public class TransformFilterImplicitJoin extends TransformCopy {
         List<Pair<Var, Var>> joins = p.getLeft();
         Collection<Var> varsMentioned = varsMentionedInImplictJoins(joins);
         ExprList remaining = p.getRight();
+
+        // Not possible to optimize if multiple overlapping implicit joins
+        // We can test this simply by checking that the number of vars in
+        // varsMentioned is double the number of detected implicit joins
+        
+        // TODO In principal this may be safe provided we carefully apply the
+        // substitutions in the correct order, this is left as a future
+        // enhancement to this optimizer
+        if (varsMentioned.size() != joins.size() * 2)
+            return null;
 
         // ---- Check if the subOp is the right shape to transform.
         Op op = subOp;

@@ -22,6 +22,7 @@ import static org.apache.jena.atlas.lib.CollectionUtils.disjoint ;
 
 import java.util.ArrayList ;
 import java.util.Collection ;
+import java.util.HashSet;
 import java.util.List ;
 import java.util.Set ;
 
@@ -64,6 +65,11 @@ public class TransformFilterEquality extends TransformCopy
         List<Pair<Var, NodeValue>> equalities = p.getLeft() ;
         Collection<Var> varsMentioned = varsMentionedInEqualityFilters(equalities) ;
         ExprList remaining = p.getRight() ;
+        
+        // If any of the conditions overlap the optimization is unsafe 
+        // (the query is also likely incorrect but that isn't our problem)
+        if (varsMentioned.size() < equalities.size())
+            return null;
         
         // ---- Check if the subOp is the right shape to transform.
         Op op = subOp ;
@@ -168,7 +174,7 @@ public class TransformFilterEquality extends TransformCopy
 
     private static Collection<Var> varsMentionedInEqualityFilters(List<Pair<Var, NodeValue>> equalities)
     {
-        List<Var> vars = new ArrayList<Var>() ;
+        Set<Var> vars = new HashSet<Var>() ;
         for ( Pair<Var, NodeValue> p : equalities )
             vars.add(p.getLeft()) ;
         return vars ;

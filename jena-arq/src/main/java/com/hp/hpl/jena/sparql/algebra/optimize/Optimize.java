@@ -173,10 +173,10 @@ public class Optimize implements Rewrite
         
         // Currently implicit join optimizations must be explicitly enabled
         
-        if ( context.isTrue(ARQ.optFilterImplicitJoin) )
+        if ( context.isTrueOrUndef(ARQ.optFilterImplicitJoin) )
             op = apply("Filter Implicit Join", new TransformFilterImplicitJoin(), op);
         
-        if ( context.isTrue(ARQ.optImplicitLeftJoin) )
+        if ( context.isTrueOrUndef(ARQ.optImplicitLeftJoin) )
             op = apply("Implicit Left Join", new TransformImplicitLeftJoin(), op);
         
         if ( context.isTrueOrUndef(ARQ.optFilterEquality) )

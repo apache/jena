@@ -197,6 +197,12 @@ public class TestTransformFilters
              "      (bgp (triple ?s1 ?p2 ?o2)))))"
             ) ;
     }
+    
+    @Test public void equality17() {
+        test("(filter ((= ?x <http://constant1>) (= ?x <http://constant2>)) (join (bgp (?x <http://p1> ?o1)) (bgp (?x <http://p2> ?o2))))",
+             t_equality,
+             (String[])null);
+    }
 
     // Related to JENA-432
     @Test public void optionalEqualitySubQuery_01() {
@@ -585,6 +591,14 @@ public class TestTransformFilters
              t_implicitJoin,
              (String[])null);
     }
+    
+    @Test public void implicitJoin9()
+    {
+        test(
+             "(filter ((= ?x ?y) (= ?x ?z)) (bgp (?x ?p ?o)(?y ?p1 ?z)))",
+             t_implicitJoin,
+             (String[])null);
+    }
         
     @Test public void implicitLeftJoin1()
     {
@@ -705,7 +719,7 @@ public class TestTransformFilters
                 "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?y ?x)) (bgp (?x <http://type> ?type)(?x ?p1 ?o1))))");
     }
     
-    @Test public void implicitJoin8()
+    @Test public void implicitLeftJoin8()
     {
         // We don't currently optimize the case where the filter will evaluate to false
         // for all solutions because neither variable in on the RHS
@@ -714,7 +728,7 @@ public class TestTransformFilters
              t_implicitLeftJoin,
              (String[])null);
     }
-    
+        
     @Test public void implicitLeftJoin9()
     {
         // && means both conditions must hold so can optimize out the implicit join
@@ -731,6 +745,60 @@ public class TestTransformFilters
              "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1)) (|| (= ?x ?y) (> ?o1 ?o2)))",
              t_implicitLeftJoin,
              (String[])null);
+    }
+    
+    @Test public void implicitLeftJoin11()
+    {
+        // Unsafe to optimize because cannot guarantee that substituted variable is fixed on RHS
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (leftjoin (bgp (?y ?p1 ?o1)) (bgp (?x ?p3 ?y))) (= ?x ?y))",
+             t_implicitLeftJoin,
+             (String[])null);
+        
+        // Swapping the order of equality expressions should still leave it unsafe
+        test(
+                "(leftjoin (bgp (?x ?p ?o)) (leftjoin (bgp (?y ?p1 ?o1)) (bgp (?x ?p3 ?y))) (= ?y ?x))",
+                t_implicitLeftJoin,
+                (String[])null);
+    }
+    
+    @Test public void implicitLeftJoin12()
+    {
+        // Unlike implicit join overlapping conditions can be safely optimized since the left join
+        // optimizer is smart enough to apply the optimizations in an appropriate order
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?x ?y) (= ?x ?z)))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x) (?z ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))))");
+        
+        test(
+                "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?y ?x) (= ?x ?z)))",
+                t_implicitLeftJoin,
+                "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x) (?z ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))))");
+        
+        test(
+                "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?x ?y) (= ?z ?x)))",
+                t_implicitLeftJoin,
+                "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x) (?z ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))))");
+    }
+    
+    @Test public void implicitLeftJoin13()
+    {
+        // There are some overlapping conditions that cannot be safely optimized
+        test(
+                "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?x ?y) (= ?x ?z) (= ?y ?z)))",
+                t_implicitLeftJoin,
+                (String[])null);
+
+        test(
+                "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?z ?y) (= ?x ?z) (= ?x ?y)))",
+                t_implicitLeftJoin,
+                (String[])null);
+        
+        test(
+                "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?z ?y) (= ?z ?x) (= ?y ?x)))",
+                t_implicitLeftJoin,
+                (String[])null);
     }
     
     @Test public void implicitLeftJoinConditional1()

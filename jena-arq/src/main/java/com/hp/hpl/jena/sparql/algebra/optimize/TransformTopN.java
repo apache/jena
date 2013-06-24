@@ -40,7 +40,7 @@ public class TransformTopN extends TransformCopy {
     @Override
 	public Op transform(OpSlice opSlice, Op subOp) { 
         /* 
-         * This looks for all the follwoing cases of slice with optionally 
+         * This looks for all the following cases of slice with optionally 
          * distinct and/or project follow by order
          * 
          *  + slice order
@@ -78,7 +78,7 @@ public class TransformTopN extends TransformCopy {
          * The project can also be over the slice.    
          *
          * The case of (slice (distinct (project (vars) (order ...))))
-         * does not work because distinct-project menas we do not know how
+         * does not work because distinct-project means we do not know how
          * but to make topN buffer.
          * 
          * When there is no project, we can push the distinct under the topN,
