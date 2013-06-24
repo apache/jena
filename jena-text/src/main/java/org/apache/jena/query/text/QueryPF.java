@@ -197,27 +197,27 @@ public class QueryPF extends PropertyFunctionBase {
             }
 
             String qs = o.getLiteralLexicalForm() ;
-            return new StrMatch(docDef.getPrimaryPredicate(), qs, -1, 0) ;
+            return new StrMatch(null, qs, -1, 0) ;
         }
 
         List<Node> list = argObject.getArgList() ;
         if (list.size() == 0 || list.size() > 3)
             throw new TextIndexException("Change in object list size") ;
 
-        Node p = docDef.getPrimaryPredicate() ;
+        Node predicate = null ;
         String field = docDef.getPrimaryField() ;
         int idx = 0 ;
         Node x = list.get(0) ;
         // Property?
         if (x.isURI()) {
-            p = x ;
+            predicate = x ;
             idx++ ;
             if (idx >= list.size())
                 throw new TextIndexException("Property specificied but no query string : " + list) ;
             x = list.get(idx) ;
-            field = docDef.getField(p) ;
+            field = docDef.getField(predicate) ;
             if (field == null) {
-                log.warn("Predicate not indexed: " + p) ;
+                log.warn("Predicate not indexed: " + predicate) ;
                 return null ;
             }
         }
@@ -249,7 +249,7 @@ public class QueryPF extends PropertyFunctionBase {
         if (field != null)
             qs = field + ":" + qs ;
 
-        return new StrMatch(p, qs, limit, score) ;
+        return new StrMatch(predicate, qs, limit, score) ;
     }
 
     class StrMatch {

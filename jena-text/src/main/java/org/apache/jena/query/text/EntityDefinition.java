@@ -18,10 +18,7 @@
 
 package org.apache.jena.query.text ;
 
-import java.util.Collection ;
-import java.util.Collections ;
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.* ;
 
 import org.apache.jena.atlas.lib.MultiMap ;
 
@@ -38,7 +35,18 @@ public class EntityDefinition {
     // Collections.unmodifiableCollection(fieldToPredicate.keySet()) ;
     private final String                 entityField ;
     private final String                 primaryField ;
-    private final Node                   primaryPredicate ;
+    //private final Node                   primaryPredicate ;
+
+    /**
+     * @param entityField
+     *            The entity being indexed (e.g. it's URI).
+     * @param primaryField
+     *            The primary/default field to search
+     */
+    public EntityDefinition(String entityField, String primaryField) {
+        this.entityField = entityField ;
+        this.primaryField = primaryField ;
+    }
 
     /**
      * @param entityField
@@ -49,15 +57,8 @@ public class EntityDefinition {
      *            The property associated with the primary/default field
      */
     public EntityDefinition(String entityField, String primaryField, Node primaryPredicate) {
-        this.entityField = entityField ;
-        this.primaryField = primaryField ;
-        this.primaryPredicate = primaryPredicate ;
-        if (primaryField == null && primaryPredicate != null)
-            throw new IllegalArgumentException("primaryField null but primaryPredicate not null") ;
-        if (primaryField != null && primaryPredicate == null)
-            throw new IllegalArgumentException("primaryField not null but primaryPredicate null") ;
-        if (primaryField != null && primaryPredicate != null)
-            set(primaryField, primaryPredicate) ;
+        this(entityField, primaryField) ;
+        set(primaryField, primaryPredicate) ;
     }
 
     public String getEntityField() {
@@ -80,15 +81,22 @@ public class EntityDefinition {
         return predicateToField.get(predicate) ;
     }
 
-    public Node getPrimaryPredicate() {
-        return primaryPredicate ;
-    }
-
     public String getPrimaryField() {
         return primaryField ;
     }
 
+    public Node getPrimaryPredicate() {
+        Collection<Node> c = fieldToPredicate.get(getPrimaryField()) ;
+        return getOne(c) ;
+    }
+
     public Collection<String> fields() {
         return fields ;
+    }
+    
+    private static <T> T getOne(Collection<T> collection) {
+        if ( collection.size() != 1 )
+            return null ;
+        return collection.iterator().next() ;
     }
 }

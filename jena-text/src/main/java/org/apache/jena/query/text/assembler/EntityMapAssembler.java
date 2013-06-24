@@ -25,6 +25,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextIndexException ;
 
@@ -56,25 +57,13 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
     {
         String prologue = "PREFIX : <"+NS+">   PREFIX list: <http://jena.hpl.hp.com/ARQ/list#> " ;
         Model model = root.getModel() ;
-        
-        
-        // ParameterizedSparqlString
-//        String qs1 = StrUtils.strjoinNL("SELECT * {",
-//                                       "  <"+root.getURI()+">    :entityField  ?entityField ;",
-//                                       "                         :defaultField ?dftField 
-//                                       "          :map ?map ;",
-//                                       "  OPTIONAL { <"+root.getURI()+"> :defaultField ?dftField } ",
-//                                       "}") ;
-        
+
         String qs1 = StrUtils.strjoinNL(prologue,
                                         "SELECT * {" ,
                                         "  ?eMap  :entityField  ?entityField ;" ,
-                                        "         :map ?map" ,
-                                        "  OPTIONAL {" ,
-                                        "     ?eMap :defaultField ?dftField" , 
-                                        "     OPTIONAL { ?eMap :defaultPredicate ?dftPredicate } " ,
-                                        "  }",
-                                         "}") ;
+                                        "         :map ?map ;",
+                                        "         :defaultField ?dftField" , 
+                                        "}") ;
         ParameterizedSparqlString pss = new ParameterizedSparqlString(qs1) ;
         pss.setIri("eMap", root.getURI()) ;
         
@@ -82,33 +71,26 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
         QueryExecution qexec1 = QueryExecutionFactory.create(query1, model) ;
         ResultSet rs1 = qexec1.execSelect() ;
         List<QuerySolution> results = ResultSetFormatter.toList(rs1) ;
-        if ( results.size() !=1 )
-            throw new IllegalStateException() ;
+        if ( results.size() == 0 ) {
+            //Log.warn(this, "Failed to find a valid EntityMap for : "+root) ;
+            throw new TextIndexException("Failed to find a valid EntityMap for : "+root) ;
+        }
+        
+        if ( results.size() !=1 )  {
+            Log.warn(this, "Multiple matches for EntityMap for : "+root) ;
+            throw new TextIndexException("Multiple matches for EntityMap for : "+root) ;
+        }
         
         QuerySolution qsol1 = results.get(0) ;
         String entityField = qsol1.getLiteral("entityField").getLexicalForm() ;
         
         String defaultField = qsol1.contains("dftField") ? qsol1.getLiteral("dftField").getLexicalForm() : null ;
-        Node defaultPredicate = qsol1.contains("dftPredicate") ? qsol1.get("dftPredicate").asNode() : null ;
         
-        String qs2 = StrUtils.strjoinNL("SELECT * {",
-                                        "  ?map list:member [ :field ?field ; :predicate ?predicate ]" ,
-                                        "}") ;
+        String qs2 = StrUtils.strjoinNL("SELECT * { ?map list:member [ :field ?field ; :predicate ?predicate ] }") ;
         Query query2 = QueryFactory.create(prologue+" "+qs2) ;
         QueryExecution qexec2 = QueryExecutionFactory.create(query2, model, qsol1) ;
         ResultSet rs2 = qexec2.execSelect() ;
         List<QuerySolution> mapEntries = ResultSetFormatter.toList(rs2) ;
-        // Find primary entity property.
-        Node primaryProperty = null ;
-        for ( QuerySolution qsol : mapEntries )
-        {
-            String field =  qsol.getLiteral("field").getLexicalForm() ;
-            if ( defaultField.equals(field) )
-            {
-                primaryProperty = qsol.getResource("predicate").asNode() ;
-                break ;
-            }
-        }
         
         MultiMap<String, Node> mapDefs = MultiMap.createMapList() ; 
         for ( QuerySolution qsol : mapEntries ) {
@@ -122,19 +104,10 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
             Collection<Node> c = mapDefs.get(defaultField) ;
             if ( c == null )
                 throw new TextIndexException("No definition of primary field '"+defaultField+"'") ;
-            if ( defaultPredicate == null ) {
-                if ( c.size() != 1 )
-                    throw new TextIndexException("No single definition of primary predicate for primary field '"+defaultField+"'") ;
-                // Set default predicate
-                defaultPredicate = c.iterator().next() ;
-            } else {
-                if ( ! c.contains(defaultPredicate) )
-                    throw new TextIndexException("Primary field '"+defaultField+"' not asscoiated with property <"+defaultPredicate.getURI()+">" ) ;
-            }
         }
         
         
-        EntityDefinition docDef = new EntityDefinition(entityField, defaultField, defaultPredicate) ;
+        EntityDefinition docDef = new EntityDefinition(entityField, defaultField) ;
         for ( String f : mapDefs.keys() ) {
             for ( Node p : mapDefs.get(f)) 
                 docDef.set(f, p) ;
