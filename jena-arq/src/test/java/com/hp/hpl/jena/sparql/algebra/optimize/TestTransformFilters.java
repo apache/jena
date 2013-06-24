@@ -583,7 +583,7 @@ public class TestTransformFilters
         test(
              "(filter (= ?x ?x) (bgp (?x ?p ?o)(?y ?p1 ?o1)))",
              t_implicitJoin,
-             null);
+             (String[])null);
     }
         
     @Test public void implicitLeftJoin1()
@@ -712,7 +712,7 @@ public class TestTransformFilters
         test(
              "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (bgp (?a ?b ?c)) ((= ?x ?y)))",
              t_implicitLeftJoin,
-             null);
+             (String[])null);
     }
     
     @Test public void implicitLeftJoin9()
@@ -730,7 +730,7 @@ public class TestTransformFilters
         test(
              "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1)) (|| (= ?x ?y) (> ?o1 ?o2)))",
              t_implicitLeftJoin,
-             null);
+             (String[])null);
     }
     
     @Test public void implicitLeftJoinConditional1()
