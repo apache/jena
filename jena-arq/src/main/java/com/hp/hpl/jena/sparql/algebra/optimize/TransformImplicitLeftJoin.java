@@ -191,9 +191,36 @@ public class TransformImplicitLeftJoin extends TransformCopy {
         List<Pair<Var, Var>> exprsJoins = new ArrayList<Pair<Var, Var>>();
         ExprList exprsOther = new ExprList();
         for (Expr e : exprs.getList()) {
+            int others = exprsOther.size();
             Pair<Var, Var> p = preprocess(left, right, e, exprsOther);
             if (p != null) {
                 exprsJoins.add(p);
+
+                // Special case for where we've split an && in case the
+                // remaining condition is also an implicit join that we can
+                // process
+                if (others != exprsOther.size()) {
+                    int possRemove = others;
+                    others = exprsOther.size();
+                    p = preprocess(left, right, exprsOther.get(possRemove), exprsOther);
+                    if (p != null) {
+                        exprsJoins.add(p);
+                        // Two possibilities here:
+                        // 1 - The other condition was a plain implicit join in which case the size of the expr list won't have changed
+                        // 2 - The other condition was a nested && which contained an implicit join in which case the size of the expr list will have changed
+                        if (others == exprsOther.size()) {
+                            // Trim the additional condition off the others list
+                            exprsOther = possRemove > 0 ? exprsOther.subList(0, possRemove - 1) : new ExprList();
+                        } else {
+                            // Have additional entry in exprOther
+                            Expr extra = exprsOther.get(exprsOther.size() - 1);
+                            exprsOther = possRemove > 0 ? exprsOther.subList(0, possRemove - 1) : new ExprList();
+                            exprsOther.add(extra);
+                            
+                            // NB - We don't try and handle further nesting which in principle may exist
+                        }
+                    }
+                }
             } else {
                 exprsOther.add(e);
             }
@@ -209,6 +236,9 @@ public class TransformImplicitLeftJoin extends TransformCopy {
 
         ExprFunction2 eq = (ExprFunction2) e;
         if (e instanceof E_LogicalAnd) {
+            // NB - We only handle a single level of nesting here
+            // There is some special case code in the calling function that can attempt to recurse one level further
+            
             // Is LHS of the && an implicit join?
             if (eq.getArg1() instanceof E_Equals || eq.getArg1() instanceof E_SameTerm) {
                 Pair<Var, Var> p = preprocess(opLeft, opRight, eq.getArg1(), exprsOther);
