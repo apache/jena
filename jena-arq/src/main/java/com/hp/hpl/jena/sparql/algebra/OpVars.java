@@ -64,6 +64,7 @@ public class OpVars
         OpWalker.walk(new WalkerVisitorVisible(visitor, acc), op) ;
     }
     
+    @SuppressWarnings("unchecked")
     public static Tuple<Set<Var>> mentionedVarsByPosition(Op op) {
         Set<Var> graphAcc = collector() ;
         Set<Var> subjAcc = collector() ;
@@ -75,6 +76,7 @@ public class OpVars
         return Tuple.create(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
     }
     
+    @SuppressWarnings("unchecked")
     public static Tuple<Set<Var>> mentionedVarsByPosition(Op... ops) {
         Set<Var> graphAcc = collector() ;
         Set<Var> subjAcc = collector() ;
@@ -82,9 +84,8 @@ public class OpVars
         Set<Var> objAcc = collector() ;
         Set<Var> unknownAcc = collector() ;
         OpVarsPatternWithPositions visitor = new OpVarsPatternWithPositions(graphAcc, subjAcc, predAcc, objAcc, unknownAcc, false);
-        for (Op op : ops) {
+        for (Op op : ops)
             OpWalker.walk(op, visitor);
-        }
         return Tuple.create(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
     }
 
@@ -392,7 +393,6 @@ public class OpVars
         addVar(acc, t.getObject()) ;
     }
 
-    @SuppressWarnings("unused")
     private static void addVarsFromQuad(Collection<Var> acc, Quad q) {
         addVar(acc, q.getSubject()) ;
         addVar(acc, q.getPredicate()) ;
