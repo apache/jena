@@ -20,7 +20,6 @@ package org.apache.jena.query.text.assembler;
 
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertTrue ;
-import static org.junit.Assert.fail ;
 
 import java.util.Collection ;
 
@@ -80,37 +79,28 @@ public class TestEntityMapAssembler {
 		assertEquals(SPEC2_PREDICATE2.asNode(), getOne(entityDef, SPEC2_FIELD2));
 	}
 	
-	@Test public void errorOnNoEntityField() {
+	@Test(expected=TextIndexException.class) public void errorOnNoEntityField() {
 		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		try {
-		    emAssembler.open(null, specNoEntityField, null);
-		    fail("should throw exception if there is no entity field");
-		} catch (IllegalStateException e) {}		
+		emAssembler.open(null, specNoEntityField, null);
 	}
 	
-	@Test public void errorOnNoDefaultField() {
+	@Test(expected=TextIndexException.class) public void errorOnNoDefaultField() {
 		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		try {
-		    emAssembler.open(null, specNoDefaultField, null);
-		    fail("should throw exception if there is no default field");
-		} catch (IllegalStateException e) {}		
+		emAssembler.open(null, specNoDefaultField, null);
 	}
 	
-	@Test public void errorOnNoMapProperty() {
+	@Test(expected=TextIndexException.class) public void errorOnNoMapProperty() {
 		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		try {
-		    emAssembler.open(null, specNoMapProperty, null);
-		    fail("should throw exception if there is no map property");
-		} catch (IllegalStateException e) {}		
+		emAssembler.open(null, specNoMapProperty, null);
 	}
 	
-	@Test public void errorOnNoPrimaryFieldDef() {
+	@Test(expected=TextIndexException.class) public void errorOnNoPrimaryFieldDef() {
 		EntityMapAssembler emAssembler = new EntityMapAssembler();
 		try {
 		    emAssembler.open(null, specNoPrimaryFieldDef, null);
-		    fail("should throw exception if there is no map property");
 		} catch (TextIndexException e) {
 			assertTrue(e.getMessage().contains(SPEC1_DEFAULT_FIELD));
+			throw e ;
 		}	
 		
 	}
