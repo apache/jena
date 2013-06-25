@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 public class DatasetGraphWrapper implements DatasetGraph
 {
     private final DatasetGraph dsg ;
-    protected final DatasetGraph getWrapped() { return dsg ; }
+    public final DatasetGraph getWrapped() { return dsg ; }
 
     public DatasetGraphWrapper(DatasetGraph dsg)
     {
