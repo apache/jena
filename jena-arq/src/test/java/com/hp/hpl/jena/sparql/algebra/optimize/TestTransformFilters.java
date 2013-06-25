@@ -18,20 +18,34 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.plaf.basic.BasicPanelUI;
+
 import org.junit.Assert ;
 import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.graph.NodeFactory;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformExpandOneOf ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterDisjunction ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterEquality ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterPlacement ;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarExprList;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Tests of transforms related to filters */
@@ -820,21 +834,22 @@ public class TestTransformFilters
     
     @Test public void implicitLeftJoin13()
     {
-        // There are some overlapping conditions that cannot be safely optimized
+        // There are some overlapping conditions that are safe to optimize however they may end up introducing
+        // additional unnecessary assign operators
         test(
                 "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?x ?y) (= ?x ?z) (= ?y ?z)))",
                 t_implicitLeftJoin,
-                (String[])null);
-
+                "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?z)) (assign ((?y ?x) (?z ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x)))))");
+        
         test(
                 "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?z ?y) (= ?x ?z) (= ?x ?y)))",
                 t_implicitLeftJoin,
-                (String[])null);
+                "(leftjoin (bgp (?x ?p ?o)) (assign ((?z ?x) (?y ?x)) (assign ((?z ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x)))))");
         
         test(
                 "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?z ?y) (= ?z ?x) (= ?y ?x)))",
                 t_implicitLeftJoin,
-                (String[])null);
+                "(leftjoin (bgp (?x ?p ?o)) (assign ((?z ?x) (?y ?x)) (assign ((?z ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x)))))");
     }
     
     @Test public void implicitLeftJoin14()
@@ -876,6 +891,90 @@ public class TestTransformFilters
              "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((&& (&& (= ?x ?y) (> ?o1 10)) (< ?o1 20))))",
              t_implicitLeftJoin,
              (String[])null);
+    }
+    
+    @Test public void implicitLeftJoin18()
+    {
+        // The optimizer is capable of going one level into a nested && to find conditions to apply
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((&& (&& (= ?x ?y) (= ?y ?z)) (= ?x ?z))))",
+             t_implicitLeftJoin,
+             "(leftjoin (bgp (?x ?p ?o)) (assign ((?z ?x) (?y ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))) (= ?y ?z))");
+    }
+    
+    @Test public void implicitLeftJoin19()
+    {
+        // Covers the case of both variables on left and neither on right
+        test(
+             "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (table unit) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             (String[])null);
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+             "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (table unit) ((= ?y ?x)))",
+             t_implicitLeftJoin,
+             (String[])null);
+    }
+    
+    @Test public void implicitLeftJoin20()
+    {
+        // Covers the case of one variable on left and neither on right
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (table unit) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             (String[])null);
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+             "(leftjoin (bgp (?x ?p ?o)) (table unit) ((= ?y ?x)))",
+             t_implicitLeftJoin,
+             (String[])null);
+    }
+    
+    @Test public void implicitLeftJoin21()
+    {
+        // Covers the case of one variable on left and neither on right
+        test(
+             "(leftjoin (bgp (?y ?p ?o)) (table unit) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             (String[])null);
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+             "(leftjoin (bgp (?y ?p ?o)) (table unit) ((= ?y ?x)))",
+             t_implicitLeftJoin,
+             (String[])null);
+    }
+    
+    @Test public void implicitLeftJoin22()
+    {
+        // Covers the case of no variables actually being relevant
+        test(
+             "(leftjoin (bgp (?s ?p ?o)) (table unit) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             (String[])null);
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+             "(leftjoin (bgp (?s ?p ?o)) (table unit) ((= ?y ?x)))",
+             t_implicitLeftJoin,
+             (String[])null);
+    }
+    
+    @Test public void implicitLeftJoin23()
+    {
+        // Covers the case of neither variable on left and both on right
+        test(
+             "(leftjoin (table unit) (bgp (?x ?p ?o)(?x <http://pred> ?y)) ((= ?x ?y)))",
+             t_implicitLeftJoin,
+             "(leftjoin (table unit) (assign ((?x ?y)) (bgp (?y ?p ?o)(?y <http://pred> ?y))))");
+        
+        // Swapping the order of the equality expression should make no difference
+        test(
+             "(leftjoin (table unit) (bgp (?x ?p ?o)(?x <http://pred> ?y)) ((= ?y ?x)))",
+             t_implicitLeftJoin,
+             "(leftjoin (table unit) (assign ((?y ?x)) (bgp (?x ?p ?o)(?x <http://pred> ?x))))");
     }
     
     @Test public void implicitLeftJoinConditional1()

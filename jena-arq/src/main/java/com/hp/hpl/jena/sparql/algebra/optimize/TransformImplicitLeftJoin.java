@@ -150,9 +150,13 @@ public class TransformImplicitLeftJoin extends TransformCopy {
                 } else if (rhsVars.contains(lVar)) {
                     // Substitute left variable for right variable
                     op = processFilterWorker(op, lVar, rVar);
-                } else {
+                } else if (rhsVars.contains(rVar)) {
                     // Substitute right variable for left variable
                     op = processFilterWorker(op, rVar, lVar);
+                } else {
+                    // May be hit if trying to apply a sequence of
+                    // substitutions
+                    return null;
                 }
             } else if (lhsVars.contains(lVar)) {
                 // Only left variable on RHS
@@ -175,8 +179,16 @@ public class TransformImplicitLeftJoin extends TransformCopy {
                     return null;
                 }
             } else {
-                // May be hit if trying to apply a sequence of substitutions
-                return null;
+                // Neither variable is on LHS
+
+                if (rhsVars.contains(lVar) && rhsVars.contains(rVar)) {
+                    // Both variables are on RHS so can substitute one for the
+                    // other
+                    op = processFilterWorker(op, lVar, rVar);
+                } else {
+                    // May be hit if trying to apply a sequence of substitutions
+                    return null;
+                }
             }
 
             // Re-compute visible RHS vars after each substitution as it may
@@ -184,7 +196,11 @@ public class TransformImplicitLeftJoin extends TransformCopy {
             rhsVars = OpVars.visibleVars(op);
         }
 
-        return OpLeftJoin.create(left, op, remaining);
+        if (remaining.size() > 0) {
+            return OpLeftJoin.create(left, op, remaining);
+        } else {
+            return OpLeftJoin.create(left, op, (ExprList) null);
+        }
     }
 
     private static Pair<List<Pair<Var, Var>>, ExprList> preprocessFilterImplicitJoin(Op left, Op right, ExprList exprs) {
@@ -199,6 +215,8 @@ public class TransformImplicitLeftJoin extends TransformCopy {
                 // Special case for where we've split an && in case the
                 // remaining condition is also an implicit join that we can
                 // process
+                // TODO See notes in other preprocess() method for a suggested
+                // improved process for && expressions
                 if (others != exprsOther.size()) {
                     int possRemove = others;
                     others = exprsOther.size();
@@ -206,8 +224,12 @@ public class TransformImplicitLeftJoin extends TransformCopy {
                     if (p != null) {
                         exprsJoins.add(p);
                         // Two possibilities here:
-                        // 1 - The other condition was a plain implicit join in which case the size of the expr list won't have changed
-                        // 2 - The other condition was a nested && which contained an implicit join in which case the size of the expr list will have changed
+                        // 1 - The other condition was a plain implicit join in
+                        // which case the size of the expr list won't have
+                        // changed
+                        // 2 - The other condition was a nested && which
+                        // contained an implicit join in which case the size of
+                        // the expr list will have changed
                         if (others == exprsOther.size()) {
                             // Trim the additional condition off the others list
                             exprsOther = possRemove > 0 ? exprsOther.subList(0, possRemove - 1) : new ExprList();
@@ -216,8 +238,9 @@ public class TransformImplicitLeftJoin extends TransformCopy {
                             Expr extra = exprsOther.get(exprsOther.size() - 1);
                             exprsOther = possRemove > 0 ? exprsOther.subList(0, possRemove - 1) : new ExprList();
                             exprsOther.add(extra);
-                            
-                            // NB - We don't try and handle further nesting which in principle may exist
+
+                            // NB - We don't try and handle further nesting
+                            // which in principle may exist
                         }
                     }
                 }
@@ -236,9 +259,14 @@ public class TransformImplicitLeftJoin extends TransformCopy {
 
         ExprFunction2 eq = (ExprFunction2) e;
         if (e instanceof E_LogicalAnd) {
+            // TODO A better approach would be to define a general recursive
+            // traversal for && which pulls out all implicit joins and produces
+            // an && tree with all other non-eligible expressions
+
             // NB - We only handle a single level of nesting here
-            // There is some special case code in the calling function that can attempt to recurse one level further
-            
+            // There is some special case code in the calling function that can
+            // attempt to recurse one level further
+
             // Is LHS of the && an implicit join?
             if (eq.getArg1() instanceof E_Equals || eq.getArg1() instanceof E_SameTerm) {
                 Pair<Var, Var> p = preprocess(opLeft, opRight, eq.getArg1(), exprsOther);
@@ -441,7 +469,7 @@ public class TransformImplicitLeftJoin extends TransformCopy {
     }
 
     private static Op subst(Op subOp, Var find, Var replace) {
-        Op op = Substitute.substitute(subOp, find, replace.asNode());
+        Op op = Substitute.substitute(subOp, find, replace);
         return OpAssign.assign(op, find, new ExprVar(replace));
     }
 }

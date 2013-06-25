@@ -22,8 +22,10 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSetFactory;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.query.ResultSetRewindable;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
@@ -34,6 +36,9 @@ import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.resultset.TextOutput;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
@@ -56,6 +61,7 @@ public class TestSemanticEquivalence {
         Node c = NodeFactory.createURI("http://c");
         Node p1 = NodeFactory.createURI("http://p1");
         Node p2 = NodeFactory.createURI("http://p2");
+        Node pSelf = NodeFactory.createURI("http://self");
         Node o = NodeFactory.createLiteral("object");
 
         DatasetGraph dsg = implJoin.asDatasetGraph();
@@ -64,6 +70,7 @@ public class TestSemanticEquivalence {
         dsg.add(Quad.defaultGraphNodeGenerated, b, p1, o);
         dsg.add(Quad.defaultGraphNodeGenerated, b, p2, o);
         dsg.add(Quad.defaultGraphNodeGenerated, c, p1, o);
+        //dsg.add(Quad.defaultGraphNodeGenerated, a, pSelf, a);
         
         // Currently these optimizations are off by default
         Assert.assertFalse(ARQ.isFalse(ARQ.optFilterImplicitJoin));
@@ -121,25 +128,34 @@ public class TestSemanticEquivalence {
     @Test
     public void implicitLeftJoinEvaluation1() {
         String query = "SELECT * WHERE { ?x <http://p1> ?o1 . OPTIONAL { ?y <http://p2> ?o2 . FILTER(?x = ?y) } }";
-        test(query, implJoin, ARQ.optFilterImplicitJoin, 3);
+        test(query, implJoin, ARQ.optImplicitLeftJoin, 3);
 
         String alg1 = "(leftjoin (bgp (?x <http://p1> ?o1)) (bgp (?y <http://p2> ?o2)) (= ?x ?y))";
-        testAsAlgebra(alg1, implJoin, ARQ.optFilterImplicitJoin, 3);
+        testAsAlgebra(alg1, implJoin, ARQ.optImplicitLeftJoin, 3);
 
         String alg2 = "(leftjoin (bgp (?x <http://p1> ?o1)) (bgp (?y <http://p2> ?o2)) (= ?y ?x))";
-        testAsAlgebra(alg2, implJoin, ARQ.optFilterImplicitJoin, 3);
+        testAsAlgebra(alg2, implJoin, ARQ.optImplicitLeftJoin, 3);
     }
 
     @Test
     public void implicitLeftJoinEvaluation2() {
         String query = "SELECT * WHERE { ?x <http://p1> ?o1 . OPTIONAL { ?y <http://p2> ?o2 . FILTER(?x = ?y && ?o1 >= ?o2) } }";
-        test(query, implJoin, ARQ.optFilterImplicitJoin, 3);
+        test(query, implJoin, ARQ.optImplicitLeftJoin, 3);
 
         String alg1 = "(leftjoin (bgp (?x <http://p1> ?o1)) (bgp (?y <http://p2> ?o2)) (&& (= ?x ?y)(> ?o1 ?o2)))";
-        testAsAlgebra(alg1, implJoin, ARQ.optFilterImplicitJoin, 3);
+        testAsAlgebra(alg1, implJoin, ARQ.optImplicitLeftJoin, 3);
 
         String alg2 = "(leftjoin (bgp (?x <http://p1> ?o1)) (bgp (?y <http://p2> ?o2)) (&& (= ?y ?x)(> ?o1 ?o2)))";
-        testAsAlgebra(alg2, implJoin, ARQ.optFilterImplicitJoin, 3);
+        testAsAlgebra(alg2, implJoin, ARQ.optImplicitLeftJoin, 3);
+    }
+    
+    @Test
+    public void implicitLeftJoinEvaluation3() {
+        String query = "SELECT * WHERE { ?x ?p ?o . OPTIONAL { ?y ?p1 ?o1 . ?y ?p2 ?z . FILTER(?x = ?y) FILTER(?x = ?z) FILTER(?y = ?z) } }";
+        test(query, implJoin, ARQ.optImplicitLeftJoin, 5);
+        
+        String alg1 = "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((= ?x ?y) (= ?x ?z) (= ?y ?z)))";
+        testAsAlgebra(alg1, implJoin, ARQ.optImplicitLeftJoin, 5);
     }
     
     /**
@@ -160,6 +176,11 @@ public class TestSemanticEquivalence {
 
         if (!q.isSelectType())
             Assert.fail("Only SELECT queries are testable with this method");
+        
+        System.out.println(q.toString());
+        Op op = Algebra.compile(q);
+        System.out.println(op.toString());
+        System.out.println(Algebra.optimize(op));
 
         // Track current state
         boolean isEnabled = ARQ.isTrue(opt);
@@ -170,6 +191,12 @@ public class TestSemanticEquivalence {
             ARQ.set(opt, false);
             QueryExecution qe = QueryExecutionFactory.create(q, ds);
             ResultSetRewindable rs = ResultSetFactory.makeRewindable(qe.execSelect());
+            if (expected != rs.size()) {
+                System.err.println("Non-optimized results not as expected");
+                TextOutput output = new TextOutput((SerializationContext)null);
+                output.format(System.out, rs);
+                rs.reset();
+            }
             Assert.assertEquals(expected, rs.size());
             qe.close();
 
@@ -177,6 +204,12 @@ public class TestSemanticEquivalence {
             ARQ.set(opt, true);
             QueryExecution qeOpt = QueryExecutionFactory.create(q, ds);
             ResultSetRewindable rsOpt = ResultSetFactory.makeRewindable(qeOpt.execSelect());
+            if (expected != rsOpt.size()) {
+                System.err.println("Optimized results not as expected");
+                TextOutput output = new TextOutput((SerializationContext)null);
+                output.format(System.out, rsOpt);
+                rsOpt.reset();
+            }
             Assert.assertEquals(expected, rsOpt.size());
             qeOpt.close();
 
@@ -224,6 +257,12 @@ public class TestSemanticEquivalence {
             QueryIterator iter = engine.eval(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
             ResultSetRewindable rs = ResultSetFactory.makeRewindable(new ResultSetStream(vars, ModelFactory.createDefaultModel(),
                     iter));
+            if (expected != rs.size()) {
+                System.err.println("Non-optimized results not as expected");
+                TextOutput output = new TextOutput((SerializationContext)null);
+                output.format(System.out, rs);
+                rs.reset();
+            }
             Assert.assertEquals(expected, rs.size());
             iter.close();
 
@@ -233,6 +272,12 @@ public class TestSemanticEquivalence {
             QueryIterator iterOpt = engine.eval(op, ds.asDatasetGraph(), BindingFactory.binding(), ARQ.getContext());
             ResultSetRewindable rsOpt = ResultSetFactory.makeRewindable(new ResultSetStream(vars, ModelFactory
                     .createDefaultModel(), iterOpt));
+            if (expected != rsOpt.size()) {
+                System.err.println("Optimized results not as expected");
+                TextOutput output = new TextOutput((SerializationContext)null);
+                output.format(System.out, rsOpt);
+                rsOpt.reset();
+            }
             Assert.assertEquals(expected, rsOpt.size());
             iterOpt.close();
 

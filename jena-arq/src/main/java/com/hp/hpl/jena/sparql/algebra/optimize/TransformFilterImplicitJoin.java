@@ -420,7 +420,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
     }
 
     private static Op subst(Op subOp, Var find, Var replace) {
-        Op op = Substitute.substitute(subOp, find, replace.asNode());
+        Op op = Substitute.substitute(subOp, find, replace);
         return OpAssign.assign(op, find, new ExprVar(replace));
     }
 }
