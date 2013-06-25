@@ -69,14 +69,10 @@ public class ExprVar extends ExprNode
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
         Var v = varNode ;  
-        if ( binding == null || !binding.contains(varNode) )
+        if ( binding == null || !binding.contains(v) )
             return new ExprVar(v) ;
-        return eval(binding, null) ;
-//        catch (VariableNotBoundException ex)
-//        {
-//            Log.warn(this, "Failed to eval bound variable (was bound earlier!)");
-//            throw ex ;
-//        }
+        Node v2 = binding.get(v);
+        return v2.isVariable() ? new ExprVar(v2) : eval(binding, null) ;
     }
     
     @Override
