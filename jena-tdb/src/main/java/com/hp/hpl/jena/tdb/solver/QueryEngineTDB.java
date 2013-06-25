@@ -23,7 +23,10 @@ import org.apache.jena.atlas.lib.Lib ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.core.* ;
+import com.hp.hpl.jena.sparql.core.DatasetDescription ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DynamicDatasets ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
@@ -38,7 +41,6 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.migrate.A2 ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 // This exists to intercept the query execution setup.
@@ -106,13 +108,14 @@ public class QueryEngineTDB extends QueryEngineMain
         if ( context.isTrue(TDB.symUnionDefaultGraph) && ! doingDynamicDatasetBySpecialDataset ) 
         {
             // doingDynamicDatasetBySpecialDataset => done earlier.
+//          // Rewrite so that any explicitly named "default graph" is union graph.
             op = A2.unionDefaultGraphQuads(op) ;
-            // Rewrite so that any explicitly named "default graph" is union graph.
-            // And set the default graph to be the union graph as well.
-            DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
-            ds.setEffectiveDefaultGraph(new GraphTDB(ds, Quad.unionGraph)) ;
             Explain.explain("REWRITE(Union default graph)", op, context) ;
-            dsg = ds ;
+//            // And set the default graph to be the union graph as well.
+//              NOT NEEDED - OpExecutorTDB handles this.            
+//            DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
+//            ds.setEffectiveDefaultGraph(new GraphTDB(ds, Quad.unionGraph)) ;
+//            dsg = ds ;
         }
         QueryIterator results = super.eval(op, dsg, input, context) ;
         results = new QueryIteratorMaterializeBinding(results) ;
