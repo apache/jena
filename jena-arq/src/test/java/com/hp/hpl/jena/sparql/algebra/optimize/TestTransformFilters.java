@@ -213,6 +213,7 @@ public class TestTransformFilters
     }
     
     @Test public void equality17() {
+        // Conflicting constraints should result in no optimization
         test("(filter ((= ?x <http://constant1>) (= ?x <http://constant2>)) (join (bgp (?x <http://p1> ?o1)) (bgp (?x <http://p2> ?o2))))",
              t_equality,
              (String[])null);
@@ -970,7 +971,7 @@ public class TestTransformFilters
              t_implicitLeftJoin,
              "(leftjoin (table unit) (assign ((?x ?y)) (bgp (?y ?p ?o)(?y <http://pred> ?y))))");
         
-        // Swapping the order of the equality expression should make no difference
+        // Swapping the order of the equality will make a difference in this case
         test(
              "(leftjoin (table unit) (bgp (?x ?p ?o)(?x <http://pred> ?y)) ((= ?y ?x)))",
              t_implicitLeftJoin,

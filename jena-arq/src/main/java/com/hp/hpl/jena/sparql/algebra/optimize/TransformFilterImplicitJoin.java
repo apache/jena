@@ -112,7 +112,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
         // Not possible to optimize if multiple overlapping implicit joins
         // We can test this simply by checking that the number of vars in
         // varsMentioned is double the number of detected implicit joins
-        
+
         // TODO In principal this may be safe provided we carefully apply the
         // substitutions in the correct order, this is left as a future
         // enhancement to this optimizer
@@ -146,8 +146,11 @@ public class TransformFilterImplicitJoin extends TransformCopy {
 
         if (!safeToTransform(joins, varsMentioned, op))
             return null;
-        for (Pair<Var, Var> implicitJoin : joins)
+        for (Pair<Var, Var> implicitJoin : joins) {
+            // TODO Where there are multiple conditions it may be necessary to
+            // apply the substitutions more intelligently
             op = processFilterWorker(op, implicitJoin.getLeft(), implicitJoin.getRight());
+        }
 
         // ---- Place any filter expressions around the processed sub op.
         if (remaining.size() > 0)
@@ -173,6 +176,8 @@ public class TransformFilterImplicitJoin extends TransformCopy {
     }
 
     private static Pair<Var, Var> preprocess(Op subOp, Expr e) {
+        // TODO Should also handle the case of && as TransformImplicitLeftJoin
+        // is already capable of doing
         if (!(e instanceof E_Equals) && !(e instanceof E_SameTerm))
             return null;
 
