@@ -59,14 +59,14 @@ public abstract class AbstractTestDatasetWithTextIndex {
 		final String turtle = StrUtils.strjoinNL(
 				TURTLE_PROLOG,
 				"<" + RESOURCE_BASE + "testOneSimpleResult>",
-				"  rdfs:label \"bar testOneSimpleResult barfoo foo\"",
+				"  rdfs:label 'bar testOneSimpleResult barfoo foo'",
 				"."
 				);
 		String queryString = StrUtils.strjoinNL(
 				QUERY_PROLOG,
 				"SELECT ?s",
 				"WHERE {",
-				"    ?s text:query ( rdfs:label \"testOneSimpleResult\" 10 ) .",
+				"    ?s text:query ( rdfs:label 'testOneSimpleResult' 10 ) .",
 				"}"
 				);
 		Set<String> expectedURIs = (new HashSet<String>());
@@ -80,17 +80,17 @@ public abstract class AbstractTestDatasetWithTextIndex {
 		final String turtle = StrUtils.strjoinNL(
 				TURTLE_PROLOG,
 				"<" + RESOURCE_BASE + label +"1>",
-				"  rdfs:label \"" + label + "1\"",
+				"  rdfs:label '" + label + "1'",
 				".",
 				"<" + RESOURCE_BASE + label + "2>",
-				"  rdfs:label \"" + label + "2\"",
+				"  rdfs:label '" + label + "2'",
 				"."
 				);
 		String queryString = StrUtils.strjoinNL(
 				QUERY_PROLOG,
 				"SELECT ?s",
 				"WHERE {",
-				"    ?s text:query ( rdfs:label \"" + label + "?\" 10 ) .",
+				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
 				"}"
 				);
 		Set<String> expectedURIs = (new HashSet<String>());
@@ -110,26 +110,26 @@ public abstract class AbstractTestDatasetWithTextIndex {
 		final String turtle = StrUtils.strjoinNL(
 				TURTLE_PROLOG,
 				"<" + RESOURCE_BASE + label +"1>",
-				"  rdfs:label \"" + label + "a\" ; ",
-				"  rdfs:comment \"" + label2 + "a\" ;",
+				"  rdfs:label '" + label + "a' ; ",
+				"  rdfs:comment '" + label2 + "a' ;",
 				".",
 				"<" + RESOURCE_BASE + label + "2>",
-				"  rdfs:label \"" + label2 + "b\" ; ",
-				"  rdfs:comment \"" + label + "b\" ; ",
+				"  rdfs:label '" + label2 + "b' ; ",
+				"  rdfs:comment '" + label + "b' ; ",
 				"."
 				);
 		String queryStringLabel = StrUtils.strjoinNL(
 				QUERY_PROLOG,
 				"SELECT ?s",
 				"WHERE {",
-				"    ?s text:query ( rdfs:label \"" + label + "?\" 10 ) .",
+				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
 				"}"
 				);
 		String queryStringComment = StrUtils.strjoinNL(
 				QUERY_PROLOG,
 				"SELECT ?s",
 				"WHERE {",
-				"    ?s text:query ( rdfs:comment \"" + label + "?\" 10 ) .",
+				"    ?s text:query ( rdfs:comment '" + label + "?' 10 ) .",
 				"}"
 				);
 		Set<String> expectedURIsLabel = (new HashSet<String>());
@@ -155,19 +155,19 @@ public abstract class AbstractTestDatasetWithTextIndex {
 		final String turtle = StrUtils.strjoinNL(
 				TURTLE_PROLOG,
 				"<" + RESOURCE_BASE + label +"1>",
-				"  rdfs:label \"" + label + "1\" ; ",
-				"  rdfs:comment \"" + label2 + "1\" ;",
+				"  rdfs:label '" + label + "1' ; ",
+				"  rdfs:comment '" + label2 + "1' ;",
 				".",
 				"<" + RESOURCE_BASE + label + "2>",
-				"  rdfs:label \"" + label2 + "2\" ; ",
-				"  rdfs:comment \"" + label + "2\" ; ",
+				"  rdfs:label '" + label2 + "2' ; ",
+				"  rdfs:comment '" + label + "2' ; ",
 				"."
 				);
 		String queryString = StrUtils.strjoinNL(
 				QUERY_PROLOG,
 				"SELECT ?s",
 				"WHERE {",
-				"    ?s text:query ( rdfs:label \"" + label + "?\" 10 ) .",
+				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
 				"}"
 				);
 		Set<String> expectedURIs = (new HashSet<String>());
@@ -185,23 +185,23 @@ public abstract class AbstractTestDatasetWithTextIndex {
 		final String turtle = StrUtils.strjoinNL(
 				TURTLE_PROLOG,
 				"<" + RESOURCE_BASE + label + "1>",
-				"  rdfs:label \"" + label + "\" ;",
+				"  rdfs:label '" + label + "' ;",
 				".",
 				"<" + RESOURCE_BASE + label + "2>",
-				"  rdfs:label \"" + label + "\" ;",
+				"  rdfs:label '" + label + "' ;",
 				".",
 				"<" + RESOURCE_BASE + label + "3>",
-				"  rdfs:label \"" + label + "\" ;",
+				"  rdfs:label '" + label + "' ;",
 				".",
 				"<" + RESOURCE_BASE + label + "4>",
-				"  rdfs:label \"" + label + "\" ;",
+				"  rdfs:label '" + label + "' ;",
 				"."
 				);
 		String queryString = StrUtils.strjoinNL(
 				QUERY_PROLOG,
 				"SELECT ?s",
 				"WHERE {",
-				"    ?s text:query ( \"" + label + "\" 3 ) .",
+				"    ?s text:query ( '" + label + "' 3 ) .",
 				"}"
 				);
 		Set<String> expectedURIs = (new HashSet<String>());
@@ -240,6 +240,15 @@ public abstract class AbstractTestDatasetWithTextIndex {
 		try {
 			dataset.begin(ReadWrite.READ);
 		    ResultSet results = qexec.execSelect() ;
+		    
+		    boolean b = ( (expectedNumResults > 0) == results.hasNext() ) ;
+		    if ( !b ) {
+		        System.out.println(queryString) ;
+		        System.out.println(expectedNumResults) ;
+		        
+		    }
+		    
+		    
 		    assertEquals(label, expectedNumResults > 0, results.hasNext());
 		    int count;
 		    for (count=0; results.hasNext(); count++) {

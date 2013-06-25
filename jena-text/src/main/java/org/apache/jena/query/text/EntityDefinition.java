@@ -116,4 +116,10 @@ public class EntityDefinition {
             return null ;
         return collection.iterator().next() ;
     }
+    
+    @Override
+    public String toString() {
+        return entityField+":"+predicateToField ;
+        
+    }
 }
