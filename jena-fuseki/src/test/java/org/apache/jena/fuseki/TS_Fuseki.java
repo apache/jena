@@ -36,6 +36,7 @@ import org.junit.runners.Suite ;
     , TestDatasetAccessorHTTP.class
     , TestUpdate.class
     , TestQuery.class
+    , TestAuth.class
 })
 public class TS_Fuseki extends BaseServerTest
 {

@@ -39,6 +39,12 @@ import org.apache.jena.fuseki.validation.QueryValidator ;
 import org.apache.jena.fuseki.validation.UpdateValidator ;
 import org.apache.jena.riot.WebContent ;
 import org.eclipse.jetty.http.MimeTypes ;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.DefaultIdentityService;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.IdentityService;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
@@ -46,6 +52,7 @@ import org.eclipse.jetty.servlet.DefaultServlet ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.servlets.GzipFilter ;
+import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.xml.XmlConfiguration ;
 
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
@@ -135,6 +142,36 @@ public class SPARQLServer
         context.setErrorHandler(new FusekiErrorHandler()) ;
         // Increase form size.
         context.getServletContext().getContextHandler().setMaxFormContentSize(10*1000*1000) ;
+        
+        // Wire up authentication if appropriate
+        if (jettyConfig == null && serverConfig.authConfigFile != null) {
+             Constraint constraint = new Constraint();
+             constraint.setName(Constraint.__BASIC_AUTH);
+             constraint.setRoles(new String[] { "fuseki" });
+             constraint.setAuthenticate(true);
+             
+             ConstraintMapping mapping = new ConstraintMapping();
+             mapping.setConstraint(constraint);
+             mapping.setPathSpec("/*");
+             
+             IdentityService identService = new DefaultIdentityService();
+             
+             ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
+             securityHandler.addConstraintMapping(mapping);
+             securityHandler.setIdentityService(identService);
+             
+             HashLoginService loginService = new HashLoginService("Fuseki Authentication", serverConfig.authConfigFile);
+             loginService.setIdentityService(identService);
+             
+             securityHandler.setLoginService(loginService);
+             securityHandler.setAuthenticator(new BasicAuthenticator());
+             
+             context.setSecurityHandler(securityHandler);
+             
+             serverLog.debug("Basic Auth Configuration = " + serverConfig.authConfigFile);
+        }
+        
+        // Wire up context handler to server
         server.setHandler(context);
         
         // Constants. Add RDF types.

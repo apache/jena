@@ -191,6 +191,18 @@
       <artifactId>jetty-xml</artifactId>
       <version>${ver.jetty}</version>
     </dependency> 
+    
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-security</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency> 
+    
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency> 
 
     <dependency>
       <groupId>org.apache.velocity</groupId>
