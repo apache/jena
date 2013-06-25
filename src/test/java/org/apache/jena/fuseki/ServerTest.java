@@ -86,7 +86,7 @@ public class ServerTest extends BaseServerTest
         server = new SPARQLServer(conf) ;
         server.start() ;
     }
-    
+        
     protected static void serverStart() {
         Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;

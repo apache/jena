@@ -44,6 +44,10 @@ public class ServerConfig
     
     /** Enable additional logging */
     public boolean verboseLogging = false ;
+    /**
+     * Authentication config file used to setup Jetty Basic auth, if a Jetty config file was set this is ignored since Jetty config allows much more complex auth methods to be implemented
+     */
+    public String authConfigFile ;
 
 }
 
