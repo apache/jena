@@ -26,6 +26,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 public class TextDatasetFactory
 {
@@ -51,6 +52,9 @@ public class TextDatasetFactory
     {
         TextDocProducer producer = new TextDocProducerTriples(textIndex.getDocDef(), textIndex) ;
         DatasetGraph dsgt = new DatasetGraphText(dsg, textIndex, producer) ;
+        // Also set on dsg
+        Context c = dsgt.getContext() ;
+        
         dsgt.getContext().set(TextQuery.textIndex, textIndex) ;
         return dsgt ;
 

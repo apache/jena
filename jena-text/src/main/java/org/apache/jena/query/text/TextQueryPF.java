@@ -41,12 +41,13 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /** property function that accesses a Solr server */
-public class QueryPF extends PropertyFunctionBase {
-    private static Logger log           = LoggerFactory.getLogger(QueryPF.class) ;
+public class TextQueryPF extends PropertyFunctionBase {
+    private static Logger log           = LoggerFactory.getLogger(TextQueryPF.class) ;
     /*
      * ?uri :queryPF (property? "string" limit? score?) score? not implemented
      */
@@ -54,7 +55,7 @@ public class QueryPF extends PropertyFunctionBase {
     private TextIndex     server        = null ;
     private boolean       warningIssued = false ;
 
-    public QueryPF() {}
+    public TextQueryPF() {}
 
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
@@ -77,13 +78,16 @@ public class QueryPF extends PropertyFunctionBase {
     }
 
     private static TextIndex chooseTextIndex(DatasetGraph dsg) {
+        
+        Context c = dsg.getContext() ; 
+        
         Object obj = dsg.getContext().get(TextQuery.textIndex) ;
 
         if (obj != null) {
             try {
                 return (TextIndex)obj ;
             } catch (ClassCastException ex) {
-                Log.warn(QueryPF.class, "Context setting '" + TextQuery.textIndex + "'is not a TextIndex") ;
+                Log.warn(TextQueryPF.class, "Context setting '" + TextQuery.textIndex + "'is not a TextIndex") ;
             }
         }
 
@@ -91,7 +95,7 @@ public class QueryPF extends PropertyFunctionBase {
             DatasetGraphText x = (DatasetGraphText)dsg ;
             return x.getTextIndex() ;
         }
-        Log.warn(QueryPF.class, "Failed to find the text index : tried context and as a text-enabled dataset") ;
+        Log.warn(TextQueryPF.class, "Failed to find the text index : tried context and as a text-enabled dataset") ;
         return null ;
     }
 

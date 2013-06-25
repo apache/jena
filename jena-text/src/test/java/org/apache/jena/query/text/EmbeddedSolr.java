@@ -20,9 +20,9 @@ package org.apache.jena.query.text;
 
 import java.io.File;
 
-public class EMBEDDED_SOLR {
-	public static final String DATA_PATH = "target/test/SolrARQ/data";
-	public static final File DATA_DIR = new File(DATA_PATH);
-	public static final String INDEX_PATH = DATA_PATH + "/index";
-	public static final File INDEX_DIR = new File(INDEX_PATH);
+public class EmbeddedSolr {
+	public static final String  DATA_PATH      = "target/test/SolrARQ/data";
+	public static final File    DATA_DIR       = new File(DATA_PATH);
+	public static final String  INDEX_PATH     = DATA_PATH + "/index";
+	public static final File    INDEX_DIR      = new File(INDEX_PATH);
 }

@@ -36,7 +36,7 @@ public class TextQuery
     private static Object lock = new Object() ;
     public static String NS = "http://jena.apache.org/text#" ;
     public static String IRI = "http://jena.apache.org/#text" ;
-    public static final Symbol textIndex = Symbol.create(NS+"#index") ;
+    public static final Symbol textIndex = Symbol.create(NS+"index") ;
     public static final String PATH         = "org.apache.jena.query.text";
     
     static private String metadataLocation  = "org/apache/jena/query/text/properties.xml" ;
@@ -65,7 +65,7 @@ public class TextQuery
             PropertyFunctionRegistry.get().put("http://jena.apache.org/text#query", new PropertyFunctionFactory() {
                 @Override
                 public PropertyFunction create(String uri) {
-                    return new QueryPF() ;
+                    return new TextQueryPF() ;
                 }
             });
         }

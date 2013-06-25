@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -28,90 +28,103 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
-/** Test the examples of building a test dataset */ 
+/** Test the examples of building a test dataset */
 public class TestBuildTextDataset extends BaseTest
 {
     static final String DIR = "testing/TextQuery" ;
 
-    // Ensure assembler initialized. 
-    @BeforeClass public static void setupClass() { TextQuery.init() ; } 
-    
-    @Test public void buildText_01() { createAssembler() ; }
+    // Ensure assembler initialized.
+    @BeforeClass
+    public static void setupClass() {
+        TextQuery.init() ;
+    }
 
-    @Test public void buildText_02() { createCode() ; }
-    
-    @Test public void buildText_03()
-    { 
-        Dataset ds = createAssembler() ;
+    @Test
+    public void buildText_01() {
+        createAssembler("text-config.ttl") ;
+    }
+
+    @Test
+    public void buildText_02() {
+        Dataset ds = createAssembler("text-config-union.ttl") ;
+        assertTrue(ds.getContext().isDefined(TextQuery.textIndex)) ;
+        assertTrue(ds.getContext().isDefined(TDB.symUnionDefaultGraph)) ;
+    }
+
+    @Test
+    public void buildText_03() {
+        createCode() ;
+    }
+
+    @Test
+    public void buildText_04() {
+        Dataset ds = createAssembler("text-config.ttl") ;
         loadData(ds) ;
         queryData(ds) ;
     }
 
-    @Test public void buildText_04()
-    { 
+    @Test
+    public void buildText_05() {
         Dataset ds = createCode() ;
         loadData(ds) ;
         queryData(ds) ;
     }
 
-    private void loadData(Dataset dataset)
-    {
+    private void loadData(Dataset dataset) {
         dataset.begin(ReadWrite.WRITE) ;
         try {
             Model m = dataset.getDefaultModel() ;
-            RDFDataMgr.read(m, DIR+"/data1.ttl") ;
+            RDFDataMgr.read(m, DIR + "/data1.ttl") ;
             dataset.commit() ;
-        } finally { dataset.end() ; }
+        }
+        finally {
+            dataset.end() ;
+        }
     }
 
-    public static void queryData(Dataset dataset)
-    {
-        String pre = StrUtils.strjoinNL
-            ( "PREFIX : <http://example/>"
-              , "PREFIX text: <http://jena.apache.org/text#>"
-              , "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>") ;
+    public static void queryData(Dataset dataset) {
+        String pre = StrUtils.strjoinNL("PREFIX : <http://example/>", "PREFIX text: <http://jena.apache.org/text#>",
+                                        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>") ;
 
-        String qs = StrUtils.strjoinNL
-            ( "SELECT * "
-              , " { ?s text:query (rdfs:label 'X1') ;"
-              , "      rdfs:label ?label"
-              , " }") ; 
+        String qs = StrUtils.strjoinNL("SELECT * ", " { ?s text:query (rdfs:label 'X1') ;", "      rdfs:label ?label",
+                                       " }") ;
 
         dataset.begin(ReadWrite.READ) ;
         try {
-            Query q = QueryFactory.create(pre+"\n"+qs) ;
-            QueryExecution qexec = QueryExecutionFactory.create(q , dataset) ;
+            Query q = QueryFactory.create(pre + "\n" + qs) ;
+            QueryExecution qexec = QueryExecutionFactory.create(q, dataset) ;
             int x = ResultSetFormatter.consume(qexec.execSelect()) ;
             qexec.close() ;
             assertEquals("Unexpected result count", 2, x) ;
-        } finally { dataset.end() ; }
+        }
+        finally {
+            dataset.end() ;
+        }
     }
 
-    public static Dataset createCode() 
-    {
+    public static Dataset createCode() {
         // Base data
-        Dataset ds1 = DatasetFactory.createMem() ; 
+        Dataset ds1 = DatasetFactory.createMem() ;
 
-        // Define the index mapping 
+        // Define the index mapping
         EntityDefinition entDef = new EntityDefinition("uri", "text", RDFS.label.asNode()) ;
 
         // Lucene, in memory.
-        Directory dir =  new RAMDirectory();
-        
+        Directory dir = new RAMDirectory() ;
+
         // Join together into a dataset
         Dataset ds = TextDatasetFactory.createLucene(ds1, dir, entDef) ;
-        
+
         return ds ;
     }
 
-    public static Dataset createAssembler() 
-    {
-        Dataset ds = DatasetFactory.assemble("testing/TextQuery/text-config.ttl",
+    public static Dataset createAssembler(String assemblerFile) {
+        Dataset ds = DatasetFactory.assemble("testing/TextQuery/" + assemblerFile,
                                              "http://localhost/jena_example/#text_dataset") ;
         return ds ;
     }
 
 }
-
