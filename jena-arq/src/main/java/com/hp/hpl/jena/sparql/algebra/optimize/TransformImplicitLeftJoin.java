@@ -133,6 +133,12 @@ public class TransformImplicitLeftJoin extends TransformCopy {
         // semantics of the Left Join
         Collection<Var> lhsVars = OpVars.visibleVars(left);
         Collection<Var> rhsVars = OpVars.visibleVars(right);
+
+        // TODO A better approach here would be to build a dependency graph of
+        // the implicit joins and use that to inform the order in which they
+        // should be carried out or even to remove some entirely where
+        // transitivity and commutativity
+
         for (Pair<Var, Var> implicitJoin : joins) {
             // Which variable do we want to substitute out?
             // We don't need to deal with the case of neither variable being on
