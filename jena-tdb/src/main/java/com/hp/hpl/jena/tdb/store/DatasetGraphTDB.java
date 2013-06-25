@@ -75,15 +75,20 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         this.config = config ;
         this.effectiveDefaultGraph = getDefaultGraphTDB() ;
     }
-    
+
+    @Deprecated
     protected DatasetGraphTDB(DatasetGraphTDB other)
     {
         this(other.tripleTable, other.quadTable, other.prefixes, other.transform, other.config) ;
+        getContext().putAll(other.getContext()) ;
     }
-
+    
+    @Deprecated
     public DatasetGraphTDB duplicate()
     {
-        return new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, config) ;
+        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, config) ;
+        dsg.getContext().putAll(getContext()) ;
+        return dsg ;
     }
     
     public QuadTable getQuadTable()         { return quadTable ; }
