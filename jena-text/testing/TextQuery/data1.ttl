@@ -3,20 +3,20 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 
-## :s a :Thing ;
-##    :p :123 ;
-##    rdfs:label "Thing 1" ;
-##    :id 123 .
-## 
-## :s1 a :Thing ;
-##    :p :123 ;
-##    rdfs:label "Thing 2" ;
-##    :id 123 .
-## 
-## :s2 a :Thing ;
-##    :p :123 ;
-##    rdfs:label "Whatever" ;
-##    :id 123 .
+:s a :Thing ;
+   :p :123 ;
+   rdfs:label "Thing 1" ;
+   :id 123 .
+
+:s1 a :Thing ;
+   :p :123 ;
+   rdfs:label "Thing 2" ;
+   :id 123 .
+
+:s2 a :Thing ;
+   :p :123 ;
+   rdfs:label "Whatever" ;
+   :id 123 .
 
    
 :x1 rdfs:label "X1 word" .

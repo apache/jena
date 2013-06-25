@@ -18,11 +18,15 @@
 
 package org.apache.jena.query.text ;
 
-import java.util.* ;
+import java.util.Collection ;
+import java.util.Collections ;
+import java.util.HashMap ;
+import java.util.Map ;
 
 import org.apache.jena.atlas.lib.MultiMap ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 
 /**
  * Definition of a "document"
@@ -56,10 +60,23 @@ public class EntityDefinition {
      * @param primaryPredicate
      *            The property associated with the primary/default field
      */
+    public EntityDefinition(String entityField, String primaryField, Resource primaryPredicate) {
+        this(entityField, primaryField, primaryPredicate.asNode()) ;
+    }
+
+    /**
+     * @param entityField
+     *            The entity being indexed (e.g. it's URI).
+     * @param primaryField
+     *            The primary/default field to search
+     * @param primaryPredicate
+     *            The property associated with the primary/default field
+     */
     public EntityDefinition(String entityField, String primaryField, Node primaryPredicate) {
         this(entityField, primaryField) ;
         set(primaryField, primaryPredicate) ;
     }
+
 
     public String getEntityField() {
         return entityField ;

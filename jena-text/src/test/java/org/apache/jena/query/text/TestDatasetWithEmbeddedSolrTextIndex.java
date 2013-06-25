@@ -73,7 +73,7 @@ public class TestDatasetWithEmbeddedSolrTextIndex extends AbstractTestDatasetWit
                     // This is replaced during setup by an embedded Solr instance.
 				    // <embedded:...> ends up with a huge dependency.
 				    "    a text:TextIndexLucene ;",
-                    "    text:directory <file:" + EMBEDDED_SOLR.INDEX_PATH + "> ;",
+                    "    text:directory <file:" + EmbeddedSolr.INDEX_PATH + "> ;",
                     "    text:entityMap :entMap ;",
 				    
 //                    "    a text:TextIndexSolr ;",
@@ -96,8 +96,8 @@ public class TestDatasetWithEmbeddedSolrTextIndex extends AbstractTestDatasetWit
 	
 	@BeforeClass public static void beforeClass() throws IOException {
 	    deleteOldFiles();
-	    EMBEDDED_SOLR.INDEX_DIR.mkdirs();
-	    TextSearchUtil.createEmptyIndex(EMBEDDED_SOLR.INDEX_DIR);
+	    EmbeddedSolr.INDEX_DIR.mkdirs();
+	    TextSearchUtil.createEmptyIndex(EmbeddedSolr.INDEX_DIR);
 	    Reader reader = new StringReader(SPEC);
 	    Model specModel = ModelFactory.createDefaultModel();
 	    specModel.read(reader, "", "TURTLE");
@@ -149,7 +149,7 @@ public class TestDatasetWithEmbeddedSolrTextIndex extends AbstractTestDatasetWit
 	}
 	
 	public static void deleteOldFiles() {
-		if (EMBEDDED_SOLR.DATA_DIR.exists()) 
-			TextSearchUtil.emptyAndDeleteDirectory(EMBEDDED_SOLR.DATA_DIR);
+		if (EmbeddedSolr.DATA_DIR.exists()) 
+			TextSearchUtil.emptyAndDeleteDirectory(EmbeddedSolr.DATA_DIR);
 	}
 }

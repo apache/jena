@@ -121,8 +121,14 @@ public class TextIndexLucene implements TextIndex
         if ( log.isDebugEnabled() )
             log.debug("Add entity: "+entity) ;
         try {
+            boolean autoBatch = (indexWriter == null) ;
+            
             Document doc = doc(entity) ;
+            if ( autoBatch )
+                startIndexing() ;
             indexWriter.addDocument(doc) ;
+            if ( autoBatch )
+                finishIndexing() ;
         } catch (IOException e) { exception(e) ; }
     }
 

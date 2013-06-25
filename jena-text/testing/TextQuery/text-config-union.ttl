@@ -29,6 +29,7 @@ text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
 
 <#dataset> rdf:type      tdb:DatasetTDB ;
     tdb:location "--mem--" ;
+    tdb:unionDefaultGraph true ;
     .
 
 <#indexLucene> a text:TextIndexLucene ;

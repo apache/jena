@@ -37,9 +37,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestTextDatasetAssembler.class
     , TestTextIndexLuceneAssembler.class
     , TestTextIndexSolrAssembler.class
+    , TestTextTDB.class
 })
 
 public class TS_Text
 { }
-
-
