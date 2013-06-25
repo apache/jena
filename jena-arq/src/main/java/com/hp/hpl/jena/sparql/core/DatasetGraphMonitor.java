@@ -40,7 +40,7 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
     private boolean CheckFirst = true ;
     /** Whether to record a no-op (maybe as a comment) */   
     private boolean RecordNoAction = true ;
-    /** Whgere to send the notifications */  
+    /** Where to send the notifications */  
     private final DatasetChanges monitor ;
 
     public DatasetGraphMonitor(DatasetGraph dsg, DatasetChanges monitor) 

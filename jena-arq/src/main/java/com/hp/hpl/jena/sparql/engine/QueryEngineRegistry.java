@@ -49,6 +49,7 @@ public class QueryEngineRegistry
     {
         registry = new QueryEngineRegistry() ;
         registry.add(QueryEngineMain.getFactory()) ;
+        registry.add(QueryEngineFactoryWrapper.get()) ;
     }
     
     /** Locate a suitable factory for this query and dataset from the default registry
