@@ -121,6 +121,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
     private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip") ;
     private static ArgDecl argUber          = new ArgDecl(ArgDecl.NoValue,  "uber", "über") ;   // Use the überservlet (experimental)
+    private static ArgDecl argBasicAuth     = new ArgDecl(ArgDecl.HasValue, "basic-auth") ;
     
     private static ArgDecl argGSP           = new ArgDecl(ArgDecl.NoValue,  "gsp") ;    // GSP compliance mode
     
@@ -152,6 +153,7 @@ public class FusekiCmd extends CmdARQ
     private String fusekiConfigFile     = null ;
     private boolean enableCompression   = true ;
     private String jettyConfigFile      = null ;
+    private String authConfigFile       = null ;
     private String homeDir              = null ;
     private String pagesDir             = null ;
     
@@ -177,6 +179,7 @@ public class FusekiCmd extends CmdARQ
         add(argAllowUpdate, "--update",         "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         add(argFusekiConfig, "--config=",       "Use a configuration file to determine the services") ;
         add(argJettyConfig, "--jetty-config=",  "Set up the server (not services) with a Jetty XML file") ;
+        add(argBasicAuth, "--basic-auth",       "Configure basic auth using provided Jetty realm file, ignored if --jetty-config is used") ;
         add(argMgtPort, "--mgtPort=port",       "Enable the management commands on the given port") ; 
         add(argHome, "--home=DIR",              "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ; 
         add(argGZip, "--gzip=on|off",           "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
@@ -344,7 +347,14 @@ public class FusekiCmd extends CmdARQ
         {
             jettyConfigFile = getValue(argJettyConfig) ;
             if ( !FileOps.exists(jettyConfigFile) )
-                throw new CmdException("No such file: : "+jettyConfigFile) ;
+                throw new CmdException("No such file: "+jettyConfigFile) ;
+        }
+        
+        if ( contains(argBasicAuth) )
+        {
+            authConfigFile = getValue(argBasicAuth) ;
+            if ( !FileOps.exists(authConfigFile) )
+                throw new CmdException("No such file: " + authConfigFile) ;
         }
         
         if ( contains(argHome) )
@@ -432,6 +442,7 @@ public class FusekiCmd extends CmdARQ
         serverConfig.pagesPort = port ;
         serverConfig.enableCompression = enableCompression ;
         serverConfig.jettyConfigFile = jettyConfigFile ;
+        serverConfig.authConfigFile = authConfigFile ;
         serverConfig.verboseLogging = ( super.isVerbose() || super.isDebug() ) ;
         
         SPARQLServer server = new SPARQLServer(serverConfig) ;
