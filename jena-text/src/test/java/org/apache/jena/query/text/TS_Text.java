@@ -30,7 +30,7 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses({
     TestBuildTextDataset.class
     , TestDatasetWithLuceneTextIndex.class
-    // Embedded solr only used for testing 
+    // Embedded solr not supported 
     //, TestDatasetWithEmbeddedSolrTextIndex.class
     , TestSearchBeforeWriteOnDatasetWithLuceneTextIndex.class
     , TestEntityMapAssembler.class
