@@ -51,6 +51,10 @@ public class UpdateWriter implements Closeable
     private boolean firstOp = true;
     private boolean opened = false;
     
+    /** Create a UpdateWriter for output of a single UpdateRequest.
+     *  @param out
+     *  @param sCxt SerializationContext - pass null for one that wil produce legal output.
+     */
     public UpdateWriter(IndentedWriter out, SerializationContext sCxt)
     {
         if (out == null)
@@ -227,13 +231,11 @@ public class UpdateWriter implements Closeable
         }
     }
     
-    
     // -- Convenience static methods -----------------------
     
     public static void output(UpdateRequest request, IndentedWriter out)
     {
-        SerializationContext sCxt = new SerializationContext(request.getPrefixMapping()) ; 
-        output(request, out, sCxt);
+        output(request, out, null);
     }
     
     public static void output(UpdateRequest request, IndentedWriter out, SerializationContext sCxt)
