@@ -33,7 +33,7 @@ public class NodeToLabelMapBNode extends NodeToLabelMap
     @Override
     public String asString(Node n)
     {
-        // Map blank nodes and non-distingusihed variables.
+        // Map blank nodes and non-distinguished variables.
         if ( ! n.isBlank() && !Var.isBlankNodeVar(n) )
             return null ;
 
