@@ -28,7 +28,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestUpdateGraphMgtMem.class
     , TestUpdateOperations.class
     , TestUpdateCompare.class
-    //, TestUpdateWriter.class
+    , TestUpdateWriter.class
 })
 public class TS_Update
 {
