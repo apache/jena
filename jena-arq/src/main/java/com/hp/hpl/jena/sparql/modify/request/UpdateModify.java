@@ -22,6 +22,9 @@ import java.util.List ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.util.Iso ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+import com.hp.hpl.jena.update.Update ;
 
 public class UpdateModify extends UpdateWithUsing
 {
@@ -95,4 +98,28 @@ public class UpdateModify extends UpdateWithUsing
     @Override
     public void visit(UpdateVisitor visitor)
     { visitor.visit(this) ; }
+
+    @Override
+    public boolean equalTo(Update obj, NodeIsomorphismMap isoMap) {
+        if (this == obj)
+            return true ;
+        if (obj == null)
+            return false ;
+        if (getClass() != obj.getClass())
+            return false ;
+        UpdateModify other = (UpdateModify)obj ;
+        if ( hasDelete != other.hasDelete )
+            return false ;
+        if ( hasInsert != other.hasInsert )
+            return false ;
+        if ( ! equalIso(other, isoMap))
+            return false ;
+        if ( ! Iso.isomorphicQuads(getDeleteQuads(), other.getDeleteQuads(), isoMap) ) 
+            return false ;
+        if ( ! Iso.isomorphicQuads(getInsertQuads(), other.getInsertQuads(), isoMap) )
+            return false ;
+        if ( ! wherePattern.equalTo(other.wherePattern, isoMap) )
+            return false ;
+        return true ;
+    }
 }

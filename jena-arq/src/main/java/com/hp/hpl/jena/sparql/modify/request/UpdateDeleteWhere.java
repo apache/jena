@@ -21,6 +21,8 @@ package com.hp.hpl.jena.sparql.modify.request;
 import java.util.List ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.Iso ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.update.Update ;
 
 public class UpdateDeleteWhere extends Update
@@ -34,4 +36,16 @@ public class UpdateDeleteWhere extends Update
     @Override
     public void visit(UpdateVisitor visitor)
     { visitor.visit(this) ; }
+
+    @Override
+    public boolean equalTo(Update obj, NodeIsomorphismMap isoMap) {
+        if (this == obj)
+            return true ;
+        if (obj == null)
+            return false ;
+        if (getClass() != obj.getClass())
+            return false ;
+        UpdateDeleteWhere other = (UpdateDeleteWhere)obj ;
+        return Iso.isomorphicQuads(getQuads(), other.getQuads(), isoMap) ;
+    }
 }

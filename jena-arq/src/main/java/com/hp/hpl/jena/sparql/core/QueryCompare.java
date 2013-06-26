@@ -65,17 +65,7 @@ public class QueryCompare implements QueryVisitor
     @Override
     public void visitPrologue(Prologue query1)
     {
-        // This is after parsing so all IRIs in the query have been made absolute.
-        // For two queries to be equal, their explicitly set base URIs must be the same. 
-        
-        String b1 = query1.explicitlySetBaseURI() ? query1.getBaseURI() : null ;
-        String b2 = query2.explicitlySetBaseURI() ? query2.getBaseURI() : null ;        
-        check("Base URIs", b1, b2) ;
-
-        if ( query1.getPrefixMapping() == null &&
-            query2.getPrefixMapping() == null )
-            return ;
-        check("Prefixes", query1.getPrefixMapping().samePrefixMappingAs(query2.getPrefixMapping())) ;
+        check("Prefixes/Base", query1.samePrologue(query2) ) ;
     }
 
     @Override

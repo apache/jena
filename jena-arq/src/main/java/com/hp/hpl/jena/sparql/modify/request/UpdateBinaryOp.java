@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.update.Update ;
 
 public abstract class UpdateBinaryOp extends Update
@@ -47,4 +48,19 @@ public abstract class UpdateBinaryOp extends Update
     public Target getDest()     { return dest ; }
     
     public boolean getSilent()  { return silent ; }
+    
+    @Override
+    final
+    public boolean equalTo(Update obj, NodeIsomorphismMap isoMap) {
+        if (this == obj)
+            return true ;
+        if (getClass() != obj.getClass())
+            return false ;
+        UpdateBinaryOp other = (UpdateBinaryOp)obj ;
+        if (silent != other.silent)
+            return false ;
+
+        return  dest.equalTo(other.dest, isoMap) &&
+                src.equalTo(other.src, isoMap) ;
+    }
 }

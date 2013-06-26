@@ -28,8 +28,8 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.modify.TemplateLib ;
 import com.hp.hpl.jena.sparql.serializer.FormatterTemplate ;
+import com.hp.hpl.jena.sparql.util.Iso ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Triples template. */
 
@@ -104,7 +104,7 @@ public class Template
         {
             Triple t1 = list1.get(i) ;
             Triple t2 = list2.get(i) ;
-            Utils.tripleIso(t1, t2, labelMap) ;
+            Iso.tripleIso(t1, t2, labelMap) ;
         }
         return true ;
     }

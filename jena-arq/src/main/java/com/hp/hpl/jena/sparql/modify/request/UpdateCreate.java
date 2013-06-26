@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.modify.request;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.update.Update ;
 
 
@@ -57,4 +58,17 @@ public class UpdateCreate extends Update
     @Override
     public void visit(UpdateVisitor visitor)
     { visitor.visit(this) ; }
+
+    @Override
+    public boolean equalTo(Update obj, NodeIsomorphismMap isoMap) {
+        if (this == obj)
+            return true ;
+        if (obj == null)
+            return false ;
+        if (getClass() != obj.getClass())
+            return false ;
+        UpdateCreate other = (UpdateCreate)obj ;
+        return silent == other.silent &&
+               isoMap.makeIsomorphic(graphRef, other.graphRef) ; 
+    }
 }

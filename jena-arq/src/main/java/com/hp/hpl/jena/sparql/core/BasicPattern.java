@@ -28,8 +28,8 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
+import com.hp.hpl.jena.sparql.util.Iso ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** A class whose purpose is to give a name to a collection of triples.
  * Reduces the use of bland "List" in APIs (Java 1.4) 
@@ -90,7 +90,7 @@ public class BasicPattern implements Iterable<Triple>
             Triple t1 = get(i) ;
             Triple t2 = other.get(i) ;
             
-            if ( ! Utils.tripleIso(t1, t2, isoMap) )
+            if ( ! Iso.tripleIso(t1, t2, isoMap) )
                 return false ;
         }
         return true ;

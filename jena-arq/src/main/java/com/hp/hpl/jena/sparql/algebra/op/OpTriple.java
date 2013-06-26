@@ -24,8 +24,8 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.util.Iso ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Algebra operation for a single triple.  Not normally used - triples are
  * contained in basic graph patterns (which is the unit of extension in SPARQL, 
@@ -73,7 +73,7 @@ public class OpTriple extends Op0
         if ( ! (other instanceof OpTriple) )
             return false ;
         OpTriple opTriple = (OpTriple)other ;
-        return Utils.tripleIso(getTriple(), opTriple.getTriple(), labelMap) ;
+        return Iso.tripleIso(getTriple(), opTriple.getTriple(), labelMap) ;
     }
 
     @Override

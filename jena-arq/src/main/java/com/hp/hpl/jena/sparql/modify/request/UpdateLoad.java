@@ -18,8 +18,12 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import org.apache.jena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.Iso ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.update.Update ;
 
 public class UpdateLoad extends Update
@@ -58,4 +62,19 @@ public class UpdateLoad extends Update
     @Override
     public void visit(UpdateVisitor visitor)
     { visitor.visit(this) ; }
+
+    @Override
+    public boolean equalTo(Update obj, NodeIsomorphismMap isoMap) {
+        if (this == obj)
+            return true ;
+        if (obj == null)
+            return false ;
+        if (getClass() != obj.getClass())
+            return false ;
+        UpdateLoad other = (UpdateLoad)obj ;
+        return 
+            silent == other.silent &&
+            Lib.equal(source, other.source) &&
+            Iso.nodeIso(dest, other.dest, isoMap) ;
+    }
 }
