@@ -864,43 +864,43 @@ public class TestTransformFilters
     
     @Test public void implicitLeftJoin15()
     {
-        // The optimizer is capable of going one level into a nested && to find conditions to apply
+        // The optimizer is capable of going any depth into nested && to find conditions to apply since it uses ExprList.splitConjunction()
         test(
                 "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((&& (&& (= ?x ?y) (> ?o1 10)) (= ?x ?z))))",
                 t_implicitLeftJoin,
-                "(leftjoin (bgp (?x ?p ?o)) (assign ((?z ?x) (?y ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))) (> ?o1 10))");
+                "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x) (?z ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))) (> ?o1 10))");
         
         test(
                 "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((&& (&& (> ?o1 10) (= ?x ?y)) (= ?x ?z))))",
                 t_implicitLeftJoin,
-                "(leftjoin (bgp (?x ?p ?o)) (assign ((?z ?x) (?y ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))) (> ?o1 10))");
+                "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x) (?z ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))) (> ?o1 10))");
     }
     
     @Test public void implicitLeftJoin16()
     {
-        // The optimizer won't go two levels deep into && even if it does find something at the top level
+        // The optimizer is capable of going any depth into nested && to find conditions to apply since it uses ExprList.splitConjunction()
         test(
              "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((&& (&& (< ?o1 20) (&& (= ?x ?y) (> ?o1 10))) (= ?x ?z))))",
              t_implicitLeftJoin,
-             "(leftjoin (bgp (?x ?p ?o)) (assign ((?z ?x)) (bgp (?y ?p1 ?o1) (?y ?p2 ?x))) (&& (< ?o1 20) (&& (= ?x ?y) (> ?o1 10))))");
+             "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x) (?z ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))) ((< ?o1 20) (> ?o1 10)))");
     }
     
     @Test public void implicitLeftJoin17()
     {
-        // The optimizer won't go another levels into && if it doesn't find anything in the top level
+        // The optimizer is capable of going any depth into nested && to find conditions to apply since it uses ExprList.splitConjunction()
         test(
              "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((&& (&& (= ?x ?y) (> ?o1 10)) (< ?o1 20))))",
              t_implicitLeftJoin,
-             (String[])null);
+             "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?z))) ((> ?o1 10) (< ?o1 20)))");
     }
     
     @Test public void implicitLeftJoin18()
     {
-        // The optimizer is capable of going one level into a nested && to find conditions to apply
+        // The optimizer is capable of going any depth into nested && to find conditions to apply since it uses ExprList.splitConjunction()
         test(
              "(leftjoin (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1) (?y ?p2 ?z)) ((&& (&& (= ?x ?y) (= ?y ?z)) (= ?x ?z))))",
              t_implicitLeftJoin,
-             "(leftjoin (bgp (?x ?p ?o)) (assign ((?z ?x) (?y ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x))) (= ?y ?z))");
+             "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x) (?z ?x)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1) (?x ?p2 ?x)))))");
     }
     
     @Test public void implicitLeftJoin19()
