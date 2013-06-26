@@ -4,43 +4,33 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.AfterClass ;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.ResultSetRewindable;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVars;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.resultset.TextOutput;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
+import com.hp.hpl.jena.sparql.resultset.TextOutput ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 /**
  * Tests for verifying that a query returns the same results both with and
