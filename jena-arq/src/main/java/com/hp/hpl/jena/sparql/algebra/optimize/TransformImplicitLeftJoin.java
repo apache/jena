@@ -90,14 +90,6 @@ import com.hp.hpl.jena.sparql.expr.*;
  * the optimization may not be made since we cannot assume that we can map value
  * equality to term equality by making the optimization.
  * </p>
- * <h3>Known Limitations/To Do</h3>
- * <p>
- * Currently there are several issues with enabling this optimizer:
- * <p>
- * <ul>
- * <li>Application to implicit left joins blocks the conditional transform which
- * means the potential benefits of the optimization are negated</li>
- * </ul>
  */
 public class TransformImplicitLeftJoin extends TransformCopy {
 
@@ -115,7 +107,13 @@ public class TransformImplicitLeftJoin extends TransformCopy {
     }
 
     private static Op apply(OpLeftJoin opLeftJoin, Op left, Op right) {
-        Pair<List<Pair<Var, Var>>, ExprList> p = preprocessFilterImplicitJoin(left, right, opLeftJoin.getExprs());
+        // This handles arbitrarily nested && conditions
+        ExprList orig = ExprList.splitConjunction(opLeftJoin.getExprs());
+        
+        // Extract optimizable conditions?
+        Pair<List<Pair<Var, Var>>, ExprList> p = preprocessFilterImplicitJoin(left, right, orig);
+        
+        // Were there any optimizable conditions?
         if (p == null || p.getLeft().size() == 0)
             return null;
 
@@ -129,7 +127,7 @@ public class TransformImplicitLeftJoin extends TransformCopy {
             return null;
 
         // We apply substitution only to the RHS
-        // This is because applying to both sides could change the join
+        // This is because applying to both sides would change the join
         // semantics of the Left Join
         Collection<Var> lhsVars = OpVars.visibleVars(left);
         Collection<Var> rhsVars = OpVars.visibleVars(right);
@@ -137,7 +135,7 @@ public class TransformImplicitLeftJoin extends TransformCopy {
         // TODO A better approach here would be to build a dependency graph of
         // the implicit joins and use that to inform the order in which they
         // should be carried out or even to remove some entirely where
-        // transitivity and commutativity
+        // transitivity and commutativity apply
 
         for (Pair<Var, Var> implicitJoin : joins) {
             // Which variable do we want to substitute out?
@@ -213,43 +211,9 @@ public class TransformImplicitLeftJoin extends TransformCopy {
         List<Pair<Var, Var>> exprsJoins = new ArrayList<Pair<Var, Var>>();
         ExprList exprsOther = new ExprList();
         for (Expr e : exprs.getList()) {
-            int others = exprsOther.size();
-            Pair<Var, Var> p = preprocess(left, right, e, exprsOther);
+            Pair<Var, Var> p = preprocess(left, right, e);
             if (p != null) {
                 exprsJoins.add(p);
-
-                // Special case for where we've split an && in case the
-                // remaining condition is also an implicit join that we can
-                // process
-                // TODO See notes in other preprocess() method for a suggested
-                // improved process for && expressions
-                if (others != exprsOther.size()) {
-                    int possRemove = others;
-                    others = exprsOther.size();
-                    p = preprocess(left, right, exprsOther.get(possRemove), exprsOther);
-                    if (p != null) {
-                        exprsJoins.add(p);
-                        // Two possibilities here:
-                        // 1 - The other condition was a plain implicit join in
-                        // which case the size of the expr list won't have
-                        // changed
-                        // 2 - The other condition was a nested && which
-                        // contained an implicit join in which case the size of
-                        // the expr list will have changed
-                        if (others == exprsOther.size()) {
-                            // Trim the additional condition off the others list
-                            exprsOther = possRemove > 0 ? exprsOther.subList(0, possRemove - 1) : new ExprList();
-                        } else {
-                            // Have additional entry in exprOther
-                            Expr extra = exprsOther.get(exprsOther.size() - 1);
-                            exprsOther = possRemove > 0 ? exprsOther.subList(0, possRemove - 1) : new ExprList();
-                            exprsOther.add(extra);
-
-                            // NB - We don't try and handle further nesting
-                            // which in principle may exist
-                        }
-                    }
-                }
             } else {
                 exprsOther.add(e);
             }
@@ -259,64 +223,36 @@ public class TransformImplicitLeftJoin extends TransformCopy {
         return Pair.create(exprsJoins, exprsOther);
     }
 
-    private static Pair<Var, Var> preprocess(Op opLeft, Op opRight, Expr e, ExprList exprsOther) {
-        if (!(e instanceof E_Equals) && !(e instanceof E_SameTerm) && !(e instanceof E_LogicalAnd))
+    private static Pair<Var, Var> preprocess(Op opLeft, Op opRight, Expr e) {
+        if (!(e instanceof E_Equals) && !(e instanceof E_SameTerm))
             return null;
 
         ExprFunction2 eq = (ExprFunction2) e;
-        if (e instanceof E_LogicalAnd) {
-            // TODO A better approach would be to define a general recursive
-            // traversal for && which pulls out all implicit joins and produces
-            // an && tree with all other non-eligible expressions
+        // An equals or same term implicit join
+        Expr left = eq.getArg1();
+        Expr right = eq.getArg2();
 
-            // NB - We only handle a single level of nesting here
-            // There is some special case code in the calling function that can
-            // attempt to recurse one level further
-
-            // Is LHS of the && an implicit join?
-            if (eq.getArg1() instanceof E_Equals || eq.getArg1() instanceof E_SameTerm) {
-                Pair<Var, Var> p = preprocess(opLeft, opRight, eq.getArg1(), exprsOther);
-                if (p != null) {
-                    exprsOther.add(eq.getArg2());
-                    return p;
-                }
-            }
-            // Is RHS of the && an implicit join?
-            if (eq.getArg2() instanceof E_Equals || eq.getArg2() instanceof E_SameTerm) {
-                Pair<Var, Var> p = preprocess(opLeft, opRight, eq.getArg2(), exprsOther);
-                if (p != null) {
-                    exprsOther.add(eq.getArg1());
-                    return p;
-                }
-            }
+        if (!left.isVariable() || !right.isVariable()) {
             return null;
-        } else {
-            // An equals or same term implicit join
-            Expr left = eq.getArg1();
-            Expr right = eq.getArg2();
-
-            if (!left.isVariable() || !right.isVariable()) {
-                return null;
-            }
-            if (left.equals(right)) {
-                return null;
-            }
-
-            // If neither variable is visible in RHS optimization does not apply
-            Collection<Var> rhsVars = OpVars.visibleVars(opRight);
-            if (!rhsVars.contains(left.asVar()) && !rhsVars.contains(right.asVar()))
-                return null;
-
-            if (e instanceof E_Equals) {
-                // Is a safe equals for this optimization?
-                Tuple<Set<Var>> varsByPosition = OpVars.mentionedVarsByPosition(opLeft, opRight);
-
-                if (!isSafeEquals(varsByPosition, left.asVar(), right.asVar()))
-                    return null;
-            }
-
-            return Pair.create(left.asVar(), right.asVar());
         }
+        if (left.equals(right)) {
+            return null;
+        }
+
+        // If neither variable is visible in RHS optimization does not apply
+        Collection<Var> rhsVars = OpVars.visibleVars(opRight);
+        if (!rhsVars.contains(left.asVar()) && !rhsVars.contains(right.asVar()))
+            return null;
+
+        if (e instanceof E_Equals) {
+            // Is a safe equals for this optimization?
+            Tuple<Set<Var>> varsByPosition = OpVars.mentionedVarsByPosition(opLeft, opRight);
+
+            if (!isSafeEquals(varsByPosition, left.asVar(), right.asVar()))
+                return null;
+        }
+
+        return Pair.create(left.asVar(), right.asVar());
     }
 
     private static boolean isSafeEquals(Tuple<Set<Var>> varsByPosition, Var left, Var right) {
