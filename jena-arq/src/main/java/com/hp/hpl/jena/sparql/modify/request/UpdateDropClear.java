@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.update.Update ;
 
 public abstract class UpdateDropClear extends Update 
@@ -45,4 +46,18 @@ public abstract class UpdateDropClear extends Update
     
     //public String getGraphIRI() { return target.getGraphIRI() ; }
     public Node getGraph()      { return target.getGraph() ; }
+    
+    @Override
+    public boolean equalTo(Update obj, NodeIsomorphismMap isoMap) {
+        if (this == obj)
+            return true ;
+        if (obj == null)
+            return false ;
+        if (getClass() != obj.getClass())
+            return false ;
+        UpdateDropClear other = (UpdateDropClear)obj ;
+        if ( silent != other.silent )
+            return false ;
+        return target.equalTo(other.target, isoMap) ;
+    }
 }

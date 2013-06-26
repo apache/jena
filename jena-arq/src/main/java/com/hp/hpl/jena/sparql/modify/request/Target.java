@@ -18,11 +18,15 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import static com.hp.hpl.jena.sparql.modify.request.Target.Decl.* ;
+import static com.hp.hpl.jena.sparql.modify.request.Target.Decl.ALL$ ;
+import static com.hp.hpl.jena.sparql.modify.request.Target.Decl.DEFAULT$ ;
+import static com.hp.hpl.jena.sparql.modify.request.Target.Decl.IRI$ ;
+import static com.hp.hpl.jena.sparql.modify.request.Target.Decl.NAMED$ ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class Target
 {
@@ -60,12 +64,17 @@ public class Target
             return decl.toString() ;
     }
 
+    public boolean equalTo(Target other, NodeIsomorphismMap isoMap) {
+        return equals(other) ;
+    }
+
     @Override
     public int hashCode()
     {
         final int prime = 31 ;
         int result = 1 ;
         result = prime * result + ((decl == null) ? 0 : decl.hashCode()) ;
+        // OK since a URI.
         result = prime * result + ((graphIRI == null) ? 0 : graphIRI.hashCode()) ;
         return result ;
     }

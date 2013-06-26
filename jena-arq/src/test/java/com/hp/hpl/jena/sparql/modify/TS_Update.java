@@ -24,9 +24,11 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses( { 
-    TestUpdateGraphMem.class ,
-    TestUpdateGraphMgtMem.class ,
-    TestUpdateOperations.class
+    TestUpdateGraphMem.class
+    , TestUpdateGraphMgtMem.class
+    , TestUpdateOperations.class
+    , TestUpdateCompare.class
+    //, TestUpdateWriter.class
 })
 public class TS_Update
 {

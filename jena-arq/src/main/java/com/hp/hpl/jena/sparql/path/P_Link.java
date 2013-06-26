@@ -19,8 +19,8 @@
 package com.hp.hpl.jena.sparql.path;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.Iso ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class P_Link extends P_Path0
 {
@@ -41,7 +41,7 @@ public class P_Link extends P_Path0
     {
         if ( ! ( path2 instanceof P_Link ) ) return false ;
         P_Link other = (P_Link)path2 ;
-        return Utils.nodeIso(node, other.node, isoMap) ;
+        return Iso.nodeIso(node, other.node, isoMap) ;
     }
 
     @Override

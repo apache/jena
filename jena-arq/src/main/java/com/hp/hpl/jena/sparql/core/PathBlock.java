@@ -22,8 +22,8 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.ListIterator ;
 
+import com.hp.hpl.jena.sparql.util.Iso ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** A class whose purpose is to give a name to a collection of triple paths. */ 
 
@@ -69,7 +69,7 @@ public class PathBlock implements Iterable<TriplePath>
             TriplePath tp1 = get(i) ;
             TriplePath tp2 = other.get(i) ;
             
-            if ( ! Utils.triplePathIso(tp1, tp2, isoMap) )
+            if ( ! Iso.triplePathIso(tp1, tp2, isoMap) )
                 return false ;
         }
         return true ;

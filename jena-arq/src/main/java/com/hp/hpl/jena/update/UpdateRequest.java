@@ -28,6 +28,7 @@ import org.apache.jena.atlas.io.PrintUtils ;
 import org.apache.jena.atlas.io.Printable ;
 
 import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.modify.UpdateCompare ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 
 /** A SPARQL Update consists of a number of operations (e.g. INSERT, CLEAR).
@@ -67,4 +68,9 @@ public class UpdateRequest extends Prologue implements Printable, Iterable<Updat
     @Override
     public void output(IndentedWriter out)
     { UpdateWriter.output(this, out) ; }
+    
+    public boolean equalTo(UpdateRequest other) {
+        return UpdateCompare.isomorphic(this, other) ; 
+    }
+    
 }

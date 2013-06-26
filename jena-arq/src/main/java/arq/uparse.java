@@ -126,16 +126,9 @@ public class uparse extends CmdARQ
             System.err.println("Can not reparse update after serialization") ;
             System.err.println(updateString2) ; 
         }
-        // Currently, UpdateRequest do not implement value-based .equals
-//        if ( req.hashCode() != req2.hashCode() )
-//        {
-//            System.err.println("Reparsed update hash code does not equal original parsed request hash code") ;
-//        }
-//        else
-//        {
-//            if ( ! req.equals(req2) )
-//                System.err.println("Reparsed update does not .equals original parsed request") ;
-//        }
+
+        if ( ! req.equalTo(req2) )
+            System.err.println("Reparsed update does not .equalTo original parsed request") ;
         
         
     }

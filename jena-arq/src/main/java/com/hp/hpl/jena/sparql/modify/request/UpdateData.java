@@ -21,6 +21,8 @@ package com.hp.hpl.jena.sparql.modify.request;
 import java.util.List ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.Iso ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.update.Update ;
 
 public abstract class UpdateData extends Update
@@ -30,4 +32,18 @@ public abstract class UpdateData extends Update
     public UpdateData(QuadDataAcc quadData) { this.quadData = quadData ; } 
     
     public List<Quad> getQuads() { return quadData.getQuads() ; }
+    
+    @Override
+    final
+    public boolean equalTo(Update obj, NodeIsomorphismMap isoMap) {
+        if (this == obj)
+            return true ;
+        if (getClass() != obj.getClass())
+            return false ;
+        UpdateData other = (UpdateData)obj ;
+        List<Quad> quads1 = getQuads() ;
+        List<Quad> quads2 = other.getQuads() ;
+        return Iso.isomorphicQuads(quads1, quads2, isoMap) ;
+    }
+
 }

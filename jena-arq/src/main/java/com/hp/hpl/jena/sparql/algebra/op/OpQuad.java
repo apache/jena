@@ -25,8 +25,8 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadPattern ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.util.Iso ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Algebra operation for a single quad.
  * @see OpTriple
@@ -71,7 +71,7 @@ public class OpQuad extends Op0
         if ( ! (other instanceof OpQuad) )
             return false ;
         OpQuad opQuad = (OpQuad)other ;
-        return Utils.quadIso(getQuad(), opQuad.getQuad(), labelMap) ;
+        return Iso.quadIso(getQuad(), opQuad.getQuad(), labelMap) ;
     }
 
     @Override

@@ -27,11 +27,6 @@ import java.util.GregorianCalendar ;
 import java.util.TimeZone ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.TriplePath ;
-import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Miscellaneous operations - not query specific */
 
@@ -172,69 +167,5 @@ public class Utils
     { 
         // No SPARQL short form.
         return Float.toString(f) ;
-    }
-    
-    public static boolean triplePathIso(TriplePath tp1, TriplePath tp2, NodeIsomorphismMap isoMap)
-    {
-        if ( tp1.isTriple() ^ tp2.isTriple() ) 
-            return false ;
-
-        if ( tp1.isTriple() )
-            return Utils.tripleIso(tp1.asTriple(), tp2.asTriple(), isoMap) ;
-        else
-            return Utils.nodeIso(tp1.getSubject(), tp2.getSubject(), isoMap) && 
-                   Utils.nodeIso(tp1.getObject(), tp2.getObject(), isoMap) &&
-                   tp1.getPath().equalTo(tp2.getPath(), isoMap) ;
-    }
-    
-    public static boolean tripleIso(Triple t1, Triple t2, NodeIsomorphismMap labelMap)
-    {
-        Node s1 = t1.getSubject() ;
-        Node p1 = t1.getPredicate() ;
-        Node o1 = t1.getObject() ;
-        
-        Node s2 = t2.getSubject() ;
-        Node p2 = t2.getPredicate() ;
-        Node o2 = t2.getObject() ;
-        
-        if ( ! nodeIso(s1, s2, labelMap) )
-            return false ;
-        if ( ! nodeIso(p1, p2, labelMap) )
-            return false ;
-        if ( ! nodeIso(o1, o2, labelMap) )
-            return false ;
-
-        return true ;
-    }
-    
-    public static boolean quadIso(Quad t1, Quad t2, NodeIsomorphismMap labelMap)
-    {
-        Node g1 = t1.getGraph() ;
-        Node s1 = t1.getSubject() ;
-        Node p1 = t1.getPredicate() ;
-        Node o1 = t1.getObject() ;
-        
-        Node g2 = t2.getGraph() ;
-        Node s2 = t2.getSubject() ;
-        Node p2 = t2.getPredicate() ;
-        Node o2 = t2.getObject() ;
-        
-        if ( ! nodeIso(g1, g2, labelMap) )
-            return false ;
-        if ( ! nodeIso(s1, s2, labelMap) )
-            return false ;
-        if ( ! nodeIso(p1, p2, labelMap) )
-            return false ;
-        if ( ! nodeIso(o1, o2, labelMap) )
-            return false ;
-
-        return true ;
-    }
-    
-    public static boolean nodeIso(Node n1, Node n2, NodeIsomorphismMap isoMap)
-    {
-        if ( isoMap != null && Var.isBlankNodeVar(n1) && Var.isBlankNodeVar(n2) )
-            return isoMap.makeIsomorphic(n1, n2) ;
-        return n1.equals(n2) ;
     }
 }

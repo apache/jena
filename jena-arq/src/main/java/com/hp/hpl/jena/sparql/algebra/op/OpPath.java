@@ -23,8 +23,8 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.util.Iso ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class OpPath extends Op0
 {
@@ -59,7 +59,7 @@ public class OpPath extends Op0
     {
         if ( ! (other instanceof OpPath) ) return false ;
         OpPath p = (OpPath)other ;
-        return  Utils.triplePathIso(triplePath, p.triplePath, isoMap) ;
+        return  Iso.triplePathIso(triplePath, p.triplePath, isoMap) ;
     }
 
     @Override

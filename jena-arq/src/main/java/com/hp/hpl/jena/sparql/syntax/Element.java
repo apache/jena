@@ -29,7 +29,7 @@ public abstract class Element
     
     @Override
     public abstract int hashCode() ;
-    // If the labeMap is null, do .equals() on nodes, else map from
+    // If the labelMap is null, do .equals() on nodes, else map from
     // bNode varables in one to bNodes variables in the other 
     public abstract boolean equalTo(Element el2, NodeIsomorphismMap isoMap) ;
     
@@ -42,7 +42,6 @@ public abstract class Element
             return false ;
         return equalTo((Element)el2, null) ;
     }
-    
     
     @Override
     public String toString()

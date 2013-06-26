@@ -23,6 +23,8 @@ import java.util.Collections ;
 import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.Iso ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.update.Update ;
 
 public abstract class UpdateWithUsing extends Update
@@ -43,5 +45,22 @@ public abstract class UpdateWithUsing extends Update
     public List<Node> getUsingNamed()       { return usingNamedView ; }
     
     public Node getWithIRI()                { return withIRI ; }
-    public void setWithIRI(Node node)       { this.withIRI = node ; } 
+    public void setWithIRI(Node node)       { this.withIRI = node ; }
+
+    protected boolean equalIso(UpdateWithUsing other, NodeIsomorphismMap isoMap) {
+        // Assumes IRIs
+        if ( withIRI == null && other.withIRI != null )
+            return false ;
+        if ( withIRI != null && other.withIRI == null )
+            return false ;
+        if ( withIRI != null && other.withIRI != null ) {
+            if ( ! Iso.nodeIso(withIRI, other.withIRI, isoMap) )
+                return false ;
+        }
+        if ( ! Iso.isomorphicNodes(using, other.using, isoMap) )
+                return false ;
+        if ( ! Iso.isomorphicNodes(usingNamed, other.usingNamed, isoMap) )
+            return false ;
+        return true ;
+    } 
 }
