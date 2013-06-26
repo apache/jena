@@ -167,11 +167,7 @@ public class TestSemanticEquivalence {
         if (!q.isSelectType())
             Assert.fail("Only SELECT queries are testable with this method");
         
-        System.out.println(q.toString());
         Op op = Algebra.compile(q);
-        System.out.println(op.toString());
-        System.out.println(Algebra.optimize(op));
-
         // Track current state
         boolean isEnabled = ARQ.isTrue(opt);
         boolean isDisabled = ARQ.isFalse(opt);
