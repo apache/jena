@@ -18,14 +18,33 @@
 
 package dev;
 
-import sdb.sdbquery ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sdb.SDBFactory ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class Main
 {
 
     public static void main(String[] args)
     {
-        sdbquery.main("--sdb=sdb.ttl", "--set", "sdb:unionDefaultGraph=true", "SELECT * { ?s ?p ?o }") ;
+        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-mem.ttl") ;
+        store.getTableFormatter().format() ;
+        store.getTableFormatter().addIndexes() ;
+        
+        Dataset ds = SDBFactory.connectDataset(store) ;
+        DatasetGraph dsg = ds.asDatasetGraph() ;
+        Quad quad = SSE.parseQuad("(<g> <s> <p> <o>)") ;
+        dsg.add(quad) ;
+        System.out.println("DONE") ;
+        System.exit(0) ;
+    }
+    
+    public static void main2(String[] args)
+    {
+        sdb.sdbquery.main("--sdb=sdb.ttl", "--set", "sdb:unionDefaultGraph=true", "SELECT * { ?s ?p ?o }") ;
         //sdbquery.main("--sdb=sdb.ttl", "--set", "http://jena.hpl.hp.com/SDB/symbol#unionDefaultGraph=true", "SELECT * { ?s ?p ?o }") ;
     }
 
