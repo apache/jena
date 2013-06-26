@@ -18,34 +18,16 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.plaf.basic.BasicPanelUI;
-
-import org.junit.Assert ;
 import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.junit.Assert ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformExpandOneOf ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterDisjunction ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterEquality ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterPlacement ;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Tests of transforms related to filters */
