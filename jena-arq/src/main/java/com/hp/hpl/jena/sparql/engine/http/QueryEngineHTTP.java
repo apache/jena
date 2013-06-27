@@ -18,134 +18,128 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.io.ByteArrayInputStream ;
-import java.io.InputStream ;
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.concurrent.TimeUnit ;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.riot.* ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
+import org.apache.jena.riot.*;
+import org.apache.jena.riot.web.HttpOp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.resultset.CSVInput ;
-import com.hp.hpl.jena.sparql.resultset.JSONInput ;
-import com.hp.hpl.jena.sparql.resultset.TSVInput ;
-import com.hp.hpl.jena.sparql.resultset.XMLInput ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.graph.GraphFactory;
+import com.hp.hpl.jena.sparql.resultset.CSVInput;
+import com.hp.hpl.jena.sparql.resultset.JSONInput;
+import com.hp.hpl.jena.sparql.resultset.TSVInput;
+import com.hp.hpl.jena.sparql.resultset.XMLInput;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.util.FileManager;
 
 /**
- * A query execution implementation where queries are executed against a remote service
- *
+ * A query execution implementation where queries are executed against a remote
+ * service
+ * 
  */
-public class QueryEngineHTTP implements QueryExecution
-{
-    private static Logger log = LoggerFactory.getLogger(QueryEngineHTTP.class) ;
-    
-    public static final String QUERY_MIME_TYPE = WebContent.contentTypeSPARQLQuery ; // "application/sparql-query" ;
-    private final Query query ;
-    private final String queryString ;
-    private final String service ;
-    private final Context context ;
-    
-    //Params
-    Params params = null ;
-    
+public class QueryEngineHTTP implements QueryExecution {
+    private static Logger log = LoggerFactory.getLogger(QueryEngineHTTP.class);
+
+    public static final String QUERY_MIME_TYPE = WebContent.contentTypeSPARQLQuery; // "application/sparql-query"
+                                                                                    // ;
+    private final Query query;
+    private final String queryString;
+    private final String service;
+    private final Context context;
+
+    // Params
+    Params params = null;
+
     // Protocol
-    List<String> defaultGraphURIs = new ArrayList<String>() ;
-    List<String> namedGraphURIs  = new ArrayList<String>() ;
-    private String user = null ;
-    private char[] password = null ;
-    
-    private boolean finished = false ;
-    
-    //Timeouts
-    private long connectTimeout = -1 ;
+    List<String> defaultGraphURIs = new ArrayList<String>();
+    List<String> namedGraphURIs = new ArrayList<String>();
+    private HttpAuthenticator authenticator;
+
+    private boolean finished = false;
+
+    // Timeouts
+    private long connectTimeout = -1;
     private TimeUnit connectTimeoutUnit = TimeUnit.MILLISECONDS;
-    private long readTimeout = -1 ;
+    private long readTimeout = -1;
     private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
-    
-    //Compression Support
-    private boolean allowGZip = true ;
-    private boolean	allowDeflate = true;
-    
-    //Content Types
+
+    // Compression Support
+    private boolean allowGZip = true;
+    private boolean allowDeflate = true;
+
+    // Content Types
     private String selectContentType = WebContent.contentTypeResultsXML;
     private String askContentType = WebContent.contentTypeResultsXML;
     private String modelContentType = WebContent.contentTypeRDFXML;
-    public static String[] supportedSelectContentTypes = new String []
-    		{
-    			WebContent.contentTypeResultsXML,
-    			WebContent.contentTypeResultsJSON,
-    			WebContent.contentTypeTextTSV,
-    			WebContent.contentTypeTextCSV
-    		};
-    public static String[] supportedAskContentTypes = new String []
-    		{
-    			WebContent.contentTypeResultsXML,
-    			WebContent.contentTypeJSON,
-    			WebContent.contentTypeTextTSV,
-    			WebContent.contentTypeTextCSV
-    		};
-    
+    public static String[] supportedSelectContentTypes = new String[] { WebContent.contentTypeResultsXML,
+            WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
+    public static String[] supportedAskContentTypes = new String[] { WebContent.contentTypeResultsXML,
+            WebContent.contentTypeJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
+
     // Releasing HTTP input streams is important. We remember this for SELECT,
     // and will close when the engine is closed
     private InputStream retainedConnection = null;
-    
-    public QueryEngineHTTP(String serviceURI, Query query)
-    { 
-        this(serviceURI, query, query.toString()) ;
-    }
-    
-    public QueryEngineHTTP(String serviceURI, String queryString)
-    { 
-        this(serviceURI, null, queryString) ;
+
+    public QueryEngineHTTP(String serviceURI, Query query) {
+        this(serviceURI, query, query.toString());
     }
 
-    private QueryEngineHTTP(String serviceURI, Query query, String queryString)
-    { 
-        this.query = query ;
-        this.queryString = queryString ;
-        this.service = serviceURI ;
+    public QueryEngineHTTP(String serviceURI, String queryString) {
+        this(serviceURI, null, queryString);
+    }
+
+    private QueryEngineHTTP(String serviceURI, Query query, String queryString) {
+        this.query = query;
+        this.queryString = queryString;
+        this.service = serviceURI;
         // Copy the global context to freeze it.
-        this.context = new Context(ARQ.getContext()) ;
-        
+        this.context = new Context(ARQ.getContext());
+
         // Apply service configuration if relevant
         QueryEngineHTTP.applyServiceConfig(serviceURI, this);
     }
-    
+
     /**
      * <p>
-     * Helper method which applies configuration from the Context to the query engine
-     * if a service context exists for the given URI
+     * Helper method which applies configuration from the Context to the query
+     * engine if a service context exists for the given URI
      * </p>
      * <p>
-     * Based off proposed patch for JENA-405 but modified to apply all relevant configuration, this is in part also
-     * based off of the private {@code configureQuery()} method of the {@link Service} class though it omits
-     * parameter merging since that will be done automatically whenever the {@link QueryEngineHTTP} instance
-     * makes a query for remote submission.
+     * Based off proposed patch for JENA-405 but modified to apply all relevant
+     * configuration, this is in part also based off of the private
+     * {@code configureQuery()} method of the {@link Service} class though it
+     * omits parameter merging since that will be done automatically whenever
+     * the {@link QueryEngineHTTP} instance makes a query for remote submission.
      * </p>
-     * @param serviceURI Service URI
+     * 
+     * @param serviceURI
+     *            Service URI
      */
     private static void applyServiceConfig(String serviceURI, QueryEngineHTTP engine) {
-        if (engine.context == null) return;
-        
+        if (engine.context == null)
+            return;
+
         @SuppressWarnings("unchecked")
         Map<String, Context> serviceContextMap = (Map<String, Context>) engine.context.get(Service.serviceContext);
         if (serviceContextMap != null && serviceContextMap.containsKey(serviceURI)) {
             Context serviceContext = serviceContextMap.get(serviceURI);
             if (log.isDebugEnabled())
                 log.debug("Endpoint URI {} has SERVICE Context: {} ", serviceURI, serviceContext);
-            
+
             // Apply behavioral options
             engine.setAllowGZip(serviceContext.isTrueOrUndef(Service.queryGzip));
             engine.setAllowDeflate(serviceContext.isTrueOrUndef(Service.queryDeflate));
@@ -164,491 +158,554 @@ public class QueryEngineHTTP implements QueryExecution
             }
         }
     }
-    
+
     /**
      * Applies context provided timeouts to the given engine
-     * @param engine Engine
-     * @param context Context
+     * 
+     * @param engine
+     *            Engine
+     * @param context
+     *            Context
      */
     private static void applyServiceTimeouts(QueryEngineHTTP engine, Context context) {
-        if (context.isDefined(Service.queryTimeout)) 
-        {
+        if (context.isDefined(Service.queryTimeout)) {
             Object obj = context.get(Service.queryTimeout);
-            if (obj instanceof Number) 
-            {
+            if (obj instanceof Number) {
                 int x = ((Number) obj).intValue();
                 engine.setTimeout(-1, x);
-            } 
-            else if (obj instanceof String)
-            {
+            } else if (obj instanceof String) {
                 try {
                     String str = obj.toString();
                     if (str.contains(",")) {
-                        
+
                         String[] a = str.split(",");
                         int connect = Integer.parseInt(a[0]);
                         int read = Integer.parseInt(a[1]);
                         engine.setTimeout(read, connect);
-                    } 
-                    else 
-                    {
+                    } else {
                         int x = Integer.parseInt(str);
                         engine.setTimeout(-1, x);
                     }
-                } 
-                catch (NumberFormatException ex) 
-                {
+                } catch (NumberFormatException ex) {
                     throw new QueryExecException("Can't interpret string for timeout: " + obj);
                 }
-            } 
-            else
-            {
+            } else {
                 throw new QueryExecException("Can't interpret timeout: " + obj);
             }
         }
     }
-    
-//    public void setParams(Params params)
-//    { this.params = params ; }
-    
+
+    // public void setParams(Params params)
+    // { this.params = params ; }
+
     // Meaning-less
     @Override
-    public void setFileManager(FileManager fm)
-    { throw new UnsupportedOperationException("FileManagers do not apply to remote query execution") ; }  
+    public void setFileManager(FileManager fm) {
+        throw new UnsupportedOperationException("FileManagers do not apply to remote query execution");
+    }
 
     @Override
-    public void setInitialBinding(QuerySolution binding)
-    { throw new UnsupportedOperationException("Initial bindings not supported for remote queries, consider using a ParameterizedSparqlString to prepare a query for remote execution") ; }
-    
-    public void setInitialBindings(ResultSet table)
-    { throw new UnsupportedOperationException("Initial bindings not supported for remote queries, consider using a ParameterizedSparqlString to prepare a query for remote execution") ; }
-    
-    /**  @param defaultGraphURIs The defaultGraphURIs to set. */
-    public void setDefaultGraphURIs(List<String> defaultGraphURIs)
-    {
-        this.defaultGraphURIs = defaultGraphURIs ;
+    public void setInitialBinding(QuerySolution binding) {
+        throw new UnsupportedOperationException(
+                "Initial bindings not supported for remote queries, consider using a ParameterizedSparqlString to prepare a query for remote execution");
     }
-    
-    /**  @param namedGraphURIs The namedGraphURIs to set. */
-    public void setNamedGraphURIs(List<String> namedGraphURIs)
-    {
-        this.namedGraphURIs = namedGraphURIs ;
+
+    public void setInitialBindings(ResultSet table) {
+        throw new UnsupportedOperationException(
+                "Initial bindings not supported for remote queries, consider using a ParameterizedSparqlString to prepare a query for remote execution");
     }
-    
+
+    /**
+     * @param defaultGraphURIs
+     *            The defaultGraphURIs to set.
+     */
+    public void setDefaultGraphURIs(List<String> defaultGraphURIs) {
+        this.defaultGraphURIs = defaultGraphURIs;
+    }
+
+    /**
+     * @param namedGraphURIs
+     *            The namedGraphURIs to set.
+     */
+    public void setNamedGraphURIs(List<String> namedGraphURIs) {
+        this.namedGraphURIs = namedGraphURIs;
+    }
+
     /**
      * Sets whether the HTTP request will specify Accept-Encoding: gzip
      */
-    public void setAllowGZip(boolean allowed)
-    {
-    	allowGZip = allowed;
+    public void setAllowGZip(boolean allowed) {
+        allowGZip = allowed;
     }
-    
+
     /**
      * Sets whether the HTTP requests will specify Accept-Encoding: deflate
      */
-    public void setAllowDeflate(boolean allowed)
-    {
-    	allowDeflate = allowed;
+    public void setAllowDeflate(boolean allowed) {
+        allowDeflate = allowed;
     }
 
-    public void addParam(String field, String value)
-    {
-        if ( params == null )
-            params = new Params() ;
-        params.addParam(field, value) ;
-    }
-    
-    /** @param defaultGraph The defaultGraph to add. */
-    public void addDefaultGraph(String defaultGraph)
-    {
-        if ( defaultGraphURIs == null )
-            defaultGraphURIs = new ArrayList<String>() ;
-        defaultGraphURIs.add(defaultGraph) ;
+    public void addParam(String field, String value) {
+        if (params == null)
+            params = new Params();
+        params.addParam(field, value);
     }
 
-    /** @param name The URI to add. */
-    public void addNamedGraph(String name)
-    {
-        if ( namedGraphURIs == null )
-            namedGraphURIs = new ArrayList<String>() ;
-        namedGraphURIs.add(name) ;
-    }
-    
     /**
-     * Gets whether basic authentication credentials have been provided
-     * @return True if basic authentication credentials have been provided
+     * @param defaultGraph
+     *            The defaultGraph to add.
+     */
+    public void addDefaultGraph(String defaultGraph) {
+        if (defaultGraphURIs == null)
+            defaultGraphURIs = new ArrayList<String>();
+        defaultGraphURIs.add(defaultGraph);
+    }
+
+    /**
+     * @param name
+     *            The URI to add.
+     */
+    public void addNamedGraph(String name) {
+        if (namedGraphURIs == null)
+            namedGraphURIs = new ArrayList<String>();
+        namedGraphURIs.add(name);
+    }
+
+    /**
+     * Gets whether an authentication mechanism has been provided.
+     * <p>
+     * Even if this returns false authentication may still be used if the
+     * default authenticator applies, this is controlled via the
+     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} method
+     * </p>
+     * 
+     * @return True if an authenticator has been provided
      */
     public boolean isUsingBasicAuthentication() {
-        return this.user != null || this.password != null;
+        return this.authenticator != null;
     }
-    
-    /** Set user and password for basic authentication.
-     *  After the request is made (one of the exec calls), the application
-     *  can overwrite the password array to remove details of the secret.
+
+    /**
+     * Set user and password for basic authentication. After the request is made
+     * (one of the exec calls), the application can overwrite the password array
+     * to remove details of the secret.
+     * <p>
+     * Note that it may be more flexible to
+     * </p>
+     * 
      * @param user
      * @param password
      */
-    public void setBasicAuthentication(String user, char[] password)
-    {
-        this.user = user ;
-        this.password = password ;
+    public void setBasicAuthentication(String user, char[] password) {
+        this.authenticator = new SimpleAuthenticator(user, password);
     }
-    
+
+    /**
+     * Sets the HTTP authenticator to use, if none is set then the default
+     * authenticator is used. This may be configured via the
+     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} method.
+     * 
+     * @param authenticator
+     *            HTTP authenticator
+     */
+    public void setAuthenticator(HttpAuthenticator authenticator) {
+        this.authenticator = authenticator;
+    }
+
     @Override
-    public ResultSet execSelect()
-    {
-        HttpQuery httpQuery = makeHttpQuery() ;
-        httpQuery.setAccept(selectContentType) ;
-        InputStream in = httpQuery.exec() ;
-        
-        if ( false )
-        {
-            byte b[] = IO.readWholeFile(in) ;
-            String str = new String(b) ;
-            System.out.println(str) ;
-            in = new ByteArrayInputStream(b) ; 
+    public ResultSet execSelect() {
+        HttpQuery httpQuery = makeHttpQuery();
+        httpQuery.setAccept(selectContentType);
+        InputStream in = httpQuery.exec();
+
+        if (false) {
+            byte b[] = IO.readWholeFile(in);
+            String str = new String(b);
+            System.out.println(str);
+            in = new ByteArrayInputStream(b);
         }
-        
+
         retainedConnection = in; // This will be closed on close()
-        
-        //TODO: Find a way to auto-detect how to create the ResultSet based on the content type in use
-        
-        //Don't assume the endpoint actually gives back the content type we asked for
+
+        // TODO: Find a way to auto-detect how to create the ResultSet based on
+        // the content type in use
+
+        // Don't assume the endpoint actually gives back the content type we
+        // asked for
         String actualContentType = httpQuery.getContentType();
-        
-        //If the server fails to return a Content-Type then we will assume
-        //the server returned the type we asked for
-        if (actualContentType == null || actualContentType.equals(""))
-        {
-        	actualContentType = selectContentType;
+
+        // If the server fails to return a Content-Type then we will assume
+        // the server returned the type we asked for
+        if (actualContentType == null || actualContentType.equals("")) {
+            actualContentType = selectContentType;
         }
-        
+
         if (actualContentType.equals(WebContent.contentTypeResultsXML))
             return ResultSetFactory.fromXML(in);
         if (actualContentType.equals(WebContent.contentTypeResultsJSON))
-            return ResultSetFactory.fromJSON(in); 
+            return ResultSetFactory.fromJSON(in);
         if (actualContentType.equals(WebContent.contentTypeTextTSV))
             return ResultSetFactory.fromTSV(in);
         if (actualContentType.equals(WebContent.contentTypeTextCSV))
             return CSVInput.fromCSV(in);
-        throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not currently supported for SELECT queries");
+        throw new QueryException("Endpoint returned Content-Type: " + actualContentType
+                + " which is not currently supported for SELECT queries");
     }
 
     @Override
-    public Model execConstruct()                   { return execConstruct(GraphFactory.makeJenaDefaultModel()) ; }
-    
-    @Override
-    public Model execConstruct(Model model)        { return execModel(model) ; }
-    
-    @Override
-    public Iterator<Triple> execConstructTriples() { return execTriples() ; }
-
-    @Override
-    public Model execDescribe()                    { return execDescribe(GraphFactory.makeJenaDefaultModel()) ; }
-    
-    @Override
-    public Model execDescribe(Model model)         { return execModel(model) ; }
-    
-    @Override
-    public Iterator<Triple> execDescribeTriples()  { return execTriples() ; }
-
-    private Model execModel(Model model)
-    {
-        HttpQuery httpQuery = makeHttpQuery() ;
-        httpQuery.setAccept(modelContentType) ;
-        InputStream in = httpQuery.exec() ;
-        
-        //Don't assume the endpoint actually gives back the content type we asked for
-        String actualContentType = httpQuery.getContentType();
-        
-        //If the server fails to return a Content-Type then we will assume
-        //the server returned the type we asked for
-        if (actualContentType == null || actualContentType.equals(""))
-        {
-        	actualContentType = modelContentType;
-        }
-        
-        //Try to select language appropriately here based on the model content type
-        Lang lang = WebContent.contentTypeToLang(actualContentType);
-        if (! RDFLanguages.isTriples(lang)) 
-           throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
-        RDFDataMgr.read(model, in, lang) ;
-        this.close() ; 
-        return model ;
+    public Model execConstruct() {
+        return execConstruct(GraphFactory.makeJenaDefaultModel());
     }
-    
-    private Iterator<Triple> execTriples()
-    {
-        HttpQuery httpQuery = makeHttpQuery() ;
-        httpQuery.setAccept(modelContentType) ;
-        InputStream in = httpQuery.exec() ;
-        
-        //Don't assume the endpoint actually gives back the content type we asked for
+
+    @Override
+    public Model execConstruct(Model model) {
+        return execModel(model);
+    }
+
+    @Override
+    public Iterator<Triple> execConstructTriples() {
+        return execTriples();
+    }
+
+    @Override
+    public Model execDescribe() {
+        return execDescribe(GraphFactory.makeJenaDefaultModel());
+    }
+
+    @Override
+    public Model execDescribe(Model model) {
+        return execModel(model);
+    }
+
+    @Override
+    public Iterator<Triple> execDescribeTriples() {
+        return execTriples();
+    }
+
+    private Model execModel(Model model) {
+        HttpQuery httpQuery = makeHttpQuery();
+        httpQuery.setAccept(modelContentType);
+        InputStream in = httpQuery.exec();
+
+        // Don't assume the endpoint actually gives back the content type we
+        // asked for
         String actualContentType = httpQuery.getContentType();
-        
-        //If the server fails to return a Content-Type then we will assume
-        //the server returned the type we asked for
-        if (actualContentType == null || actualContentType.equals(""))
-        {
+
+        // If the server fails to return a Content-Type then we will assume
+        // the server returned the type we asked for
+        if (actualContentType == null || actualContentType.equals("")) {
             actualContentType = modelContentType;
         }
-        
-        //Try to select language appropriately here based on the model content type
+
+        // Try to select language appropriately here based on the model content
+        // type
         Lang lang = WebContent.contentTypeToLang(actualContentType);
-        if (! RDFLanguages.isTriples(lang)) 
-            throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
-        
+        if (!RDFLanguages.isTriples(lang))
+            throw new QueryException("Endpoint returned Content Type: " + actualContentType
+                    + " which is not a valid RDF Graph syntax");
+        RDFDataMgr.read(model, in, lang);
+        this.close();
+        return model;
+    }
+
+    private Iterator<Triple> execTriples() {
+        HttpQuery httpQuery = makeHttpQuery();
+        httpQuery.setAccept(modelContentType);
+        InputStream in = httpQuery.exec();
+
+        // Don't assume the endpoint actually gives back the content type we
+        // asked for
+        String actualContentType = httpQuery.getContentType();
+
+        // If the server fails to return a Content-Type then we will assume
+        // the server returned the type we asked for
+        if (actualContentType == null || actualContentType.equals("")) {
+            actualContentType = modelContentType;
+        }
+
+        // Try to select language appropriately here based on the model content
+        // type
+        Lang lang = WebContent.contentTypeToLang(actualContentType);
+        if (!RDFLanguages.isTriples(lang))
+            throw new QueryException("Endpoint returned Content Type: " + actualContentType
+                    + " which is not a valid RDF Graph syntax");
+
         return RiotReader.createIteratorTriples(in, lang, null);
     }
-    
+
     @Override
-    public boolean execAsk()
-    {
-        HttpQuery httpQuery = makeHttpQuery() ;
-        httpQuery.setAccept(askContentType) ;
-        InputStream in = httpQuery.exec() ;
+    public boolean execAsk() {
+        HttpQuery httpQuery = makeHttpQuery();
+        httpQuery.setAccept(askContentType);
+        InputStream in = httpQuery.exec();
 
         try {
-            //Don't assume the endpoint actually gives back the content type we asked for
+            // Don't assume the endpoint actually gives back the content type we
+            // asked for
             String actualContentType = httpQuery.getContentType();
-            
-            //If the server fails to return a Content-Type then we will assume
-            //the server returned the type we asked for
-            if (actualContentType == null || actualContentType.equals(""))
-            {
-            	actualContentType = askContentType;
+
+            // If the server fails to return a Content-Type then we will assume
+            // the server returned the type we asked for
+            if (actualContentType == null || actualContentType.equals("")) {
+                actualContentType = askContentType;
             }
             Lang lang = WebContent.contentTypeToLang(actualContentType);
-            if (! RDFLanguages.isTriples(lang)) 
+            if (!RDFLanguages.isTriples(lang))
 
-            //Parse the result appropriately depending on the selected content type
-            if (actualContentType.equals(WebContent.contentTypeResultsXML))
-                return XMLInput.booleanFromXML(in) ;
+                // Parse the result appropriately depending on the selected
+                // content type
+                if (actualContentType.equals(WebContent.contentTypeResultsXML))
+                    return XMLInput.booleanFromXML(in);
             if (actualContentType.equals(WebContent.contentTypeResultsJSON))
-                return JSONInput.booleanFromJSON(in) ;
+                return JSONInput.booleanFromJSON(in);
             if (actualContentType.equals(WebContent.contentTypeTextTSV))
-            	return TSVInput.booleanFromTSV(in);
+                return TSVInput.booleanFromTSV(in);
             if (actualContentType.equals(WebContent.contentTypeTextCSV))
-            	return CSVInput.booleanFromCSV(in);
-            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not currently supported for ASK queries");
+                return CSVInput.booleanFromCSV(in);
+            throw new QueryException("Endpoint returned Content-Type: " + actualContentType
+                    + " which is not currently supported for ASK queries");
         } finally {
             // Ensure connection is released
-            try { in.close(); }
-            catch (java.io.IOException e) { log.warn("Failed to close connection", e); }
+            try {
+                in.close();
+            } catch (java.io.IOException e) {
+                log.warn("Failed to close connection", e);
+            }
         }
     }
 
     @Override
-    public Context getContext() { return context ; }
-    
-    @Override public Dataset getDataset()   { return null ; }
+    public Context getContext() {
+        return context;
+    }
 
-    // This may be null - if we were created form a query string, 
-    // we don't guarantee to parse it so we let through non-SPARQL
-    // extensions to the far end. 
-    @Override public Query getQuery()       { return query ; }
-    
     @Override
-    public void setTimeout(long readTimeout)
-    {
+    public Dataset getDataset() {
+        return null;
+    }
+
+    // This may be null - if we were created form a query string,
+    // we don't guarantee to parse it so we let through non-SPARQL
+    // extensions to the far end.
+    @Override
+    public Query getQuery() {
+        return query;
+    }
+
+    @Override
+    public void setTimeout(long readTimeout) {
         this.readTimeout = readTimeout;
         this.readTimeoutUnit = TimeUnit.MILLISECONDS;
     }
 
     @Override
-    public void setTimeout(long readTimeout, long connectTimeout)
-    {
+    public void setTimeout(long readTimeout, long connectTimeout) {
         this.readTimeout = readTimeout;
         this.readTimeoutUnit = TimeUnit.MILLISECONDS;
         this.connectTimeout = connectTimeout;
         this.connectTimeoutUnit = TimeUnit.MILLISECONDS;
     }
 
-
     @Override
-    public void setTimeout(long readTimeout, TimeUnit timeoutUnits)
-    {
+    public void setTimeout(long readTimeout, TimeUnit timeoutUnits) {
         this.readTimeout = readTimeout;
         this.readTimeoutUnit = timeoutUnits;
     }
 
     @Override
-    public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2)
-    {
+    public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) {
         this.readTimeout = timeout1;
         this.readTimeoutUnit = timeUnit1;
         this.connectTimeout = timeout2;
         this.connectTimeoutUnit = timeUnit2;
     }
-    
+
     @Override
-    public long getTimeout1() { return asMillis(readTimeout, readTimeoutUnit) ; } 
-    
+    public long getTimeout1() {
+        return asMillis(readTimeout, readTimeoutUnit);
+    }
+
     @Override
-    public long getTimeout2() { return asMillis(connectTimeout, connectTimeoutUnit) ; }
-    
+    public long getTimeout2() {
+        return asMillis(connectTimeout, connectTimeoutUnit);
+    }
+
     /**
-     * Gets whether HTTP requests will indicate to the remote server that GZip encoding of responses is accepted
+     * Gets whether HTTP requests will indicate to the remote server that GZip
+     * encoding of responses is accepted
+     * 
      * @return True if GZip encoding will be accepted
      */
-    public boolean getAllowGZip() { return allowGZip; }
-    
+    public boolean getAllowGZip() {
+        return allowGZip;
+    }
+
     /**
-     * Gets whether HTTP requests will indicate to the remote server that Deflate encoding of responses is accepted
+     * Gets whether HTTP requests will indicate to the remote server that
+     * Deflate encoding of responses is accepted
+     * 
      * @return True if Deflate encoding will be accepted
      */
-    public boolean getAllowDeflate() { return allowDeflate; }
-
-    private static long asMillis(long duration, TimeUnit timeUnit)
-    {
-        return (duration < 0 ) ? duration : timeUnit.toMillis(duration) ;
+    public boolean getAllowDeflate() {
+        return allowDeflate;
     }
-    
-    private HttpQuery makeHttpQuery()
-    {
-        // Also need to tie to ResultSet returned which is streamed back if StAX.
-        if ( finished )
-            throw new ARQException("HTTP execution already closed") ;
-        
-        HttpQuery httpQuery = new HttpQuery(service) ;
-        httpQuery.merge(getServiceParams(service, context)) ;
-        httpQuery.addParam(HttpParams.pQuery, queryString );
-        
-        for ( Iterator<String> iter = defaultGraphURIs.iterator() ; iter.hasNext() ; )
-        {
-            String dft = iter.next() ;
-            httpQuery.addParam(HttpParams.pDefaultGraph, dft) ;
+
+    private static long asMillis(long duration, TimeUnit timeUnit) {
+        return (duration < 0) ? duration : timeUnit.toMillis(duration);
+    }
+
+    private HttpQuery makeHttpQuery() {
+        if (finished)
+            throw new ARQException("HTTP execution already closed");
+
+        HttpQuery httpQuery = new HttpQuery(service);
+        httpQuery.merge(getServiceParams(service, context));
+        httpQuery.addParam(HttpParams.pQuery, queryString);
+
+        for (Iterator<String> iter = defaultGraphURIs.iterator(); iter.hasNext();) {
+            String dft = iter.next();
+            httpQuery.addParam(HttpParams.pDefaultGraph, dft);
         }
-        for ( Iterator<String> iter = namedGraphURIs.iterator() ; iter.hasNext() ; )
-        {
-            String name = iter.next() ;
-            httpQuery.addParam(HttpParams.pNamedGraph, name) ;
+        for (Iterator<String> iter = namedGraphURIs.iterator(); iter.hasNext();) {
+            String name = iter.next();
+            httpQuery.addParam(HttpParams.pNamedGraph, name);
         }
-        
-        if ( params != null )
-            httpQuery.merge(params) ;
-        
+
+        if (params != null)
+            httpQuery.merge(params);
+
         if (allowGZip)
-        	httpQuery.setAllowGZip(true);
+            httpQuery.setAllowGZip(true);
 
         if (allowDeflate)
-        	httpQuery.setAllowDeflate(true);
-        
-        httpQuery.setBasicAuthentication(user, password) ;
-        
-        //Apply timeouts
-        if (connectTimeout > 0)
-        {
-        	httpQuery.setConnectTimeout((int)connectTimeoutUnit.toMillis(connectTimeout));
+            httpQuery.setAllowDeflate(true);
+
+        httpQuery.setAuthenticator(this.authenticator);
+
+        // Apply timeouts
+        if (connectTimeout > 0) {
+            httpQuery.setConnectTimeout((int) connectTimeoutUnit.toMillis(connectTimeout));
         }
-        if (readTimeout > 0)
-        {
-        	httpQuery.setReadTimeout((int)readTimeoutUnit.toMillis(readTimeout));
+        if (readTimeout > 0) {
+            httpQuery.setReadTimeout((int) readTimeoutUnit.toMillis(readTimeout));
         }
-        
-        return httpQuery ;
+
+        return httpQuery;
     }
 
-    
-    // This is to allow setting additional/optional query parameters on a per SERVICE level, see: JENA-195
-    protected static Params getServiceParams(String serviceURI, Context context) throws QueryExecException
-    {
+    // This is to allow setting additional/optional query parameters on a per
+    // SERVICE level, see: JENA-195
+    protected static Params getServiceParams(String serviceURI, Context context) throws QueryExecException {
         Params params = new Params();
         @SuppressWarnings("unchecked")
-        Map<String, Map<String,List<String>>> serviceParams = (Map<String, Map<String,List<String>>>)context.get(ARQ.serviceParams) ;
-        if ( serviceParams != null ) 
-        {
-            Map<String,List<String>> paramsMap = serviceParams.get(serviceURI) ;
-            if ( paramsMap != null )
-            {
-                for (String param : paramsMap.keySet()) 
-                {   
-                    if ( HttpParams.pQuery.equals(param) ) 
-                        throw new QueryExecException("ARQ serviceParams overrides the 'query' SPARQL protocol parameter") ;
+        Map<String, Map<String, List<String>>> serviceParams = (Map<String, Map<String, List<String>>>) context
+                .get(ARQ.serviceParams);
+        if (serviceParams != null) {
+            Map<String, List<String>> paramsMap = serviceParams.get(serviceURI);
+            if (paramsMap != null) {
+                for (String param : paramsMap.keySet()) {
+                    if (HttpParams.pQuery.equals(param))
+                        throw new QueryExecException("ARQ serviceParams overrides the 'query' SPARQL protocol parameter");
 
-                    List<String> values = paramsMap.get(param) ;
-                    for (String value : values) 
-                        params.addParam(param, value) ;
+                    List<String> values = paramsMap.get(param);
+                    for (String value : values)
+                        params.addParam(param, value);
                 }
-            }            
+            }
         }
         return params;
     }
 
-    public void cancel() { finished = true ; }
-    
-    @Override
-    public void abort() { try { close() ; } catch (Exception ex) {} }
+    /**
+     * Cancel query evaluation
+     */
+    public void cancel() {
+        finished = true;
+    }
 
     @Override
-    public void close() {
-        finished = true ;
-        if (retainedConnection != null) {
-            try { retainedConnection.close(); }
-            catch (java.io.IOException e) { log.warn("Failed to close connection", e); }
-            finally { retainedConnection = null; }
+    public void abort() {
+        try {
+            close();
+        } catch (Exception ex) {
+            log.warn("Error during abort", ex);
         }
     }
 
-//    public boolean isActive() { return false ; }
-    
     @Override
-    public String toString()
-    {
-        HttpQuery httpQuery = makeHttpQuery() ;
-        return "GET "+httpQuery.toString() ;
+    public void close() {
+        finished = true;
+        if (retainedConnection != null) {
+            try {
+                retainedConnection.close();
+            } catch (java.io.IOException e) {
+                log.warn("Failed to close connection", e);
+            } finally {
+                retainedConnection = null;
+            }
+        }
     }
-    
+
+    // public boolean isActive() { return false ; }
+
+    @Override
+    public String toString() {
+        HttpQuery httpQuery = makeHttpQuery();
+        return "GET " + httpQuery.toString();
+    }
+
     /**
-     * Sets the Content Type for SELECT queries provided that the format is supported
+     * Sets the Content Type for SELECT queries provided that the format is
+     * supported
+     * 
      * @param contentType
      */
-    public void setSelectContentType(String contentType)
-    {
-    	boolean ok = false;
-    	for (String supportedType : supportedSelectContentTypes)
-    	{
-    		if (supportedType.equals(contentType))
-    		{
-    			ok = true;
-    			break;
-    		}
-    	}
-    	if (!ok) throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a supported SELECT results format");
-    	selectContentType = contentType;
+    public void setSelectContentType(String contentType) {
+        boolean ok = false;
+        for (String supportedType : supportedSelectContentTypes) {
+            if (supportedType.equals(contentType)) {
+                ok = true;
+                break;
+            }
+        }
+        if (!ok)
+            throw new IllegalArgumentException("Given Content Type '" + contentType
+                    + "' is not a supported SELECT results format");
+        selectContentType = contentType;
     }
-    
+
     /**
-     * Sets the Content Type for ASK queries provided that the format is supported
+     * Sets the Content Type for ASK queries provided that the format is
+     * supported
+     * 
      * @param contentType
      */
-    public void setAskContentType(String contentType)
-    {
-    	boolean ok = false;
-    	for (String supportedType : supportedAskContentTypes)
-    	{
-    		if (supportedType.equals(contentType))
-    		{
-    			ok = true;
-    			break;
-    		}
-    	}
-    	if (!ok) throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a supported ASK results format");
-    	askContentType = contentType;
+    public void setAskContentType(String contentType) {
+        boolean ok = false;
+        for (String supportedType : supportedAskContentTypes) {
+            if (supportedType.equals(contentType)) {
+                ok = true;
+                break;
+            }
+        }
+        if (!ok)
+            throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a supported ASK results format");
+        askContentType = contentType;
     }
-    
+
     /**
-     * Sets the Content Type for CONSTRUCT/DESCRIBE queries provided that the format is supported
+     * Sets the Content Type for CONSTRUCT/DESCRIBE queries provided that the
+     * format is supported
+     * 
      * @param contentType
      */
-    public void setModelContentType(String contentType)
-    {
+    public void setModelContentType(String contentType) {
         // Check that this is a valid setting
-        Lang lang = WebContent.contentTypeToLang(contentType) ;
-        if (lang == null) 
-            throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not supported by RIOT") ;
-        if (!RDFLanguages.isTriples(lang)) 
-            throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a RDF Graph format") ;
-        modelContentType = contentType ;
+        Lang lang = WebContent.contentTypeToLang(contentType);
+        if (lang == null)
+            throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not supported by RIOT");
+        if (!RDFLanguages.isTriples(lang))
+            throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a RDF Graph format");
+        modelContentType = contentType;
     }
 }

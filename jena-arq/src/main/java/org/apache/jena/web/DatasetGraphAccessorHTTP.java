@@ -53,6 +53,8 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.graph.UnmodifiableGraph ;
 
+// TODO Support use of a HttpAuthenticator
+
 public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 {
     private final String remote ;
