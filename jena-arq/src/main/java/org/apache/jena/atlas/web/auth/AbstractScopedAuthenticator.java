@@ -15,35 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.jena.atlas.web.auth;
 
-package org.apache.jena.atlas.web;
+import java.net.URI;
 
 /**
- * Class of HTTP Exceptions from Atlas code
- * 
+ * An abstract helper for authenticators which scope credentials to URIs
  */
-public class HttpException extends RuntimeException {
-    private static final long serialVersionUID = -7224224620679594095L;
-    private int responseCode = -1;
+public abstract class AbstractScopedAuthenticator extends AbstractCredentialsAuthenticator {
 
-    public HttpException(int responseCode, String statusLine) {
-        super(responseCode + " - " + statusLine);
-        this.responseCode = responseCode;
-    }
-    
-    public HttpException(String message) {
-        super(message);
+    @Override
+    protected boolean hasUserName(URI target) {
+        return this.getUserName(target) != null;
     }
 
-    public HttpException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    protected boolean hasPassword(URI target) {
+        return this.getPassword(target) != null;
     }
-    
-    /**
-     * Gets the response code, may be -1 if unknown
-     * @return Response Code if known, -1 otherwise
-     */
-    public int getResponseCode() {
-        return this.responseCode;
-    }
+
 }
