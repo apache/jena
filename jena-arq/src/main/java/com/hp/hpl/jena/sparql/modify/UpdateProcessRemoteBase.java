@@ -24,6 +24,9 @@ import java.util.Map;
 
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
+import org.apache.jena.riot.web.HttpOp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     private final UpdateRequest request;
     private final String endpoint;
     private final Context context;
+    private HttpAuthenticator authenticator;
 
     protected List<String> defaultGraphURIs = new ArrayList<String>();
     protected List<String> namedGraphURIs = new ArrayList<String>();
@@ -113,13 +117,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
                 if (log.isDebugEnabled())
                     log.debug("Setting basic HTTP authentication for endpoint URI {} with username: {} ", serviceURI, user);
 
-                HttpContext httpContext = engine.getHttpContext();
-                if (httpContext == null) {
-                    engine.setHttpContext(new BasicHttpContext());
-                    httpContext = engine.getHttpContext();
-                }
-                httpContext.setAttribute(Service.queryAuthUser.toString(), user);
-                httpContext.setAttribute(Service.queryAuthPwd.toString(), pwd);
+                engine.setAuthentication(user, pwd.toCharArray());
             }
         }
     }
@@ -151,9 +149,10 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     public String getQueryString() {
         return this.getParams().httpString();
     }
-    
+
     /**
      * Gets the parameters for the execution
+     * 
      * @return Parameters
      */
     public Params getParams() {
@@ -252,32 +251,55 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
 
     /**
      * Sets authentication credentials for remote updates
+     * <p>
+     * May be better to use {@link #setAuthenticator(HttpAuthenticator)} as that
+     * allows for more complex authentication to be used
+     * </p>
      * 
      * @param username
-     *            Username
+     *            User name
      * @param password
      *            Password
      */
     public void setAuthentication(String username, char[] password) {
-        HttpContext httpContext = this.getHttpContext();
-        if (httpContext == null) {
-            this.setHttpContext(new BasicHttpContext());
-            httpContext = this.getHttpContext();
-        }
-        httpContext.setAttribute(Service.queryAuthUser.toString(), username);
-        httpContext.setAttribute(Service.queryAuthPwd.toString(), new String(password));
+        this.setAuthenticator(new SimpleAuthenticator(username, password));
     }
 
     /**
-     * Gets whether any authentication credentials have been set
+     * Sets the authenticator to use
+     * <p>
+     * Note that you can globally set an authenticator via
+     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} to avoid the
+     * need to set authentication on a per-request basis
+     * </p>
      * 
-     * @return True if credentials have been set, false otherwise
+     * @param authenticator
+     *            HTTP Authenticator
+     */
+    public void setAuthenticator(HttpAuthenticator authenticator) {
+        this.authenticator = authenticator;
+    }
+
+    /**
+     * Gets the authenticator that has been set (if any)
+     * <p>
+     * If no authenticator is used then the default authenticator will be used,
+     * this can be configured via the
+     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} method.
+     * </p>
+     * 
+     * @return HTTP Authenticator if set, null otherwise
+     */
+    public HttpAuthenticator getAuthenticator() {
+        return this.authenticator;
+    }
+
+    /**
+     * Gets whether any authenticator has been set
+     * 
+     * @return True if an authenticator has been set, false otherwise
      */
     public boolean isUsingAuthentication() {
-        HttpContext httpContext = this.getHttpContext();
-        if (httpContext == null)
-            return false;
-        return httpContext.getAttribute(Service.queryAuthUser.toString()) != null
-                && httpContext.getAttribute(Service.queryAuthPwd.toString()) != null;
+        return this.authenticator != null;
     }
 }
