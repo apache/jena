@@ -21,9 +21,16 @@ package org.apache.jena.fuseki;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator;
+import org.apache.jena.atlas.web.auth.ScopedAuthenticator;
+import org.apache.jena.atlas.web.auth.ServiceAuthenticator;
 import org.apache.jena.fuseki.server.FusekiConfig;
 import org.apache.jena.fuseki.server.SPARQLServer;
 import org.apache.jena.fuseki.server.ServerConfig;
@@ -32,155 +39,294 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
+import com.hp.hpl.jena.sparql.engine.http.Service;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessRemoteBase;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 /**
  * Tests Fuseki operation with authentication enabled
+ * 
  * @author rvesse
- *
+ * 
  */
 public class TestAuth extends BaseServerTest {
-    
+
     private static File realmFile;
     private static SPARQLServer server;
 
     @BeforeClass
     public static void setup() throws IOException {
         realmFile = File.createTempFile("realm", ".properties");
-        
+
         FileWriter writer = new FileWriter(realmFile);
         writer.write("allowed: password, fuseki\n");
         writer.write("forbidden: password, other");
         writer.close();
-        
-        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
 
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
+        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
+        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
+
+        DatasetGraph dsg = DatasetGraphFactory.createMem();
         // This must agree with BaseServerTest
-        ServerConfig conf = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
-        conf.port = BaseServerTest.port ;
-        conf.pagesPort = BaseServerTest.port ;
-        conf.authConfigFile = realmFile.getAbsolutePath() ;
+        ServerConfig conf = FusekiConfig.defaultConfiguration(datasetPath, dsg, true);
+        conf.port = BaseServerTest.port;
+        conf.pagesPort = BaseServerTest.port;
+        conf.authConfigFile = realmFile.getAbsolutePath();
 
-        server = new SPARQLServer(conf) ;
-        server.start() ;
+        server = new SPARQLServer(conf);
+        server.start();
     }
-    
+
     @AfterClass
     public static void teardown() {
         server.stop();
-        
+
         realmFile.delete();
     }
-    
+
     @Test(expected = QueryExceptionHTTP.class)
     public void query_with_auth_01() {
-        QueryEngineHTTP qe = (QueryEngineHTTP)QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
         // No auth credentials should result in an error
         qe.execAsk();
     }
-    
+
     @Test(expected = QueryExceptionHTTP.class)
     public void query_with_auth_02() {
-        QueryEngineHTTP qe = (QueryEngineHTTP)QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
         // Auth credentials for valid user with bad password
         qe.setBasicAuthentication("allowed", "incorrect".toCharArray());
         qe.execAsk();
     }
-    
+
     @Test
     public void query_with_auth_03() {
-        QueryEngineHTTP qe = (QueryEngineHTTP)QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
         // Auth credentials for valid user with correct password
         qe.setBasicAuthentication("allowed", "password".toCharArray());
         Assert.assertTrue(qe.execAsk());
     }
-    
+
     @Test(expected = QueryExceptionHTTP.class)
     public void query_with_auth_04() {
-        QueryEngineHTTP qe = (QueryEngineHTTP)QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
-        // Auth credentials for valid user with correct password BUT not in correct role
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+        // Auth credentials for valid user with correct password BUT not in
+        // correct role
         qe.setBasicAuthentication("forbidden", "password".toCharArray());
         qe.execAsk();
     }
+
+    @Test
+    public void query_with_auth_05() {
+        // Uses auth and enables compression
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+        qe.setAllowDeflate(true);
+        qe.setAllowGZip(true);
+
+        // Auth credentials for valid user with correct password
+        qe.setBasicAuthentication("allowed", "password".toCharArray());
+        Assert.assertTrue(qe.execAsk());
+    }
+
+    @Test(expected = QueryExceptionHTTP.class)
+    public void query_with_auth_06() {
+        // Uses auth and enables compression
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+        qe.setAllowDeflate(true);
+        qe.setAllowGZip(true);
+
+        // Auth credentials for valid user with bad password
+        qe.setBasicAuthentication("allowed", "incorrect".toCharArray());
+        qe.execAsk();
+    }
+
+    @Test(expected = QueryExceptionHTTP.class)
+    public void query_with_auth_07() throws URISyntaxException {
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+
+        // Auth credentials for valid user with correct password but scoped to
+        // wrong URI
+        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI("http://example"), "allowed",
+                "password".toCharArray());
+        qe.setAuthenticator(authenticator);
+        qe.execAsk();
+    }
+
+    @Test
+    public void query_with_auth_08() throws URISyntaxException {
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+
+        // Auth credentials for valid user with correct password and scoped to
+        // correct URI
+        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(serviceQuery), "allowed", "password".toCharArray());
+        qe.setAuthenticator(authenticator);
+        Assert.assertTrue(qe.execAsk());
+    }
+
+    @Test
+    public void query_with_auth_09() throws URISyntaxException {
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+
+        // Auth credentials for valid user with correct password using
+        // pre-emptive auth
+        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(serviceQuery), "allowed", "password".toCharArray());
+        qe.setAuthenticator(new PreemptiveBasicAuthenticator(authenticator));
+        Assert.assertTrue(qe.execAsk());
+    }
+
+    @Test
+    public void query_with_auth_10() throws URISyntaxException {
+        Context ctx = ARQ.getContext();
+        try {
+            QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+
+            // Auth credentials for valid user with correct password and scoped
+            // to correct URI
+            // Provided via Service Context and its associated authenticator
+            Map<String, Context> serviceContext = new HashMap<String, Context>();
+            Context authContext = new Context();
+            authContext.put(Service.queryAuthUser, "allowed");
+            authContext.put(Service.queryAuthPwd, "password");
+            serviceContext.put(serviceQuery, authContext);
+            ctx.put(Service.serviceContext, serviceContext);
+
+            qe.setAuthenticator(new ServiceAuthenticator());
+            Assert.assertTrue(qe.execAsk());
+        } finally {
+            ctx.remove(Service.serviceContext);
+        }
+    }
     
+    @Test
+    public void query_with_auth_11() throws URISyntaxException {
+        ARQ.getContext().remove(Service.serviceContext);
+
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+
+        // Auth credentials for valid user with correct password
+        // Use service authenticator with fallback credentials.
+        qe.setAuthenticator(new ServiceAuthenticator("allowed", "password".toCharArray()));
+        Assert.assertTrue(qe.execAsk());
+     }
+
     @Test(expected = HttpException.class)
     public void update_with_auth_01() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase)UpdateExecutionFactory.createRemote(updates, serviceUpdate);
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, serviceUpdate);
         // No auth credentials should result in an error
         ue.execute();
     }
-    
+
     @Test(expected = HttpException.class)
     public void update_with_auth_02() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase)UpdateExecutionFactory.createRemote(updates, serviceUpdate);
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, serviceUpdate);
         // Auth credentials for valid user with bad password
         ue.setAuthentication("allowed", "incorrect".toCharArray());
         ue.execute();
     }
-    
+
     @Test
     public void update_with_auth_03() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase)UpdateExecutionFactory.createRemote(updates, serviceUpdate);
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, serviceUpdate);
         // Auth credentials for valid user with correct password
         ue.setAuthentication("allowed", "password".toCharArray());
         ue.execute();
     }
-    
+
     @Test(expected = HttpException.class)
     public void update_with_auth_04() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase)UpdateExecutionFactory.createRemote(updates, serviceUpdate);
-        // Auth credentials for valid user with correct password BUT not in correct role
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, serviceUpdate);
+        // Auth credentials for valid user with correct password BUT not in
+        // correct role
         ue.setAuthentication("forbidden", "password".toCharArray());
         ue.execute();
     }
-    
+
     @Test(expected = HttpException.class)
     public void update_with_auth_05() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase)UpdateExecutionFactory.createRemoteForm(updates, serviceUpdate);
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemoteForm(updates, serviceUpdate);
         // No auth credentials should result in an error
         ue.execute();
     }
-    
+
     @Test(expected = HttpException.class)
     public void update_with_auth_06() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase)UpdateExecutionFactory.createRemoteForm(updates, serviceUpdate);
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemoteForm(updates, serviceUpdate);
         // Auth credentials for valid user with bad password
         ue.setAuthentication("allowed", "incorrect".toCharArray());
         ue.execute();
     }
-    
+
     @Test
     public void update_with_auth_07() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase)UpdateExecutionFactory.createRemoteForm(updates, serviceUpdate);
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemoteForm(updates, serviceUpdate);
         // Auth credentials for valid user with correct password
         ue.setAuthentication("allowed", "password".toCharArray());
         ue.execute();
     }
-    
+
     @Test(expected = HttpException.class)
     public void update_with_auth_08() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
-        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase)UpdateExecutionFactory.createRemoteForm(updates, serviceUpdate);
-        // Auth credentials for valid user with correct password BUT not in correct role
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemoteForm(updates, serviceUpdate);
+        // Auth credentials for valid user with correct password BUT not in
+        // correct role
         ue.setAuthentication("forbidden", "password".toCharArray());
+        ue.execute();
+    }
+
+    @Test(expected = HttpException.class)
+    public void update_with_auth_09() throws URISyntaxException {
+        UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, serviceUpdate);
+
+        // Auth credentials for valid user with correct password but scoped to
+        // wrong URI
+        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI("http://example"), "allowed",
+                "password".toCharArray());
+        ue.setAuthenticator(authenticator);
+        ue.execute();
+    }
+
+    @Test
+    public void update_with_auth_10() throws URISyntaxException {
+        UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, serviceUpdate);
+
+        // Auth credentials for valid user with correct password scoped to
+        // correct URI
+        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(serviceUpdate), "allowed", "password".toCharArray());
+        ue.setAuthenticator(authenticator);
+        ue.execute();
+    }
+
+    @Test
+    public void update_with_auth_11() throws URISyntaxException {
+        UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");
+        UpdateProcessRemoteBase ue = (UpdateProcessRemoteBase) UpdateExecutionFactory.createRemote(updates, serviceUpdate);
+
+        // Auth credentials for valid user with correct password scoped to
+        // correct URI
+        // Also using pre-emptive auth
+        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(serviceUpdate), "allowed", "password".toCharArray());
+        ue.setAuthenticator(new PreemptiveBasicAuthenticator(authenticator));
         ue.execute();
     }
 }
