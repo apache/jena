@@ -18,12 +18,14 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
+import java.net.SocketException;
 import java.util.HashMap ;
 import java.util.Map ;
 
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
+import org.junit.Ignore;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -49,7 +51,8 @@ public class TestService {
     
     @BeforeClass public static void recordContextState() { value = ARQ.getContext().get(Service.serviceContext) ; }
     @AfterClass public static void restoreContextState() { ARQ.getContext().set(Service.serviceContext, value) ; }
-    
+       
+   
     @Test
     public void testNumericTimeout() {
         BasicPattern basicPattern = new BasicPattern();
@@ -66,10 +69,10 @@ public class TestService {
             Service.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            if (expected.getCause() instanceof java.net.SocketTimeoutException) {
+            if (expected.getCause() instanceof SocketException) {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketTimeoutException, instead got: %s %s", expected.getCause().getClass()
+                Assert.fail(String.format("Expected SocketException (or subclass thereof), instead got: %s %s", expected.getCause().getClass()
                         .getName(), expected.getCause().getMessage()));
             }
         }
@@ -92,10 +95,10 @@ public class TestService {
             Service.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            if (expected.getCause() instanceof java.net.SocketTimeoutException) {
+            if (expected.getCause() instanceof java.net.SocketException) {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketTimeoutException, instead got: %s %s", expected.getCause().getClass()
+                Assert.fail(String.format("Expected SocketException (or subclass thereof), instead got: %s %s", expected.getCause().getClass()
                         .getName(), expected.getCause().getMessage()));
             }
         }
@@ -117,10 +120,10 @@ public class TestService {
             Service.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            if (expected.getCause() instanceof java.net.SocketTimeoutException) {
+            if (expected.getCause() instanceof java.net.SocketException) {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketTimeoutException, instead got: %s %s", expected.getCause().getClass()
+                Assert.fail(String.format("Expected SocketException (or subclass thereof), instead got: %s %s", expected.getCause().getClass()
                         .getName(), expected.getCause().getMessage()));
             }
         }

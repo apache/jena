@@ -54,7 +54,9 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase implements Upda
         // Build endpoint URL
         String endpoint = this.getEndpoint();
         String querystring = this.getQueryString();
-        endpoint = endpoint.contains("?") ? endpoint + "&" + querystring : endpoint + "?" + querystring;
+        if (querystring != null && !querystring.equals("")) {
+            endpoint = endpoint.contains("?") ? endpoint + "&" + querystring : endpoint + "?" + querystring;
+        }
         
         // Execution
         String reqStr = this.getUpdateRequest().toString() ;

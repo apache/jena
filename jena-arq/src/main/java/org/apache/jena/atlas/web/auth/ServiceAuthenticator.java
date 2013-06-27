@@ -93,7 +93,7 @@ public class ServiceAuthenticator extends AbstractScopedAuthenticator {
 
             @SuppressWarnings("unchecked")
             Map<String, Context> serviceContextMap = (Map<String, Context>) this.context.get(Service.serviceContext);
-            if (serviceContextMap != null && serviceContextMap.containsKey(Service.serviceContext)) {
+            if (serviceContextMap != null && serviceContextMap.containsKey(target.toString())) {
                 // Try to obtain Context for target URI
                 Context serviceContext = serviceContextMap.get(target.toString());
                 if (serviceContext != null) {
@@ -112,7 +112,7 @@ public class ServiceAuthenticator extends AbstractScopedAuthenticator {
 
             @SuppressWarnings("unchecked")
             Map<String, Context> serviceContextMap = (Map<String, Context>) this.context.get(Service.serviceContext);
-            if (serviceContextMap != null && serviceContextMap.containsKey(Service.serviceContext)) {
+            if (serviceContextMap != null && serviceContextMap.containsKey(target.toString())) {
                 // Try to obtain Context for target URI
                 Context serviceContext = serviceContextMap.get(target.toString());
                 if (serviceContext != null) {

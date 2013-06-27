@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.http.*;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -40,6 +41,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.EntityTemplate;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -111,8 +113,6 @@ public class HttpOp {
     public static void setDefaultAuthenticator(HttpAuthenticator authenticator) {
         defaultAuthenticator = authenticator;
     }
-    
-    // TODO Currently most of the code wraps IO Exceptions as AtlasException, may be better to wrap as HTTP Exception
 
     /**
      * Executes a HTTP Get request handling the response with one of the given
@@ -142,7 +142,7 @@ public class HttpOp {
      */
     public static void execHttpGet(String url, String acceptHeader, Map<String, HttpResponseHandler> handlers,
             HttpContext httpContext) {
-        execHttpGet(url, acceptHeader, handlers, httpContext, defaultAuthenticator);
+        execHttpGet(url, acceptHeader, handlers, null, httpContext, defaultAuthenticator);
     }
 
     /**
@@ -164,13 +164,15 @@ public class HttpOp {
      *            Accept Header
      * @param handlers
      *            Response Handlers
+     * @param httpClient
+     *            HTTP Client
      * @param httpContext
      *            HTTP Context
      * @param authenticator
      *            HTTP Authenticator
      */
     public static void execHttpGet(String url, String acceptHeader, Map<String, HttpResponseHandler> handlers,
-            HttpContext httpContext, HttpAuthenticator authenticator) {
+            HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         try {
             long id = counter.incrementAndGet();
             String requestURI = determineRequestURI(url);
@@ -184,16 +186,16 @@ public class HttpOp {
                 httpget.addHeader(HttpNames.hAccept, acceptHeader);
 
             // Prepare and execute
-            DefaultHttpClient httpclient = new SystemDefaultHttpClient();
+            httpClient = ensureClient(httpClient);
             httpContext = ensureContext(httpContext);
-            applyAuthentication(httpclient, url, httpContext, authenticator);
-            HttpResponse response = httpclient.execute(httpget, httpContext);
+            applyAuthentication(asAbstractClient(httpClient), url, httpContext, authenticator);
+            HttpResponse response = httpClient.execute(httpget, httpContext);
 
             // Handle response
             httpResponse(id, response, baseIRI, handlers);
-            httpclient.getConnectionManager().shutdown();
+            httpClient.getConnectionManager().shutdown();
         } catch (IOException ex) {
-            IO.exception(ex);
+            throw new HttpException(ex);
         }
     }
 
@@ -212,7 +214,7 @@ public class HttpOp {
      * @return Typed Input Stream
      */
     public static TypedInputStreamHttp execHttpGet(String url, String acceptHeader, HttpContext httpContext) {
-        return execHttpGet(url, acceptHeader, httpContext, defaultAuthenticator);
+        return execHttpGet(url, acceptHeader, null, httpContext, defaultAuthenticator);
     }
 
     /**
@@ -229,14 +231,16 @@ public class HttpOp {
      *            URL
      * @param acceptHeader
      *            Accept Header
+     * @param httpClient
+     *            HTTP Client
      * @param httpContext
      *            HTTP Context
      * @param authenticator
      *            HTTP Authenticator
      * @return Typed Input Stream, null if the URL returns 404
      */
-    public static TypedInputStreamHttp execHttpGet(String url, String acceptHeader, HttpContext httpContext,
-            HttpAuthenticator authenticator) {
+    public static TypedInputStreamHttp execHttpGet(String url, String acceptHeader, HttpClient httpClient,
+            HttpContext httpContext, HttpAuthenticator authenticator) {
         try {
             long id = counter.incrementAndGet();
             String requestURI = determineRequestURI(url);
@@ -251,10 +255,10 @@ public class HttpOp {
                 httpget.addHeader(HttpNames.hAccept, acceptHeader);
 
             // Prepare and execute
-            DefaultHttpClient httpclient = new SystemDefaultHttpClient();
+            httpClient = ensureClient(httpClient);
             httpContext = ensureContext(httpContext);
-            applyAuthentication(httpclient, url, httpContext, authenticator);
-            HttpResponse response = httpclient.execute(httpget, httpContext);
+            applyAuthentication(asAbstractClient(httpClient), url, httpContext, authenticator);
+            HttpResponse response = httpClient.execute(httpget, httpContext);
 
             // Response
             StatusLine statusLine = response.getStatusLine();
@@ -280,10 +284,9 @@ public class HttpOp {
             if (log.isDebugEnabled())
                 log.debug(format("[%d] %d %s :: %s", id, statusLine.getStatusCode(), statusLine.getReasonPhrase(), mt));
 
-            return new TypedInputStreamHttp(entity.getContent(), mt, httpclient.getConnectionManager());
+            return new TypedInputStreamHttp(entity.getContent(), mt, httpClient.getConnectionManager());
         } catch (IOException ex) {
-            IO.exception(ex);
-            return null;
+            throw new HttpException(ex);
         }
     }
 
@@ -332,8 +335,7 @@ public class HttpOp {
             instream.close();
             return string;
         } catch (IOException ex) {
-            IO.exception(ex);
-            return null;
+            throw new HttpException(ex);
         }
     }
 
@@ -663,7 +665,7 @@ public class HttpOp {
 
             httpclient.getConnectionManager().shutdown();
         } catch (IOException ex) {
-            IO.exception(ex);
+            throw new HttpException(ex);
         } finally {
             closeEntity(provider);
         }
@@ -679,13 +681,14 @@ public class HttpOp {
      *            URL
      * @param acceptHeader
      *            Accept Header
-     * @param params Parameters to POST
+     * @param params
+     *            Parameters to POST
      * @param httpContext
      *            HTTP Context
      * @return Typed Input Stream
      */
     public static TypedInputStreamHttp execHttpPostForm(String url, String acceptHeader, Params params, HttpContext httpContext) {
-        return execHttpPostForm(url, acceptHeader, params, httpContext, defaultAuthenticator);
+        return execHttpPostForm(url, acceptHeader, params, null, httpContext, defaultAuthenticator);
     }
 
     /**
@@ -704,14 +707,16 @@ public class HttpOp {
      *            Accept Header
      * @param params
      *            Parameters to POST
+     * @param httpClient
+     *            HTTP Client
      * @param httpContext
      *            HTTP Context
      * @param authenticator
      *            HTTP Authenticator
      * @return Typed Input Stream, null if the URL returns 404
      */
-    public static TypedInputStreamHttp execHttpPostForm(String url, String acceptHeader, Params params, HttpContext httpContext,
-            HttpAuthenticator authenticator) {
+    public static TypedInputStreamHttp execHttpPostForm(String url, String acceptHeader, Params params, HttpClient httpClient,
+            HttpContext httpContext, HttpAuthenticator authenticator) {
         try {
             long id = counter.incrementAndGet();
             String requestURI = determineRequestURI(url);
@@ -727,10 +732,10 @@ public class HttpOp {
             httppost.setEntity(convertFormParams(params));
 
             // Prepare and execute
-            DefaultHttpClient httpclient = new SystemDefaultHttpClient();
+            httpClient = ensureClient(httpClient);
             httpContext = ensureContext(httpContext);
-            applyAuthentication(httpclient, url, httpContext, authenticator);
-            HttpResponse response = httpclient.execute(httppost, httpContext);
+            applyAuthentication(asAbstractClient(httpClient), url, httpContext, authenticator);
+            HttpResponse response = httpClient.execute(httppost, httpContext);
 
             // Response
             StatusLine statusLine = response.getStatusLine();
@@ -756,10 +761,9 @@ public class HttpOp {
             if (log.isDebugEnabled())
                 log.debug(format("[%d] %d %s :: %s", id, statusLine.getStatusCode(), statusLine.getReasonPhrase(), mt));
 
-            return new TypedInputStreamHttp(entity.getContent(), mt, httpclient.getConnectionManager());
+            return new TypedInputStreamHttp(entity.getContent(), mt, httpClient.getConnectionManager());
         } catch (IOException ex) {
-            IO.exception(ex);
-            return null;
+            throw new HttpException(ex);
         }
     }
 
@@ -845,7 +849,7 @@ public class HttpOp {
             httpResponse(id, response, baseIRI, handlers);
             httpclient.getConnectionManager().shutdown();
         } catch (IOException ex) {
-            IO.exception(ex);
+            throw new HttpException(ex);
         }
     }
 
@@ -985,8 +989,26 @@ public class HttpOp {
             httpResponse(id, response, baseIRI, null);
             httpclient.getConnectionManager().shutdown();
         } catch (IOException ex) {
-            IO.exception(ex);
+            throw new HttpException(ex);
         }
+    }
+
+    /**
+     * Ensures that a HTTP Client is non-null
+     * 
+     * @param client
+     *            HTTP Client
+     * @return HTTP Client
+     */
+    private static HttpClient ensureClient(HttpClient client) {
+        return client != null ? client : new SystemDefaultHttpClient();
+    }
+
+    private static AbstractHttpClient asAbstractClient(HttpClient client) {
+        if (AbstractHttpClient.class.isAssignableFrom(client.getClass())) {
+            return (AbstractHttpClient) client;
+        }
+        return null;
     }
 
     /**
@@ -1001,7 +1023,12 @@ public class HttpOp {
     }
 
     /**
-     * Applies authentication to the client as appropriate
+     * Applies authentication to the given client as appropriate
+     * <p>
+     * If a null authenticator is provided this method tries to use the
+     * registered default authenticator which may be set via the
+     * {@link HttpOp#setDefaultAuthenticator(HttpAuthenticator)} method.
+     * </p>
      * 
      * @param client
      *            HTTP Client
@@ -1012,8 +1039,12 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    private static void applyAuthentication(DefaultHttpClient client, String target, HttpContext context,
+    public static void applyAuthentication(AbstractHttpClient client, String target, HttpContext context,
             HttpAuthenticator authenticator) {
+        // Cannot apply to null client
+        if (client == null)
+            return;
+
         // Fallback to default authenticator if null authenticator provided
         if (authenticator == null)
             authenticator = defaultAuthenticator;

@@ -15,39 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.jena.atlas.web;
+package org.apache.jena.atlas.web.auth;
 
 /**
- * Class of HTTP Exceptions from Atlas code
+ * Represents form login credentials where form logins are against Apache
+ * mod_auth_form secured servers using default form field configuration
  * 
  */
-public class HttpException extends RuntimeException {
-    private static final long serialVersionUID = -7224224620679594095L;
-    private int responseCode = -1;
+public class ApacheModAuthFormLogin extends FormLogin {
 
-    public HttpException(int responseCode, String statusLine) {
-        super(responseCode + " - " + statusLine);
-        this.responseCode = responseCode;
-    }
-    
-    public HttpException(String message) {
-        super(message);
-    }
+    private static final String APACHE_MOD_AUTH_FORM_USER_FIELD = "httpd_username";
+    private static final String APACHE_MOD_AUTH_FORM_PASSWORD_FIELD = "httpd_password";
 
-    public HttpException(String message, Throwable cause) {
-        super(message, cause);
-    }
-    
-    public HttpException(Throwable cause) {
-        super(cause);
-    }
-    
     /**
-     * Gets the response code, may be -1 if unknown
-     * @return Response Code if known, -1 otherwise
+     * Creates new form login credentials
+     * 
+     * @param loginFormURL
+     *            Login Form URL
+     * @param username
+     *            User name
+     * @param password
+     *            Password
      */
-    public int getResponseCode() {
-        return this.responseCode;
+    public ApacheModAuthFormLogin(String loginFormURL, String username, char[] password) {
+        super(loginFormURL, APACHE_MOD_AUTH_FORM_USER_FIELD, APACHE_MOD_AUTH_FORM_PASSWORD_FIELD, username, password);
     }
 }
