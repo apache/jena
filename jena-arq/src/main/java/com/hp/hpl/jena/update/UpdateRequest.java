@@ -72,5 +72,7 @@ public class UpdateRequest extends Prologue implements Printable, Iterable<Updat
     public boolean equalTo(UpdateRequest other) {
         return UpdateCompare.isomorphic(this, other) ; 
     }
-    
+        
+    // Better to have an explicit "isomorphism" equality and leave .equals alone.
+    // The Query object historical did it the other way so leave that.
 }
