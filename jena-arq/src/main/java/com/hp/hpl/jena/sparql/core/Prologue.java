@@ -27,7 +27,7 @@ import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.util.PrefixMapping2 ;
 
-//** Prologues - combines with PrefixMapping (the RIOT Prologue uses PrefixMap) */
+/** Prologue - combines with PrefixMapping (the RIOT Prologue uses PrefixMap) */
 public class Prologue
 {
     protected boolean seenBaseURI = false ;     // Implicit or set.
@@ -210,5 +210,21 @@ public class Prologue
         if ( getPrefixMapping() == null )
             return false ;
         return getPrefixMapping().samePrefixMappingAs(other.getPrefixMapping()) ;    
+    }
+
+    // Caution.
+    // Prologues are inherited (historical).
+    // This is support code.
+    
+    public static int hash(Prologue prologue) {
+        final int prime = 31 ;
+        int x = 1 ; 
+        if ( prologue.seenBaseURI )
+            x = prime * x + prologue.getBaseURI().hashCode() ;
+        else
+            x = 1237 ;
+        if ( prologue.prefixMap != null )
+            x = prime * x + prologue.prefixMap.getNsPrefixMap().hashCode() ;
+        return x ;
     }
 }

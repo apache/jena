@@ -52,9 +52,7 @@ public class QueryHashCode
         @Override
         public void visitPrologue(Prologue query)
         {
-            if ( query.explicitlySetBaseURI() )
-                x ^= query.getBaseURI().hashCode() ;
-            x ^= query.getPrefixMapping().getNsPrefixMap().hashCode() ;
+            x ^= Prologue.hash(query) ;
         }
 
         @Override
