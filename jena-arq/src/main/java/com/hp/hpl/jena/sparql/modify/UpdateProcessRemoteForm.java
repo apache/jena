@@ -65,7 +65,7 @@ public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase implements 
         ps.addParam(HttpParams.pUpdate, reqStr);
         Map<String, HttpResponseHandler> handlers = new HashMap<String, HttpResponseHandler>() ;
         handlers.put("*", HttpResponseLib.nullResponse) ;
-        HttpOp.execHttpPostForm(this.getEndpoint(), ps, handlers, getHttpContext()) ;
+        HttpOp.execHttpPostForm(this.getEndpoint(), ps, handlers, getHttpContext(), getAuthenticator()) ;
     }
 }
 
