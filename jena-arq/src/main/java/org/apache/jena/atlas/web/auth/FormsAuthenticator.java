@@ -30,6 +30,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.apache.jena.atlas.web.HttpException;
 
 /**
@@ -100,7 +101,9 @@ public class FormsAuthenticator implements HttpAuthenticator {
             synchronized (this.cookies) {
                 this.cookies.put(target, client.getCookieStore());
             }
-
+            
+            // Consume the response to free up the connection
+            EntityUtils.consumeQuietly(response.getEntity());
         } catch (UnsupportedEncodingException e) {
             throw new HttpException("UTF-8 encoding not supported on your platform", e);
         } catch (IOException e) {
