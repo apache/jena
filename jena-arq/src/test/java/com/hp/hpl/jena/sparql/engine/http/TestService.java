@@ -18,14 +18,13 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.net.SocketException;
+import java.net.SocketException ;
 import java.util.HashMap ;
 import java.util.Map ;
 
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
-import org.junit.Ignore;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;

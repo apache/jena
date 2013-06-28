@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import org.apache.jena.atlas.web.HttpException;
-
 import com.hp.hpl.jena.query.QueryException ;
 
 /** Exception class for all operations in the SPARQL client library.

@@ -244,8 +244,7 @@ public class HttpOp {
         try {
             long id = counter.incrementAndGet();
             String requestURI = determineRequestURI(url);
-            @SuppressWarnings("unused")
-            String baseIRI = determineBaseIRI(requestURI);
+            //String baseIRI = determineBaseIRI(requestURI);
 
             HttpGet httpget = new HttpGet(requestURI);
             if (log.isDebugEnabled())
@@ -720,8 +719,7 @@ public class HttpOp {
         try {
             long id = counter.incrementAndGet();
             String requestURI = determineRequestURI(url);
-            @SuppressWarnings("unused")
-            String baseIRI = determineBaseIRI(requestURI);
+            //String baseIRI = determineBaseIRI(requestURI);
 
             HttpPost httppost = new HttpPost(requestURI);
             if (log.isDebugEnabled())

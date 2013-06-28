@@ -18,45 +18,30 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.zip.DeflaterInputStream;
-import java.util.zip.GZIPInputStream;
+import java.io.InputStream ;
+import java.net.MalformedURLException ;
+import java.net.URL ;
+import java.util.regex.Pattern ;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.client.DecompressingHttpClient;
-import org.apache.http.impl.client.SystemDefaultHttpClient;
-import org.apache.http.params.CoreConnectionPNames;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.jena.atlas.AtlasException;
-import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
-import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.web.HttpOp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.http.client.HttpClient ;
+import org.apache.http.impl.client.AbstractHttpClient ;
+import org.apache.http.impl.client.DecompressingHttpClient ;
+import org.apache.http.impl.client.SystemDefaultHttpClient ;
+import org.apache.http.params.CoreConnectionPNames ;
+import org.apache.http.protocol.BasicHttpContext ;
+import org.apache.http.protocol.HttpContext ;
+import org.apache.jena.atlas.web.HttpException ;
+import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.web.HttpOp ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QueryExecException;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.util.Convert;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QueryExecException ;
+import com.hp.hpl.jena.shared.JenaException ;
 
 /**
  * Create an execution object for performing a query on a model over HTTP. This
@@ -359,7 +344,7 @@ public class HttpQuery extends Params {
                 client = new DecompressingHttpClient(client);
             }
 
-            TypedInputStream stream = HttpOp.execHttpPostForm(serviceURL, contentTypeResult, (Params) this, client, context,
+            TypedInputStream stream = HttpOp.execHttpPostForm(serviceURL, contentTypeResult, this, client, context,
                     this.authenticator);
             if (stream == null)
                 throw new QueryExceptionHTTP(404);

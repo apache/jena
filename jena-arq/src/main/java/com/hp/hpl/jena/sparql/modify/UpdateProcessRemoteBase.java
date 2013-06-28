@@ -18,27 +18,26 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Map ;
 
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
-import org.apache.jena.riot.web.HttpOp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.http.protocol.HttpContext ;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.jena.riot.web.HttpOp ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.engine.http.HttpParams;
-import com.hp.hpl.jena.sparql.engine.http.Params;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
-import com.hp.hpl.jena.sparql.engine.http.Service;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.update.GraphStore;
-import com.hp.hpl.jena.update.UpdateProcessor;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.sparql.engine.http.HttpParams ;
+import com.hp.hpl.jena.sparql.engine.http.Params ;
+import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
+import com.hp.hpl.jena.sparql.engine.http.Service ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * Abstract base class for update processors that perform remote updates over
