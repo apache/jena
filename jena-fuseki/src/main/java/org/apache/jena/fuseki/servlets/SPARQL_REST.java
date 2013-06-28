@@ -330,19 +330,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         {
             Target dest = determineTarget(action) ;
             FusekiLib.addDataInto(data, dest.dsg, dest.graphName) ;
-            
-//            Graph g = dest.graph() ;
-//            
-//            if (g == null)
-//            {
-//                if (dest.isDefault) errorOccurred("Dataset does not have a default graph") ;
-//                log.info(format("[%d] Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
-//                // Not default graph.
-//                // Not an autocreate dataset - create something.
-//                g = GraphFactory.createDefaultGraph() ;
-//                dest.dsg.addGraph(dest.graphName, g) ;
-//            }
-//            GraphUtil.addInto(g, data) ;
         } catch (RuntimeException ex)
         {
             // If anything went wrong, try to backout.
