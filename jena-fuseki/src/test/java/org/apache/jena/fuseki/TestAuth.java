@@ -54,9 +54,6 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * Tests Fuseki operation with authentication enabled
- * 
- * @author rvesse
- * 
  */
 public class TestAuth extends BaseServerTest {
 
