@@ -160,7 +160,7 @@ public class RDFWriterRegistry
     private static void register(RDFFormat serialization)
     { }
     
-    /** Register the default serialization for the language
+    /** Register the default serialization for the language (replace any existing registration).
      * @param lang      Languages
      * @param format    The serialization forma to use when the language is used for writing.
      */
