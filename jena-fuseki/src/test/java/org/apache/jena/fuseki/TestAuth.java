@@ -18,40 +18,39 @@
 
 package org.apache.jena.fuseki;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File ;
+import java.io.FileWriter ;
+import java.io.IOException ;
+import java.net.URI ;
+import java.net.URISyntaxException ;
+import java.util.HashMap ;
+import java.util.Map ;
 
-import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator;
-import org.apache.jena.atlas.web.auth.ScopedAuthenticator;
-import org.apache.jena.atlas.web.auth.ServiceAuthenticator;
-import org.apache.jena.fuseki.server.FusekiConfig;
-import org.apache.jena.fuseki.server.SPARQLServer;
-import org.apache.jena.fuseki.server.ServerConfig;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.web.HttpException ;
+import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator ;
+import org.apache.jena.atlas.web.auth.ScopedAuthenticator ;
+import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
+import org.apache.jena.fuseki.server.FusekiConfig ;
+import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.apache.jena.fuseki.server.ServerConfig ;
+import org.junit.AfterClass ;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
-import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
-import com.hp.hpl.jena.sparql.engine.http.Service;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessRemoteBase;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.update.UpdateExecutionFactory;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
+import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP ;
+import com.hp.hpl.jena.sparql.engine.http.Service ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessRemoteBase ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.update.UpdateExecutionFactory ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * Tests Fuseki operation with authentication enabled
@@ -186,7 +185,7 @@ public class TestAuth extends BaseServerTest {
     }
 
     @Test
-    public void query_with_auth_10() throws URISyntaxException {
+    public void query_with_auth_10() {
         Context ctx = ARQ.getContext();
         try {
             QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
@@ -209,7 +208,7 @@ public class TestAuth extends BaseServerTest {
     }
     
     @Test
-    public void query_with_auth_11() throws URISyntaxException {
+    public void query_with_auth_11() {
         ARQ.getContext().remove(Service.serviceContext);
 
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
