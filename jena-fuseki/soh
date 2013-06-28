@@ -111,11 +111,15 @@ $accept_charset=nil
 
 $cmd = File.basename($0)
 if ! $cmd.start_with?('s-')
-# If you don't have start_with? ...
-# if ! $cmd.match(/^s-/)
+  # If you don't have start_with? ...
+  # if ! $cmd.match(/^s-/)
   # "soh query ..."
-  $cmd = ARGV.shift
-  $cmd = 's-'+$cmd
+  if ARGV.size == 0
+    $cmd = 'soh'
+  else
+    $cmd = ARGV.shift
+    $cmd = 's-'+$cmd
+  end
 end
 
 ## -------- 
@@ -360,7 +364,7 @@ def cmd_soh(command=nil)
 
   if command.nil?
     if ARGV.size == 0
-      warn "No command given: expected one of get, put, post, delete"
+      warn "No command given: expected one of 'get', 'put', 'post', 'delete', 'query' or 'update'"
       exit 1
     end
     cmdPrint=ARGV.shift
