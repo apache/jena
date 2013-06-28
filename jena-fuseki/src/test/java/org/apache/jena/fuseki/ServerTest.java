@@ -32,73 +32,85 @@ import com.hp.hpl.jena.update.UpdateExecutionFactory ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 
 /** Manage a server for testing.
+ * Example for one server per test suite: 
  * <pre>
     \@BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
-    \@AfterClass public static void afterClass() { ServerTest.freeServer() ; }
+    \@AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
+    \@Before      public void beforeTest()         { ServerTest.resetServer() ; }
     </pre>
  */
 public class ServerTest extends BaseServerTest
 {
-    // Abstraction that runs one server.
-    // Inherit from this class to add starting/stopping a server.  
+    // Abstraction that runs a SPARQL server for tests.
     
     private static SPARQLServer server = null ;
-    static { setupServer() ; }
     
-    private static int referenceCount = 0 ; 
+    // reference count of start/stop server logging
+    private static int countLogging = 0 ; 
+
+    // reference count of start/stop server
+    private static int countServer = 0 ; 
     
-    // If not inheriting from this class, call:
-    
+    // This will cause there to be one server over all tests.
+    // Must be after initialization of counters 
+    //static { allocServer() ; }
+
     static public void allocServer()
     {
-//        if ( server == null )
-//            setupServer() ;
-//        else
-//            System.err.println("server not null") ;
-        
-        if ( referenceCount == 0 )
-            serverStart() ;
-        referenceCount ++ ;
+        if ( countLogging == 0 )
+            serverStartLogging() ;
+        countLogging++ ;
+
+        if ( countServer == 0 )
+            setupServer() ;
+        countServer++ ;
     }
     
     static public void freeServer() 
-    { 
-        referenceCount -- ;
-        if ( referenceCount == 0 )
-            serverStop() ;
+    {
+        if ( countServer >= 0 ) {
+            countServer -- ;
+            if ( countServer == 0 )
+                teardownServer() ;
+        }
+        if ( countLogging >= 0 ) { 
+            countLogging-- ;
+            if ( countLogging == 0 )
+                serverStopLogging() ;
+        }
     }
     
     protected static void setupServer()
     {
-        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         // This must agree with BaseServerTest
         ServerConfig conf = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
         conf.port = BaseServerTest.port ;
         conf.pagesPort = BaseServerTest.port ;
-//        public static final String serviceUpdate = "http://localhost:"+ServerTest.port+datasetPath+"/update" ; 
-//        public static final String serviceQuery  = "http://localhost:"+ServerTest.port+datasetPath+"/query" ; 
-//        public static final String serviceREST   = "http://localhost:"+ServerTest.port+datasetPath+"/data" ; // ??????
-        
         server = new SPARQLServer(conf) ;
         server.start() ;
     }
+    
+    protected static void teardownServer() {
+        if ( server != null )
+            server.stop() ;
+        server = null ;
+    }
         
-    protected static void serverStart() {
+    // For tests, the server sits in the background
+    // Set logging to WARN only.
+    
+    protected static void serverStartLogging() {
         Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
+        
     }
     
-    protected static void serverStop() {
-//        server.stop() ;
+    protected static void serverStopLogging() {
         Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
         Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
-//        server = null ;
     }
     
     public static void resetServer()
