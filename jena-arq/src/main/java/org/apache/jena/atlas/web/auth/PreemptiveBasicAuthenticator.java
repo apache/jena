@@ -20,6 +20,7 @@ package org.apache.jena.atlas.web.auth;
 import java.net.URI;
 
 import org.apache.http.HttpHost;
+import org.apache.http.auth.ChallengeState;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.auth.BasicScheme;
@@ -29,32 +30,61 @@ import org.apache.http.protocol.HttpContext;
 
 /**
  * A decorator for other authenticators that may be used to enable preemptive
- * basic authentication. Note that preemptive basic authentication is less
- * secure because it can expose credentials to servers that do not require them.
- * 
+ * basic authentication.
+ * <p>
+ * It is <strong>important</strong> to note that preemptive basic authentication
+ * is less secure because it can expose credentials to servers that do not
+ * require them.
+ * </p>
+ * <p>
+ * Doing preemptive authentication requires knowing in advance whether you will
+ * be doing standard or proxy authentication i.e. whether the remote server will
+ * challenge with 401 or 407.  If you need both you can take advantage of this
+ * being a decorator and simply layer multiple instances of this.
+ * </p>
  */
 public class PreemptiveBasicAuthenticator implements HttpAuthenticator {
-    
+
     private HttpAuthenticator authenticator;
-    
+    private boolean isProxy = false;
+
     /**
      * Creates a new decorator over the given authenticator
-     * @param authenticator Authenticator to decorate
+     * 
+     * @param authenticator
+     *            Authenticator to decorate
      */
     public PreemptiveBasicAuthenticator(HttpAuthenticator authenticator) {
-        if (authenticator == null) throw new IllegalArgumentException("Must provide an authenticator to decorate");
+        this(authenticator, false);
+    }
+
+    /**
+     * Creates a new decorator over the given authenticator
+     * 
+     * @param authenticator
+     *            Authenticator to decorate
+     * @param forProxy
+     *            Whether preemptive authentication is for a proxy
+     */
+    public PreemptiveBasicAuthenticator(HttpAuthenticator authenticator, boolean forProxy) {
+        if (authenticator == null)
+            throw new IllegalArgumentException("Must provide an authenticator to decorate");
         this.authenticator = authenticator;
     }
 
     @Override
     public void apply(AbstractHttpClient client, HttpContext httpContext, URI target) {
         this.authenticator.apply(client, httpContext, target);
-        
+
         // Enable preemptive basic authentication
-        AuthCache authCache = new BasicAuthCache();
-        BasicScheme basicAuth = new BasicScheme();
+        // For nice layering we need to respect existing auth cache if present
+        AuthCache authCache = (AuthCache) httpContext.getAttribute(ClientContext.AUTH_CACHE);
+        if (authCache == null)
+            authCache = new BasicAuthCache();
+        BasicScheme basicAuth = new BasicScheme(this.isProxy ? ChallengeState.PROXY : ChallengeState.TARGET);
+        // TODO It is possible that this overwrites existing cached credentials so potentially not ideal.
         authCache.put(new HttpHost(target.getHost(), target.getPort()), basicAuth);
-        httpContext.setAttribute(ClientContext.AUTH_CACHE, authCache);   
+        httpContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
     }
 
 }
