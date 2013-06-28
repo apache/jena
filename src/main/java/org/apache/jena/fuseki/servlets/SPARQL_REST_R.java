@@ -27,9 +27,7 @@ import javax.servlet.ServletOutputStream ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.* ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -64,7 +62,7 @@ public class SPARQL_REST_R extends SPARQL_REST
 
         if ( action.verbose )
             log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
-                                  action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
+                            action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
 
         action.beginRead() ;
 
@@ -81,7 +79,11 @@ public class SPARQL_REST_R extends SPARQL_REST
             action.response.setContentType(ct) ;
             Graph g = target.graph() ;
             Model model = ModelFactory.createModelForGraph(g) ;
-            RDFDataMgr.write(out, model, lang) ;
+            
+            //Special case RDF/XML to be the plain (faster, less readable) form
+            RDFFormat fmt = 
+                ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang) ;  
+            RDFDataMgr.write(out, model, fmt) ;
             success(action) ;
         } finally { action.endRead() ; }
     }
