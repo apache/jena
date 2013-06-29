@@ -32,30 +32,41 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.apache.jena.atlas.web.HttpException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An authenticator capable of making Form based logins and using cookies to
- * maintain authentication state
+ * maintain authentication state. Different logins may be used for different
+ * services as required.
  * 
  */
 public class FormsAuthenticator implements HttpAuthenticator {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FormsAuthenticator.class);
+
     private Map<URI, CookieStore> cookies = new HashMap<URI, CookieStore>();
     private Map<URI, FormLogin> logins = new HashMap<URI, FormLogin>();
-    
+
     /**
      * Creates a new authenticator with the given login
-     * @param target Target URI
-     * @param login Login
+     * 
+     * @param target
+     *            Target URI
+     * @param login
+     *            Login
      */
     public FormsAuthenticator(URI target, FormLogin login) {
-        if (target == null) throw new IllegalArgumentException("Target URI cannot be null");
+        if (target == null)
+            throw new IllegalArgumentException("Target URI cannot be null");
         this.logins.put(target, login);
     }
-    
+
     /**
      * Creates a new authenticator with the given logins
-     * @param logins Logins
+     * 
+     * @param logins
+     *            Logins
      */
     public FormsAuthenticator(Map<URI, FormLogin> logins) {
         this.logins.putAll(logins);
@@ -69,39 +80,46 @@ public class FormsAuthenticator implements HttpAuthenticator {
         synchronized (this.cookies) {
             if (this.cookies.containsKey(target)) {
                 // Use existing cookies
+                LOG.info("Using existing cookies to authenticate access to " + target.toString());
                 CookieStore store = this.cookies.get(target);
                 if (store != null)
                     client.setCookieStore(store);
                 return;
             }
         }
-        
+
         // Do we have a login available for the target server?
         FormLogin login = this.logins.get(target);
         if (login == null)
             return;
-        
+
         // Use a fresh Cookie Store for new login attempts
         CookieStore store = new BasicCookieStore();
         client.setCookieStore(store);
 
         try {
             // Try to login
+            LOG.info("Making login attempt against " + login.getLoginFormURL() + " to obtain authentication for access to "
+                    + target.toString());
             HttpPost post = new HttpPost(login.getLoginFormURL());
             post.setEntity(login.getLoginEntity());
             HttpResponse response = client.execute(post, httpContext);
 
             // Check for successful login
             if (response.getStatusLine().getStatusCode() >= 400) {
+                LOG.warn("Failed to login against " + login.getLoginFormURL() + " to obtain authentication for access to "
+                        + target.toString());
                 throw new HttpException(response.getStatusLine().getStatusCode(), "Login attempt failed - "
                         + response.getStatusLine().getReasonPhrase());
             }
 
             // Otherwise assume a successful login
+            LOG.info("Successfully logged in against " + login.getLoginFormURL() + " and obtained authentication for access to "
+                    + target.toString());
             synchronized (this.cookies) {
                 this.cookies.put(target, client.getCookieStore());
             }
-            
+
             // Consume the response to free up the connection
             EntityUtils.consumeQuietly(response.getEntity());
         } catch (UnsupportedEncodingException e) {
@@ -110,14 +128,19 @@ public class FormsAuthenticator implements HttpAuthenticator {
             throw new HttpException("Error making login request", e);
         }
     }
-    
+
     /**
-     * Adds a login to the authenticator, if the authenticator had previously logged into the given URI cookies for that URI are discarded
-     * @param target Target URI
-     * @param login Login
+     * Adds a login to the authenticator, if the authenticator had previously
+     * logged into the given URI cookies for that URI are discarded
+     * 
+     * @param target
+     *            Target URI
+     * @param login
+     *            Login
      */
     public void addLogin(URI target, FormLogin login) {
-        if (target == null) throw new IllegalArgumentException("Target URI cannot be null");
+        if (target == null)
+            throw new IllegalArgumentException("Target URI cannot be null");
         this.logins.put(target, login);
         synchronized (this.cookies) {
             this.cookies.remove(target);
