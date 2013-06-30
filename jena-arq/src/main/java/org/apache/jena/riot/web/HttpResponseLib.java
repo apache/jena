@@ -25,12 +25,11 @@ import java.util.Map ;
 
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
-import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.web.MediaType ;
-import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 
@@ -41,27 +40,26 @@ import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 
 /** A collection of handlers for response handling.
- * @see HttpOp#execHttpGet(String, String, java.util.Map, HttpContext)
- * @see HttpOp#execHttpPost(String, String, ContentProducer, String, java.util.Map)
- * 
+ * @see HttpOp
  */
 public class HttpResponseLib
 {
-    static abstract class AbstractGraphReader implements HttpCaptureResponse<Graph>
+    public static HttpCaptureResponse<Graph> graphHandler() { return new GraphReader() ; }
+    static class GraphReader implements HttpCaptureResponse<Graph>
     {
         private Graph graph = null ;
         @Override
-        final public void handle(String contentType, String baseIRI, HttpResponse response)
+        final public void handle(String baseIRI, HttpResponse response)
         {
             try {
                 Graph g = GraphFactory.createDefaultGraph() ;
                 HttpEntity entity = response.getEntity() ;
-                MediaType mt = MediaType.create(response.getFirstHeader(HttpNames.hContentType).getValue()) ;
-                mt.getCharset() ;
+                // org.apache.http.entity.ContentType ;
+                String ct = contentType(response) ;
+                Lang lang = RDFLanguages.contentTypeToLang(ct) ;
                 StreamRDF dest = StreamRDFLib.graph(g) ; 
                 InputStream in = entity.getContent() ;
-                LangRIOT parser = createParser(in, baseIRI, dest) ;
-                parser.parse() ;
+                RDFDataMgr.parse(dest, in, baseIRI, lang) ;
                 in.close() ;
                 this.graph = g ; 
             } catch (IOException ex) { IO.exception(ex) ; }
@@ -69,17 +67,18 @@ public class HttpResponseLib
     
         @Override
         public Graph get() { return graph ; }
-        
-        abstract protected LangRIOT createParser(InputStream in, String baseIRI, StreamRDF dest) ;
     }
 
     public static HttpResponseHandler httpDumpResponse = new HttpResponseHandler()
     {
         @Override
-        public void handle(String contentType, String baseIRI, HttpResponse response)
+        public void handle(String baseIRI , HttpResponse response )
         {
             try {
                 HttpEntity entity = response.getEntity() ;
+                org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.get(entity) ;
+                System.out.println("Content-type: "+ct) ;
+                System.out.println() ;
                 InputStream in = entity.getContent() ;
                 int l ;
                 byte buffer[] = new byte[1024] ;
@@ -99,33 +98,8 @@ public class HttpResponseLib
     
     public static HttpResponseHandler nullResponse = new HttpResponseHandler() {
         @Override
-        public void handle(String contentType, String baseIRI, HttpResponse response)
+        public void handle(String baseIRI , HttpResponse response )
         {}
-    } ;
-    
-    public static HttpCaptureResponse<Graph> graphReaderTurtle = new AbstractGraphReader()
-    {
-        @Override
-        protected LangRIOT createParser(InputStream in, String baseIRI, StreamRDF dest)
-        {
-            return RiotReader.createParserTurtle(in, baseIRI, dest) ;
-        }
-    } ;
-    public static HttpCaptureResponse<Graph> graphReaderNTriples = new AbstractGraphReader()
-    {
-        @Override
-        protected LangRIOT createParser(InputStream in, String baseIRI, StreamRDF dest)
-        {
-            return RiotReader.createParserNTriples(in, dest) ;
-        }
-    } ;
-    public static HttpCaptureResponse<Graph> graphReaderRDFXML = new AbstractGraphReader()
-    {
-        @Override
-        protected LangRIOT createParser(InputStream in, String baseIRI, StreamRDF dest)
-        {
-            return RiotReader.createParserRDFXML(in, baseIRI, dest) ;
-        }
     } ;
     
     public static ResultsFormat contentTypeToResultSet(String contentType) { return mapContentTypeToResultSet.get(contentType) ; }
@@ -142,10 +116,10 @@ public class HttpResponseLib
     {    
         ResultSet rs = null ;
         @Override
-        public void handle(String contentType, String baseIRI, HttpResponse response) throws IOException
+        public void handle(String baseIRI , HttpResponse response ) throws IOException
         {
-            MediaType mt = MediaType.create(contentType) ;
-            ResultsFormat fmt = mapContentTypeToResultSet.get(contentType) ; // contentTypeToResultSet(contentType) ;
+            String ct = contentType(response) ;
+            ResultsFormat fmt = mapContentTypeToResultSet.get(ct) ;
             InputStream in = response.getEntity().getContent() ;
             rs = ResultSetFactory.load(in, fmt) ;
             // Force reading
@@ -157,5 +131,12 @@ public class HttpResponseLib
         {
             return rs ;
         }
+    }
+    
+    private static String contentType(HttpResponse response) {
+        HttpEntity entity = response.getEntity() ;
+        //org.apache.http.entity.ContentType ;
+        org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.get(entity) ;
+        return ct.getMimeType() ;
     }
 }

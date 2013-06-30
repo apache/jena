@@ -85,7 +85,7 @@ public class Lang
         
         String mediaType = mainContentType ;
 
-        contentType = mediaType==null ? null : ContentType.parse(mediaType) ;
+        contentType = mediaType==null ? null : ContentType.create(mediaType) ;
         
         List<String> _altContentTypes = copy(otherContentTypes) ;
         if ( ! _altContentTypes.contains(mainContentType) )
