@@ -96,8 +96,10 @@ public class HttpOp {
     
     // See also:
     // Fluent API in HttpClient from v4.2
+    
     static private Logger log = LoggerFactory.getLogger(HttpOp.class);
 
+    /** System wide HTTP operation counter for log messages */
     static private AtomicLong counter = new AtomicLong(0);
 
     /**
@@ -105,9 +107,12 @@ public class HttpOp {
      */
     static private HttpAuthenticator defaultAuthenticator = new ServiceAuthenticator();
 
+    /**
+     * "Do nothing" response handler.
+     */
     static private HttpResponseHandler nullHandler = HttpResponseLib.nullResponse ; 
     
-    /** Response as a string (UTF-8 assumed) */
+    /** Capture response as a string (UTF-8 assumed) */
     public static class CaptureString implements HttpCaptureResponse<String> {
         String result ;
 
@@ -159,10 +164,6 @@ public class HttpOp {
     }
 
     //---- HTTP GET
-    //  -- Handler for results
-    //  -- TypeInsputStream
-    //  -- String
-    
     /**
      * Executes a HTTP Get request, handling the response with given handler.
      * <p>
@@ -231,7 +232,7 @@ public class HttpOp {
     }
 
     /**
-     * Executes a HTTP GET and return a typed input stream.
+     * Executes a HTTP GET and return a TypedInputStream.
      * The stream must be closed after use.
      * <p>
      * The acceptHeader string is any legal value for HTTP Accept: field.
@@ -239,7 +240,7 @@ public class HttpOp {
      * 
      * @param url
      *            URL
-     * @return Typed Input Stream
+     * @return TypedInputStream
      */
     public static TypedInputStream execHttpGet(String url) {
         HttpCaptureResponse<TypedInputStream> handler = new CaptureInput() ;
@@ -248,7 +249,7 @@ public class HttpOp {
     }
 
     /**
-     * Executes a HTTP GET and return a typed input stream.
+     * Executes a HTTP GET and return a TypedInputStream.
      * The stream must be closed after use.
      * <p>
      * The acceptHeader string is any legal value for HTTP Accept: field.
@@ -258,7 +259,7 @@ public class HttpOp {
      *            URL
      * @param acceptHeader
      *            Accept Header
-     * @return Typed Input Stream
+     * @return TypedInputStream or null if the URL returns 404.
      */
     public static TypedInputStream execHttpGet(String url, String acceptHeader) {
         HttpCaptureResponse<TypedInputStream> handler = new CaptureInput() ;
@@ -267,27 +268,7 @@ public class HttpOp {
     }
 
     /**
-     * Executes a HTTP GET and return a typed input stream.
-     * The stream must be closed after use.
-     * <p>
-     * The acceptHeader string is any legal value for HTTP Accept: field.
-     * </p>
-     * 
-     * @param url
-     *            URL
-     * @param acceptHeader
-     *            Accept Header
-     * @param authenticator
-     *            HTTP Authenticator
-     * @return Typed Input Stream
-     */
-    public static TypedInputStream execHttpGet(String url, String acceptHeader, HttpAuthenticator authenticator) {
-        return execHttpGet(url, acceptHeader, null, null, authenticator);
-    }
-
-
-    /**
-     * Executes a HTTP GET and returns a typed input stream
+     * Executes a HTTP GET and returns a TypedInputStream
      * <p>
      * A 404 will result in a null stream being returned, any other error code
      * results in an exception.
@@ -319,7 +300,7 @@ public class HttpOp {
     }
 
     /**
-     * Convenience operation to execute a GET with no content negtotiationreturn
+     * Convenience operation to execute a GET with no content negtotiation and return
      * the response as a string.
      * 
      * @param url URL
@@ -351,12 +332,8 @@ public class HttpOp {
     }
 
     //---- HTTP POST
-    //  -- Pass in a string
-    //  -- Pass in an InoputStream
-    //  -- Pass in Entity (see org.apache.http.entityContentProducer) 
-
     /**
-     * Executes a HTTP POST with the given string as the request body and throws
+     * Executes a HTTP POST with the given contentype/string as the request body and throws
      * away success responses, failure responses will throw an error.
      * 
      * @param url
@@ -367,47 +344,47 @@ public class HttpOp {
      *            Content to POST
      */
     public static void execHttpPost(String url, String contentType, String content) {
-        execHttpPost(url, contentType, content, null, null, defaultAuthenticator);
+        execHttpPost(url, contentType, content, null, null, null, null, defaultAuthenticator);
     }
 
-    /**
-     * Executes a simple POST with the given string as the request body and
-     * throws away success responses, failure responses will throw an error.
-     * 
-     * @param url
-     *            URL
-     * @param contentType
-     *            Content Type to POST
-     * @param content
-     *            Content to POST
-     * @param authenticator
-     *            HTTP Authenticator
-     */
-    public static void execHttpPost(String url, String contentType, String content, HttpAuthenticator authenticator) {
-        execHttpPost(url, contentType, content, null, null, authenticator);
-    }
-
-    /**
-     * Executes a HTTP POST with a string as the request body and response
-     * handling
-     * 
-     * @param url
-     *            URL
-     * @param contentType
-     *            Content Type to POST
-     * @param content
-     *            Content to POST
-     * @param acceptType
-     *            Accept Type
-     * @param handler
-     *            Response handler called to process the response
-     * @param authenticator
-     *            HTTP Authenticator
-     */
-    public static void execHttpPost(String url, String contentType, String content, String acceptType,
-                                    HttpResponseHandler handler, HttpAuthenticator authenticator) {
-        execHttpPost(url, contentType, content, acceptType, handler, null, null, authenticator) ;
-    }
+//    /**
+//     * Executes a simple POST with the given string as the request body and
+//     * throws away success responses, failure responses will throw an error.
+//     * 
+//     * @param url
+//     *            URL
+//     * @param contentType
+//     *            Content Type to POST
+//     * @param content
+//     *            Content to POST
+//     * @param authenticator
+//     *            HTTP Authenticator
+//     */
+//    public static void execHttpPost(String url, String contentType, String content, HttpAuthenticator authenticator) {
+//        execHttpPost(url, contentType, content, null, null, authenticator);
+//    }
+//
+//    /**
+//     * Executes a HTTP POST with a string as the request body and response
+//     * handling
+//     * 
+//     * @param url
+//     *            URL
+//     * @param contentType
+//     *            Content Type to POST
+//     * @param content
+//     *            Content to POST
+//     * @param acceptType
+//     *            Accept Type
+//     * @param handler
+//     *            Response handler called to process the response
+//     * @param authenticator
+//     *            HTTP Authenticator
+//     */
+//    public static void execHttpPost(String url, String contentType, String content, String acceptType,
+//                                    HttpResponseHandler handler, HttpAuthenticator authenticator) {
+//        execHttpPost(url, contentType, content, acceptType, handler, null, null, authenticator) ;
+//    }
 
     /**
      * Executes a HTTP POST with a string as the request body and response
@@ -460,26 +437,26 @@ public class HttpOp {
         execHttpPost(url, contentType, input, length, null, null, null, null, defaultAuthenticator);
     }
 
-    /**
-     * Executes a HTTP POST with a request body from an input stream without
-     * response body with no response handling
-     * 
-     * @param url
-     *            URL
-     * @param contentType
-     *            Content Type to POST
-     * @param input
-     *            Input Stream to POST from
-     * @param length
-     *            Amount of content to POST
-     * @param authenticator
-     *            HTTP Authenticator
-     * 
-     */
-    public static void execHttpPost(String url, String contentType, InputStream input, long length,
-                                    HttpAuthenticator authenticator) {
-        execHttpPost(url, contentType, input, length, null, null, null, null, authenticator) ;
-    }
+//    /**
+//     * Executes a HTTP POST with a request body from an input stream without
+//     * response body with no response handling
+//     * 
+//     * @param url
+//     *            URL
+//     * @param contentType
+//     *            Content Type to POST
+//     * @param input
+//     *            Input Stream to POST from
+//     * @param length
+//     *            Amount of content to POST
+//     * @param authenticator
+//     *            HTTP Authenticator
+//     * 
+//     */
+//    public static void execHttpPost(String url, String contentType, InputStream input, long length,
+//                                    HttpAuthenticator authenticator) {
+//        execHttpPost(url, contentType, input, length, null, null, null, null, authenticator) ;
+//    }
 
     /**
      * Executes a HTTP POST with request body from an input stream and response
@@ -501,8 +478,8 @@ public class HttpOp {
      * @param handler
      *            Response handler called to process the response
      */
-    public static void execHttpPost(String url, String contentType, InputStream input, long length, String acceptType,
-                                    HttpResponseHandler handler) {
+    public static void execHttpPost(String url, String contentType, InputStream input, long length, 
+                                    String acceptType, HttpResponseHandler handler) {
         execHttpPost(url, contentType, input, length, acceptType, handler, null, null, null) ;
     }
 
@@ -528,14 +505,17 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPost(String url, String contentType, InputStream input, long length, String acceptType,
-                                    HttpResponseHandler handler, 
-                                    HttpClient httpClient, HttpContext httpContext, 
-                                    HttpAuthenticator authenticator) {
-        InputStreamEntity e = new InputStreamEntity(input, length);
-        e.setContentType(contentType);
-        e.setContentEncoding("UTF-8");
-        execHttpPost(url, e, acceptType, handler, httpClient, httpContext, authenticator);
+    public static void execHttpPost(String url, String contentType, InputStream input, long length, 
+                                    String acceptType, HttpResponseHandler handler, 
+                                    HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+        InputStreamEntity e = new InputStreamEntity(input, length) ;
+        e.setContentType(contentType) ;
+        e.setContentEncoding("UTF-8") ;
+        try {
+            execHttpPost(url, e, acceptType, handler, httpClient, httpContext, authenticator) ;
+        } finally {
+            closeEntity(e) ;
+        }
     }
 
     /**
@@ -577,38 +557,30 @@ public class HttpOp {
     public static void execHttpPost(String url, HttpEntity entity, String acceptHeader, HttpResponseHandler handler,
                                     HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
 
-        try {
-            String requestURI = determineRequestURI(url) ;
-            HttpPost httppost = new HttpPost(requestURI) ;
-            httppost.setEntity(entity);
-            exec(url, httppost, acceptHeader, handler, httpClient, httpContext, authenticator) ;
-        } finally {
-            closeEntity(entity) ;
-        }
+        String requestURI = determineRequestURI(url) ;
+        HttpPost httppost = new HttpPost(requestURI) ;
+        httppost.setEntity(entity);
+        exec(url, httppost, acceptHeader, handler, httpClient, httpContext, authenticator) ;
     }
 
     //---- HTTP POST as a form.
-    //  -- Pass in a string
-    //  -- Pass in an InoputStream
-    //  -- Pass in Entity (see org.apache.http.entityContentProducer) 
-
     
     /**
-     * Executes a HTTP POST and returns a typed input stream
+     * Executes a HTTP POST and returns a TypedInputStream
      * 
      * @param url
      *            URL
      * @param params
      *            Parameters to POST
      * @param acceptHeader
-     * @return Typed Input Stream
+     * @return TypedInputStream
      */
     public static TypedInputStream execHttpPostForm(String url, Params params, String acceptHeader) {
         return execHttpPostForm(url, params, acceptHeader, null, null, null);
     }
 
     /**
-     * Executes a HTTP GET and returns a typed input stream
+     * Executes a HTTP GET and returns a TypedInputStream
      * <p>
      * The acceptHeader string is any legal value for HTTP Accept: field.
      * </p>
@@ -629,69 +601,20 @@ public class HttpOp {
      *            HTTP Context
      * @param authenticator
      *            HTTP Authenticator
-     * @return Typed Input Stream, null if the URL returns 404
+     * @return TypedInputStream, null if the URL returns 404
      */
     public static TypedInputStream execHttpPostForm(String url, Params params, String acceptHeader,
                                                     HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
-            HttpCaptureResponse<TypedInputStream> handler = new CaptureInput() ;
-            try {
-                execHttpPostForm(url, params, acceptHeader, handler, httpClient, httpContext, authenticator);
-            } catch (HttpException ex) {
-                if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
-                    return null ;
-                throw ex ;
-            }
-            return handler.get();
+        HttpCaptureResponse<TypedInputStream> handler = new CaptureInput() ;
+        try {
+            execHttpPostForm(url, params, acceptHeader, handler, httpClient, httpContext, authenticator);
+        } catch (HttpException ex) {
+            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+                return null ;
+            throw ex ;
         }
-    
-//        try {
-//            long id = counter.incrementAndGet();
-//            String requestURI = determineRequestURI(url);
-//            //String baseIRI = determineBaseIRI(requestURI);
-//
-//            HttpPost httppost = new HttpPost(requestURI);
-//            if (log.isDebugEnabled())
-//                log.debug(format("[%d] %s %s", id, httppost.getMethod(), httppost.getURI().toString()));
-//            // Accept
-//            if (acceptHeader != null)
-//                httppost.addHeader(HttpNames.hAccept, acceptHeader);
-//            httppost.setEntity(convertFormParams(params));
-//
-//            // Prepare and execute
-//            httpClient = ensureClient(httpClient);
-//            httpContext = ensureContext(httpContext);
-//            applyAuthentication(asAbstractClient(httpClient), url, httpContext, authenticator);
-//            HttpResponse response = httpClient.execute(httppost, httpContext);
-//
-//            // Response
-//            StatusLine statusLine = response.getStatusLine();
-//            if (statusLine.getStatusCode() == 404) {
-//                log.debug(format("[%d] %s %s", id, statusLine.getStatusCode(), statusLine.getReasonPhrase()));
-//                return null;
-//            }
-//            if (statusLine.getStatusCode() >= 400) {
-//                log.debug(format("[%d] %s %s", id, statusLine.getStatusCode(), statusLine.getReasonPhrase()));
-//                throw new HttpException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
-//            }
-//
-//            HttpEntity entity = response.getEntity();
-//            if (entity == null) {
-//                // No content in the return. Probably a mistake, but not
-//                // guaranteed.
-//                if (log.isDebugEnabled())
-//                    log.debug(format("[%d] %d %s :: (empty)", id, statusLine.getStatusCode(), statusLine.getReasonPhrase()));
-//                return null;
-//            }
-//
-//            MediaType mt = MediaType.create(entity.getContentType().getValue());
-//            if (log.isDebugEnabled())
-//                log.debug(format("[%d] %d %s :: %s", id, statusLine.getStatusCode(), statusLine.getReasonPhrase(), mt));
-//
-//            return new TypedInputStreamHttp(entity.getContent(), mt, httpClient.getConnectionManager());
-//        } catch (IOException ex) {
-//            throw new HttpException(ex);
-//        }
-//    }
+        return handler.get();
+    }
 
     /**
      * Executes a HTTP POST form operation
@@ -723,7 +646,6 @@ public class HttpOp {
      */
     public static void execHttpPostForm(String url, Params params, String acceptHeader, HttpResponseHandler handler,
                                         HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
-        
         String requestURI = url;
         HttpPost httppost = new HttpPost(requestURI);
         httppost.setEntity(convertFormParams(params));
@@ -739,11 +661,9 @@ public class HttpOp {
      *            Content Type for the PUT
      * @param content
      *            Content for the PUT
-     * @param httpContext
-     *            HTTP Context
      */
-    public static void execHttpPut(String url, String contentType, String content, HttpContext httpContext) {
-        execHttpPut(url, contentType, content, httpContext, defaultAuthenticator);
+    public static void execHttpPut(String url, String contentType, String content) {
+        execHttpPut(url, contentType, content, null, null, defaultAuthenticator);
     }
 
     /**
@@ -760,13 +680,13 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPut(String url, String contentType, String content, HttpContext httpContext,
-            HttpAuthenticator authenticator) {
+    public static void execHttpPut(String url, String contentType, String content, 
+                                   HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         StringEntity e = null;
         try {
             e = new StringEntity(content, "UTF-8");
-            e.setContentType(contentType.toString());
-            execHttpPut(url, e, httpContext, authenticator);
+            e.setContentType(contentType);
+            execHttpPut(url, e, httpClient, httpContext, authenticator);
         } catch (UnsupportedEncodingException e1) {
             throw new ARQInternalErrorException("Platform does not support required UTF-8");
         } finally {
@@ -785,11 +705,9 @@ public class HttpOp {
      *            Input Stream to read PUT content from
      * @param length
      *            Amount of content to PUT
-     * @param httpContext
-     *            HTTP Context
      */
-    public static void execHttpPut(String url, String contentType, InputStream input, long length, HttpContext httpContext) {
-        execHttpPut(url, contentType, input, length, httpContext, defaultAuthenticator);
+    public static void execHttpPut(String url, String contentType, InputStream input, long length) {
+        execHttpPut(url, contentType, input, length, null, null, null);
     }
 
     /**
@@ -808,13 +726,13 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPut(String url, String contentType, InputStream input, long length, HttpContext httpContext,
-            HttpAuthenticator authenticator) {
+    public static void execHttpPut(String url, String contentType, InputStream input, long length,
+                                   HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         InputStreamEntity e = new InputStreamEntity(input, length);
         e.setContentType(contentType);
         e.setContentEncoding("UTF-8");
         try {
-            execHttpPut(url, e, httpContext, authenticator);
+            execHttpPut(url, e, httpClient, httpContext, authenticator);
         } finally {
             closeEntity(e);
         }
@@ -827,11 +745,9 @@ public class HttpOp {
      *            URL
      * @param entity
      *            HTTP Entity to PUT
-     * @param httpContext
-     *            HTTP Context
      */
-    public static void execHttpPut(String url, HttpEntity entity, HttpContext httpContext) {
-        execHttpPut(url, entity, httpContext, defaultAuthenticator);
+    public static void execHttpPut(String url, HttpEntity entity) {
+        execHttpPut(url, entity, null, null, null) ;
     }
 
     /**
@@ -846,29 +762,11 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPut(String url, HttpEntity entity, HttpContext httpContext, HttpAuthenticator authenticator) {
-        try {
-            //XXX
-            long id = counter.incrementAndGet();
-            String requestURI = determineRequestURI(url) ;
-            String baseIRI = determineBaseIRI(requestURI);
-            HttpPut httpput = new HttpPut(requestURI);
-            if (log.isDebugEnabled())
-                log.debug(format("[%d] %s %s", id, httpput.getMethod(), httpput.getURI().toString()));
-
-            httpput.setEntity(entity);
-
-            // Prepare and Execute
-            DefaultHttpClient httpclient = new SystemDefaultHttpClient();
-            httpContext = ensureContext(httpContext);
-            applyAuthentication(httpclient, url, httpContext, authenticator);
-            HttpResponse response = httpclient.execute(httpput, httpContext);
-
-            httpResponse(id, response, baseIRI, null);
-            httpclient.getConnectionManager().shutdown();
-        } catch (IOException ex) {
-            throw new HttpException(ex);
-        }
+    public static void execHttpPut(String url, HttpEntity entity, HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+        String requestURI = determineRequestURI(url) ;
+        HttpPut httpput = new HttpPut(requestURI);
+        httpput.setEntity(entity) ;
+        exec(url, httpput, null, null, httpClient, httpContext, authenticator) ;
     }
     
     /**
@@ -922,7 +820,7 @@ public class HttpOp {
      *            URL
      */
     public static void execHttpDelete(String url, HttpResponseHandler handler) {
-        execHttpDelete(url, handler, null, defaultAuthenticator) ;
+        execHttpDelete(url, handler, null, null, null) ;
     }
 
     /**
@@ -935,12 +833,12 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpDelete(String url, HttpResponseHandler handler, HttpContext httpContext, HttpAuthenticator authenticator) {
+    public static void execHttpDelete(String url, HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
             HttpUriRequest httpDelete = new HttpDelete(url) ;
             exec(url, httpDelete, null, handler, null, httpContext, authenticator) ;
     }
 
-    // Perform the operation!
+    // ---- Perform the operation!
     // With logging.
     
     private static void exec(String url, HttpUriRequest request, String acceptHeader,HttpResponseHandler handler, 

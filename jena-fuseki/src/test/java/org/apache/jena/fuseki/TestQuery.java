@@ -22,11 +22,13 @@ import java.io.IOException ;
 import java.net.HttpURLConnection ;
 import java.net.URL ;
 
+import static org.apache.jena.fuseki.ServerTest.* ;
+
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-
+import org.apache.jena.atlas.junit.BaseTest ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -36,7 +38,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 import com.hp.hpl.jena.sparql.util.Convert ;
 
-public class TestQuery extends BaseServerTest 
+public class TestQuery extends BaseTest 
 {
     protected static ResultSet rs1 = null ; 
     static {

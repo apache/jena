@@ -55,7 +55,7 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 /**
  * Tests Fuseki operation with authentication enabled
  */
-public class TestAuth extends BaseServerTest {
+public class TestAuth extends ServerTest {
 
     private static File realmFile;
     private static SPARQLServer server;
@@ -74,10 +74,10 @@ public class TestAuth extends BaseServerTest {
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
 
         DatasetGraph dsg = DatasetGraphFactory.createMem();
-        // This must agree with BaseServerTest
+        // This must agree with ServerTest
         ServerConfig conf = FusekiConfig.defaultConfiguration(datasetPath, dsg, true);
-        conf.port = BaseServerTest.port;
-        conf.pagesPort = BaseServerTest.port;
+        conf.port = ServerTest.port;
+        conf.pagesPort = ServerTest.port;
         conf.authConfigFile = realmFile.getAbsolutePath();
 
         server = new SPARQLServer(conf);
