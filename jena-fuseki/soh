@@ -110,16 +110,13 @@ $accept_charset=nil
 ##    soh query .....
 
 $cmd = File.basename($0)
+$cmd = (ARGV.size == 0) ? 'soh' : ARGV.shift
+
 if ! $cmd.start_with?('s-')
   # If you don't have start_with? ...
   # if ! $cmd.match(/^s-/)
   # "soh query ..."
-  if ARGV.size == 0
-    $cmd = 'soh'
-  else
-    $cmd = ARGV.shift
-    $cmd = 's-'+$cmd
-  end
+  $cmd = 's-'+$cmd
 end
 
 ## -------- 
@@ -378,8 +375,12 @@ def cmd_soh(command=nil)
     requiredFile=false
   when "PUT", "POST"
     requiredFile=true
+  when "QUERY"
+    cmd_sparql_query
+  when "UPDATE"
+    cmd_sparql_update
   else
-    warn_exit "Unknown command: #{cmdPrint}", 2
+    warn_exit "Unknown command: #{command}", 2
   end
 
   if requiredFile 
@@ -680,7 +681,6 @@ end
 
 ## -------
 
-
 case $cmd
 when "s-http", "sparql-http", "soh"
   $banner="#{$cmd} [get|post|put|delete] datasetURI graph [file]"
@@ -703,5 +703,5 @@ when "s-update", "sparql-update"
 when "s-update-form", "sparql-update-form"
   cmd_sparql_update false
 else 
-  warn_exit "Unknown: "+$0, 1
+  warn_exit "Unknown: "+$cmd, 1
 end

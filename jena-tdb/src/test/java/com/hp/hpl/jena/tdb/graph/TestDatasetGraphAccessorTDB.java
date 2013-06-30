@@ -19,13 +19,13 @@
 package com.hp.hpl.jena.tdb.graph;
 
 import org.apache.jena.web.DatasetGraphAccessor ;
-import org.apache.jena.web.TestDatasetGraphAccessorBase ;
+import org.apache.jena.web.AbstractTestDatasetGraphAccessor ;
 
 import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 
-public class TestDatasetGraphAccessorTDB extends TestDatasetGraphAccessorBase
+public class TestDatasetGraphAccessorTDB extends AbstractTestDatasetGraphAccessor
 {
     @Override
     protected DatasetGraphAccessor getDatasetUpdater()

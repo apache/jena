@@ -177,7 +177,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                         errorBadRequest("No name for content - can't determine RDF syntax") ;
 
                     String contentTypeHeader = item.getContentType() ;
-                    ct = ContentType.parse(contentTypeHeader) ;
+                    ct = ContentType.create(contentTypeHeader) ;
 
                     lang = WebContent.contentTypeToLang(ct.getContentType()) ;
                     if ( lang == null )
