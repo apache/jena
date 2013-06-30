@@ -1027,6 +1027,11 @@ public class HttpSC
         return ((300 <= code) && (code <= 399));
     }
 
+    public static boolean isError(int code) {
+        return isClientError(code) || isServerError(code) ;
+    }
+    
+
     /**
      * Simple test against an code to determine if it falls into the
      * <code>Client Error</code> message category as defined in the <a
