@@ -25,5 +25,5 @@ import org.apache.http.HttpResponse ;
 /** General act-on-HTTP-response interface.*/
 public interface HttpResponseHandler
 {
-    void handle(String contentType, String baseIRI, HttpResponse response) throws IOException ;
+    void handle(String baseIRI , HttpResponse response ) throws IOException ;
 }

@@ -30,6 +30,11 @@ public class TypedInputStreamHttp extends TypedInputStream
 {
     private ClientConnectionManager connectMgr ;
 
+    TypedInputStreamHttp(InputStream input, String contentType, ClientConnectionManager connectMgr)
+    {
+        this(input, MediaType.create(contentType), connectMgr) ;
+    }
+    
     TypedInputStreamHttp(InputStream input, MediaType mt, ClientConnectionManager connectMgr)
     {
         super(input, mt.getContentType(), mt.getCharset(), null) ;

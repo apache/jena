@@ -121,8 +121,11 @@ public class WebContent
         mapContentTypeToLang.put(contentTypeTriG,           RDFLanguages.TRIG) ;
         mapContentTypeToLang.put(contentTypeTriGAlt1,       RDFLanguages.TRIG) ;
         mapContentTypeToLang.put(contentTypeTriGAlt2,       RDFLanguages.TRIG) ;
-        
     }
+
+    public static final String defaultGraphAcceptHeader     =  "application/n-triples,text/turtle;q=0.9,application/rdf+xml;q=0.8,application/xml;q=0.7,*/*;q=0.5" ; 
+    // Old :: "application/rdf+xml,application/xml;q=0.9,*/*;q=0.5" ;
+
     
     /** Return our "canonical" name for a Content Type.
      * This should be the standard one, no X-* 

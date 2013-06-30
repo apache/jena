@@ -21,6 +21,7 @@ package org.apache.jena.riot.stream;
 import java.util.Locale ;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -32,8 +33,6 @@ public class LocatorURL implements Locator
     private static Logger log = LoggerFactory.getLogger(LocatorURL.class) ;
     private static final String[] schemeNames = { "http" , "https" } ;    // Must be lower case and not include the ":"
     
-    public final String acceptTriples = "text/turtle,application/rdf+xml;q=0.9,application/xml;q=0.8,*/*;q=0.5" ; 
-
     @Override
     public TypedInputStream open(String uri)
     {
@@ -44,7 +43,7 @@ public class LocatorURL implements Locator
             return null;
         }
         if ( uri.startsWith("http://") || uri.startsWith("https://"))
-            return HttpOp.execHttpGet(uri, acceptTriples, null) ;
+            return HttpOp.execHttpGet(uri, WebContent.defaultGraphAcceptHeader) ;
         return null ;
     }
 
@@ -71,10 +70,7 @@ public class LocatorURL implements Locator
     @Override
     public int hashCode()
     {
-        final int prime = 31 ;
-        int result = 1 ;
-        result = prime * result + ((acceptTriples == null) ? 0 : acceptTriples.hashCode()) ;
-        return result ;
+        return 57 ;
     }
 
     @Override
@@ -82,14 +78,7 @@ public class LocatorURL implements Locator
     {
         if (this == obj) return true ;
         if (obj == null) return false ;
-        if (getClass() != obj.getClass()) return false ;
-        LocatorURL other = (LocatorURL)obj ;
-        if (acceptTriples == null)
-        {
-            if (other.acceptTriples != null) return false ;
-        } else
-            if (!acceptTriples.equals(other.acceptTriples)) return false ;
-        return true ;
+        return getClass() == obj.getClass() ;
     }
 }
 
