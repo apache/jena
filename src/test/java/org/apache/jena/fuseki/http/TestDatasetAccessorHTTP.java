@@ -20,8 +20,10 @@ package org.apache.jena.fuseki.http;
 
 import static org.apache.jena.fuseki.ServerTest.* ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.fuseki.ServerTest ;
-import org.apache.jena.fuseki.WebTest ;
+import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.web.HttpSC ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
@@ -45,25 +47,41 @@ public class TestDatasetAccessorHTTP extends BaseTest
     @AfterClass public static void afterClass()     { ServerTest.freeServer() ; }
     @Before public void before()                    { ServerTest.resetServer() ; }
     
-    @Test public void test_ds_1()
+    @Test(expected=HttpException.class)
+    public void test_ds_1()
     {
         // Can't GET the dataset service.
-        WebTest.exec_get(serviceREST, 400, 404) ;
+        try {
+            HttpOp.execHttpGet(serviceREST) ;
+        } catch (HttpException ex) {
+            assertTrue(HttpSC.isClientError(ex.getResponseCode())) ;
+            throw ex ;
+        }
     }
     
-    @Test public void test_ds_2()
+    @Test(expected=HttpException.class)
+    public void test_ds_2()
     {
-        // Random other URI
-        WebTest.exec_get(datasetURI_not_1, 404) ;
+        try {
+            HttpOp.execHttpGet(datasetURI_not_1) ;
+        } catch (HttpException ex) {
+            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
+            throw ex ;
+        }
     }
 
-    @Test public void test_ds_3()
+    @Test(expected=HttpException.class)
+    public void test_ds_3()
     {
-        // Longer path URI.
-        WebTest.exec_get(datasetURI_not_2, 404) ;
+        try {
+            HttpOp.execHttpGet(datasetURI_not_2) ;
+        } catch (HttpException ex) {
+            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
+            throw ex ;
+        }
     }
 
-    @Test //(expected=FusekiNotFoundException.class)
+    @Test
     public void test_404_1()
     {
         // Not the right service.
@@ -72,7 +90,7 @@ public class TestDatasetAccessorHTTP extends BaseTest
         assertNull(graph) ; 
     }
 
-    @Test //(expected=FusekiNotFoundException.class)
+    @Test
     public void test_404_2()
     {
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(datasetURI_not_2) ;
