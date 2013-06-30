@@ -18,13 +18,17 @@
 
 package org.apache.jena.atlas.web;
 
-/** A restricted MediaType */
+/** A restricted view of MediaType */
 public class ContentType
 {
     private MediaType mediaType ;
     private static final String charsetParamName              = "charset" ;
     
-    public static ContentType parse(String string)
+    /**  @deprecated use {@linkplain #create(String)} */
+    @Deprecated
+    public static ContentType parse(String string)  { return create(string) ; }
+    
+    public static ContentType create(String string)
     {
         ContentType ct = new ContentType(MediaType.create(string)) ;
         return ct ;
@@ -32,7 +36,7 @@ public class ContentType
     
     public static ContentType create(String ctString, String charset)
     {
-        ParsedMediaType x = MediaType.parse(ctString) ;
+        MediaType.ParsedMediaType x = MediaType.parse(ctString) ;
         x.params.put(charsetParamName, charset) ;
         return new ContentType(new MediaType(x)) ;
     }

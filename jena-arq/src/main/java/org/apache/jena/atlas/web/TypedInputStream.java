@@ -32,6 +32,9 @@ public class TypedInputStream extends FilterInputStream
     public TypedInputStream(InputStream in)
     { this(in, (ContentType)null, null) ; }
     
+    public TypedInputStream(InputStream in, String contentType)
+    { this(in, ContentType.create(contentType), null) ; }
+
     public TypedInputStream(InputStream in, String mediaType, String charset)
     { this(in, mediaType, charset, null) ; }
     

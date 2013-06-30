@@ -60,7 +60,7 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase implements Upda
         
         // Execution
         String reqStr = this.getUpdateRequest().toString() ;
-        HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, null, null, getHttpContext(), getAuthenticator()) ;
+        HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, null, null, null, getHttpContext(), getAuthenticator()) ;
     }
 }
 
