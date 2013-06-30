@@ -36,7 +36,7 @@ import org.junit.runners.Suite ;
     , TestQuery.class
     , TestAuth.class
 })
-public class TS_Fuseki extends BaseServerTest
+public class TS_Fuseki extends ServerTest
 {
     @BeforeClass static public void beforeClass() { Log.disable(Fuseki.requestLogName) ; }
     @AfterClass static public void afterClass()   { Log.setInfo(Fuseki.requestLogName) ;}
