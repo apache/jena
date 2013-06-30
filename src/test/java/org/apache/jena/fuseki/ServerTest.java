@@ -23,10 +23,16 @@ import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
 
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.modify.request.Target ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateExecutionFactory ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
@@ -39,9 +45,30 @@ import com.hp.hpl.jena.update.UpdateProcessor ;
     \@Before      public void beforeTest()         { ServerTest.resetServer() ; }
     </pre>
  */
-public class ServerTest extends BaseServerTest
+public class ServerTest
 {
     // Abstraction that runs a SPARQL server for tests.
+    
+    public static final int port             = 3535 ;
+    public static final String urlRoot       = "http://localhost:"+port+"/" ;
+    public static final String datasetPath   = "/dataset" ;
+    public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
+    public static final String serviceQuery  = "http://localhost:"+port+datasetPath+"/query" ; 
+    public static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ; // ??????
+    
+    public static final String gn1       = "http://graph/1" ;
+    public static final String gn2       = "http://graph/2" ;
+    public static final String gn99      = "http://graph/99" ;
+    
+    public static final Node n1          = NodeFactory.createURI("http://graph/1") ;
+    public static final Node n2          = NodeFactory.createURI("http://graph/2") ;
+    public static final Node n99         = NodeFactory.createURI("http://graph/99") ;
+    
+    public static final Graph graph1     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))") ;
+    public static final Graph graph2     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))") ;
+    
+    public static final Model model1     = ModelFactory.createModelForGraph(graph1) ;
+    public static final Model model2     = ModelFactory.createModelForGraph(graph2) ;
     
     private static SPARQLServer server = null ;
     
@@ -83,10 +110,10 @@ public class ServerTest extends BaseServerTest
     protected static void setupServer()
     {
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        // This must agree with BaseServerTest
-        ServerConfig conf = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
-        conf.port = BaseServerTest.port ;
-        conf.pagesPort = BaseServerTest.port ;
+        // This must agree with ServerTest
+        ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true) ;
+        conf.port = ServerTest.port ;
+        conf.pagesPort = ServerTest.port ;
         server = new SPARQLServer(conf) ;
         server.start() ;
     }
@@ -116,7 +143,7 @@ public class ServerTest extends BaseServerTest
     public static void resetServer()
     {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
-        UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, serviceUpdate) ;
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
         proc.execute() ;
     }
 }

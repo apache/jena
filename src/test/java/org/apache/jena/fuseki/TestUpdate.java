@@ -20,7 +20,7 @@ package org.apache.jena.fuseki;
 
 import org.junit.Test ;
 
-public class TestUpdate extends BaseServerTest 
+public class TestUpdate extends ServerTest 
 {
     @Test public void t1() {}
 }

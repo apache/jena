@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.util.Convert ;
 // SPARQL Query
 // SPARQL Update
 //   GSP is done in TestDatasetAccessorHTTP
-public class TestProtocol extends BaseServerTest
+public class TestProtocol extends ServerTest
 {
     @BeforeClass public static void beforeClass()
     {

@@ -53,7 +53,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
                 // commit, not abort, because locking "transactions" don't support abort. 
                 action.commit() ;
                 errorNotFound("No such graph: "+target.name) ;
-            }
+            } 
             deleteGraph(action) ;
             action.commit() ;
         }
