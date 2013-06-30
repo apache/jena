@@ -22,16 +22,18 @@ import org.apache.jena.fuseki.BaseServerTest ;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.web.DatasetGraphAccessor ;
 import org.apache.jena.web.DatasetGraphAccessorHTTP ;
-import org.apache.jena.web.TestDatasetGraphAccessorBase ;
+import org.apache.jena.web.AbstractTestDatasetGraphAccessor ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
 
-public class TestDatasetGraphAccessorHTTP extends TestDatasetGraphAccessorBase
+public class TestDatasetGraphAccessorHTTP extends AbstractTestDatasetGraphAccessor
 {
     @BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
     @AfterClass public static void afterClass() { ServerTest.freeServer() ; }
-    @Before public void before() { ServerTest.resetServer() ; }
+    @Before public void before() { 
+        ServerTest.resetServer() ; 
+    }
 
     
     @Override

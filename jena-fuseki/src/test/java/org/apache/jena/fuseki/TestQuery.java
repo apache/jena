@@ -22,16 +22,14 @@ import java.io.IOException ;
 import java.net.HttpURLConnection ;
 import java.net.URL ;
 
-import org.junit.Assert ;
 import org.junit.AfterClass ;
+import org.junit.Assert ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.query.DatasetAccessor ;
-import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;

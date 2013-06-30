@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.http;
 
-import org.apache.jena.fuseki.BaseServerTest ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.fuseki.WebTest ;
 import org.junit.AfterClass ;
@@ -30,14 +30,16 @@ import com.hp.hpl.jena.query.DatasetAccessor ;
 import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import static org.apache.jena.fuseki.BaseServerTest.* ;
 
-public class TestDatasetAccessorHTTP extends BaseServerTest 
+
+public class TestDatasetAccessorHTTP extends BaseTest 
 {
     //Model level testing.
     
     static final String datasetURI_not_1    = "http://localhost:"+ServerTest.port+"/junk" ;
     static final String datasetURI_not_2    = serviceREST+"/not" ;
-    static final String datasetURI_not_3    = "http://localhost:"+ServerTest.port+datasetPath+"/not/data" ;
+    static final String datasetURI_not_3    = "http://localhost:"+ServerTest.port+ServerTest.datasetPath+"/not/data" ;
     
     @BeforeClass public static void beforeClass()   { ServerTest.allocServer() ; }
     @AfterClass public static void afterClass()     { ServerTest.freeServer() ; }
