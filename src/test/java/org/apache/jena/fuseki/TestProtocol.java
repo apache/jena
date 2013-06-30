@@ -26,7 +26,10 @@ import com.hp.hpl.jena.query.DatasetAccessor ;
 import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.sparql.util.Convert ;
 
-// generally poke the server.
+// Generally poke the server.
+// SPARQL Query
+// SPARQL Update
+//   GSP is done in TestDatasetAccessorHTTP
 public class TestProtocol extends BaseServerTest
 {
     @BeforeClass public static void beforeClass()

@@ -29,6 +29,7 @@ import org.apache.jena.atlas.web.MediaType ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Convert ;
@@ -111,6 +112,7 @@ public class FusekiLib
     // Do the addition directly on the dataset
     public static void addDataInto(Graph data, DatasetGraph dsg, Node graphName)
     {
+        //Prefixes?
         if ( graphName == null )
             graphName = Quad.defaultGraphNodeGenerated ;
             
@@ -120,8 +122,9 @@ public class FusekiLib
             Triple t = iter.next();
             dsg.add(graphName, t.getSubject(), t.getPredicate(), t.getObject()) ;
         }
+        
+        PrefixMapping pmapSrc = data.getPrefixMapping() ; 
+        PrefixMapping pmapDest = dsg.getDefaultGraph().getPrefixMapping() ;
+        pmapDest.withDefaultMappings(pmapSrc) ;
     }
-
-
-
 }

@@ -372,7 +372,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         
     private String getRemoteString(String queryURI)
     {
-        return HttpOp.execHttpGet(queryURI, null) ;
+        return HttpOp.execHttpGetString(queryURI) ;
     }
 
 }

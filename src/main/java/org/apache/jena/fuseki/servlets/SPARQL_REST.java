@@ -347,7 +347,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             errorBadRequest("No content type: "+contentTypeHeader) ;
             // lang = Lang.guess(action.request.getRequestURI()) ;
         
-        ContentType ct = ContentType.parse(contentTypeHeader) ;
+        ContentType ct = ContentType.create(contentTypeHeader) ;
         
         String base = wholeRequestURL(action.request) ;
         

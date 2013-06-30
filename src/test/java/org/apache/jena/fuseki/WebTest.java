@@ -28,6 +28,7 @@ import org.apache.http.client.methods.HttpGet ;
 import org.apache.http.client.methods.HttpUriRequest ;
 import org.apache.http.impl.client.DefaultHttpClient ;
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.junit.BaseTest ;
 
 public class WebTest extends BaseTest
 {

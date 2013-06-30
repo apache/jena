@@ -21,7 +21,6 @@ package org.apache.jena.fuseki;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
-import org.apache.jena.web.TestDatasetGraphAccessorMem ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
@@ -31,7 +30,6 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestProtocol.class
-    , TestDatasetGraphAccessorMem.class
     , TestDatasetGraphAccessorHTTP.class
     , TestDatasetAccessorHTTP.class
     , TestUpdate.class
