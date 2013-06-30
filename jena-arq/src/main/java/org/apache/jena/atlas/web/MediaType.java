@@ -203,4 +203,14 @@ public class MediaType
 //    public void setSubType(String subType)  { this.subType = subType ; strContentType = null ; }
     public String getType()                 { return type ; }
 //    public void setType(String type)        { this.type = type ; strContentType = null ; }
+    
+    /** The outcome of parsing 
+     * @see MediaType#parse 
+     */
+    /*package*/ static class ParsedMediaType
+    {
+        public String type ;
+        public String subType ;
+        public Map<String, String> params = new LinkedHashMap<String, String>() ;
+    }
 }

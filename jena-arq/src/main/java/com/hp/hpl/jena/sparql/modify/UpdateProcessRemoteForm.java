@@ -18,16 +18,12 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import java.util.HashMap ;
-import java.util.Map ;
-
 import org.apache.jena.riot.web.HttpOp ;
-import org.apache.jena.riot.web.HttpResponseHandler ;
 import org.apache.jena.riot.web.HttpResponseLib ;
 
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.engine.http.HttpParams;
-import com.hp.hpl.jena.sparql.engine.http.Params;
+import com.hp.hpl.jena.sparql.engine.http.HttpParams ;
+import com.hp.hpl.jena.sparql.engine.http.Params ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -63,9 +59,7 @@ public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase implements 
         String reqStr = this.getUpdateRequest().toString() ;
         Params ps = new Params(this.getParams());
         ps.addParam(HttpParams.pUpdate, reqStr);
-        Map<String, HttpResponseHandler> handlers = new HashMap<String, HttpResponseHandler>() ;
-        handlers.put("*", HttpResponseLib.nullResponse) ;
-        HttpOp.execHttpPostForm(this.getEndpoint(), ps, handlers, getHttpContext(), getAuthenticator()) ;
+        HttpOp.execHttpPostForm(this.getEndpoint(), ps, null, HttpResponseLib.nullResponse, null, getHttpContext(), getAuthenticator()) ;
     }
 }
 
