@@ -19,6 +19,8 @@
 package org.apache.jena.web;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -30,7 +32,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public abstract class TestDatasetGraphAccessorBase extends BaseTest
+public abstract class AbstractTestDatasetGraphAccessor extends BaseTest
 {
     protected static final String gn1       = "http://graph/1" ;
     protected static final String gn2       = "http://graph/2" ;
@@ -52,6 +54,11 @@ public abstract class TestDatasetGraphAccessorBase extends BaseTest
     private static void assertNullOrEmpty(Graph graph)
     {
         if ( graph == null ) return ; 
+        if ( ! graph.isEmpty() ) {
+            System.out.println("----") ;
+            RDFDataMgr.write(System.out, graph, Lang.TTL) ;
+        }
+        
         assertTrue(graph.isEmpty()) ;
     }
     

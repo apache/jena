@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,17 +18,17 @@
 
 package org.apache.jena.web;
 
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
-import com.hp.hpl.jena.query.DatasetAccessorFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-
-public class TestDatasetGraphAccessorMem extends AbstractTestDatasetGraphAccessor
+@RunWith(Suite.class)
+@SuiteClasses(
 {
-    @Override
-    protected DatasetGraphAccessor getDatasetUpdater()
-    {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        return DatasetAccessorFactory.make(dsg) ;
-    }
+    TestDatasetGraphAccessorMem.class
+})
+
+public class TS_Web {
+
 }
+
