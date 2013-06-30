@@ -21,43 +21,43 @@ package org.apache.jena.web;
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.io.IOException ;
-import java.io.InputStream ;
 
 import org.apache.http.Header ;
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
 import org.apache.http.HttpVersion ;
 import org.apache.http.client.HttpClient ;
-import org.apache.http.client.methods.* ;
+import org.apache.http.client.methods.HttpHead ;
+import org.apache.http.client.methods.HttpUriRequest ;
+import org.apache.http.entity.ContentType ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.params.BasicHttpParams ;
 import org.apache.http.params.HttpConnectionParams ;
 import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
+import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.IRILib ;
-import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.riot.web.* ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.graph.UnmodifiableGraph ;
 
 // TODO Support use of a HttpAuthenticator
 
 public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 {
+    // Test for this class are in Fuseki so they can be run with a server. 
+    
     private final String remote ;
+    private static final HttpResponseHandler noResponse = HttpResponseLib.nullResponse ;
 
     /** Create a DatasetUpdater for the remote URL */
     public DatasetGraphAccessorHTTP(String remote)
@@ -73,13 +73,15 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     
     private Graph doGet(String url)
     {
-        HttpUriRequest httpGet = new HttpGet(url) ;
+        HttpCaptureResponse<Graph> graph = HttpResponseLib.graphHandler() ;
         try {
-            return exec(url, null, httpGet, true) ;
-        } catch (JenaHttpNotFoundException ex)
-        {
-            return null ;  
+            HttpOp.execHttpGet(url, WebContent.defaultGraphAcceptHeader, graph) ;
+        } catch (HttpException ex) {
+            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+                return null ;
+            throw ex ;
         }
+        return graph.get(); 
     }
     
     @Override
@@ -98,11 +100,10 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     {
         HttpUriRequest httpHead = new HttpHead(url) ;
         try {
-            exec(url, null, httpHead, false) ;
+            HttpOp.execHttpGet(url, WebContent.defaultGraphAcceptHeader, noResponse) ;
             return true ;
-        } catch (JenaHttpException ex)
-        {
-            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
+        } catch (HttpException ex) {
+            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
                 return false ;
             throw ex ;
         }
@@ -116,8 +117,8 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 
     private void doPut(String url, Graph data)
     {
-        HttpUriRequest httpPut = new HttpPut(url) ;
-        exec(url, data, httpPut, false) ;
+        HttpEntity entity = graphToHttpEntity(data) ;
+        HttpOp.execHttpPut(url, entity, (HttpContext)null, (HttpAuthenticator)null) ;
     }
     
     @Override
@@ -126,13 +127,14 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     @Override
     public void httpDelete(Node graphName)            { doDelete(target(graphName)) ; }
 
-    private boolean doDelete(String url)
+    private void doDelete(String url)
     {
         try {
-            HttpUriRequest httpDelete = new HttpDelete(url) ;
-            exec(url, null, httpDelete, false) ;
-            return true ;
-        } catch (JenaHttpNotFoundException ex) { return false ; }
+            HttpOp.execHttpDelete(url, noResponse) ;
+        } catch (HttpException ex) {
+            if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
+                return ;
+        }
     }
     
     @Override
@@ -143,8 +145,8 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 
     private void doPost(String url, Graph data)
     {
-        HttpUriRequest httpPost = new HttpPost(url) ;
-        exec(url, data, httpPost, false) ;
+        HttpEntity entity = graphToHttpEntity(data) ;
+        HttpOp.execHttpPost(url, entity) ;
     }
 
     @Override
@@ -191,97 +193,50 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         return h.getValue() ;
     }
 
-    private Graph exec(String targetStr, Graph graphToSend, HttpUriRequest httpRequest, boolean processBody)
+    private static RDFFormat sendLang = RDFFormat.RDFXML_PLAIN ;
+
+    // Impedence mismatch - is there a better way?
+    private static byte[] graphToBytes(Graph graph) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+        RDFDataMgr.write(out, graph, sendLang) ;
+        byte[] bytes = out.toByteArray() ;
+        return bytes ;
+    }
+    
+    // Better : ContentProducer
+    // (But this way ensures the graph can be serialized.)
+    
+    private static HttpEntity graphToHttpEntity(Graph graph) {
+        byte[] bytes = graphToBytes(graph) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;
+        String ct = sendLang.getLang().getContentType().getContentType() ;
+        ContentType contentType = ContentType.create(ct) ;
+        InputStreamEntity reqEntity = new InputStreamEntity(in, bytes.length, contentType) ;
+        return reqEntity ;
+    }
+
+    private void execSimple(String targetStr, HttpUriRequest httpRequest, HttpAuthenticator httpAuthenticator)
     {
         HttpClient httpclient = new SystemDefaultHttpClient(httpParams) ;
-        
-        if ( graphToSend != null )
-        {
-            // ??? httpRequest isa Post
-            // Impedence mismatch - is there a better way?
-            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-            Model model = ModelFactory.createModelForGraph(graphToSend) ;
-            model.write(out, "RDF/XML") ;
-            byte[] bytes = out.toByteArray() ;
-            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-            InputStreamEntity reqEntity = new InputStreamEntity(in, bytes.length) ;
-            reqEntity.setContentType(WebContent.contentTypeRDFXML) ;
-            reqEntity.setContentEncoding(WebContent.charsetUTF8) ;
-            HttpEntity entity = reqEntity ;
-            ((HttpEntityEnclosingRequestBase)httpRequest).setEntity(entity) ;
-        }
-        TypedInputStream ts = null ;
-        // httpclient.getParams().setXXX
         try {
             HttpResponse response = httpclient.execute(httpRequest) ;
-
             int responseCode = response.getStatusLine().getStatusCode() ;
             String responseMessage = response.getStatusLine().getReasonPhrase() ;
             
-            if ( HttpSC.isRedirection(responseCode) )
-                // Not implemented yet.
-                throw JenaHttpException.create(responseCode, responseMessage) ;
-
-            // Other 400 and 500 - errors
-
             if ( HttpSC.isClientError(responseCode) || HttpSC.isServerError(responseCode) )
                 throw JenaHttpException.create(responseCode, responseMessage) ;
 
-            if ( responseCode == HttpSC.NO_CONTENT_204) return null ;
-            if ( responseCode == HttpSC.CREATED_201 ) return null ;
+            if ( responseCode == HttpSC.NO_CONTENT_204) return ;
+            if ( responseCode == HttpSC.CREATED_201 ) return ;
             
             if ( responseCode != HttpSC.OK_200 )
             {
                 Log.warn(this, "Unexpected status code") ;
                 throw JenaHttpException.create(responseCode, responseMessage) ;
             }
-            
-            // May not have a body.
-            String ct = getHeader(response, HttpNames.hContentType) ;
-            if ( ct == null )
-            {
-                HttpEntity entity = response.getEntity() ;
-                
-                if (entity != null)
-                {
-                    InputStream instream = entity.getContent() ;
-                    // Read to completion?
-                    instream.close() ;
-                }
-                return null ;
-            }
-            
-            // Tidy. See ConNeg / MediaType.
-            String x = getHeader(response, HttpNames.hContentType) ;
-            String y[] = x.split(";") ;
-            String contentType = null ;
-            if ( y[0] != null )
-                contentType = y[0].trim();
-            String charset = null ;
-            if ( y.length > 1 && y[1] != null )
-                charset = y[1].trim();
-
-            // Get hold of the response entity
-            HttpEntity entity = response.getEntity() ;
-
-            if (entity != null)
-            {
-                InputStream instream = entity.getContent() ;
-//                String mimeType = ConNeg.chooseContentType(request, rdfOffer, ConNeg.acceptRDFXML).getAcceptType() ;
-//                String charset = ConNeg.chooseCharset(request, charsetOffer, ConNeg.charsetUTF8).getAcceptType() ;
-                ts = new TypedInputStream(instream, contentType, charset, null) ;
-            }
-            Graph graph = GraphFactory.createGraphMem() ;
-            if ( processBody )
-                readGraph(graph, ts, null) ;
-            if ( ts != null )
-                ts.close() ;
-            Graph graph2 = new UnmodifiableGraph(graph) ;
-            return graph2 ;
         } catch (IOException ex)
         {
             httpRequest.abort() ;
-            return null ;
         }
     }
 
