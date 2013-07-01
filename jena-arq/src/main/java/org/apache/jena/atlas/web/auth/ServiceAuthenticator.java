@@ -26,13 +26,14 @@ import com.hp.hpl.jena.sparql.engine.http.Service;
 import com.hp.hpl.jena.sparql.util.Context;
 
 /**
+ * <p>
  * A HTTP authenticator which selects credentials based upon service context
  * found in the provided {@link Context}. May also optionally use fallback
  * credentials for URIs for which authentication has not been explicitly
  * configured.
- * 
+ * </p> 
  */
-public class ServiceAuthenticator extends AbstractScopedAuthenticator {
+public class ServiceAuthenticator extends AbstractScopedAuthenticator<Context> {
 
     private Context context;
     private String username;
@@ -87,42 +88,40 @@ public class ServiceAuthenticator extends AbstractScopedAuthenticator {
         this.password = password;
     }
 
-    @Override
-    public String getUserName(URI target) {
-        if (this.context != null) {
+    @SuppressWarnings("unchecked")
+    private Map<String, Context> getServiceContextMap() {
+        return (Map<String, Context>) this.context.get(Service.serviceContext);
 
-            @SuppressWarnings("unchecked")
-            Map<String, Context> serviceContextMap = (Map<String, Context>) this.context.get(Service.serviceContext);
-            if (serviceContextMap != null && serviceContextMap.containsKey(target.toString())) {
-                // Try to obtain Context for target URI
-                Context serviceContext = serviceContextMap.get(target.toString());
-                if (serviceContext != null) {
-                    // Service Context exists for target URI
-                    return serviceContext.getAsString(Service.queryAuthUser);
-                }
-            }
-        }
-        // Use fallback user name
-        return this.username;
     }
 
     @Override
-    public char[] getPassword(URI target) {
-        if (this.context != null) {
+    protected Context getCredentials(URI target) {
+        Map<String, Context> serviceContextMap = this.getServiceContextMap();
+        if (serviceContextMap == null)
+            return null;
+        return serviceContextMap.get(target.toString());
+    }
 
-            @SuppressWarnings("unchecked")
-            Map<String, Context> serviceContextMap = (Map<String, Context>) this.context.get(Service.serviceContext);
-            if (serviceContextMap != null && serviceContextMap.containsKey(target.toString())) {
-                // Try to obtain Context for target URI
-                Context serviceContext = serviceContextMap.get(target.toString());
-                if (serviceContext != null) {
-                    // Service Context exists for target URI
-                    String pwd = serviceContext.getAsString(Service.queryAuthPwd);
-                    return pwd != null ? pwd.toCharArray() : null;
-                }
-            }
+    @Override
+    protected String getUserNameFromCredentials(Context credentials) {
+        if (credentials != null) {
+            // Use user name from service context
+            return credentials.getAsString(Service.queryAuthUser);
+        } else {
+            // Use fallback user name
+            return this.username;
         }
-        // User fallback password
-        return this.password;
+    }
+
+    @Override
+    protected char[] getPasswordFromCredentials(Context credentials) {
+        if (credentials != null) {
+            // Use password from service context
+            String pwd = credentials.getAsString(Service.queryAuthPwd);
+            return pwd != null ? pwd.toCharArray() : null;
+        } else {
+            // Use fallback password
+            return this.password;
+        }
     }
 }

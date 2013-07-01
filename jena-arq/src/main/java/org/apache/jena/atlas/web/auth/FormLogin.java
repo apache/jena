@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -34,6 +35,7 @@ public class FormLogin {
 
     private String loginForm, loginUserField, loginPasswordField, username;
     private char[] password;
+    private CookieStore cookies;
 
     /**
      * Creates new form login credentials
@@ -79,5 +81,40 @@ public class FormLogin {
         nvps.add(new BasicNameValuePair(this.loginPasswordField, new String(this.password)));
 
         return new UrlEncodedFormEntity(nvps, "UTF-8");
+    }
+
+    /**
+     * Gets whether any cookies are associated with this login
+     * 
+     * @return True if there are cookies, false otherwise
+     */
+    public boolean hasCookies() {
+        return this.cookies != null;
+    }
+
+    /**
+     * Gets cookies associated with this login
+     * 
+     * @return Cookies
+     */
+    public CookieStore getCookies() {
+        return this.cookies;
+    }
+
+    /**
+     * Sets cookies associated with this login
+     * 
+     * @param cookies
+     */
+    public void setCookies(CookieStore cookies) {
+        this.cookies = cookies;
+    }
+
+    /**
+     * Clears cookies associated with login, may be useful if you need to force
+     * a fresh login attempt for any reason.
+     */
+    public void clearCookies() {
+        this.cookies = null;
     }
 }

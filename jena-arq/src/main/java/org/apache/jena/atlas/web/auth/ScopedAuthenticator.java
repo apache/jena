@@ -25,55 +25,72 @@ import java.util.Map;
 import org.apache.jena.atlas.lib.Pair;
 
 /**
+ * <p>
  * A credentials based authenticator where credentials are scoped to URIs. This
  * allows for a single authenticator to present different credentials to
  * different URIs as appropriate.
+ * </p>
  * 
  */
-public class ScopedAuthenticator extends AbstractScopedAuthenticator {
+public class ScopedAuthenticator extends AbstractScopedAuthenticator<Pair<String, char[]>> {
 
     private Map<URI, Pair<String, char[]>> credentials = new HashMap<URI, Pair<String, char[]>>();
 
     /**
      * Creates an authenticator with credentials for the given URI
-     * @param target URI
-     * @param username User name
-     * @param password Password
+     * 
+     * @param target
+     *            URI
+     * @param username
+     *            User name
+     * @param password
+     *            Password
      */
     public ScopedAuthenticator(URI target, String username, char[] password) {
-        if (target == null) throw new IllegalArgumentException("Target URI cannot be null");
+        if (target == null)
+            throw new IllegalArgumentException("Target URI cannot be null");
         this.credentials.put(target, Pair.create(username, password));
     }
 
     /**
      * Creates an authenticator with a set of credentials for URIs
-     * @param credentials Credentials
+     * 
+     * @param credentials
+     *            Credentials
      */
     public ScopedAuthenticator(Map<URI, Pair<String, char[]>> credentials) {
         this.credentials.putAll(credentials);
     }
-    
+
     /**
      * Adds/Overwrites credentials for a given URI
-     * @param target Target
-     * @param username User name
-     * @param password Password
+     * 
+     * @param target
+     *            Target
+     * @param username
+     *            User name
+     * @param password
+     *            Password
      */
     public void addCredentials(URI target, String username, char[] password) {
-        if (target == null) throw new IllegalArgumentException("Target URI cannot be null");
+        if (target == null)
+            throw new IllegalArgumentException("Target URI cannot be null");
         this.credentials.put(target, Pair.create(username, password));
     }
 
     @Override
-    protected String getUserName(URI target) {
-        Pair<String, char[]> p = this.credentials.get(target);
-        return p != null ? p.getLeft() : null;
+    protected Pair<String, char[]> getCredentials(URI target) {
+        return this.credentials.get(target);
     }
 
     @Override
-    protected char[] getPassword(URI target) {
-        Pair<String, char[]> p = this.credentials.get(target);
-        return p != null ? p.getRight() : null;
+    protected String getUserNameFromCredentials(Pair<String, char[]> credentials) {
+        return credentials != null ? credentials.getLeft() : null;
+    }
+
+    @Override
+    protected char[] getPasswordFromCredentials(Pair<String, char[]> credentials) {
+        return credentials != null ? credentials.getRight() : null;
     }
 
 }

@@ -21,9 +21,11 @@ package org.apache.jena.atlas.web.auth;
 import java.net.URI;
 
 /**
+ * <p>
  * A HTTP Authenticator which provides authentication via user name and password
  * combinations, can in principal be used to authenticate with any of the HTTP
  * authentication schemes that HTTP Client supports
+ * </p>
  * <p>
  * This authenticator will presents the given credentials to any server, it is
  * typically more secure to use the {@link ScopedAuthenticator} instead.

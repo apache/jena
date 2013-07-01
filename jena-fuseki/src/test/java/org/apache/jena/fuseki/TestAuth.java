@@ -219,6 +219,29 @@ public class TestAuth extends ServerTest {
     
     @Test
     public void query_with_auth_11() {
+        Context ctx = ARQ.getContext();
+        try {
+            QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+
+            // Auth credentials for valid user with correct password and scoped
+            // to base URI of the actual service URL
+            // Provided via Service Context and its associated authenticator
+            Map<String, Context> serviceContext = new HashMap<String, Context>();
+            Context authContext = new Context();
+            authContext.put(Service.queryAuthUser, "allowed");
+            authContext.put(Service.queryAuthPwd, "password");
+            serviceContext.put(urlRoot, authContext);
+            ctx.put(Service.serviceContext, serviceContext);
+
+            qe.setAuthenticator(new ServiceAuthenticator());
+            Assert.assertTrue(qe.execAsk());
+        } finally {
+            ctx.remove(Service.serviceContext);
+        }
+    }
+    
+    @Test
+    public void query_with_auth_12() {
         ARQ.getContext().remove(Service.serviceContext);
 
         QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
@@ -228,6 +251,28 @@ public class TestAuth extends ServerTest {
         qe.setAuthenticator(new ServiceAuthenticator("allowed", "password".toCharArray()));
         Assert.assertTrue(qe.execAsk());
      }
+    
+    @Test
+    public void query_with_auth_13() throws URISyntaxException {
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+
+        // Auth credentials for valid user with correct password and scoped to
+        // base URI of the actual service URL
+        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(urlRoot), "allowed", "password".toCharArray());
+        qe.setAuthenticator(authenticator);
+        Assert.assertTrue(qe.execAsk());
+    }
+    
+    @Test
+    public void query_with_auth_14() throws URISyntaxException {
+        QueryEngineHTTP qe = (QueryEngineHTTP) QueryExecutionFactory.sparqlService(serviceQuery, "ASK { }");
+
+        // Auth credentials for valid user with correct password and scoped to
+        // base URI of the actual service URL
+        ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI("http://localhost:" + port), "allowed", "password".toCharArray());
+        qe.setAuthenticator(authenticator);
+        Assert.assertTrue(qe.execAsk());
+    }
 
     @Test(expected = HttpException.class)
     public void update_with_auth_01() {
@@ -368,10 +413,7 @@ public class TestAuth extends ServerTest {
         accessor.getModel();
     }
     
-    //TODO Currently broken because scoped authenticators aren't taking into account derived URIs which seems like a sensible enhancement
-    
     @Test
-    @Ignore
     public void graphstore_with_auth_05() throws URISyntaxException {
         // Correct auth credentials scoped to correct URI
         DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(serviceREST, new ScopedAuthenticator(new URI(serviceREST), "allowed", "password".toCharArray()));
