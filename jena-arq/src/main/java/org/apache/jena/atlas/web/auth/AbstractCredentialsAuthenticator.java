@@ -35,7 +35,7 @@ import org.apache.http.protocol.HttpContext;
 public abstract class AbstractCredentialsAuthenticator implements HttpAuthenticator {
 
     @Override
-    public final void apply(AbstractHttpClient client, HttpContext context, URI target) {
+    public void apply(AbstractHttpClient client, HttpContext context, URI target) {
         // TODO Should we allow a user name without a password (or vice versa)?
         if (!this.hasUserName(target) || !this.hasPassword(target)) return;
         
