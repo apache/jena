@@ -31,16 +31,21 @@ import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator ;
 import org.apache.jena.atlas.web.auth.ScopedAuthenticator ;
 import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
+import org.junit.Ignore;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.DatasetAccessor;
+import com.hp.hpl.jena.query.DatasetAccessorFactory;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
@@ -55,11 +60,16 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 /**
  * Tests Fuseki operation with authentication enabled
  */
+@SuppressWarnings("javadoc")
 public class TestAuth extends ServerTest {
 
     private static File realmFile;
     private static SPARQLServer server;
 
+    /**
+     * Sets up the authentication for tests
+     * @throws IOException
+     */
     @BeforeClass
     public static void setup() throws IOException {
         realmFile = File.createTempFile("realm", ".properties");
@@ -84,6 +94,9 @@ public class TestAuth extends ServerTest {
         server.start();
     }
 
+    /**
+     * Tears down authentication test setup
+     */
     @AfterClass
     public static void teardown() {
         server.stop();
@@ -324,5 +337,44 @@ public class TestAuth extends ServerTest {
         ScopedAuthenticator authenticator = new ScopedAuthenticator(new URI(serviceUpdate), "allowed", "password".toCharArray());
         ue.setAuthenticator(new PreemptiveBasicAuthenticator(authenticator));
         ue.execute();
+    }
+    
+    @Test(expected = HttpException.class)
+    public void graphstore_with_auth_01() throws URISyntaxException {       
+        // No auth credentials
+        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(serviceREST);
+        accessor.getModel();
+    }
+    
+    @Test(expected = HttpException.class)
+    public void graphstore_with_auth_02() throws URISyntaxException {
+        // Incorrect auth credentials
+        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(serviceREST, new SimpleAuthenticator("allowed", "incorrect".toCharArray()));
+        accessor.getModel();
+    }
+    
+    @Test
+    public void graphstore_with_auth_03() throws URISyntaxException {
+        // Correct auth credentials
+        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(serviceREST, new SimpleAuthenticator("allowed", "password".toCharArray()));
+        Model m = accessor.getModel();
+        Assert.assertTrue(m.isEmpty());
+    }
+    
+    @Test(expected = HttpException.class)
+    public void graphstore_with_auth_04() throws URISyntaxException {
+        // Correct auth credentials scoped to wrong URI
+        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(serviceREST, new ScopedAuthenticator(new URI("http://example.org/"), "allowed", "password".toCharArray()));
+        accessor.getModel();
+    }
+    
+    //TODO Currently broken because scoped authenticators aren't taking into account derived URIs which seems like a sensible enhancement
+    
+    @Test
+    @Ignore
+    public void graphstore_with_auth_05() throws URISyntaxException {
+        // Correct auth credentials scoped to correct URI
+        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(serviceREST, new ScopedAuthenticator(new URI(serviceREST), "allowed", "password".toCharArray()));
+        accessor.getModel();
     }
 }

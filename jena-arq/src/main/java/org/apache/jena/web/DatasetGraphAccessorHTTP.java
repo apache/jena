@@ -21,9 +21,7 @@ package org.apache.jena.web;
 import java.io.IOException ;
 import java.io.OutputStream ;
 
-import org.apache.http.Header ;
 import org.apache.http.HttpEntity ;
-import org.apache.http.HttpResponse ;
 import org.apache.http.HttpVersion ;
 import org.apache.http.client.methods.HttpHead ;
 import org.apache.http.client.methods.HttpUriRequest ;
@@ -34,7 +32,8 @@ import org.apache.http.params.HttpConnectionParams ;
 import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
 import org.apache.jena.atlas.web.HttpException ;
-import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.riot.web.* ;
@@ -44,22 +43,55 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.JenaException ;
 
-// TODO Support use of a HttpAuthenticator
-
+/**
+ * A dataset graph accessor that talks to stores that implement the SPARQL 1.1 Graph Store Protocol
+ *
+ */
 public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 {
     // Test for this class are in Fuseki so they can be run with a server. 
     
     private final String remote ;
     private static final HttpResponseHandler noResponse = HttpResponseLib.nullResponse ;
+    private HttpAuthenticator authenticator;
 
     /** Format used to send a graph to the server */ 
     private static RDFFormat sendLang = RDFFormat.RDFXML_PLAIN ;
 
-    /** Create a DatasetUpdater for the remote URL */
+    /** 
+     * Create a DatasetUpdater for the remote URL 
+     * @param remote Remote URL
+     */
     public DatasetGraphAccessorHTTP(String remote)
     {
         this.remote = remote ;
+    }
+    
+    /** 
+     * Create a DatasetUpdater for the remote URL 
+     * @param remote Remote URL
+     * @param authenticator HTTP Authenticator
+     */
+    public DatasetGraphAccessorHTTP(String remote, HttpAuthenticator authenticator) {
+        this(remote);
+        this.setAuthenticator(authenticator);
+    }
+    
+    /**
+     * Sets authentication credentials for the remote URL
+     * @param username User name
+     * @param password Password
+     */
+    public void setAuthentication(String username, char[] password) {
+        this.setAuthenticator(new SimpleAuthenticator(username, password));
+    }
+    
+    /**
+     * Sets an authenticator to use for authentication to the remote URL
+     * @param authenticator Authenticator
+     */
+    public void setAuthenticator(HttpAuthenticator authenticator) {
+        this.authenticator = authenticator;
     }
     
     @Override
@@ -72,7 +104,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     {
         HttpCaptureResponse<Graph> graph = HttpResponseLib.graphHandler() ;
         try {
-            HttpOp.execHttpGet(url, WebContent.defaultGraphAcceptHeader, graph) ;
+            HttpOp.execHttpGet(url, WebContent.defaultGraphAcceptHeader, graph, this.authenticator) ;
         } catch (HttpException ex) {
             if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
                 return null ;
@@ -95,9 +127,10 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 
     private boolean doHead(String url)
     {
+        // TODO Shouldn't this use HttpOp.execHttpHead() ?
         HttpUriRequest httpHead = new HttpHead(url) ;
         try {
-            HttpOp.execHttpGet(url, WebContent.defaultGraphAcceptHeader, noResponse) ;
+            HttpOp.execHttpGet(url, WebContent.defaultGraphAcceptHeader, noResponse, this.authenticator) ;
             return true ;
         } catch (HttpException ex) {
             if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
@@ -115,7 +148,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     private void doPut(String url, Graph data)
     {
         HttpEntity entity = graphToHttpEntity(data) ;
-        HttpOp.execHttpPut(url, entity) ;
+        HttpOp.execHttpPut(url, entity, null, null, this.authenticator) ;
     }
     
     @Override
@@ -127,7 +160,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     private void doDelete(String url)
     {
         try {
-            HttpOp.execHttpDelete(url, noResponse) ;
+            HttpOp.execHttpDelete(url, noResponse, null, null, this.authenticator) ;
         } catch (HttpException ex) {
             if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
                 return ;
@@ -143,7 +176,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     private void doPost(String url, Graph data)
     {
         HttpEntity entity = graphToHttpEntity(data) ;
-        HttpOp.execHttpPost(url, entity) ;
+        HttpOp.execHttpPost(url, entity, null, null, null, null, this.authenticator) ;
     }
 
     @Override
@@ -166,6 +199,8 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         guri = IRILib.encodeUriComponent(guri) ;
         return remote+"?"+HttpNames.paramGraph+"="+guri ;
     }
+    
+    // TODO: Move default parameters into HttpOp and use in ensureClient()
 
     static private HttpParams httpParams = createHttpParams() ;
     
@@ -182,14 +217,6 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         return httpParams$;
     }
     
-    private static String getHeader(HttpResponse response, String headerName)
-    {
-        Header h = response.getLastHeader(headerName) ;
-        if ( h == null )
-            return null ;
-        return h.getValue() ;
-    }
-
     private static HttpEntity graphToHttpEntity(final Graph graph) {
         
         ContentProducer producer = new ContentProducer() {
@@ -203,17 +230,5 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         String ct = sendLang.getLang().getContentType().getContentType() ;
         entity.setContentType(ct) ;
         return entity ;
-    }
-
-    private void readGraph(Graph graph, TypedInputStream ts, String base)
-    {
-        // Yes - we ignore the charset.
-        // Either it's XML and so the XML parser deals with it, or the 
-        // language determines the charset and the parsers offer InputStreams.   
-       
-        Lang lang = WebContent.contentTypeToLang(ts.getContentType()) ;
-        if ( lang == null )
-            throw new RiotException("Unknown lang for "+ts.getMediaType()) ;
-        RDFDataMgr.read(graph, ts, lang) ; 
     }        
 }
