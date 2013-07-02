@@ -53,6 +53,7 @@ public class qparse extends CmdARQ
     protected final ArgDecl argDeclOpt      = new ArgDecl(ArgDecl.NoValue, "opt", "optimize") ;
     protected final ArgDecl argDeclExplain  = new ArgDecl(ArgDecl.NoValue, "explain") ;
     
+    protected boolean printNone             = false ;
     protected boolean printQuery            = false ;
     protected boolean printOp               = false ;
     protected boolean printOpt              = false ;
@@ -103,11 +104,12 @@ public class qparse extends CmdARQ
             else if ( arg.equalsIgnoreCase("opt"))      { printOpt = true ; }
             else if ( arg.equalsIgnoreCase("optquad"))  { printQuadOpt = true ; }
             else if ( arg.equalsIgnoreCase("quadopt"))  { printQuadOpt = true ; }
+            else if ( arg.equalsIgnoreCase("none"))     { printNone = true ; }
             else
                 throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad, opt, optquad") ;
         }
         
-        if ( ! printQuery && ! printOp && ! printQuad && ! printPlan && ! printOpt && ! printQuadOpt )
+        if ( ! printQuery && ! printOp && ! printQuad && ! printPlan && ! printOpt && ! printQuadOpt && ! printNone )
             printQuery = true ;
     }
 

@@ -24,6 +24,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 
+import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 
@@ -37,10 +38,13 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class uparse extends CmdARQ
 {
-    protected static final ArgDecl fileArg = new ArgDecl(ArgDecl.HasValue, "file", "update") ;
-    protected static final ArgDecl syntaxArg = new ArgDecl(ArgDecl.HasValue, "syntax", "syn") ;
+    protected static final ArgDecl fileArg          = new ArgDecl(ArgDecl.HasValue, "file", "update") ;
+    protected static final ArgDecl syntaxArg        = new ArgDecl(ArgDecl.HasValue, "syntax", "syn") ;
+    protected static final ArgDecl argDeclPrint     = new ArgDecl(ArgDecl.HasValue, "print") ;
     List<String> requestFiles = null ;
     protected Syntax updateSyntax = Syntax.defaultUpdateSyntax ;
+    private boolean printUpdate = false ;
+    private boolean printNone  = false ;
     
     public static void main (String... argv)
     { new uparse(argv).mainRun() ; }
@@ -50,6 +54,7 @@ public class uparse extends CmdARQ
         super(argv) ;
         super.add(fileArg, "--file=FILE",  "Update commands to parse") ;
         super.add(syntaxArg, "--syntax=name", "Update syntax") ;
+        super.add(argDeclPrint, "--print", "Print in various forms [update, none]") ;
     }
 
     @Override
@@ -59,6 +64,19 @@ public class uparse extends CmdARQ
         super.processModulesAndArgs() ;
         if ( super.cmdStrictMode )
             updateSyntax = Syntax.syntaxSPARQL_11 ;
+        
+        for ( Iterator<String> iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
+        {
+            String arg = iter.next() ;
+            if ( arg.equalsIgnoreCase("query"))         { printUpdate = true ; }
+            else if ( arg.equalsIgnoreCase("none"))     { printNone = true ; }
+            else
+                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad, opt, optquad") ;
+        }
+        
+        if ( !printUpdate && ! printNone )
+            printUpdate = true ;
+        
     }
     
     @Override
@@ -112,7 +130,11 @@ public class uparse extends CmdARQ
             return ; 
         }
         //req.output(IndentedWriter.stderr) ;
-        System.out.print(req) ;
+        if ( printUpdate )
+            System.out.print(req) ;
+        
+        if ( printNone )
+            return ;
         
         // And some checking.
         IndentedLineBuffer w = new IndentedLineBuffer() ;
