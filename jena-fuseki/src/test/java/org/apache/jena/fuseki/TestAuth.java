@@ -31,21 +31,20 @@ import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator ;
 import org.apache.jena.atlas.web.auth.ScopedAuthenticator ;
 import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
-import org.junit.Ignore;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.DatasetAccessor;
-import com.hp.hpl.jena.query.DatasetAccessorFactory;
+import com.hp.hpl.jena.query.DatasetAccessor ;
+import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
@@ -60,7 +59,6 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 /**
  * Tests Fuseki operation with authentication enabled
  */
-@SuppressWarnings("javadoc")
 public class TestAuth extends ServerTest {
 
     private static File realmFile;
@@ -385,21 +383,21 @@ public class TestAuth extends ServerTest {
     }
     
     @Test(expected = HttpException.class)
-    public void graphstore_with_auth_01() throws URISyntaxException {       
+    public void graphstore_with_auth_01() {       
         // No auth credentials
         DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(serviceREST);
         accessor.getModel();
     }
     
     @Test(expected = HttpException.class)
-    public void graphstore_with_auth_02() throws URISyntaxException {
+    public void graphstore_with_auth_02() {
         // Incorrect auth credentials
         DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(serviceREST, new SimpleAuthenticator("allowed", "incorrect".toCharArray()));
         accessor.getModel();
     }
     
     @Test
-    public void graphstore_with_auth_03() throws URISyntaxException {
+    public void graphstore_with_auth_03() {
         // Correct auth credentials
         DatasetAccessor accessor = DatasetAccessorFactory.createHTTP(serviceREST, new SimpleAuthenticator("allowed", "password".toCharArray()));
         Model m = accessor.getModel();
