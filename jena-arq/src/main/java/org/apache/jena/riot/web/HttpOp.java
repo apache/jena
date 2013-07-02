@@ -44,17 +44,17 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.atlas.web.auth.ServiceAuthenticator;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.http.Params;
 import com.hp.hpl.jena.sparql.engine.http.Params.Pair;
 
@@ -419,7 +419,7 @@ public class HttpOp {
             e.setContentType(contentType);
             execHttpPost(url, e, acceptType, handler, httpClient, httpContext, authenticator);
         } catch (UnsupportedEncodingException e1) {
-            throw new ARQInternalErrorException("Platform does not support required UTF-8");
+            throw new InternalErrorException("Platform does not support required UTF-8");
         } finally {
             closeEntity(e);
         }
@@ -722,7 +722,7 @@ public class HttpOp {
             e.setContentType(contentType);
             execHttpPut(url, e, httpClient, httpContext, authenticator);
         } catch (UnsupportedEncodingException e1) {
-            throw new ARQInternalErrorException("Platform does not support required UTF-8");
+            throw new InternalErrorException("Platform does not support required UTF-8");
         } finally {
             closeEntity(e);
         }
@@ -906,6 +906,7 @@ public class HttpOp {
         try {
             long id = counter.incrementAndGet();
             String requestURI = determineRequestURI(url);
+            String baseURI = determineBaseIRI(url) ;
             if (log.isDebugEnabled())
                 log.debug(format("[%d] %s %s", id, request.getMethod(), request.getURI().toString()));
             // Accept
@@ -927,7 +928,7 @@ public class HttpOp {
             }
             // Redirects are followed by HttpClient.
             if (handler != null)
-                handler.handle(requestURI, response);
+                handler.handle(baseURI, response);
         } catch (IOException ex) {
             throw new HttpException(ex);
         }
@@ -1000,9 +1001,9 @@ public class HttpOp {
             URI uri = new URI(target);
             authenticator.apply(client, context, uri);
         } catch (URISyntaxException e) {
-            throw new ARQException("Invalid request URI", e);
+            throw new RiotException("Invalid request URI", e);
         } catch (NullPointerException e) {
-            throw new ARQException("Null request URI", e);
+            throw new RiotException("Null request URI", e);
         }
     }
 
@@ -1014,7 +1015,7 @@ public class HttpOp {
             HttpEntity e = new UrlEncodedFormEntity(nvps, "UTF-8");
             return e;
         } catch (UnsupportedEncodingException e) {
-            throw new ARQInternalErrorException("Platform does not support required UTF-8");
+            throw new InternalErrorException("Platform does not support required UTF-8");
         }
     }
 
@@ -1027,8 +1028,11 @@ public class HttpOp {
         }
     }
 
-    private static String determineRequestURI(String url) {
-        String requestURI = url;
+    /** Calculate the request URI from a general URI.
+     * This means remove any fragment. 
+     */
+    private static String determineRequestURI(String uri) {
+        String requestURI = uri;
         if (requestURI.contains("#")) {
             // No frag ids.
             int i = requestURI.indexOf('#');
@@ -1037,14 +1041,16 @@ public class HttpOp {
         return requestURI;
     }
 
-    @SuppressWarnings("unused")
-    private static String determineBaseIRI(String requestURI) {
+    /** Calculate the base IRI to use from a URI.
+     *  The base is without fragement and without query string.
+     */ 
+    private static String determineBaseIRI(String uri) {
+        // Defrag
+        String baseIRI = determineRequestURI(uri);
         // Technically wrong, but including the query string is "unhelpful"
-        String baseIRI = requestURI;
-        if (requestURI.contains("?")) {
-            // No frag ids.
-            int i = requestURI.indexOf('?');
-            baseIRI = requestURI.substring(0, i);
+        if (baseIRI.contains("?")) {
+            int i = baseIRI.indexOf('?');
+            baseIRI = baseIRI.substring(0, i);
         }
         return baseIRI;
     }
