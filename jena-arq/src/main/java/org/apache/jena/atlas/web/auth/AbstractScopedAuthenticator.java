@@ -42,10 +42,12 @@ import java.net.URISyntaxException;
  */
 public abstract class AbstractScopedAuthenticator<T> extends AbstractCredentialsAuthenticator {
     
+    @Override
     protected final String getUserName(URI target) {
         return getUserNameFromCredentials(this.findCredentials(target));
     }
     
+    @Override
     protected final char[] getPassword(URI target) {
         return getPasswordFromCredentials(this.findCredentials(target));
     }

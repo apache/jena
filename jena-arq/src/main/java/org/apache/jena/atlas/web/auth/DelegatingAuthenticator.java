@@ -59,6 +59,7 @@ public class DelegatingAuthenticator extends AbstractScopedAuthenticator<HttpAut
         this.authenticators.putAll(authenticators);
     }
 
+    @Override
     public void apply(AbstractHttpClient client, HttpContext context, URI target) {
         HttpAuthenticator authenticator = this.findCredentials(target);
         if (authenticator != null) {
