@@ -115,8 +115,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         return x ;
     }
     
-    // Left to the underlying implementations, when known
-    // These calls shoudl not happen becuase we hook in at execute$
+    // These calls should not happen because we hook in at executeAction
     @Override protected void validate(HttpAction action) { throw new FusekiException("Call to SPARQL_UberServlet.validate") ; }
     @Override protected void perform(HttpAction action)  { throw new FusekiException("Call to SPARQL_UberServlet.perform") ; }
 
