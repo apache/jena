@@ -28,11 +28,8 @@
 
   <properties>
     <ver.jena>2.10.2-SNAPSHOT</ver.jena>
-    <ver.lucene>4.2.1</ver.lucene>
-    <ver.solr>4.2.1</ver.solr>
-
-    <this.root>${project.artifactId}-${project.version}</this.root>
-    <server.jar.name>${this.root}-fuseki</server.jar.name>
+    <ver.lucene>4.3.1</ver.lucene>
+    <ver.solr>4.3.1</ver.solr>
 
     <jdk.version>1.6</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->

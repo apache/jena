@@ -31,7 +31,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 public class TextSearchUtil {
-    private static Version VER = Version.LUCENE_41 ;
+    private static Version VER = TextIndexLucene.VER ;
     private static final Analyzer analyzer = new StandardAnalyzer(VER);
 	
     public static void emptyAndDeleteDirectory(File dir) {
