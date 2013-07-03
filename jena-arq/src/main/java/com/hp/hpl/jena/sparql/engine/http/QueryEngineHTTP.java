@@ -85,8 +85,14 @@ public class QueryEngineHTTP implements QueryExecution {
     private String selectContentType = WebContent.contentTypeResultsXML;
     private String askContentType = WebContent.contentTypeResultsXML;
     private String modelContentType = WebContent.contentTypeRDFXML;
+    /**
+     * Supported content types for SELECT queries
+     */
     public static String[] supportedSelectContentTypes = new String[] { WebContent.contentTypeResultsXML,
             WebContent.contentTypeResultsJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
+    /**
+     * Supported content types for ASK queries
+     */
     public static String[] supportedAskContentTypes = new String[] { WebContent.contentTypeResultsXML,
             WebContent.contentTypeJSON, WebContent.contentTypeTextTSV, WebContent.contentTypeTextCSV };
 
@@ -97,12 +103,24 @@ public class QueryEngineHTTP implements QueryExecution {
     public QueryEngineHTTP(String serviceURI, Query query) {
         this(serviceURI, query, query.toString());
     }
+    
+    public QueryEngineHTTP(String serviceURI, Query query, HttpAuthenticator authenticator) {
+        this(serviceURI, query, query.toString(), authenticator);
+    }
 
     public QueryEngineHTTP(String serviceURI, String queryString) {
         this(serviceURI, null, queryString);
     }
-
+    
+    public QueryEngineHTTP(String serviceURI, String queryString, HttpAuthenticator authenticator) {
+        this(serviceURI, null, queryString, authenticator);
+    }
+    
     private QueryEngineHTTP(String serviceURI, Query query, String queryString) {
+        this(serviceURI, query, queryString, null);
+    }
+
+    private QueryEngineHTTP(String serviceURI, Query query, String queryString, HttpAuthenticator authenticator) {
         this.query = query;
         this.queryString = queryString;
         this.service = serviceURI;
@@ -111,6 +129,12 @@ public class QueryEngineHTTP implements QueryExecution {
 
         // Apply service configuration if relevant
         QueryEngineHTTP.applyServiceConfig(serviceURI, this);
+        
+        // Don't want to overwrite credentials we may have picked up from
+        // service context in the parent constructor if the specified
+        // authenticator is null
+        if (authenticator != null)
+            this.setAuthenticator(authenticator);
     }
 
     /**
