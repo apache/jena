@@ -24,8 +24,14 @@ package org.apache.jena.atlas.web.auth;
  */
 public class ApacheModAuthFormLogin extends FormLogin {
 
-    private static final String APACHE_MOD_AUTH_FORM_USER_FIELD = "httpd_username";
-    private static final String APACHE_MOD_AUTH_FORM_PASSWORD_FIELD = "httpd_password";
+    /**
+     * Default user field used by Apache mod_auth_form configurations
+     */
+    public static final String APACHE_MOD_AUTH_FORM_USER_FIELD = "httpd_username";
+    /**
+     * Default password field used by Apache mod_auth_form configurations
+     */
+    public static final String APACHE_MOD_AUTH_FORM_PASSWORD_FIELD = "httpd_password";
 
     /**
      * Creates new form login credentials
