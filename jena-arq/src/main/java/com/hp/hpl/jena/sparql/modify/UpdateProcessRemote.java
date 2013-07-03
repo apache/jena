@@ -53,7 +53,11 @@ public class UpdateProcessRemote extends UpdateProcessRemoteBase implements Upda
     public UpdateProcessRemote(UpdateRequest request, String endpoint, Context context, HttpAuthenticator authenticator)
     {
         this(request, endpoint, context);
-        this.setAuthenticator(authenticator);
+        // Don't want to overwrite credentials we may have picked up from
+        // service context in the parent constructor if the specified
+        // authenticator is null
+        if (authenticator != null)
+            this.setAuthenticator(authenticator);
     }
 
     @Override
