@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseLib ;
 
@@ -44,6 +45,19 @@ public class UpdateProcessRemoteForm extends UpdateProcessRemoteBase implements 
     public UpdateProcessRemoteForm(UpdateRequest request , String endpoint, Context context )
     {
         super(request, endpoint, context);
+    }
+    
+    /**
+     * Creates a new remote update processor that uses the form URL encoded submission method
+     * @param request Update request
+     * @param endpoint Update endpoint
+     * @param context Context
+     * @param authenticator HTTP Authenticator
+     */
+    public UpdateProcessRemoteForm(UpdateRequest request , String endpoint, Context context, HttpAuthenticator authenticator)
+    {
+        this(request, endpoint, context);
+        this.setAuthenticator(authenticator);
     }
 
     @Override
