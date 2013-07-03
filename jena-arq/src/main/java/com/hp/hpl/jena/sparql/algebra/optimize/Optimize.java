@@ -146,7 +146,7 @@ public class Optimize implements Rewrite
         // ** TransformScopeRename::
         // This is a requirement for the linearization execution that the default
         // ARQ query engine uses where possible.  
-        // This transformation must be done (e.g. by QueryEngineBase) if no other optimziation is done. 
+        // This transformation must be done (e.g. by QueryEngineBase) if no other optimization is done. 
         op = TransformScopeRename.transform(op) ;
         
         // Remove "group of one" join
