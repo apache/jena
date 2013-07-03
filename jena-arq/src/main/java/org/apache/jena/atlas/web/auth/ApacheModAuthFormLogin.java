@@ -27,11 +27,11 @@ public class ApacheModAuthFormLogin extends FormLogin {
     /**
      * Default user field used by Apache mod_auth_form configurations
      */
-    public static final String APACHE_MOD_AUTH_FORM_USER_FIELD = "httpd_username";
+    public static final String USER_FIELD = "httpd_username";
     /**
      * Default password field used by Apache mod_auth_form configurations
      */
-    public static final String APACHE_MOD_AUTH_FORM_PASSWORD_FIELD = "httpd_password";
+    public static final String PASSWORD_FIELD = "httpd_password";
 
     /**
      * Creates new form login credentials
@@ -44,6 +44,6 @@ public class ApacheModAuthFormLogin extends FormLogin {
      *            Password
      */
     public ApacheModAuthFormLogin(String loginFormURL, String username, char[] password) {
-        super(loginFormURL, APACHE_MOD_AUTH_FORM_USER_FIELD, APACHE_MOD_AUTH_FORM_PASSWORD_FIELD, username, password);
+        super(loginFormURL, USER_FIELD, PASSWORD_FIELD, username, password);
     }
 }
