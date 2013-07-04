@@ -39,7 +39,7 @@ public class ServerConfig
     public String pages ;
     /** The list of datasets */
     public List<DatasetRef> datasets ;
-    /** Enable Accept-Encoding compression */
+    /** Enable Accept-Encoding compression. Set to false by default.*/
     public boolean enableCompression = false ;
     
     /** Enable additional logging */
