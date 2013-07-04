@@ -54,6 +54,15 @@ import org.eclipse.jetty.xml.XmlConfiguration ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
+/**
+ * SPARQLServer is the Jena server instance which wraps/utilizes 
+ * {@link org.eclipse.jetty.server.Server}. This class provides
+ * immediate access to the {@link org.eclipse.jetty.server.Server#start()} and 
+ * {@link org.eclipse.jetty.server.Server#stop()} commands as well as obtaining
+ * instances of the server and server configuration. Finally we can obtain 
+ * instances of {@link org.apache.jena.fuseki.server.ServerConfig}.
+ *
+ */
 public class SPARQLServer {
     static {
         Fuseki.init() ;
@@ -67,6 +76,12 @@ public class SPARQLServer {
 
     // private static int ThreadPoolSize = 100 ;
 
+    /**
+     * Default constructor which requires a {@link org.apache.jena.fuseki.server.ServerConfig}
+     * object as input. We use this config to specify (verbose) logging, enable compression
+     * etc. 
+     * @param config
+     */
     public SPARQLServer(ServerConfig config) {
         this.serverConfig = config ;
         verboseLogging = config.verboseLogging ;
@@ -82,6 +97,9 @@ public class SPARQLServer {
             configureOneDataset(context, dsDesc, config.enableCompression) ;
     }
 
+    /**
+     * Initialize the {@link SPARQLServer} instance.
+     */
     public void start() {
         String now = Utils.nowAsString() ;
         serverLog.info(format("%s %s %s", Fuseki.NAME, Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
@@ -106,6 +124,9 @@ public class SPARQLServer {
         ServletContextHandler context = (ServletContextHandler)server.getHandler() ;
     }
 
+    /**
+     * Stop the {@link SPARQLServer} instance.
+     */
     public void stop() {
         String now = Utils.nowAsString() ;
         serverLog.info(format("Stopped %s on port %d", now, server.getConnectors()[0].getPort())) ;
@@ -117,14 +138,26 @@ public class SPARQLServer {
         removeJMX() ;
     }
 
+    /**
+     * Get the Jetty instance.
+     * @return Server
+     */
     public Server getServer() {
         return server ;
     }
 
+    /**
+     * Get the datasets associated with the server.
+     * @return returns the datasets via {@link org.apache.jena.fuseki.server.ServerConfig#datasets}
+     */
     public List<DatasetRef> getDatasets() {
         return serverConfig.datasets ;
     }
 
+    /**
+     * Obtain the {@link org.apache.jena.fuseki.server.ServerConfig}
+     * @return ServerConfig
+     */
     public ServerConfig getServerConfig() {
         return serverConfig ;
     }
@@ -244,10 +277,11 @@ public class SPARQLServer {
         return context ;
     }
 
-    // Experimental - off by default.
-    // The überservlet sits on the dataset name and handles all requests.
-    // Includes direct naming and quad access to the dataset.
+    /** Experimental - off by default. The überservlet sits on the dataset name and handles all requests.
+      * Includes direct naming and quad access to the dataset. 
+      */
     public static boolean       überServlet       = false ;
+    
     private static List<String> ListOfEmptyString = Arrays.asList("") ;
 
     private void configureOneDataset(ServletContextHandler context, DatasetRef dsDesc, boolean enableCompression) {
