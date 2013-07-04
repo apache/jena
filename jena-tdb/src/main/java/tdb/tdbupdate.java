@@ -23,6 +23,7 @@ import tdb.cmdline.ModTDBGraphStore ;
 import arq.cmdline.ModGraphStore ;
 
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class tdbupdate extends arq.update
 {
@@ -30,6 +31,8 @@ public class tdbupdate extends arq.update
     public static void main(String...argv)
     {
         CmdTDB.init() ;
+        // Do everything with flushing transactions.
+        TransactionManager.QueueBatchSize = 0 ;
         new tdbupdate(argv).mainRun() ;
     }
     
@@ -52,4 +55,6 @@ public class tdbupdate extends arq.update
     {
         return new ModTDBGraphStore();
     }
+    
+    
 }
