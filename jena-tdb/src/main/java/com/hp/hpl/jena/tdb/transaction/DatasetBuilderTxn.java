@@ -45,9 +45,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 public class DatasetBuilderTxn
 {
     // Ideally, don't make a DatasetGraphTDB to pass to new DatasetGraphTxn as it rips it apart.
-    // And fails to copy context.
-    // XXX 1/ DatasetGraphTDB clone constructor needs to handle context. 
-    // XXX 2/ DatasetBuilderTxn needs to build a  DatasetGraphTxn directly, not via 
     
     // Context for the build.
     private TransactionManager txnMgr ;

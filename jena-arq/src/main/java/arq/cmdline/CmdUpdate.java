@@ -49,15 +49,12 @@ public abstract class CmdUpdate extends CmdARQ
             updateSyntax = Syntax.syntaxSPARQL_11 ;
     }
     
-    
     @Override
     protected final void exec()
     {
         GraphStore graphStore = modGraphStore.getGraphStore() ;
         if ( graphStore.getDefaultGraph() == null )
             graphStore.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()); 
-        // Migrate trasnaction flag to DatsetGraph ... sometime 
-        
         execUpdate(graphStore) ;
     }
 

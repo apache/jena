@@ -235,17 +235,17 @@ public class StoreConnection
         if (sConn == null)
         {
             sConn = new StoreConnection(dsg) ;
-            boolean actionTaken = JournalControl.recoverFromJournal(dsg.getConfig(), sConn.transactionManager.getJournal()) ;
-            
-            if ( false && actionTaken )
-            {
-                // This should be unnecessary because we wrote the journal replay
-                // via the DSG storage configuration.  
-                sConn.transactionManager.closedown() ;
-                sConn.baseDSG.close() ;
-                dsg = DatasetBuilderStd.build(location) ;
-                sConn = new StoreConnection(dsg) ;
-            }
+            sConn.forceRecoverFromJournal() ;
+//            boolean actionTaken = JournalControl.recoverFromJournal(dsg.getConfig(), sConn.transactionManager.getJournal()) ;
+//            if ( false && actionTaken )
+//            {
+//                // This should be unnecessary because we wrote the journal replay
+//                // via the DSG storage configuration.  
+//                sConn.transactionManager.closedown() ;
+//                sConn.baseDSG.close() ;
+//                dsg = DatasetBuilderStd.build(location) ;
+//                sConn = new StoreConnection(dsg) ;
+//            }
             
             if (!location.isMemUnique())
                 // Don't cache use-once in-memory datasets.
