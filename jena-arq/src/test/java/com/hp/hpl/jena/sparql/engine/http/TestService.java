@@ -22,6 +22,7 @@ import java.net.SocketException ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.http.conn.ConnectTimeoutException ;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
@@ -68,11 +69,13 @@ public class TestService {
             Service.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            if (expected.getCause() instanceof SocketException) {
+            Throwable thrown = expected.getCause() ;
+            if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException )  {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketException (or subclass thereof), instead got: %s %s", expected.getCause().getClass()
-                        .getName(), expected.getCause().getMessage()));
+                Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s", 
+                                          thrown.getClass().getName(), 
+                                          thrown.getMessage()));
             }
         }
 
@@ -94,11 +97,13 @@ public class TestService {
             Service.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            if (expected.getCause() instanceof java.net.SocketException) {
+            Throwable thrown = expected.getCause() ;
+            if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException )  {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketException (or subclass thereof), instead got: %s %s", expected.getCause().getClass()
-                        .getName(), expected.getCause().getMessage()));
+                Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s", 
+                                          thrown.getClass().getName(), 
+                                          thrown.getMessage()));
             }
         }
     }
@@ -119,11 +124,13 @@ public class TestService {
             Service.exec(opService, context);
             Assert.fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            if (expected.getCause() instanceof java.net.SocketException) {
+            Throwable thrown = expected.getCause() ;
+            if ( thrown instanceof SocketException || thrown instanceof ConnectTimeoutException )  {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketException (or subclass thereof), instead got: %s %s", expected.getCause().getClass()
-                        .getName(), expected.getCause().getMessage()));
+                Assert.fail(String.format("Expected SocketException or ConnectTimeoutException, instead got: %s %s", 
+                                          thrown.getClass().getName(), 
+                                          thrown.getMessage()));
             }
         }
     }
