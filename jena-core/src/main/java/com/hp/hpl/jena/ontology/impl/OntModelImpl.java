@@ -2650,6 +2650,15 @@ public class OntModelImpl extends ModelCom implements OntModel
         return super.write( out, lang, base );
     }
 
+    @Override
+    public Model writeAll( Writer writer, String lang ) {
+        return super.write( writer, lang );
+    }
+
+    @Override
+    public Model writeAll( OutputStream out, String lang) {
+        return super.write( out, lang );
+    }
 
     // Implementation of inf model interface methods
 
