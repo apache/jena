@@ -1559,7 +1559,7 @@ public interface OntModel
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "TURTLE".  The default value,
      * represented by <code>null</code> is "RDF/XML".</p>
      * @param writer The output writer
      * @param lang The output language
@@ -1579,7 +1579,7 @@ public interface OntModel
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "TURTLE".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param writer The output writer
      * @param base The base URI for relative URI calculations.
@@ -1599,7 +1599,7 @@ public interface OntModel
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value is
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "TURTLE".  The default value is
      * represented by <code>null</code> is "RDF/XML".</p>
      * @param out The output stream to which the XML will be written
      * @return This model
@@ -1616,7 +1616,7 @@ public interface OntModel
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "TURTLE".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
      * @param lang The output language
@@ -1634,7 +1634,7 @@ public interface OntModel
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "TURTLE".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
      * @param base The base URI to use when writing relative URI's. <code>null</code>
@@ -1655,12 +1655,12 @@ public interface OntModel
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "TURTLE".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param writer The output writer
+     * @param lang The language in which the RDF should be written
      * @param base The base URI for relative URI calculations.
      * <code>null</code> means use only absolute URI's.
-     * @param lang The language in which the RDF should be written
      * @return This model
      */
     public Model writeAll( Writer writer, String lang, String base );
@@ -1673,13 +1673,47 @@ public interface OntModel
      * </p>
      * <p>The language in which to write the model is specified by the
      * <code>lang</code> argument.  Predefined values are "RDF/XML",
-     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "TURTLE".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
+     * @param lang The language in which the RDF should be written
      * @param base The base URI to use when writing relative URI's. <code>null</code>
      * means use only absolute URI's.
-     * @param lang The language in which the RDF should be written
      * @return This model
      */
     public Model writeAll( OutputStream out, String lang, String base );
+    
+    /**
+     * <p>Write a serialized representation of all of the contents of the model,
+     * including inferred statements and statements imported from other
+     * documents.  To write only the data asserted in the base model, use
+     * {@link #write( Writer, String ) write}.
+     * It is often better to use an OutputStream rather than a Writer,
+     * since this will avoid character encoding errors.
+     * </p>
+     * <p>The language in which to write the model is specified by the
+     * <code>lang</code> argument.  Predefined values are "RDF/XML",
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "TURTLE".  The default value,
+     * represented by <code>null</code>, is "RDF/XML".</p>
+     * @param writer The output writer
+     * @param lang The language in which the RDF should be written
+     * @return This model
+     */
+    public Model writeAll( Writer writer, String lang );
+
+    /**
+     * <p>Write a serialized representation of all of the contents of the model,
+     * including inferred statements and statements imported from other
+     * documents.  To write only the data asserted in the base model, use
+     * {@link #write( OutputStream, String ) write}.
+     * </p>
+     * <p>The language in which to write the model is specified by the
+     * <code>lang</code> argument.  Predefined values are "RDF/XML",
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "TURTLE".  The default value,
+     * represented by <code>null</code>, is "RDF/XML".</p>
+     * @param out The output stream to which the RDF is written
+     * @param lang The language in which the RDF should be written
+     * @return This model
+     */
+    public Model writeAll( OutputStream out, String lang );
 }
