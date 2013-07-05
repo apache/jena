@@ -38,7 +38,7 @@ public class LocatorURL implements Locator
     static final String acceptHeader = "application/rdf+xml,application/xml;q=0.9,*/*;q=0.5" ;
     
     static final String[] schemeNames = { "http:" , "https:" } ;    // Must be lower case and include the ":"
-
+    
     @Override
     public TypedStream open(String filenameOrURI)
     {
