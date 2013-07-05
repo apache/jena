@@ -30,6 +30,7 @@
     
     <!-- All dependencies. -->
     <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>lib</outputDirectory>
       <unpack>false</unpack>
       <includes>
@@ -44,6 +45,7 @@
     </dependencySet>
 
     <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>lib-src</outputDirectory>
       <unpack>false</unpack>
       <includes>
@@ -54,6 +56,7 @@
     </dependencySet>
 
     <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>javadoc-core</outputDirectory>
       <unpack>true</unpack>
       <includes>
@@ -64,6 +67,7 @@
     </dependencySet>
 
     <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>javadoc-arq</outputDirectory>
       <unpack>true</unpack>
       <includes>
@@ -74,6 +78,7 @@
     </dependencySet>
 
     <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>javadoc-tdb</outputDirectory>
       <unpack>true</unpack>
       <includes>
