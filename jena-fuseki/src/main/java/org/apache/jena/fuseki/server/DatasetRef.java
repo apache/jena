@@ -61,6 +61,7 @@ public class DatasetRef implements DatasetMXBean
         add(upload) ;
         add(readGraphStore) ;
         add(readWriteGraphStore) ;
+        addCounters() ;
     }
     
     private void add(ServiceRef srvRef) {
@@ -169,5 +170,68 @@ public class DatasetRef implements DatasetMXBean
     @Override
     public long getRequestsBad() {
         return counters.value(CounterName.RequestsBad) ;
+    }
+    
+    private void addCounters() {
+        counters.add(CounterName.Requests) ;
+        counters.add(CounterName.RequestsGood) ;
+        counters.add(CounterName.RequestsBad) ;
+
+        query.counters.add(CounterName.Requests) ;
+        query.counters.add(CounterName.RequestsGood) ;
+        query.counters.add(CounterName.RequestsBad) ;
+        query.counters.add(CounterName.QueryTimeouts) ;
+        query.counters.add(CounterName.QueryExecErrors) ;
+
+        update.counters.add(CounterName.Requests) ;
+        update.counters.add(CounterName.RequestsGood) ;
+        update.counters.add(CounterName.RequestsBad) ;
+        update.counters.add(CounterName.UpdateExecErrors) ;
+
+        upload.counters.add(CounterName.Requests) ;
+        upload.counters.add(CounterName.RequestsGood) ;
+        upload.counters.add(CounterName.RequestsBad) ;
+
+        addCountersForGSP(readWriteGraphStore.counters, false) ;
+        if ( readGraphStore != readWriteGraphStore )
+            addCountersForGSP(readGraphStore.counters, true) ;
+    }
+
+    private void addCountersForGSP(CounterSet cs, boolean readWrite) {
+        cs.add(CounterName.Requests) ;
+        cs.add(CounterName.RequestsGood) ;
+        cs.add(CounterName.RequestsBad) ;
+
+        cs.add(CounterName.GSPget) ;
+        cs.add(CounterName.GSPgetGood) ;
+        cs.add(CounterName.GSPgetBad) ;
+
+        cs.add(CounterName.GSPhead) ;
+        cs.add(CounterName.GSPheadGood) ;
+        cs.add(CounterName.GSPheadBad) ;
+
+        // Add anyway.
+        // if ( ! readWrite )
+        // return ;
+
+        cs.add(CounterName.GSPput) ;
+        cs.add(CounterName.GSPputGood) ;
+        cs.add(CounterName.GSPputBad) ;
+
+        cs.add(CounterName.GSPpost) ;
+        cs.add(CounterName.GSPpostGood) ;
+        cs.add(CounterName.GSPpostBad) ;
+
+        cs.add(CounterName.GSPdelete) ;
+        cs.add(CounterName.GSPdeleteGood) ;
+        cs.add(CounterName.GSPdeleteBad) ;
+
+        cs.add(CounterName.GSPpatch) ;
+        cs.add(CounterName.GSPpatchGood) ;
+        cs.add(CounterName.GSPpatchBad) ;
+
+        cs.add(CounterName.GSPoptions) ;
+        cs.add(CounterName.GSPoptionsGood) ;
+        cs.add(CounterName.GSPoptionsBad) ;
     }
 }
