@@ -161,7 +161,7 @@ public class FormsAuthenticator extends AbstractScopedAuthenticator<FormLogin> {
 
     @Override
     protected FormLogin getCredentials(URI target) {
-        return this.logins.get(target.toString());
+        return this.logins.get(target);
     }
 
     @Override
