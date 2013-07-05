@@ -295,7 +295,6 @@ public class SPARQLServer {
         if ( datasetPath.endsWith("/") )
             datasetPath = datasetPath.substring(0, datasetPath.length() - 1) ;
 
-        addCounters(dsDesc) ;
         dsDesc.init() ;
 
         DatasetRegistry.get().put(datasetPath, dsDesc) ;
@@ -436,69 +435,6 @@ public class SPARQLServer {
 
         if ( enableCompression )
             context.addFilter(GzipFilter.class, pathSpec, EnumSet.allOf(DispatcherType.class)) ;
-    }
-
-    private static void addCounters(DatasetRef sDesc) {
-        sDesc.counters.add(CounterName.Requests) ;
-        sDesc.counters.add(CounterName.RequestsGood) ;
-        sDesc.counters.add(CounterName.RequestsBad) ;
-
-        sDesc.query.counters.add(CounterName.Requests) ;
-        sDesc.query.counters.add(CounterName.RequestsGood) ;
-        sDesc.query.counters.add(CounterName.RequestsBad) ;
-        sDesc.query.counters.add(CounterName.QueryTimeouts) ;
-        sDesc.query.counters.add(CounterName.QueryExecErrors) ;
-
-        sDesc.update.counters.add(CounterName.Requests) ;
-        sDesc.update.counters.add(CounterName.RequestsGood) ;
-        sDesc.update.counters.add(CounterName.RequestsBad) ;
-        sDesc.update.counters.add(CounterName.UpdateExecErrors) ;
-
-        sDesc.upload.counters.add(CounterName.Requests) ;
-        sDesc.upload.counters.add(CounterName.RequestsGood) ;
-        sDesc.upload.counters.add(CounterName.RequestsBad) ;
-
-        addCountersForGSP(sDesc.readWriteGraphStore.counters, false) ;
-        if ( sDesc.readGraphStore != sDesc.readGraphStore )
-            addCountersForGSP(sDesc.readGraphStore.counters, true) ;
-    }
-
-    private static void addCountersForGSP(CounterSet cs, boolean readWrite) {
-        cs.add(CounterName.Requests) ;
-        cs.add(CounterName.RequestsGood) ;
-        cs.add(CounterName.RequestsBad) ;
-
-        cs.add(CounterName.GSPget) ;
-        cs.add(CounterName.GSPgetGood) ;
-        cs.add(CounterName.GSPgetBad) ;
-
-        cs.add(CounterName.GSPhead) ;
-        cs.add(CounterName.GSPheadGood) ;
-        cs.add(CounterName.GSPheadBad) ;
-
-        // Add anyway.
-        // if ( ! readWrite )
-        // return ;
-
-        cs.add(CounterName.GSPput) ;
-        cs.add(CounterName.GSPputGood) ;
-        cs.add(CounterName.GSPputBad) ;
-
-        cs.add(CounterName.GSPpost) ;
-        cs.add(CounterName.GSPpostGood) ;
-        cs.add(CounterName.GSPpostBad) ;
-
-        cs.add(CounterName.GSPdelete) ;
-        cs.add(CounterName.GSPdeleteGood) ;
-        cs.add(CounterName.GSPdeleteBad) ;
-
-        cs.add(CounterName.GSPpatch) ;
-        cs.add(CounterName.GSPpatchGood) ;
-        cs.add(CounterName.GSPpatchBad) ;
-
-        cs.add(CounterName.GSPoptions) ;
-        cs.add(CounterName.GSPoptionsGood) ;
-        cs.add(CounterName.GSPoptionsBad) ;
     }
 
     private void addJMX() {
