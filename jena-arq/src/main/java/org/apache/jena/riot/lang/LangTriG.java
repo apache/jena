@@ -60,6 +60,9 @@ public class LangTriG extends LangTurtleBase {
                 nextToken() ;
                 mustBeNamedGraph = true ;
                 token = peekToken() ;
+                // GRAPH <g> 
+                // GRAPH [] 
+                
             } else
                 exception(t, "Keyword '" + token.getImage() + "' not allowed here") ;
         }
@@ -80,20 +83,25 @@ public class LangTriG extends LangTurtleBase {
             token = peekToken() ;
             Node blank = profile.createBlankNode(graphNode, t.getLine(), t.getColumn()) ;
             if ( lookingAt(RBRACKET) ) {
-                // Can be [] :predicate or [] {
+                // Can be Turtle, "[] :predicate", or named graph "[] {"
                 nextToken() ;
                 if ( lookingAt(LBRACE) )
                     graphNode = blank ;
                 else {
+                    if ( mustBeNamedGraph )
+                        exception(t, "Keyword 'GRAPH' must start a named graph") ;
                     // [] :p ...
-                    predicateObjectList(blank) ;
-                    expectEndOfTriplesTurtle() ;
+                    turtle(blank) ;
                     return ;
                 }
             } else {
+                // [ :p ... ]
+                // [ :p ... ] :p ...
                 // XXX This fragment must be in Turtle somewhere
+                if ( mustBeNamedGraph )
+                    exception(t, "Keyword 'GRAPH' must start a named graph") ;
                 triplesBlankNode(blank) ;
-
+                // Following predicate.
                 if ( peekPredicate() )
                     predicateObjectList(blank) ;
 
@@ -109,15 +117,14 @@ public class LangTriG extends LangTurtleBase {
             if ( lookingAt(LBRACE) )
                 graphNode = n ;
             else {
-                // [ :p .... ] :q
-                // In LangTurtle?
-                predicateObjectList(n) ;
-                expectEndOfTriplesTurtle() ;
+                if ( mustBeNamedGraph )
+                    exception(t, "Keyword 'GRAPH' must start a named graph") ;
+                turtle(n) ;
                 return ;
             }
         } else if ( lookingAt(LPAREN) ) {
             // Turtle - list
-            triplesSameSubject() ;
+            turtle() ;
             return ;
         }
 
@@ -126,6 +133,16 @@ public class LangTriG extends LangTurtleBase {
 
         // braced graph
         bracedGraph(t, graphNode) ;
+    }
+
+    protected final void turtle(Node n) {
+        predicateObjectList(n) ;
+        expectEndOfTriplesTurtle() ;
+    }
+    
+    protected final void turtle() {
+        // This does expectEndOfTriplesTurtle() ;
+        triplesSameSubject() ;
     }
 
     protected final void oneNamedGraphBlock() {
