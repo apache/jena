@@ -18,21 +18,19 @@
 
 package org.apache.jena.riot.lang ;
 
-import static org.apache.jena.riot.tokens.TokenType.DOT ;
-import static org.apache.jena.riot.tokens.TokenType.RBRACE ;
+import static org.apache.jena.riot.tokens.TokenType.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
-import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** TriG language: http://www.w3.org/TR/trig/ */
-public class LangTriG extends LangTurtleBase<Quad> {
+public class LangTriG extends LangTurtleBase {
 
     public LangTriG(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
         super(tokens, profile, dest) ;
@@ -46,6 +44,88 @@ public class LangTriG extends LangTurtleBase<Quad> {
     @Override
     protected final void oneTopLevelElement() {
         oneNamedGraphBlock() ;
+        //oneNamedGraphBlock2() ;
+    }
+
+    // Version for proposed Turtle-in-TriG and keyword GRAPH
+    protected final void oneNamedGraphBlock2() {
+        // Which may not be a graph block.
+        Node graphNode = null ;
+        Token token = peekToken() ;
+        Token t = token ; // Keep for error message.
+        boolean mustBeNamedGraph = false ;
+
+        if ( lookingAt(KEYWORD) ) {
+            if ( token.getImage().equalsIgnoreCase("GRAPH") ) {
+                nextToken() ;
+                mustBeNamedGraph = true ;
+                token = peekToken() ;
+            } else
+                exception(t, "Keyword '" + token.getImage() + "' not allowed here") ;
+        }
+        // GRAPH dealt with.
+        // Starting points:
+        // [ ] { .... }
+        // :g { ... }
+        // :s :p :o .
+        // [ ] :p :o .
+        // [ :p 123 ] :p :o .
+        // () :p :o .
+        // (1 2) :p :o .
+
+        // XXX Find the Turtle code to do this for the Trutle case and refactor.
+        
+        if ( lookingAt(LBRACKET) ) {
+            nextToken() ;
+            token = peekToken() ;
+            Node blank = profile.createBlankNode(graphNode, t.getLine(), t.getColumn()) ;
+            if ( lookingAt(RBRACKET) ) {
+                // Can be [] :predicate or [] {
+                nextToken() ;
+                if ( lookingAt(LBRACE) )
+                    graphNode = blank ;
+                else {
+                    // [] :p ...
+                    predicateObjectList(blank) ;
+                    expectEndOfTriplesTurtle() ;
+                    return ;
+                }
+            } else {
+                // XXX This fragment must be in Turtle somewhere
+                triplesBlankNode(blank) ;
+
+                if ( peekPredicate() )
+                    predicateObjectList(blank) ;
+
+                expectEndOfTriplesTurtle() ;
+                return ;
+            }
+
+        } else if ( token.isNode() ) {
+            // Either :s :p :o or :g { ... }
+            Node n = node() ;
+            nextToken() ;
+            token = peekToken() ;
+            if ( lookingAt(LBRACE) )
+                graphNode = n ;
+            else {
+                // [ :p .... ] :q
+                // In LangTurtle?
+                predicateObjectList(n) ;
+                expectEndOfTriplesTurtle() ;
+                return ;
+            }
+        } else if ( lookingAt(LPAREN) ) {
+            // Turtle - list
+            triplesSameSubject() ;
+            return ;
+        }
+
+        if ( mustBeNamedGraph && graphNode == null )
+            exception(t, "Keyword 'GRAPH' must be followed by a graph name") ;
+
+        // braced graph
+        bracedGraph(t, graphNode) ;
     }
 
     protected final void oneNamedGraphBlock() {
@@ -55,10 +135,10 @@ public class LangTriG extends LangTurtleBase<Quad> {
         Token t = token ; // Keep for error message.
 
         // [ ] { ... }
-        if ( token.getType() == TokenType.LBRACKET ) {
+        if ( lookingAt(LBRACKET) ) {
             nextToken() ;
             token = peekToken() ;
-            if ( token.getType() != TokenType.RBRACKET )
+            if ( lookingAt(RBRACKET) )
                 exception(t, "Broken term: [ not followed by ]") ;
 
             graphNode = profile.createBlankNode(graphNode, t.getLine(), t.getColumn()) ;
@@ -72,6 +152,10 @@ public class LangTriG extends LangTurtleBase<Quad> {
             }
         }
 
+        bracedGraph(t, graphNode) ;
+    }
+
+    private void bracedGraph(Token t, Node graphNode) {
         if ( graphNode != null ) {
             if ( graphNode.isURI() || graphNode.isBlank() )
                 setCurrentGraph(graphNode) ;
@@ -80,10 +164,10 @@ public class LangTriG extends LangTurtleBase<Quad> {
         } else
             setCurrentGraph(Quad.tripleInQuad) ;
 
-        token = peekToken() ;
+        Token token = peekToken() ;
 
         // = is optional and old style.
-        if ( token.getType() == TokenType.EQUALS ) {
+        if ( lookingAt(EQUALS) ) {
             if ( profile.isStrictMode() )
                 exception(token, "Use of = {} is not part of standard TriG: " + graphNode) ;
             // Skip.
@@ -91,7 +175,7 @@ public class LangTriG extends LangTurtleBase<Quad> {
             token = peekToken() ;
         }
 
-        if ( token.getType() != TokenType.LBRACE )
+        if ( !lookingAt(LBRACE) )
             exception(token, "Expected start of graph: got %s", peekToken()) ;
         nextToken() ;
 
@@ -99,30 +183,36 @@ public class LangTriG extends LangTurtleBase<Quad> {
 
         while (true) {
             token = peekToken() ;
-            if ( token.hasType(TokenType.RBRACE) )
+            
+            if ( lookingAt(RBRACE) )
                 break ;
-            // Unlike many operations in this parser suite
+            // Unlike many operations in this parser suite,
             // this does not assume that we are definitely entering
-            // this state throws an error if the first token
+            // this state and can throw an error if the first token
+            // is not acceptable.
             triplesSameSubject() ;
         }
 
         // **** Turtle.
         token = nextToken() ;
-        if ( token.getType() != TokenType.RBRACE )
+        if ( lookingAt(RBRACE) )
             exception(token, "Expected end of graph: got %s", token) ;
 
-        // Skip DOT
-        token = peekToken() ;
-        if ( token.hasType(TokenType.DOT) )
-            nextToken() ;
-
+        if ( !profile.isStrictMode() ) {
+            // Skip DOT after {}
+            token = peekToken() ;
+            if ( lookingAt(DOT) )
+                nextToken() ;
+        }
         // End graph block.
         setCurrentGraph(Quad.tripleInQuad) ;
     }
 
+    
     @Override
-    protected void expectEndOfTriples() {
+    protected void expectEndOfTriples() { expectEndOfTriplesBraceGraph() ; }
+        
+    protected void expectEndOfTriplesBraceGraph() {
         // The DOT is required by Turtle (strictly).
         // It is not in N3 and SPARQL or TriG
 
