@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.lang ;
 
 import static org.apache.jena.riot.tokens.TokenType.COMMA ;
 import static org.apache.jena.riot.tokens.TokenType.DIRECTIVE ;
@@ -45,123 +45,113 @@ import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 
 /** The main engine for all things Turtle-ish (Turtle, TriG). */
-public abstract class LangTurtleBase<X> extends LangBase
-{
+public abstract class LangTurtleBase extends LangBase {
     // See http://www.w3.org/TR/turtle/
     // Some predicates (if accepted)
-    protected final static String KW_A              = "a" ;
-    protected final static String KW_SAME_AS        = "=" ;
-    protected final static String KW_LOG_IMPLIES    = "=>" ;
-    protected final static String KW_TRUE           = "true" ;
-    protected final static String KW_FALSE          = "false" ;
-    
-    protected final static boolean VERBOSE          = false ;
-    //protected final static boolean CHECKING         = true ;
+    protected final static String  KW_A           = "a" ;
+    protected final static String  KW_SAME_AS     = "=" ;
+    protected final static String  KW_LOG_IMPLIES = "=>" ;
+    protected final static String  KW_TRUE        = "true" ;
+    protected final static String  KW_FALSE       = "false" ;
+
+    protected final static boolean VERBOSE        = false ;
+    // protected final static boolean CHECKING = true ;
     // Current graph - null for default graph
-    private Node currentGraph = null ;
-    
-    public final Node getCurrentGraph()
-    {
+    private Node                   currentGraph   = null ;
+
+    public final Node getCurrentGraph() {
         return currentGraph ;
     }
 
-    public final void setCurrentGraph(Node graph)
-    {
+    public final void setCurrentGraph(Node graph) {
         this.currentGraph = graph ;
     }
 
-    protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest)
-    { 
+    protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
         super(tokens, profile, dest) ;
     }
-    
+
     @Override
-    protected final void runParser()
-    {
-        while(moreTokens())
-        {
+    protected final void runParser() {
+        while (moreTokens()) {
             Token t = peekToken() ;
-            if ( lookingAt(DIRECTIVE) )
-            {
-                directive() ;       // @form.
-                continue ;
-            }
-            
-            if ( lookingAt(KEYWORD) )
-            {
-                toplevelkeyword() ;
+            if ( lookingAt(DIRECTIVE) ) {
+                directive() ; // @form.
                 continue ;
             }
 
+            if ( lookingAt(KEYWORD) ) {
+                if ( t.getImage().equalsIgnoreCase("PREFIX") || t.getImage().equalsIgnoreCase("BASE") ) {
+                    directiveKeyword() ;
+                    continue ;
+                }
+            }
+
             oneTopLevelElement() ;
-            
+
             if ( lookingAt(EOF) )
                 break ;
         }
     }
-    
+
     // Do one top level item for the language.
     protected abstract void oneTopLevelElement() ;
 
-    /** Emit a triple - nodes have been checked as has legality of node type in location */
+    /**
+     * Emit a triple - nodes have been checked as has legality of node type in
+     * location
+     */
     protected abstract void emit(Node subject, Node predicate, Node object) ;
 
-    protected final void toplevelkeyword()
-    {
-        Token t = peekToken() ; 
+    protected final void directiveKeyword() {
+        Token t = peekToken() ;
         String x = t.getImage() ;
         nextToken() ;
-        
-        if ( x.equalsIgnoreCase("BASE") )
-        {
+
+        if ( x.equalsIgnoreCase("BASE") ) {
             directiveBase() ;
             return ;
         }
-        
-        if ( x.equalsIgnoreCase("PREFIX") )
-        {
+
+        if ( x.equalsIgnoreCase("PREFIX") ) {
             directivePrefix() ;
             return ;
         }
-        exception(t, "Unrecognized keyword: %s", x) ; 
+        exception(t, "Unrecognized keyword for directive: %s", x) ;
     }
-    
-    protected final void directive()
-    {
+
+    protected final void directive() {
         // It's a directive ...
-        Token t = peekToken() ; 
+        Token t = peekToken() ;
         String x = t.getImage() ;
         nextToken() ;
-        
-        if ( x.equals("base") )
-        {
+
+        if ( x.equals("base") ) {
             directiveBase() ;
             skipIf(DOT) ;
-            //expect("Base directive not terminated by a dot", DOT) ;
+            // expect("Base directive not terminated by a dot", DOT) ;
             return ;
         }
-        
-        if ( x.equals("prefix") )
-        {
+
+        if ( x.equals("prefix") ) {
             directivePrefix() ;
             skipIf(DOT) ;
-            //expect("Prefix directive not terminated by a dot", DOT) ;
+            // expect("Prefix directive not terminated by a dot", DOT) ;
             return ;
         }
         exception(t, "Unrecognized directive: %s", x) ;
     }
-    
-    protected final void directivePrefix()
-    {
+
+    protected final void directivePrefix() {
         // Raw - unresolved prefix name.
-        if ( ! lookingAt(PREFIXED_NAME) )
-            exception(peekToken(), "@prefix requires a prefix (found '"+peekToken()+"')") ;
+        if ( !lookingAt(PREFIXED_NAME) )
+            exception(peekToken(), "@prefix requires a prefix (found '" + peekToken() + "')") ;
         if ( peekToken().getImage2().length() != 0 )
-            exception(peekToken(), "@prefix requires a prefix and no suffix (found '"+peekToken()+"')") ;
+            exception(peekToken(), "@prefix requires a prefix and no suffix (found '" + peekToken() + "')") ;
         String prefix = peekToken().getImage() ;
         nextToken() ;
-        if ( ! lookingAt(IRI) )
-            exception(peekToken(), "@prefix requires an IRI (found '"+peekToken()+"')") ;
+        if ( !lookingAt(IRI) )
+            exception(peekToken(), "@prefix requires an IRI (found '" + peekToken() + "')") ;
         String iriStr = peekToken().getImage() ;
         dest.prefix(prefix, iriStr) ;
         IRI iri = profile.makeIRI(iriStr, currLine, currCol) ;
@@ -170,11 +160,10 @@ public abstract class LangTurtleBase<X> extends LangBase
         nextToken() ;
     }
 
-    protected final void directiveBase()
-    {
+    protected final void directiveBase() {
         Token token = peekToken() ;
-        if ( ! lookingAt(IRI) )
-            exception(token, "@base requires an IRI (found '"+token+"')") ;
+        if ( !lookingAt(IRI) )
+            exception(token, "@base requires an IRI (found '" + token + "')") ;
 
         String baseStr = token.getImage() ;
         dest.base(baseStr) ;
@@ -184,61 +173,55 @@ public abstract class LangTurtleBase<X> extends LangBase
         profile.getPrologue().setBaseURI(baseIRI) ;
     }
 
-    // Unlike many operations in this parser suite 
+    // Unlike many operations in this parser suite
     // this does not assume that we have definitely
-    // entering this state.  It does checks and may 
+    // entering this state. It does checks and may
     // signal a parse exception.
 
-    protected final void triplesSameSubject()
-    {
-        // Either a IRI/prefixed name or a construct that generates triples  
-        
-        // TriplesSameSubject -> Term PropertyListNotEmpty 
-        if ( lookingAt(NODE) )
-        {
+    protected final void triplesSameSubject() {
+        // Either a IRI/prefixed name or a construct that generates triples
+
+        // TriplesSameSubject -> Term PropertyListNotEmpty
+        if ( lookingAt(NODE) ) {
             triples() ;
             return ;
         }
-        
+
         // TriplesSameSubject -> TriplesNode PropertyList?
-        if ( peekTriplesNodeCompound() )
-        {
+        if ( peekTriplesNodeCompound() ) {
             Node n = triplesNodeCompound() ;
 
-            // May be followed by: 
-            //   A predicateObject list
-            //   A DOT or EOF.
+            // May be followed by:
+            // A predicateObject list
+            // A DOT or EOF.
             // But if a DOT or EOF, then it can't have been () or [].
-            
-            // Turtle, as spec'ed does not allow 
+
+            // Turtle, as spec'ed does not allow
             // (1 2 3 4) .
             // There must be a predicate and object.
-            
+
             // -- If strict turtle.
-            if ( false )
-            {
-                if ( peekPredicate() )
-                {
+            if ( false ) {
+                if ( peekPredicate() ) {
                     predicateObjectList(n) ;
                     expectEndOfTriples() ;
                     return ;
                 }
-                exception(peekToken(), "Prediate/object required after (...) and [...] - Unexpected token : %s", peekToken()) ;
+                exception(peekToken(), "Predicate/object required after (...) and [...] - Unexpected token : %s",
+                          peekToken()) ;
             }
             // ---
             // If we allow top-level lists and [...].
             // Should check if () and [].
-            
+
             if ( lookingAt(EOF) )
                 return ;
-            if ( lookingAt(DOT) )
-            {
+            if ( lookingAt(DOT) ) {
                 nextToken() ;
                 return ;
             }
 
-            if ( peekPredicate() )
-            {
+            if ( peekPredicate() ) {
                 predicateObjectList(n) ;
                 expectEndOfTriples() ;
                 return ;
@@ -248,58 +231,65 @@ public abstract class LangTurtleBase<X> extends LangBase
         exception(peekToken(), "Out of place: %s", peekToken()) ;
     }
 
-    // Must be at least one triple. 
-    protected final void triples()
-    {
+    // Must be at least one triple.
+    protected final void triples() {
         // Looking at a node.
         Node subject = node() ;
         if ( subject == null )
             exception(peekToken(), "Not recognized: expected node: %s", peekToken().text()) ;
-        
+
         nextToken() ;
         predicateObjectList(subject) ;
         expectEndOfTriples() ;
     }
 
-    // Differs between Trutle and TriG.
+    // XXX Sort out.
+    // Move top level loop into LangTriG and LangTurtle. 
+    // Differs between Turtle and TriG.
     protected abstract void expectEndOfTriples() ;
-
-    protected final void predicateObjectList(Node subject)
-    {
+    
+    // The DOT is required by Turtle (strictly).
+    // It is not in N3 and SPARQL.
+    
+    protected void expectEndOfTriplesTurtle() {
+        if ( profile.isStrictMode() )
+            expect("Triples not terminated by DOT", DOT) ;
+        else
+            expectOrEOF("Triples not terminated by DOT", DOT) ;
+    }
+        
+    protected final void predicateObjectList(Node subject) {
         predicateObjectItem(subject) ;
 
-        for(;;)
-        {
-            if ( ! lookingAt(SEMICOLON) )
+        for (;;) {
+            if ( !lookingAt(SEMICOLON) )
                 break ;
             // predicatelist continues - move over all ";"
-            while ( lookingAt(SEMICOLON) )
+            while (lookingAt(SEMICOLON))
                 nextToken() ;
-            if ( ! peekPredicate() )
-                // Trailing (pointless) SEMICOLONs, no following predicate/object list.
+            if ( !peekPredicate() )
+                // Trailing (pointless) SEMICOLONs, no following
+                // predicate/object list.
                 break ;
             predicateObjectItem(subject) ;
         }
     }
 
-    protected final void predicateObjectItem(Node subject)
-    {
+    protected final void predicateObjectItem(Node subject) {
         Node predicate = predicate() ;
         nextToken() ;
         objectList(subject, predicate) ;
     }
-    
-    static protected final Node nodeSameAs = OWL.sameAs.asNode() ; 
+
+    static protected final Node nodeSameAs     = OWL.sameAs.asNode() ;
     static protected final Node nodeLogImplies = NodeFactory.createURI("http://www.w3.org/2000/10/swap/log#implies") ;
-    
+
     /** Get predicate - maybe null for "illegal" */
-    protected final Node predicate()
-    {
+    protected final Node predicate() {
         Token t = peekToken() ;
-        
-        if ( t.hasType(TokenType.KEYWORD) )
-        {
-            boolean strict =  profile.isStrictMode() ;
+
+        if ( t.hasType(TokenType.KEYWORD) ) {
+            boolean strict = profile.isStrictMode() ;
             Token tErr = peekToken() ;
             String image = peekToken().getImage() ;
             if ( image.equals(KW_A) )
@@ -308,80 +298,72 @@ public abstract class LangTurtleBase<X> extends LangBase
                 return nodeSameAs ;
             if ( !strict && image.equals(KW_LOG_IMPLIES) )
                 return NodeConst.nodeRDFType ;
-            exception(tErr, "Unrecognized: "+image) ;
+            exception(tErr, "Unrecognized: " + image) ;
         }
-        
+
         Node n = node() ;
-        if ( n == null || ! n.isURI() )
-            exception(t, "Expected IRI for predicate: got: %s", t) ; 
-        return n ; 
+        if ( n == null || !n.isURI() )
+            exception(t, "Expected IRI for predicate: got: %s", t) ;
+        return n ;
     }
 
     /** Check raw token to see if it might be a predciate */
-    protected final boolean peekPredicate()
-    {
-        if ( lookingAt(TokenType.KEYWORD) )
-        {
+    protected final boolean peekPredicate() {
+        if ( lookingAt(TokenType.KEYWORD) ) {
             String image = peekToken().getImage() ;
-            boolean strict =  profile.isStrictMode() ;
+            boolean strict = profile.isStrictMode() ;
             if ( image.equals(KW_A) )
                 return true ;
             if ( !strict && image.equals(KW_SAME_AS) )
                 return true ;
             if ( !strict && image.equals(KW_LOG_IMPLIES) )
                 return true ;
-            return false ; 
+            return false ;
         }
-//        if ( lookingAt(NODE) )
-//            return true ; 
+        // if ( lookingAt(NODE) )
+        // return true ;
         if ( lookingAt(TokenType.IRI) )
             return true ;
         if ( lookingAt(TokenType.PREFIXED_NAME) )
             return true ;
         return false ;
     }
-    
+
     /** Maybe "null" for not-a-node. */
-    protected final Node node()
-    {
+    protected final Node node() {
         // Token to Node
         Node n = tokenAsNode(peekToken()) ;
         if ( n == null )
             return null ;
         return n ;
     }
-    
-    protected final void objectList(Node subject, Node predicate)
-    {
-        for(;;)
-        {
+
+    protected final void objectList(Node subject, Node predicate) {
+        for (;;) {
             Node object = triplesNode() ;
             checkEmitTriple(subject, predicate, object) ;
 
-            if ( ! moreTokens() )
+            if ( !moreTokens() )
                 break ;
-            if ( ! lookingAt(COMMA) )
+            if ( !lookingAt(COMMA) )
                 break ;
             // list continues - move over the ","
             nextToken() ;
         }
     }
 
-    // A structure of triples that itself generates a node.  
-    // Special checks for [] and (). 
-    
-    protected final Node triplesNode()
-    {
-        if ( lookingAt(NODE) )
-        {
+    // A structure of triples that itself generates a node.
+    // Special checks for [] and ().
+
+    protected final Node triplesNode() {
+        if ( lookingAt(NODE) ) {
             Node n = node() ;
             nextToken() ;
-            return n ; 
+            return n ;
         }
 
         // Special words.
-        if ( lookingAt(TokenType.KEYWORD) )
-        {
+        if ( lookingAt(TokenType.KEYWORD) ) {
             Token tErr = peekToken() ;
             // Location independent node words
             String image = peekToken().getImage() ;
@@ -391,16 +373,15 @@ public abstract class LangTurtleBase<X> extends LangBase
             if ( image.equals(KW_FALSE) )
                 return NodeConst.nodeFalse ;
             if ( image.equals(KW_A) )
-                exception(tErr, "Keyword 'a' not legal at this point") ; 
+                exception(tErr, "Keyword 'a' not legal at this point") ;
 
-            exception(tErr, "Unrecognized keyword: "+image) ; 
+            exception(tErr, "Unrecognized keyword: " + image) ;
         }
-        
+
         return triplesNodeCompound() ;
     }
-        
-    protected final boolean peekTriplesNodeCompound()
-    {
+
+    protected final boolean peekTriplesNodeCompound() {
         if ( lookingAt(LBRACKET) )
             return true ;
         if ( lookingAt(LBRACE) )
@@ -409,64 +390,60 @@ public abstract class LangTurtleBase<X> extends LangBase
             return true ;
         return false ;
     }
-    
-    protected final Node triplesNodeCompound()
-    {
+
+    protected final Node triplesNodeCompound() {
         if ( lookingAt(LBRACKET) )
             return triplesBlankNode() ;
         if ( lookingAt(LBRACE) )
             return triplesFormula() ;
         if ( lookingAt(LPAREN) )
             return triplesList() ;
-        exception(peekToken(), "Unrecognized: "+peekToken()) ;
+        exception(peekToken(), "Unrecognized: " + peekToken()) ;
         return null ;
     }
-    
-    protected final Node triplesBlankNode()
-    {
-        Token t = nextToken() ;        // Skip [
-        Node subject =  profile.createBlankNode(currentGraph, t.getLine(), t.getColumn()) ;
 
-        if ( peekPredicate() )
-            predicateObjectList(subject) ;
-
-        expect("Triples not terminated properly in []-list", RBRACKET) ;
-        // Exit: after the ]
+    protected final Node triplesBlankNode() {
+        Token t = nextToken() ; // Skip [
+        Node subject = profile.createBlankNode(currentGraph, t.getLine(), t.getColumn()) ;
+        triplesBlankNode(subject) ;
         return subject ;
     }
-    
-    protected final Node triplesFormula()
-    {
+
+    protected final void triplesBlankNode(Node subject) {
+        if ( peekPredicate() )
+            predicateObjectList(subject) ;
+        expect("Triples not terminated properly in []-list", RBRACKET) ;
+        // Exit: after the ]
+    }
+
+    protected final Node triplesFormula() {
         exception(peekToken(), "Not implemented") ;
         return null ;
     }
-    
-    protected final Node triplesList()
-    {
+
+    protected final Node triplesList() {
         nextToken() ;
         Node lastCell = null ;
         Node listHead = null ;
-        
+
         startList() ;
-        
-        for ( ;; )
-        {
+
+        for (;;) {
             Token errorToken = peekToken() ;
             if ( eof() )
-                exception (peekToken(), "Unterminated list") ;
-            
-            if ( lookingAt(RPAREN) ) 
-            {
-                nextToken(); 
+                exception(peekToken(), "Unterminated list") ;
+
+            if ( lookingAt(RPAREN) ) {
+                nextToken() ;
                 break ;
             }
-            
+
             // The value.
             Node n = triplesNode() ;
-            
+
             if ( n == null )
                 exception(errorToken, "Malformed list") ;
-            
+
             // Node for the list structre.
             Node nextCell = NodeFactory.createAnon() ;
             if ( listHead == null )
@@ -474,18 +451,18 @@ public abstract class LangTurtleBase<X> extends LangBase
             if ( lastCell != null )
                 checkEmitTriple(lastCell, NodeConst.nodeRest, nextCell) ;
             lastCell = nextCell ;
-            
+
             checkEmitTriple(nextCell, NodeConst.nodeFirst, n) ;
 
-            if ( ! moreTokens() )   // Error.
+            if ( !moreTokens() ) // Error.
                 break ;
         }
         // On exit, just after the RPARENS
-        
+
         if ( lastCell == null )
             // Simple ()
             return NodeConst.nodeNil ;
-        
+
         // Finish list.
         checkEmitTriple(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
 
@@ -493,21 +470,18 @@ public abstract class LangTurtleBase<X> extends LangBase
 
         return listHead ;
     }
-   
+
     // Signal start of a list
-    protected void finishList()     {}
+    protected void finishList() {}
 
     // Signal end of a list
-    protected void startList()      {}
-    
+    protected void startList() {}
 
-    protected final void checkEmitTriple(Node subject, Node predicate, Node object)
-    {
+    protected final void checkEmitTriple(Node subject, Node predicate, Node object) {
         emit(subject, predicate, object) ;
     }
 
-    protected final Node tokenAsNode(Token token) 
-    {
+    protected final Node tokenAsNode(Token token) {
         return profile.create(currentGraph, token) ;
     }
 }

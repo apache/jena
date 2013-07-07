@@ -16,9 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.lang ;
 
-import static org.apache.jena.riot.tokens.TokenType.DOT ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
@@ -27,40 +26,31 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+
 /** Turtle language */
-public class LangTurtle extends LangTurtleBase<Triple>
-{
-    public LangTurtle(Tokenizer tokens, 
-                      ParserProfile profile, 
-                      StreamRDF dest) 
-    {
+public class LangTurtle extends LangTurtleBase {
+    public LangTurtle(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
         super(tokens, profile, dest) ;
         setCurrentGraph(null) ;
     }
 
     @Override
-    public Lang getLang()   { return RDFLanguages.TURTLE ; }
-    
+    public Lang getLang() {
+        return RDFLanguages.TURTLE ;
+    }
+
     @Override
-    protected final void oneTopLevelElement()
-    {
+    protected final void oneTopLevelElement() {
         triplesSameSubject() ;
     }
-    
+
     @Override
-    protected void expectEndOfTriples()
-    {
-        // The DOT is required by Turtle (strictly).
-        // It is not in N3 and SPARQL.
-        if ( profile.isStrictMode() )
-            expect("Triples not terminated by DOT", DOT) ;
-        else
-            expectOrEOF("Triples not terminated by DOT", DOT) ;
+    protected void expectEndOfTriples() {
+        expectEndOfTriplesTurtle() ;
     }
-    
+
     @Override
-    protected void emit(Node subject, Node predicate, Node object)
-    {
+    protected void emit(Node subject, Node predicate, Node object) {
         Triple t = profile.createTriple(subject, predicate, object, currLine, currCol) ;
         dest.triple(t) ;
     }
