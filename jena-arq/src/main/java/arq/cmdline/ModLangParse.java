@@ -19,6 +19,8 @@
 package arq.cmdline;
 
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.IRIResolver ;
 import arq.cmd.CmdException ;
@@ -42,6 +44,8 @@ public class ModLangParse implements ArgModuleGeneral
     private ArgDecl argBase     = new ArgDecl(ArgDecl.HasValue, "base") ;
     
     private ArgDecl argRDFS     = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
+    
+    private ArgDecl argSyntax     = new ArgDecl(ArgDecl.HasValue, "syntax") ;
 
     private  String rdfsVocabFilename   = null ;
     private  Model  rdfsVocab           = null ;
@@ -53,12 +57,13 @@ public class ModLangParse implements ArgModuleGeneral
     private boolean bitbucket           = false ; 
     private boolean strict              = false ;
     private boolean validate            = false ;
+    private Lang lang                   = null ;
     
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
+    public void registerWith(CmdGeneral cmdLine) {
         cmdLine.getUsage().startCategory("Parser control") ;
         cmdLine.add(argSink,    "--sink",           "Parse but throw away output") ;
+        cmdLine.add(argSyntax,  "--syntax=NAME",    "Set syntax (otherwise syntax guessed from file extension)") ;
         cmdLine.add(argBase,    "--base=URI",       "Set the base URI (does not apply to N-triples and N-Quads)") ;
         cmdLine.add(argCheck,   "--check",          "Addition checking of RDF terms") ; // (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
         cmdLine.add(argStrict,  "--strict",         "Run with in strict mode") ;
@@ -72,99 +77,100 @@ public class ModLangParse implements ArgModuleGeneral
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        if ( cmdLine.contains(argValidate) )
-        {
+    public void processArgs(CmdArgModule cmdLine) {
+        if ( cmdLine.contains(argValidate) ) {
             validate = true ;
             strict = true ;
             explicitCheck = true ;
             bitbucket = true ;
         }
-        
+
+        if ( cmdLine.contains(argSyntax) ) {
+            String syntax = cmdLine.getValue(argSyntax) ;
+            Lang lang$ = RDFLanguages.nameToLang(syntax) ;
+            if ( lang$ == null )
+                throw new CmdException("Can not detemine the synatx from '" + syntax + "'") ;
+            this.lang = lang$ ;
+        }
+
         if ( cmdLine.contains(argCheck) )
             explicitCheck = true ;
-        
+
         if ( cmdLine.contains(argNoCheck) )
             explicitNoCheck = true ;
-        
+
         if ( cmdLine.contains(argStrict) )
             strict = true ;
 
         if ( cmdLine.contains(argSkip) )
-            skipOnBadTerm = true ; 
+            skipOnBadTerm = true ;
         if ( cmdLine.contains(argNoSkip) )
             skipOnBadTerm = false ;
-        
-        if ( cmdLine.contains(argBase) )
-        {
+
+        if ( cmdLine.contains(argBase) ) {
             baseIRI = cmdLine.getValue(argBase) ;
             IRI iri = IRIResolver.resolveIRI(baseIRI) ;
             if ( iri.hasViolation(false) )
-                throw new CmdException("Bad base IRI: "+baseIRI) ;
-            if ( ! iri.isAbsolute() )
-                throw new CmdException("Base IRI must be an absolute IRI: "+baseIRI) ;
+                throw new CmdException("Bad base IRI: " + baseIRI) ;
+            if ( !iri.isAbsolute() )
+                throw new CmdException("Base IRI must be an absolute IRI: " + baseIRI) ;
         }
-        
+
         if ( cmdLine.contains(argStop) )
             stopOnBadTerm = true ;
-        
+
         if ( cmdLine.contains(argSink) )
             bitbucket = true ;
-        
-        if ( cmdLine.contains(argRDFS) )
-        {
+
+        if ( cmdLine.contains(argRDFS) ) {
             try {
                 rdfsVocabFilename = cmdLine.getArg(argRDFS).getValue() ;
                 rdfsVocab = FileManager.get().loadModel(rdfsVocabFilename) ;
-            } 
-            catch (RiotException ex)
-            { throw new CmdException("Error in RDFS vocabulary: "+rdfsVocabFilename) ; }
-            catch (Exception ex)
-            { throw new CmdException("Error: "+ex.getMessage()) ; }
-            
+            } catch (RiotException ex) {
+                throw new CmdException("Error in RDFS vocabulary: " + rdfsVocabFilename) ;
+            } catch (Exception ex) {
+                throw new CmdException("Error: " + ex.getMessage()) ;
+            }
         }
     }
 
-    public boolean explicitChecking()
-    {
+    public boolean explicitChecking() {
         return explicitCheck ;
     }
 
-    public boolean explicitNoChecking()
-    {
+    public boolean explicitNoChecking() {
         return explicitNoCheck ;
     }
 
-    public boolean strictMode()
-    {
+    public boolean strictMode() {
         return strict ;
     }
 
-    public boolean validate()
-    {
+    public boolean validate() {
         return validate ;
     }
 
-    public boolean skipOnBadTerm()
-    {
+    public boolean skipOnBadTerm() {
         return skipOnBadTerm ;
     }
 
-    public boolean stopOnBadTerm()
-    {
+    public boolean stopOnBadTerm() {
         return stopOnBadTerm ;
     }
 
-    public boolean toBitBucket()
-    {
+    public boolean toBitBucket() {
         return bitbucket ;
     }
 
-    public String getBaseIRI()
-    {
+    public String getBaseIRI() {
         return baseIRI ;
     }
 
-    public Model getRDFSVocab()     { return rdfsVocab ; } 
+    public Model getRDFSVocab() {
+        return rdfsVocab ;
+    }
+
+    public Lang getLang() {
+        return lang ;
+    }
 }
