@@ -20,7 +20,10 @@ package org.apache.jena.riot.langsuite;
 
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
@@ -40,10 +43,22 @@ public class UnitTestSyntax extends LangTestCase
     @Override
     public void runTestForReal()
     {
+        if ( RDFLanguages.isTriples(lang) )
+            run3() ;
+        else
+            run4() ;
+    }
+
+    private void run3() {
         Model model = ModelFactory.createDefaultModel() ;
         RDFDataMgr.read(model, uri, uri, lang) ;
     }
-
+    
+    private void run4() {
+        Dataset ds = DatasetFactory.createMem() ;
+        RDFDataMgr.read(ds, uri, uri, lang) ;
+    }
+    
     @Override
     protected void _setUp()
     {}
