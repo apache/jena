@@ -22,10 +22,13 @@ import static org.apache.jena.riot.SysRIOT.fmtMessage ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
@@ -75,9 +78,28 @@ public class UnitTestBadSyntax extends LangTestCase
     @Override
     public void runTestForReal()
     {
+        if ( RDFLanguages.isTriples(lang) )
+            run3() ;
+        else
+            run4() ;
+    }
+    
+    private void run3() {
         Model model = ModelFactory.createDefaultModel() ;
         try {
             RDFDataMgr.read(model, uri, uri, lang) ;
+        } catch (RiotException ex) { return ; }
+        catch (RuntimeException ex) {
+            ex.printStackTrace(System.err) ;
+            fail("Unexpected exception") ;
+        }
+        fail("Bad syntax test succeed in parsing the file") ;
+    }
+    
+    private void run4() {
+        Dataset ds = DatasetFactory.createMem() ;
+        try {
+            RDFDataMgr.read(ds, uri, uri, lang) ;
         } catch (RiotException ex) { return ; }
         catch (RuntimeException ex) {
             ex.printStackTrace(System.err) ;

@@ -21,12 +21,15 @@ package org.apache.jena.riot.langsuite;
 
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.junit.After ;
 import org.junit.Before ;
 
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.JenaException ;
@@ -65,6 +68,15 @@ public class UnitTestBadEval extends LangTestCase
     @Override
     public void runTestForReal()
     {
+        if ( RDFLanguages.isTriples(lang) )
+            run3() ;
+        else
+            run4() ;
+    }
+
+    
+    private void run3()
+    {
         Model model = ModelFactory.createDefaultModel() ;
         try {
             RDFDataMgr.read(model, input) ;
@@ -77,4 +89,20 @@ public class UnitTestBadEval extends LangTestCase
             ex.printStackTrace(System.err) ;
             throw ex ; }
     }
+    
+    private void run4()
+    {
+        Dataset ds = DatasetFactory.createMem() ;
+        try {
+            RDFDataMgr.read(ds, input) ;
+            fail("Managed to read a bad evaluation test without error") ;
+        } 
+        catch (RiotException ex) {}
+        catch (JenaException ex) {}
+        catch (RuntimeException ex) 
+        { 
+            ex.printStackTrace(System.err) ;
+            throw ex ; }
+    }
+
 }

@@ -109,29 +109,6 @@ public class UnitTestEval extends LangTestCase
         return IsoMatcher.isomorphic(dsg1, dsg2) ;
     }
 
-//    private boolean isomorphicX(DatasetGraph dsg1, DatasetGraph dsg2) {
-//        {
-//            Graph g1 = dsg1.getDefaultGraph() ;
-//            Graph g2 = dsg2.getDefaultGraph() ;
-//            boolean b = g1.isIsomorphicWith(g2) ;
-//            if ( !b ) return false ;
-//        }
-//        List<Node> names1 = Iter.toList(dsg1.listGraphNodes()) ;
-//        List<Node> names2 = Iter.toList(dsg2.listGraphNodes()) ;
-//        if ( names1.size() != names2.size() )
-//            return false ;
-//        
-//        for ( Node gn : names1 ) {
-//            Graph g1 = dsg1.getGraph(gn) ;
-//            Graph g2 = dsg2.getGraph(gn) ;
-//            if ( g1 == null || g2 == null )
-//                return false ;
-//            boolean b = g1.isIsomorphicWith(g2) ;
-//            if ( !b ) return false ;
-//        }
-//        return true ;
-//    }
-    
     // Triples test.
     private void run3() {     
         Model model = ModelFactory.createDefaultModel() ;
@@ -152,20 +129,6 @@ public class UnitTestEval extends LangTestCase
 
             boolean b = model.isIsomorphicWith(results) ;
 
-//            try {
-//                boolean b1 = IsoMatcher.isomorphic(model.getGraph(), results.getGraph()) ;
-//                if ( b1 != b ) {
-//                    System.out.println("---- IsoMatcher mismatch");
-//                }
-//            } catch ( java.lang.StackOverflowError ex) {
-//                System.out.println("STACK") ;
-//                System.out.println("---- Parsed");
-//                model.write(System.out, "TTL") ;
-//                System.out.println("---- Expected");
-//                results.write(System.out, "TTL") ;
-//                System.out.println("--------");
-//            }
-            
             if ( !b )
             {
                 //model.isIsomorphicWith(results) ;
