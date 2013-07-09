@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text.assembler;
+package org.apache.jena.query.text.assembler ;
 
 import static org.apache.jena.query.text.assembler.TextVocab.pDirectory ;
 import static org.apache.jena.query.text.assembler.TextVocab.pEntityMap ;
@@ -41,8 +41,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
-public class TextIndexLuceneAssembler extends AssemblerBase
-{
+public class TextIndexLuceneAssembler extends AssemblerBase {
     /*
     <#index> a :TextIndexLucene ;
         #text:directory "mem" ;
@@ -51,37 +50,33 @@ public class TextIndexLuceneAssembler extends AssemblerBase
         .
     */
 
-    @SuppressWarnings("resource")
     @Override
-    public TextIndex open(Assembler a, Resource root, Mode mode)
-    {
-        try
-        {
-            if ( ! GraphUtils.exactlyOneProperty(root, pDirectory) )
-                throw new TextIndexException("No 'text:directory' property on "+root) ;
-            
+    public TextIndex open(Assembler a, Resource root, Mode mode) {
+        try {
+            if ( !GraphUtils.exactlyOneProperty(root, pDirectory) )
+                throw new TextIndexException("No 'text:directory' property on " + root) ;
+
             Directory directory ;
             RDFNode n = root.getProperty(pDirectory).getObject() ;
-            if ( n.isLiteral() )
-            {
-                if ( ! "mem".equals(n.asLiteral().getLexicalForm()) )
-                    throw new TextIndexException("No 'text:directory' property on "+root+ " is a literal and not \"mem\"") ;
-                 directory = new RAMDirectory() ;
-            }
-            else
-            { 
+            if ( n.isLiteral() ) {
+                if ( !"mem".equals(n.asLiteral().getLexicalForm()) )
+                    throw new TextIndexException("No 'text:directory' property on " + root
+                                                 + " is a literal and not \"mem\"") ;
+                directory = new RAMDirectory() ;
+            } else {
                 Resource x = n.asResource() ;
-                String path = IRILib.IRIToFilename(x.getURI()) ; 
-                File dir = new File(path) ; 
+                String path = IRILib.IRIToFilename(x.getURI()) ;
+                File dir = new File(path) ;
                 directory = FSDirectory.open(dir) ;
             }
-        
+
             Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
-            EntityDefinition docDef = (EntityDefinition)a.open(r) ; 
-            
+            EntityDefinition docDef = (EntityDefinition)a.open(r) ;
+
             return TextDatasetFactory.createLuceneIndex(directory, docDef) ;
-        } catch (IOException e) { IO.exception(e) ; return null ;}
+        } catch (IOException e) {
+            IO.exception(e) ;
+            return null ;
+        }
     }
-
 }
-
