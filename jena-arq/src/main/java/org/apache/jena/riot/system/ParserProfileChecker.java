@@ -35,7 +35,6 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 public class ParserProfileChecker extends ParserProfileBase //implements ParserProfile 
 {
     private boolean checkLiterals = true ;
-    private boolean resolveURIs = true ;
     
     public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler)
     {
