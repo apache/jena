@@ -175,10 +175,15 @@ public class T_TransSystemMultiDatasets
                     int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     pause(maxpause) ;
                     int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                    if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
-                                                  dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
-                    log.debug("reader finish " + id + "/" + i) ;
+                    // Eclispe Kepler (3.4) bug - otherwise the dsg.end() below 
+                    // gets a warning ("The variable dsg can only be null at this location")/
+                    // which is wrong.
+                    dsg.getClass() ;
+                    if ( x1 != x2 )
+                        log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d", dsg.getTransaction().getLabel(),
+                                        x1, x2, id, i)) ;
                     dsg.end() ;
+                    log.debug("reader finish " + id + "/" + i) ;
                     dsg = null ;
                 }
                 return null ;
