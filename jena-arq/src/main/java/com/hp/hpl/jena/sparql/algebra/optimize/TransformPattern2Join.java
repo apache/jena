@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import java.util.List ;
+
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
@@ -26,16 +28,28 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadPattern ;
 
-/** Expand BGPs to joins of triples. */ 
+/** Expand to joins of triples and quads. */ 
 public class TransformPattern2Join extends TransformCopy
 {
+    /*
+     * Get standard shaped trees?
+     * Alternative is hard flatteniing to (sequence of all the quads, triples) 
+     */
+    
     @Override
     public Op transform(OpBGP opBGP)                        { return expand(opBGP.getPattern()) ; }
     
     @Override
     public Op transform(OpQuadPattern quadPattern)          { return expand(quadPattern.getPattern()) ; }
 
-    public static Op expand(BasicPattern bgp)
+    @Override
+    public Op transform(OpSequence opSeq, List<Op> elts)    { return expand(opSeq, elts) ; }
+
+//    @Override
+//    public Op transform(OpJoin opJoin, Op left, Op right)
+//    { return super.transform(opJoin, left, right) ; }
+
+    private static Op expand(BasicPattern bgp)
     {
         if ( bgp.getList().isEmpty() )
             return OpTable.unit() ;
@@ -48,7 +62,7 @@ public class TransformPattern2Join extends TransformCopy
         return op ;
     }
     
-    public static Op expand(QuadPattern quads)
+    private static Op expand(QuadPattern quads)
     {
         if ( quads.getList().isEmpty() )
             return OpTable.unit() ;
@@ -61,8 +75,17 @@ public class TransformPattern2Join extends TransformCopy
         return op ;
     }
     
+    private static Op expand(OpSequence opSeq, List<Op> elts)
+    {
+        Op x = null ;
+        // shape choices.
+        for ( Op op : elts )
+            x = join(x, op) ;
+        return x ;
+    }
+
     private static Op join(Op left, Op right)
     {
       return OpJoin.createReduce(left, right) ;
-    }
+  }
 }
