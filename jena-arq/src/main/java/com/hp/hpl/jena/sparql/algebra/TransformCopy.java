@@ -41,6 +41,8 @@ public class TransformCopy implements Transform
     @Override
     public Op transform(OpQuadPattern opQuadPattern)                { return xform(opQuadPattern) ; }
     @Override
+    public Op transform(OpQuadBlock opQuadBlock)                    { return xform(opQuadBlock) ; }
+    @Override
     public Op transform(OpTriple opTriple)                          { return xform(opTriple) ; }
     @Override
     public Op transform(OpQuad opQuad)                              { return xform(opQuad) ; }

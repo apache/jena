@@ -52,6 +52,8 @@ public class TransformWrapper implements Transform
     public Op transform(OpDatasetNames dsNames)             { return transform.transform(dsNames) ; }
     @Override
     public Op transform(OpQuadPattern quadPattern)          { return transform.transform(quadPattern) ; }
+    @Override
+    public Op transform(OpQuadBlock quadBlock)              { return transform.transform(quadBlock) ; }
     
     @Override
     public Op transform(OpFilter opFilter, Op subOp)        { return transform.transform(opFilter, subOp) ; }

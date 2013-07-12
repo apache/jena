@@ -27,6 +27,8 @@ import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
+import com.hp.hpl.jena.sparql.util.Iso ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 
 /** A class whose purpose is to give a name to a collection of quads
@@ -53,26 +55,39 @@ public class QuadPattern implements Iterable<Quad>
     
     @Override
     public int hashCode() { return quads.hashCode() ; } 
+    
     @Override
-    public boolean equals(Object other)
-    { 
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof QuadPattern) ) 
+    public boolean equals(Object other) {
+        if ( this == other )
+            return true ;
+        if ( !(other instanceof QuadPattern) )
             return false ;
         QuadPattern bp = (QuadPattern)other ;
         return quads.equals(bp.quads) ;
     }
+
+    public boolean equiv(QuadPattern other, NodeIsomorphismMap isoMap) {
+        if ( this.quads.size() != other.quads.size() )
+            return false ;
+
+        for (int i = 0; i < this.quads.size(); i++) {
+            Quad q1 = get(i) ;
+            Quad q2 = other.get(i) ;
+
+            if ( !Iso.quadIso(q1, q2, isoMap) )
+                return false ;
+        }
+        return true ;
+    }
     
     @Override
-    public String toString()
-    { 
+    public String toString() {
         IndentedLineBuffer out = new IndentedLineBuffer() ;
-        
+
         SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
-        
+
         boolean first = true ;
-        for ( Quad quad : quads )
-        {
+        for (Quad quad : quads) {
             if ( !first )
                 out.print(" ") ;
             else
@@ -83,7 +98,7 @@ public class QuadPattern implements Iterable<Quad>
             WriterNode.outputPlain(out, quad, sCxt) ;
             out.print(")") ;
         }
-        out.flush();
+        out.flush() ;
         return out.toString() ;
     }
 }

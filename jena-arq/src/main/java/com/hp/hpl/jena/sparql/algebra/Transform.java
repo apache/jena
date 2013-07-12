@@ -32,6 +32,7 @@ public interface Transform
     public Op transform(OpPath opPath) ;
     public Op transform(OpDatasetNames dsNames) ;
     public Op transform(OpQuadPattern quadPattern) ;
+    public Op transform(OpQuadBlock quadBlock) ;
     public Op transform(OpNull opNull) ;
     
     // Op1

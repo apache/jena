@@ -44,6 +44,8 @@ public class TransformBase implements Transform
     public Op transform(OpDatasetNames dsNames)             { return dsNames ; }
     @Override
     public Op transform(OpQuadPattern quadPattern)          { return quadPattern ; }
+    @Override
+    public Op transform(OpQuadBlock quadBlock)              { return quadBlock ; }
     
     @Override
     public Op transform(OpFilter opFilter, Op subOp)        { return opFilter ; }
