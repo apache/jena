@@ -20,6 +20,8 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.* ;
 
+import org.apache.jena.atlas.lib.NotImplemented ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;
@@ -267,6 +269,13 @@ public class OpAsQuery
                 Element graphElt = new ElementNamedGraph(graphNode, e) ;
                 currentGroup().addElement(graphElt) ;
             }
+        }
+
+        @Override
+        public void visit(OpQuadBlock quadBlock)
+        {
+            // Gather into OpQuadPatterns.
+            throw new NotImplemented("OpQuadBlock") ;
         }
 
         @Override

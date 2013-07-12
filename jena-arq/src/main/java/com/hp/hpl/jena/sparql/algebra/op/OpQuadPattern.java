@@ -29,6 +29,11 @@ import com.hp.hpl.jena.sparql.core.QuadPattern ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
+/** The main Op used in converting SPARQL algebra to quad form.
+ * OpQuadPattern reflects the fact that quads come in per-GRAPH units. 
+ * {@linkplain OpQuadBlock} is for a general containers of quads
+ * without any contract on the quads sharing the same garph node.   
+ */
 public class OpQuadPattern extends Op0
 {
     public static boolean isQuadPattern(Op op)
@@ -42,12 +47,10 @@ public class OpQuadPattern extends Op0
     private QuadPattern quads = null ;
     
     // A QuadPattern is a block of quads with the same graph arg.
-    // i.e. a BasicGraphPattern.  This gets the blank node scoping right.
-    
-    // Quads are for a specific quad store.
-    
-    // Later, we may introduce OpQuadBlock for this and OpQuadPattern becomes
-    // a sequence of such blocks.
+    // i.e. a BasicGraphPattern.
+
+    // Match switch so OpQuadPattern is a 
+    // a sequence of OpQuadBlocks.
     
     public OpQuadPattern(Node quadNode, BasicPattern triples)
     { 

@@ -27,6 +27,8 @@ public class OpVisitorBase implements OpVisitor
     @Override public void visit(OpBGP opBGP)                    {}
 
     @Override public void visit(OpQuadPattern quadPattern)      {}
+ 
+    @Override public void visit(OpQuadBlock quadBlock)          {}
     
     @Override public void visit(OpTriple opTriple)              {}
  

@@ -101,7 +101,7 @@ public class BasicPattern implements Iterable<Triple>
     { 
         IndentedLineBuffer out = new IndentedLineBuffer() ;
         
-        SerializationContext sCxt = SSE.sCxt((SSE.defaultPrefixMapWrite)) ;
+        SerializationContext sCxt = SSE.sCxt(SSE.defaultPrefixMapWrite) ;
         
         boolean first = true ;
         for ( Triple t : triples )

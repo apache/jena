@@ -18,11 +18,7 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.* ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -30,44 +26,8 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Table ;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpConditional ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDiff ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDisjunction ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
-import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGroup ;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
-import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
-import com.hp.hpl.jena.sparql.algebra.op.OpList ;
-import com.hp.hpl.jena.sparql.algebra.op.OpMinus ;
-import com.hp.hpl.jena.sparql.algebra.op.OpN ;
-import com.hp.hpl.jena.sparql.algebra.op.OpNull ;
-import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
-import com.hp.hpl.jena.sparql.algebra.op.OpProcedure ;
-import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
-import com.hp.hpl.jena.sparql.algebra.op.OpPropFunc ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuad ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.algebra.op.OpReduced ;
-import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
-import com.hp.hpl.jena.sparql.algebra.op.OpService ;
-import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTopN ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTriple ;
-import com.hp.hpl.jena.sparql.algebra.op.OpUnion ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.TriplePath ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.core.* ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
@@ -106,6 +66,7 @@ public class BuilderOp
     {
         addBuild(Tags.tagBGP,           buildBGP) ;
         addBuild(Tags.tagQuadPattern,   buildQuadPattern) ;
+        addBuild(Tags.tagQuadBlock,     buildQuadBlock) ;
         addBuild(Tags.tagTriple,        buildTriple) ;
         addBuild(Tags.tagQuad,          buildQuad) ;
         addBuild(Tags.tagTriplePath,    buildTriplePath) ;
@@ -288,6 +249,28 @@ public class BuilderOp
             return op ;
         }
     } ;
+
+    final protected Build buildQuadBlock = new Build()
+    {
+        @Override
+        public Op make(ItemList list)
+        {
+            Node g = null ;
+            QuadPattern qp = new QuadPattern() ;
+            for ( int i = 1 ; i < list.size() ; i++ )
+            {
+                Item item = list.get(i) ;
+                if ( ! item.isList() )
+                    BuilderLib.broken(item, "Not a quad structure") ;
+                Quad q = BuilderGraph.buildQuad(item.getList()) ;
+                qp.add(q) ;
+            }
+            
+            OpQuadBlock op = new OpQuadBlock(qp) ;
+            return op ;
+        }
+    } ;
+
 
     final protected Build buildTriple = new Build(){
         @Override

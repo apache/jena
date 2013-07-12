@@ -167,26 +167,6 @@ public class WriterOp
         }
 
         @Override
-        public void visit(OpQuadPattern opQuadP)
-        { 
-            QuadPattern quads = opQuadP.getPattern() ;
-            if ( quads.size() == 1 )
-            {
-                start(opQuadP, NoNL) ;
-                formatQuad(quads.get(0)) ;
-                finish(opQuadP) ;
-                return ;
-            }
-            start(opQuadP, NL) ;
-            for ( Quad quad : quads )
-            {
-               formatQuad(quad) ;
-               out.println() ;
-            }
-            finish(opQuadP) ;
-        }
-        
-        @Override
         public void visit(OpBGP opBGP)
         {
             if ( opBGP.getPattern().size() == 1 )
@@ -200,6 +180,38 @@ public class WriterOp
             start(opBGP, NL) ;
             write(opBGP.getPattern(), false) ;
             finish(opBGP) ;
+        }
+
+        @Override
+        public void visit(OpQuadPattern opQuadP)
+        { 
+            QuadPattern quads = opQuadP.getPattern() ;
+            if ( quads.size() == 1 )
+            {
+                start(opQuadP, NoNL) ;
+                formatQuad(quads.get(0)) ;
+                finish(opQuadP) ;
+                return ;
+            }
+            start(opQuadP, NL) ;
+            write(quads, false) ;
+            finish(opQuadP) ;
+        }
+        
+        @Override
+        public void visit(OpQuadBlock opQuads)
+        { 
+            QuadPattern quads = opQuads.getPattern() ;
+            if ( quads.size() == 1 )
+            {
+                start(opQuads, NoNL) ;
+                formatQuad(quads.get(0)) ;
+                finish(opQuads) ;
+                return ;
+            }
+            start(opQuads, NL) ;
+            write(quads, false) ;
+            finish(opQuads) ;
         }
         
         private void write(BasicPattern pattern, boolean oneLine)
@@ -218,6 +230,20 @@ public class WriterOp
             }
         }
         
+        private void write(QuadPattern quads, boolean oneLine) {
+            boolean first = true ;
+            for ( Quad t : quads )
+            {
+               formatQuad(t) ;
+               if ( oneLine ) {
+                   if ( ! first ) out.print(" ") ;
+               }
+               else
+                   out.println() ;
+               first = false ;
+            }
+        }
+
         @Override
         public void visit(OpTriple opTriple)
         {

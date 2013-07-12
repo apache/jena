@@ -25,6 +25,7 @@ public interface OpVisitor
     // Op0
     public void visit(OpBGP opBGP) ;
     public void visit(OpQuadPattern quadPattern) ;
+    public void visit(OpQuadBlock quadBlock) ;
     public void visit(OpTriple opTriple) ;
     public void visit(OpQuad opQuad) ;
     public void visit(OpPath opPath) ;

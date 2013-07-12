@@ -58,6 +58,7 @@ public class Tags
     // SPARQL algebra
     public static final String tagBGP           = "bgp" ;
     public static final String tagQuadPattern   = "quadpattern" ;
+    public static final String tagQuadBlock     = "quadblock" ;
     public static final String tagFilter        = "filter" ;
     // public static final String tagGraph = "graph" ;
     public static final String tagLabel         = "label" ;

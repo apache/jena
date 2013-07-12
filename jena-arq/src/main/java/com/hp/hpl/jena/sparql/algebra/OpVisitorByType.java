@@ -50,6 +50,10 @@ public abstract class OpVisitorByType implements OpVisitor
     { visit0(quadPattern) ; }
 
     @Override
+    public void visit(OpQuadBlock quadBlock)
+    { visit0(quadBlock) ; }
+
+    @Override
     public void visit(OpTriple opTriple)
     { visit0(opTriple) ; }
     

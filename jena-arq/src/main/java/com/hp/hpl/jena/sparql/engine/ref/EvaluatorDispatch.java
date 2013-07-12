@@ -75,6 +75,13 @@ public class EvaluatorDispatch implements OpVisitor
     }
 
     @Override
+    public void visit(OpQuadBlock quadBlock)
+    {
+        push(eval(quadBlock.convertOp())) ;
+        //push(Eval.evalQuadPattern(quadBlock, evaluator)) ;
+    }
+
+    @Override
     public void visit(OpTriple opTriple)
     {
         visit(opTriple.asBGP()) ;

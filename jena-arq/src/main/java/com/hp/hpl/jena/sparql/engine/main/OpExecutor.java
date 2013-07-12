@@ -184,6 +184,11 @@ public class OpExecutor
         OpGraph op = new OpGraph(quadPattern.getGraphNode(), opBGP) ;
         return execute(op, input) ;
     }
+    
+    protected QueryIterator execute(OpQuadBlock quadBlock, QueryIterator input) {
+        Op op = quadBlock.convertOp() ;
+        return executeOp(op, input) ;
+    }
 
     protected QueryIterator execute(OpPath opPath, QueryIterator input) {
         return new QueryIterPath(opPath.getTriplePath(), input, execCxt) ;
