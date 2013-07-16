@@ -346,6 +346,18 @@ public class ARQ
      */  
     public static final Symbol optFilterDisjunction = ARQConstants.allocSymbol("optFilterDisjunction") ;
     
+    /**
+     * Context key controlling whether the standard optimizer applies optimizations to the evaluation
+     * of joins to favour index joins wherever possible
+     */
+    public static final Symbol optIndexJoinStrategy = ARQConstants.allocSymbol("optIndexJoinStrategy");
+    
+    /**
+     * Context key controlling whether the standard optimizater applies optimizations to joined BGPs to
+     * merge them into single BGPs
+     */
+    public static final Symbol optMergeBGPs = ARQConstants.allocSymbol("optMergeBGPs");
+    
     /** 
      *  Context key controlling whether the main query engine 
      *  
