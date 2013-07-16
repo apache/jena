@@ -210,9 +210,12 @@ public class Optimize implements Rewrite
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
         
         // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
-        op = apply("Join strategy", new TransformJoinStrategy(), op) ;
+        if ( context.isTrueOrUndef(ARQ.optIndexJoinStrategy) )
+            op = apply("Index Join strategy", new TransformJoinStrategy(), op) ;
         
-        op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
+        // Merge adjacent BGPs
+        if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
+            op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
         
         // Mark
         if ( false )
