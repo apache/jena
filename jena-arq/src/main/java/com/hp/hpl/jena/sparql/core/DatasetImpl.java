@@ -210,6 +210,8 @@ public class DatasetImpl implements Dataset
     @Override
     public void setDefaultModel(Model model)
     { 
+        if ( model == null )
+            model = ModelFactory.createDefaultModel() ;
         // Assumes single writer.
         removeFromCache(dsg.getDefaultGraph()) ;
         addToCache(model) ;
