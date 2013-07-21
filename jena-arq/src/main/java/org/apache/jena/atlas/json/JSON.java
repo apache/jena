@@ -18,16 +18,10 @@
 
 package org.apache.jena.atlas.json;
 
-import java.io.FileNotFoundException ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.OutputStream ;
-import java.io.Reader ;
-import java.io.StringReader ;
+import java.io.* ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.io.JSONMaker ;
 import org.apache.jena.atlas.json.io.JsonWriter ;
 import org.apache.jena.atlas.json.io.parser.JSONParser ;
@@ -70,8 +64,7 @@ public class JSON
         try
         {
             InputStream in = IO.openFileEx(filename) ;
-            PeekReader r = PeekReader.makeUTF8(in) ;
-            return _parse(r) ;
+            try { return JSON.parse(in) ; } finally { in.close() ; }
         }
         catch (FileNotFoundException ex)
         {
@@ -79,7 +72,8 @@ public class JSON
         }
         catch (IOException ex)
         {
-            throw new RuntimeException("IOException: "+filename, ex) ;
+            IO.exception("IOException: "+filename, ex);
+            return null ;
         }
     }
     
@@ -89,8 +83,7 @@ public class JSON
         try
         {
             InputStream in = IO.openFileEx(filename) ;
-            PeekReader r = PeekReader.makeUTF8(in) ;
-            return _parseAny(r) ;
+            try { return JSON.parseAny(in) ; } finally { in.close() ; }
         }
         catch (FileNotFoundException ex)
         {
@@ -98,7 +91,8 @@ public class JSON
         }
         catch (IOException ex)
         {
-            throw new RuntimeException("IOException: "+filename, ex) ;
+            IO.exception("IOException: "+filename, ex);
+            return null ;
         }
 
     }
