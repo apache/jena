@@ -601,7 +601,8 @@ public class RuleClauseCode {
             }
             if (builtin.getArgLength() != 0 && builtin.getArgLength() != fargs.length) {
                 throw new LPRuleSyntaxException("Wrong number of arguments to functor " + functor.getName() 
-                                                  + " expected " + functor.getArgLength(), rule);
+                                                  + " : got " + functor.getArgLength()
+                                                  + " : expected " + builtin.getArgLength(), rule);
             }
             for (int i = 0; i < fargs.length; i++) {
                 Node node = fargs[i];
