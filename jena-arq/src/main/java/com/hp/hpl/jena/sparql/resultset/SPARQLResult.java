@@ -76,7 +76,7 @@ public class SPARQLResult
         if ( ! hasBeenSet )
             throw new ResultSetException("Not set") ;
         if ( ! isResultSet() )
-            throw new ResultSetException("Not an ResultSet result") ;
+            throw new ResultSetException("Not a ResultSet result") ;
         return resultSet ;
     }
 
