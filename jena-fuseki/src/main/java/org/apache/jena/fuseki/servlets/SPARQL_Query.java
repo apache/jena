@@ -280,16 +280,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             //
             // If the timeout-first-row goes off, the output stream has not 
             // been started so the HTTP error code is sent. 
-            //
-            // This also forces the query to do something that should touch any underlying database,
-            // and hence ensure the communications layer is working.
-            // MySQL can time out after 8 hours of an idle connection
             
             rs.hasNext() ;
 
             // If we wanted perfect query time cancellation, we could consume the result now
             // to see if the timeout-end-of-query goes off.  
-            // Not necessary if we are inside a read transaction or lock until the end of sending results.
             
             //rs = ResultSetFactory.copyResults(rs) ;
 
