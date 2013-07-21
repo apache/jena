@@ -25,7 +25,6 @@ import java.util.Map ;
 import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.conneg.WebLib ;
 
 public class ResponseOps
 {
@@ -62,17 +61,17 @@ public class ResponseOps
         return expandShortName(x, map) ; 
     }
 
-    public static String paramAcceptField(HttpServletRequest request, Map<String,String> map)
-    {
-        String acceptField = WebLib.getAccept(request) ;
-        String acceptParam = fetchParam(request, HttpNames.paramAccept) ;
-        
-        if ( acceptParam != null )
-            acceptField = acceptParam ;
-        if ( acceptField == null )
-            return null ;
-        return expandShortName(acceptField, map) ; 
-    }
+//    public static String paramAcceptField(HttpServletRequest request, Map<String,String> map)
+//    {
+//        String acceptField = WebLib.getAccept(request) ;
+//        String acceptParam = fetchParam(request, HttpNames.paramAccept) ;
+//        
+//        if ( acceptParam != null )
+//            acceptField = acceptParam ;
+//        if ( acceptField == null )
+//            return null ;
+//        return expandShortName(acceptField, map) ; 
+//    }
 
     public static String expandShortName(String str, Map<String,String> map)
     {
