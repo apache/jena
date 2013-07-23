@@ -123,9 +123,19 @@ public class WebContent
         mapContentTypeToLang.put(contentTypeTriGAlt2,       RDFLanguages.TRIG) ;
     }
 
-    public static final String defaultGraphAcceptHeader     =  "application/n-triples,text/turtle;q=0.9,application/rdf+xml;q=0.8,application/xml;q=0.7,*/*;q=0.5" ; 
-    // Old :: "application/rdf+xml,application/xml;q=0.9,*/*;q=0.5" ;
+    /** Accept header part when looking for a graph */
+    private static final String defaultGraphAccept          =  "application/n-triples,text/turtle;q=0.9,application/rdf+xml;q=0.8,application/xml;q=0.7" ;
+    /** Accept header when looking for a graph */
+    public static final String defaultGraphAcceptHeader     =  defaultGraphAccept+",*/*;q=0.5" ; 
 
+    /** Accept header part when looking for a dataset */
+    public static final String defaultDatasetAccept         =  "application/n-quads,text/x-nquads;q=0.9;application/trig;q=0.8,application/x-trig;q=0.7" ;
+    /** Accept header when looking for a dataset */
+    public static final String defaultDatasetAcceptHeader   =  defaultDatasetAccept+",*/*;q=0.5" ;
+    
+    /** Accept header when looking for a graph or dataset */
+    public static final String defaultRDFAcceptHeader       =  defaultGraphAccept+","+defaultDatasetAccept+",*/*;q=0.5" ;
+    
     
     /** Return our "canonical" name for a Content Type.
      * This should be the standard one, no X-* 
