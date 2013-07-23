@@ -100,11 +100,17 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     @Override
     public Graph httpGet(Node graphName)              { return doGet(target(graphName)) ; }
     
+    /** Accept header for fetching graphs - prefer N-triples
+     * @See WebContent.defaultGraphAcceptHeader 
+     *  
+     */
+    private static String GetAcceptHeader = "application/n-triples,text/turtle;q=0.9,application/rdf+xml;q=0.8,application/xml;q=0.7" ;
+    
     private Graph doGet(String url)
     {
         HttpCaptureResponse<Graph> graph = HttpResponseLib.graphHandler() ;
         try {
-            HttpOp.execHttpGet(url, WebContent.defaultGraphAcceptHeader, graph, this.authenticator) ;
+            HttpOp.execHttpGet(url, GetAcceptHeader, graph, this.authenticator) ;
         } catch (HttpException ex) {
             if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
                 return null ;
