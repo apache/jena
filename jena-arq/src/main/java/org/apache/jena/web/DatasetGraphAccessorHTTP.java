@@ -127,10 +127,9 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 
     private boolean doHead(String url)
     {
-        // TODO Shouldn't this use HttpOp.execHttpHead() ?
         HttpUriRequest httpHead = new HttpHead(url) ;
         try {
-            HttpOp.execHttpGet(url, WebContent.defaultGraphAcceptHeader, noResponse, this.authenticator) ;
+            HttpOp.execHttpHead(url, WebContent.defaultGraphAcceptHeader, noResponse, null, null, this.authenticator) ;
             return true ;
         } catch (HttpException ex) {
             if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
