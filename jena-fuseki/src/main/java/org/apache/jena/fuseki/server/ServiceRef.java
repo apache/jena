@@ -22,11 +22,14 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 /** Configuration of an individual service */
-public class ServiceRef implements ServiceMXBean
+public class ServiceRef implements ServiceMXBean, Counters
 {
     public final String name ;
+    
     // Service-level counters.
-    public final CounterSet counters           = new CounterSet() ;
+    private final CounterSet counters           = new CounterSet() ;
+    @Override
+    public  CounterSet getCounters() { return counters ; }
 
     /** Endpoints (as absolute path URLs) */
     public List<String> endpoints               = new ArrayList<String>() ;

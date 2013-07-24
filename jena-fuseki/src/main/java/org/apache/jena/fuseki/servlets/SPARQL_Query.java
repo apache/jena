@@ -224,10 +224,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             queryStringLog = formatForLog(query) ;
             validateQuery(action, query) ;
         } catch (ActionErrorException ex) {
-            action.srvRef.counters.inc(RequestsBad) ;
+            incCounter(action.srvRef, RequestsBad) ;
             throw ex ;
         } catch (QueryParseException ex) {
-            action.srvRef.counters.inc(RequestsBad) ;
+            incCounter(action.srvRef, RequestsBad) ;
             errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
         }
         // Should not happen.
@@ -247,11 +247,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             sendResults(action, result, query.getPrologue()) ;
         } catch (QueryCancelledException ex) {
             // Additional counter information.
-            action.srvRef.counters.inc(QueryTimeouts) ; 
+            incCounter(action.srvRef, QueryTimeouts) ; 
             throw ex ; 
         } catch (QueryExecException ex) { 
             // Additional counter information.
-            action.srvRef.counters.inc(QueryExecErrors) ; 
+            incCounter(action.srvRef, QueryExecErrors) ; 
             throw ex ; 
         } finally { 
             if ( qExec != null )

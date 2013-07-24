@@ -245,11 +245,11 @@ public class SPARQL_Update extends SPARQL_Protocol
             action.commit() ;
         } catch (UpdateException ex) {
             action.abort() ;
-            action.srvRef.counters.inc(UpdateExecErrors) ;
+            incCounter(action.srvRef, UpdateExecErrors) ;
             errorBadRequest(ex.getMessage()) ;
         } catch (QueryParseException ex) {
             action.abort() ;
-            action.srvRef.counters.inc(UpdateExecErrors) ;
+            incCounter(action.srvRef, UpdateExecErrors) ;
             errorBadRequest(messageForQPE(ex)) ;
         } catch (Throwable ex) {
             if ( ! ( ex instanceof ActionErrorException ) )
