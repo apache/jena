@@ -99,7 +99,7 @@ public class Test_SPARQL_TDB extends BaseTest
     
     @Test public void sparql4()
     {
-        // Requires OpDatasetNames 
+        // OpDatasetNames 
         Dataset dataset = create() ;
         
         String graphName = "http://example/" ;
@@ -115,6 +115,36 @@ public class Test_SPARQL_TDB extends BaseTest
         assertEquals(1, n) ;
     }
     
+    @Test public void sparql5()
+    {
+        Dataset dataset = create() ;
+        
+        String graphName = "http://example/" ;
+        Triple triple = SSE.parseTriple("(<x> <y> 123)") ;
+        Graph g2 = dataset.asDatasetGraph().getGraph(NodeFactory.createURI(graphName)) ;
+        // Graphs only exists if they have a triple in them
+        g2.add(triple) ;
+        
+        Query query = QueryFactory.create("ASK { GRAPH <"+graphName+"> {} }") ;
+        boolean b = QueryExecutionFactory.create(query, dataset).execAsk() ;
+        assertEquals(true, b) ;
+    }
+    
+    @Test public void sparql6()
+    {
+        Dataset dataset = create() ;
+        
+        String graphName = "http://example/" ;
+        Triple triple = SSE.parseTriple("(<http://example/x> <http://example/y> 123)") ;
+        Graph g2 = dataset.asDatasetGraph().getGraph(NodeFactory.createURI(graphName)) ;
+        // Graphs only exists if they have a triple in them
+        g2.add(triple) ;
+        
+        Query query = QueryFactory.create("ASK { GRAPH <http://example/x> {} }") ;
+        boolean b = QueryExecutionFactory.create(query, dataset).execAsk() ;
+        assertEquals(false, b) ;
+    }
+
     // Test transactions effective.
     
     @Test public void sparql_txn_1()

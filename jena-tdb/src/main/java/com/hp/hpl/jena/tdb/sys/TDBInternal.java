@@ -49,13 +49,22 @@ public class TDBInternal
     public static NodeId getNodeId(DatasetGraph ds, Node node)
     {
         DatasetGraphTDB dsg = getDatasetGraphTDB(ds) ;
+        return getNodeId(dsg, node) ;
+    }
+    
+    /** Return the NodeId for a node.
+     * Returns NodeId.NodeDoesNotExist when the node is not found. 
+     * Returns null when not a TDB-backed dataset.
+     */
+    public static NodeId getNodeId(DatasetGraphTDB dsg, Node node)
+    {
         if ( dsg == null )
             return null ;
         NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         NodeId nodeId = nodeTable.getNodeIdForNode(node) ;
         return nodeId ;
     }
-    
+
     /** Return the node for a NodeId (if any).
      *  Returns null if the NodeId does not exist in the dataset. 
      */
@@ -70,6 +79,14 @@ public class TDBInternal
     public static Node getNode(DatasetGraph ds, NodeId nodeId)
     {
         DatasetGraphTDB dsg = getDatasetGraphTDB(ds) ;
+        return getNode(dsg, nodeId) ;
+    }
+
+    /** Return the node for a NodeId (if any).
+     *  Returns null if the NodeId does not exist in the dataset. 
+     */
+    public static Node getNode(DatasetGraphTDB dsg, NodeId nodeId)
+    {
         if ( dsg == null )
             return null ;
         NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
