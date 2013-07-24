@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -44,6 +45,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.TDBInternal ;
 
 /** Utilities used within the TDB BGP solver : local TDB store */
 public class SolverLib
@@ -278,35 +280,55 @@ public class SolverLib
             }
         } ;
     }
+    
+    /** Find whether a specific graph name is in the quads table. */
+    public static QueryIterator testForGraphName(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
+                                                 Filter<Tuple<NodeId>> filter, ExecutionContext execCxt) {
+        NodeId nid = TDBInternal.getNodeId(ds, graphNode) ;
+        boolean exists = !NodeId.isDoesNotExist(nid) ;
+        if ( exists ) {
+            // Node exists but is it used in the quad position?
+            NodeTupleTable ntt = ds.getQuadTable().getNodeTupleTable() ;
+            Iterator<Tuple<NodeId>> iter1 = ntt.find(nid, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
+            if ( filter != null )
+                iter1 = Iter.filter(iter1, filter) ;
+            exists = iter1.hasNext() ;
+        }
 
-    /** Find all the graph names in the quads table. */ 
-    public static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode,
-                                           QueryIterator input, Filter<Tuple<NodeId>> filter,
-                                           ExecutionContext execCxt)
-    {
+        if ( exists )
+            return input ;
+        else {
+            input.close() ;
+            return QueryIterNullIterator.create(execCxt) ;
+        }
+    }
+
+    /** Find all the graph names in the quads table. */
+    public static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
+                                           Filter<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         List<Abortable> killList = new ArrayList<Abortable>() ;
-        Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
+        Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny,
+                                                                                   NodeId.NodeIdAny, NodeId.NodeIdAny) ;
         if ( filter != null )
             iter1 = Iter.filter(iter1, filter) ;
-        
+
         Iterator<NodeId> iter2 = Tuple.project(0, iter1) ;
-        // Project is cheap - don't brother wrapping iter1 
+        // Project is cheap - don't brother wrapping iter1
         iter2 = makeAbortable(iter2, killList) ;
-        
+
         Iterator<NodeId> iter3 = Iter.distinct(iter2) ;
         iter3 = makeAbortable(iter3, killList) ;
-        
+
         Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3) ;
-        
+
         final Var var = Var.alloc(graphNode) ;
-        Transform<Node, Binding> bindGraphName = new Transform<Node, Binding>(){
+        Transform<Node, Binding> bindGraphName = new Transform<Node, Binding>() {
             @Override
-            public Binding convert(Node node)
-            {
+            public Binding convert(Node node) {
                 return BindingFactory.binding(var, node) ;
             }
         } ;
-        
+
         Iterator<Binding> iterBinding = Iter.map(iter4, bindGraphName) ;
         // Not abortable.
         return new QueryIterTDB(iterBinding, killList, input, execCxt) ;

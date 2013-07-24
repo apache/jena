@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterPlacement ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek ;
@@ -337,9 +338,13 @@ public class OpExecutorTDB extends OpExecutor
     { 
         DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset() ;
         Filter<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
-        return SolverLib.graphNames(ds, dsNames.getGraphNode(), input, filter, execCxt) ;
+        Node gn = dsNames.getGraphNode() ;
+        if ( Var.isVar(gn) )
+            return SolverLib.graphNames(ds, dsNames.getGraphNode(), input, filter, execCxt) ;
+        else
+            return SolverLib.testForGraphName(ds, dsNames.getGraphNode(), input, filter, execCxt) ;
     }
-    
+
     // ---- OpExecute factories and plain executor.
     
     private static OpExecutorFactory plainFactory = new OpExecutorPlainFactoryTDB() ;
