@@ -30,7 +30,7 @@ public class IterLib
 {
     public static QueryIterator noResults(ExecutionContext execCxt)
     {
-        return new QueryIterNullIterator(execCxt) ;
+        return QueryIterNullIterator.create(execCxt) ;
     }
     
     public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)

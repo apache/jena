@@ -114,7 +114,7 @@ public class labelSearch implements PropertyFunction
         if ( pattern == null )
         {
             Log.warn(this, "Pattern must be a plain literal or xsd:string: "+argObject.getArg()) ;
-            return new QueryIterNullIterator(execCxt) ;
+            return QueryIterNullIterator.create(execCxt) ;
         }
 
         if ( false )

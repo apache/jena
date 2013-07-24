@@ -37,7 +37,7 @@ public class TableEmpty extends TableBase
     @Override
     public QueryIterator iterator(ExecutionContext execCxt)
     {
-        return new QueryIterNullIterator(execCxt) ;
+        return QueryIterNullIterator.create(execCxt) ;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class TableEmpty extends TableBase
             return QueryIterSingleton.create(bindingLeft, execContext) ;
         else
             // No rows - no match
-            return new QueryIterNullIterator(execContext) ;
+            return QueryIterNullIterator.create(execContext) ;
     }
 
     @Override

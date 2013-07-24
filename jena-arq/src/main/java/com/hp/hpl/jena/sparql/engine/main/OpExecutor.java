@@ -369,7 +369,7 @@ public class OpExecutor
     protected QueryIterator execute(OpNull opNull, QueryIterator input) {
         // Loose the input.
         input.close() ;
-        return new QueryIterNullIterator(execCxt) ;
+        return QueryIterNullIterator.create(execCxt) ;
     }
 
     protected QueryIterator execute(OpList opList, QueryIterator input) {
