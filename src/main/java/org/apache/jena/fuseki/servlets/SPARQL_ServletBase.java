@@ -32,10 +32,9 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.server.DatasetRef ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.fuseki.server.ServiceRef ;
+import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -172,35 +171,51 @@ public abstract class SPARQL_ServletBase extends ServletBase
     // Called directly by the UberServlet which has not done any stats by this point.
     protected void executeLifecycle(HttpAction action)
     {
-        action.dsRef.counters.inc(Requests) ;
-        action.srvRef.counters.inc(Requests) ;
+        incCounter(action.dsRef, Requests) ;
+        incCounter(action.srvRef, Requests) ;
 
         startRequest(action) ;
         try {
             validate(action) ;
         } catch (ActionErrorException ex) {
-            action.dsRef.counters.inc(RequestsBad) ;
+            incCounter(action.dsRef,RequestsBad) ;
             throw ex ;
         }
 
         try {
             perform(action) ;
             // Success
-            action.srvRef.counters.inc(RequestsGood) ;
-            action.dsRef.counters.inc(RequestsGood) ;
+            incCounter(action.srvRef, RequestsGood) ;
+            incCounter(action.dsRef, RequestsGood) ;
         } catch (ActionErrorException ex) {
-            action.srvRef.counters.inc(RequestsBad) ;
-            action.dsRef.counters.inc(RequestsBad) ;
+            incCounter(action.srvRef, RequestsBad) ;
+            incCounter(action.dsRef, RequestsBad) ;
             throw ex ;
         } catch (QueryCancelledException ex) {
-            action.srvRef.counters.inc(RequestsBad) ;
-            action.dsRef.counters.inc(RequestsBad) ;
+            incCounter(action.srvRef, RequestsBad) ;
+            incCounter(action.dsRef, RequestsBad) ;
             throw ex ;
         } finally {
             finishRequest(action) ;
         }
     }
-   
+    
+    protected static void incCounter(Counters counters, CounterName name) {
+        try {
+            counters.getCounters().inc(name) ;
+        } catch (Exception ex) {
+            Fuseki.serverLog.warn("Exception on counter inc", ex) ;
+        }
+    }
+    
+    protected static void decCounter(Counters counters, CounterName name) {
+        try {
+            counters.getCounters().dec(name) ;
+        } catch (Exception ex) {
+            Fuseki.serverLog.warn("Exception on counter dec", ex) ;
+        }
+    }
+
     @SuppressWarnings("unused") // ServletException
     protected void doPatch(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException

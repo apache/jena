@@ -26,7 +26,7 @@ import org.apache.jena.fuseki.Fuseki ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public class DatasetRef implements DatasetMXBean
+public class DatasetRef implements DatasetMXBean, Counters
 {
     public String name                          = null ;
     public DatasetGraph dataset                 = null ;
@@ -40,7 +40,10 @@ public class DatasetRef implements DatasetMXBean
     
     
     // Dataset-level counters.
-    public final CounterSet counters            = new CounterSet() ;
+    private final CounterSet counters           = new CounterSet() ;
+    @Override
+    public  CounterSet getCounters() { return counters ; }
+    
     private Map<String, ServiceRef> endpoints   = new HashMap<String, ServiceRef>() ;
     private List<ServiceRef> serviceRefs        = new ArrayList<ServiceRef>() ;
     private boolean initialized = false ;
@@ -173,28 +176,28 @@ public class DatasetRef implements DatasetMXBean
     }
     
     private void addCounters() {
-        counters.add(CounterName.Requests) ;
-        counters.add(CounterName.RequestsGood) ;
-        counters.add(CounterName.RequestsBad) ;
+        getCounters().add(CounterName.Requests) ;
+        getCounters().add(CounterName.RequestsGood) ;
+        getCounters().add(CounterName.RequestsBad) ;
 
-        query.counters.add(CounterName.Requests) ;
-        query.counters.add(CounterName.RequestsGood) ;
-        query.counters.add(CounterName.RequestsBad) ;
-        query.counters.add(CounterName.QueryTimeouts) ;
-        query.counters.add(CounterName.QueryExecErrors) ;
+        query.getCounters().add(CounterName.Requests) ;
+        query.getCounters().add(CounterName.RequestsGood) ;
+        query.getCounters().add(CounterName.RequestsBad) ;
+        query.getCounters().add(CounterName.QueryTimeouts) ;
+        query.getCounters().add(CounterName.QueryExecErrors) ;
 
-        update.counters.add(CounterName.Requests) ;
-        update.counters.add(CounterName.RequestsGood) ;
-        update.counters.add(CounterName.RequestsBad) ;
-        update.counters.add(CounterName.UpdateExecErrors) ;
+        update.getCounters().add(CounterName.Requests) ;
+        update.getCounters().add(CounterName.RequestsGood) ;
+        update.getCounters().add(CounterName.RequestsBad) ;
+        update.getCounters().add(CounterName.UpdateExecErrors) ;
 
-        upload.counters.add(CounterName.Requests) ;
-        upload.counters.add(CounterName.RequestsGood) ;
-        upload.counters.add(CounterName.RequestsBad) ;
+        upload.getCounters().add(CounterName.Requests) ;
+        upload.getCounters().add(CounterName.RequestsGood) ;
+        upload.getCounters().add(CounterName.RequestsBad) ;
 
-        addCountersForGSP(readWriteGraphStore.counters, false) ;
+        addCountersForGSP(readWriteGraphStore.getCounters(), false) ;
         if ( readGraphStore != readWriteGraphStore )
-            addCountersForGSP(readGraphStore.counters, true) ;
+            addCountersForGSP(readGraphStore.getCounters(), true) ;
     }
 
     private void addCountersForGSP(CounterSet cs, boolean readWrite) {
