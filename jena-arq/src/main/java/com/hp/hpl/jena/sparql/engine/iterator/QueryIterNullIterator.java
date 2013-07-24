@@ -23,6 +23,7 @@ import java.util.NoSuchElementException ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -31,6 +32,8 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class QueryIterNullIterator extends QueryIter
 {
+    public static QueryIterator create(ExecutionContext qCxt) { return new QueryIterNullIterator(qCxt) ; }
+    
     // Or QueryIterYeildN with N = 0 ;
     // but sometimes it clearer just to w-r-i-t-e the code.
     

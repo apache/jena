@@ -79,7 +79,7 @@ public class localname extends PFuncSimple
     {
         if ( ! nodeURI.isURI() )
             // Subject bound but not a URI
-            return new QueryIterNullIterator(execCxt) ;
+            return QueryIterNullIterator.create(execCxt) ;
 
         // Subject is bound and a URI - get the localname as a Node 
         Node localname = NodeFactory.createLiteral(nodeURI.getLocalName()) ;
@@ -92,7 +92,7 @@ public class localname extends PFuncSimple
                 // Same
                 return QueryIterSingleton.create(binding, execCxt) ;
             // No - different - no match.
-            return new QueryIterNullIterator(execCxt) ;
+            return QueryIterNullIterator.create(execCxt) ;
         }
         
         // Object unbound variable - assign the localname to it.
@@ -109,11 +109,11 @@ public class localname extends PFuncSimple
         {
             if ( ! nodeLocalname.isLiteral() )
                 // Not a variable, not a literal=> can't match
-                return new QueryIterNullIterator(execCxt) ;
+                return QueryIterNullIterator.create(execCxt) ;
         
             if( ! NodeUtils.isStringLiteral(nodeLocalname) )
                 // If a typed literal, must be XSD string.
-                return new QueryIterNullIterator(execCxt) ;
+                return QueryIterNullIterator.create(execCxt) ;
         }
         
         //Set bindings = new HashSet() ;    // Use a Set if you want unique results. 

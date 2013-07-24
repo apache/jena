@@ -77,7 +77,7 @@ public class Table1 extends TableBase
         }
         
         if ( ! matches && ! includeOnNoMatch)
-            return new QueryIterNullIterator(execContext) ;
+            return QueryIterNullIterator.create(execContext) ;
         // Matches, or does not match and it's a left join - return the left binding. 
         return QueryIterSingleton.create(bindingLeft, execContext) ;
     }

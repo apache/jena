@@ -106,7 +106,7 @@ public class TableN extends TableBase
             out.add(bindingLeft) ;
         
         if ( out.size() == 0 )
-            return new QueryIterNullIterator(execContext) ;
+            return QueryIterNullIterator.create(execContext) ;
         return new QueryIterPlainWrapper(out.iterator(), execContext) ;
     }
  
