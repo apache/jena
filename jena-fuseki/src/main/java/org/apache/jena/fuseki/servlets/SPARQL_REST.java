@@ -222,78 +222,78 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     // Counter wrappers
     
     protected void doGet$(HttpAction action) {
-        action.srvRef.counters.inc(CounterName.GSPget) ;
+        incCounter(action.srvRef, CounterName.GSPget) ;
         try {
             doGet(action) ;
-            action.srvRef.counters.inc(CounterName.GSPgetGood) ;
+            incCounter(action.srvRef, CounterName.GSPgetGood) ;
         } catch ( ActionErrorException ex) {
-            action.srvRef.counters.inc(CounterName.GSPgetBad) ;
+            incCounter(action.srvRef, CounterName.GSPgetBad) ;
             throw ex ;
         }
     }
 
     protected void doHead$(HttpAction action) {
-        action.srvRef.counters.inc(CounterName.GSPhead) ;
+        incCounter(action.srvRef, CounterName.GSPhead) ;
         try {
             doHead(action) ;
-            action.srvRef.counters.inc(CounterName.GSPheadGood) ;
+            incCounter(action.srvRef, CounterName.GSPheadGood) ;
         } catch ( ActionErrorException ex) {
-            action.srvRef.counters.inc(CounterName.GSPheadBad) ;
+            incCounter(action.srvRef, CounterName.GSPheadBad) ;
             throw ex ;
         }
     }
 
     protected void doPost$(HttpAction action) {
-        action.srvRef.counters.inc(CounterName.GSPpost) ;
+        incCounter(action.srvRef, CounterName.GSPpost) ;
         try {
             doPost(action) ;
-            action.srvRef.counters.inc(CounterName.GSPpostGood) ;
+            incCounter(action.srvRef, CounterName.GSPpostGood) ;
         } catch ( ActionErrorException ex) {
-            action.srvRef.counters.inc(CounterName.GSPpostBad) ;
+            incCounter(action.srvRef, CounterName.GSPpostBad) ;
             throw ex ;
         }
     }
 
     protected void doPatch$(HttpAction action) {
-        action.srvRef.counters.inc(CounterName.GSPpatch) ;
+        incCounter(action.srvRef, CounterName.GSPpatch) ;
         try {
             doPatch(action) ;
-            action.srvRef.counters.inc(CounterName.GSPpatchGood) ;
+            incCounter(action.srvRef, CounterName.GSPpatchGood) ;
         } catch ( ActionErrorException ex) {
-            action.srvRef.counters.inc(CounterName.GSPpatchBad) ;
+            incCounter(action.srvRef, CounterName.GSPpatchBad) ;
             throw ex ;
         }
     }
 
     protected void doDelete$(HttpAction action) {
-        action.srvRef.counters.inc(CounterName.GSPdelete) ;
+        incCounter(action.srvRef, CounterName.GSPdelete) ;
         try {
             doDelete(action) ;
-            action.srvRef.counters.inc(CounterName.GSPdeleteGood) ;
+            incCounter(action.srvRef, CounterName.GSPdeleteGood) ;
         } catch ( ActionErrorException ex) {
-            action.srvRef.counters.inc(CounterName.GSPdeleteBad) ;
+            incCounter(action.srvRef, CounterName.GSPdeleteBad) ;
             throw ex ;
         }
     }
 
     protected void doPut$(HttpAction action) {
-        action.srvRef.counters.inc(CounterName.GSPput) ;
+        incCounter(action.srvRef, CounterName.GSPput) ;
         try {
             doPut(action) ;
-            action.srvRef.counters.inc(CounterName.GSPputGood) ;
+            incCounter(action.srvRef, CounterName.GSPputGood) ;
         } catch ( ActionErrorException ex) {
-            action.srvRef.counters.inc(CounterName.GSPputBad) ;
+            incCounter(action.srvRef, CounterName.GSPputBad) ;
             throw ex ;
         }
     }
 
     protected void doOptions$(HttpAction action) {
-        action.srvRef.counters.inc(CounterName.GSPoptions) ;
+        incCounter(action.srvRef, CounterName.GSPoptions) ;
         try {
             doOptions(action) ;
-            action.srvRef.counters.inc(CounterName.GSPoptionsGood) ;
+            incCounter(action.srvRef, CounterName.GSPoptionsGood) ;
         } catch ( ActionErrorException ex) {
-            action.srvRef.counters.inc(CounterName.GSPoptionsBad) ;
+            incCounter(action.srvRef, CounterName.GSPoptionsBad) ;
             throw ex ;
         }
     }
