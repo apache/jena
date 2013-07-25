@@ -289,6 +289,10 @@ public class SolverLib
         if ( exists ) {
             // Node exists but is it used in the quad position?
             NodeTupleTable ntt = ds.getQuadTable().getNodeTupleTable() ;
+            // Don't worry about abortable - this iterator should be fast
+            // (with normal indexing - at least one G???).
+            // Either it finds a starting point, or it doesn't.  We are only 
+            // interested in the first .hasNext.
             Iterator<Tuple<NodeId>> iter1 = ntt.find(nid, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
             if ( filter != null )
                 iter1 = Iter.filter(iter1, filter) ;
