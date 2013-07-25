@@ -35,7 +35,9 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     fuseki:name                     "ds" ;
     fuseki:serviceQuery             "query" ;
     fuseki:serviceQuery             "sparql" ;
-    fuseki:serviceUpdate            "update" ;
+    # Don't allow SPARQL Update.
+    #fuseki:serviceUpdate            "update" ;
+    # Use the read-only service.
     fuseki:serviceReadGraphStore    "data" ;
     fuseki:serviceReadGraphStore    "get" ;
     fuseki:dataset           <#tdb_dataset_read> ;
