@@ -111,13 +111,11 @@ $accept_charset=nil
 
 $cmd = File.basename($0)
 if $cmd == 'soh'
+then
   $cmd = (ARGV.size == 0) ? 'soh' : ARGV.shift
-  end
+end
 
-if ! $cmd.start_with?('s-')
-  # If you don't have start_with? ...
-  # if ! $cmd.match(/^s-/)
-  # "soh query ..."
+if ! $cmd.start_with?('s-') && $cmd != 'soh'
   $cmd = 's-'+$cmd
 end
 
