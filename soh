@@ -110,7 +110,9 @@ $accept_charset=nil
 ##    soh query .....
 
 $cmd = File.basename($0)
-$cmd = (ARGV.size == 0) ? 'soh' : ARGV.shift
+if $cmd == 'soh'
+  $cmd = (ARGV.size == 0) ? 'soh' : ARGV.shift
+  end
 
 if ! $cmd.start_with?('s-')
   # If you don't have start_with? ...
