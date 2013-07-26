@@ -74,7 +74,7 @@ public class Lang
     private final List<String> altContentTypes ;
     private final List<String> fileExtensions ;
 
-    // NOT public.  This is to force use of the RDFLanguages which makes languges symbols and so == works
+    // NOT public.  This is to force use of the RDFLanguages which makes languages symbols and so == works
     protected Lang(String langlabel, String mainContentType, List<String> altLangLabels, List<String> otherContentTypes, List<String> fileExt)
     {
         if ( langlabel == null )

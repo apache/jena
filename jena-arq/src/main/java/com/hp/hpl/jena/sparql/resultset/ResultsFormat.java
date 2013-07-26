@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.util.TranslationTable ;
 // Better ....
 //public enum ResultFormat
 //{ 
-//    // Merge with out system wide naming (WebContent?)
+//    // Merge with our system wide naming (WebContent?)
 //    FMT_RS_XML , FMT_RS_JSON , FMT_RS_CSV , FMT_RS_TSV , FMT_RS_SSE , FMT_RS_BIO ,
 //    FMT_NONE , FMT_TEXT , FMT_TUPLES , FMT_COUNT ,
 //    FMT_RS_RDF , FMT_RDF_XML , FMT_RDF_N3 , FMT_RDF_TTL , FMT_RDF_TURTLE , FMT_RDF_NT ,
@@ -50,7 +50,6 @@ public class ResultsFormat extends Symbol
     static public ResultsFormat FMT_TEXT         = new ResultsFormat("text") ;
     static public ResultsFormat FMT_TUPLES       = new ResultsFormat("tuples") ;
     static public ResultsFormat FMT_COUNT        = new ResultsFormat("count") ;
-    static public ResultsFormat FMT_RS_RDF       = new ResultsFormat(contentTypeRDFXML) ;
     static public ResultsFormat FMT_RDF_XML      = new ResultsFormat(contentTypeRDFXML) ;
     static public ResultsFormat FMT_RDF_N3       = new ResultsFormat(contentTypeN3) ;
     static public ResultsFormat FMT_RDF_TTL      = new ResultsFormat(contentTypeTurtle) ;
@@ -127,7 +126,7 @@ public class ResultsFormat extends Symbol
         if ( url.endsWith(".yml") )
             return FMT_RS_JSON ;
         
-        // -- SSE : http://openjena.org/wiki/SSE
+        // -- SSE : http://jena.apache.org/documentation/notes/sse.html
         if ( url.endsWith(".sse") )
             return FMT_RS_SSE ;
 

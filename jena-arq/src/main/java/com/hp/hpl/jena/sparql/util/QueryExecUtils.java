@@ -122,7 +122,7 @@ public class QueryExecUtils
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_RDF) ||
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) ||
              outputFormat.equals(ResultsFormat.FMT_RDF_N3) ||
              outputFormat.equals(ResultsFormat.FMT_RDF_TTL) )
         {
