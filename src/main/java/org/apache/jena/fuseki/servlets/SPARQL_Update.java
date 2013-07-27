@@ -63,11 +63,8 @@ public class SPARQL_Update extends SPARQL_Protocol
     private static final String UpdateParseBase = "http://example/update-base/" ;
     private static final IRIResolver resolver = IRIResolver.create(UpdateParseBase) ;
     
-    public SPARQL_Update(boolean verbose)
-    { super(verbose) ; }
-
     public SPARQL_Update()
-    { this(false) ; }
+    { super() ; }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -181,7 +178,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         try { input = action.request.getInputStream() ; }
         catch (IOException ex) { errorOccurred(ex) ; }
 
-        if ( super.verbose_debug || action.verbose )
+        if ( action.verbose )
         {
             // Verbose mode only .... capture request for logging (does not scale). 
             String requestStr = null ;
@@ -203,7 +200,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         if ( requestStr == null )
             requestStr = action.request.getParameter(paramRequest) ;
         
-        if ( super.verbose_debug || action.verbose )
+        if ( action.verbose )
             //requestLog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
             requestLog.info(format("[%d] Form update = \n%s", action.id, requestStr)) ;
 

@@ -171,11 +171,8 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         }
     }
 
-    public SPARQL_REST(boolean verbose)
-    { super(verbose) ; }
-
     public SPARQL_REST()
-    { this(false) ; }
+    { super() ; }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

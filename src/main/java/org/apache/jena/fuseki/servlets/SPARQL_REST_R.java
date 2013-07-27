@@ -36,11 +36,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 /** Only the READ operations */
 public class SPARQL_REST_R extends SPARQL_REST
 {
-    public SPARQL_REST_R(boolean verbose)
-    { super(verbose) ; }
-
     public SPARQL_REST_R()
-    { this(false) ; }
+    { super() ; }
     
     
     @Override

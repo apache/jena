@@ -49,7 +49,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     
     public static class ReadOnly extends SPARQL_UberServlet
     {
-        public ReadOnly(boolean verbose_debug) { super(verbose_debug) ; }
+        public ReadOnly()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return true ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return false ; }
         @Override protected boolean allowREST_R(HttpAction action)   { return true ; }
@@ -60,7 +60,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
 
     public static class ReadWrite extends SPARQL_UberServlet
     {
-        public ReadWrite(boolean verbose_debug) { super(verbose_debug) ; }
+        public ReadWrite()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return true ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return true ; }
         @Override protected boolean allowREST_R(HttpAction action)   { return true ; }
@@ -71,7 +71,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
 
     public static class AccessByConfig extends SPARQL_UberServlet
     {
-        public AccessByConfig(boolean verbose_debug) { super(verbose_debug) ; }
+        public AccessByConfig()    { super() ; }
         @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action.dsRef.query) ; }
         @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action.dsRef.update) ; }
         @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action.dsRef.readGraphStore) || allowREST_W(action); }
@@ -92,17 +92,14 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     // Refactor? Extract the direct naming handling.
     // To test: enable in SPARQLServer.configureOneDataset
     
-    private final SPARQL_ServletBase queryServlet    = new SPARQL_QueryDataset(verbose_debug) ;
-    private final SPARQL_ServletBase updateServlet   = new SPARQL_Update(verbose_debug) ;
-    private final SPARQL_ServletBase uploadServlet   = new SPARQL_Upload(verbose_debug) ;
-    private final SPARQL_REST        restServlet_RW  = new SPARQL_REST_RW(verbose_debug) ;
-    private final SPARQL_REST        restServlet_R   = new SPARQL_REST_R(verbose_debug) ;
-    private final SPARQL_ServletBase restQuads       = new REST_Quads(verbose_debug) ;
+    private final SPARQL_ServletBase queryServlet    = new SPARQL_QueryDataset() ;
+    private final SPARQL_ServletBase updateServlet   = new SPARQL_Update() ;
+    private final SPARQL_ServletBase uploadServlet   = new SPARQL_Upload() ;
+    private final SPARQL_REST        restServlet_RW  = new SPARQL_REST_RW() ;
+    private final SPARQL_REST        restServlet_R   = new SPARQL_REST_R() ;
+    private final SPARQL_ServletBase restQuads       = new REST_Quads() ;
     
-    public SPARQL_UberServlet(boolean verbose_debug)
-    {
-        super(verbose_debug) ;
-    }
+    public SPARQL_UberServlet() { super(); }
 
     private String getEPName(String dsname, List<String> endpoints)
     {

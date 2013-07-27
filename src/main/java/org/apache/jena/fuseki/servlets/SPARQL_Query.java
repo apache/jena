@@ -46,12 +46,7 @@ import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
-    public SPARQL_Query(boolean verbose)
-    { super(verbose) ; }
-
-    
-    public SPARQL_Query()
-    { this(false) ; }
+    public SPARQL_Query()   { super() ; }
 
     // Choose REST verbs to support.
     
@@ -212,7 +207,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     private void execute(String queryString, HttpAction action)
     {
         String queryStringLog = formatForLog(queryString) ;
-        if ( super.verbose_debug || action.verbose )
+        if ( action.verbose )
             log.info(format("[%d] Query = \n%s", action.id, queryString));
         else
             log.info(format("[%d] Query = %s", action.id, queryStringLog));

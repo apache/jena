@@ -37,13 +37,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
 {
     final static int MaxTriples = 100*1000 ; 
     
-    public SPARQL_QueryGeneral(boolean verbose)
-    { 
-        super(verbose) ;
-    }
-
-    public SPARQL_QueryGeneral()
-    { this(false) ; }
+    public SPARQL_QueryGeneral()    { super() ; }
 
     @Override
     protected void validateRequest(HttpAction action) {}

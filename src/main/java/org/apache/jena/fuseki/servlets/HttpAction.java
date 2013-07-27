@@ -35,7 +35,6 @@ import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.ServiceRef ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
@@ -76,47 +75,27 @@ public class HttpAction
     public HttpServletRequest request;
     public HttpServletResponseTracker response ;
     
-
-    
-//    // ---- Concurrency checking.
-//    private static Map<Lock, ConcurrencyPolicyMRSW> lockCounters = new HashMap<Lock, ConcurrencyPolicyMRSW>() ;
-//    private static ConcurrencyPolicyMRSW getConcurrencyPolicy(Lock lock)
-//    {
-//        synchronized(lockCounters)
-//        {
-//            ConcurrencyPolicyMRSW x = lockCounters.get(lock) ;
-//            if ( x == null )
-//            {
-//                x = new ConcurrencyPolicyMRSW() ;
-//                lockCounters.put(lock, x) ;
-//            }
-//            return x ;
-//        }
-//    }
-
-    public HttpAction(long id, HttpServletRequest request, HttpServletResponse response, boolean verbose)
-    {
+    public HttpAction(long id, HttpServletRequest request, HttpServletResponse response, boolean verbose) {
         this.id = id ;
         this.request = request ;
         this.response = new HttpServletResponseTracker(this, response) ;
+        // Should this be set when setDataset is called from the dataset context?
+        // Currently server-wide, e.g. from the command line.
         this.verbose = verbose ;
     }
 
-    public void setDataset(DatasetRef desc)
-    {
+    public void setDataset(DatasetRef desc) {
         this.dsRef = desc ;
         this.dsg = desc.dataset ;
 
-        if ( dsg instanceof Transactional )
-        {
+        if ( dsg instanceof Transactional ) {
             transactional = (Transactional)dsg ;
             isTransactional = true ;
-        }
-        else
-        {
-            // Non-transactional - wrap in something that does locking to give the same 
+        } else {
+            // Non-transactional - wrap in something that does locking to give
+            // the same
             // functionality in the absense of errors, with less concurrency.
-            DatasetGraphWithLock dsglock = new DatasetGraphWithLock(dsg) ; 
+            DatasetGraphWithLock dsglock = new DatasetGraphWithLock(dsg) ;
             transactional = dsglock ;
             isTransactional = false ;
             dsg = dsglock ;
@@ -130,62 +109,57 @@ public class HttpAction
     /**
      * Returns whether or not the underlying DatasetGraph is fully transactional (supports rollback)
      */
-    public boolean isTransactional()
-    {
-        return isTransactional;
+    public boolean isTransactional() {
+        return isTransactional ;
     }
-    
-    public void beginRead()
-    {
+
+    public void beginRead() {
         activeMode = READ ;
         transactional.begin(READ) ;
         activeDSG = dsg ;
         dsRef.startTxn(READ) ;
     }
 
-    public void endRead()
-    {
+    public void endRead() {
         dsRef.finishTxn(READ) ;
         activeMode = null ;
         transactional.end() ;
         activeDSG = null ;
     }
 
-    public void beginWrite()
-    {
+    public void beginWrite() {
         transactional.begin(WRITE) ;
         activeMode = WRITE ;
         activeDSG = dsg ;
         dsRef.startTxn(WRITE) ;
     }
 
-    public void commit()
-    {
+    public void commit() {
         transactional.commit() ;
         activeDSG = null ;
     }
 
-    public void abort()
-    {
+    public void abort() {
         transactional.abort() ;
         activeDSG = null ;
     }
 
-    public void endWrite()
-    {
+    public void endWrite() {
         dsRef.finishTxn(WRITE) ;
         activeMode = null ;
 
-        if (transactional.isInTransaction())
-        {
+        if ( transactional.isInTransaction() ) {
             Log.warn(this, "Transaction still active in endWriter - no commit or abort seen (forced abort)") ;
-            try { transactional.abort() ; } 
-            catch (RuntimeException ex) { Log.warn(this, "Exception in forced abort (trying to continue)", ex) ;} 
+            try {
+                transactional.abort() ;
+            } catch (RuntimeException ex) {
+                Log.warn(this, "Exception in forced abort (trying to continue)", ex) ;
+            }
         }
         transactional.end() ;
         activeDSG = null ;
     }
-    
+   
     public final DatasetGraph getActiveDSG() {
         return activeDSG ;
     }
@@ -193,10 +167,9 @@ public class HttpAction
     public final DatasetRef getDatasetRef() {
         return dsRef ;
     }
-    
-    /** Reduce to a size that can be kept around for sometime */  
-    public void minimize()
-    {
+
+    /** Reduce to a size that can be kept around for sometime */
+    public void minimize() {
         this.request = null ;
         this.response = null ;
     }
@@ -214,15 +187,11 @@ public class HttpAction
         finishTimeIsSet = true ;
         this.finishTime = System.nanoTime() ;
     }
-    
 
-//    public Map <String, String> getHeaders()    { return headers ; } 
-//    
-//    public HttpServletRequest getRequest()      { return request ; }
-//
-//    public HttpServletResponseTracker getResponse()    { return response ; }
-    
+    public HttpServletRequest getRequest()              { return request ; }
 
+    public HttpServletResponseTracker getResponse()     { return response ; }
+    
     /** Return the recorded time taken in milliseconds. 
      *  {@linkplain #setStartTime} and {@linkplain #setFinishTime}
      *  must have been called.
@@ -236,51 +205,22 @@ public class HttpAction
         return (finishTime-startTime)/(1000*1000) ;
     }
 
-    
-//    // External, additional lock.
-//    private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
-//    {
-//        if ( lock == null && dsg == null )
-//            return ;
-//        if ( lock == null )
-//            lock = dsg.getLock() ;
-//        if ( lock == null )
-//            return ;
-//        lock.enterCriticalSection(readLock) ;
-//    }
-    
-    private void leave(DatasetGraph dsg, Lock lock, boolean readLock)
-    {
-        if ( lock == null && dsg == null )
-            return ;
-
-        if ( lock == null )
-            lock = dsg.getLock() ;
-        if ( lock == null )
-            return ;
-        lock.leaveCriticalSection() ;
-    }
-    
-    public void sync()
-    {
+    public void sync() {
         SystemARQ.sync(dsg) ;
     }
-    
-    public static MediaType contentNegotationRDF(HttpAction action)
-    {
+
+    public static MediaType contentNegotationRDF(HttpAction action) {
         MediaType mt = ConNeg.chooseContentType(action.request, DEF.rdfOffer, DEF.acceptRDFXML) ;
         if ( mt == null )
             return null ;
         if ( mt.getContentType() != null )
-            action.response.setContentType(mt.getContentType());
+            action.response.setContentType(mt.getContentType()) ;
         if ( mt.getCharset() != null )
-        action.response.setCharacterEncoding(mt.getCharset()) ;
+            action.response.setCharacterEncoding(mt.getCharset()) ;
         return mt ;
     }
-    
-    public static MediaType contentNegotationQuads(HttpAction action)
-    {
+
+    public static MediaType contentNegotationQuads(HttpAction action) {
         return ConNeg.chooseContentType(action.request, DEF.quadsOffer, DEF.acceptNQuads) ;
     }
-
 }

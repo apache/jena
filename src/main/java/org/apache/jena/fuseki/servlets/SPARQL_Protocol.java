@@ -39,10 +39,7 @@ import com.hp.hpl.jena.sparql.core.DatasetDescription ;
  */
 public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
 {
-    protected SPARQL_Protocol(boolean verbose_debug)
-    {
-        super(verbose_debug) ;
-    }
+    protected SPARQL_Protocol() { super() ; }
 
     protected static String messageForQPE(QueryParseException ex)
     {
