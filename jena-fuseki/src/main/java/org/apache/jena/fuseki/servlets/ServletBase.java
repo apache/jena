@@ -36,12 +36,8 @@ public abstract class ServletBase extends HttpServlet
 {
     protected static final Logger log = Fuseki.requestLog ;
     private static AtomicLong requestIdAlloc = new AtomicLong(0) ;
-    protected final boolean verbose_debug ;
 
-    protected ServletBase(boolean verbose_debug)
-    {
-        this.verbose_debug = verbose_debug ;
-    }
+    protected ServletBase()     { }
     
     /**
      * Helper method which gets a unique request ID and appends it as a header to the response
