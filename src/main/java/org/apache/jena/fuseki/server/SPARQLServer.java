@@ -71,10 +71,8 @@ public class SPARQLServer {
     private ServerConfig        serverConfig ;
 
     private Server              server         = null ;
-    private boolean             verboseLogging = false ;
+    public static boolean       verboseLogging = false ;
     private static List<String> epDataset      = Arrays.asList("*") ;
-
-    // private static int ThreadPoolSize = 100 ;
 
     /**
      * Default constructor which requires a {@link org.apache.jena.fuseki.server.ServerConfig}
@@ -300,12 +298,12 @@ public class SPARQLServer {
         DatasetRegistry.get().put(datasetPath, dsDesc) ;
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
 
-        HttpServlet sparqlQuery = new SPARQL_QueryDataset(verboseLogging) ;
-        HttpServlet sparqlUpdate = new SPARQL_Update(verboseLogging) ;
-        HttpServlet sparqlUpload = new SPARQL_Upload(verboseLogging) ;
-        HttpServlet sparqlHttpR = new SPARQL_REST_R(verboseLogging) ;
-        HttpServlet sparqlHttpRW = new SPARQL_REST_RW(verboseLogging) ;
-        HttpServlet sparqlDataset = new SPARQL_UberServlet.AccessByConfig(verboseLogging) ;
+        HttpServlet sparqlQuery = new SPARQL_QueryDataset() ;
+        HttpServlet sparqlUpdate = new SPARQL_Update() ;
+        HttpServlet sparqlUpload = new SPARQL_Upload() ;
+        HttpServlet sparqlHttpR = new SPARQL_REST_R() ;
+        HttpServlet sparqlHttpRW = new SPARQL_REST_RW() ;
+        HttpServlet sparqlDataset = new SPARQL_UberServlet.AccessByConfig() ;
 
         if ( !überServlet ) {
             // If uberserver, these are unnecessary but can be used.

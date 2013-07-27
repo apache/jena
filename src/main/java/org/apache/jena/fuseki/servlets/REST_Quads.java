@@ -44,8 +44,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class REST_Quads extends SPARQL_REST
 {
-    public REST_Quads(boolean verbose)
-    { super(verbose) ; }
+    public REST_Quads()     { super(); }
     
     @Override
     protected void validate(HttpAction action)

@@ -47,10 +47,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class ActionBackup extends ServletBase
 {
-    public ActionBackup()
-    {
-        super(false) ;
-    }
+    public ActionBackup() { super() ; }
 
     // Limit to one backup at a time.
     public static final ExecutorService backupService = Executors.newFixedThreadPool(1) ;
@@ -83,7 +80,6 @@ public class ActionBackup extends ServletBase
             response.sendError(HttpSC.BAD_REQUEST_400, "No such dataset: " + dataset) ;
             return ;
         }
-
         
         long id = allocRequestId(request, response);
         HttpAction action = new HttpAction(id, request, response, false) ;

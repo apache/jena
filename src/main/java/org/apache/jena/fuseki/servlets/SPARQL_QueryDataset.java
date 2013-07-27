@@ -27,8 +27,7 @@ import com.hp.hpl.jena.sparql.core.DynamicDatasets ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
-    public SPARQL_QueryDataset(boolean verbose)
-    { super(verbose) ; }
+    public SPARQL_QueryDataset(boolean verbose)     { super() ; }
 
     public SPARQL_QueryDataset()
     { this(false) ; }
