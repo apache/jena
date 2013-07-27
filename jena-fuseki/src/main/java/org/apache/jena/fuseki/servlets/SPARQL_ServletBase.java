@@ -48,11 +48,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
 {
     private static DatasetGraph dummyDSG = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
     
-    protected SPARQL_ServletBase(boolean verbose_debug)
-    {
-        super(verbose_debug) ;
-        //this.queryStringHandling = noQueryStringIsOK ;
-    }
+    protected SPARQL_ServletBase()      {   super() ; }
     
     // Common framework for handling HTTP requests
     protected void doCommon(HttpServletRequest request, HttpServletResponse response)
@@ -108,9 +104,9 @@ public abstract class SPARQL_ServletBase extends ServletBase
 
     /** Return a fresh WebAction for this request */
     protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
-        return new HttpAction(id, request, response, verbose_debug) ;
+        // Need a way to set verbose logging on a per servlet and per request basis. 
+        return new HttpAction(id, request, response, SPARQLServer.verboseLogging ) ;
     }
-
 
     protected abstract void validate(HttpAction action) ;
     protected abstract void perform(HttpAction action) ;
@@ -229,7 +225,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
         String method = action.request.getMethod() ;
 
         log.info(format("[%d] %s %s", action.id, method, url)) ;
-        if (verbose_debug) {
+        if ( action.verbose ) {
             Enumeration<String> en = action.request.getHeaderNames() ;
             for (; en.hasMoreElements();) {
                 String h = en.nextElement() ;
@@ -258,7 +254,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
         long time = action.getTime() ;
         
         HttpServletResponseTracker response = action.response ;
-        if ( verbose_debug )
+        if ( action.verbose )
         {
             if ( action.contentType != null )
                 log.info(format("[%d]   %-20s %s", action.id, HttpNames.hContentType, action.contentType)) ;

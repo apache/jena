@@ -25,11 +25,8 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 /** The WRITE operations added to the READ operations */
 public class SPARQL_REST_RW extends SPARQL_REST_R
 {
-    public SPARQL_REST_RW(boolean verbose)
-    { super(verbose) ; }
-
     public SPARQL_REST_RW()
-    { this(false) ; }
+    { super() ; }
 
     @Override
     protected void doOptions(HttpAction action)

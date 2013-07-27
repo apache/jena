@@ -50,9 +50,8 @@ public class SPARQL_Upload extends SPARQL_ServletBase
 {
     private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
     
-    public SPARQL_Upload(boolean verbose_debug)
-    {
-        super(verbose_debug) ;
+    public SPARQL_Upload() {
+        super() ;
     }
 
     // Methods to respond to.
