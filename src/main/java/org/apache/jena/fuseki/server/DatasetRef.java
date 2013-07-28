@@ -145,7 +145,8 @@ public class DatasetRef implements DatasetMXBean, Counters
 
     //TODO Need to be able to set this from the config file.  
     public boolean allowDatasetUpdate           = false;
-    
+
+    public long defaultTimeout                  = Long.MAX_VALUE;
     public boolean allowTimeoutOverride         = false;
     public long maximumTimeoutOverride          = Long.MAX_VALUE;
     

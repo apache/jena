@@ -20,6 +20,9 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.apache.jena.fuseki.HttpNames.* ;
+import static org.apache.jena.fuseki.server.CounterName.QueryExecErrors ;
+import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts ;
+import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -31,10 +34,9 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.web.MediaType ;
-import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.FusekiRequestException ;
 import org.apache.jena.fuseki.HttpNames ;
-import static org.apache.jena.fuseki.server.CounterName.* ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
@@ -316,26 +318,29 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         if (!(action.getDatasetRef().allowTimeoutOverride))
             return;
 
-        long desiredTimeout = Long.MAX_VALUE;
+        long desiredTimeout = action.getDatasetRef().defaultTimeout;
         String timeoutHeader = action.request.getHeader("Timeout");
         String timeoutParameter = action.request.getParameter("timeout");
         if (timeoutHeader != null) {
             try {
-                desiredTimeout = (int) Float.parseFloat(timeoutHeader) * 1000;
+                desiredTimeout = (long) (Float.parseFloat(timeoutHeader) * 1000);
             } catch (NumberFormatException e) {
-                throw new FusekiException("Timeout header must be a number", e);
+                throw FusekiRequestException.create(HttpSC.BAD_REQUEST_400, "Timeout header must be a number");
             }
-        } else if (timeoutParameter != null) {
+        } else if (timeoutParameter != null && !timeoutParameter.equals("")) {
             try {
-                desiredTimeout = (int) Float.parseFloat(timeoutParameter) * 1000;
+                desiredTimeout = (long) (Float.parseFloat(timeoutParameter) * 1000);
             } catch (NumberFormatException e) {
-                throw new FusekiException("timeout parameter must be a number", e);
+                throw FusekiRequestException.create(HttpSC.BAD_REQUEST_400, "timeout parameter must be a number");
             }
         }
 
         desiredTimeout = Math.min(action.getDatasetRef().maximumTimeoutOverride, desiredTimeout);
-        if (desiredTimeout != Long.MAX_VALUE)
+        if (desiredTimeout != Long.MAX_VALUE) {
+        	log.info(String.format("[%d] Setting timeout: %d ms", action.id, desiredTimeout));
+        	action.timeout = desiredTimeout;
             qexec.setTimeout(desiredTimeout);
+        }
     }
 
     protected abstract Dataset decideDataset(HttpAction action, Query query, String queryStringLog) ;

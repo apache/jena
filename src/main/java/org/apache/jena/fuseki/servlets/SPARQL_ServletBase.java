@@ -73,7 +73,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
                 execCommonWorker(action) ;
             } catch (QueryCancelledException ex) {
                 // Also need the per query info ...
-                String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
+                String message = String.format("The query timed out (restricted to %s ms)", action.timeout);
                 // Possibility :: response.setHeader("Retry-after", "600") ;    // 5 minutes
                 responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
             } catch (ActionErrorException ex) {

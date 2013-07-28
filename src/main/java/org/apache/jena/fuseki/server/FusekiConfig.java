@@ -222,12 +222,17 @@ public class FusekiConfig
         addServiceEP("graphStore(RW)", sDesc.name, sDesc.readWriteGraphStore, svc, "fu:serviceReadWriteGraphStore") ;
         addServiceEP("graphStore(R)", sDesc.name, sDesc.readGraphStore, svc, "fu:serviceReadGraphStore") ;
         // Extract timeout overriding configuration if present.
+        if (svc.hasProperty(FusekiVocab.pDefaultTimeout)) {
+        	sDesc.defaultTimeout = (long) (svc.getProperty(FusekiVocab.pDefaultTimeout).getObject().asLiteral().getFloat() * 1000);
+        }
         if (svc.hasProperty(FusekiVocab.pAllowTimeoutOverride)) {
             sDesc.allowTimeoutOverride = svc.getProperty(FusekiVocab.pAllowTimeoutOverride).getObject().asLiteral().getBoolean();
             if (svc.hasProperty(FusekiVocab.pMaximumTimeoutOverride)) {
-                sDesc.maximumTimeoutOverride = (int) (svc.getProperty(FusekiVocab.pMaximumTimeoutOverride).getObject().asLiteral().getFloat() * 1000);
+                sDesc.maximumTimeoutOverride = (long) (svc.getProperty(FusekiVocab.pMaximumTimeoutOverride).getObject().asLiteral().getFloat() * 1000);
             }
         }
+        log.info("  timeouts = default: " + (sDesc.defaultTimeout == Long.MAX_VALUE ? "unlimited" : sDesc.defaultTimeout + "ms")
+        	+ (sDesc.allowTimeoutOverride ? (", max: " + (sDesc.maximumTimeoutOverride == Long.MAX_VALUE ? "unlimited" : sDesc.maximumTimeoutOverride + "ms")) : ", cannot be overridden"));
         
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
 

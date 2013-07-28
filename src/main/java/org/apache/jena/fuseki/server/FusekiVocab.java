@@ -41,6 +41,7 @@ public class FusekiVocab
     public static final Property pServiceReadWriteGraphStoreEP = property("serviceReadWriteGraphStore") ;
     public static final Property pServiceReadgraphStoreEP = property("serviceReadGraphStore") ;
 
+    public static final Property pDefaultTimeout = property("defaultTimeout");
     public static final Property pAllowTimeoutOverride = property("allowTimeoutOverride");
     public static final Property pMaximumTimeoutOverride = property("maximumTimeoutOverride");
 

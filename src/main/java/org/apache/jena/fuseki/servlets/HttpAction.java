@@ -60,6 +60,9 @@ public class HttpAction
 
     private long startTime = -2 ;
     private long finishTime = -2 ;
+
+    // Set by e.g. SPARQL_Query.setAnyTimeouts(), for picking up later.
+    public long timeout = Long.MAX_VALUE;
     
     // Incoming
     //public final 

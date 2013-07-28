@@ -63,6 +63,8 @@
         <br/>
         <input type="checkbox" name="force-accept" value="text/plain"/>
         Force the accept header to <tt>text/plain</tt> regardless.
+        <br/>
+        Timeout: <input type="text" name="timeout" size="4"/> (seconds; leave blank for server default)
 	    <br/>
 	    <input type="submit" value="Get Results" />
       </form>
