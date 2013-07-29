@@ -740,23 +740,10 @@ public class Query extends Prologue implements Cloneable, Printable
      * Makes a copy of this query.  Copies by parsing a query from the serialized form of this query
      * @return Copy of this query
      */
-    public Query cloneQuery()
-    {
-    	//By default clone from serialized form of this query
-    	return cloneQuery(false);
-    }
-    
-    /**
-     * Makes a copy of this query.  May specify whether is cloned by parsing from original raw query or by parsing from serialized form of this query
-     * @param useRawQuery Copy from raw query if present
-     * @return Copy of this query
-     */
-    public Query cloneQuery(boolean useRawQuery)
-    {
+    public Query cloneQuery() {
         // A little crude.
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        serialize(buff, getSyntax()) ;
-        String qs = buff.toString() ;
+        // Must use toString() rather than serialize() because we may not know how to serialize extended syntaxes
+        String qs = this.toString();
         return QueryFactory.create(qs, getSyntax()) ;
     }
     
