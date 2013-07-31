@@ -58,7 +58,7 @@ public class UpdateWriter implements Closeable
     public UpdateWriter(IndentedWriter out, SerializationContext sCxt)
     {
         if (out == null)
-            throw new IllegalArgumentException("out may not be null") ;
+            throw new NullPointerException("out") ;
         
         // To get legal syntax out, the serialization context 
         // has to be a bNode mapping that does ??N vars to bNodes
