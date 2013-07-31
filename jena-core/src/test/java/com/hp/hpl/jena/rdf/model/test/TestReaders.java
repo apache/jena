@@ -27,7 +27,6 @@ import org.junit.Assert ;
 
 import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.rdf.model.StmtIterator ;
-import com.hp.hpl.jena.rdf.model.impl.NTripleReader ;
 import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.NoReaderForLangException ;
@@ -45,12 +44,15 @@ public class TestReaders extends AbstractModelTestBase
 		this( new TestPackage.PlainModelFactory(), "TestReaders"); 
 	}
 
+	/**
+	 * Test to ensure that the reader is set.
+	 */
 	public void testGetNTripleReader()
 	{
 		final RDFReader reader = model.getReader("N-TRIPLE");
-		Assert.assertTrue(reader instanceof NTripleReader);
+        Assert.assertNotNull(reader);
 	}
-
+	
 	public void testMissingReader()
 	{
 		model.setReaderClassName("foobar", "");

@@ -30,9 +30,23 @@ import com.hp.hpl.jena.shared.PrefixMapping ;
  */
 public interface TestingModelFactory
 {
+	/**
+	 * Create the default model for testing
+	 * @return the model.
+	 */
 	abstract public Model createModel();
 
+	/**
+	 * get the prefix mapping for the default model.
+	 * @return a PrefixMapping
+	 */
 	abstract public PrefixMapping getPrefixMapping();
 
+	/**
+	 * Get a model for the specified graph.
+	 * @param base the graph to make the model for.
+	 * @return the model
+	 */
 	abstract public Model createModel( Graph base );
+
 }
