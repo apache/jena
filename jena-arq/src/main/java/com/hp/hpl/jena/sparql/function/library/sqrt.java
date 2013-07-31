@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** abs(expression) */ 
+/** sqrt(expression) */ 
 
 public class sqrt  extends FunctionBase1
 {
