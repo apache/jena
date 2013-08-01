@@ -29,6 +29,7 @@ import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -96,8 +97,7 @@ public class BulkLoader
 
     private static BulkStreamRDF destinationDefaultGraph(DatasetGraphTDB dsg, boolean showProgress)
     {
-        NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ;
-        return destinationGraph(dsg, ntt, showProgress) ;
+        return destinationGraph(dsg, null, showProgress) ;
     }
 
     /** Load into named graph */
@@ -127,7 +127,6 @@ public class BulkLoader
         BulkStreamRDF dest = destinationDataset(dsg, showProgress) ;
         loadQuads$(dest, input) ;
     }
-    
 
     /** Load into a graph */
     private static void loadTriples$(BulkStreamRDF dest, List<String> urls)
@@ -175,10 +174,7 @@ public class BulkLoader
     {
         if ( graphName == null )
             return destinationDefaultGraph(dsg,showProgress) ;
-        
-        NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
-        NodeTupleTable ntt2 = new NodeTupleTableView(ntt, graphName) ;
-        return destinationGraph(dsg, ntt2, showProgress) ;
+        return destinationGraph(dsg, graphName, showProgress) ;
     }
 
     public static LoadMonitor createLoadMonitor(DatasetGraphTDB dsg, String itemName, boolean showProgress)
@@ -194,9 +190,9 @@ public class BulkLoader
         return new DestinationDSG(dsg, showProgress) ;
     }
     
-    private static BulkStreamRDF destinationGraph(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, boolean showProgress)
+    private static BulkStreamRDF destinationGraph(DatasetGraphTDB dsg, Node graphNode, boolean showProgress)
     {
-        return new DestinationGraph(dsg, nodeTupleTable, showProgress) ;
+        return new DestinationGraph(dsg, graphNode, showProgress) ;
     }
 
     // Load triples and quads into a dataset.
@@ -295,8 +291,11 @@ public class BulkLoader
         public void tuple(Tuple<Node> tuple)    { throw new TDBException("Tuple encountered while loading a dataset") ; }
         @Override
         public void base(String base)           {}
+        
         @Override
-        public void prefix(String prefix, String iri)   {} // TODO
+        public void prefix(String prefix, String iri)
+        { dsg.getPrefixes().getPrefixMapping().setNsPrefix(prefix, iri) ; }
+
         @Override
         public void finish()                    {}
     }
@@ -305,15 +304,27 @@ public class BulkLoader
     private static final class DestinationGraph implements BulkStreamRDF
     {
         final private DatasetGraphTDB dsg ;
+        final private Node graphName ;
         final private LoadMonitor monitor ;
         final private LoaderNodeTupleTable loaderTriples ;
         final private boolean startedEmpty ;
         private long count = 0 ;
         private StatsCollector stats ;
 
-        DestinationGraph(final DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, boolean showProgress)
+        // Graph node is null for default graph.
+        DestinationGraph(final DatasetGraphTDB dsg, Node graphNode, boolean showProgress)
         {
             this.dsg = dsg ;
+            this.graphName = graphNode ;
+            
+            // Choose NodeTupleTable.
+            NodeTupleTable nodeTupleTable ;
+            if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
+                nodeTupleTable = dsg.getTripleTable().getNodeTupleTable() ;
+            else {
+                NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
+                nodeTupleTable = new NodeTupleTableView(ntt, graphName) ;
+            }
             startedEmpty = dsg.isEmpty() ;
             monitor = createLoadMonitor(dsg, "triples", showProgress) ;
             loaderTriples = new LoaderNodeTupleTable(nodeTupleTable, "triples", monitor) ;
@@ -364,7 +375,19 @@ public class BulkLoader
         @Override
         public void base(String base)           { }
         @Override
-        public void prefix(String prefix, String iri)  { } // TODO
+        public void prefix(String prefix, String iri)
+        { 
+            if ( graphName != null && graphName.isBlank() ) {  
+                loadLogger.warn("Prefixes for blank node graphs not stored") ;
+                return ;
+            }
+                
+            PrefixMapping pmap =
+                ( graphName == null )
+                ? dsg.getPrefixes().getPrefixMapping()
+                : dsg.getPrefixes().getPrefixMapping(graphName.getURI()) ;
+            pmap.setNsPrefix(prefix, iri) ;
+        }
         @Override
         public void finish()                    {}
     }
