@@ -32,7 +32,6 @@ import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor;
 import org.apache.jena.jdbc.preprocessing.CommandPreProcessor;
 import org.apache.jena.jdbc.preprocessing.Echo;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Assume;
@@ -50,7 +49,7 @@ public abstract class AbstractJenaDriverTests {
         // Init Log4j
         BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.WARN);
+        Logger.getRootLogger().removeAllAppenders();
 
         // Init ARQ
         ARQ.init();

@@ -43,7 +43,6 @@ import org.apache.jena.jdbc.results.metadata.AskResultsMetadata;
 import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Assume;
@@ -70,7 +69,7 @@ public abstract class AbstractJenaConnectionTests {
         // Init Log4j
         BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.WARN);
+        Logger.getRootLogger().removeAllAppenders();
 
         // Init ARQ
         ARQ.init();

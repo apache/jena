@@ -27,6 +27,8 @@ import java.sql.Types;
 import java.util.Calendar;
 
 import org.apache.jena.jdbc.results.metadata.columns.ColumnInfo;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,6 +46,13 @@ import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
  *
  */
 public class TestCompatibility {
+    
+    static {
+        // Init Log4j
+        BasicConfigurator.resetConfiguration();
+        BasicConfigurator.configure();
+        Logger.getRootLogger().removeAllAppenders();
+    }
 
     /**
      * Tests constants are not normalized to different values
