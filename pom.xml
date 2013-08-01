@@ -60,7 +60,8 @@
     <module>jena-text</module>
     <module>jena-sdb</module>
     <module>jena-fuseki</module>
-    <module>jena-jdbc</module>
+    <!-- Currently the following builds locally but hangs on Apache Jenkins -->
+    <!--<module>jena-jdbc</module>-->
 
     <!-- Delivery modules - after build modules --> 
     <module>apache-jena-libs</module>
