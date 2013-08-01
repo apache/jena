@@ -89,7 +89,7 @@ public abstract class AbstractScopedAuthenticator<T> extends AbstractCredentials
     /**
      * Finds credentials for the given URI using a longest match approach
      * @param target
-     * @return
+     * @return T
      */
     protected final T findCredentials(URI target) {
         // Try URI as-is to start with
