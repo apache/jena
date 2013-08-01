@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.algebra ;
 
+import static com.hp.hpl.jena.sparql.core.Vars.* ;
+
 import java.util.ArrayList;
 import java.util.Collection ;
 import java.util.Iterator ;
@@ -33,7 +35,6 @@ import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 
@@ -385,26 +386,5 @@ public class OpVars
                 acc.addAll(x) ;
             }
         }
-    }
-
-    private static void addVarsFromTriple(Collection<Var> acc, Triple t) {
-        addVar(acc, t.getSubject()) ;
-        addVar(acc, t.getPredicate()) ;
-        addVar(acc, t.getObject()) ;
-    }
-
-    private static void addVarsFromQuad(Collection<Var> acc, Quad q) {
-        addVar(acc, q.getSubject()) ;
-        addVar(acc, q.getPredicate()) ;
-        addVar(acc, q.getObject()) ;
-        addVar(acc, q.getGraph()) ;
-    }
-
-    private static void addVar(Collection<Var> acc, Node n) {
-        if (n == null)
-            return ;
-
-        if (n.isVariable())
-            acc.add(Var.alloc(n)) ;
     }
 }
