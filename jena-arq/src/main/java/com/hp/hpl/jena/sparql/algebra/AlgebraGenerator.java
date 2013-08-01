@@ -39,7 +39,10 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-// Develop modifications outside of main codebase.Table
+/**
+ * Class used to compile SPARQL queries into SPARQL algebra
+ *
+ */
 public class AlgebraGenerator 
 {
     // Fixed filter position means leave exactly where it is syntactically (illegal SPARQL)
@@ -58,14 +61,21 @@ public class AlgebraGenerator
     static final private boolean applySimplification = true ;                   // False allows raw algebra to be generated (testing) 
     static final private boolean simplifyTooEarlyInAlgebraGeneration = false ;  // False is the correct setting. 
 
+    /**
+     * Create a new generator
+     * @param context Context
+     */
     public AlgebraGenerator(Context context)
     {
         this (context != null ? context : ARQ.getContext().copy(), 0) ;
     }
     
+    /**
+     * Create a new generator
+     */
     public AlgebraGenerator() { this(null) ; } 
     
-    private AlgebraGenerator(Context context, int depth)
+    protected AlgebraGenerator(Context context, int depth)
     {
         this.context = context ;
         this.subQueryDepth = depth ;
@@ -74,6 +84,14 @@ public class AlgebraGenerator
     //-- Public operations.  Do not call recursively (call compileElement).
     // These operations apply the simplification step which is done, once, at the end.
     
+    /**
+     * Compile a query
+     * <p>
+     * <strong>DO NOT</strong> call recursively
+     * </p>
+     * @param query Query to compile
+     * @return Compiled algebra
+     */
     public Op compile(Query query)
     {
         Op op = compile(query.getQueryPattern()) ;     // Not compileElement - may need to apply simplification.
@@ -83,7 +101,12 @@ public class AlgebraGenerator
     }
     
     protected static Transform simplify = new TransformSimplify() ;
-    // Compile any structural element
+    
+    /**
+     * Compile any structural element
+     * @param elt Element
+     * @return Compiled algebra
+     */
     public Op compile(Element elt)
     {
         Op op = compileElement(elt) ;
@@ -93,7 +116,7 @@ public class AlgebraGenerator
         return op2;
     }
     
-    private static Op simplify(Op op)
+    protected static Op simplify(Op op)
     {
         return Transformer.transform(simplify, op) ;
     }
@@ -202,11 +225,10 @@ public class AlgebraGenerator
      * Return a list of elements with any filters at the end. 
      */
     
-    private Pair<List<Expr>, List<Element>> prepareGroup(ElementGroup groupElt)
+    protected Pair<List<Expr>, List<Element>> prepareGroup(ElementGroup groupElt)
     {
         List<Element> groupElts = new ArrayList<Element>() ;
         
-        PathBlock currentBGP = null ;
         PathBlock currentPathBlock = null ;
         List<Expr> filters = null ;
         
@@ -225,7 +247,7 @@ public class AlgebraGenerator
             }
 
             // The parser does not generate ElementTriplesBlock (SPARQL 1.1) 
-            // but SPARQL 1.0 does and also we cope for programmtically built queries
+            // but SPARQL 1.0 does and also we cope for programmatically built queries
             
             if ( elt instanceof ElementTriplesBlock )
             {
@@ -300,7 +322,7 @@ public class AlgebraGenerator
 //        return joined ; 
 //    }
     
-    private Op compileOneInGroup(Element elt, Op current, Deque<Op> acc)
+    protected Op compileOneInGroup(Element elt, Op current, Deque<Op> acc)
     {
 //            // Coming into the general block.
 //            if ( elt instanceof ElementTriplesBlock )
@@ -398,7 +420,7 @@ public class AlgebraGenerator
         return compileUnknownElement(elt, "compile/Element not recognized: "+Utils.className(elt));
     }
 
-    private Op compileElementUnion(ElementUnion el)
+    protected Op compileElementUnion(ElementUnion el)
     { 
         Op current = null ;
         
@@ -410,7 +432,7 @@ public class AlgebraGenerator
         return current ;
     }
 
-    private Op compileElementNotExists(Op current, ElementNotExists elt2)
+    protected Op compileElementNotExists(Op current, ElementNotExists elt2)
     {
         Op op = compile(elt2.getElement()) ;    // "compile", not "compileElement" -- do simpliifcation  
         Expr expr = new E_Exists(elt2, op) ;
@@ -418,26 +440,26 @@ public class AlgebraGenerator
         return OpFilter.filter(expr, current) ;
     }
 
-    private Op compileElementExists(Op current, ElementExists elt2)
+    protected Op compileElementExists(Op current, ElementExists elt2)
     {
         Op op = compile(elt2.getElement()) ;    // "compile", not "compileElement" -- do simpliifcation 
         Expr expr = new E_Exists(elt2, op) ;
         return OpFilter.filter(expr, current) ;
     }
 
-    private Op compileElementMinus(Op current, ElementMinus elt2)
+    protected Op compileElementMinus(Op current, ElementMinus elt2)
     {
         Op op = compile(elt2.getMinusElement()) ;
         Op opMinus = OpMinus.create(current, op) ;
         return opMinus ;
     }
 
-    private Op compileElementData(ElementData elt)
+    protected Op compileElementData(ElementData elt)
     {
         return OpTable.create(elt.getTable()) ;
     }
 
-    private Op compileElementUnion(Op current, ElementUnion elt2)
+    protected Op compileElementUnion(Op current, ElementUnion elt2)
     {
         // Special SPARQL 1.1 case.
         Op op = compile(elt2.getElements().get(0)) ;
@@ -501,7 +523,7 @@ public class AlgebraGenerator
     }
     
     /** Compile query modifiers */
-    private Op compileModifiers(Query query, Op pattern)
+    protected Op compileModifiers(Query query, Op pattern)
     {
          /* The modifier order in algebra is:
           * 
@@ -626,7 +648,7 @@ public class AlgebraGenerator
 
     // -------- 
     
-    private static Op join(Op current, Op newOp)
+    protected static Op join(Op current, Op newOp)
     { 
         if ( simplifyTooEarlyInAlgebraGeneration && applySimplification )
             return OpJoin.createReduce(current, newOp) ;
@@ -644,7 +666,7 @@ public class AlgebraGenerator
         return OpUnion.create(current, newOp) ;
     }
     
-    private void broken(String msg)
+    protected final void broken(String msg)
     {
         //System.err.println("AlgebraGenerator: "+msg) ;
         throw new ARQInternalErrorException(msg) ;
