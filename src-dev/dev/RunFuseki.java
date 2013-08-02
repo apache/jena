@@ -52,6 +52,7 @@ public class RunFuseki
     private static void main1()
     {
         FusekiCmd.main(
+                     //  "-v",
                      "--update", "--mem", "--mgtPort=3131", "/ds"
                      
                      //"--update", "--mem", "/ds"
@@ -59,7 +60,6 @@ public class RunFuseki
                      //"--update", "--loc=/home/afs/tmp/DB", "--set=tdb:unionDefaultGraph=true", "--update", "/ds"
                      //"--update", "--memtdb", "--set=tdb:unionDefaultGraph=true", "--update", "/ds"
                      
-                    //"-v", 
                     //"--debug",
                     //"--update",
                     //"--timeout=1000,5000",
