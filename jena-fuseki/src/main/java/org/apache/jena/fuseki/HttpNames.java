@@ -84,7 +84,7 @@ public class HttpNames
     public static final String ServiceUpdate        = "update" ;
     public static final String ServiceData          = "data" ;
     public static final String ServiceUpload        = "upload" ;
-    public static final String ServiceGeneralQuery  = "sparql" ;
+    public static final String ServiceGeneralQuery  = "/sparql" ;
     
     // Posisble values of fields.
     // TODO Pull in from results writer.
