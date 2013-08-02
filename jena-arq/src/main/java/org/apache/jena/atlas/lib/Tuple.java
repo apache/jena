@@ -28,13 +28,10 @@ import org.apache.jena.atlas.iterator.IteratorArray ;
 import org.apache.jena.atlas.iterator.Transform ;
 
 /** Tuple class - tuples are immutable and must be created initialized */
-public final class Tuple<T> implements Iterable<T>
+public class Tuple<T> implements Iterable<T>
 {
-    // Interface this.
+    // Interface this?
     // Classes: TupleImpl, TupleSlice
-    
-    // Or use an ArrayList<T>
-    
 //    public static <X> Tuple<X> blankTuple(Class<X> clazz, int capacity)
 //    {
 //        @SuppressWarnings("unchecked")
@@ -73,9 +70,9 @@ public final class Tuple<T> implements Iterable<T>
     }
 
     // Alternative : Object[] (+ cast on access)
-    final T[] tuple ;
+    protected final T[] tuple ;
     
-    private Tuple(/*@SuppressWarnings("unchecked")*/ T...tuple)
+    protected Tuple(/*@SuppressWarnings("unchecked")*/ T...tuple)
     {
         this.tuple = ArrayUtils.copy(tuple) ;   // Take copy to stop 'tuple' being referenced after the call.
     }
