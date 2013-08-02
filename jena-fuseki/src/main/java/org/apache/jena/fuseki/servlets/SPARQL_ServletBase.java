@@ -137,10 +137,13 @@ public abstract class SPARQL_ServletBase extends ServletBase
             }
         } else {
             // General SPARQL processor
-            // - is this the right way to do it?
-            // = or make it a completely separate servlet. 
+            // Kludgy - is this the right way to do it?
+            //        - or make it a completely separate servlet.
+            //        - is it important enough to worry?
             dsRef = new DatasetRef();
             dsRef.dataset = dummyDSG;
+            dsRef.name = "" ;
+            dsRef.query.endpoints.add(HttpNames.ServiceGeneralQuery) ;
             dsRef.init() ;
         }
         
@@ -314,11 +317,10 @@ public abstract class SPARQL_ServletBase extends ServletBase
         return uri.substring(dsname.length()+1) ;   // Skip the separating "/"
     }
 
-    
-
-    
     protected static String mapRequestToService(DatasetRef dsRef, String uri, String serviceName)
     {
+        if ( dsRef == null )
+            return "" ;
         if ( dsRef.name.length() >= uri.length() )
             return "" ;
         return uri.substring(dsRef.name.length()+1) ;   // Skip the separating "/"
