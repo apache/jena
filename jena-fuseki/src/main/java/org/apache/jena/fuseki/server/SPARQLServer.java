@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.mgt.ActionDataset ;
 import org.apache.jena.fuseki.mgt.MgtFunctions ;
 import org.apache.jena.fuseki.mgt.PageNames ;
@@ -225,7 +226,6 @@ public class SPARQLServer {
         boolean installServices = true ;
 
         String validationRoot = "/validate" ;
-        String sparqlProcessor = "/sparql" ;
 
         // Should all services be /_/.... or some such?
 
@@ -263,7 +263,7 @@ public class SPARQLServer {
             addServlet(context, validateIRI, validationRoot + "/iri", false) ;
 
             // general query processor.
-            addServlet(context, generalQueryService, sparqlProcessor, enableCompression) ;
+            addServlet(context, generalQueryService, HttpNames.ServiceGeneralQuery, enableCompression) ;
         }
 
         if ( installManager || installServices ) {

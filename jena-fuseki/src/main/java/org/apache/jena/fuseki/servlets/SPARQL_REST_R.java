@@ -30,8 +30,6 @@ import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.riot.* ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /** Only the READ operations */
 public class SPARQL_REST_R extends SPARQL_REST
@@ -75,12 +73,10 @@ public class SPARQL_REST_R extends SPARQL_REST
             String ct = WebContent.mapLangToContentType(lang) ;
             action.response.setContentType(ct) ;
             Graph g = target.graph() ;
-            Model model = ModelFactory.createModelForGraph(g) ;
-            
             //Special case RDF/XML to be the plain (faster, less readable) form
             RDFFormat fmt = 
                 ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang) ;  
-            RDFDataMgr.write(out, model, fmt) ;
+            RDFDataMgr.write(out, g, fmt) ;
             success(action) ;
         } finally { action.endRead() ; }
     }
