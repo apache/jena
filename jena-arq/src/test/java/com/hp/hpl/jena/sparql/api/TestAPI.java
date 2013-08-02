@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.api;
 import java.util.Iterator;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Triple;
@@ -34,10 +35,14 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public class TestAPI extends BaseTest
 {
@@ -170,6 +175,61 @@ public class TestAPI extends BaseTest
             //System.out.println("Result: " + qs);
         }
         qexec.close() ;
+    }
+    
+    /**
+     * This test demonstrates a disconnect between user understanding of 
+     * initial bindings and the reality of their implementation.
+     * <p>
+     * Using initial bindings can potentially change the semantics of the query 
+     * in unexpected ways such as making an always false query return true
+     * but sometimes the optimizer (which knows nothing of initial bindings)
+     * makes a decision which negates that potential.
+     * </p>
+     */
+    @Test public void testInitialBindings5() {
+        Query query = QueryFactory.create(
+                "ASK\n" +
+                "WHERE {\n" +
+                "    FILTER (?a = <http://constant>) .\n" +
+                "}");
+        //System.out.println(Algebra.optimize(Algebra.compile(query)).toString());
+        
+        Model model = ModelFactory.createDefaultModel();
+        model.add(OWL.Thing, RDF.type, OWL.Class);
+        QuerySolutionMap initialBinding = new QuerySolutionMap();
+        initialBinding.add("a", ResourceFactory.createResource("http://constant"));
+        QueryExecution qexec = QueryExecutionFactory.create(query, model, initialBinding);
+        boolean result = qexec.execAsk();
+        Assert.assertFalse(result);
+    }
+    
+    /**
+     * This test demonstrates a disconnect between user understanding of 
+     * initial bindings and the reality of their implementation.
+     * <p>
+     * Using initial bindings can potentially change the semantics of the query 
+     * in unexpected ways such as making an always false query return true
+     * but sometimes the optimizer (which knows nothing of initial bindings)
+     * makes a decision which negates that potential.
+     * </p>
+     */
+    @Test public void testInitialBindings6() {
+        Query query = QueryFactory.create(
+                "ASK\n" +
+                "WHERE {\n" +
+                "    FILTER (?a = ?b) .\n" +
+                "}");
+        //System.out.println(Algebra.optimize(Algebra.compile(query)).toString());
+        
+        Model model = ModelFactory.createDefaultModel();
+        model.add(OWL.Thing, RDF.type, OWL.Class);
+        QuerySolutionMap initialBinding = new QuerySolutionMap();
+        initialBinding.add("a", ResourceFactory.createTypedLiteral(Boolean.TRUE));
+        initialBinding.add("b", ResourceFactory.createTypedLiteral(Boolean.TRUE));
+        QueryExecution qexec = QueryExecutionFactory.create(query, model, initialBinding);
+        boolean result = qexec.execAsk();
+        Assert.assertFalse(result);
     }
     
     @Test public void testReuseQueryObject1()
