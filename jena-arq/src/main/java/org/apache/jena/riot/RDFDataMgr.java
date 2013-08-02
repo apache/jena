@@ -710,8 +710,19 @@ public class RDFDataMgr
      */
     public static void parse(StreamRDF sink, TypedInputStream in, String base)
     {
+        parse(sink, in, base, (Context)null) ;
+    }
+
+    /** Read RDF data.
+     * @param sink      Destination for the RDF read.
+     * @param in        Bytes to read.
+     * @param base      Base URI
+     * @param context   Content object to control reading process.
+     */
+    public static void parse(StreamRDF sink, TypedInputStream in, String base, Context context)
+    {
         Lang hintLang = RDFLanguages.contentTypeToLang(in.getMediaType()) ;
-        process(sink, new TypedInputStream(in), base, hintLang, null) ;
+        process(sink, new TypedInputStream(in), base, hintLang, context) ;
     }
 
     /** Open a stream to the destination (URI or filename)
@@ -775,9 +786,9 @@ public class RDFDataMgr
     // We could have had two step design - ReaderFactory-ReaderInstance
     // no - put the bruden on complicated readers, not everyone. 
     
-    private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang hintLang, Context context )
+    private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang hintLang, Context context)
     {
-        ContentType ct = determineCT(baseUri, in.getContentType(), hintLang ) ;
+        ContentType ct = determineCT(baseUri, in.getContentType(), hintLang) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the triples content type: (URI="+baseUri+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
 
@@ -795,8 +806,6 @@ public class RDFDataMgr
             return null ;
         return r.create(lang) ;
     }
-
-    // With sink and ither ParserOutput
     
     // java.io.Readers are NOT preferred.
     @SuppressWarnings("deprecation")
@@ -831,6 +840,17 @@ public class RDFDataMgr
         parser.parse() ;
     }
 
+    /** Determine the Lang, given the URI target, any content type header string and a hint */ 
+    public static Lang determineLang(String target, String ctStr, Lang hintLang) {
+        ContentType ct = determineCT(target, ctStr, hintLang ) ;
+        if ( ct == null )
+            return hintLang ;
+        Lang lang = RDFLanguages.contentTypeToLang(ct) ;
+        if (lang == null )
+            return hintLang ;
+        return lang ;
+    }
+    
     private static ContentType determineCT(String target, String ctStr, Lang hintLang)
     {
         boolean isTextPlain = WebContent.contentTypeTextPlain.equals(ctStr) ;
