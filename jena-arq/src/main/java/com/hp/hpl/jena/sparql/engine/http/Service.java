@@ -123,8 +123,6 @@ public class Service
 //        }
 //        else
             query = OpAsQuery.asQuery(opRemote) ;
-            
-        
         
         Explain.explain("HTTP", query, context) ;
         String uri = op.getService().getURI() ;
