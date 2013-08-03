@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.tdb.store.bulkloader2;
 
 import java.io.InputStream ;
-import java.util.Arrays ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.AtlasException ;
@@ -58,14 +57,13 @@ public class CmdIndexBuild
         
         String locationStr = argv[0] ;
         String indexName = argv[1] ;
-        if ( ! Arrays.asList(Names.tripleIndexes).contains(indexName) &&
-            ! Arrays.asList(Names.quadIndexes).contains(indexName) )
-//        
-//        if ( !indexName.equals("SPO") && !indexName.equals("POS") && !indexName.equals("OSP") )
-        {
-            System.err.println("Index name not recognized: "+indexName) ;
-            System.exit(1) ;
-        }
+        
+//        if ( ! Arrays.asList(Names.tripleIndexes).contains(indexName) &&
+//            ! Arrays.asList(Names.quadIndexes).contains(indexName) )
+//        {
+//            System.err.println("Index name not recognized: "+indexName) ;
+//            System.exit(1) ;
+//        }
             
         String dataFile = argv[2] ;
         
