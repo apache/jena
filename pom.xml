@@ -75,8 +75,6 @@
     <assembly.zip.name>${this.root}</assembly.zip.name>
 
     <ver.jetty>8.1.11.v20130520</ver.jetty>
-    <!--<ver.jetty>8.1.8.v20121106</ver.jetty>  < ! - - Has stray print "Null identity service..." -->
-    <!-- <ver.jetty>8.1.7.v20120910</ver.jetty> -->
     <ver.velocity>1.7</ver.velocity>
 
     <ver.commons-fileupload>1.2.2</ver.commons-fileupload>

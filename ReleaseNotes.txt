@@ -4,6 +4,8 @@
 
 + jena-text added to the server : Lucene/solr backed search:
   http://jena.apache.org/documentation/query/text-query.html
++ Upgrade to Jetty 8.1.11.v20130520  
++ JENA-499 : --localhost will cause the server to oonly listen to the loopback interface
 
 == Fuseki 0.2.7
 
