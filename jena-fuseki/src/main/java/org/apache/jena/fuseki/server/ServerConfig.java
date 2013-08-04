@@ -34,7 +34,9 @@ public class ServerConfig
     /** Port for the pages UI : this can be the same as the services port. */ 
     public int pagesPort ;
     /** Jetty config file - if null, use the built-in configuration of Jetty */
-    public String jettyConfigFile ;
+    public String jettyConfigFile = null ;
+    /** Listen only on the loopback (localhost) interface */
+    public boolean loopback = false ;
     /** The local directory for serving the static pages */ 
     public String pages ;
     /** The list of datasets */
