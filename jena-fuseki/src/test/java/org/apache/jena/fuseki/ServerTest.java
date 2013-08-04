@@ -111,7 +111,7 @@ public class ServerTest
     {
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         // This must agree with ServerTest
-        ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true) ;
+        ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true, true) ;
         conf.port = ServerTest.port ;
         conf.pagesPort = ServerTest.port ;
         server = new SPARQLServer(conf) ;

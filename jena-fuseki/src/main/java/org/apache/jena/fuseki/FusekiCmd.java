@@ -21,8 +21,6 @@ package org.apache.jena.fuseki;
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.InputStream ;
-import java.net.InetAddress ;
-import java.net.UnknownHostException ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
@@ -115,7 +113,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argMemTDB        = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB") ;
     private static ArgDecl argTDB           = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
     private static ArgDecl argPort          = new ArgDecl(ArgDecl.HasValue, "port") ;
-    private static ArgDecl argHost          = new ArgDecl(ArgDecl.HasValue, "host") ;
+    private static ArgDecl argLocalhost     = new ArgDecl(ArgDecl.NoValue, "localhost", "local") ;
     private static ArgDecl argTimeout       = new ArgDecl(ArgDecl.HasValue, "timeout") ;
     private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
     private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
@@ -144,7 +142,7 @@ public class FusekiCmd extends CmdARQ
     
     private int port                    = 3030 ;
     private int mgtPort                 = -1 ;
-    private String clientHost           = null;
+    private boolean listenLocal         = false ;
 
     private DatasetGraph dsg            = null ; 
     private String datasetPath          = null ;
@@ -174,7 +172,7 @@ public class FusekiCmd extends CmdARQ
         add(argPort,    "--port",               "Listen on this port number") ;
         add(argPages,   "--pages=DIR",          "Set of pages to serve as static content") ; 
         // Set via jetty config file.
-        //add(argHost,    "--host=name or IP",    "Listen on a particular interface (e.g. localhost)") ;
+        add(argLocalhost,   "--localhost",      "Listen only on the localhost interface") ;
         add(argTimeout, "--timeout=",           "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
         add(argAllowUpdate, "--update",         "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         add(argFusekiConfig, "--config=",       "Use a configuration file to determine the services") ;
@@ -191,7 +189,7 @@ public class FusekiCmd extends CmdARQ
         super.modVersion.addClass(Fuseki.class) ;
     }
 
-    static String argUsage = "[--config=FILE] [--mem|--desc=AssemblerFile|--file=FILE] [--port PORT] [--host HOST] /DatasetPathName" ; 
+    static String argUsage = "[--config=FILE] [--mem|--desc=AssemblerFile|--file=FILE] [--port PORT] /DatasetPathName" ; 
     
     @Override
     protected String getSummary()
@@ -311,15 +309,8 @@ public class FusekiCmd extends CmdARQ
             }
         }
 
-        if ( contains(argHost) )
-        {
-        	clientHost = getValue(argHost);
-        	try {
-        		InetAddress.getByName(clientHost);
-        	} catch (UnknownHostException e) {
-        		throw new CmdException("unknown host name");
-        	}
-        }
+        if ( contains(argLocalhost) )
+            listenLocal = true ;
             
         if ( fusekiConfigFile == null && dsg == null )
             throw new CmdException("No dataset defined and no configuration file: "+argUsage) ;
@@ -433,13 +424,14 @@ public class FusekiCmd extends CmdARQ
             serverConfig = FusekiConfig.configure(fusekiConfigFile) ;
         }
         else
-            serverConfig = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate) ;
+            serverConfig = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate, listenLocal) ;
         
         // TODO Get from parsing config file.
         serverConfig.port = port ;
         serverConfig.pages = staticContentDir ;
         serverConfig.mgtPort = mgtPort ;
         serverConfig.pagesPort = port ;
+        serverConfig.loopback = listenLocal ;
         serverConfig.enableCompression = enableCompression ;
         serverConfig.jettyConfigFile = jettyConfigFile ;
         serverConfig.authConfigFile = authConfigFile ;

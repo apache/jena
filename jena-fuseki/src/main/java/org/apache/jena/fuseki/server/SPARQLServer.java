@@ -168,7 +168,7 @@ public class SPARQLServer {
             // for detailed configuration of the server using Jetty features.
             server = configServer(jettyConfig) ;
         } else
-            server = defaultServerConfig(serverConfig.port) ;
+            server = defaultServerConfig(serverConfig.port, serverConfig.loopback) ;
         // Keep the server to a maximum number of threads.
         // server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
 
@@ -256,7 +256,7 @@ public class SPARQLServer {
 
             HttpServlet dumpService = new DumpServlet() ;
             HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
-            // TODO Name management
+
             addServlet(context, validateQuery, validationRoot + "/query", false) ;
             addServlet(context, validateUpdate, validationRoot + "/update", false) ;
             addServlet(context, validateData, validationRoot + "/data", false) ;
@@ -346,7 +346,7 @@ public class SPARQLServer {
         }
     }
 
-    private static Server defaultServerConfig(int port) {
+    private static Server defaultServerConfig(int port, boolean loopback) {
         // Server, with one NIO-based connector, large input buffer size (for
         // long URLs, POSTed forms (queries, updates)).
         Server server = new Server() ;
@@ -369,6 +369,8 @@ public class SPARQLServer {
         // and you get a lot of log messages.
         connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this
                                       // goes off.
+        if ( loopback )
+            connector.setHost("localhost");
         connector.setPort(port) ;
         // Some people do try very large operations ...
         connector.setRequestHeaderSize(64 * 1024) ;

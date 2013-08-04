@@ -84,7 +84,7 @@ public class FusekiConfig
     "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>" ,
     "") ;
     
-    public static ServerConfig defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate)
+    public static ServerConfig defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate, boolean listenLocal)
     {
         DatasetRef dbDesc = new DatasetRef() ;
         dbDesc.name = datasetPath ;
@@ -106,6 +106,7 @@ public class FusekiConfig
         config.port = 3030 ;
         config.mgtPort = 3031 ;
         config.pagesPort = config.port ;
+        config.loopback = listenLocal ;
         config.jettyConfigFile = null ;
         config.pages = Fuseki.PagesStatic ;
         config.enableCompression = true ;
