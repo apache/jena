@@ -630,7 +630,10 @@ public class TestTransformFilters
     
     @Test public void implictJoin11()
     {
-        // Test case related to JENA-5000
+        // Test case related to JENA-500
+        // Detect that the expression (= ?prebound ?y) is always 'error' because 
+        // ?prebound is undef.  Therefore the whole thing can be removed as there
+        // can be no solutions.
         test(
             "(filter (= ?prebound ?y) (extend ((?y (ex:someFunction ?x))) (table unit)))",
             t_implicitJoin,
