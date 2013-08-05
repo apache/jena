@@ -58,8 +58,13 @@
           <option value="tsv">TSV</option>
         </select>
         <br/>
-	    XSLT style sheet (blank for none): 
-        <input name="stylesheet" size="20" value="/xml-to-html.xsl" />
+	    If XML output, add XSLT style sheet (blank for none): 
+        <select name="stylesheet">
+          <option value=""></option>
+          <option value="/xml-to-html.xsl">xml-to-html</option>
+          <option value="/xml-to-html-links.xsl">xml-to-html-links</option>
+          <option value="/xml-to-html-plain.xsl">xml-to-html-plain</option>
+        </select>
         <br/>
         <input type="checkbox" name="force-accept" value="text/plain"/>
         Force the accept header to <tt>text/plain</tt> regardless.
