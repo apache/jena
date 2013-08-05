@@ -213,6 +213,26 @@ public class TestParameterizedSparqlString {
 
         test(query, new String[] { "<http://example.org>", "<http://predicate>" }, new String[] { "?s", "?p" });
     }
+    
+    @Test
+    public void test_param_string_bnode_1() {
+        // Test Blank Node injection
+        String cmdText = "SELECT * WHERE { ?s ?p ?o . }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setIri("s", "_:blankNodeID");
+        
+        test(query, new String[] { "<_:blankNodeID>" }, new String[] { "?s" });
+    }
+    
+    @Test
+    public void test_param_string_bnode_2() {
+        // Test Blank Node injenction
+        String cmdText = "INSERT { GRAPH <target> { ?node a:p ?o . } } WHERE { ?node a:p ?o . }";
+        ParameterizedSparqlString update = new ParameterizedSparqlString(cmdText);
+        update.setIri("node", "_:blankNodeID");
+        
+        test(update, new String[] { "<_:blankNodeID>" }, new String[] { "?node" });
+    }
 
     @Test
     public void test_param_string_mixed_1() {
