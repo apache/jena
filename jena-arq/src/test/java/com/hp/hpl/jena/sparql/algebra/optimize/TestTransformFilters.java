@@ -627,6 +627,15 @@ public class TestTransformFilters
             t_implicitJoin,
             (String[])null);
     }
+    
+    @Test public void implictJoin11()
+    {
+        // Test case related to JENA-5000
+        test(
+            "(filter (= ?prebound ?y) (extend ((?y (ex:someFunction ?x))) (table unit)))",
+            t_implicitJoin,
+            "(table empty)");
+    }
         
     @Test public void implicitLeftJoin1()
     {
