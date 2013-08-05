@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
@@ -91,7 +92,14 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     protected Plan createPlan()
     {
         // Decide the algebra to actually execute.
-        Op op = modifyOp(queryOp) ;
+        Op op = queryOp ;
+        if ( false && ! startBinding.isEmpty() ) {
+            op = Substitute.substitute(op, startBinding) ;
+            context.put(ARQConstants.sysCurrentAlgebra, op) ;
+            // Don't reset the startBinding because it also is
+            // needed in the output.
+        }
+        op = modifyOp(op) ;
 
         QueryIterator queryIterator = null ;
         if ( dataset != null )
