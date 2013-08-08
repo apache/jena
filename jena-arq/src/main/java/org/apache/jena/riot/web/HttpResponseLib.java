@@ -25,6 +25,7 @@ import java.util.Map ;
 
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
+import org.apache.http.util.EntityUtils ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -82,12 +83,9 @@ public class HttpResponseLib
                 InputStream in = entity.getContent() ;
                 int l ;
                 byte buffer[] = new byte[1024] ;
-                while( (l=in.read(buffer)) != -1 )
-                {
+                while( (l=in.read(buffer)) != -1 ) {
                     System.out.print(new String(buffer, 0, l, "UTF-8")) ;
                 }
-                    
-    
                 in.close() ;
             } catch (IOException ex)
             {
@@ -98,8 +96,9 @@ public class HttpResponseLib
     
     public static HttpResponseHandler nullResponse = new HttpResponseHandler() {
         @Override
-        public void handle(String baseIRI , HttpResponse response )
-        {}
+        public void handle(String baseIRI , HttpResponse response ) {
+            EntityUtils.consumeQuietly(response.getEntity()) ;
+        }
     } ;
     
     public static ResultsFormat contentTypeToResultSet(String contentType) { return mapContentTypeToResultSet.get(contentType) ; }

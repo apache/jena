@@ -20,8 +20,10 @@ package org.apache.jena.fuseki.http;
 
 import java.io.IOException ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.HttpException ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.IRILib ;
@@ -51,13 +53,15 @@ public class TestHttpOp extends BaseTest {
     // Basic operations
     
     @Test public void httpGet_01() {
-        HttpOp.execHttpGet(pingURL) ;
+        TypedInputStream in = HttpOp.execHttpGet(pingURL) ;
+        IO.close(in) ;
     }
     
     @Test(expected=HttpException.class) 
     public void httpGet_02() {
         try {
-            HttpOp.execHttpGet(ServerTest.urlRoot+"does-not-exist") ;
+            TypedInputStream in = HttpOp.execHttpGet(ServerTest.urlRoot+"does-not-exist") ;
+            IO.close(in) ;
         } catch(HttpException ex) {
             assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
             throw ex ;
@@ -76,20 +80,23 @@ public class TestHttpOp extends BaseTest {
     }
     
     @Test public void httpGet_05() {
-        HttpOp.execHttpGet(simpleQuery) ;
+        TypedInputStream in = HttpOp.execHttpGet(simpleQuery) ;
+        IO.close(in) ;
     }
     
     // SPARQL Query
     
     @Test public void queryGet_01() {
-        HttpOp.execHttpGet(simpleQuery) ;
+        TypedInputStream in = HttpOp.execHttpGet(simpleQuery) ;
+        IO.close(in) ;
     }
 
     @Test(expected=HttpException.class)
     public void queryGet_02() {
         try {
             // No query.
-            HttpOp.execHttpGet(queryURL+"?query=") ;
+            TypedInputStream in = HttpOp.execHttpGet(queryURL+"?query=") ;
+            IO.close(in) ;
         } catch (HttpException ex) {
             assertEquals(ex.getResponseCode(), HttpSC.BAD_REQUEST_400) ;
             throw ex ; 
@@ -100,7 +107,8 @@ public class TestHttpOp extends BaseTest {
 //    public void queryGet_03() {
 //        try {
 //            // Service description.
-//            HttpOp.execHttpGet(queryURL) ;
+//            TypedInputStream in = HttpOp.execHttpGet(queryURL) ;
+//            IO.close(in) ;
 //        } catch (HttpException ex) {
 //            assertEquals(ex.getResponseCode(), HttpSC.NOT_FOUND_404) ;
 //            throw ex ; 
@@ -108,7 +116,7 @@ public class TestHttpOp extends BaseTest {
 //    }
 
     @Test(expected=HttpException.class)
-    public void queryPost_01() {
+    public void httpPost_01() {
         try {
             HttpOp.execHttpPost(queryURL, "ASK{}", "text/plain") ;
         } catch (HttpException ex) {
@@ -140,26 +148,29 @@ public class TestHttpOp extends BaseTest {
     @Test public void httpPost_04() {
         Params params = new Params() ;
         params.addParam("query", "ASK{}") ;
-        HttpOp.execHttpPostForm(queryURL, params, WebContent.contentTypeResultsJSON) ;
+        TypedInputStream in = HttpOp.execHttpPostFormStream(queryURL, params, WebContent.contentTypeResultsJSON) ;
+        IO.close(in) ;
     }
     
     @Test(expected=HttpException.class)
     public void httpPost_05() {
         Params params = new Params() ;
         params.addParam("query", "ASK{}") ;
+        TypedInputStream in = null ;
         try {
             // Query to Update 
-            HttpOp.execHttpPostForm(updateURL, params, WebContent.contentTypeResultsJSON) ;
+            in = HttpOp.execHttpPostFormStream(updateURL, params, WebContent.contentTypeResultsJSON) ;
         } catch (HttpException ex) {
             assertEquals(ex.getResponseCode(), HttpSC.BAD_REQUEST_400) ;
             throw ex ;
         }
+        finally { IO.close(in) ; }
     }
     
     @Test public void httpPost_06() {
         Params params = new Params() ;
         params.addParam("request", "CLEAR ALL") ;
-        HttpOp.execHttpPostForm(updateURL, params, WebContent.contentTypeResultsJSON) ;
+        HttpOp.execHttpPostForm(updateURL, params) ;
     }
     
     // GSP
