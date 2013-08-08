@@ -138,7 +138,8 @@ public class Optimize implements Rewrite
         
         if ( false )
         {
-            // Simplify is always applied by the AlgebraGenerator
+            // Removal of "group of one" join (AKA SPARQL "simplification") 
+            // is done during algebra generation in AlgebraGenerator
             op = apply("Simplify", new TransformSimplify(), op) ;
             op = apply("Delabel", new TransformRemoveLabels(), op) ;
         }
@@ -148,11 +149,6 @@ public class Optimize implements Rewrite
         // ARQ query engine uses where possible.  
         // This transformation must be done (e.g. by QueryEngineBase) if no other optimization is done. 
         op = TransformScopeRename.transform(op) ;
-        
-        // Remove "group of one" join
-        // Done in AlgebraGenerator
-        // e..g CONSTRUCT {} WHERE { SELECT ... } 
-        //op = TransformTopLevelSelect.simplify(op) ;
         
         // Prepare expressions.
         OpWalker.walk(op, new OpVisitorExprPrepare(context)) ;
