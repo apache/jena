@@ -34,7 +34,7 @@ public abstract class AbstractRemoteEndpointResultSetTests extends AbstractResul
         // TEMPORARY - Trying to debug why builds hang on Apache build servers
         BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.DEBUG);
+        Logger.getRootLogger().setLevel(Level.INFO);
         // END TEMPORARY
         
         Fuseki.init();
