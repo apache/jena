@@ -80,7 +80,13 @@ public class TestVarRename extends BaseTest
                                            true,
                                            "s", "o") ; }
     
+    // JENA-502 : failure to rewrite (table) in var rename.
+    @Test public void rename_13() { rename("(project (?s) (project (?s) (table (vars ?obj) (row [?obj 123])) ))",
+                                           "(project (?s) (project (?s) (table (vars ?/obj) (row [?/obj 123])) ))",
+                                           true,
+                                           "s") ; }
 
+    
     @Test public void rename_reverse_01() { reverse("(project (?s ?/p) (bgp (?s ?/p ?/o)))",
                                                     "(project (?s ?p) (bgp (?s ?p ?o)))", true ) ; }  
 
