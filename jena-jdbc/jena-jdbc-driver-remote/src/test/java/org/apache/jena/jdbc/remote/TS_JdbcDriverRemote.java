@@ -17,6 +17,7 @@
  */
 package org.apache.jena.jdbc.remote;
 
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnection;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithAuth;
 import org.apache.jena.jdbc.remote.connections.TestRemoteEndpointConnectionWithGraphUris;
@@ -29,6 +30,8 @@ import org.apache.jena.jdbc.remote.results.TestRemoteEndpointResultsWithResultSe
 import org.apache.jena.jdbc.remote.statements.TestRemoteEndpointStatements;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import com.hp.hpl.jena.query.ARQ;
 
 /**
  * Test Suite for the Jena JDBC Remote Endpoint driver
@@ -50,4 +53,8 @@ import org.junit.runners.Suite;
 })
 public class TS_JdbcDriverRemote {
 
+    static {
+        ARQ.init();
+        Fuseki.init();
+    }
 }

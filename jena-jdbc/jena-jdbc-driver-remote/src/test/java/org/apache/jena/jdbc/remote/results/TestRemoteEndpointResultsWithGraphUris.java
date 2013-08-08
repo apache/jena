@@ -28,7 +28,6 @@ import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.jdbc.results.AbstractResultSetTests;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,7 +39,7 @@ import com.hp.hpl.jena.query.Dataset;
  * Tests result sets from a remote endpoint
  *
  */
-public class TestRemoteEndpointResultsWithGraphUris extends AbstractResultSetTests {
+public class TestRemoteEndpointResultsWithGraphUris extends AbstractRemoteEndpointResultSetTests {
     
     /**
      * Constant for default graph URI used in these tests
@@ -48,7 +47,6 @@ public class TestRemoteEndpointResultsWithGraphUris extends AbstractResultSetTes
     private static final String DEFAULT_GRAPH_URI = "http://example.org/defaultGraphUri";
     
     private static RemoteEndpointConnection connection;
-    
     
     /**
      * Setup for the tests by allocating a Fuseki instance to work with

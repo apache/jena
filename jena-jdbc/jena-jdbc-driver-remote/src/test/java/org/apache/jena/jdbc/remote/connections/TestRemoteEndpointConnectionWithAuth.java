@@ -32,7 +32,6 @@ import org.apache.jena.fuseki.server.FusekiConfig;
 import org.apache.jena.fuseki.server.SPARQLServer;
 import org.apache.jena.fuseki.server.ServerConfig;
 import org.apache.jena.jdbc.JdbcCompatibility;
-import org.apache.jena.jdbc.connections.AbstractJenaConnectionTests;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
@@ -54,7 +53,7 @@ import com.hp.hpl.jena.update.UpdateProcessor;
  * authentication
  * 
  */
-public class TestRemoteEndpointConnectionWithAuth extends AbstractJenaConnectionTests {
+public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpointConnectionTests {
 
     private static String USER = "test";
     private static String PASSWORD = "letmein";

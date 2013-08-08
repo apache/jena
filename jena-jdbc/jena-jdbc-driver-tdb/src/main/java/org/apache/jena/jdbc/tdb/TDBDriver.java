@@ -32,7 +32,9 @@ import org.apache.jena.jdbc.tdb.connections.TDBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
 /**
@@ -94,6 +96,8 @@ public class TDBDriver extends JenaDriver {
      */
     static {
         try {
+            ARQ.init();
+            TDB.init();
             register();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to register Jena TDB JDBC Driver", e);

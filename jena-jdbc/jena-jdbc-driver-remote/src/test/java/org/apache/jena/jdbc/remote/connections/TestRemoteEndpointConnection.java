@@ -21,7 +21,6 @@ package org.apache.jena.jdbc.remote.connections;
 import java.sql.SQLException;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
-import org.apache.jena.jdbc.connections.AbstractJenaConnectionTests;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
@@ -35,7 +34,7 @@ import com.hp.hpl.jena.query.Dataset;
  * Tests for the {@link RemoteEndpointConnection}
  *
  */
-public class TestRemoteEndpointConnection extends AbstractJenaConnectionTests {
+public class TestRemoteEndpointConnection extends AbstractRemoteEndpointConnectionTests {
         
     /**
      * Setup for the tests by allocating a Fuseki instance to work with

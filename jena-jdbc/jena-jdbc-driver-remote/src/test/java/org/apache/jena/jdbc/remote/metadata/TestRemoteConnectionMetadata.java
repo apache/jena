@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.jena.jdbc.remote.metadata;
 
 import java.sql.Connection;
@@ -24,6 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
@@ -38,6 +38,10 @@ import org.junit.BeforeClass;
  *
  */
 public class TestRemoteConnectionMetadata extends AbstractDatabaseMetadataTests {
+    
+    static {
+        Fuseki.init();
+    }
 
     /**
      * Setup for the tests by allocating a Fuseki instance to work with

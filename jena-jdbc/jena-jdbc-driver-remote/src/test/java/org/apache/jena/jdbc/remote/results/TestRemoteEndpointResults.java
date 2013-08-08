@@ -26,7 +26,6 @@ import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.jdbc.results.AbstractResultSetTests;
 import org.apache.jena.jdbc.utils.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -38,7 +37,7 @@ import com.hp.hpl.jena.query.Dataset;
  * Tests result sets from a remote endpoint
  *
  */
-public class TestRemoteEndpointResults extends AbstractResultSetTests {
+public class TestRemoteEndpointResults extends AbstractRemoteEndpointResultSetTests {
     
     private static RemoteEndpointConnection connection;
     
