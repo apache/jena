@@ -20,6 +20,9 @@ package org.apache.jena.jdbc.remote.results;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.jdbc.results.AbstractResultSetTests;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
  * Abstract tests for remote endpoint connection result sets 
@@ -28,6 +31,14 @@ import org.apache.jena.jdbc.results.AbstractResultSetTests;
 public abstract class AbstractRemoteEndpointResultSetTests extends AbstractResultSetTests {
 
     static {
+        // TEMPORARY - Trying to debug why builds hang on Apache build servers
+        BasicConfigurator.resetConfiguration();
+        BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.DEBUG);
+        // END TEMPORARY
+        
         Fuseki.init();
+        
+        
     }
 }
