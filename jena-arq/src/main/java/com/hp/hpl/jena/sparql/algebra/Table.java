@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.Iterator ;
 import java.util.List ;
 
 import com.hp.hpl.jena.query.ResultSet ;
@@ -34,13 +35,13 @@ public interface Table
                                         boolean includeOnNoMatch,
                                         ExprList condition,
                                         ExecutionContext execCxt) ;
-
     public void close() ;
     public List<Var> getVars() ;
     public List<String> getVarNames() ;
     public int size() ;
     public boolean isEmpty() ;
     public QueryIterator iterator(ExecutionContext execCxt) ;
+    public Iterator<Binding> rows() ;
     public void addBinding(Binding binding) ;
     public boolean contains(Binding binding) ;
     public ResultSet toResultSet() ;

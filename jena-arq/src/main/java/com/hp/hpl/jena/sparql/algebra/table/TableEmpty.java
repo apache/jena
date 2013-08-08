@@ -19,7 +19,10 @@
 package com.hp.hpl.jena.sparql.algebra.table;
 
 import java.util.ArrayList ;
+import java.util.Iterator ;
 import java.util.List ;
+
+import org.apache.jena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -35,16 +38,18 @@ public class TableEmpty extends TableBase
     { }
     
     @Override
-    public QueryIterator iterator(ExecutionContext execCxt)
-    {
+    public Iterator<Binding> rows() {
+        return Iter.nullIterator() ;
+    }
+
+    @Override
+    public QueryIterator iterator(ExecutionContext execCxt) {
         return QueryIterNullIterator.create(execCxt) ;
     }
 
     @Override
-    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
-                                        ExprList conditions,
-                                        ExecutionContext execContext)
-    {
+    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch, ExprList conditions,
+                                        ExecutionContext execContext) {
         if ( includeOnNoMatch )
             return QueryIterSingleton.create(bindingLeft, execContext) ;
         else
