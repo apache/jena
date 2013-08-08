@@ -39,6 +39,8 @@ import org.apache.jena.jdbc.JenaDriver;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 
+import com.hp.hpl.jena.query.ARQ;
+
 /**
  * <p>
  * A Jena JDBC driver which creates connections to remote endpoints
@@ -219,6 +221,7 @@ public class RemoteEndpointDriver extends JenaDriver {
      */
     static {
         try {
+            ARQ.init();
             register();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to register Jena Remote Endpoint JDBC Driver", e);

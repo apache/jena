@@ -19,6 +19,8 @@
 package org.apache.jena.jdbc.remote.statements;
 
 import java.sql.SQLException;
+
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
@@ -33,6 +35,10 @@ import org.junit.BeforeClass;
  *
  */
 public class TestRemoteEndpointStatements extends AbstractJenaStatementTests {
+    
+    static {
+        Fuseki.init();
+    }
         
     /**
      * Setup for the tests by allocating a Fuseki instance to work with

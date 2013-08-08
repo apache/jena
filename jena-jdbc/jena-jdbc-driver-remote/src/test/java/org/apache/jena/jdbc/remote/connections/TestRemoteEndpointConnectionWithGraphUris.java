@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.jdbc.JdbcCompatibility;
-import org.apache.jena.jdbc.connections.AbstractJenaConnectionTests;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.utils.TestUtils;
@@ -42,7 +41,7 @@ import com.hp.hpl.jena.query.Dataset;
  * default graph is used
  * 
  */
-public class TestRemoteEndpointConnectionWithGraphUris extends AbstractJenaConnectionTests {
+public class TestRemoteEndpointConnectionWithGraphUris extends AbstractRemoteEndpointConnectionTests {
 
     /**
      * Constant used for default graph URI in these tests
