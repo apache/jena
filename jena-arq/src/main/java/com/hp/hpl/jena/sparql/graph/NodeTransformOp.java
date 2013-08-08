@@ -25,8 +25,10 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Table ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.algebra.table.TableUnit ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -136,7 +138,15 @@ class NodeTransformOp extends TransformCopy
     {
         if ( opTable.isJoinIdentity() )
             return opTable ;
-        return opTable ;
+        Table table = opTable.getTable() ;
+        if ( table.isEmpty() )
+            return opTable ;
+        if ( TableUnit.isTableUnit(table) )
+            return opTable ;
+        if ( table.getVars().size() == 0 )
+            return opTable ;
+        Table table2 = NodeTransformLib.transform(table, transform) ;
+        return OpTable.create(table2) ; 
     }
     
     @Override public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)

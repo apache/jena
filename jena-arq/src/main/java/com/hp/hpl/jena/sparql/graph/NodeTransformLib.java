@@ -19,21 +19,28 @@
 package com.hp.hpl.jena.sparql.graph;
 
 import java.util.ArrayList ;
+import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import static org.apache.jena.atlas.lib.Lib.equal ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Table ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.table.TableData ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
@@ -122,6 +129,31 @@ public class NodeTransformLib
             return quad ;
         return new Quad(g,s,p,o) ;
     }
+    
+    public static Table transform(Table table, NodeTransform transform) {
+        // Non-streaming rewrite 
+        List<Var> vars = transformVars(transform, table.getVars()) ;
+        Iterator<Binding> iter = table.rows() ; 
+        List<Binding> newRows = new ArrayList<Binding>() ;
+        for ( ; iter.hasNext() ; ) { 
+            Binding b = iter.next() ;
+            Binding b2 = transform(b, transform) ;
+            newRows.add(b2) ;
+        }
+        return new TableData(vars, newRows) ;
+    }
+    
+    public static Binding transform(Binding b, NodeTransform transform) {
+        BindingMap b2 = BindingFactory.create() ;
+        List<Var> vars = Iter.toList(b.vars()) ;
+        for ( Var v : vars ) {
+            Var v2 = (Var)transform.convert(v) ;
+            b2.add(v2, b.get(v));
+        }
+        return b2 ;
+    }
+
+
 
     /** Do a node->node conversion of a List&lt;Quad&gt; - return original List&lt;Quad&gt; for "no change" */
     public static List<Quad> transformQuads(NodeTransform nodeTransform, List<Quad> quads)
