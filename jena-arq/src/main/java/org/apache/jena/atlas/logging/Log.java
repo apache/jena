@@ -204,6 +204,11 @@ public class Log
         enable(logger, "all") ;
     }
     
+    /** Turn on a logger (specific level levels) */
+    static public void enable(Class<?> logger, String level) {
+        enable(logger.getClass().getName(), level) ;
+    }
+    
     static public void enable(String logger, String level)
     {
         org.apache.log4j.Level level1 = org.apache.log4j.Level.ALL ;
