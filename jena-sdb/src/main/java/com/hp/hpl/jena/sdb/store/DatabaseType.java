@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 /* H2 contribution from Martin HEIN (m#)/March 2008 */
+/* SAP contribution from Fergal Monaghan (m#)/May 2012 */
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class DatabaseType extends Symbol implements Named
     public static final DatabaseType SQLServer       = new DatabaseType("SQLServer") ;
     public static final DatabaseType Oracle          = new DatabaseType("Oracle") ;
     public static final DatabaseType DB2             = new DatabaseType("DB2") ;
+    public static final DatabaseType SAP             = new DatabaseType("sap") ;
     
     static SymbolRegistry<DatabaseType> registry = new SymbolRegistry<DatabaseType>() ;
     static { init() ; }
@@ -92,6 +94,8 @@ public class DatabaseType extends Symbol implements Named
         register(Oracle) ;
         
         register(DB2) ;
+        
+        register(SAP);
     }
     
     static public List<String> allNames() { return registry.allNames() ; }

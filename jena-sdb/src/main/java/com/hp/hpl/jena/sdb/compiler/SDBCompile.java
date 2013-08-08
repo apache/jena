@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 /* H2 contribution from Martin HEIN (m#)/March 2008 */
+/* SAP contribution from Fergal Monaghan (m#)/May 2012 */
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
@@ -114,6 +115,13 @@ public class SDBCompile
             request.LeftJoinTranslation = true ;
             request.LimitOffsetTranslation = false ;
             request.DistinctTranslation = false ;
+        }
+        
+        if ( StoreUtils.isSAP(store) )
+        {
+            request.LeftJoinTranslation = true ;
+            request.LimitOffsetTranslation = true ;
+            request.DistinctTranslation = true ;
         }
         
         QueryCompiler queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;

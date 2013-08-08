@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
+import com.hp.hpl.jena.sdb.sql.SAPStorageType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
@@ -67,6 +68,7 @@ public class ModStore extends ModBase
     
     protected final ArgDecl argDeclLayout       = new ArgDecl(true, "layout");
     protected final ArgDecl argDeclMySQLEngine  = new ArgDecl(true, "engine");
+    protected final ArgDecl argDeclSAPStorage   = new ArgDecl(true, "storage");
 
     
 //    protected String driverName = null;      // JDBC class name
@@ -190,6 +192,9 @@ public class ModStore extends ModBase
 
         if (cmdLine.contains(argDeclMySQLEngine))
             storeDesc.engineType = MySQLEngineType.convert(cmdLine.getArg(argDeclMySQLEngine).getValue());
+
+        if (cmdLine.contains(argDeclSAPStorage))
+            storeDesc.storageType = SAPStorageType.convert(cmdLine.getArg(argDeclSAPStorage).getValue());
         
         if (cmdLine.contains(argDeclLayout))
         {

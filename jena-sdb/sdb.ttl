@@ -51,4 +51,8 @@ sdb:DatasetStore  rdfs:subClassOf  ja:RDFDataset .
 ##     sdb:sdbUser        "SDB" ;
 ##     sdb:sdbPassword    "password" ;
 
+##     sdb:sdbType        "sap" ;
+##     sdb:sdbHost        "localhost" ;
+##     sdb:sdbName        "00" ;
+
     .

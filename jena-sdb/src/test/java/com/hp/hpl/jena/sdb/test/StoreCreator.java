@@ -27,6 +27,7 @@ import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashOracle;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSAP;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDB2;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
@@ -34,6 +35,7 @@ import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexOracle;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSAP;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -60,6 +62,8 @@ public class StoreCreator {
 	private static StoreTriplesNodesIndexOracle sdboi;
 	private static StoreTriplesNodesIndexDB2 sdbdb2i;
 	private static StoreTriplesNodesHashDB2 sdbdb2h;
+	private static StoreTriplesNodesHashSAP sdbsaph;
+	private static StoreTriplesNodesIndexSAP sdbsapi;
 
 	public static Store getIndexMySQL() {
 		if (sdbmsi == null) {
@@ -312,5 +316,35 @@ public class StoreCreator {
 		sdbdb2i.getTableFormatter().truncate();
 			
 		return sdbdb2i;
+	}
+	
+	public static Store getIndexSAP() {
+		if (sdbsapi == null) {
+			JDBC.loadDriverSAP();
+			SDBConnection sdb = SDBFactory.createConnection(
+				"jdbc:sap://localhost/test2-index", "user", "password");
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesIndex, DatabaseType.SAP) ;
+			sdbsapi = new StoreTriplesNodesIndexSAP(sdb, desc);
+			sdbsapi.getTableFormatter().create() ;
+		}
+		else
+		    sdbsapi.getTableFormatter().truncate();
+			
+		return sdbsapi;
+	}
+	
+	public static Store getHashSAP() {
+		if (sdbsaph == null) {
+			JDBC.loadDriverSAP();
+			SDBConnection sdb = SDBFactory.createConnection(
+				"jdbc:sap://localhost/test2-hash", "user", "password");
+            StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash, DatabaseType.SAP) ;
+			sdbsaph = new StoreTriplesNodesHashSAP(sdb, desc);
+			sdbsaph.getTableFormatter().create();
+		}
+		else
+		    sdbsaph.getTableFormatter().truncate();
+			
+		return sdbsaph;
 	}
 }

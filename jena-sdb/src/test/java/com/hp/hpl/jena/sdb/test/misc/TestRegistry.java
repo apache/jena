@@ -28,7 +28,7 @@ public class TestRegistry
 {
     String[] databaseNames = {  "derby", "HSQLDB",
                                 "MySQL", "PostgreSQL", 
-                                "SQLServer", "Oracle", "DB2" } ;
+                                "SQLServer", "Oracle", "DB2", "SAP" } ;
     
     String[] layoutNames = {    "layout2/hash" , "layout2", 
                                 "layout2/index", 

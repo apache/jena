@@ -59,6 +59,12 @@ _:x rdf:type sdb:StoreList ;
 ## 
 ##       [ rdfs:label "DB2/Index" ;
 ##         sdb:description <StoreDesc/db2-index.ttl> ]
+## 
+##       [ rdfs:label "SAP/Hash" ;
+##         sdb:description <StoreDesc/sap-hash.ttl> ]
+## 
+##       [ rdfs:label "SAP/Index" ;
+##         sdb:description <StoreDesc/sap-index.ttl> ]
 
 
        ) .

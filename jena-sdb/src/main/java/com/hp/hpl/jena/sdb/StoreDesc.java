@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.shared.Env;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
+import com.hp.hpl.jena.sdb.sql.SAPStorageType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.FeatureSet;
@@ -47,6 +48,9 @@ public class StoreDesc
     
     /** MySQL specific */
     public MySQLEngineType engineType   = null ;
+    
+    /** SAP specific */
+    public SAPStorageType storageType   = null ;
     
     public static StoreDesc read(String filename)
     {

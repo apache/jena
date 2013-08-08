@@ -78,6 +78,12 @@ public class Setup
             return ;
         }
 
+        if ( dbtype.equalsIgnoreCase("SAP") )
+        {
+            setup_SAP(params) ;
+            return ;
+        }
+
         System.err.println("Unknown DB type: "+dbtype) ;
         System.exit(2) ;
 
@@ -168,6 +174,19 @@ public class Setup
         params.putDft( ParamsVocab.LongTextType,     "CLOB") ;
 //        params.putDft( ParamsVocab.LongBinaryType,   "LONG VARBINARY") ;
 //        params.putDft( ParamsVocab.LongTextType,     "LONG VARCHAR") ;
+        return ;
+    }
+
+    private static void setup_SAP(Params params)
+    {
+        // Jena uses long text
+        params.putDft( ParamsVocab.Driver,           "com.sap.db.jdbc.Driver") ;
+        params.put( ParamsVocab.TestLongBinary,      "true") ;
+        params.put( ParamsVocab.TestLongText,        "true") ;
+
+        params.putDft( ParamsVocab.VarcharType,      "NVARCHAR(200)") ;
+        params.putDft( ParamsVocab.LongBinaryType,   "VARBINARY(5000)") ;
+        params.putDft( ParamsVocab.LongTextType,     "NVARCHAR(5000)") ;
         return ;
     }
 }
