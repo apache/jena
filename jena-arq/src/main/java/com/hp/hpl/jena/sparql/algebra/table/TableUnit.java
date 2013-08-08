@@ -19,7 +19,10 @@
 package com.hp.hpl.jena.sparql.algebra.table;
 
 import java.util.ArrayList ;
+import java.util.Iterator ;
 import java.util.List ;
+
+import org.apache.jena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.sparql.algebra.Table ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -36,6 +39,12 @@ public class TableUnit extends TableBase
     { return (table instanceof TableUnit) ; } 
     
     public TableUnit() {}
+    
+    @Override
+    public Iterator<Binding> rows() {
+        Binding binding = BindingFactory.binding() ;
+        return Iter.singleton(binding) ;
+    }
     
     @Override
     public QueryIterator iterator(ExecutionContext execCxt)

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.table;
+package com.hp.hpl.jena.sparql.algebra.table ;
 
 import java.util.Iterator ;
 
@@ -32,48 +32,40 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-public class TableWriter
-{
-    public static String asSSE(Table table)
-    {
+public class TableWriter {
+    public static String asSSE(Table table) {
         IndentedLineBuffer out = new IndentedLineBuffer() ;
         TableWriter.output(table, out) ;
         return out.asString() ;
     }
-    
-    public static void output(Table table, IndentedWriter out)
-    {
+
+    public static void output(Table table, IndentedWriter out) {
         output(table, out, null) ;
     }
-    
-    public static void output(Table table, IndentedWriter out, SerializationContext sCxt)
-    {
-        if ( sCxt != null )
-        {}  // Prefix.  But then qnames are wrong.
+
+    public static void output(Table table, IndentedWriter out, SerializationContext sCxt) {
+        if ( sCxt != null ) {} // Prefix. But then qnames are wrong.
         out.print("(table") ;
         out.incIndent() ;
         QueryIterator qIter = table.iterator(null) ;
-        for ( ; qIter.hasNext() ; )
-        {
+        for (; qIter.hasNext();) {
             out.println() ;
             Binding binding = qIter.nextBinding() ;
             output(binding, out, sCxt) ;
         }
         out.decIndent() ;
-        
+
         out.print(")") ;
     }
 
-    private static void output(Binding binding, IndentedWriter out, SerializationContext sCxt)
-    {
+    private static void output(Binding binding, IndentedWriter out, SerializationContext sCxt) {
         out.print("(row") ;
-        for ( Iterator<Var> iter = binding.vars() ; iter.hasNext() ; )
-        {
-            Var v = iter.next();
+        for (Iterator<Var> iter = binding.vars(); iter.hasNext();) {
+            Var v = iter.next() ;
             Node n = binding.get(v) ;
             out.print(" ") ;
             out.print(Plan.startMarker2) ;
-            out.print(FmtUtils.stringForNode(v)) ; 
+            out.print(FmtUtils.stringForNode(v)) ;
             out.print(" ") ;
             out.print(FmtUtils.stringForNode(n)) ;
             out.print(Plan.finishMarker2) ;

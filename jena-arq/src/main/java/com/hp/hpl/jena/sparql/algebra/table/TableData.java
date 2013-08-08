@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.table;
+package com.hp.hpl.jena.sparql.algebra.table ;
 
 import java.util.List ;
 
@@ -24,19 +24,17 @@ import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
-public class TableData extends TableN
-{
-    public TableData(List<Var> variables, List<Binding> rows)
-    {
+public class TableData extends TableN {
+    public TableData(List<Var> variables, List<Binding> rows) {
         super(variables, rows) ;
     }
-    
+
     @Override
-    public void addBinding(Binding binding)
-    {
+    public void addBinding(Binding binding) {
         throw new ARQException("Can't add bindings to an existing data table") ;
     }
-    
-    public List<Binding> getRows()  { return rows ; }
-}
 
+    public List<Binding> getRows() {
+        return rows ;
+    }
+}

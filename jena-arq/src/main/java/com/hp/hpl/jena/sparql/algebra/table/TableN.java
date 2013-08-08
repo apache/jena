@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.table;
+package com.hp.hpl.jena.sparql.algebra.table ;
 
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -31,35 +31,28 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
-
-public class TableN extends TableBase
-{
+public class TableN extends TableBase {
     protected List<Binding> rows = new ArrayList<Binding>() ;
-    protected List<Var> vars = new ArrayList<Var>() ;
+    protected List<Var>     vars = new ArrayList<Var>() ;
 
     public TableN() {}
-    
-    public TableN(List<Var> vars)
-    { 
+
+    public TableN(List<Var> vars) {
         if ( vars != null )
             this.vars = vars ;
     }
-    
-    public TableN(QueryIterator qIter)
-    {
+
+    public TableN(QueryIterator qIter) {
         materialize(qIter) ;
     }
-    
-    protected TableN(List<Var> variables, List<Binding> rows)
-    {
+
+    protected TableN(List<Var> variables, List<Binding> rows) {
         this.vars = variables ;
         this.rows = rows ;
     }
 
-    private void materialize(QueryIterator qIter)
-    {
-        while ( qIter.hasNext() )
-        {
+    private void materialize(QueryIterator qIter) {
+        while (qIter.hasNext()) {
             Binding binding = qIter.nextBinding() ;
             addBinding(binding) ;
         }
@@ -67,65 +60,71 @@ public class TableN extends TableBase
     }
 
     @Override
-    public void addBinding(Binding binding)
-    {
-        for ( Iterator<Var> names = binding.vars() ; names.hasNext() ; )
-        {
+    public void addBinding(Binding binding) {
+        for (Iterator<Var> names = binding.vars(); names.hasNext();) {
             Var v = names.next() ;
-            if ( ! vars.contains(v))
+            if ( !vars.contains(v) )
                 vars.add(v) ;
         }
         rows.add(binding) ;
     }
-    
-    @Override
-    public int size()           { return rows.size() ; }
-    @Override
-    public boolean isEmpty()    { return rows.isEmpty() ; }
 
-    
+    @Override
+    public int size() {
+        return rows.size() ;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return rows.isEmpty() ;
+    }
+
     // Note - this table is the RIGHT table, and takes a LEFT binding.
     @Override
-    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
-                                        ExprList conditions,
-                                        ExecutionContext execContext)
-    {
+    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch, ExprList conditions,
+                                        ExecutionContext execContext) {
         List<Binding> out = new ArrayList<Binding>() ;
-        for ( Iterator<Binding> iter = rows.iterator() ; iter.hasNext() ; )
-        {
+        for (Iterator<Binding> iter = rows.iterator(); iter.hasNext();) {
             Binding bindingRight = iter.next() ;
-            Binding r =  Algebra.merge(bindingLeft, bindingRight) ;
+            Binding r = Algebra.merge(bindingLeft, bindingRight) ;
             if ( r == null )
                 continue ;
             // This does the conditional part. Theta-join.
             if ( conditions == null || conditions.isSatisfied(r, execContext) )
                 out.add(r) ;
         }
-                
+
         if ( out.size() == 0 && includeOnNoMatch )
             out.add(bindingLeft) ;
-        
+
         if ( out.size() == 0 )
             return QueryIterNullIterator.create(execContext) ;
         return new QueryIterPlainWrapper(out.iterator(), execContext) ;
     }
- 
+
     @Override
-    public QueryIterator iterator(ExecutionContext execCxt)
-    {
+    public Iterator<Binding> rows() {
+        return rows.iterator() ;
+    }
+
+    @Override
+    public QueryIterator iterator(ExecutionContext execCxt) {
         return new QueryIterPlainWrapper(rows.iterator(), execCxt) ;
     }
-    
+
     @Override
-    public void closeTable()
-    {
+    public void closeTable() {
         rows = null ;
-        // Don't clear the vars in case code later asks for the variables. 
+        // Don't clear the vars in case code later asks for the variables.
     }
 
     @Override
-    public List<String> getVarNames()   { return Var.varNames(vars) ; }
+    public List<String> getVarNames() {
+        return Var.varNames(vars) ;
+    }
 
     @Override
-    public List<Var> getVars()          { return  vars ; }
+    public List<Var> getVars() {
+        return vars ;
+    }
 }

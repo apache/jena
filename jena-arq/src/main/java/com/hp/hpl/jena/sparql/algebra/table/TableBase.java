@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.table;
+package com.hp.hpl.jena.sparql.algebra.table ;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
@@ -28,99 +28,98 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingBase ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator ;
 
-public abstract class TableBase implements Table
-{
+public abstract class TableBase implements Table {
     protected TableBase() {}
 
     @Override
-    final public
-    void close()
-    {
+    final public void close() {
         closeTable() ;
     }
-    
+
     protected abstract void closeTable() ;
 
-    final public Table eval(Evaluator evaluator)  { return this ; }
-    
-   
+    final public Table eval(Evaluator evaluator) {
+        return this ;
+    }
+
     @Override
-    public void addBinding(Binding binding)
-    { throw new UnsupportedOperationException("Table.add") ; }
-    
+    public void addBinding(Binding binding) {
+        throw new UnsupportedOperationException("Table.add") ;
+    }
+
     @Override
-    public boolean contains(Binding b)
-    {
+    public boolean contains(Binding b) {
         QueryIterator qIter = iterator(null) ;
         try {
-            for ( ; qIter.hasNext() ; )
-            {
+            for (; qIter.hasNext();) {
                 Binding b2 = qIter.nextBinding() ;
-                if ( BindingUtils.equals(b,b2) )
+                if ( BindingUtils.equals(b, b2) )
                     return true ;
             }
             return false ;
-        } finally { qIter.close() ; }
+        } finally {
+            qIter.close() ;
+        }
     }
-    
+
     @Override
     public abstract int size() ;
-    
+
     @Override
     public abstract boolean isEmpty() ;
-    
+
     @Override
-    public ResultSet toResultSet()
-    {
+    public ResultSet toResultSet() {
         QueryIterator qIter = iterator(null) ;
         ResultSet rs = new ResultSetStream(getVarNames(), null, qIter) ;
         rs = ResultSetFactory.makeRewindable(rs) ;
         qIter.close() ;
         return rs ;
     }
-    
+
     @Override
-    public String toString()
-    {
-        return TableWriter.asSSE(this) ; 
+    public String toString() {
+        return TableWriter.asSSE(this) ;
     }
-    
+
     @Override
-    public int hashCode()
-    { 
+    public int hashCode() {
         int hash = 0 ;
         QueryIterator qIter = iterator(null) ;
         try {
-            for ( ; qIter.hasNext() ; )
-            {
+            for (; qIter.hasNext();) {
                 Binding binding = qIter.nextBinding() ;
-                hash ^= binding.hashCode();
+                hash ^= binding.hashCode() ;
             }
             return hash ;
-        } finally { qIter.close() ; }
+        } finally {
+            qIter.close() ;
+        }
     }
 
-    
     @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof Table) ) return false ;
+    public boolean equals(Object other) {
+        if ( this == other )
+            return true ;
+        if ( !(other instanceof Table) )
+            return false ;
         Table table = (Table)other ;
         if ( table.size() != this.size() )
             return false ;
         QueryIterator qIter1 = iterator(null) ;
         QueryIterator qIter2 = table.iterator(null) ;
         try {
-            for ( ; qIter1.hasNext() ; )
-            {
+            for (; qIter1.hasNext();) {
                 Binding bind1 = qIter1.nextBinding() ;
                 Binding bind2 = qIter2.nextBinding() ;
-                if ( ! BindingBase.equals(bind1, bind2) )
-                    return false ; 
+                if ( !BindingBase.equals(bind1, bind2) )
+                    return false ;
             }
             return true ;
-        } finally { qIter1.close() ; qIter2.close() ;}
+        } finally {
+            qIter1.close() ;
+            qIter2.close() ;
+        }
     }
 
 }
