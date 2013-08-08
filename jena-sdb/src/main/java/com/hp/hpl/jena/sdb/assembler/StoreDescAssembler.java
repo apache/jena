@@ -35,6 +35,7 @@ import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
+import com.hp.hpl.jena.sdb.sql.SAPStorageType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.store.Feature;
 import com.hp.hpl.jena.sdb.store.FeatureSet;
@@ -75,6 +76,12 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
         storeDesc.engineType = null ;
         if ( engineName != null )
             try { storeDesc.engineType= MySQLEngineType.convert(engineName) ; }
+            catch (SDBException ex) {}
+
+        // SAP specials
+        String storageType = GraphUtils.getStringValue(root, AssemblerVocab.pStorageType) ;
+        if ( storageType != null )
+            try { storeDesc.storageType= SAPStorageType.convert(storageType) ; }
             catch (SDBException ex) {}
             
         return storeDesc ;

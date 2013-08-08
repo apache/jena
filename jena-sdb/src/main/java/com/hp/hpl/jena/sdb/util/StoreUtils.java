@@ -87,6 +87,11 @@ public class StoreUtils
     {
         return store.getDatabaseType().equals(DatabaseType.DB2) ;
     }
+    
+    public static boolean isSAP(Store store)
+    {
+        return store.getDatabaseType().equals(DatabaseType.SAP) ;
+    }
 
     public static void load(Store store, String filename)
     {

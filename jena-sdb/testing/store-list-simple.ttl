@@ -34,5 +34,8 @@ _:x rdf:type sdb:StoreList ;
 ## 
 ##       [ rdfs:label "DB2/Simple" ;
 ##         sdb:description <StoreDescSimple/db2-layout1.ttl> ]
+## 
+##       [ rdfs:label "SAP/Simple" ;
+##         sdb:description <StoreDescSimple/sap-layout1.ttl> ]
 
     ) .

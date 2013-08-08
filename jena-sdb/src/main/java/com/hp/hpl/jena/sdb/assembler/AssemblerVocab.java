@@ -93,6 +93,9 @@ public class AssemblerVocab
     // MySQL engine type
     public static final Property pMySQLEngine       = Vocab.property(NS, "engine") ;
     
+    // SAP storage type
+    public static final Property pStorageType       = Vocab.property(NS, "storage") ;
+    
     private static boolean initialized = false ; 
     
     static { init() ; }

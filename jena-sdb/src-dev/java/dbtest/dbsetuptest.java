@@ -116,7 +116,7 @@ public class dbsetuptest
     {
         System.out.println("Usage: db=TYPE jdbc=URL user=USER password=PASSWORD") ;
         System.out.println("  where TYPE is the database type") ;
-        System.out.println("    one of HSQL, MySQL, PostgreSQL, Derby, Oracle, MS-SQL") ;
+        System.out.println("    one of HSQL, MySQL, PostgreSQL, Derby, Oracle, MS-SQL, SAP") ;
         System.out.println("  URL is the JDBC URL to connect to the database") ;
         System.out.println("  USER and PASSWORD are the access details.") ;
         System.out.println("Requires table ceration rights on the database") ; 

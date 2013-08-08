@@ -199,6 +199,13 @@ public class StoreFactory
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesHashDB2(conn, desc) ; } }) ;
 
+        /* SAP contribution from Fergal Monaghan (m#)/May 2012 */
+        register(SAP, LayoutTripleNodesHash,
+                 new StoreMaker() {
+                    @Override
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreTriplesNodesHashSAP(conn, desc, desc.storageType) ; } }) ;
+
         // -- Index layout
         
         register(Derby, LayoutTripleNodesIndex,
@@ -249,6 +256,13 @@ public class StoreFactory
                     @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexDB2(conn, desc) ; } }) ;
+
+        register(SAP, LayoutTripleNodesIndex,
+                 new StoreMaker() {
+                    @Override
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreTriplesNodesIndexSAP(conn, desc, desc.storageType) ; } }) ;
+
         
         // -- Simple layout
         
@@ -300,11 +314,17 @@ public class StoreFactory
                     @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleDB2(conn, desc) ; } }) ;
+
+        register(SAP, LayoutSimple,
+                 new StoreMaker() {
+                    @Override
+                    public Store create(SDBConnection conn, StoreDesc desc)
+                    { return new StoreSimpleSAP(conn, desc, desc.storageType) ; } }) ;
     }
     
     static private void checkRegistry()
     {
-        DatabaseType[] dbTypes = {Derby, HSQLDB, H2, MySQL, PostgreSQL, SQLServer, Oracle} ;
+        DatabaseType[] dbTypes = {Derby, HSQLDB, H2, MySQL, PostgreSQL, SQLServer, Oracle, SAP} ;
         LayoutType[] layoutTypes = {LayoutTripleNodesHash, LayoutTripleNodesIndex, LayoutSimple} ;
         
         Set <StoreMaker> seen = new HashSet<StoreMaker>() ;

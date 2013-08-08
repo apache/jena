@@ -26,9 +26,11 @@ import org.junit.runners.AllTests;
 import com.hp.hpl.jena.sdb.test.graph.TestHSQLGraph;
 import com.hp.hpl.jena.sdb.test.graph.TestMySQLGraph;
 import com.hp.hpl.jena.sdb.test.graph.TestPgSQLGraph;
+import com.hp.hpl.jena.sdb.test.graph.TestSAPGraph;
 import com.hp.hpl.jena.sdb.test.model.TestHSQLModel;
 import com.hp.hpl.jena.sdb.test.model.TestMySQLModel;
 import com.hp.hpl.jena.sdb.test.model.TestPgSQLModel;
+import com.hp.hpl.jena.sdb.test.model.TestSAPModel;
 
 @RunWith(AllTests.class)
 public class SDBModelGraphTestSuite extends TestSuite
@@ -36,6 +38,7 @@ public class SDBModelGraphTestSuite extends TestSuite
     static boolean includeMySQL = true ;
     static boolean includeHSQL = true ;
     static boolean includePGSQL = true ;
+    static boolean includeSAP = true ;
     
     public static junit.framework.Test suite() {
     	TestSuite ts = new TestSuite();
@@ -57,6 +60,12 @@ public class SDBModelGraphTestSuite extends TestSuite
         {
         	ts.addTestSuite(TestPgSQLModel.TestPgSQLHashModel.class);
         	ts.addTestSuite(TestPgSQLGraph.TestPgSQLHashGraph.class);
+        }
+        
+        if ( includeSAP )
+        {
+        	ts.addTestSuite(TestSAPModel.TestSAPHashModel.class);
+        	ts.addTestSuite(TestSAPGraph.TestSAPHashGraph.class);
         }
         
         return ts;

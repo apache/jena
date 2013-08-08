@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sdb.sql;
 /* H2 contribution from Martin HEIN (m#)/March 2008 */
+/* SAP contribution from Fergal Monaghan (m#)/May 2012 */
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -51,6 +52,7 @@ public class JDBC
         driver.put(DatabaseType.SQLServer,  "com.microsoft.sqlserver.jdbc.SQLServerDriver") ;
         driver.put(DatabaseType.Oracle,     "oracle.jdbc.driver.OracleDriver") ;
         driver.put(DatabaseType.DB2,        "com.ibm.db2.jcc.DB2Driver") ;
+        driver.put(DatabaseType.SAP,        "com.sap.db.jdbc.Driver") ;
     }
     
     static public String getDriver(DatabaseType dbType) { return driver.get(dbType) ; }
@@ -71,6 +73,8 @@ public class JDBC
     static public void loadDriverOracle() { loadDriver(driver.get(DatabaseType.Oracle)); }
     /** Explicitly load the DB2 driver */ 
     static public void loadDriverDB2() { loadDriver(driver.get(DatabaseType.DB2)); }
+    /** Explicitly load the SAP driver */ 
+    static public void loadDriverSAP() { loadDriver(driver.get(DatabaseType.SAP)); }
     
     static public void loadDriver(String className) { loadClass(className) ; }
     
@@ -192,6 +196,12 @@ public class JDBC
         {
             String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
             return s;
+        }
+
+        if ( type.equals("sap") )
+        {
+        	String s = String.format("jdbc:%s://%s:3%s15", type, host, dbName) ;
+        	return s ;
         }
 
         if ( type.equals("none") )
