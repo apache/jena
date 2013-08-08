@@ -18,45 +18,45 @@
 
 package org.apache.jena.riot.web;
 
-import static java.lang.String.format;
+import static java.lang.String.format ;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.UnsupportedEncodingException ;
+import java.net.URI ;
+import java.net.URISyntaxException ;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.concurrent.atomic.AtomicLong ;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.client.SystemDefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.jena.atlas.io.IO;
+import org.apache.http.HttpEntity ;
+import org.apache.http.HttpResponse ;
+import org.apache.http.NameValuePair ;
+import org.apache.http.StatusLine ;
+import org.apache.http.client.HttpClient ;
+import org.apache.http.client.entity.UrlEncodedFormEntity ;
+import org.apache.http.client.methods.* ;
+import org.apache.http.entity.InputStreamEntity ;
+import org.apache.http.entity.StringEntity ;
+import org.apache.http.impl.client.AbstractHttpClient ;
+import org.apache.http.impl.client.SystemDefaultHttpClient ;
+import org.apache.http.message.BasicNameValuePair ;
+import org.apache.http.protocol.BasicHttpContext ;
+import org.apache.http.protocol.HttpContext ;
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.ServiceAuthenticator;
+import org.apache.jena.atlas.web.HttpException ;
+import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.WebContent;
-import org.apache.jena.web.HttpSC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.riot.WebContent ;
+import org.apache.jena.web.HttpSC ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.engine.http.Params;
-import com.hp.hpl.jena.sparql.engine.http.Params.Pair;
+import com.hp.hpl.jena.sparql.engine.http.Params ;
+import com.hp.hpl.jena.sparql.engine.http.Params.Pair ;
 
 /**
  * Simplified HTTP operations; simplification means only supporting certain uses
@@ -934,8 +934,29 @@ public class HttpOp {
         }
     }
 
+    private static HttpClient jenaGlobalHttpClient = null ; 
+    static {
+        // SystemDefaultHttpClient respects  
+        //      *  <li>http.keepAlive</li>
+        //      *  <li>http.maxConnections</li>
+        // JENA-498 temporary workaround
+        //   Set the system property for http.keepAlive if not set. 
+        // Better would be our own settings: maybe: 
+        //      BasicHttpParams params = new BasicHttpParams...
+        //      params.set ....
+        //      jenaGlobalHttpClient = new DefaultHttpClient(params) ;
+        
+        synchronized(counter) { // Any object to lock on
+            final String keepAlive = "http.keepAlive" ;
+            String x = System.getProperty(keepAlive) ;
+            if ( x == null )
+                System.setProperty(keepAlive, "true") ;
+            jenaGlobalHttpClient = new SystemDefaultHttpClient() ;
+        }
+    }
+
     /**
-     * Ensures that a HTTP Client is non-null, uses a new
+     * Ensures that a HTTP Client is non-null, uses a Jena-wide
      * {@link SystemDefaultHttpClient} if a null client is provided
      * 
      * @param client
@@ -943,7 +964,7 @@ public class HttpOp {
      * @return HTTP Client
      */
     private static HttpClient ensureClient(HttpClient client) {
-        return client != null ? client : new SystemDefaultHttpClient();
+        return client != null ? client : jenaGlobalHttpClient ;
     }
 
     private static AbstractHttpClient asAbstractClient(HttpClient client) {
