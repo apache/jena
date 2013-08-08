@@ -417,13 +417,13 @@ public class ARQ
         context.unset(optimization) ;
 
         //context.set(hideNonDistiguishedVariables, true) ;
-        context.set(strictSPARQL,                  "false") ; 
-        context.set(constantBNodeLabels,           "true") ;
-        context.set(enablePropertyFunctions,       "true") ;
-        context.set(strictGraph,                   "false") ;
+        context.set(strictSPARQL,                  false) ; 
+        context.set(constantBNodeLabels,           true) ;
+        context.set(enablePropertyFunctions,       true) ;
+        context.set(strictGraph,                   false) ;
         
-        //context.set(useSAX,                        "false") ;
-        context.set(enableRomanNumerals,           "false") ;
+        //context.set(useSAX,                        false) ;
+        context.set(enableRomanNumerals,           false) ;
         // enableBlankNodeLabels() ;
         context.set(regexImpl,                     javaRegex) ;
 //        if (  getContext().isTrue(romanNumeralsAsFirstClassDatatypes) )
