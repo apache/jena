@@ -181,7 +181,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     private void doPost(String url, Graph data)
     {
         HttpEntity entity = graphToHttpEntity(data) ;
-        HttpOp.execHttpPost(url, entity, null, null, null, null, this.authenticator) ;
+        HttpOp.execHttpPost(url, entity, null, null, this.authenticator) ;
     }
 
     @Override

@@ -344,7 +344,7 @@ public class HttpQuery extends Params {
                 client = new DecompressingHttpClient(client);
             }
 
-            TypedInputStream stream = HttpOp.execHttpPostForm(serviceURL, this, contentTypeResult, client, context, authenticator);
+            TypedInputStream stream = HttpOp.execHttpPostFormStream(serviceURL, this, contentTypeResult, client, context, authenticator);
             if (stream == null)
                 throw new QueryExceptionHTTP(404);
             return execCommon(stream);
