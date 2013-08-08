@@ -87,7 +87,7 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractResultSetTests {
 
         DatasetGraph dsg = DatasetGraphFactory.createMem();
         // This must agree with ServerTest
-        ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true);
+        ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true, false);
         conf.port = ServerTest.port;
         conf.pagesPort = ServerTest.port;
         conf.authConfigFile = realmFile.getAbsolutePath();
