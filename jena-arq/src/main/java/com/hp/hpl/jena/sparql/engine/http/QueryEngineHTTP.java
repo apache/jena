@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.http.client.HttpClient;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
@@ -99,6 +100,8 @@ public class QueryEngineHTTP implements QueryExecution {
     // Releasing HTTP input streams is important. We remember this for SELECT,
     // and will close when the engine is closed
     private InputStream retainedConnection = null;
+
+    private HttpClient retainedClient;
 
     public QueryEngineHTTP(String serviceURI, Query query) {
         this(serviceURI, query, query.toString());
@@ -350,6 +353,7 @@ public class QueryEngineHTTP implements QueryExecution {
         }
 
         retainedConnection = in; // This will be closed on close()
+        retainedClient = httpQuery.getClient();
 
         // TODO: Find a way to auto-detect how to create the ResultSet based on
         // the content type in use
@@ -666,6 +670,15 @@ public class QueryEngineHTTP implements QueryExecution {
                 log.warn("Failed to close connection", e);
             } finally {
                 retainedConnection = null;
+            }
+        }
+        if (retainedClient != null) {
+            try {
+                retainedClient.getConnectionManager().shutdown();
+            } catch (RuntimeException e) {
+                log.warn("Failed to shutdown HTTP client", e);
+            } finally {
+                retainedClient = null;
             }
         }
     }
