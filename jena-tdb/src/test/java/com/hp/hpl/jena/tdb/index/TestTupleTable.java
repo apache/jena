@@ -48,9 +48,9 @@ public class TestTupleTable extends BaseTest
     
     static private TupleTable create()
     {
-        TupleIndex idxSPO = TestTupleIndexRecord.create("SPO") ;
-        TupleIndex idxPOS = TestTupleIndexRecord.create("POS") ;
-        TupleIndex idxOSP = TestTupleIndexRecord.create("OSP") ;
+        TupleIndex idxSPO = TestTupleIndexRecordDirect.create("SPO") ;
+        TupleIndex idxPOS = TestTupleIndexRecordDirect.create("POS") ;
+        TupleIndex idxOSP = TestTupleIndexRecordDirect.create("OSP") ;
         TupleIndex x[] = { idxSPO, idxPOS, idxOSP } ;
         TupleTable table = new TupleTable(3, x) ;
         return table ;
@@ -58,7 +58,7 @@ public class TestTupleTable extends BaseTest
     
     static private TupleTable create2()
     {
-        TupleIndex idxSPO = TestTupleIndexRecord.create("SPO") ;
+        TupleIndex idxSPO = TestTupleIndexRecordDirect.create("SPO") ;
         TupleIndex x[] = { idxSPO } ;
         TupleTable table = new TupleTable(3, x) ;
         return table ;
