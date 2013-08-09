@@ -21,11 +21,11 @@ package com.hp.hpl.jena.sparql.engine.http;
 import java.io.InputStream ;
 import java.net.MalformedURLException ;
 import java.net.URL ;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeUnit ;
 import java.util.regex.Pattern ;
 
 import org.apache.http.client.HttpClient ;
-import org.apache.http.conn.params.ConnManagerPNames;
+import org.apache.http.conn.params.ConnManagerPNames ;
 import org.apache.http.impl.client.AbstractHttpClient ;
 import org.apache.http.impl.client.DecompressingHttpClient ;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
@@ -52,6 +52,7 @@ import com.hp.hpl.jena.shared.JenaException ;
  * 
  * If the query string is large, then HTTP POST is used.
  */
+@SuppressWarnings("deprecation")
 public class HttpQuery extends Params {
     static final Logger log = LoggerFactory.getLogger(HttpQuery.class.getName());
 
@@ -282,7 +283,6 @@ public class HttpQuery extends Params {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private InputStream execGet() throws QueryExceptionHTTP {
         URL target = null;
         String qs = getQueryString();
@@ -341,7 +341,6 @@ public class HttpQuery extends Params {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private InputStream execPost() throws QueryExceptionHTTP {
         URL target = null;
         try {
