@@ -93,7 +93,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     {
         // Decide the algebra to actually execute.
         Op op = queryOp ;
-        if ( false && ! startBinding.isEmpty() ) {
+        if ( ! startBinding.isEmpty() ) {
             op = Substitute.substitute(op, startBinding) ;
             context.put(ARQConstants.sysCurrentAlgebra, op) ;
             // Don't reset the startBinding because it also is
