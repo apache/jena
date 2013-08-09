@@ -24,13 +24,7 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformScopeRename ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Substitute ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.Plan ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineBase ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.* ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck ;
@@ -51,15 +45,9 @@ public class QueryEngineMain extends QueryEngineBase
         super(query, dataset, input, context) ;
     }
 
-    // This does initial bindings by substituting immediately, rather than flowing the binding only.
-    public static boolean SUBSTITUE = true ;
-    
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
-        if ( SUBSTITUE && ! input.isEmpty() )
-            op = Substitute.substitute(op, input) ;
-        
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
         QueryIterator qIter1 = QueryIterRoot.create(input, execCxt) ;
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
