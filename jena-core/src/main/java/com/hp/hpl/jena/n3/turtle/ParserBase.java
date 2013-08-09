@@ -18,19 +18,18 @@
 
 package com.hp.hpl.jena.n3.turtle;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.n3.IRIResolver;
-import com.hp.hpl.jena.n3.JenaURIException;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.n3.IRIResolver ;
+import com.hp.hpl.jena.n3.JenaURIException ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class ParserBase
 {
@@ -52,7 +51,7 @@ public class ParserBase
     protected final String SWAP_LOG_NS  = "http://www.w3.org/2000/10/swap/log#" ;
     protected final Node nLogImplies    = NodeFactory.createURI(SWAP_LOG_NS+"implies") ;
     
-    protected final Node nOwlSameAs     = OWL.sameAs.asNode() ;
+    protected final Node nOwlSameAs     = NodeFactory.createURI("http://www.w3.org/2002/07/owl#sameAs") ;
     
     protected boolean strictTurtle = true ;
     protected boolean skolomizedBNodes = true ; 
