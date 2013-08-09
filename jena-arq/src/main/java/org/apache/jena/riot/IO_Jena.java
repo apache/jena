@@ -34,8 +34,6 @@ public class IO_Jena
 
     public static void wireIntoJena()
     {
-        if ( coreFileManager == null )
-            coreFileManager = FileManager.get() ;
         FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
         IO_JenaReaders.wireIntoJena() ;
         IO_JenaWriters.wireIntoJena() ;
@@ -47,8 +45,8 @@ public class IO_Jena
     
     public static void resetJena()
     {
-        if ( coreFileManager != null )
-            FileManager.setGlobalFileManager(coreFileManager) ;
+        // This forces reinitialization if ever used.
+        FileManager.setGlobalFileManager(null) ;
         IO_JenaReaders.resetJena() ;
         IO_JenaWriters.resetJena() ;
     }
