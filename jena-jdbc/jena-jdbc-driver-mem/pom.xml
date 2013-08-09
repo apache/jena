@@ -7,7 +7,7 @@
 		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>jena-jdbc-driver-mem</artifactId>
-	<name>Jena JDBC - In-Memory Driver</name>
+	<name>Apache Jena - JDBC In-Memory Driver</name>
 	<description>A Jena JDBC driver that uses an ARQ in-memory endpoint, intended primarily for testing purposes.</description>
 
 	<properties>

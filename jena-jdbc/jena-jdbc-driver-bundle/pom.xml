@@ -7,7 +7,7 @@
 		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>jena-jdbc-driver-bundle</artifactId>
-	<name>Jena JDBC - Driver Bundle</name>
+	<name>Apache Jena - JDBC Driver Bundle</name>
 	<description>An artifact which bundles up the standard Jena JDBC drivers into a single shaded JAR file to provide a convenience dependency</description>
 
 	<properties>
