@@ -226,9 +226,6 @@ public class TestFunctions
     E_BNode
     */ 
     
-    //@Test public void 
-
-
     private void test(String exprStr, NodeValue result)
     {
         Expr expr = ExprUtils.parse(exprStr) ;
