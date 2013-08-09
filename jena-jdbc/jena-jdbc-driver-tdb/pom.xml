@@ -7,7 +7,7 @@
 		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>jena-jdbc-driver-tdb</artifactId>
-	<name>Jena JDBC - TDB Driver</name>
+	<name>Apache Jena - JDBC TDB Driver</name>
 	<description>A Jena JDBC driver for use with the Jena TDB backend</description>
 
 	<properties>

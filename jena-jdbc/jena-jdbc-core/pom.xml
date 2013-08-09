@@ -7,7 +7,7 @@
 		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>jena-jdbc-core</artifactId>
-	<name>Jena JDBC - Core</name>
+	<name>Apache Jena - JDBC Core API</name>
 	<description>This library provides core functionality for Jena JDBC</description>
 
 	<properties>
