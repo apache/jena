@@ -4,7 +4,10 @@ ChangeLog for ARQ
 
 ==== Jena 2.10.2
 
-+ JENA-470 : Enable optimization of mixtures of disjunctions with equality and other expressions. 
++ JENA-500 : Substitution for an initial binding is now done 
+             on the algrebra before optimzation is attempted.
++ JENA-470 : Enable optimization of mixtures of disjunctions with equality 
+             and other expressions. 
 + JENA-473 : Enable implicit join optimizations
 + JENA-475 : HTTP Authentication for SPARQL Updates was not properly supported
 + JENA-471 : Fix regression in generated quad form of algebra for some queries
