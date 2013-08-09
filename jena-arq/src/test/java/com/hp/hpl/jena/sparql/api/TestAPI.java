@@ -18,30 +18,17 @@
 
 package com.hp.hpl.jena.sparql.api;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.junit.Assert;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.QuerySolutionMap ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.vocabulary.OWL ;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class TestAPI extends BaseTest
 {
@@ -200,7 +187,7 @@ public class TestAPI extends BaseTest
         initialBinding.add("a", ResourceFactory.createResource("http://constant"));
         QueryExecution qexec = QueryExecutionFactory.create(query, model, initialBinding);
         boolean result = qexec.execAsk();
-        Assert.assertFalse(result);
+        assertTrue(result);
     }
     
     /**
@@ -228,7 +215,7 @@ public class TestAPI extends BaseTest
         initialBinding.add("b", ResourceFactory.createTypedLiteral(Boolean.TRUE));
         QueryExecution qexec = QueryExecutionFactory.create(query, model, initialBinding);
         boolean result = qexec.execAsk();
-        Assert.assertFalse(result);
+        assertTrue(result);
     }
     
     @Test public void testReuseQueryObject1()
