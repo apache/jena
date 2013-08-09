@@ -45,7 +45,7 @@ public class TestAPI extends BaseTest
         m.add(r1, p3, "y1") ;
     }
     
-    @Test public void testInitialBindingsConstruct()
+    @Test public void testInitialBindingsConstruct1()
     {
         QueryExecution qExec = makeQExec("CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}") ;
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -59,6 +59,25 @@ public class TestAPI extends BaseTest
         Property p1 = m.createProperty(ns+"p1") ;
     
         assertTrue("Empty model", r.contains(null,p1, init.get("z"))) ; 
+        
+        qExec.close() ;
+    }
+    
+    
+    @Test public void testInitialBindingsConstruct2()
+    {
+        QueryExecution qExec = makeQExec("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }") ;
+        QuerySolutionMap init = new QuerySolutionMap() ;
+        init.add("o", m.createLiteral("x1"));
+        
+        qExec.setInitialBinding(init) ;
+        Model r = qExec.execConstruct() ;
+    
+        assertTrue("Empty model", r.size() > 0 ) ;
+    
+        Property p1 = m.createProperty(ns+"p1") ;
+    
+        assertTrue("Empty model", r.contains(null, p1, init.get("x1"))) ; 
         
         qExec.close() ;
     }
