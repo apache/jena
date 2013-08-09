@@ -30,14 +30,25 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
+import com.hp.hpl.jena.sparql.util.ResultSetUtils;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.GraphStoreFactory;
+import com.hp.hpl.jena.update.UpdateExecutionFactory;
+import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
@@ -213,25 +224,69 @@ public class TestParameterizedSparqlString {
 
         test(query, new String[] { "<http://example.org>", "<http://predicate>" }, new String[] { "?s", "?p" });
     }
-    
+
     @Test
     public void test_param_string_bnode_1() {
         // Test Blank Node injection
         String cmdText = "SELECT * WHERE { ?s ?p ?o . }";
         ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
         query.setIri("s", "_:blankNodeID");
-        
+
         test(query, new String[] { "<_:blankNodeID>" }, new String[] { "?s" });
     }
-    
+
     @Test
     public void test_param_string_bnode_2() {
         // Test Blank Node injenction
         String cmdText = "INSERT { GRAPH <target> { ?node a:p ?o . } } WHERE { ?node a:p ?o . }";
         ParameterizedSparqlString update = new ParameterizedSparqlString(cmdText);
         update.setIri("node", "_:blankNodeID");
-        
+
         test(update, new String[] { "<_:blankNodeID>" }, new String[] { "?node" });
+    }
+
+    @Test
+    public void test_param_string_bnode_3() {
+        // Test case related to treatment of blank nodes when injecting into
+        // SPARQL updates using _: syntax
+
+        Model model = ModelFactory.createDefaultModel();
+        Resource bnode = model.createResource();
+        bnode.addProperty(RDF.type, OWL.Thing);
+        Assert.assertEquals(1, model.size());
+
+        Dataset ds = DatasetFactory.create(model);
+
+        // Use a parameterized query to check the data can be found
+        ParameterizedSparqlString pq = new ParameterizedSparqlString();
+        pq.setCommandText("SELECT * WHERE { ?s ?p ?o }");
+        pq.setIri("s", "_:" + bnode.getId());
+        Query q = pq.asQuery();
+        QueryExecution qe = QueryExecutionFactory.create(q, ds);
+        ResultSet rset = qe.execSelect();
+        Assert.assertEquals(1, ResultSetFormatter.consume(rset));
+        qe.close();
+
+        // Use a parameterized update to modify the data
+        ParameterizedSparqlString s = new ParameterizedSparqlString();
+        s.setCommandText("INSERT { ?o ?p ?s } WHERE { ?s ?p ?o }");
+        s.setIri("s", "_:" + bnode.getId());
+        UpdateRequest query = s.asUpdate();
+
+        UpdateProcessor proc = UpdateExecutionFactory.create(query, GraphStoreFactory.create(ds));
+        proc.execute();
+
+        for (Statement st : model.listStatements().toList()) {
+            System.out.println(st);
+        }
+
+        // This should be true because this was present in the intial model set
+        // up
+        Assert.assertEquals(1, model.listStatements(bnode, null, (RDFNode) null).toList().size());
+        // This should return 0 because the INSERT should result in a new blank
+        // node being created rather than the existing one being reused becaue
+        // of the semantics of blank nodes usage in templates
+        Assert.assertEquals(0, model.listStatements(null, null, bnode).toList().size());
     }
 
     @Test
@@ -1289,13 +1344,13 @@ public class TestParameterizedSparqlString {
 
         Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"test\", ?o . }", query.toString());
     }
-    
+
     @Test
     public void test_param_string_positional_eligible_1() {
         // Test detection of eligible parameters
         String cmdText = "SELECT * WHERE { ?s ?p ? . }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(cmdText);
-        
+
         Iterator<Integer> iter = pss.getEligiblePositionalParameters();
         int count = 0;
         while (iter.hasNext()) {
@@ -1304,13 +1359,13 @@ public class TestParameterizedSparqlString {
         }
         Assert.assertEquals(1, count);
     }
-    
+
     @Test
     public void test_param_string_positional_eligible_2() {
         // Test detection of eligible parameters
         String cmdText = "SELECT * WHERE { ? ? ? . }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(cmdText);
-        
+
         Iterator<Integer> iter = pss.getEligiblePositionalParameters();
         int count = 0;
         while (iter.hasNext()) {
@@ -1319,13 +1374,13 @@ public class TestParameterizedSparqlString {
         }
         Assert.assertEquals(3, count);
     }
-    
+
     @Test
     public void test_param_string_positional_eligible_3() {
         // Test detection of eligible parameters
         String cmdText = "SELECT * WHERE { ?s ?p ?; ?p1 ?, ?. }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(cmdText);
-        
+
         Iterator<Integer> iter = pss.getEligiblePositionalParameters();
         int count = 0;
         while (iter.hasNext()) {
@@ -1702,12 +1757,13 @@ public class TestParameterizedSparqlString {
         pss.setLiteral(1, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
         // In the positional parameter case this should fail because there
-        // is only one eligible positional parameter in the string and we cannot introduce additional ones via chained injection
+        // is only one eligible positional parameter in the string and we cannot
+        // introduce additional ones via chained injection
         Iterator<Integer> params = pss.getEligiblePositionalParameters();
         Assert.assertTrue(params.hasNext());
         params.next();
         Assert.assertFalse(params.hasNext());
-        
+
         UpdateRequest u = pss.asUpdate();
         Assert.assertEquals(1, u.getOperations().size());
     }
@@ -1775,12 +1831,13 @@ public class TestParameterizedSparqlString {
         pss.setLiteral(1, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
         // In the positional parameter case this should fail because there
-        // is only one eligible positional parameter in the string and we cannot introduce additional ones via chained injection
+        // is only one eligible positional parameter in the string and we cannot
+        // introduce additional ones via chained injection
         Iterator<Integer> params = pss.getEligiblePositionalParameters();
         Assert.assertTrue(params.hasNext());
         params.next();
         Assert.assertFalse(params.hasNext());
-        
+
         UpdateRequest u = pss.asUpdate();
         Assert.assertEquals(1, u.getOperations().size());
     }
@@ -1803,37 +1860,37 @@ public class TestParameterizedSparqlString {
         String str = "SELECT * WHERE { ?s ?p ?o }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("o", "has$sign");
-        
+
         pss.toString();
     }
-    
+
     @Test
     public void test_param_string_bug_02() {
         // Tests a bug reported with setting literals
         String str = "SELECT * WHERE { ?s ?p ?o }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("o", "has$1sign");
-        
+
         pss.toString();
     }
-    
+
     @Test
     public void test_param_string_bug_03() {
         // Tests a bug reported with setting literals
         String str = "SELECT * WHERE { ?s ?p ?o }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("o", "has$5sign");
-        
+
         pss.toString();
     }
-    
+
     @Test
     public void test_param_string_bug_04() {
         // Tests a bug reported with setting literals
         String str = "SELECT * WHERE { ?s ?p ?o }";
         ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
         pss.setLiteral("o", "has $9 sign");
-        
+
         pss.toString();
     }
 }
