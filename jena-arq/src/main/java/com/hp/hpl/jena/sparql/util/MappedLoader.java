@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.function.library.leviathan.LeviathanConstants;
 
 
 public class MappedLoader
@@ -33,6 +34,7 @@ public class MappedLoader
     static Map<String, String> uriMap = new HashMap<String, String>() ;
     
     static {
+        // ARQ library
         uriMap.put(ARQConstants.ARQFunctionLibraryURI,
                    ARQConstants.ARQFunctionLibrary) ;
         uriMap.put(ARQConstants.ARQPropertyFunctionLibraryURI,
@@ -46,6 +48,10 @@ public class MappedLoader
         
         uriMap.put("java:com.hp.hpl.jena.query.pfunction.library.",
                    "java:com.hp.hpl.jena.sparql.pfunction.library.") ;
+        
+        // Leviathan library
+        uriMap.put(LeviathanConstants.LeviathanFunctionLibraryURI, 
+                   LeviathanConstants.LeviathanFunctionLibrary) ;
     }
     
     public static boolean isPossibleDynamicURI(String uri, Class<?> expectedClass)
@@ -54,7 +60,7 @@ public class MappedLoader
         if ( uri == null )
             return false ;
         // Need to force the load to check everything.
-        // Callers (who are expectedClass sesnitive) should have
+        // Callers (who are expectedClass sensitive) should have
         // an "alreadyLoaded" cache
         return loadClass(uri, expectedClass) != null ;
     }

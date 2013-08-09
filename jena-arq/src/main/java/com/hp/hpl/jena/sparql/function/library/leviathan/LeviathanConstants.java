@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.expr.nodevalue;
+package com.hp.hpl.jena.sparql.function.library.leviathan;
 
-public enum NumericType { OP_INTEGER, OP_DECIMAL, OP_DOUBLE, OP_FLOAT}
+public class LeviathanConstants {
+
+    public static final String LeviathanFunctionLibraryURI = "http://www.dotnetrdf.org/leviathan#";
+    public static final String LeviathanFunctionLibrary = "java:com.hp.hpl.jena.sparql.function.library.leviathan.";
+}
