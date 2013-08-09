@@ -43,6 +43,7 @@ import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.http.protocol.BasicHttpContext ;
 import org.apache.http.protocol.HttpContext ;
+import org.apache.http.util.EntityUtils ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.HttpException ;
@@ -223,8 +224,9 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpGet(String url, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient,
-            HttpContext httpContext, HttpAuthenticator authenticator) {
+    public static void execHttpGet(String url, 
+                                   String acceptHeader, HttpResponseHandler handler, 
+                                   HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         String requestURI = determineRequestURI(url);
         HttpGet httpget = new HttpGet(requestURI);
         exec(url, httpget, acceptHeader, handler, httpClient, httpContext, authenticator);
@@ -944,7 +946,7 @@ public class HttpOp {
                 request.addHeader(HttpNames.hAccept, acceptHeader);
 
             // Prepare and execute
-            httpClient = ensureClient(httpClient);
+            httpClient = ensureClient(httpClient, authenticator);
             httpContext = ensureContext(httpContext);
             applyAuthentication(asAbstractClient(httpClient), url, httpContext, authenticator);
             HttpResponse response = httpClient.execute(request, httpContext);
@@ -954,6 +956,8 @@ public class HttpOp {
             int statusCode = statusLine.getStatusCode();
             if (HttpSC.isClientError(statusCode) || HttpSC.isServerError(statusCode)) {
                 log.debug(format("[%d] %s %s", id, statusLine.getStatusCode(), statusLine.getReasonPhrase()));
+                // Error responses can have bodies so it is important to clear up. 
+                EntityUtils.consume(response.getEntity());
                 throw new HttpException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
             }
             // Redirects are followed by HttpClient.
@@ -965,7 +969,16 @@ public class HttpOp {
     }
 
     private static HttpClient jenaGlobalHttpClient = null ; 
-    // can cause lock-ups - need to investifage before reenabling.
+
+    // Performance can be improved by using a share HttpClient that uses
+    // connection pooling. However, pool management is complicated and can lead
+    // to starvation (the system locks-up). The use of an HttpAuthenticator also
+    // complicates the requirements.    
+    
+    // This code sets a global HttpClient, used when there is no HttpAuthenticator.
+    // however, under high load there have been lock-ups due to starvation.
+    // Provide a safe setup for the default case.
+    
 //    static {
 //        /*
 //         * SystemDefaultHttpClient respects
@@ -984,27 +997,22 @@ public class HttpOp {
 //            if ( x == null )
 //                System.setProperty(keepAlive, "true") ;
 //            jenaGlobalHttpClient = new SystemDefaultHttpClient() ;
-////            // Hack to set parameters ourselves.
-////            if ( jenaGlobalHttpClient.getConnectionManager() instanceof PoolingClientConnectionManager ) {
-////                PoolingClientConnectionManager mgr = (PoolingClientConnectionManager)jenaGlobalHttpClient.getConnectionManager() ;
-////                mgr.setDefaultMaxPerRoute(1);
-////                mgr.setMaxTotal(1);
-////            }
 //        }
 //    }
 
     /**
      * Ensures that a HTTP Client is non-null, uses a Jena-wide
-     * {@link SystemDefaultHttpClient} if a null client is provided
+     * {@link SystemDefaultHttpClient} if available when no
+     * authentication is required, else create a new instance.
      * 
      * @param client
      *            HTTP Client
      * @return HTTP Client
      */
-    private static HttpClient ensureClient(HttpClient client) {
+    private static HttpClient ensureClient(HttpClient client, HttpAuthenticator auth) {
         if ( client != null )
             return client ;
-        if ( jenaGlobalHttpClient != null )
+        if ( jenaGlobalHttpClient != null && auth == null )
             return jenaGlobalHttpClient ;
         return new SystemDefaultHttpClient() ;
     }
