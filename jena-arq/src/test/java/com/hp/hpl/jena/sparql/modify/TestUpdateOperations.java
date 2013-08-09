@@ -24,8 +24,14 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.* ;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 // Most of the testing of SPARQL Update is scripts and uses the SPARQL-WG test suite.
 // Here are a few additional tests
@@ -74,6 +80,21 @@ public class TestUpdateOperations extends BaseTest
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">") ;
         UpdateAction.execute(req, gs) ;
         assertEquals(0, Iter.count(gs.find())) ;
+    }
+    
+    @Test public void insert_where_01() {
+        Model m = ModelFactory.createDefaultModel();
+        Resource anon = m.createResource();
+        anon.addProperty(RDF.type, OWL.Thing);
+        assertEquals(1, m.size());
+        
+        GraphStore gs = GraphStoreFactory.create(m);
+        UpdateRequest req = UpdateFactory.create("INSERT { ?s ?p ?o } WHERE { ?o ?p ?s }");
+        UpdateAction.execute(req, gs);
+        
+        assertEquals(2, m.size());
+        assertEquals(1, m.listStatements(anon, null, (RDFNode)null).toList().size());
+        assertEquals(1, m.listStatements(null, null, anon).toList().size());
     }
 }
 
