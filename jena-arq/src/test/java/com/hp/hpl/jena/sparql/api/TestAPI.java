@@ -164,16 +164,10 @@ public class TestAPI extends BaseTest
     }
     
     /**
-     * This test demonstrates a disconnect between user understanding of 
-     * initial bindings and the reality of their implementation.
-     * <p>
-     * Using initial bindings can potentially change the semantics of the query 
-     * in unexpected ways such as making an always false query return true
-     * but sometimes the optimizer (which knows nothing of initial bindings)
-     * makes a decision which negates that potential.
-     * </p>
+     * Initial binding substitution happens before optimization so initial bindings can make a semantically always false query into one that can return true
      */
     @Test public void testInitialBindings5() {
+        // From JENA-500
         Query query = QueryFactory.create(
                 "ASK\n" +
                 "WHERE {\n" +
@@ -191,16 +185,10 @@ public class TestAPI extends BaseTest
     }
     
     /**
-     * This test demonstrates a disconnect between user understanding of 
-     * initial bindings and the reality of their implementation.
-     * <p>
-     * Using initial bindings can potentially change the semantics of the query 
-     * in unexpected ways such as making an always false query return true
-     * but sometimes the optimizer (which knows nothing of initial bindings)
-     * makes a decision which negates that potential.
-     * </p>
+     * Initial binding substitution happens before optimization so initial bindings can make a semantically always false query into one that can return true
      */
     @Test public void testInitialBindings6() {
+        // From JENA-500
         Query query = QueryFactory.create(
                 "ASK\n" +
                 "WHERE {\n" +
