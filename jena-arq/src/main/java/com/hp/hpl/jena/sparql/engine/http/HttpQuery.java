@@ -21,9 +21,11 @@ package com.hp.hpl.jena.sparql.engine.http;
 import java.io.InputStream ;
 import java.net.MalformedURLException ;
 import java.net.URL ;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern ;
 
 import org.apache.http.client.HttpClient ;
+import org.apache.http.conn.params.ConnManagerPNames;
 import org.apache.http.impl.client.AbstractHttpClient ;
 import org.apache.http.impl.client.DecompressingHttpClient ;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
@@ -73,6 +75,7 @@ public class HttpQuery extends Params {
     private int connectTimeout = 0, readTimeout = 0;
     private boolean allowGZip = false;
     private boolean allowDeflate = false;
+    private HttpClient client;
 
     // static final String ENC_UTF8 = "UTF-8" ;
 
@@ -191,6 +194,14 @@ public class HttpQuery extends Params {
     public void setAuthenticator(HttpAuthenticator authenticator) {
         this.authenticator = authenticator;
     }
+    
+    /**
+     * Gets the HTTP client that is being used, may be null if no request has yet been made
+     * @return HTTP Client or null
+     */
+    public HttpClient getClient() {
+        return this.client;
+    }
 
     /**
      * Return whether this request will go by GET or POST
@@ -271,6 +282,7 @@ public class HttpQuery extends Params {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private InputStream execGet() throws QueryExceptionHTTP {
         URL target = null;
         String qs = getQueryString();
@@ -289,11 +301,19 @@ public class HttpQuery extends Params {
 
         try {
             try {
-                HttpClient client = new SystemDefaultHttpClient();
+                this.client = new SystemDefaultHttpClient();
+                
+                // Always apply a 10 second timeout to obtaining a connection lease from HTTP Client
+                // This prevents a potential lock up
+                this.client.getParams().setLongParameter(ConnManagerPNames.TIMEOUT, TimeUnit.SECONDS.toMillis(10));
+                
+                // If user has specified time outs apply them now
                 if (this.connectTimeout > 0)
-                    client.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, this.connectTimeout);
+                    this.client.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, this.connectTimeout);
                 if (this.readTimeout > 0)
-                    client.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, this.readTimeout);
+                    this.client.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, this.readTimeout);
+                
+                // Enable compression support appropriately
                 HttpContext context = new BasicHttpContext();
                 if (allowGZip || allowDeflate) {
                     // Apply auth early as the decompressing client we're about
@@ -301,6 +321,8 @@ public class HttpQuery extends Params {
                     HttpOp.applyAuthentication((AbstractHttpClient) client, serviceURL, context, authenticator);
                     client = new DecompressingHttpClient(client);
                 }
+                
+                // Get the actual response stream
                 TypedInputStream stream = HttpOp.execHttpGet(target.toString(), contentTypeResult, client, context,
                         this.authenticator);
                 if (stream == null)
@@ -319,6 +341,7 @@ public class HttpQuery extends Params {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private InputStream execPost() throws QueryExceptionHTTP {
         URL target = null;
         try {
@@ -331,19 +354,28 @@ public class HttpQuery extends Params {
         ARQ.getHttpRequestLogger().trace(target.toExternalForm());
 
         try {
-            HttpClient client = new SystemDefaultHttpClient();
+            this.client = new SystemDefaultHttpClient();
+            
+            // Always apply a 10 second timeout to obtaining a connection lease from HTTP Client
+            // This prevents a potential lock up
+            this.client.getParams().setLongParameter(ConnManagerPNames.TIMEOUT, TimeUnit.SECONDS.toMillis(10));
+            
+            // If user has specified time outs apply them now
             if (this.connectTimeout > 0)
-                client.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, this.connectTimeout);
+                this.client.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, this.connectTimeout);
             if (this.readTimeout > 0)
-                client.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, this.readTimeout);
+                this.client.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, this.readTimeout);
+            
+            // Enable compression support appropriately
             HttpContext context = new BasicHttpContext();
             if (allowGZip || allowDeflate) {
                 // Apply auth early as the decompressing client we're about
                 // to add will block this being applied later
                 HttpOp.applyAuthentication((AbstractHttpClient) client, serviceURL, context, authenticator);
-                client = new DecompressingHttpClient(client);
+                this.client = new DecompressingHttpClient(client);
             }
 
+            // Get the actual response stream
             TypedInputStream stream = HttpOp.execHttpPostFormStream(serviceURL, this, contentTypeResult, client, context, authenticator);
             if (stream == null)
                 throw new QueryExceptionHTTP(404);
