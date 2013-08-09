@@ -35,6 +35,7 @@ import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
     
     TestExtHash.class,
     TestTupleIndexRecord.class,
+    TestTupleIndexRecordDirect.class,
     TestTupleTable.class
 } )
 
