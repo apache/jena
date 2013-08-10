@@ -308,6 +308,11 @@ public class QueryExecUtils
             return ;
         }
         
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_TSV) )
+        {
+            ResultSetFormatter.outputAsTSV(System.out, b) ;
+            return ;
+        }
         System.err.println("Unknown format: "+outputFormat) ;
     }
     
