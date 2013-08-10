@@ -21,16 +21,22 @@ package org.apache.jena.atlas.lib;
 // NB shifting is "mod 32" -- <<32 is a no-op (not a clear).
 // http://mindprod.com/jgloss/masking.html
 
-/** Utilities for manipulating a bit pattern which held in a 32 bit int */ 
+/** Utilities for manipulating a bit pattern which are held in a 32 bit int.
+ *  @see BitsLong
+ */ 
 public final class BitsInt
 {
     private BitsInt() {}
     
     private static int IntLen = Integer.SIZE ;
     
-    /** Extract the value packed into bits start (inclusive) and finish (exclusive),
-     *  the value is returned the low part of the returned int.
+    /** Extract the value packed into bits start (inclusive) and finish (exclusive).
+     *  The value is returned in the low part of the returned int.
      *  The low bit is bit zero.
+     * @param bits
+     * @param start
+     * @param finish
+     * @return int  
      */ 
     
     public static final
@@ -42,8 +48,13 @@ public final class BitsInt
         return (bits<<(IntLen-finish)) >>> ((IntLen-finish)+start) ;
     }
 
-    /** Place the value into the bit pattern between start and finish;
-     *  leaves other bits aint.
+    /** Place the value into the bit pattern between start and finish
+     *  and returns the new int. 
+     * @param bits
+     * @param value
+     * @param start
+     * @param finish
+     * @return int
      */
     public static final
     int pack(int bits, int value, int start, int finish)
@@ -138,6 +149,11 @@ public final class BitsInt
     /** Get the bits from start (inclusive) to finish (exclusive),
      *  leaving them aligned in the int.  See also unpack, returns
      *  the value found at that place.
+     *  @see #unpack(int, int, int)
+     *  @param bits
+     *  @param start
+     *  @param finish
+     *  @return int
      */
     
     public static final
@@ -147,6 +163,13 @@ public final class BitsInt
         return access$(bits, start, finish) ; 
     }
     
+    /**
+     * Clear the bits specified.
+     *  @param bits
+     *  @param start
+     *  @param finish
+     *  @return int
+     */
     public static final
     int clear(int bits, int start, int finish)
     {
@@ -155,7 +178,11 @@ public final class BitsInt
     }
 
     /**
-     * Create a mask that has ones between bit positions start (inc) and finish (exc)
+     * Create a mask that has ones between bit positions start (inc) and finish (exc),
+     * and zeros elsewhere.
+     * @param start
+     * @param finish
+     * @return int
      */
     public static final
     int mask(int start, int finish)
@@ -165,8 +192,11 @@ public final class BitsInt
     }
     
     /**
-     * Create a mask that has zeros between bit positions start (inc) and finish (exc)
+     * Create a mask that has zeros between bit positions start (inc) and finish (exc),
      * and ones elsewhere
+     * @param start
+     * @param finish
+     * @return int
      */
     public static final
     int maskZero(int start, int finish)
@@ -259,7 +289,6 @@ public final class BitsInt
     private static final
     int maskZero$(int start, int finish)
     {
-
         return ~mask$(start, finish) ;
     }
     
