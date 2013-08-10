@@ -21,20 +21,23 @@ package org.apache.jena.atlas.lib;
 // NB shifting is "mod 64" -- <<64 is a no-op (not a clear).
 // http://mindprod.com/jgloss/masking.html
 
-/** Utilities for manipulating a bit pattern which held in a 64 bit long
+/** Utilities for manipulating a bit pattern which are held in a 64 bit long
+ *  @see BitsInt
  *  (java.util.BitSet does not allow getting the pattern as a long) 
  */ 
 public final class BitsLong
 {
     private BitsLong() {}
 
-    // When this is false, no calls to check() should be generated.
-    //public static final boolean CHECK = true ;
     private static int LongLen = Long.SIZE ;
     
     /** Extract the value packed into bits start (inclusive) and finish (exclusive),
      *  the value is returned the low part of the returned long.
      *  The low bit is bit zero.
+     * @param bits
+     * @param start
+     * @param finish
+     * @return long
      */ 
     
     public static final
@@ -46,8 +49,13 @@ public final class BitsLong
         return (bits<<(LongLen-finish)) >>> ((LongLen-finish)+start) ;
     }
 
-    /** Place the value into the bit pattern between start and finish;
-     *  leaves other bits alone.
+    /** Place the value into the bit pattern between start and finish
+     * and returns the new value.  Leaves other bits alone.
+     * @param bits
+     * @param value
+     * @param start
+     * @param finish
+     * @return long
      */
     public static final
     long pack(long bits, long value, int start, int finish)
@@ -143,7 +151,11 @@ public final class BitsLong
     /** Get the bits from start (inclusive) to finish (exclusive),
      *  leaving them aligned in the long.  See also unpack, returns
      *  the value found at that place.
-     */
+     *  @see #unpack(long, int, int)
+     *  @param bits
+     *  @param start
+     *  @param finish
+     *  @return lon     */
     
     public static final
     long access(long bits, int start, int finish)
@@ -152,7 +164,14 @@ public final class BitsLong
         return access$(bits, start, finish) ; 
     }
     
-    public static final
+    /**
+     * Clear the bits specified.
+     *  @param bits
+     *  @param start
+     *  @param finish
+     *  @return long
+     */
+  public static final
     long clear(long bits, int start, int finish)
     {
         check(start, finish) ;
@@ -160,7 +179,11 @@ public final class BitsLong
     }
 
     /**
-     * Create a mask that has ones between bit positions start (inc) and finish (exc)
+     * Create a mask that has ones between bit positions start (inc) and finish (exc),
+     * and zeros elsewhere.
+     * @param start
+     * @param finish
+     * @return long
      */
     public static final
     long mask(int start, int finish)
@@ -170,8 +193,11 @@ public final class BitsLong
     }
     
     /**
-     * Create a mask that has zeros between bit positions start (inc) and finish (exc)
+     * Create a mask that has zeros between bit positions start (inc) and finish (exc),
      * and ones elsewhere
+     * @param start
+     * @param finish
+     * @return long
      */
     public static final
     long maskZero(int start, int finish)
