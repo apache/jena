@@ -158,6 +158,8 @@ public class rdflangtest extends CmdGeneral
         
         Model model = report.getModel() ;
         model.setNsPrefix("rdft", VocabLangRDF.getURI()) ;
+        model.setNsPrefix("turtletest", "http://www.w3.org/2013/TurtleTests/manifest.ttl#") ;
+        // Other tests ...
         
         // Update the EARL report. 
         Resource jena = model.createResource()
