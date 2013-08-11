@@ -23,6 +23,7 @@ import java.io.File ;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.util.IllegalFormatException ;
 import java.util.Properties ;
 
 import org.apache.jena.atlas.AtlasException ;
@@ -33,57 +34,55 @@ import org.apache.log4j.xml.DOMConfigurator ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-// Simple wrapper for convenient, non-time critical logging.
+/* Simple wrappers and operations for convenient, non-time critical logging.
+ * The formatting operations are not designed specifically for performance, 
+ * but they do delay forming strings for output
+ * until it is know that a log message is actually
+ * required by level setting. 
+ */
 public class Log
 {
     private Log() {}
     
     // -- Delayed argument formatting.
-    static public void info(Logger log, String fmt, Object...args)
-    {
-        if ( log.isInfoEnabled() )
-        {
-            String x = String.format(fmt, args) ;
-            log.info(x) ;
-        }
-    }
-    
-    static public void debug(Logger log, String fmt, Object...args)
-    {
-        if ( log.isDebugEnabled() )
-        {
-            String x = String.format(fmt, args) ;
-            log.debug(x) ;
-        }
+    /* Log at 'trace' level. */
+    public static void trace(Logger log, String fmt, Object...args) {
+        if ( log.isTraceEnabled() )
+            log.trace(format(fmt, args)) ;
     }
 
-    static public void trace(Logger log, String fmt, Object...args)
-    {
-        if ( log.isTraceEnabled() )
-        {
-            String x = String.format(fmt, args) ;
-            log.trace(x) ;
-        }
+    /* Log at 'debug' level */
+    public static void debug(Logger log, String fmt, Object...args) {
+        if ( log.isDebugEnabled() )
+            log.debug(format(fmt, args)) ;
     }
-    
-    static public void warn(Logger log, String fmt, Object...args)
-    {
+
+    /* Log at 'info' level */
+    public static void info(Logger log, String fmt, Object...args) {
+        if ( log.isInfoEnabled() )
+            log.info(format(fmt, args)) ;
+    }
+
+    /* Log at 'warn' level */
+    public static void warn(Logger log, String fmt, Object...args) {
         if ( log.isWarnEnabled() )
-        {
-            String x = String.format(fmt, args) ;
-            log.warn(x) ;
-        }
+            log.warn(format(fmt, args)) ;
     }
-    
-    static public void error(Logger log, String fmt, Object...args)
-    {
+
+    /* Log at 'error' level */
+    public static void error(Logger log, String fmt, Object...args) {
         if ( log.isErrorEnabled() )
-        {
-            String x = String.format(fmt, args) ;
-            log.error(x) ;
+            log.error(format(fmt, args)) ;
+    }
+
+    private static String format(String fmt, Object[] args) {
+        try {
+            return String.format(fmt, args) ;
+        } catch (IllegalFormatException ex) {
+            // return something, however grotty.
+            return fmt+" "+args ;
         }
     }
-    
     // ----
     
     static public void info(String caller, String msg)
