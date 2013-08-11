@@ -19,26 +19,17 @@
 package org.apache.jena.riot.tokens;
 
 import static org.apache.jena.atlas.lib.Chars.* ;
-import static org.apache.jena.riot.system.RiotChars.charInArray ;
-import static org.apache.jena.riot.system.RiotChars.isA2Z ;
-import static org.apache.jena.riot.system.RiotChars.isA2ZN ;
-import static org.apache.jena.riot.system.RiotChars.isAlphaNumeric ;
-import static org.apache.jena.riot.system.RiotChars.isHexChar ;
-import static org.apache.jena.riot.system.RiotChars.isNewlineChar ;
-import static org.apache.jena.riot.system.RiotChars.isPNChars ;
-import static org.apache.jena.riot.system.RiotChars.isWhitespace ;
-import static org.apache.jena.riot.system.RiotChars.range ;
-import static org.apache.jena.riot.system.RiotChars.valHexChar ;
+import static org.apache.jena.riot.system.RiotChars.* ;
 
 import java.util.NoSuchElementException ;
-
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.riot.RiotParseException ;
 import org.apache.jena.riot.system.RiotChars ;
+
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
 /** Tokenizer for all sorts of things RDF-ish */
 
@@ -65,12 +56,18 @@ public final class TokenizerText implements Tokenizer
     private Token token = null ; 
     private final StringBuilder stringBuilder = new StringBuilder(200) ;
     private final PeekReader reader ;
+    private final boolean lineMode ;        // Whether whiespace includes or excludes NL (in its various forms).  
     private boolean finished = false ;
-    private TokenChecker checker = null ; // new CheckerBase()  ;
+    private TokenChecker checker = null ;
+
+    /*package*/ TokenizerText(PeekReader reader) {
+        this(reader, false) ;
+    }
     
-    /*package*/ TokenizerText(PeekReader reader)
+    /*package*/ TokenizerText(PeekReader reader, boolean lineMode)
     {
         this.reader = reader ;
+        this.lineMode = lineMode ; 
     }
     
     @Override
@@ -171,8 +168,13 @@ public final class TokenizerText implements Tokenizer
             }
             
             // Including excess newline chars from comment.
-            if ( ! isWhitespace(ch) )
-                break ;
+            if ( lineMode ) {
+                if ( ! isHorizontalWhitespace(ch) )
+                    break ;
+            } else {
+                if ( ! isWhitespace(ch) )
+                    break ;
+            }
             reader.readChar() ;
         }
     }
@@ -426,6 +428,19 @@ public final class TokenizerText implements Tokenizer
             return token ;
         }
 
+        if ( isNewlineChar(ch) ) {
+            //** - If collecting tokne image.
+            //** stringBuilder.setLength(0) ;
+            // Any number of NL and CR become one "NL" token.
+            do {
+                int ch2 = reader.readChar() ;
+                //** stringBuilder.append((char)ch2) ;
+            } while (isNewlineChar(reader.peekChar())) ;
+            token.setType(TokenType.NL) ;
+            //** token.setImage(stringBuilder.toString()) ;
+            return token ;
+        }
+        
         // Plain words and prefixes.
         //   Can't start with a number due to numeric test above.
         //   Can't start with a '_' due to blank node test above.
