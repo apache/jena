@@ -22,42 +22,39 @@ public class RiotChars
 {
     // ---- Character classes 
     
-    public static boolean isAlpha(int codepoint)
-    {
+    public static boolean isAlpha(int codepoint) {
         return Character.isLetter(codepoint) ;
     }
-    
-    public static boolean isAlphaNumeric(int codepoint)
-    {
+
+    public static boolean isAlphaNumeric(int codepoint) {
         return Character.isLetterOrDigit(codepoint) ;
     }
-    
+
     /** ASCII A-Z */
-    public static boolean isA2Z(int ch)
-    {
+    public static boolean isA2Z(int ch) {
         return range(ch, 'a', 'z') || range(ch, 'A', 'Z') ;
     }
 
     /** ASCII A-Z or 0-9 */
-    public static boolean isA2ZN(int ch)
-    {
+    public static boolean isA2ZN(int ch) {
         return range(ch, 'a', 'z') || range(ch, 'A', 'Z') || range(ch, '0', '9') ;
     }
 
     /** ASCII 0-9 */
-    public static boolean isDigit(int ch)
-    {
+    public static boolean isDigit(int ch) {
         return range(ch, '0', '9') ;
     }
-    
-    public static boolean isWhitespace(int ch)
-    {
+
+    public static boolean isWhitespace(int ch) {
         // ch = ch | 0xFF ;
-        return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '\f' ;    
+        return isHorizontalWhitespace(ch) || isNewlineChar(ch) || ch == '\f' ;
     }
-    
-    public static boolean isNewlineChar(int ch)
-    {
+
+    public static boolean isHorizontalWhitespace(int ch) {
+        return ch == ' ' || ch == '\t' ;
+    }
+
+    public static boolean isNewlineChar(int ch) {
         return ch == '\r' || ch == '\n' ;
     }
     
