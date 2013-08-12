@@ -230,7 +230,9 @@ public class TDB
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
         StageBuilder.setGenerator(ARQ.getContext(), stageGenerator) ;
 
-        // Wire in the new OpExecutor.  This is normal way to execute with a dataset.
+        // Wire in the new OpExecutor.  
+        // This is normal way to execute with a general dataset or a 
+        // model that is TDB-backed.
         QC.setFactory(ARQ.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
     }
     

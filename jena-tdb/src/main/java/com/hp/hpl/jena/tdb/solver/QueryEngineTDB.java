@@ -145,9 +145,9 @@ public class QueryEngineTDB extends QueryEngineMain
     public long getMillis() { return -1 ; }
     
     // ---- Factory
-    private static QueryEngineFactory factory = new QueryEngineFactoryTDB() ;
+    protected static QueryEngineFactory factory = new QueryEngineFactoryTDB() ;
         
-    private static class QueryEngineFactoryTDB implements QueryEngineFactory
+    protected static class QueryEngineFactoryTDB implements QueryEngineFactory
     {
         // If a DatasetGraphTransaction is passed in, we are outside a transaction.
         
@@ -158,7 +158,7 @@ public class QueryEngineTDB extends QueryEngineMain
             return false ;
         }
         
-        private DatasetGraphTDB dsgToQuery(DatasetGraph dataset)
+        protected DatasetGraphTDB dsgToQuery(DatasetGraph dataset)
         {
             if (dataset instanceof DatasetGraphTDB) return (DatasetGraphTDB)dataset ;
             if (dataset instanceof DatasetGraphTransaction) 
