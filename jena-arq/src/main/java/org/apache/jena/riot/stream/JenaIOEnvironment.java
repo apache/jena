@@ -34,28 +34,31 @@ import com.hp.hpl.jena.vocabulary.LocationMappingVocab ;
 /** Code for using the general facilities of the location mapper/ filemanager subsystem
  *  and set up for Jena usage. e.g. find a location mapper with RDf description. 
  */
-class JenaIOEnvironment
+public class JenaIOEnvironment
 {
     static LocationMapper theMapper = null ;
+    private final static Object lock = new Object() ;
     /** Get the global LocationMapper */
     public static LocationMapper getLocationMapper()
     {
-        if ( theMapper == null )
-        {
-            theMapper = new LocationMapper() ;
-            if ( getGlobalConfigPath() != null )
-                JenaIOEnvironment.createLocationMapper(getGlobalConfigPath()) ;
+        synchronized (lock) {
+            if ( theMapper == null ) {
+                String path = getGlobalConfigPath() ;
+                if ( path != null )
+                    theMapper = JenaIOEnvironment.createLocationMapper(path) ;
+                if ( theMapper == null )
+                    theMapper = new LocationMapper() ;
+            }
+            return theMapper ;
         }
-        return theMapper ;
     }
     
     static Logger log = LoggerFactory.getLogger(JenaIOEnvironment.class)  ;
     
     /** The default path for searching for the location mapper */
     public static final String DEFAULT_PATH =
-        "file:location-mapping.rdf;file:location-mapping.n3;file:location-mapping.ttl;"+
-        "file:etc/location-mapping.rdf;file:etc/location-mapping.n3;"+
-        "file:etc/location-mapping.ttl" ;
+        "location-mapping.ttl;location-mapping.rdf;location-mapping.n3;"+
+        "etc/location-mapping.rdf;etc/location-mapping.n3;etc/location-mapping.ttl" ;
     public static final String GlobalMapperSystemProperty1 = "http://jena.hpl.hp.com/2004/08/LocationMap" ;
     public static final String GlobalMapperSystemProperty2 = "LocationMap" ;
 
@@ -146,54 +149,45 @@ class JenaIOEnvironment
      *  to find a description of a LocationMapper, then create and return a
      *  LocationMapper based on the description.
      */
-    public static LocationMapper createLocationMapper(String configPath)
-    {
-        // Old code : maintenance: use Webreader to open the model. 
-        
-        LocationMapper locMap = new LocationMapper() ;
-        if ( configPath == null || configPath.length() == 0 )
-        {
+    public static LocationMapper createLocationMapper(String configPath) {
+        if ( configPath == null || configPath.length() == 0 ) {
             log.warn("Null configuration") ;
             return null ;
         }
-        
+
         // Make a file manager to look for the location mapping file
         StreamManager smgr = new StreamManager() ;
         smgr.addLocator(new LocatorFile()) ;
         smgr.addLocator(new LocatorClassLoader(smgr.getClass().getClassLoader())) ;
-        
+
         try {
-            String uriConfig = null ; 
+            String uriConfig = null ;
             TypedInputStream in = null ;
-            
-            StringTokenizer pathElems = new StringTokenizer( configPath, AdapterFileManager.PATH_DELIMITER );
+
+            StringTokenizer pathElems = new StringTokenizer(configPath, AdapterFileManager.PATH_DELIMITER) ;
             while (pathElems.hasMoreTokens()) {
-                String uri = pathElems.nextToken();
+                String uri = pathElems.nextToken() ;
                 if ( uri == null || uri.length() == 0 )
                     break ;
-                
+
                 in = smgr.openNoMapOrNull(uri) ;
-                if ( in != null )
-                {
+                if ( in != null ) {
                     uriConfig = uri ;
                     break ;
                 }
             }
-    
-            if ( in == null )
-            {
-                log.debug("Failed to find configuration: "+configPath) ;
+
+            if ( in == null ) {
+                log.debug("Failed to find configuration: " + configPath) ;
                 return null ;
             }
             String syntax = FileUtils.guessLang(uriConfig) ;
             Model model = ModelFactory.createDefaultModel() ;
             model.read(in, uriConfig, syntax) ;
-            processConfig(model) ;
-        } catch (JenaException ex)
-        {
-            LoggerFactory.getLogger(LocationMapper.class).warn("Error in configuration file: "+ex.getMessage()) ;
+            return processConfig(model) ;
+        } catch (JenaException ex) {
+            LoggerFactory.getLogger(LocationMapper.class).warn("Error in configuration file: " + ex.getMessage()) ;
+            return new LocationMapper() ;
         }
-        return locMap ;
     }
-
 }

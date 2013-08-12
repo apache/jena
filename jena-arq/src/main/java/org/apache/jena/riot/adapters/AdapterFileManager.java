@@ -154,7 +154,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     /** Create a "standard" FileManager. */
     public static AdapterFileManager makeGlobal()
     {
-        AdapterFileManager fMgr = new AdapterFileManager(StreamManager.get(), (LocationMapper)null) ;
+        AdapterFileManager fMgr = new AdapterFileManager(StreamManager.get(), JenaIOEnvironment.getLocationMapper()) ;
         return fMgr ;
     }
     
