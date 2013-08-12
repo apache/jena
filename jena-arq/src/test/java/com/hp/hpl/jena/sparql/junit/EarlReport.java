@@ -25,11 +25,13 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.vocabulary.DOAP ;
 import com.hp.hpl.jena.sparql.vocabulary.EARL ;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF ;
 import com.hp.hpl.jena.vocabulary.DC ;
 import com.hp.hpl.jena.vocabulary.DCTerms ;
 import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class EarlReport
 {
@@ -64,14 +66,8 @@ public class EarlReport
         earl.setNsPrefix("rdf", RDF.getURI()) ;
         earl.setNsPrefix("dc", DC.getURI()) ;
         earl.setNsPrefix("dct", DCTerms.getURI()) ;
-        /*
-        <earl:Software rdf:about="#tool">
-          <dc:title xml:lang="en">Cool Tool</dc:title>
-          <dc:description xml:lang="en">My favorite tool!</dc:description>
-          <foaf:homepage rdf:resource="http://example.org/tools/#cool"/>
-          <dct:hasVersion>1.0.3</dct:hasVersion>
-        </earl:Software>
-        */
+        earl.setNsPrefix("doap", DOAP.getURI()) ; 
+        earl.setNsPrefix("xsd", XSD.getURI()) ;
         
         // Utils.
         system = (systemURI == null ) ? 

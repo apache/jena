@@ -20,6 +20,8 @@ package riotcmd;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
 import org.apache.jena.riot.langsuite.VocabLangRDF ;
@@ -46,7 +48,6 @@ import com.hp.hpl.jena.sparql.vocabulary.FOAF ;
 import com.hp.hpl.jena.vocabulary.DC ;
 import com.hp.hpl.jena.vocabulary.DCTerms ;
 import com.hp.hpl.jena.vocabulary.RDF ;
-import com.hp.hpl.jena.vocabulary.XSD ;
 
 /** A program to execute RDF language test suites
  * 
@@ -144,22 +145,40 @@ public class rdflangtest extends CmdGeneral
         SimpleTestRunner.runAndReport(suite) ;
     }
     
+    static String name =  "Apache Jena RIOT" ;
+    static String releaseName =  "RIOT" ;
+    //static String version = RIOT.getVersion() ;  // Can be "development"
+    static String version = null ;
+    static String homepage = "http://jena.apache.org/" ;
+    static String systemURI = "http://jena.apache.org/#riot" ;  // Null for bNode.
+
     static void oneManifestEarl(String testManifest)
     {
-        String name =  "Apache Jena RIOT" ;
-        String releaseName =  "RIOT" ;
-        String version = RIOT.getVersion() ;
-        String homepage = "http://jena.apache.org/" ;
-        String systemURI = "http://jena.apache.org/#riot" ;  // Null for bNode.
-        
-        // Include information later.
         EarlReport report = new EarlReport(systemURI, name, version, homepage) ;
         FactoryTestRiot.report = report ;
-        
+        TestSuite suite = FactoryTestRiot.make(testManifest, null, null) ;
+        SimpleTestRunner.runSilent(suite) ;
+
         Model model = report.getModel() ;
         model.setNsPrefix("rdft", VocabLangRDF.getURI()) ;
         model.setNsPrefix("turtletest", "http://www.w3.org/2013/TurtleTests/manifest.ttl#") ;
-        // Other tests ...
+        insertMetaOld(report) ;
+        RDFDataMgr.write(System.out, model, Lang.TURTLE) ;
+    }
+    
+    static void insertMeta(EarlReport report) {
+        Model model = report.getModel() ;
+        // We add the meta by hand separatly for better layout later 
+    }
+    
+    //OLD meta.
+    static void insertMetaOld(EarlReport report) {
+        Model model = report.getModel() ;
+        /*
+        <> foaf:primaryTopic <http://jena.apache.org/#riot> ;
+            dc:issued "..."^^xsd:dateTime;
+            foaf:maker who.
+        */
         
         // Update the EARL report. 
         Resource jena = model.createResource()
@@ -178,10 +197,6 @@ public class rdflangtest extends CmdGeneral
         Resource reporter = report.getReporter() ;
         reporter.addProperty(DC.creator, who) ;
 
-        model.setNsPrefix("doap", DOAP.getURI()) ; 
-        model.setNsPrefix("xsd", XSD.getURI()) ;
-        
-        // DAWG specific stuff.
         Resource system = report.getSystem() ;
         system.addProperty(RDF.type, DOAP.Project) ;
         system.addProperty(DOAP.name, name) ;
@@ -195,11 +210,5 @@ public class rdflangtest extends CmdGeneral
         Literal today = model.createTypedLiteral(today_node.getLiteralLexicalForm(), today_node.getLiteralDatatype()) ;
         release.addProperty(DOAP.created, today) ;
         release.addProperty(DOAP.name, releaseName) ;      // Again
-        
-        TestSuite suite = FactoryTestRiot.make(testManifest, null, null) ;
-        SimpleTestRunner.runSilent(suite) ;
-        
-        FactoryTestRiot.report.getModel().write(System.out, "TTL") ;
-        
     }
  }
