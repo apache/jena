@@ -101,22 +101,31 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
 
     /**
      * Clean up after each test by resetting the Fuseki instance
+     * @throws InterruptedException 
      */
     @After
-    public void cleanupTest() {
+    public void cleanupTest() throws InterruptedException {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate, authenticator) ;
         proc.execute() ;
+        
+        // Sleep attempts to avoid a intermittent timing issue on the build server that can result in hung builds
+        Thread.sleep(250);
     }
 
     /**
      * Clean up after tests by de-allocating the Fuseki instance
      * 
      * @throws SQLException
+     * @throws InterruptedException 
      */
     @AfterClass
-    public static void cleanup() throws SQLException {
-        server.stop();       
+    public static void cleanup() throws SQLException, InterruptedException {
+        server.stop();
+        
+        // Sleep attempts to avoid a intermittent timing issue on the build server that can result in hung builds
+        Thread.sleep(250);
+        
         connection.close();
         realmFile.delete();
     }
