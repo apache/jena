@@ -274,6 +274,7 @@ public class BuilderExpr
         dispatch.put(Tags.tagNumRound, buildNumRound) ;
         dispatch.put(Tags.tagNumCeiling, buildNumCeiling) ;
         dispatch.put(Tags.tagNumFloor, buildNumFloor) ;
+        dispatch.put(Tags.tagIsNumeric, buildIsNumeric) ;
         
         dispatch.put(Tags.tagLang, buildLang) ;
         dispatch.put(Tags.tagLangMatches, buildLangMatches) ;
@@ -1092,6 +1093,17 @@ public class BuilderExpr
             BuilderLib.checkLength(2, list, "isLiteral: wanted 1 arguments: got: "+numArgs(list)) ;
             Expr ex = buildExpr(list.get(1)) ;
             return new E_IsLiteral(ex) ;
+        }
+    };
+    
+    final protected Build buildIsNumeric = new Build()
+    {
+        @Override
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "isNumeric: wanted 1 arguments: got: "+numArgs(list)) ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_IsNumeric(ex) ;
         }
     };
     
