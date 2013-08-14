@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 public class E_UnaryMinus extends ExprFunction1
 {
     private static final String printName = "unaryMinus" ;
-    private static final String symbol = Tags.tagMinus ;
+    private static final String symbol = Tags.symMinus ;
 
     public E_UnaryMinus(Expr expr)
     {
