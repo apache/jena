@@ -20,10 +20,11 @@ package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Bound extends ExprFunction1
 {
-    private static final String symbol = "bound" ;
+    private static final String symbol = Tags.tagBound ;
     boolean isBound = false ;
 
     public E_Bound(Expr expr)

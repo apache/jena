@@ -23,12 +23,13 @@ import java.util.List ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 /** SPARQL coalesce special form. */
 
 public class E_Coalesce extends ExprFunctionN
 {
-    private static final String name = "coalesce" ;
+    private static final String name = Tags.tagCoalesce ;
     
     public E_Coalesce(ExprList args)
     {

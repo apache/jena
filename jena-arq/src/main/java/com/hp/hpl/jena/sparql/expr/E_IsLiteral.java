@@ -18,10 +18,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.sse.Tags;
+
 
 public class E_IsLiteral extends ExprFunction1
 {
-    private static final String symbol = "isLiteral" ;
+    private static final String symbol = Tags.tagIsLiteral ;
 
     public E_IsLiteral(Expr expr)
     {

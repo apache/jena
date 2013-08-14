@@ -19,10 +19,11 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_SameTerm extends ExprFunction2
 {
-    private static final String printName = "sameTerm" ;
+    private static final String printName = Tags.tagSameTerm ;
 
     public E_SameTerm(Expr left, Expr right)
     {

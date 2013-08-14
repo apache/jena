@@ -19,10 +19,11 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_IsBlank extends ExprFunction1
 {
-    private static final String symbol = "isBlank" ;
+    private static final String symbol = Tags.tagIsBlank ;
 
     public E_IsBlank(Expr expr)
     {

@@ -23,10 +23,11 @@ import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_IRI extends ExprFunction1
 {
-    private static final String symbol = "iri" ;
+    private static final String symbol = Tags.tagIri ;
 
     public E_IRI(Expr expr)
     {

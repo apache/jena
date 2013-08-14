@@ -21,13 +21,14 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_LogicalAnd extends ExprFunction2
 {
     // See logical OR
-    private static final String printName = "and" ;
-    private static final String symbol = "&&" ;
-    
+    private static final String printName = Tags.tagAnd ;
+    private static final String symbol = Tags.symAnd ;
+   
     public E_LogicalAnd(Expr left, Expr right)
     {
         super(left, right, printName, symbol) ;

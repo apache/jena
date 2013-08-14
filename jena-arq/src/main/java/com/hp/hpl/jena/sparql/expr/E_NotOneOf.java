@@ -23,10 +23,11 @@ import java.util.List ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_NotOneOf extends E_OneOfBase
 {
-    private static final String printName = "notin" ;
+    private static final String printName = Tags.tagNotIn ;
     
     public E_NotOneOf(Expr expr, ExprList args)
     {

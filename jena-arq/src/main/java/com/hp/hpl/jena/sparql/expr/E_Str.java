@@ -19,10 +19,11 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Str extends ExprFunction1
 {
-    private static final String symbol = "str" ;
+    private static final String symbol = Tags.tagStr ;
 
     public E_Str(Expr expr)
     {

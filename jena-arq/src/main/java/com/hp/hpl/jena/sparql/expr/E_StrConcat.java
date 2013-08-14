@@ -21,12 +21,13 @@ package com.hp.hpl.jena.sparql.expr;
 import java.util.List ;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 /** SPARQL CONCATs */
 
 public class E_StrConcat extends ExprFunctionN
 {
-    private static final String name = "concat" ;
+    private static final String name = Tags.tagConcat ;
     
     public E_StrConcat(ExprList args)
     {

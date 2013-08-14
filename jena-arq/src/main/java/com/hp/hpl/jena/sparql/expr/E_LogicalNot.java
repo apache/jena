@@ -19,14 +19,15 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_LogicalNot extends ExprFunction1
 {
     // See logicalOR for truth table.
 
     // Errors propage as normal.
-    private static final String printName = "not" ;
-    private static final String symbol = "!" ;
+    private static final String printName = Tags.tagNot ;
+    private static final String symbol = Tags.symNot ;
 
     public E_LogicalNot(Expr expr)
     {

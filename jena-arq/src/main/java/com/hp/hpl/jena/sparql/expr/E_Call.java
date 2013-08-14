@@ -25,6 +25,7 @@ import java.util.Map ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /**
@@ -32,7 +33,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
  */
 public class E_Call extends ExprFunctionN
 {
-    private static final String symbol = "call" ;
+    private static final String symbol = Tags.tagCall ;
     private Map<String,Expr> functionCache = new HashMap<String, Expr>();
     private Expr identExpr;
     private List<Expr> argExprs;
