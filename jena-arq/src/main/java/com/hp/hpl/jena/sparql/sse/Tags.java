@@ -193,6 +193,7 @@ public class Tags
     public static final String tagNumRound      = "round" ;
     public static final String tagNumCeiling    = "ceil" ;
     public static final String tagNumFloor      = "floor" ;
+    public static final String tagIsNumeric     = "isNumeric" ;
     
     public static final String tagBNode         = "bnode" ;
     public static final String tagIri           = "iri" ;
