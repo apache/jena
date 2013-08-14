@@ -26,6 +26,9 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
 import com.hp.hpl.jena.sparql.algebra.op.OpNull ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
+import com.hp.hpl.jena.sparql.expr.E_IsNumeric;
+import com.hp.hpl.jena.sparql.expr.E_SameTerm;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderNode ;
@@ -99,6 +102,18 @@ public class TestSSE_Builder extends TestCase
         Item item = SSE.parseItem("_") ;
         long i = BuilderNode.buildLong(item, 23) ;
         assertEquals(23, i) ;
+    }
+    
+    @Test public void testBuildExpr_01()
+    {
+        Expr e = SSE.parseExpr("(sameTerm (?x) (?y))");
+        assertTrue(e instanceof E_SameTerm);
+    }
+    
+    @Test public void testBuildExpr_02()
+    {
+        Expr e = SSE.parseExpr("(isNumeric ?x)");
+        assertTrue(e instanceof E_IsNumeric);
     }
 
 }
