@@ -21,37 +21,33 @@ package com.hp.hpl.jena.tdb.setup;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-/** System parameters for a TDB database instance.  Currently, fixed.  
- */
+/** System parameters for a TDB database instance. */
 public class SystemParams
 {
-    public final int      blockSize            = SystemTDB.BlockSize ;
-    public final int      memBlockSize         = SystemTDB.BlockSizeTestMem ;
-    public final int      readCacheSize        = SystemTDB.BlockReadCacheSize ;
-    public final int      writeCacheSize       = SystemTDB.BlockWriteCacheSize ;
-    public final int      Node2NodeIdCacheSize = SystemTDB.Node2NodeIdCacheSize ;
-    public final int      NodeId2NodeCacheSize = SystemTDB.NodeId2NodeCacheSize ;
-    public final int      NodeMissCacheSize    = SystemTDB.NodeMissCacheSize ;
+    public int      blockSize            = SystemTDB.BlockSize ;
+    public int      memBlockSize         = SystemTDB.BlockSizeTestMem ;
+    public int      readCacheSize        = SystemTDB.BlockReadCacheSize ;
+    public int      writeCacheSize       = SystemTDB.BlockWriteCacheSize ;
+    public int      Node2NodeIdCacheSize = SystemTDB.Node2NodeIdCacheSize ;
+    public int      NodeId2NodeCacheSize = SystemTDB.NodeId2NodeCacheSize ;
+    public int      NodeMissCacheSize    = SystemTDB.NodeMissCacheSize ;
 
-    public final String   indexNode2Id         = Names.indexNode2Id ;
-    public final String   indexId2Node         = Names.indexId2Node ;
-    public final String   primaryIndexTriples  = Names.primaryIndexTriples ;
-    public final String[] tripleIndexes        = Names.tripleIndexes ;
-    public final String   primaryIndexQuads    = Names.primaryIndexQuads ;
-    public final String[] quadIndexes          = Names.quadIndexes ;
-    public final String   primaryIndexPrefix   = Names.primaryIndexPrefix ;
-    public final String[] prefixIndexes        = Names.prefixIndexes ;
-    public final String   indexPrefix          = Names.indexPrefix ;
+    public String   indexNode2Id         = Names.indexNode2Id ;
+    public String   indexId2Node         = Names.indexId2Node ;
+    public String   primaryIndexTriples  = Names.primaryIndexTriples ;
+    public String[] tripleIndexes        = Names.tripleIndexes ;
+    public String   primaryIndexQuads    = Names.primaryIndexQuads ;
+    public String[] quadIndexes          = Names.quadIndexes ;
+    public String   primaryIndexPrefix   = Names.primaryIndexPrefix ;
+    public String[] prefixIndexes        = Names.prefixIndexes ;
+    public String   indexPrefix          = Names.indexPrefix ;
 
-    public final String   prefixNode2Id        = Names.prefixNode2Id ;
-    public final String   prefixId2Node        = Names.prefixId2Node ;
+    public String   prefixNode2Id        = Names.prefixNode2Id ;
+    public String   prefixId2Node        = Names.prefixId2Node ;
     
-    private SystemParams() {}
+    public SystemParams() {}
     
-    private static SystemParams standard = new SystemParams() ;
-    
-    public static SystemParams getStdSystemParams()
-    {
-        return standard ;
+    public static SystemParams getStdSystemParams() {
+        return new SystemParams() ;
     }
 }
