@@ -46,103 +46,116 @@ public class TestContentNegotiation extends BaseTest
     { testMatch("application/xml", "text/plain", null) ; }
     
     @Test public void simpleNeg3()
-    { testMatch("text/*", "text/*", "text/*") ; }
+    { testMatch("text/*", "text/plain", "text/plain") ; }
     
-    @Test public void simpleNeg4()
-    { testMatch("text/xml", "text/*", "text/xml") ; }
+    @Test public void listNeg1()
+    { testMatch("text/xml,text/*", "text/xml", "text/xml") ; }
     
-    @Test public void simpleNeg5()
-    { testMatch("text/*", "text/xml", "text/xml") ; }
+    @Test public void listNeg2()
+    { testMatch("text/xml,text/*", "text/plain,text/xml", "text/xml") ; }
     
-    @Test public void listItemNeg1()
-    { testMatch("text/xml,text/*", "text/*", "text/xml") ; }
+    @Test public void listNeg3()
+    { testMatch("text/xml,text/*", "text/plain", "text/plain") ; }
+
+    @Test public void qualNeg1() { 
+        testMatch("text/xml;q=0.5,text/plain",
+                  "text/plain",
+                  "text/plain") ; }
     
-    @Test public void listListNeg1()
-    { testMatch("text/xml,text/*", "text/plain,text/*", "text/plain") ; }
-    
-    @Test public void listListNeg2()
-    { testMatch("text/xml,text/*", "text/*,text/plain", "text/xml") ; }
-    
-    @Test public void qualNeg1() { testMatch("text/xml;q=0.5,text/plain", "text/*", "text/plain") ; }
-    
-    @Test public void qualNeg2()
-    {
+    @Test public void qualNeg2() {
         testMatch(
-                "application/n3,application/rdf+xml;q=0.5",
-                "application/rdf+xml,application/n3" , 
-                "application/n3") ;
+                "text/turtle,application/rdf+xml;q=0.5",
+                "application/rdf+xml,text/turtle" , 
+                "text/turtle") ;
     }
     
-    @Test public void qualNeg3()
-    {
+    @Test public void qualNeg3() {
         testMatch(
-                "application/rdf+xml;q=0.5 , application/n3",
-                "application/n3,application/rdf+xml" , 
-                "application/n3") ;
+                "text/turtle,application/rdf+xml;q=0.5",
+                "text/turtle,application/rdf+xml" , 
+                "text/turtle") ;
     }
     
-    @Test public void qualNeg4()
+    @Test public void qualNeg4()    
     {
         testMatch(
-                "application/rdf+xml;q=0.5 , application/n3",
-                "application/rdf+xml , application/n3" , 
-                "application/n3") ;
+                  "application/rdf+xml;q=0.5,text/turtle",
+                  "text/turtle,application/rdf+xml" , 
+                  "text/turtle") ;
+    }
+    
+    @Test public void qualNeg5()    
+    {
+        testMatch(
+                  "application/rdf+xml;q=0.5,text/turtle",
+                  ",application/rdf+xml,text/turtle" , 
+                  "text/turtle") ;
     }
 
+    // Content negotiations Jena/Fuseki tend to use.
+    // See DEF.rsOffer and DEF.rdfOffer in Fuseki.
+    // See WebContent.defaultGraphAcceptHeader, defaultDatasetAcceptHeader, defaultRDFAcceptHeader
+    
+    private static final String offerResultSet = "application/sparql-results+xml, application/sparql-results+json, text/csv , text/tab-separated-values, text/plain" ;
+    private static final String offerRDF = "text/turtle, application/turtle, application/x-turtle,  application/n-triples, text/plain, application/rdf+xml, application/rdf+json" ;
+    
     // SPARQL: result set
-    @Test public void qualNeg5()
+    @Test public void connegResultSet_01()
     {
         testMatch(
                 "application/sparql-results+json , application/sparql-results+xml;q=0.9 , application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1",
-                "application/sparql-results+xml, application/sparql-results+json, text/csv , text/tab-separated-values, text/plain",
+                offerResultSet,
                 "application/sparql-results+json") ;
     }
     
-    // SPARQL: result set
-    @Test public void qualNeg5a()
+    @Test public void connegResultSet_02()
     {
         testMatch(
-                "application/sparql-results+json , application/sparql-results+xml;q=0.9 , application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1",
-                "application/sparql-results+json, application/sparql-results+xml, text/csv , text/tab-separated-values, text/plain",
+                "application/sparql-results+xml;q=0.9, */*;q=0.1",
+                offerResultSet,
+                "application/sparql-results+xml") ;
+    }
+    
+//    conneg("application/sparql-results+xml;q=0.9, */*;q=0.1", DEF.rsOffer) ;
+//    conneg("application/sparql-results+json;q=0.9, */*;q=0.1", DEF.rsOffer) ;
+    
+    @Test public void connegResultSet_03()
+    {
+        testMatch(
+                "application/sparql-results+json;q=0.9, */*;q=0.1",
+                offerResultSet,
                 "application/sparql-results+json") ;
     }
-    
-    // SPARQL: RDF
-    @Test public void qualNeg6()
+
+    // SPARQL - all
+    @Test public void conneg_01()
     {
         testMatch(
-                "application/sparql-results+json , application/sparql-results+xml;q=0.9 , application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1",
-                "application/rdf+xml , application/turtle , application/x-turtle ,  text/turtle , text/plain  application/n-triples",
+                  // SPARQL -- ask for either.
+                "application/sparql-results+json , application/sparql-results+xml;q=0.9 , text/turtle, application/rdf+xml;q=0.9 , */*;q=0.1",
+                offerRDF,
+                "text/turtle") ;
+    }
+    
+
+    @Test public void connegRDF_01()
+    {
+        testMatch(
+                "application/rdf+xml , text/turtle;q=0.9 , */*;q=0.1",
+                offerRDF, 
                 "application/rdf+xml") ;
     }
     
-    // HTTP: RDF
-    @Test public void qualNeg7()
-    {
-        testMatch(
-                "application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1",
-                "application/rdf+xml , application/turtle , application/x-turtle ,  text/turtle , text/plain  application/n-triples",
-                "application/rdf+xml") ;
-    }
-    
-    // HTTP: RDF
-    @Test public void qualNeg8()
+    @Test public void connegRDF_02()
     {
         testMatch(
                 "application/turtle;q=0.9 , application/rdf+xml , */*;q=0.1",
-                "application/rdf+xml , application/turtle , application/x-turtle ,  text/turtle , text/plain  application/n-triples",
+                offerRDF,
                 "application/rdf+xml") ;
     }
     
-    // TODO Standard headers from clients of RDf and for SPARQL results
-    
-    // RDF:
-    //  Accept: application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1
-    //  Offer: application/rdf+xml , application/turtle , application/x-turtle ,  text/turtle , text/plain  application/n-triples
-    
-    // SPARQL:
-    //  Accept: application/sparql-results+json , application/sparql-results+xml;q=0.9 , application/rdf+xml , application/turtle;q=0.9 , */*;q=0.1
-    //  Offer:  application/sparql-results+xml, application/sparql-results+json, text/csv , text/tab-separated-values, text/plain
+    // HTTP: RDF
+    //See WebContent.defaultGraphAcceptHeader, defaultDatasetAcceptHeader, defaultRDFAcceptHeader
     
     private void testMatch(String header, String offer, String result)
     {

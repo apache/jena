@@ -96,6 +96,10 @@ public class MediaRange extends MediaType
         return a.equals(b) ;
     }
 
+    public boolean grounded(MediaType item) {
+        return ! isStar(item.getType()) && ! isStar(item.getSubType()) ;
+    }
+    
     // Strictly more grounded than
     public boolean moreGroundedThan(MediaType item)
     {
@@ -105,6 +109,18 @@ public class MediaRange extends MediaType
             return true ;
         return false ;
     }
+    
+    // Waeighting for "exactness"
+    // 3 for grounded, 2 for foo/*, 1 for */foo and 0 for */*  
+    int subweight() {
+        int x = 0 ;
+        if ( !isStar(getType()))
+            x += 2 ;
+        if ( !isStar(getSubType()))
+            x += 1 ;
+        return x ; 
+    }
+    
     
     private boolean isStar(String x)
     {

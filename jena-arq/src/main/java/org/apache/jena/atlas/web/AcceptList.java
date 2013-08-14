@@ -21,8 +21,6 @@ package org.apache.jena.atlas.web;
 import java.util.* ;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.atlas.web.MediaRange ;
-import org.apache.jena.atlas.web.MediaType ;
 
 public class AcceptList
 {
@@ -106,39 +104,50 @@ public class AcceptList
 
     private final static MediaRangeCompare comparator = new MediaRangeCompare() ;
     
-    /** Find and return a match for a MediaRange */
-    public MediaRange match(MediaRange aItem)
-    {
-        // Normally aItem is an offer - a concrete media type.
-//        ensureSorted() ;
+    /** Find and return a match for a specific MediaType. 
+     * Returns the Accept header entry best matched or null.
+     */
+    public MediaRange match(MediaType offer) {
+        // "this" is the client proposal list (Accept header)
+        // aItem is one item of the server offer list - a concrete media type (no "*")
+
         // Search all, find best by specifivity, "q"(quality), and then first occurring if otherwise equal.
         
         MediaRange choice = null ;
+        double weight = -1 ;
+        int exact = -1 ;
         
         for ( MediaRange acceptItem : ranges )
         {
-            if ( acceptItem.accepts(aItem) )
+            if ( acceptItem.accepts(offer) )
             {
-                // Return the more grounded term
-                // E.g. aItem = text/plain ; acceptItem = text/*
+                boolean newChoice = false; 
+                if ( choice == null ) 
+                    // First possibility.
+                    newChoice = true ;
+                else if ( weight < acceptItem.get_q() )
+                    // New possibility has greater weight
+                    newChoice = true ;
+                else if ( weight == acceptItem.get_q() && exact < acceptItem.subweight() ) 
+                    // New possibility has same weight but better exactness.
+                    newChoice = true ;
                 
-                if ( choice != null && choice.get_q() >= acceptItem.get_q() )
-                    continue ;
-                // Return the more grounded term
-                // E.g. aItem = text/plain ; acceptItem = text/*
-                // This looses any q
-                if ( aItem.moreGroundedThan(acceptItem) )
+                if ( newChoice )
                 {
-                    // Clone/change.
-                    acceptItem = new MediaRange(aItem.getType(), aItem.getSubType(), acceptItem.getCharset()) ;
+                    choice = acceptItem ;
+                    weight = acceptItem.get_q() ;
+                    exact = acceptItem.subweight() ;
+                    continue ;
                 }
-                choice = acceptItem ;
+                //if ( weight == acceptItem.get_q() && !exact &&  
             }
         }
+        if ( choice == null )
+            return null ;
         return choice ;
     }
- 
-    /** Find the best thing in offer list with the proposal 
+
+    /** Find the best thing in offer list 8sever side) matching the proposal (client, Accept header). 
      *  "best" means highest q value, with left most being better for same q.
      * 
      * @param proposalList Client list of possibilities
@@ -148,18 +157,33 @@ public class AcceptList
     
     static public MediaType match(AcceptList proposalList, AcceptList offerList)
     {
-        MediaRange choice = null ;  // From offerlist
-        
+        MediaRange cause = null ;
+        MediaRange choice = null ;  // From the proposalList
+        double weight = -1 ;
+        int exactness = -1 ;
+
         for ( MediaRange offer : offerList.entries() )
         {
             MediaRange m = proposalList.match(offer) ;
-            if ( m != null )
-            {
-                if ( choice != null && choice.get_q() >= m.get_q() )
-                    continue ; 
-                choice = m ;  
+            if ( m == null )
+                continue ;
+            boolean newChoice = false ;
+            
+            if ( choice == null )
+                newChoice = true ;
+            else if ( weight < m.get_q() )
+                newChoice = true ;
+            else if ( weight == m.get_q() && ( exactness < m.subweight() ) )
+                newChoice = true ;
+            
+            if ( newChoice ) {
+                choice = offer ;
+                weight = m.get_q() ;
+                exactness = m.subweight() ;
             }
         }
+        
+        
         if ( choice == null )
             return null ;
         return new MediaType(choice);
