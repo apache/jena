@@ -26,12 +26,13 @@ import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class E_BNode extends ExprFunctionN // 0 or one
 {
-    private static final String symbol = "bnode" ;
+    private static final String symbol = Tags.tagBNode ;
     
     private static final Symbol keyMap = Symbol.create("arq:internal:bNodeMappings") ;
 

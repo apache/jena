@@ -19,11 +19,12 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 /** Create a literal from lexical form and datatype URI */ 
 public class E_StrDatatype extends ExprFunction2
 {
-    private static final String symbol = "strdt" ;
+    private static final String symbol = Tags.tagStrDatatype ;
 
     public E_StrDatatype(Expr expr1, Expr expr2)
     {

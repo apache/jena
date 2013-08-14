@@ -18,10 +18,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.sse.Tags;
+
 public class E_LessThanOrEqual extends ExprFunction2
 {
     private static final String printName = "le" ;
-    private static final String symbol = "<=" ;    
+    private static final String symbol = Tags.symLE ;    
 
     public E_LessThanOrEqual(Expr left, Expr right)
     {

@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 /* 
     Logical OR and AND is special with respect to handling errors truth table.
@@ -41,8 +42,8 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 public class E_LogicalOr extends ExprFunction2
 {
     
-    private static final String printName = "or" ;
-    private static final String symbol = "||" ;
+    private static final String printName = Tags.tagOr ;
+    private static final String symbol = Tags.symOr ;
     
     public E_LogicalOr(Expr left, Expr right)
     {

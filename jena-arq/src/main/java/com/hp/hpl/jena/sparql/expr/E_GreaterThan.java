@@ -18,10 +18,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.sse.Tags;
+
 public class E_GreaterThan extends ExprFunction2
 {
     private static final String printName = "gt" ;
-    private static final String symbol = ">" ;    
+    private static final String symbol = Tags.symGT ;    
 
     public E_GreaterThan(Expr left, Expr right)
     {

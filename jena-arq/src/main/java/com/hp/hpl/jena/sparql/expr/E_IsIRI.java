@@ -19,10 +19,11 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_IsIRI extends ExprFunction1
 {
-    private static final String symbol = "isIRI" ;
+    private static final String symbol = Tags.tagIsIRI ;
 
     public E_IsIRI(Expr expr)
     {

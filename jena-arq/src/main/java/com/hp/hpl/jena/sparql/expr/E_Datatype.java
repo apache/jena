@@ -19,10 +19,11 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Datatype extends ExprFunction1
 {
-    private static final String symbol = "datatype" ;
+    private static final String symbol = Tags.tagDatatype ;
 
     public E_Datatype(Expr expr)
     {

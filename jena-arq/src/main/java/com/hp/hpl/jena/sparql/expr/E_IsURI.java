@@ -19,12 +19,13 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_IsURI extends E_IsIRI
 {
     // "isURI" is another name for "isIRI" -- we try to keep the parse name.
 
-    private static final String symbol = "isURI" ;
+    private static final String symbol = Tags.tagIsURI ;
 
     public E_IsURI(Expr expr)
     {

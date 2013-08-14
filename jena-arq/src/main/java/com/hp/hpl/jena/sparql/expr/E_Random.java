@@ -21,10 +21,11 @@ package com.hp.hpl.jena.sparql.expr;
 import org.apache.jena.atlas.lib.RandomLib ;
 
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Random extends ExprFunction0
 {
-    private static final String symbol = "rand" ;
+    private static final String symbol = Tags.tagRand ;
     
     public E_Random()
     {

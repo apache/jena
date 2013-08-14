@@ -18,10 +18,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.sse.Tags;
+
 
 public class E_IsNumeric extends ExprFunction1
 {
-    private static final String symbol = "isNumeric" ;
+    private static final String symbol = Tags.tagIsNumeric ;
 
     public E_IsNumeric(Expr expr)
     {

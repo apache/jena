@@ -25,6 +25,7 @@ import org.apache.jena.atlas.logging.Log ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 /** Indirect to the choosen regular expression implementation */
@@ -53,7 +54,7 @@ public class E_Regex extends ExprFunctionN
         }  
     }
     
-    private static final String name = "regex" ;
+    private static final String name = Tags.tagRegex ;
     private RegexEngine regexEngine = null ;
     
     public E_Regex(Expr expr, Expr pattern, Expr flags)

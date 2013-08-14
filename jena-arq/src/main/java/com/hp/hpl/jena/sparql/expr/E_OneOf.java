@@ -23,11 +23,12 @@ import java.util.List ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_OneOf extends E_OneOfBase
 {
 
-    private static final String printName = "in" ;
+    private static final String printName = Tags.tagIn ;
     
     public E_OneOf(Expr expr, ExprList args)
     {

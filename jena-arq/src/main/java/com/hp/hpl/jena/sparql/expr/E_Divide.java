@@ -21,11 +21,12 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueOps ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Divide extends ExprFunction2
 {
     private static final String printName = "div" ;
-    private static final String symbol = "/" ;
+    private static final String symbol = Tags.symDiv ;
     
     public E_Divide(Expr left, Expr right)
     {

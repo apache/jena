@@ -21,12 +21,13 @@ package com.hp.hpl.jena.sparql.expr;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 /** IF(expr, expr, expr) */ 
 
 public class E_Conditional extends ExprFunction3
 {
-    private static final String printName = "if" ;
+    private static final String printName = Tags.tagIf ;
     
     private final Expr condition ;
     private final Expr thenExpr ;

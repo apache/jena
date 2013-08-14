@@ -19,11 +19,12 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 /** Create a literal from lexical form and language tag */ 
 public class E_StrLang extends ExprFunction2
 {
-    private static final String symbol = "strlang" ;
+    private static final String symbol = Tags.tagStrLang ;
 
     public E_StrLang(Expr expr1, Expr expr2)
     {

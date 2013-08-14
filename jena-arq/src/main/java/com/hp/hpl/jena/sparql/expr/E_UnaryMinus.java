@@ -19,11 +19,12 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_UnaryMinus extends ExprFunction1
 {
     private static final String printName = "unaryMinus" ;
-    private static final String symbol = "-" ;
+    private static final String symbol = Tags.tagMinus ;
 
     public E_UnaryMinus(Expr expr)
     {

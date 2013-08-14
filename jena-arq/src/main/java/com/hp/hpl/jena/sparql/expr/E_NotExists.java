@@ -26,12 +26,13 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
+import com.hp.hpl.jena.sparql.sse.Tags;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 
 public class E_NotExists extends ExprFunctionOp
 {
     // Translated to "(not (exists (...)))" 
-    private static final String symbol = "notexists" ;
+    private static final String symbol = Tags.tagNotExists ;
 
     public E_NotExists(Op op)
     {

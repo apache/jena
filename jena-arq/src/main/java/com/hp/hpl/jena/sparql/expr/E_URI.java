@@ -18,10 +18,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.sse.Tags;
+
 
 public class E_URI extends E_IRI
 {
-    private static final String symbol = "uri" ;
+    private static final String symbol = Tags.tagUri ;
 
     public E_URI(Expr expr)
     {
