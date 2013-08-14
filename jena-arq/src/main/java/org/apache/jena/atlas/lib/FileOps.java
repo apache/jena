@@ -147,16 +147,28 @@ public class FileOps
         return Tuple.create(path, fn) ;
     }
 
+    /** Return the basename (no path, no extension) */
     public static String basename(String filename)
     {
         int j = filename.lastIndexOf('/') ;
         if ( j < 0 )
             j = filename.lastIndexOf('\\') ;
 
-        if ( j >= 0 )
-            return  filename.substring(j+1) ;
-        else
-            return filename ;
+        String fn = ( j >= 0 ) ? filename.substring(j+1) : filename ;
+        int i = fn.lastIndexOf('.') ;
+        
+        if ( i > -1 )
+            return fn.substring(0, i) ;
+        return fn ;
+    }
+    
+    /** Return the extension (or "") */
+    public static String extension(String filename) {
+        int iSlash = filename.lastIndexOf( '/' );      
+        int iBack = filename.lastIndexOf( '\\' );
+        int iExt = filename.lastIndexOf( '.' ); 
+        if (iBack > iSlash) iSlash = iBack;
+        return iExt > iSlash ? filename.substring( iExt+1 ).toLowerCase() : "";
     }
     
     public static String fullPath(String filename)
