@@ -42,6 +42,11 @@ public class TestFileOps extends BaseTest
         assertEquals(path, t.get(0)) ;
         assertEquals(basename, t.get(1)) ;
         assertEquals(ext, t.get(2)) ;
+        
+        if ( basename != null ) 
+            assertEquals(basename, FileOps.basename(fn)) ;
+        if ( ext != null ) 
+            assertEquals(ext, FileOps.extension(fn)) ;
     }
     
     @Test public void split01() 
@@ -70,5 +75,4 @@ public class TestFileOps extends BaseTest
     
     @Test public void split09() 
     { test("xyz/", "xyz", "", null) ; }
-
 }
