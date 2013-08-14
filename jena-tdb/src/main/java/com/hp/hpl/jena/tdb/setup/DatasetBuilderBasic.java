@@ -33,7 +33,10 @@ import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
 
-/** A general way to make TDB storage dataset graphs : not for transactional datasets */ 
+/** A general way to make TDB storage dataset graphs : not for transactional datasets.
+ * Old code.
+ * @see DatasetBuilderStd
+ */ 
 
 public class DatasetBuilderBasic implements DatasetBuilder
 {

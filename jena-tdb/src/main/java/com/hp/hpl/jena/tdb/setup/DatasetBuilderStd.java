@@ -40,18 +40,14 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.sys.* ;
 
-/** This class is the process of building a dataset. */ 
+/** This class is the process of building a dataset.
+ * Records BlockMgr/BufferChannel/NodeTable for use by the transaction builder. 
+ */
 
 public class DatasetBuilderStd implements DatasetBuilder
 {
     private static final Logger log = TDB.logInfo ;
 
-    //private BlockMgrBuilder blockMgrBuilder ;
-    //private ObjectFileBuilder objectFileBuilder ;
-
-    //private IndexBuilder indexBuilder ;
-    //private RangeIndexBuilder rangeIndexBuilder ;
-    
     private NodeTableBuilder nodeTableBuilder ;
     private TupleIndexBuilder tupleIndexBuilder ;
     
