@@ -301,17 +301,6 @@ public class FileUtils
         return f.getParent() ;
     }
 
-    /** Get the basename of a filename
-     * 
-     * @param filename
-     * @return Base filename.
-     */
-    public static String getBasename(String filename)
-    {
-        File f = new File(filename) ;
-        return f.getName() ;
-    }
-
     /**
      Get the suffix part of a file name or a URL in file-like format.
      */
