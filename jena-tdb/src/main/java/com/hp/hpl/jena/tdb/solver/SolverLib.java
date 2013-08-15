@@ -85,7 +85,7 @@ public class SolverLib
                                         QueryIterator input, Filter<Tuple<NodeId>> filter,
                                         ExecutionContext execCxt)
     {
-        NodeTupleTable ntt = GraphTDB.chooseNodeTupleTable(ds, graphNode) ;
+        NodeTupleTable ntt = ds.chooseNodeTupleTable(graphNode) ;
         return execute(ntt, graphNode, pattern, input, filter, execCxt) ;
     }
     

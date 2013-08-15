@@ -38,6 +38,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
@@ -116,24 +117,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     {
         return triples2quads(Quad.defaultGraphIRI, iter) ;
     }
-    
-//    @Override
-//    public void add(Quad quad)
-//    {
-//        if ( quad.isDefaultGraph() )
-//            getTripleTable().add(quad.asTriple()) ;
-//        else
-//            getQuadTable().add(quad) ;
-//    } 
-//    
-//    @Override
-//    public void delete(Quad quad)
-//    {
-//        if ( quad.isDefaultGraph() )
-//            getTripleTable().delete(quad.asTriple()) ;
-//        else
-//            getQuadTable().delete(quad) ;
-//    }
     
     @Override
     protected void addToDftGraph(Node s, Node p, Node o)
@@ -255,6 +238,61 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         // Leave the node table alone.
         getTripleTable().clearTriples() ;
         getQuadTable().clearQuads() ;
+    }
+    
+    public NodeTupleTable chooseNodeTupleTable(Node graphNode)
+    {
+        if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
+            return getTripleTable().getNodeTupleTable() ;
+        else
+            // Includes Node.ANY and union graph
+            return getQuadTable().getNodeTupleTable() ;
+    }
+    
+    private static final int sliceSize = 1000 ;
+    
+    @Override
+    public void deleteAny(Node g, Node s, Node p, Node o) {
+        // Delete in batches.
+        // That way, there is no active iterator when a delete
+        // from the indexes happens.
+
+        NodeTupleTable t = chooseNodeTupleTable(g) ;
+        startUpdate() ;
+        @SuppressWarnings("unchecked")
+        Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
+
+        while (true) { // Convert/cache s,p,o?
+            // The Node Cache will catch these so don't worry unduely.
+            Iterator<Tuple<NodeId>> iter = null ;
+            if ( g == null )
+                iter = t.findAsNodeIds(s, p, o) ;
+            else
+                iter = t.findAsNodeIds(g, s, p, o) ;
+
+            if ( iter == null )
+                // Finished?
+                return ;
+
+            // Get a slice
+            int len = 0 ;
+            for (; len < sliceSize; len++) {
+                if ( !iter.hasNext() )
+                    break ;
+                array[len] = iter.next() ;
+            }
+
+            // Delete them.
+            for (int i = 0; i < len; i++) {
+                t.getTupleTable().delete(array[i]) ;
+                array[i] = null ;
+            }
+            // Finished?
+            if ( len < sliceSize )
+                break ;
+        }
+
+        finishUpdate() ;
     }
     
     public Location getLocation()       { return config.location ; }

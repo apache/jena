@@ -53,25 +53,23 @@ public class GraphTDB extends GraphView implements Closeable, Sync
         this.dataset = dataset ;
     }
     
-    
     /** get the current TDB dataset graph - changes for transactions */  
     public DatasetGraphTDB getDSG()
-    //{ return dataset.get() ; }
     { return dataset ; }
 
     /** The NodeTupleTable for this graph */ 
     public NodeTupleTable getNodeTupleTable()
     {
-        return chooseNodeTupleTable(getDSG(), getGraphName()) ;
+        return getDSG().chooseNodeTupleTable(getGraphName()) ;
     }
-    
+
+    /**
+     * @deprecated Use DatasetGraphTDB.chooseNodeTupleTable
+     */
+    @Deprecated
     public static NodeTupleTable chooseNodeTupleTable(DatasetGraphTDB dsg, Node graphNode)
     {
-        if ( graphNode == null || Quad.isDefaultGraph(graphNode) )
-            return dsg.getTripleTable().getNodeTupleTable() ;
-        else
-            // Includes Node.ANY and union graph
-            return dsg.getQuadTable().getNodeTupleTable() ;
+        return dsg.chooseNodeTupleTable(graphNode) ;
     }
     
     @Override
@@ -242,7 +240,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
     @Override
     public void clear()
     {
-        removeWorker(this, Node.ANY, Node.ANY, Node.ANY) ;
+        dataset.deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
         getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
     }
     
@@ -256,60 +254,8 @@ public class GraphTDB extends GraphView implements Closeable, Sync
             return ;
         }
         
-        removeWorker(this, s, p, o) ;
+        dataset.deleteAny(getGraphName(), s, p, o);
         // We know no one is listening ...
         //getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
-    }
-
-    private static final int sliceSize = 1000 ;
-
-    public static void removeWorker(GraphTDB gv, Node s, Node p, Node o)
-    {
-        NodeTupleTable t = gv.getNodeTupleTable() ;
-        DatasetGraphTDB dsg = gv.getDSG() ;
-        dsg.startUpdate() ;
-        Node gn = gv.getGraphName() ;
-
-        // Delete in batches.
-        // That way, there is no active iterator when a delete 
-        // from the indexes happens.
-        
-        @SuppressWarnings("unchecked")
-        Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
-        
-        while (true)
-        {
-            // Convert/cache s,p,o?
-            // The Node Cache will catch these so don't worry unduely. 
-            Iterator<Tuple<NodeId>> iter = null ;
-            if ( gn == null )
-                iter = t.findAsNodeIds(s, p, o) ;
-            else
-                iter = t.findAsNodeIds(gn, s, p, o) ;
-            
-            if ( iter == null )
-                // Finished?
-                return ;
-            
-            // Get a slice
-            int len = 0 ;
-            for ( ; len < sliceSize ; len++ )
-            {
-                if ( !iter.hasNext() ) break ;
-                array[len] = iter.next() ;
-            }
-            
-            // Delete them.
-            for ( int i = 0 ; i < len ; i++ )
-            {
-                t.getTupleTable().delete(array[i]) ;
-                array[i] = null ;
-            }
-            // Finished?
-            if ( len < sliceSize )
-                break ;
-        }
-        
-        dsg.finishUpdate() ;
     }
 }
