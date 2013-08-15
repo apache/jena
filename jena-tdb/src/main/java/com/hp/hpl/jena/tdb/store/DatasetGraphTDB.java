@@ -67,8 +67,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     private boolean closed = false ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
-                           ReorderTransformation transform, StorageConfig config)
-    {
+                           ReorderTransformation transform, StorageConfig config) {
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
         this.prefixes = prefixes ;
@@ -77,47 +76,25 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         this.effectiveDefaultGraph = getDefaultGraphTDB() ;
     }
 
-    @Deprecated
-    protected DatasetGraphTDB(DatasetGraphTDB other)
-    {
-        this(other.tripleTable, other.quadTable, other.prefixes, other.transform, other.config) ;
-        getContext().putAll(other.getContext()) ;
-    }
-    
-    @Deprecated
-    public DatasetGraphTDB duplicate()
-    {
-        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, config) ;
-        dsg.getContext().putAll(getContext()) ;
-        return dsg ;
-    }
-    
     public QuadTable getQuadTable()         { return quadTable ; }
     public TripleTable getTripleTable()     { return tripleTable ; }
     
     @Override
-    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
-    {
+    protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
         return triples2quadsDftGraph(getTripleTable().find(s, p, o)) ;
     }
 
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
-    {
-        return getQuadTable().find(g, s, p, o) ;
-    }
+    { return getQuadTable().find(g, s, p, o) ; }
 
     @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
-    {
-        return getQuadTable().find(Node.ANY, s, p, o) ;
-    }
+    { return getQuadTable().find(Node.ANY, s, p, o) ; }
 
     protected static Iterator<Quad> triples2quadsDftGraph(Iterator<Triple> iter)
-    {
-        return triples2quads(Quad.defaultGraphIRI, iter) ;
-    }
-    
+    { return triples2quads(Quad.defaultGraphIRI, iter) ; }
+ 
     @Override
     protected void addToDftGraph(Node s, Node p, Node o)
     { getTripleTable().add(s,p,o) ; }
@@ -134,21 +111,16 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o)
     { getQuadTable().delete(g, s, p, o) ; }
     
-    public GraphTDB getDefaultGraphTDB()
-    {
-        return (GraphTDB)getDefaultGraph() ;
-    }
+    public GraphTDB getDefaultGraphTDB() 
+    { return (GraphTDB)getDefaultGraph() ; }
 
     public GraphTDB getGraphTDB(Node graphNode)
-    {
-        return (GraphTDB)getGraph(graphNode) ;
-    }
+    { return (GraphTDB)getGraph(graphNode) ; }
 
     // The effective graph may not be the concrete storage one (e.g. union)
     
     @Override
-    protected void _close()
-    {
+    protected void _close() {
         if ( closed )
             return ;
         closed = true ;
@@ -164,16 +136,14 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     
     @Override
     // Empty graphs don't "exist" 
-    public boolean containsGraph(Node graphNode)
-    { 
+    public boolean containsGraph(Node graphNode) { 
         if ( Quad.isDefaultGraphExplicit(graphNode) || Quad.isUnionGraph(graphNode)  )
             return true ;
         return _containsGraph(graphNode) ; 
     }
 
     @Override
-    protected boolean _containsGraph(Node graphNode)
-    {
+    protected boolean _containsGraph(Node graphNode) {
         // Have to look explicitly, which is a bit of a nuisance.
         // But does not normally happen for GRAPH <g> because that's rewritten to quads.
         // Only pattern with complex paths go via GRAPH. 
@@ -190,15 +160,11 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     @Override
     protected Graph _createDefaultGraph()
-    {
-        return new GraphTDB(this, null) ;
-    }
+    { return new GraphTDB(this, null) ; }
 
     @Override
     protected Graph _createNamedGraph(Node graphNode)
-    {
-        return new GraphTDB(this, graphNode) ;
-    }
+    { return new GraphTDB(this, graphNode) ; }
 
     public void setEffectiveDefaultGraph(GraphTDB g)       { effectiveDefaultGraph = g ; }
 

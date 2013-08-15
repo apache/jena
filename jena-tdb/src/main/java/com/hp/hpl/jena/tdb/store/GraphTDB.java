@@ -47,8 +47,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
     // Switch this to DatasetGraphTransaction
     private final DatasetGraphTDB dataset ;
     
-    public GraphTDB(DatasetGraphTDB dataset, Node graphName)
-    { 
+    public GraphTDB(DatasetGraphTDB dataset, Node graphName) { 
         super(dataset, graphName) ;
         this.dataset = dataset ;
     }
@@ -58,8 +57,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
     { return dataset ; }
 
     /** The NodeTupleTable for this graph */ 
-    public NodeTupleTable getNodeTupleTable()
-    {
+    public NodeTupleTable getNodeTupleTable() {
         return getDSG().chooseNodeTupleTable(getGraphName()) ;
     }
 
@@ -67,14 +65,12 @@ public class GraphTDB extends GraphView implements Closeable, Sync
      * @deprecated Use DatasetGraphTDB.chooseNodeTupleTable
      */
     @Deprecated
-    public static NodeTupleTable chooseNodeTupleTable(DatasetGraphTDB dsg, Node graphNode)
-    {
+    public static NodeTupleTable chooseNodeTupleTable(DatasetGraphTDB dsg, Node graphNode) {
         return dsg.chooseNodeTupleTable(graphNode) ;
     }
     
     @Override
-    protected PrefixMapping createPrefixMapping()
-    {
+    protected PrefixMapping createPrefixMapping() {
         if ( isDefaultGraph() )
             return getDSG().getPrefixes().getPrefixMapping() ;
         if ( isUnionGraph() )
@@ -83,16 +79,14 @@ public class GraphTDB extends GraphView implements Closeable, Sync
     }
     
     @Override
-    public final void performAdd(Triple triple)
-    { 
+    public final void performAdd(Triple triple) { 
         startUpdate() ;
         super.performAdd(triple) ;
         finishUpdate() ;
     }
 
     @Override
-    public final void performDelete(Triple triple)
-    {
+    public final void performDelete(Triple triple) {
         startUpdate() ;
         super.performDelete(triple) ;
         finishUpdate() ;
@@ -114,8 +108,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
         return WrappedIterator.createNoRemove(iterTriples) ;
     }
     
-    protected static ExtendedIterator<Triple> graphBaseFindNG(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
-    {
+    protected static ExtendedIterator<Triple> graphBaseFindNG(DatasetGraphTDB dataset, Node graphNode, TripleMatch m) {
         Node gn = graphNode ;
         // Explicitly named union graph. 
         if ( isUnionGraph(gn) )
@@ -133,8 +126,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
     }
     
     @Override
-    protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o)
-    {
+    protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
         Node g = Quad.unionGraph ;
         Iterator<Quad> iterQuads = getDSG().find(g, s, p, o) ;
         Iterator<Triple> iter = GLib.quads2triples(iterQuads) ;
@@ -152,8 +144,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
     public final void finishUpdate()    { getDSG().finishUpdate() ; }
 
     @Override
-    protected final int graphBaseSize()
-    {
+    protected final int graphBaseSize() {
         if ( isDefaultGraph() )
             return (int)getNodeTupleTable().size() ;
         
@@ -161,8 +152,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
         boolean unionGraph = isUnionGraph(gn) ; 
         gn =  unionGraph ? Node.ANY : gn ;
         Iterator<Tuple<NodeId>> iter = getDSG().getQuadTable().getNodeTupleTable().findAsNodeIds(gn, null, null, null) ;
-        if ( unionGraph ) 
-        {
+        if ( unionGraph ) {
             iter = Iter.map(iter, project4TupleTo3Tuple) ;
             iter = Iter.distinctAdjacent(iter) ;
         }
@@ -171,16 +161,14 @@ public class GraphTDB extends GraphView implements Closeable, Sync
     
     private static Transform<Tuple<NodeId>, Tuple<NodeId>> project4TupleTo3Tuple = new Transform<Tuple<NodeId>, Tuple<NodeId>>(){
         @Override
-        public Tuple<NodeId> convert(Tuple<NodeId> item)
-        {
+        public Tuple<NodeId> convert(Tuple<NodeId> item) {
             if ( item.size() != 4 )
                 throw new TDBException("Expected a Tuple of 4, got: "+item) ;
             return Tuple.create(item.get(1), item.get(2), item.get(3)) ;
         }} ; 
     
     // Convert from Iterator<Quad> to Iterator<Triple>
-    static class ProjectQuadsToTriples implements Iterator<Triple>
-    {
+    static class ProjectQuadsToTriples implements Iterator<Triple> {
         private final Iterator<Quad> iter ;
         private final Node graphNode ;
         /** Project quads to triples - check the graphNode is as expected if not null */
@@ -189,8 +177,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
         public boolean hasNext() { return iter.hasNext() ; }
         
         @Override
-        public Triple next()
-        { 
+        public Triple next() { 
             Quad q = iter.next();
             if ( graphNode != null && ! q.getGraph().equals(graphNode))
                 throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph (expected="+graphNode+", got="+q.getGraph()+")") ;
@@ -201,8 +188,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
     }
     
     @Override
-    public Capabilities getCapabilities()
-    {
+    public Capabilities getCapabilities() {
         if ( capabilities == null )
             capabilities = new Capabilities(){
                 @Override
@@ -238,15 +224,13 @@ public class GraphTDB extends GraphView implements Closeable, Sync
     { return transactionHandler ; }
 
     @Override
-    public void clear()
-    {
+    public void clear() {
         dataset.deleteAny(getGraphName(), Node.ANY, Node.ANY, Node.ANY) ;
         getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
     }
     
     @Override
-    public void remove( Node s, Node p, Node o )
-    {
+    public void remove( Node s, Node p, Node o ) {
         if ( getEventManager().listening() )
         {
             // Have to do it the hard way so that triple events happen.
