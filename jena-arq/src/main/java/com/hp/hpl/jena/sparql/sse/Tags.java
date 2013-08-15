@@ -141,8 +141,8 @@ public class Tags
     public static final String tagRand          = "rand" ;
     
     public static final String tagLang          = "lang" ;
-    public static final String tagLangMatches   = "langmatches" ;
-    public static final String tagSameTerm      = "sameterm" ;
+    public static final String tagLangMatches   = "langMatches" ;
+    public static final String tagSameTerm      = "sameTerm" ;
     public static final String tagDatatype      = "datatype" ;
     public static final String tagBound         = "bound" ;
     public static final String tagCoalesce      = "coalesce" ;
