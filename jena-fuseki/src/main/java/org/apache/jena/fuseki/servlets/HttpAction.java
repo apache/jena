@@ -93,8 +93,7 @@ public class HttpAction
             isTransactional = true ;
         } else {
             // Non-transactional - wrap in something that does locking to give
-            // the same
-            // functionality in the absense of errors, with less concurrency.
+            // the same functionality in the absense of errors, with less concurrency.
             DatasetGraphWithLock dsglock = new DatasetGraphWithLock(dsg) ;
             transactional = dsglock ;
             isTransactional = false ;

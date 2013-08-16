@@ -72,6 +72,9 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     @Override
     protected void perform(HttpAction action)
     {
+//        if ( action.isTransactional() )
+//        {}
+        
         // Only allows one file in the upload.
         boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
         if ( ! isMultipart )
