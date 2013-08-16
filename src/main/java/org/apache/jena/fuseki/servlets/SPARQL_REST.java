@@ -19,15 +19,7 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.HttpNames.HEADER_LASTMOD ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_DELETE ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_GET ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_HEAD ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_OPTIONS ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_PATCH ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_POST ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_PUT ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_TRACE ;
+import static org.apache.jena.fuseki.HttpNames.* ;
 
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
@@ -40,7 +32,6 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.CounterName ;
 import org.apache.jena.riot.Lang ;
@@ -303,122 +294,86 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected abstract void doPut(HttpAction action) ;
     protected abstract void doOptions(HttpAction action) ;
 
-    protected static void deleteGraph(HttpAction action)
-    {
-        Target target = determineTarget(action) ;
-        if ( target.isDefault )
-            target.graph().clear() ;
-        else
-            action.getActiveDSG().removeGraph(target.graphName) ;
-    }
+    // @@ Check and use more.
+    protected static ContentType getContentType(HttpAction action) {
+        String contentTypeHeader = action.request.getContentType() ;
 
-    protected static void clearGraph(Target target)
-    {
-        if ( ! target.isGraphSet() )
-        {
-            Graph g = target.graph() ;
-            g.clear() ;
-        }
-    }
-
-    protected static void addDataInto(Graph data, HttpAction action)
-    {   
-        try
-        {
-            Target dest = determineTarget(action) ;
-            FusekiLib.addDataInto(data, dest.dsg, dest.graphName) ;
-        } catch (RuntimeException ex)
-        {
-            // If anything went wrong, try to backout.
-            action.abort() ;
-            errorOccurred(ex.getMessage()) ;
-            return ;
-        }
+        if ( contentTypeHeader == null )
+            errorBadRequest("No content type: " + contentTypeHeader) ;
+        ContentType ct = ContentType.create(contentTypeHeader) ;
+        return ct ;
     }
     
-    protected static DatasetGraph parseBody(HttpAction action)
-    {
-        String contentTypeHeader = action.request.getContentType() ;
-        
-        if ( contentTypeHeader == null )
-            errorBadRequest("No content type: "+contentTypeHeader) ;
-            // lang = Lang.guess(action.request.getRequestURI()) ;
-        
-        ContentType ct = ContentType.create(contentTypeHeader) ;
-        
+    protected static DatasetGraph parseBody(HttpAction action) {
+        ContentType ct = getContentType(action) ;
         String base = wholeRequestURL(action.request) ;
-        
-        // Use WebContent names
-        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) )
-        {
-//            //log.warn("multipart/form-data not supported (yet)") ;
-//            error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/form-data not supported") ;
+
+        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) {
             Graph graphTmp = SPARQL_Upload.upload(action, base) ;
             return DatasetGraphFactory.create(graphTmp) ;
         }
-        
-        if (WebContent.contentTypeMultiMixed.equals(ct.getContentType()) )
-        {
-            //log.warn("multipart/mixed not supported") ;
+
+        if ( WebContent.contentTypeMultiMixed.equals(ct.getContentType()) ) {
             error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/mixed not supported") ;
             return null ;
         }
 
         int len = action.request.getContentLength() ;
         Lang lang = WebContent.contentTypeToLang(ct.getContentType()) ;
-        if ( lang == null )
-        {
-            errorBadRequest("Unknown content type for triples: "+contentTypeHeader) ;
+        if ( lang == null ) {
+            errorBadRequest("Unknown content type for triples: " + ct) ;
             return null ;
         }
 
-        if ( action.verbose )
-        {
+        if ( action.verbose ) {
             if ( len >= 0 )
-                log.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", 
-                                      action.id, len, ct.getContentType(), ct.getCharset(), lang.getName())) ;
+                log.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
+                                ct.getContentType(), ct.getCharset(), lang.getName())) ;
             else
-                log.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", 
-                                          action.id, ct.getContentType(), ct.getCharset(), lang.getName())) ;
+                log.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", action.id, ct.getContentType(),
+                                ct.getCharset(), lang.getName())) ;
         }
-        
+
         try {
             InputStream input = action.request.getInputStream() ;
             boolean buffering = false ;
-            if ( buffering )
-            {
+            if ( buffering ) {
                 // Slurp the input : can be helpful for debugging.
-                if ( len >= 0 )
-                {
+                if ( len >= 0 ) {
                     byte b[] = new byte[len] ;
                     input.read(b) ;
-                    input = new ByteArrayInputStream(b) ; 
-                }
-                else
-                {
-                    // Without content length, reading to end of file is occassionaly fraught.
-                    // Reason unknown - maybe some client mishandling of the stream. 
+                    input = new ByteArrayInputStream(b) ;
+                } else {
+                    // Without content length, reading to end of file is
+                    // occassionaly fraught.
+                    // Reason unknown - maybe some client mishandling of the
+                    // stream.
                     String x = FileUtils.readWholeFileAsUTF8(input) ;
-                    input = new ByteArrayInputStream(x.getBytes("UTF-8")) ; 
+                    input = new ByteArrayInputStream(x.getBytes("UTF-8")) ;
                 }
             }
-            
-            return parse(action, lang, base, input) ;
+
+            return parse(action, input, lang, base) ;
         } catch (IOException ex) { errorOccurred(ex) ; return null ; }
     }
 
-    private static DatasetGraph parse(HttpAction action, Lang lang, String base, InputStream input)
+    private static DatasetGraph parse(HttpAction action, InputStream input, Lang lang, String base)
     {
         Graph graphTmp = GraphFactory.createGraphMem() ;
-        
         StreamRDF dest = StreamRDFLib.graph(graphTmp) ;
+        parse(action, dest, input, lang, base) ;
+        DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
+        return dsgTmp ;
+    }
+    
+    private static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
         LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
         parser.getProfile().setHandler(errorHandler) ;
         try { parser.parse() ; } 
         catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
-        DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
-        return dsgTmp ;
     }
+    
+        
     
     @Override
     protected void validate(HttpAction action)
