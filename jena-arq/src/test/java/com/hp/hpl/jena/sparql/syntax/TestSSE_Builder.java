@@ -51,69 +51,145 @@ public class TestSSE_Builder extends TestCase
 
     @Test public void testOp_04() { opSame("(label 'ABC' (table unit))", OpLabel.create("ABC", OpTable.unit())) ; }
     
-    private static void opSame(String str)
-    {
+    private static void opSame(String str) {
         opSame(str, SSE.parseOp(str)) ;
     }
-    
-    private static void opSame(String str , Op other)
-    {
+
+    private static void opSame(String str, Op other) {
         Op op = SSE.parseOp(str) ;
         assertEquals(op, other) ;
     }
-    
-    @Test public void testBuildInt_01()
-    { 
+
+    @Test
+    public void testBuildInt_01() {
         Item item = SSE.parseItem("1") ;
         int i = BuilderNode.buildInt(item) ;
         assertEquals(1, i) ;
     }
 
-    @Test public void testBuildInt_02()
-    { 
+    @Test
+    public void testBuildInt_02() {
         Item item = SSE.parseItem("1") ;
         int i = BuilderNode.buildInt(item, 23) ;
         assertEquals(1, i) ;
     }
 
-    @Test public void testBuildInt_03()
-    { 
+    @Test
+    public void testBuildInt_03() {
         Item item = SSE.parseItem("_") ;
         int i = BuilderNode.buildInt(item, 23) ;
         assertEquals(23, i) ;
     }
-    
-    @Test public void testBuildLong_01()
-    { 
+
+    @Test
+    public void testBuildLong_01() {
         Item item = SSE.parseItem("100000000000") ;
         long i = BuilderNode.buildLong(item) ;
         assertEquals(100000000000L, i) ;
     }
 
-    @Test public void testBuildLong_02()
-    { 
+    @Test
+    public void testBuildLong_02() {
         Item item = SSE.parseItem("100000000000") ;
         long i = BuilderNode.buildLong(item, 23) ;
         assertEquals(100000000000L, i) ;
     }
 
-    @Test public void testBuildLong_03()
-    { 
+    @Test
+    public void testBuildLong_03() {
         Item item = SSE.parseItem("_") ;
         long i = BuilderNode.buildLong(item, 23) ;
         assertEquals(23, i) ;
     }
-    
-    @Test public void testBuildExpr_01()
-    {
-        Expr e = SSE.parseExpr("(sameTerm (?x) (?y))");
-        assertTrue(e instanceof E_SameTerm);
+
+    @Test
+    public void testBuildExpr_01() {
+        Expr e = SSE.parseExpr("(sameTerm (?x) (?y))") ;
+        assertTrue(e instanceof E_SameTerm) ;
+    }
+
+    @Test
+    public void testBuildExpr_02() {
+        Expr e = SSE.parseExpr("(isNumeric ?x)") ;
+        assertTrue(e instanceof E_IsNumeric) ;
     }
     
-    @Test public void testBuildExpr_02()
-    {
-        Expr e = SSE.parseExpr("(isNumeric ?x)");
-        assertTrue(e instanceof E_IsNumeric);
+    private static void testExprForms(String str1, String str2) {
+        Expr e1 = SSE.parseExpr(str1) ;
+        Expr e2 = SSE.parseExpr(str2) ;
+        assertEquals(str1+" "+str2, e1, e2) ;
+    }
+    
+    @Test
+    public void testBuildExpr_03()  { 
+        testExprForms("(add ?x ?y)",
+                      "(+ ?x ?y)") ;
+    }
+    
+    @Test
+    public void testBuildExpr_04() {
+        testExprForms("(subtract ?x ?y)",
+                      "(- ?x ?y)") ;
+    }
+    
+    @Test
+    public void testBuildExpr_05() {
+        testExprForms("(multiply ?x ?y)",
+                      "(* ?x ?y)") ;
+    }
+    
+    @Test
+    public void testBuildExpr_06() {
+        testExprForms("(divide ?x ?y)", 
+                      "(/ ?x ?y)") ;
+    }
+    
+    @Test
+    public void testBuildExpr_07() {
+        testExprForms("(lt ?x ?y)", 
+                      "(< ?x ?y)") ;
+    }
+    
+    @Test
+    public void testBuildExpr_08() {
+        testExprForms("(le ?x ?y)", 
+                      "(<= ?x ?y)") ;
+    }
+    
+    @Test
+    public void testBuildExpr_09() {
+        testExprForms("(gt ?x ?y)", 
+                      "(> ?x ?y)") ;
+    }
+    
+    @Test
+    public void testBuildExpr_10() {
+        testExprForms("(ge ?x ?y)", 
+                      "(>= ?x ?y)") ;
+    }
+    
+    @Test
+    public void testBuildExpr_11() {
+        testExprForms("(unaryplus ?x)", 
+                      "(+ ?x)") ;
+    }
+
+    @Test
+    public void testBuildExpr_12() {
+        testExprForms("(unaryminus ?x)", 
+                      "(- ?x)") ;
+    }
+
+    @Test
+    public void testBuildExpr_13() {
+        testExprForms("(eq ?x ?y)", 
+                      "(= ?x ?y)") ;
+    }
+
+    @Test
+    public void testBuildExpr_14() {
+        testExprForms("(ne ?x ?y)", 
+                      "(!= ?x ?y)") ;
     }
 
 }

@@ -25,12 +25,12 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Subtract extends ExprFunction2
 {
-    private static final String printName = "sub" ;
+    private static final String functionName = Tags.tagSubtract ;
     private static final String symbol = Tags.symMinus ;
     
     public E_Subtract(Expr left, Expr right)
     {
-        super(left, right, printName, symbol) ;
+        super(left, right, functionName, symbol) ;
     }
 
     @Override

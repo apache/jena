@@ -26,12 +26,12 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 public class E_LogicalAnd extends ExprFunction2
 {
     // See logical OR
-    private static final String printName = Tags.tagAnd ;
+    private static final String functionName = Tags.tagAnd ;
     private static final String symbol = Tags.symAnd ;
    
     public E_LogicalAnd(Expr left, Expr right)
     {
-        super(left, right, printName, symbol) ;
+        super(left, right, functionName, symbol) ;
     }
     
     // Special : does not evaluate RHS if LHS means it is unnecessary. 

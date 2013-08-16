@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Conditional extends ExprFunction3
 {
-    private static final String printName = Tags.tagIf ;
+    private static final String functionName = Tags.tagIf ;
     
     private final Expr condition ;
     private final Expr thenExpr ;
@@ -36,7 +36,7 @@ public class E_Conditional extends ExprFunction3
     public E_Conditional(Expr condition, Expr thenExpr, Expr elseExpr)
     {
         // Don't let the parent eval the theEpxr or ifExpr.
-        super(condition, thenExpr, elseExpr, printName) ;
+        super(condition, thenExpr, elseExpr, functionName) ;
         // Better names,
         this.condition = condition ;
         this.thenExpr = thenExpr ;

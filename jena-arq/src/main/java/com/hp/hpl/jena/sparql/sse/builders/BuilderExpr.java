@@ -215,19 +215,36 @@ public class BuilderExpr
     {
         dispatch.put(Tags.tagRegex, buildRegex) ;
         dispatch.put(Tags.symEQ, buildEQ) ;
+        dispatch.put(Tags.tagEQ, buildEQ) ;
         dispatch.put(Tags.symNE, buildNE) ;
+        dispatch.put(Tags.tagNE, buildNE) ;
         dispatch.put(Tags.symGT, buildGT) ;
+        dispatch.put(Tags.tagGT, buildGT) ;
         dispatch.put(Tags.symLT, buildLT) ;
+        dispatch.put(Tags.tagLT, buildLT) ;
         dispatch.put(Tags.symLE, buildLE) ;
+        dispatch.put(Tags.tagLE, buildLE) ;
         dispatch.put(Tags.symGE, buildGE) ;
+        dispatch.put(Tags.tagGE, buildGE) ;
         dispatch.put(Tags.symOr, buildOr) ;     // Same builders for (or ..) and (|| ..)
         dispatch.put(Tags.tagOr, buildOr) ;
         dispatch.put(Tags.symAnd, buildAnd) ;   // Same builders for (and ..) and (&& ..)
         dispatch.put(Tags.tagAnd, buildAnd) ;
         dispatch.put(Tags.symPlus, buildPlus) ;
+        dispatch.put(Tags.tagAdd,  buildPlus) ;
         dispatch.put(Tags.symMinus, buildMinus) ;
+        dispatch.put(Tags.tagSubtract, buildMinus) ;    // Not to be confused with Op for SPARQL MINUS
+        dispatch.put(Tags.tagMinus, buildMinus) ;
+
+        dispatch.put(Tags.tagUnaryPlus, buildUnaryPlus) ;
+        dispatch.put(Tags.tagUnaryMinus, buildUnaryMinus) ;
+        
         dispatch.put(Tags.symMult, buildMult) ;
+        dispatch.put(Tags.tagMultiply, buildMult) ;
+        
         dispatch.put(Tags.symDiv, buildDiv) ;
+        dispatch.put(Tags.tagDivide, buildDiv) ;
+        
         dispatch.put(Tags.tagNot, buildNot) ;   // Same builders for (not ..) and (! ..)
         dispatch.put(Tags.symNot, buildNot) ;
         dispatch.put(Tags.tagStr, buildStr) ;
@@ -391,6 +408,17 @@ public class BuilderExpr
             return new E_Add(left, right) ;
         }
     };
+    
+    final protected Build buildUnaryPlus = new Build()
+    {
+        @Override
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "unaryplus: wanted 1 argument") ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_UnaryPlus(ex) ;
+        }
+    };
 
     final protected Build buildMinus = new Build()
     {
@@ -410,6 +438,17 @@ public class BuilderExpr
         }
     };
     
+    final protected Build buildUnaryMinus = new Build()
+    {
+        @Override
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "unaryminus: wanted 1 argument") ;
+            Expr ex = buildExpr(list.get(1)) ;
+            return new E_UnaryMinus(ex) ;
+        }
+    };
+
     private static int numArgs(ItemList list) { return list.size()-1 ; } 
     
     final protected Build buildEQ = new Build()

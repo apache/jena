@@ -22,12 +22,12 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_LessThanOrEqual extends ExprFunction2
 {
-    private static final String printName = "le" ;
+    private static final String functionName = Tags.tagLE ;   
     private static final String symbol = Tags.symLE ;    
 
     public E_LessThanOrEqual(Expr left, Expr right)
     {
-        super(left, right, printName, symbol) ;
+        super(left, right, functionName, symbol) ;
     }
     
     @Override

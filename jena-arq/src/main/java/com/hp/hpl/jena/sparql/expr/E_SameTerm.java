@@ -23,11 +23,11 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_SameTerm extends ExprFunction2
 {
-    private static final String printName = Tags.tagSameTerm ;
+    private static final String functionName = Tags.tagSameTerm ;
 
     public E_SameTerm(Expr left, Expr right)
     {
-        super(left, right, printName) ;
+        super(left, right, functionName) ;
     }
     
     @Override

@@ -26,12 +26,12 @@ public class E_LogicalNot extends ExprFunction1
     // See logicalOR for truth table.
 
     // Errors propage as normal.
-    private static final String printName = Tags.tagNot ;
+    private static final String functionName = Tags.tagNot ;
     private static final String symbol = Tags.symNot ;
 
     public E_LogicalNot(Expr expr)
     {
-        super(expr, printName, symbol) ;
+        super(expr, functionName, symbol) ;
     }
 
     @Override

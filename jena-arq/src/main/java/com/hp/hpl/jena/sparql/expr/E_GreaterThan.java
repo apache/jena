@@ -22,12 +22,12 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_GreaterThan extends ExprFunction2
 {
-    private static final String printName = "gt" ;
+    private static final String functionName = Tags.tagGT ;
     private static final String symbol = Tags.symGT ;    
 
     public E_GreaterThan(Expr left, Expr right)
     {
-        super(left, right, printName, symbol) ;
+        super(left, right, functionName, symbol) ;
     }
     
     @Override
