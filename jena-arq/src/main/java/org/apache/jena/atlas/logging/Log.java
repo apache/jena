@@ -23,7 +23,6 @@ import java.io.File ;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.util.IllegalFormatException ;
 import java.util.Properties ;
 
 import org.apache.jena.atlas.AtlasException ;
@@ -43,47 +42,6 @@ import org.slf4j.LoggerFactory ;
 public class Log
 {
     private Log() {}
-    
-    // -- Delayed argument formatting.
-    /* Log at 'trace' level. */
-    public static void trace(Logger log, String fmt, Object...args) {
-        if ( log.isTraceEnabled() )
-            log.trace(format(fmt, args)) ;
-    }
-
-    /* Log at 'debug' level */
-    public static void debug(Logger log, String fmt, Object...args) {
-        if ( log.isDebugEnabled() )
-            log.debug(format(fmt, args)) ;
-    }
-
-    /* Log at 'info' level */
-    public static void info(Logger log, String fmt, Object...args) {
-        if ( log.isInfoEnabled() )
-            log.info(format(fmt, args)) ;
-    }
-
-    /* Log at 'warn' level */
-    public static void warn(Logger log, String fmt, Object...args) {
-        if ( log.isWarnEnabled() )
-            log.warn(format(fmt, args)) ;
-    }
-
-    /* Log at 'error' level */
-    public static void error(Logger log, String fmt, Object...args) {
-        if ( log.isErrorEnabled() )
-            log.error(format(fmt, args)) ;
-    }
-
-    private static String format(String fmt, Object[] args) {
-        try {
-            return String.format(fmt, args) ;
-        } catch (IllegalFormatException ex) {
-            // return something, however grotty.
-            return fmt+" "+args ;
-        }
-    }
-    // ----
     
     static public void info(String caller, String msg)
     {
