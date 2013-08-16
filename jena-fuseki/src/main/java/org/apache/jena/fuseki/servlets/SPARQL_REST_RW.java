@@ -18,8 +18,18 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import org.apache.jena.fuseki.HttpNames ;
+import java.io.InputStream ;
 
+import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
+
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** The WRITE operations added to the READ operations */
@@ -59,45 +69,102 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     }
 
     @Override
-    protected void doPut(HttpAction action)
-    {
-        DatasetGraph body = parseBody(action) ;
-        action.beginWrite() ;
+    protected void doPut(HttpAction action)     { doPutPost(action, true) ; }
+
+    @Override
+    protected void doPost(HttpAction action)     { doPutPost(action, false) ; }
+
+    private void doPutPost(HttpAction action, boolean overwrite) {
         boolean existedBefore = false ;
-        try {
-            Target target = determineTarget(action) ;
-            if ( log.isDebugEnabled() )
-                log.debug("PUT->"+target) ;
-            existedBefore = target.exists() ; 
-            if ( existedBefore )
-                clearGraph(target) ;
-            addDataInto(body.getDefaultGraph(), action) ;
-            action.commit() ;
-        } finally { action.endWrite() ; }
-        // Differentiate: 201 Created or 204 No Content 
+        if ( action.isTransactional() )
+            existedBefore = addDataIntoTxn(action, overwrite) ;
+        else
+            existedBefore = addDataIntoNonTxn(action, overwrite) ;
+            
         if ( existedBefore )
             SPARQL_ServletBase.successNoContent(action) ;
         else
             SPARQL_ServletBase.successCreated(action) ;
     }
 
-    @Override
-    protected void doPost(HttpAction action)
-    {
+    /** Directly add data in a transaction.
+     * Assumes recovery from parse errors.
+     * Return whether the target existed before.
+     * @param action
+     * @param cleanDest Whether to remove daat first (true = PUT, false = POST)
+     * @return whether the target existed beforehand
+     */
+    protected static boolean addDataIntoTxn(HttpAction action, boolean overwrite)
+    {   
+        ContentType ct = getContentType(action) ;
+        String base = wholeRequestURL(action.request) ;
+        Lang lang = WebContent.contentTypeToLang(ct.getContentType()) ;
+        if ( lang == null ) {
+            errorBadRequest("Unknown content type for triples: " + ct) ;
+            return true ;
+        }
+
+        action.beginWrite();
+        Target target = determineTarget(action) ;
+        boolean existedBefore = false ;
+        try {
+            if ( log.isDebugEnabled() )
+                log.debug("  ->"+target) ;
+            InputStream input = action.request.getInputStream() ;
+            existedBefore = target.exists() ;
+            Graph g = target.graph() ;
+            if ( overwrite && existedBefore )
+                clearGraph(target) ;
+            StreamRDF sink = StreamRDFLib.graph(g) ;
+            RDFDataMgr.parse(sink, input, base, lang) ;
+            action.commit() ;
+            return existedBefore ;
+        } catch (Exception ex) {
+            // If anything went wrong, backout.
+            action.abort() ;
+            errorOccurred(ex.getMessage()) ;
+            return existedBefore ;
+        } finally {
+            action.endWrite() ;
+        }
+    }
+
+    /** Add data whether the destination does not support full transactions,
+     *  in particular, with no abort, and actions probably going to the real storage
+     *  parse errors can lead to partial updates.  Instead, parse to a temporary
+     *  graph, then insert that data.  
+     * @param action
+     * @param cleanDest Whether to remove daat first (true = PUT, false = POST)
+     * @return whether the target existed beforehand.
+     */
+    protected static boolean addDataIntoNonTxn(HttpAction action, boolean cleanDest) {
         DatasetGraph body = parseBody(action) ;
         action.beginWrite() ;
-        boolean existedBefore ; 
+        Target target = determineTarget(action) ;
+        boolean existedBefore = false ;
         try {
-            Target target = determineTarget(action) ;
             if ( log.isDebugEnabled() )
-                log.debug("POST->"+target) ;
+                log.debug("  ->"+target) ;
             existedBefore = target.exists() ; 
-            addDataInto(body.getDefaultGraph(), action) ;
+            if ( cleanDest && existedBefore )
+                clearGraph(target) ;
+            //addDataInto(body.getDefaultGraph(), action) ;
+            FusekiLib.addDataInto(body.getDefaultGraph(), target.dsg, target.graphName) ;
             action.commit() ;
+            return existedBefore ;
         } finally { action.endWrite() ; }
-        if ( existedBefore )
-            SPARQL_ServletBase.successNoContent(action) ;
+    }
+    
+    protected static void deleteGraph(HttpAction action) {
+        Target target = determineTarget(action) ;
+        if ( target.isDefault )
+            target.graph().clear() ;
         else
-            SPARQL_ServletBase.successCreated(action) ;
+            action.getActiveDSG().removeGraph(target.graphName) ;
+    }
+
+    protected static void clearGraph(Target target) {
+        Graph g = target.graph() ;
+        g.clear() ;
     }
 }

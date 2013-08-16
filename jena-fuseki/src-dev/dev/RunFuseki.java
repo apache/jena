@@ -51,14 +51,21 @@ public class RunFuseki
     
     private static void main1()
     {
+        String tmpdir = System.getenv("TMPDIR") ;
+        if ( tmpdir == null )
+            tmpdir = System.getenv("TMP") ;
+        if ( tmpdir == null )
+            tmpdir = System.getenv("HOME")+"/tmp" ;
+        if ( ! tmpdir.endsWith("/") )
+            tmpdir = tmpdir+"/" ;
+        
         FusekiCmd.main(
                      //  "-v",
                      "--update", "--mem", "--mgtPort=3131", "/ds"
-                     
+                     //"--update", "--loc="+tmpdir+"DB", "--set=tdb:unionDefaultGraph=true", "/ds"
                      //"--update", "--mem", "/ds"
-                     
-                     //"--update", "--loc=/home/afs/tmp/DB", "--set=tdb:unionDefaultGraph=true", "--update", "/ds"
-                     //"--update", "--memtdb", "--set=tdb:unionDefaultGraph=true", "--update", "/ds"
+
+                     //"--update", "--memtdb", "--set=tdb:unionDefaultGraph=true", "/ds"
                      
                     //"--debug",
                     //"--update",
