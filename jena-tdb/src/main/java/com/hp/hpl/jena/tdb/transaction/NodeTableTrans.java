@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import static org.apache.jena.atlas.logging.FmtLog.warn ;
 import static org.apache.jena.atlas.logging.Log.warn ;
 
 import java.nio.ByteBuffer ;
