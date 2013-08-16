@@ -25,12 +25,12 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Divide extends ExprFunction2
 {
-    private static final String printName = "div" ;
+    private static final String functionName = Tags.tagDivide ;
     private static final String symbol = Tags.symDiv ;
     
     public E_Divide(Expr left, Expr right)
     {
-        super(left, right, printName, symbol) ;
+        super(left, right, functionName, symbol) ;
     }
     
     @Override

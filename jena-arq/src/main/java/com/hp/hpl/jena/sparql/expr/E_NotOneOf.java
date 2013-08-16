@@ -27,16 +27,16 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_NotOneOf extends E_OneOfBase
 {
-    private static final String printName = Tags.tagNotIn ;
+    private static final String functionName = Tags.tagNotIn ;
     
     public E_NotOneOf(Expr expr, ExprList args)
     {
-        super(printName, expr, args) ;
+        super(functionName, expr, args) ;
     }
 
     protected E_NotOneOf(ExprList args)
     {
-        super(printName, args) ;
+        super(functionName, args) ;
     }
     
     @Override

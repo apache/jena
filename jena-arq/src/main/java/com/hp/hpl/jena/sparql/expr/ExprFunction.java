@@ -118,13 +118,14 @@ public abstract class ExprFunction extends ExprNode
     public String getFunctionName(SerializationContext cxt)
     { return funcSymbol.getSymbol() ; }
     
+    /** Used to get a unique name for the function, which is intern'ed.  Used in hashCode() */ 
     public FunctionLabel getFunctionSymbol()
     { return funcSymbol ; }
 
     /** URI for this function, whether custom or specification defined URI (these are keywords in the language) */  
     public String getFunctionIRI() { return null ; }
 
-    /** Get the symbol name (+, ! etc) for this function -- Maybe null for none */
+    /** Get the symbol name (+, ! etc) for this function -- maybe null for none */
     public String getOpName()
     { return opSign ; }
 }

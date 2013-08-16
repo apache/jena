@@ -22,12 +22,12 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Equals extends ExprFunction2
 {
-    private static final String printName = "eq" ;
+    private static final String functionName = Tags.tagEQ ;
     private static final String symbol = Tags.symEQ ;    
 
     public E_Equals(Expr left, Expr right)
     {
-        super(left, right, printName, symbol) ;
+        super(left, right, functionName, symbol) ;
     }
     
     @Override

@@ -119,21 +119,34 @@ public class Tags
     public static final String tagExprList      = "exprlist" ;
 
     public static final String symEQ            = "=" ;
+    public static final String tagEQ            = "eq" ;
     public static final String symNE            = "!=" ;
+    public static final String tagNE            = "ne" ;
     public static final String symGT            = ">" ;
+    public static final String tagGT            = "gt" ;
     public static final String symLT            = "<" ;
+    public static final String tagLT            = "lt" ;
     public static final String symLE            = "<=" ;
+    public static final String tagLE            = "le" ;
     public static final String symGE            = ">=" ;
+    public static final String tagGE            = "ge" ;
     public static final String symOr            = "||" ;
     public static final String tagOr            = "or" ;
     public static final String symAnd           = "&&" ;
     public static final String tagAnd           = "and" ;
-    public static final String symPlus          = "+" ;
-    public static final String symMinus         = "-" ;
-    public static final String symMult          = "*" ;
-    public static final String symDiv           = "/" ;
-    public static final String symNot           = "!" ;
     
+    public static final String symPlus          = "+" ;
+    public static final String tagAdd           = "add" ;
+    public static final String tagUnaryPlus     = "unaryplus" ;
+    public static final String symMinus         = "-" ;
+    public static final String tagSubtract      = "subtract" ;
+    public static final String tagUnaryMinus    = "unaryminus" ;
+    public static final String symMult          = "*" ;
+    public static final String tagMultiply      = "multiply" ;
+    public static final String symDiv           = "/" ;
+    public static final String tagDivide        = "divide" ;
+    
+    public static final String symNot           = "!" ;
     public static final String tagNot           = "not" ;
     public static final String tagStr           = "str" ;
     public static final String tagStrLang       = "strlang" ;

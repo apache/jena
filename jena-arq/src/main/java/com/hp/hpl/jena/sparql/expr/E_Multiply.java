@@ -25,12 +25,12 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 
 public class E_Multiply extends ExprFunction2
 {
-    private static final String printName = "mul" ;
+    private static final String functionName = Tags.tagMultiply ;
     private static final String symbol = Tags.symMult ;
     
     public E_Multiply(Expr left, Expr right)
     {
-        super(left, right, printName, symbol) ;
+        super(left, right, functionName, symbol) ;
     }
     
     @Override

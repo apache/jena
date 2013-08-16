@@ -28,16 +28,16 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 public class E_OneOf extends E_OneOfBase
 {
 
-    private static final String printName = Tags.tagIn ;
+    private static final String functionName = Tags.tagIn ;
     
     public E_OneOf(Expr expr, ExprList args)
     {
-        super(printName, expr, args) ;
+        super(functionName, expr, args) ;
     }
     
     protected E_OneOf(ExprList args)
     {
-        super(printName, args) ;
+        super(functionName, args) ;
     }
 
     @Override

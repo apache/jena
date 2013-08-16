@@ -42,12 +42,12 @@ import com.hp.hpl.jena.sparql.sse.Tags;
 public class E_LogicalOr extends ExprFunction2
 {
     
-    private static final String printName = Tags.tagOr ;
+    private static final String functionName = Tags.tagOr ;
     private static final String symbol = Tags.symOr ;
     
     public E_LogicalOr(Expr left, Expr right)
     {
-        super(left, right, printName, symbol) ;
+        super(left, right, functionName, symbol) ;
     }
     
     @Override
