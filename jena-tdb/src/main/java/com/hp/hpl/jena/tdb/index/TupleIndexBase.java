@@ -43,7 +43,7 @@ public abstract class TupleIndexBase implements TupleIndex
         this.name = name ;
     }
     
-    /** Add tuple worker: Tuple passed in unmaped (untouched) order */
+    /** Add tuple worker: Tuple passed in unmapped (untouched) order */
     protected abstract boolean performAdd(Tuple<NodeId> tuple) ;
     
     /** Delete tuple worker: Tuple passed in unmaped (untouched) order */
