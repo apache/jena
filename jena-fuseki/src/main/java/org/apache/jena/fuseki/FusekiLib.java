@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.commons.lang.StringUtils ;
 import org.apache.jena.atlas.lib.MultiMap ;
+import org.apache.jena.atlas.lib.MultiMapToList ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.riot.Lang ;
@@ -88,7 +89,7 @@ public class FusekiLib {
 
     /** Parse the query string - do not process the body even for a form */
     public static MultiMap<String, String> parseQueryString(HttpServletRequest req) {
-        MultiMap<String, String> map = MultiMap.createMapList() ;
+        MultiMap<String, String> map = MultiMapToList.create() ;
 
         // Don't use ServletRequest.getParameter or getParamterNames
         // as that reads form data. This code parses just the query string.
