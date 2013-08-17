@@ -31,12 +31,15 @@ import org.apache.commons.fileupload.FileItemIterator ;
 import org.apache.commons.fileupload.FileItemStream ;
 import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.commons.fileupload.util.Streams ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.riot.* ;
-import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.web.HttpSC ;
 
@@ -72,68 +75,85 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     @Override
     protected void perform(HttpAction action)
     {
-//        if ( action.isTransactional() )
-//        {}
-        
         // Only allows one file in the upload.
         boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
         if ( ! isMultipart )
             error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
-        
-        long tripleCount = -1 ;
-        action.beginWrite() ;
+        long count = upload(action, "http://example/upload-base/") ;
         try {
-            Graph graphTmp = GraphFactory.createDefaultGraph() ;
-            String graphName = upload(action, graphTmp, "http://example/upload-base/") ;
-            tripleCount = graphTmp.size() ;
-            
-            log.info(format("[%d] Upload: Graph: %s (%d triple(s))", 
-                            action.id, graphName,  tripleCount)) ;
-            
-            Node gn = graphName.equals(HttpNames.valueDefault)
-                ? Quad.defaultGraphNodeGenerated 
-                : NodeFactory.createURI(graphName) ;
-                
+            action.response.setContentType("text/plain") ;
+            action.response.getOutputStream().print("Triples = "+count) ;
+            success(action) ;
+        }
+        catch (Exception ex) { errorOccurred(ex) ; }
+    }
+    
+    // Also used by SPARQL_REST
+    static public long upload(HttpAction action, String base)
+    {
+        if ( action.isTransactional() )
+            return uploadTxn(action, base) ;
+        else
+            return uploadNonTxn(action, base) ;
+    }
+
+    /** Non-transaction - buffer to a temporary graph so that parse errors
+     * are caught before inserting any data. 
+     */
+     private static long uploadNonTxn(HttpAction action, String base) {
+         Pair<String, Graph> p = uploadWorker(action, base) ;
+         String graphName = p.getLeft() ;
+         Graph graphTmp = p.getRight() ;
+         long tripleCount = graphTmp.size() ;
+
+         log.info(format("[%d] Upload: Graph: %s (%d triple(s))", 
+                         action.id, graphName,  tripleCount)) ;
+
+         Node gn = graphName.equals(HttpNames.valueDefault)
+             ? Quad.defaultGraphNodeGenerated 
+             : NodeFactory.createURI(graphName) ;
+
+         action.beginWrite() ;
+         try {
             FusekiLib.addDataInto(graphTmp, action.getActiveDSG(), gn) ;
-            tripleCount = graphTmp.size();
             action.commit() ;
+            return tripleCount ;
         } catch (RuntimeException ex)
         {
             // If anything went wrong, try to backout.
             try { action.abort() ; } catch (Exception ex2) {}
             errorOccurred(ex.getMessage()) ;
+            return -1 ;
         } 
         finally { action.endWrite() ; }
-        try {
-            action.response.setContentType("text/plain") ;
-            action.response.getOutputStream().print("Triples = "+tripleCount) ;
-            success(action) ;
-        }
-        catch (Exception ex) { errorOccurred(ex) ; }
     }
 
-    // Used by SPARQL_REST
-    static public Graph upload(HttpAction action, String destination)
-    {
-        // We read into a in-memory graph, then (if successful) update the dataset.
-        // This isolates errors.
-        Graph graphTmp = GraphFactory.createDefaultGraph() ;
-        String graphName = upload(action, graphTmp, destination) ;
-        return graphTmp ;
-    }
-    
-    /** @return any graph name found.
+     /** Transactional - we'd like data to go straight to the destination, with an abort on parse error.
+      * But file upload with a name means that the name can be after the data
+      * (it is in the Fuseki default pages).
+      * Use Graph Store protocol for bulk uploads.
+      * (It would be possible to process the incoming stream and see the graph name first.)
+      */
+      private static long uploadTxn(HttpAction action, String base) {
+          // We can't do better than the non-transaction approach.
+          return uploadNonTxn(action, base) ;
+      }
+     
+    /**  process an HTTP upload of RDF.
+     *   We can't stream straight into a dataset because the graph name can be after the data. 
+     *  @return graph name and count
      */
     
-    static private String upload(HttpAction action, Graph graphDst, String base)
+    static private Pair<String, Graph> uploadWorker(HttpAction action, String base)
     {
+        Graph graphTmp = GraphFactory.createDefaultGraph() ;
         ServletFileUpload upload = new ServletFileUpload();
-        // Locking only needed over the insert into the dataset
         String graphName = null ;
+        long count = -1 ;
+        
         String name = null ;  
         ContentType ct = null ;
         Lang lang = null ;
-        int tripleCount = 0 ;
 
         try {
             FileItemIterator iter = upload.getItemIterator(action.request);
@@ -148,7 +168,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     if ( fieldName.equals(HttpNames.paramGraph) )
                     {
                         graphName = value ;
-                        if ( graphName != null && ! graphName.equals(HttpNames.valueDefault) )
+                        if ( graphName != null && ! graphName.equals("") && ! graphName.equals(HttpNames.valueDefault) )
                         {
                             IRI iri = IRIResolver.parseIRI(value) ;
                             if ( iri.hasViolation(false) )
@@ -188,19 +208,19 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                         // Desperate.
                         lang = RDFLanguages.RDFXML ;
 
-                    StreamRDF dest = StreamRDFLib.graph(graphDst) ;
-                    LangRIOT parser = RiotReader.createParser(stream, lang, base, dest) ;
-                    parser.getProfile().setHandler(errorHandler) ;
                     log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", 
                                     action.id, name,  ct.getContentType(), ct.getCharset(), lang.getName())) ;
-                    try { parser.parse() ; }
-                    catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
+                    
+                    StreamRDF x = StreamRDFLib.graph(graphTmp) ;
+                    StreamRDFCounting dest =  StreamRDFLib.count(x) ;
+                    SPARQL_REST.parse(action, dest, stream, lang, base);
+                    count = dest.count() ;
                 }
             }    
 
-            if ( graphName == null )
-                graphName = "default" ;
-            return graphName ;
+            if ( graphName == null || graphName.equals("") ) 
+                graphName = HttpNames.valueDefault ;
+            return Pair.create(graphName, graphTmp) ;
         }
         catch (ActionErrorException ex) { throw ex ; }
         catch (Exception ex)            { errorOccurred(ex) ; return null ; }

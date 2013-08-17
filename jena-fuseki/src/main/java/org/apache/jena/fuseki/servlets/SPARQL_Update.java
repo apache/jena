@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.iri.IRI ;
@@ -93,11 +93,11 @@ public class SPARQL_Update extends SPARQL_Protocol
         // WebContent needs to migrate to using ContentType.
         String ctStr ;
         {
-            MediaType incoming = FusekiLib.contentType(action.request) ;
-            if ( incoming == null )
+            ContentType ct = FusekiLib.getContentType(action) ;
+            if ( ct == null )
                 ctStr = WebContent.contentTypeSPARQLUpdate ;
             else
-                ctStr = incoming.getContentType() ;
+                ctStr = ct.getContentType() ;
         }
 
         if (WebContent.contentTypeSPARQLUpdate.equals(ctStr))
@@ -125,7 +125,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(request.getMethod()) )
             errorMethodNotAllowed("SPARQL Update : use POST") ;
         
-        MediaType incoming = FusekiLib.contentType(request) ;
+        ContentType incoming = FusekiLib.getContentType(action) ;
         String ctStr = ( incoming == null ) ? WebContent.contentTypeSPARQLUpdate : incoming.getContentType() ;
         // ----
         
