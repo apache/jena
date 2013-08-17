@@ -20,6 +20,9 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.apache.jena.fuseki.HttpNames.* ;
+import static org.apache.jena.fuseki.server.CounterName.QueryExecErrors ;
+import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts ;
+import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -30,11 +33,10 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import static org.apache.jena.fuseki.server.CounterName.* ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
@@ -79,7 +81,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             return ;
         }
 
-        MediaType ct = FusekiLib.contentType(action.request) ;
+        ContentType ct = FusekiLib.getContentType(action) ;
         String incoming = ct.getContentType() ;
 
         // POST application/sparql-query
@@ -141,7 +143,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     /** Helper for validating request */
     protected void validateParams(HttpServletRequest request, Collection<String> params)
     {
-        MediaType ct = FusekiLib.contentType(request) ;
+        ContentType ct = FusekiLib.getContentType(request) ;
         boolean mustHaveQueryParam = true ;
         if ( ct != null )
         {
