@@ -18,10 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static java.lang.String.format ;
 import static org.apache.jena.fuseki.HttpNames.* ;
 
-import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Enumeration ;
@@ -31,16 +29,16 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.CounterName ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.system.* ;
-import org.apache.jena.web.HttpSC ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -48,9 +46,6 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 public abstract class SPARQL_REST extends SPARQL_ServletBase
 {
@@ -293,88 +288,19 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected abstract void doDelete(HttpAction action) ;
     protected abstract void doPut(HttpAction action) ;
     protected abstract void doOptions(HttpAction action) ;
-
-    // @@ Check and use more.
-    protected static ContentType getContentType(HttpAction action) {
-        String contentTypeHeader = action.request.getContentType() ;
-
-        if ( contentTypeHeader == null )
-            errorBadRequest("No content type: " + contentTypeHeader) ;
-        ContentType ct = ContentType.create(contentTypeHeader) ;
-        return ct ;
-    }
     
-    protected static DatasetGraph parseBody(HttpAction action) {
-        ContentType ct = getContentType(action) ;
-        String base = wholeRequestURL(action.request) ;
-
-        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) {
-            Graph graphTmp = SPARQL_Upload.upload(action, base) ;
-            return DatasetGraphFactory.create(graphTmp) ;
-        }
-
-        if ( WebContent.contentTypeMultiMixed.equals(ct.getContentType()) ) {
-            error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/mixed not supported") ;
-            return null ;
-        }
-
-        int len = action.request.getContentLength() ;
-        Lang lang = WebContent.contentTypeToLang(ct.getContentType()) ;
-        if ( lang == null ) {
-            errorBadRequest("Unknown content type for triples: " + ct) ;
-            return null ;
-        }
-
-        if ( action.verbose ) {
-            if ( len >= 0 )
-                log.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
-                                ct.getContentType(), ct.getCharset(), lang.getName())) ;
-            else
-                log.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", action.id, ct.getContentType(),
-                                ct.getCharset(), lang.getName())) ;
-        }
-
-        try {
-            InputStream input = action.request.getInputStream() ;
-            boolean buffering = false ;
-            if ( buffering ) {
-                // Slurp the input : can be helpful for debugging.
-                if ( len >= 0 ) {
-                    byte b[] = new byte[len] ;
-                    input.read(b) ;
-                    input = new ByteArrayInputStream(b) ;
-                } else {
-                    // Without content length, reading to end of file is
-                    // occassionaly fraught.
-                    // Reason unknown - maybe some client mishandling of the
-                    // stream.
-                    String x = FileUtils.readWholeFileAsUTF8(input) ;
-                    input = new ByteArrayInputStream(x.getBytes("UTF-8")) ;
-                }
-            }
-
-            return parse(action, input, lang, base) ;
-        } catch (IOException ex) { errorOccurred(ex) ; return null ; }
-    }
-
-    private static DatasetGraph parse(HttpAction action, InputStream input, Lang lang, String base)
-    {
-        Graph graphTmp = GraphFactory.createGraphMem() ;
-        StreamRDF dest = StreamRDFLib.graph(graphTmp) ;
-        parse(action, dest, input, lang, base) ;
-        DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
-        return dsgTmp ;
-    }
-    
-    private static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
+    // @@ Move to SPARQL_ServletBase
+    // Check for all RiotReader
+    public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
+        // Need to adjust the error handler.
+//        try { RDFDataMgr.parse(dest, input, base, lang) ; }
+//        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
         LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
         parser.getProfile().setHandler(errorHandler) ;
         try { parser.parse() ; } 
         catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
     }
-    
-        
-    
+
     @Override
     protected void validate(HttpAction action)
     {

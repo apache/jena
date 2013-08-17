@@ -18,19 +18,23 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static java.lang.String.format ;
+
+import java.io.IOException ;
 import java.io.InputStream ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 /** The WRITE operations added to the READ operations */
 public class SPARQL_REST_RW extends SPARQL_REST_R
@@ -75,6 +79,21 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     protected void doPost(HttpAction action)     { doPutPost(action, false) ; }
 
     private void doPutPost(HttpAction action, boolean overwrite) {
+        ContentType ct = FusekiLib.getContentType(action) ;
+        if ( ct == null )
+            errorBadRequest("No Content-Type:") ;
+
+        // Helper case - if it's a possible HTTP file upload, pretend that's the action.
+        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) {
+            String base = wholeRequestURL(action.request) ;
+            SPARQL_Upload.upload(action, base) ;
+            return ; 
+        }
+
+        if ( WebContent.contentTypeMultiMixed.equals(ct.getContentType()) ) {
+            error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/mixed not supported") ;
+        }
+        
         boolean existedBefore = false ;
         if ( action.isTransactional() )
             existedBefore = addDataIntoTxn(action, overwrite) ;
@@ -96,13 +115,6 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
      */
     protected static boolean addDataIntoTxn(HttpAction action, boolean overwrite)
     {   
-        ContentType ct = getContentType(action) ;
-        String base = wholeRequestURL(action.request) ;
-        Lang lang = WebContent.contentTypeToLang(ct.getContentType()) ;
-        if ( lang == null ) {
-            errorBadRequest("Unknown content type for triples: " + ct) ;
-            return true ;
-        }
 
         action.beginWrite();
         Target target = determineTarget(action) ;
@@ -110,13 +122,13 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         try {
             if ( log.isDebugEnabled() )
                 log.debug("  ->"+target) ;
-            InputStream input = action.request.getInputStream() ;
             existedBefore = target.exists() ;
+            
             Graph g = target.graph() ;
             if ( overwrite && existedBefore )
                 clearGraph(target) ;
             StreamRDF sink = StreamRDFLib.graph(g) ;
-            RDFDataMgr.parse(sink, input, base, lang) ;
+            incomingData(action, sink);
             action.commit() ;
             return existedBefore ;
         } catch (Exception ex) {
@@ -137,8 +149,12 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
      * @param cleanDest Whether to remove daat first (true = PUT, false = POST)
      * @return whether the target existed beforehand.
      */
-    protected static boolean addDataIntoNonTxn(HttpAction action, boolean cleanDest) {
-        DatasetGraph body = parseBody(action) ;
+    
+    protected static boolean addDataIntoNonTxn(HttpAction action, boolean overwrite) {
+        Graph graphTmp = GraphFactory.createGraphMem() ;
+        StreamRDF dest = StreamRDFLib.graph(graphTmp) ;
+        incomingData(action, dest);
+        // Now insert into dataset
         action.beginWrite() ;
         Target target = determineTarget(action) ;
         boolean existedBefore = false ;
@@ -146,15 +162,39 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             if ( log.isDebugEnabled() )
                 log.debug("  ->"+target) ;
             existedBefore = target.exists() ; 
-            if ( cleanDest && existedBefore )
+            if ( overwrite && existedBefore )
                 clearGraph(target) ;
-            //addDataInto(body.getDefaultGraph(), action) ;
-            FusekiLib.addDataInto(body.getDefaultGraph(), target.dsg, target.graphName) ;
+            FusekiLib.addDataInto(graphTmp, target.dsg, target.graphName) ;
             action.commit() ;
             return existedBefore ;
         } finally { action.endWrite() ; }
     }
     
+    private static void incomingData(HttpAction action, StreamRDF dest) {
+        String base = wholeRequestURL(action.request) ;
+        ContentType ct = FusekiLib.getContentType(action) ;
+        Lang lang = WebContent.contentTypeToLang(ct.getContentType()) ;
+        if ( lang == null ) {
+            errorBadRequest("Unknown content type for triples: " + ct) ;
+            return ;
+        }
+        InputStream input = null ;
+        try { input = action.request.getInputStream() ; } 
+        catch (IOException ex) { IO.exception(ex) ; }
+    
+        int len = action.request.getContentLength() ;
+        if ( action.verbose ) {
+            if ( len >= 0 )
+                log.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
+                                ct.getContentType(), ct.getCharset(), lang.getName())) ;
+            else
+                log.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", action.id, ct.getContentType(),
+                                ct.getCharset(), lang.getName())) ;
+        }
+    
+        parse(action, dest, input, lang, base) ;
+    }
+
     protected static void deleteGraph(HttpAction action) {
         Target target = determineTarget(action) ;
         if ( target.isDefault )
