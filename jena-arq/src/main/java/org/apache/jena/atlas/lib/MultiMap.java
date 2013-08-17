@@ -18,60 +18,35 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.HashMap ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.* ;
 
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorConcat ;
 
 /* Map from K to collection of V */
 
 public abstract class MultiMap<K, V>
 {
-    // size
-    // clear
-    // remove
-    // putAll
-    // values() 
-    
-    // Set vs List here.
     private Map<K, Collection<V>> map = new HashMap<K, Collection<V>>() ;
 
-    protected abstract Collection<V> create() ;
+    protected abstract Collection<V> createCollection() ;
     
-    static class MultiMapToList<K,V> extends MultiMap<K,V> {
-        @Override
-        protected Collection<V> create() {
-            return new ArrayList<V>() ;
-        }
-    }
-    
-    static class MultiMapToSet<K,V> extends MultiMap<K,V> {
-        @Override
-        protected Collection<V> create()
-        {
-            return new HashSet<V>() ;
-        }}
-    
-    public static <K, V> MultiMap<K, V> createMapList() { return new MultiMapToList<K, V>() ; }
-    public static <K, V> MultiMap<K, V> createMapSet() { return new MultiMapToSet<K, V>() ; }
+    public static <K, V> MultiMapToList<K, V> createMapList() { return new MultiMapToList<K, V>() ; }
+    public static <K, V> MultiMapToSet<K, V> createMapSet() { return new MultiMapToSet<K, V>() ; }
     
     protected MultiMap() { }
     
-    public Collection<V> get(K key) { 
-        return map.get(key) ; } 
+    protected Collection<V> getByKey(K key) { 
+        return map.get(key) ; 
+    } 
+
+    public abstract Collection<V> get(K key) ; 
     
-//    public V getOne(K key) { 
-//        Collection<V> c = map.get(key) ;
-//        if ( c == null || c.size() == 0 ) 
-//            return null ;
-//        return c.iterator().next() ;
-//    }
+    public V getOne(K key) { 
+        Collection<V> c = map.get(key) ;
+        if ( c == null || c.size() == 0 ) 
+            return null ;
+        return c.iterator().next() ;
+    }
     
     public void putAll(K key, V ... values)
     {
@@ -84,22 +59,26 @@ public abstract class MultiMap<K, V>
         Collection<V> x = map.get(key) ;
         if ( x == null )
         {
-            x = create() ;
+            x = createCollection() ;
             map.put(key, x) ;
         }
         x.add(value) ;
     }
     
-    public Collection<V> values(K key) { return map.get(key); }
-    public Collection<V> values() { return Iter.toList(flatten()) ; }
+    public void remove(K key, V value)  { map.get(key).remove(value) ; }
+    public void removeKey(K key)        { map.remove(key) ; }
+    
+    protected Collection<V> valuesForKey(K key) { return map.get(key); }
+    public abstract Collection<V> values(K key) ;
+    public abstract Collection<V> values() ;
 
     public boolean containsKey(K key) { return map.containsKey(key) ; }
     
-    //public boolean containsValue(V Value) { return map.containsKey(key) ; }
+    public Set<K> keys()        { return map.keySet() ; }
     
-    public Set<K> keys() { return map.keySet() ; }
+    public void clear()         { map.clear() ; }
     
-    public boolean isEmpty() { return map.isEmpty() ; }
+    public boolean isEmpty()    { return map.isEmpty() ; }
 
     /** Does not materialise the contents */
     public Iterator<V> flatten()
