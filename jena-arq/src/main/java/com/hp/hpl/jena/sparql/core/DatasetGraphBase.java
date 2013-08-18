@@ -18,9 +18,7 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-
 import java.util.Iterator ;
-import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.iterator.Iter ;
@@ -85,14 +83,32 @@ abstract public class DatasetGraphBase implements DatasetGraph
     @Override
     public void delete(Node g, Node s, Node p, Node o)  { delete(new Quad(g,s,p,o)) ; }
     
+    private static final int DeleteBufferSize = 1000 ;
     @Override
-    /** Simple implementation */
+    /** Simple implementation but done without assuming iterator.remove() */
     public void deleteAny(Node g, Node s, Node p, Node o)
-    { 
-        Iterator<Quad> iter = find(g, s, p, o) ;
-        List<Quad> list = Iter.toList(iter) ;
-        for ( Quad q : list )
-            delete(q) ;
+    {
+        // Delete in slices rather than assume .remove() on the iterator is implemented. 
+        // We keep executing find(g, s, p, o) until we don't get a full slice.
+        Quad[] buffer = new Quad[DeleteBufferSize] ;
+        while(true) {
+            Iterator<Quad> iter = find(g, s, p, o) ;
+            // Get a slice
+            int len = 0 ;
+            for (; len < DeleteBufferSize; len++) {
+                if ( !iter.hasNext() )
+                    break ;
+                buffer[len] = iter.next() ;
+            }
+            // Delete them.
+            for (int i = 0; i < len; i++) {
+                delete(buffer[i]) ;
+                buffer[i] = null ;
+            }
+            // Finished?
+            if ( len < DeleteBufferSize )
+                break ;
+        }
     }
     
     @Override

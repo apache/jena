@@ -237,4 +237,24 @@ public abstract class AbstractDatasetGraphTests
         dsg.deleteAny(Node.ANY, subject, null, null);
     }
   
+    @Test public void deleteAny_02()
+    {
+        DatasetGraph dsg = emptyDataset() ;
+        Node subject = NodeFactory.createURI("http://example/s");
+        Node predicate = NodeFactory.createURI("http://example/p");
+        Node object1 = NodeFactory.createAnon();
+        Node object2 = NodeFactory.createAnon();
+        Node graph = NodeFactory.createURI("http://example/g") ; 
+        
+        dsg.add(graph, subject, predicate, object1);
+        dsg.add(graph, subject, predicate, object2);
+        
+        dsg.deleteAny(Quad.defaultGraphIRI, null, null, null);
+        List<Quad> quads = Iter.toList(dsg.find(graph, null, null, null)) ;
+        assertEquals(2, quads.size()) ;
+        
+        dsg.deleteAny(graph, null, null, null);
+        quads = Iter.toList(dsg.find(graph, null, null, null)) ;
+        assertEquals(0, quads.size()) ;
+    }
 }
