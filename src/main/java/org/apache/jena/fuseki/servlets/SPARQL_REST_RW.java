@@ -28,6 +28,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -107,15 +108,13 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     }
 
     /** Directly add data in a transaction.
-     * Assumes recovery from parse errors.
+     * Assumes recovery from parse errors by transaction abort.
      * Return whether the target existed before.
      * @param action
-     * @param cleanDest Whether to remove daat first (true = PUT, false = POST)
+     * @param cleanDest Whether to remove data first (true = PUT, false = POST)
      * @return whether the target existed beforehand
      */
-    protected static boolean addDataIntoTxn(HttpAction action, boolean overwrite)
-    {   
-
+    protected static boolean addDataIntoTxn(HttpAction action, boolean overwrite) {   
         action.beginWrite();
         Target target = determineTarget(action) ;
         boolean existedBefore = false ;
@@ -123,7 +122,6 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             if ( log.isDebugEnabled() )
                 log.debug("  ->"+target) ;
             existedBefore = target.exists() ;
-            
             Graph g = target.graph() ;
             if ( overwrite && existedBefore )
                 clearGraph(target) ;
@@ -131,8 +129,13 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             incomingData(action, sink);
             action.commit() ;
             return existedBefore ;
+        } catch (RiotException ex) { 
+            // Parse error
+            action.abort() ;
+            errorBadRequest(ex.getMessage()) ;
+            return existedBefore ;
         } catch (Exception ex) {
-            // If anything went wrong, backout.
+            // Something else went wrong.  Backout.
             action.abort() ;
             errorOccurred(ex.getMessage()) ;
             return existedBefore ;
@@ -141,19 +144,24 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         }
     }
 
-    /** Add data whether the destination does not support full transactions,
-     *  in particular, with no abort, and actions probably going to the real storage
+    /** Add data where the destination does not support full transactions.
+     *  In particular, with no abort, and actions probably going to the real storage
      *  parse errors can lead to partial updates.  Instead, parse to a temporary
      *  graph, then insert that data.  
      * @param action
-     * @param cleanDest Whether to remove daat first (true = PUT, false = POST)
+     * @param cleanDest Whether to remove data first (true = PUT, false = POST)
      * @return whether the target existed beforehand.
      */
     
     protected static boolean addDataIntoNonTxn(HttpAction action, boolean overwrite) {
         Graph graphTmp = GraphFactory.createGraphMem() ;
         StreamRDF dest = StreamRDFLib.graph(graphTmp) ;
-        incomingData(action, dest);
+
+        try { incomingData(action, dest); }
+        catch (RiotException ex) {
+            errorBadRequest(ex.getMessage()) ;
+            return false ;
+        }
         // Now insert into dataset
         action.beginWrite() ;
         Target target = determineTarget(action) ;
@@ -167,6 +175,14 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             FusekiLib.addDataInto(graphTmp, target.dsg, target.graphName) ;
             action.commit() ;
             return existedBefore ;
+        } catch (Exception ex) {
+            // We parsed into a temporary graph so an exception at this point
+            // is not because of a parse error.
+            // We're in the non-transactional branch, this probably will not work
+            // but it might and there is no harm safely trying. 
+            try { action.abort() ; } catch (Exception ex2) {} 
+            errorOccurred(ex.getMessage()) ;
+            return existedBefore ;            
         } finally { action.endWrite() ; }
     }
     
