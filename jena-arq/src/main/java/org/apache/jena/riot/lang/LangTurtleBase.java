@@ -417,7 +417,7 @@ public abstract class LangTurtleBase extends LangBase {
     }
 
     protected final Node triplesFormula() {
-        exception(peekToken(), "Not implemented") ;
+        exception(peekToken(), "Not implemented (formulae, graph literals)") ;
         return null ;
     }
 
