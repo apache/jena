@@ -85,7 +85,7 @@ public class textindexer extends CmdARQ {
         
         if (file == null)
             throw new CmdException("No dataset specified") ;
-        // Assumes a single test daatset description in the assembler file.
+        // Assumes a single test dataset description in the assembler file.
         Dataset ds = TextDatasetFactory.create(file) ;
         if (ds == null)
             throw new CmdException("No dataset description found") ;
