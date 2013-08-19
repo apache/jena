@@ -20,6 +20,7 @@ package arq;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.SysRIOT ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
@@ -157,7 +158,13 @@ public class query extends CmdARQ
     @Override
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
     
-    protected Dataset getDataset()  { return modDataset.getDataset() ; }
+    protected Dataset getDataset()  { 
+        try { return modDataset.getDataset() ; }
+        catch ( RiotException ex ) { 
+            System.err.println("Failed to load data") ;
+            throw new TerminationException(1) ;
+        }
+    }
     
     protected long totalTime = 0 ;
     protected void queryExec(boolean timed, ResultsFormat fmt)
