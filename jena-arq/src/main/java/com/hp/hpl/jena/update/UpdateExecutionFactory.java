@@ -21,6 +21,7 @@ package com.hp.hpl.jena.update;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessRemote ;
@@ -40,7 +41,18 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor create(Update update, GraphStore graphStore)
     {
-        return create(new UpdateRequest(update), graphStore) ;
+        return create(new UpdateRequest(update), graphStore, null, null) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param update
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(Update update, GraphStore graphStore, Binding inputBinding)
+    {
+        return create(new UpdateRequest(update), graphStore, inputBinding) ;
     }
 
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
@@ -50,7 +62,18 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore)
     {        
-        return make(updateRequest, graphStore, null) ;
+        return make(updateRequest, graphStore, null, null) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Binding inputBinding)
+    {        
+        return make(updateRequest, graphStore, inputBinding, null) ;
     }
     
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
@@ -59,7 +82,17 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessorStreaming createStreaming(GraphStore graphStore)
     {        
-        return makeStreaming(graphStore, null) ;
+        return makeStreaming(graphStore, null, null) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Binding inputBinding)
+    {        
+        return makeStreaming(graphStore, inputBinding, null) ;
     }
     
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
@@ -69,7 +102,18 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Context context)
     {        
-        return makeStreaming(graphStore, context) ;
+        return makeStreaming(graphStore, null, context) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Binding inputBinding, Context context)
+    {        
+        return makeStreaming(graphStore, inputBinding, context) ;
     }
 
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
@@ -80,11 +124,23 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Context context)
     {        
-        return make(updateRequest, graphStore, context) ;
+        return make(updateRequest, graphStore, null, context) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Binding inputBinding, Context context)
+    {        
+        return make(updateRequest, graphStore, inputBinding, context) ;
     }
 
     // Everything comes through one of these two make methods
-    private static UpdateProcessor make(UpdateRequest updateRequest, GraphStore graphStore, Context context)
+    private static UpdateProcessor make(UpdateRequest updateRequest, GraphStore graphStore, Binding inputBinding, Context context)
     {
         if ( context == null )
         {
@@ -96,12 +152,12 @@ public class UpdateExecutionFactory
         if ( f == null )
             return null ;
         
-        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, graphStore, context, f) ;
+        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, graphStore, inputBinding, context, f) ;
         return uProc ;
     }
     
     // Everything comes through one of these two make methods
-    private static UpdateProcessorStreaming makeStreaming(GraphStore graphStore, Context context)
+    private static UpdateProcessorStreaming makeStreaming(GraphStore graphStore, Binding inputBinding, Context context)
     {
         if ( context == null )
         {
@@ -113,7 +169,7 @@ public class UpdateExecutionFactory
         if ( f == null )
             return null ;
         
-        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(graphStore, context, f) ;
+        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(graphStore, inputBinding, context, f) ;
         return uProc;
     }
     

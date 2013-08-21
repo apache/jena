@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.modify;
 
 import org.apache.jena.atlas.iterator.Iter ;
 
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
@@ -32,16 +33,19 @@ public class UpdateProcessorBase implements UpdateProcessor
 {
     protected final UpdateRequest request ;
     protected final GraphStore graphStore ;
+    protected final Binding inputBinding;
     protected final UpdateEngineFactory factory ;
     protected final Context context ;
 
     public UpdateProcessorBase(UpdateRequest request, 
                                GraphStore graphStore, 
+                               Binding inputBinding,
                                Context context, 
                                UpdateEngineFactory factory)
     {
         this.request = request ;
         this.graphStore = graphStore ;
+        this.inputBinding = inputBinding;
         this.context = Context.setupContext(context, graphStore) ;
         this.factory = factory ;
     }
@@ -49,7 +53,7 @@ public class UpdateProcessorBase implements UpdateProcessor
     @Override
     public void execute()
     {
-        UpdateEngine uProc = factory.create(graphStore, context);
+        UpdateEngine uProc = factory.create(graphStore, inputBinding, context);
         uProc.startRequest();
         
         try {

@@ -28,6 +28,7 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.lang.UpdateParser ;
 import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 import com.hp.hpl.jena.sparql.modify.UsingList ;
@@ -35,7 +36,7 @@ import com.hp.hpl.jena.sparql.modify.UsingUpdateSink ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWithUsing ;
 
 /** A class of forms for executing SPARQL Update operations. 
- * parse* means the update request is in a string;
+ * parse* means the update request is in a String or an InputStream;
  * read* means read the contents of a file.    
  */
 
@@ -76,15 +77,25 @@ public class UpdateAction
     {
         readExecute(filename, GraphStoreFactory.create(graph)) ; 
     }
-
+    
     /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
      * @param graphStore
      */
     public static void readExecute(String filename, GraphStore graphStore)
     {
+        readExecute(filename, graphStore, null);
+    }
+
+    /** Read a file containing SPARQL Update operations, and execute the operations.
+     * @param filename
+     * @param graphStore
+     * @param inputBinding
+     */
+    public static void readExecute(String filename, GraphStore graphStore, Binding inputBinding)
+    {
         UpdateRequest req = UpdateFactory.read(filename) ;
-        execute(req, graphStore) ;
+        execute(req, graphStore, inputBinding) ;
     }
     
 
@@ -171,20 +182,30 @@ public class UpdateAction
     {
         execute(request, GraphStoreFactory.create(graph)) ; 
     }
-
+    
     /** Execute SPARQL Update operations.
      * @param request
      * @param graphStore
      */
     public static void execute(UpdateRequest request, GraphStore graphStore)
     {
-        execute$(request, graphStore) ;
+        execute(request, graphStore, null);
+    }
+
+    /** Execute SPARQL Update operations.
+     * @param request
+     * @param graphStore
+     * @param inputBinding
+     */
+    public static void execute(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
+    {
+        execute$(request, graphStore, inputBinding) ;
     }
     
     // All non-streaming updates come through here.
-    private static void execute$(UpdateRequest request, GraphStore graphStore)
+    private static void execute$(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
     {
-        UpdateProcessor uProc = UpdateExecutionFactory.create(request, graphStore);
+        UpdateProcessor uProc = UpdateExecutionFactory.create(request, graphStore, inputBinding);
         if (uProc == null)
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
         uProc.execute();
@@ -226,21 +247,31 @@ public class UpdateAction
     {
         execute(update, GraphStoreFactory.create(graph)) ; 
     }
-
+    
     /** Execute a single SPARQL Update operation.
      * @param update
      * @param graphStore
      */
     public static void execute(Update update, GraphStore graphStore)
     {
-        execute$(update, graphStore) ;
+        execute(update, graphStore, null);
+    }
+
+    /** Execute a single SPARQL Update operation.
+     * @param update
+     * @param graphStore
+     * @param inputBinding
+     */
+    public static void execute(Update update, GraphStore graphStore, Binding inputBinding)
+    {
+        execute$(update, graphStore, inputBinding) ;
     }
     
-    private static void execute$(Update update, GraphStore graphStore)
+    private static void execute$(Update update, GraphStore graphStore, Binding inputBinding)
     {
         UpdateRequest request = new UpdateRequest() ;
         request.add(update) ;
-        execute$(request, graphStore) ;
+        execute$(request, graphStore, inputBinding) ;
     }  
 
     
@@ -258,9 +289,15 @@ public class UpdateAction
     {
         parseExecute(usingList, dataset, fileName, null, syntax) ;
     }
-
+    
     /** Parse update operations into a GraphStore by reading it from a file */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, String baseURI, Syntax syntax)
+    {
+        parseExecute(usingList, dataset, fileName, null, baseURI, syntax);
+    }
+
+    /** Parse update operations into a GraphStore by reading it from a file */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, Binding inputBinding, String baseURI, Syntax syntax)
     { 
         InputStream in = null ;
         if ( fileName.equals("-") )
@@ -271,7 +308,7 @@ public class UpdateAction
             if ( in == null )
                 throw new UpdateException("File could not be opened: "+fileName) ;
         }
-        parseExecute(usingList, dataset, in, baseURI, syntax) ;
+        parseExecute(usingList, dataset, in, inputBinding, baseURI, syntax) ;
     }
     
     /** 
@@ -311,14 +348,29 @@ public class UpdateAction
      * @param usingList A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param dataset   The dataset to apply the changes to
      * @param input     The source of the update request (must be UTF-8). 
-     * @param baseURI   The base URI for resolving relative URIs. 
+     * @param baseURI   The base URI for resolving relative URIs (may be <code>null</code>)
      * @param syntax    The update language syntax 
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax)
     {
+        parseExecute(usingList, dataset, input, null, baseURI, syntax);
+    }
+    
+    /**
+     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param usingList    A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
+     * @param dataset      The dataset to apply the changes to
+     * @param input        The source of the update request (must be UTF-8). 
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding
+     *                     (i.e. UpdateDeleteWhere, UpdateModify).  May be <code>null</code>
+     * @param baseURI      The base URI for resolving relative URIs (may be <code>null</code>)
+     * @param syntax       The update language syntax 
+     */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, Binding inputBinding, String baseURI, Syntax syntax)
+    {
         GraphStore graphStore = GraphStoreFactory.create(dataset);
         
-        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore) ;
+        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore, inputBinding) ;
         if (uProc == null)
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
         

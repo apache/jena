@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -39,11 +40,12 @@ public class UpdateEngineNonStreaming extends UpdateEngineMain
     /**
      * Creates a new Update Engine
      * @param graphStore Graph Store the updates operate over
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @param context Execution Context
      */
-    public UpdateEngineNonStreaming(GraphStore graphStore, Context context)
+    public UpdateEngineNonStreaming(GraphStore graphStore, Binding inputBinding, Context context)
     {
-        super(graphStore, context) ;
+        super(graphStore, inputBinding, context) ;
         accRequests = new UpdateRequest();
         updateSink = new UpdateRequestSink(accRequests)
         {
@@ -97,9 +99,9 @@ public class UpdateEngineNonStreaming extends UpdateEngineMain
         }
         
         @Override
-        public UpdateEngine create(GraphStore graphStore, Context context)
+        public UpdateEngine create(GraphStore graphStore, Binding inputBinding, Context context)
         {
-            return new UpdateEngineNonStreaming(graphStore, context);
+            return new UpdateEngineNonStreaming(graphStore, inputBinding, context);
         }
     } ;
 

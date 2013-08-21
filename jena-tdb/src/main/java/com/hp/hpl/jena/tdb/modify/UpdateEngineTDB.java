@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.tdb.modify;
 
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngine ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineMain ;
@@ -28,8 +29,8 @@ import com.hp.hpl.jena.update.GraphStore ;
 
 public class UpdateEngineTDB extends UpdateEngineMain
 {
-    public UpdateEngineTDB(DatasetGraphTDB graphStore, Context context)
-    { super(graphStore, context) ; }
+    public UpdateEngineTDB(DatasetGraphTDB graphStore, Binding inputBinding, Context context)
+    { super(graphStore, inputBinding, context) ; }
     
 
     // ---- Factory
@@ -43,9 +44,9 @@ public class UpdateEngineTDB extends UpdateEngineMain
             }
             
             @Override
-            public UpdateEngine create(GraphStore graphStore, Context context)
+            public UpdateEngine create(GraphStore graphStore, Binding inputBinding, Context context)
             {
-                return new UpdateEngineTDB((DatasetGraphTDB)graphStore, context);
+                return new UpdateEngineTDB((DatasetGraphTDB)graphStore, inputBinding, context);
             }
         } ;
     }
