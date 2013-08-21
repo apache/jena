@@ -11,6 +11,7 @@ ChangeLog for ARQ
 + JENA-473 : Enable implicit join optimizations
 + JENA-475 : HTTP Authentication for SPARQL Updates was not properly supported
 + JENA-471 : Fix regression in generated quad form of algebra for some queries
++ JENA-519 : Restored initial binding support for SPARQL Update execution (INSERT/DELETE/WHERE and DELETE/WHERE only)
 
 ==== Jena 2.10.1
 
