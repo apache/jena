@@ -21,7 +21,9 @@ package com.hp.hpl.jena.update;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessRemote ;
@@ -41,9 +43,20 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor create(Update update, GraphStore graphStore)
     {
-        return create(new UpdateRequest(update), graphStore, null, null) ;
+        return create(new UpdateRequest(update), graphStore, (Binding)null) ;
     }
     
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param update
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(Update update, GraphStore graphStore, QuerySolution inputBinding)
+    {
+        return create(update, graphStore, BindingUtils.asBinding(inputBinding)) ;
+    }
+
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param update
      * @param graphStore
@@ -55,6 +68,7 @@ public class UpdateExecutionFactory
         return create(new UpdateRequest(update), graphStore, inputBinding) ;
     }
 
+
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
      * @param graphStore
@@ -63,6 +77,17 @@ public class UpdateExecutionFactory
     public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore)
     {        
         return make(updateRequest, graphStore, null, null) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, QuerySolution inputBinding)
+    {        
+        return create(updateRequest, graphStore, BindingUtils.asBinding(inputBinding)) ;
     }
     
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
@@ -85,6 +110,17 @@ public class UpdateExecutionFactory
         return makeStreaming(graphStore, null, null) ;
     }
     
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, QuerySolution inputBinding)
+    {        
+        return createStreaming(graphStore, BindingUtils.asBinding(inputBinding)) ;
+    }
+
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param graphStore
      * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
@@ -111,6 +147,17 @@ public class UpdateExecutionFactory
      * @param context  (null means use merge of global and graph store context))
      * @return UpdateProcessor or null
      */
+    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, QuerySolution inputBinding, Context context)
+    {        
+        return createStreaming(graphStore, BindingUtils.asBinding(inputBinding), context) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
     public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Binding inputBinding, Context context)
     {        
         return makeStreaming(graphStore, inputBinding, context) ;
@@ -127,6 +174,18 @@ public class UpdateExecutionFactory
         return make(updateRequest, graphStore, null, context) ;
     }
     
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param graphStore
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, QuerySolution inputBinding, Context context)
+    {        
+        return create(updateRequest, graphStore, BindingUtils.asBinding(inputBinding), context) ;
+    }
+
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
      * @param graphStore
