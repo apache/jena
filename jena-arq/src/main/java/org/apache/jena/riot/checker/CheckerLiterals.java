@@ -37,7 +37,7 @@ import com.hp.hpl.jena.graph.Node ;
 
 public class CheckerLiterals implements NodeChecker
 {
-    // A flag to anble the test suite to read bad data.
+    // A flag to enable the test suite to read bad data.
     public static boolean WarnOnBadLiterals = true ;
     
     private ErrorHandler handler ;
