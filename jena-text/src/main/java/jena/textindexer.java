@@ -71,15 +71,19 @@ public class textindexer extends CmdARQ {
         // Two forms : with and without arg.
         // Maximises similarity with other tools.
         String file ;
+        
+        if ( ! super.contains(assemblerDescDecl) && getNumPositional() == 0 )
+            throw new CmdException("No assembler description given") ;
+        
         if ( super.contains(assemblerDescDecl) ) {
             if ( getValues(assemblerDescDecl).size() != 1 )
-                throw new CmdException("Multiple assembler descriptions given") ;
+                throw new CmdException("Multiple assembler descriptions given via --desc") ;
             if ( getPositional().size() != 0 )
                 throw new CmdException("Additional assembler descriptions given") ; 
             file = getValue(assemblerDescDecl) ;
         } else {
             if ( getNumPositional() != 1 )
-                throw new CmdException("Multiple assembler descriptions given") ;
+                throw new CmdException("Multiple assembler descriptions given as positional arguments") ;
             file = getPositionalArg(0) ;
         }
         
