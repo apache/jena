@@ -24,11 +24,13 @@ import org.apache.jena.atlas.io.IO ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.lang.UpdateParser ;
 import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 import com.hp.hpl.jena.sparql.modify.UsingList ;
@@ -36,8 +38,8 @@ import com.hp.hpl.jena.sparql.modify.UsingUpdateSink ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWithUsing ;
 
 /** A class of forms for executing SPARQL Update operations. 
- * parse* means the update request is in a String or an InputStream;
- * read* means read the contents of a file.    
+ * parse means the update request is in a String or an InputStream;
+ * read means read the contents of a file.    
  */
 
 public class UpdateAction
@@ -84,8 +86,19 @@ public class UpdateAction
      */
     public static void readExecute(String filename, GraphStore graphStore)
     {
-        readExecute(filename, graphStore, null);
+        readExecute(filename, graphStore, (Binding)null);
     }
+
+    /** Read a file containing SPARQL Update operations, and execute the operations.
+     * @param filename
+     * @param graphStore
+     * @param inputBinding
+     */
+    public static void readExecute(String filename, GraphStore graphStore, QuerySolution inputBinding)
+    {
+        readExecute(filename, graphStore, BindingUtils.asBinding(inputBinding)) ;
+    }
+    
 
     /** Read a file containing SPARQL Update operations, and execute the operations.
      * @param filename
@@ -98,7 +111,6 @@ public class UpdateAction
         execute(req, graphStore, inputBinding) ;
     }
     
-
     /** Parse a string containing SPARQL Update operations, and execute the operations.
      * @param updateString
      * @param model
@@ -189,9 +201,19 @@ public class UpdateAction
      */
     public static void execute(UpdateRequest request, GraphStore graphStore)
     {
-        execute(request, graphStore, null);
+        execute(request, graphStore, (Binding)null);
     }
 
+    /** Execute SPARQL Update operations.
+     * @param request
+     * @param graphStore
+     * @param inputBinding
+     */
+    public static void execute(UpdateRequest request, GraphStore graphStore, QuerySolution inputBinding)
+    {
+        execute(request, graphStore, BindingUtils.asBinding(inputBinding)) ;
+    }
+    
     /** Execute SPARQL Update operations.
      * @param request
      * @param graphStore
@@ -202,6 +224,7 @@ public class UpdateAction
         execute$(request, graphStore, inputBinding) ;
     }
     
+
     // All non-streaming updates come through here.
     private static void execute$(UpdateRequest request, GraphStore graphStore, Binding inputBinding)
     {
@@ -254,9 +277,19 @@ public class UpdateAction
      */
     public static void execute(Update update, GraphStore graphStore)
     {
-        execute(update, graphStore, null);
+        execute(update, graphStore, (Binding)null);
     }
 
+    /** Execute a single SPARQL Update operation.
+     * @param update
+     * @param graphStore
+     * @param inputBinding
+     */
+    public static void execute(Update update, GraphStore graphStore, QuerySolution inputBinding)
+    {
+        execute(update, graphStore, BindingUtils.asBinding(inputBinding)) ;
+    }
+    
     /** Execute a single SPARQL Update operation.
      * @param update
      * @param graphStore
@@ -266,15 +299,13 @@ public class UpdateAction
     {
         execute$(update, graphStore, inputBinding) ;
     }
-    
+
     private static void execute$(Update update, GraphStore graphStore, Binding inputBinding)
     {
         UpdateRequest request = new UpdateRequest() ;
         request.add(update) ;
         execute$(request, graphStore, inputBinding) ;
     }  
-
-    
     
     // Streaming Updates:
     
@@ -293,9 +324,15 @@ public class UpdateAction
     /** Parse update operations into a GraphStore by reading it from a file */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, String baseURI, Syntax syntax)
     {
-        parseExecute(usingList, dataset, fileName, null, baseURI, syntax);
+        parseExecute(usingList, dataset, fileName, (Binding)null, baseURI, syntax);
     }
 
+    /** Parse update operations into a GraphStore by reading it from a file */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, QuerySolution inputBinding, String baseURI, Syntax syntax)
+    { 
+        parseExecute(usingList, dataset, fileName, BindingUtils.asBinding(inputBinding), baseURI, syntax) ; 
+    }
+    
     /** Parse update operations into a GraphStore by reading it from a file */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, Binding inputBinding, String baseURI, Syntax syntax)
     { 
@@ -353,9 +390,24 @@ public class UpdateAction
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax)
     {
-        parseExecute(usingList, dataset, input, null, baseURI, syntax);
+        parseExecute(usingList, dataset, input, (Binding)null, baseURI, syntax);
     }
     
+    /**
+     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param usingList    A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
+     * @param dataset      The dataset to apply the changes to
+     * @param input        The source of the update request (must be UTF-8). 
+     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding
+     *                     (i.e. UpdateDeleteWhere, UpdateModify).  May be <code>null</code>
+     * @param baseURI      The base URI for resolving relative URIs (may be <code>null</code>)
+     * @param syntax       The update language syntax 
+     */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, QuerySolution inputBinding, String baseURI, Syntax syntax)
+    {
+        parseExecute(usingList, dataset, input, BindingUtils.asBinding(inputBinding), baseURI, syntax) ;
+    }
+
     /**
      * Parse update operations into a GraphStore by parsing from an InputStream.
      * @param usingList    A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
