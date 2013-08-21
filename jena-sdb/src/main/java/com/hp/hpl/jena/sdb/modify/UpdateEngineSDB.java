@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sdb.modify;
 
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngine ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineMain ;
@@ -30,8 +31,8 @@ public class UpdateEngineSDB extends UpdateEngineMain
 {
     // More of a placeholder currently.
     
-    public UpdateEngineSDB(DatasetStoreGraph graphStore, Context context)
-    { super(graphStore, context) ; }
+    public UpdateEngineSDB(DatasetStoreGraph graphStore, Binding inputBinding, Context context)
+    { super(graphStore, inputBinding, context) ; }
     
 
     // ---- Factory
@@ -45,9 +46,9 @@ public class UpdateEngineSDB extends UpdateEngineMain
             }
             
             @Override
-            public UpdateEngine create(GraphStore graphStore, Context context)
+            public UpdateEngine create(GraphStore graphStore, Binding inputBinding, Context context)
             {
-                return new UpdateEngineSDB((DatasetStoreGraph)graphStore, context);
+                return new UpdateEngineSDB((DatasetStoreGraph)graphStore, inputBinding, context);
             }
         } ;
     }

@@ -67,11 +67,13 @@ public class UpdateEngineWorker implements UpdateVisitor
 {
     protected final GraphStore graphStore ;
     protected final boolean alwaysSilent = true ;
+    protected final Binding inputBinding;  // Used for UpdateModify and UpdateDeleteWhere only
     protected final Context context ;
 
-    public UpdateEngineWorker(GraphStore graphStore, Context context)
+    public UpdateEngineWorker(GraphStore graphStore, Binding inputBinding, Context context)
     {
         this.graphStore = graphStore ;
+        this.inputBinding = inputBinding ;
         this.context = context ;
     }
 
@@ -394,7 +396,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
         try
         {
-            Iterator<Binding> bindings = evalBindings(query, dsg, context) ;
+            Iterator<Binding> bindings = evalBindings(query, dsg, inputBinding, context) ;
             
             if ( false )
             {   
@@ -585,11 +587,11 @@ public class UpdateEngineWorker implements UpdateVisitor
             }
         }
         
-        return evalBindings(query, dsg, context) ;
+        return evalBindings(query, dsg, inputBinding, context) ;
         
     }
     
-    protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Context context)
+    protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding inputBinding, Context context)
     {
         // SET UP CONTEXT
         // The UpdateProcessorBase already copied the context and made it safe ... but that's going to happen again :-(
@@ -598,12 +600,12 @@ public class UpdateEngineWorker implements UpdateVisitor
         
         if ( query != null )
         {
-            Plan plan = QueryExecutionFactory.createPlan(query, dsg, null, context) ;
+            Plan plan = QueryExecutionFactory.createPlan(query, dsg, inputBinding, context) ;
             toReturn = plan.iterator();
         }
         else
         {
-            toReturn = Iter.singleton(BindingRoot.create()) ;
+            toReturn = Iter.singleton((null != inputBinding) ? inputBinding : BindingRoot.create()) ;
         }
         return toReturn ;
     }

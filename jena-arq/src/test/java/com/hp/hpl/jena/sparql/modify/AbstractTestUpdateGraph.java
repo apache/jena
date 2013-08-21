@@ -31,8 +31,18 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.modify.request.* ;
+import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
+import com.hp.hpl.jena.sparql.modify.request.QuadDataAcc ;
+import com.hp.hpl.jena.sparql.modify.request.Target ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateCopy ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataDelete ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDeleteWhere ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateModify ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
@@ -245,6 +255,29 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         assertFalse(graphContains(gStore.getGraph(graphIRI), t));
     }
     
+    @Test public void testModifyInitialBindings()
+    {
+        GraphStore gStore = getEmptyGraphStore() ;
+        defaultGraphData(gStore, data12()) ;
+        namedGraphData(gStore, graphIRI, Factory.createDefaultGraph()) ;
+        
+        Binding initialBinding = BindingFactory.binding(Var.alloc("o"), o1) ;
+        
+        UpdateModify modify = new UpdateModify() ;
+        Element element = QueryFactory.createElement("{ ?s <http://example/p> ?o }" ) ;
+        modify.setElement(element) ;
+        modify.getInsertAcc().addQuad(new Quad(graphIRI, triple1)) ;
+        modify.getDeleteAcc().addTriple(SSE.parseTriple("(?s <http://example/p> ?o)")) ;
+        modify.getDeleteAcc().addQuad(SSE.parseQuad("(<http://example/graph> ?s <http://example/p> ?o)")) ; 
+        UpdateAction.execute(modify, gStore, initialBinding) ;
+        
+        assertFalse(graphEmpty(gStore.getGraph(graphIRI))) ;
+        assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
+        assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
+        assertTrue(graphContains(gStore.getDefaultGraph(), triple2)) ;
+        assertFalse(graphContains(gStore.getDefaultGraph(), triple1)) ;
+    }
+    
     @Test public void testCopy()
     {
         // Use blank nodes (will expose any problems in serialization when spill occurs)
@@ -351,16 +384,17 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 
     private static Graph data1()
     {
-        Graph graph = Factory.createDefaultGraph() ;
-        graph.add(triple1) ;
-        return graph ; 
+        return data(triple1) ;
     }
     
     private static Graph data2()
     {
-        Graph graph = Factory.createDefaultGraph() ;
-        graph.add(triple2) ;
-        return graph ; 
+        return data(triple2) ;
+    }
+    
+    private static Graph data12()
+    {
+        return data(triple1, triple2) ;
     }
     
     private static Graph data(Triple... triples)

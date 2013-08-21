@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessorStreaming ;
@@ -32,12 +33,12 @@ public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
     
     protected final UpdateEngine proc;
 
-    public UpdateProcessorStreamingBase(GraphStore graphStore, Context context, UpdateEngineFactory factory)
+    public UpdateProcessorStreamingBase(GraphStore graphStore, Binding inputBinding, Context context, UpdateEngineFactory factory)
     {
         this.graphStore = graphStore ;
         this.context = Context.setupContext(context, graphStore) ;
         
-        proc = factory.create(graphStore, context) ;
+        proc = factory.create(graphStore, inputBinding, context) ;
     }
     
     @Override

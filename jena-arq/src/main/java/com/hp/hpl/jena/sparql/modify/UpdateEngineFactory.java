@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 
@@ -30,5 +31,5 @@ public interface UpdateEngineFactory
     public boolean accept(GraphStore graphStore, Context context) ;
     
     /** Create the update engine - having returned true to accept, should not fail */
-    public UpdateEngine create(GraphStore graphStore, Context context);
+    public UpdateEngine create(GraphStore graphStore, Binding inputBinding, Context context);
 }

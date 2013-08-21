@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.modify;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -28,12 +29,15 @@ import com.hp.hpl.jena.update.GraphStore ;
 public abstract class UpdateEngineBase implements UpdateEngine
 {
     protected final GraphStore graphStore ;
+    protected final Binding inputBinding;
     protected final Context context ;
 
     public UpdateEngineBase(GraphStore graphStore,
+                            Binding inputBinding,
                             Context context)
     {
         this.graphStore = graphStore ;
+        this.inputBinding = inputBinding ;
         this.context = setupContext(context, graphStore) ;
     }
     
