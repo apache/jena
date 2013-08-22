@@ -72,9 +72,16 @@ public class TestIO_JenaReaders {
         assertFalse(defaults.isEmpty());
         for (String lang : defaults.keySet()) {
             assertEquals(defaults.get(lang), readerF.getLangToClassName().get(lang));
-            // Disabled as it does not handle GRDLL reader
-            //assertEquals(defaults.get(lang), readerF.getReader(lang).getClass().getName());
+            if (lang.equals("GRDDL")) {
+                // Can't load
+                continue;
+            }
+            assertEquals(defaults.get(lang), readerF.getReader(lang).getClass().getName());
         }
+        
+        // And unregistered our additional langs
+        assertEquals("", readerF.getLangToClassName().get("RDF/JSON"));
+        
     }
 
     
