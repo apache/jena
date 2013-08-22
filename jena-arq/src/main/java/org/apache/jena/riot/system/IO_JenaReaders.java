@@ -50,10 +50,17 @@ public class IO_JenaReaders
     
     static String jenaNTriplesReader = "com.hp.hpl.jena.rdf.model.impl.NTripleReader" ; 
     static String jenaTurtleReader = "com.hp.hpl.jena.n3.turtle.TurtleReader" ; 
-    static String jenaN3Reader = jenaTurtleReader ; 
+    static String jenaN3Reader = jenaTurtleReader ;
+    static String jenaRDFReader = "com.hp.hpl.jena.rdf.arp.JenaReader"; 
     
     public static void resetJena()
     {
+        // TODO: Create RDFReaderFImpl.resetReaders() instead of hard-coding
+        // the defaults here -- this reset will also (inadvertently)
+        // override any system properties
+        RDFReaderFImpl.setBaseReaderClassName("RDF/XML", jenaRDFReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("RDF/XML-ABBREV", jenaRDFReader) ;
+        
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", jenaNTriplesReader) ;
         RDFReaderFImpl.setBaseReaderClassName("N-Triples",  jenaNTriplesReader) ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",  jenaNTriplesReader) ;
@@ -63,8 +70,7 @@ public class IO_JenaReaders
         RDFReaderFImpl.setBaseReaderClassName("Turtle", jenaTurtleReader) ;
         RDFReaderFImpl.setBaseReaderClassName("TTL",    jenaTurtleReader) ;
 
-        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", null) ;
-        RDFWriterFImpl.setBaseWriterClassName("RDFJSON",  null) ;
+        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", "") ;
     }
     
     /** Register for use with Model.read (old style compatibility) */ 
