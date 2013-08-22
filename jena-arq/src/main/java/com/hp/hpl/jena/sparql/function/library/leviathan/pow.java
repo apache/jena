@@ -19,30 +19,32 @@
 package com.hp.hpl.jena.sparql.function.library.leviathan;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionBase1;
+import com.hp.hpl.jena.sparql.function.FunctionBase2;
 
-public class sq extends FunctionBase1 {
+public class pow extends FunctionBase2 {
 
     @Override
-    public NodeValue exec(NodeValue v) {
-        switch (XSDFuncOp.classifyNumeric("sq", v))
+    public NodeValue exec(NodeValue v1, NodeValue v2) {
+        switch (XSDFuncOp.classifyNumeric("pow", v1))
         {
             case OP_INTEGER:
-                BigInteger i = v.getInteger();
-                return NodeValue.makeInteger( i.pow(2) );
+                BigInteger i = v1.getInteger();
+                return NodeValue.makeInteger( i.pow(v2.getInteger().intValue()) );
             case OP_DECIMAL:
-                double dec = v.getDecimal().doubleValue() ;
-                return NodeValue.makeDecimal( Math.pow(dec, 2d)) ;
+                double dec = v1.getDecimal().doubleValue() ;
+                return NodeValue.makeDecimal( Math.pow(dec, v2.getDouble())) ;
             case OP_FLOAT:
-                // TODO Should squaring a float keep it a float?
+                // TODO Should raising a float to a power keep it a float?
             case OP_DOUBLE:
-                return NodeValue.makeDouble( Math.pow(v.getDouble(), 2d) ) ;
+                return NodeValue.makeDouble( Math.pow(v1.getDouble(), v2.getDouble()) ) ;
             default:
-                throw new ARQInternalErrorException("Unrecognized numeric operation : "+v) ;   
+                throw new ARQInternalErrorException("Unrecognized numeric operation : "+ v1) ;
         }
     }
 
