@@ -90,7 +90,17 @@ public class TestLeviathanFunctions extends BaseTest {
     public void e_01() {
         test("lfn:e(2)", NodeFactoryExtra.doubleToNode(Math.exp(2d)));
     }
-
+    
+    @Test
+    public void pow_01() {
+        test("lfn:pow(2, 4)", "16");
+    }
+    
+    @Test
+    public void pow_02() {
+        test("lfn:pow(0.5, 3)", "0.125");
+    }
+    
     private static void test(String string, String result) {
         Node r = NodeFactoryExtra.parseNode(result);
         test(string, r);
