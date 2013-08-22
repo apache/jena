@@ -18,15 +18,33 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
+import com.hp.hpl.jena.sparql.algebra.op.OpExtend;
+import com.hp.hpl.jena.sparql.algebra.op.OpGroup;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarExprList;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.expr.aggregate.AggCountVar;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueNode;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestOptimizer extends BaseTest
@@ -379,7 +397,82 @@ public class TestOptimizer extends BaseTest
                                             "        (bgp (triple ?s1 ?p1 <urn:x2>)))))" ) ;
         check(queryString, opExpectedString) ; 
     }
-
+    
+    @Test public void combine_extend_01()
+    {
+        Op extend = OpExtend.extendDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        extend = OpExtend.extendDirect(extend, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
+        
+        String opExpectedString = StrUtils.strjoinNL(
+                                            "(extend ((?x 1) (?y 2))",
+                                            "  (table unit))");
+        
+        check(extend, new TransformExtendCombine(), opExpectedString);
+    }
+    
+    @Test public void combine_extend_02()
+    {
+        Op extend = OpExtend.extendDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        extend = OpExtend.extendDirect(extend, new VarExprList(Var.alloc("y"), new ExprVar("x")));
+        
+        String opExpectedString = StrUtils.strjoinNL(
+                                            "(extend ((?x 1) (?y ?x))",
+                                            "  (table unit))");
+        
+        check(extend, new TransformExtendCombine(), opExpectedString);
+    }
+    
+    @Test public void combine_extend_03()
+    {
+        // Technically illegal SPARQL here but useful to validate that the optimizer doesn't do the wrong thing
+        Op extend = OpExtend.extendDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        extend = OpExtend.extendDirect(extend, new VarExprList(Var.alloc("x"), new NodeValueInteger(2)));
+        
+        String opExpectedString = StrUtils.strjoinNL(
+                                            "(extend ((?x 2))",
+                                            "  (extend ((?x 1))",
+                                            "    (table unit)))");
+        
+        check(extend, new TransformExtendCombine(), opExpectedString);
+    }
+        
+    @Test public void combine_assign_01()
+    {
+        Op assign = OpAssign.assignDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        assign = OpAssign.assignDirect(assign, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
+        
+        String opExpectedString = StrUtils.strjoinNL(
+                                            "(assign ((?x 1) (?y 2))",
+                                            "  (table unit))");
+        
+        check(assign, new TransformExtendCombine(), opExpectedString);
+    }
+    
+    @Test public void combine_assign_02()
+    {
+        Op assign = OpAssign.assignDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        assign = OpAssign.assignDirect(assign, new VarExprList(Var.alloc("y"), new ExprVar("x")));
+        
+        String opExpectedString = StrUtils.strjoinNL(
+                                            "(assign ((?x 1) (?y ?x))",
+                                            "  (table unit))");
+        
+        check(assign, new TransformExtendCombine(), opExpectedString);
+    }
+    
+    @Test public void combine_assign_03()
+    {
+        Op assign = OpAssign.assignDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        assign = OpAssign.assignDirect(assign, new VarExprList(Var.alloc("x"), new NodeValueInteger(2)));
+        
+        String opExpectedString = StrUtils.strjoinNL(
+                                            "(assign ((?x 2))",
+                                            "  (assign ((?x 1))",
+                                            "    (table unit)))");
+        
+        check(assign, new TransformExtendCombine(), opExpectedString);
+    }
+    
     public static void check(String queryString, String opExpectedString)
     {
         queryString = "PREFIX : <http://example/>\n"+queryString ;
@@ -393,7 +486,21 @@ public class TestOptimizer extends BaseTest
         Op opOptimize = Algebra.optimize(opToOptimize) ;
         Op opExpected = SSE.parseOp(opExpectedString) ;
         assertEquals(opExpected, opOptimize) ;
-
+    }
+    
+    private static void check(Op opToOptimize, Transform additionalOptimizer, String opExpectedString) {
+        Op opOptimize = Algebra.optimize(opToOptimize) ;
+        opOptimize = Transformer.transform(additionalOptimizer, opOptimize) ;
+        Op opExpected = SSE.parseOp(opExpectedString) ;
+        assertEquals(opExpected, opOptimize) ;
+    }
+    
+    private static void checkAlgebra(String algString, String opExpectedString)
+    {
+        Op algebra = SSE.parseOp(algString);
+        algebra = Algebra.optimize(algebra);
+        Op opExpexpected = SSE.parseOp(opExpectedString);
+        assertEquals(opExpexpected, algebra);
     }
     
 }
