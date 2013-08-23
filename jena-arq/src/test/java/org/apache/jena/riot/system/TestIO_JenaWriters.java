@@ -17,31 +17,38 @@
  */
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.LinkedHashMap ;
+import java.util.Map ;
+import java.util.Properties ;
 
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3Plain;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3Triples;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3TriplesAlt;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3_PP;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_NTriples;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_RDFJSON;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_Turtle;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_Turtle1;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_Turtle2;
-import org.junit.Test;
+import org.apache.jena.riot.IO_Jena ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3 ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3Plain ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3Triples ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3TriplesAlt ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_N3_PP ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_NTriples ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_RDFJSON ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_Turtle ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_Turtle1 ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFWriterRIOT_Turtle2 ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.n3.N3JenaWriter;
-import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl;
-import com.hp.hpl.jena.xmloutput.impl.Abbreviated;
-import com.hp.hpl.jena.xmloutput.impl.Basic;
+import com.hp.hpl.jena.n3.N3JenaWriter ;
+import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
+import com.hp.hpl.jena.xmloutput.impl.Abbreviated ;
+import com.hp.hpl.jena.xmloutput.impl.Basic ;
 
 public class TestIO_JenaWriters {
+    
+    @BeforeClass public static void beforeClass() { } 
+    @AfterClass public static void afterClass()   { IO_Jena.wireIntoJena(); }
+    
     private final class RDFWriterFImplExposingProtected extends RDFWriterFImpl {
         public Map<String, String> defaultWriters() {
             Map<String,String> defaults = new LinkedHashMap<String,String>();
@@ -56,7 +63,7 @@ public class TestIO_JenaWriters {
     }
 
     @Test
-    public void wireIntoJena() throws Exception {
+    public void testWireIntoJena() throws Exception {
         IO_JenaWriters.wireIntoJena();
         RDFWriterFImpl writerF = new RDFWriterFImpl();
         assertEquals(Basic.class, writerF.getWriter().getClass());
@@ -82,7 +89,7 @@ public class TestIO_JenaWriters {
     }
     
     @Test
-    public void resetJena() throws Exception {
+    public void testResetJena() throws Exception {
         IO_JenaWriters.wireIntoJena();
         IO_JenaWriters.resetJena();
         RDFWriterFImplExposingProtected writerF = new RDFWriterFImplExposingProtected();
@@ -98,6 +105,7 @@ public class TestIO_JenaWriters {
         assertEquals("", writerF.getLangToClassName().get("NT"));
         assertEquals("", writerF.getLangToClassName().get("RDF/JSON"));
         assertEquals("", writerF.getLangToClassName().get("RDFJSON"));
+        IO_JenaWriters.wireIntoJena();
     }
 
     
