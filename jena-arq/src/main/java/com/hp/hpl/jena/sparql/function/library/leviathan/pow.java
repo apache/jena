@@ -18,14 +18,12 @@
 
 package com.hp.hpl.jena.sparql.function.library.leviathan;
 
-import java.math.BigInteger;
-import java.util.List;
+import java.math.BigInteger ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
-import com.hp.hpl.jena.sparql.function.FunctionBase1;
-import com.hp.hpl.jena.sparql.function.FunctionBase2;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.function.FunctionBase2 ;
 
 public class pow extends FunctionBase2 {
 
