@@ -55,11 +55,6 @@ public class ActionBackup extends ServletBase
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        // Split SPARQL ServletBase into Servletbase. 
-        
-        // request.getRemoteUser() ;
-        // request.getUserPrincipal() ;
-
         String dataset = FusekiLib.safeParameter(request, "dataset") ;
         if ( dataset == null )
         {
@@ -84,6 +79,7 @@ public class ActionBackup extends ServletBase
         long id = allocRequestId(request, response);
         HttpAction action = new HttpAction(id, request, response, false) ;
         DatasetRef ref = DatasetRegistry.get().get(dataset) ;
+        action.setDataset(ref);
         scheduleBackup(action) ;
     }
 
