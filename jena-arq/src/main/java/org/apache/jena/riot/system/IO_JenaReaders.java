@@ -21,7 +21,6 @@ package org.apache.jena.riot.system;
 import org.apache.jena.riot.adapters.JenaReadersWriters ;
 
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
-import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class IO_JenaReaders
@@ -32,9 +31,6 @@ public class IO_JenaReaders
 
     public static void wireIntoJena()
     {
-//        // Wire in generic 
-//        Class<?> readerRDF = RDFReaderRIOT.class ;
-        
       registerForModelRead("RDF/XML",    JenaReadersWriters.RDFReaderRIOT_RDFXML.class) ;           // And default
       registerForModelRead("RDF/XML-ABBREV", JenaReadersWriters.RDFReaderRIOT_RDFXML.class) ;
 
@@ -50,10 +46,14 @@ public class IO_JenaReaders
     
     static String jenaNTriplesReader = "com.hp.hpl.jena.rdf.model.impl.NTripleReader" ; 
     static String jenaTurtleReader = "com.hp.hpl.jena.n3.turtle.TurtleReader" ; 
-    static String jenaN3Reader = jenaTurtleReader ; 
+    static String jenaN3Reader = jenaTurtleReader ;
+    static String jenaRDFReader = "com.hp.hpl.jena.rdf.arp.JenaReader"; 
     
     public static void resetJena()
     {
+        RDFReaderFImpl.setBaseReaderClassName("RDF/XML", jenaRDFReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("RDF/XML-ABBREV", jenaRDFReader) ;
+        
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", jenaNTriplesReader) ;
         RDFReaderFImpl.setBaseReaderClassName("N-Triples",  jenaNTriplesReader) ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",  jenaNTriplesReader) ;
@@ -63,8 +63,8 @@ public class IO_JenaReaders
         RDFReaderFImpl.setBaseReaderClassName("Turtle", jenaTurtleReader) ;
         RDFReaderFImpl.setBaseReaderClassName("TTL",    jenaTurtleReader) ;
 
-        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", null) ;
-        RDFWriterFImpl.setBaseWriterClassName("RDFJSON",  null) ;
+        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", "") ;
+        RDFReaderFImpl.setBaseReaderClassName("RDFJSON", "") ;
     }
     
     /** Register for use with Model.read (old style compatibility) */ 

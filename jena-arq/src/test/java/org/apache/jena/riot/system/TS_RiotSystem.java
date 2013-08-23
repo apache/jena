@@ -37,6 +37,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestFastAbbreviatingPrefixMap.class
     , TestPrefixMapExtended1.class
     , TestPrefixMapExtended2.class
+    , TestIO_JenaReaders.class
+    , TestIO_JenaWriters.class
     // May be subject to performance vagaries, with the improvements made
     // to the fast implementation this should be fairly safe
     //, TestAbbreviationPerformance.class
