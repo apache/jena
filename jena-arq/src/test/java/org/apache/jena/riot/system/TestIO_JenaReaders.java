@@ -24,15 +24,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.jena.riot.IO_Jena ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_NT;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFJSON;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFXML;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_TTL;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test;
 
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
 
 public class TestIO_JenaReaders {
+    @BeforeClass public static void beforeClass() { } 
+    @AfterClass public static void afterClass()   { IO_Jena.wireIntoJena(); }
+    
     private final class RDFReaderFImplExposingProtected extends RDFReaderFImpl {
         public Map<String, String> defaultReaders() {
             Map<String,String> defaults = new LinkedHashMap<String,String>();
@@ -81,7 +87,7 @@ public class TestIO_JenaReaders {
         
         // And unregistered our additional langs
         assertEquals("", readerF.getLangToClassName().get("RDF/JSON"));
-        
+        IO_JenaReaders.wireIntoJena();
     }
 
     
