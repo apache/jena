@@ -28,12 +28,8 @@ import com.hp.hpl.jena.shared.Lock ;
 public abstract class DatasetGraphTrackActive implements DatasetGraph, Transactional
 {
     protected abstract DatasetGraph get() ;
-    private boolean inTransaction = false ; 
 
-    protected DatasetGraphTrackActive()
-    {
-        inTransaction = false ;
-    }
+    protected DatasetGraphTrackActive() { }
 
     protected abstract void checkActive() ;
     protected abstract void checkNotActive() ;
@@ -43,7 +39,6 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     {
         checkNotActive() ;
         _begin(readWrite) ;
-        inTransaction = true ;
     }
     
     @Override
@@ -51,7 +46,6 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     {
         checkActive() ;
         _commit() ;
-        inTransaction = false ;
     }
 
     @Override
@@ -59,7 +53,6 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     {
         checkActive() ;
         // Set before calling _abort, which might throw an exception. 
-        inTransaction = false ;
         _abort() ;
     }
     
@@ -68,12 +61,10 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     {
         // Don't check if active.  We may have committed or aborted already.
         _end() ;
-        inTransaction = false ; 
     }
     
     @Override
-    public boolean isInTransaction()    { return inTransaction ; }
-    
+    public abstract boolean isInTransaction() ;
     protected abstract void _begin(ReadWrite readWrite) ;
     protected abstract void _commit() ;
     protected abstract void _abort() ;
@@ -82,7 +73,7 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     @Override
     public void close()
     {
-        if ( inTransaction )
+        if ( isInTransaction() )
             abort() ;
         // Don't close really - let the implementation decide. 
         _close() ;
