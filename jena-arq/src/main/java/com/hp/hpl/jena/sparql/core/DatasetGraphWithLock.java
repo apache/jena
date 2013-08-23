@@ -23,6 +23,7 @@ import org.apache.jena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.JenaTransactionException ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
@@ -40,16 +41,29 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
         public JenaLockException(String message, Throwable cause)   { super(message, cause) ; }
     }
     
-    private DatasetGraph dsg ;
-    private boolean locked ;
-    private ReadWrite readWrite ;
+    static class ThreadLocalBoolean extends ThreadLocal<Boolean>
+    {
+        @Override protected Boolean initialValue() {
+            return false ;
+        }
+    }
+    
+    static class ThreadLocalReadWrite extends ThreadLocal<ReadWrite>
+    {
+        @Override protected ReadWrite initialValue() {
+            return null ;
+        }
+    }
+
+    private final DatasetGraph dsg ;
+    private final ThreadLocalReadWrite readWrite = new ThreadLocalReadWrite() ;
+    private final ThreadLocalBoolean inTransaction = new ThreadLocalBoolean() ;
+
     
 
     public DatasetGraphWithLock(DatasetGraph dsg)
     {
         this.dsg = dsg ;
-        this.locked = false ;
-        this.readWrite = null ;
     }
 
     @Override
@@ -62,38 +76,44 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     protected void checkActive()
     {
         if ( ! isInTransaction() )
-            throw new JenaLockException("Not in a locked region") ;
+            throw new JenaTransactionException("Not in a transaction") ;
     }
-
+    
     @Override
     protected void checkNotActive()
     {
         if ( isInTransaction() )
-            throw new JenaLockException("Currently in a locked region") ;
+            throw new JenaTransactionException("Currently in a transaction") ;
+    }
+    
+    @Override
+    public boolean isInTransaction()    
+    { 
+        return inTransaction.get() ;
     }
 
     @Override
     protected void _begin(ReadWrite readWrite)
     {
-        this.readWrite = readWrite ;
+        this.readWrite.set(readWrite) ;
         boolean b = ( readWrite == ReadWrite.READ ) ;
         dsg.getLock().enterCriticalSection(b) ;
-        locked = true ;
+        inTransaction.set(true) ; 
     }
 
     @Override
     protected void _commit()
     {
-        if ( readWrite ==  ReadWrite.WRITE )
+        if ( readWrite.get() == ReadWrite.WRITE )
             sync() ;
-        locked = false ;
         dsg.getLock().leaveCriticalSection() ;
+        this.readWrite.set(null) ;
+        inTransaction.set(false) ;
     }
 
     @Override
     protected void _abort()
     {
-        locked = false ;
         throw new JenaLockException("Can't abort a locked update") ;   
         //dsg.getLock().leaveCriticalSection() ;
     }
@@ -101,9 +121,9 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     @Override
     protected void _end()
     {
-        if ( locked )
+        if ( isInTransaction() )
             dsg.getLock().leaveCriticalSection() ;
-        locked = false ;
+        inTransaction.set(false) ;
     }
 
     @Override
@@ -111,7 +131,6 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     {
         if ( dsg != null )
             dsg.close() ;
-        dsg = null ;
     }
 
     @Override
