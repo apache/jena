@@ -146,7 +146,7 @@ public class N3JenaWriter implements RDFWriter
     * try {
     *      Writer w =  new BufferedWriter(new OutputStreamWriter(output, "UTF-8")) ;
     *      model.write(w, base) ;
-    *      try { w.flush() ; } catch (IOException ioEx) {}
+    *      try { w.flush() ; } catch (IOException ioEx) {...}
     *  } catch (java.io.UnsupportedEncodingException ex) {} //UTF-8 is required so can't happen
     * </pre>
     * or

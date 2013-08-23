@@ -19,7 +19,9 @@
 package com.hp.hpl.jena.n3;
 
 import java.io.* ;
+
 import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.shared.JenaException ;
 
 /** Simple class that provides output with moving left margin.
  *  Does not cope with tabs or newlines in output strings.
@@ -56,13 +58,13 @@ public class N3IndentedWriter
 	public void print(String s)
 	{
 		try { writer.write(s); column += s.length() ; }
-		catch (java.io.IOException ex) {}
+		catch (java.io.IOException ex) { throw new JenaException(ex) ; }
 	}
 
 	public void println(String s)
 	{
 		try { writer.write(s);	println() ; }
-		catch (java.io.IOException ex) { }
+		catch (java.io.IOException ex) { throw new JenaException(ex) ; }
 	}
 	
 	public void println()
@@ -74,7 +76,7 @@ public class N3IndentedWriter
 			row++ ; 
 			padTo() ;
 		}
-		catch (java.io.IOException ex) { }
+		catch (java.io.IOException ex) { throw new JenaException(ex) ; }
 	}
 	
 	public void padTo() throws IOException
@@ -85,7 +87,7 @@ public class N3IndentedWriter
 		column = column + currentIndent ;
 	}
 	
-	public void flush() { try { writer.flush() ; } catch (IOException ioEx) {} }
-	public void close() { try { writer.close() ; } catch (IOException ioEx) {} }
+	public void flush() { try { writer.flush() ; } catch (IOException ioEx) { throw new JenaException(ioEx) ; } }
+	public void close() { try { writer.close() ; } catch (IOException ioEx) { throw new JenaException(ioEx) ; } }
 
 }
