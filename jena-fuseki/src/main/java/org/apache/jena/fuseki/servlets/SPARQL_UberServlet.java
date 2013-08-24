@@ -215,11 +215,18 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         }       
         // There is a trailing part - params are illegal by this point.
         if ( hasParams )
-            // Revisit to include query-on-one-graph 
-            errorBadRequest("Can't invoke a query-string service on a direct named graph") ; 
+            // ?? Revisit to include query-on-one-graph 
+            //errorBadRequest("Can't invoke a query-string service on a direct named graph") ;
+            errorNotFound("Not found: dataset='"+printName(desc.name)+"' service='"+printName(trailing)+"'");
 
         // There is a trailing part - not a service, no params ==> GSP direct naming.
         doGraphStoreProtocol(action) ;
+    }
+    
+    private String printName(String x) {
+        if ( x.startsWith("/") )
+            return x.substring(1) ;
+        return x ;
     }
     
     private void doGraphStoreProtocol(HttpAction action)
@@ -296,7 +303,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         return true ;
     }
 
-    /** Find the dataset name even if direct naming */ 
+    /** Find the graph (direct naming) or service name */ 
     protected static String findTrailing(String uri, String dsname) 
     {
         if ( dsname.length() >= uri.length() )
