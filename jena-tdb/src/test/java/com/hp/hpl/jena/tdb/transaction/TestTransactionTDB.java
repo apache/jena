@@ -21,24 +21,26 @@ package com.hp.hpl.jena.tdb.transaction;
 import static com.hp.hpl.jena.query.ReadWrite.READ ;
 import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.apache.jena.atlas.logging.Log ;
+import org.junit.* ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.transaction.AbstractTestTransaction ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.migrate.AbstractTestTransaction ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestTransactionTDB extends AbstractTestTransaction
 {
     static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
     String DIR = null ; 
+    
+    @BeforeClass public static void beforeClassLoggingOff() { Log.disable(SystemTDB.errlog.getName()) ; } 
+    @AfterClass public static void afterClassLoggingOn()    { Log.enable(SystemTDB.errlog.getName(), "info") ; }
     
     @Before public void before()
     {
