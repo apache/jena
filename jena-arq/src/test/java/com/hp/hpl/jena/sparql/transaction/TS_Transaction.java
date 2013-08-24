@@ -16,29 +16,16 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql;
+package com.hp.hpl.jena.sparql.transaction;
 
 import junit.framework.TestSuite ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
-import com.hp.hpl.jena.sparql.expr.E_Function ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
-
-public class TC_Scripted extends TestSuite
-{
-    static public TestSuite suite()
-    {
-        TestSuite ts = new TC_Scripted() ;
-        ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/manifest-arq.ttl")) ;
-        ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Syntax/manifest-syntax.ttl")) ;
-        ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Serialization/manifest.ttl")) ;
-        return ts ;
-    }
-    
-    public TC_Scripted()
-    {
-        super("Scripted") ;
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
-    }
-}
+@RunWith(Suite.class)
+@SuiteClasses( {
+    TestTransactionMem.class
+})
+public class TS_Transaction extends TestSuite
+{ }

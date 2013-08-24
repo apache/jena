@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import junit.framework.TestSuite ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -27,6 +26,5 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses( {
     TestSerialization.class
 })
-public class TS_Serialization extends TestSuite
-{
-}
+public class TS_Serialization 
+{ }
