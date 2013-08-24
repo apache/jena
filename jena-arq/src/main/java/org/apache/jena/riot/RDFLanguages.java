@@ -62,7 +62,7 @@ public class RDFLanguages
     /** RDF/XML */
     public static final Lang RDFXML   = LangBuilder.create(strLangRDFXML, contentTypeRDFXML)
                                                 .addAltNames("RDFXML", "RDF/XML-ABBREV", "RDFXML-ABBREV")
-                                                .addFileExtensions("rdf","owl","xml")
+                                                .addFileExtensions("rdf", "xml")
                                                 .build() ;
     
     /** Turtle */
@@ -70,7 +70,6 @@ public class RDFLanguages
                                                 .addAltNames("TTL")
                                                 .addAltContentTypes(contentTypeTurtleAlt1, contentTypeTurtleAlt2)
                                                 .addFileExtensions("ttl")
-                                                //.addFileExtensions("n3")
                                                 .build() ;
     /** Common abbreviation for TURTLE */
     public static final Lang TTL    = TURTLE ;
