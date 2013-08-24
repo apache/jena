@@ -327,21 +327,18 @@ public abstract class SPARQL_ServletBase extends ServletBase
         
     }
     
-    /** Implementation of mapRequestToDataset(String) that looks for the longest match.
-     *  This includes use in direct naming GSP. 
+    /** Implementation of mapRequestToDataset(String) that looks for
+     * the longest match in the registry.
+     * This includes use in direct naming GSP. 
      */
     protected static String mapRequestToDatasetLongest$(String uri) 
     {
         if ( uri == null )
             return null ;
         
-        // Mapping a request for GSP needs to find the "best"
-        // (longest matching) dataset URI.
         // This covers local, using the URI as a direct name for
         // a graph, not just using the indirect ?graph= or ?default 
         // forms.
-        // Service matching, which is a matter of removing the service component,
-        // would only work for indirect. 
 
         String ds = null ;
         for ( String ds2 : DatasetRegistry.get().keys() ) {
