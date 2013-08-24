@@ -59,10 +59,20 @@ public class RDFLanguages
     public static final String strLangNQuads     = "N-Quads" ;
     public static final String strLangTriG       = "TriG" ;
     
+    /*
+     * ".owl" is not a formally registered file extension for OWL 
+     *  using RDF/XML. It was mentioned in OWL1 (when there was
+     *  formally only one syntax for publishing RDF).
+     *   
+     * OWL2 does not mention it.
+     * 
+     * ".owx" is the OWl direct XML syntax.
+     */
+
     /** RDF/XML */
     public static final Lang RDFXML   = LangBuilder.create(strLangRDFXML, contentTypeRDFXML)
                                                 .addAltNames("RDFXML", "RDF/XML-ABBREV", "RDFXML-ABBREV")
-                                                .addFileExtensions("rdf", "xml")
+                                                .addFileExtensions("rdf", /*"owl",*/ "xml")
                                                 .build() ;
     
     /** Turtle */
