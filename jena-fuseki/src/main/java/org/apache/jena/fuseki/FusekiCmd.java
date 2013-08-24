@@ -224,12 +224,6 @@ public class FusekiCmd extends CmdARQ
             if ( x == 0 )
                 throw new CmdException("Required: either --config=FILE or one of --mem, --file, --loc or --desc") ;
         }
-
-        
-        TDB.setOptimizerWarningFlag(false) ;
-        // Don't get TDB batch commits.
-        // This is slower but less memory hungry. 
-        TransactionManager.QueueBatchSize = 0 ;
         
         if ( contains(argMem) )
         {

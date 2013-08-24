@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 /**
  * <p>The main class enabling us to:</p> 
@@ -140,6 +141,11 @@ public class Fuseki
         RIOT.init() ;
         TDB.init() ;
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
+        
+        TDB.setOptimizerWarningFlag(false) ;
+        // Don't set TDB batch commits.
+        // This can be slower, but it less memory hungry and more predictable. 
+        TransactionManager.QueueBatchSize = 0 ;
     }
   
     /**
