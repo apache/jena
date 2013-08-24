@@ -43,6 +43,7 @@ import com.hp.hpl.jena.sparql.resultset.TS_ResultSet ;
 import com.hp.hpl.jena.sparql.solver.TS_Solver ;
 import com.hp.hpl.jena.sparql.syntax.TS_SSE ;
 import com.hp.hpl.jena.sparql.syntax.TS_Serialization ;
+import com.hp.hpl.jena.sparql.transaction.TS_Transaction ;
 import com.hp.hpl.jena.sparql.util.TS_Util ;
 
 
@@ -68,6 +69,7 @@ import com.hp.hpl.jena.sparql.util.TS_Util ;
     , TS_Path.class
     , TS_ParamString.class
     , TS_Update.class
+    , TS_Transaction.class
 })
 
 public class TC_General extends TestSuite
