@@ -111,7 +111,7 @@ public class Fuseki
     /** Actual log file for config server messages. */
     public static final String configLogName    = PATH+".Config" ;
     
-    /** Instance of log for config server messages*/
+    /** Instance of log for config server message s*/
     public static final Logger configLog        = LoggerFactory.getLogger(configLogName) ;
     
     /** An instance of management for stream opening, including redirecting through a 
