@@ -114,6 +114,9 @@ public class Fuseki
     /** Instance of log for config server message s*/
     public static final Logger configLog        = LoggerFactory.getLogger(configLogName) ;
     
+    /** Instance of log for config server message s*/
+    public static boolean verboseLogging        = false ;
+    
     /** An instance of management for stream opening, including redirecting through a 
      * location mapper whereby a name (e.g. URL) is redirected to another name (e.g. local file).
      * */
