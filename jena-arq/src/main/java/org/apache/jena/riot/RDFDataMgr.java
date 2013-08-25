@@ -683,6 +683,16 @@ public class RDFDataMgr
     /** Read RDF data.
      * @param sink      Destination for the RDF read.
      * @param in        Bytes to read.
+     * @param lang      Syntax for the stream.
+     */
+    public static void parse(StreamRDF sink, InputStream in, Lang lang)
+    {
+        parse(sink, in, null, lang, null) ;  
+    }
+
+    /** Read RDF data.
+     * @param sink      Destination for the RDF read.
+     * @param in        Bytes to read.
      * @param base      Base URI (defaults to uri).
      * @param hintLang  Hint for the syntax
      */
@@ -702,6 +712,16 @@ public class RDFDataMgr
     {
         process(sink, new TypedInputStream(in), base, hintLang, context) ;
     }
+
+    /** Read RDF data.
+     * @param sink      Destination for the RDF read.
+     * @param in        Bytes to read.  This must include the content type.
+     */
+    public static void parse(StreamRDF sink, TypedInputStream in)
+    {
+        parse(sink, in, (String)null) ;
+    }
+
 
     /** Read RDF data.
      * @param sink      Destination for the RDF read.
@@ -863,11 +883,12 @@ public class RDFDataMgr
         // server setups return text/plain for any file type.
         // We use the file extension.
         
+        if ( ct == null && hintLang != null ) 
+            ct = hintLang.getContentType() ;
+
         if ( ct == null || isTextPlain )
             ct = RDFLanguages.guessContentType(target) ;
         
-        if ( ct == null && hintLang != null ) 
-            ct = hintLang.getContentType() ;
         return ct ;
     }
     
