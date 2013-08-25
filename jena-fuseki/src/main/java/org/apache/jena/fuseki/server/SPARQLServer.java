@@ -91,11 +91,16 @@ public class SPARQLServer {
         // where it makes no sense to have it turned on e.g. update and upload
 
         ServletContextHandler context = buildServer(serverConfig.jettyConfigFile, config.enableCompression) ;
-        // Build them all.
-        for (DatasetRef dsDesc : serverConfig.datasets)
-            configureOneDataset(context, dsDesc, config.enableCompression) ;
+        configureDatasets(context) ;
     }
 
+    private void configureDatasets(ServletContextHandler context) {
+        // Build them all.
+        for (DatasetRef dsDesc : serverConfig.datasets)
+            configureOneDataset(context, dsDesc, serverConfig.enableCompression) ;
+        
+    }
+    
     /**
      * Initialize the {@link SPARQLServer} instance.
      */
