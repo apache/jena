@@ -176,8 +176,8 @@ public class FusekiCmd extends CmdARQ
         add(argTimeout, "--timeout=",           "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
         add(argAllowUpdate, "--update",         "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         add(argFusekiConfig, "--config=",       "Use a configuration file to determine the services") ;
-        add(argJettyConfig, "--jetty-config=",  "Set up the server (not services) with a Jetty XML file") ;
-        add(argBasicAuth, "--basic-auth",       "Configure basic auth using provided Jetty realm file, ignored if --jetty-config is used") ;
+        add(argJettyConfig, "--jetty-config=FILE",  "Set up the server (not services) with a Jetty XML file") ;
+        add(argBasicAuth, "--basic-auth=FILE",  "Configure basic auth using provided Jetty realm file, ignored if --jetty-config is used") ;
         add(argMgtPort, "--mgtPort=port",       "Enable the management commands on the given port") ; 
         add(argHome, "--home=DIR",              "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ; 
         add(argGZip, "--gzip=on|off",           "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
