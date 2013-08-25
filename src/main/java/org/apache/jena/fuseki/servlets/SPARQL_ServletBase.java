@@ -99,13 +99,12 @@ public abstract class SPARQL_ServletBase extends ServletBase
         }
     }
 
-
     // ---- Operation lifecycle
 
     /** Return a fresh WebAction for this request */
     protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
         // Need a way to set verbose logging on a per servlet and per request basis. 
-        return new HttpAction(id, request, response, SPARQLServer.verboseLogging ) ;
+        return new HttpAction(id, request, response, verboseLogging) ;
     }
 
     protected abstract void validate(HttpAction action) ;
@@ -309,15 +308,9 @@ public abstract class SPARQL_ServletBase extends ServletBase
         }
         
         return uri.substring(0, i) ;
-    }    /** Find the dataset name even if direct naming */ 
-    protected static String findTrailing(String uri, String dsname) 
-    {
-        if ( dsname.length() >= uri.length() )
-            return "" ;
-        return uri.substring(dsname.length()+1) ;   // Skip the separating "/"
     }
 
-    protected static String mapRequestToService(DatasetRef dsRef, String uri, String serviceName)
+    protected String mapRequestToService(DatasetRef dsRef, String uri, String serviceName)
     {
         if ( dsRef == null )
             return "" ;

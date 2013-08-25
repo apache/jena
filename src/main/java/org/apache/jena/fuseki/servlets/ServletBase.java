@@ -35,6 +35,7 @@ import org.slf4j.Logger ;
 public abstract class ServletBase extends HttpServlet
 {
     protected static final Logger log = Fuseki.requestLog ;
+    public final boolean verboseLogging = Fuseki.verboseLogging ;
     private static AtomicLong requestIdAlloc = new AtomicLong(0) ;
 
     protected ServletBase()     { }

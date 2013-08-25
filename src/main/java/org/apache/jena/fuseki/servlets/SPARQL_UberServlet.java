@@ -304,7 +304,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     }
 
     /** Find the graph (direct naming) or service name */ 
-    protected static String findTrailing(String uri, String dsname) 
+    protected String findTrailing(String uri, String dsname) 
     {
         if ( dsname.length() >= uri.length() )
             return "" ;
@@ -334,6 +334,5 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
-
 }
 

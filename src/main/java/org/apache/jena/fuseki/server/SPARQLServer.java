@@ -72,7 +72,6 @@ public class SPARQLServer {
     private ServerConfig        serverConfig ;
 
     private Server              server         = null ;
-    public static boolean       verboseLogging = false ;
     private static List<String> epDataset      = Arrays.asList("*") ;
 
     /**
@@ -83,7 +82,8 @@ public class SPARQLServer {
      */
     public SPARQLServer(ServerConfig config) {
         this.serverConfig = config ;
-        verboseLogging = config.verboseLogging ;
+        // Currently server-wide.
+        Fuseki.verboseLogging = config.verboseLogging ;
 
         // GZip compression
         // Note that regardless of this setting we'll always leave it turned off
