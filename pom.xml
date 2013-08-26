@@ -66,6 +66,7 @@
     <!-- Delivery modules - after build modules --> 
     <module>apache-jena-libs</module>
     <module>apache-jena</module>
+    <module>jena-security</module>
   </modules>
 
   <mailingLists>
