@@ -18,6 +18,7 @@
 
 package org.apache.jena.jdbc.connections;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -79,6 +80,7 @@ public abstract class DatasetConnection extends JenaConnection {
         try {
             if (this.ds != null) {
                 ds.close();
+                ds = null;
             }
         } catch (Exception e) {
             throw new SQLException("Unexpected error closing a dataset backed connection", e);
@@ -138,8 +140,9 @@ public abstract class DatasetConnection extends JenaConnection {
             return;
         case TRANSACTION_SERIALIZABLE:
             // Serializable is supported if the dataset supports transactions
-            if (this.ds.supportsTransactions())
-                return;
+            if (this.ds != null)
+                if (this.ds.supportsTransactions())
+                    return;
             // Otherwise we'll drop through and throw the error
         default:
             throw new SQLException(String.format("The Transaction level %d is not supported by this connection", level));
@@ -160,6 +163,10 @@ public abstract class DatasetConnection extends JenaConnection {
      */
     public synchronized void begin(ReadWrite type) throws SQLException {
         try {
+            if (this.isClosed())
+                throw new SQLException("Cannot start a transaction on a closed connection");
+            if (this.getTransactionIsolation() == Connection.TRANSACTION_NONE)
+                throw new SQLException("Cannot start a transaction when transaction isolation is set to NONE");
             if (ds.supportsTransactions()) {
                 if (ds.isInTransaction()) {
                     // Additional participant in existing transaction
