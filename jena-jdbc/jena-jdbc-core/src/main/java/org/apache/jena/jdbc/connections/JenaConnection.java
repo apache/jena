@@ -342,7 +342,7 @@ public abstract class JenaConnection implements Connection {
      * @param results
      *            Results
      * @return Results after processing by registered post-processors
-     * @throws SQLException 
+     * @throws SQLException
      */
     public final com.hp.hpl.jena.query.ResultSet applyPostProcessors(com.hp.hpl.jena.query.ResultSet results) throws SQLException {
         for (ResultsPostProcessor postProcessor : this.postProcessors) {
@@ -359,7 +359,7 @@ public abstract class JenaConnection implements Connection {
      * @param triples
      *            Results
      * @return Results after processing by registered post-processors
-     * @throws SQLException 
+     * @throws SQLException
      */
     public final Iterator<Triple> applyPostProcessors(Iterator<Triple> triples) throws SQLException {
         for (ResultsPostProcessor postProcessor : this.postProcessors) {
@@ -376,7 +376,7 @@ public abstract class JenaConnection implements Connection {
      * @param result
      *            Result
      * @return Result after processing by registered post-processors
-     * @throws SQLException 
+     * @throws SQLException
      */
     public final boolean applyPostProcessors(boolean result) throws SQLException {
         for (ResultsPostProcessor postProcessor : this.postProcessors) {
@@ -393,7 +393,7 @@ public abstract class JenaConnection implements Connection {
      * @param metadata
      *            Results metadata
      * @return Results metadata after processing by registered post-processors
-     * @throws SQLException 
+     * @throws SQLException
      */
     public final SelectResultsMetadata applyPostProcessors(SelectResultsMetadata metadata) throws SQLException {
         for (ResultsPostProcessor postProcessor : this.postProcessors) {
@@ -410,7 +410,7 @@ public abstract class JenaConnection implements Connection {
      * @param metadata
      *            Results metadata
      * @return Results metadata after processing by registered post-processors
-     * @throws SQLException 
+     * @throws SQLException
      */
     public final TripleResultsMetadata applyPostProcessors(TripleResultsMetadata metadata) throws SQLException {
         for (ResultsPostProcessor postProcessor : this.postProcessors) {
@@ -427,7 +427,7 @@ public abstract class JenaConnection implements Connection {
      * @param metadata
      *            Results metadata
      * @return Results metadata after processing by registered post-processors
-     * @throws SQLException 
+     * @throws SQLException
      */
     public final AskResultsMetadata applyPostProcessors(AskResultsMetadata metadata) throws SQLException {
         for (ResultsPostProcessor postProcessor : this.postProcessors) {
