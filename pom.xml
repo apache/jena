@@ -50,24 +50,59 @@
     <url>https://svn.apache.org/repos/asf/jena/trunk/</url>
   </scm>
 
-  <modules>
-
-    <module>jena-parent</module>
-    <module>jena-iri</module>
-    <module>jena-core</module>
-    <module>jena-arq</module>
-    <module>jena-tdb</module>
-    <module>jena-text</module>
-    <module>jena-sdb</module>
-    <module>jena-fuseki</module>
-    <!-- Currently the following builds locally but hangs on Apache Jenkins -->
-    <!--<module>jena-jdbc</module>-->
-
-    <!-- Delivery modules - after build modules --> 
-    <module>apache-jena-libs</module>
-    <module>apache-jena</module>
-    <module>jena-security</module>
-  </modules>
+	<profiles>
+		<profile>
+			<!-- 
+				This is the dev profile, it only builds the common modules and
+				does not build the slow building JDBC modules or the distribution packages
+			 -->
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>jena-parent</module>
+				<module>jena-iri</module>
+				<module>jena-core</module>
+				<module>jena-arq</module>
+				<module>jena-tdb</module>
+				<module>jena-text</module>
+				<module>jena-sdb</module>
+				<module>jena-fuseki</module>
+				<module>jena-security</module>
+				<!-- Slow to build - exclude from default dev build -->
+				<!-- <module>jena-jdbc</module>-->
+				<module>apache-jena-libs</module>
+				<!-- Don't build distro package every time -->
+				<!-- <module>apache-jena</module> -->
+			</modules>
+		</profile>
+		
+		<profile>
+			<!-- 
+				This is the complete profile, it builds everything including slow building modules and
+				the distribution packages.
+				
+				This profile must be enabled when making a release
+				-P apache-release,complete
+			 -->
+			<id>complete</id>
+			<modules>
+				<module>jena-parent</module>
+				<module>jena-iri</module>
+				<module>jena-core</module>
+				<module>jena-arq</module>
+				<module>jena-tdb</module>
+				<module>jena-text</module>
+				<module>jena-sdb</module>
+				<module>jena-fuseki</module>
+				<module>jena-security</module>
+				<module>jena-jdbc</module>
+				<module>apache-jena-libs</module>
+				<module>apache-jena</module>
+			</modules>
+		</profile>
+	</profiles>
 
   <mailingLists>
     <mailingList>
