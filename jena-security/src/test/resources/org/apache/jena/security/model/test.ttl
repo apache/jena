@@ -1,0 +1,2 @@
+@prefix rt: <http://example.com/readTest#> .
+rt:1 a rt:3 .

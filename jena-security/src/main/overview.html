@@ -1,0 +1,83 @@
+<html>
+<body>
+	<p>JenaSecurity is a SecurityEvaluator interface and a set of
+		dynamic proxies that apply that interface to Jena Graphs, Models, and
+		associated methods and classes.</p>
+	<p>
+		The SecurityEvaluator class must be implemented. This class provides
+		the interface to the authentication results (e.g.
+		<code>getPrincipal()</code>
+		) and the authorization system.
+	</p>
+	<p>
+	<ul>
+		<li>Create a SecuredGraph by calling <code>Factory.getInstance(
+				SecurityEvaluator, String, Graph );</code>
+		</li>
+		<li>Create a SecuredModel by calling <code>Factory.getInstance(
+				SecurityEvaluator, String, Model )</code>
+		</li>
+		<li>It is not recommended that you use the Jena <code>ModelFactory.createModelForGraph(
+				SecuredGraph )</code> See Differences Between Graph and Model below for
+			reasons.
+		</li>
+	</ul>
+	</p>
+	<p>
+	<ul>
+		<li>See SecurityEvaluator documentation for description of
+			cascading security checks</li>
+		<li>Secured methods are annotated with: &#64;sec.graph for
+			permissions required on the graph to execute the method.
+			&#64;sec.triple for permissions required on the associated triples
+			(if any) to execute the method.</li>
+		<li>It is possible to implement a SecurityEvaluator that does not
+			enforce security at the triple level. See SecurityEvaluator
+			documentation for details</li>
+	</ul>
+	</p>
+	<h2>
+		Differences Between
+		<code>Graph</code>
+		and
+		<code>Model</code>
+	</h2>
+	<p>
+		The Graph interface does not have the concept of "update". Thus all
+		updates are implemented as a delete and an insert. The Model interface
+		does have the concept of update as evidenced by the
+		<code>replace()</code>
+		method in the
+		<code>RDFList</code>
+		class. This difference means that a
+		<code>Model</code>
+		created by calling
+		<code>ModelFactory.createModelForGraph( SecuredGraph )</code>
+		will yield a model that evaluates
+		<code>Update</code>
+		actions differently from one created with
+		<Code>Factory.getInstance( SecurityEvaluator, modelIRI, model)</Code>
+		.
+	<ul>
+		<li>Models created by the Jena ModelFactory will require that the
+			user have both delete and create permissions on the underlying graph
+			to perform the update. And will delete the existing triple before
+			attempting to create the new one. Since the graph interface does not
+			have visibility to the model's request for update these are, to the
+			graph, separate events. It is possible that the delete may succeed
+			while the create fails.</li>
+		<li>Models created by the JenaSecurity Factory will require that
+			the user have update permissions on the underlying model to perform
+			the update. As long as the user has the update permission on the
+			graph, and the triple where required, the update is performed as a
+			single event.</li>
+	</ul>
+	This is the well documented case of differences between the two secured
+	model creation methods. For this reason it is recommended that the
+	model be created with the
+	<code>Factory.getInsance()</code>
+	method.
+	</p>
+
+</body>
+</html>
