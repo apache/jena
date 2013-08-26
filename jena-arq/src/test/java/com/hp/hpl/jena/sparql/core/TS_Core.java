@@ -32,6 +32,7 @@ import org.junit.runners.Suite ;
     , TestGraphOverDatasetMem.class
     , TestDatasetGraphViewGraphs.class
     , TestDatasetMonitor.class
+    , TestDatasetGraphWithLock.class
 })
 
 public class TS_Core
