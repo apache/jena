@@ -247,7 +247,7 @@ public abstract class JenaDriver implements Driver {
      * @param minorVer
      *            Minor Version
      * @param prefix
-     *            Implementation specific prefix
+     *            Implementation specific prefix which must end with a colon
      */
     public JenaDriver(int majorVer, int minorVer, String prefix) {
         this.majorVer = majorVer;
