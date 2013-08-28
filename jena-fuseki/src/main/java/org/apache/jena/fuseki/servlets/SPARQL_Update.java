@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
@@ -203,12 +204,11 @@ public class SPARQL_Update extends SPARQL_Protocol
         if ( action.verbose )
             //requestLog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
             requestLog.info(format("[%d] Form update = \n%s", action.id, requestStr)) ;
-
         // A little ugly because we are taking a copy of the string, but hopefully shouldn't be too big if we are in this code-path
         // If we didn't want this additional copy, we could make the parser take a Reader in addition to an InputStream
-        ByteArrayInputStream input = new ByteArrayInputStream(requestStr.getBytes());
+        byte[] b = StrUtils.asUTF8bytes(requestStr) ;
+        ByteArrayInputStream input = new ByteArrayInputStream(b);
         requestStr = null;  // free it early at least
-
         execute(action, input);
         successPage(action,"Update succeeded") ;
     }
@@ -221,10 +221,9 @@ public class SPARQL_Update extends SPARQL_Protocol
         // If it isn't, we need to read the entire update request before performing any updates, because
         // we have to attempt to make the request atomic in the face of malformed queries
         UpdateRequest req = null ;
-        if (!action.isTransactional())
+        if (!action.isTransactional()) 
         {
-            try
-            {
+            try {
                 // TODO implement a spill-to-disk version of this
                 req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
             }
@@ -233,8 +232,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         }
         
         action.beginWrite() ;
-        try
-        {
+        try {
             if (action.isTransactional())
                 UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, UpdateParseBase, Syntax.syntaxARQ);
             else
