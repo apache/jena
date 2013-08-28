@@ -871,26 +871,63 @@ public class RDFDataMgr
         return lang ;
     }
     
-    private static ContentType determineCT(String target, String ctStr, Lang hintLang)
+    /** Determine the content type to be used, given the target URL, the content-type from
+     *  Content Negotiation and a hint language.  This is a pragmatic balance.
+     *  A content-type of "text/plain" is ignored - it is too often wrong.  
+     */
+    /*package*/ static ContentType determineCT(String target, String ctStr, Lang hintLang)
     {
         boolean isTextPlain = WebContent.contentTypeTextPlain.equals(ctStr) ;
-        
-        if ( ctStr != null )
+
+        if ( ctStr != null  )
             ctStr = WebContent.contentTypeCanonical(ctStr) ;
-        ContentType ct = (ctStr==null) ? null : ContentType.create(ctStr) ;
-        
+
+        // The decision is:
+        // Content type (but not text/plain) > hint > file extension.
+
         // If it's text plain, we ignore it because a lot of naive
         // server setups return text/plain for any file type.
-        // We use the file extension.
+        // (It was never registered as being N-triples; 
+        // that was only for RDF 2004 testing.)
+        ContentType ct = null ;
+        if ( ! isTextPlain )
+            // Not guaranteed to be registered as a language here.
+            ct = (ctStr==null) ? null : ContentType.create(ctStr) ;
         
         if ( ct == null && hintLang != null ) 
             ct = hintLang.getContentType() ;
-
-        if ( ct == null || isTextPlain )
+        
+        if ( ct == null )
             ct = RDFLanguages.guessContentType(target) ;
         
         return ct ;
     }
+
+        
+//        /* 2.10.2 */
+//        if ( true ) {
+//            if ( ct == null && hintLang != null ) 
+//                ct = hintLang.getContentType() ;
+//
+//            if ( ct == null || isTextPlain )
+//                ct = RDFLanguages.guessContentType(target) ;
+//
+//            return ct ; 
+//        }
+//        
+//        /* 2.10.1 */
+//        if ( true ) {
+//            if ( ct == null || isTextPlain )
+//                ct = RDFLanguages.guessContentType(target) ;
+//
+//            if ( ct == null && hintLang != null ) 
+//                ct = hintLang.getContentType() ;
+//
+//            return ct ; 
+//        }
+//        
+//        return null ;
+
     
     // -------- WRITERS
     
