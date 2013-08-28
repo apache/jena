@@ -28,6 +28,7 @@ import org.junit.runners.Suite.SuiteClasses ;
 @SuiteClasses(
 { 
     TestLangRIOT.class
+    , TestSyntaxDetermination.class
     , TestStreamManager.class 
     , TestJenaReaderRIOT.class
     , TestReadData.class
