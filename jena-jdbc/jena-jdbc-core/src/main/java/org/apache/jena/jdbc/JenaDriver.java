@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -1016,4 +1017,8 @@ public abstract class JenaDriver implements Driver {
         return value.equals(actualValue);
     }
 
+	// Java6/7 compatibility
+	public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
+		throw new SQLFeatureNotSupportedException() ;
+	}
 }

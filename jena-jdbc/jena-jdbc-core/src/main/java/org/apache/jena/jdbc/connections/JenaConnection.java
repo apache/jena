@@ -860,4 +860,24 @@ public abstract class JenaConnection implements Connection {
         this.setWarning(new SQLWarning(warning, cause));
     }
 
+	//--- Java6/7 compatibility.
+	public void setSchema(String schema) throws SQLException {
+		throw new SQLFeatureNotSupportedException();	
+	}
+
+	public String getSchema() throws SQLException {
+		throw new SQLFeatureNotSupportedException();	
+	}
+
+	public void abort(java.util.concurrent.Executor executor) throws SQLException {
+		throw new SQLFeatureNotSupportedException();	
+	}
+
+	public int getNetworkTimeout() throws SQLException {
+		throw new SQLFeatureNotSupportedException();	
+	}
+
+	public void setNetworkTimeout(java.util.concurrent.Executor executor, int milliseconds) throws SQLException {
+		throw new SQLFeatureNotSupportedException();	
+	}
 }

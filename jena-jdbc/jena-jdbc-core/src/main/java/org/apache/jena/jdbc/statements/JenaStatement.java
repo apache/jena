@@ -834,4 +834,12 @@ public abstract class JenaStatement implements Statement {
             this.timeout = seconds;
         }
     }
-}
+
+	// Java 6/7 compatibility
+	public boolean isCloseOnCompletion() throws SQLException {
+		throw new SQLFeatureNotSupportedException();
+	}
+
+	public void closeOnCompletion() throws SQLException {
+		throw new SQLFeatureNotSupportedException();
+	}}
