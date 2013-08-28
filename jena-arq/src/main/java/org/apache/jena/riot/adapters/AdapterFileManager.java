@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.NotFoundException ;
+import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.FileUtils ;
 import com.hp.hpl.jena.util.TypedStream ;
 
@@ -122,24 +123,34 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
         streamManager = new StreamManager() ;
     }
     
-    /** Create a new file manager that is a copy of another.
-     * Location mapper and locators chain are copied (the locators are not cloned).
-     * @param filemanager
-     */
-    public AdapterFileManager(com.hp.hpl.jena.util.FileManager filemanager)
-    {
-        this() ;
-        Iterator<com.hp.hpl.jena.util.Locator> iter = filemanager.locators() ;
-        while ( iter.hasNext() )
-            streamManager.addLocator(AdapterLib.convert(iter.next())) ;
-
-        com.hp.hpl.jena.util.LocationMapper locmap = filemanager.getLocationMapper() ;
-        streamManager.setLocationMapper(AdapterLib.copyConvert(locmap)) ;
+//    /** Create a new file manager that is a copy of another.
+//     * Location mapper and locators chain are copied (the locators are not cloned).
+//     * @param filemanager
+//     */
+//    public AdapterFileManager(com.hp.hpl.jena.util.FileManager filemanager)
+//    {
+//        this() ;
+//        Iterator<com.hp.hpl.jena.util.Locator> iter = filemanager.locators() ;
+//        while ( iter.hasNext() )
+//            streamManager.addLocator(AdapterLib.convert(iter.next())) ;
+//
+//        com.hp.hpl.jena.util.LocationMapper locmap = filemanager.getLocationMapper() ;
+//        streamManager.setLocationMapper(AdapterLib.copyConvert(locmap)) ;
+//    }
+    
+    @Override
+    public FileManager clone() { 
+        StreamManager sm = new StreamManager(streamManager) ;
+        // clone LM
+        AdapterFileManager x = new AdapterFileManager(sm) ;
+        return x ;
+        
     }
 
     public AdapterFileManager(StreamManager streamManager)
     {
-        this(streamManager, (LocationMapper)null) ;
+        this(streamManager, 
+             streamManager == null ? null : streamManager.getLocationMapper() ) ;
     }
     
     /** Create a FileManger using a RIOT StreamManager and RIOT LocationMapper  */
@@ -154,7 +165,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     /** Create a "standard" FileManager. */
     public static AdapterFileManager makeGlobal()
     {
-        AdapterFileManager fMgr = new AdapterFileManager(StreamManager.get(), JenaIOEnvironment.getLocationMapper()) ;
+        AdapterFileManager fMgr = new AdapterFileManager(StreamManager.get()) ;
         return fMgr ;
     }
     
