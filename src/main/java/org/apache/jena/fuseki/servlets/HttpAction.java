@@ -88,7 +88,10 @@ public class HttpAction
         this.dsRef = desc ;
         this.dsg = desc.dataset ;
 
-        if ( dsg instanceof Transactional ) {
+        if ( dsg instanceof DatasetGraphWithLock ) {
+            transactional = (Transactional)dsg ;
+            isTransactional = false ;       // No real abort.
+        } else if ( dsg instanceof Transactional ) {
             transactional = (Transactional)dsg ;
             isTransactional = true ;
         } else {
