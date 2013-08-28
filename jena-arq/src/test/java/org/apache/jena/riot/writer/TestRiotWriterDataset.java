@@ -60,6 +60,7 @@ public class TestRiotWriterDataset extends AbstractWriterTest
     @Test public void writer01() { test("writer-rt-21.trig") ; }
     @Test public void writer02() { test("writer-rt-22.trig") ; }
     @Test public void writer03() { test("writer-rt-23.trig") ; }
+    @Test public void writer04() { test("writer-rt-24.trig") ; }
     
     private void test(String filename)
     {
@@ -78,6 +79,11 @@ public class TestRiotWriterDataset extends AbstractWriterTest
         
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         String s = StrUtils.fromUTF8bytes(out.toByteArray()) ;
+        if (false) {
+            System.out.println(format.toString());
+            System.out.println(s);
+            System.out.println();
+        }
         Dataset ds2 = DatasetFactory.createMem() ;
         try {
             RDFDataMgr.read(ds2, in, lang) ;
