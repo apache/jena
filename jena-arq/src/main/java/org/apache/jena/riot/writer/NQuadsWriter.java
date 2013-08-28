@@ -36,13 +36,23 @@ public class NQuadsWriter extends WriterDatasetRIOTBase
 {
     public static void write(OutputStream out, Iterator<Quad> iter)
     {
-        StreamRDF s = StreamRDFLib.writer(out) ;
+        write(out, iter, CharSpace.UTF8);
+    }
+    
+    public static void write(OutputStream out, Iterator<Quad> iter, CharSpace charSpace)
+    {
+        StreamRDF s = StreamRDFLib.writer(out, charSpace) ;
         write$(s, iter) ;
     }
     
     public static void write(Writer out, Iterator<Quad> iter)
     {
-        StreamRDF s = StreamRDFLib.writer(out) ;
+        write(out, iter, CharSpace.UTF8);
+    }
+    
+    public static void write(Writer out, Iterator<Quad> iter, CharSpace charSpace)
+    {
+        StreamRDF s = StreamRDFLib.writer(out, charSpace) ;
         write$(s, iter) ;
     }
 
@@ -72,12 +82,12 @@ public class NQuadsWriter extends WriterDatasetRIOTBase
     @Override
     public void write(Writer out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context)
     {
-        write(out, dataset.find(null, null, null, null)) ;
+        write(out, dataset.find(null, null, null, null), this.charSpace) ;
     }
 
     @Override
     public void write(OutputStream out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context)
     {
-        write(out, dataset.find(null, null, null, null)) ;
+        write(out, dataset.find(null, null, null, null), this.charSpace) ;
     }
 }

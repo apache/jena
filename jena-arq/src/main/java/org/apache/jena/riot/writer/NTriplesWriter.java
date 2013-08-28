@@ -40,13 +40,23 @@ public class NTriplesWriter extends WriterGraphRIOTBase
 {
     public static void write(OutputStream out, Iterator<Triple> iter)
     {
-        StreamRDF s = StreamRDFLib.writer(out) ;
+        write(out, iter, CharSpace.UTF8);
+    }
+    
+    public static void write(OutputStream out, Iterator<Triple> iter, CharSpace charSpace)
+    {
+        StreamRDF s = StreamRDFLib.writer(out, charSpace) ;
         write$(s, iter) ;
     }
     
     public static void write(Writer out, Iterator<Triple> iter)
     {
-        StreamRDF s = StreamRDFLib.writer(out) ;
+        write(out, iter, CharSpace.UTF8);
+    }
+    
+    public static void write(Writer out, Iterator<Triple> iter, CharSpace charSpace)
+    {
+        StreamRDF s = StreamRDFLib.writer(out, charSpace) ;
         write$(s, iter) ;
     }
 
