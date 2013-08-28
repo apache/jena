@@ -24,6 +24,8 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.util.List;
 
@@ -123,5 +125,18 @@ public class TestListStatements
 				TestListStatements.s, TestListStatements.p, "text", "");
 		final List<Statement> lis = it.toList();
 		Assert.assertTrue(lis.size() == 1);
+	}
+	
+	@Test
+	public final void theresOneWithABNodeObject()
+	{
+	    Model m = ModelFactory.createDefaultModel();
+	    Resource anon = m.createResource();
+	    m.createResource("http://example").addProperty(RDF.type, anon);
+	    
+	    StmtIterator it = m.listStatements(null, null, anon);
+	    final List<Statement> lis = it.toList();
+	    Assert.assertTrue(lis.size() == 1);
+	    
 	}
 }
