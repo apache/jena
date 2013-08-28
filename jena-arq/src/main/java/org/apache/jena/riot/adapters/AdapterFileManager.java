@@ -98,251 +98,262 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     // These are in the FileManager for legacy reasons.
     private FileManagerModelCache modelCache = new FileManagerModelCache() ;
 
-    /** Get the global file manager.
+    /**
+     * Get the global file manager.
+     * 
      * @return the global file manager
      */
-    public static AdapterFileManager get()
-    {
+    public static AdapterFileManager get() {
         if ( instance == null )
             instance = makeGlobal() ;
         return instance ;
     }
-    
-    /** Set the global file manager (as returned by get())
-     * If called before any call to get(), then the usual default filemanager is not created 
+
+    /**
+     * Set the global file manager (as returned by get()) If called before any
+     * call to get(), then the usual default filemanager is not created
+     * 
      * @param globalFileManager
      */
-    public static void setGlobalFileManager(AdapterFileManager globalFileManager)
-    {
+    public static void setGlobalFileManager(AdapterFileManager globalFileManager) {
         instance = globalFileManager ;
     }
-    
+
     /** Create an uninitialized FileManager */
-    private AdapterFileManager()
-    { 
+    private AdapterFileManager() {
         streamManager = new StreamManager() ;
     }
-    
-//    /** Create a new file manager that is a copy of another.
-//     * Location mapper and locators chain are copied (the locators are not cloned).
-//     * @param filemanager
-//     */
-//    public AdapterFileManager(com.hp.hpl.jena.util.FileManager filemanager)
-//    {
-//        this() ;
-//        Iterator<com.hp.hpl.jena.util.Locator> iter = filemanager.locators() ;
-//        while ( iter.hasNext() )
-//            streamManager.addLocator(AdapterLib.convert(iter.next())) ;
-//
-//        com.hp.hpl.jena.util.LocationMapper locmap = filemanager.getLocationMapper() ;
-//        streamManager.setLocationMapper(AdapterLib.copyConvert(locmap)) ;
-//    }
-    
+
     @Override
-    public FileManager clone() { 
-        StreamManager sm = new StreamManager(streamManager) ;
-        // clone LM
+    public FileManager clone() {
+        StreamManager sm = streamManager.clone() ;
         AdapterFileManager x = new AdapterFileManager(sm) ;
         return x ;
-        
+
     }
 
-    public AdapterFileManager(StreamManager streamManager)
-    {
-        this(streamManager, 
-             streamManager == null ? null : streamManager.getLocationMapper() ) ;
+    public AdapterFileManager(StreamManager streamManager) {
+        this(streamManager, streamManager == null ? null : streamManager.getLocationMapper()) ;
     }
-    
-    /** Create a FileManger using a RIOT StreamManager and RIOT LocationMapper  */
-    public AdapterFileManager(StreamManager streamManager, LocationMapper mapper)
-    { 
+
+    /** Create a FileManger using a RIOT StreamManager and RIOT LocationMapper */
+    public AdapterFileManager(StreamManager streamManager, LocationMapper mapper) {
         if ( streamManager == null )
             streamManager = new StreamManager() ;
-        this.streamManager = streamManager ; 
+        this.streamManager = streamManager ;
         streamManager.setLocationMapper(mapper) ;
     }
-    
+
     /** Create a "standard" FileManager. */
-    public static AdapterFileManager makeGlobal()
-    {
+    public static AdapterFileManager makeGlobal() {
         AdapterFileManager fMgr = new AdapterFileManager(StreamManager.get()) ;
         return fMgr ;
     }
-    
-    /** Return the associate stream manager */ 
-    public StreamManager getStreamManager()         { return streamManager ; } 
-    
+
+    /** Return the associate stream manager */
+    public StreamManager getStreamManager() {
+        return streamManager ;
+    }
+
     /** Set the location mapping */
     @Override
-    public void setLocationMapper(com.hp.hpl.jena.util.LocationMapper mapper)   { streamManager.setLocationMapper(AdapterLib.copyConvert(mapper)) ; }
-    
+    public void setLocationMapper(com.hp.hpl.jena.util.LocationMapper mapper) {
+        streamManager.setLocationMapper(AdapterLib.copyConvert(mapper)) ;
+    }
+
     /** Get the location mapping */
     @Override
-    public com.hp.hpl.jena.util.LocationMapper getLocationMapper()               { return new AdapterLocationMapper(streamManager.getLocationMapper()) ; }
-    
+    public com.hp.hpl.jena.util.LocationMapper getLocationMapper() {
+        return new AdapterLocationMapper(streamManager.getLocationMapper()) ;
+    }
+
     /** Return an iterator over all the handlers */
     @Override
-    public Iterator<com.hp.hpl.jena.util.Locator> locators()    { throw new UnsupportedOperationException() ; }
+    public Iterator<com.hp.hpl.jena.util.Locator> locators() {
+        throw new UnsupportedOperationException() ;
+    }
 
-    /** Remove a locator */ 
+    /** Remove a locator */
     @Override
-    public void remove(com.hp.hpl.jena.util.Locator loc)                             { throw new UnsupportedOperationException() ; }
+    public void remove(com.hp.hpl.jena.util.Locator loc) {
+        throw new UnsupportedOperationException() ;
+    }
 
-    /** Add a locator to the end of the locators list */ 
+    /** Add a locator to the end of the locators list */
     @Override
-    public void addLocator(com.hp.hpl.jena.util.Locator oldloc)
-    {
+    public void addLocator(com.hp.hpl.jena.util.Locator oldloc) {
         Locator loc = AdapterLib.convert(oldloc) ;
-        log.debug("Add location: "+loc.getName()) ;
-        streamManager.addLocator(loc) ; }
+        log.debug("Add location: " + loc.getName()) ;
+        streamManager.addLocator(loc) ;
+    }
 
     /** Add a file locator */
     @Override
-    public void addLocatorFile() { addLocatorFile(null) ; } 
+    public void addLocatorFile() {
+        addLocatorFile(null) ;
+    }
 
-    /** Add a file locator which uses dir as its working directory */ 
+    /** Add a file locator which uses dir as its working directory */
     @Override
-    public void addLocatorFile(String dir)
-    {
+    public void addLocatorFile(String dir) {
         LocatorFile fLoc = new LocatorFile(dir) ;
         streamManager.addLocator(fLoc) ;
     }
-    
-    /** Add a class loader locator */ 
+
+    /** Add a class loader locator */
     @Override
-    public void addLocatorClassLoader(ClassLoader cLoad)
-    {
+    public void addLocatorClassLoader(ClassLoader cLoad) {
         LocatorClassLoader cLoc = new LocatorClassLoader(cLoad) ;
         streamManager.addLocator(cLoc) ;
     }
 
     /** Add a URL locator */
     @Override
-    public void addLocatorURL()
-    {
+    public void addLocatorURL() {
         Locator loc = new LocatorURL() ;
         streamManager.addLocator(loc) ;
     }
 
     /** Add a zip file locator */
     @Override
-    public void addLocatorZip(String zfn)
-    {
+    public void addLocatorZip(String zfn) {
         Locator loc = new LocatorZip(zfn) ;
         streamManager.addLocator(loc) ;
     }
-    
+
     // -------- Cache operations (start)
     /** Reset the model cache */
     @Override
-    public void resetCache()                        { modelCache.resetCache() ; }
+    public void resetCache() {
+        modelCache.resetCache() ;
+    }
 
-    /** Change the state of model cache : does not clear the cache */ 
+    /** Change the state of model cache : does not clear the cache */
     @Override
-    public void setModelCaching(boolean state)      { modelCache.setModelCaching(state) ; }
-    
+    public void setModelCaching(boolean state) {
+        modelCache.setModelCaching(state) ;
+    }
+
     /** return whether caching is on of off */
     @Override
-    public boolean isCachingModels()               { return modelCache.isCachingModels() ; }
-    
-    /** Read out of the cache - return null if not in the cache */ 
+    public boolean isCachingModels() {
+        return modelCache.isCachingModels() ;
+    }
+
+    /** Read out of the cache - return null if not in the cache */
     @Override
-    public Model getFromCache(String filenameOrURI) { return modelCache.getFromCache(filenameOrURI) ; }
+    public Model getFromCache(String filenameOrURI) {
+        return modelCache.getFromCache(filenameOrURI) ;
+    }
 
     @Override
-    public boolean hasCachedModel(String filenameOrURI)
-    { return modelCache.hasCachedModel(filenameOrURI) ; } 
-    
-    @Override
-    public void addCacheModel(String uri, Model m)  { modelCache.addCacheModel(uri, m) ; }
+    public boolean hasCachedModel(String filenameOrURI) {
+        return modelCache.hasCachedModel(filenameOrURI) ;
+    }
 
     @Override
-    public void removeCacheModel(String uri)        { modelCache.removeCacheModel(uri) ; }
+    public void addCacheModel(String uri, Model m) {
+        modelCache.addCacheModel(uri, m) ;
+    }
+
+    @Override
+    public void removeCacheModel(String uri) {
+        modelCache.removeCacheModel(uri) ;
+    }
+
     // -------- Cache operations (end)
 
     @Override
-    protected Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax)
-    {
-        // Doesn't call open() - we want to make the synatx guess based on the mapped URI.
+    protected Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax) {
+        // Doesn't call open() - we want to make the synatx guess based on the
+        // mapped URI.
         String mappedURI = mapURI(filenameOrURI) ;
 
-        if ( log.isDebugEnabled() && ! mappedURI.equals(filenameOrURI) )
-            log.debug("Map: "+filenameOrURI+" => "+mappedURI) ;
+        if ( log.isDebugEnabled() && !mappedURI.equals(filenameOrURI) )
+            log.debug("Map: " + filenameOrURI + " => " + mappedURI) ;
 
-        if ( syntax == null && baseURI == null && mappedURI.startsWith( "http:" ) )
-        {
+        if ( syntax == null && baseURI == null && mappedURI.startsWith("http:") ) {
             // No syntax, no baseURI, HTTP URL ==> use content negotiation
             model.read(mappedURI) ;
             return model ;
         }
-        
-        if ( syntax == null )
-        {
+
+        if ( syntax == null ) {
             syntax = FileUtils.guessLang(mappedURI) ;
             if ( syntax == null || syntax.equals("") )
                 syntax = FileUtils.langXML ;
-            if ( log.isDebugEnabled() ) 
-                log.debug("Syntax guess: "+syntax);
+            if ( log.isDebugEnabled() )
+                log.debug("Syntax guess: " + syntax) ;
         }
 
         if ( baseURI == null )
             baseURI = chooseBaseURI(filenameOrURI) ;
 
         TypedInputStream in = streamManager.openNoMapOrNull(mappedURI) ;
-        if ( in == null )
-        {
+        if ( in == null ) {
             if ( log.isDebugEnabled() )
-                log.debug("Failed to locate '"+mappedURI+"'") ;
-            throw new NotFoundException("Not found: "+filenameOrURI) ;
+                log.debug("Failed to locate '" + mappedURI + "'") ;
+            throw new NotFoundException("Not found: " + filenameOrURI) ;
         }
-        if ( in.getMediaType() != null )
-        {
+        if ( in.getMediaType() != null ) {
             // XXX
-            //syntax
+            // syntax
         }
         model.read(in, baseURI, syntax) ;
-        try { in.close(); } catch (IOException ex) {}
+        try {
+            in.close() ;
+        } catch (IOException ex) {}
         return model ;
     }
 
-    private static String chooseBaseURI(String baseURI)
-    {
+    private static String chooseBaseURI(String baseURI) {
         // Use IRILib.filenameToIRI
         String scheme = FileUtils.getScheme(baseURI) ;
-        
-        if ( scheme != null && ! scheme.equals("file") )
+
+        if ( scheme != null && !scheme.equals("file") )
             // Not file: - leave alone.
             return baseURI ;
-        
+
         return IRILib.filenameToIRI(baseURI) ;
     }
-    
-    /** Open a file using the locators of this FileManager 
-     *  Throws RiotNotFoundException if not found.*/ 
+
+    /**
+     * Open a file using the locators of this FileManager Throws
+     * RiotNotFoundException if not found.
+     */
     @Override
-    public InputStream open(String filenameOrURI)
-    { 
+    public InputStream open(String filenameOrURI) {
         return streamManager.open(filenameOrURI) ;
     }
-    
+
     /** Apply the mapping of a filename or URI */
     @Override
-    public String mapURI(String filenameOrURI)                  { return streamManager.mapURI(filenameOrURI) ; }
-    
-    /** Open a file using the locators of this FileManager 
-     *  but without location mapping.  Throws RiotNotFoundException if not found.*/ 
-    @Override
-    public InputStream openNoMap(String filenameOrURI)          { return streamManager.openNoMap(filenameOrURI) ; }
+    public String mapURI(String filenameOrURI) {
+        return streamManager.mapURI(filenameOrURI) ;
+    }
 
-    /** Open a file using the locators of this FileManager 
-     *  without location mapping. Return null if not found
-     */ 
+    /**
+     * Open a file using the locators of this FileManager but without location
+     * mapping. Throws RiotNotFoundException if not found.
+     */
     @Override
-    public TypedStream openNoMapOrNull(String filenameOrURI)    { return AdapterLib.convert(streamManager.openNoMapOrNull(filenameOrURI)) ; }
-    
+    public InputStream openNoMap(String filenameOrURI) {
+        return streamManager.openNoMap(filenameOrURI) ;
+    }
+
+    /**
+     * Open a file using the locators of this FileManager without location
+     * mapping. Return null if not found
+     */
+    @Override
+    public TypedStream openNoMapOrNull(String filenameOrURI) {
+        return AdapterLib.convert(streamManager.openNoMapOrNull(filenameOrURI)) ;
+    }
+
     /** @deprecated Use mapURI */
     @Deprecated
     @Override
-    public String remap(String filenameOrURI)
-    { return mapURI(filenameOrURI) ; }
+    public String remap(String filenameOrURI) {
+        return mapURI(filenameOrURI) ;
+    }
 }
