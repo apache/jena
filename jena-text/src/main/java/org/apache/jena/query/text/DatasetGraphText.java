@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.sparql.JenaTransactionException ;
 import com.hp.hpl.jena.sparql.core.* ;
 
 public class DatasetGraphText extends DatasetGraphMonitor implements Transactional 
@@ -135,9 +136,10 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         try {
             if ( needFinish )
                 textIndex.abortIndexing() ;
-            //textIndex.abort() ;
             dsgtxn.abort() ;
-        } catch (Throwable ex) { log.warn("Exception in abort: "+ex.getMessage(), ex) ; }
+        } 
+        catch (JenaTransactionException ex) { throw ex ; } 
+        catch (RuntimeException ex) { log.warn("Exception in abort: "+ex.getMessage(), ex) ; throw ex ; }
     }
 
     @Override
