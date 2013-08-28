@@ -96,8 +96,11 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     @Override
     protected void _abort() {
         // OK for read, not for write.
-        if ( readWrite.get() == ReadWrite.WRITE )
+        if ( readWrite.get() == ReadWrite.WRITE ) {
+            // Still clean up.
+            _end() ;
             throw new JenaTransactionException("Can't abort a write lock-transaction") ;
+        }
         _end() ;
     }
 
