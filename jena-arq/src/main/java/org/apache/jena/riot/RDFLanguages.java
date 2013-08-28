@@ -93,6 +93,7 @@ public class RDFLanguages
     /** N-Triples */
     public static final Lang NTRIPLES = LangBuilder.create(strLangNTriples, contentTypeNTriples)
                                                 .addAltNames("NT", "NTriples", "NTriple", "N-Triple", "N-Triples")
+                                                 // Remove? Causes more trouble than it's worth.
                                                 .addAltContentTypes(contentTypeNTriplesAlt)
                                                 .addFileExtensions("nt")
                                                 .build() ;

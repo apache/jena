@@ -111,8 +111,9 @@ public class WebContent
         mapContentTypeToLang.put(contentTypeTurtle,         RDFLanguages.TURTLE) ;
         mapContentTypeToLang.put(contentTypeTurtleAlt1,     RDFLanguages.TURTLE) ;
         mapContentTypeToLang.put(contentTypeTurtleAlt2,     RDFLanguages.TURTLE) ;
-        mapContentTypeToLang.put(contentTypeNTriples,       RDFLanguages.NTRIPLES) ;   // text/plain
-        mapContentTypeToLang.put(contentTypeNTriplesAlt,    RDFLanguages.NTRIPLES) ;
+        mapContentTypeToLang.put(contentTypeNTriples,       RDFLanguages.NTRIPLES) ;
+        // Remove? Causes more trouble than it's worth.
+        mapContentTypeToLang.put(contentTypeNTriplesAlt,    RDFLanguages.NTRIPLES) ;    // text/plain
         mapContentTypeToLang.put(contentTypeRdfJson,        RDFLanguages.RDFJSON) ;
 
         mapContentTypeToLang.put(contentTypeNQuads,         RDFLanguages.NQUADS) ;
