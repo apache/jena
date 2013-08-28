@@ -1185,4 +1185,15 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     @Override
     public abstract boolean usesLocalFiles() throws SQLException;
 
+	public ResultSet getPseudoColumns(String catalog,
+									  String schemaPattern,
+									  String tableNamePattern,
+									  String columnNamePattern) throws SQLException {
+		throw new SQLFeatureNotSupportedException();
+	}
+
+	// Java 6/7 compatibility
+	public boolean generatedKeyAlwaysReturned() throws SQLException {
+		throw new SQLFeatureNotSupportedException();
+	}
 }

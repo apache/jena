@@ -623,6 +623,15 @@ public class MetaResultSet implements ResultSet {
         throw new SQLFeatureNotSupportedException();
     }
 
+	// Java 6/7 compatibility
+	public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+	
+	public <T> T getObject(String columnLabel,  Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     @Override
     public SQLWarning getWarnings() throws SQLException {
         // TODO Auto-generated method stub
@@ -1199,5 +1208,4 @@ public class MetaResultSet implements ResultSet {
     public boolean wasNull() throws SQLException {
         return this.wasNull;
     }
-
 }

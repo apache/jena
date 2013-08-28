@@ -700,6 +700,15 @@ public abstract class JenaResultSet implements ResultSet {
     public InputStream getUnicodeStream(String columnLabel) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
+	
+	// Java6/7 compatibility
+	public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+	
+	public <T> T getObject(String columnLabel,  Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
 
     @Override
     public final SQLWarning getWarnings() throws SQLException {
