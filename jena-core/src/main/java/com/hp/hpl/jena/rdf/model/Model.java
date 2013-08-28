@@ -366,19 +366,25 @@ public interface Model
 	@Deprecated
     Model add( Model m, boolean suppressReifications );
 
-	/** Add the RDF statements from an XML document.
-	 * Uses content negotiation to request appropriate mime types.
+	/** Add the RDF statements from a document.
+	 *  Uses content negotiation to request appropriate mime types.
+	 *  If the content type is not found, it may guess from the URL.
+     *  <p>See {@link Model} for a description of how to traverse a firewall.</p>
 	 *
-	 * <p>See {@link Model} for a description of how to traverse a firewall.</p>
 	 * @return this model
 	 * @param url of the document containing the RDF statements.
-
+	 * 
+     * @see "<a href="http://jena.apache.org/documentation/io/index.html">Reading and Writing RDF in Apache Jena</a>"
+     *    for more information about determining the syntax.
 	 */
 	public Model read(String url) ;
 
-	/** Add statements from an RDF/XML serialization.
-	 * @param in the source of the RDF/XML
-
+	/** Add statements from a document.
+	 *  This method assumes the concrete syntax is RDF/XML.
+	 *  See {@link #read(InputStream, String, String)} for explicitly setting the language.
+	 *  
+	 * @param in the input stream
+     
      @param base the base uri to be used when converting relative
          URI's to absolute URI's. (Resolving relative URIs and fragment IDs is done
          by prepending the base URI to the relative URI/fragment.) If there are no 
@@ -386,8 +392,10 @@ public interface Model
          If the base is the empty string, then relative URIs <i>will be retained in
          the model</i>. This is typically unwise and will usually generate errors
          when writing the model back out.
-         
+
 	 * @return the current model
+     * @see "<a href="http://jena.apache.org/documentation/io/index.html">Reading and Writing RDF in Apache Jena</a>"
+     *    for more information about concrete syntaxes.
 	 */
 	public Model read(InputStream in, String base) ;
 
@@ -411,27 +419,29 @@ public interface Model
 	 * @param lang the langauge of the serialization <code>null</code>
 	 * selects the default
 	 * @param in the source of the input serialization
+     * @see "<a href="http://jena.apache.org/documentation/io/index.html">Reading and Writing RDF in Apache Jena</a>"
+     *    for more information about concrete syntaxes.
 	 */
 	public Model read(InputStream in, String base, String lang);
 
     /** Using this method is often a mistake.
-	 * Add statements from an RDF/XML serialization.
-     * It is generally better to use an InputStream if possible.
-     * {@link Model#read(InputStream,String)}, otherwise there is a danger of a
+     * Add statements from an RDF/XML serialization.
+     * It is generally better to use an InputStream if possible, 
+     * otherwise there is a danger of a
      * mismatch between the character encoding of say the FileReader and the
      * character encoding of the data in the file.
-	 * @param reader the source of the RDF/XML
-	 
-     @param base the base uri to be used when converting relative
-         URI's to absolute URI's. (Resolving relative URIs and fragment IDs is done
-         by prepending the base URI to the relative URI/fragment.) If there are no 
-         relative URIs in the source, this argument may safely be <code>null</code>. 
-         If the base is the empty string, then relative URIs <i>will be retained in
-         the model</i>. This is typically unwise and will usually generate errors
-         when writing the model back out.
-         
-	 * * @return the current model
-	 */
+     * 
+     * It is better to explicitly set the serialization format. 
+     *  See {@link #read(InputStream, String, String)} for explicitily setting the serialization language.
+     *  
+     * @param in the input stream
+     * @param base the base uri to be used when converting relative URI's to absolute URI's and to guess the RDF serialization syntax.
+     * @return the current model
+	 * @param reader the source
+	 * @return the current model
+     * @see "<a href="http://jena.apache.org/documentation/io/index.html">Reading and Writing RDF in Apache Jena</a>"
+     *    for more information about concrete syntaxes.	 
+     */
 	public Model read(Reader reader, String base) ;
 
 	/**
@@ -448,7 +458,9 @@ public interface Model
 	 * @param lang the language of the serialization
 
 	 * @return this model
-	 */
+     * @see "<a href="http://jena.apache.org/documentation/io/index.html">Reading and Writing RDF in Apache Jena</a>"
+     *    for more information about concrete syntaxes.  
+     */
 	public Model read(String url, String lang) ;
 
 	/** Using this method is often a mistake.
