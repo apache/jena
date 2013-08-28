@@ -23,18 +23,20 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import java.io.*;
-import java.util.*;
+import java.io.InputStream ;
+import java.util.* ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.*;
-import com.hp.hpl.jena.vocabulary.OntDocManagerVocab;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.FileUtils ;
+import com.hp.hpl.jena.vocabulary.OntDocManagerVocab ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 
 /**
@@ -283,7 +285,7 @@ public class OntDocumentManager
      * global location mapper).</p>
      */
     public void setFileManager() {
-        setFileManager( new FileManager( FileManager.get() ) );
+        setFileManager( FileManager.get().clone() ) ;
         m_usingGlobalFileMgr = true;
     }
 

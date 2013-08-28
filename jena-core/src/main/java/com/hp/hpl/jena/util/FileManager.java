@@ -72,11 +72,11 @@ public class FileManager
     public static final String filePathSeparator = java.io.File.separator ;
     private static Logger log = LoggerFactory.getLogger(FileManager.class) ;
 
-    static FileManager instance = null ;
+    static FileManager fmInstance = null ;
 
     static boolean logAllLookups = true ; 
-    List<Locator> handlers = new ArrayList<Locator>() ;
-    LocationMapper mapper = null ;
+    protected List<Locator> fmHandlers = new ArrayList<Locator>() ;
+    protected LocationMapper fmMapper = null ;
     
     /** Get the global file manager.
      * @return the global file manager
@@ -84,9 +84,9 @@ public class FileManager
     public static FileManager get()
     {
         // Singleton pattern adopted in case we later have several file managers.
-        if ( instance == null )
-            instance = makeGlobal() ;
-        return instance ;
+        if ( fmInstance == null )
+            fmInstance = makeGlobal() ;
+        return fmInstance ;
     }
     
     /** Set the global file manager (as returned by get())
@@ -95,7 +95,7 @@ public class FileManager
      */
     public static void setGlobalFileManager(FileManager globalFileManager)
     {
-        instance = globalFileManager ;
+        fmInstance = globalFileManager ;
     }
     
     /** Create an uninitialized FileManager */
@@ -105,15 +105,32 @@ public class FileManager
      *  Location mapper and locators chain are copied (the locators are not cloned).
      *  The model cache is not copied and is initially set to not cache.
      * @param filemanager
+     * @deprecated Call filemanager.clone() to get a duplicate FileManager. 
      */
+    @Deprecated
     public FileManager(FileManager filemanager)
     {
-        handlers.addAll(filemanager.handlers) ;
-        mapper = null ;
+        fmHandlers.addAll(filemanager.fmHandlers) ;
+        fmMapper = null ;
         if ( filemanager.getLocationMapper() != null )
-            mapper = new LocationMapper(filemanager.getLocationMapper()) ;
+            fmMapper = new LocationMapper(filemanager.getLocationMapper()) ;
         cacheModelLoads = false ;
         modelCache = null ;
+    }
+    
+    @Override
+    public FileManager clone() { return clone(this) ; } 
+ 
+    // Isolate to help avoid copy errors.
+    private static FileManager clone(FileManager filemanager) {
+        FileManager newFm = new FileManager() ;
+        newFm.fmHandlers.addAll(filemanager.fmHandlers) ;
+        newFm.fmMapper = null ;
+        if ( filemanager.getLocationMapper() != null )
+            newFm.fmMapper = new LocationMapper(filemanager.getLocationMapper()) ;
+        newFm.cacheModelLoads = false ;
+        newFm.modelCache = null ;
+        return newFm ;
     }
 
     /** Create a "standard" FileManager. */
@@ -127,33 +144,33 @@ public class FileManager
     /** Force a file handler to have the default configuration. */
     public static void setStdLocators(FileManager fMgr)
     {
-        fMgr.handlers.clear() ;
+        fMgr.fmHandlers.clear() ;
         fMgr.addLocatorFile() ;
         fMgr.addLocatorURL() ;
         fMgr.addLocatorClassLoader(fMgr.getClass().getClassLoader()) ;
     }
     /** Create with the given location mapper */
     public FileManager(LocationMapper _mapper)    { setLocationMapper(_mapper) ; }
-
+    
     /** @deprecated Use setLocationMapper */
     @Deprecated
     public void setMapper(LocationMapper _mapper) { setLocationMapper(_mapper) ; }
     
     
     /** Set the location mapping */
-    public void setLocationMapper(LocationMapper _mapper) { mapper = _mapper ; }
+    public void setLocationMapper(LocationMapper _mapper) { fmMapper = _mapper ; }
     
     /** Get the location mapping */
-    public LocationMapper getLocationMapper() { return mapper ; }
+    public LocationMapper getLocationMapper() { return fmMapper ; }
     
     /** Return an iterator over all the handlers */
-    public Iterator<Locator> locators() { return handlers.listIterator() ; }
+    public Iterator<Locator> locators() { return fmHandlers.listIterator() ; }
 
     /** Add a locator to the end of the locators list */ 
     public void addLocator(Locator loc)
     {
         log.debug("Add location: "+loc.getName()) ;
-        handlers.add(loc) ; }
+        fmHandlers.add(loc) ; }
 
     /** Add a file locator */ 
     public void addLocatorFile() { addLocatorFile(null) ; } 
@@ -188,7 +205,7 @@ public class FileManager
 
     
     /** Remove a locator */ 
-    public void remove(Locator loc) { handlers.remove(loc) ; }
+    public void remove(Locator loc) { fmHandlers.remove(loc) ; }
 
     // -------- Cache operations
     boolean cacheModelLoads = false ;
@@ -219,27 +236,27 @@ public class FileManager
     /** Read out of the cache - return null if not in the cache */ 
     public Model getFromCache(String filenameOrURI)
     { 
-        if ( ! getCachingModels() )
+        if ( ! isCachingModels() )
             return null; 
         return modelCache.get(filenameOrURI) ;
     }
     
     public boolean hasCachedModel(String filenameOrURI)
     { 
-        if ( ! getCachingModels() )
+        if ( ! isCachingModels() )
             return false ; 
         return modelCache.containsKey(filenameOrURI) ;
     }
     
     public void addCacheModel(String uri, Model m)
     { 
-        if ( getCachingModels() )
+        if ( isCachingModels() )
             modelCache.put(uri, m) ;
     }
 
     public void removeCacheModel(String uri)
     { 
-        if ( getCachingModels() )
+        if ( isCachingModels() )
             modelCache.remove(uri) ;
     }
 
@@ -465,10 +482,10 @@ public class FileManager
     /** Apply the mapping of a filename or URI */
     public String mapURI(String filenameOrURI)
     {
-        if ( mapper == null )
+        if ( fmMapper == null )
             return filenameOrURI ; 
             
-        String uri = mapper.altMapping(filenameOrURI, null) ;
+        String uri = fmMapper.altMapping(filenameOrURI, null) ;
 
         if ( uri == null )
         {
@@ -534,7 +551,7 @@ public class FileManager
     
     public TypedStream openNoMapOrNull(String filenameOrURI)
     {
-        for (Locator loc : handlers)
+        for (Locator loc : fmHandlers)
         {
             TypedStream in = loc.open(filenameOrURI) ;
             if ( in != null )

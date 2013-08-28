@@ -131,7 +131,7 @@ public class TestFileManager extends TestCase
     public void testFileManagerClone()
     {
         FileManager fileManager1 = new FileManager() ;
-        FileManager fileManager2 = new FileManager(fileManager1) ;
+        FileManager fileManager2 = fileManager1.clone() ;
         
         // Should not affect fileManager2
         fileManager1.addLocatorFile() ;
@@ -147,7 +147,6 @@ public class TestFileManager extends TestCase
             assertNull("Found file via wrong FileManager", in) ;
         } catch (NotFoundException ex) {}
     }
-    
     
     public void testLocationMappingURLtoFileOpen()
     {
