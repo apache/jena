@@ -47,6 +47,11 @@ public class StreamManager
     
     public StreamManager() {}
     
+    public StreamManager(StreamManager other) {
+        handlers.addAll(other.handlers) ;
+        mapper = other.mapper ;
+    }
+    
     /** Return a default configuration StreamManager 
      *  with a {@link LocatorFile}, 
      *  {@link LocatorURL},
@@ -58,6 +63,7 @@ public class StreamManager
         streamManager.addLocator(new LocatorFile(null)) ;
         streamManager.addLocator(new LocatorURL()) ;
         streamManager.addLocator(new LocatorClassLoader(streamManager.getClass().getClassLoader())) ;
+        streamManager.setLocationMapper(JenaIOEnvironment.getLocationMapper()) ;
         return streamManager ;
     }
     
@@ -131,7 +137,6 @@ public class StreamManager
         }
         return null; 
     }
-    
 
     /** Set the location mapping */
     public void setLocationMapper(LocationMapper _mapper) { mapper = _mapper ; }
