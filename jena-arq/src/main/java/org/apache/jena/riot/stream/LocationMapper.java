@@ -51,162 +51,152 @@ public class LocationMapper
     /** Create a LocationMapper with no mapping yet */
     public LocationMapper() { }
     
-    /** Create a LocationMapper made like another one
-     * This is a deep copy of the location and prefix maps..*/
-    public LocationMapper(LocationMapper locMapper)
-    {
-        altLocations.putAll(locMapper.altLocations) ;
-        altPrefixes.putAll(locMapper.altPrefixes) ;
+    /** Deep copy of location and prefix maps */
+    @Override
+    public LocationMapper clone() {
+        return clone(this) ;
     }
-    
-    public void copyFrom(LocationMapper lmap2)
-    {
+
+    private static LocationMapper clone(LocationMapper other) {
+        LocationMapper mapper = new LocationMapper() ;
+        mapper.altLocations.putAll(other.altLocations) ;
+        mapper.altPrefixes.putAll(other.altPrefixes) ;
+        return mapper ;
+    }
+
+    public void copyFrom(LocationMapper lmap2) {
         this.altLocations.putAll(lmap2.altLocations) ;
         this.altPrefixes.putAll(lmap2.altPrefixes) ;
     }
-    
-    public String altMapping(String uri)
-    {
+
+    public String altMapping(String uri) {
         return altMapping(uri, uri) ;
     }
 
-    /** Apply mappings: first try for an exact alternative location, then
-     *  try to remap by prefix, finally, try the special case of filenames
-     *  in a specific base directory. 
+    /**
+     * Apply mappings: first try for an exact alternative location, then try to
+     * remap by prefix, finally, try the special case of filenames in a specific
+     * base directory.
+     * 
      * @param uri
      * @param otherwise
      * @return The alternative location choosen
      */
-    public String altMapping(String uri, String otherwise)
-    {
-        if ( altLocations.containsKey(uri)) 
+    public String altMapping(String uri, String otherwise) {
+        if ( altLocations.containsKey(uri) )
             return altLocations.get(uri) ;
         String newStart = null ;
         String oldStart = null ;
-        for ( Iterator<String> iter = altPrefixes.keySet().iterator() ; iter.hasNext() ;)
-        {
+        for (Iterator<String> iter = altPrefixes.keySet().iterator(); iter.hasNext();) {
             String prefix = iter.next() ;
-            if ( uri.startsWith(prefix) )
-            {
+            if ( uri.startsWith(prefix) ) {
                 String s = altPrefixes.get(prefix) ;
-                if ( newStart == null || newStart.length() < s.length() )
-                {
+                if ( newStart == null || newStart.length() < s.length() ) {
                     oldStart = prefix ;
                     newStart = s ;
                 }
             }
         }
-        
+
         if ( newStart != null )
-            return newStart+uri.substring(oldStart.length()) ;
-        
+            return newStart + uri.substring(oldStart.length()) ;
+
         return otherwise ;
     }
-    
 
-    public void addAltEntry(String uri, String alt)
-    {
+    public void addAltEntry(String uri, String alt) {
         altLocations.put(uri, alt) ;
     }
 
-    public void addAltPrefix(String uriPrefix, String altPrefix) 
-    {
+    public void addAltPrefix(String uriPrefix, String altPrefix) {
         altPrefixes.put(uriPrefix, altPrefix) ;
     }
 
-    /** Iterate over all the entries registered */ 
-    public Iterator<String> listAltEntries()  { return altLocations.keySet().iterator() ; } 
-    /** Iterate over all the prefixes registered */ 
-    public Iterator<String> listAltPrefixes() { return altPrefixes.keySet().iterator() ; } 
-    
-    public void removeAltEntry(String uri)
-    {
+    /** Iterate over all the entries registered */
+    public Iterator<String> listAltEntries() {
+        return altLocations.keySet().iterator() ;
+    }
+
+    /** Iterate over all the prefixes registered */
+    public Iterator<String> listAltPrefixes() {
+        return altPrefixes.keySet().iterator() ;
+    }
+
+    public void removeAltEntry(String uri) {
         altLocations.remove(uri) ;
     }
 
-    public void removeAltPrefix(String uriPrefix) 
-    {
+    public void removeAltPrefix(String uriPrefix) {
         altPrefixes.remove(uriPrefix) ;
     }
-    public String getAltEntry(String uri)
-    {
+
+    public String getAltEntry(String uri) {
         return altLocations.get(uri) ;
     }
 
-    public String getAltPrefix(String uriPrefix) 
-    {
+    public String getAltPrefix(String uriPrefix) {
         return altPrefixes.get(uriPrefix) ;
     }
-   
+
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int x = 0 ;
         x = x ^ altLocations.hashCode() ;
         x = x ^ altPrefixes.hashCode() ;
         return x ;
     }
-    
+
     @Override
-    public boolean equals(Object obj)
-    {
-        if ( ! ( obj instanceof LocationMapper ) )
+    public boolean equals(Object obj) {
+        if ( !(obj instanceof LocationMapper) )
             return false ;
         LocationMapper other = (LocationMapper)obj ;
-        
-        if ( ! this.altLocations.equals(other.altLocations) )
+
+        if ( !this.altLocations.equals(other.altLocations) )
             return false ;
-        
-        if ( ! this.altPrefixes.equals(other.altPrefixes) )
+
+        if ( !this.altPrefixes.equals(other.altPrefixes) )
             return false ;
-        return true ; 
+        return true ;
     }
-    
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         String s = "" ;
-        for ( Iterator<String> iter = altLocations.keySet().iterator() ; iter.hasNext() ; )
-        {
+        for (Iterator<String> iter = altLocations.keySet().iterator(); iter.hasNext();) {
             String k = iter.next() ;
             String v = altLocations.get(k) ;
-            s = s+"(Loc:"+k+"=>"+v+") " ;
+            s = s + "(Loc:" + k + "=>" + v + ") " ;
         }
 
-        for ( Iterator<String> iter = altPrefixes.keySet().iterator() ; iter.hasNext() ; )
-        {
+        for (Iterator<String> iter = altPrefixes.keySet().iterator(); iter.hasNext();) {
             String k = iter.next() ;
             String v = altPrefixes.get(k) ;
-            s = s+"(Prefix:"+k+"=>"+v+") " ;
+            s = s + "(Prefix:" + k + "=>" + v + ") " ;
         }
         return s ;
     }
-    
-    public Model toModel()
-    {
+
+    public Model toModel() {
         Model m = ModelFactory.createDefaultModel() ;
         m.setNsPrefix("lmap", "http://jena.hpl.hp.com/2004/08/location-mapping#") ;
         toModel(m) ;
         return m ;
     }
-    
-    public void toModel(Model model)
-    {
-        
-        for ( Iterator<String> iter = altLocations.keySet().iterator() ; iter.hasNext() ; )
-        {
+
+    public void toModel(Model model) {
+        for (Iterator<String> iter = altLocations.keySet().iterator(); iter.hasNext();) {
             Resource r = model.createResource() ;
             Resource e = model.createResource() ;
             model.add(r, LocationMappingVocab.mapping, e) ;
-            
+
             String k = iter.next() ;
             String v = altLocations.get(k) ;
             model.add(e, LocationMappingVocab.name, k) ;
             model.add(e, LocationMappingVocab.altName, v) ;
         }
 
-        for ( Iterator<String> iter = altPrefixes.keySet().iterator() ; iter.hasNext() ; )
-        {
+        for (Iterator<String> iter = altPrefixes.keySet().iterator(); iter.hasNext();) {
             Resource r = model.createResource() ;
             Resource e = model.createResource() ;
             model.add(r, LocationMappingVocab.mapping, e) ;
