@@ -1219,12 +1219,14 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     @Override
     public abstract boolean usesLocalFiles() throws SQLException;
 
+    @SuppressWarnings("javadoc")
     public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern)
             throws SQLException {
         return new MetaResultSet(MetadataSchema.getPsuedoColumnColumns());
     }
 
     // Java 6/7 compatibility
+    @SuppressWarnings("javadoc")
     public boolean generatedKeyAlwaysReturned() throws SQLException {
         // We don't support returning keys
         return false;

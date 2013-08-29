@@ -300,12 +300,13 @@ public abstract class JenaStatement implements Statement {
             if (q.isSelectType()) {
                 switch (this.type) {
                 case ResultSet.TYPE_SCROLL_INSENSITIVE:
-                    this.currResults = new MaterializedSelectResults(this, qe, ResultSetFactory.makeRewindable(this.connection.applyPostProcessors(qe.execSelect())),
-                            false);
+                    this.currResults = new MaterializedSelectResults(this, qe, ResultSetFactory.makeRewindable(this.connection
+                            .applyPostProcessors(qe.execSelect())), false);
                     break;
                 case ResultSet.TYPE_FORWARD_ONLY:
                 default:
-                    this.currResults = new SelectResults(this, qe, this.connection.applyPostProcessors(qe.execSelect()), needsCommit);
+                    this.currResults = new SelectResults(this, qe, this.connection.applyPostProcessors(qe.execSelect()),
+                            needsCommit);
                     break;
                 }
             } else if (q.isAskType()) {
@@ -315,21 +316,25 @@ public abstract class JenaStatement implements Statement {
             } else if (q.isDescribeType()) {
                 switch (this.type) {
                 case ResultSet.TYPE_SCROLL_INSENSITIVE:
-                    this.currResults = new TripleListResults(this, qe, Iter.toList(this.connection.applyPostProcessors(qe.execDescribeTriples())), false);
+                    this.currResults = new TripleListResults(this, qe, Iter.toList(this.connection.applyPostProcessors(qe
+                            .execDescribeTriples())), false);
                     break;
                 case ResultSet.TYPE_FORWARD_ONLY:
                 default:
-                    this.currResults = new TripleIteratorResults(this, qe, this.connection.applyPostProcessors(qe.execDescribeTriples()), needsCommit);
+                    this.currResults = new TripleIteratorResults(this, qe, this.connection.applyPostProcessors(qe
+                            .execDescribeTriples()), needsCommit);
                     break;
                 }
             } else if (q.isConstructType()) {
                 switch (this.type) {
                 case ResultSet.TYPE_SCROLL_INSENSITIVE:
-                    this.currResults = new TripleListResults(this, qe, Iter.toList(this.connection.applyPostProcessors(qe.execConstructTriples())), false);
+                    this.currResults = new TripleListResults(this, qe, Iter.toList(this.connection.applyPostProcessors(qe
+                            .execConstructTriples())), false);
                     break;
                 case ResultSet.TYPE_FORWARD_ONLY:
                 default:
-                    this.currResults = new TripleIteratorResults(this, qe, this.connection.applyPostProcessors(qe.execConstructTriples()), needsCommit);
+                    this.currResults = new TripleIteratorResults(this, qe, this.connection.applyPostProcessors(qe
+                            .execConstructTriples()), needsCommit);
                     break;
                 }
             } else {
@@ -835,11 +840,16 @@ public abstract class JenaStatement implements Statement {
         }
     }
 
-	// Java 6/7 compatibility
-	public boolean isCloseOnCompletion() throws SQLException {
-		throw new SQLFeatureNotSupportedException();
-	}
+    // Java 6/7 compatibility
+    @SuppressWarnings("javadoc")
+    public boolean isCloseOnCompletion() throws SQLException {
+        // Statements do not automatically close
+        return false;
+    }
 
-	public void closeOnCompletion() throws SQLException {
-		throw new SQLFeatureNotSupportedException();
-	}}
+    @SuppressWarnings("javadoc")
+    public void closeOnCompletion() throws SQLException {
+        // We don't support the JDBC 4.1 feature of closing statements automatically
+        throw new SQLFeatureNotSupportedException();
+    }
+}
