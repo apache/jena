@@ -38,6 +38,7 @@ import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Transactional ;
 
 public class HttpAction
@@ -87,23 +88,26 @@ public class HttpAction
     public void setDataset(DatasetRef desc) {
         this.dsRef = desc ;
         this.dsg = desc.dataset ;
-
-        if ( dsg instanceof DatasetGraphWithLock ) {
+        
+        if ( dsg instanceof Transactional ) {
             transactional = (Transactional)dsg ;
-            isTransactional = false ;       // No real abort.
-        } else if ( dsg instanceof Transactional ) {
-            transactional = (Transactional)dsg ;
-            isTransactional = true ;
+            DatasetGraph basedsg = unwrap(dsg) ;
+            // Use transactional if it looks safe - abort is necessary.
+            isTransactional = ( basedsg instanceof Transactional ) ;
         } else {
-            // Non-transactional - wrap in something that does locking to give
-            // the same functionality in the absense of errors, with less concurrency.
-            DatasetGraphWithLock dsglock = new DatasetGraphWithLock(dsg) ;
-            transactional = dsglock ;
+            transactional = new DatasetGraphWithLock(dsg) ; 
+            // No real abort.
             isTransactional = false ;
-            dsg = dsglock ;
         }
     }
     
+    private DatasetGraph unwrap(DatasetGraph dsg) {
+        while ( dsg instanceof DatasetGraphWrapper ) {
+            dsg = ((DatasetGraphWrapper)dsg).getWrapped() ;
+        }
+        return dsg ;
+    }
+        
     public void setService(ServiceRef srvRef) {
         this.srvRef = srvRef ; 
     }
@@ -142,7 +146,12 @@ public class HttpAction
     }
 
     public void abort() {
-        transactional.abort() ;
+        try { transactional.abort() ; } 
+        catch (Exception ex) {
+            // Some datasets claim to be transactional.
+            // We try to continue operation
+            Log.warn(this, "Exception during abort (operation attempts to continue): "+ex.getMessage()) ; 
+        }
         activeDSG = null ;
     }
 
