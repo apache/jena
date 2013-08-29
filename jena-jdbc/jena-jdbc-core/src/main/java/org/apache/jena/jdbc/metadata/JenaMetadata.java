@@ -107,6 +107,7 @@ public abstract class JenaMetadata implements DatabaseMetaData {
 
     /**
      * Gets the associated Jena connection instance
+     * 
      * @return Jena connection
      */
     public JenaConnection getJenaConnection() {
@@ -567,32 +568,64 @@ public abstract class JenaMetadata implements DatabaseMetaData {
         // SQL_DATA_TYPE int => unused
         // SQL_DATETIME_SUB int => unused
         // NUM_PREC_RADIX int => usually 2 or 10
-        
-        //Report types we can marshal appropriately
-        return new MetaResultSet(MetadataSchema.getTypeInfoColumns(), 
-                new Object[][] {
-            { XSD.xboolean.toString(), Types.BOOLEAN, 0, null, null, null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 0 },
-            { XSD.xbyte.toString(), Types.TINYINT, Byte.toString(Byte.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 0 },
-            { XSD.date.toString(), Types.DATE, 0, "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 0 },
-            { XSD.dateTime.toString(), Types.DATE, 0, "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 0 },
-            { XSD.decimal.toString(), Types.DECIMAL, 16, null, null, null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)16, 0, 0, 10 },
-            { XSD.xdouble.toString(), Types.DOUBLE, 16, null, null, null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)16, 0, 0, 10 },
-            { XSD.xfloat.toString(), Types.FLOAT, 15, "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)7, 0, 0, 10 },
-            { XSD.xshort.toString(), Types.INTEGER, Integer.toString(Integer.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.integer.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), null, null, null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.xlong.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.xint.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.negativeInteger.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.nonNegativeInteger.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, true, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.nonPositiveInteger.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.positiveInteger.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, true, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.unsignedByte.toString(), Types.TINYINT, Byte.toString(Byte.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, true, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.unsignedInt.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, true, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.unsignedLong.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, true, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.unsignedShort.toString(), Types.INTEGER, Integer.toString(Integer.MAX_VALUE).length(), "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, true, false, false, null, (short)0, (short)0, 0, 0, 10 },
-            { XSD.xstring.toString(), Types.NVARCHAR, 0, "\"", "\"", null, (short)typeNullable, true, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 0 },
-            { XSD.time.toString(), Types.TIME, 0, "\"", "\"", null, (short)typeNullable, false, (short)typeSearchable, false, false, false, null, (short)0, (short)0, 0, 0, 0 },
-        });
+
+        // Report types we can marshal appropriately
+        return new MetaResultSet(MetadataSchema.getTypeInfoColumns(), new Object[][] {
+                { XSD.xboolean.toString(), Types.BOOLEAN, 0, null, null, null, (short) typeNullable, false,
+                        (short) typeSearchable, false, false, false, null, (short) 0, (short) 0, 0, 0, 0 },
+                { XSD.xbyte.toString(), Types.TINYINT, Byte.toString(Byte.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, false, false, false, null, (short) 0, (short) 0, 0,
+                        0, 0 },
+                { XSD.date.toString(), Types.DATE, 0, "\"", "\"", null, (short) typeNullable, false, (short) typeSearchable,
+                        false, false, false, null, (short) 0, (short) 0, 0, 0, 0 },
+                { XSD.dateTime.toString(), Types.DATE, 0, "\"", "\"", null, (short) typeNullable, false, (short) typeSearchable,
+                        false, false, false, null, (short) 0, (short) 0, 0, 0, 0 },
+                { XSD.decimal.toString(), Types.DECIMAL, 16, null, null, null, (short) typeNullable, false,
+                        (short) typeSearchable, false, false, false, null, (short) 0, (short) 16, 0, 0, 10 },
+                { XSD.xdouble.toString(), Types.DOUBLE, 16, null, null, null, (short) typeNullable, false,
+                        (short) typeSearchable, false, false, false, null, (short) 0, (short) 16, 0, 0, 10 },
+                { XSD.xfloat.toString(), Types.FLOAT, 15, "\"", "\"", null, (short) typeNullable, false, (short) typeSearchable,
+                        false, false, false, null, (short) 0, (short) 7, 0, 0, 10 },
+                { XSD.xshort.toString(), Types.INTEGER, Integer.toString(Integer.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, false, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.integer.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), null, null, null,
+                        (short) typeNullable, false, (short) typeSearchable, false, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.xlong.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, false, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.xint.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, false, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.negativeInteger.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, false, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.nonNegativeInteger.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, true, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.nonPositiveInteger.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, false, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.positiveInteger.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, true, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.unsignedByte.toString(), Types.TINYINT, Byte.toString(Byte.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, true, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.unsignedInt.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, true, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.unsignedLong.toString(), Types.BIGINT, Long.toString(Long.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, true, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.unsignedShort.toString(), Types.INTEGER, Integer.toString(Integer.MAX_VALUE).length(), "\"", "\"", null,
+                        (short) typeNullable, false, (short) typeSearchable, true, false, false, null, (short) 0, (short) 0, 0,
+                        0, 10 },
+                { XSD.xstring.toString(), Types.NVARCHAR, 0, "\"", "\"", null, (short) typeNullable, true,
+                        (short) typeSearchable, false, false, false, null, (short) 0, (short) 0, 0, 0, 0 },
+                { XSD.time.toString(), Types.TIME, 0, "\"", "\"", null, (short) typeNullable, false, (short) typeSearchable,
+                        false, false, false, null, (short) 0, (short) 0, 0, 0, 0 }, });
     }
 
     @Override
@@ -1029,7 +1062,8 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     @Override
     public boolean supportsResultSetConcurrency(int type, int concurrency) throws SQLException {
         // We only support read-only result sets
-        if (concurrency != ResultSet.CONCUR_READ_ONLY) return false;
+        if (concurrency != ResultSet.CONCUR_READ_ONLY)
+            return false;
         return supportsResultSetType(type);
     }
 
@@ -1185,15 +1219,14 @@ public abstract class JenaMetadata implements DatabaseMetaData {
     @Override
     public abstract boolean usesLocalFiles() throws SQLException;
 
-	public ResultSet getPseudoColumns(String catalog,
-									  String schemaPattern,
-									  String tableNamePattern,
-									  String columnNamePattern) throws SQLException {
-		throw new SQLFeatureNotSupportedException();
-	}
+    public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern)
+            throws SQLException {
+        return new MetaResultSet(MetadataSchema.getPsuedoColumnColumns());
+    }
 
-	// Java 6/7 compatibility
-	public boolean generatedKeyAlwaysReturned() throws SQLException {
-		throw new SQLFeatureNotSupportedException();
-	}
+    // Java 6/7 compatibility
+    public boolean generatedKeyAlwaysReturned() throws SQLException {
+        // We don't support returning keys
+        return false;
+    }
 }
