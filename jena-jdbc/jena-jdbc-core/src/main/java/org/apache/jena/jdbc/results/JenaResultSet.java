@@ -633,6 +633,16 @@ public abstract class JenaResultSet implements ResultSet {
     public Object getObject(String columnLabel, Map<String, Class<?>> map) throws SQLException {
         throw new SQLFeatureNotSupportedException("Only the single argument form of getObject() is supported");
     }
+    
+    @SuppressWarnings("javadoc")
+    public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException("Only the single argument form of getObject() is supported");
+    }
+    
+    @SuppressWarnings("javadoc")
+    public <T> T getObject(String columnLabel,  Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException("Only the single argument form of getObject() is supported");
+    }
 
     @Override
     public Ref getRef(int columnIndex) throws SQLException {
@@ -701,15 +711,6 @@ public abstract class JenaResultSet implements ResultSet {
         throw new SQLFeatureNotSupportedException();
     }
 	
-	// Java6/7 compatibility
-	public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-	
-	public <T> T getObject(String columnLabel,  Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
     @Override
     public final SQLWarning getWarnings() throws SQLException {
         return this.warnings;
