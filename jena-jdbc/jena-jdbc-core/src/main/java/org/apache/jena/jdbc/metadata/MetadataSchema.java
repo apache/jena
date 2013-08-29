@@ -207,7 +207,14 @@ public class MetadataSchema {
     public static ColumnInfo[] getProcedureColumns() {
         return PROCEDURE_COLUMNS;
     }
-    
+
+    /**
+     * Gets the columns for
+     * {@link JenaMetadata#getPseudoColumns(String, String, String, String)}
+     * method
+     * 
+     * @return Column information
+     */
     public static ColumnInfo[] getPsuedoColumnColumns() {
         return PSUEDO_COLUMN_COLUMNS;
     }
@@ -1083,7 +1090,7 @@ public class MetadataSchema {
                     // SPECIFIC_NAME String => The name which uniquely
                     // identifies this procedure within its schema.
                     specificName };
-            
+
             PSUEDO_COLUMN_COLUMNS = new ColumnInfo[] {
                     // TABLE_CAT String => table catalog (may be null)
                     tableCat,
@@ -1097,22 +1104,28 @@ public class MetadataSchema {
                     dataType,
                     // COLUMN_SIZE int => column size.
                     columnSize,
-                    // DECIMAL_DIGITS int => the number of fractional digits. Null is returned for data types where DECIMAL_DIGITS is not applicable.
+                    // DECIMAL_DIGITS int => the number of fractional digits.
+                    // Null is returned for data types where DECIMAL_DIGITS is
+                    // not applicable.
                     decimalDigits,
                     // NUM_PREC_RADIX int => Radix (typically either 10 or 2)
                     numPrecRadix,
-                    // COLUMN_USAGE String => The allowed usage for the column. The value returned will correspond to the enum name returned by PseudoColumnUsage.name()
+                    // COLUMN_USAGE String => The allowed usage for the column.
+                    // The value returned will correspond to the enum name
+                    // returned by PseudoColumnUsage.name()
                     columnUsage,
                     // REMARKS String => comment describing column (may be null)
                     remarks,
-                    // CHAR_OCTET_LENGTH int => for char types the maximum number of bytes in the column
+                    // CHAR_OCTET_LENGTH int => for char types the maximum
+                    // number of bytes in the column
                     charOctetLength,
-                    // IS_NULLABLE String => ISO rules are used to determine the nullability for a column.
+                    // IS_NULLABLE String => ISO rules are used to determine the
+                    // nullability for a column.
                     // YES --- if the column can include NULLs
                     // NO --- if the column cannot include NULLs
-                    // empty string --- if the nullability for the column is unknown
-                    isNullable
-            };
+                    // empty string --- if the nullability for the column is
+                    // unknown
+                    isNullable };
 
             // NB - For some reason JDBC suddenly uses TABLE_CATALOG instead of
             // TABLE_CAT here?
