@@ -228,12 +228,12 @@ public class SPARQL_Update extends SPARQL_Protocol
                 req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
             }
             catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; return ; }
-            catch (QueryParseException ex)  { errorBadRequest(messageForQPE(ex)) ; return ; }
+            catch (QueryParseException ex) { errorBadRequest(messageForQPE(ex)) ; return ; }
         }
         
         action.beginWrite() ;
         try {
-            if (action.isTransactional())
+            if (req == null )
                 UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, UpdateParseBase, Syntax.syntaxARQ);
             else
                 UpdateAction.execute(req, action.getActiveDSG()) ;
@@ -241,10 +241,10 @@ public class SPARQL_Update extends SPARQL_Protocol
         } catch (UpdateException ex) {
             action.abort() ;
             incCounter(action.srvRef, UpdateExecErrors) ;
-            errorBadRequest(ex.getMessage()) ;
+            errorOccurred(ex.getMessage()) ;
         } catch (QueryParseException ex) {
             action.abort() ;
-            incCounter(action.srvRef, UpdateExecErrors) ;
+            // Counter inc'ed further out.
             errorBadRequest(messageForQPE(ex)) ;
         } catch (Throwable ex) {
             if ( ! ( ex instanceof ActionErrorException ) )
