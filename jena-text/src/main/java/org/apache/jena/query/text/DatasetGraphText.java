@@ -47,8 +47,6 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
             dsgtxn = new DatasetGraphWithLock(dsg) ;
     }
 
-//    public DatasetGraph getBase() { return getWrapped() ; }
-    
     // ---- Intecept these and force the use of views.
     @Override
     public Graph getDefaultGraph()
