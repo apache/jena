@@ -73,8 +73,7 @@
 				<!-- Slow to build - exclude from default dev build -->
 				<!-- <module>jena-jdbc</module>-->
 				<module>apache-jena-libs</module>
-				<!-- Don't build distro package every time -->
-				<!-- <module>apache-jena</module> -->
+				<module>apache-jena</module>
 			</modules>
 		</profile>
 		
