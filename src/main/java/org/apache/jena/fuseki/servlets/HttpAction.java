@@ -148,8 +148,10 @@ public class HttpAction
     public void abort() {
         try { transactional.abort() ; } 
         catch (Exception ex) {
-            // Some datasets claim to be transactional.
-            // We try to continue operation
+            // Some datasets claim to be transactional but
+            // don't provide a real abort. We tried to avoid
+            // them earlier but even if they sneek through,
+            // we try to continue server operation.
             Log.warn(this, "Exception during abort (operation attempts to continue): "+ex.getMessage()) ; 
         }
         activeDSG = null ;
