@@ -47,8 +47,8 @@ public class MetadataSchema {
     private static ColumnInfo[] ATTRIBUTE_COLUMNS, BEST_ROW_IDENTIFIER_COLUMNS, CATALOG_COLUMNS, CLIENT_INFO_PROPERTY_COLUMNS,
             COLUMN_COLUMNS, COLUMN_PRIVILEGE_COLUMNS, CROSS_REFERENCE_COLUMNS, EXPORTED_KEY_COLUMNS, FUNCTION_COLUMN_COLUMNS,
             FUNCTION_COLUMNS, IMPORTED_KEY_COLUMNS, INDEX_INFO_COLUMNS, PRIMARY_KEY_COLUMNS, PROCEDURE_COLUMN_COLUMNS,
-            PROCEDURE_COLUMNS, SCHEMA_COLUMNS, SUPER_TABLE_COLUMNS, SUPER_TYPE_COLUMNS, TABLE_PRIVILEGE_COLUMNS,
-            TABLE_TYPE_COLUMNS, TABLE_COLUMNS, TYPE_INFO_COLUMNS, UDT_COLUMNS, VERSION_COLUMNS;
+            PROCEDURE_COLUMNS, PSUEDO_COLUMN_COLUMNS, SCHEMA_COLUMNS, SUPER_TABLE_COLUMNS, SUPER_TYPE_COLUMNS,
+            TABLE_PRIVILEGE_COLUMNS, TABLE_TYPE_COLUMNS, TABLE_COLUMNS, TYPE_INFO_COLUMNS, UDT_COLUMNS, VERSION_COLUMNS;
 
     /**
      * Gets the columns for the
@@ -206,6 +206,10 @@ public class MetadataSchema {
      */
     public static ColumnInfo[] getProcedureColumns() {
         return PROCEDURE_COLUMNS;
+    }
+    
+    public static ColumnInfo[] getPsuedoColumnColumns() {
+        return PSUEDO_COLUMN_COLUMNS;
     }
 
     /**
@@ -414,6 +418,7 @@ public class MetadataSchema {
             ColumnInfo tableType = new StringColumn("TABLE_TYPE", columnNoNulls);
             ColumnInfo selfRefColName = new StringColumn("SELF_REFERENCING_COL_NAME", columnNullable);
             ColumnInfo refGeneration = new StringColumn("REF_GENERATION", columnNullable);
+            ColumnInfo columnUsage = new StringColumn("COLUMN_USAGE", columnNoNulls);
 
             ATTRIBUTE_COLUMNS = new ColumnInfo[] {
                     // TYPE_CAT String => type catalog (may be null)
@@ -1078,6 +1083,36 @@ public class MetadataSchema {
                     // SPECIFIC_NAME String => The name which uniquely
                     // identifies this procedure within its schema.
                     specificName };
+            
+            PSUEDO_COLUMN_COLUMNS = new ColumnInfo[] {
+                    // TABLE_CAT String => table catalog (may be null)
+                    tableCat,
+                    // TABLE_SCHEM String => table schema (may be null)
+                    tableSchema,
+                    // TABLE_NAME String => table name
+                    tableName,
+                    // COLUMN_NAME String => column name
+                    columnName,
+                    // DATA_TYPE int => SQL type from java.sql.Types
+                    dataType,
+                    // COLUMN_SIZE int => column size.
+                    columnSize,
+                    // DECIMAL_DIGITS int => the number of fractional digits. Null is returned for data types where DECIMAL_DIGITS is not applicable.
+                    decimalDigits,
+                    // NUM_PREC_RADIX int => Radix (typically either 10 or 2)
+                    numPrecRadix,
+                    // COLUMN_USAGE String => The allowed usage for the column. The value returned will correspond to the enum name returned by PseudoColumnUsage.name()
+                    columnUsage,
+                    // REMARKS String => comment describing column (may be null)
+                    remarks,
+                    // CHAR_OCTET_LENGTH int => for char types the maximum number of bytes in the column
+                    charOctetLength,
+                    // IS_NULLABLE String => ISO rules are used to determine the nullability for a column.
+                    // YES --- if the column can include NULLs
+                    // NO --- if the column cannot include NULLs
+                    // empty string --- if the nullability for the column is unknown
+                    isNullable
+            };
 
             // NB - For some reason JDBC suddenly uses TABLE_CATALOG instead of
             // TABLE_CAT here?
