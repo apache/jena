@@ -87,7 +87,7 @@ public class TransformCopy implements Transform
     public Op transform(OpDisjunction opDisjunction, List<Op> elts)     { return xform(opDisjunction, elts) ; }
     
     @Override
-    public Op transform(OpExt opExt)                                { return opExt ; }
+    public Op transform(OpExt opExt)                                { return xform(opExt) ; }
     
     @Override
     public Op transform(OpNull opNull)                              { return opNull.copy() ; }
@@ -131,12 +131,23 @@ public class TransformCopy implements Transform
             return op ;
         return op.copy(left, right) ;
     }
+    
     private Op xform(OpN op, List<Op> elts)
     {
         // Need to do one-deep equality checking.
         if ( ! alwaysCopy && equals1(elts, op.getElements()) )
             return op ;
         return op.copy(elts) ;
+    }
+    
+    private Op xform(OpExt op)
+    {
+        try {
+            return op.apply(this);
+        } catch (Exception e) {
+            // May happen if the OpExt doesn't implement apply()
+            return op;
+        }
     }
     
     private boolean equals1(List<Op> list1, List<Op> list2)
