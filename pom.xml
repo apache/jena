@@ -67,7 +67,8 @@
 				<module>jena-arq</module>
 				<module>jena-tdb</module>
 				<module>jena-text</module>
-				<module>jena-sdb</module>
+				<!-- Slow to build - exclude from default dev build -->
+				<!-- <module>jena-sdb</module> -->
 				<module>jena-fuseki</module>
 				<module>jena-security</module>
 				<!-- Slow to build - exclude from default dev build -->
