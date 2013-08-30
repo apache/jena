@@ -112,6 +112,11 @@ public class JSWriter {
         key(key) ;
         value(val) ;
     }
+    
+    public void pair(String key, Number val) {
+        key(key) ;
+        value(val) ;
+    }
 
     public void startArray() {
         startCompound() ;
