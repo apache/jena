@@ -23,19 +23,13 @@ import java.math.BigDecimal ;
 public class JsonNumber extends JsonPrimitive
 {
     public static JsonNumber valueDecimal(String image)
-    {
-        return new JsonNumber(image) ;
-    }
+    { return new JsonNumber(image) ; }
 
     public static JsonNumber valueDouble(String image)
-    {
-        return new JsonNumber(image) ;
-    }
+    { return new JsonNumber(image) ; }
 
     public static JsonNumber valueInteger(String image)
-    {
-        return new JsonNumber(image) ;
-    }
+    { return new JsonNumber(image) ; }
  
     public static JsonNumber value(long number)
     { return new JsonNumber(number) ; }
@@ -50,7 +44,6 @@ public class JsonNumber extends JsonPrimitive
 
     private JsonNumber(String string)        { this.number = new BigDecimal(string) ; }
     
-    
     private JsonNumber(long number)          { this.number = BigDecimal.valueOf(number) ; }
     private JsonNumber(double number)        { this.number = BigDecimal.valueOf(number) ; }
     private JsonNumber(BigDecimal number)    { this.number = number ; }
@@ -60,7 +53,7 @@ public class JsonNumber extends JsonPrimitive
     @Override
     public boolean isNumber()           { return true ; }
     @Override
-    public JsonNumber getAsNumber()       { return this ; }
+    public JsonNumber getAsNumber()     { return this ; }
     
     public Number value()               { return this.number ; }
 
