@@ -36,10 +36,13 @@ import org.apache.http.StatusLine ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.client.methods.* ;
+import org.apache.http.conn.ClientConnectionManager ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
 import org.apache.http.impl.client.AbstractHttpClient ;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
+import org.apache.http.impl.conn.PoolingClientConnectionManager ;
+import org.apache.http.impl.conn.SchemeRegistryFactory ;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.http.protocol.BasicHttpContext ;
 import org.apache.http.protocol.HttpContext ;
@@ -102,6 +105,13 @@ public class HttpOp {
     /** System wide HTTP operation counter for log messages */
     static private AtomicLong counter = new AtomicLong(0);
 
+    
+    /** Default HttpClient.
+     *  This is used only if there is no authentication set.
+     */
+    static private HttpClient defaultHttpClient = null ; 
+
+    
     /**
      * Default authenticator used for HTTP authentication
      */
@@ -151,6 +161,14 @@ public class HttpOp {
     };
     
     /**
+     * Gets the default authenticator used for authenticate requests if no
+     * specific authenticator is provided.
+     */
+    public static HttpAuthenticator getDefaultAuthenticator() {
+        return defaultAuthenticator ;
+    }
+
+    /**
      * Sets the default authenticator used for authenticate requests if no
      * specific authenticator is provided. May be set to null to turn off
      * default authentication, when set to null users must manually configure
@@ -163,6 +181,47 @@ public class HttpOp {
         defaultAuthenticator = authenticator;
     }
 
+    /** Return the current default HttpClient.  This may be null, meaning a new
+     * Httpclient is created each time, if none is provided in the HttpOp function call. 
+     */
+    public static HttpClient getDefaultHttpClient() {
+        return defaultHttpClient ;
+    }
+
+    /* Performance can be improved by using a shared HttpClient that uses
+     * connection pooling. However, pool management is complicated and can lead
+     * to starvation (the system locks-up, especially on Java6; it's JVM sensitive).
+     * The default HttpClient is not used if an HttpAuthenticator is provided.
+     * <p>
+     * Set to "null" to create a new HttpClient for each call (default behaviour, more reliable, 
+     * but slower when many HTTP operation are attempted).  
+     * <p>
+     * See the Apache Http Client documentation for more details. 
+     */
+    public static void setDefaultHttpClient(HttpClient httpClient) {
+        defaultHttpClient = httpClient;
+    }
+    
+    
+    /** Create an HttpClient that performs connection pooling.  This can be used
+     * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
+     */
+    public static HttpClient createCachingHttpClient() {
+        return new SystemDefaultHttpClient() {
+          /** See SystemDefaultHttpClient (4.2).  This version always sets the connection cache */  
+          @Override
+          protected ClientConnectionManager createClientConnectionManager() {
+              PoolingClientConnectionManager connmgr = new PoolingClientConnectionManager(
+                      SchemeRegistryFactory.createSystemDefault());
+              String s = System.getProperty("http.maxConnections", "5");
+              int max = Integer.parseInt(s);
+              connmgr.setDefaultMaxPerRoute(max);
+              connmgr.setMaxTotal(2 * max);
+              return connmgr;
+          }
+        } ;
+    } ;
+    
     // ---- HTTP GET
     /**
      * Executes a HTTP Get request, handling the response with given handler.
@@ -968,38 +1027,6 @@ public class HttpOp {
         }
     }
 
-    private static HttpClient jenaGlobalHttpClient = null ; 
-
-    // Performance can be improved by using a share HttpClient that uses
-    // connection pooling. However, pool management is complicated and can lead
-    // to starvation (the system locks-up). The use of an HttpAuthenticator also
-    // complicates the requirements.    
-    
-    // This code sets a global HttpClient, used when there is no HttpAuthenticator.
-    // however, under high load there have been lock-ups due to starvation.
-    // Provide a safe setup for the default case.
-    
-//    static {
-//        /*
-//         * SystemDefaultHttpClient respects
-//         *     http.keepAlive
-//         *     http.maxConnections 
-//         * JENA-498 temporary workaround
-//         * 
-//         * Set the system property for http.keepAlive if not set. Better would be our
-//         * own settings: maybe: BasicHttpParams params = new BasicHttpParams...
-//         * params.set .... jenaGlobalHttpClient = new DefaultHttpClient(params)
-//         * ;
-//         */
-//        synchronized(counter) { // Any object to lock on
-//            final String keepAlive = "http.keepAlive" ;
-//            String x = System.getProperty(keepAlive) ;
-//            if ( x == null )
-//                System.setProperty(keepAlive, "true") ;
-//            jenaGlobalHttpClient = new SystemDefaultHttpClient() ;
-//        }
-//    }
-
     /**
      * Ensures that a HTTP Client is non-null, uses a Jena-wide
      * {@link SystemDefaultHttpClient} if available when no
@@ -1012,8 +1039,8 @@ public class HttpOp {
     private static HttpClient ensureClient(HttpClient client, HttpAuthenticator auth) {
         if ( client != null )
             return client ;
-        if ( jenaGlobalHttpClient != null && auth == null )
-            return jenaGlobalHttpClient ;
+        if ( defaultHttpClient != null && auth == null )
+            return defaultHttpClient ;
         return new SystemDefaultHttpClient() ;
     }
 
