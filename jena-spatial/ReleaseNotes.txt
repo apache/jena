@@ -1,0 +1,14 @@
+Release Notes 
+=============
+
+==== Jena Spatial 1.0.0
++ Jena spatial search support with property functions:
+  nearby
+  withinCircle
+  withinBox
+  intersectBox
+  north
+  south
+  west
+  east
+
