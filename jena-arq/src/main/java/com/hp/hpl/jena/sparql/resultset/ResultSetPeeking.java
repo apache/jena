@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.resultset;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.jena.atlas.lib.Closeable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  * A wrapper around another result set that provides peek capabilities
  * 
  */
-public class ResultSetPeeking implements ResultSetPeekable {
+public class ResultSetPeeking implements ResultSetPeekable, Closeable {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResultSetPeekable.class);
 
     /**
@@ -169,6 +170,13 @@ public class ResultSetPeeking implements ResultSetPeekable {
             return this.peeked;
         } else {
             throw new NoSuchElementException();
+        }
+    }
+
+    @Override
+    public void close() {
+        if (this.results instanceof Closeable) {
+            ((Closeable)this.results).close();
         }
     }
 
