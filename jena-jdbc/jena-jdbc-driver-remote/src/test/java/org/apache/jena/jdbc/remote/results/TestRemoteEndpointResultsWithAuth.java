@@ -108,9 +108,6 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
         Update clearRequest = new UpdateDrop(Target.ALL) ;
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate, authenticator) ;
         proc.execute() ;
-        
-        // Sleep attempts to avoid a intermittent timing issue on the build server that can result in hung builds
-        Thread.sleep(250);
     }
 
     /**
@@ -121,13 +118,12 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
      */
     @AfterClass
     public static void cleanup() throws SQLException, InterruptedException {
-        server.stop();
         
         // Sleep attempts to avoid a intermittent timing issue on the build server that can result in hung builds
-        Thread.sleep(250);
         
         connection.close();
         realmFile.delete();
+        server.stop();
     }
 
     @Override
