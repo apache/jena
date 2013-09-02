@@ -7,7 +7,6 @@
   <name>Apache Jena - SPARQL and Lucene/Solr Spatial</name>
   <version>1.0.1-SNAPSHOT</version>
   
-  
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>

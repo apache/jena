@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geoarq: <http://openjena.org/GeoARQ/property#>
+
+SELECT ?airport {
+    ?s geoarq:nearby (51.3000 -2.71000) .
+    ?s rdfs:label ?airport .
+}
