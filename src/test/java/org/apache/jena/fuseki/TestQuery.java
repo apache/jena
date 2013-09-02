@@ -82,6 +82,16 @@ public class TestQuery extends BaseTest
         qExec.close();
     }
     
+    @Test public void query_with_params_01()
+    {
+        String query = "ASK { }";
+        QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query);
+        
+        boolean result = qExec.execAsk();
+        Assert.assertTrue(result);
+        qExec.close();
+    }
+    
     @Test public void request_id_header_01() throws IOException
     {
         String qs = Convert.encWWWForm("ASK{}") ;
