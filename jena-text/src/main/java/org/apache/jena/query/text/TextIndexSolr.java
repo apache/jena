@@ -73,8 +73,6 @@ public class TextIndexSolr implements TextIndex
             solrServer.shutdown() ;
     }
 
-
-
     @Override
     public void addEntity(Entity entity)
     {
