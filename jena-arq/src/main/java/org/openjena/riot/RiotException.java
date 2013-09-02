@@ -20,7 +20,7 @@ package org.openjena.riot;
 
 import com.hp.hpl.jena.shared.JenaException ;
 
-/** @deprecated use org.pache.jena.riot.RiotExpection */
+/** @deprecated use org.apache.jena.riot.RiotExpection */
 @Deprecated 
 public class RiotException extends JenaException
 {
