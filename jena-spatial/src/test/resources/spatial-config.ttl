@@ -47,5 +47,8 @@ spatial:SpatialIndexLucene  rdfs:subClassOf   spatial:SpatialIndex .
          [ spatial:latitude :latitude_2 ; spatial:longitude :longitude_2 ]
          ) ;
     # custom geo predicates for 2) Well Known Text Literal
-    spatial:hasWKTPredicates (:wkt_1 :wkt_2) 
+    spatial:hasWKTPredicates (:wkt_1 :wkt_2) ;
+    # custom SpatialContextFactory for 2) Well Known Text Literal
+    spatial:spatialContextFactory
+         "com.spatial4j.core.context.jts.JtsSpatialContextFactory"
     .

@@ -54,8 +54,10 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
          [ spatial:latitude <#latitude_1> ; spatial:longitude <#longitude_1> ]
          [ spatial:latitude <#latitude_2> ; spatial:longitude <#longitude_2> ]
     ) ;
-    spatial:hasWKTPredicates (<#wkt_1> <#wkt_2>) .
-      */
+    spatial:hasWKTPredicates (<#wkt_1> <#wkt_2>) ;
+    spatial:spatialContextFactory
+         "com.spatial4j.core.context.jts.JtsSpatialContextFactory"  .
+    */
     
     @Override
     public EntityDefinition open(Assembler a, Resource root, Mode mode)
@@ -114,7 +116,22 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
             docDef.addWKTPredicate(wkt);
         }
         
-        return docDef ;
+        String qs4 = StrUtils.strjoinNL("SELECT * { ?definition :spatialContextFactory ?factory }") ;
+        Query query4 = QueryFactory.create(prologue+" "+qs4) ;
+        QueryExecution qexec4 = QueryExecutionFactory.create(query4, model, qsol1) ;
+        ResultSet rs4 = qexec4.execSelect() ;
+        List<QuerySolution> results4 = ResultSetFormatter.toList(rs4) ;
+        if (results4.size() ==0){
+        	return docDef;
+        } else if ( results4.size() !=1  )  {
+            Log.warn(this, "Multiple matches for SpatialContextFactory for : "+root) ;
+            throw new SpatialIndexException("Multiple matches for SpatialContextFactory for : "+root) ;
+        } else {
+        	QuerySolution qsol4 = results4.get(0);
+        	String spatialContextFactory = qsol4.getLiteral("factory").getLexicalForm() ;
+        	docDef.setSpatialContextFactory(spatialContextFactory);
+        	return docDef ;
+        }  
     }
 }
 

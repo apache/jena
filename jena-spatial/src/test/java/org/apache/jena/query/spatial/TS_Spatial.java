@@ -81,6 +81,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		
 		TestTDBDatasetWithLuceneSpatialIndex.class,
 		TestIndexingSpatialDataWithLucene.class,
+		TestIndexingSpatialDataWithSolr.class,
 
 		TestEntityDefinitionAssembler.class,
 		TestSpatialDatasetAssembler.class,

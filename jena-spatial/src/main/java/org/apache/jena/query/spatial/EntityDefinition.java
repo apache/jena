@@ -18,14 +18,17 @@
 
 package org.apache.jena.query.spatial;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.spatial4j.core.context.SpatialContextFactory;
 
 /**
  * Definition of a "document"
@@ -58,8 +61,10 @@ public class EntityDefinition {
 	 *            The entity being indexed (e.g. it's URI).
 	 */
 	public EntityDefinition(String entityField, String geoField) {
-		this.entityField = entityField==null || entityField.isEmpty() ? "entityField":entityField;
-		this.geoField = geoField==null || geoField.isEmpty() ? "geoField":geoField;
+		this.entityField = entityField == null || entityField.isEmpty() ? "entityField"
+				: entityField;
+		this.geoField = geoField == null || geoField.isEmpty() ? "geoField"
+				: geoField;
 		this.WKTPredicates = new HashSet<Node>();
 		this.builtinWKTPredicates = new HashSet<Node>();
 		this.spatialPredicatePairs = new HashSet<SpatialPredicatePair>();
@@ -67,12 +72,19 @@ public class EntityDefinition {
 		initBuiltinPredicates();
 	}
 
+	public void setSpatialContextFactory(String spatialContextFactoryClass) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("spatialContextFactory", spatialContextFactoryClass);
+		SpatialQuery.ctx = SpatialContextFactory.makeSpatialContext(map,
+				SpatialQuery.class.getClassLoader());
+	}
+
 	private void initBuiltinPredicates() {
 		addBuiltinWKTPredicate(geo_geometry);
 		addBuiltinWKTPredicate(geosparql_asWKT);
 		addBuiltinSpatialPredicatePair(geo_latitude, geo_longitude);
 	}
-	
+
 	private boolean addBuiltinWKTPredicate(Resource predicate) {
 		builtinWKTPredicates.add(predicate.asNode());
 		return addWKTPredicate(predicate);
@@ -88,13 +100,12 @@ public class EntityDefinition {
 				latitude_predicate.asNode(), longitude_predicate.asNode()));
 		return addSpatialPredicatePair(latitude_predicate, longitude_predicate);
 	}
-	
+
 	public boolean addSpatialPredicatePair(Resource latitude_predicate,
 			Resource longitude_predicate) {
 		return spatialPredicatePairs.add(new SpatialPredicatePair(
 				latitude_predicate.asNode(), longitude_predicate.asNode()));
 	}
-	
 
 	public String getEntityField() {
 		return entityField;
@@ -129,24 +140,26 @@ public class EntityDefinition {
 		}
 		return null;
 	}
-	
-	public int getCustomSpatialPredicatePairCount(){
-		return this.spatialPredicatePairs.size()-builtinSpatialPredicatePairs.size();
+
+	public int getCustomSpatialPredicatePairCount() {
+		return this.spatialPredicatePairs.size()
+				- builtinSpatialPredicatePairs.size();
 	}
-	
-	public int getSpatialPredicatePairCount(){
+
+	public int getSpatialPredicatePairCount() {
 		return this.spatialPredicatePairs.size();
 	}
-	
-	public int getCustomWKTPredicateCount(){
-		return this.WKTPredicates.size()- builtinWKTPredicates.size();
+
+	public int getCustomWKTPredicateCount() {
+		return this.WKTPredicates.size() - builtinWKTPredicates.size();
 	}
-	
-	public int getWKTPredicateCount(){
+
+	public int getWKTPredicateCount() {
 		return this.WKTPredicates.size();
 	}
-	
-	public boolean hasSpatialPredicatePair(Node latitude_predicate, Node longitude_predicate){
+
+	public boolean hasSpatialPredicatePair(Node latitude_predicate,
+			Node longitude_predicate) {
 		Iterator<SpatialPredicatePair> it = this.spatialPredicatePairs
 				.iterator();
 		while (it.hasNext()) {

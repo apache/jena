@@ -56,7 +56,7 @@ public class SpatialQuery
     public static final String VERSION      = metadata.get(PATH+".version", "unknown") ;
     public static final String BUILD_DATE   = metadata.get(PATH+".build.datetime", "unset") ;
     
-    public static final SpatialContext ctx = JtsSpatialContext.GEO;
+    public static SpatialContext ctx = SpatialContext.GEO;
     
     static { init() ; }
     
