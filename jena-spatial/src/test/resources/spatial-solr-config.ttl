@@ -45,4 +45,7 @@ spatial:SpatialIndexSolr rdfs:subClassOf   spatial:SpatialIndex .
          ) ;
     # custom geo predicates for 2) Well Known Text Literal
     spatial:hasWKTPredicates (:wkt_1 :wkt_2) ;
+    # custom SpatialContextFactory for 2) Well Known Text Literal
+    spatial:spatialContextFactory
+         "com.spatial4j.core.context.jts.JtsSpatialContextFactory"
     .

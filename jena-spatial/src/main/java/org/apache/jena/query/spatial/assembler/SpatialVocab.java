@@ -46,6 +46,7 @@ public class SpatialVocab
     public static final Property pHasWKTPredicates  = Vocab.property(NS, "hasWKTPredicates") ;
     public static final Property pLatitude             = Vocab.property(NS, "latitude") ;
     public static final Property pLongitude         = Vocab.property(NS, "longitude") ;
+    public static final Property pSpatialContextFactory = Vocab.property(NS, "spatialContextFactory") ;
     // public static final Property pOptional          = Vocab.property(NS, "optional") ;
 
 }

@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.jena.query.spatial.EntityDefinition;
 import org.apache.jena.query.spatial.SpatialIndexException;
+import org.apache.jena.query.spatial.SpatialQuery;
 import org.junit.Test;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -29,6 +30,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.spatial4j.core.context.jts.JtsSpatialContext;
 
 /**
  * Test assembler for EntityDefinition
@@ -39,6 +41,7 @@ public class TestEntityDefinitionAssembler {
 	private static final Resource spec0;
 	private static final Resource spec1;
 	private static final Resource spec2;
+	private static final Resource spec3;
 	private static final Resource specNoEntityField;
 	private static final Resource specNoGeoField;
 
@@ -85,6 +88,12 @@ public class TestEntityDefinitionAssembler {
 		assertEquals(true, entityDef.isWKTPredicate(SPEC2_WKT_2.asNode()));
 		assertEquals(false, entityDef.isWKTPredicate(SPEC1_WKT.asNode()));
 	}
+    
+	@Test public void EntityHasSpatialContextFactory() {
+		EntityDefinitionAssembler emAssembler = new EntityDefinitionAssembler();
+		EntityDefinition entityDef = emAssembler.open(null, spec3, null);
+		assertEquals(JtsSpatialContext.GEO.getClass().toString(), SpatialQuery.ctx.getClass().toString());
+	}
 	
 	@Test(expected=SpatialIndexException.class) public void errorOnNoEntityField() {
 		EntityDefinitionAssembler emAssembler = new EntityDefinitionAssembler();
@@ -114,6 +123,8 @@ public class TestEntityDefinitionAssembler {
 	private static final Resource SPEC2_LONGITUDE_2 = ResourceFactory.createResource(TESTBASE+"longitude_2");
 	private static final Resource SPEC2_WKT_1 = ResourceFactory.createResource(TESTBASE+"wkt_1");
 	private static final Resource SPEC2_WKT_2 = ResourceFactory.createResource(TESTBASE+"wkt_2");
+	
+	private static final String SPEC3_SPATIALCONTEXTFACTORY = "com.spatial4j.core.context.jts.JtsSpatialContextFactory";
 	
 	static {
 		
@@ -165,6 +176,15 @@ public class TestEntityDefinitionAssembler {
 			    		    				  SPEC2_WKT_1, SPEC2_WKT_2
 			    		    		  }))
 			     ;
+		
+		// create an entity definition specification with spatialContextFactory
+		model = ModelFactory.createDefaultModel();
+		spec3 = model.createResource(TESTBASE + "spec0")
+				     .addProperty(SpatialVocab.pEntityField, SPEC0_ENTITY_FIELD)
+				     .addProperty(SpatialVocab.pGeoField, SPEC0_GEO_FIELD)
+				     .addProperty(SpatialVocab.pSpatialContextFactory, SPEC3_SPATIALCONTEXTFACTORY)
+				     ;
+		
 		// bad assembler spec
 		model = ModelFactory.createDefaultModel();
 		specNoEntityField = 

@@ -18,26 +18,17 @@
 
 package org.apache.jena.query.spatial;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.apache.jena.atlas.lib.StrUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
-public class TestIndexingSpatialDataWithLucene extends
+public class TestIndexingSpatialDataWithSolr extends
 		AbstractTestIndexingSpatialData {
-	private static final String INDEX_PATH = "target/test/IsNearByPFWithLuceneSpatialIndex";
-	private static final File INDEX_DIR = new File(INDEX_PATH);
 
 	@Before
 	public void init() throws IOException {
-		dataset = SpatialSearchUtil
-				.initInMemoryDatasetWithLuceneSpatitalIndex(INDEX_DIR);
+		dataset = SpatialSearchUtil.initInMemoryDatasetWithSolrSpatitalIndex();
 
 		SpatialIndex index = (SpatialIndex) dataset.getContext().get(
 				SpatialQuery.spatialIndex);
@@ -48,7 +39,10 @@ public class TestIndexingSpatialDataWithLucene extends
 
 	@After
 	public void destroy() {
-		SpatialSearchUtil.deleteOldFiles(INDEX_DIR);
+		SpatialIndexSolr index = (SpatialIndexSolr) dataset.getContext().get(
+				SpatialQuery.spatialIndex);
+		index.getServer().shutdown();
+		SpatialSearchUtil.deleteOldSolrDataDir();
 	}
 
 }
