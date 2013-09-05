@@ -88,21 +88,26 @@ public class HttpAction
     public void setDataset(DatasetRef desc) {
         this.dsRef = desc ;
         this.dsg = desc.dataset ;
-        
-        if ( dsg instanceof Transactional ) {
-            transactional = (Transactional)dsg ;
-            DatasetGraph basedsg = unwrap(dsg) ;
+        DatasetGraph basedsg = unwrap(dsg) ;
+
+        if ( isTransactional(basedsg) && isTransactional(dsg) ) {
             // Use transactional if it looks safe - abort is necessary.
-            isTransactional = ( basedsg instanceof Transactional ) ;
+            transactional = (Transactional)dsg ;
+            isTransactional = true ;
         } else {
-            transactional = new DatasetGraphWithLock(dsg) ; 
+            // Unsure if safe
+            transactional = new DatasetGraphWithLock(dsg) ;
             // No real abort.
             isTransactional = false ;
         }
     }
-    
-    private DatasetGraph unwrap(DatasetGraph dsg) {
-        while ( dsg instanceof DatasetGraphWrapper ) {
+
+    private static boolean isTransactional(DatasetGraph dsg) {
+        return (dsg instanceof Transactional) ;
+    }
+
+    private static DatasetGraph unwrap(DatasetGraph dsg) {
+        while (dsg instanceof DatasetGraphWrapper) {
             dsg = ((DatasetGraphWrapper)dsg).getWrapped() ;
         }
         return dsg ;
