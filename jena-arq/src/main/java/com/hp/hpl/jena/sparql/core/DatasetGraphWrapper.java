@@ -20,12 +20,15 @@ package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.lib.Sync ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
-public class DatasetGraphWrapper implements DatasetGraph
+public class DatasetGraphWrapper implements DatasetGraph, Sync
 {
     private final DatasetGraph dsg ;
     public final DatasetGraph getWrapped() { return dsg ; }
@@ -129,4 +132,11 @@ public class DatasetGraphWrapper implements DatasetGraph
     
     @Override
     public String toString() { return dsg.toString() ; }
+
+    @Override
+    public void sync() {
+        // Pass down sync.
+        SystemARQ.sync(dsg) ; 
+    }
+    
 }
