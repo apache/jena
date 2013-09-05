@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.core;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.riot.other.GLib ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -30,14 +31,16 @@ import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 /** Implement a Graph as a view of the DatasetGraph.
  * 
- *  It maps graph operations to quad operations. */ 
+ *  It maps graph operations to quad operations. 
+ */ 
 
-public class GraphView extends GraphBase
+public class GraphView extends GraphBase implements Sync
 {
     // Beware this implements union graph - implementations may wish
     // to do better so see protected method below.
@@ -146,5 +149,10 @@ public class GraphView extends GraphBase
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
         dsg.delete(g, s, p, o) ;
+    }
+
+    @Override
+    public void sync() {
+        SystemARQ.sync(dsg);
     }
 }
