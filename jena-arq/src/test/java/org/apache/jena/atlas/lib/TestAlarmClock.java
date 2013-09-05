@@ -51,7 +51,7 @@ public class TestAlarmClock extends BaseTest
         AlarmClock alarmClock = new AlarmClock() ;
         // Short - happens.
         alarmClock.add(callback, 10) ;
-        sleep(100) ;
+        sleep(150) ;
         assertEquals(1, count.get()) ;
         // try to cancel anyway.
         alarmClock.cancel(callback) ;
