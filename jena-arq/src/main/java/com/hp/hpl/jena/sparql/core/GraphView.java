@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 public class GraphView extends GraphBase
 {
-    // Beware this implements union graph - implementation may wish
+    // Beware this implements union graph - implementations may wish
     // to do better so see protected method below.
     
     static class GraphViewException extends JenaException
@@ -61,23 +61,21 @@ public class GraphView extends GraphBase
     { return new GraphView(dsg, graphIRI) ; }
     
     // If inherited.
-    protected GraphView(DatasetGraph dsg, Node gn)
-    { 
-        this.dsg = dsg ; 
+    protected GraphView(DatasetGraph dsg, Node gn) {
+        this.dsg = dsg ;
         this.gn = gn ;
     }
-    
-    /** Return the graph name for this graph in the dataset it is a view of.
-     *  Returns {@code null} for the default graph. 
+
+    /**
+     * Return the graph name for this graph in the dataset it is a view of.
+     * Returns {@code null} for the default graph.
      */
-    public Node getGraphName()
-    {
-        return ( gn == Quad.defaultGraphNodeGenerated ) ? null : gn ; 
+    public Node getGraphName() {
+        return (gn == Quad.defaultGraphNodeGenerated) ? null : gn ;
     }
-    
+
     /** Return the DatasetGraph we are viewing. */
-    public DatasetGraph getDataset()       
-    {
+    public DatasetGraph getDataset() {
         return dsg ;
     }
     
@@ -89,15 +87,13 @@ public class GraphView extends GraphBase
     protected static final boolean isUnionGraph(Node gn)   { return Quad.isUnionGraph(gn) ; }
     
     @Override
-    protected PrefixMapping createPrefixMapping()
-    {
+    protected PrefixMapping createPrefixMapping() {
         // TODO Unsatisfactory - need PrefixMap support by DSGs then PrefixMap -> PrefixMapping
         return new PrefixMappingImpl() ; 
     }
 
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
-    {
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m) {
         if ( m == null ) m = Triple.ANY ;
         Node s = m.getMatchSubject() ;
         Node p = m.getMatchPredicate() ;
@@ -106,8 +102,7 @@ public class GraphView extends GraphBase
     }
     
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(Node s, Node p, Node o)
-    {
+    protected ExtendedIterator<Triple> graphBaseFind(Node s, Node p, Node o) {
         Node g = graphNode(gn) ;
         Iterator<Triple> iter = GLib.quads2triples(dsg.find(g, s, p, o)) ;
         if ( Quad.isUnionGraph(gn) )
@@ -115,13 +110,11 @@ public class GraphView extends GraphBase
         return WrappedIterator.createNoRemove(iter) ;
     }
 
-    private static Node graphNode(Node gn)
-    {
+    private static Node graphNode(Node gn) {
         return ( gn == null ) ? Quad.defaultGraphNodeGenerated : gn ;
     }
 
-    protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o)
-    {
+    protected ExtendedIterator<Triple> graphUnionFind(Node s, Node p, Node o) {
         Node g = graphNode(gn) ;
         // Implementations may wish to do better so this is separated out.
         // For example, Iter.distinctAdjacent is a lot cheaper than Iter.distinct
@@ -134,8 +127,7 @@ public class GraphView extends GraphBase
     }
     
     @Override
-    public void performAdd( Triple t )
-    { 
+    public void performAdd( Triple t ) { 
         Node g = graphNode(gn) ;
         if ( Quad.isUnionGraph(g) )
             throw new GraphViewException("Can't update the default union graph of a dataset") ; 
@@ -146,8 +138,7 @@ public class GraphView extends GraphBase
     }
 
     @Override
-    public void performDelete( Triple t ) 
-    {
+    public void performDelete( Triple t ) {
         Node g = graphNode(gn) ;
         if ( Quad.isUnionGraph(g) )
             throw new GraphViewException("Can't update the default union graph of a dataset") ; 
@@ -157,4 +148,3 @@ public class GraphView extends GraphBase
         dsg.delete(g, s, p, o) ;
     }
 }
-
