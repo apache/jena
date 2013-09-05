@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text ;
 
 import java.util.Iterator ;
 import java.util.List ;
@@ -31,11 +31,12 @@ import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.JenaTransactionException ;
 import com.hp.hpl.jena.sparql.core.* ;
 
-public class DatasetGraphText extends DatasetGraphMonitor implements Transactional 
+public class DatasetGraphText extends DatasetGraphMonitor implements Transactional
 {
-    private static Logger log = LoggerFactory.getLogger(DatasetGraphText.class) ;
-    private final TextIndex textIndex ;
+    private static Logger       log = LoggerFactory.getLogger(DatasetGraphText.class) ;
+    private final TextIndex     textIndex ;
     private final Transactional dsgtxn ;
+    private final Graph         dftGraph ;
 
     public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer)
     {
@@ -45,32 +46,33 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
             dsgtxn = (Transactional)dsg ;
         else
             dsgtxn = new DatasetGraphWithLock(dsg) ;
+        dftGraph = GraphView.createDefaultGraph(this) ;
     }
 
     // ---- Intecept these and force the use of views.
     @Override
-    public Graph getDefaultGraph()
-    { return GraphView.createDefaultGraph(this) ; }
+    public Graph getDefaultGraph() {
+        return dftGraph ;
+    }
 
     @Override
-    public Graph getGraph(Node graphNode)
-    { return GraphView.createNamedGraph(this, graphNode) ; }
-    // ----    
-    
-    public TextIndex getTextIndex()
-    {
-        return textIndex;
+    public Graph getGraph(Node graphNode) {
+        return GraphView.createNamedGraph(this, graphNode) ;
+    }
+
+    // ----
+
+    public TextIndex getTextIndex() {
+        return textIndex ;
     }
 
     /** Search the text index on the default text field */
-    public Iterator<Node> search(String queryString)
-    {
+    public Iterator<Node> search(String queryString) {
         return search(queryString, null) ;
     }
-    
+
     /** Search the text index on the text field associated with the predicate */
-    public Iterator<Node> search(String queryString, Node predicate)
-    {
+    public Iterator<Node> search(String queryString, Node predicate) {
         return search(queryString, predicate, -1) ;
     }
 
@@ -78,15 +80,13 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     public Iterator<Node> search(String queryString, int limit) {
         return search(queryString, null, limit) ;
     }
-    
+
     /** Search the text index on the text field associated with the predicate */
-    public Iterator<Node> search(String queryString, Node predicate, int limit)
-    {
+    public Iterator<Node> search(String queryString, Node predicate, int limit) {
         queryString = QueryParser.escape(queryString) ;
-        if ( predicate != null )
-        {
+        if ( predicate != null ) {
             String f = textIndex.getDocDef().getField(predicate) ;
-            queryString = f+":"+queryString ;
+            queryString = f + ":" + queryString ;
         }
         List<Node> results = textIndex.query(queryString, limit) ;
         return results.iterator() ;
@@ -94,65 +94,62 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
 
     // Imperfect.
     private boolean needFinish = false ;
-    
+
     @Override
-    public void begin(ReadWrite readWrite)
-    {
+    public void begin(ReadWrite readWrite) {
         dsgtxn.begin(readWrite) ;
-        //textIndex.begin(readWrite) ;
-        if ( readWrite == ReadWrite.WRITE )
-        {
+        // textIndex.begin(readWrite) ;
+        if ( readWrite == ReadWrite.WRITE ) {
             // WRONG design
             super.getMonitor().start() ;
             // Right design.
-            //textIndex.startIndexing() ;
+            // textIndex.startIndexing() ;
             needFinish = true ;
         }
     }
 
     @Override
-    public void commit()
-    {
+    public void commit() {
         try {
-            if ( needFinish )
-            {
+            if ( needFinish ) {
                 super.getMonitor().finish() ;
-                //textIndex.finishIndexing() ;
+                // textIndex.finishIndexing() ;
             }
             needFinish = false ;
-            //textIndex.commit() ;
+            // textIndex.commit() ;
             dsgtxn.commit() ;
-        } catch (Throwable ex) { 
-            log.warn("Exception in commit: "+ex.getMessage(), ex) ;
-            dsgtxn.abort() ; 
+        }
+        catch (Throwable ex) {
+            log.warn("Exception in commit: " + ex.getMessage(), ex) ;
+            dsgtxn.abort() ;
         }
     }
 
     @Override
-    public void abort()
-    {
+    public void abort() {
         try {
             if ( needFinish )
                 textIndex.abortIndexing() ;
             dsgtxn.abort() ;
-        } 
-        catch (JenaTransactionException ex) { throw ex ; } 
-        catch (RuntimeException ex) { log.warn("Exception in abort: "+ex.getMessage(), ex) ; throw ex ; }
+        }
+        catch (JenaTransactionException ex) { throw ex ; }
+        catch (RuntimeException ex) { 
+            log.warn("Exception in abort: " + ex.getMessage(), ex) ;
+            throw ex ;
+        }
     }
 
     @Override
-    public boolean isInTransaction()
-    {
+    public boolean isInTransaction() {
         return dsgtxn.isInTransaction() ;
     }
 
     @Override
-    public void end()
-    {
+    public void end() {
         try {
-            //textIndex.end() ;
+            // textIndex.end() ;
             dsgtxn.end() ;
-        } catch (Throwable ex) { log.warn("Exception in end: "+ex.getMessage(), ex) ; }
+        }
+        catch (Throwable ex) { log.warn("Exception in end: " + ex.getMessage(), ex) ; }
     }
 }
-
