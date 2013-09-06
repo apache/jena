@@ -18,44 +18,34 @@
 
 package org.apache.jena.query.spatial;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.queries.function.ValueSource;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.spatial.SpatialStrategy;
-import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy;
-import org.apache.lucene.spatial.prefix.tree.GeohashPrefixTree;
-import org.apache.lucene.spatial.prefix.tree.SpatialPrefixTree;
-import org.apache.lucene.spatial.query.SpatialArgs;
-import org.apache.lucene.spatial.query.SpatialOperation;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.util.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.lucene.analysis.Analyzer ;
+import org.apache.lucene.analysis.standard.StandardAnalyzer ;
+import org.apache.lucene.document.Document ;
+import org.apache.lucene.document.Field ;
+import org.apache.lucene.document.FieldType ;
+import org.apache.lucene.index.* ;
+import org.apache.lucene.queries.function.ValueSource ;
+import org.apache.lucene.search.* ;
+import org.apache.lucene.spatial.SpatialStrategy ;
+import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy ;
+import org.apache.lucene.spatial.prefix.tree.GeohashPrefixTree ;
+import org.apache.lucene.spatial.prefix.tree.SpatialPrefixTree ;
+import org.apache.lucene.spatial.query.SpatialArgs ;
+import org.apache.lucene.spatial.query.SpatialOperation ;
+import org.apache.lucene.store.Directory ;
+import org.apache.lucene.util.Version ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
-import com.spatial4j.core.shape.Point;
-import com.spatial4j.core.shape.Shape;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
+import com.spatial4j.core.shape.Point ;
+import com.spatial4j.core.shape.Shape ;
 
 public class SpatialIndexLucene implements SpatialIndex {
 	private static Logger log = LoggerFactory
@@ -204,8 +194,7 @@ public class SpatialIndexLucene implements SpatialIndex {
 		}
 	}
 	
-	private List<Node> query$(IndexReader indexReader, Shape shape, int limit, SpatialOperation operation) throws ParseException,
-			IOException {
+	private List<Node> query$(IndexReader indexReader, Shape shape, int limit, SpatialOperation operation) throws IOException {
 		if (limit <= 0)
 			limit = MAX_N;
 

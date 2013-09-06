@@ -18,28 +18,20 @@
 
 package org.apache.jena.query.spatial.assembler;
 
-import static org.apache.jena.query.spatial.assembler.SpatialVocab.pDefinition;
-import static org.apache.jena.query.spatial.assembler.SpatialVocab.pServer;
-import static org.apache.jena.query.spatial.assembler.SpatialVocab.pSolrHome;
+import static org.apache.jena.query.spatial.assembler.SpatialVocab.pDefinition ;
+import static org.apache.jena.query.spatial.assembler.SpatialVocab.pServer ;
+import org.apache.jena.query.spatial.EntityDefinition ;
+import org.apache.jena.query.spatial.SpatialDatasetFactory ;
+import org.apache.jena.query.spatial.SpatialIndex ;
+import org.apache.jena.query.spatial.SpatialIndexException ;
+import org.apache.solr.client.solrj.SolrServer ;
+import org.apache.solr.client.solrj.impl.HttpSolrServer ;
 
-import java.io.FileNotFoundException;
-
-import org.apache.jena.query.spatial.EntityDefinition;
-import org.apache.jena.query.spatial.SpatialDatasetFactory;
-import org.apache.jena.query.spatial.SpatialIndex;
-import org.apache.jena.query.spatial.SpatialIndexException;
-import org.apache.jena.riot.system.IRILib;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
-import org.apache.solr.core.CoreContainer;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
 public class SpatialIndexSolrAssembler extends AssemblerBase {
 	/*
@@ -53,29 +45,30 @@ public class SpatialIndexSolrAssembler extends AssemblerBase {
 		String uri = GraphUtils.getResourceValue(root, pServer).getURI();
 		SolrServer server;
 		if (uri.startsWith("embedded:")) {
-			try {
-	            if ( ! GraphUtils.exactlyOneProperty(root, pSolrHome) )
-	                throw new SpatialIndexException("No 'spatial:solrHome' property on EmbeddedSolrServer "+root) ;
-	            
-	            RDFNode n = root.getProperty(pSolrHome).getObject() ;
-	            
-	            if (n.isLiteral()){
-	            	throw new SpatialIndexException ("No 'spatial:solrHome' property on EmbeddedSolrServer "+root+ " is a literal and not a Resource/URI");
-	            }
-                Resource x = n.asResource() ;
-                String path = IRILib.IRIToFilename(x.getURI()) ;
-				
-				System.setProperty("solr.solr.home", path);
-				String coreName = uri.substring("embedded:".length());
-				CoreContainer.Initializer initializer = new CoreContainer.Initializer();
-				CoreContainer coreContainer = initializer.initialize();
-				server = new EmbeddedSolrServer(coreContainer, coreName);
-			} catch (FileNotFoundException e) {
-				throw new SpatialIndexException(e);
-				// throw new
-				// SpatialIndexException("Embedded Solr server not supported (change code and dependencies to enable)")
-				// ;
-			}
+		    throw new SpatialIndexException("Embedded Solr server not supported (change code and dependencies to enable)") ;
+//			try {
+//	            if ( ! GraphUtils.exactlyOneProperty(root, pSolrHome) )
+//	                throw new SpatialIndexException("No 'spatial:solrHome' property on EmbeddedSolrServer "+root) ;
+//	            
+//	            RDFNode n = root.getProperty(pSolrHome).getObject() ;
+//	            
+//	            if (n.isLiteral()){
+//	            	throw new SpatialIndexException ("No 'spatial:solrHome' property on EmbeddedSolrServer "+root+ " is a literal and not a Resource/URI");
+//	            }
+//                Resource x = n.asResource() ;
+//                String path = IRILib.IRIToFilename(x.getURI()) ;
+//				
+//				System.setProperty("solr.solr.home", path);
+//				String coreName = uri.substring("embedded:".length());
+//				CoreContainer.Initializer initializer = new CoreContainer.Initializer();
+//				CoreContainer coreContainer = initializer.initialize();
+//				server = new EmbeddedSolrServer(coreContainer, coreName);
+//			} catch (FileNotFoundException e) {
+//				throw new SpatialIndexException(e);
+//				// throw new
+//				// SpatialIndexException("Embedded Solr server not supported (change code and dependencies to enable)")
+//				// ;
+//			}
 		} else if (uri.startsWith("http://")) {
 			server = new HttpSolrServer(uri);
 		} else

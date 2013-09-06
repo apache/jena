@@ -73,7 +73,7 @@ public class SpatialSearchUtil {
         }
 	}
     
-    public static Dataset initInMemoryDatasetWithSolrSpatitalIndex() throws IOException{
+    public static Dataset initInMemoryDatasetWithSolrSpatitalIndex() {
 	    SpatialSearchUtil.deleteOldFiles(SOLR_DATA_DIR  );
 	    SOLR_INDEX_DIR.mkdirs();
 	    SpatialQuery.init() ;

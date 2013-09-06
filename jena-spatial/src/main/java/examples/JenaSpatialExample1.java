@@ -18,36 +18,23 @@
 
 package examples;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.File ;
+import java.io.IOException ;
 
-import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.query.spatial.EntityDefinition;
-import org.apache.jena.query.spatial.SpatialDatasetFactory;
-import org.apache.jena.query.spatial.SpatialIndex;
-import org.apache.jena.query.spatial.SpatialIndexLucene;
-import org.apache.jena.query.spatial.SpatialIndexSolr;
-import org.apache.jena.query.spatial.SpatialQuery;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.spatial.* ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.lucene.store.Directory ;
+import org.apache.lucene.store.FSDirectory ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 
 /** Build a spatial search dataset */
 public class JenaSpatialExample1 {
@@ -84,14 +71,14 @@ public class JenaSpatialExample1 {
 			deleteOldFiles(LUCENE_TDB_DIR);
 		}
 		
-		else if (index instanceof SpatialIndexSolr){
-			SolrServer server = ((SpatialIndexSolr)index).getServer();
-			
-			if (server instanceof EmbeddedSolrServer){
-				server.shutdown();
-				deleteOldFiles(SOLR_DATA_DIR);
-			}
-		} 
+//		else if (index instanceof SpatialIndexSolr){
+//			SolrServer server = ((SpatialIndexSolr)index).getServer();
+//			
+//			if (server instanceof EmbeddedSolrServer){
+//				server.shutdown();
+//				deleteOldFiles(SOLR_DATA_DIR);
+//			}
+//		} 
 		
 	}
     private static void emptyAndDeleteDirectory(File dir) {

@@ -35,28 +35,16 @@ package org.apache.jena.query.spatial;
  * limitations under the License.
  */
 
-import org.apache.jena.query.spatial.assembler.TestEntityDefinitionAssembler;
-import org.apache.jena.query.spatial.assembler.TestSpatialDatasetAssembler;
-import org.apache.jena.query.spatial.assembler.TestSpatialIndexLuceneAssembler;
-import org.apache.jena.query.spatial.pfunction.lucene.TestEastPFWithLuceneSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.lucene.TestIntersectsBoxPFWithLuceneSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.lucene.TestIsNearByPFWithLuceneSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.lucene.TestIsWithinBoxPFWithLuceneSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.lucene.TestIsWithinCirclePFWithLuceneSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.lucene.TestNorthPFWithLuceneSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.lucene.TestSouthPFWithLuceneSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.lucene.TestWestPFWithLuceneSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.solr.TestEastPFWithEmbeddedSolrSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.solr.TestIntersectsBoxPFWithEmbeddedSolrSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.solr.TestIsNearByPFWithEmbeddedSolrSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.solr.TestIsWithinBoxPFWithEmbeddedSolrSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.solr.TestIsWithinCirclePFWithEmbeddedSolrSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.solr.TestNorthPFWithEmbeddedSolrSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.solr.TestSouthPFWithEmbeddedSolrSpatialIndex;
-import org.apache.jena.query.spatial.pfunction.solr.TestWestPFWithEmbeddedSolrSpatialIndex;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.spatial.assembler.TestEntityDefinitionAssembler ;
+import org.apache.jena.query.spatial.assembler.TestSpatialDatasetAssembler ;
+import org.apache.jena.query.spatial.assembler.TestSpatialIndexLuceneAssembler ;
+import org.apache.jena.query.spatial.pfunction.lucene.* ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -70,18 +58,18 @@ import org.junit.runners.Suite.SuiteClasses;
 		TestEastPFWithLuceneSpatialIndex.class,
 		TestWestPFWithLuceneSpatialIndex.class,
 		
-		TestIsWithinCirclePFWithEmbeddedSolrSpatialIndex.class,
-		TestIsNearByPFWithEmbeddedSolrSpatialIndex.class,
-		TestIsWithinBoxPFWithEmbeddedSolrSpatialIndex.class,
-		TestIntersectsBoxPFWithEmbeddedSolrSpatialIndex.class,
-		TestNorthPFWithEmbeddedSolrSpatialIndex.class,
-		TestSouthPFWithEmbeddedSolrSpatialIndex.class,
-		TestEastPFWithEmbeddedSolrSpatialIndex.class,
-		TestWestPFWithEmbeddedSolrSpatialIndex.class,
+//		TestIsWithinCirclePFWithEmbeddedSolrSpatialIndex.class,
+//		TestIsNearByPFWithEmbeddedSolrSpatialIndex.class,
+//		TestIsWithinBoxPFWithEmbeddedSolrSpatialIndex.class,
+//		TestIntersectsBoxPFWithEmbeddedSolrSpatialIndex.class,
+//		TestNorthPFWithEmbeddedSolrSpatialIndex.class,
+//		TestSouthPFWithEmbeddedSolrSpatialIndex.class,
+//		TestEastPFWithEmbeddedSolrSpatialIndex.class,
+//		TestWestPFWithEmbeddedSolrSpatialIndex.class,
 		
 		TestTDBDatasetWithLuceneSpatialIndex.class,
 		TestIndexingSpatialDataWithLucene.class,
-		TestIndexingSpatialDataWithSolr.class,
+//		TestIndexingSpatialDataWithSolr.class,
 
 		TestEntityDefinitionAssembler.class,
 		TestSpatialDatasetAssembler.class,
@@ -90,4 +78,11 @@ import org.junit.runners.Suite.SuiteClasses;
 		
 		})
 public class TS_Spatial {
+    @BeforeClass public static void beforeClass() { 
+        Log.enable("org.apache.jena.query.spatial", "error");
+    } 
+    @AfterClass public static void afterClass() { 
+        Log.enable("org.apache.jena.query.spatial", "info");
+    }
+    
 }

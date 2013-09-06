@@ -33,9 +33,8 @@ public class SouthPF extends DirectionWithPointPFBase {
 	}
 
 	/** Deconstruct the node or list object argument and make a SpatialMatch */
-	protected SpatialMatch getSpatialMatch(Double latitude, Double longitude,
-			int limit) {
-		SpatialMatch match = new SpatialMatch(SpatialQuery.ctx.getWorldBounds().getMinY(),
+    @Override
+    protected SpatialMatch getSpatialMatch(Double latitude, Double longitude, int limit) {		SpatialMatch match = new SpatialMatch(SpatialQuery.ctx.getWorldBounds().getMinY(),
 				SpatialQuery.ctx.getWorldBounds().getMinX(), latitude, SpatialQuery.ctx.getWorldBounds()
 						.getMaxX(), limit, getSpatialOperation());
 		return match;

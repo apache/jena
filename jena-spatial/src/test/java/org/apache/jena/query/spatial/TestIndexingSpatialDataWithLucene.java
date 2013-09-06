@@ -20,14 +20,8 @@ package org.apache.jena.query.spatial;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.jena.atlas.lib.StrUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 public class TestIndexingSpatialDataWithLucene extends
 		AbstractTestIndexingSpatialData {

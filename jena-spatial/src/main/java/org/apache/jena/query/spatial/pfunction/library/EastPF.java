@@ -33,8 +33,8 @@ public class EastPF extends DirectionWithPointPFBase {
 	}
 
 	/** Deconstruct the node or list object argument and make a SpatialMatch */
-	protected SpatialMatch getSpatialMatch(Double latitude, Double longitude,
-			int limit) {
+    @Override
+	protected SpatialMatch getSpatialMatch(Double latitude, Double longitude, int limit) {
 		SpatialMatch match = new SpatialMatch(SpatialQuery.ctx.getWorldBounds().getMinY(),
 				longitude, SpatialQuery.ctx.getWorldBounds().getMaxY(), SpatialQuery.ctx.getWorldBounds()
 						.getMaxX(), limit, getSpatialOperation());

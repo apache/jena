@@ -24,7 +24,6 @@ import org.apache.jena.query.spatial.SpatialIndexLucene;
 import org.junit.Test;
 
 import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class TestSpatialIndexLuceneAssembler extends AbstractTestSpatialAssembler {
 	

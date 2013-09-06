@@ -38,7 +38,6 @@ public class SpatialIndexContext {
 		this.defn = indexer.getDocDef();
 		this.indexer = indexer;
 		this.spatialPredicatePairValues = new HashMap<String, Set<SpatialPredicatePairValue>>();
-		;
 	}
 
 	public void index(Node g, Node s, Node p, Node o) {
@@ -94,8 +93,8 @@ public class SpatialIndexContext {
 			pairValues.add(toAdd);
 
 		} else if (defn.isWKTPredicate(p) && SpatialValueUtil.isWKTLiteral(o.getLiteral())) {
-
-			Shape shape = SpatialQuery.ctx.readShape(o.getLiteralLexicalForm());
+			@SuppressWarnings("deprecation")
+            Shape shape = SpatialQuery.ctx.readShape(o.getLiteralLexicalForm());
 			indexer.add(x, shape);
 		}
 	}

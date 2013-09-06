@@ -109,6 +109,7 @@ public class SpatialIndexSolr implements SpatialIndex {
 		}
 	}
 
+    @SuppressWarnings("deprecation")
 	private SolrInputDocument solrDoc(String entityURI, Shape... shapes) {
 		SolrInputDocument doc = new SolrInputDocument();
 		doc.addField(docDef.getEntityField(), entityURI);
@@ -118,7 +119,6 @@ public class SpatialIndexSolr implements SpatialIndex {
 							+ shapes.length + " shapes.");
 		}
 		doc.addField(docDef.getGeoField(), SpatialQuery.ctx.toString(shapes[0]));
-
 		return doc;
 	}
 
@@ -140,6 +140,7 @@ public class SpatialIndexSolr implements SpatialIndex {
 		return results;
 	}
 
+    @SuppressWarnings("deprecation")
 	private SolrDocumentList solrQuery(Shape shape, int limit,
 			SpatialOperation operation) {
 		SolrQuery sq = new SolrQuery();

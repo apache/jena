@@ -18,8 +18,6 @@
 
 package org.apache.jena.query.spatial;
 
-import java.io.IOException;
-
 import org.junit.After;
 import org.junit.Before;
 
@@ -27,7 +25,7 @@ public class TestIndexingSpatialDataWithSolr extends
 		AbstractTestIndexingSpatialData {
 
 	@Before
-	public void init() throws IOException {
+	public void init() {
 		dataset = SpatialSearchUtil.initInMemoryDatasetWithSolrSpatitalIndex();
 	}
 
