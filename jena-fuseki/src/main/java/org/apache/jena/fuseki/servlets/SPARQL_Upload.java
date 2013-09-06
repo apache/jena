@@ -22,6 +22,7 @@ import static java.lang.String.format ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -81,8 +82,27 @@ public class SPARQL_Upload extends SPARQL_ServletBase
             error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
         long count = upload(action, "http://example/upload-base/") ;
         try {
-            action.response.setContentType("text/plain") ;
-            action.response.getOutputStream().print("Triples = "+count) ;
+            action.response.setContentType("text/html") ;
+            action.response.setStatus(HttpSC.OK_200);
+            PrintWriter out = action.response.getWriter() ;
+            out.println("<html>") ;
+            out.println("<head>") ;
+            out.println("</head>") ;
+            out.println("<body>") ;
+            out.println("<h1>Success</h1>");
+            out.println("<p>") ;
+            out.println("Triples = "+count + "\n");
+            out.println("<p>") ;
+            out.println("</p>") ;
+            out.println("<button onclick=\"timeFunction()\">Back to Fuseki</button>");
+            out.println("</p>") ;
+            out.println("<script type=\"text/javascript\">");
+            out.println("function timeFunction(){");
+            out.println("window.location.href = \"/fuseki.html\";}");
+            out.println("</script>");
+            out.println("</body>") ;
+            out.println("</html>") ;
+            out.flush() ;
             success(action) ;
         }
         catch (Exception ex) { errorOccurred(ex) ; }
