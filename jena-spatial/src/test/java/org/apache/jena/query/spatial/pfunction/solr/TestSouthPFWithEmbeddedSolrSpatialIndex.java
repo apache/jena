@@ -18,8 +18,6 @@
 
 package org.apache.jena.query.spatial.pfunction.solr;
 
-import java.io.IOException;
-
 import org.apache.jena.query.spatial.SpatialIndexSolr;
 import org.apache.jena.query.spatial.SpatialQuery;
 import org.apache.jena.query.spatial.SpatialSearchUtil;
@@ -35,7 +33,7 @@ public class TestSouthPFWithEmbeddedSolrSpatialIndex extends
 		AbstractTestSouthPF {
 
 	@Before
-	public void init() throws IOException {
+	public void init() {
 		dataset = SpatialSearchUtil.initInMemoryDatasetWithSolrSpatitalIndex();
 	}
 

@@ -18,7 +18,6 @@
 
 package org.apache.jena.query.spatial.pfunction.lucene;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.jena.query.spatial.SpatialSearchUtil;

@@ -64,7 +64,8 @@ public abstract class DirectionWithPointPFBase extends SpatialOperationPFBase {
 	
 
 	/** Deconstruct the node or list object argument and make a SpatialMatch */
-	protected SpatialMatch objectToStruct(PropFuncArg argObject) {
+	@Override
+    protected SpatialMatch objectToStruct(PropFuncArg argObject) {
 		if (argObject.isNode()) {
 			log.warn("Object not a List: " + argObject);
 			return null;

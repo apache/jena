@@ -60,6 +60,7 @@ public abstract class SpatialOperationWithBoxPFBase extends SpatialOperationPFBa
 	}
 
 	/** Deconstruct the node or list object argument and make a SpatialMatch */
+	@Override
 	protected SpatialMatch objectToStruct(PropFuncArg argObject) {
 		
 		if (argObject.isNode()) {

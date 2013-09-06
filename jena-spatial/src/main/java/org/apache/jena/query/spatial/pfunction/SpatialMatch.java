@@ -59,6 +59,7 @@ public class SpatialMatch {
 		return operation;
 	}
 
+	@Override
 	public String toString() {
 		return "(" + shape + " " + limit + " " + operation + ")";
 	}

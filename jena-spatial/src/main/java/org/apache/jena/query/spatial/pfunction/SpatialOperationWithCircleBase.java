@@ -62,6 +62,7 @@ public abstract class SpatialOperationWithCircleBase extends SpatialOperationPFB
 		}
 	}
 	/** Deconstruct the node or list object argument and make a NearbyMatch */
+	@Override
 	protected SpatialMatch objectToStruct(PropFuncArg argObject) {
 
 		// EntityDefinition docDef = server.getDocDef();

@@ -19,8 +19,6 @@
 package org.apache.jena.query.spatial.assembler;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.spatial.EntityDefinition;
 import org.apache.jena.query.spatial.SpatialIndexException;
