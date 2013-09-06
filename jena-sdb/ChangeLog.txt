@@ -1,10 +1,9 @@
 SDB Change Log
 ==============
 
-Homepage:
-    http://jena.sf.net/SDB
-Documentation:
-    http://jena.hpl.hp.com/wiki/SDB
+==== SDB v1.4.0
+
+Integrated with main Jena build process.
 
 ==== SDB v1.3.7
 
