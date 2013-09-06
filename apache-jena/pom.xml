@@ -118,6 +118,33 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
       <version>1.0.0-SNAPSHOT</version>
+      <classifier>sources</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <classifier>javadoc</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-sdb</artifactId>
+      <version>1.4.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-sdb</artifactId>
+      <version>1.4.0-SNAPSHOT</version>
+      <classifier>sources</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-sdb</artifactId>
+      <version>1.4.0-SNAPSHOT</version>
       <classifier>javadoc</classifier>
     </dependency>
 
