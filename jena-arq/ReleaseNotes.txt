@@ -2,7 +2,7 @@ ChangeLog for ARQ
 =================
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
-==== Jena 2.10.2
+==== Jena 2.11.0
 
 + JENA-500 : Substitution for an initial binding is now done 
              on the algrebra before optimzation is attempted.
