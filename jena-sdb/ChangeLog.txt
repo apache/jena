@@ -1,12 +1,11 @@
 SDB Change Log
 ==============
 
+
+
 ==== SDB v1.4.0
 
-Integrated with main Jena build process.
-
-==== SDB v1.3.7
-
++ Integrated with main Jena build process.
 + Add support for SAP database (JENA-241) - thanks to Fergal Monaghan
 
 ==== SDB v1.3.4-snapshot
