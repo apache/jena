@@ -27,8 +27,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <!-- Use a released parent POM -->
-    <version>6</version>
+    <version>7-SNAPSHOT</version>
     <relativePath />
   </parent> 
 
