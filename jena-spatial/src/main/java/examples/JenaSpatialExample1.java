@@ -143,7 +143,11 @@ public class JenaSpatialExample1 {
 	
 	private static Dataset joinDataset(Dataset baseDataset, File indexDir) throws IOException{
 		EntityDefinition entDef = new EntityDefinition("entityField", "geoField");
-		entDef.setSpatialContextFactory("com.spatial4j.core.context.jts.JtsSpatialContextFactory");
+		
+		// you need JTS lib in the classpath to run the examples
+		entDef.setSpatialContextFactory(SpatialQuery.JTS_SPATIAL_CONTEXT_FACTORY_CLASS);
+		
+		// set custom goe predicates
 		entDef.addSpatialPredicatePair(ResourceFactory.createResource("http://localhost/jena_example/#latitude_1"), ResourceFactory.createResource("http://localhost/jena_example/#longitude_1"));
 		entDef.addSpatialPredicatePair(ResourceFactory.createResource("http://localhost/jena_example/#latitude_2"), ResourceFactory.createResource("http://localhost/jena_example/#longitude_2"));
 		entDef.addWKTPredicate(ResourceFactory.createResource("http://localhost/jena_example/#wkt_1"));

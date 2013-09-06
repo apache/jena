@@ -99,7 +99,7 @@ public abstract class AbstractTestDatasetWithSpatialIndex {
 		        
 		    }
 		    if (throwException){
-		    	fail("An exception is supposed to be thrown!");
+		    	fail("An exception is supposed to be thrown for spatial query!");
 		    }
 		    assertEquals( expectedNumResults > 0, results.hasNext());
 		    int count;
