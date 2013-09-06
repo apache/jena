@@ -187,6 +187,11 @@ public class Log
             level1 = org.apache.log4j.Level.WARN ;
             level2 = java.util.logging.Level.WARNING ;
         }
+        if ( level.equalsIgnoreCase("error"))
+        {
+            level1 = org.apache.log4j.Level.ERROR ;
+            level2 = java.util.logging.Level.SEVERE ;
+        }
         logLevel(logger, level1, level2) ;
     }
     
