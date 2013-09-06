@@ -57,9 +57,7 @@ public class TextIndexSolrAssembler extends AssemblerBase
 //            server = new EmbeddedSolrServer(coreContainer, coreName);
         } 
         else if ( uri.startsWith("http://") )
-        {
             server = new HttpSolrServer( uri );
-        }
         else
             throw new TextIndexException("URI for the server must begin 'http://'") ;
         

@@ -124,6 +124,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-spatial</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
