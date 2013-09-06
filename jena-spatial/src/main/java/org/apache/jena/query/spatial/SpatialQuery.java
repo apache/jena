@@ -38,7 +38,6 @@ import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.TDB;
 import com.spatial4j.core.context.SpatialContext;
-import com.spatial4j.core.context.jts.JtsSpatialContext;
 
 public class SpatialQuery
 {
@@ -57,6 +56,9 @@ public class SpatialQuery
     public static final String BUILD_DATE   = metadata.get(PATH+".build.datetime", "unset") ;
     
     public static SpatialContext ctx = SpatialContext.GEO;
+    
+    // an optional feature for WKT literals, loaded when necessary, but not required
+    public static final String JTS_SPATIAL_CONTEXT_FACTORY_CLASS = "com.spatial4j.core.context.jts.JtsSpatialContextFactory"; 
     
     static { init() ; }
     

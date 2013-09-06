@@ -38,12 +38,6 @@ public class TestIndexingSpatialDataWithLucene extends
 	public void init() throws IOException {
 		dataset = SpatialSearchUtil
 				.initInMemoryDatasetWithLuceneSpatitalIndex(INDEX_DIR);
-
-		SpatialIndex index = (SpatialIndex) dataset.getContext().get(
-				SpatialQuery.spatialIndex);
-		index.getDocDef().setSpatialContextFactory(
-				"com.spatial4j.core.context.jts.JtsSpatialContextFactory");
-
 	}
 
 	@After

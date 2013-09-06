@@ -129,7 +129,11 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         } else {
         	QuerySolution qsol4 = results4.get(0);
         	String spatialContextFactory = qsol4.getLiteral("factory").getLexicalForm() ;
-        	docDef.setSpatialContextFactory(spatialContextFactory);
+        	try {
+        		docDef.setSpatialContextFactory(spatialContextFactory);
+        	}catch (NoClassDefFoundError e){
+        		Log.warn(this, "Custom SpatialContextFactory lib is not ready in classpath:"+ e.getMessage()) ;
+        	}
         	return docDef ;
         }  
     }

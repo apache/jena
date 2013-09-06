@@ -29,12 +29,6 @@ public class TestIndexingSpatialDataWithSolr extends
 	@Before
 	public void init() throws IOException {
 		dataset = SpatialSearchUtil.initInMemoryDatasetWithSolrSpatitalIndex();
-
-		SpatialIndex index = (SpatialIndex) dataset.getContext().get(
-				SpatialQuery.spatialIndex);
-		index.getDocDef().setSpatialContextFactory(
-				"com.spatial4j.core.context.jts.JtsSpatialContextFactory");
-
 	}
 
 	@After
