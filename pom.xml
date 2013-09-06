@@ -65,8 +65,10 @@
 	<module>jena-tdb</module>
 	<module>jena-text</module>
 	<module>jena-spatial</module>
+
 	<!-- Slow to build - exclude from default dev build -->
 	<!-- <module>jena-sdb</module> -->
+
 	<module>jena-fuseki</module>
 	<module>jena-security</module>
 	<!-- Slow to build - exclude from default dev build -->
@@ -92,14 +94,20 @@
 	<module>jena-parent</module>
 	<module>jena-iri</module>
 	<module>jena-core</module>
+
 	<module>jena-arq</module>
 	<module>jena-tdb</module>
+
 	<module>jena-text</module>
 	<module>jena-spatial</module>
+
 	<module>jena-sdb</module>
+
 	<module>jena-fuseki</module>
 	<module>jena-security</module>
+	<!-- Temporary - seems to hang Jenkins
 	<module>jena-jdbc</module>
+	-->
 	<module>apache-jena-libs</module>
 	<module>apache-jena</module>
       </modules>
