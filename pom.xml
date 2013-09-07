@@ -105,9 +105,9 @@
 
 	<module>jena-fuseki</module>
 	<module>jena-security</module>
-	<!-- Temporary - seems to hang Jenkins
+
 	<module>jena-jdbc</module>
-	-->
+
 	<module>apache-jena-libs</module>
 	<module>apache-jena</module>
       </modules>
