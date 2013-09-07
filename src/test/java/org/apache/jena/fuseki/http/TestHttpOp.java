@@ -36,7 +36,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.sparql.engine.http.Params ;
 import com.hp.hpl.jena.util.FileUtils ;
 
-// This a mixture of testign HttpOp and testing basic operation of the SPARQL server
+// This a mixture of testing HttpOp and testing basic operation of the SPARQL server
 // especially error cases abnd unusual usage that the higher level APIs don't use.
 public class TestHttpOp extends BaseTest {
     
