@@ -18,10 +18,12 @@
 
 package org.apache.jena.fuseki;
 
+import org.apache.http.client.HttpClient ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
+import org.apache.jena.riot.web.HttpOp ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
@@ -39,6 +41,22 @@ import org.junit.runners.Suite ;
 })
 public class TS_Fuseki extends ServerTest
 {
+    // Use HttpOp caching of connections during testing to stop
+    // swamping  kernel socket management (seems to be most
+    // acute on Java 1.6)
+    
+    static HttpClient defaultHttpClient = HttpOp.getDefaultHttpClient() ;
+    // Used for all tests except auth tests.
+    static HttpClient globalCachingClient = HttpOp.createCachingHttpClient() ;
+    
+    @BeforeClass public static void beforeClassAbstract1() {
+        HttpOp.setDefaultHttpClient(globalCachingClient) ;
+    }
+    
+    @AfterClass public static void afterClassAbstract1() {
+        HttpOp.setDefaultHttpClient(defaultHttpClient) ;
+    }
+    
     @BeforeClass static public void beforeClass() { Log.disable(Fuseki.requestLogName) ; }
     @AfterClass static public void afterClass()   { Log.setInfo(Fuseki.requestLogName) ;}
 }
