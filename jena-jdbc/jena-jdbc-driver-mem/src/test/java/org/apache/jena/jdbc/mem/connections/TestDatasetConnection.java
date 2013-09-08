@@ -31,9 +31,6 @@ import com.hp.hpl.jena.query.DatasetFactory;
 
 /**
  * Tests for the {@link DatasetConnection}
- * 
- * @author rvesse
- * 
  */
 public class TestDatasetConnection extends AbstractJenaConnectionTests {
 

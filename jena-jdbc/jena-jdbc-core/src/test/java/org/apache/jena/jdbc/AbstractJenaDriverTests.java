@@ -18,26 +18,25 @@
 
 package org.apache.jena.jdbc;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Properties;
+import java.io.File ;
+import java.io.FileWriter ;
+import java.io.IOException ;
+import java.sql.Connection ;
+import java.sql.SQLException ;
+import java.util.Iterator ;
+import java.util.Properties ;
 
-import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.postprocessing.ResultsEcho;
-import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor;
-import org.apache.jena.jdbc.preprocessing.CommandPreProcessor;
-import org.apache.jena.jdbc.preprocessing.Echo;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Test;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
+import org.apache.jena.jdbc.connections.JenaConnection ;
+import org.apache.jena.jdbc.postprocessing.ResultsEcho ;
+import org.apache.jena.jdbc.postprocessing.ResultsPostProcessor ;
+import org.apache.jena.jdbc.preprocessing.CommandPreProcessor ;
+import org.apache.jena.jdbc.preprocessing.Echo ;
+import org.junit.Assert ;
+import org.junit.Assume ;
+import org.junit.Test ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
 
 /**
  * Abstract tests for {@link JenaDriver} implementations
@@ -46,12 +45,6 @@ import com.hp.hpl.jena.query.ARQ;
 public abstract class AbstractJenaDriverTests {
 
     static {
-        // Init Log4j
-        BasicConfigurator.resetConfiguration();
-        BasicConfigurator.configure();
-        Logger.getRootLogger().removeAllAppenders();
-
-        // Init ARQ
         ARQ.init();
     }
 

@@ -36,8 +36,6 @@ import com.hp.hpl.jena.tdb.base.file.Location;
 
 /**
  * Tests database metadata for TDB connections
- * @author rvesse
- *
  */
 public class TestTdbConnectionMetadata extends AbstractDatabaseMetadataTests {
     
