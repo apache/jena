@@ -17,47 +17,32 @@
  */
 package org.apache.jena.jdbc.connections;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.ParameterMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.HashMap;
-import java.util.Properties;
+import java.net.MalformedURLException ;
+import java.net.URL ;
+import java.sql.* ;
+import java.sql.ResultSet ;
+import java.util.HashMap ;
+import java.util.Properties ;
 
-import org.apache.jena.jdbc.JdbcCompatibility;
-import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.postprocessing.ResultsEcho;
-import org.apache.jena.jdbc.preprocessing.Echo;
-import org.apache.jena.jdbc.results.AskResults;
-import org.apache.jena.jdbc.results.SelectResults;
-import org.apache.jena.jdbc.results.TripleIteratorResults;
-import org.apache.jena.jdbc.results.metadata.AskResultsMetadata;
-import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata;
-import org.apache.jena.jdbc.utils.TestUtils;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Test;
+import org.apache.jena.jdbc.JdbcCompatibility ;
+import org.apache.jena.jdbc.postprocessing.ResultsEcho ;
+import org.apache.jena.jdbc.preprocessing.Echo ;
+import org.apache.jena.jdbc.results.AskResults ;
+import org.apache.jena.jdbc.results.SelectResults ;
+import org.apache.jena.jdbc.results.TripleIteratorResults ;
+import org.apache.jena.jdbc.results.metadata.AskResultsMetadata ;
+import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata ;
+import org.apache.jena.jdbc.utils.TestUtils ;
+import org.junit.Assert ;
+import org.junit.Assume ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.update.UpdateFactory;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * Abstract tests for {@link JenaConnection} implementations
@@ -66,12 +51,6 @@ import com.hp.hpl.jena.update.UpdateRequest;
 public abstract class AbstractJenaConnectionTests {
 
     static {
-        // Init Log4j
-        BasicConfigurator.resetConfiguration();
-        BasicConfigurator.configure();
-        Logger.getRootLogger().removeAllAppenders();
-
-        // Init ARQ
         ARQ.init();
     }
 

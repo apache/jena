@@ -18,50 +18,27 @@
 
 package org.apache.jena.jdbc.results;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.Ref;
-import java.sql.ResultSet;
-import java.sql.RowId;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.SQLXML;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.io.InputStream ;
+import java.io.Reader ;
+import java.math.BigDecimal ;
+import java.sql.* ;
+import java.util.Calendar ;
+import java.util.HashMap ;
 
-import org.apache.jena.jdbc.JdbcCompatibility;
-import org.apache.jena.jdbc.results.metadata.AskResultsMetadata;
-import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.jena.jdbc.JdbcCompatibility ;
+import org.apache.jena.jdbc.results.metadata.AskResultsMetadata ;
+import org.apache.jena.jdbc.results.metadata.TripleResultsMetadata ;
+import org.junit.* ;
 
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
-import com.hp.hpl.jena.vocabulary.XSD;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 
 /**
  * Abstract tests for Jena JDBC {@link ResultSet} implementations, these tests
@@ -72,12 +49,6 @@ import com.hp.hpl.jena.vocabulary.XSD;
 public abstract class AbstractResultSetTests {
 
     static {
-        // Init Log4j
-        BasicConfigurator.resetConfiguration();
-        BasicConfigurator.configure();
-        Logger.getRootLogger().removeAllAppenders();
-
-        // Init ARQ
         ARQ.init();
     }
 
