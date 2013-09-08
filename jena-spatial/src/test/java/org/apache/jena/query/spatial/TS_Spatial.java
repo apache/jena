@@ -35,13 +35,10 @@ package org.apache.jena.query.spatial;
  * limitations under the License.
  */
 
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.spatial.assembler.TestEntityDefinitionAssembler ;
 import org.apache.jena.query.spatial.assembler.TestSpatialDatasetAssembler ;
 import org.apache.jena.query.spatial.assembler.TestSpatialIndexLuceneAssembler ;
 import org.apache.jena.query.spatial.pfunction.lucene.* ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -78,11 +75,4 @@ import org.junit.runners.Suite.SuiteClasses ;
 		
 		})
 public class TS_Spatial {
-    @BeforeClass public static void beforeClass() { 
-        Log.enable("org.apache.jena.query.spatial", "error");
-    } 
-    @AfterClass public static void afterClass() { 
-        Log.enable("org.apache.jena.query.spatial", "info");
-    }
-    
 }
