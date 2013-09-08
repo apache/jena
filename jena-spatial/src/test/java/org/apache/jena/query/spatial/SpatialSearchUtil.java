@@ -42,7 +42,7 @@ public class SpatialSearchUtil {
 	private static final String LUCENE_INDEX_PATH = "target/test/LuceneSpatialIndex";
 	private static final File LUCENE_Index_DIR = new File(LUCENE_INDEX_PATH);
 	
-    private static final String  SOLR_DATA_PATH      = "src/test/resources/SolrHome/SolrARQCollection/data";
+    private static final String  SOLR_DATA_PATH      = "target/test/SolrARQCollection/data";
     private static final File    SOLR_DATA_DIR       = new File(SOLR_DATA_PATH);
     private static final String  SOLR_INDEX_PATH     = SOLR_DATA_PATH + "/index";
     private static final File    SOLR_INDEX_DIR      = new File(SOLR_INDEX_PATH);
