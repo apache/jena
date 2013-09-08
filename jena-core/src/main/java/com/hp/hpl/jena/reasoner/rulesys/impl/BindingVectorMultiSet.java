@@ -27,16 +27,12 @@ import com.hp.hpl.jena.graph.Node;
 /**
  * A multi set of BindingVector's divided in buckets matching an unique
  * combination of values at given indices managed by RETEQueue
- * 
- * @author Tilo Fischer
  */
 public class BindingVectorMultiSet {
 
 	/**
 	 * Inner class used to represent an updatable count.
 	 * Formerly enclosed in RETEQueue
-	 * 
-	 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
 	 */
 	protected static class Count {
 		/** the count */
