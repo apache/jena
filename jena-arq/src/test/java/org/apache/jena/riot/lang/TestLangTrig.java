@@ -20,6 +20,7 @@ package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.ErrorHandlerTestLib ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
@@ -41,8 +42,11 @@ public class TestLangTrig extends BaseTest
     @Test public void trig_01()     { parse("{}") ; } 
     @Test public void trig_02()     { parse("{}.") ; }
     @Test public void trig_03()     { parse("<g> {}") ; }
-    @Test public void trig_04()     { parse("<g> = {}") ; }
-    @Test public void trig_05()     { parse("<g> = {} .") ; }
+    
+    @Test(expected=ErrorHandlerTestLib.ExFatal.class) 
+    public void trig_04()     { parse("<g> = {}") ; }
+    @Test(expected=ErrorHandlerTestLib.ExFatal.class)
+    public void trig_05()     { parse("<g> = {} .") ; }
     
     // Need to check we get resolved URIs.
     @Test public void trig_10()     //{ parse("{ <x> <p> <q> }") ; }

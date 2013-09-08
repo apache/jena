@@ -43,8 +43,8 @@ public class LangTriG extends LangTurtleBase {
 
     @Override
     protected final void oneTopLevelElement() {
-        oneNamedGraphBlock() ;
-        //oneNamedGraphBlock2() ;
+        //oneNamedGraphBlock() ;
+        oneNamedGraphBlock2() ;
     }
 
     // Version for proposed Turtle-in-TriG and keyword GRAPH
@@ -145,6 +145,7 @@ public class LangTriG extends LangTurtleBase {
         triplesSameSubject() ;
     }
 
+    // Old version , tradition trig with RDF 1.1 Turtle tokens.
     protected final void oneNamedGraphBlock() {
         // Directives are only between graph blocks.
         Node graphNode = null ;
