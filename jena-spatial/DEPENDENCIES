@@ -19,5 +19,7 @@ JUnit : http://junit.org/
 spatial4j : https://github.com/spatial4j/spatial4j
   Apache Software License - v 2.0
 
-JTS Topology Suite : http://tsusiatsoftware.net/jts/main.html (optional)
-  LGPL Licence - v 2.1
+The following dependency is optional and wil need to be provided by the user:
+
+JTS Topology Suite : http://tsusiatsoftware.net/jts/main.html
+  LGPL Licence
