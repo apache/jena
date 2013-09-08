@@ -4,6 +4,8 @@ ChangeLog for ARQ
 
 ==== Jena 2.11.0
 
++ Support draft RDF 1.1 TriG
+  GRAPH keyword, bnodes for graph labels, no "<g> = {}".
 + JENA-500 : Substitution for an initial binding is now done 
              on the algrebra before optimzation is attempted.
 + JENA-470 : Enable optimization of mixtures of disjunctions with equality 
