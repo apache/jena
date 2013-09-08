@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.jena</groupId>
+  <artifactId>new-test</artifactId>
+  <version>2.10.2-SNAPSHOT</version>
+  <name>new Jena tests</name>
+  <description>New test suite for Jena project.   This is a complete rewrite of the existing tests</description>
+  <parent>
+  	<groupId>org.apache.jena</groupId>
+  	<artifactId>jena-parent</artifactId>
+  	<version>7-SNAPSHOT</version>
+  </parent>
+  <dependencies>
+  <dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${ver.junit}</version>
+		</dependency>
+  <dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>apache-jena-libs</artifactId>
+			<version>${version}</version>
+			<type>pom</type>
+		</dependency>
+  <dependency>
+  	<groupId>org.mockito</groupId>
+  	<artifactId>mockito-all</artifactId>
+  	<version>1.9.5</version>
+  	<scope>test</scope>
+  </dependency>
+  </dependencies>
+</project>
