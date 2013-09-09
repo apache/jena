@@ -55,10 +55,10 @@ import org.slf4j.LoggerFactory;
  * </p>
  * 
  * <pre>
- * jena:jdbc:foo:
+ * jdbc:jena:foo:
  * </pre>
  * <p>
- * The {@code jena:jdbc:} portion is the common prefix for all Jena JDBC
+ * The {@code jdbc:jena:} portion is the common prefix for all Jena JDBC
  * drivers, the {@code foo:} portion is an implementation specific prefix. Each
  * Jena JDBC driver will have a different {@code foo:} prefix chosen such that
  * it appropriately identifies at a glance the type of the underlying RDF
