@@ -25,10 +25,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.ServerTest;
 import org.apache.jena.fuseki.server.FusekiConfig;
 import org.apache.jena.fuseki.server.SPARQLServer;
