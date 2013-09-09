@@ -80,10 +80,6 @@ public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointRes
         writer.write(USER + ": " + PASSWORD + ", fuseki\n");
         writer.close();
 
-        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-
         DatasetGraph dsg = DatasetGraphFactory.createMem();
         // This must agree with ServerTest
         ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true, false);
