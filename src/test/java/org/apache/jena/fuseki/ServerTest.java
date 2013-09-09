@@ -18,7 +18,6 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
@@ -72,9 +71,6 @@ public class ServerTest
     
     private static SPARQLServer server = null ;
     
-    // reference count of start/stop server logging
-    private static int countLogging = 0 ; 
-
     // reference count of start/stop server
     private static int countServer = 0 ; 
     
@@ -84,10 +80,6 @@ public class ServerTest
 
     static public void allocServer()
     {
-        if ( countLogging == 0 )
-            serverStartLogging() ;
-        countLogging++ ;
-
         if ( countServer == 0 )
             setupServer() ;
         countServer++ ;
@@ -99,11 +91,6 @@ public class ServerTest
             countServer -- ;
             if ( countServer == 0 )
                 teardownServer() ;
-        }
-        if ( countLogging >= 0 ) { 
-            countLogging-- ;
-            if ( countLogging == 0 )
-                serverStopLogging() ;
         }
     }
     
@@ -123,23 +110,6 @@ public class ServerTest
             server.stop() ;
         server = null ;
     }
-        
-    // For tests, the server sits in the background
-    // Set logging to WARN only.
-    
-    protected static void serverStartLogging() {
-        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        
-    }
-    
-    protected static void serverStopLogging() {
-        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
-        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
-        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
-    }
-    
     public static void resetServer()
     {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
