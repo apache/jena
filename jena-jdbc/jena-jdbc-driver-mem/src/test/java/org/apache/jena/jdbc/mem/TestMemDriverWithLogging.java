@@ -18,16 +18,17 @@
 
 package org.apache.jena.jdbc.mem;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.ByteArrayOutputStream ;
+import java.io.PrintStream ;
+import java.net.URL ;
 
-
-import org.apache.jena.jdbc.AbstractJenaDriverTests;
-import org.apache.jena.jdbc.JenaDriver;
-import org.apache.log4j.BasicConfigurator;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.apache.jena.jdbc.AbstractJenaDriverTests ;
+import org.apache.jena.jdbc.JenaDriver ;
+import org.apache.log4j.LogManager ;
+import org.apache.log4j.PropertyConfigurator ;
+import org.apache.log4j.helpers.Loader ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 
 /**
  * Tests for the {@link MemDriver}
@@ -37,30 +38,15 @@ public class TestMemDriverWithLogging extends AbstractJenaDriverTests {
 
     private static ByteArrayOutputStream output;
     private static PrintStream orig;
-    
-    /**
-     * Redirect stdout so as not to pollute the build output
-     */
-    @BeforeClass
-    public static void setup() {
-        // Redirect stdout
-        orig = System.out;
-        output = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(output));
-    }
-    
-    /**
-     * Resets logging configuration after these tests
-     */
-    @AfterClass
-    public static void teardown() {
-        BasicConfigurator.resetConfiguration();
-        
-        // Reset stdout
-        System.setOut(orig);
-        Assert.assertTrue(output.size() > 0);
-    }
 
+    @AfterClass public static void afterClassResetLogging() {
+        // Unfortunately, this code "knows" how log4j was set up in testing
+        // Thsi is fragile.
+        URL configURL = Loader.getResource("log4j.properties");
+        new PropertyConfigurator().doConfigure(configURL,
+                                               LogManager.getLoggerRepository());
+    }
+    
     @Override
     protected JenaDriver getDriver() {
         return new MemDriver();
