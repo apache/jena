@@ -18,36 +18,32 @@
 
 package org.apache.jena.jdbc.remote.connections;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.SQLException;
+import java.io.File ;
+import java.io.FileWriter ;
+import java.io.IOException ;
+import java.sql.SQLException ;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
-import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.ServerTest;
-import org.apache.jena.fuseki.server.FusekiConfig;
-import org.apache.jena.fuseki.server.SPARQLServer;
-import org.apache.jena.fuseki.server.ServerConfig;
-import org.apache.jena.jdbc.JdbcCompatibility;
-import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
-import org.apache.jena.jdbc.utils.TestUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.jena.fuseki.ServerTest ;
+import org.apache.jena.fuseki.server.FusekiConfig ;
+import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.apache.jena.fuseki.server.ServerConfig ;
+import org.apache.jena.jdbc.JdbcCompatibility ;
+import org.apache.jena.jdbc.connections.JenaConnection ;
+import org.apache.jena.jdbc.utils.TestUtils ;
+import org.junit.After ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
-import com.hp.hpl.jena.sparql.modify.request.Target;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDrop;
-import com.hp.hpl.jena.update.Update;
-import com.hp.hpl.jena.update.UpdateExecutionFactory;
-import com.hp.hpl.jena.update.UpdateProcessor;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.modify.request.Target ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
+import com.hp.hpl.jena.update.Update ;
+import com.hp.hpl.jena.update.UpdateExecutionFactory ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
 
 /**
  * Tests for the {@link RemoteEndpointConnection} where we use HTTP
@@ -103,7 +99,6 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
     @AfterClass
     public static void cleanup() {
         server.stop();
-        Lib.sleep(250); 
         realmFile.delete();
     }
 
