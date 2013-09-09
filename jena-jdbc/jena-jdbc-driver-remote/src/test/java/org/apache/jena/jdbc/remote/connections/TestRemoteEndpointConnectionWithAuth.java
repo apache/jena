@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.auth.HttpAuthenticator;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
@@ -75,10 +76,6 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
         writer.write(USER + ": " + PASSWORD + ", fuseki\n");
         writer.close();
 
-        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-
         DatasetGraph dsg = DatasetGraphFactory.createMem();
         // This must agree with ServerTest
         ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true, false);
@@ -106,6 +103,7 @@ public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpoint
     @AfterClass
     public static void cleanup() {
         server.stop();
+        Lib.sleep(250); 
         realmFile.delete();
     }
 
