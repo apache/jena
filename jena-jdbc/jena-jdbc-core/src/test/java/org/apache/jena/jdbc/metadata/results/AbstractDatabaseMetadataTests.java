@@ -18,20 +18,17 @@
 
 package org.apache.jena.jdbc.metadata.results;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
+import java.sql.Connection ;
+import java.sql.DatabaseMetaData ;
+import java.sql.ResultSet ;
+import java.sql.SQLException ;
+import java.util.List ;
 
-import org.apache.jena.jdbc.connections.JenaConnection;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.jena.jdbc.connections.JenaConnection ;
+import org.junit.Assert ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.ARQ ;
 
 /**
  * Tests that inspect the information provided by {@link JenaConnection}
@@ -52,12 +49,6 @@ public abstract class AbstractDatabaseMetadataTests {
             Connection.TRANSACTION_READ_UNCOMMITTED, Connection.TRANSACTION_REPEATABLE_READ, Connection.TRANSACTION_SERIALIZABLE };
 
     static {
-        // Init Log4j
-        BasicConfigurator.resetConfiguration();
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.WARN);
-
-        // Init ARQ
         ARQ.init();
     }
 
