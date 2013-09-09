@@ -43,12 +43,22 @@ public class SecuredFunction extends ExprFunctionN
 	private final List<Node> variables;
 	private final List<Triple> bgp;
 	private final SecNode graphIRI;
+	
+	private static ExprList createArgs( List<Node> variables )
+	{
+		ExprList retval = new ExprList();
+		for (Node n : variables )
+		{
+			retval.add( new ExprVar( n ));
+		}
+		return retval;
+	}
 
 	public SecuredFunction( final SecNode graphIRI,
 			final SecurityEvaluator securityEvaluator,
 			final List<Node> variables, final List<Triple> bgp )
 	{
-		super("<java:" + SecuredFunction.class.getName() + ">" );
+		super(String.format("<java:%s>", SecuredFunction.class.getName() ), createArgs( variables));
 		//, 
 		//		new ElementTriplesBlock( BasicPattern.wrap(bgp) ),
 		//		new OpBGP( BasicPattern.wrap(bgp) )
@@ -107,24 +117,6 @@ public class SecuredFunction extends ExprFunctionN
 	{
 		visitor.visit( this );
 	}
-
-	@Override
-	public Expr getArg( int i )
-	{
-		if (i<=variables.size())
-		{
-			return new ExprVar( variables.get(i-1));
-		}
-		return null;
-	}
-
-	@Override
-	public int numArgs()
-	{
-		return variables.size();
-	}
-	
-	//NodeValue s = evalSpecial(binding, env) ;
 
 	@Override
 	protected NodeValue eval( List<NodeValue> args )
