@@ -38,6 +38,6 @@ export SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
 ## Add --parallel=3 if available.
 if $(sort --parallel=3 < /dev/null 2>/dev/null) 
 then
-    SORT_ARGS="$SORT_ARGS --parallel=3
+    SORT_ARGS="$SORT_ARGS --parallel=3"
 fi
 exec "$TDBROOT/bin/tdbloader2worker" "$@"
