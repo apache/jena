@@ -21,7 +21,6 @@ package com.hp.hpl.jena.sparql.algebra.optimize;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
@@ -35,11 +34,6 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestVarRename extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestVarRename.class) ;
-    }
-
     @Test public void rename_01() { rename("(bgp (<s> <p> <o>))", "(bgp (<s> <p> <o>))", true) ; }
     @Test public void rename_02() { rename("(bgp (<s> ?p <o>))", "(bgp (<s> ?/p <o>))", true) ; }
     @Test public void rename_03() { rename("(bgp (?s ?p <o>))", "(bgp (?s ?/p <o>))", true, "s") ; }

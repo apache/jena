@@ -18,29 +18,16 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
-public class TestContext extends TestCase
+public class TestContext extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestContext.class) ;
-    }
-//    
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestContext.class) ;
-//        ts.setName("TestContext") ;
-//        return ts ;
-//    }
-    
-    Symbol p1 = Symbol.create("p1") ;
-    Symbol p2 = Symbol.create("p2") ;
+    static Symbol p1 = Symbol.create("p1") ;
+    static Symbol p2 = Symbol.create("p2") ;
     
     @Test public void testCxt1() { Context cxt = new Context(); }
     

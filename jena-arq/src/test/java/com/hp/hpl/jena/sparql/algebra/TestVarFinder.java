@@ -23,7 +23,6 @@ import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
 
-import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
@@ -33,11 +32,6 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestVarFinder extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestVarFinder.class) ;
-    }
-    
     @Test public void varfind_01_1() { varfindFixed("(bgp (?s <p> <o>))", "s") ; }
     @Test public void varfind_01_2() { varfindOpt("(bgp (?s <p> <o>))") ; }
     @Test public void varfind_01_3() { varfindFilter("(bgp (?s <p> <o>))") ; }

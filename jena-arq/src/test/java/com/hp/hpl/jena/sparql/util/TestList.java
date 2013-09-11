@@ -21,16 +21,11 @@ package com.hp.hpl.jena.sparql.util;
 import java.io.StringReader ;
 import java.util.List ;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Factory ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GNode ;
@@ -38,20 +33,8 @@ import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 /** Test the graph-level RDF list support used in SPARQL */
-public class TestList extends TestCase
+public class TestList extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestList.class) ;
-    }
-    
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestList.class) ;
-//        ts.setName(Utils.classShortName(TestList.class)) ;
-//        return ts ;
-//    }
-    
     private GNode emptyList = parse(listStr_1) ; 
     private GNode list4 = parse(listStr_2) ;
     private GNode list22 = parse(listStr_3) ;

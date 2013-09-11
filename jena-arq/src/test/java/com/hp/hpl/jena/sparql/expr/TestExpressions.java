@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 
-import junit.framework.JUnit4TestAdapter ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -54,10 +53,6 @@ public class TestExpressions
     public final static int PARSE_FAIL    = 250 ;   // Parser should catch it.
     public final static int EVAL_FAIL     = 200 ;   // Parser should pass it but eval should fail it
     
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TestExpressions.class);
-      }
-    
     static boolean flagVerboseWarning ;
     @BeforeClass static public void beforeClass() {  
         flagVerboseWarning = NodeValue.VerboseWarnings ;
@@ -65,7 +60,6 @@ public class TestExpressions
     }
     
     @AfterClass static public void afterClass() { NodeValue.VerboseWarnings = flagVerboseWarning ; }
-    
     
     @Test public void testVar_1() { testVar("?x", "x") ; }
     @Test public void testVar_2() { testVar("$x", "x") ; }

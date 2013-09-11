@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Assert ;
 import org.junit.Test ;
@@ -33,11 +32,6 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 /** Tests of transforms related to filters */
 public class TestTransformFilters
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestTransformFilters.class) ;
-    }
-    
     private Transform t_equality    = new TransformFilterEquality() ;
     private Transform t_disjunction = new TransformFilterDisjunction() ;
     private Transform t_placement   = new TransformFilterPlacement() ;

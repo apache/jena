@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap;
@@ -47,11 +46,6 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class TestBindingStreams extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestBindingStreams.class) ;
-    }
-    
     @BeforeClass public static void beforeClass()
     { 
         setTestLogging() ;

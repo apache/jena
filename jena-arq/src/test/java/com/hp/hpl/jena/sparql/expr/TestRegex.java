@@ -18,32 +18,20 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 
-/** com.hp.hpl.jena.query.test.TestMisc */
-
-public class TestRegex extends TestCase
+public class TestRegex extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
+    @BeforeClass
+    public static void beforeClass() {
         if ( false )
             ARQ.getContext().set(ARQ.regexImpl, ARQ.xercesRegex) ;
-        return new JUnit4TestAdapter(TestRegex.class) ;
     }
-    
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestRegex.class) ;
-//        ts.setName("TestRegex") ;
-//        if ( false )
-//            ARQ.getContext().set(ARQ.regexImpl, ARQ.xercesRegex) ;
-//        return ts ;
-//    }
     
     @Test public void testRegex1() { regexTest("ABC", "ABC", null, true) ; }
     @Test public void testRegex2() { regexTest("ABC", "abc", null, false) ; }
