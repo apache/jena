@@ -18,8 +18,7 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.Query ;
@@ -33,20 +32,8 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 
-public class TestSerialization extends TestCase
+public class TestSerialization extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestSerialization.class) ;
-    }
-    
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestSerialization.class) ;
-//        ts.setName(Utils.classShortName(TestSerialization.class)) ;
-//        return ts ;
-//    }
-    
     static PrefixMapping pmap1 = new PrefixMappingImpl() ;
     {
         pmap1.setNsPrefix("", "http://default/") ;

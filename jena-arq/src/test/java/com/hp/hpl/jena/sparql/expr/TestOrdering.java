@@ -18,8 +18,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -27,13 +26,8 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
-public class TestOrdering extends TestCase
+public class TestOrdering extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestOrdering.class) ;
-    }
-    
     NodeValue nvInt2 = NodeValue.makeNodeInteger(2) ;
     NodeValue nvInt3 = NodeValue.makeNodeInteger("3") ;
     NodeValue nvInt03 = NodeValue.makeNodeInteger("03") ;

@@ -29,23 +29,11 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.* ;
 
 public class TestXSDFuncOp extends BaseTest
 {
-//    public static junit.framework.Test suite()
-//    {
-//        return new JUnit4TestAdapter(TestXSDFuncOp.class) ;
-//    }
-    
     private static final double accuracyExact_D = 0.0d ;
     private static final double accuracyExact_F = 0.0d ;
     private static final double accuracyClose_D = 0.000001d ;
     private static final double accuracyClose_F = 0.000001f ;
     
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestXSDFuncOp.class) ;
-//        ts.setName(Utils.classShortName(TestXSDFuncOp.class)) ;
-//        return ts ;
-//    }
-
     // These add tests also test that the right kind of operation was done.
     
     @Test public void testAddIntegerInteger()

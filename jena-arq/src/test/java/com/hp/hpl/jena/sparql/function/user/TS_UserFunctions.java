@@ -18,15 +18,11 @@
 
 package com.hp.hpl.jena.sparql.function.user;
 
-import junit.framework.JUnit4TestAdapter;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import com.hp.hpl.jena.sparql.expr.TS_Expr;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {
@@ -50,8 +46,4 @@ public class TS_UserFunctions {
 	public static void teardown() {
 		UserDefinedFunctionDefinition.warnOnUnusedVariable = bWarnOnUnusedVar;
 	}
-    
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TS_Expr.class);
-      }
 }

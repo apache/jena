@@ -23,7 +23,7 @@ import java.util.Calendar ;
 import java.util.GregorianCalendar ;
 import java.util.TimeZone ;
 
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
  * @see TestExprLib
  * @see TestNodeValue
  */
-public class TestNodeValue extends TestCase
+public class TestNodeValue extends BaseTest
 {
     static final double doubleAccuracy = 0.00000001d ;
 

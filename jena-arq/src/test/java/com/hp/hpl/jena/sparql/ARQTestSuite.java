@@ -48,6 +48,9 @@ public class ARQTestSuite extends TestSuite
     
     static public TestSuite suite()
     {
+        // We have to do things JUnit3 style in order to
+        // have scripted tests, which use JUnit3-style dynamic test building.
+        // This does not seem to be possible in org.junit.*
         TestSuite ts = new ARQTestSuite() ;
         
         // No warnings (e.g. bad lexical forms).

@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import junit.framework.JUnit4TestAdapter ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
@@ -62,9 +61,4 @@ public class TS_Expr
         NodeValue.VerboseWarnings = bVerboseWarnings ;
         E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction ;
     }
-    
-    
-      public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TS_Expr.class);
-      }
 }

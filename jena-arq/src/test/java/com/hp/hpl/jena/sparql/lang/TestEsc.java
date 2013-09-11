@@ -18,29 +18,13 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.sparql.lang.ParserBase ;
 
-/** com.hp.hpl.jena.query.test.TestMisc */
-
-public class TestEsc extends TestCase
+public class TestEsc extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestEsc.class) ;
-    }
-    
-//    public static TestSuite suite()
-//    {
-//        TestSuite ts = new TestSuite(TestEsc.class) ;
-//        ts.setName(Utils.classShortName(TestEsc.class)) ;
-//        return ts ;
-//    }
-    
     @Test public void testEsc01() { execTest("x\\uabcd", "x\uabcd") ; }
     @Test public void testEsc02() { execTest("\\uabcdx", "\uabcdx") ; }
     @Test public void testEsc03() { execTest("1234\\uabcd1234", "1234\uabcd1234") ; }

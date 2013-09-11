@@ -18,8 +18,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -29,13 +28,8 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
-public class TestNodeFunctions extends TestCase
+public class TestNodeFunctions extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestNodeFunctions.class) ;
-    }
-    
     private static final double accuracyExact = 0.0d ;
     private static final double accuracyClose = 0.000001d ;
     

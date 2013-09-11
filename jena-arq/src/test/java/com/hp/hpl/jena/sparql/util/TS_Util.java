@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import junit.framework.JUnit4TestAdapter ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -31,8 +30,4 @@ import org.junit.runners.Suite.SuiteClasses ;
 })
 
 public class TS_Util
-{
-      public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TS_Util.class);
-      }
-}
+{ }

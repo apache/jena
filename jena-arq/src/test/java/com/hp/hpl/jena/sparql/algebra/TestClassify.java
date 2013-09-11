@@ -18,8 +18,7 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.Query ;
@@ -30,19 +29,8 @@ import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
 import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
 import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier ;
 
-public class TestClassify extends TestCase
+public class TestClassify extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestClassify.class) ;
-    }
-//    public static Test suite()
-//    {
-//        TestSuite ts = new TestSuite(TestClassify.class) ;
-//        ts.setName(Utils.classShortName(TestClassify.class)) ;
-//        return ts ;
-//    }
-
     @Test public void testClassify_Join_01() 
 	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ; }
 
