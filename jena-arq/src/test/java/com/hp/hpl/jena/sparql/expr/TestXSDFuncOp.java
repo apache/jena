@@ -18,29 +18,21 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestCase ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueFloat ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.* ;
 
-
-/** com.hp.hpl.jena.query.test.TestNodeValue */
-
-public class TestXSDFuncOp extends TestCase
+public class TestXSDFuncOp extends BaseTest
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestXSDFuncOp.class) ;
-    }
+//    public static junit.framework.Test suite()
+//    {
+//        return new JUnit4TestAdapter(TestXSDFuncOp.class) ;
+//    }
     
     private static final double accuracyExact_D = 0.0d ;
     private static final double accuracyExact_F = 0.0d ;
@@ -878,4 +870,25 @@ public class TestXSDFuncOp extends TestCase
     // Junk to date/time thing.
     @Test (expected=ExprEvalTypeException.class)
     public void cast_err_gregorian_01() { testDateTimeCast(NodeValue.makeBoolean(false), XSDDatatype.XSDgDay, nv_gd) ; }
+    
+    private static NodeValue nv_dt_tz1 = NodeValue.makeNode("2010-03-22T20:31:54.5+01:00", XSDDatatype.XSDdateTime) ;
+    private static NodeValue nv_dt_tz2 = NodeValue.makeNode("2010-03-22T20:31:54.5-05:00", XSDDatatype.XSDdateTime) ;
+    private static NodeValue nv_dt_tz3 = NodeValue.makeNode("2010-03-22T20:31:54.5Z", XSDDatatype.XSDdateTime) ;
+    
+    private static NodeValue nv_d_tz1 = NodeValue.makeNode("2010-03-22+01:00", XSDDatatype.XSDdate) ;
+    private static NodeValue nv_d_tz2 = NodeValue.makeNode("2010-03-22-05:00", XSDDatatype.XSDdate) ;
+    private static NodeValue nv_d_tz3 = NodeValue.makeNode("2010-03-22Z", XSDDatatype.XSDdate) ;
+    
+    private static NodeValue nv_t_tz1 = NodeValue.makeNode("20:31:54.5+01:00", XSDDatatype.XSDtime) ;
+    private static NodeValue nv_t_tz2 = NodeValue.makeNode("20:31:54.5-05:00", XSDDatatype.XSDtime) ;
+    private static NodeValue nv_t_tz3 = NodeValue.makeNode("20:31:54.5Z", XSDDatatype.XSDtime) ;
+    
+    @Test public void cast_date_tz_01() { testDateTimeCast(nv_dt_tz1, XSDDatatype.XSDdate, nv_d_tz1) ; }
+    @Test public void cast_date_tz_02() { testDateTimeCast(nv_dt_tz2, XSDDatatype.XSDdate, nv_d_tz2) ; }
+    @Test public void cast_date_tz_03() { testDateTimeCast(nv_dt_tz3, XSDDatatype.XSDdate, nv_d_tz3) ; }
+    
+    @Test public void cast_time_tz_01() { testDateTimeCast(nv_dt_tz1, XSDDatatype.XSDtime, nv_t_tz1) ; }
+    @Test public void cast_time_tz_02() { testDateTimeCast(nv_dt_tz2, XSDDatatype.XSDtime, nv_t_tz2) ; }
+    @Test public void cast_time_tz_03() { testDateTimeCast(nv_dt_tz3, XSDDatatype.XSDtime, nv_t_tz3) ; }
 }
+

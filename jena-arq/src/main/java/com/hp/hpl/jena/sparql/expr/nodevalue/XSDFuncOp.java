@@ -33,7 +33,6 @@ import static javax.xml.datatype.DatatypeConstants.YEARS ;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
-import java.text.DecimalFormat ;
 import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
@@ -1110,6 +1109,19 @@ public class XSDFuncOp
        return dateTimeCast(nv, xsd) ;
     }
 
+    /** Get the timezone in XSD tiezone format (e.g. "Z" or "+01:00").
+     * Assumes the NodeValue is of suitable datatype.
+     */
+    private static String tzStrFromNV(NodeValue nv) {
+        DateTimeStruct dts = parseAnyDT(nv) ;
+        if ( dts == null )
+            return "" ;
+        String tzStr = dts.timezone ;
+        if ( tzStr == null )
+            tzStr = "" ;
+        return tzStr ;
+    }
+    
     /** Cast a NodeValue to a date/time type (xsd dateTime, date, time, g*) according to F&O
      *  <a href="http://www.w3.org/TR/xpath-functions/#casting-to-datetimes">17.1.5 Casting to date and time types</a>
      *  Throws an exception on incorrect case.
@@ -1130,8 +1142,9 @@ public class XSDFuncOp
             // ==> DateTime
             if ( nv.isDateTime() ) return nv ;
             if ( ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:dateTime: "+nv) ;
-            // DateTime with time 00:00:00
-            String x = String.format("%04d-%02d-%02dT00:00:00", xsdDT.getYear(), xsdDT.getMonth(),xsdDT.getDay()) ;
+            // DateTime with time 00:00:00 ... and timezone, if any
+            String tzStr = tzStrFromNV(nv) ;
+            String x = String.format("%04d-%02d-%02dT00:00:00%s", xsdDT.getYear(), xsdDT.getMonth(),xsdDT.getDay(), tzStr) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
@@ -1140,7 +1153,9 @@ public class XSDFuncOp
             // ==> Date
             if ( nv.isDate() ) return nv ;
             if ( ! nv.isDateTime() ) throw new ExprEvalTypeException("Can't cast to XSD:date: "+nv) ;
-            String x = String.format("%04d-%02d-%02d", xsdDT.getYear(), xsdDT.getMonth(),xsdDT.getDay()) ;
+            // Timezone
+            String tzStr = tzStrFromNV(nv) ;
+            String x = String.format("%04d-%02d-%02d%s", xsdDT.getYear(), xsdDT.getMonth(),xsdDT.getDay(),tzStr) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
@@ -1149,11 +1164,11 @@ public class XSDFuncOp
             // ==> time
             if ( nv.isTime() ) return nv ;
             if ( ! nv.isDateTime() ) throw new ExprEvalTypeException("Can't cast to XSD:time: "+nv) ;
-            // Careful foratting 
-            DecimalFormat nf = new DecimalFormat("00.####") ;
-            nf.setDecimalSeparatorAlwaysShown(false) ;
-            String x = nf.format(xsdDT.getSecond()) ;
-            x = String.format("%02d:%02d:%s", xsdDT.getHour(), xsdDT.getMinute(),x) ;
+            // Careful formatting 
+            
+            DateTimeStruct dts = parseAnyDT(nv) ;
+            if ( dts.timezone == null ) dts.timezone = "" ;
+            String x = String.format("%s:%s:%s%s", dts.hour, dts.minute, dts.second, dts.timezone) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
