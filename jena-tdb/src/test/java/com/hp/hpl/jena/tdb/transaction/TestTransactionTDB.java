@@ -44,8 +44,7 @@ public class TestTransactionTDB extends AbstractTestTransaction
     
     @Before public void before()
     {
-        DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ;
-        FileOps.clearDirectory(DIR) ; 
+        DIR = ConfigTest.getCleanDir() ;
         StoreConnection.release(new Location(DIR)) ;
     }
     

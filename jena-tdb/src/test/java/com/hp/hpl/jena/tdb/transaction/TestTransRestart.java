@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.tdb.transaction ;
 
-import java.io.File ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
@@ -34,7 +33,6 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -52,17 +50,16 @@ public class TestTransRestart extends BaseTest {
             SystemTDB.setFileMode(FileMode.direct) ; 
     }
     
-//    private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ) ; 
-    private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : "/tmp/TDB" ) ; 
-    private Location location = new Location (path) ;
-
+    private String path = null ; 
+    private Location location = null ;
+    
     private static boolean useTransactionsSetup = true ;
     private static Quad quad1 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'foo')") ;
     private static Quad quad2 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'bar')") ;
     
     @Before public void setup() {
-        cleanup() ;
-        FileOps.ensureDir(path) ;
+        path = ConfigTest.getCleanDir() ; 
+        location = new Location (path) ;
         if ( useTransactionsSetup )
             setupTxn() ;
         else
@@ -86,24 +83,22 @@ public class TestTransRestart extends BaseTest {
     }
 
     private void setupTxn() {
-        StoreConnection sc = StoreConnection.make(location) ; 
-        DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ; 
+        StoreConnection.release(location) ;
+        FileOps.clearDirectory(path);
+        StoreConnection sc = StoreConnection.make(location) ;
+        DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE);
         dsg.add(quad1) ; 
-        dsg.commit() ; 
-        TDB.sync(dsg) ; 
-        dsg.end() ; 
-        StoreConnection.release(location) ; 
+        dsg.commit() ;
+        dsg.end() ;
+        sc.flush(); 
+        StoreConnection.release(location) ;
     }
         
     private void cleanup() {
-        File dir = new File(path) ;
-        if ( dir.exists() ) {
+        if ( FileOps.exists(path)) {
             FileOps.clearDirectory(path) ;
             FileOps.deleteSilent(path) ;
         }
-        if ( ! SystemTDB.isWindows )
-            // Windows, any mode, does not remove directories, at least not instantly. 
-            assertFalse ( dir.exists() ) ;
     }
     
     @Test

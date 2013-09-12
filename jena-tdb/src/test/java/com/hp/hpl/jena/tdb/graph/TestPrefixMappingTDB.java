@@ -120,8 +120,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
             //TDB.getContext().set(SystemTDB.symFileMode, "mapped") ;
             TDB.getContext().set(SystemTDB.symFileMode, "direct") ;
         }
-        String DB = ConfigTest.getTestingDirDB() ;
-        FileOps.clearDirectory(DB) ;
+        String DB = ConfigTest.getCleanDir() ;
         {
             // Create new DB (assuming it's empty now)
             Graph graph = TDBFactory.createDatasetGraph(DB).getDefaultGraph() ;

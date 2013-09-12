@@ -28,13 +28,12 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class TestTDBFactory extends BaseTest
 {
-    final String DIR = SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ;
+    String DIR = ConfigTest.getCleanDir() ;
     
     static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
     static Quad quad2 = SSE.parseQuad("(_ <s> <p> 1)") ;
