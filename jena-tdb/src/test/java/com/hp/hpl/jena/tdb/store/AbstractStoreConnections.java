@@ -18,11 +18,8 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.io.File ;
-
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -38,15 +35,12 @@ import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 
 public abstract class AbstractStoreConnections extends BaseTest
 {
     // Subclass to give direct and mapped versions.
-    
-    static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
     
     // Per-test unique-ish.
     static int count = 0 ;
@@ -63,13 +57,7 @@ public abstract class AbstractStoreConnections extends BaseTest
     @Before public void before()
     {
         StoreConnection.reset() ;
-        DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ;
-        FileOps.ensureDir(DIR) ;
-        FileOps.clearDirectory(DIR) ;
-        
-        File d = new File(DIR) ;
-        if ( d.list().length > 2 )  // . and ..
-            throw new RuntimeException("Unable to clean up existing test directory contents") ;
+        DIR = ConfigTest.getCleanDir() ;
     }
 
     @After public void after() {} 

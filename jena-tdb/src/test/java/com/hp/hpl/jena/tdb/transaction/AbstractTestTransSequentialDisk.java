@@ -20,20 +20,16 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import java.io.File ;
 
-import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.After ;
 import org.junit.Before ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Basic tests and tests of ordering (single thread) */
 public abstract class AbstractTestTransSequentialDisk extends AbstractTestTransSeq
 {
-    static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
-    
-    String DIR = null ;
+    protected String DIR = null ;
     
     // Subclasses must implement.
 //    @BeforeClass public static void beforeClass() {}
@@ -42,13 +38,8 @@ public abstract class AbstractTestTransSequentialDisk extends AbstractTestTransS
     @Before public void before()
     {
         StoreConnection.reset() ;
-        DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
-		FileOps.ensureDir(DIR) ;
-		FileOps.clearDirectory(DIR) ;
-		
+        DIR = ConfigTest.getCleanDir() ;
         File d = new File(DIR) ;
-        if ( d.list().length > 2 )  // . and ..
-            throw new RuntimeException("not empty") ;
     }
 
     @After public void after() {} 

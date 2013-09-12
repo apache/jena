@@ -18,13 +18,11 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-
 import java.util.Arrays ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
@@ -40,7 +38,6 @@ import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.junit.GraphLocation ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Testing persistence  */ 
 public class TestDatasetTDBPersist extends BaseTest
@@ -48,7 +45,6 @@ public class TestDatasetTDBPersist extends BaseTest
     static Node n0 = NodeFactoryExtra.parseNode("<http://example/n0>") ; 
     static Node n1 = NodeFactoryExtra.parseNode("<http://example/n1>") ;
     static Node n2 = NodeFactoryExtra.parseNode("<http://example/n2>") ;
-    static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
     
     // To avoid the problems on MS Windows whereby memory mapped files
     // can't be deleted from a running JVM, we use a different, cleaned 
@@ -58,10 +54,8 @@ public class TestDatasetTDBPersist extends BaseTest
     
     @Before public void before()
     {   
-    	String dirname = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
+    	String dirname = ConfigTest.getCleanDir() ;
     	StoreConnection.reset() ;
-		FileOps.ensureDir(dirname) ;
-		FileOps.clearDirectory(dirname) ;
 		graphLocation = new GraphLocation(new Location(dirname)) ;
         graphLocation.createDataset() ;
     }

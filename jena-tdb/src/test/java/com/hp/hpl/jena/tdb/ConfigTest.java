@@ -18,31 +18,42 @@
 
 package com.hp.hpl.jena.tdb;
 
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+
 import org.apache.jena.atlas.lib.FileOps ;
 
 public class ConfigTest
 {
-    // Place under target - it wil not be included in Apache source-release.
+    // Place under target
     private static final String testingDir = "target/tdb-testing" ;
     private static final String testingDirDB = "target/tdb-testing/DB" ;
-    // See also "testing/Assembler/*.ttl" that uses the temp area for testing   
+    static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
     
     static boolean initialized = false ; 
     
     private static void init()
     {
-        if ( ! initialized )
-        {
-            FileOps.ensureDir("target") ;
-            FileOps.ensureDir(testingDir) ;
-            FileOps.ensureDir(testingDirDB) ;
-        }
+        if ( initialized )
+            return ; 
+        FileOps.ensureDir("target") ;
+        FileOps.ensureDir(testingDir) ;
+        FileOps.ensureDir(testingDirDB) ;
+        initialized = true ;
     }
     
     private static int count = 0 ;
     
-    /** Get a empty directory name that has not been used before in this JVM */ 
-    public static final String getTestingDirUnique()
+    /** return a directory */ 
+    public static final String getCleanDir() {
+        init() ;
+        String dir = nonDeleteableMMapFiles ? getTestingDirUnique() : getTestingDirDB() ;
+        FileOps.ensureDir(dir); 
+        FileOps.clearDirectory(dir) ;
+        return dir ;
+    }
+    /** Get a empty directory name that has not been used before in this JVM */
+    
+    private static final String getTestingDirUnique()
     {
         init() ;
     	String dn = testingDir+"/D-"+(++count) ;
@@ -57,9 +68,19 @@ public class ConfigTest
         return testingDir ;
     }
     
+    public static final void deleteTestingDir()
+    {
+        if ( ! FileOps.exists(testingDir) )
+            return ;
+        deleteTestingDirDB() ;
+        FileOps.clearDirectory(testingDir) ;
+        FileOps.deleteSilent(testingDir) ;
+    }
+
     public static final String getTestingDirDB()
     {
         init() ;
+        FileOps.ensureDir(testingDirDB) ;
         return testingDirDB ;
     }
     
@@ -71,12 +92,4 @@ public class ConfigTest
         FileOps.deleteSilent(testingDirDB) ;
     }
 
-    public static final void deleteTestingDir()
-    {
-        if ( ! FileOps.exists(testingDir) )
-            return ;
-        deleteTestingDirDB() ;
-        FileOps.clearDirectory(testingDir) ;
-        FileOps.deleteSilent(testingDir) ;
-    }
 }
