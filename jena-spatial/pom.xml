@@ -22,7 +22,7 @@
   <artifactId>jena-spatial</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SPARQL Spatial Search</name>
-  <version>1.0.1</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -32,7 +32,7 @@
   </parent>
 
   <properties>
-    <ver.jena>2.11.0</ver.jena>
+    <ver.jena>2.11.1-SNAPSHOT</ver.jena>
     <ver.lucene>4.3.1</ver.lucene>
     <ver.solr>4.3.1</ver.solr>
     <ver.spatial4j>0.3</ver.spatial4j>
