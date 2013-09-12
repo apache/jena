@@ -33,8 +33,6 @@ public class ConfigTest
     
     private static void init()
     {
-        if ( initialized )
-            return ; 
         FileOps.ensureDir("target") ;
         FileOps.ensureDir(testingDir) ;
         FileOps.ensureDir(testingDirDB) ;
