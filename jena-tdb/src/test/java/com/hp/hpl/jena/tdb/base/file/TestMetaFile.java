@@ -18,24 +18,25 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.io.File;
-
+import java.io.File ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.After ;
+import org.junit.Before ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class TestMetaFile extends BaseTest
 {
-    static String testfile = ConfigTest.getTestingDir()+"/file" ;
-    static String testfileMeta = ConfigTest.getTestingDir()+"/file."+Names.extMeta ;
+    String testfile = null ;
+    String testfileMeta = null ;
     
     @Before public void before()
     {
+        testfile = ConfigTest.getTestingDir()+"/file" ;
+        testfileMeta = ConfigTest.getTestingDir()+"/file."+Names.extMeta ;
         File f = new File(testfileMeta) ;
         f.delete() ;
     }
@@ -63,10 +64,10 @@ public class TestMetaFile extends BaseTest
 
     // Test MetaBase
     
-    @AfterClass public static void afterClass()
+    @After public void afterClass()
     { clear() ; }
     
-    private static void clear()
+    private void clear()
     {
         File f = new File(testfileMeta) ;
         f.delete() ;

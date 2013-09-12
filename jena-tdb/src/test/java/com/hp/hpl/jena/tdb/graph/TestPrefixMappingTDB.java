@@ -141,7 +141,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
             assertEquals("http://test", ns) ;
             graph.close();
         }
-        ConfigTest.deleteTestingDirDB() ;
+        FileOps.deleteSilent(DB);
 
     }
 }
