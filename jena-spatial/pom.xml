@@ -16,24 +16,23 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-spatial</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SPARQL Spatial Search</name>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>7-SNAPSHOT</version>
+    <version>7</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
   <properties>
-    <ver.jena>2.11.0-SNAPSHOT</ver.jena>
+    <ver.jena>2.11.0</ver.jena>
     <ver.lucene>4.3.1</ver.lucene>
     <ver.solr>4.3.1</ver.solr>
     <ver.spatial4j>0.3</ver.spatial4j>
