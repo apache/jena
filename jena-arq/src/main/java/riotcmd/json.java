@@ -26,7 +26,7 @@ import org.apache.jena.atlas.json.JsonValue ;
 /** Command to read and print JSON */
 public class json
 {
-    public static void main(String[] args)
+    public static void main(String... args)
     {
         if ( args.length == 0 )
             args = new String[] {"-"} ;
