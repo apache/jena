@@ -18,11 +18,13 @@
 
 package jena;
 
+import jena.cmdline.CmdLineUtils ;
+
 
 public class turtle
 {
     public static void main(String... args)
     {
-        query.invokeCmd("riotcmd.turtle",args) ;
+        CmdLineUtils.invokeCmd("riotcmd.turtle",args) ;
     }
 }

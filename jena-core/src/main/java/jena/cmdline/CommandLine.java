@@ -21,6 +21,8 @@ package jena.cmdline;
 import java.io.* ;
 import java.util.* ;
 
+import com.hp.hpl.jena.util.FileUtils ;
+
 /**
  * Command line argument processing based on a trigger model.
  * An action is called whenever an argument is encountered. Example:
@@ -112,7 +114,7 @@ public class CommandLine
         if ( withIndirect && item.startsWith(indirectionMarker) )
         {
             item = item.substring(1) ;
-            try { item = CmdLineUtils.readWholeFileAsUTF8(item) ; }
+            try { item = FileUtils.readWholeFileAsUTF8(item) ; }
             catch (Exception ex)
             { throw new IllegalArgumentException("Failed to read '"+item+"': "+ex.getMessage()) ; }
         }
