@@ -18,11 +18,13 @@
 
 package jena;
 
+import jena.cmdline.CmdLineUtils ;
+
 public class qtest
 {
     // Call-through to arq command line application
     public static void main(String[] args)
     {
-        query.invokeCmd("arq.qtest",args) ;
+        CmdLineUtils.invokeCmd("arq.qtest",args) ;
     }
 }

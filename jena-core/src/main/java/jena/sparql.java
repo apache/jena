@@ -18,11 +18,13 @@
 
 package jena;
 
+import jena.cmdline.CmdLineUtils ;
+
 public class sparql
 {
     // Call-through to arq command line application
     public static void main(String[] args)
     {
-        query.invokeCmd("arq.sparql",args) ;
+        CmdLineUtils.invokeCmd("arq.sparql",args) ;
     }
 }
