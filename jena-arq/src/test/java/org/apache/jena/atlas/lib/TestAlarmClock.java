@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib;
+package org.apache.jena.atlas.lib ;
 
 import static org.apache.jena.atlas.lib.Lib.sleep ;
 
@@ -25,19 +25,17 @@ import java.util.concurrent.atomic.AtomicInteger ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-public class TestAlarmClock extends BaseTest
-{
-    AtomicInteger count = new AtomicInteger(0) ;
-    Runnable callback = new Runnable() {
-        
-        @Override
-        public void run()
-        {
-            count.getAndIncrement() ;
-        }} ;
-    
-    @Test public void alarm_01()
-    {
+public class TestAlarmClock extends BaseTest {
+    AtomicInteger count    = new AtomicInteger(0) ;
+    Runnable      callback = new Runnable() {
+                               @Override
+                               public void run() {
+                                   count.getAndIncrement() ;
+                               }
+                           } ;
+
+    @Test
+    public void alarm_01() {
         AlarmClock alarmClock = new AlarmClock() ;
         // Very long - never happens.
         alarmClock.add(callback, 10000000) ;
@@ -45,9 +43,9 @@ public class TestAlarmClock extends BaseTest
         assertEquals(0, count.get()) ;
         alarmClock.release() ;
     }
-    
-    @Test public void alarm_02()
-    {
+
+    @Test
+    public void alarm_02() {
         AlarmClock alarmClock = new AlarmClock() ;
         // Short - happens.
         alarmClock.add(callback, 10) ;
@@ -58,31 +56,31 @@ public class TestAlarmClock extends BaseTest
         alarmClock.release() ;
     }
 
-    @Test public void alarm_03()
-    {
+    @Test
+    public void alarm_03() {
         AlarmClock alarmClock = new AlarmClock() ;
-        alarmClock.add(callback, 50) ;
+        alarmClock.add(callback, 10) ;
         alarmClock.add(callback, 100000) ;
-        sleep(100) ;
+        sleep(150) ;
         // ping1 went off.
         assertEquals(1, count.get()) ;
         alarmClock.cancel(callback) ;
         alarmClock.release() ;
     }
 
-    @Test public void alarm_04()
-    {
+    @Test
+    public void alarm_04() {
         AlarmClock alarmClock = new AlarmClock() ;
         alarmClock.add(callback, 10) ;
         alarmClock.add(callback, 20) ;
         sleep(200) ;
-        // ping1 went off.  ping2 went off.
+        // ping1 went off. ping2 went off.
         assertEquals(2, count.get()) ;
         alarmClock.release() ;
     }
 
-    @Test public void alarm_05()
-    {
+    @Test
+    public void alarm_05() {
         AlarmClock alarmClock = new AlarmClock() ;
         alarmClock.add(callback, 100) ;
         alarmClock.reset(callback, 2000) ;
