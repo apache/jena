@@ -70,11 +70,11 @@ public class ARQ
      */
     public static final Symbol symLogExec           = ARQConstants.allocSymbol("logExec") ;
     
-    /** Get the currentl global execution logging setting */  
+    /** Get the currently global execution logging setting */  
     public static Explain.InfoLevel getExecutionLogging() { return (Explain.InfoLevel)ARQ.getContext().get(ARQ.symLogExec) ; }
     
     /** Set execution logging - logging is to logger "com.hp.hpl.jena.arq.exec" at level INFO.
-     * An appropriate logging configuration is also required.
+     *  An appropriate logging configuration is also required.
      */
     public static void setExecutionLogging(Explain.InfoLevel infoLevel)
     {
@@ -85,8 +85,8 @@ public class ARQ
         }
         
         ARQ.getContext().set(ARQ.symLogExec, infoLevel) ;
-        if ( ! getExecLogger().isInfoEnabled() )
-            getExecLogger().warn("Attempt to enable execution logging but the logger '"+logExecName+"' is not logging at level INFO") ;
+//        if ( ! getExecLogger().isInfoEnabled() )
+//            getExecLogger().warn("Attempt to enable execution logging but the logger '"+logExecName+"' is not logging at level INFO") ;
     }
 
     /** IRI for ARQ */  
