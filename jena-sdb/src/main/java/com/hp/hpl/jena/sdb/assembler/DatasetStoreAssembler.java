@@ -22,11 +22,9 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.Resource;
-
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
-
 import com.hp.hpl.jena.query.Dataset;
-
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.StoreDesc;
 
@@ -39,6 +37,7 @@ public class DatasetStoreAssembler extends AssemblerBase implements Assembler
     {
         StoreDesc desc = openStore(a, root, mode) ;
         Dataset ds = SDBFactory.connectDataset(desc) ;
+        AssemblerUtils.setContext(root, ds.getContext());
         return ds ;
     }
     

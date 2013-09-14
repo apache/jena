@@ -32,6 +32,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -43,40 +44,35 @@ public class DatasetAssemblerTDB extends DatasetAssembler
     static { TDB.init(); }
     
     @Override
-    public Dataset createDataset(Assembler a, Resource root, Mode mode)
-    {
+    public Dataset createDataset(Assembler a, Resource root, Mode mode) {
         TDB.init() ;
         return make(root) ;
     }
 
-    static Dataset make(Resource root)
-    {
-        if ( ! exactlyOneProperty(root, pLocation) )
+    static Dataset make(Resource root) {
+        if ( !exactlyOneProperty(root, pLocation) )
             throw new AssemblerException(root, "No location given") ;
 
         String dir = getStringValue(root, pLocation) ;
         Location loc = new Location(dir) ;
         DatasetGraph dsg = TDBFactory.createDatasetGraph(loc) ;
-        
-        if ( root.hasProperty(pUnionDefaultGraph) )
-        {
+
+        if ( root.hasProperty(pUnionDefaultGraph) ) {
             Node b = root.getProperty(pUnionDefaultGraph).getObject().asNode() ;
             NodeValue nv = NodeValue.makeNode(b) ;
             if ( nv.isBoolean() )
                 dsg.getContext().set(TDB.symUnionDefaultGraph, nv.getBoolean()) ;
             else
-                Log.warn(DatasetAssemblerTDB.class,
-                         "Failed to recognize value for union graph setting (ignored): "+b) ;
+                Log.warn(DatasetAssemblerTDB.class, "Failed to recognize value for union graph setting (ignored): " + b) ;
         }
-        
+
         /*
         <r> rdf:type tdb:DatasetTDB ;
             tdb:location "dir" ;
-            //arq:set [ arq:contextSymbol "xyz" ; arq:contextValue 123 ] ;  <-- in ARQ dataset assembler stuff.
-            //arq:set ( <uri> 123 ) ;
+            //ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
             tdb:unionGraph true ; # or "true"
         */
-        
+        AssemblerUtils.setContext(root, dsg.getContext());
         return DatasetFactory.create(dsg) ; 
     }
     
