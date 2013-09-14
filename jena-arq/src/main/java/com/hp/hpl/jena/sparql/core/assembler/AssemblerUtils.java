@@ -101,6 +101,16 @@ public class AssemblerUtils
         return Assembler.general.open(root) ;
     }
     
+    /** Look for and set context declarations. 
+     * e.g.
+     * <pre>
+     * root ... ;
+     *   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+     *   ...
+     * </pre>
+     * Short name forms of context parameters can be used.  
+     * Setting as string "undef" will remove the context setting.
+     */
     public static void setContext(Resource r, Context context)
     {
         String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name ; ja:cxtValue ?value ] }" ;
