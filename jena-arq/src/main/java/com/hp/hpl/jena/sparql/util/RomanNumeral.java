@@ -94,7 +94,7 @@ public class RomanNumeral
     // It is easier working right to left!
     public static int r2i(String lex)
     {
-        lex = lex.toUpperCase(Locale.ENGLISH) ;
+        lex = lex.toUpperCase(Locale.ROOT) ;
 
         // This is overly permissive.
         // 1 - allows multiple reducing values

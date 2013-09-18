@@ -145,9 +145,9 @@ public abstract class LangTurtleBase extends LangBase {
     protected final void directivePrefix() {
         // Raw - unresolved prefix name.
         if ( !lookingAt(PREFIXED_NAME) )
-            exception(peekToken(), "@prefix requires a prefix (found '" + peekToken() + "')") ;
+            exception(peekToken(), "@prefix or PREFIX requires a prefix (found '" + peekToken() + "')") ;
         if ( peekToken().getImage2().length() != 0 )
-            exception(peekToken(), "@prefix requires a prefix and no suffix (found '" + peekToken() + "')") ;
+            exception(peekToken(), "@prefix or PREFIX requires a prefix with no suffix (found '" + peekToken() + "')") ;
         String prefix = peekToken().getImage() ;
         nextToken() ;
         if ( !lookingAt(IRI) )

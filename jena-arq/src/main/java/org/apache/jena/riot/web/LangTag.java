@@ -288,13 +288,13 @@ public class LangTag
     private static String lowercase(String string)
     {
         if ( string == null ) return null ;
-        return string.toLowerCase(Locale.ENGLISH) ;
+        return string.toLowerCase(Locale.ROOT) ;
     }
 
     private static String uppercase(String string)
     {
         if ( string == null ) return null ;
-        return string.toUpperCase(Locale.ENGLISH) ;
+        return string.toUpperCase(Locale.ROOT) ;
     }
 
     private static String titlecase(String string)
