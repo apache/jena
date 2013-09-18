@@ -1,5 +1,10 @@
 ==== Fuseki
 
+== Fuseki 1.0.1
+
+== Fuseki 1.0.0
+This is the final version of what was 0.2.8
+
 == Fuseki 0.2.8
 
 + jena-text added to the server : Lucene/solr backed search:
