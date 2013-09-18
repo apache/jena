@@ -84,31 +84,11 @@ public class DatasetBuilderStd implements DatasetBuilder
         set(blockMgrBuilder, nodeTableBuilder) ;
     }
     
-    // Dalayed initialization
-    protected void setAll(NodeTableBuilder nodeTableBuilder,
-                          TupleIndexBuilder tupleIndexBuilder,
-                          IndexBuilder indexBuilder,
-                          RangeIndexBuilder rangeIndexBuilder,
-                          BlockMgrBuilder blockMgrBuilder,
-                          ObjectFileBuilder objectFileBuilder)
-    {
-        this.nodeTableBuilder = nodeTableBuilder ;
-        this.tupleIndexBuilder = tupleIndexBuilder ;
-        //this.indexBuilder = indexBuilder ;
-//        this.rangeIndexBuilder = rangeIndexBuilder ;
-//        this.blockMgrBuilder = blockMgrBuilder ;
-//        this.objectFileBuilder = objectFileBuilder ;
-    }
-    
     protected void set(NodeTableBuilder nodeTableBuilder,
-                       TupleIndexBuilder tupleIndexBuilder,
-                       //IndexBuilder indexBuilder,
-                       RangeIndexBuilder rangeIndexBuilder)
+                       TupleIndexBuilder tupleIndexBuilder)
     {
         this.nodeTableBuilder = nodeTableBuilder ;
         this.tupleIndexBuilder = tupleIndexBuilder ;
-        //this.indexBuilder = indexBuilder ;
-//        this.rangeIndexBuilder = rangeIndexBuilder ;
     }
     
     protected void set(BlockMgrBuilder blockMgrBuilder,
@@ -124,7 +104,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         nodeTableBuilder = new NodeTableBuilderRecorder(nodeTableBuilder, recorder) ;
         
         TupleIndexBuilder tupleIndexBuilder     = new Builder.TupleIndexBuilderStd(rangeIndexBuilder) ;
-        set(nodeTableBuilder, tupleIndexBuilder, rangeIndexBuilder) ;
+        set(nodeTableBuilder, tupleIndexBuilder) ;
     }
         
     protected void setStd()
