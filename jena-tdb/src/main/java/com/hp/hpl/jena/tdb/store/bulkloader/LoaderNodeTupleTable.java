@@ -108,16 +108,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             count++ ;           // Not zero the first time.
             monitor.dataItem() ;
             nodeTupleTable.addRow(nodes) ;
-
-//            // Flush every so often.
-//            // Seems to improve performance:maybe because a bunch of blocks are
-//            // flushed together meaning better disk access pattern 
-//            if ( LoadFlushTickPrimary > 0 &&  count % LoadFlushTickPrimary == 0 )
-//            {
-//                System.out.println("FLUSH - primary") ;
-//                nodeTupleTable.sync() ;
-//            }
-            
         } catch (RuntimeException ex)
         {
             System.err.println(Iter.asString(Arrays.asList(nodes))) ;
@@ -130,8 +120,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
      */
     public void loadDataFinish()
     {
-//      if ( LoadFlushTickPrimary > 0 &&  count % LoadFlushTickPrimary == 0 )
-//          nodeTupleTable.sync() ;
         monitor.finishDataPhase() ;
     }
     
@@ -213,18 +201,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
                 if ( destIdx != null )
                     destIdx.add(tuple) ;
             }
-            
-//            // Flush every so often.
-//            if ( LoadFlushTickSecondary > 0 && counter % LoadFlushTickSecondary == 0 )
-//            {
-//                System.out.println("FLUSH - secondary") ;
-//                sync(destIndexes ) ;
-//            }
         }
-
-//        // And finally ...
-//        if ( LoadFlushTickSecondary > 0 && counter % LoadFlushTickSecondary != 0 )
-//            sync(destIndexes) ;
 
         monitor.finishIndex(label) ;
     }
