@@ -25,6 +25,7 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import tdb.cmdline.CmdTDB ;

@@ -29,6 +29,8 @@ import com.hp.hpl.jena.sparql.util.Timer ;
 
 public final class LoadMonitor
 {
+    // c.f. ProgressLogger except this (earlier) class
+    // has two explicit phases.
     /* Parameterize the load logging */
     private final Logger log ;
     private final DatasetGraph dataset ;

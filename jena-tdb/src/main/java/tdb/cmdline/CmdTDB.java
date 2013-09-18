@@ -36,35 +36,9 @@ public abstract class CmdTDB extends CmdARQ
 {
     protected final ModTDBDataset tdbDatasetAssembler   = new ModTDBDataset() ;
 
-    // Check oK - remove.
-//    private static final String log4Jsetup = StrUtils.strjoin("\n"
-//                   , "## Plain output to stdout"
-//                   , "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender"
-//                   , "log4j.appender.tdb.plain.target=System.out"
-//                   , "log4j.appender.tdb.plain.layout=org.apache.log4j.PatternLayout"
-//                   , "log4j.appender.tdb.plain.layout.ConversionPattern=%m%n"
-//
-//                   , "## Plain output with level, to stderr"
-//                   , "log4j.appender.tdb.plainlevel=org.apache.log4j.ConsoleAppender"
-//                   , "log4j.appender.tdb.plainlevel.target=System.err"
-//                   , "log4j.appender.tdb.plainlevel.layout=org.apache.log4j.PatternLayout"
-//                   , "log4j.appender.tdb.plainlevel.layout.ConversionPattern=%-5p %m%n"
-//
-//                   , "## Everything"
-//                   , "log4j.rootLogger=INFO, tdb.plainlevel"
-//
-//                   , "## Loader output"
-//                   , "log4j.additivity."+TDB.logLoaderName+"=false"
-//                   , "log4j.logger."+TDB.logLoaderName+"=INFO, tdb.plain"
-//
-//                   , "## Parser output"
-//                   , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
-//                   , "log4j.logger."+SysRIOT.riotLoggerName+"=INFO, tdb.plainlevel "
-//    ) ;
     private static boolean initialized = false ;
     
-    protected CmdTDB(String[] argv)
-    {
+    protected CmdTDB(String[] argv) {
         super(argv) ;
         init() ;
         super.addModule(tdbDatasetAssembler) ;
@@ -72,10 +46,9 @@ public abstract class CmdTDB extends CmdARQ
         super.modVersion.addClass(ARQ.class) ;
         super.modVersion.addClass(TDB.class) ;
     }
-    
-    public static synchronized void init()
-    {
-        if ( initialized )
+
+    public static synchronized void init() {
+        if (initialized)
             return ;
         // attempt once.
         initialized = true ;
@@ -83,38 +56,31 @@ public abstract class CmdTDB extends CmdARQ
         TDB.init() ;
         DatasetBuilderStd.setOptimizerWarningFlag(false) ;
     }
-    
+
     @Override
-    protected void processModulesAndArgs()
-    {
+    protected void processModulesAndArgs() {
         super.processModulesAndArgs() ;
     }
-    
-    protected Location getLocation()
-    {
+
+    protected Location getLocation() {
         return tdbDatasetAssembler.getLocation() ;
     }
-    
-    protected DatasetGraph getDatasetGraph()
-    {
+
+    protected DatasetGraph getDatasetGraph() {
         return getDataset().asDatasetGraph() ;
     }
-    
-    protected DatasetGraphTDB getDatasetGraphTDB()
-    {
+
+    protected DatasetGraphTDB getDatasetGraphTDB() {
         DatasetGraph dsg = getDatasetGraph() ;
         return TDBInternal.getBaseDatasetGraphTDB(dsg) ;
     }
 
-    protected Dataset getDataset()
-    {
+    protected Dataset getDataset() {
         return tdbDatasetAssembler.getDataset() ;
     }
-    
+
     @Override
-    protected String getCommandName()
-    {
+    protected String getCommandName() {
         return Utils.className(this) ;
     }
-    
 }
