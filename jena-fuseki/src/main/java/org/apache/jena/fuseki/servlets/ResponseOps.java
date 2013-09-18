@@ -31,7 +31,7 @@ public class ResponseOps
     // Helpers
     public static void put(Map<String, String> map, String key, String value)
     {
-        map.put(key.toLowerCase(Locale.US), value) ;
+        map.put(key.toLowerCase(Locale.ROOT), value) ;
     }
     
     public static boolean isEOFexception(IOException ioEx)
@@ -58,7 +58,8 @@ public class ResponseOps
         String x = fetchParam(request, HttpNames.paramOutput1) ;
         if ( x == null )
             x = fetchParam(request, HttpNames.paramOutput2) ;
-        return expandShortName(x, map) ; 
+        String z = expandShortName(x, map) ;
+        return z.toLowerCase(Locale.ROOT) ;
     }
 
 //    public static String paramAcceptField(HttpServletRequest request, Map<String,String> map)

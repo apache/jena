@@ -179,7 +179,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     private void dispatch(HttpAction action) {
         HttpServletRequest req = action.request ;
         HttpServletResponse resp = action.response ;
-        String method = req.getMethod().toUpperCase(Locale.ENGLISH) ;
+        String method = req.getMethod().toUpperCase(Locale.ROOT) ;
 
         if (method.equals(METHOD_GET))
             doGet$(action);

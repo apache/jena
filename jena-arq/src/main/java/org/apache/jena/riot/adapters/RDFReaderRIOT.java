@@ -49,7 +49,7 @@ public class RDFReaderRIOT implements RDFReader
     
     public RDFReaderRIOT(String lang)
     {
-        basename = "org.apache.jena.riot.reader."+lang.toLowerCase(Locale.ENGLISH) ;
+        basename = "org.apache.jena.riot.reader."+lang.toLowerCase(Locale.ROOT) ;
         hintlang = lang ;
     }
 

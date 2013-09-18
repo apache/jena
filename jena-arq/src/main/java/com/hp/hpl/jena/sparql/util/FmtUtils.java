@@ -562,7 +562,7 @@ public class FmtUtils
                 }
                 else
                 {
-                    String hexstr = Integer.toHexString(c).toUpperCase(Locale.ENGLISH);
+                    String hexstr = Integer.toHexString(c).toUpperCase(Locale.ROOT);
                     int pad = 4 - hexstr.length();
                     sbuff.append("\\u");
                     for (; pad > 0; pad--)

@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class E_MD5 extends ExprDigest
 {
-    private static final String symbol = Tags.tagMD5.toUpperCase(Locale.ENGLISH) ;
+    private static final String symbol = Tags.tagMD5.toUpperCase(Locale.ROOT) ;
 
     public E_MD5(Expr expr)
     {

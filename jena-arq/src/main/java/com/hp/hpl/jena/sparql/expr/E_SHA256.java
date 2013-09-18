@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class E_SHA256 extends ExprDigest
 {
-    private static final String symbol = Tags.tagSHA256.toUpperCase(Locale.ENGLISH) ;
+    private static final String symbol = Tags.tagSHA256.toUpperCase(Locale.ROOT) ;
 
     public E_SHA256(Expr expr)
     {

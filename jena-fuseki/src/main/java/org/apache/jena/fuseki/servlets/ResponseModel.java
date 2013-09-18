@@ -100,7 +100,7 @@ public class ResponseModel
         String forceAccept = ResponseOps.paramForceAccept(request) ;
         if ( forceAccept != null )
         {
-            contentType = WebContent.contentTypeTextPlain ;
+            contentType = forceAccept ;
             charset = WebContent.charsetUTF8 ;
         }
 

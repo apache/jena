@@ -103,7 +103,7 @@ public class GraphMemPlain extends GraphBase
             String lang = node.getLiteralLanguage() ;
             if ( lang != null && ! lang.equals("") )
                 node = NodeFactory.createLiteral(node.getLiteralLexicalForm(),
-                                          lang.toLowerCase(Locale.ENGLISH),
+                                          lang.toLowerCase(Locale.ROOT),
                                           node.getLiteralDatatype()) ;
         }
         return node ; 

@@ -58,7 +58,7 @@ public class LocatorURL implements Locator
         String uriSchemeName = FileUtils.getScheme(filenameOrURI) ;
         if ( uriSchemeName == null )
             return false ;
-        uriSchemeName = uriSchemeName.toLowerCase(Locale.ENGLISH) ; 
+        uriSchemeName = uriSchemeName.toLowerCase(Locale.ROOT) ; 
         for ( int i = 0 ; i < schemeNames.length ; i++ )
         {
             if ( uriSchemeName.equals(schemeNames[i]) )
