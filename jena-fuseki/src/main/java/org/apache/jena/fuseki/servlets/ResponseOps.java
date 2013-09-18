@@ -58,27 +58,16 @@ public class ResponseOps
         String x = fetchParam(request, HttpNames.paramOutput1) ;
         if ( x == null )
             x = fetchParam(request, HttpNames.paramOutput2) ;
-        String z = expandShortName(x, map) ;
-        return z.toLowerCase(Locale.ROOT) ;
+        return expandShortName(x, map) ;
     }
-
-//    public static String paramAcceptField(HttpServletRequest request, Map<String,String> map)
-//    {
-//        String acceptField = WebLib.getAccept(request) ;
-//        String acceptParam = fetchParam(request, HttpNames.paramAccept) ;
-//        
-//        if ( acceptParam != null )
-//            acceptField = acceptParam ;
-//        if ( acceptField == null )
-//            return null ;
-//        return expandShortName(acceptField, map) ; 
-//    }
 
     public static String expandShortName(String str, Map<String,String> map)
     {
         if ( str == null )
             return null ;
-        String str2 = map.get(str) ;
+        // Force keys to lower case. See put() above.
+        String key = str.toLowerCase(Locale.ROOT) ;
+        String str2 = map.get(key) ;
         if ( str2 == null )
             return str ;
         return str2 ;
