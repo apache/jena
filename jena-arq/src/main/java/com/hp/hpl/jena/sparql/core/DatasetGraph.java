@@ -30,13 +30,10 @@ import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /** DatasetGraph: The graph representation of an RDF Dataset. See {@link Dataset}
- * for the Model level, read-only view (fixed set of models - the models
- * themselves are still mutable) of an RDF dataset.  
+ * for the Model level of an RDF dataset.  
  * <p>
  * Whether a dataset contains a graph if there are no triples
- * is not defined; see the specifc implementation. Some datasets are "open" -
- * they have all graphs even if no triples, Some datasets are "closed" - fixed
- * set of graphs
+ * is not defined; see the specific implementation.
  */
 
 public interface DatasetGraph extends Closeable
