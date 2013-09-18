@@ -199,7 +199,7 @@ public class OpVars
 
         @Override
         public void visit(OpProject opProject) {
-            // The walker (WalerVisitorVisible) handles this
+            // The walker (WalkerVisitorVisible) handles this
             // for visible variables, not mentioned variable colelcting.
             // The visibleOnly/clear is simply to be as general as possible.
             if (visibleOnly)
