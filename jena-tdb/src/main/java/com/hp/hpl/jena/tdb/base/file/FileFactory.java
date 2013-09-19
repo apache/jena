@@ -38,9 +38,6 @@ public class FileFactory
 
     public static ObjectFile createObjectFileMem(String filename)
     { 
-        // Old.
-        //return new com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem(filename) ;
-        // Newer way.
         BufferChannel file = BufferChannelMem.create(filename) ; 
         return new ObjectFileStorage(file) ;
     }
