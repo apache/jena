@@ -28,7 +28,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
  * Suitable for memory mapped I/O (returns
  * internally allocated space for read, not provided from outside; write() can
  * insist the block written comes from allocate()). This is wrapped in a
- * BlockMgrAccess to provide a higher level abstraction.
+ * BlockMgr to provide a higher level abstraction.
  * 
  * @see BufferChannel
  */
