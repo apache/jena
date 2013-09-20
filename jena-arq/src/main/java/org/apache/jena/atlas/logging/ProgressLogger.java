@@ -74,10 +74,15 @@ public class ProgressLogger
             long thisTime = timePoint - lastTime ;
         
             // *1000L is milli to second conversion
-        
-            long batchAvgRate = (counterBatch * 1000L) / thisTime;
-            long runAvgRate   = (counterTotal * 1000L) / timePoint ;
-            print("Add: %,d %s (Batch: %,d / Avg: %,d)", counterTotal, label, batchAvgRate, runAvgRate) ;
+            if ( thisTime != 0 && timePoint != 0 ) {
+                long batchAvgRate = (counterBatch * 1000L) / thisTime;
+                long runAvgRate   = (counterTotal * 1000L) / timePoint ;
+                print("Add: %,d %s (Batch: %,d / Avg: %,d)", counterTotal, label, batchAvgRate, runAvgRate) ;
+            } else {
+                print("Add: %,d %s (Batch: ---- / Avg: ----)", counterTotal, label) ;
+            }
+            
+            
             lastTime = timePoint ;
 
             if ( tickPoint(counterTotal, superTick*tickPoint) )
