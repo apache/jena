@@ -28,7 +28,7 @@
 #   Command to invoke Java. If not set, java (from the PATH) will be used.
 #
 # JAVA_OPTIONS
-#   Extra options to pass to the JVM
+#   Extra options to pass to the JVM.
 #
 # FUSEKI_HOME
 #   Where Fuseki is installed.  If not set, the script will try
@@ -205,7 +205,7 @@ fi
 # Some JVM settings
 if [ -z "$JAVA_OPTIONS" ]
 then
-  JAVA_OPTIONS="-Dlog4j.configuration=log4j.properties -Xmx1200M"
+  JAVA_OPTIONS="-Xmx1200M"
 fi
 
 
