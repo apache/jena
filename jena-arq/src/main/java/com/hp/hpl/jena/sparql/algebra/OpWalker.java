@@ -43,84 +43,88 @@ public class OpWalker
         op.visit(walkerVisitor) ;
     }
     
-    static class WalkerVisitor extends OpVisitorByType
-    {
-        private final OpVisitor beforeVisitor ;
-        private final OpVisitor afterVisitor ;
+    static class WalkerVisitor extends OpVisitorByType {
+        private final OpVisitor   beforeVisitor ;
+        private final OpVisitor   afterVisitor ;
         protected final OpVisitor visitor ;
 
-        public WalkerVisitor(OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
-        { 
+        public WalkerVisitor(OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
             this.visitor = visitor ;
             this.beforeVisitor = beforeVisitor ;
             this.afterVisitor = afterVisitor ;
         }
 
-        public WalkerVisitor(OpVisitor visitor) { this(visitor, null, null) ; }
-        
-        protected final void before(Op op)
-        { 
+        public WalkerVisitor(OpVisitor visitor) {
+            this(visitor, null, null) ;
+        }
+
+        protected final void before(Op op) {
             if ( beforeVisitor != null )
                 op.visit(beforeVisitor) ;
         }
 
-        protected final void after(Op op)
-        {
+        protected final void after(Op op) {
             if ( afterVisitor != null )
                 op.visit(afterVisitor) ;
         }
-        
+
         @Override
-        protected void visit0(Op0 op)         
-        {  
+        protected void visit0(Op0 op) {
             before(op) ;
-            if ( visitor != null ) op.visit(visitor) ;
+            if ( visitor != null )
+                op.visit(visitor) ;
             after(op) ;
         }
 
         @Override
-        protected void visit1(Op1 op)
-        {
+        protected void visit1(Op1 op) {
             before(op) ;
-            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
-            if ( visitor != null ) op.visit(visitor) ; 
+            if ( op.getSubOp() != null )
+                op.getSubOp().visit(this) ;
+            if ( visitor != null )
+                op.visit(visitor) ;
             after(op) ;
         }
 
         @Override
-        protected void visitFilter(OpFilter op)
-        {
+        protected void visitFilter(OpFilter op) {
             visit1(op) ;
         }
-        
+
         @Override
-        protected void visit2(Op2 op)
-        {
-            before(op) ;
-            if ( op.getLeft() != null ) op.getLeft().visit(this) ;
-            if ( op.getRight() != null ) op.getRight().visit(this) ;
-            if ( visitor != null ) op.visit(visitor) ;      
-            after(op) ; 
+        protected void visitLeftJoin(OpLeftJoin op) {
+            visit2(op) ;
         }
-        
+
         @Override
-        protected void visitN(OpN op)
-        {
+        protected void visit2(Op2 op) {
             before(op) ;
-            for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
-            {
+            if ( op.getLeft() != null )
+                op.getLeft().visit(this) ;
+            if ( op.getRight() != null )
+                op.getRight().visit(this) ;
+            if ( visitor != null )
+                op.visit(visitor) ;
+            after(op) ;
+        }
+
+        @Override
+        protected void visitN(OpN op) {
+            before(op) ;
+            for (Iterator<Op> iter = op.iterator(); iter.hasNext();) {
                 Op sub = iter.next() ;
                 sub.visit(this) ;
             }
-            if ( visitor != null ) op.visit(visitor) ;
+            if ( visitor != null )
+                op.visit(visitor) ;
             after(op) ;
         }
 
         @Override
-        protected void visitExt(OpExt op)
-        {
+        protected void visitExt(OpExt op) {
             before(op) ;
-            if ( visitor != null ) op.visit(visitor) ;
+            if ( visitor != null )
+                op.visit(visitor) ;
             after(op) ;
         }
     }

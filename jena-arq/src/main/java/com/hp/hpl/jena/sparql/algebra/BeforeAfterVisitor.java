@@ -71,6 +71,11 @@ public class BeforeAfterVisitor extends OpVisitorByType//implements OpVisitor
     }
 
     @Override
+    protected void visitLeftJoin(OpLeftJoin op) { 
+        before(op) ; op.visit(mainVisitor) ; after(op) ;
+    }
+
+    @Override
     protected void visitExt(OpExt op) { 
         before(op) ; op.visit(mainVisitor) ; after(op) ;
     }

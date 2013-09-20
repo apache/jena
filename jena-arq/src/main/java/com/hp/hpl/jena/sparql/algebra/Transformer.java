@@ -116,14 +116,6 @@ public class Transformer
         }
     }
 
-    /** Transform an Op - not recursively */ 
-    public static Op transformOne(Transform transform, Op op)
-    {
-        OpTransformApplyOne visitor = new OpTransformApplyOne(transform) ;
-        op.visit(visitor) ;
-        return visitor.result ;
-    }
-    
     // To allow subclassing this class, we use a singleton pattern 
     // and theses protected methods.
     protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
@@ -157,7 +149,6 @@ public class Transformer
         Op r = transformApply.result() ;
         return r ;
     }
-
     
     protected Transformer() { }
     
@@ -190,14 +181,14 @@ public class Transformer
             return pop() ; 
         }
 
-        private ExprList transform(ExprList exprList, ExprTransform exprTransform)
+        private static ExprList transform(ExprList exprList, ExprTransform exprTransform)
         {
             if ( exprList == null || exprTransform == null )
                 return exprList ;
             return ExprTransformer.transform(exprTransform, exprList) ;
         }
 
-        private Expr transform(Expr expr, ExprTransform exprTransform)
+        private static Expr transform(Expr expr, ExprTransform exprTransform)
         {
             if ( expr == null || exprTransform == null )
                 return expr ;
@@ -232,7 +223,7 @@ public class Transformer
         public void visit(OpAssign opAssign)
         { 
             VarExprList varExpr = opAssign.getVarExprList() ;
-            VarExprList varExpr2 = process(varExpr) ;
+            VarExprList varExpr2 = process(varExpr, exprTransform) ;
             OpAssign opAssign2 = opAssign ;
             if ( varExpr != varExpr2 )
                 opAssign2 = OpAssign.assignDirect(opAssign.getSubOp(), varExpr2) ;
@@ -243,14 +234,14 @@ public class Transformer
         public void visit(OpExtend opExtend)
         { 
             VarExprList varExpr = opExtend.getVarExprList() ;
-            VarExprList varExpr2 = process(varExpr) ;
+            VarExprList varExpr2 = process(varExpr, exprTransform) ;
             OpExtend opExtend2 = opExtend ;
             if ( varExpr != varExpr2 )
                 opExtend2 = OpExtend.extendDirect(opExtend.getSubOp(), varExpr2) ;
             visit1(opExtend2) ;
         }
         
-        private VarExprList process(VarExprList varExpr)
+        private static VarExprList process(VarExprList varExpr, ExprTransform exprTransform)
         {
             List<Var> vars = varExpr.getVars() ;
             VarExprList varExpr2 = new VarExprList() ;
@@ -268,8 +259,38 @@ public class Transformer
                 if ( e != e2 )
                     changed = true ;
             }
-            if ( ! changed ) return varExpr ;
+            if ( ! changed ) 
+                return varExpr ;
             return varExpr2 ;
+        }
+
+        private static ExprList process(ExprList exprList, ExprTransform exprTransform)
+        {
+            if ( exprList == null )
+                return null ;
+            ExprList exprList2 = new ExprList() ;
+            boolean changed = false ;
+            for ( Expr e : exprList )
+            {
+                Expr e2 = process(e, exprTransform) ;
+                exprList2.add(e2) ; 
+                if ( e != e2 )
+                    changed = true ;
+            }
+            if ( ! changed ) 
+                return exprList ;
+            return exprList2 ;
+        }
+        
+        private static Expr process(Expr expr, ExprTransform exprTransform)
+        {
+            Expr e = expr ;
+            Expr e2 =  e ;
+            if ( e != null )
+                e2 = transform(e, exprTransform) ;
+            if ( e == e2 ) 
+                return expr ;
+            return e2 ;
         }
 
         @Override
@@ -278,7 +299,7 @@ public class Transformer
             boolean changed = false ;
 
             VarExprList varExpr = opGroup.getGroupVars() ;
-            VarExprList varExpr2 = process(varExpr) ;
+            VarExprList varExpr2 = process(varExpr, exprTransform) ;
             if ( varExpr != varExpr2 )
                 changed = true ;
             
@@ -373,22 +394,35 @@ public class Transformer
             if ( opFilter.getSubOp() != null )
                 subOp = pop() ;
             boolean changed = ( opFilter.getSubOp() != subOp ) ;
-            
-            // Now any expressions.
-            ExprList ex = new ExprList() ;
-            for ( Expr e : opFilter.getExprs() )
-            {
-                Expr e2 = transform(e, exprTransform) ;
-                ex.add(e2) ;
-                if ( e != e2 )
-                    changed = true ;
-            }
+
+            ExprList ex = opFilter.getExprs() ;
+            ExprList ex2 = process(ex, exprTransform) ;
             OpFilter f = opFilter ;
-            if ( changed )
-                f = (OpFilter)OpFilter.filter(ex, subOp) ;
+            if ( ex != ex2 )
+                f = (OpFilter)OpFilter.filter(ex2, subOp) ;
             push(f.apply(transform, subOp)) ;
         }
         
+        @Override
+        protected void visitLeftJoin(OpLeftJoin op) {
+            Op left = null ;
+            Op right = null ;
+        
+            // Must do right-left because the pushes onto the stack were left-right. 
+            if ( op.getRight() != null )
+                right = pop() ;
+            if ( op.getLeft() != null )
+                left = pop() ;
+            
+            ExprList exprs = op.getExprs() ;
+            ExprList exprs2 = process(exprs, exprTransform) ;
+            OpLeftJoin x = op ;
+            if ( exprs != exprs2 )
+                x = OpLeftJoin.createLeftJoin(left, right, exprs2) ;
+            Op opX = x.apply(transform, left, right) ; 
+            push(opX) ;
+        }
+
         @Override
         protected void visitExt(OpExt op)
         {
@@ -461,40 +495,5 @@ public class Transformer
         @Override
         public Op transform(OpService opService, Op subOp)
         { return opService ; } 
-    }
-    
-    static class OpTransformApplyOne extends OpVisitorByType
-    {
-        private final Transform transform ;
-        Op result ;
-
-        OpTransformApplyOne(Transform transform)
-        {
-            this.transform = transform ;
-        }
-
-        @Override
-        protected void visitN(OpN op)
-        { result = op.apply(transform, op.getElements()) ; }
-
-        @Override
-        protected void visit2(Op2 op)
-        { result = op.apply(transform, op.getLeft(), op.getRight()) ; }
-
-        @Override
-        protected void visit1(Op1 op)
-        { result = op.apply(transform, op.getSubOp()) ; }
-
-        @Override
-        protected void visit0(Op0 op)
-        { result = op.apply(transform) ; }
-
-        @Override
-        protected void visitFilter(OpFilter op)
-        { result = op.apply(transform, op.getSubOp()) ; }
-        
-        @Override
-        protected void visitExt(OpExt op)
-        { result = op.apply(transform) ; }
     }
 }

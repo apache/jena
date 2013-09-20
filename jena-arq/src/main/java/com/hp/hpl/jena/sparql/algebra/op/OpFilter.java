@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class OpFilter extends Op1
 {
-    ExprList expressions ;
+    protected ExprList expressions ;
     
     public static Op filter(Expr expr, Op op)
     {
@@ -54,15 +54,6 @@ public class OpFilter extends Op1
         return f ;
     }
     
-    
-//    public static Op filterRaw(ExprList exprs, Op op)
-//    {
-//        if ( exprs.isEmpty() )
-//            return op ;
-//        OpFilter f = new OpFilter(exprs, op) ;
-//        return f ;
-//    }
-
     /** Make a OpFilter - guarantteed to return an OpFilter */
     public static OpFilter filterDirect(ExprList exprs, Op op)
     {
