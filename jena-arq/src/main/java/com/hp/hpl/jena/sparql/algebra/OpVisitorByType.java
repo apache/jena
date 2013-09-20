@@ -38,6 +38,8 @@ public abstract class OpVisitorByType implements OpVisitor
 
     protected abstract void visitFilter(OpFilter op) ;
     
+    protected abstract void visitLeftJoin(OpLeftJoin op) ;
+    
     protected void visitModifer(OpModifier opMod)
     { visit1(opMod) ; }
 
@@ -87,7 +89,7 @@ public abstract class OpVisitorByType implements OpVisitor
     
     @Override
     public void visit(OpLeftJoin opLeftJoin)
-    { visit2(opLeftJoin) ; }
+    { visitLeftJoin(opLeftJoin) ; }
 
     @Override
     public void visit(OpDiff opDiff)

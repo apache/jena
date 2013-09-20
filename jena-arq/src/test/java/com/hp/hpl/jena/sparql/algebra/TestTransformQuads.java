@@ -117,12 +117,52 @@ public class TestTransformQuads extends BaseTest
     @Test public void quads33() { test ( "{ GRAPH ?g { { SELECT ?x WHERE { ?x ?p ?g } } } }",
                                           "(project (?x)",
                                           "  (quadpattern (quad ?g ?x ?/p ?/g)))") ; }
+
+    // JENA-535
+    @Test public void quads34() { test ( "{ ?s ?p ?o OPTIONAL { FILTER NOT EXISTS { ?x ?y ?z } } }",
+                                         "(conditional",
+                                         "  (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?s ?p ?o))",
+                                         "  (filter (notexists",
+                                         "             (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?x ?y ?z)))",
+                                         "    (table unit)))") ; }
     
-    private static void test(String patternString, String... strExpected)
+    // NOT EXISTS in left join expression. 
+    @Test public void quads35() { test ( "{ ?s ?p ?o OPTIONAL { FILTER NOT EXISTS { ?x ?y ?z } } }",
+                                         false,
+                                         "(leftjoin",
+                                         "   (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?s ?p ?o))",
+                                         "   (table unit)",
+                                         "   (notexists",
+                                         "     (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?x ?y ?z))))") ; }
+        
+    // NOT EXISTS in left join expression. 
+    @Test public void quads36() { test ( "{ ?s ?p ?o OPTIONAL { FILTER NOT EXISTS { GRAPH ?g { ?x ?y ?z } } } }",
+                                         false,
+                                         "(leftjoin",
+                                         "   (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?s ?p ?o))",
+                                         "   (table unit)",
+                                         "   (notexists",
+                                         "     (quadpattern (?g ?x ?y ?z))))") ; }
+    
+    // NOT EXISTS in BIND 
+    @Test public void quads37() { test ( "{ BIND ( true && NOT EXISTS { GRAPH ?g { ?x ?y ?z } } AS ?X ) }",
+                                         "(extend ((?X (&& true (notexists",
+                                         "                         (quadpattern (quad ?g ?x ?y ?z))))))",
+                                         "    (table unit))") ; }
+
+        
+
+    private static void test(String patternString, String... strExpected) {
+        test(patternString, true, strExpected) ;
+    }
+    
+    
+    private static void test(String patternString, boolean optimize, String... strExpected)
     {
         Query q = QueryFactory.create("SELECT * WHERE "+patternString) ;
         Op op = Algebra.compile(q) ;
-        op = Algebra.optimize(op) ;
+        if ( optimize )
+            op = Algebra.optimize(op) ;
         op = Algebra.toQuadForm(op) ;
         
         Op op2 = SSE.parseOp(StrUtils.strjoinNL(strExpected)) ;
