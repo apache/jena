@@ -48,7 +48,7 @@ public class sdbprint extends CmdArgsDB
 
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
     
-    ModQueryIn modQuery = new ModQueryIn() ;
+    ModQueryIn modQuery = new ModQueryIn(Syntax.syntaxARQ) ;
     ArgDecl argDeclPrintSQL     = new ArgDecl(ArgDecl.NoValue, "sql") ;
     ArgDecl argDeclPrint = new ArgDecl(ArgDecl.HasValue, "print") ;
 
