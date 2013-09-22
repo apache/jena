@@ -22,7 +22,7 @@
 export FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Jena/jena-fuseki}
 if [ ! -e $FUSEKI_HOME ]
 then
-     echo "$FUSEKI_HOME does not exist" 1>&2
+    echo "$FUSEKI_HOME does not exist" 1>&2
     exit 1
     fi
 if [ ! -d $FUSEKI_HOME ]
@@ -52,7 +52,7 @@ do
     fi
 done
 
-FUSEKI_LOG=${FUSEKI_LOG:-} # "-D-Dlog4j.configuration=file:$FUSEKI_HOME/log4j.properties"
+FUSEKI_LOG=${FUSEKI_LOG:-}
 JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 #JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize=1G"
 
