@@ -18,19 +18,20 @@
 
 package arq;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import com.hp.hpl.jena.query.Syntax ;
 
 /** A program to execute queries from the command line in ARQ mode. */
 
-public class arq
+public class arq extends query
 {
-    public static void main(String... argv)
-    {
-        List<String> a = new ArrayList<String>() ;
-        for ( int i = 0 ; i < argv.length ; i++ ) a.add(argv[i]) ;
-        a.add(0, "--syntax=arq") ;
-        argv = a.toArray(argv) ;
-        query.main(argv) ;
+    public static void main (String... argv) {
+        new arq(argv).mainRun() ;
     }
+    
+    public arq(String[] argv) {
+        super(argv) ; 
+    }
+
+    @Override
+    protected Syntax getDefaultSyntax()     { return Syntax.syntaxARQ ; } 
  }

@@ -53,7 +53,7 @@ public class query extends CmdARQ
     protected boolean queryOptimization = true ;
     
     protected ModTime       modTime =     new ModTime() ;
-    protected ModQueryIn    modQuery =    new ModQueryIn() ;
+    protected ModQueryIn    modQuery =    null;
     protected ModDataset    modDataset =  null ;
     protected ModResultsOut modResults =  new ModResultsOut() ;
     protected ModEngine     modEngine =   new ModEngine() ;
@@ -66,7 +66,9 @@ public class query extends CmdARQ
     public query(String[] argv)
     {
         super(argv) ;
+        modQuery = new ModQueryIn(getDefaultSyntax()) ; 
         modDataset = setModDataset() ;
+       
         super.addModule(modQuery) ;
         super.addModule(modResults) ;
         super.addModule(modDataset) ;
@@ -78,6 +80,18 @@ public class query extends CmdARQ
         super.add(argRepeat,   "--repeat=N or N,M", "Do N times or N warmup and then M times (use for timing to overcome start up costs of Java)");
         super.add(argOptimize, "--optimize=", "Turn the query optimizer on or off (default: on)") ;
     }
+
+    /** Default syntax used when the syntax can not be determined from the command name or file extension
+     *  The order of determination is:
+     *  <ul>
+     *  <li>Explicitly given --syntax</li>
+     *  <li>File extension</li>
+     *  <li>Command default</li>
+     *  <li>System default</li>
+     *  </ul>
+     *  
+     */
+    protected Syntax getDefaultSyntax()     { return Syntax.defaultQuerySyntax ; }
 
     @Override
     protected void processModulesAndArgs()
