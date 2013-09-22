@@ -76,39 +76,38 @@ public class FileRef
     static {
         //printTable() ;
         add(journalIdx , journalName) ;
-        // The code above produces this:
-        // To make it clear and stable, we keep this form.
-        add(0+idxOffset , "SPO.idn") ;
-        add(1+idxOffset , "SPO.dat") ;
-        add(2+idxOffset , "POS.idn") ;
-        add(3+idxOffset , "POS.dat") ;
-        add(4+idxOffset , "OSP.idn") ;
-        add(5+idxOffset , "OSP.dat") ;
-        add(6+idxOffset , "GSPO.idn") ;
-        add(7+idxOffset , "GSPO.dat") ;
-        add(8+idxOffset , "GPOS.idn") ;
-        add(9+idxOffset , "GPOS.dat") ;
-        add(10+idxOffset , "GOSP.idn") ;
-        add(11+idxOffset , "GOSP.dat") ;
-        add(12+idxOffset , "POSG.idn") ;
-        add(13+idxOffset , "POSG.dat") ;
-        add(14+idxOffset , "OSPG.idn") ;
-        add(15+idxOffset , "OSPG.dat") ;
-        add(16+idxOffset , "SPOG.idn") ;
-        add(17+idxOffset , "SPOG.dat") ;
-        add(18+idxOffset , "prefixes.idn") ;
-        add(19+idxOffset , "prefixes.dat") ;
-        add(20+idxOffset , "prefix2id.idn") ;
-        add(21+idxOffset , "prefix2id.dat") ;
-        add(22+idxOffset , "nodes.dat") ;
-        add(23+idxOffset , "node2id.idn") ;
-        add(24+idxOffset , "node2id.dat") ;
-        add(25+idxOffset , "prefixIdx.idn") ;
-        add(26+idxOffset , "prefixIdx.dat") ;
+
+        file("SPO.idn") ;
+        file("SPO.dat") ;
+        file("POS.idn") ;
+        file("POS.dat") ;
+        file("OSP.idn") ;
+        file("OSP.dat") ;
+        file("GSPO.idn") ;
+        file("GSPO.dat") ;
+        file("GPOS.idn") ;
+        file("GPOS.dat") ;
+        file("GOSP.idn") ;
+        file("GOSP.dat") ;
+        file("POSG.idn") ;
+        file("POSG.dat") ;
+        file("OSPG.idn") ;
+        file("OSPG.dat") ;
+        file("SPOG.idn") ;
+        file("SPOG.dat") ;
+        file("prefixes.idn") ;
+        file("prefixes.dat") ;
+        file("prefix2id.idn") ;
+        file("prefix2id.dat") ;
+        file("nodes.dat") ;
+        file("node2id.idn") ;
+        file("node2id.dat") ;
+        file("prefixIdx.idn") ;
+        file("prefixIdx.dat") ;
         
-        add(50+idxOffset , "TEST") ;
-        add(51+idxOffset , "TEST1") ;
-        add(52+idxOffset , "TEST2") ;
+        add(1000+idxOffset, "TEST") ;
+        add(1001+idxOffset, "TEST1") ;
+        add(1002+idxOffset, "TEST2") ;
     }
     public static final FileRef Journal = get(journalIdx) ;
     
@@ -128,8 +127,7 @@ public class FileRef
     public static void file(String name)
     {
         int idx = name2id.size() + idxOffset ;
-        name2id.put(name, idx) ;
-        id2name.put(idx, new FileRef(name, idx)) ;
+        add(idx, name) ;
     }
     // --------
     

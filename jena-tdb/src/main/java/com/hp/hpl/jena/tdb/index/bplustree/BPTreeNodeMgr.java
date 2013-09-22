@@ -52,7 +52,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         BPTreePage recordsPage = bpTree.getRecordsMgr().create() ;
         if ( recordsPage.getId() != BPlusTreeParams.RootId )
             // [TxTDB:PATCH-UP]
-            throw new TDBException("Root blocks must be at position zero") ;
+            throw new TDBException("Root blocks must be at position zero (got "+recordsPage.getId()+")") ;
         // Empty data block.
         // [TxTDB:PATCH-UP]
         recordsPage.write();

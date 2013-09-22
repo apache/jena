@@ -165,9 +165,10 @@ public class DatasetBuilderStd implements DatasetBuilder
     {    
         String primary = params.primaryIndexTriples ;
         String[] indexes = params.tripleIndexes ;
-        
-        if ( indexes.length != 3 )
-            error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
+
+        // Allow experimentation of other index layouts. 
+//        if ( indexes.length != 3 )
+//            error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
         log.debug("Triple table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
         
         TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes) ;
@@ -183,8 +184,9 @@ public class DatasetBuilderStd implements DatasetBuilder
         String primary = params.primaryIndexQuads ;
         String[] indexes = params.quadIndexes ;
         
-        if ( indexes.length != 6 )
-            error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
+        // Allow experimentation of other index layouts. 
+//        if ( indexes.length != 6 )
+//            error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
         
         log.debug("Quad table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
         
