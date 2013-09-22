@@ -26,10 +26,7 @@ import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModResultsOut;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.compiler.SDB_QC;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
@@ -60,7 +57,7 @@ public class sdbquery extends CmdArgsDB
     boolean printResults = true ;
     int repeatCount = 1 ;
     
-    ModQueryIn    modQuery =    new ModQueryIn() ;
+    ModQueryIn    modQuery =    new ModQueryIn(Syntax.syntaxARQ) ;
     ModResultsOut modResults =  new ModResultsOut() ;
 
     public static void main (String... argv)
