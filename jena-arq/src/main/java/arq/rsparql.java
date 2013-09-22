@@ -27,13 +27,14 @@ import arq.cmdline.ModResultsOut ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.engine.http.HttpQuery ;
 import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 
 public class rsparql extends CmdARQ
 {
-    protected ModQueryIn    modQuery =      new ModQueryIn() ;
+    protected ModQueryIn    modQuery =      new ModQueryIn(Syntax.syntaxSPARQL_11) ;
     protected ModRemote     modRemote =     new ModRemote() ;
     protected ModResultsOut modResults =    new ModResultsOut() ;
 

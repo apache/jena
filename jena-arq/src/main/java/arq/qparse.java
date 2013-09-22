@@ -46,7 +46,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class qparse extends CmdARQ
 {
-    protected ModQueryIn    modQuery        = new ModQueryIn() ;
+    protected ModQueryIn    modQuery        = new ModQueryIn(Syntax.syntaxSPARQL_11) ;
     protected ModQueryOut   modOutput       = new ModQueryOut() ; 
     protected ModEngine     modEngine       = new ModEngine() ;
     protected final ArgDecl argDeclPrint    = new ArgDecl(ArgDecl.HasValue, "print") ;

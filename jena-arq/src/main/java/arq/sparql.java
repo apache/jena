@@ -18,12 +18,20 @@
 
 package arq;
 
+import com.hp.hpl.jena.query.Syntax ;
+
 /** A program to execute queries from the command line in SPARQL mode. */
 
-public class sparql
+public class sparql extends query
 {
-    public static void main (String... argv)
-    {
-        query.main(argv) ;
+    public static void main (String... argv) {
+        new sparql(argv).mainRun() ;
     }
- }
+    
+    public sparql(String[] argv) {
+        super(argv) ; 
+    }
+
+    @Override
+    protected Syntax getDefaultSyntax()     { return Syntax.syntaxSPARQL_11 ; } 
+}
