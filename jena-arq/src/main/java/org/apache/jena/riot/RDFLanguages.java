@@ -66,13 +66,13 @@ public class RDFLanguages
      *   
      * OWL2 does not mention it.
      * 
-     * ".owx" is the OWl direct XML syntax.
+     * ".owx" is the OWL direct XML syntax.
      */
 
     /** RDF/XML */
     public static final Lang RDFXML   = LangBuilder.create(strLangRDFXML, contentTypeRDFXML)
                                                 .addAltNames("RDFXML", "RDF/XML-ABBREV", "RDFXML-ABBREV")
-                                                .addFileExtensions("rdf", /*"owl",*/ "xml")
+                                                .addFileExtensions("rdf", "owl", "xml")
                                                 .build() ;
     
     /** Turtle */
