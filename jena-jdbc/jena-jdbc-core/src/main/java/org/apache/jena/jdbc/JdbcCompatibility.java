@@ -26,6 +26,7 @@ import org.apache.jena.jdbc.results.metadata.columns.BooleanColumn;
 import org.apache.jena.jdbc.results.metadata.columns.ByteColumn;
 import org.apache.jena.jdbc.results.metadata.columns.ColumnInfo;
 import org.apache.jena.jdbc.results.metadata.columns.DateColumn;
+import org.apache.jena.jdbc.results.metadata.columns.DateTimeColumn;
 import org.apache.jena.jdbc.results.metadata.columns.DecimalColumn;
 import org.apache.jena.jdbc.results.metadata.columns.DoubleColumn;
 import org.apache.jena.jdbc.results.metadata.columns.FloatColumn;
@@ -217,9 +218,12 @@ public class JdbcCompatibility {
      * @throws SQLException
      */
     private static ColumnInfo selectColumnType(String var, String dtUri, int nullable) throws SQLException {
-        if (dtUri.equals(XSD.date.toString()) || dtUri.equals(XSD.dateTime.toString())) {
+        if (dtUri.equals(XSD.date.toString())) {
             // Date column
             return new DateColumn(var, nullable);
+        } else if (dtUri.equals(XSD.dateTime.toString())) {
+            // Date time column
+            return new DateTimeColumn(var, nullable);
         } else if (dtUri.equals(XSD.decimal.toString())) {
             // Decimal column
             return new DecimalColumn(var, nullable);

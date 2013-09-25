@@ -276,7 +276,7 @@ public class TestCompatibility {
     @Test
     public void test_column_type_detection_datetimes_01() throws SQLException {
         Model m = ModelFactory.createDefaultModel();
-        testColumnTypeDetection("x", m.createTypedLiteral(Calendar.getInstance()).asNode(), true, Types.DATE, Date.class.getCanonicalName());
+        testColumnTypeDetection("x", m.createTypedLiteral(Calendar.getInstance()).asNode(), true, Types.TIMESTAMP, Timestamp.class.getCanonicalName());
     }
     
     /**
