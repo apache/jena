@@ -277,7 +277,7 @@ public abstract class AbstractResultSetTests {
             Object obj = rset.getObject("o");
             Assert.assertNotNull(obj);
             Assert.assertFalse(rset.wasNull());
-            Assert.assertTrue(obj instanceof Date);
+            Assert.assertTrue(obj instanceof Timestamp);
         }
 
         Assert.assertTrue(rset.isAfterLast());
