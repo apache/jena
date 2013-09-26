@@ -26,6 +26,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.mgt.ManagementServer ;
@@ -49,6 +50,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class FusekiCmd extends CmdARQ
@@ -284,9 +286,14 @@ public class FusekiCmd extends CmdARQ
         if ( contains(argTDB) )
         {
             String dir = getValue(argTDB) ;
-            log.info("TDB dataset: directory="+dir) ;
-            if ( ! FileOps.exists(dir) )
-                throw new CmdException("Directory not found: "+dir) ;
+            
+            if ( Lib.equal(dir, Names.memName) ) {
+                log.info("TDB dataset: in-memory") ;
+            } else {
+                if ( ! FileOps.exists(dir) )
+                    throw new CmdException("Directory not found: "+dir) ;
+                log.info("TDB dataset: directory="+dir) ;
+            }
             dsg = TDBFactory.createDatasetGraph(dir) ;
         }
         
