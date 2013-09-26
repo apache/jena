@@ -28,7 +28,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 
 public class QueryIterTDB extends QueryIterPlainWrapper
 {
-    // Rename as QueryIterCloseOther?
     final private QueryIterator originalInput ;
     private List<Abortable> killList ;
     
@@ -54,5 +53,7 @@ public class QueryIterTDB extends QueryIterPlainWrapper
         if ( killList != null )
             for ( Abortable it : killList )
                 it.abort() ;
+        if ( originalInput != null )
+            originalInput.cancel(); 
     }
 }
