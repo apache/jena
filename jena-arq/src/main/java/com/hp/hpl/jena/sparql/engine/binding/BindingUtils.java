@@ -30,26 +30,6 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 public class BindingUtils
 {
-    
-//    public static Triple substituteIntoTriple(Triple t, Binding binding)
-//    {
-//        Node subject = substituteNode(t.getSubject(), binding) ;
-//        Node predicate = substituteNode(t.getPredicate(), binding) ;
-//        Node object = substituteNode(t.getObject(), binding) ;
-//        
-//        if ( subject == t.getSubject() &&
-//             predicate == t.getPredicate() &&
-//             object == t.getObject() )
-//             return t ;
-//             
-//        return new Triple(subject, predicate, object) ;
-//    }
-//    
-//    public static Node substituteNode(Node n, Binding binding)
-//    {
-//        return Var.lookup(binding, n) ;
-//    }
-    
     /** Convert a query solution to a binding */ 
     public static Binding asBinding(QuerySolution qSolution)
     {
@@ -73,7 +53,6 @@ public class BindingUtils
             String n = iter.next() ;
             
             RDFNode x = qSolution.get(n) ;
-            //XXX
             if ( Var.isBlankNodeVarName(n) )
                 continue ;
             try {
@@ -85,7 +64,6 @@ public class BindingUtils
             }
         }
     }
-    
     
     public static void addAll(BindingMap dest, Binding src)
     {

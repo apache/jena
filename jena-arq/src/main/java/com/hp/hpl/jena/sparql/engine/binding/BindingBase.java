@@ -99,7 +99,6 @@ abstract public class BindingBase implements Binding
             return true ;
         return parent.isEmpty() ;
     }
-    //{ return size() == 0 ; }
     
     protected abstract boolean isEmpty1() ;
     
@@ -183,6 +182,7 @@ abstract public class BindingBase implements Binding
 
     @Override
     public int hashCode() { return hashCode(this) ; } 
+    
     @Override
     public boolean equals(Object other)
     {

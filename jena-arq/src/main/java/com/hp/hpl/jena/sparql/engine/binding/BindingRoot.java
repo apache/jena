@@ -26,8 +26,6 @@ public class BindingRoot extends Binding0
     public static Binding create() { return new BindingRoot() ; } 
     private BindingRoot() { super(null) ; }
 
-    //public boolean isRoot() { return true ; } 
-
     @Override
     public void format1(StringBuffer sBuff)
     {
