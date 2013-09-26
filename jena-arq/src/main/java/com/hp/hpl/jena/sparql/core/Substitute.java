@@ -127,8 +127,13 @@ public class Substitute
     {
         if ( isNotNeeded(binding) ) return propFuncArg ;
         
-        if ( propFuncArg.isNode() )
+        if ( propFuncArg.isNode() ) {
+            Node n = propFuncArg.getArg() ;
+            if ( ! Var.isVar(n) )
+                // Not a Var, no substitute needed. 
+                return propFuncArg ;
             return new PropFuncArg(substitute(propFuncArg.getArg(), binding)) ;
+        }
         
         List<Node> newArgList = new ArrayList<Node>() ;
         for ( Node n : propFuncArg.getArgList() )
@@ -148,8 +153,6 @@ public class Substitute
         return exprList.copySubstitute(binding) ;  
     }
     
-    
-
     private static boolean isNotNeeded(Binding b)
     {
         return b.isEmpty() ; 
