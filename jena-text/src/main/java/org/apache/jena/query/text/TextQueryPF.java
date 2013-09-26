@@ -32,6 +32,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryBuildException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -113,6 +114,9 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         DatasetGraph dsg = execCxt.getDataset() ;
 
+        argSubject = Substitute.substitute(argSubject, binding) ;
+        argObject = Substitute.substitute(argObject, binding) ;
+
         if (!argSubject.isNode())
             throw new InternalErrorException("Subject is not a node (it was earlier!)") ;
 
@@ -188,7 +192,6 @@ public class TextQueryPF extends PropertyFunctionBase {
         EntityDefinition docDef = server.getDocDef() ;
         if (argObject.isNode()) {
             Node o = argObject.getArg() ;
-
             if (!o.isLiteral()) {
                 log.warn("Object to text query is not a literal") ;
                 return null ;

@@ -18,29 +18,30 @@
 
 package org.apache.jena.query.spatial.pfunction;
 
-import java.util.List;
+import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.query.spatial.DatasetGraphSpatial;
-import org.apache.jena.query.spatial.SpatialIndex;
-import org.apache.jena.query.spatial.SpatialQuery;
-import org.apache.lucene.spatial.query.SpatialOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.spatial.DatasetGraphSpatial ;
+import org.apache.jena.query.spatial.SpatialIndex ;
+import org.apache.jena.query.spatial.SpatialQuery ;
+import org.apache.lucene.spatial.query.SpatialOperation ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase;
-import com.hp.hpl.jena.sparql.util.IterLib;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice ;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase ;
+import com.hp.hpl.jena.sparql.util.IterLib ;
 
 public abstract class SpatialOperationPFBase extends PropertyFunctionBase {
 
@@ -95,10 +96,12 @@ public abstract class SpatialOperationPFBase extends PropertyFunctionBase {
 		}
 
 		DatasetGraph dsg = execCxt.getDataset();
-
+		
+        argSubject = Substitute.substitute(argSubject, binding) ;
+        argObject = Substitute.substitute(argObject, binding) ;
+		
 		if (!argSubject.isNode())
-			throw new InternalErrorException(
-					"Subject is not a node (it was earlier!)");
+			throw new InternalErrorException("Subject is not a node (it was earlier!)");
 
 		Node s = argSubject.getArg();
 

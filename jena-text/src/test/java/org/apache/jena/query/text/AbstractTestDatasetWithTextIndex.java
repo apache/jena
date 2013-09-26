@@ -69,10 +69,130 @@ public abstract class AbstractTestDatasetWithTextIndex {
 				"    ?s text:query ( rdfs:label 'testOneSimpleResult' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = (new HashSet<String>());
-		expectedURIs.addAll( Arrays.asList((new String[] {"http://example.org/data/resource/testOneSimpleResult"})));
+		Set<String> expectedURIs = new HashSet<String>() ;
+		expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testOneSimpleResult")) ;
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
+
+	static String R_S1 = RESOURCE_BASE + "s1" ;
+    static String R_S2 = RESOURCE_BASE + "s2" ;
+	static String PF_DATA = StrUtils.strjoinNL(
+	                                           TURTLE_PROLOG,
+	                                           "<" + R_S1 + "> rdfs:label 'text' .",
+	                                           "<" + R_S2 + "> rdfs:label 'fuzz' ."
+	                                           );
+	
+    @Test
+    public void propertyFunctionText_1() {
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'text') .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<String>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+    @Test
+    public void propertyFunctionText_2() {
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s text:query ( rdfs:label 'text') .",
+                "    ?s rdfs:label 'text' .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<String>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+    @Test
+    public void propertyFunctionText_3() {
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s rdfs:label 'text' .",
+                "    ?s text:query ( rdfs:label 'text') .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<String>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+    
+    @Test
+    public void propertyFunctionText_4() {
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    ?s rdfs:label 'text' .",
+                "    ?s text:query ( rdfs:label 'fuzz') .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<String>();
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+    @Test
+    public void propertyFunctionText_5() {
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    BIND('text' AS ?t)", 
+                "    ?s text:query ( rdfs:label ?t) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<String>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+    @Test
+    public void propertyFunctionText_6() {
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    BIND(rdfs:label AS ?P)", 
+                "    ?s text:query ( ?P 'text') .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<String>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+
+
+    @Test
+    public void propertyFunctionText_7() {
+        final String turtle = PF_DATA ;
+        String queryString = StrUtils.strjoinNL(
+                QUERY_PROLOG,
+                "SELECT ?s",
+                "WHERE {",
+                "    BIND(1 AS ?C)", 
+                "    ?s text:query ( rdfs:label 'text' ?C) .",
+                "}"
+                );
+        Set<String> expectedURIs = new HashSet<String>();
+        expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
+        doTestSearch(turtle, queryString, expectedURIs);
+    }
+
 
     @Test
 	public void testMultipleResults() {
@@ -93,13 +213,11 @@ public abstract class AbstractTestDatasetWithTextIndex {
 				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = (new HashSet<String>());
-		expectedURIs.addAll( Arrays.asList((new String[]
-				{
+		Set<String> expectedURIs = new HashSet<String>() ;
+		expectedURIs.addAll( Arrays.asList(
 			    "http://example.org/data/resource/" + label + "1",
 			    "http://example.org/data/resource/" + label + "2"
-				}
-		)));
+		    ));
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
 
@@ -132,18 +250,14 @@ public abstract class AbstractTestDatasetWithTextIndex {
 				"    ?s text:query ( rdfs:comment '" + label + "?' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIsLabel = (new HashSet<String>());
-		expectedURIsLabel.addAll( Arrays.asList((new String[]
-				{
-			    "http://example.org/data/resource/" + label + "1",
-				}
-		)));
-		Set<String> expectedURIsComment = (new HashSet<String>());
-		expectedURIsComment.addAll( Arrays.asList((new String[]
-				{
-			    "http://example.org/data/resource/" + label + "2",
-				}
-		)));
+		Set<String> expectedURIsLabel = new HashSet<String>() ;
+		expectedURIsLabel.addAll( Arrays.asList(
+			    "http://example.org/data/resource/" + label + "1"
+		    ));
+		Set<String> expectedURIsComment = new HashSet<String>() ;
+		expectedURIsComment.addAll( Arrays.asList(
+			    "http://example.org/data/resource/" + label + "2"
+		    ));
 		doTestSearch("label:", turtle, queryStringLabel, expectedURIsLabel);
 		doTestSearch("comment:", turtle, queryStringComment, expectedURIsComment);
 	}
@@ -170,12 +284,10 @@ public abstract class AbstractTestDatasetWithTextIndex {
 				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = (new HashSet<String>());
-		expectedURIs.addAll( Arrays.asList((new String[]
-				{
-			    "http://example.org/data/resource/" + label + "1",
-				}
-		)));
+		Set<String> expectedURIs = new HashSet<String>() ;
+		expectedURIs.addAll( Arrays.asList(
+			    "http://example.org/data/resource/" + label + "1"
+		    ));
 		doTestSearch("default field:", turtle, queryString, expectedURIs);
 	}
 
@@ -204,16 +316,13 @@ public abstract class AbstractTestDatasetWithTextIndex {
 				"    ?s text:query ( '" + label + "' 3 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = (new HashSet<String>());
-		expectedURIs.addAll( Arrays.asList((
-				new String[]
-				{
+		Set<String> expectedURIs = new HashSet<String>() ;
+		expectedURIs.addAll( Arrays.asList(
 					    "http://example.org/data/resource/" + label + "1",
 					    "http://example.org/data/resource/" + label + "2",
 					    "http://example.org/data/resource/" + label + "3",
-					    "http://example.org/data/resource/" + label + "4",
-				}
-		)));
+					    "http://example.org/data/resource/" + label + "4"
+		    ));
 		doTestSearch("default field:", turtle, queryString, expectedURIs, 3 );
 	}
 	
@@ -244,11 +353,8 @@ public abstract class AbstractTestDatasetWithTextIndex {
 		    boolean b = ( (expectedNumResults > 0) == results.hasNext() ) ;
 		    if ( !b ) {
 		        System.out.println(queryString) ;
-		        System.out.println(expectedNumResults) ;
-		        
+		        //System.out.println(expectedNumResults) ;
 		    }
-		    
-		    
 		    assertEquals(label, expectedNumResults > 0, results.hasNext());
 		    int count;
 		    for (count=0; results.hasNext(); count++) {

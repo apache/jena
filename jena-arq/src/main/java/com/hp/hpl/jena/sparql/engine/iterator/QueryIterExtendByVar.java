@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -39,6 +40,10 @@ public class QueryIterExtendByVar extends QueryIter
     public QueryIterExtendByVar(Binding binding, Var var, Iterator<Node> members, ExecutionContext execCxt)
     {
         super(execCxt) ;
+        if ( true ) { // Assume not too costly.
+            if ( binding.contains(var) )
+                throw new ARQInternalErrorException("Var "+var+" already set in "+binding) ;
+        }
         this.binding = binding ;
         this.var = var ;
         this.members = members ;
