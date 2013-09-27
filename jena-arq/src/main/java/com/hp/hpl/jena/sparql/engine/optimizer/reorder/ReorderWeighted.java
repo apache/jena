@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 
 import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
 
-public final class ReorderWeighted extends ReorderTransformationBase
+public final class ReorderWeighted extends ReorderTransformationSubstitution
 {
     private StatsMatcher stats ;
     

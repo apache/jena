@@ -37,10 +37,14 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 
-/** Machinary */
-public abstract class ReorderTransformationBase implements ReorderTransformation
+/** Machinary.
+ * This code implements the connectiveness assumed by execution based on substitution (index joins).
+ * i.e. if <code>{ ?x :p ?v . ?x :q ?w }</code> then <code>?x</code> is <code>TERM</code>
+ * at the second triple. 
+ */
+public abstract class ReorderTransformationSubstitution implements ReorderTransformation
 {
-    static public final Logger log = LoggerFactory.getLogger(ReorderTransformationBase.class) ;
+    static public final Logger log = LoggerFactory.getLogger(ReorderTransformationSubstitution.class) ;
     private final boolean DEBUG = log.isDebugEnabled() ;  
     
     @Override
@@ -227,7 +231,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
         return idx ;
     }
     
-    /** Return the weight of the pattern, or -1 if no knowdleg for it */
+    /** Return the weight of the pattern, or -1 if no knowledge for it */
     protected abstract double weight(PatternTriple pt) ;
     
     protected enum DefaultChoice { ZERO, LAST, FIRST , NUMERIC ; }

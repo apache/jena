@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 
-public class ReorderFixed extends ReorderTransformationBase
+public class ReorderFixed extends ReorderTransformationSubstitution
 {
     ReorderFixed() {}
     // Fixed scheme for when we have no stats.
