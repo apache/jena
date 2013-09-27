@@ -108,7 +108,7 @@ public class StageGeneratorGeneric implements StageGenerator
     }
 
     /** Reorder a basic graph pattern using a graph statistic handler */
-    private static class ReorderStatsHandler extends ReorderTransformationBase
+    private static class ReorderStatsHandler extends ReorderTransformationSubstitution
     {
         static ReorderFixed fixed = (ReorderFixed)reorderFixed() ;        // We need our own copy to call into.
         

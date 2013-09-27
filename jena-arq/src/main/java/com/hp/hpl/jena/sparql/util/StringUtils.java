@@ -22,6 +22,7 @@ import java.text.DateFormat ;
 import java.text.DecimalFormat ;
 import java.text.NumberFormat ;
 import java.text.SimpleDateFormat ;
+import java.util.Arrays ;
 import java.util.Date ;
 import java.util.List ;
 import java.util.regex.Pattern ;
@@ -54,6 +55,11 @@ public class StringUtils
         return decimalFormat.format(value) ;
     }
     
+    public static <T> String str(T[] array)
+    {
+        return Arrays.asList(array).toString() ;
+    }
+
     private static Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
     /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
     public static String printAbbrev(Object obj)
