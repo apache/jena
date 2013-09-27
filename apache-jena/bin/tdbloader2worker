@@ -41,7 +41,7 @@ then
     exit 1
 fi
 
-USAGE="Usage: $(basename $0) --loc location datafile ..."
+USAGE="Usage: tdbloader2 --loc location datafile ..."
 PKG=com.hp.hpl.jena.tdb.store.bulkloader2
 
 if [ "$#" -lt 2 ] ; then echo "$USAGE" 1>&2 ; exit 1 ; fi
@@ -56,6 +56,12 @@ then
 else 
     LOC="${ARG1/-*loc=/}"
     if [ "$ARG1" = "$LOC" ] ; then echo $USAGE 1>&2 ; exit 1 ; fi
+fi
+
+if test -n "$(find "$LOC" -maxdepth 1 -type f -print -quit)"
+then 
+    echo "Not empty: $LOC"
+    exit 1
 fi
 
 if [ ! -e "$LOC" ] ; then mkdir "$LOC" ; fi
