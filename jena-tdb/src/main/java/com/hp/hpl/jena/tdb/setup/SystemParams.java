@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
+import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -49,5 +50,10 @@ public class SystemParams
     
     public static SystemParams getStdSystemParams() {
         return new SystemParams() ;
+    }
+    
+    @Override
+    public String toString() {
+        return StringUtils.str(tripleIndexes)+" "+StringUtils.str(quadIndexes) ;
     }
 }
