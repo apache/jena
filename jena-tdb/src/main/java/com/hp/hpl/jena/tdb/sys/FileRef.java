@@ -111,6 +111,10 @@ public class FileRef
     }
     public static final FileRef Journal = get(journalIdx) ;
     
+    public static void register(String fn) {
+        file(fn) ;
+    }
+    
     private static void add(int idx, String fn)
     {
         name2id.put(fn, idx) ;
