@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformationBase ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformationSubstitution ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterNode ;
@@ -46,7 +46,7 @@ public class tdbreorder
             System.exit(1) ;
         }
         Log.enable(StatsMatcher.class) ;
-        Log.enable(ReorderTransformationBase.class) ;
+        Log.enable(ReorderTransformationSubstitution.class) ;
         
         if ( args.length != 2 )
         {
