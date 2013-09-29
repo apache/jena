@@ -18,7 +18,7 @@
 
 package org.apache.jena.atlas.lib;
 
-/** Operations in somewhay related to XML */
+/** Operations in someway related to XML */
 public class XMLLib
 {
     /** Trim the XML whitespace characters strictly needed for whitespace facet collapse.
