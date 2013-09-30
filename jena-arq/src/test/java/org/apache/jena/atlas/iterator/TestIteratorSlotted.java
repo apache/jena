@@ -19,49 +19,100 @@
 package org.apache.jena.atlas.iterator;
 
 import java.util.Arrays ;
+import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Parameterized ;
+import org.junit.runners.Parameterized.Parameters ;
+
+@RunWith(Parameterized.class)
 
 public class TestIteratorSlotted extends BaseTest
 {
-    static class IterStr extends IteratorSlotted<String>
+    @Parameters(name = "{index}: {0}")
+    public static Collection<Object[]> implementations() {
+        IterFactory factory1 = new IterFactory() {
+            @Override
+            public IteratorSlotted<String> create(String... array) {
+                return new IterStr1(array) ;
+            }} ;  
+        IterFactory factory2 = new IterFactory() {
+                @Override
+                public IteratorSlotted<String> create(String... array) {
+                    return new IterStr2(array) ;
+                }} ;  
+        return Arrays.asList(new Object[][] { {"hasMore accurate", factory1}, {"hasMore always true", factory2} }) ;
+    }
+    
+    /** Accurate hasMore */
+    static class IterStr1 extends IteratorSlotted<String>
     {
-        private List<String> array ;
+        private List<String>     array ;
         private Iterator<String> iter ;
 
-        IterStr(String...array)
-        { 
+        IterStr1(String... array) {
             this.array = Arrays.asList(array) ;
             iter = this.array.iterator() ;
         }
-        
+
         @Override
-        protected String moveToNext()
-        {
+        protected String moveToNext() {
             return iter.next() ;
         }
 
         @Override
-        protected boolean hasMore()
-        {
+        protected boolean hasMore() {
             return iter.hasNext() ;
         }
-        
+    }
+    
+    /** hasMore ios always true, returns null in moveToNext */
+    static class IterStr2 extends IteratorSlotted<String>
+    {
+        private List<String>     array ;
+        private Iterator<String> iter ;
+
+        IterStr2(String... array) {
+            this.array = Arrays.asList(array) ;
+            iter = this.array.iterator() ;
+        }
+
+        @Override
+        protected String moveToNext() {
+            if ( !iter.hasNext() )
+                return null ;
+            return iter.next() ;
+        }
+
+        @Override
+        protected boolean hasMore() {
+            return true ;
+        }
+    }
+    
+
+    interface IterFactory { IteratorSlotted<String> create(String...array) ; }
+    
+
+    private IterFactory factory ;
+    
+    public TestIteratorSlotted(String name, IterFactory factory) {
+        this.factory = factory ;
     }
     
     @Test public void iter_01()
     {
-        IterStr iter = new IterStr() ;
+        IteratorSlotted<String> iter = factory.create() ;
         assertFalse(iter.hasNext()) ;
     }
     
     @Test public void iter_02()
     {
-        IterStr iter = new IterStr("A") ;
+        IteratorSlotted<String> iter = factory.create("A") ;
         assertTrue(iter.hasNext()) ;
         assertEquals("A", iter.peek()) ;
         assertEquals("A", iter.peek()) ;
@@ -72,7 +123,7 @@ public class TestIteratorSlotted extends BaseTest
     
     @Test public void iter_03()
     {
-        IterStr iter = new IterStr("A", "B") ;
+        IteratorSlotted<String> iter = factory.create("A", "B") ;
         assertTrue(iter.hasNext()) ;
         assertEquals("A", iter.peek()) ;
         assertEquals("A", iter.next()) ;
