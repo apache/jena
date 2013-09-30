@@ -26,7 +26,6 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 /** An Iterator with a one slot lookahead. */  
 public abstract class IteratorSlotted<T> implements Iterator<T>
 {
-    // Could move in the async abort.
     private boolean finished = false ;
     private boolean slotIsSet = false ;
     private T slot = null ; 
@@ -65,6 +64,11 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
         }
         
         slot = moveToNext() ;
+        if ( slot == null ) {
+            close() ;
+            return false ;
+        }
+            
         slotIsSet = true ;
         return true ;
     }
