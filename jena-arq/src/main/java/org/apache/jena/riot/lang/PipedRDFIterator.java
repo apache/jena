@@ -31,17 +31,23 @@ import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
 
 /**
+ * <p>
  * A {@code PipedRDFIterator} should be connected to a {@link PipedRDFStream}
  * implementation; the piped iterator then provides whatever RDF primitives are
- * written to the {@code PipedRDFStream}. Typically, data is read from a
- * {@code PipedRDFIterator} by one thread and data is written to the
- * corresponding {@code PipedRDFStream} by some other thread. Attempting to use
- * both objects from a single thread is not recommended, as it may deadlock the
- * thread. The {@code PipedRDFIterator} contains a buffer, decoupling read
- * operations from write operations, within limits.
- * <p/>
+ * written to the {@code PipedRDFStream}
+ * </p>
+ * <p>
+ * Typically, data is read from a {@code PipedRDFIterator} by one thread (the
+ * consumer) and data is written to the corresponding {@code PipedRDFStream} by
+ * some other thread (the producer). Attempting to use both objects from a
+ * single thread is not recommended, as it may deadlock the thread. The
+ * {@code PipedRDFIterator} contains a buffer, decoupling read operations from
+ * write operations, within limits.
+ * </p>
+ * <p>
  * Inspired by Java's {@link java.io.PipedInputStream} and
  * {@link java.io.PipedOutputStream}
+ * </p>
  * 
  * @param <T>
  *            The type of the RDF primitive, should be one of {@code Triple},
@@ -73,12 +79,12 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
     @SuppressWarnings("unchecked")
     private final T endMarker = (T) new Object();
 
-    private volatile boolean closedByReader = false;
-    private volatile boolean closedByWriter = false;
+    private volatile boolean closedByConsumer = false;
+    private volatile boolean closedByProducer = false;
     private volatile boolean finished = false;
     private volatile boolean threadReused = false;
-    private volatile Thread readSide;
-    private volatile Thread writeSide;
+    private volatile Thread consumerThread;
+    private volatile Thread producerThread;
 
     private boolean connected = false;
     private int pollTimeout = DEFAULT_POLL_TIMEOUT;
@@ -171,16 +177,16 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
      * waits for data to be produced. This prevents the consumer thread from
      * blocking indefinitely and allows it to detect various potential deadlock
      * conditions e.g. dead producer thread, another consumer closed the
-     * iterator etc. and errors out accordingly. It is unlikely that you will ever
-     * need to adjust this from the default value provided by
+     * iterator etc. and errors out accordingly. It is unlikely that you will
+     * ever need to adjust this from the default value provided by
      * {@link #DEFAULT_POLL_TIMEOUT}.
      * </p>
      * <p>
      * The {@code maxPolls} parameter controls how many poll attempts will be
      * made by a single consumer thread within the context of a single call to
      * {@link #hasNext()} before the iterator declares the producer to be dead
-     * and errors out accordingly. You may need to adjust this if you have a slow
-     * producer thread or many consumer threads.
+     * and errors out accordingly. You may need to adjust this if you have a
+     * slow producer thread or many consumer threads.
      * </p>
      * 
      * @param bufferSize
@@ -207,27 +213,27 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
         if (!connected)
             throw new IllegalStateException("Pipe not connected");
 
-        if (closedByReader)
+        if (closedByConsumer)
             throw new RiotException("Pipe closed");
 
         if (finished)
             return false;
 
-        readSide = Thread.currentThread();
+        consumerThread = Thread.currentThread();
 
-        // Depending on how code schedules the threads involved there is a
-        // scenario that exists where a writer can finish/die before the reader
-        // is started and the reader is scheduled onto the same thread thus
-        // resulting in a deadlock on the consumer because it will never be able
-        // to detect that the writer died
+        // Depending on how code and/or the JVM schedules the threads involved
+        // there is a scenario that exists where a producer can finish/die
+        // before theconsumer is started and the consumer is scheduled onto the
+        // same thread thus resulting in a deadlock on the consumer because it
+        // will never be able to detect that the producer died
         // In this scenario we need to set a special flag to indicate the
         // possibility
-        if (writeSide != null && writeSide == readSide)
+        if (producerThread != null && producerThread == consumerThread)
             threadReused = true;
 
         if (slot != null)
             return true;
-        
+
         int attempts = 0;
         while (true) {
             attempts++;
@@ -244,25 +250,26 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
             // declare this pipe to be "broken"
             // Since check is after the break, we will drain as much as possible
             // out of the queue before throwing this exception
-            if (threadReused || (writeSide != null && !writeSide.isAlive() && !closedByWriter)) {
-                closedByReader = true;
-                throw new RiotException("Write end dead");
+            if (threadReused || (producerThread != null && !producerThread.isAlive() && !closedByProducer)) {
+                closedByConsumer = true;
+                throw new RiotException("Producer dead");
             }
 
             // Need to check this inside the loop as otherwise outside code that
             // attempts to break the deadlock by causing close() on the iterator
             // cannot do so
-            if (closedByReader)
+            if (closedByConsumer)
                 throw new RiotException("Pipe closed");
-            
+
             // Need to check whether polling attempts have been exceeded
-            // If so declare the writer dead and exit
+            // If so declare the producer dead and exit
             if (attempts >= this.maxPolls) {
-                closedByReader = true;
-                if (writeSide != null) {
-                    throw new RiotException("Write end failed to produce any data within the specified number of polling attempts, declaring write end dead");
+                closedByConsumer = true;
+                if (producerThread != null) {
+                    throw new RiotException(
+                            "Producer failed to produce any data within the specified number of polling attempts, declaring producer dead");
                 } else {
-                    throw new RiotException("Write end failed to ever call start(), declaring write end dead");
+                    throw new RiotException("Producer failed to ever call start(), declaring producer dead");
                 }
             }
         }
@@ -291,10 +298,10 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
     }
 
     private void checkStateForReceive() {
-        if (closedByWriter || closedByReader) {
+        if (closedByProducer || closedByConsumer) {
             throw new RiotException("Pipe closed");
-        } else if (readSide != null && !readSide.isAlive()) {
-            throw new RiotException("Read end dead");
+        } else if (consumerThread != null && !consumerThread.isAlive()) {
+            throw new RiotException("Consumer dead");
         }
     }
 
@@ -304,7 +311,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
 
     protected void receive(T t) {
         checkStateForReceive();
-        writeSide = Thread.currentThread();
+        producerThread = Thread.currentThread();
 
         try {
             queue.put(t);
@@ -348,21 +355,36 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
         }
     }
 
+    /**
+     * Should be called by the producer when it begins writing to the iterator.
+     * If the producer fails to call this for whatever reason and never produces
+     * any output or calls {@code finish()} consumers may be blocked for a short
+     * period before they detect this state and error out.
+     */
     protected void start() {
-        // Track the writer thread in case it never delivers us anything and
+        // Track the producer thread in case it never delivers us anything and
         // dies before calling finish
-        writeSide = Thread.currentThread();
+        producerThread = Thread.currentThread();
     }
 
-    // Called by the producer
+    /**
+     * Should be called by the producer when it has finished writing to the
+     * iterator. If the producer fails to call this for whatever reason
+     * consumers may be blocked for a short period before they detect this state
+     * and error out.
+     */
     protected void finish() {
         receive(endMarker);
-        closedByWriter = true;
+        closedByProducer = true;
     }
 
-    // Called by the consumer
+    /**
+     * May be called by the consumer when it is finished reading from the
+     * iterator, if the producer thread has not finished it will receive an
+     * error the next time it tries to write to the iterator
+     */
     @Override
     public void close() {
-        closedByReader = true;
+        closedByConsumer = true;
     }
 }
