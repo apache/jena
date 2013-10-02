@@ -238,7 +238,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
         while (true) {
             attempts++;
             try {
-                slot = queue.poll(DEFAULT_POLL_TIMEOUT, TimeUnit.MILLISECONDS);
+                slot = queue.poll(this.pollTimeout, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 throw new CancellationException();
             }
