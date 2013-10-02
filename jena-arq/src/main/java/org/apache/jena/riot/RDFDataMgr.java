@@ -903,32 +903,6 @@ public class RDFDataMgr
         return ct ;
     }
 
-        
-//        /* 2.10.2 */
-//        if ( true ) {
-//            if ( ct == null && hintLang != null ) 
-//                ct = hintLang.getContentType() ;
-//
-//            if ( ct == null || isTextPlain )
-//                ct = RDFLanguages.guessContentType(target) ;
-//
-//            return ct ; 
-//        }
-//        
-//        /* 2.10.1 */
-//        if ( true ) {
-//            if ( ct == null || isTextPlain )
-//                ct = RDFLanguages.guessContentType(target) ;
-//
-//            if ( ct == null && hintLang != null ) 
-//                ct = hintLang.getContentType() ;
-//
-//            return ct ; 
-//        }
-//        
-//        return null ;
-
-    
     // -------- WRITERS
     
     /** Write the model to the output stream in the default serialization for the language.
@@ -952,7 +926,7 @@ public class RDFDataMgr
     }
     
     /** Write the graph to the output stream in the default serialization for the language.
-     * @param out           OutputStream
+     * @param out           StringWriter
      * @param model         Model to write
      * @param lang          Serialization format
      */
@@ -961,8 +935,21 @@ public class RDFDataMgr
         write(out, model.getGraph(), lang) ;
     }
     
+
     /** Write the graph to the output stream in the default serialization for the language.
-     * @param out           OutputStream
+     * @param out           Writer
+     * @param model         Model to write
+     * @param lang          Serialization format
+     * @deprecated Use of writers is deprecated - use an OutputStream
+     */
+    @Deprecated
+    public static void write(Writer out, Model model, Lang lang)
+    {
+        write(out, model.getGraph(), lang) ;
+    }
+
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           StringWriter
      * @param model         Model to write
      * @param serialization Serialization format
      */
@@ -1005,7 +992,7 @@ public class RDFDataMgr
     }
 
     /** Write the graph to the output stream in the default serialization for the language.
-     * @param out           OutputStream
+     * @param out           StringWriter
      * @param graph         Graph to write
      * @param lang          Serialization format
      */
@@ -1015,6 +1002,18 @@ public class RDFDataMgr
         write$(out, graph, RDFWriterRegistry.defaultSerialization(lang)) ;
     }
 
+    /** Write the graph to the output stream in the default serialization for the language.
+     * @param out           Writer
+     * @param graph         Graph to write
+     * @param lang          Serialization format
+     * @deprecated Use of writers is deprecated - use an OutputStream
+     */
+    @Deprecated
+    public static void write(Writer out, Graph graph, Lang lang)
+    {
+        write$(out, graph, RDFWriterRegistry.defaultSerialization(lang)) ;
+    }
+    
     /** Write the graph to the output stream in the default serialization for the language.
      * @param out           OutputStream
      * @param graph         Graph to write
