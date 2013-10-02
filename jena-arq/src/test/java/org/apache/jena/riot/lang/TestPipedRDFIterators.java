@@ -18,32 +18,32 @@
 
 package org.apache.jena.riot.lang;
 
-import java.io.ByteArrayInputStream ;
-import java.nio.charset.Charset ;
-import java.util.concurrent.Callable ;
-import java.util.concurrent.ExecutionException ;
-import java.util.concurrent.ExecutorService ;
-import java.util.concurrent.Executors ;
-import java.util.concurrent.Future ;
-import java.util.concurrent.TimeUnit ;
-import java.util.concurrent.TimeoutException ;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-import org.junit.Assert ;
+import org.junit.Assert;
 
-import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RiotException;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
 
 /**
  * Tests for the {@link PipedRDFIterator} implementation
@@ -77,7 +77,7 @@ public class TestPipedRDFIterators {
 
     private void test_streamed_triples(int bufferSize, final int generateSize, boolean fair) throws InterruptedException,
             ExecutionException, TimeoutException {
-        
+
         final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>(bufferSize, fair);
         final PipedTriplesStream out = new PipedTriplesStream(it);
 
@@ -89,7 +89,8 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate triples
                 for (int i = 1; i <= generateSize; i++) {
-                    Triple t = new Triple(com.hp.hpl.jena.graph.NodeFactory.createAnon(), com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
+                    Triple t = new Triple(com.hp.hpl.jena.graph.NodeFactory.createAnon(),
+                            com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
                     out.triple(t);
                 }
                 out.finish();
@@ -220,7 +221,7 @@ public class TestPipedRDFIterators {
 
     private void test_streamed_quads(int bufferSize, final int generateSize, boolean fair) throws InterruptedException,
             ExecutionException, TimeoutException {
-        
+
         final PipedRDFIterator<Quad> it = new PipedRDFIterator<Quad>(bufferSize, fair);
         final PipedQuadsStream out = new PipedQuadsStream(it);
 
@@ -232,8 +233,9 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate quads
                 for (int i = 1; i <= generateSize; i++) {
-                    Quad q = new Quad(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"), com.hp.hpl.jena.graph.NodeFactory.createAnon(), com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"),
-                            NodeFactoryExtra.intToNode(i));
+                    Quad q = new Quad(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"),
+                            com.hp.hpl.jena.graph.NodeFactory.createAnon(),
+                            com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
                     out.quad(q);
                 }
                 out.finish();
@@ -364,10 +366,10 @@ public class TestPipedRDFIterators {
 
     private void test_streamed_tuples(int bufferSize, final int generateSize, boolean fair) throws InterruptedException,
             ExecutionException, TimeoutException {
-        
+
         final PipedRDFIterator<Tuple<Node>> it = new PipedRDFIterator<Tuple<Node>>();
         final PipedTuplesStream out = new PipedTuplesStream(it);
-        
+
         // Create a runnable that will generate tuples
         Runnable genQuads = new Runnable() {
 
@@ -376,7 +378,8 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate tuples
                 for (int i = 1; i <= generateSize; i++) {
-                    Tuple<Node> t = Tuple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"), com.hp.hpl.jena.graph.NodeFactory.createAnon(),
+                    Tuple<Node> t = Tuple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"),
+                            com.hp.hpl.jena.graph.NodeFactory.createAnon(),
                             com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
                     out.tuple(t);
                 }
@@ -536,7 +539,6 @@ public class TestPipedRDFIterators {
      */
     private void test_streamed_triples_bad(final String data, int expected) throws TimeoutException, InterruptedException {
 
-        
         final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
         final PipedTriplesStream out = new PipedTriplesStream(it);
 
@@ -620,7 +622,8 @@ public class TestPipedRDFIterators {
     }
 
     /**
-     * Tests attempting to access the iterator before the stream has been connected
+     * Tests attempting to access the iterator before the stream has been
+     * connected
      */
     @Test(expected = IllegalStateException.class)
     public void streamed_state_bad_01() {
@@ -629,60 +632,62 @@ public class TestPipedRDFIterators {
     }
 
     /**
-     * Tests attempting to access the iterator after the producer dies 
+     * Tests attempting to access the iterator after the producer dies
      */
     @Test(expected = RiotException.class)
     public void streamed_state_bad_02() {
-        
+
         final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
         final PipedTriplesStream out = new PipedTriplesStream(it);
-        
-        Thread t = new Thread(new Runnable()
-        {
+
+        Thread t = new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 out.start();
-                out.triple(Triple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("urn:s"), com.hp.hpl.jena.graph.NodeFactory.createURI("urn:p"), com.hp.hpl.jena.graph.NodeFactory.createURI("urn:o")));
+                out.triple(Triple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("urn:s"),
+                        com.hp.hpl.jena.graph.NodeFactory.createURI("urn:p"),
+                        com.hp.hpl.jena.graph.NodeFactory.createURI("urn:o")));
                 throw new RuntimeException("die!");
             }
         });
-        
-        // Because this is a unit test, set an exception handler to suppress the normal printing of the stacktrace to stderr
-        t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
-        {
+
+        // Because this is a unit test, set an exception handler to suppress the
+        // normal printing of the stacktrace to stderr
+        t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
-            public void uncaughtException(Thread t, Throwable e)
-            {
+            public void uncaughtException(Thread t, Throwable e) {
                 // Do nothing
             }
         });
-        
+
         t.start();
-        
+
         Assert.assertTrue(it.hasNext());
         it.next();
-        
+
         // Should throw a RiotException
         it.hasNext();
     }
-    
+
     /**
-     * Tests a possible deadlock scenario where the producer dies and the consumer is scheduled onto the same thread preventing the consumer from ever noticing the dead producer 
+     * Tests a possible deadlock scenario where the producer dies and the
+     * consumer is scheduled onto the same thread preventing the consumer from
+     * ever noticing the dead producer
      */
     @Test
     public void streamed_state_bad_03() {
-        
+
         final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
         final PipedTriplesStream out = new PipedTriplesStream(it);
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        
+
         Runnable producer = new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 out.start();
-                out.triple(Triple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("urn:s"), com.hp.hpl.jena.graph.NodeFactory.createURI("urn:p"), com.hp.hpl.jena.graph.NodeFactory.createURI("urn:o")));
+                out.triple(Triple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("urn:s"),
+                        com.hp.hpl.jena.graph.NodeFactory.createURI("urn:p"),
+                        com.hp.hpl.jena.graph.NodeFactory.createURI("urn:o")));
                 throw new RuntimeException("die!");
             }
         };
@@ -697,7 +702,7 @@ public class TestPipedRDFIterators {
                 it.next();
             }
         };
-        
+
         Future<?> f = executor.submit(consumer);
         try {
             f.get(3, TimeUnit.SECONDS);
@@ -714,15 +719,16 @@ public class TestPipedRDFIterators {
             executor.shutdownNow();
         }
     }
-    
+
     /**
-     * Tests a scenario where the producer never sends any data (for whatever reason) but does remember to clean up after itself by calling finish()
+     * Tests a scenario where the producer never sends any data (for whatever
+     * reason) but does remember to clean up after itself by calling finish()
      */
     @Test
     public void streamed_state_bad_04() {
         final PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
         final PipedTriplesStream stream = new PipedTriplesStream(iter);
-        
+
         Runnable producer = new Runnable() {
             @Override
             public void run() {
@@ -734,14 +740,14 @@ public class TestPipedRDFIterators {
                 }
             }
         };
-        
+
         Future<?> f = executor.submit(producer);
-        
+
         // Verify that the producer did error as expected
         try {
             f.get(3, TimeUnit.SECONDS);
             Assert.fail("Expected an error");
-        }catch (ExecutionException e) {
+        } catch (ExecutionException e) {
             // Ignore - this is as expected
             Assert.assertTrue(e.getCause() != null);
             Assert.assertTrue(e.getCause() instanceof RuntimeException);
@@ -750,15 +756,16 @@ public class TestPipedRDFIterators {
         } catch (InterruptedException e) {
             Assert.fail("Unexpected interrupt");
         }
-        
+
         Runnable consumer = new Runnable() {
             @Override
             public void run() {
                 iter.hasNext();
             }
         };
-        
-        // Consumer should finish successfully because producer will tell us it finished even though it errored
+
+        // Consumer should finish successfully because producer will tell us it
+        // finished even though it errored
         f = executor.submit(consumer);
         try {
             Object result = f.get(3, TimeUnit.SECONDS);
@@ -771,7 +778,7 @@ public class TestPipedRDFIterators {
             Assert.fail("An interrupt occurred");
         }
     }
-    
+
     /**
      * Tests a scenario where the producer never ever calls start()/finish()
      */
@@ -779,22 +786,23 @@ public class TestPipedRDFIterators {
     public void streamed_state_bad_05() {
         final PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>(1, false, PipedRDFIterator.DEFAULT_POLL_TIMEOUT, 3);
         final PipedTriplesStream stream = new PipedTriplesStream(iter);
-        
+
         Runnable producer = new Runnable() {
             @Override
             public void run() {
-                // Simply die without ever calling start() or finish() on the stream
+                // Simply die without ever calling start() or finish() on the
+                // stream
                 throw new RuntimeException("die");
             }
         };
-        
+
         Future<?> f = executor.submit(producer);
-        
+
         // Verify that the producer did error as expected
         try {
             f.get(3, TimeUnit.SECONDS);
             Assert.fail("Expected an error");
-        }catch (ExecutionException e) {
+        } catch (ExecutionException e) {
             // Ignore - this is as expected
             Assert.assertTrue(e.getCause() != null);
             Assert.assertTrue(e.getCause() instanceof RuntimeException);
@@ -803,21 +811,23 @@ public class TestPipedRDFIterators {
         } catch (InterruptedException e) {
             Assert.fail("Unexpected interrupt");
         }
-        
+
         Runnable consumer = new Runnable() {
             @Override
             public void run() {
                 iter.hasNext();
             }
         };
-        
-        // Consumer should finish successfully because producer will tell us it finished even though it errored
+
+        // Consumer should finish successfully because producer will tell us it
+        // finished even though it errored
         f = executor.submit(consumer);
         try {
             Object result = f.get(5, TimeUnit.SECONDS);
             Assert.fail("An error was expected");
         } catch (ExecutionException e) {
-            // Ignore - this is as expected and indicates we successfully detected the bad state
+            // Ignore - this is as expected and indicates we successfully
+            // detected the bad state
             Assert.assertTrue(e.getCause() != null);
             Assert.assertTrue(e.getCause() instanceof RiotException);
         } catch (TimeoutException e) {
@@ -826,9 +836,10 @@ public class TestPipedRDFIterators {
             Assert.fail("An interrupt occurred");
         }
     }
-    
+
     /**
-     * Check we can safely call hasNext() multiple times after the stream is exhausted
+     * Check we can safely call hasNext() multiple times after the stream is
+     * exhausted
      */
     @Test
     public void streamed_iterator_usage_01() {
@@ -839,11 +850,11 @@ public class TestPipedRDFIterators {
         Assert.assertFalse(iter.hasNext());
         Assert.assertFalse(iter.hasNext());
     }
-    
+
     /**
      * Check that calling hasNext() after a close() is an error
      */
-    @Test(expected=RiotException.class)
+    @Test(expected = RiotException.class)
     public void streamed_iterator_usage_02() {
         PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
         PipedTriplesStream stream = new PipedTriplesStream(iter);
@@ -851,7 +862,7 @@ public class TestPipedRDFIterators {
         stream.finish();
         Assert.assertFalse(iter.hasNext());
         iter.close();
-        //Should throw an error after the iterator is closed
+        // Should throw an error after the iterator is closed
         iter.hasNext();
     }
 }
