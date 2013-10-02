@@ -2,6 +2,10 @@ ChangeLog for ARQ
 =================
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
+==== Jena 2.11.1
+
++ Fix a couple of possible deadlock conditions when using PipedRDFIterator
+
 ==== Jena 2.11.0
 
 + Support draft RDF 1.1 TriG

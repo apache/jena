@@ -60,8 +60,7 @@ public class TestPipedRDFIterators {
     @BeforeClass
     public static void setup() {
         // We use far more than the required 2 threads to avoid intermittent
-        // deadlock issues
-        // that can otherwise occur
+        // deadlock issues that can otherwise occur
         executor = Executors.newFixedThreadPool(10);
     }
 
@@ -666,6 +665,166 @@ public class TestPipedRDFIterators {
         
         // Should throw a RiotException
         it.hasNext();
+    }
+    
+    /**
+     * Tests a possible deadlock scenario where the producer dies and the consumer is scheduled onto the same thread preventing the consumer from ever noticing the dead producer 
+     */
+    @Test
+    public void streamed_state_bad_03() {
+        
+        final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
+        final PipedTriplesStream out = new PipedTriplesStream(it);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        
+        Runnable producer = new Runnable() {
+            @Override
+            public void run()
+            {
+                out.start();
+                out.triple(Triple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("urn:s"), com.hp.hpl.jena.graph.NodeFactory.createURI("urn:p"), com.hp.hpl.jena.graph.NodeFactory.createURI("urn:o")));
+                throw new RuntimeException("die!");
+            }
+        };
+        executor.submit(producer);
+
+        Runnable consumer = new Runnable() {
+            @Override
+            public void run() {
+                it.hasNext();
+                it.next();
+                // Should fail since producer should have failed
+                it.next();
+            }
+        };
+        
+        Future<?> f = executor.submit(consumer);
+        try {
+            f.get(3, TimeUnit.SECONDS);
+            Assert.fail("Expected an error");
+        } catch (ExecutionException e) {
+            // Ignore - this is as expected
+            Assert.assertTrue(e.getCause() != null);
+            Assert.assertTrue(e.getCause() instanceof RiotException);
+        } catch (TimeoutException e) {
+            Assert.fail("Expected an error but a timeout occurred indicating the consumer deadlocked");
+        } catch (InterruptedException e) {
+            Assert.fail("Expected an execution error but an interrupt occurred");
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+    
+    /**
+     * Tests a scenario where the producer never sends any data (for whatever reason) but does remember to clean up after itself by calling finish()
+     */
+    @Test
+    public void streamed_state_bad_04() {
+        final PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
+        final PipedTriplesStream stream = new PipedTriplesStream(iter);
+        
+        Runnable producer = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    stream.start();
+                    throw new RuntimeException("die");
+                } finally {
+                    stream.finish();
+                }
+            }
+        };
+        
+        Future<?> f = executor.submit(producer);
+        
+        // Verify that the producer did error as expected
+        try {
+            f.get(3, TimeUnit.SECONDS);
+            Assert.fail("Expected an error");
+        }catch (ExecutionException e) {
+            // Ignore - this is as expected
+            Assert.assertTrue(e.getCause() != null);
+            Assert.assertTrue(e.getCause() instanceof RuntimeException);
+        } catch (TimeoutException e) {
+            Assert.fail("Unexpected timeout");
+        } catch (InterruptedException e) {
+            Assert.fail("Unexpected interrupt");
+        }
+        
+        Runnable consumer = new Runnable() {
+            @Override
+            public void run() {
+                iter.hasNext();
+            }
+        };
+        
+        // Consumer should finish successfully because producer will tell us it finished even though it errored
+        f = executor.submit(consumer);
+        try {
+            Object result = f.get(3, TimeUnit.SECONDS);
+            Assert.assertNull(result);
+        } catch (ExecutionException e) {
+            Assert.fail("An error was not expected");
+        } catch (TimeoutException e) {
+            Assert.fail("A timeout occurred indicating the consumer deadlocked");
+        } catch (InterruptedException e) {
+            Assert.fail("An interrupt occurred");
+        }
+    }
+    
+    /**
+     * Tests a scenario where the producer never ever calls start()/finish()
+     */
+    @Test
+    public void streamed_state_bad_05() {
+        final PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>(1, false, PipedRDFIterator.DEFAULT_POLL_TIMEOUT, 3);
+        final PipedTriplesStream stream = new PipedTriplesStream(iter);
+        
+        Runnable producer = new Runnable() {
+            @Override
+            public void run() {
+                // Simply die without ever calling start() or finish() on the stream
+                throw new RuntimeException("die");
+            }
+        };
+        
+        Future<?> f = executor.submit(producer);
+        
+        // Verify that the producer did error as expected
+        try {
+            f.get(3, TimeUnit.SECONDS);
+            Assert.fail("Expected an error");
+        }catch (ExecutionException e) {
+            // Ignore - this is as expected
+            Assert.assertTrue(e.getCause() != null);
+            Assert.assertTrue(e.getCause() instanceof RuntimeException);
+        } catch (TimeoutException e) {
+            Assert.fail("Unexpected timeout");
+        } catch (InterruptedException e) {
+            Assert.fail("Unexpected interrupt");
+        }
+        
+        Runnable consumer = new Runnable() {
+            @Override
+            public void run() {
+                iter.hasNext();
+            }
+        };
+        
+        // Consumer should finish successfully because producer will tell us it finished even though it errored
+        f = executor.submit(consumer);
+        try {
+            Object result = f.get(5, TimeUnit.SECONDS);
+            Assert.fail("An error was expected");
+        } catch (ExecutionException e) {
+            // Ignore - this is as expected and indicates we successfully detected the bad state
+            Assert.assertTrue(e.getCause() != null);
+            Assert.assertTrue(e.getCause() instanceof RiotException);
+        } catch (TimeoutException e) {
+            Assert.fail("A timeout occurred indicating the consumer deadlocked");
+        } catch (InterruptedException e) {
+            Assert.fail("An interrupt occurred");
+        }
     }
     
     /**
