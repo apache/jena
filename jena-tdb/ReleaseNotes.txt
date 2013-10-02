@@ -1,7 +1,15 @@
 ChangeLog for TDB
 =================
 
+==== TDB 1.0.1
+
++ JENA-550 : tdbloader2 now checks that the target location either 
+  does not exist or does not contain database files. 
+
+
 ==== TDB 1.0.0
+
+This was also know as TDB 0.10.2 
 
 ==== TDB 0.10.1
 
