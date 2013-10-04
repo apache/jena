@@ -88,7 +88,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
 
     protected Graph fetchGraph(Node gn)
     {
-        if ( Quad.isDefaultGraph(gn) || Lib.equal(gn,Quad.tripleInQuad)) // Not preferrred style
+        if ( Quad.isDefaultGraph(gn) || Lib.equal(gn,Quad.tripleInQuad)) // Not preferred style
             return getDefaultGraph() ;
         else
             return getGraph(gn) ;

@@ -71,6 +71,9 @@ public class GraphStoreNull extends DatasetGraphQuad implements GraphStore
     { }
 
     @Override
+    public void addGraph(Node graphName, Graph graph) {}
+
+    @Override
     public Graph getDefaultGraph()
     {
         return GRAPH_NULL ;
