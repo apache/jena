@@ -554,22 +554,6 @@ public class UpdateEngineWorker implements UpdateVisitor
         return query ;
     }
     
-    static class DatasetGraphAltDefaultGraph extends DatasetGraphWrapper
-    {
-        private Graph dftGraph ;
-        
-        public DatasetGraphAltDefaultGraph(DatasetGraph dsg, Graph dftGraph)
-        { super(dsg) ; setDefaultGraph(dftGraph) ; }
-        
-        @Override
-        public Graph getDefaultGraph()
-        { return dftGraph; }
-    
-        @Override
-        public void setDefaultGraph(Graph g)
-        { dftGraph = g ; }
-    }
-
     protected Iterator<Binding> evalBindings(Element pattern, Node dftGraph)
     {
         return evalBindings(elementToQuery(pattern), dftGraph) ;

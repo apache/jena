@@ -54,6 +54,8 @@ abstract public class DatasetGraphBase implements DatasetGraph
     public boolean containsGraph(Node graphNode)
     { return contains(graphNode, Node.ANY, Node.ANY, Node.ANY) ; }
     
+    // Explicit record of what's not provided here.
+    
     @Override
     public abstract Graph getDefaultGraph() ;
 
@@ -61,12 +63,10 @@ abstract public class DatasetGraphBase implements DatasetGraph
     public abstract Graph getGraph(Node graphNode) ;
 
     @Override
-    public void addGraph(Node graphName, Graph graph)
-    { throw new UnsupportedOperationException("DatasetGraph.addGraph") ; }
-
+    public abstract void addGraph(Node graphName, Graph graph) ;
+    
     @Override
-    public void removeGraph(Node graphName)
-    { throw new UnsupportedOperationException("DatasetGraph.removeGraph") ; }
+    public abstract void removeGraph(Node graphName) ;
 
     @Override
     public void setDefaultGraph(Graph g)
