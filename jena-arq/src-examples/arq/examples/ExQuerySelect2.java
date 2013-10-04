@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.DC ;
  *  to find the DC titles contained in a model. 
  *  Show how to print results twice. */
 
-public class Ex2
+public class ExQuerySelect2
 {
     static public final String NL = System.getProperty("line.separator") ; 
     

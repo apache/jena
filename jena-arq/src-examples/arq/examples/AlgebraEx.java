@@ -43,7 +43,7 @@ public class AlgebraEx
         System.out.println(op) ;
         
         // Execute it.
-        QueryIterator qIter = Algebra.exec(op, Ex1.createModel()) ;
+        QueryIterator qIter = Algebra.exec(op, ExQuerySelect1.createModel()) ;
         
         // Results
         for ( ; qIter.hasNext() ; )
