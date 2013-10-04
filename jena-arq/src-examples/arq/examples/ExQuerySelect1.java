@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.DC ;
 /** Example 1 : Execute a simple SELECT query on a model
  *  to find the DC titles contained in a model. */
 
-public class Ex1
+public class ExQuerySelect1
 {
     static public final String NL = System.getProperty("line.separator") ; 
     
