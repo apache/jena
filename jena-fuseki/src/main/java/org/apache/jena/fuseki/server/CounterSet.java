@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.server ;
 
 import java.util.Collection ;
 import java.util.HashMap ;
@@ -26,34 +26,45 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** A collection of counters */
-public class CounterSet
-{
-    private static Logger log = LoggerFactory.getLogger(CounterSet.class) ;
-    
-    private Map<CounterName, Counter> counters = new HashMap<CounterName, Counter>() ;
-    
-    public CounterSet()    {}
+public class CounterSet {
+    private static Logger             log      = LoggerFactory.getLogger(CounterSet.class) ;
 
-    public Collection<CounterName> counters()
-    { return counters.keySet() ; }
-    
-    public void inc(CounterName c)          { get(c).inc() ; } 
-    public void dec(CounterName c)          { get(c).dec() ; } 
-    public long value(CounterName c)        { return get(c).value() ; }
+    private Map<CounterName, Counter> counters = new HashMap<CounterName, Counter>() ;
+
+    public CounterSet() {}
+
+    public Collection<CounterName> counters() {
+        return counters.keySet() ;
+    }
+
+    public void inc(CounterName c) {
+        get(c).inc() ;
+    }
+
+    public void dec(CounterName c) {
+        get(c).dec() ;
+    }
+
+    public long value(CounterName c) {
+        return get(c).value() ;
+    }
 
     public void add(CounterName counterName) {
         if ( counters.containsKey(counterName) ) {
-            log.warn("Duplicate counter in counter set: "+counterName) ;
+            log.warn("Duplicate counter in counter set: " + counterName) ;
             return ;
         }
         counters.put(counterName, new Counter()) ;
     }
-    
+
+    public boolean contains(CounterName cn) {
+        return counters.containsKey(cn) ;
+    }
+
     public Counter get(CounterName cn) {
-        Counter c = counters.get(cn) ; 
+        Counter c = counters.get(cn) ;
         if ( c == null )
-            log.warn("No counter in counter set: "+cn) ;
+            log.warn("No counter in counter set: " + cn) ;
         return c ;
     }
 }
-
