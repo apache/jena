@@ -31,13 +31,11 @@ public class DatasetRef implements DatasetMXBean, Counters
     public String name                          = null ;
     public DatasetGraph dataset                 = null ;
 
-    
     public ServiceRef query                     = new ServiceRef("query") ;
     public ServiceRef update                    = new ServiceRef("update") ;
     public ServiceRef upload                    = new ServiceRef("upload") ;
     public ServiceRef readGraphStore            = new ServiceRef("gspRead") ;
     public ServiceRef readWriteGraphStore       = new ServiceRef("gspReadWrite") ; 
-    
     
     // Dataset-level counters.
     private final CounterSet counters           = new CounterSet() ;
@@ -166,6 +164,7 @@ public class DatasetRef implements DatasetMXBean, Counters
     @Override public long getRequests() { 
         return counters.value(CounterName.Requests) ;
     }
+
     @Override
     public long getRequestsGood() {
         return counters.value(CounterName.RequestsGood) ;

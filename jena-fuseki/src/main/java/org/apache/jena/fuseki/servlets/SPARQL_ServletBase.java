@@ -39,14 +39,10 @@ import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 public abstract class SPARQL_ServletBase extends ServletBase
 {
-    private static DatasetGraph dummyDSG = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
     
     protected SPARQL_ServletBase()      {   super() ; }
     
@@ -134,18 +130,9 @@ public abstract class SPARQL_ServletBase extends ServletBase
                 errorNotFound("No dataset for URI: "+datasetUri) ;
                 return ;
             }
-        } else {
-            // General SPARQL processor
-            // Kludgy - is this the right way to do it?
-            //        - or make it a completely separate servlet.
-            //        - is it important enough to worry?
-            dsRef = new DatasetRef();
-            dsRef.dataset = dummyDSG;
-            dsRef.name = "" ;
-            dsRef.query.endpoints.add(HttpNames.ServiceGeneralQuery) ;
-            dsRef.init() ;
-        }
-        
+        } else
+            dsRef = FusekiConfig.serviceOnlyDatasetRef() ;
+
         action.setDataset(dsRef) ;
         String serviceName = mapRequestToService(dsRef, uri, datasetUri) ;
         ServiceRef srvRef = dsRef.getServiceRef(serviceName) ;
@@ -200,7 +187,8 @@ public abstract class SPARQL_ServletBase extends ServletBase
     
     protected static void incCounter(Counters counters, CounterName name) {
         try {
-            counters.getCounters().inc(name) ;
+            if ( counters.getCounters().contains(name) )
+                counters.getCounters().inc(name) ;
         } catch (Exception ex) {
             Fuseki.serverLog.warn("Exception on counter inc", ex) ;
         }
@@ -208,7 +196,8 @@ public abstract class SPARQL_ServletBase extends ServletBase
     
     protected static void decCounter(Counters counters, CounterName name) {
         try {
-            counters.getCounters().dec(name) ;
+            if ( counters.getCounters().contains(name) )
+                counters.getCounters().dec(name) ;
         } catch (Exception ex) {
             Fuseki.serverLog.warn("Exception on counter dec", ex) ;
         }
@@ -310,7 +299,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
         return uri.substring(0, i) ;
     }
 
-    protected String mapRequestToService(DatasetRef dsRef, String uri, String serviceName)
+    protected String mapRequestToService(DatasetRef dsRef, String uri, String datasetURI)
     {
         if ( dsRef == null )
             return "" ;
