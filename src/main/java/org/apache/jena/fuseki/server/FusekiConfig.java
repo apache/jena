@@ -51,6 +51,8 @@ import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.rdf.model.StmtIterator ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -161,6 +163,24 @@ public class FusekiConfig
         config.verboseLogging = false ;
         return config ;
     }
+    
+
+    // DatasetRef used where there isn't a real Dataset e.g. the SPARQL processor.  
+    
+    private static DatasetRef noDataset      = new DatasetRef() ;
+    private static DatasetGraph dummyDSG        = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
+    static {
+        noDataset.name = "" ;
+        noDataset.dataset = dummyDSG ;
+        noDataset.query.endpoints.add(HttpNames.ServiceQuery) ;
+        noDataset.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
+        noDataset.allowDatasetUpdate = false ;
+        noDataset.init(); 
+        DatasetRegistry.get().put("", noDataset) ;
+    }
+
+    /** Return the DatasetRef (read-only) for when there is no dataset, just a SPARQL Query processor */ 
+    public static DatasetRef serviceOnlyDatasetRef() { return noDataset ; }
 
     private static void processServer(Resource server)
     {
