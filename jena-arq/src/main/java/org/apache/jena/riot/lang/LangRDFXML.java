@@ -26,6 +26,7 @@ import java.io.InputStream ;
 import java.io.Reader ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.checker.CheckerLiterals ;
@@ -223,7 +224,6 @@ public class LangRDFXML implements LangRIOT
         @Override
         public void endPrefixMapping(String prefix)
         {}
-
     }
     
     private static class ErrorHandlerBridge implements RDFErrorHandler
@@ -234,12 +234,32 @@ public class LangRDFXML implements LangRIOT
         {
             this.errorHandler = hander ;
         }
-        
+
         @Override
-        public void warning(Exception e)        { errorHandler.warning(e.getMessage(), -1, -1) ; }
+        public void warning(Exception e) { 
+            Pair<Integer, Integer> p =  getLineCol(e) ;
+            errorHandler.warning(e.getMessage(), p.getLeft(), p.getRight()) ;
+        }
+
         @Override
-        public void error(Exception e)          { errorHandler.error(e.getMessage(), -1, -1) ; }
+        public void error(Exception e) {
+            Pair<Integer, Integer> p = getLineCol(e) ;
+            errorHandler.error(e.getMessage(), p.getLeft(), p.getRight()) ;
+        }
+
         @Override
-        public void fatalError(Exception e)     { errorHandler.fatal(e.getMessage(), -1, -1) ; }
+        public void fatalError(Exception e) {
+            Pair<Integer, Integer> p = getLineCol(e) ;
+            errorHandler.fatal(e.getMessage(), p.getLeft(), p.getRight()) ;
+        }
+
+        private static Pair<Integer, Integer> getLineCol(Exception e) {
+            if (e instanceof SAXParseException) {
+                SAXParseException esax = (SAXParseException) e;
+                return Pair.create(esax.getLineNumber(), esax.getColumnNumber()) ; 
+            } else {
+                return Pair.create(-1, -1) ;
+            }
+        }
     }
 }
