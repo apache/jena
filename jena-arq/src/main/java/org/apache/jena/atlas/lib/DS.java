@@ -19,44 +19,35 @@
 package org.apache.jena.atlas.lib;
 
 
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.atlas.iterator.NullIterator ;
-
-
-/** Datastructure factory - allows indirecting to other implementations */ 
 
 public class DS
 {
     private DS() {}
     
+    public static <X> Set<X> setOfNone() { return Collections.emptySet()  ; }
+    public static <X> Set<X> setOfOne(X element) { return Collections.singleton(element) ; }
     public static <X> Set<X> set() { return new HashSet<X>(); }  
     public static <X> Set<X> set(int initialSize) { return new HashSet<X>(initialSize); }  
     public static <X> Set<X> set(Set<X> other) { return new HashSet<X>(other); }  
 
-    // Trove for sets
-//    public static <X> Set<X> set() { return new gnu.trove.THashSet<X>(); }  
-//    public static <X> Set<X> set(int initialSize) { return new gnu.trove.THashSet<X>(initialSize); }  
-//    public static <X> Set<X> set(Set<X> other) { return new gnu.trove.THashSet<X>(other); }  
-    
+    public static <K, V> Map<K,V> mapOfNone() { return Collections.emptyMap() ; }
+    public static <K, V> Map<K,V> mapOfOne(K key, V value) { return Collections.singletonMap(key, value) ; }
     public static <K, V> Map<K,V> map() { return new HashMap<K,V>(); }  
     public static <K, V> Map<K,V> map(int initialSize) { return new HashMap<K,V>(initialSize); }  
     public static <K, V> Map<K,V> map(Map<K,V> other) { return new HashMap<K,V>(other); }  
 
-    public static <T> Iterator<T> nothing() { return new NullIterator<T>() ; }
+    @SuppressWarnings("rawtypes")
+    private static final Iterator iter0 = new NullIterator() ;
     
+    @SuppressWarnings({"unchecked", "cast"})
+    public static <T> Iterator<T> nothing() { return (NullIterator<T>)iter0 ; }
+    
+    public static <T> List<T> listOfNone() { return Collections.emptyList() ; }
+    public static <T> List<T> listOfOne(T element) { return Collections.singletonList(element) ; }
     public static <T> List<T> list() { return new ArrayList<T>(); }  
     public static <T> List<T> list(int initialSize) { return new ArrayList<T>(initialSize); }  
     public static <T> List<T> list(List<T> other) { return new ArrayList<T>(other); }
-
-    // Trove for maps
-//  public static <K, V> Map<K,V> map() { return new gnu.trove.THashMap<K,V>(); }  
-//  public static <K, V> Map<K,V> map(int initialSize) { return new gnu.trove.THashMap<K,V>(initialSize); }  
-//  public static <K, V> Map<K,V> map(Map<K,V> other) { return new gnu.trove.THashMap<K,V>(other); }  
 }
