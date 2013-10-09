@@ -20,33 +20,33 @@ package org.apache.jena.atlas.lib ;
 
 
 /** Key-value slot, with chaining for lookup. */  
-public class Slot<K,V>
+public class Cell<K,V>
 {
-    private final Slot<K,V> previous ;
+    private final Cell<K,V> previous ;
     private final K key ;
     private final V value ;
 
     /** Create a slot with no key, value or parent - can be used a slot chain root */  
-    public Slot()               { this(null, null, null); }
+    public Cell()               { this(null, null, null); }
 
-    public Slot(K key, V value) { this(key, value, null); }
+    public Cell(K key, V value) { this(key, value, null); }
 
-    private Slot(K key, V value, Slot<K, V> previous)
+    private Cell(K key, V value, Cell<K, V> previous)
     {
         this.key = key ;
         this.value = value ;
         this.previous = previous ;
     }
 
-    public Slot<K,V> extend(K key, V value)
+    public Cell<K,V> extend(K key, V value)
     {
-        return new Slot<K,V>(key, value, this) ;
+        return new Cell<K,V>(key, value, this) ;
     }
     
     public final V find(K k)
     {
         // Java, tail recursion, lack thereof.
-        Slot<K,V> slot = this ;
+        Cell<K,V> slot = this ;
 
         while (slot != null)
         {
