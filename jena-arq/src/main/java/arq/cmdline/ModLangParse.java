@@ -67,7 +67,7 @@ public class ModLangParse implements ArgModuleGeneral
         cmdLine.add(argBase,    "--base=URI",       "Set the base URI (does not apply to N-triples and N-Quads)") ;
         cmdLine.add(argCheck,   "--check",          "Addition checking of RDF terms") ; // (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
         cmdLine.add(argStrict,  "--strict",         "Run with in strict mode") ;
-        cmdLine.add(argValidate,"--validate",       "Same as --sink --check=true --strict") ;
+        cmdLine.add(argValidate,"--validate",       "Same as --sink --check --strict") ;
         cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;
         
         cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
