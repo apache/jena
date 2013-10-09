@@ -25,6 +25,8 @@ public class SetUtils
 {
     private SetUtils() {}
     
+    public static <X> Set<X> setOfOne(X element) { return DS.setOfOne(element) ; }
+    
      // Set specific operations
     
     public static <T> Set<T> intersection(Set<? extends T> setLeft, Set<? extends T> setRight)

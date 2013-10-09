@@ -33,10 +33,15 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return new SingletonIterator<T>(item) ;
     }
 
-    public static <T> Iterator<T> nullIterator() {
-        return new NullIterator<T>() ;
-    }
+    @SuppressWarnings("rawtypes")
+    private static final Iterator iter0 = new NullIterator() ;
+    @SuppressWarnings({"unchecked", "cast"})
+    public static <T> Iterator<T> nullIterator() { return (NullIterator<T>)iter0 ; }
 
+//    public static <T> Iterator<T> nullIterator() {
+//        return new NullIterator<T>() ;
+//    }
+    
     public static <T> Set<T> toSet(Iterable<? extends T> stream) {
         return toSet(stream.iterator()) ;
     }
