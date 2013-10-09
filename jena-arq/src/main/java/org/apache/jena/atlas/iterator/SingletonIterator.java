@@ -48,11 +48,4 @@ public class SingletonIterator<T> implements Iterator<T>
     @Override
     public void remove()
     { throw new NoSuchElementException("SingletonIterator.remove") ;}
-
-//    @Override
-//    public Iterator<T> iterator()
-//    {
-//        return this ;
-//    }
-
 }

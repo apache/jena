@@ -107,15 +107,8 @@ public class QueryEngineTDB extends QueryEngineMain
         // Fix DatasetGraph for global union.
         if ( context.isTrue(TDB.symUnionDefaultGraph) && ! doingDynamicDatasetBySpecialDataset ) 
         {
-            // doingDynamicDatasetBySpecialDataset => done earlier.
-//          // Rewrite so that any explicitly named "default graph" is union graph.
             op = A2.unionDefaultGraphQuads(op) ;
             Explain.explain("REWRITE(Union default graph)", op, context) ;
-//            // And set the default graph to be the union graph as well.
-//              NOT NEEDED - OpExecutorTDB handles this.            
-//            DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
-//            ds.setEffectiveDefaultGraph(new GraphTDB(ds, Quad.unionGraph)) ;
-//            dsg = ds ;
         }
         QueryIterator results = super.eval(op, dsg, input, context) ;
         results = new QueryIteratorMaterializeBinding(results) ;
