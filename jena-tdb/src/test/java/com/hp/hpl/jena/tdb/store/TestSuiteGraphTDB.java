@@ -22,6 +22,7 @@ import junit.framework.TestSuite ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.AllTests ;
 
+import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.junit.TestFactoryTDB ;
 
 /** Scripted test generation */
@@ -29,13 +30,12 @@ import com.hp.hpl.jena.tdb.junit.TestFactoryTDB ;
 @RunWith(AllTests.class)
 public class TestSuiteGraphTDB extends TestSuite
 {
-    public final static String manifestMain = "testing/manifest.ttl" ;
-    
     static public TestSuite suite() { return new TestSuiteGraphTDB() ; }
     
     private TestSuiteGraphTDB()
     {
         super("TDB-Scripts") ;
+        String manifestMain = ConfigTest.getTestingDataRoot()+"/manifest.ttl" ;
         TestFactoryTDB.make(this, manifestMain, "TDB-") ;
     }
 }

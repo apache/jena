@@ -48,17 +48,19 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class TestSolverTDB extends BaseTest
 {
-    static final String graphData = "testing/data.ttl" ;
+    static String graphData = null ;
     static Graph graph = null ;
     static PrefixMapping pmap = null ;
 
     @BeforeClass static public void beforeClass()
     { 
+        graphData = ConfigTest.getTestingDataRoot()+"/data.ttl" ;
         graph = TDBFactory.createDatasetGraph().getDefaultGraph() ;
         Model m = ModelFactory.createModelForGraph(graph) ;
         FileManager.get().readModel(m, graphData) ;

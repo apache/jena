@@ -34,13 +34,14 @@ import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 public class TestLoader extends BaseTest {
-    private static final String DIR = "testing/Loader/" ;
+    private static String DIR = null ;
     private static final Node   g   = NodeFactory.createURI("g") ;
     private static final Node   s   = NodeFactory.createURI("s") ;
     private static final Node   p   = NodeFactory.createURI("p") ;
@@ -48,6 +49,7 @@ public class TestLoader extends BaseTest {
 
     @BeforeClass
     static public void beforeClass() {
+        DIR = ConfigTest.getTestingDataRoot()+"/Loader/" ;
         Log.disable(ARQ.logExecName) ;
         Log.disable(TDB.logLoaderName) ;
     }

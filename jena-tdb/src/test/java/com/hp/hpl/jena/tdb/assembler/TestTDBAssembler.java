@@ -41,11 +41,12 @@ import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 public class TestTDBAssembler extends BaseTest
 {
     // Can be slow - explicitly closes the dataset.
-    static final String dirAssem    = "testing/Assembler" ;
-    static final String dirDB       = ConfigTest.getTestingDir()+"/DB" ;
+    static String dirAssem      = null ;
+    static final String dirDB   = ConfigTest.getTestingDir()+"/DB" ;
 
     @BeforeClass static public void beforeClass()
     {
+        dirAssem = ConfigTest.getTestingDataRoot()+"/Assembler" ;
         FileOps.ensureDir(dirDB) ;
     }
     
