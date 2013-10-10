@@ -70,7 +70,6 @@ public class TextIndexLucene implements TextIndex
     private IndexWriter indexWriter ;
     private Analyzer analyzer = new StandardAnalyzer(VER);
     
-    
     public TextIndexLucene(Directory directory, EntityDefinition def)
     {
         this.directory = directory ;
