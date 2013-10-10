@@ -24,6 +24,7 @@ import org.apache.jena.atlas.lib.FileOps ;
 
 public class ConfigTest
 {
+    private static String testingDataRoot = "testing" ;
     // Place under target
     private static final String testingDir = "target/tdb-testing" ;
     private static final String testingDirDB = "target/tdb-testing/DB" ;
@@ -40,6 +41,9 @@ public class ConfigTest
     }
     
     private static int count = 0 ;
+
+    public static void setTestingDataRoot(String dir) { testingDataRoot = dir ; }
+    public static String getTestingDataRoot() { return testingDataRoot ; }
     
     /** return a directory */ 
     public static final String getCleanDir() {
