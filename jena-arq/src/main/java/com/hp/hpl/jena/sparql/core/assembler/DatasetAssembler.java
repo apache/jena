@@ -93,7 +93,7 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
             ds.addNamedModel(gName, m) ;
         }
 
-        AssemblerUtils.setContext(dftGraph, ds.getContext()) ;
+        AssemblerUtils.setContext(root, ds.getContext()) ;
         return ds ;
     }
 }
