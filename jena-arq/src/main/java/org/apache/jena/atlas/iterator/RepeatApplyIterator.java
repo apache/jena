@@ -51,6 +51,7 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, Closeable
             
             if ( currentStage == null  )
             {
+                hasFinished() ;
                 finished = true ;
                 return false ;
             }
@@ -63,6 +64,8 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, Closeable
     }
 
     protected abstract Iterator<T> makeNextStage(T t) ;
+    
+    protected void hasFinished() {} 
     
     @Override
     public T next()
