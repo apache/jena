@@ -56,6 +56,8 @@ public class DatasetRef implements DatasetMXBean, Counters
         initServices() ;
     }
     
+    @Override public String toString() { return "DatasetRef:'"+name+"'" ; }  
+    
     private void initServices() {
         add(query) ;
         add(update) ;
