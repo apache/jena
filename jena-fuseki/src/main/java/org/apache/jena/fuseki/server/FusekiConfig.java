@@ -175,8 +175,10 @@ public class FusekiConfig
         noDataset.query.endpoints.add(HttpNames.ServiceQuery) ;
         noDataset.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
         noDataset.allowDatasetUpdate = false ;
-        noDataset.init(); 
-        DatasetRegistry.get().put("", noDataset) ;
+        noDataset.init();
+        // Don't register it.  
+        // This is used as a placeholder and shoudl not be found by "all datasets"  
+        // DatasetRegistry.get().put("", noDataset) ;
     }
 
     /** Return the DatasetRef (read-only) for when there is no dataset, just a SPARQL Query processor */ 
