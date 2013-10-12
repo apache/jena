@@ -18,11 +18,8 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-
 import java.util.Iterator;
 import java.util.List;
-
-
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.TupleIndex;
@@ -33,6 +30,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Tuple ;
+import static org.apache.jena.atlas.lib.Tuple.* ;
 import org.junit.Test;
 
 
@@ -66,7 +64,7 @@ public class TestTupleTable extends BaseTest
     
     static void add(TupleTable table, NodeId x1, NodeId x2, NodeId x3)
     {
-        Tuple<NodeId> tuple = Tuple.create(x1, x2, x3) ;
+        Tuple<NodeId> tuple = createTuple(x1, x2, x3) ;
         table.add(tuple) ;
     }
     
@@ -77,13 +75,13 @@ public class TestTupleTable extends BaseTest
         TupleTable table = create() ;
         add(table, n1, n2, n3) ;
         // Cast removes compile lint warning.
-        Tuple<NodeId> pat = Tuple.create((NodeId)null, null, null) ;
+        Tuple<NodeId> pat = createTuple((NodeId)null, null, null) ;
         Iterator<Tuple<NodeId>> iter = table.find(pat) ;
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
         int z = x.size() ;
         assertEquals(1, z) ;
         Tuple<NodeId> e1 = x.get(0) ;
-        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
+        assertEquals(createTuple(n1, n2, n3) , e1) ;
     }
     
     @Test public void createFind2()
@@ -92,7 +90,7 @@ public class TestTupleTable extends BaseTest
         add(table, n1, n2, n3) ;
         add(table, n1, n2, n4) ;
 
-        Tuple<NodeId> pat = Tuple.create(null, n2, null) ;
+        Tuple<NodeId> pat = createTuple(null, n2, null) ;
         Iterator<Tuple<NodeId>> iter = table.find(pat) ;
         assertNotNull(iter) ;
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
@@ -101,8 +99,8 @@ public class TestTupleTable extends BaseTest
         
         Tuple<NodeId> e1 = x.get(0) ;
         Tuple<NodeId> e2 = x.get(1) ;
-        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
-        assertEquals(Tuple.create(n1, n2, n4) , e2) ;
+        assertEquals(createTuple(n1, n2, n3) , e1) ;
+        assertEquals(createTuple(n1, n2, n4) , e2) ;
     }
     
     @Test public void createFind3()
@@ -112,7 +110,7 @@ public class TestTupleTable extends BaseTest
         add(table, n1, n2, n3) ;
         add(table, n1, n2, n4) ;
 
-        Tuple<NodeId> pat = Tuple.create(n1, null, n3) ;
+        Tuple<NodeId> pat = createTuple(n1, null, n3) ;
         Iterator<Tuple<NodeId>> iter = table.find(pat) ;
         assertNotNull(iter) ;
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
@@ -120,7 +118,7 @@ public class TestTupleTable extends BaseTest
         assertEquals(1, z) ;
         
         Tuple<NodeId> e1 = x.get(0) ;
-        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
+        assertEquals(createTuple(n1, n2, n3) , e1) ;
     }
     
     @Test public void createFind4()
@@ -130,7 +128,7 @@ public class TestTupleTable extends BaseTest
         add(table, n1, n2, n3) ;
         add(table, n1, n2, n4) ;
 
-        Tuple<NodeId> pat = Tuple.create(null, null, n3) ;
+        Tuple<NodeId> pat = createTuple(null, null, n3) ;
         Iterator<Tuple<NodeId>> iter = table.find(pat) ;
         assertNotNull(iter) ;
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
@@ -138,7 +136,7 @@ public class TestTupleTable extends BaseTest
         assertEquals(1, z) ;
         
         Tuple<NodeId> e1 = x.get(0) ;
-        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
+        assertEquals(createTuple(n1, n2, n3) , e1) ;
     }
     
     @Test public void createFind5()
@@ -148,7 +146,7 @@ public class TestTupleTable extends BaseTest
         add(table, n1, n2, n3) ;
         add(table, n1, n2, n4) ;
 
-        Tuple<NodeId> pat = Tuple.create(null, NodeId.NodeIdAny, n3) ;
+        Tuple<NodeId> pat = createTuple(null, NodeId.NodeIdAny, n3) ;
         Iterator<Tuple<NodeId>> iter = table.find(pat) ;
         assertNotNull(iter) ;
         List<Tuple<NodeId>> x = Iter.toList(iter) ;
@@ -156,7 +154,7 @@ public class TestTupleTable extends BaseTest
         assertEquals(1, z) ;
         
         Tuple<NodeId> e1 = x.get(0) ;
-        assertEquals(Tuple.create(n1, n2, n3) , e1) ;
+        assertEquals(createTuple(n1, n2, n3) , e1) ;
     }
 
 }

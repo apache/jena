@@ -164,7 +164,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync
         public Tuple<NodeId> convert(Tuple<NodeId> item) {
             if ( item.size() != 4 )
                 throw new TDBException("Expected a Tuple of 4, got: "+item) ;
-            return Tuple.create(item.get(1), item.get(2), item.get(3)) ;
+            return Tuple.createTuple(item.get(1), item.get(2), item.get(3)) ;
         }} ; 
     
     // Convert from Iterator<Quad> to Iterator<Triple>

@@ -126,10 +126,10 @@ public class SolverLib
             Tuple<Node> tuple = null ;
             if ( graphNode == null )
                 // 3-tuples
-                tuple = Tuple.create(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+                tuple = Tuple.createTuple(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             else
                 // 4-tuples.
-                tuple = Tuple.create(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+                tuple = Tuple.createTuple(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
             chain = makeAbortable(chain, killList) ; 
         }

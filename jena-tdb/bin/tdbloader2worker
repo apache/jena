@@ -22,7 +22,7 @@
 set -e
 
 # Sort order is ASCII
-export LC_LOCALE="C"
+export LC_ALL="C"
 
 log() { echo " $(date $DATE)" "$@" ; }
 

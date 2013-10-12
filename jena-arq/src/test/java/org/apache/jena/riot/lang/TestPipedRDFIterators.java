@@ -378,7 +378,7 @@ public class TestPipedRDFIterators {
                 out.start();
                 // Generate tuples
                 for (int i = 1; i <= generateSize; i++) {
-                    Tuple<Node> t = Tuple.create(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"),
+                    Tuple<Node> t = Tuple.createTuple(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"),
                             com.hp.hpl.jena.graph.NodeFactory.createAnon(),
                             com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
                     out.tuple(t);

@@ -18,10 +18,10 @@
 
 package org.apache.jena.atlas.lib;
 
-
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Tuple ;
+import static org.apache.jena.atlas.lib.Tuple.* ;
 import org.junit.Test ;
 
 public class TestColumnMap extends BaseTest
@@ -48,16 +48,16 @@ public class TestColumnMap extends BaseTest
     @Test public void remap3() 
     {
         ColumnMap x = new ColumnMap("POS", 2,0,1) ;
-        Tuple<String> tuple = Tuple.create("S", "P", "O") ;
+        Tuple<String> tuple = createTuple("S", "P", "O") ;
         Tuple<String> mapped = x.map(tuple) ;
-        Tuple<String> expected = Tuple.create("P", "O", "S") ;
+        Tuple<String> expected = createTuple("P", "O", "S") ;
         assertEquals(expected, mapped) ;
     }
     
     @Test public void remap4() 
     {
         ColumnMap x = new ColumnMap("POS", 2,0,1) ;
-        Tuple<String> tuple = Tuple.create("S", "P", "O") ;
+        Tuple<String> tuple = createTuple("S", "P", "O") ;
         Tuple<String> tuple2 = x.map(tuple) ;
         tuple2 = x.unmap(tuple2) ;
         assertEquals(tuple, tuple2) ;
@@ -81,12 +81,12 @@ public class TestColumnMap extends BaseTest
     @Test public void map1()
     {
         ColumnMap cmap = new ColumnMap("GSPO", "OSPG") ;
-        Tuple<String> tuple = Tuple.create("G", "S", "P", "O") ;
+        Tuple<String> tuple = createTuple("G", "S", "P", "O") ;
         Tuple<String> mapped = cmap.map(tuple) ;
-        Tuple<String> expected = Tuple.create("O", "S", "P", "G") ;
+        Tuple<String> expected = createTuple("O", "S", "P", "G") ;
         assertEquals(expected, mapped) ;
         Tuple<String> unmapped = cmap.unmap(mapped) ;
-        assertEquals(Tuple.create("G", "S", "P", "O"), unmapped) ;
+        assertEquals(createTuple("G", "S", "P", "O"), unmapped) ;
     }
 
     @Test public void map2()

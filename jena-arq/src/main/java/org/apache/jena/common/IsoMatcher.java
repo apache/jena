@@ -24,6 +24,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.Tuple ;
+import static org.apache.jena.atlas.lib.Tuple.* ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -155,7 +156,7 @@ public class IsoMatcher
         List<Tuple<Node>> tuples = new ArrayList<Tuple<Node>>() ;
         for ( ; iter.hasNext() ; ) {
             Triple t = iter.next() ;
-            Tuple<Node> tuple = Tuple.create(t.getSubject(), t.getPredicate(), t.getObject()) ;
+            Tuple<Node> tuple = createTuple(t.getSubject(), t.getPredicate(), t.getObject()) ;
             tuples.add(tuple) ;
         }
         return tuples ;
@@ -165,7 +166,7 @@ public class IsoMatcher
         List<Tuple<Node>> tuples = new ArrayList<Tuple<Node>>() ;
         for ( ; iter.hasNext() ; ) {
             Quad q = iter.next() ;
-            Tuple<Node> tuple = Tuple.create(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
+            Tuple<Node> tuple = createTuple(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
             tuples.add(tuple) ;
         }
         return tuples ;
