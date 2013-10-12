@@ -39,9 +39,13 @@ public class Tuple<T> implements Iterable<T>
 //        return Tuple.create(tuple) ;
 //    }
     
-    public static <X> Tuple<X> create(/*@SuppressWarnings("unchecked")*/ X ... elements)
-    { return new Tuple<X>(elements) ; }
+    public static <X> Tuple<X> createTuple(/*@SuppressWarnings("unchecked")*/ X ... elements)
+    { 
+        X[] els = elements ; // ArrayUtils.copy(elements) ;
+        return create(els) ; }
     
+    public static <X> Tuple<X> create(X[] elements)
+    { return new Tuple<X>(elements) ; }
     
     //TupleLib??
     public static <T> Iterator<T> project(final int slot, Iterator<Tuple<T>> iter)
@@ -74,7 +78,7 @@ public class Tuple<T> implements Iterable<T>
     
     protected Tuple(/*@SuppressWarnings("unchecked")*/ T...tuple)
     {
-        this.tuple = ArrayUtils.copy(tuple) ;   // Take copy to stop 'tuple' being referenced after the call.
+        this.tuple = tuple ;
     }
     
     public T get(int idx) { return tuple[idx] ; }

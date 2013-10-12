@@ -186,10 +186,10 @@ public class TupleIndexRecord extends TupleIndexBase
         return Iter.map(iter, transformToTuple) ;
     }
     
-    private Transform<Record, Tuple<NodeId>> transformToTuple = new Transform<Record, Tuple<NodeId>>()
+    private final Transform<Record, Tuple<NodeId>> transformToTuple = new Transform<Record, Tuple<NodeId>>()
     {
         @Override
-        public Tuple<NodeId> convert(Record item)
+        public final Tuple<NodeId> convert(Record item)
         {
             return TupleLib.tuple(item, colMap) ;
         }

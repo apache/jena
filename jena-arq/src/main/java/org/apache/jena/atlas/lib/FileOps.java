@@ -126,7 +126,7 @@ public class FileOps
             basename = basename.substring(0, i) ;
         }
         
-        return Tuple.create(path, basename, ext) ;
+        return Tuple.createTuple(path, basename, ext) ;
     }
     
     /** Split a file name into path and filename.  Nulls returned if don't make sense. */
@@ -144,7 +144,7 @@ public class FileOps
             path = filename.substring(0, j) ;
             fn = filename.substring(j+1) ;
         }
-        return Tuple.create(path, fn) ;
+        return Tuple.createTuple(path, fn) ;
     }
 
     /** Return the basename (no path, no extension) */

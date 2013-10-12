@@ -162,43 +162,6 @@ public class TupleLib
         return new Quad(gNode, sNode, pNode, oNode) ;
     }
 
-    // ---- Tuples, Triples and Quads
-
-//    /** Triple to Tuple, not remapped by a ColumnMap. */
-//    public static Tuple<NodeId> tuple(Triple t, NodeTable nodeTable)
-//    {
-//        Node s = t.getSubject() ;
-//        Node p = t.getPredicate() ;
-//        Node o = t.getObject() ;
-//
-//        NodeId x = nodeTable.storeNode(s) ;
-//        NodeId y = nodeTable.storeNode(p) ;
-//        NodeId z = nodeTable.storeNode(o) ;
-//        return Tuple.create(x, y, z) ;  
-//    }
-//
-//    /** Quad to Tuple, not remapped by a ColumnMap. */
-//    public static Tuple<NodeId> tuple(Quad quad, NodeTable nodeTable)
-//    {
-//        return tuple(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject(), nodeTable) ;
-//    }
-//    
-//    /** Quad (as graph node and triple) to Tuple, not remapped by a ColumnMap. */
-//    public static Tuple<NodeId> tuple(Node g, Triple t, NodeTable nodeTable)
-//    {
-//        return tuple(g, t.getSubject(), t.getPredicate(), t.getObject(), nodeTable) ;
-//    }
-//    
-//    public static Tuple<NodeId> tuple(Node g, Node s, Node p, Node o, NodeTable nodeTable)
-//    {
-//        NodeId gId = nodeTable.storeNode(g) ;
-//        NodeId sId = nodeTable.storeNode(s) ;
-//        NodeId pId = nodeTable.storeNode(p) ;
-//        NodeId oId = nodeTable.storeNode(o) ;
-//        
-//        return Tuple.create(gId, sId, pId, oId) ;  
-//    }
-    
     // ---- Tuples and Records
     public static Tuple<NodeId> tuple(Record r, ColumnMap cMap)
     {
@@ -206,8 +169,7 @@ public class TupleLib
         NodeId[] nodeIds = new NodeId[N] ;
         for ( int i = 0 ; i < N ; i++ )
         {
-            long x = Bytes.getLong(r.getKey(), i*SizeOfLong) ;
-            NodeId id = NodeId.create(x) ;
+            NodeId id = NodeId.create(r.getKey(), i*SizeOfLong) ;
             int j = i ;
             if ( cMap != null )
                 j = cMap.fetchSlotIdx(i) ;

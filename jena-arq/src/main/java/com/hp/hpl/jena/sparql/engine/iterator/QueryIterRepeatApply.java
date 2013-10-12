@@ -70,13 +70,8 @@ public abstract class QueryIterRepeatApply extends QueryIter1
                 return false ;
             
             if ( cancelRequested )
-            {
-                // This ensures we don't miss a change to cancelRequested
-                // In the middle of a cancel.
-                // XXX This repeatedly calls subcancel if the iterator is drained.
-                // But QueryItertaorBase turns that into a single call of requestCancel.
+                // Pass on the cancelRequest to the active stage.
                 performRequestCancel(currentStage);
-            }
             
             if ( currentStage.hasNext() )
                 return true ;

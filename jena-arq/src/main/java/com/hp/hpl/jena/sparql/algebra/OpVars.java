@@ -74,7 +74,7 @@ public class OpVars
         Set<Var> unknownAcc = collector() ;
         OpVarsPatternWithPositions visitor = new OpVarsPatternWithPositions(graphAcc, subjAcc, predAcc, objAcc, unknownAcc, false);
         OpWalker.walk(op, visitor);
-        return Tuple.create(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
+        return Tuple.createTuple(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
     }
     
     @SuppressWarnings("unchecked")
@@ -87,7 +87,7 @@ public class OpVars
         OpVarsPatternWithPositions visitor = new OpVarsPatternWithPositions(graphAcc, subjAcc, predAcc, objAcc, unknownAcc, false);
         for (Op op : ops)
             OpWalker.walk(op, visitor);
-        return Tuple.create(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
+        return Tuple.createTuple(graphAcc, subjAcc, predAcc, objAcc, unknownAcc);
     }
 
     // All mentioned variables regardless of scope/visibility.

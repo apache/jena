@@ -153,10 +153,10 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         public Tuple<NodeId> convert(Tuple<NodeId> item)
         {
             // Zap graph node id.
-            Tuple<NodeId> t2 = Tuple.create(NodeId.NodeIdAny,    // Can't be null - gets bound to a daft variable.
-                                            item.get(1),
-                                            item.get(2),
-                                            item.get(3)) ;
+            Tuple<NodeId> t2 = Tuple.createTuple(NodeId.NodeIdAny,    // Can't be null - gets bound to a daft variable.
+                                                 item.get(1),
+                                                 item.get(2),
+                                                 item.get(3)) ;
             return t2 ;
         } } ;
     
