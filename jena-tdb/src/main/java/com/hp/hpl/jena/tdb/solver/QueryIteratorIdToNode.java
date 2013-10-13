@@ -34,7 +34,8 @@ public class QueryIteratorIdToNode extends QueryIter
     Iterator<BindingNodeId> iterator ;
     Iterator<Binding> iteratorBinding ;
     
-    public QueryIteratorIdToNode(Iterator<BindingNodeId> iterator, NodeTable nodeTable, ExecutionContext execCxt)
+    // UNUSED - See SolverLib
+    private QueryIteratorIdToNode(Iterator<BindingNodeId> iterator, NodeTable nodeTable, ExecutionContext execCxt)
     {
         super(execCxt) ;
         this.iterator = iterator ;
