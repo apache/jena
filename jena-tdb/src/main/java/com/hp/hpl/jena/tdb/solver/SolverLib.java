@@ -52,21 +52,6 @@ public class SolverLib
 {
     private static Logger log = LoggerFactory.getLogger(SolverLib.class) ; 
     
-    public interface ConvertNodeIDToNode { 
-        public Iterator<Binding> convert(NodeTable nodeTable, Iterator<BindingNodeId> iterBindingIds) ;
-    }
-    
-    /** Change this to change the process of NodeId to Node conversion. 
-     * Normally it's this code, which puts a delayed iterator mapping
-     * around the BindingNodeId stream. 
-     */
-    public final static ConvertNodeIDToNode converter = new ConvertNodeIDToNode(){
-        @Override
-        public Iterator<Binding> convert(NodeTable nodeTable, Iterator<BindingNodeId> iterBindingIds)
-        {
-            return Iter.map(iterBindingIds, convToBinding(nodeTable)) ;
-        }} ;
-
     /** Non-reordering execution of a basic graph pattern, given a iterator of bindings as input */ 
     public static QueryIterator execute(GraphTDB graph, BasicPattern pattern, 
                                         QueryIterator input, Filter<Tuple<NodeId>> filter,
@@ -92,6 +77,9 @@ public class SolverLib
     public static Iterator<BindingNodeId> convertToIds(Iterator<Binding> iterBindings, NodeTable nodeTable)
     { return Iter.map(iterBindings, convFromBinding(nodeTable)) ; }
     
+    /** Convert from Iterator<BindingNodeId> to Iterator<Binding>, conversion "on demand" 
+     * (in convToBinding(BindingNodeId, NodeTable)
+     */
     public static Iterator<Binding> convertToNodes(Iterator<BindingNodeId> iterBindingIds, NodeTable nodeTable)
     { return Iter.map(iterBindingIds, convToBinding(nodeTable)) ; }
     
@@ -151,7 +139,7 @@ public class SolverLib
         
         
         // Need to make sure the bindings here point to parent.
-        Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
+        Iterator<Binding> iterBinding = convertToNodes(chain, nodeTable) ;
         
         // "input" will be closed by QueryIterTDB but is otherwise unused.
         // "killList" will be aborted on timeout.
@@ -216,28 +204,23 @@ public class SolverLib
     }
     
     // Transform : BindingNodeId ==> Binding
-    private static Transform<BindingNodeId, Binding> convToBinding(final NodeTable nodeTable)
-    {
-        return new Transform<BindingNodeId, Binding>()
-        {
+    private static Transform<BindingNodeId, Binding> convToBinding(final NodeTable nodeTable) {
+        return new Transform<BindingNodeId, Binding>() {
             @Override
-            public Binding convert(BindingNodeId bindingNodeIds)
-            {
-                return convToBinding(nodeTable, bindingNodeIds) ;
+            public Binding convert(BindingNodeId bindingNodeIds) {
+                return convToBinding(bindingNodeIds, nodeTable) ;
             }
         } ;
     }
 
-    public static Binding convToBinding(NodeTable nodeTable, BindingNodeId bindingNodeIds)
-    {
+    public static Binding convToBinding(BindingNodeId bindingNodeIds, NodeTable nodeTable) {
         if ( true )
             return new BindingTDB(bindingNodeIds, nodeTable) ;
-        else
-        {
-            // Makes nodes immediately.  Causing unnecessary NodeTable accesses (e.g. project) 
+        else {
+            // Makes nodes immediately. Causing unnecessary NodeTable accesses
+            // (e.g. project)
             BindingMap b = BindingFactory.create() ;
-            for ( Var v : bindingNodeIds )
-            {
+            for (Var v : bindingNodeIds) {
                 NodeId id = bindingNodeIds.get(v) ;
                 Node n = nodeTable.getNodeForNodeId(id) ;
                 b.add(v, n) ;
