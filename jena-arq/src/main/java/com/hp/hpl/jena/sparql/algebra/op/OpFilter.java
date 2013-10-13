@@ -54,7 +54,7 @@ public class OpFilter extends Op1
         return f ;
     }
     
-    /** Make a OpFilter - guarantteed to return an OpFilter */
+    /** Make a OpFilter - guaranteed to return an OpFilter */
     public static OpFilter filterDirect(ExprList exprs, Op op)
     {
         return new OpFilter(exprs, op) ;
