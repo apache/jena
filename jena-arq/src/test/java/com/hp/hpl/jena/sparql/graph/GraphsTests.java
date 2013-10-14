@@ -41,109 +41,121 @@ public abstract class GraphsTests extends BaseTest
     protected static final String graph2 = "http://example/g2" ;
     protected static final String graph3 = "http://example/g3" ;
     
-    private Dataset ds ;
+    private Dataset dataset ;
     private Model calcUnion = ModelFactory.createDefaultModel() ;
 
     protected abstract Dataset createDataset() ;
     
     protected Dataset getDataset()
     {
-        if ( ds == null )
+        if ( dataset == null )
         {
-            ds = createDataset() ;
+            dataset = createDataset() ;
             // Load default model.
             // Load graph 1
             // Load graph 2.
-            ds.getDefaultModel().getGraph().add(SSE.parseTriple("(<x> <p> 'Default graph')")) ;
+            dataset.getDefaultModel().getGraph().add(SSE.parseTriple("(<x> <p> 'Default graph')")) ;
             
-            Model m1 = ds.getNamedModel(graph1) ;
+            Model m1 = dataset.getNamedModel(graph1) ;
             m1.getGraph().add(SSE.parseTriple("(<x> <p> 'Graph 1')")) ;
             m1.getGraph().add(SSE.parseTriple("(<x> <p> 'ZZZ')")) ;
             
-            Model m2 = ds.getNamedModel(graph2) ;
+            Model m2 = dataset.getNamedModel(graph2) ;
             m2.getGraph().add(SSE.parseTriple("(<x> <p> 'Graph 2')")) ;
             m2.getGraph().add(SSE.parseTriple("(<x> <p> 'ZZZ')")) ;
             
             calcUnion.add(m1) ;
             calcUnion.add(m2) ;
         }
-        return ds ;
+        return dataset ;
     }
     
     String queryString =  "SELECT * {?s ?p ?o}" ;
     
     @Test public void graph1() 
     {
-        int x = query(queryString, getDataset().getDefaultModel()) ;
+        Dataset ds = getDataset() ;
+        int x = query(queryString, ds.getDefaultModel()) ;
         assertEquals(1,x) ;
     }
     
 
     @Test public void graph2() 
     {
-        int x = query(queryString, getDataset().getNamedModel(graph1)) ;
+        Dataset ds = getDataset() ;
+        int x = query(queryString, ds.getNamedModel(graph1)) ;
         assertEquals(2,x) ;
     }
 
     @Test public void graph3() 
     {
-        int x = query(queryString, getDataset().getNamedModel(graph3)) ;
+        Dataset ds = getDataset() ;
+        int x = query(queryString, ds.getNamedModel(graph3)) ;
         assertEquals(0,x) ;
     }
     
     @Test public void graph4() 
     {
-        int x = query(queryString, getDataset().getNamedModel(Quad.unionGraph.getURI())) ;
+        Dataset ds = getDataset() ;
+        int x = query(queryString, ds.getNamedModel(Quad.unionGraph.getURI())) ;
         assertEquals(3,x) ;
-        Model m = getDataset().getNamedModel(Quad.unionGraph.getURI()) ;
+        Model m = ds.getNamedModel(Quad.unionGraph.getURI()) ;
         m.isIsomorphicWith(calcUnion) ;
     }
 
     @Test public void graph5() 
     {
-        int x = query(queryString, getDataset().getNamedModel(Quad.defaultGraphIRI.getURI())) ;
+        Dataset ds = getDataset() ;
+        int x = query(queryString, ds.getNamedModel(Quad.defaultGraphIRI.getURI())) ;
         assertEquals(1,x) ;
     }
 
     @Test public void graph6() 
     {
-        int x = query(queryString, getDataset().getNamedModel(Quad.defaultGraphNodeGenerated.getURI())) ;
+        Dataset ds = getDataset() ;
+        int x = query(queryString, ds.getNamedModel(Quad.defaultGraphNodeGenerated.getURI())) ;
         assertEquals(1,x) ;
     }
 
     @Test public void graph_count1() 
     {
-        long x = count(getDataset().getDefaultModel()) ;
+        Dataset ds = getDataset() ;
+        long x = count(ds.getDefaultModel()) ;
         assertEquals(1,x) ;
     }
 
     @Test public void graph_count2() 
     {
-        long x = count(getDataset().getNamedModel(graph1)) ;
+        Dataset ds = getDataset() ;
+        long x = count(ds.getNamedModel(graph1)) ;
         assertEquals(2,x) ;
     }
 
     @Test public void graph_count3() 
     {
-        long x = count(getDataset().getNamedModel(graph3)) ;
+        Dataset ds = getDataset() ;
+        long x = count(ds.getNamedModel(graph3)) ;
         assertEquals(0,x) ;
     }
     
     @Test public void graph_count4() 
     {
-        long x = count(getDataset().getNamedModel(Quad.unionGraph.getURI())) ;
+        Dataset ds = getDataset() ;
+        long x = count(ds.getNamedModel(Quad.unionGraph.getURI())) ;
         assertEquals(3,x) ;
     }
     
     @Test public void graph_count5() 
     {
-        long x = count(getDataset().getNamedModel(Quad.defaultGraphIRI.getURI())) ;
+        Dataset ds = getDataset() ;
+        long x = count(ds.getNamedModel(Quad.defaultGraphIRI.getURI())) ;
         assertEquals(1,x) ;
     }
 
     @Test public void graph_count6() 
     {
-        long x = count(getDataset().getNamedModel(Quad.defaultGraphNodeGenerated.getURI())) ;
+        Dataset ds = getDataset() ;
+        long x = count(ds.getNamedModel(Quad.defaultGraphNodeGenerated.getURI())) ;
         assertEquals(1,x) ;
     }
 
@@ -157,40 +169,46 @@ public abstract class GraphsTests extends BaseTest
 
     @Test public void graph_api1() 
     {
-        int x = api(getDataset().getDefaultModel()) ;
+        Dataset ds = getDataset() ;
+        int x = api(ds.getDefaultModel()) ;
         assertEquals(1,x) ;
     }
     
 
     @Test public void graph_api2() 
     {
-        int x = api(getDataset().getNamedModel(graph1)) ;
+        Dataset ds = getDataset() ;
+        int x = api(ds.getNamedModel(graph1)) ;
         assertEquals(2,x) ;
     }
 
     @Test public void graph_api3() 
     {
-        int x = api(getDataset().getNamedModel(graph3)) ;
+        Dataset ds = getDataset() ;
+        int x = api(ds.getNamedModel(graph3)) ;
         assertEquals(0,x) ;
     }
     
     @Test public void graph_api4() 
     {
-        int x = api(getDataset().getNamedModel(Quad.unionGraph.getURI())) ;
+        Dataset ds = getDataset() ;
+        int x = api(ds.getNamedModel(Quad.unionGraph.getURI())) ;
         assertEquals(3,x) ;
-        Model m = getDataset().getNamedModel(Quad.unionGraph.getURI()) ;
+        Model m = ds.getNamedModel(Quad.unionGraph.getURI()) ;
         m.isIsomorphicWith(calcUnion) ;
     }
 
     @Test public void graph_api5() 
     {
-        int x = api(getDataset().getNamedModel(Quad.defaultGraphIRI.getURI())) ;
+        Dataset ds = getDataset() ;
+        int x = api(ds.getNamedModel(Quad.defaultGraphIRI.getURI())) ;
         assertEquals(1,x) ;
     }
 
     @Test public void graph_api6() 
     {
-        int x = api(getDataset().getNamedModel(Quad.defaultGraphNodeGenerated.getURI())) ;
+        Dataset ds = getDataset() ;
+        int x = api(ds.getNamedModel(Quad.defaultGraphNodeGenerated.getURI())) ;
         assertEquals(1,x) ;
     }
     
