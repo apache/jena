@@ -35,7 +35,6 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
@@ -47,7 +46,6 @@ import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
 import com.hp.hpl.jena.tdb.modify.UpdateEngineTDB ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
-import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -153,8 +151,6 @@ public class TDB
             return ;
         }
         
-        // ARQ 2.7.1 and later - replace with SystemARQ.sync()
-
         // May be a general purpose dataset with TDB objects in it.
         sync(dataset.getDefaultGraph()) ;
         Iterator<Node> iter = dataset.listGraphNodes() ;
@@ -203,16 +199,6 @@ public class TDB
 
         wireIntoExecution() ;
         
-        // This does not work with the conncurrency policy
-        // Instead, assume all open files (direct and memory mapped) are sync'ed by the OS. 
-//        // Attempt to sync everything on exit.
-//        // This can not be guaranteed.
-//        Runnable runnable = new Runnable() {
-//            public void run()
-//            { try { TDBMaker.syncDatasetCache() ; } catch (Exception ex) {} }
-//        } ;
-//        Runtime.getRuntime().addShutdownHook(new Thread(runnable)) ;
-        
         if ( log.isDebugEnabled() )
             log.debug("\n"+ARQ.getContext()) ;
     }
@@ -232,8 +218,8 @@ public class TDB
 
         // Wire in the new OpExecutor.  
         // This is normal way to execute with a general dataset or a 
-        // model that is TDB-backed.
-        QC.setFactory(ARQ.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
+        // model that is TDB-backed.  (Is it?)
+        //QC.setFactory(ARQ.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
     }
     
     // ---- Static constants read by modVersion

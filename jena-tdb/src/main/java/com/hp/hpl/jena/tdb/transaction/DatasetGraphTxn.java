@@ -49,6 +49,10 @@ public class DatasetGraphTxn extends DatasetGraphWrapper
         transaction.abort() ;
     }
     
+    // Context copied in DatasetBuilderTxn.build.
+//    @Override
+//    public Context getContext() { ... }
+    
     @Override
     public String toString()
     { return "Txn:"+super.toString() ; }

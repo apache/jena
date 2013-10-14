@@ -94,7 +94,6 @@ public class OpExecutorTDB extends OpExecutor
     {
         return super.execute(opReduced, input) ;
     }
-
     
     @Override
     protected QueryIterator execute(OpFilter opFilter, QueryIterator input)

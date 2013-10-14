@@ -36,7 +36,6 @@ public class AbstractTestGraphsTDB extends GraphsTests
     
     @BeforeClass public static void setupClass()
     {
-        
         reorder = SystemTDB.defaultOptimizer ;
         SystemTDB.defaultOptimizer = ReorderLib.identity() ;
     }
