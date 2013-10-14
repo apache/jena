@@ -23,12 +23,14 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;
 import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
@@ -76,6 +78,7 @@ public class DatasetBuilderBasic implements DatasetBuilder
         ReorderTransformation transform  = chooseReorderTransformation(location) ;
         
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, null) ;
+        QC.setFactory(dsg.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
         return dsg ;
     }
     
