@@ -74,15 +74,9 @@ public final class PeekReader extends Reader
     
     public static PeekReader make(Reader r, int bufferSize)
     {
-//        if ( r instanceof BufferedReader )
-//        {
-//            // Already buffered - and we can't unbuffer it.
-//            // Still worth our buffering because of the synchronized on one char reads 
-//            return new PeekReader(new CharStreamBuffered(r, bufferSize)) ;
-//        }
+        // It is worth our own buffering evcen if a BufferedReader
+        // because of the synchronized on one char reads in BufferedReader. 
         return new PeekReader(new CharStreamBuffered(r, bufferSize)) ;
-        // Particularly slow to start with.
-        //return new PeekReader(new CharStreamBasic(new BufferedReader(r, bufferSize))) ;
     }
 
     /** Make PeekReader where the input is UTF8 */ 

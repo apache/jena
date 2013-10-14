@@ -33,7 +33,7 @@ import org.apache.jena.atlas.json.io.JSONHandler ;
  *   Hex numbers
  * Objects with duplicate keys are a warning (keeps last)
  */
-public class JSONP extends ParserBase
+public class JSONP extends JSONParserBase
 {
     private JSONHandler handler ;
 
