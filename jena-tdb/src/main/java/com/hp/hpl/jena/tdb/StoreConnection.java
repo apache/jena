@@ -212,8 +212,8 @@ public class StoreConnection
     public static synchronized StoreConnection make(Location location)
     {
         StoreConnection sConn = cache.get(location) ;
-        if (sConn != null) return sConn ;
-
+        if (sConn != null) 
+            return sConn ;
         DatasetGraphTDB dsg = DatasetBuilderStd.build(location) ;
         sConn = _makeAndCache(dsg) ;
         return sConn ;

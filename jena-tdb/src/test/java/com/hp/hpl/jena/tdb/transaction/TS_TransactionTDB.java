@@ -40,7 +40,7 @@ import org.junit.runners.Suite ;
     , TestTransactionTDB.class
     , TestTransactionUnionGraph.class
 })
-public class TS_Transaction
+public class TS_TransactionTDB
 {
     static Level level ;
     @BeforeClass static public void beforeClass()

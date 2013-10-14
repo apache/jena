@@ -26,6 +26,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
@@ -37,6 +38,7 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;
 import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.sys.* ;
 
@@ -148,6 +150,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         StorageConfig storageConfig = new StorageConfig(location, params, readonly, blockMgrs, bufferChannels, nodeTables) ;
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storageConfig) ;
+        QC.setFactory(dsg.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
         return dsg ;
     }
     

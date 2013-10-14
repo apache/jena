@@ -31,6 +31,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -91,6 +92,11 @@ public class SolverLib
                                          QueryIterator input, Filter<Tuple<NodeId>> filter,
                                          ExecutionContext execCxt)
     {
+        if ( Quad.isUnionGraph(graphNode) )
+            graphNode = Node.ANY ;
+        if ( Quad.isDefaultGraph(graphNode) )
+            graphNode = null ;
+        
         List<Triple> triples = pattern.getList() ;
         boolean anyGraph = (graphNode==null ? false : (Node.ANY.equals(graphNode))) ;
         
