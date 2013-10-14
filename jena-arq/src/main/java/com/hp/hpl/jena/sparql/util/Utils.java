@@ -32,8 +32,11 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 
 public class Utils
 {
-    static public String className(Object obj)
-    { return classShortName(obj.getClass()) ; }
+    static public String className(Object obj) { 
+        if ( obj == null )
+            return "null" ;
+        return classShortName(obj.getClass()) ;
+    }
     
     static public String classShortName(Class<?> cls)
     {

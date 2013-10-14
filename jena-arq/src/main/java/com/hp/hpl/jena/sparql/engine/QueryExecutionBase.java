@@ -48,7 +48,6 @@ import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.hp.hpl.jena.util.FileManager ;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
@@ -99,33 +98,10 @@ public class QueryExecutionBase implements QueryExecution
         context = Context.setupContext(context, dsg) ;
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query) ;
-        // NB: Settign timeouts via the context after creating a QueryExecutionBase 
-        // will not work.
-        // But we can't move it until the point the execution starts because of
-        // get and set timeout oeprations on this object.   
+        // NB: Setting timeouts via the context after creating a QueryExecutionBase 
+        // will not work. But we can't move it until the point the execution starts because of
+        // get and set timeout operations on this object.   
         setAnyTimeouts() ;
-    }
-    
-    // Put any per-dataset execution global configuration state here.
-    public static Context setupContext(Context context, DatasetGraph dataset)
-    {
-        if ( context == null )
-            context = ARQ.getContext() ;    // Already copied?
-        context = context.copy() ;
-
-        if ( dataset != null && dataset.getContext() != null )
-            // Copy per-dataset settings.
-            context.putAll(dataset.getContext()) ;
-        
-        context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
-        
-        // Allocators.
-//        context.set(ARQConstants.sysVarAllocNamed, new VarAlloc(ARQConstants.allocVarMarkerExec)) ;
-//        context.set(ARQConstants.sysVarAllocAnon,  new VarAlloc(ARQConstants.allocVarAnonMarkerExec)) ;
-        // Add VarAlloc for variables and bNodes (this is not the parse name). 
-        // More added later e.g. query (if there is a query), algebra form (in setOp)
-        
-        return context ; 
     }
     
     private void setAnyTimeouts()
