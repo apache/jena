@@ -26,7 +26,7 @@ import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
 
-public class ParserBase
+class JSONParserBase
 {
     protected boolean VERBOSE = true ;
     private Tokenizer tokens ;
@@ -34,13 +34,13 @@ public class ParserBase
     protected long currLine = -1 ;
     protected long currCol = -1 ;
 
-    ParserBase(Tokenizer tokens)
+    protected JSONParserBase(Tokenizer tokens)
     {
         this.tokens = tokens ;
         peekTokens = new PeekIterator<Token>(tokens) ;
     }
     
-    private static Token tokenEOF = null ;
+    private Token tokenEOF = null ;
 
     final protected boolean eof()
     {

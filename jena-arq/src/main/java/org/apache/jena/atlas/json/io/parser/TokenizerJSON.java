@@ -36,10 +36,6 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 
 public class TokenizerJSON implements Tokenizer
 {
-    // TODO Various allow/deny options
-    
-    public static final int CTRL_CHAR = CH_STAR ;
-    
     private Token token = null ; 
     private final StringBuilder sb = new StringBuilder() ;
     private final PeekReader reader ;
@@ -141,18 +137,6 @@ public class TokenizerJSON implements Tokenizer
                     token.setImage(allBetween(ch, ch, true, false)) ;
                 // Single quoted string.
                 token.setType( (ch == CH_QUOTE1) ? TokenType.STRING1 : TokenType.STRING2 ) ;
-                return token ;
-            }
-    
-            // Control (not JSON)
-            if ( ch == CTRL_CHAR )
-            {
-                reader.readChar() ;
-                token.setType(TokenType.CNTRL) ;
-                ch = reader.readChar() ;
-                if ( ch == EOF )
-                    exception("EOF found after "+CTRL_CHAR) ;
-                token.cntrlCode = (char)ch ;
                 return token ;
             }
     
