@@ -347,6 +347,11 @@ public class ARQ
     public static final Symbol optFilterDisjunction = ARQConstants.allocSymbol("optFilterDisjunction") ;
     
     /**
+     * Context key controlling whether the standard optimizer applies table empty promotion
+     */
+    public static final Symbol optPromoteTableEmpty = ARQConstants.allocSymbol("optPromoteTableEmpty") ;
+    
+    /**
      * Context key controlling whether the standard optimizer applies optimizations to the evaluation
      * of joins to favour index joins wherever possible
      */

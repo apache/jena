@@ -166,9 +166,7 @@ public class Optimize implements Rewrite
 
         // Either, do filter placement and other sequence generating transformations.
         // or improve to place in a sequence (latter is better?)
-        
-        // Currently implicit join optimizations must be explicitly enabled
-        
+                
         if ( context.isTrueOrUndef(ARQ.optFilterImplicitJoin) )
             op = apply("Filter Implicit Join", new TransformFilterImplicitJoin(), op);
         
@@ -180,6 +178,11 @@ public class Optimize implements Rewrite
             //boolean termStrings = context.isDefined(ARQ.optTermStrings) ;
             op = apply("Filter Equality", new TransformFilterEquality(), op) ;
         }
+        
+        // Can promote table empty at this point since only the implicit join optimizations 
+        // are currently capable of introducing it
+        if ( context.isTrueOrUndef(ARQ.optPromoteTableEmpty) )
+            op = apply("Table Empty Promotion", new TransformPromoteTableEmpty(), op) ;
         
         if ( context.isTrueOrUndef(ARQ.optFilterDisjunction) )
             op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;
