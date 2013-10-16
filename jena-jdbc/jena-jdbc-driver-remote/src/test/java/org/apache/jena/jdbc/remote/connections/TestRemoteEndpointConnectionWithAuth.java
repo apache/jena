@@ -35,6 +35,7 @@ import org.apache.jena.jdbc.utils.TestUtils ;
 import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
+import org.junit.Ignore;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -50,6 +51,7 @@ import com.hp.hpl.jena.update.UpdateProcessor ;
  * authentication
  * 
  */
+@Ignore
 public class TestRemoteEndpointConnectionWithAuth extends AbstractRemoteEndpointConnectionTests {
 
     private static String USER = "test";
