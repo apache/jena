@@ -78,35 +78,34 @@ public class Location {
             return ;
         }
 
-        File file = new File(rootname) ;
-
-        if ( !file.exists() ) {
-            file.mkdir() ;
-            // throw new FileException("Not found: "+file.getAbsolutePath()) ;
-        } else if ( !file.isDirectory() )
-            throw new FileException("Not a directory: " + file.getAbsolutePath()) ;
-
-        // MS Windows:
-        // getCanonicalPath is only good enough for existing files.
-        // It leaves the case as it finds it (upper, lower) and lower cases
-        // not-existing segments. But later creation of a segment with uppercase
-        // changes the exact string returned.
-
-        try {
-            pathname = file.getCanonicalPath() ;
-        } catch (IOException ex) {
-            throw new FileException("Failed to get canoncial path: " + file.getAbsolutePath(), ex) ;
-        }
-
-        if ( !pathname.endsWith(File.separator) && !pathname.endsWith(pathSeparator) )
-            pathname = pathname + pathSeparator ;
-
+        ensure(rootname) ;
+        pathname = fixupName(rootname) ;
         // Metafilename for a directory.
         String metafileName = getPath(Names.directoryMetafile, Names.extMeta) ;
 
         metafile = new MetaFile("Location: " + rootname, metafileName) ;
     }
 
+    // MS Windows:
+    // getCanonicalPath is only good enough for existing files.
+    // It leaves the case as it finds it (upper, lower) and lower cases
+    // not-existing segments. But later creation of a segment with uppercase
+    // changes the exact string returned.
+    private String fixupName(String fsName) {
+        if (  isMem() )
+            return fsName ;
+        File file = new File(fsName) ;
+        try {
+            fsName = file.getCanonicalPath() ;
+        } catch (IOException ex) {
+            throw new FileException("Failed to get canoncial path: " + file.getAbsolutePath(), ex) ;
+        }
+
+        if ( !fsName.endsWith(File.separator) && !fsName.endsWith(pathSeparator) )
+            fsName = fsName + pathSeparator ;
+        return fsName ;
+    }
+    
     public String getDirectoryPath() {
         return pathname ;
     }
@@ -125,15 +124,20 @@ public class Location {
 
     public Location getSubLocation(String dirname) {
         String newName = pathname + dirname ;
-        File file = new File(newName) ;
+        ensure(newName) ;
+        return new Location(newName) ;
+    }
+
+    private void ensure(String dirname) {
+        if ( isMem() )
+            return ;
+        File file = new File(dirname) ;
         if ( file.exists() && !file.isDirectory() )
             throw new FileException("Existing file: " + file.getAbsolutePath()) ;
         if ( !file.exists() )
             file.mkdir() ;
-
-        return new Location(newName) ;
     }
-
+    
     public String getSubDirectory(String dirname) {
         return getSubLocation(dirname).getDirectoryPath() ;
     }
