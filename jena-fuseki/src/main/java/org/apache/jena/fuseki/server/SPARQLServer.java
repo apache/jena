@@ -179,6 +179,8 @@ public class SPARQLServer {
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS) ;
         context.setErrorHandler(new FusekiErrorHandler()) ;
+        context.addEventListener(new FusekiServletContextListener(this));
+        
         // Increase form size.
         context.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
 
