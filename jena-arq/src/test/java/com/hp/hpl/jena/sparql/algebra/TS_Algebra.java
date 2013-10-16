@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.algebra.optimize.TestSemanticEquivalence;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformFilters ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestOptimizer ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformMergeBGPs ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformPromoteTableEmpty;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestVarRename ;
 
 import junit.framework.TestSuite ;
@@ -41,6 +42,7 @@ import org.junit.runners.Suite ;
     , TestVarRename.class
     , TestOptimizer.class
     , TestTransformMergeBGPs.class
+    , TestTransformPromoteTableEmpty.class
     , TestPattern2Join.class
     
 //    , TestUnionGraph.class
