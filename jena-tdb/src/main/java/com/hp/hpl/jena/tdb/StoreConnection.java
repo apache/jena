@@ -31,13 +31,12 @@ import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.transaction.* ;
 
-/** Interface to the TDB transaction mechanism. */
+/** A StoreConnection is the reference to the underlying storage.
+ *  There is JVM-wide cache of backing datasets.
+ *  The work of transaction coordination is done in TransactionManager.
+ */
 public class StoreConnection
 {
-    // A StoreConnection is the reference to the underlying storage.
-    // There is cache of backing datasets, managed by statics.
-    // The work of transaction coordination is done in TransactionManager.
-
     private final TransactionManager transactionManager ;
     private final DatasetGraphTDB    baseDSG ;
     private boolean                  isValid = true ;
