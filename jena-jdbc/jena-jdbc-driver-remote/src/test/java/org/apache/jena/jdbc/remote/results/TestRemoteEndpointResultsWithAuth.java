@@ -38,6 +38,7 @@ import org.apache.jena.jdbc.utils.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
@@ -52,6 +53,7 @@ import com.hp.hpl.jena.update.UpdateProcessor;
  * Tests result sets from a remote endpoint
  * 
  */
+@Ignore
 public class TestRemoteEndpointResultsWithAuth extends AbstractRemoteEndpointResultSetTests {
 
     private static RemoteEndpointConnection connection;
