@@ -125,18 +125,12 @@ public class Location {
 
     public Location getSubLocation(String dirname) {
         String newName = pathname + dirname ;
-        if ( isMem() ) {
-            if ( isMemUnique )
-                return mem() ;
-            else
-                return mem(newName) ;
-        }   
-
         File file = new File(newName) ;
         if ( file.exists() && !file.isDirectory() )
             throw new FileException("Existing file: " + file.getAbsolutePath()) ;
         if ( !file.exists() )
             file.mkdir() ;
+
         return new Location(newName) ;
     }
 
@@ -166,8 +160,6 @@ public class Location {
 
     /** Does the location exist (and it a directory, and is accessible) */
     public boolean exists() {
-        if ( isMem() )
-            return true ;
         File f = new File(getDirectoryPath()) ;
         return f.exists() && f.isDirectory() && f.canRead() ;
     }
@@ -177,8 +169,6 @@ public class Location {
     }
 
     public boolean exists(String filename, String ext) {
-        if ( isMem() )
-            return true ;
         String fn = getPath(filename, ext) ;
         File f = new File(fn) ;
         return f.exists() ;
