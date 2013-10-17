@@ -126,7 +126,7 @@ public final class LoadMonitor
         
         print("-- Finish %s data phase", itemsName) ;
         if ( totalDataItems > 0 )
-            print("%,d %s loaded in %,.2f seconds [Rate: %,.2f per second]",
+            print("** Data: %,d %s loaded in %,.2f seconds [Rate: %,.2f per second]",
                   totalDataItems,
                   itemsName,
                   dataTime/1000.0F,
