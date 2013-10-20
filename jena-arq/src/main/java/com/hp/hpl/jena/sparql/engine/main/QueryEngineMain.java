@@ -76,7 +76,9 @@ public class QueryEngineMain extends QueryEngineBase
     
     // -------- Factory
     
-    private static QueryEngineFactory factory = new QueryEngineFactory()
+    private static QueryEngineFactory factory = new QueryEngineMainFactory() ;
+    
+    protected static class QueryEngineMainFactory implements QueryEngineFactory
     {
         @Override
         public boolean accept(Query query, DatasetGraph dataset, Context context) 
