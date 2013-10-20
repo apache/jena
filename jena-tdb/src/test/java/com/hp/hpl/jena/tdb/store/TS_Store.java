@@ -41,7 +41,6 @@ import com.hp.hpl.jena.tdb.sys.TestOps ;
     , Test_SPARQL_TDB.class
     , TestConcurrentAccess.class
     , TestDynamicDatasetTDB.class
-    , TestLoader.class
     , TestStoreConnectionsDirect.class
     , TestStoreConnectionsMapped.class
 } )
