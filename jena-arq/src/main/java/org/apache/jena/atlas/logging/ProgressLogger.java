@@ -46,6 +46,23 @@ public class ProgressLogger
         this.timer = new Timer() ;
     }
     
+    public void startMessage() { 
+        print("Start:") ;
+    }
+    
+    public void finishMessage() { 
+        // Elapsed.
+        long timePoint = timer.getTimeInterval() ;
+    
+        // *1000L is milli to second conversion
+        if ( timePoint != 0 ) {
+            long runAvgRate   = (counterTotal * 1000L) / timePoint ;
+            print("Finished: %,d %s (Avg: %,d)", counterTotal, label, runAvgRate) ;
+        }
+        else
+            print("Finished: %,d %s (Avg: ----)", counterTotal, label) ;
+    }
+    
     public void start()
     {
         timer.startTimer() ;
@@ -82,7 +99,6 @@ public class ProgressLogger
                 print("Add: %,d %s (Batch: ---- / Avg: ----)", counterTotal, label) ;
             }
             
-            
             lastTime = timePoint ;
 
             if ( tickPoint(counterTotal, superTick*tickPoint) )
@@ -98,7 +114,8 @@ public class ProgressLogger
         print("  Elapsed: %,.2f seconds [%s]", elapsedSecs, nowAsString()) ;
     }
     
-    private void print(String fmt, Object...args)
+    /** Print a message in the form for this ProgressLogger */ 
+    public void print(String fmt, Object...args)
     {
         if ( log != null && log.isInfoEnabled() )
         {
@@ -106,8 +123,6 @@ public class ProgressLogger
             log.info(str) ;
         }
     }
-    
- 
     
     static boolean tickPoint(long counter, long quantum)
     {
