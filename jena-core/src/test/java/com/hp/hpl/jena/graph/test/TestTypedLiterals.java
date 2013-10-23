@@ -587,6 +587,19 @@ public class TestTypedLiterals extends TestCase {
         testCal4.set(Calendar.MILLISECOND, 2);
         doDateTimeTest(testCal4, "1999-05-30T15:09:32.002Z", 32.002);
         
+        // Years before 1000 : xsd:dateTime requires at least a four digit year.
+        int[] years = { -7777, -777, -77, -7, 7, 77, 777 , 7777 } ;
+        for ( int y : years ) {
+            Calendar calM1 = Calendar.getInstance();
+            calM1.set(Calendar.YEAR,  y);
+            calM1.set(Calendar.MONTH, 10);
+            calM1.set(Calendar.DATE,  23);
+            XSDDateTime xdtM = new XSDDateTime(calM1);
+            LiteralLabel xdtM_ll = LiteralLabelFactory.create(xdtM, "", XSDDatatype.XSDdateTime);
+            
+            assertTrue("Pre-1000 calendar value", xdtM_ll.getLexicalForm().matches("-?[0-9]{4}-.*")) ;
+            assertTrue("Pre-1000 calendar value", xdtM_ll.isWellFormed()) ;
+        }
         // Illegal dateTimes
         boolean ok = false;
         boolean old = JenaParameters.enableEagerLiteralValidation;
