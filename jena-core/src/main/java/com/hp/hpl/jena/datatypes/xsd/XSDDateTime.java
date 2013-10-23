@@ -259,6 +259,12 @@ public class XSDDateTime extends AbstractDateTime {
     public String toString() {
         StringBuffer buff = new StringBuffer();
         if ((mask & YEAR_MASK) != 0) {
+            int cy = data[CY] ;
+            int absCY = Math.abs(cy) ;
+            // XSD dateTime requires at least 4 digits for the year field
+            if ( absCY < 10  )  buff.append('0') ;
+            if ( absCY < 100 )  buff.append('0') ;
+            if ( absCY < 1000 ) buff.append('0') ;
             buff.append(data[CY]);
         } else {
             buff.append("-");
@@ -266,24 +272,24 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & (MONTH_MASK | DAY_MASK)) != 0) {
             buff.append("-");
             if ((mask & MONTH_MASK) != 0) {
-                if (data[M] <= 9) buff.append("0");
+                if (data[M] <= 9) buff.append('0');
                 buff.append(data[M]);
             } else {
                 buff.append("-");
             }
             if ((mask & DAY_MASK) != 0) {
-                if (mask != DAY_MASK) buff.append("-");
-                if (data[D] <= 9) buff.append("0");
+                if (mask != DAY_MASK) buff.append('-');
+                if (data[D] <= 9) buff.append('0');
                 buff.append(data[D]);
             }
         }
         if ((mask & TIME_MASK) != 0 ) {
-            buff.append("T");
+            buff.append('T');
             buff.append(timeLexicalForm());
         }
 
         if ( data[utc] != 0 )
-            buff.append("Z");
+            buff.append('Z');
 
         return buff.toString();
     }
