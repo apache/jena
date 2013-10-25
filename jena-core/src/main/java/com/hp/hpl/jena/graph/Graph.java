@@ -163,7 +163,7 @@ public interface Graph  extends GraphAdd
 	 int size();
 
     /**
-        Answer true iff .close() has been called onn this Graph.
+        Answer true iff .close() has been called on this Graph.
     */
     boolean isClosed();
     }
