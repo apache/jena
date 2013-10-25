@@ -155,4 +155,7 @@ public class GraphView extends GraphBase implements Sync
     public void sync() {
         SystemARQ.sync(dsg);
     }
+    
+    // Need to call GraphBase.close() or sent the protected closed flag.
+    //@Override public void close() { super.close() ; }
 }
