@@ -168,7 +168,18 @@ class Journal implements Sync, Closeable
             
             // Write all bytes
             channel.write(buffer) ;
-            adler.update(buffer.array()) ;
+            if (buffer.hasArray())
+            {
+                adler.update(buffer.array()) ;
+            }
+            else
+            {
+                byte[] data = new byte[bufferCapacity] ;
+                buffer.position(0) ;
+                buffer.limit(bufferCapacity) ;
+                buffer.get(data) ;
+                adler.update(data) ;
+            }
             
             buffer.position(bufferPosition) ;
             buffer.limit(bufferLimit) ;

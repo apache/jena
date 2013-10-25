@@ -87,6 +87,18 @@ public class TDB
     /** Symbol to use the union of named graphs as the default graph of a query */ 
     public static final Symbol symUnionDefaultGraph          = SystemTDB.allocSymbol("unionDefaultGraph") ;
     
+    /**
+     * A String enum Symbol that specifies the type of temporary storage for transaction journal write blocks.
+     * <p/>
+     * "mem" = Java heap memory (default)
+     * <br/>
+     * "direct" = Process heap memory
+     * <br/>
+     * "mapped" = Memory mapped temporary file
+     * <br/>
+     */
+    public static final Symbol transactionJournalWriteBlockMode = SystemTDB.allocSymbol("transactionJournalWriteBlockMode") ;
+    
     public static Context getContext()     { return ARQ.getContext() ; }  
     
     // Called on assembler loading.

@@ -123,16 +123,27 @@ public final class Block
         return String.format("Block: %d %s", id, str) ;
     }
     
-    /** Deep copy, including ByteBuffer contents. */
+    /** Deep copy, including ByteBuffer contents into a HeapByteBuffer. */
     public Block replicate()
     {
-        ByteBuffer dstBuffer = replicate(getByteBuffer()) ;
+        ByteBuffer dstBuffer = ByteBuffer.allocate(getByteBuffer().capacity());
+        return replicate(dstBuffer);
+    }
+    
+    /**
+     * Deep copy, including ByteBuffer contents, using the supplied ByteBuffer to hold the contents and
+     * to be used when constructing the new Block.  The capacity of the supplied ByteBuffer must be equal
+     * to or greater than this block's capacity.
+     */
+    public Block replicate(ByteBuffer dstBuffer)
+    {
+        replicateByteBuffer(getByteBuffer(), dstBuffer) ;
         Block b = new Block(getId(), dstBuffer) ;
         b.modified = modified ;
         b.readOnly = readOnly ;
 //        b.blockRef = null ;
         return b ;
-    }  
+    }
 
     public static void replicate(Block srcBlock, Block dstBlock)
     {
@@ -141,10 +152,8 @@ public final class Block
         replicate(srcBlock.getByteBuffer(), dstBlock.getByteBuffer()) ;
     }  
 
-    private static ByteBuffer replicate(ByteBuffer srcBlk)
+    private static ByteBuffer replicateByteBuffer(ByteBuffer srcBlk, ByteBuffer dstBlk)
     {
-        ByteBuffer dstBlk = ByteBuffer.allocate(srcBlk.capacity()) ;
-        
         int x = srcBlk.position() ;
         int y = srcBlk.limit() ;
         srcBlk.clear() ;

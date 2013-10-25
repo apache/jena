@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import java.nio.ByteBuffer ;
 import java.util.HashMap ;
 import java.util.HashSet ;
 import java.util.Iterator ;
@@ -29,10 +30,17 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.file.BufferAllocator ;
+import com.hp.hpl.jena.tdb.base.file.BufferAllocatorDirect ;
+import com.hp.hpl.jena.tdb.base.file.BufferAllocatorMapped ;
+import com.hp.hpl.jena.tdb.base.file.BufferAllocatorMem ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
 {
@@ -41,15 +49,32 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     private Transaction transaction ;
     private FileRef fileRef ;
     
-    final private Set<Long> readBlocks = new HashSet<Long>() ;
-    final private Set<Long> iteratorBlocks = new HashSet<Long>() ;
-    final private Map<Long, Block> writeBlocks = new HashMap<Long, Block>() ;
-    final private Map<Long, Block> freedBlocks = new HashMap<Long, Block>() ;
+    private final BufferAllocator writeBlockBufferAllocator ;
+    
+    private final Set<Long> readBlocks = new HashSet<Long>() ;
+    private final Set<Long> iteratorBlocks = new HashSet<Long>() ;
+    private final Map<Long, Block> writeBlocks = new HashMap<Long, Block>() ;
+    private final Map<Long, Block> freedBlocks = new HashMap<Long, Block>() ;
     private boolean closed  = false ;
     private boolean active  = false ;   // In a transaction, or preparing.
     
     public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr)
     {
+        Context context = txn.getBaseDataset().getContext() ;
+        String mode = (null != context) ? (String) context.get(TDB.transactionJournalWriteBlockMode, "") : "" ;
+        if ("direct".equalsIgnoreCase(mode))
+        {
+            writeBlockBufferAllocator = new BufferAllocatorDirect() ;
+        }
+        else if ("mapped".equalsIgnoreCase(mode))
+        {
+            writeBlockBufferAllocator = new BufferAllocatorMapped(SystemTDB.BlockSize) ;
+        }
+        else
+        {
+            writeBlockBufferAllocator = new BufferAllocatorMem() ;
+        }
+        
         reset(txn, fileRef, underlyingBlockMgr) ;
         if ( txn.getMode() == ReadWrite.READ &&  underlyingBlockMgr instanceof BlockMgrJournal )
             System.err.println("Two level BlockMgrJournal") ;
@@ -108,8 +133,9 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         this.iteratorBlocks.clear() ;
         this.writeBlocks.clear() ;
         this.freedBlocks.clear() ;
+        this.writeBlockBufferAllocator.clear() ;
     }
-                       
+    
     @Override
     public Block allocate(int blockSize)
     {
@@ -121,7 +147,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         // But we "copy" it by allocating ByteBuffer space.
         if ( active ) 
         {
-            block = block.replicate( ) ;
+            block = replicate(block) ;
             writeBlocks.put(block.getId(), block) ;
         }
         return block ;
@@ -192,7 +218,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     private Block _promote(Block block)
     {
         checkActive() ; 
-        block = block.replicate() ;
+        block = replicate(block) ;
         writeBlocks.put(block.getId(), block) ;
         return block ;
     }
@@ -256,6 +282,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     @Override
     public void close()
     {
+        writeBlockBufferAllocator.close() ;
         closed = true ;
     }
 
@@ -348,4 +375,11 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
 
     @Override
     public String getLabel() { return fileRef.getFilename() ; }
+    
+    // Our own replicate method that gets the destination ByteBuffer from our allocator instead of always the heap
+    private Block replicate(Block srcBlock)
+    {
+        ByteBuffer dstBuffer = writeBlockBufferAllocator.allocate(srcBlock.getByteBuffer().capacity()) ;
+        return srcBlock.replicate(dstBuffer) ;
+    }
 }
