@@ -30,6 +30,7 @@ import java.util.List ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.http.HttpEntity ;
+import org.apache.http.HttpMessage;
 import org.apache.http.HttpResponse ;
 import org.apache.http.NameValuePair ;
 import org.apache.http.StatusLine ;
@@ -59,6 +60,7 @@ import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.engine.http.Params ;
 import com.hp.hpl.jena.sparql.engine.http.Params.Pair ;
 
@@ -110,12 +112,21 @@ public class HttpOp {
      *  This is used only if there is no authentication set.
      */
     static private HttpClient defaultHttpClient = null ; 
-
     
     /**
      * Default authenticator used for HTTP authentication
      */
     static private HttpAuthenticator defaultAuthenticator = new ServiceAuthenticator();
+    
+    /**
+     * Constant for the default User-Agent header that ARQ will use
+     */
+    public static final String ARQ_USER_AGENT = "Apache-Jena-ARQ/" + ARQ.VERSION;
+    
+    /**
+     * User-Agent header to use
+     */
+    static private String userAgent = ARQ_USER_AGENT;
 
     /**
      * "Do nothing" response handler.
@@ -163,6 +174,7 @@ public class HttpOp {
     /**
      * Gets the default authenticator used for authenticate requests if no
      * specific authenticator is provided.
+     * @return HTTP authenticator
      */
     public static HttpAuthenticator getDefaultAuthenticator() {
         return defaultAuthenticator ;
@@ -221,6 +233,22 @@ public class HttpOp {
           }
         } ;
     } ;
+    
+    /**
+     * Gets the User-Agent string that ARQ is applying to all HTTP requests
+     * @return User-Agent string
+     */
+    public static String getUserAgent() {
+        return userAgent;
+    }
+    
+    /**
+     * Sets the User-Agent string that ARQ will apply to all HTTP requests
+     * @param userAgent User-Agent string
+     */
+    public static void setUserAgent(String userAgent) {
+        HttpOp.userAgent = userAgent;
+    }
     
     // ---- HTTP GET
     /**
@@ -1003,6 +1031,8 @@ public class HttpOp {
             // Accept
             if (acceptHeader != null)
                 request.addHeader(HttpNames.hAccept, acceptHeader);
+            // User-Agent
+            applyUserAgent(request);
 
             // Prepare and execute
             httpClient = ensureClient(httpClient, authenticator);
@@ -1061,6 +1091,16 @@ public class HttpOp {
      */
     private static HttpContext ensureContext(HttpContext context) {
         return context != null ? context : new BasicHttpContext();
+    }
+    
+    /**
+     * Applies the configured User-Agent string to the HTTP request
+     * @param message HTTP request
+     */
+    public static void applyUserAgent(HttpMessage message) {
+        if (userAgent != null) {
+            message.setHeader("User-Agent", userAgent);
+        }
     }
 
     /**
