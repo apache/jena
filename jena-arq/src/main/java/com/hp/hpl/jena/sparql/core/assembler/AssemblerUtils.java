@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
+import org.apache.jena.riot.RDFDataMgr ;
+
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.JA ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
@@ -33,7 +35,6 @@ import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
-import com.hp.hpl.jena.util.FileManager ;
 
 public class AssemblerUtils
 {
@@ -82,7 +83,7 @@ public class AssemblerUtils
             throw new ARQException("No assembler file") ;
         Model spec = null ;
         try {
-            spec = FileManager.get().loadModel(assemblerFile) ;
+            spec = RDFDataMgr.loadModel(assemblerFile) ;
         } catch (Exception ex)
         { throw new ARQException("Failed reading assembler description: "+ex.getMessage()) ; }
 
