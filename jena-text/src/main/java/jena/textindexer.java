@@ -43,7 +43,6 @@ public class textindexer extends CmdARQ {
     private static Logger      log          = LoggerFactory.getLogger(textindexer.class) ;
 
     public static final ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
-    private String assemblerFile = null ;
     
     protected DatasetGraphText dataset      = null ;
     protected TextIndex        textIndex    = null ;
