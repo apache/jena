@@ -308,6 +308,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
 
     private static String chooseBaseURI(String baseURI) {
         String scheme = FileUtils.getScheme(baseURI) ;
+        // Assume scheme of one letter are Windows drive letters. 
         if ( scheme != null && scheme.length() > 1 && scheme.equals("file") )
             // Not a file - leave alone.
             return baseURI ;
