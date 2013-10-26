@@ -29,7 +29,8 @@ text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
 
 <#dataset> rdf:type      tdb:DatasetTDB ;
     tdb:location "--mem--" ;
-    tdb:unionDefaultGraph true ;
+    ## In the example, this would hide the real default graph.
+    ##tdb:unionDefaultGraph true ;
     .
 
 <#indexLucene> a text:TextIndexLucene ;
