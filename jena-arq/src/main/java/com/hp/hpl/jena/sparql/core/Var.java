@@ -87,7 +87,10 @@ public class Var extends Node_Variable
         return var ;
     }
     
-    private Var(String varName)      { super(varName) ; }
+    // Precalulated the hash code because hashCode() is used so heavily with Var's
+    private final int hashCodeValue ;  
+    
+    private Var(String varName)      { super(varName) ; hashCodeValue = super.hashCode() ; }
     
     private Var(Node_Variable v)     { this( v.getName() ) ; }
     
@@ -102,12 +105,12 @@ public class Var extends Node_Variable
     {
         NotAVariableException(String msg) { super(msg) ; }
     }
+    
+    @Override
+    public final int hashCode() { return hashCodeValue ; }
 
     @Override
-    public int hashCode() { return super.hashCode() ; }
-
-    @Override
-    public boolean equals(Object other)
+    public final boolean equals(Object other)
     { 
         if ( this == other ) return true ;
         if ( ! ( other instanceof Var ) ) return false ;
