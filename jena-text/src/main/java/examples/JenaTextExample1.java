@@ -75,7 +75,7 @@ public class JenaTextExample1
         log.info("Construct text dataset using an assembler description") ;
         // There are two datasets in the configuration:
         // the one for the base data and one with text index.
-        // Therafore we need to name the dataset we are interested in. 
+        // Therefore we need to name the dataset we are interested in. 
         Dataset ds = DatasetFactory.assemble("text-config.ttl", "http://localhost/jena_example/#text_dataset") ;
         return ds ;
     }
@@ -88,7 +88,6 @@ public class JenaTextExample1
         try {
             Model m = dataset.getDefaultModel() ;
             RDFDataMgr.read(m, file) ;
-            //RDFDataMgr.read(dataset, "D.ttl") ;
             dataset.commit() ;
         } finally { dataset.end() ; }
         

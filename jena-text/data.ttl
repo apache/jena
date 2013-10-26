@@ -1,0 +1,4 @@
+@prefix :        <http://localhost/jena_example/#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+:T1 rdfs:label "X0 X1 X2" .
+:T2 rdfs:label "X10 X11 X12" .
