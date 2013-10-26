@@ -265,8 +265,8 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
 
     @Override
     protected Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax) {
-        // Doesn't call open() - we want to make the synatx guess based on the
-        // mapped URI.
+        // Doesn't call open() - we want to make the syntax guess
+        // based on the mapped URI.
         String mappedURI = mapURI(filenameOrURI) ;
 
         if ( log.isDebugEnabled() && !mappedURI.equals(filenameOrURI) )
@@ -307,13 +307,10 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     }
 
     private static String chooseBaseURI(String baseURI) {
-        // Use IRILib.filenameToIRI
         String scheme = FileUtils.getScheme(baseURI) ;
-
-        if ( scheme != null && !scheme.equals("file") )
-            // Not file: - leave alone.
+        if ( scheme != null && scheme.length() > 1 && scheme.equals("file") )
+            // Not a file - leave alone.
             return baseURI ;
-
         return IRILib.filenameToIRI(baseURI) ;
     }
 
