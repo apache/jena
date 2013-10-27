@@ -900,7 +900,7 @@ implements Model, PrefixMapping, Lock
 
     @Override
     public Bag getBag( Resource r )  
-    { return r.as( Bag.class ); }
+    { return r.inModel( this ).as( Bag.class ); }
 
     static private Node makeURI(String uri) 
     { return uri == null ? NodeFactory.createAnon() : NodeFactory.createURI( uri ); }
