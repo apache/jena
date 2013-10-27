@@ -892,7 +892,7 @@ implements Model, PrefixMapping, Lock
 
     @Override
     public Seq getSeq( Resource r )  
-    { return r.as( Seq.class ); }
+    { return r.inModel( this ).as( Seq.class ); }
 
     @Override
     public Bag getBag( String uri )  
