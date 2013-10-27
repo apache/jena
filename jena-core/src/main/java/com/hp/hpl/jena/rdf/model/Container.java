@@ -50,8 +50,31 @@ package com.hp.hpl.jena.rdf.model;
  */
 public interface Container extends Resource {
     
+	/**
+	 * Verify that the container is an Alt.
+	 * 
+	 * This method will return true if the object is in a model and that model 
+	 * contains the triple &lt; this, RDF.type, RDF.Alt &gt; otherwise returns
+	 * false.
+	 */
     public boolean isAlt();
+    
+    /**
+	 * Verify that the container is a Seq.
+	 * 
+	 * This method will return true if the object is in a model and that model 
+	 * contains the triple &lt; this, RDF.type, RDF.Seq &gt; otherwise returns
+	 * false.
+	 */
     public boolean isSeq();
+    
+    /**
+	 * Verify that the container is a Bag.
+	 * 
+	 * This method will return true if the object is in a model and that model 
+	 * contains the triple &lt; this, RDF.type, RDF.Bag &gt; otherwise returns
+	 * false.
+	 */
     public boolean isBag();
     /** Add a new value to a container.
      *
