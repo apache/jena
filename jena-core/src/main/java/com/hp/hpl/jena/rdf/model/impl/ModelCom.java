@@ -911,7 +911,7 @@ implements Model, PrefixMapping, Lock
 
     @Override
     public Alt getAlt( Resource r )  
-    { return r.as( Alt.class ); }
+    { return r.inModel( this ).as( Alt.class ); }
 
     @Override
     public long size()  
