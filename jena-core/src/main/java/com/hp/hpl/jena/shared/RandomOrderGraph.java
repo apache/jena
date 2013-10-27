@@ -58,6 +58,57 @@ public class RandomOrderGraph extends WrappedGraph {
     public ExtendedIterator<Triple> find( Node s, Node p, Node o )
 	{ return new RandomOrderIterator<Triple>(bufsz,super.find( s, p, o )); 
 	}
+	@Override
+	public Capabilities getCapabilities() {
+		return new MyCapabilities( super.getCapabilities() );
+	}
 	
+	private class MyCapabilities implements Capabilities {
+		private Capabilities parentCapabilities;
+		
+		public MyCapabilities( Capabilities parentCapabilities )
+		{
+			this.parentCapabilities = parentCapabilities;
+		}
+
+		public boolean sizeAccurate() {
+			return parentCapabilities.sizeAccurate();
+		}
+
+		public boolean addAllowed() {
+			return parentCapabilities.addAllowed();
+		}
+
+		public boolean addAllowed(boolean everyTriple) {
+			return parentCapabilities.addAllowed(everyTriple);
+		}
+
+		public boolean deleteAllowed() {
+			return parentCapabilities.deleteAllowed();
+		}
+
+		public boolean deleteAllowed(boolean everyTriple) {
+			return parentCapabilities.deleteAllowed(everyTriple);
+		}
+
+		public boolean canBeEmpty() {
+			return parentCapabilities.canBeEmpty();
+		}
+
+		public boolean findContractSafe() {
+			return parentCapabilities.findContractSafe();
+		}
+
+		public boolean handlesLiteralTyping() {
+			return parentCapabilities.handlesLiteralTyping();
+		}
+
+		@Override
+		public boolean iteratorRemoveAllowed() {
+			return false;
+		}
+		
+		
+	}
 
 }
