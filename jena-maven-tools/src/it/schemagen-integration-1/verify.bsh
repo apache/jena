@@ -1,0 +1,8 @@
+import org.apache.maven.it.Verifier;
+
+File testDir = new File("src/it/schemagen-integration-1");
+Verifier verifier = new Verifier( testDir.getAbsolutePath() );
+
+String test1 = verifier.getBasedir() + "/target/generated-sources/org/example/test/Test1.java";
+// no package specified, so output is just in generated-sources
+verifier.assertFileMatches( test1, "(?s).*package org.example.test.*public static final Resource Cls.*" );
