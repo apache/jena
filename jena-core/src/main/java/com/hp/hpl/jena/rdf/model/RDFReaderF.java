@@ -37,6 +37,7 @@ package com.hp.hpl.jena.rdf.model;
  *are defined.  These defaults may be overwridden by setting a system property
  *with a name of the form com.hp.hpl.jena.readers.<lang> to the class
  *name.</p>
+ * <p><b>NOTE:</b> All settings are global in nature</p>
  */
 
 public interface RDFReaderF {
@@ -60,5 +61,19 @@ public interface RDFReaderF {
  * @return the old class name for this language
  */    
     public String setReaderClassName(String lang, String className);
+    
+    /**
+     * Resets the values to the initial condition.
+     */
+    public void resetRDFReaderF();
+    
+    /**
+     * Remove lang from list of readers..
+     * Must be one of the classes that was added using setReaderClassName()
+     * @param lang The lang to remove.
+     * @return the old class name for this language
+     * @throws IllegalArgumentException if lang is one of the initial languages
+     */
+    public String removeReader( String lang ) throws IllegalArgumentException;
  
 }

@@ -51,5 +51,16 @@ public class RDFReaderFactoryRIOT implements RDFReaderF
     {
         return null ;
     }
+
+	@Override
+	public void resetRDFReaderF() {
+		// does nothing as the reader can not be modified.
+		
+	}
+
+	@Override
+	public String removeReader(String lang) throws IllegalArgumentException {
+		return null;
+	}
 }
 
