@@ -1,0 +1,81 @@
+Schemagen Maven plugin - configuration options
+
+    The following options can be set in the <<<pom.xml>>> to configure the
+    behaviour of the schemagen plugin.
+
+*----------*--------------+----------------+
+ XML config element | <<<jena.schemagen.SchemagenOptions.OPT>>> value | description
+*---*---+---+
+classdec | <<<j.s.S.OPT.CLASSDEC>>> | Additional decoration for class header (such as implements)
+*---*---+---+
+classname | <<<j.s.S.OPT.CLASSNAME>>> | The name of the generated class
+*---*---+---+
+classname-suffix | <<<j.s.S.OPT.CLASSNAME_SUFFIX>>> | Option for adding a suffix to the generated class name, e.g. <<<Vocab>>>
+*---*---+---+
+class-section | <<<j.s.S.OPT.CLASS_SECTION>>> | Text of section declaration for classes section
+*---*---+---+
+classttemplate | <<<j.s.S.OPT.CLASS_TEMPLATE>>> | Template for writing out class declarations
+*----------*--------------+----------------+
+config-file | <<<j.s.S.OPT.CONFIG_FILE>>> | Select an alternative config file
+*---*---+---+
+declarations | <<<j.s.S.OPT.DECLARATIONS>>> | Additional declarations to add at the top of the class
+*---*---+---+
+dos | <<<j.s.S.OPT.DOS>>> | Option to generate an output file with DOS (\r\n) line endings. Default is Unix line endings.
+*---*---+---+
+encoding | <<<j.s.S.OPT.ENCODING>>> | Option for the encoding syntax (RDF/XML, Turtle, etc) of the input file
+*---*---+---+
+footer | <<<j.s.S.OPT.FOOTER>>> | Text to use for the file footer
+*---*---+---+
+header | <<<j.s.S.OPT.HEADER>>> | Text to use for the file header
+*---*---+---+
+include | <<<j.s.S.OPT.INCLUDE>>> | Other namespace URI's to include in the generated Java constants
+*---*---+---+
+include-source | <<<j.s.S.OPT.INCLUDE_SOURCE>>> | Option to include the ontology source code in the generated file
+*---*---+---+
+individuals-section | <<<j.s.S.OPT.INDIVIDUALS_SECTION>>> | Text of section declaration for individuals section
+*---*---+---+
+individualttemplate | <<<j.s.S.OPT.INDIVIDUAL_TEMPLATE>>> | Template for writing out individual declarations
+*---*---+---+
+input | <<<j.s.S.OPT.INPUT>>> | Specify the URL of the input document
+*---*---+---+
+lang-daml | <<<j.s.S.OPT.LANG_DAML>>> |Specify that the language of the source is DAML+OIL
+*---*---+---+
+lang-owl | <<<j.s.S.OPT.LANG_OWL>>> |Specify that the language of the source is OWL (the default)
+*---*---+---+
+lang-rdfs | <<<j.s.S.OPT.LANG_RDFS>>> | Specify that the language of the source is RDFS
+*---*---+---+
+marker | <<<j.s.S.OPT.MARKER>>> | Specify the marker string for substitutions
+*---*---+---+
+namespace | <<<j.s.S.OPT.NAMESPACE>>> | The namespace URI for the vocabulary
+*---*---+---+
+no-comments | <<<j.s.S.OPT.NO_COMMENTS>>> | Turn off all comment output
+*---*---+---+
+noclasses | <<<j.s.S.OPT.NOCLASSES>>> |  If true, don't include classes in the Java class
+*---*---+---+
+noheader | <<<j.s.S.OPT.NOHEADER>>> | If true, suppress the file header comment
+*---*---+---+
+noindividuals | <<<j.s.S.OPT.NOINDIVIDUALS>>> |  If true, don't include individuals in the Java class
+*---*---+---+
+noproperties | <<<j.s.S.OPT.NOPROPERTIES>>> | If true, don't include properties in the Java class
+*---*---+---+
+no-strict | <<<j.s.S.OPT.NO_STRICT>>> | Option to turn off strict checking in .as()
+*---*---+---+
+ontology | <<<j.s.S.OPT.ONTOLOGY>>> | Use ontology terms in preference to vanilla RDF
+*---*---+---+
+output | <<<j.s.S.OPT.OUTPUT>>> | The name of the file that will be generated; overrides the default name taken from the class
+*---*---+---+
+package-name | <<<j.s.S.OPT.PACKAGENAME>>> | Specify the Java package name that classes will be created in
+*---*---+---+
+property-section | <<<j.s.S.OPT.PROPERTY_SECTION>>> | Text of section declaration for properties section
+*---*---+---+
+prop-template | <<<j.s.S.OPT.PROP_TEMPLATE>>> | Template for writing out property declarations
+*---*---+---+
+root | <<<j.s.S.OPT.ROOT>>> | Specify the uri of the configuration root node (not used in Maven plugin)
+*---*---+---+
+strict-individuals | <<<j.s.S.OPT.STRICT_INDIVIDUALS>>> | Option to exclude instances of classes in the allowed namespaces, where the individuals themselves are in other namespaces
+*---*---+---+
+uc-names | <<<j.s.S.OPT.UC_NAMES>>> | Option for mapping constant names to uppercase
+*---*---+---+
+use-inf | <<<j.s.S.OPT.USE_INF>>> | Option to generate to force the model to perform inference, off by default.
+*---*---+---+
+

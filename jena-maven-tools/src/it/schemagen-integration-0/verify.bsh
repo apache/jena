@@ -1,0 +1,8 @@
+import org.apache.maven.it.Verifier;
+
+File testDir = new File("src/it/schemagen-integration-0");
+Verifier verifier = new Verifier( testDir.getAbsolutePath() );
+
+String test1 = verifier.getBasedir() + "/target/generated-sources/Test1.java";
+// note that ?s modifier makes . pattern match newlines
+verifier.assertFileMatches(  test1, "(?s).*public static final Resource Cls.*" );

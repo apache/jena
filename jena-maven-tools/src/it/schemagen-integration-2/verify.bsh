@@ -1,0 +1,8 @@
+import org.apache.maven.it.Verifier;
+
+File testDir = new File("src/it/schemagen-integration-2");
+Verifier verifier = new Verifier( testDir.getAbsolutePath() );
+
+String test1 = verifier.getBasedir() + "/target/alt-source-dir/org/example/test/Test1.java";
+// output directory specified, so check the output is there
+verifier.assertFileMatches( test1, "(?s).*package org.example.test.*public static final Resource Cls.*" );

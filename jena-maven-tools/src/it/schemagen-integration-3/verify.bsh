@@ -1,0 +1,11 @@
+import org.apache.maven.it.Verifier;
+
+File testDir = new File("src/it/schemagen-integration-3");
+Verifier verifier = new Verifier( testDir.getAbsolutePath() );
+
+// Test2.java should use the Ont API, Test1.java should not
+String test1 = verifier.getBasedir() + "/target/generated-sources/org/example/test/Test1.java";
+verifier.assertFileMatches( test1, "(?s).*package org.example.test.*public static final Resource Cls.*" );
+
+String test2 = verifier.getBasedir() + "/target/generated-sources/org/example/test/Test2.java";
+verifier.assertFileMatches( test2, "(?s).*package org.example.test.*public static final OntClass Cls2.*" );
