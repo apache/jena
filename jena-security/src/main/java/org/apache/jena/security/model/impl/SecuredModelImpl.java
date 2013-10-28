@@ -1589,6 +1589,16 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 	}
 
 	@Override
+	public void resetRDFReaderF() {
+		holder.getBaseItem().resetRDFReaderF();
+	}
+
+	@Override
+	public String removeReader(String lang) throws IllegalArgumentException {
+		return holder.getBaseItem().removeReader(lang);
+	}
+	
+	@Override
 	public ReificationStyle getReificationStyle()
 	{
 		return holder.getBaseItem().getReificationStyle();
@@ -2835,4 +2845,5 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 			}
 		}
 	}
+
 }

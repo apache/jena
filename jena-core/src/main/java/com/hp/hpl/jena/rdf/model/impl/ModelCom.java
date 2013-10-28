@@ -223,6 +223,18 @@ implements Model, PrefixMapping, Lock
     public String setReaderClassName(String lang, String className) {
         return readerFactory.setReaderClassName(lang, className);
     } 
+    
+    @Override
+    public void resetRDFReaderF()
+    {
+    	readerFactory.resetRDFReaderF();
+    }
+    
+    @Override
+    public String removeReader( String lang ) throws IllegalArgumentException
+    {
+    	return readerFactory.removeReader(lang);
+    }
 
     @Override
     public Model read(String url)  {

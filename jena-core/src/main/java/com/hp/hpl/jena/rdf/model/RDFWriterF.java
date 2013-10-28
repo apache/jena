@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.rdf.model;
 
-/** An RDFReader factory inferface.
+/** An RDFWriter factory inferface.
  *
  * <p>The factory will create an appropriate writer for the particular
  *   serialization language being read.  Predefined languages include:</p>
@@ -32,6 +32,7 @@ package com.hp.hpl.jena.rdf.model;
  *are defined.  These defaults may be overwridden by setting a system property
  *with a name of the form com.hp.hpl.jena.readers.<lang> to the class
  *name.</p>
+ *<p><b>NOTE:</b> All settings are global in nature</p>
  */
 
 public interface RDFWriterF {

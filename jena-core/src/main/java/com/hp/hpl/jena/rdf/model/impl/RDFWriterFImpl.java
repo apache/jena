@@ -99,7 +99,8 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     	{
     		throw new IllegalArgumentException( lang+" is a required language set in initialization");
     	}
-    	return langToClassName.remove(lang).toString();  	
+    	Object prev = langToClassName.remove(lang);
+    	return prev==null?null:prev.toString();  	
     }
 
     /** Creates new RDFReaderFImpl */

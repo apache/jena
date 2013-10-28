@@ -21,6 +21,8 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
+
+import java.util.Arrays;
 import java.util.Properties;
 import com.hp.hpl.jena.JenaRuntime ;
 
@@ -68,15 +70,31 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     protected static final String PROPNAMEBASE = Jena.PATH + ".reader.";
 
     static { // static initializer - set default readers
-        langToClassName = new Properties();
+        reset();
+    }
+    
+    private static void reset()
+    {
+    	Properties newLangToClassName = new Properties();
         for (int i = 0; i<LANGS.length; i++) {
-            langToClassName.setProperty(
+        	newLangToClassName.setProperty(
                                LANGS[i],
                                JenaRuntime.getSystemProperty(PROPNAMEBASE + LANGS[i],
                                                   DEFAULTREADERS[i]));
         }
+        // reset all at once
+        langToClassName = newLangToClassName;
     }
 
+    private static String remove(String lang )
+    {
+    	if (Arrays.asList( LANGS ).contains(lang))
+		{
+			throw new IllegalArgumentException( lang+" is an initial language and may not be removed");
+		}
+		Object prev = langToClassName.remove(lang);
+		return prev==null?null:prev.toString();
+    }
 
     /** Creates new RDFReaderFImpl */
     public  RDFReaderFImpl() {
@@ -122,4 +140,16 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         langToClassName.setProperty(lang, className);
         return oldClassName;
     }
+
+
+	@Override
+	public void resetRDFReaderF() {
+		reset();
+	}
+
+
+	@Override
+	public String removeReader(String lang) throws IllegalArgumentException {
+		return remove( lang );
+	}
 }
