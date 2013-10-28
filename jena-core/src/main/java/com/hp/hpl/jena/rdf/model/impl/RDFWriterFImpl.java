@@ -21,6 +21,7 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.*;
 import com.hp.hpl.jena.rdf.model.*;
 
+import java.util.Arrays;
 import java.util.Properties;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.n3.N3JenaWriter;
@@ -79,12 +80,26 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     protected static final String PROPNAMEBASE = Jena.PATH + ".writer.";
 
     static { // static initializer - set default readers
-        langToClassName = new Properties();
+    	reset();
+    }
+    
+    private static void reset() {
+    	Properties newLangToClassName = new Properties();
         for (int i = 0; i < LANGS.length; i++) {
-            langToClassName.setProperty(
+        	newLangToClassName.setProperty(
                 LANGS[i],
                 JenaRuntime.getSystemProperty(PROPNAMEBASE + LANGS[i], DEFAULTWRITERS[i]));
         }
+        // do the setup all at once.
+        langToClassName = newLangToClassName;  	
+    }
+    
+    private static String remove( String lang) throws IllegalArgumentException {
+    	if (Arrays.asList( LANGS ).contains( lang ))
+    	{
+    		throw new IllegalArgumentException( lang+" is a required language set in initialization");
+    	}
+    	return langToClassName.remove(lang).toString();  	
     }
 
     /** Creates new RDFReaderFImpl */
@@ -127,5 +142,15 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         langToClassName.setProperty(lang, className);
         return oldClassName;
     }
+
+	@Override
+	public void resetRDFWriterF() {
+		reset();
+	}
+
+	@Override
+	public String removeWriter(String lang) throws IllegalArgumentException {
+		return remove(lang);
+	}
 
 }

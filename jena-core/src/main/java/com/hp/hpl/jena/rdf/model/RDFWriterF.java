@@ -51,7 +51,22 @@ public interface RDFWriterF {
 /** set the class name for the RDFWriter for a langauge
  * @param lang the language for which this class should be used
  * @param className the class name for writers for this language
+ * @throws NullPointerException if lang or classname is null.
  * @return the old class name for this language
  */    
     public String setWriterClassName(String lang, String className);
+    
+    /**
+     * Resets the values to the initial condition.
+     */
+    public void resetRDFWriterF();
+    
+    /**
+     * Remove lang from list of writers.
+     * Must be one of the classes that was added using setWriterClassName()
+     * @param lang The lang to remove.
+     * @return the old class name for this language
+     * @throws IllegalArgumentException if lang is one of the initial languages
+     */
+    public String removeWriter( String lang ) throws IllegalArgumentException;
 }

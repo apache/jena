@@ -125,6 +125,18 @@ public class TestRDFWriterMap extends JenaTestBase
 				throw new JenaException(e);
 			}
 		}
+
+		@Override
+		public void resetRDFWriterF() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public String removeWriter(String lang) throws IllegalArgumentException {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
 	public static final String TURTLE_WRITER_ALT2 = N3JenaWriter.turtleWriterAlt2;

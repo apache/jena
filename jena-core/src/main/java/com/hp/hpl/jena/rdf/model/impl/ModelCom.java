@@ -300,6 +300,15 @@ implements Model, PrefixMapping, Lock
     }
 
     @Override
+    public void resetRDFWriterF()  {
+    	writerFactory.resetRDFWriterF();
+    }
+    
+    @Override
+    public String removeWriter( String lang ) throws IllegalArgumentException {
+    	return writerFactory.removeWriter( lang );
+    }
+    @Override
     public Model write(Writer writer) 
     {
         getWriter() .write(this, writer, "");

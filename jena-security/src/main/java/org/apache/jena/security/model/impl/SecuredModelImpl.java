@@ -93,6 +93,7 @@ import org.apache.jena.security.utils.CollectionGraph;
  */
 public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 {
+
 	// a class that implements ModelChangedListener
 	private class SecuredModelChangedListener implements ModelChangedListener
 	{
@@ -1666,6 +1667,16 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 	public RDFWriter getWriter( final String lang )
 	{
 		return holder.getBaseItem().getWriter(lang);
+	}
+	
+	@Override
+	public void resetRDFWriterF() {
+		holder.getBaseItem().resetRDFWriterF();
+	}
+
+	@Override
+	public String removeWriter(String lang) throws IllegalArgumentException {
+		return holder.getBaseItem().removeWriter(lang);
 	}
 
 	@Override
