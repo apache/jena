@@ -71,35 +71,43 @@ public class RandomOrderGraph extends WrappedGraph {
 			this.parentCapabilities = parentCapabilities;
 		}
 
-		public boolean sizeAccurate() {
+		@Override
+        public boolean sizeAccurate() {
 			return parentCapabilities.sizeAccurate();
 		}
 
-		public boolean addAllowed() {
+		@Override
+        public boolean addAllowed() {
 			return parentCapabilities.addAllowed();
 		}
 
-		public boolean addAllowed(boolean everyTriple) {
+		@Override
+        public boolean addAllowed(boolean everyTriple) {
 			return parentCapabilities.addAllowed(everyTriple);
 		}
 
-		public boolean deleteAllowed() {
+		@Override
+        public boolean deleteAllowed() {
 			return parentCapabilities.deleteAllowed();
 		}
 
-		public boolean deleteAllowed(boolean everyTriple) {
+		@Override
+        public boolean deleteAllowed(boolean everyTriple) {
 			return parentCapabilities.deleteAllowed(everyTriple);
 		}
 
-		public boolean canBeEmpty() {
+		@Override
+        public boolean canBeEmpty() {
 			return parentCapabilities.canBeEmpty();
 		}
 
-		public boolean findContractSafe() {
+		@Override
+        public boolean findContractSafe() {
 			return parentCapabilities.findContractSafe();
 		}
 
-		public boolean handlesLiteralTyping() {
+		@Override
+        public boolean handlesLiteralTyping() {
 			return parentCapabilities.handlesLiteralTyping();
 		}
 
