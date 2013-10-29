@@ -417,7 +417,7 @@ public class OpExecutor
         }
         // Nested projected : need to ensure the input is seen.
         // ROLL into QueryIterProject
-        QueryIterator qIter = new QueryIterProject2(opProject, input, this, execCxt) ;
+        QueryIterator qIter = new QueryIterProjectMerge(opProject, input, this, execCxt) ;
         return qIter ;
     }
 

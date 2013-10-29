@@ -16,30 +16,23 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.engine.binding;
+package com.hp.hpl.jena.sparql.engine.binding ;
 
 import java.util.Collection ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public class  BindingProject extends BindingProjectBase
-{
-    final Collection<Var> projectionVars ; 
+/** Project a binding, given a specific collection of visible variables */
+public class BindingProject extends BindingProjectBase {
+    final Collection<Var> projectionVars ;
 
-    public BindingProject(Collection<Var> vars, Binding bind)
-    { 
-        this(vars, bind, null) ;
-    }
-
-    public BindingProject(Collection<Var> vars, Binding bind, Binding parent)
-    { 
-        super(bind, parent) ;
+    public BindingProject(Collection<Var> vars, Binding bind) {
+        super(bind) ;
         this.projectionVars = vars ;
     }
 
     @Override
-    protected boolean accept(Var var)
-    {
+    protected boolean accept(Var var) {
         return projectionVars.contains(var) ;
     }
 }

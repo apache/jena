@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.engine.iterator;
+package com.hp.hpl.jena.sparql.engine.iterator ;
 
 import java.util.List ;
 
@@ -25,63 +25,50 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingProject ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
 
-
-public class QueryIterProject2 extends QueryIterRepeatApply
-{
-    List<Var> projectionVars ;
-    private final OpProject opProject ;
+/**
+ * Execute a projection in the middle of an execution. This requires the outcome
+ * of each stage of execution (substituion evaluation assumed) to be merged with
+ * the input binding. Bindings should already be compatible, otherwise this code
+ * should not be used.
+ */
+public class QueryIterProjectMerge extends QueryIterRepeatApply {
+    // This is a merge/substitution join
+    private final OpProject  opProject ;
     private final OpExecutor engine ;
 
-    public QueryIterProject2(OpProject opProject, QueryIterator input, OpExecutor engine, ExecutionContext execCxt)
-    {
+    public QueryIterProjectMerge(OpProject opProject, QueryIterator input, OpExecutor engine, ExecutionContext execCxt) {
         super(input, execCxt) ;
         this.opProject = opProject ;
         this.engine = engine ;
     }
 
     @Override
-    protected QueryIterator nextStage(Binding binding)
-    {
-        QueryIterator qIter = engine.executeOp(opProject.getSubOp(), QueryIterSingleton.create(binding, getExecContext())) ;
-        
-        qIter = new ProjectEnsureBinding(qIter, 
-                                         new ProjectEnsureBindingConverter(binding, opProject.getVars()), 
-                                         getExecContext()) ;
-        // Project - ensure binding vars are visible. 
+    protected QueryIterator nextStage(Binding binding) {
+        QueryIterator qIter = engine.executeOp(opProject.getSubOp(),
+                                               QueryIterSingleton.create(binding, getExecContext())) ;
+
+        qIter = new QueryIterConvert(qIter,
+                                     new ProjectEnsureBindingConverter(binding, opProject.getVars()),
+                                     getExecContext()) ;
         return qIter ;
     }
-    
-    static class ProjectEnsureBinding extends QueryIterConvert
-    {
 
-        public ProjectEnsureBinding(QueryIterator iter, Converter c, ExecutionContext context)
-        {
-            super(iter, c, context) ;
-        }
-    }
-    
-    static class ProjectEnsureBindingConverter implements QueryIterConvert.Converter
-    {
+    static class ProjectEnsureBindingConverter implements QueryIterConvert.Converter {
 
-        private final Binding outerBinding ;
+        private final Binding   outerBinding ;
         private final List<Var> projectionVars ;
 
-        public ProjectEnsureBindingConverter(Binding outerBinding, List<Var> vars)
-        {
+        public ProjectEnsureBindingConverter(Binding outerBinding, List<Var> vars) {
             this.outerBinding = outerBinding ;
             this.projectionVars = vars ;
         }
 
         @Override
-        public Binding convert(Binding bind)
-        {
-            Binding b = new BindingProject(projectionVars, bind, outerBinding) ;
-            return b ;
+        public Binding convert(Binding bind) {
+            return BindingUtils.merge(outerBinding, bind) ;
         }
-        
     }
-
 }

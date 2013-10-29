@@ -16,25 +16,21 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.engine.binding;
+package com.hp.hpl.jena.sparql.engine.binding ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public class  BindingProjectNamed extends BindingProjectBase //extends BindingBase
-{
-    public BindingProjectNamed(Binding bind)
-    { 
-        this(bind, null) ;
-    }
-    
-    public BindingProjectNamed(Binding bind, Binding parent)
-    { 
-        super(bind, parent) ;
+/**
+ * Project only named variables (i.e. hide variables used because of
+ * bNodes or internally generated variables).
+ */
+public class BindingProjectNamed extends BindingProjectBase {
+    public BindingProjectNamed(Binding bind) {
+        super(bind) ;
     }
 
     @Override
-    protected boolean accept(Var var)
-    {
+    protected boolean accept(Var var) {
         return var.isNamedVar() ;
     }
 }
