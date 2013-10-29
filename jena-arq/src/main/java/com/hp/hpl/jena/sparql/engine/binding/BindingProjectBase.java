@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.engine.binding;
+package com.hp.hpl.jena.sparql.engine.binding ;
 
 import java.util.ArrayList ;
 import java.util.Iterator ;
@@ -25,60 +25,43 @@ import java.util.List ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public abstract class BindingProjectBase extends BindingBase
-{
-    private Binding binding ;
-    private List<Var> actualVars = null ;
+/** Common framework for projection; 
+ * the projection policy is provided by
+ * abstract method {@linkplain #accept(Var)} 
+ */
+public abstract class BindingProjectBase extends BindingBase {
+    private List<Var>     actualVars = null ;
+    private final Binding binding ;
 
-    public BindingProjectBase(Binding bind)
-    { 
-        this(bind, null) ;
-    }
-    
-    public BindingProjectBase(Binding bind, Binding parent)
-    { 
-        super(parent) ;
+    public BindingProjectBase(Binding bind) {
+        super(null) ;
         binding = bind ;
     }
 
-//    @Override
-//    protected void add1(Var var, Node node)
-//    { throw new UnsupportedOperationException("BindingProject.add1") ; }
-//
-//    @Override
-//    protected void checkAdd1(Var var, Node node)
-//    {}
+    protected abstract boolean accept(Var var) ;
 
-    protected abstract boolean accept(Var var) ; 
-    
     @Override
-    protected boolean contains1(Var var)
-    {
+    protected boolean contains1(Var var) {
         return accept(var) && binding.contains(var) ;
     }
 
     @Override
-    protected Node get1(Var var)
-    {
-        if ( ! accept(var) )
-            return null ; 
+    protected Node get1(Var var) {
+        if ( !accept(var) )
+            return null ;
         return binding.get(var) ;
     }
 
     @Override
-    protected Iterator<Var> vars1()
-    {
+    protected Iterator<Var> vars1() {
         return actualVars().iterator() ;
     }
 
-    private List<Var> actualVars()
-    {
-        if ( actualVars == null )
-        {
+    private List<Var> actualVars() {
+        if ( actualVars == null ) {
             actualVars = new ArrayList<Var>() ;
             Iterator<Var> iter = binding.vars() ;
-            for ( ; iter.hasNext() ; )
-            {
+            for ( ; iter.hasNext() ; ) {
                 Var v = iter.next() ;
                 if ( accept(v) )
                     actualVars.add(v) ;
@@ -86,27 +69,19 @@ public abstract class BindingProjectBase extends BindingBase
         }
         return actualVars ;
     }
-    
+
     @Override
-    protected int size1()
-    {
+    protected int size1() {
         return actualVars().size() ;
     }
-    
-    
-    
-    // NB is the projection and the binding don't overlap it is also empty. 
+
+    // NB is the projection and the binding don't overlap it is also empty.
     @Override
-    protected boolean isEmpty1()
-    {
-        if ( binding.isEmpty() ) return true ;
-        if ( size1() == 0  ) return true ;
+    protected boolean isEmpty1() {
+        if ( binding.isEmpty() )
+            return true ;
+        if ( size1() == 0 )
+            return true ;
         return false ;
-//        for ( Var v : projectionVars )
-//        {
-//            if ( binding.contains(v))  
-//                return false ;
-//        }
-//        return true ;
     }
 }
