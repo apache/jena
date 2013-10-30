@@ -1,6 +1,9 @@
 import org.apache.maven.it.Verifier;
 
 File testDir = new File("src/it/schemagen-integration-2");
+if (!testDir.exists()) {
+    testDir = new File( "jena-maven-tools/" + testDir.getPath() );
+}
 Verifier verifier = new Verifier( testDir.getAbsolutePath() );
 
 String test1 = verifier.getBasedir() + "/target/alt-source-dir/org/example/test/Test1.java";

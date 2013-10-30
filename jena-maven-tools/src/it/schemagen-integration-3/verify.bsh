@@ -1,6 +1,9 @@
 import org.apache.maven.it.Verifier;
 
 File testDir = new File("src/it/schemagen-integration-3");
+if (!testDir.exists()) {
+    testDir = new File( "jena-maven-tools/" + testDir.getPath() );
+}
 Verifier verifier = new Verifier( testDir.getAbsolutePath() );
 
 // Test2.java should use the Ont API, Test1.java should not
