@@ -9,9 +9,9 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.openjena.tools</groupId>
-        <artifactId>schemagen</artifactId>
-        <version>@project.version@</version>        
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-maven-tools</artifactId>
+        <version>@project.version@</version>
         <configuration>
           <includes>
             <include>src/main/vocabs/*.ttl</include>
@@ -41,5 +41,5 @@
       <artifactId>jena-core</artifactId>
       <version>@jenaCoreVersion@</version>
     </dependency>
-  </dependencies>  
+  </dependencies>
 </project>
