@@ -21,11 +21,15 @@ package com.hp.hpl.jena.util;
 import java.io.* ;
 import java.util.* ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.impl.IO_Ctl ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.NotFoundException ;
+import com.hp.hpl.jena.shared.WrappedIOException ;
 
 /** FileManager
  * 
@@ -77,6 +81,10 @@ public class FileManager
     static boolean logAllLookups = true ; 
     protected List<Locator> fmHandlers = new ArrayList<Locator>() ;
     protected LocationMapper fmMapper = null ;
+    
+    // This forces Jena to initialize and wire in RIOT if available.
+    // The global FileManager is reset. 
+    static { IO_Ctl.init() ; }
     
     /** Get the global file manager.
      * @return the global file manager
@@ -155,7 +163,6 @@ public class FileManager
     /** @deprecated Use setLocationMapper */
     @Deprecated
     public void setMapper(LocationMapper _mapper) { setLocationMapper(_mapper) ; }
-    
     
     /** Set the location mapping */
     public void setLocationMapper(LocationMapper _mapper) { fmMapper = _mapper ; }
