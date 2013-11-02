@@ -42,7 +42,7 @@ public class JsonWriter implements JsonVisitor
     public void finishOutput()  {  out.flush()  ; }
     
     private static String ArrayStart        = "[ " ;
-    private static String ArrayFinish       = " ]" ;
+    private static String ArrayFinish       = "]" ;
     private static String ArraySep          = "," ; 
 
     private static String ObjectStart       = "{ " ;
@@ -59,19 +59,19 @@ public class JsonWriter implements JsonVisitor
         out.print(ObjectStart) ;
         out.incIndent() ;
         boolean first = true ; 
-        boolean multiLine = false ;
         
         // Sort keys.
         Set<String> x = jsonObject.keySet() ;
         SortedSet<String> y = new TreeSet<String>(x) ;
         
+        boolean multiLine = x.size() > 1 ;
+
+        
         for ( String k : y )
         {
-            if ( ! first )
-            {
+            if ( ! first ) {
                 out.print(ObjectSep) ;
                 out.println() ;
-                multiLine = true ; 
             }
             first =  false ;
             JSWriter.outputQuotedString(out, k) ;
@@ -82,10 +82,11 @@ public class JsonWriter implements JsonVisitor
         }
         out.decIndent() ;
         if ( multiLine )
-            out.ensureStartOfLine() ;
+            out.println() ;
         else
             out.print(SPC) ;
         out.print(ObjectFinish) ;
+        out.print(SPC) ;
         
     }
 
@@ -110,6 +111,7 @@ public class JsonWriter implements JsonVisitor
             }
             first = false ;
             elt.visit(this) ;
+            out.print(SPC) ;
         }
         out.decIndent() ;
         if ( multiLine )
