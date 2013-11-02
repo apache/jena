@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.mgt;
 
 import java.io.IOException ;
+import java.io.PrintStream ;
 import java.util.Iterator ;
 
 import javax.servlet.ServletOutputStream ;
@@ -31,18 +32,27 @@ import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.web.HttpSC ;
 
 public class StatsServlet extends HttpServlet
 {
+    // Convert to JsonBuilder-style
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-        //throws ServletException, IOException
+        throws /*ServletException,*/ IOException
     {
         try {
             // Conneg etc.
             statsJSON(req, resp) ;
-        } catch (IOException e)
-        { }
+        } catch (IOException e) {
+            resp.sendError(HttpSC.INTERNAL_SERVER_ERROR_500, e.getMessage()) ;
+            resp.setContentType(WebContent.contentTypeTextPlain) ;
+            resp.setCharacterEncoding(WebContent.charsetUTF8) ;
+            ServletOutputStream out = resp.getOutputStream() ;
+            PrintStream x = new PrintStream(out) ;
+            e.printStackTrace(x) ;
+            x.flush() ;
+        }
     }
     
     private void statsJSON(HttpServletRequest req, HttpServletResponse resp) throws IOException
@@ -61,6 +71,7 @@ public class StatsServlet extends HttpServlet
         
         JsonObject obj = new JsonObject() ;
         JsonObject datasets = new JsonObject() ;
+        
         JsonObject server = new JsonObject() ;
         server.put("host", req.getLocalName()+":"+req.getLocalPort()) ;
         

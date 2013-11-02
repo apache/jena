@@ -149,6 +149,10 @@ public class SPARQLServer {
     public Server getServer() {
         return server ;
     }
+    
+    public int getPort() {
+        return server.getConnectors()[0].getPort() ;
+    }
 
     /**
      * Get the datasets associated with the server.
