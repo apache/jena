@@ -40,7 +40,7 @@ import org.junit.runners.Suite ;
     , TestLangRdfJson.class
     , TestParserFactory.class
     , TestPipedRDFIterators.class
-    
+    , TestCollectorStream.class
 })
 
 
