@@ -26,6 +26,7 @@ import org.junit.runners.Suite ;
         TestJson.class
       , TestJsonExt.class
       , TestJsonWriter.class
+      , TestJsonBuilder.class
 })
 public class TS_JSON
 {}
