@@ -18,10 +18,14 @@
 
 package org.apache.jena.riot;
 
+import java.io.File ;
+
 import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class SysRIOT
 {
@@ -32,6 +36,8 @@ public class SysRIOT
     public static boolean strictMode             = false ;
     
     public static final String BNodeGenIdPrefix = "genid" ;
+    
+    public static final boolean isWindows = (File.pathSeparatorChar == ';' ) ;
     
     static public String fmtMessage(String message, long line, long col)
     {
@@ -55,6 +61,18 @@ public class SysRIOT
         return IRIResolver.chooseBaseURI().toString() ;
     }
     
+    /** Return a URI suitable for a baseURI, based on some input (which may be null) */
+    public static String chooseBaseIRI(String baseURI)
+    {
+      String scheme = FileUtils.getScheme(baseURI) ;
+      // Assume scheme of one letter are Windows drive letters. 
+      if ( scheme != null && scheme.length() == 1 ) 
+          scheme = "file" ;
+      if ( scheme != null && scheme.equals("file") )
+          return IRILib.filenameToIRI(baseURI) ;
+      return IRIResolver.resolveString(baseURI) ;
+    }
+
     public static String filename2baseIRI(String filename)
     {
         if ( filename == null || filename.equals("-") )
