@@ -86,10 +86,10 @@ public class RDFReaderRIOT implements RDFReader
         return oldObj ;
     }
     
-    private void startRead(Model model)
+    protected void startRead(Model model)
     { model.notifyEvent( GraphEvents.startRead ); } 
     
-    private void finishRead(Model model)
+    protected void finishRead(Model model)
     { model.notifyEvent( GraphEvents.finishRead ) ; }
     
     @Override
