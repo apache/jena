@@ -24,14 +24,11 @@ import java.io.IOException ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.SysRIOT ;
 
 /** Operations related to IRIs */
 public class IRILib
 {
-    private static final boolean isWindows = (File.pathSeparatorChar == ';' ) ;
-    // Does not help - we use file.getCanonicalPath
-    // /*package*/ public static void setIsWindowsForTesting(boolean val) { isWindows = val ; }
-
     // http://www.w3.org/TR/xpath-functions/#func-encode-for-uri
     // Encodes delimiters.
     
@@ -147,7 +144,7 @@ public class IRILib
         if ( trailingSlash && ! fn.endsWith("/") )
             fn = fn + "/" ;
         
-        if ( isWindows )
+        if ( SysRIOT.isWindows )
         {
             // C:\ => file:///C:/... 
             if ( fn.length() >= 2 && fn.charAt(1) == ':' )
