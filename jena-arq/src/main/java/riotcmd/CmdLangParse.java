@@ -18,16 +18,14 @@
 
 package riotcmd;
 
-import java.io.ByteArrayInputStream ;
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.util.HashMap ;
 import java.util.Map ;
-import java.util.Properties ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.LangRIOT ;
@@ -38,7 +36,6 @@ import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.apache.log4j.PropertyConfigurator ;
 import arq.cmd.CmdException ;
 import arq.cmdline.* ;
 
@@ -97,44 +94,9 @@ public abstract class CmdLangParse extends CmdGeneral
     
     protected LangHandler langHandlerOverall = null ;
 
-    // This is the setup for command for their message via the logging in ErrorHandlers
-    private static final String log4Jsetup = StrUtils.strjoin("\n"
-//                    , "## Plain output to stdout"
-//                    , "log4j.appender.riot.plain=org.apache.log4j.ConsoleAppender"
-//                    , "log4j.appender.riot.plain.target=System.out"
-//                    , "log4j.appender.riot.plain.layout=org.apache.log4j.PatternLayout"
-//                    , "log4j.appender.riot.plain.layout.ConversionPattern=%m%n"
-                    , "## Plain output to stderr"
-                    , "log4j.appender.riot.plainerr=org.apache.log4j.ConsoleAppender"
-                    , "log4j.appender.riot.plainerr.target=System.err"
-                    , "log4j.appender.riot.plainerr.layout=org.apache.log4j.PatternLayout"
-                    , "log4j.appender.riot.plainerr.layout.ConversionPattern=%-5p %m%n"
-                    , "## Everything"
-                    , "log4j.rootLogger=INFO, riot.plainerr"
-                    , "## Parser output"
-                    , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
-                    , "log4j.logger."+SysRIOT.riotLoggerName+"=ALL, riot.plainerr "
-     ) ;
-
-    /** Reset the logging to be good for command line tools */
-    public static void setLogging()
-    {
-        // Use a plain logger for output. 
-        Properties p = new Properties() ;
-        InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
-        try { p.load(in) ; } catch (IOException ex) {}
-        PropertyConfigurator.configure(p) ;
-        //LogManager.getLogger(SysRIOT.riotLoggerName).setLevel(Level.ALL) ;
-        System.setProperty("log4j.configuration", "set") ;
-    }
-    
     protected CmdLangParse(String[] argv)
     {
         super(argv) ;
-        // As a command, we take control of logging ourselves. 
-        setLogging() ;
-        
-        
         
         super.addModule(modTime) ;
         super.addModule(modLangParse) ;
@@ -193,18 +155,17 @@ public abstract class CmdLangParse extends CmdGeneral
                 output("Total", totalTuples, totalMillis, langHandlerOverall) ;
         }
     }
-
+    
     public void parseFile(String filename)
     {
-        InputStream in = null ;
-        if ( filename.equals("-") )
-            parseFile("http://base/", "stdin", System.in) ;
-        else
-        {
+        TypedInputStream in = null ;
+        if ( filename.equals("-") ) {
+            in = new TypedInputStream(System.in) ;
+            parseFile("http://base/", "stdin", in) ;
+        } else {
             try {
-                in = IO.openFile(filename) ;
-            } catch (Exception ex)
-            {
+                in = RDFDataMgr.open(filename) ;
+            } catch (Exception ex) {
                 System.err.println("Can't open '"+filename+"' "+ex.getMessage()) ;
                 return ;
             }
@@ -213,7 +174,7 @@ public abstract class CmdLangParse extends CmdGeneral
         }
     }
 
-    public void parseFile(String defaultBaseURI, String filename, InputStream in)
+    public void parseFile(String defaultBaseURI, String filename, TypedInputStream in)
     {   
         String baseURI = modLangParse.getBaseIRI() ;
         if ( baseURI == null )
@@ -221,10 +182,16 @@ public abstract class CmdLangParse extends CmdGeneral
         parseRIOT(baseURI, filename, in) ;
     }
     
-    protected abstract Lang selectLang(String filename, Lang dftLang) ;
+    protected abstract Lang selectLang(String filename, ContentType contentType, Lang dftLang  ) ;
 
-    protected void parseRIOT(String baseURI, String filename, InputStream in)
+    protected void parseRIOT(String baseURI, String filename, TypedInputStream in)
     {
+        // I ti s shame we effectively duplicate deciding thelnaguage but we want to control the
+        // pasrer at a deep level (in validation, we want line numbers get into error message)
+        // This code predates RDFDataMgr.
+        
+        ContentType ct = in.getMediaType() ;
+        
         baseURI = SysRIOT.chooseBaseIRI(baseURI, filename) ;
         
         boolean checking = true ;
@@ -246,7 +213,7 @@ public abstract class CmdLangParse extends CmdGeneral
             // TODO skipOnBadterm
         }
         
-        Lang lang = selectLang(filename, RDFLanguages.NQUADS) ;  
+        Lang lang = selectLang(filename, ct, RDFLanguages.NQUADS) ;  
         LangHandler handler = dispatch.get(lang) ;
         if ( handler == null )
             throw new CmdException("Undefined language: "+lang) ; 
