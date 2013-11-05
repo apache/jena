@@ -29,7 +29,10 @@ import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.lang.LangRDFXML ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.stream.StreamManager ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.riot.writer.NQuadsWriter ;
@@ -670,7 +673,7 @@ public class RDFDataMgr
         if ( uri == null )
             throw new IllegalArgumentException("URI to read from is null") ;
         if ( base == null )
-            base = IRIResolver.resolveFileURL(uri) ;
+            base = SysRIOT.chooseBaseIRI(uri) ;
         if ( hintLang == null )
             hintLang = RDFLanguages.filenameToLang(uri) ;
         TypedInputStream in = open(uri, context) ;
