@@ -18,10 +18,10 @@
 
 package org.apache.jena.riot.adapters;
 
-import java.io.File ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
+import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.IRILib ;
 
 import com.hp.hpl.jena.rdf.arp.JenaReader ;
@@ -61,7 +61,6 @@ public class RDFReaderRIOT_ARP implements RDFReader
         reader.read(model, url) ;
     }
 
-    private static final boolean isWindows = ( File.separatorChar == '\\' ) ;
     /** Sort out filename-like URLs: file:, X: and plain filename */ 
     private static String fixupURL(String url)
     {
@@ -78,7 +77,7 @@ public class RDFReaderRIOT_ARP implements RDFReader
     
     private static boolean isWindowsDrive(String scheme)
     {
-        return  (isWindows && scheme.length() == 1) ;
+        return  (SysRIOT.isWindows && scheme.length() == 1) ;
     }
 
     @Override
