@@ -18,10 +18,11 @@
 
 package com.hp.hpl.jena.util.junit;
 
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.List ;
+
+import com.hp.hpl.jena.rdf.model.* ;
 
 public class TestUtils
 {
@@ -37,6 +38,21 @@ public class TestUtils
             return (Resource)n ;
         
         throw new TestException("Manifest problem (not a Resource): "+n+" => "+p) ;
+    }
+    
+    public static Collection<Resource> listResources(Resource r, Property p)
+    {
+        if ( r == null )
+            return null ;
+        List<Resource> x = new ArrayList<Resource>() ;
+        StmtIterator sIter = r.listProperties(p) ;
+        for ( ; sIter.hasNext() ; ) {
+            RDFNode n = sIter.next().getObject() ;
+            if ( ! ( n instanceof Resource ) )
+                throw new TestException("Manifest problem (not a Resource): "+n+" => "+p) ;
+            x.add((Resource)n) ;
+        }
+        return x ;
     }
     
     public static String getLiteral(Resource r, Property p)
