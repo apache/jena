@@ -18,6 +18,7 @@
 
 package riotcmd;
 
+import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 
@@ -43,6 +44,6 @@ public class nquads extends CmdLangParse
     }
     
     @Override
-    protected Lang selectLang(String filename, Lang lang) 
+    protected Lang selectLang(String filename  , ContentType contentType  , Lang lang  ) 
     { return RDFLanguages.NQUADS ; }
 }
