@@ -8,8 +8,8 @@ define(
         Backbone = require( "backbone" ),
         _ = require( "underscore" );
 
-    var Fuseki = Backbone.Model.extend( {} );
+    var FusekiServer = Backbone.Model.extend( {} );
 
-    return Fuseki;
+    return FusekiServer;
   }
 );
