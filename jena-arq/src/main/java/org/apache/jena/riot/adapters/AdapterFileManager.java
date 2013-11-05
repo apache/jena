@@ -18,18 +18,17 @@
 
 package org.apache.jena.riot.adapters;
 
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.stream.* ;
-import org.apache.jena.riot.system.IRILib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.shared.NotFoundException ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.FileUtils ;
 import com.hp.hpl.jena.util.TypedStream ;
@@ -271,48 +270,17 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
 
         if ( log.isDebugEnabled() && !mappedURI.equals(filenameOrURI) )
             log.debug("Map: " + filenameOrURI + " => " + mappedURI) ;
-
-        if ( syntax == null && baseURI == null && mappedURI.startsWith("http:") ) {
-            // No syntax, no baseURI, HTTP URL ==> use content negotiation
-            model.read(mappedURI) ;
-            return model ;
-        }
-
-        if ( syntax == null ) {
-            syntax = FileUtils.guessLang(mappedURI) ;
-            if ( syntax == null || syntax.equals("") )
-                syntax = FileUtils.langXML ;
-            if ( log.isDebugEnabled() )
-                log.debug("Syntax guess: " + syntax) ;
-        }
-
-        if ( baseURI == null )
-            baseURI = chooseBaseURI(filenameOrURI) ;
-
-        TypedInputStream in = streamManager.openNoMapOrNull(mappedURI) ;
-        if ( in == null ) {
-            if ( log.isDebugEnabled() )
-                log.debug("Failed to locate '" + mappedURI + "'") ;
-            throw new NotFoundException("Not found: " + filenameOrURI) ;
-        }
-        if ( in.getMediaType() != null ) {
-            // XXX
-            // syntax
-        }
-        model.read(in, baseURI, syntax) ;
-        try {
-            in.close() ;
-        } catch (IOException ex) {}
+        // File extension preferred to content negotiation.
+        // Compatibility.
+        if ( syntax == null )
+            syntax = RDFLanguages.guessContentType(mappedURI).getContentType() ;
+        
+        Lang lang = RDFLanguages.nameToLang(syntax) ;
+//        if ( lang == null )
+//            // This overrides content negotiation (best compatibility with old jena).
+//            lang = RDFLanguages.filenameToLang(mappedURI) ;
+        RDFDataMgr.read(model, mappedURI, baseURI, lang);
         return model ;
-    }
-
-    private static String chooseBaseURI(String baseURI) {
-        String scheme = FileUtils.getScheme(baseURI) ;
-        // Assume scheme of one letter are Windows drive letters. 
-        if ( scheme != null && scheme.length() > 1 && scheme.equals("file") )
-            // Not a file - leave alone.
-            return baseURI ;
-        return IRILib.filenameToIRI(baseURI) ;
     }
 
     /**
