@@ -4,7 +4,8 @@ define( ['require', '../common-config'],
     require(
       ['underscore', 'jquery', 'backbone', 'marionette', 'fui',
        'sprintf',
-       'models/fuseki-server', 'models/dataset'
+       'models/fuseki-server', 'models/dataset',
+       'views/dataset-selection-list'
       ],
       function( _, $, Backbone, Marionette, fui ) {
 

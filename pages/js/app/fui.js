@@ -27,7 +27,17 @@ define( ['require', 'backbone', 'marionette'],
     fui.on('initialize:after', function( options ) {
       // Backbone.history.start();
       this.initialized = true;
+
+      // view association
+      // TODO temp: this will migrate into the layout component in due course
+      var DatasetSelectionList = require( "views/dataset-selection-list" );
+      var dsl = new DatasetSelectionList( {model: fui.models.fusekiServer} );
+      var dslRegion = new Marionette.Region({
+        el: '#datasetSelectionList'
+      });
+      dslRegion.show(dsl);
     });
+
 
     return fui;
   }

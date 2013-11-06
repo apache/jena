@@ -1,6 +1,8 @@
 require.config({
   baseUrl: 'js/app',
   paths: {
+    'plugins':              '../lib/plugins',
+    // lib paths
     'backbone':             '../lib/backbone',
     'jquery':               '../lib/jquery-1.10.2.min',
     'marionette':           '../lib/backbone.marionette',
