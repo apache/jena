@@ -2,15 +2,12 @@
  * Top-level application code module for Fuseki UI
  */
 
-define(
-  function( require ) {
-    var Backbone = require( 'backbone' ),
-        Marionette = require( 'marionette' );
-
+define( ['require', 'backbone', 'marionette'],
+  function( require, Backbone, Marionette ) {
     // define the application object, and add it to the global namespace
     var fui = new Marionette.Application();
 
-    // define someMarionette modules, because they have a lifecycle component
+    // define some Marionette modules, because they have a lifecycle component
     // see https://github.com/marionettejs/backbone.marionette/wiki/AMD-Modules-vs-Marionette%27s-Modules
     fui.module( "models" );
     fui.module( "views" );
@@ -27,7 +24,7 @@ define(
 //      fui.apis.qb = new QB( options );
     });
 
-    fui.on('initialize:after', function() {
+    fui.on('initialize:after', function( options ) {
       // Backbone.history.start();
       this.initialized = true;
     });

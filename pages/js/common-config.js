@@ -2,10 +2,9 @@ require.config({
   baseUrl: 'js/app',
   paths: {
     'backbone':             '../lib/backbone',
-    'backbone.babysitter':  '../lib/backbone.babysitter',
-    'backbone.wreqr':       '../lib/backbone.wreqr',
     'jquery':               '../lib/jquery-1.10.2.min',
     'marionette':           '../lib/backbone.marionette',
+    'sprintf':              '../lib/sprintf-0.7-beta1',
     'underscore':           '../lib/underscore'
   },
   shim: {
@@ -13,17 +12,14 @@ require.config({
       exports: '_'
     },
     'backbone': {
-      depends: ['underscore', 'jquery'],
+      deps: ['underscore', 'jquery'],
       exports: 'Backbone'
     },
-    'backbone.babysitter': {
-      depends: ['backbone', 'marionette']
-    },
-    'backbone.wreqr': {
-      depends: ['backbone', 'marionette']
+    'sprintf': {
+      exports: 'sprintf'
     },
     'marionette': {
-      depends: ['backbone'],
+      deps: ['backbone'],
       exports: 'Marionette'
     }
 
