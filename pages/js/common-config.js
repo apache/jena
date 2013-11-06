@@ -13,7 +13,8 @@ require.config({
       exports: '_'
     },
     'backbone': {
-      depends: ['underscore', 'jquery']
+      depends: ['underscore', 'jquery'],
+      exports: 'Backbone'
     },
     'backbone.babysitter': {
       depends: ['backbone', 'marionette']
@@ -28,8 +29,3 @@ require.config({
 
   }
 });
-
-// define the modules as dependencies here, so that we avoid the dread
-// 'module name X has not been loaded yet for context _'
-define( ['underscore', 'backbone', 'jquery', 'marionette', 'backbone.wreqr'],
-        function() {} );
