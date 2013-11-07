@@ -20,18 +20,28 @@ define(
     var FusekiServer = Backbone.Model.extend( {
       /** This initializer occurs when the module starts, not when the constructor is invoked */
       init: function( options ) {
+        this._baseURL = sprintf( "http://%s:%s", window.location.hostname, window.location.port );
         if (options.managementPort) {
-          this._managementURL = sprintf( "http://%s:%s%s%%s", window.location.hostname,
-                                         options.managementPort, window.location.pathname );
+          this._managementURL = sprintf( "http://%s:%s%s", window.location.hostname,
+              options.managementPort, window.location.pathname );
         }
         else {
           this._managementURL = null;
         }
       },
 
-      /** Return the URL pattern for issuing commands to the management API, or null if no API defined */
+      baseURL: function() {
+        return this._baseURL;
+      },
+
+      /** Return the URL for issuing commands to the management API, or null if no API defined */
       managementURL: function() {
         return this._managementURL;
+      },
+
+      /** Return the list of datasets that this server knows about. Each dataset will be a Dataset model object */
+      datasets: function() {
+        return this.get( "datasets" );
       },
 
       /** Load and cache the remote server description. Trigger change event when done */
@@ -39,15 +49,20 @@ define(
         var self = this;
         return this.getJSON( "datasets" ).then( function() {
                                                   self.saveServerDescription( this );
-                                                } );
+                                                } )
+                                         .then( function() {
+                                                  fui.vent.trigger( "models.fuseki-server.ready" );
+                                                });
       },
 
       /** Store the server description in this model */
       saveServerDescription: function( serverDesc ) {
         // wrap each dataset JSON description as a dataset model
-        var baseURL = sprintf( this.managementURL(), "datasets" );
+        var mgmtURL = sprintf( "%s/%s", this.managementURL(), "datasets" );
+        var bURL = this.baseURL();
+
         var datasets = _.map( serverDesc.datasets, function( d ) {
-          return new Dataset( d, baseURL );
+          return new Dataset( d, bURL, mgmtURL );
         } );
 
         this.set( {server: serverDesc.server, datasets: datasets} );
