@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Apache Jena Fuseki</title>
+    <title>Apache Jena Fuseki - management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="../css/font-awesome.min.css" rel="stylesheet" media="screen">
+    <link href="../css/codemirror.css" rel="stylesheet" media="screen">
+    <link href="../css/qonsole.css" rel="stylesheet" media="screen">
+    <link href="../css/jquery.dataTables.css" rel="stylesheet" media="screen">
+    <link href="../css/fui.css" rel="stylesheet" media="screen">
 
     <!--[if lt IE 9]>
       <script src="../js/lib/html5shiv.js"></script>
@@ -23,19 +27,26 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="../index.html">Apache Jena Fuseki</a>
+            <a class="navbar-brand" href="index.html">
+              <img src="../images/jena-logo-notext-small.png" alt="Apache Jena logo" title="Apache Jena" />
+              Administer Fuseki
+            </a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="index.html">Home</a></li>
+              <li class="active"><a href="index.html">Current status</a></li>
               <li class=""><a href="data-management.html">Data management</a></li>
-              <li class=""><a href="query.html">Query</a></li>
-              <li class=""><a href="documentation.html">Documentation</a></li>
+              <li class=""><a href="logs.html">Logs</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              <li><img src="../images/jena-logo-notext-small.png" alt="Apache Jena logo" title="Apache Jena" /></li>
+              <li>
+                Server status:
+                <a class="" href="admin/server-log.html" id="server-status-light" title="current server status">
+                  <span class="server-up"></span>
+                </a>
+              </li>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.row -->
@@ -44,7 +55,7 @@
 
     <div class="container">
       <div class="row">
-        <h1>Fuseki &ndash; current server status</h1>
+        <h1>Fuseki &ndash; current server status &amp; stats</h1>
       </div>
     </div>
 
