@@ -93,7 +93,12 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_ttl_17()  { test(nodeFormatterTTL, "<http://example.org/foo>", "<foo>") ; }
     @Test public void nodefmt_ttl_18()  { test(nodeFormatterTTL, "<http://example.org/base#bar>", "<#bar>") ; }
 
-    @Test public void nodefmt_ttl_20()  { test(nodeFormatterTTL, "'Ω'", "\"Ω\"") ; }
+    // Trailing DOT
+    @Test public void nodefmt_ttl_19()  { test(nodeFormatterTTL, "<http://example/ex/abc.>", "<http://example/ex/abc.>") ; } 
+    @Test public void nodefmt_ttl_20()  { test(nodeFormatterTTL, "<http://example/ex/abc.x>", "ex:abc.x") ; }
+    @Test public void nodefmt_ttl_21()  { test(nodeFormatterTTL, "<http://example/ex/abc456.123>", "ex:abc456.123") ; }
+    
+    @Test public void nodefmt_ttl_29()  { test(nodeFormatterTTL, "'Ω'", "\"Ω\"") ; }
     
     @Test public void prefixedname_01() { testPrefix("", "") ; } 
     
