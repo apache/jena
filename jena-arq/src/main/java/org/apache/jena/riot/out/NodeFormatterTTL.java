@@ -112,9 +112,9 @@ public class NodeFormatterTTL extends NodeFormatterNT
         int idx = 0 ;
         idx = skip1_PN_CHARS_BASE(str, idx) ;
         if ( idx == -1 ) return false ;
-        idx = skipAny_PN_CHARS_or_DOT(str, idx) ;
+        idx = skipAny_PN_CHARS_or_DOT(str, idx, N-1) ;
         if ( idx == -1 ) return false ;
-        if ( idx == N ) return true ;
+        // Final char
         idx = skip1_PN_CHARS(str, idx) ;
         if ( idx == -1 ) return false ;
         return ( idx == N ) ;
@@ -144,12 +144,12 @@ public class NodeFormatterTTL extends NodeFormatterNT
         int N = str.length() ;
         if ( N == 0 ) return true ;
         int idx = 0 ;
-        idx = skip1_PN_CHARS_U_or_029(str, idx) ;
+        idx = skip1_PN_CHARS_U_or_digit(str, idx) ;
         if ( idx == -1 ) return false ;
-        idx = skipAny_PN_CHARS_or_DOT(str, idx) ;
+        idx = skipAny_PN_CHARS_or_DOT(str, idx, N-1) ;
         if ( idx == -1 ) return false ;
-        if ( idx == N ) return true ;
         idx = skip1_PN_CHARS(str, idx) ;
+        // Final char
         return ( idx == N ) ;
     }
 
@@ -162,7 +162,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
         return ch == '\u00B7' || RiotChars.range(ch, '\u0300', '\u036F') || RiotChars.range(ch, '\u203F', '\u2040')  ;  
     }
     
-    private static int skip1_PN_CHARS_U_or_029(String str, int idx)
+    private static int skip1_PN_CHARS_U_or_digit(String str, int idx)
     {
         char ch = str.charAt(idx) ;
         if ( is_PN_CHARS_U(ch) ) return idx+1 ;
@@ -177,15 +177,14 @@ public class NodeFormatterTTL extends NodeFormatterNT
         return -1 ;
     }
 
-    private static int skipAny_PN_CHARS_or_DOT(String str, int idx)
+    private static int skipAny_PN_CHARS_or_DOT(String str, int idx, int max)
     {
-        int N = str.length() ;
-        for ( int i = idx ; i < N ; i++ )
+        for ( int i = idx ; i < max ; i++ )
         {
             char ch = str.charAt(i) ;
             if ( ! is_PN_CHARS(ch) && ch != '.' ) return i ;
         }
-        return N ;
+        return max ;
     }
 
     private static int skip1_PN_CHARS(String str, int idx)
