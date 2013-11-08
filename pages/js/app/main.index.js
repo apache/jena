@@ -6,6 +6,7 @@ define( ['require', '../common-config'],
        'sprintf', 'bootstrap',
        'models/fuseki-server', 'models/dataset',
        'views/dataset-selection-list',
+       'services/ping-service',
        'lib/jquery.xdomainrequest', 'lib/qonsole'
       ],
       function( _, $, Backbone, Marionette, fui, IndexController ) {
@@ -19,6 +20,9 @@ define( ['require', '../common-config'],
         // initialise the backbone application
         fui.controllers.indexController = new IndexController();
         fui.start( options );
+
+        // additional services
+        require( 'services/ping-service' ).start();
       });
   }
 );
