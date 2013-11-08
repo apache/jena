@@ -25,6 +25,7 @@ import java.util.List ;
 import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.server.FusekiErrorHandler ;
 import org.apache.jena.fuseki.servlets.DumpServlet ;
 import org.eclipse.jetty.server.Connector ;
@@ -35,10 +36,9 @@ import org.eclipse.jetty.servlet.ServletHolder ;
 
 public class ManagementServer
 {
+    /** Create but do not initialize */
     public static Server createManagementServer(int mgtPort)
     {
-        Fuseki.serverLog.info("Adding management functions") ;
-        
         // Separate Jetty server
         Server server = new Server() ;
         
@@ -56,18 +56,32 @@ public class ManagementServer
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setErrorHandler(new FusekiErrorHandler()) ;
         server.setHandler(context);
+        return server  ;
+    }        
         
-        // Add the server control servlet
-        addServlet(context, new MgtCmdServlet(),    "/mgt") ;
-        addServlet(context, new DumpServlet(),      "/dump") ;
-        addServlet(context, new StatsServlet(),     "/stats") ;
-        addServlet(context, new DescriptionServlet(),     "/datasets") ;
+    
+//        addServerFunctions(context) ;
+//        addAdminFunctions(context) ;
         
-        return server ; 
-        // Old plan
-//      // Development : server control panel.
-//      addServlet(context, new ServerServlet(), "/server") ;
-//      addServlet(context, new ActionBackup(), "/backup") ;
+    public static void addServerFunctions(ServletContextHandler context, String base) {
+        Fuseki.serverLog.info("Adding server information functions") ;
+        if ( !base.endsWith("/" ) )
+            base = base + "/" ;
+        if ( !base.startsWith("/"))
+            throw new FusekiException("Base URI does nto start with a '/'") ; 
+        // Dump request
+        addServlet(context, new DumpServlet(),      base+"dump") ;
+        addServlet(context, new DescriptionServlet(),     base+"datasets") ;
+    }
+    
+    public static void addAdminFunctions(ServletContextHandler context, String base) {
+        Fuseki.serverLog.info("Adding administration functions") ;
+        if ( !base.endsWith("/" ) )
+            base = base + "/" ;
+        if ( !base.startsWith("/"))
+            throw new FusekiException("Base URI does nto start with a '/'") ; 
+        addServlet(context, new MgtCmdServlet(),    base+"mgt") ;
+        addServlet(context, new StatsServlet(),     base+"stats") ;
     }
 
     // SHARE
