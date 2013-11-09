@@ -39,6 +39,8 @@ import org.apache.jena.atlas.lib.Ref ;
  */
 
 public class JSWriter {
+    // Isn't this just a weird builder?
+    // This is broken for arrays for key then startObject
     protected IndentedWriter out = IndentedWriter.stdout ;
 
     public JSWriter() {
