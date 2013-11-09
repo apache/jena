@@ -17,23 +17,24 @@
  */
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertFalse ;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.LinkedHashMap ;
+import java.util.Map ;
+import java.util.Properties ;
 
 import org.apache.jena.riot.IO_Jena ;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_NT;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFJSON;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFXML;
-import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_TTL;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_NT ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFJSON ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFXML ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_TTL ;
+import org.apache.jena.riot.adapters.* ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.junit.Test;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
+import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
 
 public class TestIO_JenaReaders {
     @BeforeClass public static void beforeClass() { } 
@@ -56,17 +57,17 @@ public class TestIO_JenaReaders {
     public void wireIntoJena() throws Exception {
         IO_JenaReaders.wireIntoJena();
         RDFReaderFImpl readerF = new RDFReaderFImpl();
-        assertEquals(RDFReaderRIOT_RDFXML.class, readerF.getReader().getClass());
-        assertEquals(RDFReaderRIOT_RDFXML.class, readerF.getReader("RDF/XML").getClass());
-        assertEquals(RDFReaderRIOT_RDFXML.class, readerF.getReader("RDF/XML-ABBREV").getClass());
-        assertEquals(RDFReaderRIOT_NT.class, readerF.getReader("N-TRIPLES").getClass());
-        assertEquals(RDFReaderRIOT_NT.class, readerF.getReader("N-Triples").getClass());
-        assertEquals(RDFReaderRIOT_NT.class, readerF.getReader("N-TRIPLE").getClass());
-        assertEquals(RDFReaderRIOT_TTL.class, readerF.getReader("N3").getClass());
-        assertEquals(RDFReaderRIOT_TTL.class, readerF.getReader("TURTLE").getClass());
-        assertEquals(RDFReaderRIOT_TTL.class, readerF.getReader("Turtle").getClass());
-        assertEquals(RDFReaderRIOT_TTL.class, readerF.getReader("TTL").getClass());
-        assertEquals(RDFReaderRIOT_RDFJSON.class, readerF.getReader("RDF/JSON").getClass());
+        assertEquals(RDFReaderRIOT_Web.class,       readerF.getReader().getClass());
+        assertEquals(RDFReaderRIOT_RDFXML.class,    readerF.getReader("RDF/XML").getClass());
+        assertEquals(RDFReaderRIOT_RDFXML.class,    readerF.getReader("RDF/XML-ABBREV").getClass());
+        assertEquals(RDFReaderRIOT_NT.class,        readerF.getReader("N-TRIPLES").getClass());
+        assertEquals(RDFReaderRIOT_NT.class,        readerF.getReader("N-Triples").getClass());
+        assertEquals(RDFReaderRIOT_NT.class,        readerF.getReader("N-TRIPLE").getClass());
+        assertEquals(RDFReaderRIOT_TTL.class,       readerF.getReader("N3").getClass());
+        assertEquals(RDFReaderRIOT_TTL.class,       readerF.getReader("TURTLE").getClass());
+        assertEquals(RDFReaderRIOT_TTL.class,       readerF.getReader("Turtle").getClass());
+        assertEquals(RDFReaderRIOT_TTL.class,       readerF.getReader("TTL").getClass());
+        assertEquals(RDFReaderRIOT_RDFJSON.class,   readerF.getReader("RDF/JSON").getClass());
     }
     
     @Test
