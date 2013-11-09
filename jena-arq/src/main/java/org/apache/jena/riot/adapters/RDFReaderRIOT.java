@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.adapters;
+package org.apache.jena.riot.adapters ;
 
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -34,71 +34,69 @@ import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
-/** Adapter from Jena2 original style adapter to RIOT reader. */ 
-public class RDFReaderRIOT implements RDFReader
-{
-    private final String basename ; // This will be per reader instance.
-    protected final Lang hintlang ;
-    protected Context context = new Context() ;
-    protected RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
-    
-    public RDFReaderRIOT()
-    {
-        basename = "org.apache.jena.riot.reader.generic" ;
-        hintlang = null ;
+/** Adapter from Jena2 original style adapter to RIOT reader. */
+public class RDFReaderRIOT implements RDFReader {
+    private final String      basename ;
+    protected final Lang      hintlang ;
+    protected Context         context      = new Context() ;
+    protected RDFErrorHandler errorHandler = new RDFDefaultErrorHandler() ;
+
+    public RDFReaderRIOT() {
+        this((Lang)null) ;
     }
-    
-    public RDFReaderRIOT(String lang)
-    {
-        basename = "org.apache.jena.riot.reader."+lang.toLowerCase(Locale.ROOT) ;
-        hintlang = RDFLanguages.nameToLang(lang) ;
+
+    public RDFReaderRIOT(String lang) {
+        this(RDFLanguages.nameToLang(lang)) ;
+    }
+
+    public RDFReaderRIOT(Lang hintlang) {
+        this.hintlang = hintlang ;
+        this.basename =  (hintlang==null) 
+            ? "org.apache.jena.riot.reader.generic"
+            : "org.apache.jena.riot.reader." + hintlang.getLabel().toLowerCase(Locale.ROOT) ;
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void read(Model model, Reader r, String base)
-    { 
-        startRead(model) ; 
+    public void read(Model model, Reader r, String base) {
+        startRead(model) ;
         RDFDataMgr.read(model, r, base, hintlang) ;
         finishRead(model) ;
     }
 
     @Override
-    public void read(Model model, InputStream r, String base)
-    { 
-        startRead(model) ; 
+    public void read(Model model, InputStream r, String base) {
+        startRead(model) ;
         RDFDataMgr.read(model, r, base, hintlang) ;
         finishRead(model) ;
     }
-    
+
     @Override
-    public void read(Model model, String url)
-    { 
+    public void read(Model model, String url) {
         startRead(model) ;
         RDFDataMgr.read(model, url, hintlang) ;
         finishRead(model) ;
     }
 
     @Override
-    public Object setProperty(String propName, Object propValue)
-    {
-        Symbol sym = Symbol.create(basename+propName) ;
+    public Object setProperty(String propName, Object propValue) {
+        Symbol sym = Symbol.create(basename + propName) ;
         Object oldObj = context.get(sym) ;
         return oldObj ;
     }
-    
-    protected void startRead(Model model)
-    { model.notifyEvent( GraphEvents.startRead ); } 
-    
-    protected void finishRead(Model model)
-    { model.notifyEvent( GraphEvents.finishRead ) ; }
-    
+
+    protected void startRead(Model model) {
+        model.notifyEvent(GraphEvents.startRead) ;
+    }
+
+    protected void finishRead(Model model) {
+        model.notifyEvent(GraphEvents.finishRead) ;
+    }
+
     @Override
-    public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
-    {
+    public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler) {
         RDFErrorHandler old = errorHandler ;
         errorHandler = errHandler ;
         return old ;
     }
 }
-

@@ -29,18 +29,16 @@ import com.hp.hpl.jena.JenaRuntime ;
 /**
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
-
+    // ** The setting in this class are overrided by RIOT **
     private static final String GRDDLREADER = "com.hp.hpl.jena.grddl.GRDDLReader";
     private static final String TURTLEREADER = "com.hp.hpl.jena.n3.turtle.TurtleReader" ;
     
-    // Old reader (N3 based)
-    //private static final String TURTLEREADER = "com.hp.hpl.jena.n3.N3TurtleJenaReader" ;
-
 	protected static Properties langToClassName = null;
 
     // predefined languages - these should probably go in a properties file
 
-    protected static final String LANGS[] = { "RDF/XML",
+    protected static final String LANGS[] = { "RDF" ,
+                                              "RDF/XML",
                                               "RDF/XML-ABBREV",
                                               "N-TRIPLE",
                                               "N-TRIPLES",
@@ -55,10 +53,11 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     protected static final String DEFAULTREADERS[] = {
         "com.hp.hpl.jena.rdf.arp.JenaReader",
         "com.hp.hpl.jena.rdf.arp.JenaReader",
+        "com.hp.hpl.jena.rdf.arp.JenaReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
-        TURTLEREADER, //com.hp.hpl.jena.n3.N3JenaReader.class.getName(),  // N3 replaced by a Turtle-based parser 
+        TURTLEREADER,  // N3 replaced by a Turtle-based parser 
         TURTLEREADER,
         TURTLEREADER,
         TURTLEREADER,

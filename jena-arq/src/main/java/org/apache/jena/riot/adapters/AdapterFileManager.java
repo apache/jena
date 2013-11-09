@@ -276,9 +276,6 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
             syntax = RDFLanguages.guessContentType(mappedURI).getContentType() ;
         
         Lang lang = RDFLanguages.nameToLang(syntax) ;
-//        if ( lang == null )
-//            // This overrides content negotiation (best compatibility with old jena).
-//            lang = RDFLanguages.filenameToLang(mappedURI) ;
         RDFDataMgr.read(model, mappedURI, baseURI, lang);
         return model ;
     }
