@@ -22,6 +22,7 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.util.Locale ;
 
+import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 
@@ -37,9 +38,9 @@ import com.hp.hpl.jena.sparql.util.Symbol ;
 public class RDFReaderRIOT implements RDFReader
 {
     private final String basename ; // This will be per reader instance.
-    private final String hintlang ;
-    private Context context = new Context() ;
-    private RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
+    protected final Lang hintlang ;
+    protected Context context = new Context() ;
+    protected RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
     
     public RDFReaderRIOT()
     {
@@ -50,7 +51,7 @@ public class RDFReaderRIOT implements RDFReader
     public RDFReaderRIOT(String lang)
     {
         basename = "org.apache.jena.riot.reader."+lang.toLowerCase(Locale.ROOT) ;
-        hintlang = lang ;
+        hintlang = RDFLanguages.nameToLang(lang) ;
     }
 
     @SuppressWarnings("deprecation")
@@ -58,7 +59,7 @@ public class RDFReaderRIOT implements RDFReader
     public void read(Model model, Reader r, String base)
     { 
         startRead(model) ; 
-        RDFDataMgr.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ;
+        RDFDataMgr.read(model, r, base, hintlang) ;
         finishRead(model) ;
     }
 
@@ -66,7 +67,7 @@ public class RDFReaderRIOT implements RDFReader
     public void read(Model model, InputStream r, String base)
     { 
         startRead(model) ; 
-        RDFDataMgr.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ;
+        RDFDataMgr.read(model, r, base, hintlang) ;
         finishRead(model) ;
     }
     
@@ -74,7 +75,7 @@ public class RDFReaderRIOT implements RDFReader
     public void read(Model model, String url)
     { 
         startRead(model) ;
-        RDFDataMgr.read(model, url, RDFLanguages.nameToLang(hintlang)) ;
+        RDFDataMgr.read(model, url, hintlang) ;
         finishRead(model) ;
     }
 
