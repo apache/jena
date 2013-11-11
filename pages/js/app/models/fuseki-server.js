@@ -47,8 +47,8 @@ define(
       /** Load and cache the remote server description. Trigger change event when done */
       loadServerDescription: function() {
         var self = this;
-        return this.getJSON( "datasets" ).then( function() {
-                                                  self.saveServerDescription( this );
+        return this.getJSON( "/$/status" ).done( function( data ) {
+                                                  self.saveServerDescription( data );
                                                 } )
                                          .then( function() {
                                                   fui.vent.trigger( "models.fuseki-server.ready" );
@@ -58,8 +58,13 @@ define(
       /** Store the server description in this model */
       saveServerDescription: function( serverDesc ) {
         // wrap each dataset JSON description as a dataset model
-        var mgmtURL = sprintf( "%s/%s", this.managementURL(), "datasets" );
         var bURL = this.baseURL();
+//        var mgmtURL = sprintf( "%s/%s", this.managementURL(), "/$/status" );
+        var mgmtURL = bURL;
+
+        if (serverDesc.admin) {
+          mgmtURL = bURL.replace( ":" + window.location.port, ":" + serverDesc.admin.port );
+        }
 
         var datasets = _.map( serverDesc.datasets, function( d ) {
           return new Dataset( d, bURL, mgmtURL );
@@ -73,42 +78,44 @@ define(
        * complete with the JSON object denoted by the path.
        */
       getJSON: function( path, data ) {
-        // debugging - also temp hack while we sort out the CORS issue
-        if (true) {
-          return new $.Deferred().resolveWith(
-                  { "datasets" : [ {"ds.name" : "/testing" ,
-                                    "ds.services" :
-                                      [ { "srv.endpoints" :
-                                            [ "query" ,
-                                              "sparql"
-                                            ] ,
-                                          "srv.type" : "query"
-                                        }  ,
-                                        { "srv.endpoints" : [ "update" ] ,
-                                          "srv.type" : "update"
-                                        }  ,
-                                        { "srv.endpoints" : [ "upload" ] ,
-                                          "srv.type" : "upload"
-                                        }  ,
-                                        { "srv.endpoints" : [ ] ,
-                                          "srv.type" : "gspRead"
-                                        }  ,
-                                        { "srv.endpoints" : [ "data" ] ,
-                                          "srv.type" : "gspReadWrite"
-                                        }
-                                      ]
-                                  }  ] ,
-                    "server" : { "port" : 3030 }
-            } );
-        }
-
-        var url = this.managementURL();
-        if (url) {
-          return $.getJSON( sprintf( url, path ), data );
-        }
-        else {
-          return new $.Deferred().rejectWith( this, [{unavailable: true}] );
-        }
+//        // debugging - also temp hack while we sort out the CORS issue
+//        if (true) {
+//          return new $.Deferred().resolveWith(
+//                  { "datasets" : [ {"ds.name" : "/testing" ,
+//                                    "ds.services" :
+//                                      [ { "srv.endpoints" :
+//                                            [ "query" ,
+//                                              "sparql"
+//                                            ] ,
+//                                          "srv.type" : "query"
+//                                        }  ,
+//                                        { "srv.endpoints" : [ "update" ] ,
+//                                          "srv.type" : "update"
+//                                        }  ,
+//                                        { "srv.endpoints" : [ "upload" ] ,
+//                                          "srv.type" : "upload"
+//                                        }  ,
+//                                        { "srv.endpoints" : [ ] ,
+//                                          "srv.type" : "gspRead"
+//                                        }  ,
+//                                        { "srv.endpoints" : [ "data" ] ,
+//                                          "srv.type" : "gspReadWrite"
+//                                        }
+//                                      ]
+//                                  }  ] ,
+//                    "server" : { "port" : 3030 }
+//            } );
+//        }
+//
+//        var url = this.managementURL();
+//        if (url) {
+//          return $.getJSON( sprintf( url, path ), data );
+//        }
+//        else {
+//          return new $.Deferred().rejectWith( this, [{unavailable: true}] );
+//        }
+//      }
+        return $.getJSON( path, data );
       }
     } );
 
