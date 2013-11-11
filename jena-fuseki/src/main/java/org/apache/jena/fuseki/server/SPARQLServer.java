@@ -27,6 +27,7 @@ import java.util.* ;
 import javax.servlet.DispatcherType ;
 import javax.servlet.http.HttpServlet ;
 
+import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.HttpNames ;
@@ -241,6 +242,8 @@ public class SPARQLServer {
             if ( serverConfig.pagesPort != serverConfig.port )
                 serverLog.warn("Not supported yet - pages on a different port to services") ;
              if ( serverConfig.pages != null ) {
+                 if ( ! FileOps.exists(serverConfig.pages) )
+                     serverLog.warn("No pages directory - "+serverConfig.pages) ;
                 String base = serverConfig.pages ;
                 Map<String, Object> data = new HashMap<String, Object>() ;
                 data.put("mgt", new MgtFunctions()) ;
