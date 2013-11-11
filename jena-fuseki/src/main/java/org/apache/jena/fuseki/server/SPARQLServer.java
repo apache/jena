@@ -240,12 +240,13 @@ public class SPARQLServer {
             // TODO Respect port.
             if ( serverConfig.pagesPort != serverConfig.port )
                 serverLog.warn("Not supported yet - pages on a different port to services") ;
-
-            String base = serverConfig.pages ;
-            Map<String, Object> data = new HashMap<String, Object>() ;
-            data.put("mgt", new MgtFunctions()) ;
-            SimpleVelocityServlet templateEngine = new SimpleVelocityServlet(base, data) ;
-            addServlet(context, templateEngine, "*.tpl", false) ;
+             if ( serverConfig.pages != null ) {
+                String base = serverConfig.pages ;
+                Map<String, Object> data = new HashMap<String, Object>() ;
+                data.put("mgt", new MgtFunctions()) ;
+                SimpleVelocityServlet templateEngine = new SimpleVelocityServlet(base, data) ;
+                addServlet(context, templateEngine, "*.tpl", false) ;
+             }
         }
 
         if ( installManager ) {
