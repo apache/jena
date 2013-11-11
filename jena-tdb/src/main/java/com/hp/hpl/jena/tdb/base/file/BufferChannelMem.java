@@ -20,15 +20,21 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.nio.ByteBuffer ;
 
+import org.apache.jena.atlas.lib.ByteBufferLib ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
 import com.hp.hpl.jena.tdb.base.StorageException ;
 
 public class BufferChannelMem implements BufferChannel
 {
-    private ByteBuffer bytes ;      // Position is our file position.
-    //private long length ;           // Bytes in use: 0 to length-1 -- NO -- Use Bytes.limit()
+    private static Logger log = LoggerFactory.getLogger(BufferChannelMem.class) ;
+    private ByteBuffer bytes ;          // Position is our file position.
     private String name ;
     private static int INIT_SIZE = 1024 ;
     private static int INC_SIZE = 1024 ;
+    
+    private final boolean TRACKING ; 
     
     static public BufferChannel create() { return new BufferChannelMem("unnamed") ; }
     static public BufferChannel create(String name) { return new BufferChannelMem(name) ; }
@@ -36,6 +42,7 @@ public class BufferChannelMem implements BufferChannel
     private BufferChannelMem()
     { 
         // Unitialized blank.
+        TRACKING = false ;
     }
  
     
@@ -44,6 +51,9 @@ public class BufferChannelMem implements BufferChannel
         bytes = ByteBuffer.allocate(1024) ;
         bytes.limit(0) ;
         this.name = name ;
+        TRACKING = false ;
+        // Debugging : pick a filename.
+        //TRACKING = name.endsWith("prefixes.dat") ;
     }
 
     @Override
@@ -82,6 +92,9 @@ public class BufferChannelMem implements BufferChannel
     public int read(ByteBuffer buffer)
     {
         checkIfClosed() ;
+        if ( TRACKING ) 
+            log("read(1)["+buffer.capacity()+"]") ;  
+        
         int x = bytes.position();
         
         int len = buffer.limit()-buffer.position() ;
@@ -93,6 +106,8 @@ public class BufferChannelMem implements BufferChannel
             byte b = bytes.get() ;
             buffer.put(b);
         }
+        if ( TRACKING )
+            log("read(2)") ;  
         return len ;
     }
     
@@ -100,13 +115,19 @@ public class BufferChannelMem implements BufferChannel
     synchronized
     public int read(ByteBuffer buffer, long loc)
     {
+        if ( TRACKING )
+            log("read(1)@"+loc) ;  
         checkIfClosed() ;
-        if ( loc < 0 || loc >= bytes.limit() )
-            throw new StorageException("Out of range: "+loc+" [0,"+buffer.limit()+")") ;
-        int x = buffer.position() ;
+        if ( loc < 0 || loc > bytes.limit() )
+            throw new StorageException("Out of range("+name+"[read]): "+loc+" [0,"+bytes.limit()+")") ;
+        if ( loc == bytes.limit() )
+            System.err.println("At the limit("+name+"[read]): "+loc) ;
+        int x = bytes.position() ;
         bytes.position((int)loc) ;
         int len = read(buffer) ;
         bytes.position(x) ;
+        if ( TRACKING )
+            log("read(2)@"+loc) ;  
         return len ;
     }
 
@@ -114,6 +135,12 @@ public class BufferChannelMem implements BufferChannel
     synchronized
     public int write(ByteBuffer buffer)
     {
+        if ( TRACKING ) {
+            log("write(1)["+buffer.capacity()+"]") ; 
+            if ( bytes.limit() != 0 )
+                System.err.println("Not start") ;
+        }
+        
         checkIfClosed() ;
         int len = buffer.limit()-buffer.position() ;
         int posn = bytes.position() ;
@@ -135,8 +162,11 @@ public class BufferChannelMem implements BufferChannel
         
         if ( bytes.limit() < posn+len )
             bytes.limit(posn+len) ;
-
+        
         bytes.put(buffer) ;
+
+        if ( TRACKING )
+            log("write(2)") ; 
         return len ;
     }
     
@@ -145,14 +175,19 @@ public class BufferChannelMem implements BufferChannel
     synchronized
     public int write(ByteBuffer buffer, long loc)
     {
+        if ( TRACKING )
+            log("write(1)@"+loc) ; 
+        
         checkIfClosed() ;
         if ( loc < 0 || loc > bytes.limit() )
             // Can write at loc = bytes()
-            throw new StorageException("Out of range: "+loc) ;
+            throw new StorageException("Out of range("+name+"[write]): "+loc+" [0,"+bytes.limit()+")") ;
         int x = bytes.position() ; 
         bytes.position((int)loc) ;
         int len = write(buffer) ;
         bytes.position(x) ;
+        if ( TRACKING )
+            log("write(2)@"+loc) ; 
         return len ;
     }
     
@@ -224,5 +259,13 @@ public class BufferChannelMem implements BufferChannel
     public String getFilename()
     {
         return null ;
+    }
+    
+    private void log(String op) {
+        if ( TRACKING ) {
+            String msg = op+"["+name+"] "+ByteBufferLib.details(bytes) ;
+            System.err.println(msg);
+            //log.debug(msg) ;
+        }
     }
 }
