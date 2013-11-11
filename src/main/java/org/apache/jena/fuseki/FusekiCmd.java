@@ -454,13 +454,14 @@ public class FusekiCmd extends CmdARQ {
         Fuseki.setServer(server) ;
 
         Server mgtServer = null ;
-
+        // mgtPort = -1 means no management functions.
+        
         if ( mgtPort > 0 && mgtPort != port ) {
             Fuseki.configLog.info("Management services on port " + mgtPort) ;
             mgtServer = ManagementServer.createManagementServer(mgtPort) ;
             ServletContextHandler context = (ServletContextHandler)mgtServer.getHandler() ;
-            ManagementServer.addServerFunctions(context, "/") ;
-            ManagementServer.addAdminFunctions(context, "/") ;
+            ManagementServer.addServerFunctions(context, "/$/") ;
+            ManagementServer.addAdminFunctions(context, "/$/") ;
 
             try {
                 mgtServer.start() ;
@@ -473,7 +474,7 @@ public class FusekiCmd extends CmdARQ {
             }
         }
 
-        if ( mgtPort <= 0 || mgtPort == port ) {
+        if ( mgtPort == 0 || mgtPort == port ) {
             // TODO Temporary!
             mgtServer = server.getServer() ;
             ServletContextHandler context = (ServletContextHandler)server.getServer().getHandler() ;

@@ -67,7 +67,7 @@ public class ManagementServer
             throw new FusekiException("Base URI does not start with a '/'") ; 
         // Dump request
         addServlet(context, new DumpServlet(),          base+"dump") ;
-        addServlet(context, new DescriptionServlet(),   base+"datasets") ;
+        addServlet(context, new DescriptionServlet(),   base+"status") ;
     }
     
     public static void addAdminFunctions(ServletContextHandler context, String base) {
