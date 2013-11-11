@@ -29,7 +29,7 @@ public class ServerConfig
     
     /** Port to run the server service on */
     public int port ;
-    /** Port for the management interface : -1 for no mamangement interface */ 
+    /** Port for the management interface : -1 for no management interface */ 
     public int mgtPort ;
     /** Port for the pages UI : this can be the same as the services port. */ 
     public int pagesPort ;

@@ -18,10 +18,6 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.fuseki.server.FusekiConfig ;
-import org.apache.jena.fuseki.server.SPARQLServer ;
-import org.apache.jena.fuseki.server.ServerConfig ;
-
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
@@ -69,7 +65,7 @@ public class ServerTest
     public static final Model model1     = ModelFactory.createModelForGraph(graph1) ;
     public static final Model model2     = ModelFactory.createModelForGraph(graph2) ;
     
-    private static SPARQLServer server = null ;
+    private static EmbeddedFusekiServer server = null ;
     
     // reference count of start/stop server
     private static int countServer = 0 ; 
@@ -97,11 +93,7 @@ public class ServerTest
     protected static void setupServer()
     {
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        // This must agree with ServerTest
-        ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true, true) ;
-        conf.port = ServerTest.port ;
-        conf.pagesPort = ServerTest.port ;
-        server = new SPARQLServer(conf) ;
+        server = EmbeddedFusekiServer.create(port, dsg, datasetPath) ;
         server.start() ;
     }
     
