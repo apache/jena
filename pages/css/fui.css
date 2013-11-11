@@ -49,3 +49,7 @@ a.navbar-brand {
   padding-top: 0;
   padding-bottom: 0;
 }
+
+.options-list {
+  margin-bottom: 5px;
+}

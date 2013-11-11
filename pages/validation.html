@@ -10,6 +10,8 @@
     <link href="css/jquery.dataTables.css" rel="stylesheet" media="screen">
     <link href="css/fui.css" rel="stylesheet" media="screen">
 
+    <script data-main="js/app/main.validation.js" src="js/lib/require.min.js"></script>
+
     <!--[if lt IE 9]>
       <script src="../js/lib/html5shiv.js"></script>
       <script src="../js/lib/respond.min.js"></script>
@@ -57,8 +59,79 @@
     <div class="container">
       <div class="row">
         <h1>Fuseki &ndash; validation</h1>
-      </div>
-    </div>
+        <p>Use this page to validate SPARQL queries or RDF data.</p>
+
+        <div class="validation qonsole">
+          <div class="col-md-12 well">
+            <div class="query-edit">
+              <div id="query-edit-cm" class=""></div>
+            </div>
+            <div class="query-chrome">
+              <form class="form-inline" role="form">
+                <div class="validate-as-options options-list">
+                  <h2>Validate as:</h2>
+                  <ul class="list-inline">
+                    <li><a class="btn btn-custom2 btn-sm active validate-as-option" data-toggle="button" data-validate-as="sparql">SPARQL</a></li>
+                    <li><a class="btn btn-custom2 btn-sm  validate-as-option" data-toggle="button" data-validate-as="arq">SPARQL extended syntax</a></li>
+                    <li><a class="btn btn-custom2 btn-sm validate-as-option" data-toggle="button" data-validate-as="Turtle">Turtle</a></li>
+                    <li><a class="btn btn-custom2 btn-sm validate-as-option" data-toggle="button" data-validate-as="TriG">TriG</a></li>
+                    <li><a class="btn btn-custom2 btn-sm validate-as-option" data-toggle="button" data-validate-as="N-Triples">N-Triples</a></li>
+                    <li><a class="btn btn-custom2 btn-sm validate-as-option" data-toggle="button" data-validate-as="N-Quads">N-Quads</a></li>
+                  </ul>
+                </div><!-- /.validate-as-options -->
+
+                <div class="output-format-options options-list">
+                  <h2>Output format:</h2>
+                  <ul class="list-inline">
+                    <li><a class="btn btn-custom2 btn-sm" data-toggle="button" data-output-format="sparql">SPARQL</a></li>
+                    <li><a class="btn btn-custom2 btn-sm active" data-toggle="button" data-output-format="algebra">SPARQL algebra</a></li>
+                    <li><a class="btn btn-custom2 btn-sm" data-toggle="button" data-output-format="quads">SPARQL algebra (quads)</a></li>
+                    <li><a class="btn btn-custom2 btn-sm" data-toggle="button" data-output-format="opt">SPARQL algebra (with optimizations)</a></li>
+                    <li><a class="btn btn-custom2 btn-sm" data-toggle="button" data-output-format="optquads">SPARQL algebra (quads, with optimizations)</a></li>
+                  </ul>
+                </div><!-- /.output-format-options -->
+
+                <div class="row">
+                  <div class="col-md-3 col-md-offset-1">
+                    <a href="#" class="btn btn-success perform-validation">perform validation</a>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+          <!-- results -->
+          <div id="results-block" class="row validation-output">
+            <div class="col-md-12">
+              <div class="well">
+                <div class="row">
+                  <div class="col-md-12">
+                    <span class="loadingSpinner hidden">
+                      <img src="images/wait30.gif" alt="waiting for server action to complete" />
+                    </span>
+                    <span class="timeTaken hidden"></span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12" id="results">
+                    <h2 class="col-md-12">Validation output</h2>
+                    <div class="query-edit">
+                      <div id="validation-output-cm" class=""></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row clearfix"></div>
+
+          <footer>
+          </footer>
+        </div><!-- /.validation-->
+      </div><!-- /.row -->
+    </div><!-- /.container -->
 
     <script src="../js/lib/jquery-1.10.2.min.js"></script>
     <script src="../js/lib/bootstrap.min.js"></script>
