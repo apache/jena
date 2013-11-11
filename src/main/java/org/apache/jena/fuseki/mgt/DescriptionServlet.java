@@ -26,12 +26,15 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.json.* ;
+import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonBuilder ;
+import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.web.HttpSC ;
+import org.eclipse.jetty.server.Server ;
 
 /** Description of datasets for a server */ 
 public class DescriptionServlet extends HttpServlet
@@ -65,8 +68,6 @@ public class DescriptionServlet extends HttpServlet
         builder.startObject() ;
         describeServer(builder) ;
         describeDataset(builder) ;
-        
-        
         builder.finishObject() ;
         
         JsonValue v = builder.build() ;
@@ -80,8 +81,18 @@ public class DescriptionServlet extends HttpServlet
             .key("server")
             .startObject()
             //.key("hostname").value(req.getLocalName())
-            .key("port").value(Fuseki.getServer().getPort())
+            .key("port").value(port(Fuseki.getJettyServer()))
             .finishObject() ;
+        builder
+            .key("admin")
+            .startObject()
+            //.key("hostname").value(req.getLocalName())
+            .key("port").value(port(Fuseki.getJettyMgtServer()))
+            .finishObject() ;
+    }
+    
+    private int port(Server jettyServer ) {
+        return jettyServer.getConnectors()[0].getPort() ;
     }
 
     private void describeDataset(JsonBuilder builder) {

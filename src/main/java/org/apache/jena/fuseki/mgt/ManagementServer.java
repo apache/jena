@@ -59,19 +59,15 @@ public class ManagementServer
         return server  ;
     }        
         
-    
-//        addServerFunctions(context) ;
-//        addAdminFunctions(context) ;
-        
     public static void addServerFunctions(ServletContextHandler context, String base) {
         Fuseki.serverLog.info("Adding server information functions") ;
         if ( !base.endsWith("/" ) )
             base = base + "/" ;
         if ( !base.startsWith("/"))
-            throw new FusekiException("Base URI does nto start with a '/'") ; 
+            throw new FusekiException("Base URI does not start with a '/'") ; 
         // Dump request
-        addServlet(context, new DumpServlet(),      base+"dump") ;
-        addServlet(context, new DescriptionServlet(),     base+"datasets") ;
+        addServlet(context, new DumpServlet(),          base+"dump") ;
+        addServlet(context, new DescriptionServlet(),   base+"datasets") ;
     }
     
     public static void addAdminFunctions(ServletContextHandler context, String base) {

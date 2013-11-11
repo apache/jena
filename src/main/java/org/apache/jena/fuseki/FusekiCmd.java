@@ -475,10 +475,15 @@ public class FusekiCmd extends CmdARQ {
 
         if ( mgtPort <= 0 || mgtPort == port ) {
             // TODO Temporary!
+            mgtServer = server.getServer() ;
             ServletContextHandler context = (ServletContextHandler)server.getServer().getHandler() ;
             ManagementServer.addServerFunctions(context, "/$/") ;
             ManagementServer.addAdminFunctions(context, "/$/") ;
         }
+
+        // Temporary?
+        Fuseki.setJettyMgtServer(mgtServer) ;
+        Fuseki.setJettyServer(server.getServer()) ;
 
         server.start() ;
         try {
