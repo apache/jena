@@ -116,13 +116,12 @@ var qonsole = function() {
     $("a.run-query").on( "click", runQuery );
 
     $(document)
-      .ajaxStart(function() {
-        elementVisible( ".loadingSpinner", true );
-        startTimingResults();
-      })
-      .ajaxStop(function() {
-        elementVisible( ".loadingSpinner", false );
-      });
+//      .ajaxStart(function() {
+//        elementVisible( ".loadingSpinner", true );
+//      })
+//      .ajaxStop(function() {
+//        elementVisible( ".loadingSpinner", false );
+//      });
 
     // dialogue events
     $("#prefixEditor").on( "click", "#lookupPrefix", onLookupPrefix )
@@ -189,7 +188,10 @@ var qonsole = function() {
       dataType: "text"
     };
 
-    $.ajax( url, options );
+    elementVisible( ".loadingSpinner", true );
+    $.ajax( url, options ).then( function() {
+      elementVisible( ".loadingSpinner", false );
+    } );
   };
 
   /** Set up the drop-down list of end-points */
@@ -413,6 +415,7 @@ var qonsole = function() {
 
     checkForceTextFormat( format, options );
     checkForceJsonP( options, format );
+    startTimingResults();
 
     $.ajax( url, options );
   };
