@@ -80,10 +80,11 @@ class Journal implements Sync, Closeable
     public static Journal create(Location location)
     {
         BufferChannel chan ;
+        String channelName = journalFilename(location) ;
         if ( location.isMem() )
-            chan = BufferChannelMem.create() ;
+            chan = BufferChannelMem.create(channelName) ;
         else
-            chan = BufferChannelFile.create(journalFilename(location)) ;
+            chan = BufferChannelFile.create(channelName) ;
         return new Journal(chan) ;
     }
     
@@ -106,18 +107,6 @@ class Journal implements Sync, Closeable
         }
         return posn ;
     }
-//    
-////    synchronized
-////    public long writeJournal(JournalEntryType type, FileRef fileRef, ByteBuffer buffer)
-////    {
-////        return _write(type, fileRef, buffer, null) ;
-////    }
-////    
-//    synchronized
-//    public long writeJournal(FileRef fileRef, Block block)
-//    {
-//        return _write(Block, fileRef, null, block) ;
-//    }
      
     synchronized
     public long write(JournalEntryType type, FileRef fileRef, Block block)
