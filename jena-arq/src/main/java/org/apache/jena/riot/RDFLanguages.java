@@ -308,7 +308,7 @@ public class RDFLanguages
         return fileExtToLang(FileUtils.getFilenameExt(filename)) ;
     }
 
-    /** Try to map a file name to a {@link Lang}; return null on no registered mapping */
+    /** Try to map a file name to a {@link Lang}; return the given default where there is no registered mapping */
     public static Lang filenameToLang(String filename, Lang dftLang)
     {
         Lang lang = filenameToLang(filename) ;

@@ -647,8 +647,19 @@ public class RDFDataMgr
      */
     public static void parse(StreamRDF sink, String uri)
     {
-        parse(sink, uri, null, null) ;
+        parse(sink, uri, null) ;
     }
+
+    /** Read RDF data.
+     * @param sink      Destination for the RDF read.
+     * @param uri       URI to read from (includes file: and a plain file name).
+     * @param lang      Hint for the syntax
+     */
+    public static void parse(StreamRDF sink, String uri, Lang lang)
+    {
+        parse(sink, uri, lang, null) ;
+    }
+
 
     /** Read RDF data.
      * @param sink     Destination for the RDF read.
