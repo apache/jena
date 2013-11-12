@@ -19,6 +19,7 @@
 package org.apache.jena.riot.lang;
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.UUID;
 
 import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.riot.out.NodeToLabel ;
@@ -41,8 +42,15 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
      */
     public static LabelToNode createScopeByDocumentHash()
     { return new LabelToNode(new AllocScopePolicy(), nodeAllocatorHash()) ; }
+    
+    /**
+     * Allocation from a single scope; just the label matters.  Use this policy if repeated runs must give identical allocations
+     * @param seed Seed
+     */
+    public static LabelToNode createScopeByDocumentHash(UUID seed)
+    { return new LabelToNode(new AllocScopePolicy(), nodeAllocatorHash(seed)) ; }
 
-    /** The policy upto jena 2.10.0 - problems at very large scale */
+    /** The policy up to jena 2.10.0 - problems at very large scale */
     public static LabelToNode createScopeByDocumentOld()
     { return new LabelToNode(new SingleScopePolicy(), nodeAllocatorTraditional()) ; }
 
@@ -85,6 +93,10 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     private static Allocator<String, Node, Node> nodeAllocatorHash() { 
         return new Alloc(new BlankNodeAllocatorHash()) ; 
     } 
+    
+    private static Allocator<String, Node, Node> nodeAllocatorHash(UUID seed) {
+        return new Alloc(new BlankNodeAllocatorFixedSeedHash(seed)) ;
+    }
     
     private static Allocator<String, Node, Node> nodeAllocatorDeterministic() { 
         return new Alloc(new BlankNodeAllocatorLabel()) ; 
