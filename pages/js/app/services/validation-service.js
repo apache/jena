@@ -33,6 +33,28 @@ define( ['underscore', 'jquery', 'fui', 'codemirror/codemirror'],
           } );
         }
         return this._output;
+      },
+
+      /** Return the current code editor contents */
+      editorContent: function() {
+        return this.editorElement().getValue();
+      },
+
+      /** Perform the given action to validate the current content */
+      performValidation: function( optionsModel ) {
+        var self = this;
+        var content = {};
+        content[optionsModel.payloadParam()] = this.editorContent();
+
+        var options = {
+            data: _.extend( optionsModel.toJSON(), content ),
+            type: "POST"
+        };
+
+        $.ajax( optionsModel.validationURL(), options )
+         .done( function( data ) {
+           self.outputElement().setValue( data );
+         } );
       }
 
     } );

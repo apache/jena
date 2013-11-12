@@ -9,14 +9,17 @@ define(
         ValidationService = require( "services/validation-service" );
 
     var ValidationController = function() {
-      this.initEvents();
       this.initServices();
+      this.initEvents();
     };
 
     // add the behaviours defined on the controller
     _.extend( ValidationController.prototype, {
       initEvents: function() {
         fui.vent.on( "models.validation-options.ready", this.onValidationOptionsModelReady );
+        $(".validation").on( "click", "a.perform-validation", function( event ) {
+          fui.services.validation.performValidation( fui.views.validationOptions.model );
+        } );
       },
 
       onValidationOptionsModelReady: function( e ) {

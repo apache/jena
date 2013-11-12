@@ -43,6 +43,21 @@ define(
         this.set( "outputFormat", of );
       },
 
+      validationURL: function() {
+        switch (this.get( "validateAs" )) {
+        case "sparql":  return "/validate/query";
+        case "arq":  return "/validate/query";
+        case "Turtle": return "/validate/data";
+        case "TriG": return "/validate/data";
+        case "N-Triples": return "/validate/data";
+        case "N-Quads": return "/validate/data";
+        }
+      },
+
+      payloadParam: function() {
+        return this.validateAsQuery() ? "query" : "data";
+      },
+
       toJSON: function() {
         var json = {
           languageSyntax: this.validateAs(),
