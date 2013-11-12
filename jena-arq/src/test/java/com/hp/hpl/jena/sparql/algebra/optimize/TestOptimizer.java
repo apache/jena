@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.junit.Ignore;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -124,6 +125,7 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
 
+    @Ignore //Ignore until JENA-587 is resolved
     @Test public void slice_order_to_topn_08()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
@@ -182,6 +184,7 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
 
+    @Ignore //Ignore until JENA-587 is resolved
     @Test public void distinct_to_reduced_01()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
@@ -209,6 +212,7 @@ public class TestOptimizer extends BaseTest
         }
     }
     
+    @Ignore //Ignore until JENA-587 is resolved
     @Test public void distinct_to_reduced_03()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
@@ -252,6 +256,7 @@ public class TestOptimizer extends BaseTest
         }
     }
     
+    @Ignore //Ignore until JENA-587 is resolved
     @Test public void distinct_order_by_application_03()
     {
         // Evaluation reordering optimization doesn't apply if it's a SELECT *
@@ -293,6 +298,7 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
     
+    @Ignore //Ignore until JENA-587 is resolved
     @Test public void distinct_order_by_application_06()
     {
         // The optimization can apply when order conditions are not simple variables

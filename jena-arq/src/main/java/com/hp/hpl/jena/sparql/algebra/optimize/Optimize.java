@@ -201,7 +201,8 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optOrderByDistinctApplication) )
             op = apply("Apply DISTINCT prior to ORDER BY where possible", new TransformOrderByDistinctAppplication(), op);
 
-        if ( context.isTrueOrUndef(ARQ.optDistinctToReduced) )
+        // JENA-587 Temporarily only used when explicitly enabled, needs reworking to be stricter
+        if ( context.isTrue(ARQ.optDistinctToReduced) )
             op = apply("Distinct replaced with reduced", new TransformDistinctToReduced(), op) ;
         
         // Convert paths to triple patterns. 
