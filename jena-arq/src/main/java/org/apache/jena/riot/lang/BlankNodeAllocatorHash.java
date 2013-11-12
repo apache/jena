@@ -38,12 +38,12 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
  * This is the most scalable, always legal allocator.
  * <p>
  * New allocators must be created per parser run, or .reset() called. These are
- * fed to a digest to gve a bit string, (currently MD5, to get a 128bit bit
+ * fed to a digest to give a bit string, (currently MD5, to get a 128bit bit
  * string) that is used to form a bNode AnonId of hex digits.
  * <p>
  * In addition there is a cache of label->node allocations, using the natural
- * tendendency to locality in a database dump. (subject bNodes, bNodes in lists
- * and other datavalues structures like unit values).
+ * tendency to locality in a database dump. (subject bNodes, bNodes in lists
+ * and other data values structures like unit values).
  * <p>
  * Not thread safe.
  */
@@ -75,10 +75,18 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
         Cache<String, Node> cache1 = CacheFactory.createCache(CacheSize) ;
         cache = CacheFactory.createCacheWithGetter(cache1, getter) ;
     }
+    
+    /**
+     * Gets a fresh seed value
+     * @return Seed value
+     */
+    protected UUID freshSeed() {
+        return UUID.randomUUID();
+    }
 
     @Override
     public void reset() {
-        UUID seed = UUID.randomUUID() ;
+        UUID seed = this.freshSeed();
         seedBytes = new byte[128 / 8] ;
         Bytes.setLong(seed.getMostSignificantBits(), seedBytes, 0) ;
         Bytes.setLong(seed.getLeastSignificantBits(), seedBytes, 8) ;
