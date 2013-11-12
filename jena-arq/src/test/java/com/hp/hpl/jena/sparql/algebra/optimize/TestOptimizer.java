@@ -332,6 +332,32 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
     
+    @Test public void distinct_to_reduced_10()
+    {
+        // Per JENA-587 this is unsafe to transform since a non-project variable 
+        // appears before all the projected variables are seen in the ORDER BY
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+        String queryString = "SELECT DISTINCT ?p ?o { ?s ?p ?o } ORDER BY ?s"  ;  
+        String opExpectedString = 
+            "(distinct\n" + 
+            "  (project (?p ?o)\n" +
+            "    (order (?s)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void distinct_to_reduced_11()
+    {
+        // Per JENA-587 this is unsafe to transform since there is no ORDER BY
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+        String queryString = "SELECT DISTINCT ?p ?o { ?s ?p ?o } "  ;  
+        String opExpectedString = 
+            "(distinct\n" + 
+            "  (project (?p ?o)\n" +
+            "      (bgp (triple ?s ?p ?o))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
     @Test public void distinct_order_by_application_01()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
