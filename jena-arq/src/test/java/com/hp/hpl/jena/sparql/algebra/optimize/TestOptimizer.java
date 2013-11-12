@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.junit.Ignore;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -64,7 +63,7 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
 
-    @Test public void slice_order_to_topn_03()
+    @Test public void slice_order_to_topn_03()    
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o OFFSET 4242 LIMIT 10"  ;  
@@ -125,14 +124,13 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
 
-    @Ignore //Ignore until JENA-587 is resolved
     @Test public void slice_order_to_topn_08()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 4242"  ;  
         String opExpectedString = 
             "(slice _ 4242\n" + 
-            "  (reduced\n" +
+            "  (distinct\n" +
             "    (order (?p ?o)\n" +
             "      (bgp (triple ?s ?p ?o)))))" ; 
         check(queryString, opExpectedString) ;
@@ -184,13 +182,13 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
 
-    @Ignore //Ignore until JENA-587 is resolved
     @Test public void distinct_to_reduced_01()
     {
+        // Per JENA-587 not safe to transform if a SELECT *
         assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
         String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o"  ;  
         String opExpectedString = 
-            "(reduced\n" + 
+            "(distinct\n" + 
             "  (order (?p ?o)\n" +
             "    (bgp (triple ?s ?p ?o))))" ; 
         check(queryString, opExpectedString) ;
@@ -212,15 +210,124 @@ public class TestOptimizer extends BaseTest
         }
     }
     
-    @Ignore //Ignore until JENA-587 is resolved
     @Test public void distinct_to_reduced_03()
     {
+        // Per JENA-587 this is safe to transform since all project variables 
+        // appear in the ORDER BY
+        // Ordering of variables in the ORDER BY is irrelevant as long as they appear
+        // before any non-projected variables
         assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
         String queryString = "SELECT DISTINCT ?p { ?s ?p ?o } ORDER BY ?p ?o"  ;  
         String opExpectedString = 
             "(reduced\n" + 
             "  (project (?p)\n" +
             "    (order (?p ?o)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void distinct_to_reduced_04()
+    {
+        try {
+            // Must be turned off or will apply in favour of the specific optimization we are trying to test
+            ARQ.getContext().set(ARQ.optOrderByDistinctApplication, false);
+            
+            // Per JENA-587 this is safe to transform since all project variables 
+            // appear in the ORDER BY
+            // Ordering of variables in the ORDER BY is irrelevant as long as they appear
+            // before any non-projected variables
+            assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+            String queryString = "SELECT DISTINCT ?p ?o { ?s ?p ?o } ORDER BY ?p ?o"  ;  
+            String opExpectedString = 
+                "(reduced\n" + 
+                "  (project (?p ?o)\n" +
+                "    (order (?p ?o)\n" +
+                "      (bgp (triple ?s ?p ?o)))))" ; 
+            check(queryString, opExpectedString) ;
+        } finally {
+            ARQ.getContext().unset(ARQ.optOrderByDistinctApplication);
+        }
+    }
+    
+    @Test public void distinct_to_reduced_05()
+    {
+        try {
+            // Must be turned off or will apply in favour of the specific optimization we are trying to test
+            ARQ.getContext().set(ARQ.optOrderByDistinctApplication, false);
+            
+            // Per JENA-587 this is safe to transform since all project variables 
+            // appear in the ORDER BY
+            // Ordering of variables in the ORDER BY is irrelevant as long as they appear
+            // before any non-projected variables
+            assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+            String queryString = "SELECT DISTINCT ?p ?o { ?s ?p ?o } ORDER BY ?o ?p"  ;  
+            String opExpectedString = 
+                "(reduced\n" + 
+                "  (project (?p ?o)\n" +
+                "    (order (?o ?p)\n" +
+                "      (bgp (triple ?s ?p ?o)))))" ; 
+            check(queryString, opExpectedString) ;
+        } finally {
+            ARQ.getContext().unset(ARQ.optOrderByDistinctApplication);
+        }
+    }
+    
+    @Test public void distinct_to_reduced_06()
+    {
+        // Per JENA-587 this is safe to transform since all project variables 
+        // appear in the ORDER BY
+        // Ordering of variables in the ORDER BY is irrelevant as long as they appear
+        // before any non-projected variables
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+        String queryString = "SELECT DISTINCT ?p ?o { ?s ?p ?o } ORDER BY ?o ?p ?s"  ;  
+        String opExpectedString = 
+            "(reduced\n" + 
+            "  (project (?p ?o)\n" +
+            "    (order (?o ?p ?s)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void distinct_to_reduced_07()
+    {
+        // Per JENA-587 this is safe to transform since all project variables 
+        // appear in the ORDER BY
+        // Ordering of variables in the ORDER BY is irrelevant as long as they appear
+        // before any non-projected variables
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+        String queryString = "SELECT DISTINCT ?p ?o { ?s ?p ?o } ORDER BY ?p ?o ?s"  ;  
+        String opExpectedString = 
+            "(reduced\n" + 
+            "  (project (?p ?o)\n" +
+            "    (order (?p ?o ?s)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void distinct_to_reduced_08()
+    {
+        // Per JENA-587 this is unsafe to transform since a non-project variable 
+        // appears before all the projected variables are seen in the ORDER BY
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+        String queryString = "SELECT DISTINCT ?p ?o { ?s ?p ?o } ORDER BY ?s ?p ?o"  ;  
+        String opExpectedString = 
+            "(distinct\n" + 
+            "  (project (?p ?o)\n" +
+            "    (order (?s ?p ?o)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void distinct_to_reduced_09()
+    {
+        // Per JENA-587 this is unsafe to transform since a non-project variable 
+        // appears before all the projected variables are seen in the ORDER BY
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+        String queryString = "SELECT DISTINCT ?p ?o { ?s ?p ?o } ORDER BY ?p ?s ?o"  ;  
+        String opExpectedString = 
+            "(distinct\n" + 
+            "  (project (?p ?o)\n" +
+            "    (order (?p ?s ?o)\n" +
             "      (bgp (triple ?s ?p ?o)))))" ; 
         check(queryString, opExpectedString) ;
     }
@@ -256,15 +363,14 @@ public class TestOptimizer extends BaseTest
         }
     }
     
-    @Ignore //Ignore until JENA-587 is resolved
     @Test public void distinct_order_by_application_03()
     {
         // Evaluation reordering optimization doesn't apply if it's a SELECT *
-        // However the DISTINCT to REDUCED transformation still applies
+        // Also per JENA-587 DISTINCT -> REDUCED transformation cannot apply either
         assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
         String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p";
         String opExpectedString =
-            "  (reduced\n" +
+            "  (distinct\n" +
             "    (order (?p)\n" +
             "      (bgp (triple ?s ?p ?o))))" ;
         check(queryString, opExpectedString) ;
@@ -298,18 +404,17 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
     
-    @Ignore //Ignore until JENA-587 is resolved
     @Test public void distinct_order_by_application_06()
     {
         // The optimization can apply when order conditions are not simple variables
         // provided every variable used in an expression appears in the project list
         // In this case it should not apply because the condition used a variable that
         // does not appear in the project list
-        // However the DISTINCT to REDUCED optimization does apply
+        // Per JENA-587 the DISTINCT to REDUCED optimization also does not apply
         assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication)) ;
         String queryString = "SELECT DISTINCT ?p { ?s ?p ?o } ORDER BY LCASE(CONCAT(?s, ?p))";
         String opExpectedString =
-            "  (reduced\n" +
+            "  (distinct\n" +
             "    (project (?p)\n" +
             "      (order ((lcase (concat ?s ?p)))\n" +
             "      (bgp (triple ?s ?p ?o)))))" ;
