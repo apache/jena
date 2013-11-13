@@ -2,13 +2,14 @@
 define( ['require', '../common-config'],
   function( require ) {
     require(
-      ['underscore', 'jquery', 'backbone', 'marionette', 'fui', 'controllers/index-controller',
+      ['underscore', 'jquery', 'backbone', 'marionette', 'fui', 'controllers/query-controller',
        'sprintf', 'bootstrap',
        'models/fuseki-server', 'models/dataset',
        'views/dataset-selection-list',
-       'services/ping-service'
+       'services/ping-service',
+       'lib/jquery.xdomainrequest', 'lib/qonsole'
       ],
-      function( _, $, Backbone, Marionette, fui, IndexController ) {
+      function( _, $, Backbone, Marionette, fui, QueryController ) {
 
         // TODO: these variables need to be set dynamically based on the current server config
         var options = {
@@ -17,7 +18,7 @@ define( ['require', '../common-config'],
         };
 
         // initialise the backbone application
-        fui.controllers.indexController = new IndexController();
+        fui.controllers.queryController = new QueryController();
         fui.start( options );
 
         // additional services

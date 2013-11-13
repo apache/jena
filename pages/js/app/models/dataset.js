@@ -37,6 +37,10 @@ define(
         return this.get( "ds.services" );
       },
 
+      serviceTypes: function() {
+        return _.map( this.services(), function( s ) {return s["srv.type"];} );
+      },
+
       /** Return the first service that has the given type */
       serviceOfType: function( serviceType ) {
         return _.find( this.services(), function( s ) {

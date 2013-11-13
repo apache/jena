@@ -39,7 +39,8 @@
           <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
               <li class="active"><a href="index.html">Home</a></li>
-              <li><a href="admin/index.html">Administration</a></li>
+              <li class=""><a href="query.html">Query</a></li>
+              <li class="admin"><a href="admin/index.html">Administration</a></li>
               <li><a href="validation.html">Validation</a></li>
               <li><a href="documentation.html">Documentation</a></li>
             </ul>
@@ -59,136 +60,29 @@
     <div class="container">
       <div class="row">
         <h1>Welcome to Fuseki</h1>
-        <p>This is Apache Jena Fuseki (version TODO) <span class='host-details'></span>. To run
-           a SPARQL query against this RDF store, select a dataset and enter your query below. To
-           add new data, or perform other administrative tasks, see the <a href="">admin pages</a>.</p>
+        <p>This is Apache Jena Fuseki, version TODO<span class='host-details'></span>.</p>
 
-        <div class="qonsole">
-          <div class="col-md-12 well">
-            <h2 class="">Example queries</h2>
-            <ul class="list-inline examples">
-            </ul>
-          </div>
+        <p>
+          This server hosts the following currently-active datasets:
+        </p>
+        <ul class="datasets">
 
-          <div class="col-md-12 well vertical">
-            <h2 class="">Prefixes</h2>
-            <ul class="list-inline prefixes">
-              <li class="keep">
-                <a data-toggle="modal" href="#prefixEditor" class="button" title="Add a SPARQL prefix">
-                  <i class="fa fa-plus-circle"></i>
-                </a>
-              </li>
-            </ul>
-          </div>
+        </ul>
 
-          <div class="col-md-12 well">
-            <div class="query-edit">
-              <div id="query-edit-cm" class=""></div>
-            </div>
-            <div class="query-chrome">
-              <form class="form-inline" role="form">
-                <div class="form-group">
-                  <label for="sparqlEndpoint"></label>
-                  <div class="dropdown ">
-                    <a data-toggle="dropdown" class="btn btn-custom2" href="#">
-                      Select endpoint <i class="icon-collapse"></i>
-                    </a>
-                    <ul class="dropdown-menu endpoints" role="menu" aria-labelledby="dropdownMenu1">
-                    </ul>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="sparqlEndpoint">SPARQL endpoint</label>
-                  <input type="text" class="form-control" id="sparqlEndpoint" />
-                </div>
-                <div class="form-group">
-                  <label for="displayFormat">Results</label>
-                  <div class="dropdown ">
-                    <a data-toggle="dropdown" class="btn btn-custom2 display-format" href="#" data-value="tsv">
-                      <span>table</span> <i class="icon-collapse"></i>
-                    </a>
-                    <ul class="dropdown-menu formats  " role="menu" aria-labelledby="dropdownMenu2">
-                      <li role='presentation' class="" ><a data-value="tsv" role='menuitem' tabindex='-1' href='#'>table</a></li>
-                      <li role='presentation' class="" ><a data-value="text"role='menuitem' tabindex='-1' href='#'>plain text</a></li>
-                      <li role='presentation' class="" ><a data-value="json"role='menuitem' tabindex='-1' href='#'>JSON</a></li>
-                      <li role='presentation' class="" ><a data-value="xml"role='menuitem' tabindex='-1' href='#'>XML</a></li>
-                    </ul>
-                  </div>
+        <h2>Operations</h2>
+        <p>Use the following pages to perform actions or tasks on this server:</p>
+        <dl class="dl-horizontal">
+          <dt><a href="query.html">SPARQL query form</a></dt>
+          <dd>to run a SPARQL query against one of the active datasets hosted by this server</dd>
+          <dt><a href="validation.html">validation form</a></dt>
+          <dd>to validate SPARQL query syntax, or RDF data syntax</dd>
+          <dt><a href="documentation.html">help pages</a></dt>
+          <dd>for a cheat-sheet summary of commands, and links to online documentation</dd>
+          <dt><a href="admin/index.html">administration</a></dt>
+          <dd>to administer the datasets on this server, including adding and removing datasets,
+              enabling data services, uploading data and performing backups. </dd>
 
-                </div>
-                <div class="form-group">
-                  <label>&nbsp;</label>
-                  <a href="#" class="btn btn-success run-query form-control">perform query</a>
-                </div>
-
-              </form>
-            </div>
-          </div>
-
-          <!-- results -->
-          <div id="results-block" class="row sparql sparql-results">
-            <div class="col-md-12">
-              <div class="well">
-                <div class="row">
-                  <div class="col-md-12">
-                    <span class="loadingSpinner hidden">
-                      <img src="images/wait30.gif" alt="waiting for server action to complete" />
-                    </span>
-                    <span class="timeTaken hidden"></span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12" id="results">
-                    <h2 class="col-md-12">Query results</h2>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row clearfix"></div>
-
-          <footer>
-          </footer>
-        </div><!-- /.qonsole-->
-
-        <!-- modal dialogue -->
-        <div class="modal fade" id="prefixEditor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Add a SPARQL prefix</h4>
-              </div>
-              <div class="modal-body">
-                <form class="form-horizontal" role="form">
-                  <div class="form-group">
-                    <label for="inputPrefix" class="col-lg-2 control-label">Prefix</label>
-                    <div class="col-lg-10">
-                      <input type="text" class="form-control" id="inputPrefix" placeholder="Prefix" autofocus>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-lg-offset-2 col-lg-10">
-                      <button class="btn btn-sm btn-primary" id="lookupPrefix">Lookup <span></span> on prefix.cc</button>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputURI" class="col-lg-2 control-label">URI</label>
-                    <div class="col-lg-10">
-                      <input type="text" class="form-control" id="inputURI" placeholder="URI">
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">cancel</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="addPrefix">add prefix</button>
-              </div>
-            </div><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-
+        </dl>
       </div>
     </div>
 

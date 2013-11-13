@@ -17,7 +17,7 @@ define( ['require', '../common-config'],
         };
 
         // initialise the backbone application
-        fui.controllers.indexController = new ValidationController();
+        fui.controllers.validationController = new ValidationController();
         fui.start( options );
 
         // additional services
