@@ -42,14 +42,7 @@ public class TokenizerFactory
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
         return tokenizer ;
     }
-    
-    public static Tokenizer makeTokenizerUTF8(String string)
-    {
-        PeekReader peekReader = PeekReader.readString(string);
-        Tokenizer tokenizer = new TokenizerText(peekReader);
-        return tokenizer;
-    }
-
+   
     public static Tokenizer makeTokenizerASCII(InputStream in)
     {
         PeekReader peekReader = PeekReader.makeASCII(in) ;
