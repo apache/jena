@@ -89,6 +89,8 @@ public class DescriptionServlet extends HttpServlet
             //.key("hostname").value(req.getLocalName())
             .key("port").value(port(Fuseki.getJettyMgtServer()))
             .finishObject() ;
+        builder
+            .key("version").value(Fuseki.VERSION) ;
     }
     
     private int port(Server jettyServer ) {
