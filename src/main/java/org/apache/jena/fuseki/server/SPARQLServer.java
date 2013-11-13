@@ -36,7 +36,7 @@ import org.apache.jena.fuseki.mgt.PageNames ;
 import org.apache.jena.fuseki.servlets.* ;
 import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
-import org.apache.jena.fuseki.validation.QueryValidator ;
+import org.apache.jena.fuseki.validation2.QueryValidator ;
 import org.apache.jena.fuseki.validation.UpdateValidator ;
 import org.apache.jena.riot.WebContent ;
 import org.eclipse.jetty.http.MimeTypes ;

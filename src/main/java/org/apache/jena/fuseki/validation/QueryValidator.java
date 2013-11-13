@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 public class QueryValidator extends ValidatorBase 
 {
-    public QueryValidator() 
+    private QueryValidator() 
     { }
 
     static final String paramLineNumbers      = "linenumbers" ;
