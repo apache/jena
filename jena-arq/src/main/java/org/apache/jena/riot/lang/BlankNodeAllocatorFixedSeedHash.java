@@ -50,6 +50,7 @@ public class BlankNodeAllocatorFixedSeedHash extends BlankNodeAllocatorHash {
         this.seed = seed;
     }
 
+    @Override
     protected UUID freshSeed() {
         return this.seed;
     }

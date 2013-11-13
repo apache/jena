@@ -67,7 +67,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
      * The reverse operation is provided by {@link NodeToLabel#createBNodeByLabelAsGiven()}
      * but the pair is <em>unsafe</em> for output-input.  Use encoded labels for that.
      * 
-     * The main pupose of this LabelToNode is to repserve the used label for debugging. 
+     * The main pupose of this LabelToNode is to preserve the used label for debugging. 
      */
     public static LabelToNode createUseLabelAsGiven()
     { return new LabelToNode(new AllocScopePolicy(), nodeAllocatorRawLabel()) ; }
