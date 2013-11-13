@@ -921,7 +921,7 @@ public class XSDFuncOp
         
         if ( x == XSDDateTime.INDETERMINATE )
         {
-            NodeValue nv3 = fixupDateTime(nv1) ;
+            NodeValue nv3 = ( nv1.isDate()) ? fixupDate(nv1) : fixupDateTime(nv1) ;
             if ( nv3 != null )
             {
                 XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
@@ -931,7 +931,7 @@ public class XSDFuncOp
                 return x ;
             }
             
-            nv3 = fixupDateTime(nv2) ;
+            nv3 = ( nv2.isDate()) ? fixupDate(nv2) : fixupDateTime(nv2) ;
             if ( nv3 != null )
             {
                 XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
@@ -944,10 +944,10 @@ public class XSDFuncOp
             throw new ARQInternalErrorException("Failed to fixup dateTimes") ;
         }
         return x ;
-        
     }
     
 //    // This only differs by some "dateTime" => "date" 
+//    // Comparison is done on the dateTime start point of an xsd:date so this code is not needed.     
 //    private static int compareDateFO(NodeValue nv1, NodeValue nv2)
 //    {
 //        XMLGregorianCalendar dt1 = nv1.getDateTime() ;
@@ -980,6 +980,14 @@ public class XSDFuncOp
 //        }
 //        return x ;
 //    }
+    
+    private static NodeValue fixupDateOrDateTime(NodeValue nv) {
+        if ( nv.isDateTime() )
+            return fixupDateTime(nv);
+        if ( nv.isDate() )
+            return fixupDate(nv);
+        throw new ARQInternalErrorException("Attempt to fixupDateOrDateTime on "+nv);
+    }
     
     private static NodeValue fixupDateTime(NodeValue nv)
     {
