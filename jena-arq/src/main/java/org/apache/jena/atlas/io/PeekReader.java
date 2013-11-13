@@ -79,7 +79,7 @@ public final class PeekReader extends Reader
         return new PeekReader(new CharStreamBuffered(r, bufferSize)) ;
     }
 
-    /** Make PeekReader where the input is UTF8 */ 
+    /** Make PeekReader where the input is UTF8 : BOM is removed */ 
     public static PeekReader makeUTF8(InputStream in) 
     {
         // This is the best route to make a PeekReader because it avoids

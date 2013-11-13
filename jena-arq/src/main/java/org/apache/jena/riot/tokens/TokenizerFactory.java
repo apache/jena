@@ -37,7 +37,7 @@ public class TokenizerFactory
     
     public static Tokenizer makeTokenizerUTF8(InputStream in)
     {
-        // BOM will have been removed
+        // BOM will be removed
         PeekReader peekReader = PeekReader.makeUTF8(in) ;
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
         return tokenizer ;
