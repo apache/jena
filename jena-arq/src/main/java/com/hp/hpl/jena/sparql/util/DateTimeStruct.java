@@ -18,7 +18,9 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-/** Parse an xsd:dateTime or xsd:date lexical form */  
+/** XDS date/time 7-compoent model.
+ * Includes parsing xsd:dateTime, xsd:date and xsd:g*
+ */  
 
 public class DateTimeStruct
 {
@@ -32,7 +34,7 @@ public class DateTimeStruct
     public String second = null ;      // Inc. fractional parts
     public String timezone = null ;    // Null if none.
 
-    private DateTimeStruct() {}
+    public DateTimeStruct() {}
     
     public static class DateTimeParseException extends RuntimeException
     {
