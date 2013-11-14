@@ -49,6 +49,7 @@ public class QueryValidator extends ValidatorBaseJson {
     static final String jAlgebraOpt      = "algebra-opt" ;
     static final String jAlgebraOptQuads = "algebra-opt-quads" ;
 
+    static final String jErrors          = "errors" ;
     static final String jParseError      = "parse-error" ;
     static final String jParseErrorLine  = "parse-error-line" ;
     static final String jParseErrorCol   = "parse-error-column" ;
@@ -83,9 +84,17 @@ public class QueryValidator extends ValidatorBaseJson {
         try {
             query = QueryFactory.create(queryString, "http://example/base/", language) ;
         } catch (QueryParseException ex) {
+            obj.key(jErrors) ;
+            obj.startArray() ;      // Errors array
+            obj.startObject() ;
             obj.key(jParseError).value(ex.getMessage()) ;
             obj.key(jParseErrorLine).value(ex.getLine()) ;
             obj.key(jParseErrorCol).value(ex.getColumn()) ;
+            obj.finishObject() ;
+            obj.finishArray() ;
+            
+            obj.finishObject() ; // Outer object
+            return obj.build().getAsObject() ;
         }
 
         if ( query != null ) {
