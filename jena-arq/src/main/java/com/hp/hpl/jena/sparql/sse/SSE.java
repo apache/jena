@@ -357,10 +357,10 @@ public class SSE
         return handler.getItem() ;
     }
 
-    private static Item parse(Reader reader)
+    public static Item parse(Reader reader)
     { return parse(reader, null) ; }  
 
-    private static Item parse(Reader reader, PrefixMapping pmap)
+    public static Item parse(Reader reader, PrefixMapping pmap)
     {
         if ( pmap == null )
             pmap = getDefaultPrefixMapRead() ;

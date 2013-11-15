@@ -93,7 +93,7 @@ public class TestJenaReaderRIOT extends BaseTest
     }
     
     // test read from StringReader..
-    @Test public void read_31()
+    @Test public void read_StringReader_31()
     {
         String x = "<s> <p> <p> ." ;
         
@@ -108,7 +108,7 @@ public class TestJenaReaderRIOT extends BaseTest
         m1.read(s1, null, "N-TRIPLES") ;
     }
     
-    @Test public void read_32()
+    @Test public void read_StringReader_32()
     {
         String x = StrUtils.strjoinNL(
             "<rdf:RDF", 
@@ -171,8 +171,6 @@ public class TestJenaReaderRIOT extends BaseTest
         m2.read(new StringReader(x), "http://example/base4", lang) ;
     }
 
-    // See also TestDataRead
-    
     private static void jenaread(String dataurl)
     {
         dataurl = filename(dataurl) ; 
@@ -181,8 +179,6 @@ public class TestJenaReaderRIOT extends BaseTest
         assertTrue(m.size() != 0 ) ;
     }
     
-    // Wire in.
-    // +1 one with a base.
     private static void jenaread(String dataurl, String lang)
     {
         // read via WebReader to make sure the test setup is right.
@@ -196,10 +192,12 @@ public class TestJenaReaderRIOT extends BaseTest
         new RDFReaderFactoryRIOT().getReader(lang).read(m1, dataurl) ;
         assertTrue(m1.size() != 0 ) ;
         
-//        // Read via Jena model API.
-//        Model m2 = ModelFactory.createDefaultModel() ;
-//        m2.read(dataurl, lang) ;
-//        assertTrue(m2.size() != 0 ) ;
+        // Read via Jena model API.
+        Model m2 = ModelFactory.createDefaultModel() ;
+        // The range of names for mode.read is less - canonicalise the langauge name.
+        String x = RDFLanguages.nameToLang(lang).getName() ;
+        m2.read(dataurl, x) ;
+        assertTrue(m2.size() != 0 ) ;
     }
 
     private static void jenaread(String dataurl, String lang, String base)

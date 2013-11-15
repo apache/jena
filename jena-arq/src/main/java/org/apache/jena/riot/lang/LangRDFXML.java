@@ -75,7 +75,6 @@ public class LangRDFXML implements LangRIOT
         return new LangRDFXML(in, xmlBase, filename, errorHandler, sink) ;
     }
     
-    @Deprecated
     public static LangRDFXML create(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, StreamRDF sink)
     {
         return new LangRDFXML(reader, xmlBase, filename, errorHandler, sink) ;

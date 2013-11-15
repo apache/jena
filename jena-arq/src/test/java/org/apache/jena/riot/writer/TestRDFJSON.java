@@ -27,10 +27,6 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -172,9 +168,7 @@ public class TestRDFJSON extends BaseTest
     {
         ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray()) ;
         Graph graph = GraphFactory.createGraphMem() ;
-        StreamRDF dest = StreamRDFLib.graph(graph) ; 
-        LangRIOT parser = RiotReader.createParserRdfJson(bin, dest) ;
-        parser.parse() ;
+        RDFDataMgr.read(graph, bin, Lang.RDFJSON) ;
         return graph ;
     }
 
