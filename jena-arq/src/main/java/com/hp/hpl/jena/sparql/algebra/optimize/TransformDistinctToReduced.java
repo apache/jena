@@ -18,11 +18,13 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import java.util.Collection ;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.OpDistinct;
 import com.hp.hpl.jena.sparql.algebra.op.OpOrder;
@@ -65,24 +67,57 @@ import com.hp.hpl.jena.sparql.core.Var;
  */
 public class TransformDistinctToReduced extends TransformCopy {
 
+    public TransformDistinctToReduced() {}
+    
     // Best is this is after TransformTopN but they are order independent
     // TopN of "reduced or distinct of order" is handled.
-    @Override
-    public Op transform(OpDistinct opDistinct, Op subOp) {
+    //@Override
+    public Op transform1(OpDistinct opDistinct, Op subOp) {
         if (subOp instanceof OpProject) {
             OpProject opProject = (OpProject) subOp;
             if (opProject.getSubOp() instanceof OpOrder) {
                 OpOrder opOrder = (OpOrder) opProject.getSubOp();
-                if (isSafe(opProject, opOrder)) {
+                Set<Var> projectVars = new HashSet<Var>(opProject.getVars()) ;
+                if (isSafe(projectVars, opOrder)) {
                     return OpReduced.create(subOp);
                 }
             }
         }
         return super.transform(opDistinct, subOp);
     }
+    
+    
+    @Override
+    public Op transform(OpDistinct opDistinct, Op subOp) {
+        
+        OpOrder opOrder = null ;
+        Set<Var> projectVars = null ;
+        /*   SELECT DISTINCT * {} ORDER BY
+         * giving an alegbra expression of the form:  
+         *   (distinct
+         *     (order 
+         */
+        if (subOp instanceof OpOrder) {
+            opOrder = (OpOrder) subOp;
+            projectVars = OpVars.visibleVars(subOp) ;
+        } else if (subOp instanceof OpProject) {
+            OpProject opProject = (OpProject) subOp;
+            if (opProject.getSubOp() instanceof OpOrder) {
+                projectVars = new HashSet<Var>(opProject.getVars()) ;
+                opOrder = (OpOrder) opProject.getSubOp();
+            }
+        } 
 
-    protected boolean isSafe(OpProject opProject, OpOrder opOrder) {
-        Set<Var> projectVars = new HashSet<Var>(opProject.getVars());
+        if ( projectVars == null )
+            return super.transform(opDistinct, subOp) ;
+            
+        if (isSafe(projectVars, opOrder))
+            return OpReduced.create(subOp);
+        
+        return super.transform(opDistinct, subOp);
+    }
+
+    protected boolean isSafe(Set<Var> projectVars, OpOrder opOrder) {
         Set<Var> seenVars = new HashSet<Var>();
 
         // For the optimization to be safe all project variables must appear in
@@ -95,14 +130,14 @@ public class TransformDistinctToReduced extends TransformCopy {
                 ok = false;
                 break;
             }
-
+            // XXX
             // As soon as we've seen all variables we know this is safe and any
             // further sort conditions are irrelevant
             if (seenVars.size() == projectVars.size())
-                break;
+                return true ;
         }
-
-        return ok;
+        // The projects vars must all have been seen.
+        return (seenVars.size() == projectVars.size()) ;
     }
 
     /**
@@ -114,7 +149,7 @@ public class TransformDistinctToReduced extends TransformCopy {
      *            Project Variables
      * @return True if valid, false otherwise
      */
-    private boolean isValidSortCondition(SortCondition cond, Set<Var> projectVars, Set<Var> seenVars) {
+    private boolean isValidSortCondition(SortCondition cond, Collection<Var> projectVars, Set<Var> seenVars) {
         if (cond.getExpression().isVariable()) {
             if (projectVars.contains(cond.getExpression().asVar())) {
                 seenVars.add(cond.getExpression().asVar());
