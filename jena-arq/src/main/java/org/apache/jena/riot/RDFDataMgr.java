@@ -22,19 +22,12 @@ import java.io.* ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.io.PeekReader ;
-import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.lang.LangRDFXML ;
-import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.stream.StreamManager ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.riot.tokens.Tokenizer ;
-import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.jena.riot.writer.NQuadsWriter ;
 import org.apache.jena.riot.writer.NTriplesWriter ;
 import org.slf4j.Logger ;
@@ -67,12 +60,13 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  *  <p>
  *  Extensible - a new syntax can be added to the framework. 
  *  </p>
- *  <p>Operations fall into the follwoing categories:</p>
+ *  <p>Operations fall into the following categories:</p>
  *  <ul>
- *  <li>{@code read} -- Read data from a location into a Model/Dataset etc</li>
+ *  <li>{@code read}    -- Read data from a location into a Model/Dataset etc</li>
  *  <li>{@code loadXXX} -- Read data and return an in-memory object holding the data.</li>
- *  <li>{@code parse} -- Read data and send to an {@link StreamRDF}</li>
- *  <li>{@code open}  -- Open a typed input stream to the location, using any alternative locations</li>
+ *  <li>{@code parse}   -- Read data and send to an {@link StreamRDF}</li>
+ *  <li>{@code open}    -- Open a typed input stream to the location, using any alternative locations</li>
+ *  <li>{@code write}   -- Write Model/Dataset etc</li> 
  *  </ul> 
  */
 
@@ -289,7 +283,7 @@ public class RDFDataMgr
     public static void read(Graph graph, Reader in, String base, Lang lang)
     {
         StreamRDF dest = StreamRDFLib.graph(graph) ;
-        processTriples(dest, base, in, lang, null) ;
+        process(dest, base, in, lang, null) ;
     }
 
     /** Read triples into a model with chars from a StringReader.
@@ -302,7 +296,7 @@ public class RDFDataMgr
     {
         Graph g = model.getGraph() ;
         StreamRDF dest = StreamRDFLib.graph(g) ;
-        processTriples(dest, base, in, lang, null) ;
+        process(dest, base, in, lang, null) ;
     }
 
     /** Read triples into a model with chars from a StringReader.
@@ -314,7 +308,7 @@ public class RDFDataMgr
     public static void read(Graph graph, StringReader in, String base, Lang lang)
     {
         StreamRDF dest = StreamRDFLib.graph(graph) ;
-        processTriples(dest, base, in, lang, null) ;
+        process(dest, base, in, lang, null) ;
     }
     
     private static Model createModel() { return ModelFactory.createDefaultModel() ; } 
@@ -824,11 +818,24 @@ public class RDFDataMgr
     {
         ContentType ct = determineCT(baseUri, in.getContentType(), hintLang) ;
         if ( ct == null )
-            throw new RiotException("Failed to determine the triples content type: (URI="+baseUri+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
+            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
 
         ReaderRIOT reader = getReader(ct) ;
         if ( reader == null )
-            throw new RiotException("No triples reader for content type: "+ct.getContentType()) ;
+            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
+        reader.read(in, baseUri, ct, destination, context) ;
+    }
+
+    // java.io.Readers are NOT preferred.
+    private static void process(StreamRDF destination, String baseUri, Reader in, Lang lang, Context context)
+    {
+        // Not as good as from an InputStream 
+        ContentType ct = determineCT(baseUri, null, lang) ;
+        if ( ct == null )
+            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : hint="+lang+")") ;
+        ReaderRIOT reader = getReader(ct) ;
+        if ( reader == null )
+            throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
         reader.read(in, baseUri, ct, destination, context) ;
     }
 
@@ -839,39 +846,6 @@ public class RDFDataMgr
         if ( r == null )
             return null ;
         return r.create(lang) ;
-    }
-    
-    // java.io.Readers are NOT preferred.
-    @SuppressWarnings("deprecation")
-    private static void processTriples(StreamRDF output, String base, Reader in, Lang lang, Context context)
-    {
-        // Not as good as from an InputStream - RDF/XML not supported 
-        ContentType ct = determineCT(base, null, lang) ;
-        if ( ct == null )
-            throw new RiotException("Failed to determine the triples content type: (URI="+base+" : hint="+lang+")") ;
-        LangRIOT parser ;
-        if ( lang == null )
-            throw new RiotException("No language specificied") ;
-
-        if ( RDFLanguages.sameLang(RDFLanguages.RDFXML, lang) )
-            parser = LangRDFXML.create(in, base, base, ErrorHandlerFactory.errorHandlerStd, output) ;
-        else
-        {
-            Tokenizer tokenizer =
-                RDFLanguages.RDFJSON.equals(lang)?
-                              new TokenizerJSON(PeekReader.make(in)) :   
-                              TokenizerFactory.makeTokenizer(in) ;
-            parser = RiotReader.createParser(tokenizer, lang, base, output) ;
-        }
-        parser.parse() ;
-    }
-    
-    // java.io.Readers are NOT preferred.
-    private static void process(StreamRDF dest, String base, Reader in, Lang hintLang, Context context)
-    {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
-        LangRIOT parser = RiotReader.createParser(tokenizer, hintLang, base, dest) ;
-        parser.parse() ;
     }
 
     /** Determine the Lang, given the URI target, any content type header string and a hint */ 

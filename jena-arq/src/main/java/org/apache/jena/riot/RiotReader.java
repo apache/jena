@@ -29,6 +29,7 @@ import static org.apache.jena.riot.RDFLanguages.RDFNULL ;
 import static org.apache.jena.riot.RDFLanguages.filenameToLang ;
 
 import java.io.InputStream ;
+import java.io.Reader ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IO ;
@@ -130,6 +131,21 @@ public class RiotReader
         Tokenizer tokenizer = ( lang == RDFJSON ) ?
             new TokenizerJSON(PeekReader.makeUTF8(input)) :
                 TokenizerFactory.makeTokenizerUTF8(input) ;
+        return createParser(tokenizer, lang, baseIRI, dest) ;
+    }
+
+    /** Create a parser */  
+    public static LangRIOT createParser(Reader input, Lang lang, String baseIRI, StreamRDF dest)
+    {
+        if ( lang == RDFXML )
+        {
+            if ( baseIRI != null )
+                baseIRI = IRIResolver.resolveString(baseIRI) ;
+            return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
+        }
+        Tokenizer tokenizer = ( lang == RDFJSON ) ?
+            new TokenizerJSON(PeekReader.make(input)) :
+                TokenizerFactory.makeTokenizer(input) ;
         return createParser(tokenizer, lang, baseIRI, dest) ;
     }
 
@@ -297,21 +313,27 @@ public class RiotReader
         }
     }
     
-    /** Create a parser for Turtle, with default behaviour */
+    /** Create a parser for Turtle
+     * @deprecated use an RDFDataMgr operation with argument Lang.Turtle
+     */
+    @Deprecated
     public static LangTurtle createParserTurtle(InputStream input, String baseIRI, StreamRDF dest)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTurtle(tokenizer, baseIRI, dest) ;
     }
     
-    /** Create a parser for Turtle, with default behaviour */
+    /** Create a parser for Turtle */
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, StreamRDF dest)
     {
         LangTurtle parser = new LangTurtle(tokenizer, RiotLib.profile(RDFLanguages.TURTLE, baseIRI), dest) ;
         return parser ;
     }
 
-    /** Create a parser for RDF/XML */
+    /** Create a parser for RDF/XML
+     * @deprecated use an RDFDataMgr operation with argument Lang.RDFXML
+     */
+    @Deprecated
     public static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, StreamRDF dest)
     {
         if ( baseIRI == null )
@@ -326,49 +348,62 @@ public class RiotReader
     	LangRDFJSON parser = new LangRDFJSON(tokenizer, RiotLib.profile(RDFLanguages.RDFJSON, null), dest) ;
     	return parser;
     }
-
+    
+    /**
+     * @deprecated use RDFDataMgr and Lang.RDFJSON
+     */
+    @Deprecated
     public static LangRDFJSON createParserRdfJson(InputStream input, StreamRDF dest)
     {
-    	TokenizerJSON tokenizer = new TokenizerJSON(PeekReader.makeUTF8(input)) ;
-    	return createParserRdfJson(tokenizer, dest) ;
+        TokenizerJSON tokenizer = new TokenizerJSON(PeekReader.makeUTF8(input)) ;
+        return createParserRdfJson(tokenizer, dest) ;
     }
     
-    /** Create a parser for TriG, with default behaviour */
+    /** Create a parser for TriG
+     * @deprecated use an RDFDataMgr operation with argument Lang.TRIG
+     */
+    @Deprecated
     public static LangTriG createParserTriG(InputStream input, String baseIRI, StreamRDF dest)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTriG(tokenizer, baseIRI, dest) ;
     }
     
-    /** Create a parser for TriG, with default behaviour */
+    /** Create a parser for TriG */
     public static LangTriG createParserTriG(Tokenizer tokenizer, String baseIRI, StreamRDF dest)
     {
         LangTriG parser = new LangTriG(tokenizer, RiotLib.profile(RDFLanguages.TRIG, baseIRI), dest) ;
         return parser ;
     }
 
-    /** Create a parser for N-Triples, with default behaviour */
+    /** Create a parser for N-Triples
+     * @deprecated use an RDFDataMgr operation with argument Lang.NTRIPLES
+     */
+    @Deprecated
     public static LangNTriples createParserNTriples(InputStream input, StreamRDF dest)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
         return createParserNTriples(tokenizer, dest) ;
     }
     
-    /** Create a parser for N-Triples, with default behaviour */
+    /** Create a parser for N-Triples */
     public static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest)
     {
         LangNTriples parser = new LangNTriples(tokenizer, RiotLib.profile(RDFLanguages.NTRIPLES, null), dest) ;
         return parser ;
     }
     
-    /** Create a parser for NQuads, with default behaviour */
+    /** Create a parser for NQuads
+     * @deprecated use an RDFDataMgr operation with argument Lang.NQUADS)
+     */
+    @Deprecated
     public static LangNQuads createParserNQuads(InputStream input, StreamRDF dest)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
         return createParserNQuads(tokenizer, dest) ;
     }
     
-    /** Create a parser for NQuads, with default behaviour */
+    /** Create a parser for NQuads */
     public static LangNQuads createParserNQuads(Tokenizer tokenizer, StreamRDF dest)
     {
         LangNQuads parser = new LangNQuads(tokenizer, RiotLib.profile(RDFLanguages.NQUADS, null), dest) ;

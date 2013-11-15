@@ -19,6 +19,7 @@
 package arq.examples.riot;
 
 import java.io.InputStream ;
+import java.io.Reader ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.web.ContentType ;
@@ -70,21 +71,32 @@ public class ExRIOT_5
         @Override
         public ReaderRIOT create(Lang language)
         {
+            // This is just an example - it reads a graph in 
+            // http://jena.apache.org/documentation/notes/sse.html
+            // format.  It is not a streaming parser; it creates some triples,
+            // then send them to the output. This style might be useful for creating
+            // triples from a converter process or program.
+            
             return new ReaderRIOT() {
                 @Override
                 public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context)
                 {
-                    // This is just an example - it reads a graph in 
-                    // http://jena.apache.org/documentation/notes/sse.html
-                    // format.  It is not a streaming parser; it creates some triples,
-                    // then send them to the output. This style might be useful for creating
-                    // triples from a converter process or program. 
                     Item item = SSE.parse(in) ;
+                    read(item, baseURI, ct, output, context); 
+                    
+                }
+                @Override
+                public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+                    Item item = SSE.parse(in) ;
+                    read(item, baseURI, ct, output, context); 
+                }
+                private void read(Item item, String baseURI, ContentType ct, StreamRDF output, Context context) {
                     Graph graph = BuilderGraph.buildGraph(item) ;
                     Iterator<Triple> iter = graph.find(null, null, null) ;
                     for ( ; iter.hasNext() ; )
                         output.triple(iter.next()) ;
-                }} ;
+                }
+            } ;
         }
     }
     

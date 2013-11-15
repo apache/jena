@@ -21,6 +21,7 @@ package org.apache.jena.riot;
 import static org.apache.jena.riot.RDFLanguages.* ;
 
 import java.io.InputStream ;
+import java.io.Reader ;
 import java.util.Map ;
 import java.util.Set ;
 
@@ -136,13 +137,18 @@ public class RDFParserRegistry
         {
             return new ReaderRIOT() {
                 @Override
-                public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context)
-                {
+                public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+                    LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
+                    parser.parse() ;
+                }
+                @Override
+                public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
                     LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
                     parser.parse() ;
                 }
             } ;
         }
+
     } ;
 }
 
