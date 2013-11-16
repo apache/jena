@@ -36,7 +36,6 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 
-
 public class BuilderOp
 {
     // It's easier to have a object than have all statics because the
@@ -696,7 +695,11 @@ public class BuilderOp
         {
             BuilderLib.checkLength(3, list, "assign") ;
             VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1)) ; 
-            Op sub = build(list, 2) ;
+            Op sub ; 
+            if ( list.size() == 2 )
+                sub = OpTable.unit() ;
+            else
+                sub = build(list, 2) ;
             return OpAssign.assign(sub, x) ;
         }
     } ;
@@ -706,9 +709,13 @@ public class BuilderOp
         @Override
         public Op make(ItemList list)
         {
-            BuilderLib.checkLength(3, list, "extend") ;
-            VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1)) ; 
-            Op sub = build(list, 2) ;
+            BuilderLib.checkLength(2, 3, list, "extend") ;
+            VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1)) ;
+            Op sub ; 
+            if ( list.size() == 2 )
+                sub = OpTable.unit() ;
+            else
+                sub = build(list, 2) ;
             return OpExtend.extend(sub, x) ;
         }
     } ;
