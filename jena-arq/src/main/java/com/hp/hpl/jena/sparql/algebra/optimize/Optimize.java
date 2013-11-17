@@ -98,7 +98,7 @@ public class Optimize implements Rewrite
     }
 
     
-    /** Globably set the fcaory for making optimizers */ 
+    /** Globably set the factory for making optimizers */ 
     public static void setFactory(RewriterFactory aFactory)
     { factory = aFactory ; }
 
@@ -122,7 +122,7 @@ public class Optimize implements Rewrite
     /** Alternative name for compatibility only */
     public static final Symbol filterPlacementOldName = ARQConstants.allocSymbol("filterPlacement") ;
     
-    @SuppressWarnings("all")
+    @Override
     public Op rewrite(Op op)
     {
         // Record optimizer
