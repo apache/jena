@@ -48,10 +48,14 @@ public class BlankNodeAllocatorFixedSeedHash extends BlankNodeAllocatorHash {
         if (seed == null)
             throw new NullPointerException("seed cannot be null");
         this.seed = seed;
+        this.reset();
     }
 
     @Override
     protected UUID freshSeed() {
-        return this.seed;
+        // NB - The parent constructor calls reset() so we have to provide a
+        // fake value here temorarily which we then replace with the user
+        // specified seed by calling reset() again in our own constructor
+        return this.seed == null ? UUID.randomUUID() : this.seed;
     }
 }
