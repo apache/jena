@@ -78,6 +78,19 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
     
     /**
      * Gets a fresh seed value
+     * <p>
+     * Note that this is called almost immediately by the constructor
+     * and on this initial call you will not yet have access to any 
+     * implementation specific information used to select the seed.
+     * </p>
+     * <p>
+     * Implementations <strong>must</strong> return a non-null value
+     * so if you can't decide a seed prior to seeing your derived
+     * implementations constructor inputs you should return a temporary
+     * fake value initially.  You can then call {@link #reset()} in your 
+     * own constructor after you've taken the necessary steps that allow
+     * you to decide how to generate your own seed. 
+     * </p>
      * @return Seed value
      */
     protected UUID freshSeed() {
