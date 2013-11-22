@@ -210,10 +210,10 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optIndexJoinStrategy) )
             op = apply("Index Join strategy", new TransformJoinStrategy(), op) ;
         
-        // Place filters close to where their dependency variabnes are defined.
+        // Place filters close to where their dependency variables are defined.
         // This prunes the output of that step as early as possible.
         // If done before TransformJoinStrategy, you can get two applications
-        // of a filter in a (sequence) from eachhalf of a (join).  This is harmless,
+        // of a filter in a (sequence) from each half of a (join).  This is harmless,
         // because filters are generally cheap, but it looks a bit bad.
         if ( context.isTrueOrUndef(ARQ.optFilterPlacement) )
             // This can be done too early (breaks up BGPs).
