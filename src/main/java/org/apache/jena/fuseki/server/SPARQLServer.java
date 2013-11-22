@@ -34,10 +34,10 @@ import org.apache.jena.fuseki.mgt.ActionDataset ;
 import org.apache.jena.fuseki.mgt.MgtFunctions ;
 import org.apache.jena.fuseki.mgt.PageNames ;
 import org.apache.jena.fuseki.servlets.* ;
-import org.apache.jena.fuseki.validation.DataValidator ;
-import org.apache.jena.fuseki.validation.IRIValidator ;
+import org.apache.jena.fuseki.validation2.DataValidator ;
+import org.apache.jena.fuseki.validation2.IRIValidator ;
 import org.apache.jena.fuseki.validation2.QueryValidator ;
-import org.apache.jena.fuseki.validation.UpdateValidator ;
+import org.apache.jena.fuseki.validation2.UpdateValidator ;
 import org.apache.jena.riot.WebContent ;
 import org.eclipse.jetty.http.MimeTypes ;
 import org.eclipse.jetty.security.* ;
@@ -262,6 +262,7 @@ public class SPARQLServer {
             // Validators
             HttpServlet validateQuery = new QueryValidator() ;
             HttpServlet validateUpdate = new UpdateValidator() ;
+            
             HttpServlet validateData = new DataValidator() ;
             HttpServlet validateIRI = new IRIValidator() ;
 

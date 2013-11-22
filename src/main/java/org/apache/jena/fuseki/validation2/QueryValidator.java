@@ -49,11 +49,6 @@ public class QueryValidator extends ValidatorBaseJson {
     static final String jAlgebraOpt      = "algebra-opt" ;
     static final String jAlgebraOptQuads = "algebra-opt-quads" ;
 
-    static final String jErrors          = "errors" ;
-    static final String jParseError      = "parse-error" ;
-    static final String jParseErrorLine  = "parse-error-line" ;
-    static final String jParseErrorCol   = "parse-error-column" ;
-
     @Override
     protected JsonObject execute(ValidationAction action) {
         JsonBuilder obj = new JsonBuilder() ;

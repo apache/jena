@@ -42,6 +42,13 @@ import com.hp.hpl.jena.sparql.util.Context ;
 /** ValidationBase for JSON out */ 
 public abstract class ValidatorBaseJson extends ServletBase
 {
+    public static final String jErrors          = "errors" ;
+    public static final String jWarnings        = "warning" ;
+
+    public static final String jParseError      = "parse-error" ;
+    public static final String jParseErrorLine  = "parse-error-line" ;
+    public static final String jParseErrorCol   = "parse-error-column" ;
+
     protected static Logger serviceLog = Fuseki.requestLog ;
     public static final String respService      = "X-Service" ;
     
@@ -80,7 +87,6 @@ public abstract class ValidatorBaseJson extends ServletBase
                 responseSendError(response, ex.rc, ex.message) ;
             else
                 responseSendError(response, ex.rc) ;
-            //(null, string, statusCode) ;
         } catch (Throwable th) {
             responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, "Internal Error") ;
         }
