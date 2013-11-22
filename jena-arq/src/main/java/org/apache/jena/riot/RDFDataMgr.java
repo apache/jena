@@ -283,7 +283,7 @@ public class RDFDataMgr
     public static void read(Graph graph, Reader in, String base, Lang lang)
     {
         StreamRDF dest = StreamRDFLib.graph(graph) ;
-        process(dest, base, in, lang, null) ;
+        process(dest, in, base, lang, null) ;
     }
 
     /** Read triples into a model with chars from a StringReader.
@@ -296,7 +296,7 @@ public class RDFDataMgr
     {
         Graph g = model.getGraph() ;
         StreamRDF dest = StreamRDFLib.graph(g) ;
-        process(dest, base, in, lang, null) ;
+        process(dest, in, base, lang, null) ;
     }
 
     /** Read triples into a model with chars from a StringReader.
@@ -308,7 +308,7 @@ public class RDFDataMgr
     public static void read(Graph graph, StringReader in, String base, Lang lang)
     {
         StreamRDF dest = StreamRDFLib.graph(graph) ;
-        process(dest, base, in, lang, null) ;
+        process(dest, in, base, lang, null) ;
     }
     
     private static Model createModel() { return ModelFactory.createDefaultModel() ; } 
@@ -605,7 +605,7 @@ public class RDFDataMgr
     public static void read(DatasetGraph dataset, Reader in, String base, Lang lang)
     {
         StreamRDF dest = StreamRDFLib.dataset(dataset) ;
-        process(dest, base, in, lang, null) ;
+        process(dest, in, base, lang, null) ;
     }
 
     /** Read quads into a dataset with chars from a StringReader.
@@ -632,7 +632,7 @@ public class RDFDataMgr
     public static void read(DatasetGraph dataset, StringReader in, String base, Lang lang)
     {
         StreamRDF dest = StreamRDFLib.dataset(dataset) ;
-        process(dest, base, in, lang, null) ;
+        process(dest, in, base, lang, null) ;
     }
 
     /** Read RDF data.
@@ -705,6 +705,39 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      */
     public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang)
+    {
+        parse(sink, in, base, hintLang, null) ;  
+    }
+
+    /** Read RDF data.
+     * @param sink      Destination for the RDF read.
+     * @param in        Reader
+     * @param base      Base URI (defaults to uri).
+     * @param hintLang  Hint for the syntax
+     * @param context   Content object to control reading process.
+     */
+    public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang, Context context)
+    {
+        process(sink, in, base, hintLang, context) ;
+    }
+
+    /** Read RDF data.
+     * @param sink      Destination for the RDF read.
+     * @param in        Reader
+     * @param lang      Syntax for the stream.
+     */
+    public static void parse(StreamRDF sink, Reader in, Lang lang)
+    {
+        parse(sink, in, null, lang, null) ;  
+    }
+
+    /** Read RDF data.
+     * @param sink      Destination for the RDF read.
+     * @param in        Reader
+     * @param base      Base URI (defaults to uri).
+     * @param hintLang  Hint for the syntax
+     */
+    public static void parse(StreamRDF sink, Reader in, String base, Lang hintLang)
     {
         parse(sink, in, base, hintLang, null) ;  
     }
@@ -827,7 +860,7 @@ public class RDFDataMgr
     }
 
     // java.io.Readers are NOT preferred.
-    private static void process(StreamRDF destination, String baseUri, Reader in, Lang lang, Context context)
+    private static void process(StreamRDF destination, Reader in, String baseUri, Lang lang, Context context )
     {
         // Not as good as from an InputStream 
         ContentType ct = determineCT(baseUri, null, lang) ;
