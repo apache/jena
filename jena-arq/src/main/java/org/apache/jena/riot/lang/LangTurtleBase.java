@@ -194,7 +194,9 @@ public abstract class LangTurtleBase extends LangBase {
 
         boolean maybeList = lookingAt(LPAREN) ;
         
-        // TriplesSameSubject -> TriplesNode PropertyList?
+        // Turtle: TriplesSameSubject -> TriplesNode PropertyList?
+        // TriG:   (blankNodePropertyList | collection) predicateObjectList? '.'
+        //         labelOrSubject (wrappedGraph | predicateObjectList '.')
         if ( peekTriplesNodeCompound() ) {
             Node n = triplesNodeCompound() ;
 
@@ -208,7 +210,6 @@ public abstract class LangTurtleBase extends LangBase {
             // There must be a predicate and object.
 
             // -- If strict turtle.
-            // TODO Also for { ( 1 2 3 ) }
             if ( profile.isStrictMode() && maybeList ) {
                 if ( peekPredicate() ) {
                     predicateObjectList(n) ;
@@ -229,12 +230,11 @@ public abstract class LangTurtleBase extends LangBase {
                 return ;
             }
 
-            if ( peekPredicate() ) {
+            if ( peekPredicate() )
                 predicateObjectList(n) ;
-                expectEndOfTriples() ;
-                return ;
-            }
-            exception(peekToken(), "Unexpected token : %s", peekToken()) ;
+            expectEndOfTriples() ;
+            //exception(peekToken(), "Unexpected token : %s", peekToken()) ;
+            return ;
         }
         exception(peekToken(), "Out of place: %s", peekToken()) ;
     }
