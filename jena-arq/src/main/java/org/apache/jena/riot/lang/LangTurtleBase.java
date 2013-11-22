@@ -128,15 +128,21 @@ public abstract class LangTurtleBase extends LangBase {
 
         if ( x.equals("base") ) {
             directiveBase() ;
-            skipIf(DOT) ;
-            // expect("Base directive not terminated by a dot", DOT) ;
+            if ( profile.isStrictMode() )
+                // The line number is probably one ahead due to the newline
+                expect("Base directive not terminated by a dot", DOT) ;
+            else
+                skipIf(DOT) ;
             return ;
         }
 
         if ( x.equals("prefix") ) {
             directivePrefix() ;
-            skipIf(DOT) ;
-            // expect("Prefix directive not terminated by a dot", DOT) ;
+            if ( profile.isStrictMode() )
+                // The line number is probably one ahead due to the newline
+                expect("Prefix directive not terminated by a dot", DOT) ;   
+            else
+                skipIf(DOT) ;
             return ;
         }
         exception(t, "Unrecognized directive: %s", x) ;
@@ -168,7 +174,6 @@ public abstract class LangTurtleBase extends LangBase {
         String baseStr = token.getImage() ;
         dest.base(baseStr) ;
         IRI baseIRI = profile.makeIRI(baseStr, currLine, currCol) ;
-        skipIf(DOT) ;
         nextToken() ;
         profile.getPrologue().setBaseURI(baseIRI) ;
     }
@@ -187,6 +192,8 @@ public abstract class LangTurtleBase extends LangBase {
             return ;
         }
 
+        boolean maybeList = lookingAt(LPAREN) ;
+        
         // TriplesSameSubject -> TriplesNode PropertyList?
         if ( peekTriplesNodeCompound() ) {
             Node n = triplesNodeCompound() ;
@@ -201,13 +208,14 @@ public abstract class LangTurtleBase extends LangBase {
             // There must be a predicate and object.
 
             // -- If strict turtle.
-            if ( false ) {
+            // TODO Also for { ( 1 2 3 ) }
+            if ( profile.isStrictMode() && maybeList ) {
                 if ( peekPredicate() ) {
                     predicateObjectList(n) ;
                     expectEndOfTriples() ;
                     return ;
                 }
-                exception(peekToken(), "Predicate/object required after (...) and [...] - Unexpected token : %s",
+                exception(peekToken(), "Predicate/object required after (...) - Unexpected token : %s",
                           peekToken()) ;
             }
             // ---
@@ -243,9 +251,8 @@ public abstract class LangTurtleBase extends LangBase {
         expectEndOfTriples() ;
     }
 
-    // XXX Sort out.
-    // Move top level loop into LangTriG and LangTurtle. 
     // Differs between Turtle and TriG.
+    // TriG, inside {} does not need the trailing DOT
     protected abstract void expectEndOfTriples() ;
     
     // The DOT is required by Turtle (strictly).
