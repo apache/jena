@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.validation2 ;
+package org.apache.jena.fuseki.validation ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.json.JsonBuilder ;

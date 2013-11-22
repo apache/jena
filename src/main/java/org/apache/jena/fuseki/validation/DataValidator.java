@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.validation2;
+package org.apache.jena.fuseki.validation;
 
 import static org.apache.jena.riot.SysRIOT.fmtMessage ;
 
