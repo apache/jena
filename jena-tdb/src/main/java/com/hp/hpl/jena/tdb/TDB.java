@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb ;
 
 import java.util.Iterator ;
 
@@ -53,219 +53,213 @@ import com.hp.hpl.jena.tdb.sys.EnvTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
-public class TDB
-{
-    /** IRI for TDB */  
-    public static final String tdbIRI = "http://jena.hpl.hp.com/#tdb" ;
-    
-    /** Root of TDB-defined parameter names */  
-    public static final String tdbParamNS = "http://jena.hpl.hp.com/TDB#" ;
-    
-    /** Prefix for TDB-defined parameter names */  
-    public static final String tdbSymbolPrefix = "tdb" ;
-    
+public class TDB {
+    /** IRI for TDB */
+    public static final String  tdbIRI                           = "http://jena.hpl.hp.com/#tdb" ;
+
+    /** Root of TDB-defined parameter names */
+    public static final String  tdbParamNS                       = "http://jena.hpl.hp.com/TDB#" ;
+
+    /** Prefix for TDB-defined parameter names */
+    public static final String  tdbSymbolPrefix                  = "tdb" ;
+
     // Internal logging
-    private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
+    private static final Logger log                              = LoggerFactory.getLogger(TDB.class) ;
 
     /** Logger for loading information */
-    public static final String logLoaderName = "org.apache.jena.tdb.loader" ;
+    public static final String  logLoaderName                    = "org.apache.jena.tdb.loader" ;
     /** Logger for loading information */
-    public static final Logger logLoader = LoggerFactory.getLogger(logLoaderName) ;
-    
-    /** Logger for general information */ 
-    public static final String logInfoName = "org.apache.jena.info" ;
-    /** Logger for general information */ 
-    public static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
-    
-//    /** Logger for execution information */
-//    public static final String logExecName = "com.hp.hpl.jena.tdb.exec" ;
-//    /** Logger for execution information */
-//    public static final Logger logExec = LoggerFactory.getLogger(logExecName) ;
-    
-    public final static String namespace = "http://jena.hpl.hp.com/2008/tdb#" ;
+    public static final Logger  logLoader                        = LoggerFactory.getLogger(logLoaderName) ;
 
-    /** Symbol to use the union of named graphs as the default graph of a query */ 
-    public static final Symbol symUnionDefaultGraph          = SystemTDB.allocSymbol("unionDefaultGraph") ;
-    
+    /** Logger for general information */
+    public static final String  logInfoName                      = "org.apache.jena.info" ;
+    /** Logger for general information */
+    public static final Logger  logInfo                          = LoggerFactory.getLogger(logInfoName) ;
+
+    // /** Logger for execution information */
+    // public static final String logExecName = "com.hp.hpl.jena.tdb.exec" ;
+    // /** Logger for execution information */
+    // public static final Logger logExec = LoggerFactory.getLogger(logExecName)
+    // ;
+
+    public final static String  namespace                        = "http://jena.hpl.hp.com/2008/tdb#" ;
+
+    /** Symbol to use the union of named graphs as the default graph of a query */
+    public static final Symbol  symUnionDefaultGraph             = SystemTDB.allocSymbol("unionDefaultGraph") ;
+
     /**
-     * A String enum Symbol that specifies the type of temporary storage for transaction journal write blocks.
+     * A String enum Symbol that specifies the type of temporary storage for
+     * transaction journal write blocks.
      * <p/>
-     * "mem" = Java heap memory (default)
-     * <br/>
-     * "direct" = Process heap memory
-     * <br/>
-     * "mapped" = Memory mapped temporary file
-     * <br/>
+     * "mem" = Java heap memory (default) <br/>
+     * "direct" = Process heap memory <br/>
+     * "mapped" = Memory mapped temporary file <br/>
      */
-    public static final Symbol transactionJournalWriteBlockMode = SystemTDB.allocSymbol("transactionJournalWriteBlockMode") ;
-    
-    public static Context getContext()     { return ARQ.getContext() ; }  
-    
+    public static final Symbol  transactionJournalWriteBlockMode = SystemTDB.allocSymbol("transactionJournalWriteBlockMode") ;
+
+    public static Context getContext() {
+        return ARQ.getContext() ;
+    }
+
     // Called on assembler loading.
     // Real initializtion happnes due to class static blocks.
-    /** TDB System initialization - normally, this is not explicitly called because
-     * all routes to use TDB will cause initialization to occur.  However, calling it
-     * repeatedly is safe and low cost.
+    /**
+     * TDB System initialization - normally, this is not explicitly called
+     * because all routes to use TDB will cause initialization to occur.
+     * However, calling it repeatedly is safe and low cost.
      */
-    public static void init() { }
-    
-    /** Release any and all system resources held by TDB.
-     *  This does NOT close or release datasets or graphs held by client code. 
+    public static void init() {}
+
+    /**
+     * Release any and all system resources held by TDB. This does NOT close or
+     * release datasets or graphs held by client code.
      */
-    public static void closedown()
-    {
+    public static void closedown() {
         StoreConnection.reset() ;
     }
 
-    /** Set the global flag that control the "No BGP optimizer" warning.
-     * Set to false to silence the warning
+    /**
+     * Set the global flag that control the "No BGP optimizer" warning. Set to
+     * false to silence the warning
      */
-    public static void setOptimizerWarningFlag(boolean b)
-    { DatasetBuilderStd.setOptimizerWarningFlag(b) ; }
-    
-    // XXX Switch to SystemARQ.sync at ARQ 2.7.1 - beware of sync(DatasetGraph)
-    
+    public static void setOptimizerWarningFlag(boolean b) {
+        DatasetBuilderStd.setOptimizerWarningFlag(b) ;
+    }
+
     /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */
-    public static void sync(Model model)
-    {
+    public static void sync(Model model) {
         sync(model.getGraph()) ;
     }
-    
+
     /** Sync a TDB-backed Graph. Do nothing if not TDB-backed. */
-    public static void sync(Graph graph)
-    {
+    public static void sync(Graph graph) {
         syncObject(graph) ;
     }
 
     /** Sync a TDB-backed Dataset. Do nothing if not TDB-backed. */
-    public static void sync(Dataset dataset)
-    { 
+    public static void sync(Dataset dataset) {
         DatasetGraph ds = dataset.asDatasetGraph() ;
         sync(ds) ;
     }
-    
+
     /** Sync a TDB-backed DatasetGraph. Do nothing if not TDB-backed. */
-    public static void sync(DatasetGraph dataset)
-    { 
+    public static void sync(DatasetGraph dataset) {
         // Should be: SystemARQ.sync(dataset) ;
-        if ( dataset instanceof DatasetGraphTDB )
-        {
+        if ( dataset instanceof DatasetGraphTDB ) {
             syncObject(dataset) ;
             return ;
         }
-        
-        if ( dataset instanceof DatasetGraphTransaction )
-        {
+
+        if ( dataset instanceof DatasetGraphTransaction ) {
             DatasetGraphTransaction dsgt = (DatasetGraphTransaction)dataset ;
-            // This only sync if the dataset has not been used transactionally. 
+            // This only sync if the dataset has not been used transactionally.
             // Can't sync transactional datasets (it's meaningless)
-            dsgt.syncIfNotTransactional() ; 
+            dsgt.syncIfNotTransactional() ;
             return ;
         }
-        
+
         // May be a general purpose dataset with TDB objects in it.
         sync(dataset.getDefaultGraph()) ;
         Iterator<Node> iter = dataset.listGraphNodes() ;
-        iter = Iter.toList(iter).iterator() ;   // Avoid iterator concurrency.
-        for ( ; iter.hasNext() ; )
-        {
-            Node n = iter.next();
+        iter = Iter.toList(iter).iterator() ; // Avoid iterator concurrency.
+        for (; iter.hasNext();) {
+            Node n = iter.next() ;
             Graph g = dataset.getGraph(n) ;
             sync(g) ;
         }
     }
-    
-    /** Sync a TDB synchronizable object (model, graph, dataset). 
-     *  If force is true, synchronize as much as possible (e.g. file metadata)
-     *  else make a reasonable attenpt at synchronization but does not gauarantee disk state. 
-     * Do nothing otherwise 
+
+    /**
+     * Sync a TDB synchronizable object (model, graph, dataset). If force is
+     * true, synchronize as much as possible (e.g. file metadata) else make a
+     * reasonable attenpt at synchronization but does not gauarantee disk state.
+     * Do nothing otherwise
      */
-    private static void syncObject(Object object)
-    {
+    private static void syncObject(Object object) {
         if ( object instanceof Sync )
             ((Sync)object).sync() ;
     }
 
     private static boolean initialized = false ;
-    static { initialization1() ; }
-    
-    private static synchronized void initialization1()
-    {
+    static {
+        initialization1() ;
+    }
+
+    private static synchronized void initialization1() {
         // Called at start.
         if ( initialized )
             return ;
         initialized = true ;
-     
+
         RIOT.init() ;
         SystemTDB.init() ;
         ARQ.init() ;
         LangRDFXML.RiotUniformCompatibility = true ;
         EnvTDB.processGlobalSystemProperties() ;
-        
+
         MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
         AssemblerUtils.init() ;
-        AssemblerTDB.init();
+        AssemblerTDB.init() ;
         QueryEngineTDB.register() ;
         UpdateEngineTDB.register() ;
         MappingRegistry.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.tdbParamNS) ;
 
         wireIntoExecution() ;
-        
+
         if ( log.isDebugEnabled() )
-            log.debug("\n"+ARQ.getContext()) ;
+            log.debug("\n" + ARQ.getContext()) ;
     }
 
-    private static void wireIntoExecution()
-    {
+    private static void wireIntoExecution() {
         // TDB does it itself.
-        TDB.getContext().set(ARQ.optFilterPlacement, false) ;
+        TDB.getContext().set(ARQ.optFilterPlacementBGP, false) ;
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
-        
+
         // Wire in the TDB stage generator which will make TDB work whether
-        // or not the TDB executor is used. This means that datasets of mixed graph
+        // or not the TDB executor is used. This means that datasets of mixed
+        // graph
         // types inside a general purpose dataset work.
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
         StageBuilder.setGenerator(ARQ.getContext(), stageGenerator) ;
 
-        // Wire in the new OpExecutor.  
-        // This is normal way to execute with a general dataset or a 
-        // model that is TDB-backed.  (Is it?)
-        //QC.setFactory(ARQ.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
+        // Wire in the new OpExecutor.
+        // This is normal way to execute with a general dataset or a
+        // model that is TDB-backed. (Is it?)
+        // QC.setFactory(ARQ.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
     }
-    
+
     // ---- Static constants read by modVersion
     // ---- Must be after initialization.
-    
-    static private String metadataLocation = "org/apache/jena/tdb/tdb-properties.xml" ;
-    static private Metadata metadata = new Metadata(metadataLocation) ;
-    
-    /** The root package name for TDB */   
-    public static final String PATH = "org.apache.jena.tdb";
+
+    static private String      metadataLocation = "org/apache/jena/tdb/tdb-properties.xml" ;
+    static private Metadata    metadata         = new Metadata(metadataLocation) ;
+
+    /** The root package name for TDB */
+    public static final String PATH             = "org.apache.jena.tdb" ;
 
     // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
-    
-    public static final String NAME = "TDB" ;
-    
+
+    public static final String NAME             = "TDB" ;
+
     /** The full name of the current TDB version */
-    public static final String VERSION = metadata.get(PATH+".version", "DEV") ;
+    public static final String VERSION          = metadata.get(PATH + ".version", "DEV") ;
 
     /** The date and time at which this release was built */
-    public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
-    
-    // Final initialization (in case any statics in this file are important). 
+    public static final String BUILD_DATE       = metadata.get(PATH + ".build.datetime", "unset") ;
+
+    // Final initialization (in case any statics in this file are important).
     static {
         initialization2() ;
     }
 
-    private static void initialization2()
-    { 
+    private static void initialization2() {
         // Set management information.
         // Needs ARQ > 2.8.0
         String NS = TDB.PATH ;
         SystemInfo systemInfo = new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE) ;
-        ARQMgt.register(NS+".system:type=SystemInfo", systemInfo) ;
+        ARQMgt.register(NS + ".system:type=SystemInfo", systemInfo) ;
         SystemARQ.registerSubSystem(systemInfo) ;
     }
-    
+
 }

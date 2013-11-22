@@ -150,6 +150,8 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         StorageConfig storageConfig = new StorageConfig(location, params, readonly, blockMgrs, bufferChannels, nodeTables) ;
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storageConfig) ;
+        // TDB does filter placement on BGPs itself.
+        dsg.getContext().set(ARQ.optFilterPlacementBGP, false);
         QC.setFactory(dsg.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
         return dsg ;
     }

@@ -215,9 +215,11 @@ public class Optimize implements Rewrite
         // If done before TransformJoinStrategy, you can get two applications
         // of a filter in a (sequence) from each half of a (join).  This is harmless,
         // because filters are generally cheap, but it looks a bit bad.
-        if ( context.isTrueOrUndef(ARQ.optFilterPlacement) )
-            // This can be done too early (breaks up BGPs).
-            op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
+        if ( context.isTrueOrUndef(ARQ.optFilterPlacement) ) {
+            // Wether to push into BGPs 
+            boolean b = context.isTrueOrUndef(ARQ.optFilterPlacementBGP) ;
+            op = apply("Filter Placement", new TransformFilterPlacement(b), op) ;
+        }
 
         // Merge adjacent BGPs
         if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
