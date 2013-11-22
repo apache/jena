@@ -57,7 +57,6 @@ import com.hp.hpl.jena.tdb.transaction.TS_TransactionTDB ;
     , TS_Graph.class
     , TS_Factory.class
     , TS_TDBAssembler.class
-    , TS_Jena.class
     , TS_TransactionTDB.class
     , TS_ObjectFile.class
 } )

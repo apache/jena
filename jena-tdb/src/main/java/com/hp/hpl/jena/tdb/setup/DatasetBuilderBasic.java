@@ -23,6 +23,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -78,6 +79,8 @@ public class DatasetBuilderBasic implements DatasetBuilder
         ReorderTransformation transform  = chooseReorderTransformation(location) ;
         
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, null) ;
+        // TDB does filter placement on BGPs itself.
+        dsg.getContext().set(ARQ.optFilterPlacementBGP, false);
         QC.setFactory(dsg.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
         return dsg ;
     }

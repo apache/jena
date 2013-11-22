@@ -280,6 +280,13 @@ public class ARQ
     public static final Symbol optFilterPlacement = ARQConstants.allocSymbol("optFilterPlacement") ;
     
     /** 
+     *  Context key controlling whether to do filter placement within BGP and quad blocks.
+     *  Modies the effect of optFilterPlacement. 
+     *  Default is "true" - filter placement is pushed into BGPs.
+     */  
+    public static final Symbol optFilterPlacementBGP = ARQConstants.allocSymbol("optFilterPlacementBGP") ;
+
+    /** 
      *  Context key controlling whether an ORDER BY-LIMIT query is done avoiding total sort using an heap.
      *  Default is "true" - total sort if avoided by default when ORDER BY is used with LIMIT.
      */  

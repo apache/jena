@@ -46,6 +46,11 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              "(sequence (filter (= ?x 1) (bgp ( ?s ?p ?x))) (bgp (?s1 ?p1 ?x)))") ;
     }
 
+    @Test public void place_bgp_03a() {
+        testNoBGP("(filter (= ?x 1) (bgp (?s ?p ?x) (?s1 ?p1 ?x) ))",
+             null) ;
+    }
+
     @Test public void place_bgp_04() {
         test("(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))", "(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))") ;
     }
@@ -86,10 +91,21 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              "(sequence (bgp (?s ?p ?x1)) (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x2)) )") ;
     }
 
-    @Test public void place_sequence_05() {
-        test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
-            "(sequence (filter (= ?x 123) (bgp (?s ?p ?x1) (?s ?p ?x))) (bgp (?s ?p ?x2)) )") ;
+    @Test public void place_sequence_04a() {
+        testNoBGP("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1)) (bgp (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
+                "(sequence (filter (= ?x 123) (sequence (bgp (?s ?p ?x1)) (bgp (?s ?p ?x)))) (bgp (?s ?p ?x2)) )") ;
     }
+
+    @Test public void place_sequence_05() {
+        test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x) (?s ?p ?x1)) (bgp (?s ?p ?x2)) ))",
+            "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x1)) (bgp (?s ?p ?x2)) )") ;
+    }
+
+    @Test public void place_sequence_05a() {
+        testNoBGP("(filter (= ?x 123) (sequence (bgp (?s ?p ?x) (?s ?p ?x1)) (bgp (?s ?p ?x2)) ))",
+                "(sequence (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1))) (bgp (?s ?p ?x2)) )") ;
+    }
+
 
     @Test public void place_sequence_06() {
         test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x2)) (bgp (?s ?p ?x)) ))",
@@ -248,10 +264,17 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              "(union  (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y))) "+
                       "(filter (= ?x 123) (bgp (?s ?p ?z)  (?s1 ?p1 ?x)) ))") ;
     }
-
         
-        public static void test(String input, String output) {
-        Transform t_placement = new TransformFilterPlacement() ;
+    public static void test(String input, String output) {
+        test$(input, output, true) ;
+    }
+
+    public static void testNoBGP(String input , String output ) {
+        test$(input, output, false) ;
+    }
+        
+    public static void test$(String input, String output, boolean includeBGPs) {
+        Transform t_placement = new TransformFilterPlacement(includeBGPs) ;
         Op op1 = SSE.parseOp(input) ;
         Op op2 = Transformer.transform(t_placement, op1) ;
         if ( output == null ) {
@@ -262,6 +285,6 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
 
         Op op3 = SSE.parseOp(output) ;
         Assert.assertEquals(op3, op2) ;
+        
     }
-
 }

@@ -47,6 +47,7 @@ import com.hp.hpl.jena.sparql.util.VarUtils ;
  */
 
 public class TransformFilterPlacement extends TransformCopy {
+    
     static class Placement {
         final Op op ;
         final ExprList unplaced ; 
@@ -62,10 +63,10 @@ public class TransformFilterPlacement extends TransformCopy {
         return new Placement(op, remaining) ; 
     }
     
-    private static Placement resultNoChange(Op original) { 
+    private Placement resultNoChange(Op original) { 
         return noChangePlacement ;
     }
-    private static boolean isNoChange(Placement placement) { 
+    private boolean isNoChange(Placement placement) { 
         return placement == noChangePlacement ;
     }
 
@@ -85,7 +86,12 @@ public class TransformFilterPlacement extends TransformCopy {
         return op ;
     }
 
-    public TransformFilterPlacement() {}
+    private final boolean includeBGPs ;
+
+    public TransformFilterPlacement() { this(true) ; }
+    
+    public TransformFilterPlacement(boolean includeBGPs)
+    { this.includeBGPs = includeBGPs ; }
 
     @Override
     public Op transform(OpFilter opFilter, Op x) {
@@ -99,22 +105,26 @@ public class TransformFilterPlacement extends TransformCopy {
     }
 
     // Recurse
-    private static Op transformOp(ExprList exprs, Op x) {
+    private Op transformOp(ExprList exprs, Op x) {
         Placement placement = transform(exprs, x) ;
         Op op = buildFilter(placement) ;
         return op ;
     }
 
-    private static Placement transform(ExprList exprs, Op input) {
+    private Placement transform(ExprList exprs, Op input) {
         // Dispatch by visitor??
         Placement placement = null ;
 
-        if ( input instanceof OpBGP )
-            placement = placeBGP(exprs, (OpBGP)input) ;
+        if ( input instanceof OpBGP ) {
+            if ( includeBGPs )
+                placement = placeBGP(exprs, (OpBGP)input) ;
+        }
+        else if ( input instanceof OpQuadPattern ) {
+            if ( includeBGPs )
+                placement = placeQuadPattern(exprs, (OpQuadPattern)input) ;    
+        }
         else if ( input instanceof OpSequence )
             placement = placeSequence(exprs, (OpSequence)input) ;
-        else if ( input instanceof OpQuadPattern )
-            placement = placeQuadPattern(exprs, (OpQuadPattern)input) ;
         else if ( input instanceof OpJoin )
             placement = placeJoin(exprs, (OpJoin)input) ;
         else if ( input instanceof OpConditional )
@@ -126,11 +136,10 @@ public class TransformFilterPlacement extends TransformCopy {
         else if ( input instanceof OpUnion )
             placement = placeUnion(exprs, (OpUnion)input) ;
         
-        
-        // These are operations where chnaging the order of operations
-        // does not in itself make a differencebut enables expressions
-        // to be pushed own down to where they might make a difference.
-        // Otherwise these would blockers.
+        // These are operations where changing the order of operations
+        // does not in itself make a difference but enables expressions
+        // to be pushed down to where they might make a difference.
+        // Otherwise these would be blockers.
         
         else if ( input instanceof OpExtend )
             placement = placeExtend(exprs, (OpExtend)input) ;
@@ -142,11 +151,11 @@ public class TransformFilterPlacement extends TransformCopy {
         return placement ;
     }
     
-    private static Placement x_placeNoOp(ExprList exprs, Op op) {
+    private Placement x_placeNoOp(ExprList exprs, Op op) {
         return result(op, exprs) ;
     }
 
-    private static Placement placeFilter(ExprList exprs, OpFilter input) {
+    private Placement placeFilter(ExprList exprs, OpFilter input) {
         Placement p = transform(exprs, input.getSubOp()) ;
         if ( p == null )
             p = new Placement(input.getSubOp(), exprs) ;
@@ -209,7 +218,7 @@ public class TransformFilterPlacement extends TransformCopy {
         return null ;
     }
 
-    private static Placement placeQuadPattern(ExprList exprs, OpQuadPattern pattern) {
+    private Placement placeQuadPattern(ExprList exprs, OpQuadPattern pattern) {
         return placeQuadPattern(exprs, pattern.getGraphNode(), pattern.getBasicPattern()) ;
     }
 
@@ -272,7 +281,7 @@ public class TransformFilterPlacement extends TransformCopy {
      * orginal query.
      */
 
-    private static Placement placeSequence(ExprList exprsIn, OpSequence opSequence) {
+    private Placement placeSequence(ExprList exprsIn, OpSequence opSequence) {
         ExprList exprs = new ExprList(exprsIn) ;
         Set<Var> varScope = DS.set() ;
         List<Op> ops = opSequence.getElements() ;
@@ -299,7 +308,7 @@ public class TransformFilterPlacement extends TransformCopy {
     // If this is run after join->sequence, then this is good to do.
     static boolean pushRightAsWellAsLeft = true ; 
     
-    private static Placement placeJoin(ExprList exprs, OpJoin opJoin) {
+    private Placement placeJoin(ExprList exprs, OpJoin opJoin) {
         Op left = opJoin.getLeft() ;
         Op right = opJoin.getRight() ;
         Collection<Var> leftVars = fixedVars(left) ;
@@ -347,7 +356,7 @@ public class TransformFilterPlacement extends TransformCopy {
 
     /* A conditional is left join without scoping complications. */
     
-    private static Placement placeConditional(ExprList exprs, OpConditional opConditional) {
+    private Placement placeConditional(ExprList exprs, OpConditional opConditional) {
         Op left = opConditional.getLeft() ;
         Op right = opConditional.getRight() ;
         Placement nLeft = transform(exprs, left) ;
@@ -357,7 +366,7 @@ public class TransformFilterPlacement extends TransformCopy {
         return result(op, nLeft.unplaced) ;
     }
 
-    private static Placement placeLeftJoin(ExprList exprs, OpLeftJoin opLeftJoin) {
+    private Placement placeLeftJoin(ExprList exprs, OpLeftJoin opLeftJoin) {
         // Push LHS only.  RHS may result in no matches - is that safe to push into? 
         Op left = opLeftJoin.getLeft() ;
         Op right = opLeftJoin.getRight() ;
@@ -368,7 +377,7 @@ public class TransformFilterPlacement extends TransformCopy {
         return result(op, nLeft.unplaced) ;
     }
     
-    private static Placement placeUnion(ExprList exprs, OpUnion input) {
+    private Placement placeUnion(ExprList exprs, OpUnion input) {
         // Unsubtle - push into both sides.
         // Neater - for all unpushed put outside the union. 
         Op left = input.getLeft() ;
@@ -384,16 +393,16 @@ public class TransformFilterPlacement extends TransformCopy {
     }
 
     /** Try to optimize (filter (extend ...)) */
-    private static Placement placeExtend(ExprList exprs, OpExtend input) {
+    private Placement placeExtend(ExprList exprs, OpExtend input) {
         return processExtendAssign(exprs, input) ;
     }
     
-    private static Placement placeAssign(ExprList exprs, OpAssign input) {
+    private Placement placeAssign(ExprList exprs, OpAssign input) {
         return processExtendAssign(exprs, input) ;
         
     }
 
-    private static Placement processExtendAssign(ExprList exprs, OpExtendAssign input) {
+    private Placement processExtendAssign(ExprList exprs, OpExtendAssign input) {
         // Could break up the VarExprList
         Collection<Var> vars1 = input.getVarExprList().getVars() ;
         ExprList pushed = new ExprList() ;
@@ -428,7 +437,7 @@ public class TransformFilterPlacement extends TransformCopy {
         return result(op2, unpushed) ;
     }
 
-    private static Placement placeProject(ExprList exprs, OpProject input) {
+    private Placement placeProject(ExprList exprs, OpProject input) {
         Collection<Var> varsProject = input.getVars() ;
         ExprList pushed = new ExprList() ;
         ExprList unpushed = new ExprList() ;
@@ -455,7 +464,7 @@ public class TransformFilterPlacement extends TransformCopy {
         return result(op2, unpushed) ;
     }
     
-    private static Set<Var> fixedVars(Op op) {
+    private Set<Var> fixedVars(Op op) {
         return OpVars.fixedVars(op) ;
     }
 
