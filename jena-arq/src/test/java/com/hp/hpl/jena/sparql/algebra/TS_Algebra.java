@@ -27,10 +27,12 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestVarFinder.class
+    TestOpVars.class
+    , TestVarFinder.class
     , TestAlgebraTranslate.class
     , TestClassify.class
     , TestTransformFilters.class
+    , TestTransformFilterPlacement.class
     , TestTransformQuads.class
     , TestSemanticEquivalence.class
 

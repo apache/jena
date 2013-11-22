@@ -18,16 +18,13 @@
 
 package com.hp.hpl.jena.sparql.algebra ;
 
-import static com.hp.hpl.jena.sparql.core.Vars.* ;
+import static com.hp.hpl.jena.sparql.core.Vars.addVar ;
+import static com.hp.hpl.jena.sparql.core.Vars.addVarsFromTriple ;
 
-import java.util.ArrayList;
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.LinkedHashSet ;
-import java.util.List;
-import java.util.Set ;
+import java.util.* ;
 
-import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.atlas.lib.SetUtils ;
+import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -37,6 +34,7 @@ import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
+import com.hp.hpl.jena.sparql.util.VarUtils ;
 
 /** Get vars for a pattern */
 
@@ -63,6 +61,18 @@ public class OpVars
     public static void visibleVars(Op op, Set<Var> acc) {
         OpVarsPattern visitor = new OpVarsPattern(acc, true) ;
         OpWalker.walk(new WalkerVisitorVisible(visitor, acc), op) ;
+    }
+    
+    /** The set of variables that wil be in every solution of this Op */
+    public static Set<Var> fixedVars(Op op) {
+        Set<Var> acc = collector() ;
+        fixedVars(op, acc) ;
+        return acc ;
+    }
+
+    public static void fixedVars(Op op, Set<Var> acc) {
+        OpVarsPattern visitor = new OpVarsPattern(acc, true) ;
+        OpWalker.walk(new WalkerVisitorFixed(visitor, acc), op) ;
     }
     
     @SuppressWarnings("unchecked")
@@ -103,13 +113,16 @@ public class OpVars
         OpWalker.walk(op, visitor) ;
     }
 
+    /** @deprecate Use VarUtils.addVars */
+    @Deprecated
     public static Collection<Var> vars(BasicPattern pattern) {
         Set<Var> acc = collector() ;
         vars(pattern, acc) ;
         return acc ;
     }
 
-    public static void vars(BasicPattern pattern, Collection<Var> acc) {
+    /** @deprecate Use VarUtils.addVars */
+    @Deprecated    public static void vars(BasicPattern pattern, Collection<Var> acc) {
         for (Triple triple : pattern)
             addVarsFromTriple(acc, triple) ;
     }
@@ -145,6 +158,56 @@ public class OpVars
         }
     }
 
+    // Only consider variables that are visible and definitely defined.
+    // OPTIONAL (2 forms) and UNION are the interesting cases.
+    private static class WalkerVisitorFixed extends WalkerVisitor
+    {
+        private final Collection<Var> acc ;
+
+        public WalkerVisitorFixed(OpVarsPattern visitor, Collection<Var> acc) {
+            super(visitor) ;
+            this.acc = acc ;
+        }
+        
+        @Override
+        public void visit(OpLeftJoin x) {
+            x.getLeft().visit(this);
+        }
+
+        @Override
+        public void visit(OpConditional x) {
+            x.getLeft().visit(this);
+        }
+
+        @Override
+        public void visit(OpUnion x) {
+            Set<Var> left = fixedVars(x.getLeft()) ;
+            Set<Var> right = fixedVars(x.getRight()) ;
+            Set<Var> r = SetUtils.intersection(left,  right) ;
+            acc.addAll(r) ;
+        }
+        
+        @Override
+        public void visit(OpProject op) {
+            before(op) ;
+            // Skip Project subop.
+            acc.addAll(op.getVars()) ;
+            after(op) ;
+        }
+
+        @Override
+        public void visit(OpMinus op) {
+            before(op) ;
+            if (op.getLeft() != null)
+                op.getLeft().visit(this) ;
+            // Skip right.
+            // if ( op.getRight() != null ) op.getRight().visit(this) ;
+            if (visitor != null)
+                op.visit(visitor) ;
+            after(op) ;
+        }
+    }
+
     private static class OpVarsPattern extends OpVisitorBase
     {
         // The possibly-set-vars
@@ -158,7 +221,7 @@ public class OpVars
 
         @Override
         public void visit(OpBGP opBGP) {
-            vars(opBGP.getPattern(), acc) ;
+            VarUtils.addVars(acc, opBGP.getPattern()) ;
         }
 
         @Override
@@ -170,7 +233,7 @@ public class OpVars
         @Override
         public void visit(OpQuadPattern quadPattern) {
             addVar(acc, quadPattern.getGraphNode()) ;
-            vars(quadPattern.getBasicPattern(), acc) ;
+            VarUtils.addVars(acc, quadPattern.getBasicPattern()) ;
 //            // Pure quading
 //            for (Iterator<Quad> iter = quadPattern.getQuads().iterator(); iter.hasNext();) {
 //                Quad quad = iter.next() ;
