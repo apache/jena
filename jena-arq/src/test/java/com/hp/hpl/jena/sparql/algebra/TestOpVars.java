@@ -29,22 +29,40 @@ import org.junit.Test ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public class TestOpVar extends BaseTest
+public class TestOpVars extends BaseTest
 {
-    @Test public void opvar_01() { opVarPattern("(bgp (?s :p ?o))", "s", "o") ; }
-    @Test public void opvar_02() { opVarPattern("(leftjoin (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s1", "o1", "s", "o") ; }
-    @Test public void opvar_03() { opVarPattern("(leftjoin (bgp (?s :p ?o)) (bgp (?s :p ?o)) )", "s", "o") ; }
+    @Test public void opvars_01() { visible("(bgp (?s :p ?o))", "s", "o") ; }
+    @Test public void opvars_02() { visible("(leftjoin (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s1", "o1", "s", "o") ; }
+    @Test public void opvars_03() { visible("(leftjoin (bgp (?s :p ?o)) (bgp (?s :p ?o)) )", "s", "o") ; }
     
-    @Test public void opvar_04() { opVarPattern("(project (?s) (bgp(?s :p ?o)))", "s") ; }
-    @Test public void opvar_05() { opVarPattern("(minus (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s", "o") ; }
-    @Test public void opvar_06() { opVarPattern("(join (project (?x) (bgp(?x :p ?z)))  (bgp(?s :p 1)) )", "x", "s") ; }
+    @Test public void opvars_04() { visible("(project (?s) (bgp(?s :p ?o)))", "s") ; }
+    @Test public void opvars_05() { visible("(minus (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s", "o") ; }
+    @Test public void opvars_06() { visible("(join (project (?x) (bgp(?x :p ?z)))  (bgp(?s :p 1)) )", "x", "s") ; }
     
-    private static void opVarPattern(String string, String... vars)
+    
+    @Test public void opvars_10() { fixed("(bgp (?s :p ?o))", "s", "o") ; }
+    @Test public void opvars_11() { fixed("(leftjoin (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s", "o") ; }
+    @Test public void opvars_12() { fixed("(leftjoin (bgp (?s :p ?o)) (bgp (?s :p ?o)) )", "s", "o") ; }
+    
+    @Test public void opvars_13() { fixed("(union (bgp (?s :p ?o1)) (bgp (?s :p ?o2)) )", "s") ; }
+    @Test public void opvars_14() { fixed("(minus (bgp (?s :p ?o)) (bgp (?s1 :p ?o1)) )", "s", "o") ; }
+    @Test public void opvars_15() { fixed("(join (project (?x) (bgp(?x :p ?z)))  (bgp(?s :p 1)) )", "x", "s") ; }
+    
+    
+    private static void visible(String string, String... vars)
     {
         Op op = SSE.parseOp(string) ;
         Collection<Var> c = OpVars.visibleVars(op) ;
         check(vars, c) ;
     }
+    
+    private static void fixed(String string, String... vars)
+    {
+        Op op = SSE.parseOp(string) ;
+        Collection<Var> c = OpVars.fixedVars(op) ;
+        check(vars, c) ;
+    }
+    
 
     private static void check(String[] varsExpected, Collection<Var> varsFound)
     {

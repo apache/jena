@@ -19,21 +19,15 @@
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.junit.Assert ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Tests of transforms related to filters */
 public class TestTransformFilters extends AbstractTestTransform
 {
     private Transform t_equality    = new TransformFilterEquality() ;
     private Transform t_disjunction = new TransformFilterDisjunction() ;
-    private Transform t_placement   = new TransformFilterPlacement() ;
     private Transform t_expandOneOf = new TransformExpandOneOf() ;
     private Transform t_implicitJoin = new TransformFilterImplicitJoin() ;
     private Transform t_implicitLeftJoin = new TransformImplicitLeftJoin() ;
@@ -207,11 +201,11 @@ public class TestTransformFilters extends AbstractTestTransform
             , "}") ; 
         
         String ops = StrUtils.strjoinNL
-            ("(filter (= ?test <http://localhost/t1>)"
-            ,"    (sequence"
-            ,"      (bgp (triple ?test ?p1 ?X))"
-            ,"      (project (?s1 ?test)"
-            ,"        (bgp (triple ?test ?/p2 ?/o2)))))"
+            ("(sequence"
+            ,"   (filter (= ?test <http://localhost/t1>)"
+            ,"     (bgp (triple ?test ?p1 ?X)))"
+            ,"   (project (?s1 ?test)"
+            ,"     (bgp (triple ?test ?/p2 ?/o2))))"
             ) ;
         TestOptimizer.check(qs, ops) ;
     }
@@ -424,88 +418,6 @@ public class TestTransformFilters extends AbstractTestTransform
         ) ;
     }
 
-    @Test public void placement01()
-    {
-        testOp("(filter (= ?x 1) (bgp ( ?s ?p ?x)))",
-             t_placement,
-             "(filter (= ?x 1) (bgp ( ?s ?p ?x)))") ;
-        	
-    }
-    
-    @Test public void placement02()
-    {
-        testOp("(filter (= ?x 1) (bgp (?s ?p ?x) (?s1 ?p1 ?x1) ))",
-             t_placement,
-             "(sequence (filter (= ?x 1) (bgp ( ?s ?p ?x))) (bgp (?s1 ?p1 ?x1)))") ;
-            
-    }
-
-    @Test public void placement03()
-    {
-        testOp("(filter (= ?x 1) (bgp (?s ?p ?x) (?s1 ?p1 ?x) ))",
-             t_placement,
-             "(sequence (filter (= ?x 1) (bgp ( ?s ?p ?x))) (bgp (?s1 ?p1 ?x)))") ;
-    }
-
-    @Test public void placement04()
-    {
-        testOp("(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))",
-             t_placement,
-             "(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))") ;
-    }
-    
-    @Test public void placement10()
-    {
-        // Unbound
-        testOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))",
-             t_placement,
-             "(filter (= ?x ?unbound) (bgp (?s ?p ?x)))") ;
-    }
-    
-    @Test public void placement11()
-    {
-        Op op1 = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))") ;
-        OpFilter f = (OpFilter)op1 ;
-        Op op2 = TransformFilterPlacement.transform(f.getExprs(), ((OpBGP)f.getSubOp()).getPattern()) ;
-        Op op3 = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))") ;
-        Assert.assertEquals(op3, op2) ;
-    }
-
-    @Test public void placement12()
-    {
-        Op op1 = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s1 ?p1 ?XX)))") ;
-        OpFilter f = (OpFilter)op1 ;
-        Op op2 = TransformFilterPlacement.transform(f.getExprs(), ((OpBGP)f.getSubOp()).getPattern()) ;
-        Op op3 = SSE.parseOp("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s1 ?p1 ?XX)))") ;
-        Assert.assertEquals(op3, op2) ;
-    }
-    
-    
-    @Test public void placement20()
-    {
-        // conditional
-        testOp("(filter (= ?x 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
-             t_placement,
-             "(conditional (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )") ;
-    }
-
-    @Test public void placement21()
-    {
-        // conditional
-        testOp("(filter (= ?z 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
-             t_placement,
-             "(filter (= ?z 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))") ;
-    }
-
-    @Test public void placement22()
-    {
-        // conditional
-        testOp("(filter (= ?x 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?x)) ))",
-             t_placement,
-             "(conditional (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x)) )") ;
-    }
-
-    
     @Test public void oneOf1()
     {
         testOp(

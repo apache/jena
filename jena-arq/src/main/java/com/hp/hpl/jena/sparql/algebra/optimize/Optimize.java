@@ -187,10 +187,6 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optFilterDisjunction) )
             op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;
         
-        if ( context.isTrueOrUndef(ARQ.optFilterPlacement) )
-            // This can be done too early (breaks up BGPs).
-            op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
-        
         if ( context.isTrueOrUndef(ARQ.optTopNSorting) )
         	op = apply("TopN Sorting", new TransformTopN(), op) ;
         
@@ -209,11 +205,20 @@ public class Optimize implements Rewrite
         // Convert paths to triple patterns. 
         // Also done in the AlgebraGenerator so this transform step catches programmatically built op expressions 
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
-        
+
         // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
         if ( context.isTrueOrUndef(ARQ.optIndexJoinStrategy) )
             op = apply("Index Join strategy", new TransformJoinStrategy(), op) ;
         
+        // Place filters close to where their dependency variabnes are defined.
+        // This prunes the output of that step as early as possible.
+        // If done before TransformJoinStrategy, you can get two applications
+        // of a filter in a (sequence) from eachhalf of a (join).  This is harmless,
+        // because filters are generally cheap, but it looks a bit bad.
+        if ( context.isTrueOrUndef(ARQ.optFilterPlacement) )
+            // This can be done too early (breaks up BGPs).
+            op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
+
         // Merge adjacent BGPs
         if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
             op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
