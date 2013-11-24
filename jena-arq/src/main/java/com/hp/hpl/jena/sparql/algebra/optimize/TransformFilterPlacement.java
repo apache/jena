@@ -432,7 +432,18 @@ public class TransformFilterPlacement extends TransformCopy {
             Op op2 = input.copy(op1) ; //, input.getVarExprList()) ; //OpExtend.extend(op1, input.getVarExprList()) ;
             return result(op2, unpushed) ;
         }
-        Op op1 = OpFilter.filter(p.unplaced, p.op) ;
+        // handle the case where the filter is being to a surrounding sequence or other bgp container 
+        // and may apply to the assignation variables.
+        // in this case disjoint var sets indicate the expression is unused.
+        pushed = new ExprList() ;
+        for ( Expr expr : p.unplaced ) {
+            Set<Var> exprVars = expr.getVarsMentioned() ;
+            if ( disjoint(vars1, exprVars) )
+                unpushed.add(expr);
+            else
+                pushed.add(expr) ;
+        }
+        Op op1 = OpFilter.filter(pushed, p.op) ;
         Op op2 = input.copy(op1) ;
         return result(op2, unpushed) ;
     }

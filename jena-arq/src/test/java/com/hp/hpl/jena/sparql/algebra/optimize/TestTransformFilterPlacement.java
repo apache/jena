@@ -123,6 +123,15 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         test("(sequence (bgp (?s ?p ?x)) (filter (= ?z 123) (bgp (?s ?p ?z))) )",
              null) ;
     }
+    
+    @Test public void place_sequence_with_bind() {
+    	test("(filter (= ?foo 1) " +
+    			"(sequence  " +
+    				"(extend " +
+    				"	((?bound (if ?v_binder 'Y' 'N'))) " +
+    				"	(bgp (triple ?foob <http://example.com/binding> ?v_binder)))" +
+    				"(bgp (triple ?foob <http://www.w3.org/2000/01/rdf-schema#label> ?foo))))", null );
+    }
 
     // Join : one sided push.
     @Test public void place_join_01() {
