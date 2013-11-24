@@ -124,15 +124,6 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              null) ;
     }
     
-    @Test public void place_sequence_with_bind() {
-    	test("(filter (= ?foo 1) " +
-    			"(sequence  " +
-    				"(extend " +
-    				"	((?bound (if ?v_binder 'Y' 'N'))) " +
-    				"	(bgp (triple ?foob <http://example.com/binding> ?v_binder)))" +
-    				"(bgp (triple ?foob <http://www.w3.org/2000/01/rdf-schema#label> ?foo))))", null );
-    }
-
     // Join : one sided push.
     @Test public void place_join_01() {
         test("(filter (= ?x 123) (join (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
@@ -232,14 +223,31 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              "(extend ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
     }
     
-    @Test public void place_extend_02() { // Blocked
+    @Test public void place_extend_02() {
+        test("(filter ((= ?x1 123) (= ?x2 456)) (extend (?z 789) (bgp (?s ?p ?x1)) ))",
+             "(filter (= ?x2 456) (extend (?z 789) (filter (= ?x1 123) (bgp (?s ?p ?x1)) )))") ;
+    }
+    
+    @Test public void place_extend_03() { // Blocked
         test("(filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?z)) ))",
              null) ;
     }
 
-    @Test public void place_extend_03() {
+    @Test public void place_extend_04() {
         test("(filter (= ?x 123) (extend ((?x1 123)) (filter (< ?x 456) (bgp (?s ?p ?x) (?s ?p ?z))) ))",
              "(extend (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
+    }
+
+    @Test public void place_extend_05() {
+        // Filter further out than one place. 
+    	test("(filter (= ?z 1) (sequence (extend (?x1 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))))",
+    	     null) ;
+    }
+
+    @Test public void place_extend_06() {
+        // Filter further out than one place. 
+        test("(filter (= ?z 1) (join (extend (?x1 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))))" ,
+             "(join (extend (?x1 123) (bgp (?s ?p ?x))) (filter (= ?z 1) (bgp (?s ?p ?z))) )") ;
     }
 
     @Test public void place_assign_01() {
@@ -247,12 +255,17 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
     }
     
-    @Test public void place_assign_02() { // Blocked
+    @Test public void place_assign_02() {
+        test("(filter ((= ?x1 123) (= ?x2 456)) (assign (?z 789) (bgp (?s ?p ?x1)) ))",
+             "(filter (= ?x2 456) (assign (?z 789) (filter (= ?x1 123) (bgp (?s ?p ?x1)) )))") ;
+    }
+    
+    @Test public void place_assign_03() { // Blocked
         test("(filter (= ?x 123) (assign ((?x 123)) (bgp (?s ?p ?z)) ))",
              null) ;
     }
 
-    @Test public void place_assign_03() {
+    @Test public void place_assign_04() {
         // Caution - OpFilter equality is sensitive to the order of expressions 
         test("(filter (= ?x 123) (assign ((?x1 123)) (filter (< ?x 456) (bgp (?s ?p ?x) (?s ?p ?z))) ))",
              "(assign (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
