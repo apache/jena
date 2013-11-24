@@ -52,6 +52,7 @@ public class QueryIterFilterExpr extends QueryIterProcessBinding
             return null ;
         } catch (ExprException ex)
         { // Some evaluation exception
+            Log.warn(this, "Expression Exception in "+expr, ex) ;
             return null ;
         }
         catch (Exception ex)
