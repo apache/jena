@@ -426,26 +426,19 @@ public class TransformFilterPlacement extends TransformCopy {
         
         // And try down the expressions
         Placement p = transform(pushed, opSub) ;
-        
+
         if ( p == null ) {
-            Op op1 = OpFilter.filter(pushed, opSub) ;
-            Op op2 = input.copy(op1) ; //, input.getVarExprList()) ; //OpExtend.extend(op1, input.getVarExprList()) ;
-            return result(op2, unpushed) ;
+            // Couldn't place an filter expressions.  Do nothing.
+            return null ;
         }
-        // handle the case where the filter is being to a surrounding sequence or other bgp container 
-        // and may apply to the assignation variables.
-        // in this case disjoint var sets indicate the expression is unused.
-        pushed = new ExprList() ;
-        for ( Expr expr : p.unplaced ) {
-            Set<Var> exprVars = expr.getVarsMentioned() ;
-            if ( disjoint(vars1, exprVars) )
-                unpushed.add(expr);
-            else
-                pushed.add(expr) ;
-        }
-        Op op1 = OpFilter.filter(pushed, p.op) ;
-        Op op2 = input.copy(op1) ;
-        return result(op2, unpushed) ;
+        
+        if ( ! p.unplaced.isEmpty() )
+            // Some placed, not all.
+            // Pass back out all untouched expressions.
+            unpushed.addAll(p.unplaced) ; 
+        Op op1 = input.copy(p.op) ;
+        
+        return result(op1, unpushed) ;
     }
 
     private Placement placeProject(ExprList exprs, OpProject input) {
