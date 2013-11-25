@@ -113,7 +113,7 @@ public class OpVars
         OpWalker.walk(op, visitor) ;
     }
 
-    /** @deprecate Use VarUtils.addVars */
+    /** @deprecated Use VarUtils.addVars */
     @Deprecated
     public static Collection<Var> vars(BasicPattern pattern) {
         Set<Var> acc = collector() ;
@@ -121,8 +121,9 @@ public class OpVars
         return acc ;
     }
 
-    /** @deprecate Use VarUtils.addVars */
-    @Deprecated    public static void vars(BasicPattern pattern, Collection<Var> acc) {
+    /** @deprecated Use VarUtils.addVars */
+    @Deprecated
+    public static void vars(BasicPattern pattern, Collection<Var> acc) {
         for (Triple triple : pattern)
             addVarsFromTriple(acc, triple) ;
     }
