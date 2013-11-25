@@ -69,18 +69,20 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getParent()}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testGetParent() {
+    public void testGetParent() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so = new SchemagenOptions();
         assertNull( so.getParent() );
     }
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#setParent(org.openjena.tools.schemagen.SchemagenOptions)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testSetParent() {
+    public void testSetParent() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -89,9 +91,10 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#hasParent()}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testHasParent() {
+    public void testHasParent() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -101,15 +104,16 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getOption(jena.schemagen.SchemagenOptions.OPT)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testGetOption0() {
+    public void testGetOption0() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         assertNull( so0.getOption( OPT.CLASS_SECTION ));
     }
 
     @Test
-    public void testGetOption1() {
+    public void testGetOption1() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -117,14 +121,14 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testGetOption2() {
+    public void testGetOption2() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         so0.setOption( OPT.CLASS_SECTION, "test123" );
         assertEquals( "test123", so0.getOption( OPT.CLASS_SECTION ).asLiteral().getString() );
     }
 
     @Test
-    public void testGetOption3() {
+    public void testGetOption3() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -133,7 +137,7 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testGetOption4() {
+    public void testGetOption4() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -142,7 +146,7 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testGetOption5() {
+    public void testGetOption5() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -153,9 +157,10 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#setOption(java.lang.String, java.lang.String)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testSetOptionStringString() {
+    public void testSetOptionStringString() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         so0.setOption( "CLASS_SECTION", "test123" );
         assertEquals( "test123", so0.getOption( OPT.CLASS_SECTION ).asLiteral().getString() );
@@ -163,24 +168,26 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#asOption(java.lang.String)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testAsOption() {
+    public void testAsOption() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         assertSame( OPT.DOS, so0.asOption( "DOS" ));
     }
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#isTrue(jena.schemagen.SchemagenOptions.OPT)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testIsTrueOPT0() {
+    public void testIsTrueOPT0() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         assertFalse( so0.isTrue( OPT.DOS ));
     }
 
     @Test
-    public void testIsTrueOPT1() {
+    public void testIsTrueOPT1() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         so0.setOption( OPT.DOS, true );
         assertTrue( so0.isTrue( OPT.DOS ));
@@ -188,22 +195,23 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#hasValue(jena.schemagen.SchemagenOptions.OPT)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testHasValueOPT0() {
+    public void testHasValueOPT0() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         assertFalse( so0.hasValue( OPT.CLASS_SECTION ));
     }
 
     @Test
-    public void testHasValueOPT1() {
+    public void testHasValueOPT1() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         so0.setOption( OPT.CLASS_SECTION, "foo" );
         assertTrue( so0.hasValue( OPT.CLASS_SECTION ));
     }
 
     @Test
-    public void testHasValueOPT2() {
+    public void testHasValueOPT2() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -213,22 +221,23 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getValue(jena.schemagen.SchemagenOptions.OPT)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testGetValueOPT0() {
+    public void testGetValueOPT0() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         assertNull( so0.getValue( OPT.CLASS_SECTION ));
     }
 
     @Test
-    public void testGetValueOPT1() {
+    public void testGetValueOPT1() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         so0.setOption( OPT.CLASS_SECTION, "foo" );
         assertEquals( "foo", so0.getValue( OPT.CLASS_SECTION ).asLiteral().getString() );
     }
 
     @Test
-    public void testGetValueOPT2() {
+    public void testGetValueOPT2() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -237,7 +246,7 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testGetValueOPT3() {
+    public void testGetValueOPT3() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -248,15 +257,16 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#hasResourceValue(jena.schemagen.SchemagenOptions.OPT)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testHasResourceValueOPT0() {
+    public void testHasResourceValueOPT0() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         assertFalse( so0.hasResourceValue( OPT.ROOT ));
     }
 
     @Test
-    public void testHasResourceValueOPT1() {
+    public void testHasResourceValueOPT1() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         Resource r = ResourceFactory.createResource( "http://example.org/foo" );
         so0.setOption( OPT.ROOT, r );
@@ -264,7 +274,7 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testHasResourceValueOPT2() {
+    public void testHasResourceValueOPT2() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -275,15 +285,16 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getResource(jena.schemagen.SchemagenOptions.OPT)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testGetResourceOPT0() {
+    public void testGetResourceOPT0() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         assertNull( so0.getResource( OPT.ROOT ));
     }
 
     @Test
-    public void testGetResourceValueOPT1() {
+    public void testGetResourceValueOPT1() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         Resource r = ResourceFactory.createResource( "http://example.org/foo" );
         so0.setOption( OPT.ROOT, r );
@@ -291,7 +302,7 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testGetResourceValueOPT2() {
+    public void testGetResourceValueOPT2() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -301,7 +312,7 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testGetResourceValueOPT3() {
+    public void testGetResourceValueOPT3() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
@@ -314,9 +325,10 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getAllValues(jena.schemagen.SchemagenOptions.OPT)}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testGetAllValuesOPT0() {
+    public void testGetAllValuesOPT0() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         List<String> l = so0.getAllValues( OPT.INCLUDE );
         assertNotNull( l );
@@ -324,7 +336,7 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testGetAllValuesOPT1() {
+    public void testGetAllValuesOPT1() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         so0.setOption( OPT.INCLUDE, "foo" );
         List<String> l = so0.getAllValues( OPT.INCLUDE );
@@ -334,7 +346,7 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testGetAllValuesOPT2() {
+    public void testGetAllValuesOPT2() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         so0.setOption( OPT.INCLUDE, "foo" );
         so0.setOption( OPT.INCLUDE, "bar" );
@@ -346,7 +358,7 @@ public class SchemagenOptionsTest
     }
 
     @Test
-    public void testGetAllValuesOPT3() {
+    public void testGetAllValuesOPT3() throws SchemagenOptionsConfigurationException {
         SchemagenOptions so0 = new SchemagenOptions();
         SchemagenOptions so1 = new SchemagenOptions();
         so0.setParent( so1 );
