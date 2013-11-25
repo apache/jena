@@ -16,7 +16,8 @@ package org.openjena.tools.schemagen;
 // Imports
 ///////////////
 
-import java.util.*;
+import java.lang.reflect.Method;
+import java.util.List;
 
 import jena.schemagen;
 import jena.schemagen.OptionDefinition;
@@ -24,7 +25,9 @@ import jena.schemagen.OptionDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 
 /**
@@ -60,12 +63,30 @@ public class SchemagenOptions
     /** The parent options for this options instance */
     private SchemagenOptions parent;
 
-    /***********************************/
     /* Constructors                    */
-    /***********************************/
 
-    public SchemagenOptions() {
+    public SchemagenOptions() throws SchemagenOptionsConfigurationException {
+        this(null, null);
+    }
+
+    public SchemagenOptions(String defaultOutputDir)
+            throws SchemagenOptionsConfigurationException {
+        this(defaultOutputDir, null);
+    }
+
+    public SchemagenOptions(String defaultOutputDir, Source options)
+            throws SchemagenOptionsConfigurationException {
         super( new String[]{} );
+
+        //set output to default, source options may override
+        if (defaultOutputDir != null) {
+            setOption( OPT.OUTPUT, defaultOutputDir );
+        }
+        
+        //set schemagen options from Maven plugin config Source
+        if (options != null) {
+            configure(options);
+        }
     }
 
     /***********************************/
@@ -169,6 +190,38 @@ public class SchemagenOptions
     /* Internal implementation methods */
     /***********************************/
 
+    /**
+     * Configure SchemagenOptions from Source object
+     * @param options Options from Maven configuration
+     * @throws SchemagenOptionsConfigurationException 
+     */
+    protected void configure(Source options) throws SchemagenOptionsConfigurationException {
+        for(Method method : options.getClass().getMethods()) {
+            SchemagenOption schemagenOptionAnnotation =
+                    method.getAnnotation(SchemagenOption.class);
+            if (schemagenOptionAnnotation != null) {
+                Object optionValue = null;
+                try {
+                    optionValue = method.invoke(options);
+                } catch (Exception e) {
+                    throw new SchemagenOptionsConfigurationException(e);
+                }
+                OPT option = schemagenOptionAnnotation.opt();
+                if (optionValue != null) {
+                    if (optionValue instanceof String) {
+                        setOption(option, (String) optionValue);    
+                    } else if (optionValue instanceof Boolean) {
+                        setOption(option, (Boolean) optionValue);                        
+                    } else {
+                        throw new IllegalArgumentException("Schemagen options of type "
+                                + optionValue.getClass().getCanonicalName()
+                                + " are not allowed");
+                    }
+                }
+            }
+        }
+    }
+    
     protected OPT asOption( String optString ) {
         return OPT.valueOf( optString );
     }
@@ -240,18 +293,4 @@ public class SchemagenOptions
         return (l.isEmpty() && hasParent()) ? getParent().getAllValues( option ) : l;
     }
 
-    /***********************************/
-    /* Inner class definitions         */
-    /***********************************/
-
-    /**
-     * Default options for schemagen if no other options are specified
-     */
-    public static class DefaultSchemagenOptions
-        extends SchemagenOptions
-    {
-        public DefaultSchemagenOptions() {
-            setOption( OPT.OUTPUT, SchemagenMojo.getProjectBuildDir() + SchemagenMojo.GENERATED_SOURCES );
-        }
-    }
 }

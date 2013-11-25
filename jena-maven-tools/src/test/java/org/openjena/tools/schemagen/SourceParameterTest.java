@@ -100,12 +100,14 @@ public class SourceParameterTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.Source#getFileName()}.
+     * @throws SchemagenOptionsConfigurationException 
      */
     @Test
-    public void testGetOption() {
+    public void testGetOption() throws SchemagenOptionsConfigurationException {
         Source s = new Source();
         setParamValue( s );
-        assertEquals( optionName, expected, s.getOption( option ).asLiteral().getValue() );
+        SchemagenOptions so = new SchemagenOptions(null, s);
+        assertEquals( optionName, expected, so.getOption( option ).asLiteral().getValue() );
     }
 
 
@@ -243,97 +245,97 @@ public class SourceParameterTest
 
             // Boolean options
             case DOS:
-                s.setDos( optionName );
+                s.setDos( true );
 
                 expected = true;
                 break;
 
             case HELP:
-                s.setHelp( optionName );
+                s.setHelp( true );
 
                 expected = true;
                 break;
 
             case INCLUDE_SOURCE:
-                s.setIncludeSource( optionName );
+                s.setIncludeSource( true );
 
                 expected = true;
                 break;
 
             case LANG_DAML:
-                s.setLangDaml( optionName );
+                s.setLangDaml( true );
 
                 expected = true;
                 break;
 
             case LANG_OWL:
-                s.setLangOwl( optionName );
+                s.setLangOwl( true );
 
                 expected = true;
                 break;
 
             case LANG_RDFS:
-                s.setLangRdfs( optionName );
+                s.setLangRdfs( true );
 
                 expected = true;
                 break;
 
             case NOCLASSES:
-                s.setNoClasses( optionName );
+                s.setNoClasses( true );
 
                 expected = true;
                 break;
 
             case NOHEADER:
-                s.setNoHeader( optionName );
+                s.setNoHeader( true );
 
                 expected = true;
                 break;
 
             case NOINDIVIDUALS:
-                s.setNoIndividuals( optionName );
+                s.setNoIndividuals( true );
 
                 expected = true;
                 break;
 
             case NOPROPERTIES:
-                s.setNoProperties( optionName );
+                s.setNoProperties( true );
 
                 expected = true;
                 break;
 
             case NO_COMMENTS:
-                s.setNoComments( optionName );
+                s.setNoComments( true );
 
                 expected = true;
                 break;
 
             case NO_STRICT:
-                s.setNoStrict( optionName );
+                s.setNoStrict( true );
 
                 expected = true;
                 break;
 
             case ONTOLOGY:
-                s.setOntology( optionName );
+                s.setOntology( true );
 
                 expected = true;
                 break;
 
             case STRICT_INDIVIDUALS:
-                s.setStrictIndividuals( optionName );
+                s.setStrictIndividuals( true );
 
                 expected = true;
                 break;
 
             case UC_NAMES:
-                s.setUcNames( optionName );
+                s.setUcNames( true );
 
                 expected = true;
                 break;
 
             case USE_INF:
-                s.setUseInf( optionName );
+                s.setUseInf( true );
 
                 expected = true;
                 break;
