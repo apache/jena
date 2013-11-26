@@ -978,7 +978,7 @@ public final class TokenizerText implements Tokenizer
             } else
                 break ;
         }
-        return stringBuilder.toString() ;
+        return stringBuilder.toString().intern() ;
     }
     
     // ASCII-only e.g. in lang tags.
