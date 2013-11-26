@@ -78,7 +78,7 @@ public class ManagementServer
             throw new FusekiException("Base URI does nto start with a '/'") ; 
         addServlet(context, new MgtCmdServlet(),    base+"mgt") ;
         addServlet(context, new StatsServlet(),     base+"stats") ;
-        addServlet(context, new DatasetsCollectionServlet(),     base+"datasets") ;
+        addServlet(context, new DatasetsCollectionServlet(),     base+"datasets/*") ; // Covers base+"datasets" 
     }
 
     // SHARE

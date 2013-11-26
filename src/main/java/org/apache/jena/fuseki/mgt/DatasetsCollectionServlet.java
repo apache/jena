@@ -23,11 +23,15 @@ import java.io.InputStream ;
 import java.util.List ;
 
 import javax.servlet.ServletException ;
+import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonBuilder ;
+import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiConfigException ;
@@ -78,10 +82,23 @@ public class DatasetsCollectionServlet extends ServletBase {
         
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { 
-        super.doGet(request, response); 
+        String name = request.getRequestURI() ;
+        int idx = name.lastIndexOf('/') ;
+        name = name.substring(idx) ;
+        String datasetPath = DatasetRef.canocialDatasetPath(name) ;
+        DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
+        if ( dsDesc == null )
+            errorNotFound("Not found: "+name);
         
-        
-        
+        JsonBuilder builder = new JsonBuilder() ;
+        JsonDescription.describe(builder, dsDesc) ;
+        JsonValue v = builder.build() ;
+        ServletOutputStream out = response.getOutputStream() ;
+        response.setContentType(WebContent.contentTypeJSON);
+        response.setCharacterEncoding(WebContent.charsetUTF8) ;
+        JSON.write(out, v) ;
+        out.println() ; 
+        out.flush() ;
     }
 
     protected void execPost(HttpServletRequest request, HttpServletResponse response) {
