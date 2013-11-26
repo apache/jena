@@ -30,7 +30,6 @@ import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.web.HttpSC ;
@@ -58,8 +57,7 @@ public class DescriptionServlet extends HttpServlet
         }
     }
     
-    private void description(HttpServletRequest req, HttpServletResponse resp) throws IOException
-    {
+    private void description(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ServletOutputStream out = resp.getOutputStream() ;
         resp.setContentType(WebContent.contentTypeJSON);
         resp.setCharacterEncoding(WebContent.charsetUTF8) ;
@@ -93,18 +91,13 @@ public class DescriptionServlet extends HttpServlet
             .key("version").value(Fuseki.VERSION) ;
     }
     
-    private int port(Server jettyServer ) {
+    private int port(Server jettyServer) {
         return jettyServer.getConnectors()[0].getPort() ;
     }
 
     private void describeDataset(JsonBuilder builder) {
         builder.key("datasets") ;
-        builder.startArray() ;
-        for ( String ds : DatasetRegistry.get().keys() ) {
-            DatasetRef desc = DatasetRegistry.get().get(ds) ;
-            JsonDescription.describe(builder, desc) ;
-        }
-        builder.finishArray() ;
+        JsonDescription.arrayDatasets(builder, DatasetRegistry.get());
     }
 
 }

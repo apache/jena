@@ -81,42 +81,66 @@ public class DatasetsCollectionServlet extends ServletBase {
     }
         
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { 
-        String name = request.getRequestURI() ;
-        int idx = name.lastIndexOf('/') ;
-        name = name.substring(idx) ;
-        String datasetPath = DatasetRef.canocialDatasetPath(name) ;
-        DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
-        if ( dsDesc == null )
-            errorNotFound("Not found: "+name);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            execGet(request, response) ;
+        } catch (ActionErrorException ex) {
+            if ( ex.exception != null )
+                ex.exception.printStackTrace(System.err) ;
+            // XXX Log message done by printResponse in a moment.
+            if ( ex.message != null )
+                responseSendError(response, ex.rc, ex.message) ;
+            else
+                responseSendError(response, ex.rc) ;
+        } 
+    }
+    protected void execGet(HttpServletRequest request, HttpServletResponse response) {
         
         JsonBuilder builder = new JsonBuilder() ;
-        JsonDescription.describe(builder, dsDesc) ;
+        String pathInfo = request.getPathInfo() ;
+        if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") ) {
+            // All
+            
+            builder.startObject() ;
+            builder.key("datasets") ;
+            JsonDescription.arrayDatasets(builder, DatasetRegistry.get());
+            builder.finishObject() ;
+        } else {
+            String name = pathInfo ; // request.getRequestURI() ;
+            int idx = pathInfo.lastIndexOf('/') ;
+            if ( idx > 0 )
+                name = name.substring(idx) ;
+            String datasetPath = DatasetRef.canocialDatasetPath(name) ;
+            DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
+            if ( dsDesc == null )
+                errorNotFound("Not found: dataset "+name);
+            JsonDescription.describe(builder, dsDesc) ;
+        }
         JsonValue v = builder.build() ;
-        ServletOutputStream out = response.getOutputStream() ;
-        response.setContentType(WebContent.contentTypeJSON);
-        response.setCharacterEncoding(WebContent.charsetUTF8) ;
-        JSON.write(out, v) ;
-        out.println() ; 
-        out.flush() ;
+        try {
+            ServletOutputStream out = response.getOutputStream() ;
+            response.setContentType(WebContent.contentTypeJSON);
+            response.setCharacterEncoding(WebContent.charsetUTF8) ;
+            JSON.write(out, v) ;
+            out.println() ; 
+            out.flush() ;
+        } catch (IOException ex) { errorOccurred(ex) ; }
     }
-
+    
     protected void execPost(HttpServletRequest request, HttpServletResponse response) {
+        String pathInfo = request.getPathInfo() ;
+        if ( pathInfo != null && ! pathInfo.isEmpty() && ! pathInfo.equals("/") ) {
+            // Can only POST to the container.
+            errorNotFound("Not found") ;
+            return ;
+        }
+        
         Model m = ModelFactory.createDefaultModel() ;
         StreamRDF dest = StreamRDFLib.graph(m.getGraph()) ;
         bodyAsGraph(request, dest) ;
         Resource t = m.createResource("http://jena.apache.org/fuseki#Service") ;
         List<Resource> services = getByType(t, m) ; 
             
-//        ResultSet rs = query("SELECT * { ?service rdf:type fuseki:Service }", m) ; 
-//        List<Resource> services = new ArrayList<Resource>() ;
-//        for ( ; rs.hasNext() ; )
-//        {
-//            QuerySolution soln = rs.next() ;
-//            Resource svc = soln.getResource("service") ;
-//            services.add(svc) ;
-//        }
-        
         if ( services.size() == 0 ) {
             log.error("No services found") ;
             throw new FusekiConfigException() ;
@@ -139,13 +163,6 @@ public class DatasetsCollectionServlet extends ServletBase {
         SPARQLServer.registerDataset(datasetPath, dsDesc) ;
     }
 
-//    @Override
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
-//    {
-//        
-//    }
-    
-    
     // XXX Merge with SPARQL_REST_RW.incomingData
     
     protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;

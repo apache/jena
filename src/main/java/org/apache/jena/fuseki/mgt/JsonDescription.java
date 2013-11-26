@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.mgt;
 
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.ServiceRef ;
 
 /** Create a description of a service */
@@ -31,7 +32,16 @@ public class JsonDescription {
     static final String srvType = "srv.type" ;
     static final String srvEndpoints = "srv.endpoints" ;
     
-    static void describe(JsonBuilder builder, ServiceRef serviceref) {
+    public static void arrayDatasets(JsonBuilder builder, DatasetRegistry registry) {
+        builder.startArray() ;
+        for ( String ds : registry.keys() ) {
+            DatasetRef desc = DatasetRegistry.get().get(ds) ;
+            JsonDescription.describe(builder, desc) ;
+        }
+        builder.finishArray() ;
+    }
+    
+    public static void describe(JsonBuilder builder, ServiceRef serviceref) {
         builder.startObject() ;
         
         builder.key(srvType).value(serviceref.name) ;
@@ -45,7 +55,7 @@ public class JsonDescription {
         builder.finishObject() ;
     }
     
-    static void describe(JsonBuilder builder, DatasetRef ds) {
+    public static void describe(JsonBuilder builder, DatasetRef ds) {
         
         builder.startObject() ;
         
