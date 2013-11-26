@@ -39,7 +39,7 @@ public class SPARQL_REST_R extends SPARQL_REST
     
     
     @Override
-    protected String mapRequestToDataset(String uri) { return mapRequestToDatasetLongest$(uri) ; } 
+    protected String mapRequestToDataset(String uri) { return ActionLib.mapRequestToDatasetLongest$(uri) ; } 
 
     @Override
     protected void doGet(HttpAction action)

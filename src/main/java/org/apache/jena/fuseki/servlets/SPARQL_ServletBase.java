@@ -43,7 +43,6 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 public abstract class SPARQL_ServletBase extends ServletBase
 {
-    
     protected SPARQL_ServletBase()      {   super() ; }
     
     // Common framework for handling HTTP requests
@@ -134,7 +133,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
             dsRef = FusekiConfig.serviceOnlyDatasetRef() ;
 
         action.setDataset(dsRef) ;
-        String serviceName = mapRequestToService(dsRef, uri, datasetUri) ;
+        String serviceName = ActionLib.mapRequestToService(dsRef, uri, datasetUri) ;
         ServiceRef srvRef = dsRef.getServiceRef(serviceName) ;
         action.setService(srvRef) ;
         executeAction(action) ;
@@ -183,6 +182,14 @@ public abstract class SPARQL_ServletBase extends ServletBase
         } finally {
             finishRequest(action) ;
         }
+    }
+    
+    /** Map request to uri in the registry.
+     *  null means no mapping done (passthrough). 
+     */
+    protected String mapRequestToDataset(String uri) 
+    {
+        return ActionLib.mapRequestToDataset(uri) ;
     }
     
     protected static void incCounter(Counters counters, CounterName name) {
@@ -269,75 +276,5 @@ public abstract class SPARQL_ServletBase extends ServletBase
         if ( time < 1000 )
             return String.format("%,d ms", time) ;
         return String.format("%,.3f s", time/1000.0) ;
-    }
-
-    /** Map request to uri in the registry.
-     *  null means no mapping done (passthrough). 
-     */
-    protected String mapRequestToDataset(String uri) 
-    {
-        return mapRequestToDataset$(uri) ;
-    }
-    
-    /** A possible implementation for mapRequestToDataset(String)
-     *  that assums the form /dataset/service 
-     */
-    
-    protected static String mapRequestToDataset$(String uri)
-    {
-        // Chop off trailing part - the service selector
-        // e.g. /dataset/sparql => /dataset 
-        int i = uri.lastIndexOf('/') ;
-        if ( i == -1 )
-            return null ;
-        if ( i == 0 )
-        {
-            // started with '/' - leave.
-            return uri ;
-        }
-        
-        return uri.substring(0, i) ;
-    }
-
-    protected String mapRequestToService(DatasetRef dsRef, String uri, String datasetURI)
-    {
-        if ( dsRef == null )
-            return "" ;
-        if ( dsRef.name.length() >= uri.length() )
-            return "" ;
-        return uri.substring(dsRef.name.length()+1) ;   // Skip the separating "/"
-        
-    }
-    
-    /** Implementation of mapRequestToDataset(String) that looks for
-     * the longest match in the registry.
-     * This includes use in direct naming GSP. 
-     */
-    protected static String mapRequestToDatasetLongest$(String uri) 
-    {
-        if ( uri == null )
-            return null ;
-        
-        // This covers local, using the URI as a direct name for
-        // a graph, not just using the indirect ?graph= or ?default 
-        // forms.
-
-        String ds = null ;
-        for ( String ds2 : DatasetRegistry.get().keys() ) {
-            if ( ! uri.startsWith(ds2) )
-                continue ;
-
-            if ( ds == null )
-            {
-                ds = ds2 ;
-                continue ; 
-            }
-            if ( ds.length() < ds2.length() )
-            {
-                ds = ds2 ;
-                continue ;
-            }
-        }
-        return ds ;
     }
 }

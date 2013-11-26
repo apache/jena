@@ -28,11 +28,10 @@ import javax.servlet.DispatcherType ;
 import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.mgt.ActionDataset ;
 import org.apache.jena.fuseki.mgt.MgtFunctions ;
-import org.apache.jena.fuseki.mgt.PageNames ;
 import org.apache.jena.fuseki.servlets.* ;
 import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
@@ -46,6 +45,7 @@ import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
 import org.eclipse.jetty.servlet.DefaultServlet ;
+import org.eclipse.jetty.servlet.FilterHolder ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.servlets.GzipFilter ;
@@ -96,9 +96,16 @@ public class SPARQLServer {
 
     private void configureDatasets(ServletContextHandler context) {
         // Build them all.
+        
         for (DatasetRef dsDesc : serverConfig.datasets)
             configureOneDataset(context, dsDesc, serverConfig.enableCompression) ;
         
+        if ( überServlet ) {
+            FilterHolder f = new FilterHolder(new SPARQL_UberFilter()) ;
+            //FilterMapping
+            EnumSet<DispatcherType> es = EnumSet.allOf(DispatcherType.class) ; 
+            context.addFilter(f, "/*", es);
+        }
     }
     
     /**
@@ -150,13 +157,15 @@ public class SPARQLServer {
         return server ;
     }
     
-    public int getPort() {
+    public int getPort() {        
+
         return server.getConnectors()[0].getPort() ;
     }
 
     /**
      * Get the datasets associated with the server.
-     * @return returns the datasets via {@link org.apache.jena.fuseki.server.ServerConfig#datasets}
+     * @return returns the datasets via {@link org.apache.jena.fuseki.server.ServerConfig#datasets        
+}
      */
     public List<DatasetRef> getDatasets() {
         return serverConfig.datasets ;
@@ -233,14 +242,13 @@ public class SPARQLServer {
 
         serverLog.debug("Pages = " + serverConfig.pages) ;
 
-        boolean installManager = true ;
         boolean installServices = true ;
 
         String validationRoot = "/validate" ;
 
         // Should all services be /_/.... or some such?
 
-        if ( installManager || installServices ) {
+        if ( installServices ) {
             // TODO Respect port.
             if ( serverConfig.pagesPort != serverConfig.port )
                 serverLog.warn("Not supported yet - pages on a different port to services") ;
@@ -250,12 +258,6 @@ public class SPARQLServer {
             data.put("mgt", new MgtFunctions()) ;
             SimpleVelocityServlet templateEngine = new SimpleVelocityServlet(base, data) ;
             addServlet(context, templateEngine, "*.tpl", false) ;
-        }
-
-        if ( installManager ) {
-            // Action when control panel selects a dataset.
-            HttpServlet datasetChooser = new ActionDataset() ;
-            addServlet(context, datasetChooser, PageNames.actionDatasetNames, false) ;
         }
 
         if ( installServices ) {
@@ -278,7 +280,7 @@ public class SPARQLServer {
             addServlet(context, generalQueryService, HttpNames.ServiceGeneralQuery, enableCompression) ;
         }
 
-        if ( installManager || installServices ) {
+        if ( installServices ) {
             String[] files = {"fuseki.html", "index.html"} ;
             context.setWelcomeFiles(files) ;
             addContent(context, "/", serverConfig.pages) ;
@@ -295,31 +297,17 @@ public class SPARQLServer {
     private static List<String> ListOfEmptyString = Arrays.asList("") ;
 
     private void configureOneDataset(ServletContextHandler context, DatasetRef dsDesc, boolean enableCompression) {
-        String datasetPath = dsDesc.name ;
-        if ( datasetPath.equals("/") )
-            datasetPath = "" ;
-        else
-            if ( !datasetPath.startsWith("/") )
-                datasetPath = "/" + datasetPath ;
-
-        if ( datasetPath.endsWith("/") )
-            datasetPath = datasetPath.substring(0, datasetPath.length() - 1) ;
-
-        dsDesc.init() ;
-
-        DatasetRegistry.get().put(datasetPath, dsDesc) ;
-        serverLog.info(format("Dataset path = %s", datasetPath)) ;
-
-        HttpServlet sparqlQuery = new SPARQL_QueryDataset() ;
-        HttpServlet sparqlUpdate = new SPARQL_Update() ;
-        HttpServlet sparqlUpload = new SPARQL_Upload() ;
-        HttpServlet sparqlHttpR = new SPARQL_REST_R() ;
-        HttpServlet sparqlHttpRW = new SPARQL_REST_RW() ;
-        HttpServlet sparqlDataset = new SPARQL_UberServlet.AccessByConfig() ;
-
+        
+        String datasetPath = DatasetRef.canocialDatasetPath(dsDesc.name) ;
+        registerDataset(datasetPath, dsDesc) ;
+        
         if ( !überServlet ) {
-            // If uberserver, these are unnecessary but can be used.
-            // If just means the überservlet isn't handling these operations.
+            HttpServlet sparqlQuery = new SPARQL_QueryDataset() ;
+            HttpServlet sparqlUpdate = new SPARQL_Update() ;
+            HttpServlet sparqlUpload = new SPARQL_Upload() ;
+            HttpServlet sparqlHttpR = new SPARQL_REST_R() ;
+            HttpServlet sparqlHttpRW = new SPARQL_REST_RW() ;
+
             addServlet(context, datasetPath, sparqlQuery, dsDesc.query, enableCompression) ;
             addServlet(context, datasetPath, sparqlUpdate, dsDesc.update, false) ;
             addServlet(context, datasetPath, sparqlUpload, dsDesc.upload, false) ; // No point - no results of any size.
@@ -330,21 +318,33 @@ public class SPARQLServer {
             // ListOfEmptyString, enableCompression) ;
         } else {
             // This is the servlet that analyses requests and dispatches them to
-            // the appropriate servlet.
+            // the appropriate servlet. 
             // SPARQL Query, SPARQL Update -- handles dataset?query=
             // dataset?update=
             // Graph Store Protocol (direct and indirect naming) if enabled.
             // GET/PUT/POST on the dataset itself.
-            // It also checks for a request that looks like a service request
-            // and passes it
+            // It also checks for a request that looks like a service request and passes it
             // on to the service (this takes precedence over direct naming).
-            addServlet(context, datasetPath, sparqlDataset, epDataset, enableCompression) ;
+
+            if ( false ) {
+                //XXX Filter version superceeds this.
+                HttpServlet sparqlDataset = new SPARQL_UberServlet.AccessByConfig() ;
+                addServlet(context, datasetPath, sparqlDataset, epDataset, enableCompression) ;
+            }
         }
 
         // Add JMX beans to record daatset and it's services.
         addJMX(dsDesc) ;
     }
 
+    public static void registerDataset(String datasetPath, DatasetRef dsDesc) {
+        dsDesc.init() ;
+        if ( DatasetRegistry.get().isRegistered(datasetPath) )
+            throw new FusekiConfigException("Already registered: key = "+datasetPath) ;
+        DatasetRegistry.get().put(datasetPath, dsDesc) ;
+        serverLog.info(format("Dataset path = %s", datasetPath)) ;
+    }
+    
     private static Server configServer(String jettyConfig) {
         try {
             serverLog.info("Jetty server config file = " + jettyConfig) ;

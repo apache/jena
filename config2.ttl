@@ -1,0 +1,35 @@
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+## ## ## Always.
+## ## @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+## ## [] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+## ## tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+## ## tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+## ## ##
+
+<#service_tdb> rdf:type fuseki:Service ;
+    rdfs:label                      "TDB Service" ;
+    fuseki:name                     "NEW" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceUpdate            "update" ;
+    fuseki:serviceUpload            "upload" ;
+    fuseki:serviceReadWriteGraphStore      "data" ;
+    # A separate read-only graph store endpoint:
+    fuseki:serviceReadGraphStore       "get" ;
+    fuseki:dataset           <#tdb_dataset> ;
+    .
+
+<#tdb_dataset> rdf:type      tdb:DatasetTDB ;
+    tdb:location "--mem--" ;
+##     # Query timeout on this dataset (milliseconds)
+    ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
+##     # Default graph for query is the (read-only) union of all named graphs.
+    tdb:unionDefaultGraph true ;
+   .

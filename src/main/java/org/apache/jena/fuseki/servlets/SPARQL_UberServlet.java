@@ -122,7 +122,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     @Override
     protected String mapRequestToDataset(String uri) 
     {
-        return mapRequestToDatasetLongest$(uri) ;
+        return ActionLib.mapRequestToDatasetLongest$(uri) ;
     }
     
 

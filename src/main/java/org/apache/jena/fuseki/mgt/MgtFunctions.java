@@ -74,12 +74,6 @@ public class MgtFunctions
         return Iter.toList(DatasetRegistry.get().keys()) ;
     }
 
-    /** Return name of */  
-    public static String actionDataset(HttpServletRequest request)
-    {
-        return PageNames.actionDatasetNames ;
-    }
-
     // Service name getters ...
     
     /** Return a SPARQL query service name for the dataset */

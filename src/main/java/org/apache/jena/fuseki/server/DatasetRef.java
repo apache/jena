@@ -238,4 +238,15 @@ public class DatasetRef implements DatasetMXBean, Counters
         cs.add(CounterName.GSPoptionsGood) ;
         cs.add(CounterName.GSPoptionsBad) ;
     }
+    
+    public static String canocialDatasetPath(String datasetPath) {
+        if ( datasetPath.equals("/") )
+            datasetPath = "" ;
+        else
+            if ( !datasetPath.startsWith("/") )
+                datasetPath = "/" + datasetPath ;
+        if ( datasetPath.endsWith("/") )
+            datasetPath = datasetPath.substring(0, datasetPath.length() - 1) ;
+        return datasetPath ;
+    }
 }

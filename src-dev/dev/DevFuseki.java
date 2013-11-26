@@ -18,42 +18,27 @@
 
 package dev;
 
+import java.util.ArrayList ;
+import java.util.List ;
+
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.fuseki.FusekiConfigException ;
+import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.fuseki.server.FusekiConfig ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
+
 public class DevFuseki
 {
-    // SPARQL_QueryDataset.vialidate query -- but FROM etc is important for TDB. 
-    // DatasetDescription from protocol
-    //   createDataset from the ARQ.
-    //   SPARQL_QueryGeneral.datasetFromDescription
-    
-    // Config:
-    //   fuseki:name ==> fuseki:serviceName of fuseki:endpointBase 
-    //   rdfs:label for log files.
-    
-    // sparql.jsp needs to switch on presence and name of service endpoints.
-    // --accept for to soh for construct queries (check can get CONSTRUCT in TTL).
-    
-    // application/json for application/sparql-results+json. 
-    // application/xml for application/sparql-results+xml. 
-    
-    // LimitingGraph, LimitingBulkUpdateHandler --> change to use a limiting Sink<>
-    // Finish: SPARQL_QueryGeneral
-    //    Parse errors and etc need to be passed out.
-    // --jetty-config documentation
-    
-    // Rework arguments.
-    //   Explicit install pages.
-    //   Pages for read-only.
-    
-    // RDF/XML_ABBREV in ResponseModel
-    // Config Jetty from a file?
-    //   Alternatibe way to run Fuseki
-    
-	// Flint?
-	// Pages for publish mode.
-
-	// Multiple Accept headers
-    // WebContent and ContentType clean up.
-    
 	// SOH default to not needing 'default'
 	// More error handling.
 
@@ -62,55 +47,6 @@ public class DevFuseki
     
     //soh : --accept application/turtle for CONSTRUCT queries.
     
-    // Direct naming.
-    // Use absence/presence of a query string to switch.
-    
-    // sparql.jsp ==> if no dataset, go to choosing page or error page linking to.
-    
-    // Better handling of bad URI name for a graph http:/example/X => stacktrace.
-    
-    // FUSEKI_ROOT
-
-    // Documentation:
-    //   Plan documentation.
-    //   MIME types supported
-    // Include a data file in the distribution.
-    // curl as commandline
-    
-    // Dataset servers - bulk loader.
-    // Access the bulk loader via web. [later]
-    
-    // Structure pages, different static content servers
-    // /Main - index.html = fuseki.html
-    // /validate
-    // /admin
-    
-    // Server-local graph naming
-    
-    // Plain text error pages
-    
-    // Deploy to sparql.org -- need query form for read-only mode.
-    
-    // + LARQ
-    
-    // Testing:
-    //   No file -> error.
-    
-    // Remove from package conneg - use code from ARQ/Atlas.
-    // TypedStream TypedInoputStrea, TypedOutputStream, MediaType, MediaRange
-    
-    // Bundle tdb scripts with Fuseki.
-
-    // ParserFor - share between SPARQL_REST and SPARQL_Upload
-    // UploadTo dataset (TriG, N-Quads)
-   
-    // populate forms with prefixes (later)
-    
-    // Tests
-    //   TestProtocol (HTTP update, query, update), inc status codes.
-    //   SPARQL Query servlet / SPARQL Update servlet
-    //   TestContentNegotiation - is coveage enough?
-    
     // ?? Slug header:
     // http://bitworking.org/projects/atom/rfc5023.html#rfc.section.9.7
     
@@ -118,32 +54,111 @@ public class DevFuseki
     
     // Authentication
     
-    // SOH
-    //   Refactor into body/no_body send & body/no_body receive
-    // All:
-    // -v --help --accept --user/--password ( or --auth user:pass) 
-    // Drop --service.
-    // Local config file - read to get service settings. 
-    
-    //   --accept line/shortname : s-get, s-query
-    //   Basic authentication: --user --password
-    
-    // Argument names: --service naming seems inconsistent.
-    
-    // Plug-ins:
-    //   Dataset (query, Update), HttpInternalIF?
-    //   "Connection"
-    // Locking => transaction support (via default model?)
-    //   HttpAction.beginRead() etc.
-    
-    // Java clients:
-    //   DatasetAccessor : don't serialise to byte[] and then send. 
-    //   DatasetAccessor : check existence of endpoint. 
-
     // Content-Length: SHOULD
     //   Transfer-Encoding: identity
     // "chunked" encoding
     // gzip
     
-    // Code examples
+    private static Logger log = LoggerFactory.getLogger("Devel") ;
+    
+    public static void main(String ... argv) {
+        Model m = read("config2.ttl") ;
+        // One rdf:type fuseki:Service
+        
+        ResultSet rs = query("SELECT * { ?service rdf:type fuseki:Service }", m) ; 
+        List<Resource> services = new ArrayList<Resource>() ;
+        for ( ; rs.hasNext() ; )
+        {
+            QuerySolution soln = rs.next() ;
+            Resource svc = soln.getResource("service") ;
+            services.add(svc) ;
+        }
+        
+        if ( services.size() == 0 ) {
+            log.error("No services found") ;
+            throw new FusekiConfigException() ;
+        }
+        if ( services.size() > 1 ) {
+            log.error("Multiple services found") ;
+            throw new FusekiConfigException() ;
+        }
+
+        Resource service = services.get(0) ;
+        DatasetRef sd = FusekiConfig.processService(service) ;
+        sd.init() ;
+        System.out.println("DONE");
+    }
+
+    private static Model read(String filename) {
+
+        Model m = RDFDataMgr.loadModel(filename) ;
+        String x1 = StrUtils.strjoinNL
+            ( "PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>" ,
+              "PREFIX ja:  <http://jena.hpl.hp.com/2005/11/Assembler#>", 
+              "INSERT                    { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' }",
+              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' } }"
+             ) ;
+        String x2 = StrUtils.strjoinNL
+            ("PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>" ,
+             "PREFIX ja:  <http://jena.hpl.hp.com/2005/11/Assembler#>",
+             "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
+             "INSERT DATA {",
+             "   tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .",
+             "   tdb:GraphTDB    rdfs:subClassOf  ja:Model .",
+             "}" 
+             ) ;
+        execute(m, x1) ;
+        execute(m, x2) ;
+        return m ;
+        
+    }
+
+    private static void execute(Model m, String x) {
+        UpdateRequest req = UpdateFactory.create(x) ;
+        UpdateAction.execute(req, m);
+    }
+    
+    // Copies from original FusekiConfig
+    
+    private static String prefixes = StrUtils.strjoinNL(
+    "PREFIX fuseki: <http://jena.apache.org/fuseki#>" ,
+    "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+    "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+    "PREFIX tdb:    <http://jena.hpl.hp.com/2008/tdb#>",
+    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
+    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
+    "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
+    "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>", 
+    "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>" ,
+    "") ;
+    
+    private static ResultSet query(String string, Model m)
+    {
+        return query(string, m, null, null) ;
+    }
+
+    private static ResultSet query(String string, Model m, String varName, RDFNode value)
+    {
+        Query query = QueryFactory.create(prefixes+string) ;
+        QuerySolutionMap initValues = null ;
+        if ( varName != null )
+            initValues = querySolution(varName, value) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, m, initValues) ;
+        ResultSet rs = ResultSetFactory.copyResults(qExec.execSelect()) ;
+        qExec.close() ;
+        return rs ;
+    }
+    
+    private static QuerySolutionMap querySolution(String varName, RDFNode value)
+    {
+        QuerySolutionMap qsm = new QuerySolutionMap() ;
+        querySolution(qsm, varName, value) ;
+        return qsm ;
+    }
+    
+    private static QuerySolutionMap querySolution(QuerySolutionMap qsm, String varName, RDFNode value)
+    {
+        qsm.add(varName, value) ;
+        return qsm ;
+    }
 }
