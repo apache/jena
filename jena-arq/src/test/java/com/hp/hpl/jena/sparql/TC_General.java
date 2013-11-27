@@ -38,6 +38,7 @@ import com.hp.hpl.jena.sparql.function.user.TS_UserFunctions ;
 import com.hp.hpl.jena.sparql.graph.TS_Graph ;
 import com.hp.hpl.jena.sparql.lang.TS_Lang ;
 import com.hp.hpl.jena.sparql.modify.TS_Update ;
+import com.hp.hpl.jena.sparql.negation.TS_Negation;
 import com.hp.hpl.jena.sparql.path.TS_Path ;
 import com.hp.hpl.jena.sparql.resultset.TS_ResultSet ;
 import com.hp.hpl.jena.sparql.solver.TS_Solver ;
@@ -60,6 +61,7 @@ import com.hp.hpl.jena.sparql.util.TS_Util ;
     , TS_ResultSet.class
     , TS_Binding.class
     , TS_Engine.class
+    , TS_Negation.class
     , TS_Solver.class
     , TS_Algebra.class
     , TS_ResultSet.class
