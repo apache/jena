@@ -91,13 +91,9 @@ public abstract class IRIResolver
     static private String      globalBase         = IRILib.filenameToIRI("./") ;
 
     // The global resolver may be accessed by multiple threads
-    // but also some actions need consistency across more than one access
-    // so just sync'd access to globalResolver is not enough, and we need
-    // a lock object.
-    static private Object      globalResolverLock = new Object() ;
+    // Other resolvers are not thread safe.
+    
     private static IRIResolver globalResolver ;
-    // Don't pass out - use the statics here.
-    // public static IRIResolver get() { return globalResolver ; }
 
     /**
      * The current global resolver based on the working directory
@@ -111,7 +107,7 @@ public abstract class IRIResolver
             cwd = iriFactory.create("file:///") ;
             e.printStackTrace(System.err) ;
         }
-        globalResolver = IRIResolver.create(cwd) ;
+        globalResolver = new IRIResolverSync(IRIResolver.create(cwd)) ;
     }
 
     /**
@@ -122,14 +118,12 @@ public abstract class IRIResolver
      * @return String The filename as an absolute URL
      */
     static public String resolveFileURL(String filename) throws IRIException {
-        synchronized (globalResolverLock) {
-            IRI r = globalResolver.resolve(filename) ;
-            if (!r.getScheme().equalsIgnoreCase("file")) {
-                // Pragmatic hack that copes with "c:"
-                return resolveFileURL("./" + filename) ;
-            }
-            return r.toString() ;
+        IRI r = globalResolver.resolve(filename) ;
+        if (!r.getScheme().equalsIgnoreCase("file")) {
+            // Pragmatic hack that copes with "c:"
+            return resolveFileURL("./" + filename) ;
         }
+        return r.toString() ;
     }
 
     /**
@@ -188,18 +182,16 @@ public abstract class IRIResolver
      * No exception thrown by this method.
      */
     static private IRI resolveIRI(String relStr, String baseStr) {
-        synchronized (globalResolverLock) {
-            IRI i = iriFactory.create(relStr) ;
-            if (i.isAbsolute())
-                // removes excess . segments
-                return globalResolver.getBaseIRI().create(i) ;
+        IRI i = iriFactory.create(relStr) ;
+        if (i.isAbsolute())
+            // removes excess . segments
+            return globalResolver.getBaseIRI().create(i) ;
 
-            IRI base = iriFactory.create(baseStr) ;
+        IRI base = iriFactory.create(baseStr) ;
 
-            if ("file".equalsIgnoreCase(base.getScheme()))
-                return globalResolver.getBaseIRI().create(i) ;
-            return base.create(i) ;
-        }
+        if ("file".equalsIgnoreCase(base.getScheme()))
+            return globalResolver.getBaseIRI().create(i) ;
+        return base.create(i) ;
     }
 
     public static IRIResolver create() {
@@ -233,9 +225,7 @@ public abstract class IRIResolver
      */
 
     static public IRI chooseBaseURI() {
-        synchronized (globalResolverLock) {
-            return globalResolver.getBaseIRI() ;
-        }
+        return globalResolver.getBaseIRI() ;
     }
 
     public String getBaseIRIasString() {
@@ -379,9 +369,7 @@ public abstract class IRIResolver
             if (baseS == null)
                 base = chooseBaseURI() ;
             else
-                synchronized (globalResolverLock) {
-                    base = globalResolver.resolveSilent(baseS) ;
-                }
+                base = globalResolver.resolveSilent(baseS) ;
         }
 
         public IRIResolverNormal(IRI baseIRI)
@@ -429,6 +417,30 @@ public abstract class IRIResolver
             if (resolvedIRIs != null)
                 resolvedIRIs.put(relURI, iri) ;
             return iri ;
+        }
+    }
+    
+    static class IRIResolverSync extends IRIResolver
+    {
+        private final IRIResolver other ;
+
+        IRIResolverSync(IRIResolver other) { this.other = other ; }
+        @Override
+        synchronized
+        protected IRI getBaseIRI() {
+            return other.getBaseIRI() ;
+        }
+
+        @Override
+        synchronized
+        public IRI resolve(String uriStr) {
+            return other.resolve(uriStr) ;
+        }
+
+        @Override
+        synchronized
+        public IRI resolveSilent(String uriStr) {
+            return other.resolveSilent(uriStr) ;
         }
     }
 }
