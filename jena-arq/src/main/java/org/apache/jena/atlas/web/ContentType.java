@@ -30,6 +30,8 @@ public class ContentType
     
     public static ContentType create(String string)
     {
+        if ( string == null )
+            return null ;
         ContentType ct = new ContentType(MediaType.create(string)) ;
         return ct ;
     }
