@@ -1,29 +1,20 @@
 package com.hp.hpl.jena.sparql.negation;
 
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Collection;
+import java.io.StringReader ;
+import java.util.Arrays ;
+import java.util.Collection ;
 
-import org.apache.jena.atlas.lib.StrUtils;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.junit.AfterClass ;
+import org.junit.Assert ;
+import org.junit.Test ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Parameterized ;
+import org.junit.runners.Parameterized.Parameters ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.ResultSetRewindable;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /**
  * Tests for calculating graph deltas using SPARQL
@@ -45,60 +36,59 @@ public class TestGraphDeltas {
             "<http://r1> <http://r1> <http://r1> , \"value\" , 1234, 123e4, 123.4, true, false .",
             "<http://r2> <http://r2> <http://r2> .");
 
-//@formatter:off
-    private static final String MinusQuery = StrUtils.strjoinNL("SELECT *",
-"WHERE",
-"{",
-"GRAPH <http://a>",
-"{",
-"    ?s ?p ?o .",
-"}",
-"MINUS",
-"{",
-"    GRAPH <http://b> { ?s ?p ?o }",
-"}",
-"}");
+    private static final String MinusQuery = StrUtils.strjoinNL
+        ("SELECT *",
+         "{",
+         "  GRAPH <http://a>",
+         "  {",
+         "     ?s ?p ?o .",
+         "  }",
+         "  MINUS",
+         "  {",
+         "    GRAPH <http://b> { ?s ?p ?o }",
+         "  }",
+         "}");
     
-    private static final String OptionalSameTermQuery1 = StrUtils.strjoinNL("SELECT *",
-"WHERE",
-"{",
-"GRAPH <http://a>",
-"{",
-"    ?s ?p ?o .",
-"}",
-"OPTIONAL",
-"{",
-"    GRAPH <http://b> { ?s0 ?p0 ?o0 . }",
-"    FILTER (SAMETERM(?s, ?s0) && SAMETERM(?p, ?p0) && SAMETERM(?o, ?o0))",
-"}",
-"FILTER(!BOUND(?s0))",
-"}");
+    private static final String OptionalSameTermQuery1 = StrUtils.strjoinNL
+        ("SELECT *",
+         "{",
+         "  GRAPH <http://a>",
+         "  {",
+         "     ?s ?p ?o .",
+         "  }",
+         "  OPTIONAL",
+         "  {",
+         "     GRAPH <http://b> { ?s0 ?p0 ?o0 . }",
+         "     FILTER (SAMETERM(?s, ?s0) && SAMETERM(?p, ?p0) && SAMETERM(?o, ?o0))",
+         "  }",
+         "  FILTER(!BOUND(?s0))",
+         "}");
 
-    private static final String OptionalSameTermQuery2 = StrUtils.strjoinNL("SELECT *",
-"WHERE",
-"{",
-"GRAPH <http://a>",
-"{",
-"    ?s ?p ?o .",
-"}",
-"OPTIONAL",
-"{",
-"    GRAPH <http://b> { ?s ?p ?o0 . }",
-"    FILTER (SAMETERM(?o, ?o0))",
-"}",
-"FILTER(!BOUND(?o0))",
-"}");
+    private static final String OptionalSameTermQuery2 = StrUtils.strjoinNL
+        ("SELECT *",
+         "{",
+         "  GRAPH <http://a>",
+         "  {",
+         "    ?s ?p ?o .",
+         "  }",
+         "  OPTIONAL",
+         "  {",
+         "    GRAPH <http://b> { ?s ?p ?o0 . }",
+         "    FILTER (SAMETERM(?o, ?o0))",
+         "  }",
+         "  FILTER(!BOUND(?o0))",
+         "}");
 
-    private static final String NotExistsQuery = StrUtils.strjoinNL("SELECT *",
-"WHERE",
-"{",
-"GRAPH <http://a>",
-"{",
-"    ?s ?p ?o .",
-"}",
-"FILTER NOT EXISTS { GRAPH <http://b> { ?s ?p ?o } }",
-"}");
-//@formatter:on
+    private static final String NotExistsQuery = StrUtils.strjoinNL
+        ("SELECT *",
+         "{",
+         "  GRAPH <http://a>",
+         "  {",
+         "     ?s ?p ?o .",
+         "  }",
+         "  FILTER NOT EXISTS { GRAPH <http://b> { ?s ?p ?o } }",
+         "}");
+
 
     @AfterClass
     public static void afterTests() {
@@ -109,7 +99,6 @@ public class TestGraphDeltas {
 
     /**
      * Data for parameters
-     * @return
      */
     @Parameters
     public static Collection<Object[]> data() {
