@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import java.io.IOException ;
-import java.io.InputStream ;
+import java.io.* ;
+import java.nio.channels.FileChannel ;
 import java.util.List ;
 
 import javax.servlet.ServletException ;
@@ -28,13 +28,10 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
@@ -49,14 +46,8 @@ import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
-import com.hp.hpl.jena.vocabulary.RDF ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 public class DatasetsCollectionServlet extends ServletBase {
     
@@ -72,7 +63,7 @@ public class DatasetsCollectionServlet extends ServletBase {
         } catch (ActionErrorException ex) {
             if ( ex.exception != null )
                 ex.exception.printStackTrace(System.err) ;
-            // XXX Log message done by printResponse in a moment.
+            // XXX Log message needed pretinresonse in SPARQL_ServletBase 
             if ( ex.message != null )
                 responseSendError(response, ex.rc, ex.message) ;
             else
@@ -95,7 +86,6 @@ public class DatasetsCollectionServlet extends ServletBase {
         } 
     }
     protected void execGet(HttpServletRequest request, HttpServletResponse response) {
-        
         JsonBuilder builder = new JsonBuilder() ;
         String pathInfo = request.getPathInfo() ;
         if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") ) {
@@ -138,31 +128,36 @@ public class DatasetsCollectionServlet extends ServletBase {
         Model m = ModelFactory.createDefaultModel() ;
         StreamRDF dest = StreamRDFLib.graph(m.getGraph()) ;
         bodyAsGraph(request, dest) ;
-        Resource t = m.createResource("http://jena.apache.org/fuseki#Service") ;
-        List<Resource> services = getByType(t, m) ; 
-            
-        if ( services.size() == 0 ) {
-            log.error("No services found") ;
-            throw new FusekiConfigException() ;
-        }
-        if ( services.size() > 1 ) {
-            log.error("Multiple services found") ;
-            throw new FusekiConfigException() ;
-        }
-
-        // Test name.
+        List<DatasetRef> refs = FusekiConfig.readConfiguration(m);
         
-        Resource service = services.get(0) ;
-        String name = ((Literal)getOne(service, "fuseki:name")).getLexicalForm() ;
-        //log.info("name = "+name); 
-        DatasetRef dsDesc = FusekiConfig.processService(service) ;
-        String datasetPath = dsDesc.name ;
-        if ( DatasetRegistry.get().isRegistered(datasetPath) )
-            // Remove?
-            errorBadRequest("Already registered: "+name);
-        SPARQLServer.registerDataset(datasetPath, dsDesc) ;
+        for (DatasetRef dsDesc : refs) {
+            String datasetPath = dsDesc.name ;
+            if ( DatasetRegistry.get().isRegistered(datasetPath) )
+                // Remove?
+                errorBadRequest("Already registered: " + dsDesc.name) ;
+            SPARQLServer.registerDataset(datasetPath, dsDesc) ;
+        }
+        try {
+            String n = IO.uniqueFilename(FusekiConfig.configurationsDirectory, "assem", "ttl") ;
+            OutputStream out = new FileOutputStream(n) ;
+            out = new BufferedOutputStream(out) ;
+            RDFDataMgr.write(out, m, Lang.TURTLE) ;
+            out.close() ;
+        } catch (IOException ex) { IO.exception(ex) ; }
     }
 
+    private static void copyFile(File source, File dest) {
+        try {
+            @SuppressWarnings("resource")
+            FileChannel sourceChannel = new FileInputStream(source).getChannel();
+            @SuppressWarnings("resource")
+            FileChannel destChannel = new FileOutputStream(dest).getChannel();
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+            sourceChannel.close();
+            destChannel.close();
+        } catch (IOException ex) { IO.exception(ex); }
+    }
+    
     // XXX Merge with SPARQL_REST_RW.incomingData
     
     protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
@@ -188,8 +183,9 @@ public class DatasetsCollectionServlet extends ServletBase {
 //                log.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", action.id, ct.getContentType(),
 //                                ct.getCharset(), lang.getName())) ;
 //        }
-
+        dest.prefix("root", base+"#");
         parse(dest, input, lang, base) ;
+         
     }
 
     public static void parse(StreamRDF dest, InputStream input, Lang lang, String base) {
@@ -201,143 +197,5 @@ public class DatasetsCollectionServlet extends ServletBase {
         try { parser.parse() ; } 
         catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
     }
-    
-    private static Model read(String filename) {
-
-        Model m = RDFDataMgr.loadModel(filename) ;
-        String x1 = StrUtils.strjoinNL
-            ( "PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>" ,
-              "PREFIX ja:  <http://jena.hpl.hp.com/2005/11/Assembler#>", 
-              "INSERT                    { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' }",
-              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' } }"
-             ) ;
-        String x2 = StrUtils.strjoinNL
-            ("PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>" ,
-             "PREFIX ja:  <http://jena.hpl.hp.com/2005/11/Assembler#>",
-             "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
-             "INSERT DATA {",
-             "   tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .",
-             "   tdb:GraphTDB    rdfs:subClassOf  ja:Model .",
-             "}" 
-             ) ;
-        execute(m, x1) ;
-        execute(m, x2) ;
-        return m ;
-        
-    }
-
-    private static void execute(Model m, String x) {
-        UpdateRequest req = UpdateFactory.create(x) ;
-        UpdateAction.execute(req, m);
-    }
-    
-    // Temprary -- XXX Copies from original FusekiConfig
-    
-    private static String prefixes = StrUtils.strjoinNL(
-    "PREFIX fuseki: <http://jena.apache.org/fuseki#>" ,
-    "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-    "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-    "PREFIX tdb:    <http://jena.hpl.hp.com/2008/tdb#>",
-    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
-    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
-    "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
-    "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>", 
-    "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>" ,
-    "") ;
-    
-    private static ResultSet query(String string, Model m)
-    {
-        return query(string, m, null, null) ;
-    }
-
-    private static ResultSet query(String string, Model m, String varName, RDFNode value)
-    {
-        Query query = QueryFactory.create(prefixes+string) ;
-        QuerySolutionMap initValues = null ;
-        if ( varName != null )
-            initValues = querySolution(varName, value) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, m, initValues) ;
-        ResultSet rs = ResultSetFactory.copyResults(qExec.execSelect()) ;
-        qExec.close() ;
-        return rs ;
-    }
-    
-    private static QuerySolutionMap querySolution(String varName, RDFNode value)
-    {
-        QuerySolutionMap qsm = new QuerySolutionMap() ;
-        querySolution(qsm, varName, value) ;
-        return qsm ;
-    }
-    
-    private static QuerySolutionMap querySolution(QuerySolutionMap qsm, String varName, RDFNode value)
-    {
-        qsm.add(varName, value) ;
-        return qsm ;
-    }
-    
-    private static RDFNode getOne(Resource svc, String property)
-    {
-        String ln = property.substring(property.indexOf(':')+1) ;
-        ResultSet rs = query("SELECT * { ?svc "+property+" ?x}", svc.getModel(), "svc", svc) ;
-        if ( ! rs.hasNext() )
-            throw new FusekiConfigException("No "+ln+" for service "+nodeLabel(svc)) ;
-        RDFNode x = rs.next().get("x") ;
-        if ( rs.hasNext() )
-            throw new FusekiConfigException("Multiple "+ln+" for service "+nodeLabel(svc)) ;
-        return x ;
-    }
-    
-    private static List<Resource> getByType(Resource type, Model m)
-    {
-        ResIterator rIter = m.listSubjectsWithProperty(RDF.type, type) ;
-        return Iter.toList(rIter) ;
-    }
-    
-    
-    // Node presentation
-    private static String nodeLabel(RDFNode n)
-    {
-        if ( n == null )
-            return "<null>" ;
-        if ( n instanceof Resource )
-            return strForResource((Resource)n) ;
-        
-        Literal lit = (Literal)n ;
-        return lit.getLexicalForm() ;
-    }
-    private static String strForResource(Resource r) { return strForResource(r, r.getModel()) ; }
-    
-    private static String strForResource(Resource r, PrefixMapping pm)
-    {
-        if ( r == null )
-            return "NULL ";
-        if ( r.hasProperty(RDFS.label))
-        {
-            RDFNode n = r.getProperty(RDFS.label).getObject() ;
-            if ( n instanceof Literal )
-                return ((Literal)n).getString() ;
-        }
-        
-        if ( r.isAnon() )
-            return "<<blank node>>" ;
-
-        if ( pm == null )
-            pm = r.getModel() ;
-
-        return strForURI(r.getURI(), pm ) ;
-    }
-    
-    private static String strForURI(String uri, PrefixMapping pm)
-    {
-        if ( pm != null )
-        {
-            String x = pm.shortForm(uri) ;
-            
-            if ( ! x.equals(uri) )
-                return x ;
-        }
-        return "<"+uri+">" ;
-    }
-
 }
 

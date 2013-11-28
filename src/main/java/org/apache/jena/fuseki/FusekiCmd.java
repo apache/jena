@@ -437,6 +437,8 @@ public class FusekiCmd extends CmdARQ {
         } else
             serverConfig = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate, listenLocal) ;
 
+        FusekiConfig.additional(serverConfig) ;
+        
         // TODO Get from parsing config file.
         serverConfig.port = port ;
         serverConfig.pages = staticContentDir ;

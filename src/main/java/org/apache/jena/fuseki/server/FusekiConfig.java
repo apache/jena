@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.server ;
 
+import java.io.File ;
+import java.io.FilenameFilter ;
 import java.lang.reflect.Method ;
 import java.util.ArrayList ;
 import java.util.Arrays ;
@@ -28,33 +30,22 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.JA ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.QuerySolutionMap ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.ResIterator ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.Statement ;
-import com.hp.hpl.jena.rdf.model.StmtIterator ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
@@ -63,6 +54,9 @@ public class FusekiConfig {
     static {
         Fuseki.init() ;
     }
+    
+    // MASSIVE AMOUNT OF CODE TIDYING NEEDED
+    // 
 
     // The datastructure that captures a servers configuration.
 
@@ -75,12 +69,12 @@ public class FusekiConfig {
     private static Logger log      = Fuseki.configLog ;
 
     private static String prefixes = StrUtils.strjoinNL
-        ("PREFIX fu:     <http://jena.apache.org/fuseki#>",
-         "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-         "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-         "PREFIX tdb:    <http://jena.hpl.hp.com/2008/tdb#>",
-         "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
-         "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
+        ("PREFIX fu:      <http://jena.apache.org/fuseki#>",
+         "PREFIX fuseki:  <http://jena.apache.org/fuseki#>",
+         "PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+         "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
+         "PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#>",
+         "PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>",
          "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
          "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>",
          "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>", "") ;
@@ -101,7 +95,7 @@ public class FusekiConfig {
         } else
             dbDesc.readGraphStore.endpoints.add(HttpNames.ServiceData) ;
         ServerConfig config = new ServerConfig() ;
-        config.datasets = Arrays.asList(dbDesc) ;
+        config.datasets = new ArrayList<DatasetRef>(Arrays.asList(dbDesc)) ;
         config.port = 3030 ;
         config.mgtPort = 3031 ;
         config.pagesPort = config.port ;
@@ -113,6 +107,89 @@ public class FusekiConfig {
         return config ;
     }
 
+    // NEW
+    public static final String configurationsDirectory = "configure" ;
+    public static final String fusekiService = "http://jena.apache.org/fuseki#Service" ;
+    
+    public static void additional(ServerConfig config) {
+        // server/
+        // configure/
+        // databases/
+        
+        File d = new File(configurationsDirectory) ;
+        String[] assemblerFiles = d.list(new FilenameFilter() {
+          @Override
+          public boolean accept(File dir, String name) {
+              return ! name.startsWith(".") ;
+          }
+        });
+        
+        String x = Iter.asString(Arrays.asList(assemblerFiles));
+        log.info("Files: "+x);
+        
+        for ( String fn : assemblerFiles ) {
+            Model m = RDFDataMgr.loadModel(configurationsDirectory+"/"+fn);
+            List<DatasetRef> refs = readConfiguration(m);
+            config.datasets.addAll(refs) ;
+        }
+    }
+    
+    public static List<DatasetRef> readConfiguration(Model m) {
+        additionalRDF(m) ;
+        Resource t = m.createResource(fusekiService) ;
+        List<Resource> services = getByType(t, m) ; 
+            
+        if ( services.size() == 0 ) {
+            log.error("No services found") ;
+            throw new FusekiConfigException() ;
+        }
+        
+        // Remove?
+        if ( services.size() > 1 ) {
+            log.error("Multiple services found") ;
+            throw new FusekiConfigException() ;
+        }
+        
+        List<DatasetRef> refs = new ArrayList<DatasetRef>() ;
+        
+        Resource service = services.get(0) ;
+        String name = ((Literal)getOne(service, "fuseki:name")).getLexicalForm() ;
+        log.info("name = "+name); 
+        DatasetRef dsDesc = FusekiConfig.processService(service) ;
+        String datasetPath = dsDesc.name ;
+        refs.add(dsDesc) ;
+        return refs ;
+    }
+    
+    private static Model additionalRDF(Model m ) {
+        String x1 = StrUtils.strjoinNL
+            ( "PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>" ,
+              "PREFIX ja:  <http://jena.hpl.hp.com/2005/11/Assembler#>", 
+              "INSERT                    { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' }",
+              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' } }"
+             ) ;
+        String x2 = StrUtils.strjoinNL
+            ("PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>" ,
+             "PREFIX ja:  <http://jena.hpl.hp.com/2005/11/Assembler#>",
+             "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
+             "INSERT DATA {",
+             "   tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .",
+             "   tdb:GraphTDB    rdfs:subClassOf  ja:Model .",
+             "}" 
+             ) ;
+        execute(m, x1) ;
+        execute(m, x2) ;
+        return m ;
+        
+    }
+    
+    private static void execute(Model m, String x) {
+        UpdateRequest req = UpdateFactory.create(x) ;
+        UpdateAction.execute(req, m);
+    }
+    
+    // OLD
+    
     public static ServerConfig configure(String filename) {
         // Be absolutely sure everything has initialized.
         // Some initialization registers assemblers and sets abbreviation
