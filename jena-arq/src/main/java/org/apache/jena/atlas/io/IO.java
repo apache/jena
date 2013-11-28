@@ -302,4 +302,27 @@ public class IO
         return sw.toString();  
     }
 
+    public static String uniqueFilename(String directory, String base, String ext) {
+        File d = new File(directory) ;
+        if ( !d.exists() )
+            throw new IllegalArgumentException("Not found: " + directory) ;
+        try {
+            String fn0 = d.getCanonicalPath() + File.separator + base ;
+            String fn = fn0 ;
+            int x = 1 ;
+            while (true) {
+                if ( ext != null )
+                    fn = fn + "."+ext ;
+                File f = new File(fn) ;
+                if ( ! f.exists() )
+                    return fn ;
+                fn = fn0 + "-" + (x++) ;
+            }
+        } catch (IOException e) {
+            IO.exception(e) ;
+            return null ;
+        }
+
+    }
+
 }
