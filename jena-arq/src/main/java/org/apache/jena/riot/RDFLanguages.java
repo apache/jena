@@ -271,6 +271,8 @@ public class RDFLanguages
     /** Map a content type (without charset) to a {@link Lang} */
     public static Lang contentTypeToLang(String contentType)
     {
+        if ( contentType == null )
+            return null ;
         String key = canonicalKey(contentType) ;
         return mapContentTypeToLang.get(key) ;
     }
@@ -278,6 +280,8 @@ public class RDFLanguages
     /** Map a content type (without charset) to a {@link Lang} */
     public static Lang contentTypeToLang(ContentType ct)
     {
+        if ( ct == null )
+            return null ;
         String key = canonicalKey(ct.getContentType()) ;
         return mapContentTypeToLang.get(key) ;
     }
@@ -285,6 +289,8 @@ public class RDFLanguages
     /** Map a colloquial name (e.g. "Turtle") to a {@link Lang} */
     public static Lang shortnameToLang(String label)
     {
+        if ( label == null )
+            return null ;
         String key = canonicalKey(label) ;
         return mapLabelToLang.get(key) ;
     }

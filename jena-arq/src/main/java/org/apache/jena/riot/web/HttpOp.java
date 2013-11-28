@@ -162,7 +162,8 @@ public class HttpOp {
         public void handle(String baseIRI, HttpResponse response) throws IOException {
 
             HttpEntity entity = response.getEntity();
-            stream = new TypedInputStream(entity.getContent(), entity.getContentType().getValue());
+            String ct = (entity.getContentType()==null) ? null : entity.getContentType().getValue() ;
+            stream = new TypedInputStream(entity.getContent(), ct);
         }
 
         @Override

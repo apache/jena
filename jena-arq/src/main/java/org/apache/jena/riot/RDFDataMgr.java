@@ -883,7 +883,7 @@ public class RDFDataMgr
 
     /** Determine the Lang, given the URI target, any content type header string and a hint */ 
     public static Lang determineLang(String target, String ctStr, Lang hintLang) {
-        ContentType ct = determineCT(target, ctStr, hintLang ) ;
+        ContentType ct = determineCT(target, ctStr, hintLang) ;
         if ( ct == null )
             return hintLang ;
         Lang lang = RDFLanguages.contentTypeToLang(ct) ;

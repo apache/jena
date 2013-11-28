@@ -152,7 +152,8 @@ public class UpdateEngineWorker implements UpdateVisitor
         try {
             // Read into temporary storage to protect against parse errors.
             TypedInputStream s = RDFDataMgr.open(source) ;
-            Lang lang = RDFLanguages.contentTypeToLang(s.getContentType()) ;
+            Lang lang = RDFDataMgr.determineLang(source, s.getContentType(), null) ;
+            
             if ( RDFLanguages.isTriples(lang) ) {
                 // Triples
                 Graph g = GraphFactory.createGraphMem() ;
