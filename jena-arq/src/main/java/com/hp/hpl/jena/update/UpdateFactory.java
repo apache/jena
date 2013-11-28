@@ -146,19 +146,19 @@ public class UpdateFactory
     /** Create an UpdateRequest by reading it from a file */
     public static UpdateRequest read(String fileName)
     { 
-        return read(fileName, null, defaultUpdateSyntax) ;
+        return read(fileName, fileName, defaultUpdateSyntax) ;
     }
     
     /** Create an UpdateRequest by reading it from a file */
     public static UpdateRequest read(String fileName, Syntax syntax)
     {
-        return read(fileName, null, syntax) ;
+        return read(fileName, fileName, syntax) ;
     }
     
     /** Create an UpdateRequest by reading it from a file */
     public static UpdateRequest read(UsingList usingList, String fileName, Syntax syntax)
     {
-        return read(usingList, fileName, null, syntax) ;
+        return read(usingList, fileName, fileName, syntax) ;
     }
 
     /** Create an UpdateRequest by reading it from a file */
