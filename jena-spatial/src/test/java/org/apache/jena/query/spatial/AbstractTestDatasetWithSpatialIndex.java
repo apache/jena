@@ -50,7 +50,9 @@ public abstract class AbstractTestDatasetWithSpatialIndex {
 	protected static final String QUERY_PROLOG = 
 			StrUtils.strjoinNL(
 				"PREFIX spatial: <http://jena.apache.org/spatial#>",
-				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+				"PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>",
+				"PREFIX : <"+ RESOURCE_BASE +">"
 				);
 	
 	protected static final String TURTLE_PROLOG = 
@@ -59,7 +61,8 @@ public abstract class AbstractTestDatasetWithSpatialIndex {
 						"@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
 						"@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .",
 						"@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .",
-						"@prefix wkt: <http://www.opengis.net/ont/geosparql#> ."
+						"@prefix wkt: <http://www.opengis.net/ont/geosparql#> .",
+						"@prefix : <"+ RESOURCE_BASE +"> ."
 						);
 	
 	
