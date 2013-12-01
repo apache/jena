@@ -1,0 +1,3 @@
+#!/bin/bash
+
+wget -S -O- -q 'http://localhost:3030/NEW/query?query=ASK{}'

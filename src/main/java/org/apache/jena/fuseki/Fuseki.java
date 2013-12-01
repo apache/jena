@@ -103,6 +103,13 @@ public class Fuseki
     /** Instance of log for operations */
     public static final Logger requestLog       = LoggerFactory.getLogger(requestLogName) ;
     
+    /** Admin log file for operations */
+    public static final String adminLogName   = PATH+".Admin" ;
+    
+    /** Instance of log for operations */
+    public static final Logger adminLog       = LoggerFactory.getLogger(adminLogName) ;
+    
+
     /** Actual log file for general server messages.*/
     public static final String serverLogName    = PATH+".Server" ;
     

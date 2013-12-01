@@ -55,35 +55,35 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class FusekiCmd extends CmdARQ {
-    private static String log4Jsetup = StrUtils.strjoinNL("## Plain output to stdout",
-                                                          "log4j.appender.jena.plain=org.apache.log4j.ConsoleAppender",
-                                                          "log4j.appender.jena.plain.target=System.out",
-                                                          "log4j.appender.jena.plain.layout=org.apache.log4j.PatternLayout",
-                                                          "log4j.appender.jena.plain.layout.ConversionPattern=%d{HH:mm:ss} %-5p %m%n"
+    private static String log4Jsetup = StrUtils.strjoinNL
+        ("## Plain output to stdout",
+         "log4j.appender.jena.plain=org.apache.log4j.ConsoleAppender",
+         "log4j.appender.jena.plain.target=System.out",
+         "log4j.appender.jena.plain.layout=org.apache.log4j.PatternLayout",
+         "log4j.appender.jena.plain.layout.ConversionPattern=%d{HH:mm:ss} %-5p %m%n",
+         
+         "## Plain output with level, to stderr",
+         "log4j.appender.jena.plainlevel=org.apache.log4j.ConsoleAppender",
+         "log4j.appender.jena.plainlevel.target=System.err",
+         "log4j.appender.jena.plainlevel.layout=org.apache.log4j.PatternLayout",
+         "log4j.appender.jena.plainlevel.layout.ConversionPattern=%d{HH:mm:ss} %-5p %m%n",
 
-                                                          ,
-                                                          "## Plain output with level, to stderr",
-                                                          "log4j.appender.jena.plainlevel=org.apache.log4j.ConsoleAppender",
-                                                          "log4j.appender.jena.plainlevel.target=System.err",
-                                                          "log4j.appender.jena.plainlevel.layout=org.apache.log4j.PatternLayout",
-                                                          "log4j.appender.jena.plainlevel.layout.ConversionPattern=%d{HH:mm:ss} %-5p %m%n"
+         "## Everything", "log4j.rootLogger=INFO, jena.plain",
+         "log4j.logger.com.hp.hpl.jena=WARN",
+         "log4j.logger.org.openjena=WARN",
+         "log4j.logger.org.apache.jena=WARN",
 
-                                                          , "## Everything", "log4j.rootLogger=INFO, jena.plain",
-                                                          "log4j.logger.com.hp.hpl.jena=WARN",
-                                                          "log4j.logger.org.openjena=WARN",
-                                                          "log4j.logger.org.apache.jena=WARN"
+         "# System logs.",
+         "log4j.logger."+Fuseki.serverLogName+"=INFO",
+         "log4j.logger."+Fuseki.requestLogName+"=INFO",
+         "log4j.logger."+Fuseki.adminLogName+"=INFO",
+         "log4j.logger.org.apache.jena.tdb.loader=INFO",
+         "log4j.logger.org.eclipse.jetty=ERROR" ,
 
-                                                          , "# Server log.",
-                                                          "log4j.logger.org.apache.jena.fuseki.Server=INFO",
-                                                          "# Request log.",
-                                                          "log4j.logger.org.apache.jena.fuseki.Fuseki=INFO",
-                                                          "log4j.logger.org.apache.jena.tdb.loader=INFO",
-                                                          "log4j.logger.org.eclipse.jetty=ERROR"
-
-                                                          , "## Parser output", "log4j.additivity."
-                                                                                + SysRIOT.riotLoggerName + "=false",
-                                                          "log4j.logger." + SysRIOT.riotLoggerName
-                                                              + "=INFO, jena.plainlevel ") ;
+         "## Parser output", 
+         "log4j.additivity" + SysRIOT.riotLoggerName + "=false",
+         "log4j.logger." + SysRIOT.riotLoggerName + "=INFO, jena.plainlevel"
+            ) ;
 
     // Set logging.
     // 1/ Use log4j.configuration is defined.
@@ -145,15 +145,12 @@ public class FusekiCmd extends CmdARQ {
     private static ArgDecl             argFusekiConfig = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
     private static ArgDecl             argJettyConfig  = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
     private static ArgDecl             argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip") ;
-    private static ArgDecl             argUber         = new ArgDecl(ArgDecl.NoValue, "uber", "über") ;         // Use
-                                                                                                                 // the
-                                                                                                                 // überservlet
-                                                                                                                 // (experimental)
-    private static ArgDecl             argBasicAuth    = new ArgDecl(ArgDecl.HasValue, "basic-auth") ;
-
+    
+    // Ignored - it's always dynamic dispatch 
+    private static ArgDecl             argUber         = new ArgDecl(ArgDecl.NoValue, "uber", "über") ;
     private static ArgDecl             argGSP          = new ArgDecl(ArgDecl.NoValue, "gsp") ;                  // GSP
-                                                                                                                 // compliance
-                                                                                                                 // mode
+
+    private static ArgDecl             argBasicAuth    = new ArgDecl(ArgDecl.HasValue, "basic-auth") ;
 
     private static ArgDecl             argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
     private static ArgDecl             argPages        = new ArgDecl(ArgDecl.HasValue, "pages") ;
@@ -384,10 +381,9 @@ public class FusekiCmd extends CmdARQ {
         }
 
         if ( contains(argUber) )
-            SPARQLServer.überServlet = true ;
-
+            Fuseki.configLog.info("Dynamic dispatch is now the only mode: --uber is not needed" );
+        
         if ( contains(argGSP) ) {
-            SPARQLServer.überServlet = true ;
             Fuseki.graphStoreProtocolPostCreate = true ;
         }
 

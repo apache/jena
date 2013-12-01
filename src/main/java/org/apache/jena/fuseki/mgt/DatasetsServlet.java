@@ -32,78 +32,59 @@ import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
-import org.apache.jena.fuseki.servlets.ActionErrorException ;
-import org.apache.jena.fuseki.servlets.ServletBase ;
+import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.fuseki.servlets.SPARQL_ServletBase ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
-public class DatasetsCollectionServlet extends ServletBase {
+
+public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
     //private static Logger log = Fuseki.adminLog ;
+
+    // XXX Rewrite for (renamed) SPARQL_ServletBase
     
-    public DatasetsCollectionServlet() {}
+    public DatasetsServlet() {}
     
     // LOG
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            execGet(request, response) ;
-        } catch (ActionErrorException ex) {
-            if ( ex.exception != null )
-                ex.exception.printStackTrace(System.err) ;
-            // XXX Log message done by printResponse in a moment.
-            if ( ex.message != null )
-                responseSendError(response, ex.rc, ex.message) ;
-            else
-                responseSendError(response, ex.rc) ;
-        } 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        doCommon(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        // POST a new description.
-        try {
-            execPost(request, response) ;
-        } catch (ActionErrorException ex) {
-            if ( ex.exception != null )
-                ex.exception.printStackTrace(System.err) ;
-            // XXX Log message needed pretinresonse in SPARQL_ServletBase 
-            if ( ex.message != null )
-                responseSendError(response, ex.rc, ex.message) ;
-            else
-                responseSendError(response, ex.rc) ;
-        } 
-    }
-        
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            execDelete(request, response) ;
-        } catch (ActionErrorException ex) {
-            if ( ex.exception != null )
-                ex.exception.printStackTrace(System.err) ;
-            // XXX Log message done by printResponse in a moment.
-            if ( ex.message != null )
-                responseSendError(response, ex.rc, ex.message) ;
-            else
-                responseSendError(response, ex.rc) ;
-        } 
+        doCommon(request, response);
     }
     
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doCommon(request, response);
+    }
+    
+    @Override
+    protected void validate(HttpAction action) {
+    }
+
+    @Override
+    protected void perform(HttpAction action) {
+        String name = mapRequestToDataset(action) ;
+        
+    }
+    
+
     protected void execGet(HttpServletRequest request, HttpServletResponse response) {
         log.info("Admin: GET "+request.getRequestURI()); // +Query string.
         JsonBuilder builder = new JsonBuilder() ;
@@ -132,9 +113,36 @@ public class DatasetsCollectionServlet extends ServletBase {
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
-    // Null means no name given.
+    @Deprecated()
     static String mapRequestToDataset(HttpServletRequest request) {
         String pathInfo = request.getPathInfo() ;
+        if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") )
+            return null ;
+        String name = pathInfo ;
+        // pathInfo starts with a "/"
+        int idx = pathInfo.lastIndexOf('/') ;
+        if ( idx > 0 )
+            name = name.substring(idx) ;
+        // Returns "/name"
+        return name ; 
+    }
+    
+    // Null means no name given.
+    @Override
+    protected String mapRequestToDataset(HttpAction action) {
+        // Find the part after the name used to dispatch this request. 
+        System.out.println("context path = '"+action.request.getContextPath()+"'") ;
+        System.out.println("pathinfo     = '"+action.request.getPathInfo()+"'") ;
+        System.out.println("servlet path = '"+action.request.getServletPath()+"'") ;
+        
+
+//        log.info("context path = "+action.request.getContextPath()) ;
+//        log.info("pathinfo     = "+action.request.getPathInfo()) ;
+//        log.info("servlet path = "+action.request.getServletPath()) ;
+        // if /name
+        //action.request.getServletPath() ;
+        // if /*
+        String pathInfo = action.request.getPathInfo() ;
         if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") )
             return null ;
         String name = pathInfo ;

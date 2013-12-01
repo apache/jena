@@ -119,9 +119,8 @@ public abstract class SPARQL_ServletBase extends ServletBase
     private void execCommonWorker(HttpAction action)
     {
         DatasetRef dsRef = null ;
-        String uri = action.request.getRequestURI() ;
 
-        String datasetUri = mapRequestToDataset(uri) ;
+        String datasetUri = mapRequestToDataset(action) ;
         
         if ( datasetUri != null ) {
             dsRef = DatasetRegistry.get().get(datasetUri) ;
@@ -133,6 +132,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
             dsRef = FusekiConfig.serviceOnlyDatasetRef() ;
 
         action.setDataset(dsRef) ;
+        String uri = action.request.getRequestURI() ;
         String serviceName = ActionLib.mapRequestToService(dsRef, uri, datasetUri) ;
         ServiceRef srvRef = dsRef.getServiceRef(serviceName) ;
         action.setService(srvRef) ;
@@ -145,9 +145,8 @@ public abstract class SPARQL_ServletBase extends ServletBase
     }
 
     // Execute - no stats.
-    // Intecept point for the UberServlet 
-    protected void executeAction(HttpAction action)
-    {
+    // Intercept point for the UberServlet 
+    protected void executeAction(HttpAction action) {
         executeLifecycle(action) ;
     }
     
@@ -187,9 +186,9 @@ public abstract class SPARQL_ServletBase extends ServletBase
     /** Map request to uri in the registry.
      *  null means no mapping done (passthrough). 
      */
-    protected String mapRequestToDataset(String uri) 
+    protected String mapRequestToDataset(HttpAction action) 
     {
-        return ActionLib.mapRequestToDataset(uri) ;
+        return ActionLib.mapRequestToDataset(action.request.getRequestURI()) ;
     }
     
     protected static void incCounter(Counters counters, CounterName name) {
@@ -211,9 +210,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
     }
 
     @SuppressWarnings("unused") // ServletException
-    protected void doPatch(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
-    {
+    protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "HTTP PATCH not supported");
     }
     

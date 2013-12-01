@@ -120,9 +120,8 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
      *  null means no mapping done 
      */
     @Override
-    protected String mapRequestToDataset(String uri) 
-    {
-        return ActionLib.mapRequestToDatasetLongest$(uri) ;
+    protected String mapRequestToDataset(HttpAction action) {
+        return ActionLib.mapRequestToDatasetLongest$(action.request.getRequestURI()) ;
     }
     
 

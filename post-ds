@@ -1,4 +1,4 @@
 #!/bin/bash
 
 curl --data-binary @config2.ttl --header 'Content-type: text/turtle' \
-     http://localhost:3030/$/datasets
+     'http://localhost:3030/$/datasets'

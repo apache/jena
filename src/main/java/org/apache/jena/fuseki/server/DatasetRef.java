@@ -19,12 +19,15 @@
 package org.apache.jena.fuseki.server;
 
 import java.util.* ;
+import java.util.concurrent.atomic.AtomicBoolean ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.fuseki.Fuseki ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class DatasetRef implements DatasetMXBean, Counters
 {
@@ -36,6 +39,7 @@ public class DatasetRef implements DatasetMXBean, Counters
     public ServiceRef upload                    = new ServiceRef("upload") ;
     public ServiceRef readGraphStore            = new ServiceRef("gspRead") ;
     public ServiceRef readWriteGraphStore       = new ServiceRef("gspReadWrite") ; 
+    private AtomicBoolean shuttingdown          = new AtomicBoolean(false) ; 
     
     // Dataset-level counters.
     private final CounterSet counters           = new CounterSet() ;
@@ -141,8 +145,24 @@ public class DatasetRef implements DatasetMXBean, Counters
                 activeWriteTxn.decrementAndGet() ;
                 break ;
         }
+        checkShutdown() ;
     }
 
+    private void checkShutdown() {
+        if ( shuttingdown.get() ) {
+        if ( activeReadTxn.get() == 0 && activeWriteTxn.get() == 0 )
+            shutdown() ;
+        }
+    }
+    
+    private void shutdown() {
+        dataset.close() ;
+        if ( dataset instanceof DatasetGraphTransaction ) {
+            DatasetGraphTransaction dsgtxn = (DatasetGraphTransaction)dataset ;
+            StoreConnection.release(dsgtxn.getLocation()) ;
+        }
+    }
+    
     //TODO Need to be able to set this from the config file.  
     public boolean allowDatasetUpdate           = false;
     
@@ -156,6 +176,13 @@ public class DatasetRef implements DatasetMXBean, Counters
                ! upload.isActive() &&
                ! readWriteGraphStore.isActive()
                ;
+    }
+    
+    public void gracefulShutdown() {
+        // In graceful shutdown, we assume it has been unlinked from the registry.
+        // We just wait for the transactions to end.
+        shuttingdown.set(true) ;
+        checkShutdown() ;
     }
     
     // MBean

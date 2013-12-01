@@ -99,13 +99,15 @@ public class SPARQLServer {
         
         for (DatasetRef dsDesc : serverConfig.datasets)
             configureOneDataset(context, dsDesc, serverConfig.enableCompression) ;
-        
-        if ( überServlet ) {
-            FilterHolder f = new FilterHolder(new SPARQL_UberFilter()) ;
-            //FilterMapping
-            EnumSet<DispatcherType> es = EnumSet.allOf(DispatcherType.class) ; 
-            context.addFilter(f, "/*", es);
-        }
+
+        // Service operation dispatch:
+        // This filter looks at incoming HTTP requests and routes one that match
+        // registered, active datasets to the all purpose service dispatch servlet
+        // SPARQL_UberServlet.
+
+        FilterHolder f = new FilterHolder(new SPARQL_UberFilter()) ;
+        EnumSet<DispatcherType> es = EnumSet.allOf(DispatcherType.class) ; 
+        context.addFilter(f, "/*", es);
     }
     
     /**
@@ -289,51 +291,13 @@ public class SPARQLServer {
         return context ;
     }
 
-    /** Experimental - off by default. The überservlet sits on the dataset name and handles all requests.
-      * Includes direct naming and quad access to the dataset. 
-      */
-    public static boolean       überServlet       = false ;
-    
     private static List<String> ListOfEmptyString = Arrays.asList("") ;
 
     private void configureOneDataset(ServletContextHandler context, DatasetRef dsDesc, boolean enableCompression) {
         
         String datasetPath = DatasetRef.canocialDatasetPath(dsDesc.name) ;
         registerDataset(datasetPath, dsDesc) ;
-        
-        if ( !überServlet ) {
-            HttpServlet sparqlQuery = new SPARQL_QueryDataset() ;
-            HttpServlet sparqlUpdate = new SPARQL_Update() ;
-            HttpServlet sparqlUpload = new SPARQL_Upload() ;
-            HttpServlet sparqlHttpR = new SPARQL_REST_R() ;
-            HttpServlet sparqlHttpRW = new SPARQL_REST_RW() ;
-
-            addServlet(context, datasetPath, sparqlQuery, dsDesc.query, enableCompression) ;
-            addServlet(context, datasetPath, sparqlUpdate, dsDesc.update, false) ;
-            addServlet(context, datasetPath, sparqlUpload, dsDesc.upload, false) ; // No point - no results of any size.
-            addServlet(context, datasetPath, sparqlHttpR, dsDesc.readGraphStore, enableCompression) ;
-            addServlet(context, datasetPath, sparqlHttpRW, dsDesc.readWriteGraphStore, enableCompression) ;
-            // This adds direct operations on the dataset itself.
-            // addServlet(context, datasetPath, sparqlDataset,
-            // ListOfEmptyString, enableCompression) ;
-        } else {
-            // This is the servlet that analyses requests and dispatches them to
-            // the appropriate servlet. 
-            // SPARQL Query, SPARQL Update -- handles dataset?query=
-            // dataset?update=
-            // Graph Store Protocol (direct and indirect naming) if enabled.
-            // GET/PUT/POST on the dataset itself.
-            // It also checks for a request that looks like a service request and passes it
-            // on to the service (this takes precedence over direct naming).
-
-            if ( false ) {
-                //XXX Filter version superceeds this.
-                HttpServlet sparqlDataset = new SPARQL_UberServlet.AccessByConfig() ;
-                addServlet(context, datasetPath, sparqlDataset, epDataset, enableCompression) ;
-            }
-        }
-
-        // Add JMX beans to record daatset and it's services.
+        // Add JMX beans to record dataset and it's services.
         addJMX(dsDesc) ;
     }
 

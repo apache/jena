@@ -53,7 +53,7 @@ public class SPARQL_UberFilter implements Filter {
             if ( datasetUri != null ) {        
                 if ( DatasetRegistry.get().isRegistered(datasetUri) ) {
                     // Intercept and redirect
-                    log.info("Redirect: "+uri);
+                    //log.info("Redirect: "+uri);
                     überServlet.doCommon(req, resp) ;
                     return ;
                 }
