@@ -311,4 +311,25 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		expectedURIs = (new HashSet<String>());
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
+  
+    @Test
+	public void testLatLongBound() {
+		final String turtle = StrUtils.strjoinNL(TURTLE_PROLOG, "<"
+				+ RESOURCE_BASE + "testLatLongBound>",
+				"   geo:lat '51.3827'^^xsd:float ;",
+				"   geo:long '-2.71909'^^xsd:float ", ". ",
+				"<" + RESOURCE_BASE + "center>",
+				"   geo:lat '51.3000'^^xsd:float ;",
+				"   geo:long '-2.71000'^^xsd:float ", ". ");
+		String queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
+				"WHERE {",
+				" :center geo:lat ?lat .",
+				" :center geo:long ?long .",
+				" ?s spatial:nearby (?lat ?long 100.0 'miles' -1) .", "}");
+		Set<String> expectedURIs = (new HashSet<String>());
+		expectedURIs
+				.addAll(Arrays
+						.asList((new String[] { "http://example.org/data/resource/testLatLongBound", "http://example.org/data/resource/center" })));
+		doTestSearch(turtle, queryString, expectedURIs);
+	}
 }
