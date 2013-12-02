@@ -110,6 +110,13 @@ public class FusekiConfig {
     // NEW
     public static final String configurationsDirectory = "configure" ;
     public static final String fusekiService = "http://jena.apache.org/fuseki#Service" ;
+    private static FilenameFilter visibleFiles = 
+        new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return ! name.startsWith(".") ;
+            }
+        } ;
     
     public static void additional(ServerConfig config) {
         // server/
@@ -117,12 +124,11 @@ public class FusekiConfig {
         // databases/
         
         File d = new File(configurationsDirectory) ;
-        String[] assemblerFiles = d.list(new FilenameFilter() {
-          @Override
-          public boolean accept(File dir, String name) {
-              return ! name.startsWith(".") ;
-          }
-        });
+        String[] assemblerFiles = d.list(visibleFiles) ;
+        
+        if ( assemblerFiles == null ) {
+            log.warn("No configurtion directory '"+configurationsDirectory+"'") ;
+        }
         
         String x = Iter.asString(Arrays.asList(assemblerFiles));
         log.info("Files: "+x);
@@ -250,7 +256,7 @@ public class FusekiConfig {
         noDataset.query.endpoints.add(HttpNames.ServiceQuery) ;
         noDataset.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
         noDataset.allowDatasetUpdate = false ;
-        noDataset.init() ;
+        noDataset.activate() ;
         // Don't register it.
         // This is used as a placeholder and shoudl not be found by
         // "all datasets"

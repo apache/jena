@@ -33,6 +33,7 @@ import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.ServiceRef ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.web.HttpSC ;
 
 /** This servlet can be attached to a dataset location
  *  and acts as a router for all SPARQL operations
@@ -138,6 +139,8 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         String uri = request.getRequestURI() ;
         String method = request.getMethod() ;
         DatasetRef desc = action.dsRef ;
+        if ( ! desc.isActive() )
+            error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
         
         String trailing = findTrailing(uri, desc.name) ;
         String qs = request.getQueryString() ;

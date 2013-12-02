@@ -162,6 +162,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
             validate(action) ;
         } catch (ActionErrorException ex) {
             incCounter(action.dsRef,RequestsBad) ;
+            incCounter(action.srvRef, RequestsBad) ;
             throw ex ;
         }
 

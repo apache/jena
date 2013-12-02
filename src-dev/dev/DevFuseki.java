@@ -85,7 +85,7 @@ public class DevFuseki
 
         Resource service = services.get(0) ;
         DatasetRef sd = FusekiConfig.processService(service) ;
-        sd.init() ;
+        sd.activate() ;
         System.out.println("DONE");
     }
 

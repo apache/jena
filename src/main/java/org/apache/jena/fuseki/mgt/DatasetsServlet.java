@@ -18,9 +18,14 @@
 
 package org.apache.jena.fuseki.mgt;
 
+import static org.apache.jena.fuseki.server.CounterName.Requests ;
+import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
+import static org.apache.jena.fuseki.server.CounterName.RequestsGood ;
+
 import java.io.* ;
 import java.nio.channels.FileChannel ;
 import java.util.List ;
+import java.util.Locale ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.ServletOutputStream ;
@@ -32,11 +37,13 @@ import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.apache.jena.fuseki.servlets.ActionErrorException ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.SPARQL_ServletBase ;
 import org.apache.jena.riot.* ;
@@ -45,15 +52,22 @@ import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.web.HttpSC ;
+import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ; 
 
 
 public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
-    //private static Logger log = Fuseki.adminLog ;
+    private static Logger alog = Fuseki.adminLog ;
 
-    // XXX Rewrite for (renamed) SPARQL_ServletBase
+    // XXX Rewrite for (renamed) SPARQL_ServletBase(Logger)
+    // ActionRequest(Logger)
+    //    > ServiceRequest
+    //    > AdminRequest
+    //    > Backup
+    //    > Status
     
     public DatasetsServlet() {}
     
@@ -75,20 +89,68 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
     }
     
     @Override
-    protected void validate(HttpAction action) {
+    protected void executeLifecycle(HttpAction action)
+    {
+        startRequest(action) ;
+        try {
+            perform(action) ;
+//            incCounter(action.srvRef, RequestsGood) ;
+//            incCounter(action.dsRef, RequestsGood) ;
+        } catch (ActionErrorException ex) {
+//            incCounter(action.srvRef, RequestsBad) ;
+//            incCounter(action.dsRef, RequestsBad) ;
+            throw ex ;
+        } finally {
+            finishRequest(action) ;
+        }
+    }
+    
+    @Override
+    protected void validate(HttpAction action) { 
+        // Validate later.
     }
 
     @Override
     protected void perform(HttpAction action) {
         String name = mapRequestToDataset(action) ;
-        
+        String method = action.request.getMethod().toUpperCase(Locale.ROOT) ;
+        if ( method.equals("GET") )
+            execGet(name, action) ;
+        else if ( method.equals("POST") )
+            execPost(name, action) ;
+        else if ( method.equals("DELETE") )
+            execDelete(name, action) ;
+        else
+            error(HttpSC.METHOD_NOT_ALLOWED_405) ;
     }
-    
 
-    protected void execGet(HttpServletRequest request, HttpServletResponse response) {
-        log.info("Admin: GET "+request.getRequestURI()); // +Query string.
+    // Null means no name given, i.e. names the collection.
+    @Override
+    protected String mapRequestToDataset(HttpAction action) {
+        alog.info("context path  = "+action.request.getContextPath()) ;
+        alog.info("pathinfo      = "+action.request.getPathInfo()) ;
+        alog.info("servlet path  = "+action.request.getServletPath()) ;
+        // if /name
+        //action.request.getServletPath() ;
+        // if /*
+        String pathInfo = action.request.getPathInfo() ;
+        
+        // Or uri after servlet path.
+        
+        if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") )
+            return null ;
+        String name = pathInfo ;
+        // pathInfo starts with a "/"
+        int idx = pathInfo.lastIndexOf('/') ;
+        if ( idx > 0 )
+            name = name.substring(idx) ;
+        // Returns "/name"
+        return name ; 
+    }
+
+    protected void execGet(String name, HttpAction action) {
+        alog.info("GET ds="+(name==null?"":name)) ;
         JsonBuilder builder = new JsonBuilder() ;
-        String name = mapRequestToDataset(request) ;
         if ( name == null ) {
             // All
             builder.startObject() ;
@@ -104,67 +166,54 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
         }
         JsonValue v = builder.build() ;
         try {
+            HttpServletResponse response = action.response ;
             ServletOutputStream out = response.getOutputStream() ;
             response.setContentType(WebContent.contentTypeJSON);
             response.setCharacterEncoding(WebContent.charsetUTF8) ;
             JSON.write(out, v) ;
             out.println() ; 
             out.flush() ;
+            success(action) ;
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
     
-    @Deprecated()
-    static String mapRequestToDataset(HttpServletRequest request) {
-        String pathInfo = request.getPathInfo() ;
-        if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") )
-            return null ;
-        String name = pathInfo ;
-        // pathInfo starts with a "/"
-        int idx = pathInfo.lastIndexOf('/') ;
-        if ( idx > 0 )
-            name = name.substring(idx) ;
-        // Returns "/name"
-        return name ; 
+    
+    // POST container -> register new dataset
+    // POST conatins/name -> change the state of an exiting entry. 
+    
+    protected void execPost(String name, HttpAction action) {
+        if (name == null )
+            execPostContainer(action) ;
+        else
+            execPostDataset(name, action) ;
     }
     
-    // Null means no name given.
-    @Override
-    protected String mapRequestToDataset(HttpAction action) {
-        // Find the part after the name used to dispatch this request. 
-        System.out.println("context path = '"+action.request.getContextPath()+"'") ;
-        System.out.println("pathinfo     = '"+action.request.getPathInfo()+"'") ;
-        System.out.println("servlet path = '"+action.request.getServletPath()+"'") ;
+    private void execPostDataset(String name, HttpAction action) {
+        String datasetPath = DatasetRef.canocialDatasetPath(name) ;
+        DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
+        if ( dsDesc == null )
+            errorNotFound("Not found: dataset "+name);
         
-
-//        log.info("context path = "+action.request.getContextPath()) ;
-//        log.info("pathinfo     = "+action.request.getPathInfo()) ;
-//        log.info("servlet path = "+action.request.getServletPath()) ;
-        // if /name
-        //action.request.getServletPath() ;
-        // if /*
-        String pathInfo = action.request.getPathInfo() ;
-        if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") )
-            return null ;
-        String name = pathInfo ;
-        // pathInfo starts with a "/"
-        int idx = pathInfo.lastIndexOf('/') ;
-        if ( idx > 0 )
-            name = name.substring(idx) ;
-        // Returns "/name"
-        return name ; 
+        String s = action.request.getParameter("status") ;
+        if ( s == null || s.isEmpty() )
+            errorBadRequest("No state change given") ;
+        if ( s.equalsIgnoreCase("active") )
+            dsDesc.activate() ;
+        else if ( s.equalsIgnoreCase("dormant") )
+            dsDesc.dormant() ;
+        else
+            errorBadRequest("New state '"+s+"' not recognized");
     }
-    
-    protected void execPost(HttpServletRequest request, HttpServletResponse response) {
-        log.info("Admin: POST "+request.getRequestURI()); // +Query string.
-        String name = mapRequestToDataset(request) ;
-        if ( name != null ) {
-            errorBadRequest("POST only to the container") ;
-            return ;
-        }
+
+    protected void execPostContainer(HttpAction action) {
+        alog.info("POST container") ;
+        // ??? 
+        // Send to disk, then parse, then decide what to do.
+        // Overwrite?
         
         Model m = ModelFactory.createDefaultModel() ;
         StreamRDF dest = StreamRDFLib.graph(m.getGraph()) ;
-        bodyAsGraph(request, dest) ;
+        bodyAsGraph(action.request, dest) ;
         List<DatasetRef> refs = FusekiConfig.readConfiguration(m);
         
         for (DatasetRef dsDesc : refs) {
@@ -183,10 +232,9 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 
-    protected void execDelete(HttpServletRequest request, HttpServletResponse response) {
+    protected void execDelete(String name, HttpAction action) {
         // Find DS.
-        log.info("Admin: DELETE "+request.getRequestURI()); // +Query string.
-        String name = mapRequestToDataset(request) ;
+        alog.info("DELETE "+(name==null?"":name));
         if ( name == null ) {
             errorBadRequest("DELETE only to the container entries.") ;
             return ;
@@ -233,10 +281,10 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
         int len = request.getContentLength() ;
 //        if ( verbose ) {
 //            if ( len >= 0 )
-//                log.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
+//                alog.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
 //                                ct.getContentType(), ct.getCharset(), lang.getName())) ;
 //            else
-//                log.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", action.id, ct.getContentType(),
+//                alog.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", action.id, ct.getContentType(),
 //                                ct.getCharset(), lang.getName())) ;
 //        }
         dest.prefix("root", base+"#");
