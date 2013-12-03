@@ -270,12 +270,12 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
 
         if ( log.isDebugEnabled() && !mappedURI.equals(filenameOrURI) )
             log.debug("Map: " + filenameOrURI + " => " + mappedURI) ;
-        // File extension preferred to content negotiation.
-        // Compatibility.
-        if ( syntax == null )
-            syntax = RDFLanguages.guessContentType(mappedURI).getContentType() ;
-        
-        Lang lang = RDFLanguages.nameToLang(syntax) ;
+
+        Lang lang = 
+            syntax != null 
+            ? RDFLanguages.nameToLang(syntax) 
+            : RDFLanguages.resourceNameToLang(mappedURI, Lang.RDFXML) ;
+            
         RDFDataMgr.read(model, mappedURI, baseURI, lang);
         return model ;
     }
