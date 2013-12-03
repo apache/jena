@@ -305,6 +305,12 @@ public class RDFLanguages
         return mapFileExtToLang.get(ext) ;
     }
 
+    /** Try to map a resource name to a {@link Lang}; return null on no registered mapping */
+    public static Lang resourceNameToLang(String resourceName) { return filenameToLang(resourceName) ; }
+    
+    /** Try to map a resource name to a {@link Lang}; return the given default where there is no registered mapping */
+    public static Lang resourceNameToLang(String resourceName, Lang dftLang) { return filenameToLang(resourceName, dftLang) ; }
+    
     /** Try to map a file name to a {@link Lang}; return null on no registered mapping */
     public static Lang filenameToLang(String filename)
     {

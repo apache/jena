@@ -227,7 +227,7 @@ public class Closure
         }
     }
 
-    // Defines the reachable (on forwrd arcs) subgraph. 
+    // Defines the reachable (on forward arcs) subgraph. 
     
     public static class ClosureReachable implements ClosureTest
     {
