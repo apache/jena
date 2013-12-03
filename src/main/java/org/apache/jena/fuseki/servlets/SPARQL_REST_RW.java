@@ -57,8 +57,8 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         action.beginWrite() ;
         try {
             Target target = determineTarget(action) ;
-            if ( log.isDebugEnabled() )
-                log.debug("DELETE->"+target) ;
+            if ( action.log.isDebugEnabled() )
+                action.log.debug("DELETE->"+target) ;
             boolean existedBefore = target.exists() ; 
             if ( ! existedBefore)
             {
@@ -70,7 +70,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             action.commit() ;
         }
         finally { action.endWrite() ; }
-        SPARQL_ServletBase.successNoContent(action) ;
+        ActionSPARQL.successNoContent(action) ;
     }
 
     @Override
@@ -102,9 +102,9 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             existedBefore = addDataIntoNonTxn(action, overwrite) ;
             
         if ( existedBefore )
-            SPARQL_ServletBase.successNoContent(action) ;
+            ActionSPARQL.successNoContent(action) ;
         else
-            SPARQL_ServletBase.successCreated(action) ;
+            ActionSPARQL.successCreated(action) ;
     }
 
     /** Directly add data in a transaction.
@@ -119,8 +119,8 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         Target target = determineTarget(action) ;
         boolean existedBefore = false ;
         try {
-            if ( log.isDebugEnabled() )
-                log.debug("  ->"+target) ;
+            if ( action.log.isDebugEnabled() )
+                action.log.debug("  ->"+target) ;
             existedBefore = target.exists() ;
             Graph g = target.graph() ;
             if ( overwrite && existedBefore )
@@ -167,8 +167,8 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         Target target = determineTarget(action) ;
         boolean existedBefore = false ;
         try {
-            if ( log.isDebugEnabled() )
-                log.debug("  ->"+target) ;
+            if ( action.log.isDebugEnabled() )
+                action.log.debug("  ->"+target) ;
             existedBefore = target.exists() ; 
             if ( overwrite && existedBefore )
                 clearGraph(target) ;
@@ -201,10 +201,10 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         int len = action.request.getContentLength() ;
         if ( action.verbose ) {
             if ( len >= 0 )
-                log.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
+                action.log.info(format("[%d]   Body: Content-Length=%d, Content-Type=%s, Charset=%s => %s", action.id, len,
                                 ct.getContentType(), ct.getCharset(), lang.getName())) ;
             else
-                log.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", action.id, ct.getContentType(),
+                action.log.info(format("[%d]   Body: Content-Type=%s, Charset=%s => %s", action.id, ct.getContentType(),
                                 ct.getCharset(), lang.getName())) ;
         }
     

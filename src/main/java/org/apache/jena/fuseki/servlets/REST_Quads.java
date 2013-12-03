@@ -66,7 +66,7 @@ public class REST_Quads extends SPARQL_REST
             lang = RDFLanguages.TRIG ;
 
         if ( action.verbose )
-            log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
+            action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
                                   action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
         if ( ! RDFLanguages.isQuads(lang) )
             errorBadRequest("Not a quads format: "+mediaType) ;
@@ -122,7 +122,7 @@ public class REST_Quads extends SPARQL_REST
             lang = RDFLanguages.TRIG ;
 
         if ( action.verbose )
-            log.info(format("[%d]   Post: Content-Type=%s, Charset=%s => %s", 
+            action.log.info(format("[%d]   Post: Content-Type=%s, Charset=%s => %s", 
                                   action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
         
         if ( RDFLanguages.isQuads(lang) )
@@ -186,7 +186,7 @@ public class REST_Quads extends SPARQL_REST
             StreamRDF dest = StreamRDFLib.graph(g) ;
             LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
             parser.parse() ;
-            log.info(format("[%d] Location: %s", action.id, name)) ;
+            action.log.info(format("[%d] Location: %s", action.id, name)) ;
             action.response.setHeader("Location",  name) ;
             action.commit();
             successCreated(action) ;

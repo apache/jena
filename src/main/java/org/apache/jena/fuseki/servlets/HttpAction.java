@@ -33,6 +33,7 @@ import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.ServiceRef ;
+import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
@@ -45,6 +46,7 @@ public class HttpAction
 {
     public final long id ;
     public final boolean verbose ;
+    public final Logger log ;
     
     // Phase two items - set and valida after the datasetRef is known.  
     private DatasetGraph dsg ;                  // The data
@@ -76,8 +78,9 @@ public class HttpAction
     public HttpServletRequest request;
     public HttpServletResponseTracker response ;
     
-    public HttpAction(long id, HttpServletRequest request, HttpServletResponse response, boolean verbose) {
+    public HttpAction(long id, Logger log, HttpServletRequest request, HttpServletResponse response, boolean verbose) {
         this.id = id ;
+        this.log = log ;
         this.request = request ;
         this.response = new HttpServletResponseTracker(this, response) ;
         // Should this be set when setDataset is called from the dataset context?

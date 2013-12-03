@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 
 /** Support for the SPARQL protocol (SPARQL Query, SPARQL Update)
  */
-public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
+public  abstract class SPARQL_Protocol extends ActionSPARQL
 {
     protected SPARQL_Protocol() { super() ; }
 

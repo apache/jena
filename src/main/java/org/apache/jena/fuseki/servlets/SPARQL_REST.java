@@ -47,11 +47,9 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public abstract class SPARQL_REST extends SPARQL_ServletBase
+public abstract class SPARQL_REST extends ActionSPARQL
 {
     protected static Logger classLog = LoggerFactory.getLogger(SPARQL_REST.class) ;
-    
-    protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
 
     protected final static Target determineTarget(HttpAction action) {
         // Delayed until inside a transaction.
@@ -149,7 +147,9 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             return _graph != null ;
         }
 
-        @Override
+        @Override    
+//      protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
+
         public String toString()
         {
             if ( isDefault ) return "default" ;
@@ -296,6 +296,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 //        try { RDFDataMgr.parse(dest, input, base, lang) ; }
 //        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
         LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
+        ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(action.log); 
         parser.getProfile().setHandler(errorHandler) ;
         try { parser.parse() ; } 
         catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }

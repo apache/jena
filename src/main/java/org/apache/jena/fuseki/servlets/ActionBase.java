@@ -19,9 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.server.CounterName.Requests ;
-import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
-import static org.apache.jena.fuseki.server.CounterName.RequestsGood ;
 
 import java.io.IOException ;
 import java.util.Enumeration ;
@@ -32,18 +29,23 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.web.HttpSC ;
+import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
-public abstract class SPARQL_ServletBase extends ServletBase
+/** General request lifecycle */
+public abstract class ActionBase extends ServletBase
 {
-    protected SPARQL_ServletBase()      {   super() ; }
+    private final Logger log ;
+
+    protected ActionBase(Logger log) {
+        super() ;
+        this.log = log ;
+    }
     
     // Common framework for handling HTTP requests
     protected void doCommon(HttpServletRequest request, HttpServletResponse response)
@@ -99,11 +101,11 @@ public abstract class SPARQL_ServletBase extends ServletBase
     /** Return a fresh WebAction for this request */
     protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
         // Need a way to set verbose logging on a per servlet and per request basis. 
-        return new HttpAction(id, request, response, verboseLogging) ;
+        return new HttpAction(id, log, request, response, verboseLogging) ;
     }
 
-    protected abstract void validate(HttpAction action) ;
-    protected abstract void perform(HttpAction action) ;
+//    protected abstract void validate(HttpAction action) ;
+//    protected abstract void perform(HttpAction action) ;
 
     // Default start/finish steps. 
     protected void startRequest(HttpAction action) {
@@ -116,99 +118,79 @@ public abstract class SPARQL_ServletBase extends ServletBase
         action.minimize() ;
     }
 
-    private void execCommonWorker(HttpAction action)
-    {
-        DatasetRef dsRef = null ;
-
-        String datasetUri = mapRequestToDataset(action) ;
+    protected abstract void execCommonWorker(HttpAction action) ;
         
-        if ( datasetUri != null ) {
-            dsRef = DatasetRegistry.get().get(datasetUri) ;
-            if ( dsRef == null ) {
-                errorNotFound("No dataset for URI: "+datasetUri) ;
-                return ;
-            }
-        } else
-            dsRef = FusekiConfig.serviceOnlyDatasetRef() ;
-
-        action.setDataset(dsRef) ;
-        String uri = action.request.getRequestURI() ;
-        String serviceName = ActionLib.mapRequestToService(dsRef, uri, datasetUri) ;
-        ServiceRef srvRef = dsRef.getServiceRef(serviceName) ;
-        action.setService(srvRef) ;
-        executeAction(action) ;
-    }
-        
+    @Deprecated
     protected void inc(AtomicLong x)
     {
         x.incrementAndGet() ;
     }
 
-    // Execute - no stats.
-    // Intercept point for the UberServlet 
-    protected void executeAction(HttpAction action) {
-        executeLifecycle(action) ;
-    }
-    
-    // This is the service request lifecycle.
-    // Called directly by the UberServlet which has not done any stats by this point.
-    protected void executeLifecycle(HttpAction action)
-    {
-        incCounter(action.dsRef, Requests) ;
-        incCounter(action.srvRef, Requests) ;
-
-        startRequest(action) ;
-        try {
-            validate(action) ;
-        } catch (ActionErrorException ex) {
-            incCounter(action.dsRef,RequestsBad) ;
-            incCounter(action.srvRef, RequestsBad) ;
-            throw ex ;
-        }
-
-        try {
-            perform(action) ;
-            // Success
-            incCounter(action.srvRef, RequestsGood) ;
-            incCounter(action.dsRef, RequestsGood) ;
-        } catch (ActionErrorException ex) {
-            incCounter(action.srvRef, RequestsBad) ;
-            incCounter(action.dsRef, RequestsBad) ;
-            throw ex ;
-        } catch (QueryCancelledException ex) {
-            incCounter(action.srvRef, RequestsBad) ;
-            incCounter(action.dsRef, RequestsBad) ;
-            throw ex ;
-        } finally {
-            finishRequest(action) ;
-        }
-    }
-    
-    /** Map request to uri in the registry.
-     *  null means no mapping done (passthrough). 
-     */
-    protected String mapRequestToDataset(HttpAction action) 
-    {
-        return ActionLib.mapRequestToDataset(action.request.getRequestURI()) ;
-    }
-    
-    protected static void incCounter(Counters counters, CounterName name) {
-        try {
-            if ( counters.getCounters().contains(name) )
-                counters.getCounters().inc(name) ;
-        } catch (Exception ex) {
-            Fuseki.serverLog.warn("Exception on counter inc", ex) ;
-        }
-    }
-    
-    protected static void decCounter(Counters counters, CounterName name) {
-        try {
-            if ( counters.getCounters().contains(name) )
-                counters.getCounters().dec(name) ;
-        } catch (Exception ex) {
-            Fuseki.serverLog.warn("Exception on counter dec", ex) ;
-        }
-    }
+//    // Execute - no stats.
+//    // Intercept point for the UberServlet 
+//    protected void executeAction(HttpAction action) {
+//        executeLifecycle(action) ;
+//    }
+//    
+//    // This is the service request lifecycle.
+//    // Called directly by the UberServlet which has not done any stats by this point.
+//    protected void executeLifecycle(HttpAction action)
+//    {
+//        incCounter(action.dsRef, Requests) ;
+//        incCounter(action.srvRef, Requests) ;
+//
+//        startRequest(action) ;
+//        try {
+//            validate(action) ;
+//        } catch (ActionErrorException ex) {
+//            incCounter(action.dsRef,RequestsBad) ;
+//            incCounter(action.srvRef, RequestsBad) ;
+//            throw ex ;
+//        }
+//
+//        try {
+//            perform(action) ;
+//            // Success
+//            incCounter(action.srvRef, RequestsGood) ;
+//            incCounter(action.dsRef, RequestsGood) ;
+//        } catch (ActionErrorException ex) {
+//            incCounter(action.srvRef, RequestsBad) ;
+//            incCounter(action.dsRef, RequestsBad) ;
+//            throw ex ;
+//        } catch (QueryCancelledException ex) {
+//            incCounter(action.srvRef, RequestsBad) ;
+//            incCounter(action.dsRef, RequestsBad) ;
+//            throw ex ;
+//        } finally {
+//            finishRequest(action) ;
+//        }
+//    }
+//    
+//    /** Map request to uri in the registry.
+//     *  null means no mapping done (passthrough). 
+//     */
+//    protected String mapRequestToDataset(HttpAction action) 
+//    {
+//        return ActionLib.mapRequestToDataset(action.request.getRequestURI()) ;
+//    }
+//    
+//    protected static void incCounter(Counters counters, CounterName name) {
+//        try {
+//            if ( counters.getCounters().contains(name) )
+//                counters.getCounters().inc(name) ;
+//        } catch (Exception ex) {
+//            Fuseki.serverLog.warn("Exception on counter inc", ex) ;
+//        }
+//    }
+//    
+//    protected static void decCounter(Counters counters, CounterName name) {
+//        try {
+//            if ( counters.getCounters().contains(name) )
+//                counters.getCounters().dec(name) ;
+//        } catch (Exception ex) {
+//            Fuseki.serverLog.warn("Exception on counter dec", ex) ;
+//        }
+//    }
 
     @SuppressWarnings("unused") // ServletException
     protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

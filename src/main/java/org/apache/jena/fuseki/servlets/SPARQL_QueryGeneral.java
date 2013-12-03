@@ -65,7 +65,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
      * Construct a Dataset based on a dataset description.
      */
     
-    protected static Dataset datasetFromDescription(HttpAction action, DatasetDescription datasetDesc)
+    protected Dataset datasetFromDescription(HttpAction action, DatasetDescription datasetDesc)
     {
         try {
             if ( datasetDesc == null )
@@ -93,13 +93,13 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
                     try {
                         //TODO Clearup - RIOT integration.
                         GraphLoadUtils.loadModel(model, uri, MaxTriples) ;
-                        log.info(format("[%d] Load (default graph) %s", action.id, uri)) ;
+                        action.log.info(format("[%d] Load (default graph) %s", action.id, uri)) ;
                     } catch (RiotException ex) {
-                        log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage())) ;
+                        action.log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage())) ;
                         errorBadRequest("Failed to load URL (parse error) "+uri+" : "+ex.getMessage()) ;
                     } catch (Exception ex)
                     {
-                        log.info(format("[%d] Failed to load (default) %s: %s", action.id, uri, ex.getMessage())) ;
+                        action.log.info(format("[%d] Failed to load (default) %s: %s", action.id, uri, ex.getMessage())) ;
                         errorBadRequest("Failed to load URL "+uri) ;
                     }
                 }
@@ -116,14 +116,14 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
                     try {
                         Model model = ModelFactory.createDefaultModel() ;
                         GraphLoadUtils.loadModel(model, uri, MaxTriples) ;
-                        log.info(format("[%d] Load (named graph) %s", action.id, uri)) ;
+                        action.log.info(format("[%d] Load (named graph) %s", action.id, uri)) ;
                         dataset.addNamedModel(uri, model) ;
                     } catch (RiotException ex) {
-                        log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage())) ;
+                        action.log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage())) ;
                         errorBadRequest("Failed to load URL (parse error) "+uri+" : "+ex.getMessage()) ;
                     } catch (Exception ex)
                     {
-                        log.info(format("[%d] Failed to load (named graph) %s: %s", action.id, uri, ex.getMessage())) ;
+                        action.log.info(format("[%d] Failed to load (named graph) %s: %s", action.id, uri, ex.getMessage())) ;
                         errorBadRequest("Failed to load URL "+uri) ;
                     }
                 }
@@ -135,7 +135,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
         catch (ActionErrorException ex) { throw ex ; }
         catch (Exception ex)
         {
-            log.info(format("[%d] SPARQL parameter error: "+ex.getMessage(),action.id, ex)) ;
+            action.log.info(format("[%d] SPARQL parameter error: "+ex.getMessage(),action.id, ex)) ;
             errorBadRequest("Parameter error: "+ex.getMessage());
             return null ;
         }

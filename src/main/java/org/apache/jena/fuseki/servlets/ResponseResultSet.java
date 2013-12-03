@@ -22,7 +22,6 @@ import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.Lib.equal ;
 import static org.apache.jena.fuseki.servlets.ServletBase.errorBadRequest ;
 import static org.apache.jena.fuseki.servlets.ServletBase.errorOccurred ;
-import static org.apache.jena.fuseki.servlets.ServletBase.log ;
 
 import java.io.IOException ;
 import java.util.HashMap ;
@@ -52,7 +51,6 @@ import com.hp.hpl.jena.sparql.core.Prologue ;
 public class ResponseResultSet
 {
     private static Logger xlog = LoggerFactory.getLogger(ResponseResultSet.class) ;
-    private static Logger slog = ServletBase.log ;
 
     // Short names for "output="
     private static final String contentOutputJSON          = "json" ;
@@ -152,24 +150,25 @@ public class ResponseResultSet
     }
     
     
-    public static void setHttpResponse(HttpServletRequest httpRequest,
-                                       HttpServletResponse httpResponse,
+    public static void setHttpResponse(HttpAction action, 
+//                                       HttpServletRequest httpRequest,
+//                                       HttpServletResponse httpResponse,
                                        String contentType, String charset) 
     {
         // ---- Set up HTTP Response
         // Stop caching (not that ?queryString URLs are cached anyway)
         if ( true )
         {
-            httpResponse.setHeader("Cache-Control", "no-cache") ;
-            httpResponse.setHeader("Pragma", "no-cache") ;
+            action.response.setHeader("Cache-Control", "no-cache") ;
+            action.response.setHeader("Pragma", "no-cache") ;
         }
         // See: http://www.w3.org/International/O-HTTP-charset.html
         if ( contentType != null )
         {
             if ( charset != null && ! isXML(contentType) )
                 contentType = contentType+"; charset="+charset ;
-            log.trace("Content-Type for response: "+contentType) ;
-            httpResponse.setContentType(contentType) ;
+            action.log.trace("Content-Type for response: "+contentType) ;
+            action.response.setContentType(contentType) ;
         }
     }
 
@@ -275,7 +274,7 @@ public class ResponseResultSet
     private static void output(HttpAction action, String contentType, String charset, OutputContent proc) 
     {
         try {
-            setHttpResponse(action.request, action.response, contentType, charset) ; 
+            setHttpResponse(action, contentType, charset) ; 
             action.response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = action.response.getOutputStream() ;
             try
@@ -284,7 +283,7 @@ public class ResponseResultSet
                 out.flush() ;
             } catch (QueryCancelledException ex) {
                 // Bother.  Status code 200 already sent.
-                slog.info(format("[%d] Query Cancelled - results truncated (but 200 already sent)", action.id)) ;
+                action.log.info(format("[%d] Query Cancelled - results truncated (but 200 already sent)", action.id)) ;
                 out.println() ;
                 out.println("##  Query cancelled due to timeout during execution   ##") ;
                 out.println("##  ****          Incomplete results           ****   ##") ;

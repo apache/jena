@@ -25,11 +25,13 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.slf4j.Logger ;
 
 public class ValidationAction
 {
     public final boolean verbose ;
     public final long id ;
+    public final Logger log ;
     private boolean startTimeIsSet = false ;
     private boolean finishTimeIsSet = false ;
 
@@ -46,8 +48,9 @@ public class ValidationAction
     public HttpServletRequest request;
     public HttpServletResponse response ;
     
-    public ValidationAction(long id, HttpServletRequest request, HttpServletResponse response, boolean verbose) {
+    public ValidationAction(long id, Logger log, HttpServletRequest request, HttpServletResponse response, boolean verbose) {
         this.id = id ;
+        this.log = log ;
         this.request = request ;
         this.response = response ;
         this.verbose = false ;

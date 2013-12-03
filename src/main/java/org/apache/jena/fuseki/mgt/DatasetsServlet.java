@@ -18,10 +18,6 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import static org.apache.jena.fuseki.server.CounterName.Requests ;
-import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
-import static org.apache.jena.fuseki.server.CounterName.RequestsGood ;
-
 import java.io.* ;
 import java.nio.channels.FileChannel ;
 import java.util.List ;
@@ -37,15 +33,14 @@ import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.apache.jena.fuseki.servlets.ActionCtl ;
 import org.apache.jena.fuseki.servlets.ActionErrorException ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.SPARQL_ServletBase ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
@@ -53,25 +48,14 @@ import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.web.HttpSC ;
-import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ; 
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 
-public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
-    private static Logger alog = Fuseki.adminLog ;
-
-    // XXX Rewrite for (renamed) SPARQL_ServletBase(Logger)
-    // ActionRequest(Logger)
-    //    > ServiceRequest
-    //    > AdminRequest
-    //    > Backup
-    //    > Status
+public class DatasetsServlet extends ActionCtl {
     
     public DatasetsServlet() {}
-    
-    // LOG
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -88,6 +72,11 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
         doCommon(request, response);
     }
     
+//    @Override
+//    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        doCommon(request, response);
+//    }
+
     @Override
     protected void executeLifecycle(HttpAction action)
     {
@@ -106,11 +95,6 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
     }
     
     @Override
-    protected void validate(HttpAction action) { 
-        // Validate later.
-    }
-
-    @Override
     protected void perform(HttpAction action) {
         String name = mapRequestToDataset(action) ;
         String method = action.request.getMethod().toUpperCase(Locale.ROOT) ;
@@ -127,9 +111,9 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
     // Null means no name given, i.e. names the collection.
     @Override
     protected String mapRequestToDataset(HttpAction action) {
-        alog.info("context path  = "+action.request.getContextPath()) ;
-        alog.info("pathinfo      = "+action.request.getPathInfo()) ;
-        alog.info("servlet path  = "+action.request.getServletPath()) ;
+        action.log.info("context path  = "+action.request.getContextPath()) ;
+        action.log.info("pathinfo      = "+action.request.getPathInfo()) ;
+        action.log.info("servlet path  = "+action.request.getServletPath()) ;
         // if /name
         //action.request.getServletPath() ;
         // if /*
@@ -149,7 +133,7 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
     }
 
     protected void execGet(String name, HttpAction action) {
-        alog.info("GET ds="+(name==null?"":name)) ;
+        action.log.info("GET ds="+(name==null?"":name)) ;
         JsonBuilder builder = new JsonBuilder() ;
         if ( name == null ) {
             // All
@@ -173,8 +157,9 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
             JSON.write(out, v) ;
             out.println() ; 
             out.flush() ;
-            success(action) ;
         } catch (IOException ex) { errorOccurred(ex) ; }
+        success(action);
+
     }
     
     
@@ -203,17 +188,18 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
             dsDesc.dormant() ;
         else
             errorBadRequest("New state '"+s+"' not recognized");
+        success(action);
     }
 
     protected void execPostContainer(HttpAction action) {
-        alog.info("POST container") ;
+        action.log.info("POST container") ;
         // ??? 
         // Send to disk, then parse, then decide what to do.
         // Overwrite?
         
         Model m = ModelFactory.createDefaultModel() ;
         StreamRDF dest = StreamRDFLib.graph(m.getGraph()) ;
-        bodyAsGraph(action.request, dest) ;
+        bodyAsGraph(action, dest) ;
         List<DatasetRef> refs = FusekiConfig.readConfiguration(m);
         
         for (DatasetRef dsDesc : refs) {
@@ -230,11 +216,12 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
             RDFDataMgr.write(out, m, Lang.TURTLE) ;
             out.close() ;
         } catch (IOException ex) { IO.exception(ex) ; }
+        success(action);
     }
 
     protected void execDelete(String name, HttpAction action) {
         // Find DS.
-        alog.info("DELETE "+(name==null?"":name));
+        action.log.info("DELETE "+(name==null?"":name));
         if ( name == null ) {
             errorBadRequest("DELETE only to the container entries.") ;
             return ;
@@ -248,6 +235,7 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
         DatasetRegistry.get().remove(name) ;
         // No longer routeable
         dsRef.gracefulShutdown() ;
+        success(action);
     }
 
     private static void copyFile(File source, File dest) {
@@ -264,9 +252,8 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
     
     // XXX Merge with SPARQL_REST_RW.incomingData
     
-    protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
-
-    private static void bodyAsGraph(HttpServletRequest request, StreamRDF dest) {
+    private static void bodyAsGraph(HttpAction action, StreamRDF dest) {
+        HttpServletRequest request = action.request ;
         String base = wholeRequestURL(request) ;
         ContentType ct = FusekiLib.getContentType(request) ;
         Lang lang = WebContent.contentTypeToLang(ct.getContentType()) ;
@@ -288,15 +275,17 @@ public class DatasetsServlet extends SPARQL_ServletBase /* rename */ {
 //                                ct.getCharset(), lang.getName())) ;
 //        }
         dest.prefix("root", base+"#");
-        parse(dest, input, lang, base) ;
+        parse(action, dest, input, lang, base) ;
          
     }
 
-    public static void parse(StreamRDF dest, InputStream input, Lang lang, String base) {
+    // See SPARQL_REST for common code.
+    public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
         // Need to adjust the error handler.
 //        try { RDFDataMgr.parse(dest, input, base, lang) ; }
 //        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
         LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
+        ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(action.log) ;
         parser.getProfile().setHandler(errorHandler) ;
         try { parser.parse() ; } 
         catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }

@@ -56,15 +56,15 @@ public class SPARQL_REST_R extends SPARQL_REST
         Lang lang = WebContent.contentTypeToLang(mediaType.getContentType()) ;
 
         if ( action.verbose )
-            log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
+            action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
                             action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
 
         action.beginRead() ;
 
         try {
             Target target = determineTarget(action) ;
-            if ( log.isDebugEnabled() )
-                log.debug("GET->"+target) ;
+            if ( action.log.isDebugEnabled() )
+                action.log.debug("GET->"+target) ;
             boolean exists = target.exists() ;
             if ( ! exists )
                 errorNotFound("No such graph: <"+target.name+">") ;
@@ -95,8 +95,8 @@ public class SPARQL_REST_R extends SPARQL_REST
         action.beginRead() ;
         try { 
             Target target = determineTarget(action) ;
-            if ( log.isDebugEnabled() )
-                log.debug("HEAD->"+target) ;
+            if ( action.log.isDebugEnabled() )
+                action.log.debug("HEAD->"+target) ;
             if ( ! target.exists() )
             {
                 successNotFound(action) ;

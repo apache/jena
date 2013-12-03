@@ -135,7 +135,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             String charset = request.getCharacterEncoding() ;
             if ( charset != null && ! charset.equalsIgnoreCase(WebContent.charsetUTF8) )
                 errorBadRequest("Bad charset: "+charset) ;
-            validate(request, paramsPOST) ;
+            validate(action, paramsPOST) ;
             return ;
         }
         
@@ -152,23 +152,23 @@ public class SPARQL_Update extends SPARQL_Protocol
                 requestStr = request.getParameter(paramRequest) ;
             if ( requestStr == null )
                 errorBadRequest("SPARQL Update: No update= in HTML form") ;
-            validate(request, paramsForm) ;
+            validate(action, paramsForm) ;
             return ;
         }
         
         error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm+" (got "+ctStr+")") ;
     }
     
-    protected void validate(HttpServletRequest request, Collection<String> params)
+    protected void validate(HttpAction action, Collection<String> params)
     {
         if ( params != null )
         {
-            Enumeration<String> en = request.getParameterNames() ;
+            Enumeration<String> en = action.request.getParameterNames() ;
             for ( ; en.hasMoreElements() ; )
             {
                 String name = en.nextElement() ;
                 if ( ! params.contains(name) )
-                    warning("SPARQL Update: Unrecognize request parameter (ignored): "+name) ;
+                    warning(action, "SPARQL Update: Unrecognize request parameter (ignored): "+name) ;
             }
         }
     }

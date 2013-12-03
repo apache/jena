@@ -22,7 +22,7 @@ import static java.lang.String.format ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.io.PrintWriter;
+import java.io.PrintWriter ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -50,10 +50,8 @@ import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
-public class SPARQL_Upload extends SPARQL_ServletBase 
+public class SPARQL_Upload extends ActionSPARQL 
 {
-    private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
-    
     public SPARQL_Upload() {
         super() ;
     }
@@ -126,7 +124,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
          Graph graphTmp = p.getRight() ;
          long tripleCount = graphTmp.size() ;
 
-         log.info(format("[%d] Upload: Graph: %s (%d triple(s))", 
+         action.log.info(format("[%d] Upload: Graph: %s (%d triple(s))", 
                          action.id, graphName,  tripleCount)) ;
 
          Node gn = graphName.equals(HttpNames.valueDefault)
@@ -211,7 +209,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                         graphName = null ;
                     else
                         // Add file type?
-                        log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName)) ;
+                        action.log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName)) ;
                 } else {
                     // Process the input stream
                     name = item.getName() ; 
@@ -228,7 +226,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                         // Desperate.
                         lang = RDFLanguages.RDFXML ;
 
-                    log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", 
+                    action.log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", 
                                     action.id, name,  ct.getContentType(), ct.getCharset(), lang.getName())) ;
                     
                     StreamRDF x = StreamRDFLib.graph(graphTmp) ;

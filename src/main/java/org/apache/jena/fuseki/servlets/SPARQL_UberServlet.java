@@ -39,7 +39,7 @@ import org.apache.jena.web.HttpSC ;
  *  and acts as a router for all SPARQL operations
  *  (query, update, graph store, both direct and indirect naming). 
  */
-public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
+public abstract class SPARQL_UberServlet extends ActionSPARQL
 {
     protected abstract boolean allowQuery(HttpAction action) ;
     protected abstract boolean allowUpdate(HttpAction action) ;
@@ -93,12 +93,12 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     // Refactor? Extract the direct naming handling.
     // To test: enable in SPARQLServer.configureOneDataset
     
-    private final SPARQL_ServletBase queryServlet    = new SPARQL_QueryDataset() ;
-    private final SPARQL_ServletBase updateServlet   = new SPARQL_Update() ;
-    private final SPARQL_ServletBase uploadServlet   = new SPARQL_Upload() ;
-    private final SPARQL_REST        restServlet_RW  = new SPARQL_REST_RW() ;
-    private final SPARQL_REST        restServlet_R   = new SPARQL_REST_R() ;
-    private final SPARQL_ServletBase restQuads       = new REST_Quads() ;
+    private final ActionSPARQL queryServlet    = new SPARQL_QueryDataset() ;
+    private final ActionSPARQL updateServlet   = new SPARQL_Update() ;
+    private final ActionSPARQL uploadServlet   = new SPARQL_Upload() ;
+    private final ActionSPARQL restServlet_RW  = new SPARQL_REST_RW() ;
+    private final ActionSPARQL restServlet_R   = new SPARQL_REST_R() ;
+    private final ActionSPARQL restQuads       = new REST_Quads() ;
     
     public SPARQL_UberServlet() { super(); }
 
@@ -162,7 +162,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         if ( ct != null )
             mt = MediaType.create(ct, charset) ;
         
-        log.info(format("[%d] All: %s %s :: '%s' :: %s ? %s", id, method, desc.name, trailing, (mt==null?"<none>":mt), (qs==null?"":qs))) ;
+        action.log.info(format("[%d] All: %s %s :: '%s' :: %s ? %s", id, method, desc.name, trailing, (mt==null?"<none>":mt), (qs==null?"":qs))) ;
                        
         boolean hasTrailing = ( trailing.length() != 0 ) ;
         
@@ -259,14 +259,14 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
        return ;
     }
 
-    private void executeRequest(HttpAction action, SPARQL_ServletBase servlet, ServiceRef service)
+    private void executeRequest(HttpAction action, ActionSPARQL servlet, ServiceRef service)
     {
         if ( service.endpoints.size() == 0 )
             errorMethodNotAllowed(action.request.getMethod()) ;
         servlet.executeLifecycle(action) ;
     }
 
-    private void executeRequest(HttpAction action,SPARQL_ServletBase servlet)
+    private void executeRequest(HttpAction action,ActionSPARQL servlet)
     {
         servlet.executeLifecycle(action) ;
 //      // Forwarded dispatch.
@@ -297,7 +297,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     }
 
     /** return true if dispatched */
-    private boolean serviceDispatch(HttpAction action, ServiceRef service, String srvName , SPARQL_ServletBase servlet)
+    private boolean serviceDispatch(HttpAction action, ServiceRef service, String srvName , ActionSPARQL servlet)
     {
         if ( ! service.endpoints.contains(srvName) )
             return false ;

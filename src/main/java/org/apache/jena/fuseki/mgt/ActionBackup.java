@@ -36,8 +36,8 @@ import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.fuseki.servlets.ActionCtl ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletBase ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.web.HttpSC ;
@@ -45,7 +45,7 @@ import org.apache.jena.web.HttpSC ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class ActionBackup extends ServletBase
+public class ActionBackup extends ActionCtl
 {
     public ActionBackup() { super() ; }
 
@@ -53,12 +53,17 @@ public class ActionBackup extends ServletBase
     public static final ExecutorService backupService = Executors.newFixedThreadPool(1) ;
     
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        doCommon(request, response); 
+    }
+    
+    @Override
+    protected void perform(HttpAction action)
     {
-        String dataset = FusekiLib.safeParameter(request, "dataset") ;
+        String dataset = FusekiLib.safeParameter(action.request, "dataset") ;
         if ( dataset == null )
         {
-            response.sendError(HttpSC.BAD_REQUEST_400, "Required parameter missing: ?dataset=") ;
+            errorBadRequest("Required parameter missing: ?dataset=") ;
             return ;
         }
         
@@ -72,12 +77,10 @@ public class ActionBackup extends ServletBase
         boolean known = DatasetRegistry.get().isRegistered(dataset) ;
         if (!known)
         {
-            response.sendError(HttpSC.BAD_REQUEST_400, "No such dataset: " + dataset) ;
+            errorBadRequest("No such dataset: " + dataset) ;
             return ;
         }
         
-        long id = allocRequestId(request, response);
-        HttpAction action = new HttpAction(id, request, response, false) ;
         DatasetRef ref = DatasetRegistry.get().get(dataset) ;
         action.setDataset(ref);
         scheduleBackup(action) ;
@@ -99,15 +102,15 @@ public class ActionBackup extends ServletBase
                 @Override
                 public Boolean call() throws Exception
                 {
-                    log.info(format("[%d] Start backup %s to '%s'", action.id, ds, filename)) ;
+                    action.log.info(format("[%d] Start backup %s to '%s'", action.id, ds, filename)) ;
                     action.beginRead() ;
                     try {
                         backup(action.getActiveDSG(), filename) ;
-                        log.info(format("[%d] Finish backup %s to '%s'", action.id, ds, filename)) ;
+                        action.log.info(format("[%d] Finish backup %s to '%s'", action.id, ds, filename)) ;
                     }
                     catch ( RuntimeException ex )
                     {
-                        log.info(format("[%d] Exception during backup: ", action.id, ex.getMessage()), ex) ;
+                        action.log.info(format("[%d] Exception during backup: ", action.id, ex.getMessage()), ex) ;
                         return Boolean.FALSE ;
                     }
                     finally {
@@ -116,13 +119,13 @@ public class ActionBackup extends ServletBase
                     return Boolean.TRUE ;
                 }} ;
             
-            log.info(format("[%d] Schedule backup %s to '%s'", action.id, ds, filename)) ;                
+                action.log.info(format("[%d] Schedule backup %s to '%s'", action.id, ds, filename)) ;                
             backupService.submit(task) ;
         } 
         //catch (FusekiException ex)
         catch (RuntimeException ex)
         {
-            log.warn("Unanticipated exception", ex) ;
+            action.log.warn("Unanticipated exception", ex) ;
             try { action.response.sendError(HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ; }
             catch (IOException e) { IO.exception(e) ; }
             return ;            

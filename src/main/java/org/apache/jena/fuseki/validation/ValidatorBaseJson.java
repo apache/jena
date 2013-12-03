@@ -42,6 +42,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 /** ValidationBase for JSON out */ 
 public abstract class ValidatorBaseJson extends ServletBase
 {
+    private static Logger vLog = Fuseki.validationLog ;
     public static final String jErrors          = "errors" ;
     public static final String jWarnings        = "warning" ;
 
@@ -62,7 +63,7 @@ public abstract class ValidatorBaseJson extends ServletBase
     
     protected void execute(HttpServletRequest request, HttpServletResponse response) {
         long id = allocRequestId(request, response) ;
-        ValidationAction action = new ValidationAction(id, request, response, false) ;
+        ValidationAction action = new ValidationAction(id, vLog, request, response, false) ;
         printRequest(action) ;
         action.setStartTime() ;
         
@@ -108,17 +109,17 @@ public abstract class ValidatorBaseJson extends ServletBase
         String url = wholeRequestURL(action.request) ;
         String method = action.request.getMethod() ;
 
-        log.info(format("[%d] %s %s", action.id, method, url)) ;
+        action.log.info(format("[%d] %s %s", action.id, method, url)) ;
         if ( action.verbose ) {
             Enumeration<String> en = action.request.getHeaderNames() ;
             for (; en.hasMoreElements();) {
                 String h = en.nextElement() ;
                 Enumeration<String> vals = action.request.getHeaders(h) ;
                 if (!vals.hasMoreElements())
-                    log.info(format("[%d]   ", action.id, h)) ;
+                    action.log.info(format("[%d]   ", action.id, h)) ;
                 else {
                     for (; vals.hasMoreElements();)
-                        log.info(format("[%d]   %-20s %s", action.id, h, vals.nextElement())) ;
+                        action.log.info(format("[%d]   %-20s %s", action.id, h, vals.nextElement())) ;
                 }
             }
         }
@@ -142,9 +143,9 @@ public abstract class ValidatorBaseJson extends ServletBase
         String timeStr = fmtMillis(time) ;
 
         if ( action.message == null )
-            log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, HttpSC.getMessage(action.statusCode), timeStr)) ;
+            action.log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, HttpSC.getMessage(action.statusCode), timeStr)) ;
         else
-            log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, action.message, timeStr)) ;
+            action.log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, action.message, timeStr)) ;
     }
     
     private static String fmtMillis(long time)

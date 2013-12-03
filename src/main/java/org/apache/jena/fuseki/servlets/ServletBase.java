@@ -30,10 +30,8 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.web.HttpSC ;
-import org.slf4j.Logger ;
 
 public abstract class ServletBase extends HttpServlet {
-    protected static final Logger log            = Fuseki.requestLog ;
     public final boolean          verboseLogging = Fuseki.verboseLogging ;
     private static AtomicLong     requestIdAlloc = new AtomicLong(0) ;
 
@@ -138,12 +136,12 @@ public abstract class ServletBase extends HttpServlet {
         }
     }
 
-    protected static void warning(String string) {
-        log.warn(string) ;
+    protected void warning(HttpAction action, String string) {
+        action.log.warn(string) ;
     }
 
-    protected static void warning(String string, Throwable thorwable) {
-        log.warn(string, thorwable) ;
+    protected void warning(HttpAction action, String string, Throwable thorwable) {
+        action.log.warn(string, thorwable) ;
     }
 
     protected static void errorBadRequest(String string) {

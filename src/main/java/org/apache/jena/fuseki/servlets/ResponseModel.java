@@ -38,14 +38,11 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.web.HttpSC ;
-import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 
 public class ResponseModel
 {
-    private static Logger slog = ServletBase.log ;
-
     // Short names for "output="
     private static final String contentOutputJSON          = "json" ;
     private static final String contentOutputXML           = "xml" ;
@@ -123,14 +120,14 @@ public class ResponseModel
     //        }
 
         try {
-            ResponseResultSet.setHttpResponse(request, response, contentType, charset) ; 
+            ResponseResultSet.setHttpResponse(action, contentType, charset) ; 
             response.setStatus(HttpSC.OK_200) ;
             ServletOutputStream out = response.getOutputStream() ;
             RDFDataMgr.write(out, model, lang) ;
             out.flush() ;
         }
         catch (Exception ex) { 
-            slog.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
+            action.log.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
             errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
         }
     }

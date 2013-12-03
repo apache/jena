@@ -123,13 +123,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             
         if ( HttpNames.METHOD_GET.equals(method) && action.request.getQueryString() == null )
         {
-            warning("Service Description / SPARQL Query / "+action.request.getRequestURI()) ;
+            warning(action, "Service Description / SPARQL Query / "+action.request.getRequestURI()) ;
             errorNotFound("Service Description: "+action.request.getRequestURI()) ;
         }
         
         // Use of the dataset describing parameters is check later.
         try {
-            validateParams(action.request, allParams) ;
+            validateParams(action, allParams) ;
             validateRequest(action) ; 
         } catch (ActionErrorException ex) { 
             throw ex ; 
@@ -141,8 +141,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     protected abstract void validateRequest(HttpAction action) ;
     
     /** Helper for validating request */
-    protected void validateParams(HttpServletRequest request, Collection<String> params)
+    protected void validateParams(HttpAction action, Collection<String> params)
     {
+        HttpServletRequest request = action.request ;
         ContentType ct = FusekiLib.getContentType(request) ;
         boolean mustHaveQueryParam = true ;
         if ( ct != null )
@@ -184,7 +185,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             {
                 String name = en.nextElement() ;
                 if ( ! params.contains(name) )
-                    warning("SPARQL Query: Unrecognize request parameter (ignored): "+name) ;
+                    warning(action, "SPARQL Query: Unrecognize request parameter (ignored): "+name) ;
             }
         }
     }
@@ -210,9 +211,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     {
         String queryStringLog = formatForLog(queryString) ;
         if ( action.verbose )
-            log.info(format("[%d] Query = \n%s", action.id, queryString));
+            action.log.info(format("[%d] Query = \n%s", action.id, queryString));
         else
-            log.info(format("[%d] Query = %s", action.id, queryStringLog));
+            action.log.info(format("[%d] Query = %s", action.id, queryStringLog));
 
         Query query = null ;
         try {
@@ -285,28 +286,28 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             
             //rs = ResultSetFactory.copyResults(rs) ;
 
-            log.info(format("[%d] exec/select", action.id)) ;
+            action.log.info(format("[%d] exec/select", action.id)) ;
             return new SPARQLResult(rs) ;
         }
 
         if ( query.isConstructType() )
         {
             Model model = qExec.execConstruct() ;
-            log.info(format("[%d] exec/construct", action.id)) ;
+            action.log.info(format("[%d] exec/construct", action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isDescribeType() )
         {
             Model model = qExec.execDescribe() ;
-            log.info(format("[%d] exec/describe",action.id)) ;
+            action.log.info(format("[%d] exec/describe",action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isAskType() )
         {
             boolean b = qExec.execAsk() ;
-            log.info(format("[%d] exec/ask",action.id)) ;
+            action.log.info(format("[%d] exec/ask",action.id)) ;
             return new SPARQLResult(b) ;
         }
 
