@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServlet ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.server.FusekiErrorHandler ;
-import org.apache.jena.fuseki.servlets.DumpServlet ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.nio.SelectChannelConnector ;
@@ -66,8 +65,8 @@ public class ManagementServer
         if ( !base.startsWith("/"))
             throw new FusekiException("Base URI does not start with a '/'") ; 
         // Dump request
-        addServlet(context, new DumpServlet(),          base+"dump") ;
-        addServlet(context, new DescriptionServlet(),   base+"status") ;
+        addServlet(context, new DumpServlet(),         base+"dump") ;
+        addServlet(context, new ActionDescription(),   base+"status") ;
     }
     
     public static void addAdminFunctions(ServletContextHandler context, String base) {
@@ -77,8 +76,8 @@ public class ManagementServer
         if ( !base.startsWith("/"))
             throw new FusekiException("Base URI does nto start with a '/'") ; 
         addServlet(context, new MgtCmdServlet(),        base+"mgt") ;
-        addServlet(context, new StatsServlet(),         base+"stats") ;
-        addServlet(context, new DatasetsServlet(),      base+"datasets/*") ; // Covers "datasets" as well. 
+        addServlet(context, new ActionStats(),          base+"stats") ;
+        addServlet(context, new ActionDatasets(),       base+"datasets/*") ; // Covers ".../datasets" as well. 
     }
 
     // SHARE

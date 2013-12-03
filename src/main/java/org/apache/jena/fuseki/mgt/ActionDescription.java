@@ -19,10 +19,8 @@
 package org.apache.jena.fuseki.mgt;
 
 import java.io.IOException ;
-import java.io.PrintStream ;
 
 import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -31,36 +29,35 @@ import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.web.HttpSC ;
 import org.eclipse.jetty.server.Server ;
 
 /** Description of datasets for a server */ 
-public class DescriptionServlet extends HttpServlet
+public class ActionDescription extends ActionCtl
 {
+    public ActionDescription() { super() ; }
+    
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-        throws /*ServletException,*/ IOException
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        doCommon(req, resp); }
+    
+    @Override
+    protected void perform(HttpAction action) 
     {
         try {
-            // Conneg etc.
-            description(req, resp) ;
-        } catch (IOException e)
-        { 
-            resp.sendError(HttpSC.INTERNAL_SERVER_ERROR_500, e.getMessage()) ;
-            resp.setContentType(WebContent.contentTypeTextPlain) ;
-            resp.setCharacterEncoding(WebContent.charsetUTF8) ;
-            ServletOutputStream out = resp.getOutputStream() ;
-            PrintStream x = new PrintStream(out) ;
-            e.printStackTrace(x);
-            x.flush() ;
+            description(action) ;
+            success(action) ;
+        }
+        catch (IOException e) {
+            errorOccurred(e) ;
         }
     }
     
-    private void description(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        ServletOutputStream out = resp.getOutputStream() ;
-        resp.setContentType(WebContent.contentTypeJSON);
-        resp.setCharacterEncoding(WebContent.charsetUTF8) ;
+    private void description(HttpAction action) throws IOException {
+        ServletOutputStream out = action.response.getOutputStream() ;
+        action.response.setContentType(WebContent.contentTypeJSON);
+        action.response.setCharacterEncoding(WebContent.charsetUTF8) ;
         
         JsonBuilder builder = new JsonBuilder() ; 
         builder.startObject() ;

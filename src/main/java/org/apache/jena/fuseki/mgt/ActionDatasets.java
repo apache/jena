@@ -38,8 +38,6 @@ import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
-import org.apache.jena.fuseki.servlets.ActionCtl ;
-import org.apache.jena.fuseki.servlets.ActionErrorException ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
@@ -53,9 +51,9 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 
-public class DatasetsServlet extends ActionCtl {
+public class ActionDatasets extends ActionCtl {
     
-    public DatasetsServlet() {}
+    public ActionDatasets() { super() ; }
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
@@ -77,23 +75,6 @@ public class DatasetsServlet extends ActionCtl {
 //        doCommon(request, response);
 //    }
 
-    @Override
-    protected void executeLifecycle(HttpAction action)
-    {
-        startRequest(action) ;
-        try {
-            perform(action) ;
-//            incCounter(action.srvRef, RequestsGood) ;
-//            incCounter(action.dsRef, RequestsGood) ;
-        } catch (ActionErrorException ex) {
-//            incCounter(action.srvRef, RequestsBad) ;
-//            incCounter(action.dsRef, RequestsBad) ;
-            throw ex ;
-        } finally {
-            finishRequest(action) ;
-        }
-    }
-    
     @Override
     protected void perform(HttpAction action) {
         String name = mapRequestToDataset(action) ;

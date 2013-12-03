@@ -36,7 +36,6 @@ import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.fuseki.servlets.ActionCtl ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -84,6 +83,7 @@ public class ActionBackup extends ActionCtl
         DatasetRef ref = DatasetRegistry.get().get(dataset) ;
         action.setDataset(ref);
         scheduleBackup(action) ;
+        success(action) ;
     }
 
     static final String BackupArea = "backups" ;  

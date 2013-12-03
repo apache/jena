@@ -19,47 +19,41 @@
 package org.apache.jena.fuseki.mgt;
 
 import java.io.IOException ;
-import java.io.PrintStream ;
 import java.util.Iterator ;
 
 import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.web.HttpSC ;
 
-public class StatsServlet extends HttpServlet
+public class ActionStats extends ActionCtl
 {
-    // Convert to JsonBuilder-style
+    public ActionStats() { super() ; } 
+    
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-        throws /*ServletException,*/ IOException
-    {
-        try {
-            // Conneg etc.
-            statsJSON(req, resp) ;
-        } catch (IOException e) {
-            resp.sendError(HttpSC.INTERNAL_SERVER_ERROR_500, e.getMessage()) ;
-            resp.setContentType(WebContent.contentTypeTextPlain) ;
-            resp.setCharacterEncoding(WebContent.charsetUTF8) ;
-            ServletOutputStream out = resp.getOutputStream() ;
-            PrintStream x = new PrintStream(out) ;
-            e.printStackTrace(x) ;
-            x.flush() ;
-        }
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        doCommon(req, resp); 
     }
     
-    private void statsJSON(HttpServletRequest req, HttpServletResponse resp) throws IOException
-    {
-        ServletOutputStream out = resp.getOutputStream() ;
-        resp.setContentType(WebContent.contentTypeJSON);
-        resp.setCharacterEncoding(WebContent.charsetUTF8) ;
+    @Override
+    protected void perform(HttpAction action) {
+        try {
+            perform$(action) ;
+        } catch (IOException ex) { IO.exception(ex) ; }
+    }
+    
+    protected void perform$(HttpAction action) throws IOException {
+        HttpServletResponse response = action.response ;
+        ServletOutputStream out = action.response.getOutputStream() ;
+        response.setContentType(WebContent.contentTypeJSON);
+        response.setCharacterEncoding(WebContent.charsetUTF8) ;
 
         /*
          * { "server" : ....   
@@ -68,19 +62,19 @@ public class StatsServlet extends HttpServlet
          *       GSP stucture?
          *         
          */
-        
+
         JsonObject obj = new JsonObject() ;
         JsonObject datasets = new JsonObject() ;
-        
+
         JsonObject server = new JsonObject() ;
-        server.put("host", req.getLocalName()+":"+req.getLocalPort()) ;
-        
+        server.put("host", action.request.getLocalName()+":"+action.request.getLocalPort()) ;
+
         for ( String ds : DatasetRegistry.get().keys() )
             statsJSON(datasets, ds) ; 
-        
+
         obj.put("server", server) ;
         obj.put("datasets", datasets) ;
-        
+
         JSON.write(out, obj) ;
         out.flush() ;
     }

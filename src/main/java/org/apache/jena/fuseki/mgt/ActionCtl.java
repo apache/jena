@@ -16,10 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki.mgt;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.servlets.ActionBase ;
+import org.apache.jena.fuseki.servlets.ActionLib ;
+import org.apache.jena.fuseki.servlets.HttpAction ;
 
 /** Control/admin request lifecycle */
 public abstract class ActionCtl extends ActionBase
@@ -58,6 +61,7 @@ public abstract class ActionCtl extends ActionBase
     }
     
     // This is the service request lifecycle.
+    final
     protected void executeLifecycle(HttpAction action)
     {
         startRequest(action) ;

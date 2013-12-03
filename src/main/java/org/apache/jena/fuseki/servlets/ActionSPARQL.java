@@ -65,7 +65,7 @@ public abstract class ActionSPARQL extends ActionBase
     }
     
     // This is the service request lifecycle.
-    // Called directly by the UberServlet which has not done any stats by this point.
+    final
     protected void executeLifecycle(HttpAction action)
     {
         incCounter(action.dsRef, Requests) ;

@@ -32,7 +32,9 @@ import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.mgt.MgtFunctions ;
-import org.apache.jena.fuseki.servlets.* ;
+import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral ;
+import org.apache.jena.fuseki.servlets.SPARQL_UberFilter ;
+import org.apache.jena.fuseki.servlets.SimpleVelocityServlet ;
 import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
 import org.apache.jena.fuseki.validation.QueryValidator ;
@@ -270,7 +272,6 @@ public class SPARQLServer {
             HttpServlet validateData = new DataValidator() ;
             HttpServlet validateIRI = new IRIValidator() ;
 
-            HttpServlet dumpService = new DumpServlet() ;
             HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
 
             addServlet(context, validateQuery, validationRoot + "/query", false) ;
