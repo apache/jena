@@ -23,6 +23,7 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.PrintWriter;
+import java.util.zip.GZIPInputStream;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -222,8 +223,15 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     ct = ContentType.create(contentTypeHeader) ;
 
                     lang = WebContent.contentTypeToLang(ct.getContentType()) ;
-                    if ( lang == null )
+
+                    if ( lang == null ) {
                         lang = RDFLanguages.filenameToLang(name) ;
+                        
+                        //JENA-600 filenameToLang() strips off certain extensions such as .gz and 
+                        //we need to ensure that if there was a .gz extension present we wrap the stream accordingly
+                        if (name.endsWith(".gz"))
+                            stream = new GZIPInputStream(stream);
+                    }
                     if ( lang == null )
                         // Desperate.
                         lang = RDFLanguages.RDFXML ;
