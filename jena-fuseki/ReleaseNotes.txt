@@ -2,6 +2,9 @@
 
 == Fuseki 1.0.1
 
++ JENA-600 : Support GZipped uploads correctly i.e. files with .foo.gz style
+             extensions
+
 == Fuseki 1.0.0
 This is the final version of what was 0.2.8
 
