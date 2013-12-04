@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.migrate;
+package org.apache.jena.fuseki.migrate ;
 
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFWrapper ;
 
@@ -26,40 +27,47 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class SinkRDFLimited extends StreamRDFWrapper
-{
-   private long count = 0 ;
-   private final long limit ;
-    
-    public SinkRDFLimited(StreamRDF output, long limit)
-    {
+/**
+ * Limit triples/quads and stop passing through after a limit is reached.
+ */
+public class StreamRDFLimited extends StreamRDFWrapper {
+    private long       count = 0 ;
+    private final long limit ;
+
+    public StreamRDFLimited(StreamRDF output, long limit) {
         super(output) ;
         this.limit = limit ;
     }
 
     @Override
-    public void triple(Triple triple)
-    { 
+    public void triple(Triple triple) {
         count++ ;
+        if ( count > limit )
+            throw new RiotException("Limit ("+limit+") reached") ; 
         super.triple(triple) ;
     }
 
     @Override
-    public void quad(Quad quad)
-    { 
+    public void quad(Quad quad) {
         count++ ;
+        if ( count > limit )
+            throw new RiotException("Limit ("+limit+") reached") ; 
         super.quad(quad) ;
     }
 
     @Override
-    public void tuple(Tuple<Node> tuple)
-    { 
+    public void tuple(Tuple<Node> tuple) {
         count++ ;
+        if ( count > limit )
+            throw new RiotException("Limit ("+limit+") reached") ; 
         super.tuple(tuple) ;
     }
 
-    
-    public long getCount() { return count ; } 
-    public long getLimit() { return limit ; }
-}
+    public long getCount() {
+        return count ;
+    }
 
+    public long getLimit() {
+        return limit ;
+    }
+}

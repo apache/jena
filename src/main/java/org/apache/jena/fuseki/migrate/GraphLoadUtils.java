@@ -68,7 +68,7 @@ public class GraphLoadUtils
     {
         // We need to do this ourselves, not via riot, to use the webStreamManager
         StreamRDF sink = StreamRDFLib.graph(graph) ;
-        sink = new SinkRDFLimited(sink, limit) ;
+        sink = new StreamRDFLimited(sink, limit) ;
 
         TypedInputStream input = Fuseki.webStreamManager.open(uri) ;
         RDFDataMgr.parse(sink, input, uri) ;

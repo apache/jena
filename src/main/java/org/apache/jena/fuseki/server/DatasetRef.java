@@ -61,12 +61,12 @@ public class DatasetRef implements DatasetMXBean, Counters
         if ( getState() == UNINITIALIZED )
             initServices() ;    
         setState(ACTIVE) ;
-        
     }
     
     public boolean isActive() { return getState() == ACTIVE ; }  
     
-    public DatasetStatus getStatus()    { return state ; }
+    public DatasetStatus getStatus()                    { return state ; }
+    public void setStatus(DatasetStatus newStatus)      { setState(newStatus) ; }
     
     private DatasetStatus getState() {
         return state ;

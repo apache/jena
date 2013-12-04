@@ -91,7 +91,6 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
                         throw new InternalErrorException("Default graph URI is null or the empty string")  ;
 
                     try {
-                        //TODO Clearup - RIOT integration.
                         GraphLoadUtils.loadModel(model, uri, MaxTriples) ;
                         action.log.info(format("[%d] Load (default graph) %s", action.id, uri)) ;
                     } catch (RiotException ex) {

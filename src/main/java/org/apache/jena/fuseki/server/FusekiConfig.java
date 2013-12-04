@@ -30,7 +30,6 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.riot.RDFDataMgr ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
@@ -67,17 +66,6 @@ public class FusekiConfig {
     List<DatasetRef>      datasets = null ;
 
     private static Logger log      = Fuseki.configLog ;
-
-    private static String prefixes = StrUtils.strjoinNL
-        ("PREFIX fu:      <http://jena.apache.org/fuseki#>",
-         "PREFIX fuseki:  <http://jena.apache.org/fuseki#>",
-         "PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-         "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
-         "PREFIX tdb:     <http://jena.hpl.hp.com/2008/tdb#>",
-         "PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>",
-         "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
-         "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>",
-         "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>", "") ;
 
     public static ServerConfig defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate,
                                                     boolean listenLocal) {
@@ -118,25 +106,57 @@ public class FusekiConfig {
             }
         } ;
     
+//    public static void additional(ServerConfig config) {
+//        // server/
+//        // configure/
+//        // databases/
+//        
+//        File d = new File(configurationsDirectory) ;
+//        String[] assemblerFiles = d.list(visibleFiles) ;
+//        
+//        if ( assemblerFiles == null ) {
+//            log.warn("No configurtion directory '"+configurationsDirectory+"'") ;
+//        }
+//        
+//        String x = Iter.asString(Arrays.asList(assemblerFiles));
+//        log.info("Files: "+x);
+//        
+//        for ( String fn : assemblerFiles ) {
+//            Model m = RDFDataMgr.loadModel(configurationsDirectory+"/"+fn);
+//            List<DatasetRef> refs = readConfiguration(m);
+//            config.datasets.addAll(refs) ;
+//        }
+//    }
+        
     public static void additional(ServerConfig config) {
-        // server/
-        // configure/
-        // databases/
+        String qs = StrUtils.strjoinNL
+            (SystemState.PREFIXES ,
+             "SELECT * {" ,
+             "  GRAPH ?g {",
+             "     ?s fu:name ?name ;" ,
+             "        fu:status ?status ." ,
+             "  }",
+             "}"
+             ) ;
         
-        File d = new File(configurationsDirectory) ;
-        String[] assemblerFiles = d.list(visibleFiles) ;
+        ResultSet rs = query(qs,SystemState.dataset) ;
         
-        if ( assemblerFiles == null ) {
-            log.warn("No configurtion directory '"+configurationsDirectory+"'") ;
-        }
+//        ResultSetFormatter.out(rs); 
+//        ((ResultSetRewindable)rs).reset();
         
-        String x = Iter.asString(Arrays.asList(assemblerFiles));
-        log.info("Files: "+x);
-        
-        for ( String fn : assemblerFiles ) {
-            Model m = RDFDataMgr.loadModel(configurationsDirectory+"/"+fn);
-            List<DatasetRef> refs = readConfiguration(m);
-            config.datasets.addAll(refs) ;
+        for ( ; rs.hasNext() ; ) {
+            QuerySolution row = rs.next() ;
+            Resource s = row.getResource("s") ;
+            // The result set was copied so we need to find the model again.
+            Resource g = row.getResource("g") ;
+            Resource rStatus = row.getResource("status") ;
+            DatasetStatus status = DatasetStatus.status(rStatus) ;
+            Model m = SystemState.dataset.getNamedModel(g.getURI()) ;
+            s = m.wrapAsResource(s.asNode()) ;
+            //String name = row.getLiteral("name").getLexicalForm() ;
+            DatasetRef ref = processService(s) ;
+            ref.setStatus(status) ;
+            config.datasets.add(ref) ;
         }
     }
     
@@ -169,15 +189,12 @@ public class FusekiConfig {
     
     private static Model additionalRDF(Model m ) {
         String x1 = StrUtils.strjoinNL
-            ( "PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>" ,
-              "PREFIX ja:  <http://jena.hpl.hp.com/2005/11/Assembler#>", 
+            ( SystemState.PREFIXES, 
               "INSERT                    { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' }",
               "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' } }"
              ) ;
         String x2 = StrUtils.strjoinNL
-            ("PREFIX tdb: <http://jena.hpl.hp.com/2008/tdb#>" ,
-             "PREFIX ja:  <http://jena.hpl.hp.com/2005/11/Assembler#>",
-             "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
+            (SystemState.PREFIXES,
              "INSERT DATA {",
              "   tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .",
              "   tdb:GraphTDB    rdfs:subClassOf  ja:Model .",
@@ -378,11 +395,26 @@ public class FusekiConfig {
     }
 
     private static ResultSet query(String string, Model m, String varName, RDFNode value) {
-        Query query = QueryFactory.create(prefixes + string) ;
+        Query query = QueryFactory.create(SystemState.PREFIXES + string) ;
         QuerySolutionMap initValues = null ;
         if ( varName != null )
             initValues = querySolution(varName, value) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, m, initValues) ;
+        ResultSet rs = ResultSetFactory.copyResults(qExec.execSelect()) ;
+        qExec.close() ;
+        return rs ;
+    }
+
+    private static ResultSet query(String string, Dataset ds) {
+        return query(string, ds, null, null) ;
+    }
+
+    private static ResultSet query(String string, Dataset ds, String varName, RDFNode value) {
+        Query query = QueryFactory.create(SystemState.PREFIXES + string) ;
+        QuerySolutionMap initValues = null ;
+        if ( varName != null )
+            initValues = querySolution(varName, value) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds, initValues) ;
         ResultSet rs = ResultSetFactory.copyResults(qExec.execSelect()) ;
         qExec.close() ;
         return rs ;

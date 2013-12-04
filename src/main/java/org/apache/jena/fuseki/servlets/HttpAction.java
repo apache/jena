@@ -48,13 +48,13 @@ public class HttpAction
     public final boolean verbose ;
     public final Logger log ;
     
-    // Phase two items - set and valida after the datasetRef is known.  
+    // Phase two items - set and valid after the datasetRef is known.  
     private DatasetGraph dsg ;                  // The data
     public DatasetRef dsRef ;
     public ServiceRef srvRef ;
     
-    private Transactional transactional ;
-    private boolean isTransactional;
+    private Transactional   transactional ;
+    private boolean         isTransactional;
     private DatasetGraph    activeDSG ;             // Set when inside begin/end.
     private ReadWrite       activeMode ;            // Set when inside begin/end.
     
@@ -90,6 +90,9 @@ public class HttpAction
 
     public void setDataset(DatasetRef desc) {
         this.dsRef = desc ;
+        if ( desc == null || desc.dataset == null )
+            return ;
+        
         this.dsg = desc.dataset ;
         DatasetGraph basedsg = unwrap(dsg) ;
 

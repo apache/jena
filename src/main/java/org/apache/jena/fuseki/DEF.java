@@ -25,20 +25,21 @@ import org.apache.jena.riot.WebContent ;
 public class DEF
 {
     public static final MediaType acceptRDFXML        = MediaType.create(WebContent.contentTypeRDFXML) ;
-    public static final MediaType acceptTurtle1       = MediaType.create(WebContent.contentTypeTurtle) ;
-    public static final MediaType acceptTurtle2       = MediaType.create(WebContent.contentTypeTurtleAlt1) ;
-    public static final MediaType acceptTurtle3       = MediaType.create(WebContent.contentTypeTurtleAlt2) ;
-    public static final MediaType acceptNTriples      = MediaType.create(WebContent.contentTypeNTriples) ;
-    public static final MediaType acceptNTriplesAlt   = MediaType.create(WebContent.contentTypeNTriplesAlt) ;
-    public static final MediaType acceptTriG          = MediaType.create(WebContent.contentTypeTriG) ;
-    public static final MediaType acceptTriGAlt1      = MediaType.create(WebContent.contentTypeTriGAlt1) ;
-    public static final MediaType acceptTriGAlt2      = MediaType.create(WebContent.contentTypeTriGAlt2) ;
-    public static final MediaType acceptRDFJSON       = MediaType.create(WebContent.contentTypeRDFJSON) ; 
     public static final MediaType acceptNQuads        = MediaType.create(WebContent.contentTypeNQuads) ;
-    public static final MediaType acceptNQuadsAlt1    = MediaType.create(WebContent.contentTypeNQuadsAlt1) ;
-    public static final MediaType acceptNQuadsAlt2    = MediaType.create(WebContent.contentTypeNQuadsAlt2) ;
-   
     public static final MediaType acceptRSXML         = MediaType.create(WebContent.contentTypeResultsXML) ;
+    
+    private static final MediaType acceptTurtle1       = MediaType.create(WebContent.contentTypeTurtle) ;
+    private static final MediaType acceptTurtle2       = MediaType.create(WebContent.contentTypeTurtleAlt1) ;
+    private static final MediaType acceptTurtle3       = MediaType.create(WebContent.contentTypeTurtleAlt2) ;
+    private static final MediaType acceptNTriples      = MediaType.create(WebContent.contentTypeNTriples) ;
+    private static final MediaType acceptNTriplesAlt   = MediaType.create(WebContent.contentTypeNTriplesAlt) ;
+    private static final MediaType acceptTriG          = MediaType.create(WebContent.contentTypeTriG) ;
+    private static final MediaType acceptTriGAlt1      = MediaType.create(WebContent.contentTypeTriGAlt1) ;
+    private static final MediaType acceptTriGAlt2      = MediaType.create(WebContent.contentTypeTriGAlt2) ;
+    private static final MediaType acceptRDFJSON       = MediaType.create(WebContent.contentTypeRDFJSON) ; 
+    private static final MediaType acceptNQuadsAlt1    = MediaType.create(WebContent.contentTypeNQuadsAlt1) ;
+    private static final MediaType acceptNQuadsAlt2    = MediaType.create(WebContent.contentTypeNQuadsAlt2) ;
+   
 
     public static final AcceptList rdfOffer           = AcceptList.create(acceptTurtle1, acceptTurtle2, acceptTurtle3, 
                                                                           acceptNTriples, acceptNTriplesAlt,

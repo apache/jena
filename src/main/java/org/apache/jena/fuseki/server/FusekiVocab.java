@@ -43,7 +43,22 @@ public class FusekiVocab
 
     public static final Property pAllowTimeoutOverride = property("allowTimeoutOverride");
     public static final Property pMaximumTimeoutOverride = property("maximumTimeoutOverride");
+    
+    // Internal
+    
+    private static final String stateNameActive      = DatasetStatus.ACTIVE.name ;
+    private static final String stateNameDormant     = DatasetStatus.DORMANT.name ;
+    private static final String stateNameClosing     = DatasetStatus.CLOSING.name ;
+    private static final String stateNameClosed      = DatasetStatus.CLOSED.name ;
+    
+    public static final Resource stateActive        = resource(stateNameActive) ;
+    public static final Resource stateDormant       = resource(stateNameDormant) ;
+    public static final Resource stateClosing       = resource(stateNameClosing) ;
+    public static final Resource stateClosed        = resource(stateNameClosed) ;
+    
+    public static final Property pStatus = property("status") ;
 
+    
     private static Resource resource(String localname) { return ResourceFactory.createResource(iri(localname)) ; }
     private static Property property(String localname) { return ResourceFactory.createProperty(iri(localname)) ; }
         

@@ -23,6 +23,7 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.PrintWriter ;
+import java.util.zip.GZIPInputStream ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -41,7 +42,9 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -220,8 +223,16 @@ public class SPARQL_Upload extends ActionSPARQL
                     ct = ContentType.create(contentTypeHeader) ;
 
                     lang = WebContent.contentTypeToLang(ct.getContentType()) ;
-                    if ( lang == null )
+                    if ( lang == null ) {
                         lang = RDFLanguages.filenameToLang(name) ;
+
+                        //JENA-600 filenameToLang() strips off certain extensions such as .gz and 
+                        //we need to ensure that if there was a .gz extension present we wrap the stream accordingly
+                        if (name.endsWith(".gz") )
+                            stream = new GZIPInputStream(stream);
+                    }
+                    
+                    
                     if ( lang == null )
                         // Desperate.
                         lang = RDFLanguages.RDFXML ;

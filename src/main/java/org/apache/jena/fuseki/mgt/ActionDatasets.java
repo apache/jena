@@ -18,9 +18,11 @@
 
 package org.apache.jena.fuseki.mgt;
 
+import static java.lang.String.format ;
+
 import java.io.* ;
 import java.nio.channels.FileChannel ;
-import java.util.List ;
+import java.util.Iterator ;
 import java.util.Locale ;
 
 import javax.servlet.ServletException ;
@@ -32,14 +34,15 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.server.DatasetRef ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.fuseki.server.FusekiConfig ;
-import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
@@ -47,12 +50,39 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.web.HttpSC ;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.uuid.JenaUUID ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ActionDatasets extends ActionCtl {
+    // XXX DatasetRef to include UUID : see execPostDataset
+    // XXX Build registry from system database
+    // XXX Put the system database somewhere on disk.
+    // XXX
+    // DatasetRef ref = processService(s) ;
+    //   Needs to do the state.
     
+    // DORMANT on restart excludes on counters.  Not initialised.
+    // DORMANT - close or not close?
+    // ACTIVE - initialize.
+    
+    private static Dataset system = SystemState.dataset ;
+    private static DatasetGraphTransaction systemDSG = SystemState.dsg ; 
+    
+    static private Property pServiceName = FusekiVocab.pServiceName ;
+    static private Property pStatus = FusekiVocab.pStatus ;
+
     public ActionDatasets() { super() ; }
     
     @Override
@@ -77,59 +107,28 @@ public class ActionDatasets extends ActionCtl {
 
     @Override
     protected void perform(HttpAction action) {
-        String name = mapRequestToDataset(action) ;
         String method = action.request.getMethod().toUpperCase(Locale.ROOT) ;
         if ( method.equals("GET") )
-            execGet(name, action) ;
+            execGet(action) ;
         else if ( method.equals("POST") )
-            execPost(name, action) ;
+            execPost(action) ;
         else if ( method.equals("DELETE") )
-            execDelete(name, action) ;
+            execDelete(action) ;
         else
             error(HttpSC.METHOD_NOT_ALLOWED_405) ;
+        
+//      system.begin(ReadWrite.READ) ;
+//      try { RDFDataMgr.write(System.out, system, Lang.TRIG); }
+//      finally { system.end() ; }
+
     }
 
-    // Null means no name given, i.e. names the collection.
-    @Override
-    protected String mapRequestToDataset(HttpAction action) {
-        action.log.info("context path  = "+action.request.getContextPath()) ;
-        action.log.info("pathinfo      = "+action.request.getPathInfo()) ;
-        action.log.info("servlet path  = "+action.request.getServletPath()) ;
-        // if /name
-        //action.request.getServletPath() ;
-        // if /*
-        String pathInfo = action.request.getPathInfo() ;
-        
-        // Or uri after servlet path.
-        
-        if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") )
-            return null ;
-        String name = pathInfo ;
-        // pathInfo starts with a "/"
-        int idx = pathInfo.lastIndexOf('/') ;
-        if ( idx > 0 )
-            name = name.substring(idx) ;
-        // Returns "/name"
-        return name ; 
-    }
-
-    protected void execGet(String name, HttpAction action) {
-        action.log.info("GET ds="+(name==null?"":name)) ;
-        JsonBuilder builder = new JsonBuilder() ;
-        if ( name == null ) {
-            // All
-            builder.startObject() ;
-            builder.key("datasets") ;
-            JsonDescription.arrayDatasets(builder, DatasetRegistry.get());
-            builder.finishObject() ;
-        } else {
-            String datasetPath = DatasetRef.canocialDatasetPath(name) ;
-            DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
-            if ( dsDesc == null )
-                errorNotFound("Not found: dataset "+name);
-            JsonDescription.describe(builder, dsDesc) ;
-        }
-        JsonValue v = builder.build() ;
+    protected void execGet(HttpAction action) {
+        JsonValue v ;
+        if (action.dsRef.name == null )
+            v = execGetContainer(action) ;
+        else
+            v = execGetDataset(action) ;
         try {
             HttpServletResponse response = action.response ;
             ServletOutputStream out = response.getOutputStream() ;
@@ -140,84 +139,182 @@ public class ActionDatasets extends ActionCtl {
             out.flush() ;
         } catch (IOException ex) { errorOccurred(ex) ; }
         success(action);
+    }
+    
+    // This does not consult the system database for dormant etc.
+    private JsonValue execGetDataset(HttpAction action) { 
+        JsonBuilder builder = new JsonBuilder() ;
+        builder.startObject() ;
+        builder.key("datasets") ;
+        JsonDescription.arrayDatasets(builder, DatasetRegistry.get());
+        builder.finishObject() ;
+        return builder.build() ;
+    }
 
-    }
-    
-    
-    // POST container -> register new dataset
-    // POST conatins/name -> change the state of an exiting entry. 
-    
-    protected void execPost(String name, HttpAction action) {
-        if (name == null )
-            execPostContainer(action) ;
-        else
-            execPostDataset(name, action) ;
-    }
-    
-    private void execPostDataset(String name, HttpAction action) {
-        String datasetPath = DatasetRef.canocialDatasetPath(name) ;
+    private JsonValue execGetContainer(HttpAction action) {
+        action.log.info(format("[%d] GET ds=%s", action.id, action.dsRef.name)) ;
+        JsonBuilder builder = new JsonBuilder() ;
+        String datasetPath = DatasetRef.canocialDatasetPath(action.dsRef.name) ;
         DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
         if ( dsDesc == null )
-            errorNotFound("Not found: dataset "+name);
+            errorNotFound("Not found: dataset "+action.dsRef.name);
+        JsonDescription.describe(builder, dsDesc) ;
+        return builder.build() ;
+    }
+    
+    // POST container -> register new dataset
+    // POST contains/name -> change the state of an existing entry.
+    
+    protected void execPost(HttpAction action) {
+        if (action.dsRef.name == null )
+            execPostContainer(action) ;
+        else
+            execPostDataset(action) ;
+    }
+    
+    // An action on a dataset.
+    // XXX extend to backup etc??
+    private void execPostDataset(HttpAction action) {
+        String name = action.dsRef.name ;
+        if ( name == null )
+            name = "" ;
+        action.log.info(format("[%d] POST dataset %s", action.id, name)) ;
         
+        if ( action.dsRef.dataset == null )
+            errorNotFound("Not found: dataset "+action.dsRef.name);
+        DatasetRef dsDesc = action.dsRef ;
         String s = action.request.getParameter("status") ;
         if ( s == null || s.isEmpty() )
             errorBadRequest("No state change given") ;
-        if ( s.equalsIgnoreCase("active") )
+
+        if ( s.equalsIgnoreCase("active") ) {
+            setDatasetState(name, FusekiVocab.stateActive) ;        
             dsDesc.activate() ;
-        else if ( s.equalsIgnoreCase("dormant") )
+        } else if ( s.equalsIgnoreCase("dormant") ) {
+            setDatasetState(name, FusekiVocab.stateDormant) ;        
             dsDesc.dormant() ;
-        else
+        } else
             errorBadRequest("New state '"+s+"' not recognized");
-        success(action);
+        success(action) ;
     }
 
-    protected void execPostContainer(HttpAction action) {
-        action.log.info("POST container") ;
-        // ??? 
-        // Send to disk, then parse, then decide what to do.
-        // Overwrite?
-        
-        Model m = ModelFactory.createDefaultModel() ;
-        StreamRDF dest = StreamRDFLib.graph(m.getGraph()) ;
-        bodyAsGraph(action, dest) ;
-        List<DatasetRef> refs = FusekiConfig.readConfiguration(m);
-        
-        for (DatasetRef dsDesc : refs) {
-            String datasetPath = dsDesc.name ;
-            if ( DatasetRegistry.get().isRegistered(datasetPath) )
-                // Remove?
-                errorBadRequest("Already registered: " + dsDesc.name) ;
-            SPARQLServer.registerDataset(datasetPath, dsDesc) ;
-        }
+    // Persistent state change.
+    private void setDatasetState(String name, Resource newState) {
+        boolean committed = false ;
+        system.begin(ReadWrite.WRITE) ;
         try {
-            String n = IO.uniqueFilename(FusekiConfig.configurationsDirectory, "assem", "ttl") ;
-            OutputStream out = new FileOutputStream(n) ;
-            out = new BufferedOutputStream(out) ;
-            RDFDataMgr.write(out, m, Lang.TURTLE) ;
-            out.close() ;
-        } catch (IOException ex) { IO.exception(ex) ; }
-        success(action);
+            String dbName = name ;
+            if ( dbName.startsWith("/") )
+                dbName = dbName.substring(1) ;
+            
+            String update =  StrUtils.strjoinNL
+                (SystemState.PREFIXES,
+                 "DELETE { GRAPH ?g { ?s fu:status ?state } }",
+                 "INSERT { GRAPH ?g { ?s fu:status "+FmtUtils.stringForRDFNode(newState)+" } }",
+                 "WHERE {",
+                 "   GRAPH ?g { ?s fu:name '"+dbName+"' ; ",
+                 "                 fu:status ?state .",
+                 "   }",
+                 "}"
+                 ) ;
+            UpdateRequest req =  UpdateFactory.create(update) ;
+            UpdateAction.execute(req, system);
+            system.commit();
+            committed = true ;
+        } finally { 
+            if ( ! committed ) system.abort() ; 
+            system.end() ; 
+        }
     }
+    
+    private void execPostContainer(HttpAction action) {
+        String newURI = JenaUUID.generate().asURI() ;
+        Node gn = NodeFactory.createURI(newURI) ;
+        
+        //action.beginWrite() ;
+        boolean committed = false ;
+        system.begin(ReadWrite.WRITE) ;
+        try {
+            Model model = system.getNamedModel(newURI) ;
+            StreamRDF dest = StreamRDFLib.graph(model.getGraph()) ;
+            bodyAsGraph(action, dest) ;
+            // Find name.
+            
+            StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
+            if ( ! sIter.hasNext() )
+                errorBadRequest("No name given in description of Fuseki service") ;
+            Statement stmt = sIter.next() ;
+            if ( sIter.hasNext() )
+                errorBadRequest("Multiple names given in description of Fuseki service") ;
+            if ( ! stmt.getObject().isLiteral() )
+                errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI") ;
+            
+            Resource subject = stmt.getSubject() ;
+            Literal object = stmt.getObject().asLiteral() ;
+            
+            if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
+                action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
 
-    protected void execDelete(String name, HttpAction action) {
-        // Find DS.
-        action.log.info("DELETE "+(name==null?"":name));
-        if ( name == null ) {
+            String datasetName = object.getLexicalForm() ;
+            model.removeAll(null, pStatus, null) ;
+            model.add(subject, pStatus, FusekiVocab.stateActive) ;
+            
+            String datasetPath = DatasetRef.canocialDatasetPath(datasetName) ;
+            DatasetRef dsRef = FusekiConfig.processService(subject) ;
+            SPARQLServer.registerDataset(datasetPath, dsRef) ;
+            system.commit();
+            committed = true ;
+            success(action) ;
+        } finally { 
+            if ( ! committed ) system.abort() ; 
+            system.end() ; 
+        }
+    }
+    
+    protected void execDelete(HttpAction action) {
+        // Does not exist?
+        String name = action.dsRef.name ;
+        if ( name == null )
+            name = "" ;
+        action.log.info(format("[%d] DELETE ds=%s", action.id, name)) ;
+        if ( action.dsRef.name == null ) {
             errorBadRequest("DELETE only to the container entries.") ;
             return ;
         }
-        
-        //  Canoncial name
-        if ( ! DatasetRegistry.get().isRegistered(name) )
-            errorBadRequest("Not found: " + name) ;
-        
-        DatasetRef dsRef = DatasetRegistry.get().get(name) ;
-        DatasetRegistry.get().remove(name) ;
-        // No longer routeable
-        dsRef.gracefulShutdown() ;
-        success(action);
+
+        systemDSG.begin(ReadWrite.WRITE) ;
+        boolean committed =false ;
+        try {
+            // Name to graph
+            Quad q = getOne(SystemState.dsg, null, null, pServiceName.asNode(), null) ;
+            if ( q == null )
+                errorBadRequest("Failed to find dataset for '"+name+"'");
+            Node gn = q.getGraph() ;
+            
+            DatasetRef dsRef = DatasetRegistry.get().get(name) ;
+            dsRef.gracefulShutdown() ;
+            DatasetRegistry.get().remove(name) ;
+            // XXX or set to state deleted.
+            systemDSG.deleteAny(gn, null, null, null) ;
+            systemDSG.commit() ;
+            committed = true ;
+            success(action) ;
+        } finally { 
+            if ( ! committed ) systemDSG.abort() ; 
+            systemDSG.end() ; 
+        }
     }
+
+    private Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+        Iterator<Quad> iter = dsg.findNG(g, s, p, o) ;
+        if ( ! iter.hasNext() )
+            return null ;
+        Quad q = iter.next() ;
+        if ( iter.hasNext() )
+            return null ;
+        return q ;
+    }
+    
 
     private static void copyFile(File source, File dest) {
         try {
