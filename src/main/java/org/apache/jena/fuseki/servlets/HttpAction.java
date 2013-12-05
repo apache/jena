@@ -48,24 +48,33 @@ public class HttpAction
     public final boolean verbose ;
     public final Logger log ;
     
-    // Phase two items - set and valid after the datasetRef is known.  
-    private DatasetGraph dsg ;                  // The data
-    public DatasetRef dsRef ;
-    public ServiceRef srvRef ;
+    // ----
+    // Worth subclassing? Given this is allocated in the general lifecycle
+    // it would mean there are downcasts to the specific type.
     
-    private Transactional   transactional ;
-    private boolean         isTransactional;
-    private DatasetGraph    activeDSG ;             // Set when inside begin/end.
-    private ReadWrite       activeMode ;            // Set when inside begin/end.
+    // -- Valid only for operational actions (e.g. SPARQL).
+    private DatasetGraph dsg                = null ;
+    public  ServiceRef srvRef               = null ;
+    private Transactional   transactional   = null ;
+    private boolean         isTransactional = false ;
+    private DatasetGraph    activeDSG       = null ;        // Set when inside begin/end.
+    private ReadWrite       activeMode      = null ;        // Set when inside begin/end.
+    
+    
+    // -- Valid only for administration actions.
+    public String datasetName               = null ;
+    
+    
+    // -- Shared items (but exact meaning may differ)
+    public  DatasetRef dsRef                = null ;
+
+    // ----
     
     private boolean startTimeIsSet = false ;
     private boolean finishTimeIsSet = false ;
 
     private long startTime = -2 ;
     private long finishTime = -2 ;
-    
-    // Incoming
-    //public final 
     
     // Outcome.
     int statusCode = -1 ;

@@ -23,7 +23,6 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 import java.util.Enumeration ;
 import java.util.Map ;
-import java.util.concurrent.atomic.AtomicLong ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -118,79 +117,8 @@ public abstract class ActionBase extends ServletBase
         action.minimize() ;
     }
 
+    /** execution point */
     protected abstract void execCommonWorker(HttpAction action) ;
-        
-    @Deprecated
-    protected void inc(AtomicLong x)
-    {
-        x.incrementAndGet() ;
-    }
-
-//    // Execute - no stats.
-//    // Intercept point for the UberServlet 
-//    protected void executeAction(HttpAction action) {
-//        executeLifecycle(action) ;
-//    }
-//    
-//    // This is the service request lifecycle.
-//    // Called directly by the UberServlet which has not done any stats by this point.
-//    protected void executeLifecycle(HttpAction action)
-//    {
-//        incCounter(action.dsRef, Requests) ;
-//        incCounter(action.srvRef, Requests) ;
-//
-//        startRequest(action) ;
-//        try {
-//            validate(action) ;
-//        } catch (ActionErrorException ex) {
-//            incCounter(action.dsRef,RequestsBad) ;
-//            incCounter(action.srvRef, RequestsBad) ;
-//            throw ex ;
-//        }
-//
-//        try {
-//            perform(action) ;
-//            // Success
-//            incCounter(action.srvRef, RequestsGood) ;
-//            incCounter(action.dsRef, RequestsGood) ;
-//        } catch (ActionErrorException ex) {
-//            incCounter(action.srvRef, RequestsBad) ;
-//            incCounter(action.dsRef, RequestsBad) ;
-//            throw ex ;
-//        } catch (QueryCancelledException ex) {
-//            incCounter(action.srvRef, RequestsBad) ;
-//            incCounter(action.dsRef, RequestsBad) ;
-//            throw ex ;
-//        } finally {
-//            finishRequest(action) ;
-//        }
-//    }
-//    
-//    /** Map request to uri in the registry.
-//     *  null means no mapping done (passthrough). 
-//     */
-//    protected String mapRequestToDataset(HttpAction action) 
-//    {
-//        return ActionLib.mapRequestToDataset(action.request.getRequestURI()) ;
-//    }
-//    
-//    protected static void incCounter(Counters counters, CounterName name) {
-//        try {
-//            if ( counters.getCounters().contains(name) )
-//                counters.getCounters().inc(name) ;
-//        } catch (Exception ex) {
-//            Fuseki.serverLog.warn("Exception on counter inc", ex) ;
-//        }
-//    }
-//    
-//    protected static void decCounter(Counters counters, CounterName name) {
-//        try {
-//            if ( counters.getCounters().contains(name) )
-//                counters.getCounters().dec(name) ;
-//        } catch (Exception ex) {
-//            Fuseki.serverLog.warn("Exception on counter dec", ex) ;
-//        }
-//    }
 
     @SuppressWarnings("unused") // ServletException
     protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
