@@ -116,12 +116,13 @@
           <debug>true</debug>
           <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
           <postBuildHookScript>verify</postBuildHookScript>
+          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
         </configuration>
         <executions>
           <execution>
             <id>integration-test</id>
             <goals>
-              <goal>install</goal>
+              <goal>install</goal>            
               <goal>run</goal>
             </goals>
           </execution>
