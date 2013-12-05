@@ -78,8 +78,7 @@
         <!--<module>apache-jena-libs</module> -->
         <!--<module>apache-jena</module> -->
 	
-	<!-- Unclear problems JENA-596 -->
-	<!--<module>jena-maven-tools</module>-->
+	<module>jena-maven-tools</module>
       </modules>
     </profile>
 
@@ -114,8 +113,7 @@
         <module>apache-jena-libs</module>
         <module>apache-jena</module>
 
-	<!-- Unclear problems JENA-596 -->
-	<!-- <module>jena-maven-tools</module>-->
+	<module>jena-maven-tools</module>
       </modules>
     </profile>
   </profiles>
