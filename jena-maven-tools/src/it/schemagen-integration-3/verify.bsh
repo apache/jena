@@ -1,6 +1,6 @@
 import org.apache.maven.it.Verifier;
 
-File testDir = new File("src/it/schemagen-integration-3");
+File testDir = new File("target/it/schemagen-integration-3");
 if (!testDir.exists()) {
     testDir = new File( "jena-maven-tools/" + testDir.getPath() );
 }

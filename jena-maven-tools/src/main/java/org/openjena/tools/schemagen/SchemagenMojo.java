@@ -66,43 +66,40 @@ public class SchemagenMojo
     /* Static variables                */
     /***********************************/
 
-    /**
-     * Target directory
-     * @parameter property="project.build.directory"
-     */
-    public static String projectBuildDir;
-
-    /** Return the value of <code>${project.build.directory}</code> */
-    public static String getProjectBuildDir() {
-        return projectBuildDir;
-    }
-
     /***********************************/
     /* Instance variables              */
     /***********************************/
 
     /**
-     * Array of file patterns to include in processing
-     * @parameter alias="includes"
+     * @parameter property="project.build.directory"
      */
+    
+    @Parameter(property="project.build.directory")
+    private String projectBuildDir;
+
+    
+    /**
+     * Array of file patterns to include in processing
+     */
+    @Parameter
     private String[] includes = new String[0];
 
     /**
      * Array of file patterns to exclude from processing
-     * @parameter alias="excludes"
      */
+    @Parameter    
     private String[] excludes = new String[0];
 
     /**
      * Options for individual files
-     * @parameter alias="fileOptions"
      */
+    @Parameter    
     private List<Source> fileOptions;
 
     /**
      * The current base directory of the project
-     * @parameter property="basedir"
      */
+    @Parameter(property="basedir")
     private File baseDir;
 
     /** The default options object, if any */
@@ -187,6 +184,11 @@ public class SchemagenMojo
         return defaultOptions;
     }
 
+    /** Return the value of <code>${project.build.directory}</code> */
+    public String getProjectBuildDir() {
+        return projectBuildDir;
+    }
+
     /**
      * Handle the default options by creating a default options object and assigning
      * the options values from the given source object.
@@ -243,7 +245,7 @@ public class SchemagenMojo
         // the name of the input file, and link it to the defaults
         String soFileName;
         if (so == null) {
-            so = new SchemagenOptions(getDefaultOutputDir());
+            so = new SchemagenOptions(getDefaultOptions().getOutputOption());
             soFileName = fileName;
             so.setParent( getDefaultOptions() );
         } else {
