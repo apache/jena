@@ -26,6 +26,10 @@ import org.apache.jena.riot.RDFDataMgr ;
 
 import com.hp.hpl.jena.graph.Graph ;
 
+/** @deprecated 
+ * Use {@link RDFDataMgr#write(OutputStream, Graph, Lang)} with {@code Lang.RDFJSON}
+ */
+@Deprecated
 public class RDFJSONWriter {
 
     //public RDFJSONWriter() {}
@@ -38,7 +42,13 @@ public class RDFJSONWriter {
 	public static void write (OutputStream out, Graph graph) {
 	    RDFDataMgr.write(out, graph, Lang.RDFJSON) ;
 	}
-	
+    
+    /** @deprecated 
+     * Use {@link RDFDataMgr#write(OutputStream, Graph, Lang)}
+     * with {@code Lang.RDFJSON}
+     */ 
+    @Deprecated
 	public static void write (Writer out, Graph graph) {
+        RDFDataMgr.write(out, graph, Lang.RDFJSON) ;
 	}
 }
