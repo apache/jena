@@ -139,7 +139,7 @@ public class WebContent
     
     
     /** Return our "canonical" name for a Content Type.
-     * This should be the standard one, no X-* 
+     * This should be the standard one, no X-*
      */
     public static String contentTypeCanonical(String contentType)
     { 
@@ -148,7 +148,9 @@ public class WebContent
             return null ;
         return mapLangToContentType.get(lang) ;
     }
-    
+
+    /** @deprecated Use RDFlanguages.contentTypeToLang(String)*/
+    @Deprecated
     public static Lang contentTypeToLang(String contentType)
     { 
         if ( contentType == null )
