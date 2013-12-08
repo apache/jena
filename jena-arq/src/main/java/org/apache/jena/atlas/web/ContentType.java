@@ -52,6 +52,7 @@ public class ContentType
     public String getCharset()      { return mediaType.getCharset() ; }
     public String getType()         { return mediaType.getType() ; }
     public String getSubType()      { return mediaType.getSubType() ; }
+    public String toHeaderString()  { return mediaType.toHeaderString() ; }
     
     @Override
     public int hashCode()

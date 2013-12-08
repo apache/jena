@@ -131,6 +131,9 @@ public class Lang
 
     public String getName()                     { return label ; }
     public ContentType getContentType()         { return contentType ; }
+    
+    /** As an HTTP Content-Type field value */ 
+    public String getHeaderString()             { return contentType.toHeaderString() ; }
     public String getLabel()                    { return label ; }
     public List<String> getAltNames()           { return altLabels ; }
     public List<String> getAltContentTypes()    { return altContentTypes ; }

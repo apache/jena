@@ -427,7 +427,7 @@ public class QueryEngineHTTP implements QueryExecution {
 
         // Try to select language appropriately here based on the model content
         // type
-        Lang lang = WebContent.contentTypeToLang(actualContentType);
+        Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
         if (!RDFLanguages.isTriples(lang))
             throw new QueryException("Endpoint returned Content Type: " + actualContentType
                     + " which is not a valid RDF Graph syntax");
@@ -453,7 +453,7 @@ public class QueryEngineHTTP implements QueryExecution {
 
         // Try to select language appropriately here based on the model content
         // type
-        Lang lang = WebContent.contentTypeToLang(actualContentType);
+        Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
         if (!RDFLanguages.isTriples(lang))
             throw new QueryException("Endpoint returned Content Type: " + actualContentType
                     + " which is not a valid RDF Graph syntax");
@@ -477,7 +477,7 @@ public class QueryEngineHTTP implements QueryExecution {
             if (actualContentType == null || actualContentType.equals("")) {
                 actualContentType = askContentType;
             }
-            Lang lang = WebContent.contentTypeToLang(actualContentType);
+            Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
             if (!RDFLanguages.isTriples(lang))
 
                 // Parse the result appropriately depending on the selected
@@ -738,7 +738,7 @@ public class QueryEngineHTTP implements QueryExecution {
      */
     public void setModelContentType(String contentType) {
         // Check that this is a valid setting
-        Lang lang = WebContent.contentTypeToLang(contentType);
+        Lang lang = RDFLanguages.contentTypeToLang(contentType);
         if (lang == null)
             throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not supported by RIOT");
         if (!RDFLanguages.isTriples(lang))

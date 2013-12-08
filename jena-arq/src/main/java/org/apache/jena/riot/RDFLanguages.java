@@ -18,22 +18,7 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.WebContent.contentTypeN3 ;
-import static org.apache.jena.riot.WebContent.contentTypeN3Alt1 ;
-import static org.apache.jena.riot.WebContent.contentTypeN3Alt2 ;
-import static org.apache.jena.riot.WebContent.contentTypeNQuads ;
-import static org.apache.jena.riot.WebContent.contentTypeNQuadsAlt1 ;
-import static org.apache.jena.riot.WebContent.contentTypeNQuadsAlt2 ;
-import static org.apache.jena.riot.WebContent.contentTypeNTriples ;
-import static org.apache.jena.riot.WebContent.contentTypeNTriplesAlt ;
-import static org.apache.jena.riot.WebContent.contentTypeRDFJSON ;
-import static org.apache.jena.riot.WebContent.contentTypeRDFXML ;
-import static org.apache.jena.riot.WebContent.contentTypeTriG ;
-import static org.apache.jena.riot.WebContent.contentTypeTriGAlt1 ;
-import static org.apache.jena.riot.WebContent.contentTypeTriGAlt2 ;
-import static org.apache.jena.riot.WebContent.contentTypeTurtle ;
-import static org.apache.jena.riot.WebContent.contentTypeTurtleAlt1 ;
-import static org.apache.jena.riot.WebContent.contentTypeTurtleAlt2 ;
+import static org.apache.jena.riot.WebContent.* ;
 
 import java.util.Collection ;
 import java.util.Collections ;
@@ -42,6 +27,7 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.MediaType ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
@@ -286,6 +272,22 @@ public class RDFLanguages
         return mapContentTypeToLang.get(key) ;
     }
 
+    public static String getCharsetForContentType(String contentType)
+    {
+        MediaType ct = MediaType.create(contentType) ;
+        if ( ct.getCharset() != null )
+            return ct.getCharset() ;
+        
+        String mt = ct.getContentType() ;
+        if ( contentTypeNTriples.equals(mt) )       return charsetUTF8 ;
+        if ( contentTypeNTriplesAlt.equals(mt) )    return charsetASCII ;
+        if ( contentTypeNQuads.equals(mt) )         return charsetUTF8 ;
+        if ( contentTypeNQuadsAlt1.equals(mt) )      return charsetASCII ;
+        if ( contentTypeNQuadsAlt2.equals(mt) )      return charsetASCII ;
+        return charsetUTF8 ;
+    }
+
+    
     /** Map a colloquial name (e.g. "Turtle") to a {@link Lang} */
     public static Lang shortnameToLang(String label)
     {
