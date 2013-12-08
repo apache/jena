@@ -22,8 +22,8 @@ import static java.lang.String.format ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.io.PrintWriter;
-import java.util.zip.GZIPInputStream;
+import java.io.PrintWriter ;
+import java.util.zip.GZIPInputStream ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -40,7 +40,6 @@ import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.web.HttpSC ;
@@ -222,7 +221,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     String contentTypeHeader = item.getContentType() ;
                     ct = ContentType.create(contentTypeHeader) ;
 
-                    lang = WebContent.contentTypeToLang(ct.getContentType()) ;
+                    lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
 
                     if ( lang == null ) {
                         lang = RDFLanguages.filenameToLang(name) ;
