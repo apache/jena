@@ -28,7 +28,7 @@ import org.apache.jena.atlas.lib.MultiMapToList ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.RDFLanguages ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -67,7 +67,7 @@ public class FusekiLib {
         String contentTypeHeader = action.request.getContentType() ;
         if ( contentTypeHeader == null )
             return dft ;
-        return WebContent.contentTypeToLang(contentTypeHeader) ;
+        return RDFLanguages.contentTypeToLang(contentTypeHeader) ;
     }
 
     static String fmtRequest(HttpServletRequest request) {

@@ -61,7 +61,7 @@ public class REST_Quads extends SPARQL_REST
         catch (IOException ex) { errorOccurred(ex) ; output = null ; }
         
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
-        Lang lang = WebContent.contentTypeToLang(mediaType.getContentType()) ;
+        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType()) ;
         if ( lang == null )
             lang = RDFLanguages.TRIG ;
 
@@ -117,7 +117,7 @@ public class REST_Quads extends SPARQL_REST
             errorBadRequest("Content-type required for data format") ;
         
         MediaType mediaType = MediaType.create(x) ;
-        Lang lang = WebContent.contentTypeToLang(mediaType.getContentType()) ;
+        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType()) ;
         if ( lang == null )
             lang = RDFLanguages.TRIG ;
 
