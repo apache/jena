@@ -50,7 +50,7 @@ public abstract class ActionSPARQL extends ActionBase
         } else
             dsRef = FusekiConfig.serviceOnlyDatasetRef() ;
 
-        action.setDataset(dsRef) ;
+        action.setRequestRef(dsRef) ;
         String uri = action.request.getRequestURI() ;
         String serviceName = ActionLib.mapRequestToService(dsRef, uri, datasetUri) ;
         ServiceRef srvRef = dsRef.getServiceRef(serviceName) ;

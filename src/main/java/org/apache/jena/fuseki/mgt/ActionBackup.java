@@ -44,7 +44,7 @@ import org.apache.jena.web.HttpSC ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-public class ActionBackup extends ActionCtl
+public class ActionBackup extends ActionCtl /* XXX This is a RequestAction not a control action */
 {
     public ActionBackup() { super() ; }
 
@@ -81,7 +81,7 @@ public class ActionBackup extends ActionCtl
         }
         
         DatasetRef ref = DatasetRegistry.get().get(dataset) ;
-        action.setDataset(ref);
+        action.setRequestRef(ref);
         scheduleBackup(action) ;
         success(action) ;
     }

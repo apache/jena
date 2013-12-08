@@ -34,15 +34,13 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
@@ -67,15 +65,8 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ActionDatasets extends ActionCtl {
     // XXX DatasetRef to include UUID : see execPostDataset
-    // XXX Build registry from system database
-    // XXX Put the system database somewhere on disk.
-    // XXX
     // DatasetRef ref = processService(s) ;
     //   Needs to do the state.
-    
-    // DORMANT on restart excludes on counters.  Not initialised.
-    // DORMANT - close or not close?
-    // ACTIVE - initialize.
     
     private static Dataset system = SystemState.dataset ;
     private static DatasetGraphTransaction systemDSG = SystemState.dsg ; 
@@ -187,6 +178,7 @@ public class ActionDatasets extends ActionCtl {
         if ( s == null || s.isEmpty() )
             errorBadRequest("No state change given") ;
 
+        // setDatasetState is a transaction on the pesistent state of the server. 
         if ( s.equalsIgnoreCase("active") ) {
             setDatasetState(name, FusekiVocab.stateActive) ;        
             dsDesc.activate() ;
@@ -238,14 +230,19 @@ public class ActionDatasets extends ActionCtl {
             Model model = system.getNamedModel(newURI) ;
             StreamRDF dest = StreamRDFLib.graph(model.getGraph()) ;
             bodyAsGraph(action, dest) ;
-            // Find name.
+            // Find name.  SPARQL?
             
-            StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
-            if ( ! sIter.hasNext() )
-                errorBadRequest("No name given in description of Fuseki service") ;
-            Statement stmt = sIter.next() ;
-            if ( sIter.hasNext() )
-                errorBadRequest("Multiple names given in description of Fuseki service") ;
+            Statement stmt = getOne(model, null, pServiceName, null) ;
+            if ( stmt == null ) {
+                StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
+                if ( ! sIter.hasNext() )
+                    errorBadRequest("No name given in description of Fuseki service") ;
+                sIter.next() ;
+                if ( sIter.hasNext() )
+                    errorBadRequest("Multiple names given in description of Fuseki service") ;
+                throw new InternalErrorException("Inconsistent: getOne didn't fail the second time") ;
+            }
+                
             if ( ! stmt.getObject().isLiteral() )
                 errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI") ;
             
@@ -260,6 +257,7 @@ public class ActionDatasets extends ActionCtl {
             model.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             String datasetPath = DatasetRef.canocialDatasetPath(datasetName) ;
+            // Need to be in Resource space at this point.
             DatasetRef dsRef = FusekiConfig.processService(subject) ;
             SPARQLServer.registerDataset(datasetPath, dsRef) ;
             system.commit();
@@ -315,7 +313,16 @@ public class ActionDatasets extends ActionCtl {
         return q ;
     }
     
-
+    private Statement getOne(Model m, Resource s, Property p, RDFNode o) {
+        StmtIterator iter = m.listStatements(s, p, o) ;
+        if ( ! iter.hasNext() )
+            return null ;
+        Statement stmt = iter.next() ;
+        if ( iter.hasNext() )
+            return null ;
+        return stmt ;
+    }
+    
     private static void copyFile(File source, File dest) {
         try {
             @SuppressWarnings("resource")
@@ -334,7 +341,7 @@ public class ActionDatasets extends ActionCtl {
         HttpServletRequest request = action.request ;
         String base = wholeRequestURL(request) ;
         ContentType ct = FusekiLib.getContentType(request) ;
-        Lang lang = WebContent.contentTypeToLang(ct.getContentType()) ;
+        Lang lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
         if ( lang == null ) {
             errorBadRequest("Unknown content type for triples: " + ct) ;
             return ;

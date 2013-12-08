@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
+import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.ServiceRef ;
@@ -53,6 +54,7 @@ public class HttpAction
     // it would mean there are downcasts to the specific type.
     
     // -- Valid only for operational actions (e.g. SPARQL).
+    
     private DatasetGraph dsg                = null ;
     public  ServiceRef srvRef               = null ;
     private Transactional   transactional   = null ;
@@ -62,10 +64,12 @@ public class HttpAction
     
     
     // -- Valid only for administration actions.
+    /** Name of dataset being acted upon in a admin operation (may be null) */
     public String datasetName               = null ;
     
     
     // -- Shared items (but exact meaning may differ)
+    /** Handle to dataset+services being acted on (maybe null) */
     public  DatasetRef dsRef                = null ;
 
     // ----
@@ -97,10 +101,14 @@ public class HttpAction
         this.verbose = verbose ;
     }
 
-    public void setDataset(DatasetRef desc) {
+    /** Initialization after action creation during lifecycle setup */
+    public void setRequestRef(DatasetRef desc) {
+        if ( this.dsRef != null )
+            throw new FusekiException("Redefintion of DatasetRef in the request action") ;
+        
         this.dsRef = desc ;
         if ( desc == null || desc.dataset == null )
-            return ;
+            throw new FusekiException("Null DatasetRef in the request action") ;
         
         this.dsg = desc.dataset ;
         DatasetGraph basedsg = unwrap(dsg) ;
@@ -116,7 +124,16 @@ public class HttpAction
             isTransactional = false ;
         }
     }
+    
+    public void setControlRef(DatasetRef desc) {
+        if ( desc == null )
+            throw new FusekiException("Null DatasetRef in the control action") ;
 
+        if ( this.dsRef != null )
+            throw new FusekiException("Redefintion of DatasetRef in the control action") ;
+        this.dsRef = desc ;
+    }
+    
     private static boolean isTransactional(DatasetGraph dsg) {
         return (dsg instanceof Transactional) ;
     }

@@ -28,6 +28,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -189,7 +190,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     private static void incomingData(HttpAction action, StreamRDF dest) {
         String base = wholeRequestURL(action.request) ;
         ContentType ct = FusekiLib.getContentType(action) ;
-        Lang lang = WebContent.contentTypeToLang(ct.getContentType()) ;
+        Lang lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
         if ( lang == null ) {
             errorBadRequest("Unknown content type for triples: " + ct) ;
             return ;

@@ -40,7 +40,6 @@ import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -222,7 +221,7 @@ public class SPARQL_Upload extends ActionSPARQL
                     String contentTypeHeader = item.getContentType() ;
                     ct = ContentType.create(contentTypeHeader) ;
 
-                    lang = WebContent.contentTypeToLang(ct.getContentType()) ;
+                    lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
                     if ( lang == null ) {
                         lang = RDFLanguages.filenameToLang(name) ;
 

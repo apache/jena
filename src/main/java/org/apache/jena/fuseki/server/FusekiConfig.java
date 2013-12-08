@@ -106,28 +106,6 @@ public class FusekiConfig {
             }
         } ;
     
-//    public static void additional(ServerConfig config) {
-//        // server/
-//        // configure/
-//        // databases/
-//        
-//        File d = new File(configurationsDirectory) ;
-//        String[] assemblerFiles = d.list(visibleFiles) ;
-//        
-//        if ( assemblerFiles == null ) {
-//            log.warn("No configurtion directory '"+configurationsDirectory+"'") ;
-//        }
-//        
-//        String x = Iter.asString(Arrays.asList(assemblerFiles));
-//        log.info("Files: "+x);
-//        
-//        for ( String fn : assemblerFiles ) {
-//            Model m = RDFDataMgr.loadModel(configurationsDirectory+"/"+fn);
-//            List<DatasetRef> refs = readConfiguration(m);
-//            config.datasets.addAll(refs) ;
-//        }
-//    }
-        
     public static void additional(ServerConfig config) {
         String qs = StrUtils.strjoinNL
             (SystemState.PREFIXES ,

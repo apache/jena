@@ -56,8 +56,8 @@ public class ManagementServer
         context.setErrorHandler(new FusekiErrorHandler()) ;
         server.setHandler(context);
         return server  ;
-    }        
-        
+    }
+
     public static void addServerFunctions(ServletContextHandler context, String base) {
         Fuseki.serverLog.info("Adding server information functions") ;
         if ( !base.endsWith("/" ) )

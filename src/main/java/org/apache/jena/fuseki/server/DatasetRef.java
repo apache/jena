@@ -55,14 +55,6 @@ public class DatasetRef implements DatasetMXBean, Counters
     
     public DatasetRef() {}
     
-    public void activate() {
-        if ( getState() == ACTIVE )
-            Fuseki.serverLog.warn("Already active: dataset = "+name) ;
-        if ( getState() == UNINITIALIZED )
-            initServices() ;    
-        setState(ACTIVE) ;
-    }
-    
     public boolean isActive() { return getState() == ACTIVE ; }  
     
     public DatasetStatus getStatus()                    { return state ; }
@@ -76,6 +68,21 @@ public class DatasetRef implements DatasetMXBean, Counters
         state = newState ;
     }
 
+    public void enable() {
+        if ( getState() == UNINITIALIZED )
+            setState(ACTIVE) ;
+        if ( serviceRefs.isEmpty() )
+            initServices() ;    
+    }
+    
+    public void activate() {
+        if ( getState() == ACTIVE )
+            Fuseki.serverLog.warn("Already active: dataset = "+name) ;
+        if ( getState() == UNINITIALIZED )
+            initServices() ;    
+        setState(ACTIVE) ;
+    }
+    
     public void dormant() {
         if ( getState() == DORMANT )
             Fuseki.serverLog.warn("Already dormant: dataset = "+name) ;

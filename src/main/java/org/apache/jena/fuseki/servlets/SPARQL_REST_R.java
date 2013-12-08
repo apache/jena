@@ -53,7 +53,7 @@ public class SPARQL_REST_R extends SPARQL_REST
         catch (IOException ex) { errorOccurred(ex) ; output = null ; }
         
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
-        Lang lang = WebContent.contentTypeToLang(mediaType.getContentType()) ;
+        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType()) ;
 
         if ( action.verbose )
             action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
@@ -70,7 +70,7 @@ public class SPARQL_REST_R extends SPARQL_REST
                 errorNotFound("No such graph: <"+target.name+">") ;
             // If we want to set the Content-Length, we need to buffer.
             //response.setContentLength(??) ;
-            String ct = WebContent.mapLangToContentType(lang) ;
+            String ct = lang.getContentType().toHeaderString() ;
             action.response.setContentType(ct) ;
             Graph g = target.graph() ;
             //Special case RDF/XML to be the plain (faster, less readable) form

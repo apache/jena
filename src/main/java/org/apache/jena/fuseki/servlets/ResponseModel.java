@@ -36,6 +36,7 @@ import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.conneg.WebLib ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.web.HttpSC ;
 
@@ -101,7 +102,7 @@ public class ResponseModel
             charset = WebContent.charsetUTF8 ;
         }
 
-        Lang lang = WebContent.contentTypeToLang(contentType) ;
+        Lang lang = RDFLanguages.contentTypeToLang(contentType) ;
         if ( lang == null )
             errorBadRequest("Can't determine output content type: "+contentType) ;
         

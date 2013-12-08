@@ -44,7 +44,7 @@ public abstract class ActionCtl extends ActionBase
             dsRef.name = name ;
         }
         action.datasetName = name ;
-        action.setDataset(dsRef) ;
+        action.setControlRef(dsRef) ;
         executeAction(action) ;
     }
 

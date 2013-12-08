@@ -303,7 +303,7 @@ public class SPARQLServer {
     }
 
     public static void registerDataset(String datasetPath, DatasetRef dsDesc) {
-        dsDesc.activate() ;
+        dsDesc.enable() ;
         if ( DatasetRegistry.get().isRegistered(datasetPath) )
             throw new FusekiConfigException("Already registered: key = "+datasetPath) ;
         DatasetRegistry.get().put(datasetPath, dsDesc) ;
