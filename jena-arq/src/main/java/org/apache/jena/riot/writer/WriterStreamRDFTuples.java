@@ -40,9 +40,8 @@ public class WriterStreamRDFTuples implements StreamRDF
     // This class is the overall structure - the NodeFormatter controls the
     // appearance of the Nodes themselves.
 
-    private final AWriter out ;
-    
-    private final NodeFormatter nodeFmt ; 
+    protected final AWriter out ;
+    protected final NodeFormatter nodeFmt ; 
 
     /** Output tuples, using UTF8 output 
      * See {@linkplain StreamRDFLib#writer} for ways to create a AWriter object.
