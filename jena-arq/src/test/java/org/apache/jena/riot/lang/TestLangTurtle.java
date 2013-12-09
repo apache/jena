@@ -79,7 +79,7 @@ public class TestLangTurtle extends BaseTest
     }
 
     
-    @Test public void updatePrefixMapping()
+    @Test public void updatePrefixMapping1()
     {
         Model model = ModelFactory.createDefaultModel() ;
         StringReader reader = new StringReader("@prefix x: <http://example/x>.") ;
@@ -88,6 +88,17 @@ public class TestLangTurtle extends BaseTest
         assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
     }
     
+    @Test public void updatePrefixMapping2()
+    {
+        // Test that prefixes are resolved
+        Model model = ModelFactory.createDefaultModel() ;
+        StringReader reader = new StringReader("BASE <http://example/> PREFIX x: <abc>") ;
+        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE) ;
+        assertEquals(1, model.getNsPrefixMap().size()) ;
+        assertEquals("http://example/abc", model.getNsPrefixURI("x")) ;
+    }
+    
+
     @Test public void optionalDotInPrefix()
     {
         Model model = ModelFactory.createDefaultModel() ;

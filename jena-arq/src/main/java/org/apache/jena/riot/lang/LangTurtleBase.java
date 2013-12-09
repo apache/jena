@@ -159,10 +159,9 @@ public abstract class LangTurtleBase extends LangBase {
         if ( !lookingAt(IRI) )
             exception(peekToken(), "@prefix requires an IRI (found '" + peekToken() + "')") ;
         String iriStr = peekToken().getImage() ;
-        dest.prefix(prefix, iriStr) ;
         IRI iri = profile.makeIRI(iriStr, currLine, currCol) ;
         profile.getPrologue().getPrefixMap().add(prefix, iri) ;
-
+        emitPrefix(prefix, iri.toString()) ;
         nextToken() ;
     }
 
@@ -170,13 +169,14 @@ public abstract class LangTurtleBase extends LangBase {
         Token token = peekToken() ;
         if ( !lookingAt(IRI) )
             exception(token, "@base requires an IRI (found '" + token + "')") ;
-
         String baseStr = token.getImage() ;
-        dest.base(baseStr) ;
         IRI baseIRI = profile.makeIRI(baseStr, currLine, currCol) ;
+        emitBase(baseIRI.toString()) ;
         nextToken() ;
         profile.getPrologue().setBaseURI(baseIRI) ;
     }
+
+    
 
     // Unlike many operations in this parser suite
     // this does not assume that we have definitely
@@ -348,7 +348,7 @@ public abstract class LangTurtleBase extends LangBase {
     protected final void objectList(Node subject, Node predicate) {
         for (;;) {
             Node object = triplesNode() ;
-            checkEmitTriple(subject, predicate, object) ;
+            emitTriple(subject, predicate, object) ;
 
             if ( !moreTokens() )
                 break ;
@@ -456,10 +456,10 @@ public abstract class LangTurtleBase extends LangBase {
             if ( listHead == null )
                 listHead = nextCell ;
             if ( lastCell != null )
-                checkEmitTriple(lastCell, NodeConst.nodeRest, nextCell) ;
+                emitTriple(lastCell, NodeConst.nodeRest, nextCell) ;
             lastCell = nextCell ;
 
-            checkEmitTriple(nextCell, NodeConst.nodeFirst, n) ;
+            emitTriple(nextCell, NodeConst.nodeFirst, n) ;
 
             if ( !moreTokens() ) // Error.
                 break ;
@@ -471,7 +471,7 @@ public abstract class LangTurtleBase extends LangBase {
             return NodeConst.nodeNil ;
 
         // Finish list.
-        checkEmitTriple(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
+        emitTriple(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
 
         finishList() ;
 
@@ -484,8 +484,16 @@ public abstract class LangTurtleBase extends LangBase {
     // Signal end of a list
     protected void startList() {}
 
-    protected final void checkEmitTriple(Node subject, Node predicate, Node object) {
+    protected final void emitTriple(Node subject, Node predicate, Node object) {
         emit(subject, predicate, object) ;
+    }
+
+    private final void emitPrefix(String prefix, String iriStr) {
+        dest.prefix(prefix, iriStr) ; 
+    }
+
+    private final void emitBase(String baseStr) { 
+        dest.base(baseStr);
     }
 
     protected final Node tokenAsNode(Token token) {
