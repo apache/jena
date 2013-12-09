@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.servlets.ServletBase ;
 import org.slf4j.Logger ;
 
 public abstract class ValidatorBase extends HttpServlet 
@@ -62,6 +63,7 @@ public abstract class ValidatorBase extends HttpServlet
 
     protected static void setHeaders(HttpServletResponse httpResponse)
     {
+        ServletBase.setCommonHeaders(httpResponse) ; 
         httpResponse.setCharacterEncoding("UTF-8") ;
         httpResponse.setContentType("text/html") ;
         httpResponse.setHeader(respService, "Fuseki/ARQ SPARQL Query Validator: http://jena.apache.org/") ;
