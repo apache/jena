@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text ;
 
 import java.io.IOException ;
 import java.util.* ;
@@ -49,14 +49,13 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
-public class TextIndexLucene implements TextIndex
-{
-    private static Logger log = LoggerFactory.getLogger(TextIndexLucene.class) ;
-    
-    private static int MAX_N = 10000 ;
-    public static final Version VER = Version.LUCENE_43 ;
-    
-    public static final FieldType ftIRI ;
+public class TextIndexLucene implements TextIndex {
+    private static Logger          log      = LoggerFactory.getLogger(TextIndexLucene.class) ;
+
+    private static int             MAX_N    = 10000 ;
+    public static final Version    VER      = Version.LUCENE_43 ;
+
+    public static final FieldType  ftIRI ;
     static {
         ftIRI = new FieldType() ;
         ftIRI.setTokenized(false) ;
@@ -64,100 +63,118 @@ public class TextIndexLucene implements TextIndex
         ftIRI.setIndexed(true) ;
         ftIRI.freeze() ;
     }
-    public static final FieldType ftString = StringField.TYPE_NOT_STORED ;
-    public static final FieldType ftText = TextField.TYPE_NOT_STORED ;
+    public static final FieldType  ftString = StringField.TYPE_NOT_STORED ;
+    public static final FieldType  ftText   = TextField.TYPE_NOT_STORED ;
     // Bigger index, easier to debug!
     // public static final FieldType ftText = TextField.TYPE_STORED ;
-    
+
     private final EntityDefinition docDef ;
-    private final Directory directory ;
-    private IndexWriter indexWriter ;
-    private Analyzer analyzer ;
-    
-    public TextIndexLucene(Directory directory, EntityDefinition def)
-    {
+    private final Directory        directory ;
+    private IndexWriter            indexWriter ;
+    private Analyzer               analyzer ;
+
+    public TextIndexLucene(Directory directory, EntityDefinition def) {
         this.directory = directory ;
         this.docDef = def ;
-        
+
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and StandardAnalyzer for all other
-        Map<String,Analyzer> analyzerPerField = new HashMap<String,Analyzer>() ;
+        Map<String, Analyzer> analyzerPerField = new HashMap<String, Analyzer>() ;
         analyzerPerField.put(def.getEntityField(), new KeywordAnalyzer()) ;
-        if (def.getGraphField() != null)
+        if ( def.getGraphField() != null )
             analyzerPerField.put(def.getGraphField(), new KeywordAnalyzer()) ;
         this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
-        
+
         // force creation of the index if it don't exist
-        // otherwise if we get a search before data is written we get an exception
-        startIndexing();
-        finishIndexing();
+        // otherwise if we get a search before data is written we get an
+        // exception
+        startIndexing() ;
+        finishIndexing() ;
     }
-    
-    public Directory getDirectory()     { return directory ; }
-    public Analyzer getAnalyzer()       { return analyzer ; }
-    
+
+    public Directory getDirectory() {
+        return directory ;
+    }
+
+    public Analyzer getAnalyzer() {
+        return analyzer ;
+    }
+
     @Override
-    public void startIndexing()
-    { 
+    public void startIndexing() {
         try {
             IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer) ;
             indexWriter = new IndexWriter(directory, wConfig) ;
-        } catch (IOException e) { exception(e) ; }
+        }
+        catch (IOException e) {
+            exception(e) ;
+        }
     }
 
     @Override
-    public void finishIndexing()
-    {
-        try { indexWriter.commit() ; indexWriter.close() ; indexWriter = null ; }
-        catch (IOException e) { exception(e) ; }
-    }
-    
-    @Override
-    public void abortIndexing()
-    {
-        try { indexWriter.rollback() ; }
-        catch ( IOException ex) { exception(ex) ; }
+    public void finishIndexing() {
+        try {
+            indexWriter.commit() ;
+            indexWriter.close() ;
+            indexWriter = null ;
+        }
+        catch (IOException e) {
+            exception(e) ;
+        }
     }
 
     @Override
-    public void close()
-    { 
-        if ( indexWriter != null ) 
-            try { indexWriter.close() ; } catch (IOException ex) { exception(ex) ; }
+    public void abortIndexing() {
+        try {
+            indexWriter.rollback() ;
+        }
+        catch (IOException ex) {
+            exception(ex) ;
+        }
     }
 
     @Override
-    public void addEntity(Entity entity)
-    {
+    public void close() {
+        if ( indexWriter != null )
+            try {
+                indexWriter.close() ;
+            }
+            catch (IOException ex) {
+                exception(ex) ;
+            }
+    }
+
+    @Override
+    public void addEntity(Entity entity) {
         if ( log.isDebugEnabled() )
-            log.debug("Add entity: "+entity) ;
+            log.debug("Add entity: " + entity) ;
         try {
             boolean autoBatch = (indexWriter == null) ;
-            
+
             Document doc = doc(entity) ;
             if ( autoBatch )
                 startIndexing() ;
             indexWriter.addDocument(doc) ;
             if ( autoBatch )
                 finishIndexing() ;
-        } catch (IOException e) { exception(e) ; }
+        }
+        catch (IOException e) {
+            exception(e) ;
+        }
     }
 
-    private Document doc(Entity entity)
-    {
+    private Document doc(Entity entity) {
         Document doc = new Document() ;
         Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIRI) ;
         doc.add(entField) ;
 
         String graphField = docDef.getGraphField() ;
-        if ( graphField != null )
-        {
+        if ( graphField != null ) {
             Field gField = new Field(graphField, entity.getGraph(), ftString) ;
             doc.add(gField) ;
         }
-        
-        for ( Entry<String, Object> e : entity.getMap().entrySet() )
-        {
+
+        for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
             Field field = new Field(e.getKey(), (String)e.getValue(), ftText) ;
             doc.add(field) ;
         }
@@ -165,46 +182,45 @@ public class TextIndexLucene implements TextIndex
     }
 
     @Override
-    public Map<String, Node> get(String uri)
-    {
+    public Map<String, Node> get(String uri) {
         try {
             IndexReader indexReader = DirectoryReader.open(directory) ;
             List<Map<String, Node>> x = get$(indexReader, uri) ;
-            if ( x.size() == 0)
+            if ( x.size() == 0 )
                 return null ;
-//            if ( x.size() > 1)
-//                throw new TextIndexException("Multiple entires for "+uri) ;
+            // if ( x.size() > 1)
+            // throw new TextIndexException("Multiple entires for "+uri) ;
             return x.get(0) ;
-        } catch (Exception ex) { exception(ex) ; return null ; } 
+        }
+        catch (Exception ex) {
+            exception(ex) ;
+            return null ;
+        }
     }
-    
-    private List<Map<String, Node>> get$(IndexReader indexReader, String uri)  throws ParseException, IOException {
-        String escaped = QueryParser.escape(uri);
-        String qs = docDef.getEntityField()+":"+escaped ;
-        QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer);
-        Query query = queryParser.parse(qs);
-        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-        ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;    
+
+    private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
+        String escaped = QueryParser.escape(uri) ;
+        String qs = docDef.getEntityField() + ":" + escaped ;
+        QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+        Query query = queryParser.parse(qs) ;
+        IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
+        ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
 
         // Align and DRY with Solr.
-        for ( ScoreDoc sd : sDocs )
-        {
+        for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
             String[] x = doc.getValues(docDef.getEntityField()) ;
-            if ( x.length != 1 )
-            {}
+            if ( x.length != 1 ) {}
             String uriStr = x[0] ;
-            Map<String, Node> record = new HashMap<String, Node>() ; 
+            Map<String, Node> record = new HashMap<String, Node>() ;
             Node entity = NodeFactory.createURI(uriStr) ;
             record.put(docDef.getEntityField(), entity) ;
-                    
-            for ( String f : docDef.fields() )
-            {
-                //log.info("Field: "+f) ;
+
+            for ( String f : docDef.fields() ) {
+                // log.info("Field: "+f) ;
                 String[] values = doc.getValues(f) ;
-                for ( String v : values )
-                {
+                for ( String v : values ) {
                     Node n = entryToNode(v) ;
                     record.put(f, n) ;
                 }
@@ -214,62 +230,63 @@ public class TextIndexLucene implements TextIndex
         return records ;
     }
 
+    @Override
+    public List<Node> query(String qs) {
+        return query(qs, MAX_N) ;
+    }
 
     @Override
-    public List<Node> query(String qs) { return query(qs, MAX_N) ; } 
-    
-    @Override
-    public List<Node> query(String qs, int limit)
-    {
+    public List<Node> query(String qs, int limit) {
         try {
-            // Upgrade at Java7 ... 
+            // Upgrade at Java7 ...
             IndexReader indexReader = DirectoryReader.open(directory) ;
-            try { return query$(indexReader, qs, limit) ; } 
-            finally { indexReader.close() ; }
-        } catch (Exception ex) { exception(ex) ; return null ; } 
+            try {
+                return query$(indexReader, qs, limit) ;
+            }
+            finally {
+                indexReader.close() ;
+            }
+        }
+        catch (Exception ex) {
+            exception(ex) ;
+            return null ;
+        }
     }
-        
-    private List<Node> query$(IndexReader indexReader , String qs, int limit) throws ParseException, IOException {
-        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-        QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer);
-        Query query = queryParser.parse(qs);
-        
+
+    private List<Node> query$(IndexReader indexReader, String qs, int limit) throws ParseException, IOException {
+        IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
+        QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+        Query query = queryParser.parse(qs) ;
+
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
-        
+
         List<Node> results = new ArrayList<Node>() ;
-        
+
         // Align and DRY with Solr.
-        for ( ScoreDoc sd : sDocs )
-        {
+        for ( ScoreDoc sd : sDocs ) {
             Document doc = indexSearcher.doc(sd.doc) ;
             String[] values = doc.getValues(docDef.getEntityField()) ;
-            for ( String v : values )
-            {
-                Node n = NodeFactory.createURI(v);
+            for ( String v : values ) {
+                Node n = TextQuery.stringToNode(v) ;
                 results.add(n) ;
             }
         }
         return results ;
     }
 
-    
     @Override
-    public EntityDefinition getDocDef()
-    {
+    public EntityDefinition getDocDef() {
         return docDef ;
     }
 
-    private Node entryToNode(String v)
-    {
+    private Node entryToNode(String v) {
         // TEMP
         return NodeFactoryExtra.createLiteralNode(v, null, null) ;
     }
 
-    private static void exception(Exception ex)
-    {
+    private static void exception(Exception ex) {
         throw new TextIndexException(ex) ;
     }
 }
-

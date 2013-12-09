@@ -32,6 +32,8 @@ public class Entity
         this.graph = entityGraph;
     }
 
+    /** @deprecated Use {@linkplain #Entity(String, String)} */
+    @Deprecated
     public Entity(String entityId)          { this(entityId, null) ; }
     
     public String getId()                   { return id ; }

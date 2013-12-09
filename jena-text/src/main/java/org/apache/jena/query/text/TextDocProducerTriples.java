@@ -18,18 +18,11 @@
 
 package org.apache.jena.query.text ;
 
-import java.util.List ;
-
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadAction ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class TextDocProducerTriples implements TextDocProducer {
     private static Logger          log     = LoggerFactory.getLogger(TextDocProducerTriples.class) ;
@@ -60,31 +53,9 @@ public class TextDocProducerTriples implements TextDocProducer {
         if ( qaction != QuadAction.ADD )
             return ;
 
-        String field = defn.getField(p) ;
-        if ( field == null )
-            return ;
-
-        String x = (s.isURI()) ? s.getURI() : s.getBlankNodeLabel() ;
-        String graph = TextQuery.graphNodeToString(g) ;
-        Entity entity = new Entity(x, graph) ;
-
-        if ( !o.isLiteral() ) {
-            log.warn("Not a literal value for mapped field-predicate: " + field + " :: "
-                     + FmtUtils.stringForString(field)) ;
-            return ;
-        }
-        entity.put(field, o.getLiteralLexicalForm()) ;
-        indexer.addEntity(entity) ;
-    }
-
-    static Transform<Quad, Triple> QuadsToTriples = new Transform<Quad, Triple>() {
-                                                      @Override
-                                                      public Triple convert(Quad item) {
-                                                          return item.asTriple() ;
-                                                      }
-                                                  } ;
-
-    static private List<Triple> quadsToTriples(List<Quad> quads) {
-        return Iter.map(quads, QuadsToTriples) ;
+        Entity entity = TextQuery.entityFromQuad(defn, g, s, p, o) ;
+        if ( entity != null )
+            // Null means does not match defn
+            indexer.addEntity(entity) ;
     }
 }

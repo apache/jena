@@ -32,7 +32,6 @@ import arq.cmdline.CmdARQ ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /**
  * Text indexer application that will read a dataset and index its triples in
@@ -122,7 +121,7 @@ public class textindexer extends CmdARQ {
             Iterator<Quad> quadIter = dataset.find(Node.ANY, Node.ANY, property, Node.ANY) ;
             for (; quadIter.hasNext();) {
                 Quad quad = quadIter.next() ;
-                Entity entity = createEntity(quad) ;
+                Entity entity = TextQuery.entityFromQuad(entityDefinition, quad) ;
                 if (entity != null) {
                     textIndex.addEntity(entity) ;
                     progressMonitor.progressByOne() ;
@@ -139,30 +138,6 @@ public class textindexer extends CmdARQ {
             for ( Node p : entityDefinition.getPredicates(f) )
                 result.add(p) ;
         }
-        return result ;
-    }
-
-    private Entity createEntity(Quad quad) {
-        Node s = quad.getSubject() ;
-        String x = (s.isURI()) ? s.getURI() : s.getBlankNodeLabel() ;
-        Entity result = new Entity(x) ;
-        Node p = quad.getPredicate() ;
-        String field = entityDefinition.getField(p) ;
-        if (field == null)
-            return null ;
-        Node o = quad.getObject() ;
-        String val = null ;
-        if (o.isURI())
-            val = o.getURI() ;
-        else
-            if (o.isLiteral())
-                val = o.getLiteralLexicalForm() ;
-            else {
-                log.warn("Not a literal value for mapped field-predicate: " + field + " :: "
-                         + FmtUtils.stringForString(field)) ;
-                return null ;
-            }
-        result.put(field, val) ;
         return result ;
     }
 

@@ -16,81 +16,78 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text ;
 
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetChangesBatched ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadAction ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-public class TextDocProducerEntities extends DatasetChangesBatched implements TextDocProducer
-{
-    private static Logger log = LoggerFactory.getLogger(TextDocProducer.class) ;
+public class TextDocProducerEntities extends DatasetChangesBatched implements TextDocProducer {
+    private static Logger          log     = LoggerFactory.getLogger(TextDocProducer.class) ;
     private final EntityDefinition defn ;
-    private final TextIndex indexer ;
-    private boolean started = false ;
-    
-    public TextDocProducerEntities(EntityDefinition defn, TextIndex indexer)
-    {
+    private final TextIndex        indexer ;
+    private boolean                started = false ;
+
+    public TextDocProducerEntities(EntityDefinition defn, TextIndex indexer) {
         this.defn = defn ;
         this.indexer = indexer ;
     }
-    
-    @Override
-    protected void startBatched()
-    { indexer.startIndexing() ; started = true ;}
 
     @Override
-    protected void finishBatched()
-    { indexer.finishIndexing() ; }
+    protected void startBatched() {
+        indexer.startIndexing() ;
+        started = true ;
+    }
 
     @Override
-    protected void dispatch(QuadAction quadAction, List<Quad> batch)
-    {
-        if ( ! started )
+    protected void finishBatched() {
+        indexer.finishIndexing() ;
+    }
+
+    @Override
+    protected void dispatch(QuadAction quadAction, List<Quad> batch) {
+        if ( !started )
             throw new IllegalStateException("Not started") ;
-        if ( ! QuadAction.ADD.equals(quadAction) )
+        if ( !QuadAction.ADD.equals(quadAction) )
             return ;
         if ( batch.size() == 0 )
             return ;
-        Quad q = batch.get(0) ;
-        Node g = q.getGraph() ;
-        Node s = q.getSubject() ;
-        List<Triple> triples = quadsToTriples(batch) ;
-        //docEntity(s, triples) ;   // One docment per entity - future possibility.
-        docTriples(s,triples) ; // Does not need batching.
+        if ( false ) {
+            // One document per entity - future possibility.
+            Quad q = batch.get(0) ;
+            Node g = q.getGraph() ;
+            Node s = q.getSubject() ;
+            docEntity(g, s, batch) ;
+        }
+        docQuads(batch) ; // Does not need batching.
     }
 
-    private void docEntity(Node s, List<Triple> batch)
-    {
+    private void docEntity(Node g, Node s, List<Quad> batch) {
         // One document per entity
-        
-        String x = (s.isURI() ) ? s.getURI() : s.getBlankNodeLabel() ;
-        Entity entity = new Entity(x) ;
-        for ( Triple triple : batch )
-        {
-            Node p = triple.getPredicate() ;
+        String x = TextQuery.subjectToString(s) ;
+        String gx = TextQuery.graphNodeToString(g) ;
+        Entity entity = new Entity(x, gx) ;
+        for ( Quad quad : batch ) {
+            Node p = quad.getPredicate() ;
             String field = defn.getField(p) ;
             if ( field == null )
                 continue ;
-            Node o = triple.getObject() ;
+            Node o = quad.getObject() ;
             String val = null ;
             if ( o.isURI() )
                 val = o.getURI() ;
             else if ( o.isLiteral() )
                 val = o.getLiteralLexicalForm() ;
-            else
-            {
-                log.warn("Not a literal value for mapped field-predicate: "+field+" :: "+FmtUtils.stringForString(field)) ;
+            else {
+                log.warn("Not a literal value for mapped field-predicate: " + field + " :: "
+                         + FmtUtils.stringForString(field)) ;
                 continue ;
             }
             entity.put(field, val) ;
@@ -98,38 +95,13 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
         indexer.addEntity(entity) ;
     }
 
-    private void docTriples(Node s, List<Triple> batch)
-    {
-        String x = (s.isURI() ) ? s.getURI() : s.getBlankNodeLabel() ;
-        // One document per triple.
-        for ( Triple triple : batch )
-        {
-            Entity entity = new Entity(x) ;
-            Node p = triple.getPredicate() ;
-            String field = defn.getField(p) ;
-            if ( field == null )
-                continue ;
-            Node o = triple.getObject() ;
-            if ( ! o.isLiteral() )
-            {
-                log.warn("Not a literal value for mapped field-predicate: "+field+" :: "+FmtUtils.stringForString(field)) ;
-                continue ;
-            }
-            entity.put(field, o.getLiteralLexicalForm()) ;
-            indexer.addEntity(entity) ;
+    private void docQuads(List<Quad> batch) {
+
+        // One document per triple/quad
+        for ( Quad quad : batch ) {
+            Entity entity = TextQuery.entityFromQuad(defn, quad) ;
+            if ( entity != null )
+                indexer.addEntity(entity) ;
         }
     }
-
-    static Transform<Quad, Triple> QuadsToTriples = new Transform<Quad, Triple>() 
-    {
-        @Override
-        public Triple convert(Quad item)
-        {
-            return item.asTriple() ;
-        }
-        
-    } ;
-    
-    static private List<Triple> quadsToTriples(List<Quad> quads) { return Iter.map(quads, QuadsToTriples) ; } 
 }
-
