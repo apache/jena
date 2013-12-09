@@ -18,37 +18,12 @@
 
 package org.apache.jena.query.text;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import org.junit.BeforeClass ;
 
-public class Entity
-{
-    private final String id ;
-    private final String graph ;
-    private final Map<String, Object> map = new HashMap<String, Object>() ;
-
-    public Entity(String entityId, String entityGraph) {
-        this.id = entityId ;
-        this.graph = entityGraph;
-    }
-
-    public Entity(String entityId)          { this(entityId, null) ; }
-    
-    public String getId()                   { return id ; }
-
-    public String getGraph()                { return graph ; }
-
-    public void put(String key, Object value)
-    { map.put(key, value) ; }
-    
-    public Object get(String key)
-    { return map.get(key) ; }
-
-    public Map<String, Object> getMap()     { return map ; }
-    
-    @Override
-    public String toString() {
-        return id+" : "+map ;
-    }
+public class TestDatasetWithLuceneGraphTextIndex extends AbstractTestDatasetWithLuceneGraphTextIndex {
+	
+	@BeforeClass public static void beforeClass() {
+		init();
+	}
+	
 }
-

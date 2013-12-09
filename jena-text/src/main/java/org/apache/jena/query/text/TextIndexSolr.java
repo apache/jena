@@ -87,6 +87,13 @@ public class TextIndexSolr implements TextIndex
     {
         SolrInputDocument doc = new SolrInputDocument() ;
         doc.addField(docDef.getEntityField(), entity.getId()) ;
+        
+        String graphField = docDef.getGraphField() ;
+        if ( graphField != null )
+        {
+            doc.addField(graphField, entity.getGraph()) ;
+        }
+        
         // the addition needs to be done as a partial update
         // otherwise, if we have multiple fields, each successive
         // addition will replace the previous one and we are left
