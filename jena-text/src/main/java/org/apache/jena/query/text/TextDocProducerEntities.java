@@ -65,6 +65,7 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
             Node g = q.getGraph() ;
             Node s = q.getSubject() ;
             docEntity(g, s, batch) ;
+            return ;
         }
         docQuads(batch) ; // Does not need batching.
     }
@@ -74,6 +75,10 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
         String x = TextQuery.subjectToString(s) ;
         String gx = TextQuery.graphNodeToString(g) ;
         Entity entity = new Entity(x, gx) ;
+        String graphField = defn.getGraphField() ;
+        if ( defn.getGraphField() != null )
+            entity.put(graphField, gx) ;
+        
         for ( Quad quad : batch ) {
             Node p = quad.getPredicate() ;
             String field = defn.getField(p) ;

@@ -123,8 +123,11 @@ public class TextQuery
             return null ;
 
         String x = TextQuery.subjectToString(s) ;
-        String graph = TextQuery.graphNodeToString(g) ;
-        Entity entity = new Entity(x, graph) ;
+        String graphText = TextQuery.graphNodeToString(g) ;
+        Entity entity = new Entity(x, graphText) ;
+        String graphField = defn.getGraphField() ;
+        if ( defn.getGraphField() != null )
+            entity.put(graphField, graphText) ;
 
         if ( !o.isLiteral() ) {
             Log.warn(TextQuery.class, "Not a literal value for mapped field-predicate: " + field + " :: "
