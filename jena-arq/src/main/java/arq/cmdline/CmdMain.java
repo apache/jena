@@ -74,7 +74,8 @@ public abstract class CmdMain extends CmdLineArgs
         }
         catch (IllegalArgumentException ex)
         {
-            System.err.println(ex.getMessage()) ;
+            ex.printStackTrace(System.err) ;
+            //System.err.println(ex.getMessage()) ;
             if ( exitOnFailure ) System.exit(1) ;
             return 1 ; 
         }
