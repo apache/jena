@@ -72,8 +72,8 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
 
     private void docEntity(Node g, Node s, List<Quad> batch) {
         // One document per entity
-        String x = TextQuery.subjectToString(s) ;
-        String gx = TextQuery.graphNodeToString(g) ;
+        String x = TextQueryFuncs.subjectToString(s) ;
+        String gx = TextQueryFuncs.graphNodeToString(g) ;
         Entity entity = new Entity(x, gx) ;
         String graphField = defn.getGraphField() ;
         if ( defn.getGraphField() != null )
@@ -104,7 +104,7 @@ public class TextDocProducerEntities extends DatasetChangesBatched implements Te
 
         // One document per triple/quad
         for ( Quad quad : batch ) {
-            Entity entity = TextQuery.entityFromQuad(defn, quad) ;
+            Entity entity = TextQueryFuncs.entityFromQuad(defn, quad) ;
             if ( entity != null )
                 indexer.addEntity(entity) ;
         }

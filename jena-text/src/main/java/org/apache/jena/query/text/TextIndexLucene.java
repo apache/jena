@@ -269,7 +269,7 @@ public class TextIndexLucene implements TextIndex {
             Document doc = indexSearcher.doc(sd.doc) ;
             String[] values = doc.getValues(docDef.getEntityField()) ;
             for ( String v : values ) {
-                Node n = TextQuery.stringToNode(v) ;
+                Node n = TextQueryFuncs.stringToNode(v) ;
                 results.add(n) ;
             }
         }

@@ -53,7 +53,7 @@ public class TextDocProducerTriples implements TextDocProducer {
         if ( qaction != QuadAction.ADD )
             return ;
 
-        Entity entity = TextQuery.entityFromQuad(defn, g, s, p, o) ;
+        Entity entity = TextQueryFuncs.entityFromQuad(defn, g, s, p, o) ;
         if ( entity != null )
             // Null means does not match defn
             indexer.addEntity(entity) ;
