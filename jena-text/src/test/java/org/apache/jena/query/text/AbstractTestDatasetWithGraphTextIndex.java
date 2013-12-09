@@ -27,7 +27,6 @@ import java.util.Set ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.junit.Ignore ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -46,7 +45,6 @@ public class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWi
         dataset.commit() ;
     }
 
-    @Ignore
 	@Test
 	public void testOneSimpleResultInGraph() {
 		final String turtle = StrUtils.strjoinNL(
@@ -158,7 +156,6 @@ public class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWi
 		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
 	}
 
-	@Ignore
 	@Test
 	public void testBnodeIdentifiedGraph() {
 		final String trig = StrUtils.strjoinNL(

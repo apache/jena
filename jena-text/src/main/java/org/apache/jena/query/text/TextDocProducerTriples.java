@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
+package org.apache.jena.query.text ;
 
 import java.util.List ;
 
@@ -31,62 +31,60 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadAction ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-public class TextDocProducerTriples implements TextDocProducer
-{
-    private static Logger log = LoggerFactory.getLogger(TextDocProducerTriples.class) ;
+public class TextDocProducerTriples implements TextDocProducer {
+    private static Logger          log     = LoggerFactory.getLogger(TextDocProducerTriples.class) ;
     private final EntityDefinition defn ;
-    private final TextIndex indexer ;
-    private boolean started = false ;
-    
-    public TextDocProducerTriples(EntityDefinition defn, TextIndex indexer)
-    {
+    private final TextIndex        indexer ;
+    private boolean                started = false ;
+
+    public TextDocProducerTriples(EntityDefinition defn, TextIndex indexer) {
         this.defn = defn ;
         this.indexer = indexer ;
     }
-    
-    @Override
-    public void start()
-    { indexer.startIndexing() ; started = true ;}
 
     @Override
-    public void finish()
-    { indexer.finishIndexing() ; }
+    public void start() {
+        indexer.startIndexing() ;
+        started = true ;
+    }
 
     @Override
-    public void change(QuadAction qaction, Node g, Node s, Node p, Node o)
-    {
+    public void finish() {
+        indexer.finishIndexing() ;
+    }
+
+    @Override
+    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
         // One document per triple/quad
-        
-        if ( qaction != QuadAction.ADD)
+
+        if ( qaction != QuadAction.ADD )
             return ;
-        
+
         String field = defn.getField(p) ;
         if ( field == null )
             return ;
 
-        String x = (s.isURI() ) ? s.getURI() : s.getBlankNodeLabel() ;
-        String graph = (g.isURI() ) ? g.getURI() : "_:" + g.getBlankNodeLabel() ;
+        String x = (s.isURI()) ? s.getURI() : s.getBlankNodeLabel() ;
+        String graph = TextQuery.graphNodeToString(g) ;
         Entity entity = new Entity(x, graph) ;
 
-        if ( ! o.isLiteral() )
-        {
-            log.warn("Not a literal value for mapped field-predicate: "+field+" :: "+FmtUtils.stringForString(field)) ;
+        if ( !o.isLiteral() ) {
+            log.warn("Not a literal value for mapped field-predicate: " + field + " :: "
+                     + FmtUtils.stringForString(field)) ;
             return ;
         }
         entity.put(field, o.getLiteralLexicalForm()) ;
         indexer.addEntity(entity) ;
     }
 
-    static Transform<Quad, Triple> QuadsToTriples = new Transform<Quad, Triple>() 
-    {
-        @Override
-        public Triple convert(Quad item)
-        {
-            return item.asTriple() ;
-        }
-        
-    } ;
-    
-    static private List<Triple> quadsToTriples(List<Quad> quads) { return Iter.map(quads, QuadsToTriples) ; } 
-}
+    static Transform<Quad, Triple> QuadsToTriples = new Transform<Quad, Triple>() {
+                                                      @Override
+                                                      public Triple convert(Quad item) {
+                                                          return item.asTriple() ;
+                                                      }
+                                                  } ;
 
+    static private List<Triple> quadsToTriples(List<Quad> quads) {
+        return Iter.map(quads, QuadsToTriples) ;
+    }
+}

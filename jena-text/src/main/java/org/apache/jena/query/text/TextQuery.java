@@ -20,6 +20,7 @@ package org.apache.jena.query.text;
 
 import org.apache.jena.query.text.assembler.TextAssembler ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
@@ -69,6 +70,12 @@ public class TextQuery
                 }
             });
         }
+    }
+    
+    public static String graphNodeToString(Node g) {
+        if ( ! (g.isURI() || g.isBlank() ) )
+            throw new TextIndexException("Found a graph label that is not a URI nor a blank node: "+g) ; 
+        return (g.isURI() ) ? g.getURI() : "_:" + g.getBlankNodeLabel() ;
     }
 }
 

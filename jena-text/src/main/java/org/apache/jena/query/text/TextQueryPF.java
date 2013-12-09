@@ -188,7 +188,10 @@ public class TextQueryPF extends PropertyFunctionBase {
             && execCxt.getActiveGraph() instanceof GraphView) {
             GraphView activeGraph = (GraphView)execCxt.getActiveGraph() ;
             if (!Quad.isUnionGraph(activeGraph.getGraphName())) {
-                String uri = activeGraph.getGraphName() != null ? activeGraph.getGraphName().getURI() : Quad.defaultGraphNodeGenerated.getURI() ;
+                String uri = 
+                    activeGraph.getGraphName() != null 
+                    ? TextQuery.graphNodeToString(activeGraph.getGraphName())
+                    : Quad.defaultGraphNodeGenerated.getURI() ;
                 String escaped = QueryParser.escape(uri) ;
                 String qs2 = server.getDocDef().getGraphField() + ":" + escaped ;
                 queryString = "(" + queryString + ") AND " + qs2 ;
