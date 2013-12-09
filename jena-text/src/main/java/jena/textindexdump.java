@@ -109,7 +109,7 @@ public class textindexdump extends CmdARQ {
             for ( ScoreDoc sd : sDocs ) {
                 System.out.println("Doc: "+sd.doc) ;
                 Document doc = indexSearcher.doc(sd.doc) ;
-                //System.out.println(doc) ;
+                // Don't formget that many feilds aren't stored, just indexed.
                 for ( IndexableField f : doc ) {
                     //System.out.println("  "+f) ;
                     System.out.println("  "+f.name()+" = "+f.stringValue()) ;
