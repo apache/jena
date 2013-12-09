@@ -23,10 +23,13 @@ import java.util.* ;
 import java.util.Map.Entry ;
 
 import org.apache.lucene.analysis.Analyzer ;
+import org.apache.lucene.analysis.core.KeywordAnalyzer ;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.document.Document ;
 import org.apache.lucene.document.Field ;
 import org.apache.lucene.document.FieldType ;
+import org.apache.lucene.document.StringField ;
 import org.apache.lucene.document.TextField ;
 import org.apache.lucene.index.DirectoryReader ;
 import org.apache.lucene.index.IndexReader ;
@@ -61,6 +64,7 @@ public class TextIndexLucene implements TextIndex
         ftIRI.setIndexed(true) ;
         ftIRI.freeze() ;
     }
+    public static final FieldType ftString = StringField.TYPE_NOT_STORED ;
     public static final FieldType ftText = TextField.TYPE_NOT_STORED ;
     // Bigger index, easier to debug!
     // public static final FieldType ftText = TextField.TYPE_STORED ;
@@ -68,12 +72,20 @@ public class TextIndexLucene implements TextIndex
     private final EntityDefinition docDef ;
     private final Directory directory ;
     private IndexWriter indexWriter ;
-    private Analyzer analyzer = new StandardAnalyzer(VER);
+    private Analyzer analyzer ;
     
     public TextIndexLucene(Directory directory, EntityDefinition def)
     {
         this.directory = directory ;
         this.docDef = def ;
+        
+        // create the analyzer as a wrapper that uses KeywordAnalyzer for
+        // entity and graph fields and StandardAnalyzer for all other
+        Map<String,Analyzer> analyzerPerField = new HashMap<String,Analyzer>() ;
+        analyzerPerField.put(def.getEntityField(), new KeywordAnalyzer()) ;
+        if (def.getGraphField() != null)
+            analyzerPerField.put(def.getGraphField(), new KeywordAnalyzer()) ;
+        this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
         
         // force creation of the index if it don't exist
         // otherwise if we get a search before data is written we get an exception
@@ -136,6 +148,13 @@ public class TextIndexLucene implements TextIndex
         Document doc = new Document() ;
         Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIRI) ;
         doc.add(entField) ;
+
+        String graphField = docDef.getGraphField() ;
+        if ( graphField != null )
+        {
+            Field gField = new Field(graphField, entity.getGraph(), ftString) ;
+            doc.add(gField) ;
+        }
         
         for ( Entry<String, Object> e : entity.getMap().entrySet() )
         {

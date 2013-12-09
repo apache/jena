@@ -32,6 +32,8 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryBuildException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.GraphView ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -181,6 +183,18 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
 
     private List<Node> query(String queryString, int limit, ExecutionContext execCxt) {
+        // use the graph information in the text index if possible
+        if (server.getDocDef().getGraphField() != null
+            && execCxt.getActiveGraph() instanceof GraphView) {
+            GraphView activeGraph = (GraphView)execCxt.getActiveGraph() ;
+            if (!Quad.isUnionGraph(activeGraph.getGraphName())) {
+                String uri = activeGraph.getGraphName() != null ? activeGraph.getGraphName().getURI() : Quad.defaultGraphNodeGenerated.getURI() ;
+                String escaped = QueryParser.escape(uri) ;
+                String qs2 = server.getDocDef().getGraphField() + ":" + escaped ;
+                queryString = "(" + queryString + ") AND " + qs2 ;
+            }
+        } 
+    
         Explain.explain(execCxt.getContext(), "Text query: "+queryString) ;
         if ( log.isDebugEnabled())
             log.debug("Text query: {} ({})", queryString,limit) ;

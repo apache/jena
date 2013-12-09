@@ -40,7 +40,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
  * the actual tests.
  */
 public abstract class AbstractTestDatasetWithTextIndex {
-	private static final String RESOURCE_BASE = "http://example.org/data/resource/";
+	protected static final String RESOURCE_BASE = "http://example.org/data/resource/";
 	protected static Dataset dataset;
 	protected static final String QUERY_PROLOG = 
 			StrUtils.strjoinNL(

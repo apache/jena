@@ -65,7 +65,8 @@ public class TextDocProducerTriples implements TextDocProducer
             return ;
 
         String x = (s.isURI() ) ? s.getURI() : s.getBlankNodeLabel() ;
-        Entity entity = new Entity(x) ;
+        String graph = (g.isURI() ) ? g.getURI() : "_:" + g.getBlankNodeLabel() ;
+        Entity entity = new Entity(x, graph) ;
 
         if ( ! o.isLiteral() )
         {

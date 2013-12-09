@@ -62,7 +62,10 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
                                         "SELECT * {" ,
                                         "  ?eMap  :entityField  ?entityField ;" ,
                                         "         :map ?map ;",
-                                        "         :defaultField ?dftField" , 
+                                        "         :defaultField ?dftField ." ,
+                                        "  OPTIONAL {" ,
+                                        "    ?eMap :graphField ?graphField" ,
+                                        "  }",
                                         "}") ;
         ParameterizedSparqlString pss = new ParameterizedSparqlString(qs1) ;
         pss.setIri("eMap", root.getURI()) ;
@@ -83,7 +86,7 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
         
         QuerySolution qsol1 = results.get(0) ;
         String entityField = qsol1.getLiteral("entityField").getLexicalForm() ;
-        
+        String graphField = qsol1.contains("graphField") ? qsol1.getLiteral("graphField").getLexicalForm() : null;
         String defaultField = qsol1.contains("dftField") ? qsol1.getLiteral("dftField").getLexicalForm() : null ;
         
         String qs2 = StrUtils.strjoinNL("SELECT * { ?map list:member [ :field ?field ; :predicate ?predicate ] }") ;
@@ -107,7 +110,7 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
         }
         
         
-        EntityDefinition docDef = new EntityDefinition(entityField, defaultField) ;
+        EntityDefinition docDef = new EntityDefinition(entityField, defaultField, graphField) ;
         for ( String f : mapDefs.keys() ) {
             for ( Node p : mapDefs.get(f)) 
                 docDef.set(f, p) ;
