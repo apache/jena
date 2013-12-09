@@ -172,9 +172,10 @@ public class TextIndexSolr implements TextIndex
 
         for ( SolrDocument sd : solrResults )
         {
-            String uriStr = (String)sd.getFieldValue(docDef.getEntityField()) ;
+            String str = (String)sd.getFieldValue(docDef.getEntityField()) ;
             //log.info("Entity: "+uriStr) ;
-            results.add(NodeFactory.createURI(uriStr)) ;
+            Node n = TextQuery.stringToNode(str) ;
+            results.add(n) ;
         }
 
         if ( limit > 0 && results.size() > limit )
