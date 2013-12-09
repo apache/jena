@@ -190,7 +190,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             if (!Quad.isUnionGraph(activeGraph.getGraphName())) {
                 String uri = 
                     activeGraph.getGraphName() != null 
-                    ? TextQuery.graphNodeToString(activeGraph.getGraphName())
+                    ? TextQueryFuncs.graphNodeToString(activeGraph.getGraphName())
                     : Quad.defaultGraphNodeGenerated.getURI() ;
                 String escaped = QueryParser.escape(uri) ;
                 String qs2 = server.getDocDef().getGraphField() + ":" + escaped ;

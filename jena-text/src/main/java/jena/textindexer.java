@@ -121,7 +121,7 @@ public class textindexer extends CmdARQ {
             Iterator<Quad> quadIter = dataset.find(Node.ANY, Node.ANY, property, Node.ANY) ;
             for (; quadIter.hasNext();) {
                 Quad quad = quadIter.next() ;
-                Entity entity = TextQuery.entityFromQuad(entityDefinition, quad) ;
+                Entity entity = TextQueryFuncs.entityFromQuad(entityDefinition, quad) ;
                 if (entity != null) {
                     textIndex.addEntity(entity) ;
                     progressMonitor.progressByOne() ;

@@ -174,7 +174,7 @@ public class TextIndexSolr implements TextIndex
         {
             String str = (String)sd.getFieldValue(docDef.getEntityField()) ;
             //log.info("Entity: "+uriStr) ;
-            Node n = TextQuery.stringToNode(str) ;
+            Node n = TextQueryFuncs.stringToNode(str) ;
             results.add(n) ;
         }
 
