@@ -172,9 +172,9 @@ public class QueryIterGraph extends QueryIterRepeatApply
         // Create the iterator - or return null if there can't be any results.
         protected static QueryIterator buildIterator(Binding binding, Node graphNode, OpGraph opGraph, ExecutionContext outerCxt)
         {
-            if ( !graphNode.isURI() )
+            if ( !graphNode.isURI() && !graphNode.isBlank() )
                 // e.g. variable bound to a literal or blank node.
-                throw new ARQInternalErrorException("QueryIterGraphInner.buildIterator") ;
+                throw new ARQInternalErrorException("QueryIterGraphInner.buildIterator: Not a URI or balnk node: "+graphNode) ;
             
             // Think about avoiding substitution.
             // If the subpattern does not involve the vars from the binding, avoid the substitute.  
