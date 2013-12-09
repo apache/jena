@@ -4,6 +4,11 @@ ChangeLog for ARQ
 
 ==== Jena 2.11.1
 
+RDF 1.1 Language support (Turtle, TriG, N-Triples, N-Quads)
+
++ JENA-606 : URIs for prefixes are resolved (made absolute) before adding
+             to a models prefix mapping. Previously, they were left as
+             relative, ifrelative URis in the document.
 + Fix a couple of possible deadlock conditions when using PipedRDFIterator
 
 ==== Jena 2.11.0
