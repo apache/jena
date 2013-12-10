@@ -16,98 +16,107 @@
  * limitations under the License.
  */
 
-package org.apache.jena.web;
+package org.apache.jena.web ;
 
 import java.io.IOException ;
 import java.io.OutputStream ;
 
 import org.apache.http.HttpEntity ;
-import org.apache.http.HttpVersion ;
 import org.apache.http.client.methods.HttpHead ;
 import org.apache.http.client.methods.HttpUriRequest ;
 import org.apache.http.entity.ContentProducer ;
 import org.apache.http.entity.EntityTemplate ;
-import org.apache.http.params.BasicHttpParams ;
-import org.apache.http.params.HttpConnectionParams ;
-import org.apache.http.params.HttpParams ;
-import org.apache.http.params.HttpProtocolParams ;
 import org.apache.jena.atlas.web.HttpException ;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
-import org.apache.jena.riot.* ;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFFormat ;
+import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.IRILib ;
 import org.apache.jena.riot.web.* ;
 
-import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.JenaException ;
 
 /**
- * A dataset graph accessor that talks to stores that implement the SPARQL 1.1 Graph Store Protocol
- *
+ * A dataset graph accessor that talks to stores that implement the SPARQL 1.1
+ * Graph Store Protocol
  */
-public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
-{
-    // Test for this class are in Fuseki so they can be run with a server. 
-    
-    private final String remote ;
+public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
+    // Test for this class are in Fuseki so they can be run with a server.
+
+    private final String                     remote ;
     private static final HttpResponseHandler noResponse = HttpResponseLib.nullResponse ;
-    private HttpAuthenticator authenticator;
+    private HttpAuthenticator                authenticator ;
 
-    /** Format used to send a graph to the server */ 
-    private static RDFFormat sendLang = RDFFormat.RDFXML_PLAIN ;
+    /** Format used to send a graph to the server */
+    private static RDFFormat                 defaultSendLang   = RDFFormat.RDFXML_PLAIN ;
 
-    /** 
-     * Create a DatasetUpdater for the remote URL 
-     * @param remote Remote URL
+    /**
+     * Create a DatasetUpdater for the remote URL
+     * 
+     * @param remote
+     *            Remote URL
      */
-    public DatasetGraphAccessorHTTP(String remote)
-    {
+    public DatasetGraphAccessorHTTP(String remote) {
         this.remote = remote ;
     }
-    
-    /** 
-     * Create a DatasetUpdater for the remote URL 
-     * @param remote Remote URL
-     * @param authenticator HTTP Authenticator
+
+    /**
+     * Create a DatasetUpdater for the remote URL
+     * 
+     * @param remote
+     *            Remote URL
+     * @param authenticator
+     *            HTTP Authenticator
      */
     public DatasetGraphAccessorHTTP(String remote, HttpAuthenticator authenticator) {
-        this(remote);
-        this.setAuthenticator(authenticator);
+        this(remote) ;
+        this.setAuthenticator(authenticator) ;
     }
-    
+
     /**
      * Sets authentication credentials for the remote URL
-     * @param username User name
-     * @param password Password
+     * 
+     * @param username
+     *            User name
+     * @param password
+     *            Password
      */
     public void setAuthentication(String username, char[] password) {
-        this.setAuthenticator(new SimpleAuthenticator(username, password));
+        this.setAuthenticator(new SimpleAuthenticator(username, password)) ;
     }
-    
+
     /**
      * Sets an authenticator to use for authentication to the remote URL
-     * @param authenticator Authenticator
+     * 
+     * @param authenticator
+     *            Authenticator
      */
     public void setAuthenticator(HttpAuthenticator authenticator) {
-        this.authenticator = authenticator;
+        this.authenticator = authenticator ;
     }
-    
-    @Override
-    public Graph httpGet()                            { return doGet(targetDefault()) ; }
 
     @Override
-    public Graph httpGet(Node graphName)              { return doGet(target(graphName)) ; }
-    
-    /** Accept header for fetching graphs - prefer N-triples
-     * @See WebContent.defaultGraphAcceptHeader 
-     *  
+    public Graph httpGet() {
+        return doGet(targetDefault()) ;
+    }
+
+    @Override
+    public Graph httpGet(Node graphName) {
+        return doGet(target(graphName)) ;
+    }
+
+    /**
+     * Accept header for fetching graphs - prefer N-triples
+     * 
+     * @See WebContent.defaultGraphAcceptHeader
+     * 
      */
     private static String GetAcceptHeader = "application/n-triples,text/turtle;q=0.9,application/rdf+xml;q=0.8,application/xml;q=0.7" ;
-    
-    private Graph doGet(String url)
-    {
+
+    protected Graph doGet(String url) {
         HttpCaptureResponse<Graph> graph = HttpResponseLib.graphHandler() ;
         try {
             HttpOp.execHttpGet(url, GetAcceptHeader, graph, this.authenticator) ;
@@ -116,23 +125,20 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
                 return null ;
             throw ex ;
         }
-        return graph.get(); 
+        return graph.get() ;
     }
-    
+
     @Override
-    public boolean httpHead()
-    {
+    public boolean httpHead() {
         return doHead(targetDefault()) ;
     }
-    
+
     @Override
-    public boolean httpHead(Node graphName)
-    {
+    public boolean httpHead(Node graphName) {
         return doHead(target(graphName)) ;
     }
 
-    private boolean doHead(String url)
-    {
+    protected boolean doHead(String url) {
         HttpUriRequest httpHead = new HttpHead(url) ;
         try {
             HttpOp.execHttpHead(url, WebContent.defaultGraphAcceptHeader, noResponse, null, null, this.authenticator) ;
@@ -145,25 +151,31 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     }
 
     @Override
-    public void httpPut(Graph data)                   { doPut(targetDefault(), data) ; }
+    public void httpPut(Graph data) {
+        doPut(targetDefault(), data) ;
+    }
 
     @Override
-    public void httpPut(Node graphName, Graph data)   { doPut(target(graphName), data) ; }
+    public void httpPut(Node graphName, Graph data) {
+        doPut(target(graphName), data) ;
+    }
 
-    private void doPut(String url, Graph data)
-    {
+    protected void doPut(String url, Graph data) {
         HttpEntity entity = graphToHttpEntity(data) ;
         HttpOp.execHttpPut(url, entity, null, null, this.authenticator) ;
     }
-    
-    @Override
-    public void httpDelete()                          { doDelete(targetDefault()) ; }
 
     @Override
-    public void httpDelete(Node graphName)            { doDelete(target(graphName)) ; }
+    public void httpDelete() {
+        doDelete(targetDefault()) ;
+    }
 
-    private void doDelete(String url)
-    {
+    @Override
+    public void httpDelete(Node graphName) {
+        doDelete(target(graphName)) ;
+    }
+
+    protected void doDelete(String url) {
         try {
             HttpOp.execHttpDelete(url, noResponse, null, null, this.authenticator) ;
         } catch (HttpException ex) {
@@ -171,69 +183,64 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
                 return ;
         }
     }
-    
-    @Override
-    public void httpPost(Graph data)                  { doPost(targetDefault(), data) ; }
 
     @Override
-    public void httpPost(Node graphName, Graph data)  { doPost(target(graphName), data) ; }
+    public void httpPost(Graph data) {
+        doPost(targetDefault(), data) ;
+    }
 
-    private void doPost(String url, Graph data)
-    {
+    @Override
+    public void httpPost(Node graphName, Graph data) {
+        doPost(target(graphName), data) ;
+    }
+
+    protected void doPost(String url, Graph data) {
         HttpEntity entity = graphToHttpEntity(data) ;
         HttpOp.execHttpPost(url, entity, null, null, this.authenticator) ;
     }
 
     @Override
-    public void httpPatch(Graph data)                 { throw new UnsupportedOperationException() ; }
-
-    @Override
-    public void httpPatch(Node graphName, Graph data) { throw new UnsupportedOperationException() ; }
-
-    private String targetDefault()
-    {
-        return remote+"?"+HttpNames.paramGraphDefault+"=" ;
+    public void httpPatch(Graph data) {
+        throw new UnsupportedOperationException() ;
     }
 
-    private String target(Node name)
-    {
-        if ( ! name.isURI() )
-            throw new JenaException("Not a URI: "+name) ;
+    @Override
+    public void httpPatch(Node graphName, Graph data) {
+        throw new UnsupportedOperationException() ;
+    }
+
+    protected final String targetDefault() {
+        return remote + "?" + HttpNames.paramGraphDefault + "=" ;
+    }
+
+    protected final String target(Node name) {
+        if ( !name.isURI() )
+            throw new JenaException("Not a URI: " + name) ;
         String guri = name.getURI() ;
         // Encode
         guri = IRILib.encodeUriComponent(guri) ;
-        return remote+"?"+HttpNames.paramGraph+"="+guri ;
+        return remote + "?" + HttpNames.paramGraph + "=" + guri ;
     }
-    
-    // TODO: Move default parameters into HttpOp and use in ensureClient()
 
-    static private HttpParams httpParams = createHttpParams() ;
+    /**
+     * RDF syntax to use when sending graphs  with POST and PUT  
+     */
+    protected RDFFormat getOutboundSyntax()  { return defaultSendLang ; } 
     
-    static private HttpParams createHttpParams()
-    {
-        HttpParams httpParams$ = new BasicHttpParams() ;
-        // See DefaultHttpClient.createHttpParams
-        HttpProtocolParams.setVersion(httpParams$,               HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(httpParams$,        WebContent.charsetUTF8);
-        HttpProtocolParams.setUseExpectContinue(httpParams$,     true);
-        HttpConnectionParams.setTcpNoDelay(httpParams$,          true);
-        HttpConnectionParams.setSocketBufferSize(httpParams$,    32*1024);
-        HttpProtocolParams.setUserAgent(httpParams$,             Jena.NAME+"/"+Jena.VERSION);
-        return httpParams$;
-    }
-    
-    private static HttpEntity graphToHttpEntity(final Graph graph) {
-        
+    /** Create an HttpEntity for the graph */  
+    protected HttpEntity graphToHttpEntity(final Graph graph) {
+
+        final RDFFormat syntax = getOutboundSyntax() ;
         ContentProducer producer = new ContentProducer() {
             @Override
             public void writeTo(OutputStream out) throws IOException {
-                RDFDataMgr.write(out, graph, sendLang) ;
+                RDFDataMgr.write(out, graph, syntax) ;
             }
         } ;
-        
+
         EntityTemplate entity = new EntityTemplate(producer) ;
-        String ct = sendLang.getLang().getContentType().getContentType() ;
+        String ct = syntax.getLang().getContentType().getContentType() ;
         entity.setContentType(ct) ;
         return entity ;
-    }        
+    }
 }

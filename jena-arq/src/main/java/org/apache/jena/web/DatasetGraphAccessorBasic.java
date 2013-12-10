@@ -50,14 +50,12 @@ public class DatasetGraphAccessorBasic implements DatasetGraphAccessor
     public boolean httpHead(Node graphName)     { return dataset.containsGraph(graphName) ; }
 
     @Override
-    public void httpPut(Graph data) 
-    {  
+    public void httpPut(Graph data) {
         putGraph(dataset.getDefaultGraph(), data) ;
     }
-    
+
     @Override
-    public void httpPut(Node graphName, Graph data)
-    {
+    public void httpPut(Node graphName, Graph data) {
         Graph ng = dataset.getGraph(graphName) ;
         if ( ng == null )
             dataset.addGraph(graphName, ng) ;
@@ -66,33 +64,28 @@ public class DatasetGraphAccessorBasic implements DatasetGraphAccessor
     }
 
     @Override
-    public void httpDelete()
-    {
+    public void httpDelete() {
         clearGraph(dataset.getDefaultGraph()) ;
     }
-    
+
     @Override
-    public void httpDelete(Node graphName)
-    {
+    public void httpDelete(Node graphName) {
         Graph ng = dataset.getGraph(graphName) ;
         if ( ng == null )
             return ;
         dataset.removeGraph(graphName) ;
-        //clearGraph(ng) ;
+        // clearGraph(ng) ;
     }
 
     @Override
-    public void httpPost(Graph data)
-    {
+    public void httpPost(Graph data) {
         mergeGraph(dataset.getDefaultGraph(), data) ;
     }
-    
+
     @Override
-    public void httpPost(Node graphName, Graph data)
-    {
+    public void httpPost(Node graphName, Graph data) {
         Graph ng = dataset.getGraph(graphName) ;
-        if ( ng == null )
-        {
+        if ( ng == null ) {
             dataset.addGraph(graphName, data) ;
             return ;
         }
@@ -105,20 +98,17 @@ public class DatasetGraphAccessorBasic implements DatasetGraphAccessor
     @Override
     public void httpPatch(Node graphName, Graph data) {  httpPost(graphName, data) ;}
 
-    private void putGraph(Graph destGraph, Graph data)
-    {
+    private void putGraph(Graph destGraph, Graph data) {
         clearGraph(destGraph) ;
-        mergeGraph(destGraph, data) ; 
+        mergeGraph(destGraph, data) ;
     }
 
-    private void clearGraph(Graph graph)
-    {
-        if ( ! graph.isEmpty() )
+    private void clearGraph(Graph graph) {
+        if ( !graph.isEmpty() )
             graph.clear() ;
     }
 
-    private void mergeGraph(Graph graph, Graph data)
-    {
+    private void mergeGraph(Graph graph, Graph data) {
         GraphUtil.addInto(graph, data) ;
     }
 
