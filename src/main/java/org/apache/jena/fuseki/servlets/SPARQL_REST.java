@@ -18,27 +18,29 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static java.lang.String.format ;
 import static org.apache.jena.fuseki.HttpNames.* ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Enumeration ;
 import java.util.Locale ;
+import java.util.zip.GZIPInputStream ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.commons.fileupload.FileItemIterator ;
+import org.apache.commons.fileupload.FileItemStream ;
+import org.apache.commons.fileupload.servlet.ServletFileUpload ;
+import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.CounterName ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.lang.StreamRDFCounting ;
+import org.apache.jena.riot.system.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -86,7 +88,6 @@ public abstract class SPARQL_REST extends ActionSPARQL
         Node gn = NodeFactory.createURI(absUri) ;
         return Target.createNamed(action.getActiveDSG(), absUri, gn) ;
     }
-    
 
     // struct for target
     protected static final class Target
@@ -204,7 +205,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
 
     // Counter wrappers
     
-    protected void doGet$(HttpAction action) {
+    private final void doGet$(HttpAction action) {
         incCounter(action.srvRef, CounterName.GSPget) ;
         try {
             doGet(action) ;
@@ -215,7 +216,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
         }
     }
 
-    protected void doHead$(HttpAction action) {
+    private final void doHead$(HttpAction action) {
         incCounter(action.srvRef, CounterName.GSPhead) ;
         try {
             doHead(action) ;
@@ -226,7 +227,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
         }
     }
 
-    protected void doPost$(HttpAction action) {
+    private final void doPost$(HttpAction action) {
         incCounter(action.srvRef, CounterName.GSPpost) ;
         try {
             doPost(action) ;
@@ -237,7 +238,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
         }
     }
 
-    protected void doPatch$(HttpAction action) {
+    private final void doPatch$(HttpAction action) {
         incCounter(action.srvRef, CounterName.GSPpatch) ;
         try {
             doPatch(action) ;
@@ -248,7 +249,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
         }
     }
 
-    protected void doDelete$(HttpAction action) {
+    private final void doDelete$(HttpAction action) {
         incCounter(action.srvRef, CounterName.GSPdelete) ;
         try {
             doDelete(action) ;
@@ -259,7 +260,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
         }
     }
 
-    protected void doPut$(HttpAction action) {
+    private final void doPut$(HttpAction action) {
         incCounter(action.srvRef, CounterName.GSPput) ;
         try {
             doPut(action) ;
@@ -270,7 +271,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
         }
     }
 
-    protected void doOptions$(HttpAction action) {
+    private final void doOptions$(HttpAction action) {
         incCounter(action.srvRef, CounterName.GSPoptions) ;
         try {
             doOptions(action) ;
@@ -289,7 +290,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
     protected abstract void doPut(HttpAction action) ;
     protected abstract void doOptions(HttpAction action) ;
     
-    // @@ Move to SPARQL_ServletBase
+    // XXX Move to SPARQL_ServletBase
     // Check for all RiotReader
     public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
         // Need to adjust the error handler.
@@ -351,4 +352,86 @@ public abstract class SPARQL_REST extends ActionSPARQL
             errorBadRequest("Multiple occurrences of '"+name+"'") ;
         return values[0] ;
     }
+    
+    // XXX Where to put this?
+    /**  Process an HTTP upload of RDF files (triples or quads)
+     *   Stream straight into a graph or dataset -- unlike SPARQL_Upload the destination is known
+     *   at the start of the multipart file body
+     */
+    
+    static public void fileUploadWorker(HttpAction action, String base)
+    {
+        // XXX Extend determineTarget to allow for datasets.  Conflict with direct naming?
+        Target target = determineTarget(action) ;
+
+        String item = (target==null)?"quad":"triple" ;
+
+        // Load quads or triples.
+        // Caution: if a target grpah is given and then a quads format found,
+        // the default graph of the quad steram is sent to the target graph.
+        StreamRDF dest = 
+            (target == null) 
+            ? StreamRDFLib.dataset(action.getActiveDSG())
+            : StreamRDFLib.graph(target.graph()) ; 
+            
+        ServletFileUpload upload = new ServletFileUpload();
+        long count = -1 ;
+        
+        //log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName)) ;
+        
+        try {
+            FileItemIterator iter = upload.getItemIterator(action.request);
+            while (iter.hasNext()) {
+                FileItemStream fileStream = iter.next();
+                if (fileStream.isFormField())
+                    errorBadRequest("Only files accept in multipart file upload") ;
+                //Ignore the field name.
+                //String fieldName = fileStream.getFieldName();
+
+                InputStream stream = fileStream.openStream();
+                // Process the input stream
+                String contentTypeHeader = fileStream.getContentType() ;
+                ContentType ct = ContentType.create(contentTypeHeader) ;
+                Lang lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
+
+                if ( lang == null ) {
+                    String name = fileStream.getName() ; 
+                    if ( name == null || name.equals("") ) 
+                        errorBadRequest("No name for content - can't determine RDF syntax") ;
+                    lang = RDFLanguages.filenameToLang(name) ;
+                    if (name.endsWith(".gz"))
+                        stream = new GZIPInputStream(stream);
+                }
+                if ( lang == null )
+                    // Desperate.
+                    lang = RDFLanguages.RDFXML ;
+
+                String printfilename = fileStream.getName() ; 
+                if ( printfilename == null  || printfilename.equals("") )
+                    printfilename = "<none>" ; 
+
+                // Before
+                // action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s", 
+                //                        action.id, printfilename,  ct.getContentType(), ct.getCharset(), lang.getName())) ;
+                
+                StreamRDFCounting countingDest =  StreamRDFLib.count(dest) ;
+                try {
+                    SPARQL_REST.parse(action, countingDest, stream, lang, base);
+                    long c = countingDest.count() ;
+                    
+                    action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %d %s%s", 
+                                           action.id, printfilename,  ct.getContentType(), ct.getCharset(), lang.getName(),
+                                           c, item, (c==1)?"":"s")) ;
+                } catch (RiotParseException ex) {
+                    action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
+                                           action.id, printfilename,  ct.getContentType(), ct.getCharset(), lang.getName(),
+                                           ex.getMessage())) ;
+                    throw ex ;
+                }
+            }
+        }
+        catch (ActionErrorException ex) { throw ex ; }
+        catch (Exception ex)            { errorOccurred(ex) ; }
+    }            
+
 }

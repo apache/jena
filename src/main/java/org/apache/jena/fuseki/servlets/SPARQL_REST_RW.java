@@ -75,10 +75,10 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     }
 
     @Override
-    protected void doPut(HttpAction action)     { doPutPost(action, true) ; }
+    protected void doPut(HttpAction action)         { doPutPost(action, true) ; }
 
     @Override
-    protected void doPost(HttpAction action)     { doPutPost(action, false) ; }
+    protected void doPost(HttpAction action)        { doPutPost(action, false) ; }
 
     private void doPutPost(HttpAction action, boolean overwrite) {
         ContentType ct = FusekiLib.getContentType(action) ;
@@ -88,7 +88,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         // Helper case - if it's a possible HTTP file upload, pretend that's the action.
         if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) {
             String base = wholeRequestURL(action.request) ;
-            SPARQL_Upload.upload(action, base) ;
+            fileUpload(action, base);
             return ; 
         }
 
@@ -103,9 +103,9 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             existedBefore = addDataIntoNonTxn(action, overwrite) ;
             
         if ( existedBefore )
-            ActionSPARQL.successNoContent(action) ;
+            successNoContent(action) ;
         else
-            ActionSPARQL.successCreated(action) ;
+            successCreated(action) ;
     }
 
     /** Directly add data in a transaction.
@@ -211,7 +211,59 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     
         parse(action, dest, input, lang, base) ;
     }
+    
+    static public void fileUpload(HttpAction action, String base)
+    {
+        if ( action.isTransactional() )
+            uploadTxn(action, base) ;
+        else
+            uploadNonTxn(action, base) ;
+    }
 
+    /** Non-transaction - buffer to a temporary graph so that parse errors
+     * are caught before inserting any data. 
+     */
+     private static void uploadNonTxn(HttpAction action, String base) {
+         System.err.println("Dangerous fake") ; 
+         // Need tempoary destination
+         action.beginWrite() ;
+         fileUploadWorker(action, base) ;
+         action.commit() ;
+         // XXX
+//         Pair<String, Graph> p = null ;
+//         String graphName = p.getLeft() ;
+//         Graph graphTmp = p.getRight() ;
+//         long tripleCount = graphTmp.size() ;
+//
+//         action.log.info(format("[%d] Upload: Graph: %s (%d triple(s))", 
+//                         action.id, graphName,  tripleCount)) ;
+//
+//         Node gn = graphName.equals(HttpNames.valueDefault)
+//             ? Quad.defaultGraphNodeGenerated 
+//             : NodeFactory.createURI(graphName) ;
+//
+//         action.beginWrite() ;
+//         try {
+//            FusekiLib.addDataInto(graphTmp, action.getActiveDSG(), gn) ;
+//            action.commit() ;
+//            return ;
+//        } catch (RuntimeException ex)
+//        {
+//            // If anything went wrong, try to backout.
+//            try { action.abort() ; } catch (Exception ex2) {}
+//            errorOccurred(ex.getMessage()) ;
+//            return ;
+//        } 
+//        finally { action.endWrite() ; }
+    }
+
+     /** Transactional - data to go straight to the destination, with an abort on parse error.
+      */
+      private static void uploadTxn(HttpAction action, String base) {
+          fileUploadWorker(action, base) ;
+      }
+     
+    
     protected static void deleteGraph(HttpAction action) {
         Target target = determineTarget(action) ;
         if ( target.isDefault )
