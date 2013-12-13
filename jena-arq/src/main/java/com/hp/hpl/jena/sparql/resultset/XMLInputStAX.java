@@ -276,10 +276,10 @@ class XMLInputStAX extends SPARQLResult {
 
         @Override
         public void close() {
+            if ( finished )
+                return ;
             finished = true ;
-            try {
-                parser.close() ;
-            } catch (XMLStreamException ex) {}
+            try { parser.close() ; } catch (XMLStreamException ex) {}
         }
 
         // -------- Boolean stuff
@@ -399,10 +399,11 @@ class XMLInputStAX extends SPARQLResult {
         }
 
         private Binding getOneSolution() throws XMLStreamException {
+            if ( finished )
+                return null ;
             // At the start of <result>
             BindingMap binding = BindingFactory.create() ;
             String varName = null ;
-
             while (parser.hasNext()) {
                 int event = parser.next() ;
                 String tag = null ;
