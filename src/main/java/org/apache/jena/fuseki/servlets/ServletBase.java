@@ -31,8 +31,8 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.web.HttpSC ;
 
+// 
 public abstract class ServletBase extends HttpServlet {
-    public final boolean          verboseLogging = Fuseki.verboseLogging ;
     private static AtomicLong     requestIdAlloc = new AtomicLong(0) ;
 
     protected ServletBase() {}
@@ -47,7 +47,7 @@ public abstract class ServletBase extends HttpServlet {
      *            HTTP Response
      * @return Request ID
      */
-    protected long allocRequestId(HttpServletRequest request, HttpServletResponse response) {
+    protected static long allocRequestId(HttpServletRequest request, HttpServletResponse response) {
         long id = requestIdAlloc.incrementAndGet() ;
         addRequestId(response, id) ;
         return id ;
@@ -61,11 +61,11 @@ public abstract class ServletBase extends HttpServlet {
      * @param id
      *            Request ID
      */
-    protected void addRequestId(HttpServletResponse response, long id) {
+    protected static void addRequestId(HttpServletResponse response, long id) {
         response.addHeader("Fuseki-Request-ID", Long.toString(id)) ;
     }
 
-    protected void responseSendError(HttpServletResponse response, int statusCode, String message) {
+    protected static void responseSendError(HttpServletResponse response, int statusCode, String message) {
         try {
             response.sendError(statusCode, message) ;
         } catch (IOException ex) {
@@ -73,7 +73,7 @@ public abstract class ServletBase extends HttpServlet {
         } catch (IllegalStateException ex) {}
     }
 
-    protected void responseSendError(HttpServletResponse response, int statusCode) {
+    protected static void responseSendError(HttpServletResponse response, int statusCode) {
         try {
             response.sendError(statusCode) ;
         } catch (IOException ex) {
@@ -136,11 +136,11 @@ public abstract class ServletBase extends HttpServlet {
         }
     }
 
-    protected void warning(HttpAction action, String string) {
+    protected static void warning(HttpAction action, String string) {
         action.log.warn(string) ;
     }
 
-    protected void warning(HttpAction action, String string, Throwable thorwable) {
+    protected static void warning(HttpAction action, String string, Throwable thorwable) {
         action.log.warn(string, thorwable) ;
     }
 

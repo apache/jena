@@ -36,6 +36,8 @@ import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 /** The WRITE operations added to the READ operations */
@@ -84,13 +86,6 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         ContentType ct = FusekiLib.getContentType(action) ;
         if ( ct == null )
             errorBadRequest("No Content-Type:") ;
-
-        // Helper case - if it's a possible HTTP file upload, pretend that's the action.
-        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) {
-            String base = wholeRequestURL(action.request) ;
-            fileUpload(action, base);
-            return ; 
-        }
 
         if ( WebContent.contentTypeMultiMixed.equals(ct.getContentType()) ) {
             error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/mixed not supported") ;
@@ -144,6 +139,9 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             action.endWrite() ;
         }
     }
+    
+    
+    
 
     /** Add data where the destination does not support full transactions.
      *  In particular, with no abort, and actions probably going to the real storage
@@ -187,9 +185,54 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         } finally { action.endWrite() ; }
     }
     
+     private static void uploadNonTxn(HttpAction action, String base) {
+         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+         // Need temporary destination
+         action.beginWrite() ;
+         try {
+             Target target = determineTarget(action) ;
+             boolean isGraph = (target == null) ;
+             // Load quads or triples.
+             // Caution: if a target graph is given and then a quads format found,
+             // the default graph of the quad steram is sent to the target graph.
+             Target target1 = Target.retarget(target, dsg) ;
+             StreamRDF dest = 
+                 (target == null) 
+                 ? StreamRDFLib.dataset(target1.dsg)
+                 : StreamRDFLib.graph(target1.graph()) ; 
+             
+             fileUploadWorker(action, dest, isGraph) ;
+         
+             // Copy temp dsg to target.dsg - hopefuly, nothing can go wrong.
+             FusekiLib.addDataInto(dsg, target.dsg);
+             action.commit() ;
+             success(action) ;
+         } catch (Exception ex) {
+             // Something else went wrong.  Try to backout (unlikely).
+             try { action.abort() ; } catch (Exception ex2) {} 
+             errorOccurred(ex.getMessage()) ;
+             return ;
+         } finally {
+             action.endWrite() ;
+         } 
+     }
+    
     private static void incomingData(HttpAction action, StreamRDF dest) {
-        String base = wholeRequestURL(action.request) ;
         ContentType ct = FusekiLib.getContentType(action) ;
+         
+        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) 
+        {
+            boolean isGraph = true ;    // Only for the tripels/quads logging.
+            fileUploadWorker(action, dest, isGraph) ;
+            return ;
+        }
+//        else
+//            incomingDataGraphBody(action, ct, dest) ;
+//    }
+//        
+//    private static void incomingDataGraphBody(HttpAction action, ContentType ct, StreamRDF dest) {
+        
+        String base = wholeRequestURL(action.request) ; // XXX Actually wrong?!
         Lang lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
         if ( lang == null ) {
             errorBadRequest("Unknown content type for triples: " + ct) ;
@@ -209,60 +252,10 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
                                 ct.getCharset(), lang.getName())) ;
         }
     
-        parse(action, dest, input, lang, base) ;
+        ActionSPARQL.parse(action, dest, input, lang, base) ;
     }
     
-    static public void fileUpload(HttpAction action, String base)
-    {
-        if ( action.isTransactional() )
-            uploadTxn(action, base) ;
-        else
-            uploadNonTxn(action, base) ;
-    }
-
-    /** Non-transaction - buffer to a temporary graph so that parse errors
-     * are caught before inserting any data. 
-     */
-     private static void uploadNonTxn(HttpAction action, String base) {
-         System.err.println("Dangerous fake") ; 
-         // Need tempoary destination
-         action.beginWrite() ;
-         fileUploadWorker(action, base) ;
-         action.commit() ;
-         // XXX
-//         Pair<String, Graph> p = null ;
-//         String graphName = p.getLeft() ;
-//         Graph graphTmp = p.getRight() ;
-//         long tripleCount = graphTmp.size() ;
-//
-//         action.log.info(format("[%d] Upload: Graph: %s (%d triple(s))", 
-//                         action.id, graphName,  tripleCount)) ;
-//
-//         Node gn = graphName.equals(HttpNames.valueDefault)
-//             ? Quad.defaultGraphNodeGenerated 
-//             : NodeFactory.createURI(graphName) ;
-//
-//         action.beginWrite() ;
-//         try {
-//            FusekiLib.addDataInto(graphTmp, action.getActiveDSG(), gn) ;
-//            action.commit() ;
-//            return ;
-//        } catch (RuntimeException ex)
-//        {
-//            // If anything went wrong, try to backout.
-//            try { action.abort() ; } catch (Exception ex2) {}
-//            errorOccurred(ex.getMessage()) ;
-//            return ;
-//        } 
-//        finally { action.endWrite() ; }
-    }
-
-     /** Transactional - data to go straight to the destination, with an abort on parse error.
-      */
-      private static void uploadTxn(HttpAction action, String base) {
-          fileUploadWorker(action, base) ;
-      }
-     
+    // XXX Tests for file upload.
     
     protected static void deleteGraph(HttpAction action) {
         Target target = determineTarget(action) ;

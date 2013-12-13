@@ -241,7 +241,7 @@ public class SPARQL_Upload extends ActionSPARQL
                     
                     StreamRDF x = StreamRDFLib.graph(graphTmp) ;
                     StreamRDFCounting dest =  StreamRDFLib.count(x) ;
-                    SPARQL_REST.parse(action, dest, stream, lang, base);
+                    ActionSPARQL.parse(action, dest, stream, lang, base);
                     count = dest.count() ;
                 }
             }    

@@ -140,4 +140,17 @@ public class FusekiLib {
         PrefixMapping pmapDest = dsg.getDefaultGraph().getPrefixMapping() ;
         pmapDest.withDefaultMappings(pmapSrc) ;
     }
+    
+    public static void addDataInto(DatasetGraph src, DatasetGraph dest) {
+        Iterator<Quad> iter = src.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
+        for (; iter.hasNext();) {
+            Quad q = iter.next() ;
+            dest.add(q) ;
+        }
+
+        PrefixMapping pmapSrc = src.getDefaultGraph().getPrefixMapping() ;
+        PrefixMapping pmapDest = dest.getDefaultGraph().getPrefixMapping() ;
+        pmapDest.withDefaultMappings(pmapSrc) ;
+    }
+
 }

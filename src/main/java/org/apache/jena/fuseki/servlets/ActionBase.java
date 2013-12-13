@@ -28,6 +28,7 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
@@ -100,11 +101,8 @@ public abstract class ActionBase extends ServletBase
     /** Return a fresh WebAction for this request */
     protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
         // Need a way to set verbose logging on a per servlet and per request basis. 
-        return new HttpAction(id, log, request, response, verboseLogging) ;
+        return new HttpAction(id, log, request, response, Fuseki.verboseLogging) ;
     }
-
-//    protected abstract void validate(HttpAction action) ;
-//    protected abstract void perform(HttpAction action) ;
 
     // Default start/finish steps. 
     protected void startRequest(HttpAction action) {

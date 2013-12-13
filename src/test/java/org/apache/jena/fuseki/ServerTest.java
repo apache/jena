@@ -18,6 +18,9 @@
 
 package org.apache.jena.fuseki;
 
+import java.util.Collection ;
+
+import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
@@ -109,7 +112,12 @@ public class ServerTest
         if ( server != null )
             server.stop() ;
         server = null ;
+        // Clear out the registry.
+        Collection<String> keys = DatasetRegistry.get().keys() ;
+        for ( String k : keys )
+            DatasetRegistry.get().remove(k);
     }
+    
     public static void resetServer()
     {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
