@@ -21,7 +21,6 @@ package com.hp.hpl.jena.query;
 import java.io.InputStream ;
 import java.util.List ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -267,32 +266,28 @@ public class ResultSetFactory {
             || format.equals(ResultsFormat.FMT_RS_TSV) || format.equals(ResultsFormat.FMT_RS_CSV)) {
             InputStream in = null;
             try {
-                try {
-                    in = FileManager.get().open(filenameOrURI);
-                    if (in == null)
-                        throw new NotFoundException(filenameOrURI);
-                } catch (NotFoundException ex) {
-                    throw new NotFoundException("File not found: " + filenameOrURI);
-                }
+                in = FileManager.get().open(filenameOrURI);
+                if (in == null)
+                    throw new NotFoundException(filenameOrURI);
+            } catch (NotFoundException ex) {
+                throw new NotFoundException("File not found: " + filenameOrURI);
+            }
 
-                SPARQLResult x = null;
+            SPARQLResult x = null;
 
-                if (format.equals(ResultsFormat.FMT_RS_JSON))
-                    return JSONInput.make(in, GraphFactory.makeDefaultModel());
-                else if (format.equals(ResultsFormat.FMT_RS_XML))
-                    return XMLInput.make(in, GraphFactory.makeDefaultModel());
-                else if (format.equals(ResultsFormat.FMT_RS_TSV)) {
-                    ResultSet rs = TSVInput.fromTSV(in);
-                    return new SPARQLResult(rs);
-                } else if (format.equals(ResultsFormat.FMT_RS_CSV)) {
-                    ResultSet rs = CSVInput.fromCSV(in);
-                    return new SPARQLResult(rs);
-                } else if (format.equals(ResultsFormat.FMT_RS_BIO)) {
-                    ResultSet rs = BIOInput.fromBIO(in);
-                    return new SPARQLResult(rs);
-                }
-            } finally {
-                IO.close(in) ; 
+            if (format.equals(ResultsFormat.FMT_RS_JSON))
+                return JSONInput.make(in, GraphFactory.makeDefaultModel());
+            else if (format.equals(ResultsFormat.FMT_RS_XML))
+                return XMLInput.make(in, GraphFactory.makeDefaultModel());
+            else if (format.equals(ResultsFormat.FMT_RS_TSV)) {
+                ResultSet rs = TSVInput.fromTSV(in);
+                return new SPARQLResult(rs);
+            } else if (format.equals(ResultsFormat.FMT_RS_CSV)) {
+                ResultSet rs = CSVInput.fromCSV(in);
+                return new SPARQLResult(rs);
+            } else if (format.equals(ResultsFormat.FMT_RS_BIO)) {
+                ResultSet rs = BIOInput.fromBIO(in);
+                return new SPARQLResult(rs);
             }
         }
 
