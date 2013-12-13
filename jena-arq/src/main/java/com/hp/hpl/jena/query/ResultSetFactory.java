@@ -18,22 +18,23 @@
 
 package com.hp.hpl.jena.query;
 
-import java.io.InputStream;
-import java.util.List;
+import java.io.InputStream ;
+import java.util.List ;
 
-import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.shared.NotFoundException;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
-import com.hp.hpl.jena.sparql.graph.GraphFactory;
-import com.hp.hpl.jena.sparql.resultset.*;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderTable;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.shared.NotFoundException ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.resultset.* ;
+import com.hp.hpl.jena.sparql.sse.Item ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderTable ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /** ResultSetFactory - make result sets from places other than a query. */
 
@@ -263,32 +264,35 @@ public class ResultSetFactory {
         }
 
         if (format.equals(ResultsFormat.FMT_RS_XML) || format.equals(ResultsFormat.FMT_RS_JSON)
-                || format.equals(ResultsFormat.FMT_RS_TSV) || format.equals(ResultsFormat.FMT_RS_CSV)) {
+            || format.equals(ResultsFormat.FMT_RS_TSV) || format.equals(ResultsFormat.FMT_RS_CSV)) {
             InputStream in = null;
             try {
-                in = FileManager.get().open(filenameOrURI);
-                if (in == null)
-                    throw new NotFoundException(filenameOrURI);
-            } catch (NotFoundException ex) {
-                throw new NotFoundException("File not found: " + filenameOrURI);
-            }
+                try {
+                    in = FileManager.get().open(filenameOrURI);
+                    if (in == null)
+                        throw new NotFoundException(filenameOrURI);
+                } catch (NotFoundException ex) {
+                    throw new NotFoundException("File not found: " + filenameOrURI);
+                }
 
-            SPARQLResult x = null;
+                SPARQLResult x = null;
 
-            if (format.equals(ResultsFormat.FMT_RS_JSON))
-                return JSONInput.make(in, GraphFactory.makeDefaultModel());
-            else if (format.equals(ResultsFormat.FMT_RS_XML))
-                return XMLInput.make(in, GraphFactory.makeDefaultModel());
-            else if (format.equals(ResultsFormat.FMT_RS_TSV)) {
-                ResultSet rs = TSVInput.fromTSV(in);
-                return new SPARQLResult(rs);
-            } else if (format.equals(ResultsFormat.FMT_RS_CSV)) {
-                ResultSet rs = CSVInput.fromCSV(in);
-                return new SPARQLResult(rs);
-            } else if (format.equals(ResultsFormat.FMT_RS_BIO)) {
-                ResultSet rs = BIOInput.fromBIO(in);
-                return new SPARQLResult(rs);
-
+                if (format.equals(ResultsFormat.FMT_RS_JSON))
+                    return JSONInput.make(in, GraphFactory.makeDefaultModel());
+                else if (format.equals(ResultsFormat.FMT_RS_XML))
+                    return XMLInput.make(in, GraphFactory.makeDefaultModel());
+                else if (format.equals(ResultsFormat.FMT_RS_TSV)) {
+                    ResultSet rs = TSVInput.fromTSV(in);
+                    return new SPARQLResult(rs);
+                } else if (format.equals(ResultsFormat.FMT_RS_CSV)) {
+                    ResultSet rs = CSVInput.fromCSV(in);
+                    return new SPARQLResult(rs);
+                } else if (format.equals(ResultsFormat.FMT_RS_BIO)) {
+                    ResultSet rs = BIOInput.fromBIO(in);
+                    return new SPARQLResult(rs);
+                }
+            } finally {
+                IO.close(in) ; 
             }
         }
 
