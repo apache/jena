@@ -46,18 +46,28 @@ public abstract class SPARQL_REST extends ActionSPARQL
     protected final static Target determineTarget(HttpAction action) {
         // Delayed until inside a transaction.
         if ( action.getActiveDSG() == null )
-            errorOccurred("Internal error : No action graph (not in a transaction?)") ;
+            ServletOps.errorOccurred("Internal error : No action graph (not in a transaction?)") ;
         
         boolean dftGraph = getOneOnly(action.request, HttpNames.paramGraphDefault) != null ;
         String uri = getOneOnly(action.request, HttpNames.paramGraph) ;
         
         if ( !dftGraph && uri == null ) {
+            ServletOps.errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
+            
             // Direct naming or error.
             uri = action.request.getRequestURL().toString() ;
             if ( action.request.getRequestURI().equals(action.getDatasetRef().name) )
                 // No name 
-                errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
+                ServletOps.errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
         }
+        
+//        // Put these in action.
+//        String datasetUri = mapRequestToDataset(action) ;
+//        String reqUri = action.request.getRequestURI() ;
+//        String serviceName = ActionLib.mapRequestToService(dsRef, reqUri, reqUri) ;
+
+        String dsTarget = action.datasetName ;
+        
         
         if ( dftGraph )
             return Target.createDefault(action.getActiveDSG()) ;
@@ -69,6 +79,9 @@ public abstract class SPARQL_REST extends ActionSPARQL
         
         // Strictly, a bit naughty on the URI resolution.  But more sensible. 
         // Base is dataset.
+        
+        // XXX Remove service.
+        
         String base = action.request.getRequestURL().toString() ; //wholeRequestURL(request) ;
         // Make sure it ends in "/", ie. dataset as container.
         if ( action.request.getQueryString() != null && ! base.endsWith("/") )
@@ -199,13 +212,13 @@ public abstract class SPARQL_REST extends ActionSPARQL
             doOptions$(action) ;
         else if (method.equals(METHOD_TRACE))
             //doTrace(action) ;
-            errorMethodNotAllowed("TRACE") ;
+            ServletOps.errorMethodNotAllowed("TRACE") ;
         else if (method.equals(METHOD_PUT))
             doPut$(action) ;   
         else if (method.equals(METHOD_DELETE))
             doDelete$(action) ;
         else
-            errorNotImplemented("Unknown method: "+method) ;
+            ServletOps.errorNotImplemented("Unknown method: "+method) ;
     }
 
     // Counter wrappers
@@ -299,37 +312,37 @@ public abstract class SPARQL_REST extends ActionSPARQL
     protected void validate(HttpAction action)
     {
         HttpServletRequest request = action.request ;
-        // Direct naming.
-        if ( request.getQueryString() == null )
+        if ( request.getQueryString() == null ) {
             //errorBadRequest("No query string") ;
             return ;
+        }
         
         String g = request.getParameter(HttpNames.paramGraph) ;
         String d = request.getParameter(HttpNames.paramGraphDefault) ;
         
         if ( g != null && d !=null )
-            errorBadRequest("Both ?default and ?graph in the query string of the request") ;
+            ServletOps.errorBadRequest("Both ?default and ?graph in the query string of the request") ;
         
         if ( g == null && d == null )
-            errorBadRequest("Neither ?default nor ?graph in the query string of the request") ;
+            ServletOps.errorBadRequest("Neither ?default nor ?graph in the query string of the request") ;
         
         int x1 = SPARQL_Protocol.countParamOccurences(request, HttpNames.paramGraph) ;
         int x2 = SPARQL_Protocol.countParamOccurences(request, HttpNames.paramGraphDefault) ;
         
         if ( x1 > 1 )
-            errorBadRequest("Multiple ?default in the query string of the request") ;
+            ServletOps.errorBadRequest("Multiple ?default in the query string of the request") ;
         if ( x2 > 1 )
-            errorBadRequest("Multiple ?graph in the query string of the request") ;
+            ServletOps.errorBadRequest("Multiple ?graph in the query string of the request") ;
         
         Enumeration<String> en = request.getParameterNames() ;
         for ( ; en.hasMoreElements() ; )
         {
             String h = en.nextElement() ;
             if ( ! HttpNames.paramGraph.equals(h) && ! HttpNames.paramGraphDefault.equals(h) )
-                errorBadRequest("Unknown parameter '"+h+"'") ;
+                ServletOps.errorBadRequest("Unknown parameter '"+h+"'") ;
             // one of ?default and &graph
             if ( request.getParameterValues(h).length != 1 )
-                errorBadRequest("Multiple parameters '"+h+"'") ;
+                ServletOps.errorBadRequest("Multiple parameters '"+h+"'") ;
         }
     }
 
@@ -341,7 +354,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
         if ( values.length == 0 )
             return null ;
         if ( values.length > 1 )
-            errorBadRequest("Multiple occurrences of '"+name+"'") ;
+            ServletOps.errorBadRequest("Multiple occurrences of '"+name+"'") ;
         return values[0] ;
     }
 }

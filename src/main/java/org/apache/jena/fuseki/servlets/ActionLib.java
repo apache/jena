@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import javax.servlet.http.HttpServletRequest ;
+
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 
@@ -25,6 +27,9 @@ import org.apache.jena.fuseki.server.DatasetRegistry ;
 
 public class ActionLib {
 
+    
+    // TODO Combine ServletOps?
+    
     /** Map request to uri in the registry.
      * A possible implementation for mapRequestToDataset(String)
      *  that assumes the form /dataset/service 
@@ -88,6 +93,17 @@ public class ActionLib {
         }
         return ds ;
     }
+
+    public static String wholeRequestURL(HttpServletRequest request) {
+        StringBuffer sb = request.getRequestURL() ;
+        String queryString = request.getQueryString() ;
+        if ( queryString != null ) {
+            sb.append("?") ;
+            sb.append(queryString) ;
+        }
+        return sb.toString() ;
+    }
+
 
 }
 

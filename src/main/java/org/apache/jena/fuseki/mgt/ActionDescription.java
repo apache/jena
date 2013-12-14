@@ -30,6 +30,7 @@ import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.riot.WebContent ;
 import org.eclipse.jetty.server.Server ;
 
@@ -47,10 +48,10 @@ public class ActionDescription extends ActionCtl
     {
         try {
             description(action) ;
-            success(action) ;
+            ServletOps.success(action) ;
         }
         catch (IOException e) {
-            errorOccurred(e) ;
+            ServletOps.errorOccurred(e) ;
         }
     }
     

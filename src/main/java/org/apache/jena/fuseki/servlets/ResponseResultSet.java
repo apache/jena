@@ -20,8 +20,6 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.Lib.equal ;
-import static org.apache.jena.fuseki.servlets.ServletBase.errorBadRequest ;
-import static org.apache.jena.fuseki.servlets.ServletBase.errorOccurred ;
 
 import java.io.IOException ;
 import java.util.HashMap ;
@@ -146,7 +144,7 @@ public class ResponseResultSet
         else if (equal(serializationType, WebContent.contentTypeTextTSV) )
             tsvOutput(action, contentType, resultSet, booleanResult) ;
         else
-            errorBadRequest("Can't determine output serialization: "+serializationType) ;
+            ServletOps.errorBadRequest("Can't determine output serialization: "+serializationType) ;
     }
     
     
@@ -223,7 +221,7 @@ public class ResponseResultSet
 
             if ( callback != null )
                 out.println(")") ;
-        } catch (IOException ex) { errorOccurred(ex) ; }
+        } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
     }
     
     private static void textOutput(HttpAction action, String contentType, final ResultSet resultSet, final Prologue qPrologue, final Boolean booleanResult)
@@ -293,7 +291,7 @@ public class ResponseResultSet
             }
         // Includes client gone.
         } catch (IOException ex) 
-        { errorOccurred(ex) ; }
+        { ServletOps.errorOccurred(ex) ; }
         // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
         // then the JSON callback closing details can't be added. 
     }

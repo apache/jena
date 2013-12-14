@@ -79,7 +79,7 @@ public class SPARQL_Upload extends ActionSPARQL
         // Only allows one file in the upload.
         boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
         if ( ! isMultipart )
-            error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
+            ServletOps.error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
         long count = upload(action, "http://example/upload-base/") ;
         try {
             action.response.setContentType("text/html") ;
@@ -103,9 +103,9 @@ public class SPARQL_Upload extends ActionSPARQL
             out.println("</body>") ;
             out.println("</html>") ;
             out.flush() ;
-            success(action) ;
+            ServletOps.success(action) ;
         }
-        catch (Exception ex) { errorOccurred(ex) ; }
+        catch (Exception ex) { ServletOps.errorOccurred(ex) ; }
     }
     
     // Also used by SPARQL_REST
@@ -142,7 +142,7 @@ public class SPARQL_Upload extends ActionSPARQL
         {
             // If anything went wrong, try to backout.
             try { action.abort() ; } catch (Exception ex2) {}
-            errorOccurred(ex.getMessage()) ;
+            ServletOps.errorOccurred(ex.getMessage()) ;
             return -1 ;
         } 
         finally { action.endWrite() ; }
@@ -192,18 +192,18 @@ public class SPARQL_Upload extends ActionSPARQL
                         {
                             IRI iri = IRIResolver.parseIRI(value) ;
                             if ( iri.hasViolation(false) )
-                                errorBadRequest("Bad IRI: "+graphName) ;
+                                ServletOps.errorBadRequest("Bad IRI: "+graphName) ;
                             if ( iri.getScheme() == null )
-                                errorBadRequest("Bad IRI: no IRI scheme name: "+graphName) ;
+                                ServletOps.errorBadRequest("Bad IRI: no IRI scheme name: "+graphName) ;
                             if ( iri.getScheme().equalsIgnoreCase("http") || iri.getScheme().equalsIgnoreCase("https")) 
                             {
                                 // Redundant??
                                 if ( iri.getRawHost() == null ) 
-                                    errorBadRequest("Bad IRI: no host name: "+graphName) ;
+                                    ServletOps.errorBadRequest("Bad IRI: no host name: "+graphName) ;
                                 if ( iri.getRawPath() == null || iri.getRawPath().length() == 0 )
-                                    errorBadRequest("Bad IRI: no path: "+graphName) ;
+                                    ServletOps.errorBadRequest("Bad IRI: no path: "+graphName) ;
                                 if ( iri.getRawPath().charAt(0) != '/' )
-                                    errorBadRequest("Bad IRI: Path does not start '/': "+graphName) ;
+                                    ServletOps.errorBadRequest("Bad IRI: Path does not start '/': "+graphName) ;
                             } 
                         }
                     }
@@ -216,7 +216,7 @@ public class SPARQL_Upload extends ActionSPARQL
                     // Process the input stream
                     name = item.getName() ; 
                     if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") ) 
-                        errorBadRequest("No name for content - can't determine RDF syntax") ;
+                        ServletOps.errorBadRequest("No name for content - can't determine RDF syntax") ;
 
                     String contentTypeHeader = item.getContentType() ;
                     ct = ContentType.create(contentTypeHeader) ;
@@ -251,7 +251,7 @@ public class SPARQL_Upload extends ActionSPARQL
             return Pair.create(graphName, graphTmp) ;
         }
         catch (ActionErrorException ex) { throw ex ; }
-        catch (Exception ex)            { errorOccurred(ex) ; return null ; }
+        catch (Exception ex)            { ServletOps.errorOccurred(ex) ; return null ; }
     }            
 
     @Override

@@ -24,6 +24,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonObject ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
@@ -48,7 +49,7 @@ public class IRIValidator extends ValidatorBaseJson {
         
         String args[] = getArgs(action, paramIRI) ;
         if ( args.length == 0 )
-            errorBadRequest("No IRIs supplied");
+            ServletOps.errorBadRequest("No IRIs supplied");
         
         obj.key(jIRIs) ;
         obj.startArray() ;

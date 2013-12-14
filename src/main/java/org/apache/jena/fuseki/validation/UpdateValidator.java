@@ -21,6 +21,7 @@ package org.apache.jena.fuseki.validation;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonObject ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
@@ -48,7 +49,7 @@ public class UpdateValidator extends ValidatorBaseJson {
         
         Syntax language = Syntax.lookup(updateSyntax) ;
         if ( language == null ) {
-            errorBadRequest("Unknown syntax: " + updateSyntax) ;
+            ServletOps.errorBadRequest("Unknown syntax: " + updateSyntax) ;
             return null ;
         }
         

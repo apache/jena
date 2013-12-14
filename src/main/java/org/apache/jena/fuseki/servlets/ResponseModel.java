@@ -18,10 +18,6 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static org.apache.jena.fuseki.servlets.ServletBase.error ;
-import static org.apache.jena.fuseki.servlets.ServletBase.errorBadRequest ;
-import static org.apache.jena.fuseki.servlets.ServletBase.errorOccurred ;
-
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -89,7 +85,7 @@ public class ResponseModel
                 msg = "No Accept: header" ;
             else
                 msg = "Accept: "+x+" : Not understood" ;
-            error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
+            ServletOps.error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
         }
 
         String contentType = mimeType ;
@@ -104,7 +100,7 @@ public class ResponseModel
 
         Lang lang = RDFLanguages.contentTypeToLang(contentType) ;
         if ( lang == null )
-            errorBadRequest("Can't determine output content type: "+contentType) ;
+            ServletOps.errorBadRequest("Can't determine output content type: "+contentType) ;
         
 //        if ( rdfw instanceof RDFXMLWriterI )
 //            rdfw.setProperty("showXmlDeclaration", "true") ;
@@ -129,7 +125,7 @@ public class ResponseModel
         }
         catch (Exception ex) { 
             action.log.info("Exception while writing the response model: "+ex.getMessage(), ex) ;
-            errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
+            ServletOps.errorOccurred("Exception while writing the response model: "+ex.getMessage(), ex) ;
         }
     }
 }

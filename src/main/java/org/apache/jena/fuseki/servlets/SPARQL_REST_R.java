@@ -50,7 +50,7 @@ public class SPARQL_REST_R extends SPARQL_REST
         
         ServletOutputStream output ;
         try { output = action.response.getOutputStream() ; }
-        catch (IOException ex) { errorOccurred(ex) ; output = null ; }
+        catch (IOException ex) { ServletOps.errorOccurred(ex) ; output = null ; }
         
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
         Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType()) ;
@@ -67,7 +67,7 @@ public class SPARQL_REST_R extends SPARQL_REST
                 action.log.debug("GET->"+target) ;
             boolean exists = target.exists() ;
             if ( ! exists )
-                errorNotFound("No such graph: <"+target.name+">") ;
+                ServletOps.errorNotFound("No such graph: <"+target.name+">") ;
             // If we want to set the Content-Length, we need to buffer.
             //response.setContentLength(??) ;
             String ct = lang.getContentType().toHeaderString() ;
@@ -77,7 +77,7 @@ public class SPARQL_REST_R extends SPARQL_REST
             RDFFormat fmt = 
                 ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang) ;  
             RDFDataMgr.write(out, g, fmt) ;
-            success(action) ;
+            ServletOps.success(action) ;
         } finally { action.endRead() ; }
     }
     
@@ -86,7 +86,7 @@ public class SPARQL_REST_R extends SPARQL_REST
     {
         action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS") ;
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
-        success(action) ;
+        ServletOps.success(action) ;
     }
 
     @Override
@@ -99,27 +99,27 @@ public class SPARQL_REST_R extends SPARQL_REST
                 action.log.debug("HEAD->"+target) ;
             if ( ! target.exists() )
             {
-                successNotFound(action) ;
+                ServletOps.successNotFound(action) ;
                 return ;
             }
             MediaType mediaType = HttpAction.contentNegotationRDF(action) ;
-            success(action) ;
+            ServletOps.success(action) ;
         } finally { action.endRead() ; }
     }
 
     @Override
     protected void doPost(HttpAction action)
-    { errorMethodNotAllowed("POST") ; }
+    { ServletOps.errorMethodNotAllowed("POST") ; }
 
     @Override
     protected void doDelete(HttpAction action)
-    { errorMethodNotAllowed("DELETE") ; }
+    { ServletOps.errorMethodNotAllowed("DELETE") ; }
 
     @Override
     protected void doPut(HttpAction action)
-    { errorMethodNotAllowed("PUT") ; }
+    { ServletOps.errorMethodNotAllowed("PUT") ; }
 
     @Override
     protected void doPatch(HttpAction action)
-    { errorMethodNotAllowed("PATCH") ; }
+    { ServletOps.errorMethodNotAllowed("PATCH") ; }
 }

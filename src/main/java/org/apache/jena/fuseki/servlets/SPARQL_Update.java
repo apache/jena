@@ -111,7 +111,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             executeForm(action) ;
             return ;
         }
-        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + action.request.getContentType()) ;
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + action.request.getContentType()) ;
     }
 
     protected static List<String> paramsForm = Arrays.asList(paramRequest, paramUpdate, 
@@ -124,7 +124,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         HttpServletRequest request = action.request ;
         
         if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(request.getMethod()) )
-            errorMethodNotAllowed("SPARQL Update : use POST") ;
+            ServletOps.errorMethodNotAllowed("SPARQL Update : use POST") ;
         
         ContentType incoming = FusekiLib.getContentType(action) ;
         String ctStr = ( incoming == null ) ? WebContent.contentTypeSPARQLUpdate : incoming.getContentType() ;
@@ -134,7 +134,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         {
             String charset = request.getCharacterEncoding() ;
             if ( charset != null && ! charset.equalsIgnoreCase(WebContent.charsetUTF8) )
-                errorBadRequest("Bad charset: "+charset) ;
+                ServletOps.errorBadRequest("Bad charset: "+charset) ;
             validate(action, paramsPOST) ;
             return ;
         }
@@ -143,20 +143,20 @@ public class SPARQL_Update extends SPARQL_Protocol
         {
             int x = countParamOccurences(request, paramUpdate) + countParamOccurences(request, paramRequest) ;
             if ( x == 0 )
-                errorBadRequest("SPARQL Update: No 'update=' parameter") ;
+                ServletOps.errorBadRequest("SPARQL Update: No 'update=' parameter") ;
             if ( x != 1 )
-                errorBadRequest("SPARQL Update: Multiple 'update=' parameters") ;
+                ServletOps.errorBadRequest("SPARQL Update: Multiple 'update=' parameters") ;
             
             String requestStr = request.getParameter(paramUpdate) ;
             if ( requestStr == null )
                 requestStr = request.getParameter(paramRequest) ;
             if ( requestStr == null )
-                errorBadRequest("SPARQL Update: No update= in HTML form") ;
+                ServletOps.errorBadRequest("SPARQL Update: No update= in HTML form") ;
             validate(action, paramsForm) ;
             return ;
         }
         
-        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm+" (got "+ctStr+")") ;
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm+" (got "+ctStr+")") ;
     }
     
     protected void validate(HttpAction action, Collection<String> params)
@@ -168,7 +168,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             {
                 String name = en.nextElement() ;
                 if ( ! params.contains(name) )
-                    warning(action, "SPARQL Update: Unrecognize request parameter (ignored): "+name) ;
+                    ServletOps.warning(action, "SPARQL Update: Unrecognize request parameter (ignored): "+name) ;
             }
         }
     }
@@ -177,7 +177,7 @@ public class SPARQL_Update extends SPARQL_Protocol
     {
         InputStream input = null ;
         try { input = action.request.getInputStream() ; }
-        catch (IOException ex) { errorOccurred(ex) ; }
+        catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
 
         if ( action.verbose )
         {
@@ -185,14 +185,14 @@ public class SPARQL_Update extends SPARQL_Protocol
             String requestStr = null ;
             try { requestStr = IO.readWholeFileAsUTF8(input) ; }
             catch (IOException ex) { IO.exception(ex) ; }
-            requestLog.info(format("[%d] Update = %s", action.id, formatForLog(requestStr))) ;
+            requestLog.info(format("[%d] Update = %s", action.id, ServletOps.formatForLog(requestStr))) ;
             
             input = new ByteArrayInputStream(requestStr.getBytes());
             requestStr = null;
         }
         
         execute(action, input) ;
-        successNoContent(action) ;
+        ServletOps.successNoContent(action) ;
     }
 
     private void executeForm(HttpAction action)
@@ -210,7 +210,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         ByteArrayInputStream input = new ByteArrayInputStream(b);
         requestStr = null;  // free it early at least
         execute(action, input);
-        successPage(action,"Update succeeded") ;
+        ServletOps.successPage(action,"Update succeeded") ;
     }
     
     private void execute(HttpAction action, InputStream input)
@@ -227,8 +227,8 @@ public class SPARQL_Update extends SPARQL_Protocol
                 // TODO implement a spill-to-disk version of this
                 req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
             }
-            catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; return ; }
-            catch (QueryParseException ex) { errorBadRequest(messageForQPE(ex)) ; return ; }
+            catch (UpdateException ex) { ServletOps.errorBadRequest(ex.getMessage()) ; return ; }
+            catch (QueryParseException ex) { ServletOps.errorBadRequest(messageForQPE(ex)) ; return ; }
         }
         
         action.beginWrite() ;
@@ -241,16 +241,16 @@ public class SPARQL_Update extends SPARQL_Protocol
         } catch (UpdateException ex) {
             action.abort() ;
             incCounter(action.srvRef, UpdateExecErrors) ;
-            errorOccurred(ex.getMessage()) ;
+            ServletOps.errorOccurred(ex.getMessage()) ;
         } catch (QueryParseException ex) {
             action.abort() ;
             // Counter inc'ed further out.
-            errorBadRequest(messageForQPE(ex)) ;
+            ServletOps.errorBadRequest(messageForQPE(ex)) ;
         } catch (Throwable ex) {
             if ( ! ( ex instanceof ActionErrorException ) )
             {
                 try { action.abort() ; } catch (Exception ex2) {}
-                errorOccurred(ex.getMessage(), ex) ;
+                ServletOps.errorOccurred(ex.getMessage(), ex) ;
             }
         } finally { action.endWrite(); }
     }
@@ -299,7 +299,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             return NodeFactory.createURI(iri.toString()) ;
         } catch (Exception ex)
         {
-            errorBadRequest("SPARQL Update: bad IRI: "+x) ;
+            ServletOps.errorBadRequest("SPARQL Update: bad IRI: "+x) ;
             return null ;
         }
         

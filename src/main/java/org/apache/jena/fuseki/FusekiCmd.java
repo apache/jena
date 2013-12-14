@@ -150,8 +150,6 @@ public class FusekiCmd extends CmdARQ {
     
     // Ignored - it's always dynamic dispatch 
     private static ArgDecl             argUber         = new ArgDecl(ArgDecl.NoValue, "uber", "über") ;
-    private static ArgDecl             argGSP          = new ArgDecl(ArgDecl.NoValue, "gsp") ;                  // GSP
-
     private static ArgDecl             argBasicAuth    = new ArgDecl(ArgDecl.HasValue, "basic-auth") ;
 
     private static ArgDecl             argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
@@ -384,11 +382,6 @@ public class FusekiCmd extends CmdARQ {
 
         if ( contains(argUber) )
             Fuseki.configLog.info("Dynamic dispatch is now the only mode: --uber is not needed" );
-        
-        if ( contains(argGSP) ) {
-            Fuseki.graphStoreProtocolPostCreate = true ;
-        }
-
     }
 
     private static String sort_out_dir(String path) {

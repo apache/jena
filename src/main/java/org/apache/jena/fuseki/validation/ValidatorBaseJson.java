@@ -31,7 +31,9 @@ import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.servlets.ActionErrorException ;
+import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.ServletBase ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
@@ -85,11 +87,11 @@ public abstract class ValidatorBaseJson extends ServletBase
             if ( ex.exception != null )
                 ex.exception.printStackTrace(System.err) ;
             if ( ex.message != null )
-                responseSendError(response, ex.rc, ex.message) ;
+                ServletOps.responseSendError(response, ex.rc, ex.message) ;
             else
-                responseSendError(response, ex.rc) ;
+                ServletOps.responseSendError(response, ex.rc) ;
         } catch (Throwable th) {
-            responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, "Internal Error") ;
+            ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, "Internal Error") ;
         }
         action.setFinishTime() ;
         printResponse(action) ;
@@ -106,7 +108,7 @@ public abstract class ValidatorBaseJson extends ServletBase
     
     private void printRequest(ValidationAction action)
     {
-        String url = wholeRequestURL(action.request) ;
+        String url = ActionLib.wholeRequestURL(action.request) ;
         String method = action.request.getMethod() ;
 
         action.log.info(format("[%d] %s %s", action.id, method, url)) ;
@@ -170,7 +172,7 @@ public abstract class ValidatorBaseJson extends ServletBase
     protected static String getArg(ValidationAction action, String paramName) {
         String arg = getArgOrNull(action, paramName) ;
         if ( arg == null ) {
-            error(HttpSC.BAD_REQUEST_400, "No parameter given: " + paramName) ;
+            ServletOps.error(HttpSC.BAD_REQUEST_400, "No parameter given: " + paramName) ;
             return null ;
         }
         return arg ;
@@ -183,7 +185,7 @@ public abstract class ValidatorBaseJson extends ServletBase
             return null ;
 
         if ( args.length > 1 ) {
-            error(HttpSC.BAD_REQUEST_400, "Too many ("+args.length+") parameter values: "+paramName) ;
+            ServletOps.error(HttpSC.BAD_REQUEST_400, "Too many ("+args.length+") parameter values: "+paramName) ;
             return null ;
         }
         

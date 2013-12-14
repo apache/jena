@@ -26,6 +26,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonObject ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -52,7 +53,7 @@ public class DataValidator extends ValidatorBaseJson {
 
         Lang language = RDFLanguages.shortnameToLang(syntax) ;
         if ( language == null ) {
-            errorBadRequest("Unknown syntax: " + syntax) ;
+            ServletOps.errorBadRequest("Unknown syntax: " + syntax) ;
             return null ;
         }
 

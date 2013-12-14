@@ -97,7 +97,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             return ;
         }
 
-        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: "+incoming) ;
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: "+incoming) ;
     }
 
     // All the params we support
@@ -119,12 +119,12 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         String method = action.request.getMethod().toUpperCase(Locale.ROOT) ;
         
         if ( ! HttpNames.METHOD_POST.equals(method) && ! HttpNames.METHOD_GET.equals(method) )
-            errorMethodNotAllowed("Not a GET or POST request") ;
+            ServletOps.errorMethodNotAllowed("Not a GET or POST request") ;
             
         if ( HttpNames.METHOD_GET.equals(method) && action.request.getQueryString() == null )
         {
-            warning(action, "Service Description / SPARQL Query / "+action.request.getRequestURI()) ;
-            errorNotFound("Service Description: "+action.request.getRequestURI()) ;
+            ServletOps.warning(action, "Service Description / SPARQL Query / "+action.request.getRequestURI()) ;
+            ServletOps.errorNotFound("Service Description: "+action.request.getRequestURI()) ;
         }
         
         // Use of the dataset describing parameters is check later.
@@ -157,7 +157,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             }
             else if ( WebContent.contentTypeForm.equals(incoming) ) {}
             else
-                error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: "+incoming) ;
+                ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: "+incoming) ;
         }
         
         // GET/POST of a form at this point.
@@ -166,16 +166,16 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         {
             int N = countParamOccurences(request, paramQuery) ; 
             
-            if ( N == 0 ) errorBadRequest("SPARQL Query: No 'query=' parameter") ;
-            if ( N > 1 ) errorBadRequest("SPARQL Query: Multiple 'query=' parameters") ;
+            if ( N == 0 ) ServletOps.errorBadRequest("SPARQL Query: No 'query=' parameter") ;
+            if ( N > 1 ) ServletOps.errorBadRequest("SPARQL Query: Multiple 'query=' parameters") ;
             
             // application/sparql-query does not use a query param.
             String queryStr = request.getParameter(HttpNames.paramQuery) ;
             
             if ( queryStr == null )
-                errorBadRequest("SPARQL Query: No query specified (no 'query=' found)") ;
+                ServletOps.errorBadRequest("SPARQL Query: No query specified (no 'query=' found)") ;
             if ( queryStr.isEmpty() )
-                errorBadRequest("SPARQL Query: Empty query string") ;
+                ServletOps.errorBadRequest("SPARQL Query: Empty query string") ;
         }
 
         if ( params != null )
@@ -185,7 +185,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             {
                 String name = en.nextElement() ;
                 if ( ! params.contains(name) )
-                    warning(action, "SPARQL Query: Unrecognize request parameter (ignored): "+name) ;
+                    ServletOps.warning(action, "SPARQL Query: Unrecognize request parameter (ignored): "+name) ;
             }
         }
     }
@@ -203,13 +203,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             InputStream input = action.request.getInputStream() ; 
             queryString = IO.readWholeFileAsUTF8(input) ;
         }
-        catch (IOException ex) { errorOccurred(ex) ; }
+        catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
         execute(queryString, action) ;
     }
 
     private void execute(String queryString, HttpAction action)
     {
-        String queryStringLog = formatForLog(queryString) ;
+        String queryStringLog = ServletOps.formatForLog(queryString) ;
         if ( action.verbose )
             action.log.info(format("[%d] Query = \n%s", action.id, queryString));
         else
@@ -226,11 +226,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             throw ex ;
         } catch (QueryParseException ex) {
             incCounter(action.srvRef, RequestsBad) ;
-            errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
+            ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
         }
         // Should not happen.
         catch (QueryException ex) {
-            errorBadRequest("Error: \n" + queryString + "\n\r" + ex.getMessage()) ;
+            ServletOps.errorBadRequest("Error: \n" + queryString + "\n\r" + ex.getMessage()) ;
         }
         
         // Assumes finished whole thing by end of sendResult. 
@@ -311,7 +311,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             return new SPARQLResult(b) ;
         }
 
-        errorBadRequest("Unknown query type - "+queryStringLog) ;
+        ServletOps.errorBadRequest("Unknown query type - "+queryStringLog) ;
         return null ;
     }
 
@@ -352,7 +352,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         else if ( result.isBoolean() )
             ResponseResultSet.doResponseResultSet(action, result.getBooleanResult()) ;
         else
-            errorOccurred("Unknown or invalid result type") ;
+            ServletOps.errorOccurred("Unknown or invalid result type") ;
     }
     
     private String formatForLog(Query query)

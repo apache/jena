@@ -140,7 +140,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         String method = request.getMethod() ;
         DatasetRef desc = action.dsRef ;
         if ( ! desc.isActive() )
-            error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
+            ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
         
         String trailing = findTrailing(uri, desc.name) ;
         String qs = request.getQueryString() ;
@@ -179,7 +179,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             {
                 // SPARQL Query
                 if ( ! allowQuery(action))
-                    errorForbidden("Forbidden: SPARQL query") ; 
+                    ServletOps.errorForbidden("Forbidden: SPARQL query") ; 
                 executeRequest(action, queryServlet, desc.query) ;
                 return ;
             }
@@ -188,7 +188,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             {
                 // SPARQL Update
                 if ( ! allowQuery(action))
-                    errorForbidden("Forbidden: SPARQL query") ; 
+                    ServletOps.errorForbidden("Forbidden: SPARQL query") ; 
                 executeRequest(action, updateServlet, desc.update) ;
                 return ;
             }
@@ -199,8 +199,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                 return ;
             }
             
-            errorBadRequest("Malformed request") ;
-            errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
+            ServletOps.errorBadRequest("Malformed request") ;
+            ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
         }
         
         final boolean checkForPossibleService = true ;
@@ -219,7 +219,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         if ( hasParams )
             // ?? Revisit to include query-on-one-graph 
             //errorBadRequest("Can't invoke a query-string service on a direct named graph") ;
-            errorNotFound("Not found: dataset='"+printName(desc.name)+"' service='"+printName(trailing)+"'");
+            ServletOps.errorNotFound("Not found: dataset='"+printName(desc.name)+"' service='"+printName(trailing)+"'");
 
         // There is a trailing part - not a service, no params ==> GSP direct naming.
         doGraphStoreProtocol(action) ;
@@ -248,13 +248,13 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
            else if ( desc.readWriteGraphStore.isActive() )
                executeRequest(action, restServlet_RW, desc.readWriteGraphStore) ;
            else
-               errorMethodNotAllowed(method) ;
+               ServletOps.errorMethodNotAllowed(method) ;
            return ;
        }
        
        // Graphs Store Protocol, indirect naming, write
        if ( ! allowREST_W(action))
-           errorForbidden("Forbidden: SPARQL Graph Store Protocol : Write operation : "+method) ;
+           ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : Write operation : "+method) ;
        executeRequest(action, restServlet_RW, desc.readWriteGraphStore) ;
        return ;
     }
@@ -262,7 +262,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     private void executeRequest(HttpAction action, ActionSPARQL servlet, ServiceRef service)
     {
         if ( service.endpoints.size() == 0 )
-            errorMethodNotAllowed(action.request.getMethod()) ;
+            ServletOps.errorMethodNotAllowed(action.request.getMethod()) ;
         servlet.executeLifecycle(action) ;
     }
 

@@ -56,7 +56,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
         if ( datasetDesc == null )
             datasetDesc = getDatasetDescription(query) ;
         if ( datasetDesc == null )
-            errorBadRequest("No dataset description in protocol request or in the query string") ;
+            ServletOps.errorBadRequest("No dataset description in protocol request or in the query string") ;
 
         return datasetFromDescription(action, datasetDesc) ;
     }
@@ -95,11 +95,11 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
                         action.log.info(format("[%d] Load (default graph) %s", action.id, uri)) ;
                     } catch (RiotException ex) {
                         action.log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage())) ;
-                        errorBadRequest("Failed to load URL (parse error) "+uri+" : "+ex.getMessage()) ;
+                        ServletOps.errorBadRequest("Failed to load URL (parse error) "+uri+" : "+ex.getMessage()) ;
                     } catch (Exception ex)
                     {
                         action.log.info(format("[%d] Failed to load (default) %s: %s", action.id, uri, ex.getMessage())) ;
-                        errorBadRequest("Failed to load URL "+uri) ;
+                        ServletOps.errorBadRequest("Failed to load URL "+uri) ;
                     }
                 }
                 dataset.setDefaultModel(model) ;
@@ -119,11 +119,11 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
                         dataset.addNamedModel(uri, model) ;
                     } catch (RiotException ex) {
                         action.log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage())) ;
-                        errorBadRequest("Failed to load URL (parse error) "+uri+" : "+ex.getMessage()) ;
+                        ServletOps.errorBadRequest("Failed to load URL (parse error) "+uri+" : "+ex.getMessage()) ;
                     } catch (Exception ex)
                     {
                         action.log.info(format("[%d] Failed to load (named graph) %s: %s", action.id, uri, ex.getMessage())) ;
-                        errorBadRequest("Failed to load URL "+uri) ;
+                        ServletOps.errorBadRequest("Failed to load URL "+uri) ;
                     }
                 }
             }
@@ -135,7 +135,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
         catch (Exception ex)
         {
             action.log.info(format("[%d] SPARQL parameter error: "+ex.getMessage(),action.id, ex)) ;
-            errorBadRequest("Parameter error: "+ex.getMessage());
+            ServletOps.errorBadRequest("Parameter error: "+ex.getMessage());
             return null ;
         }
     }

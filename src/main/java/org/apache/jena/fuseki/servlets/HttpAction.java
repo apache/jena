@@ -55,22 +55,20 @@ public class HttpAction
     
     // -- Valid only for operational actions (e.g. SPARQL).
     
-    private DatasetGraph dsg                = null ;
-    public  ServiceRef srvRef               = null ;
+    public  String          endpointName    = null ;        // Endpoint name srv was found under 
+    public  ServiceRef      srvRef          = null ;
     private Transactional   transactional   = null ;
     private boolean         isTransactional = false ;
     private DatasetGraph    activeDSG       = null ;        // Set when inside begin/end.
     private ReadWrite       activeMode      = null ;        // Set when inside begin/end.
     
-    
     // -- Valid only for administration actions.
-    /** Name of dataset being acted upon in a admin operation (may be null) */
-    public String datasetName               = null ;
-    
     
     // -- Shared items (but exact meaning may differ)
     /** Handle to dataset+services being acted on (maybe null) */
     public  DatasetRef dsRef                = null ;
+    public  String datasetName              = null ;        // Dataset URI used (e.g. registry)
+    private DatasetGraph dsg                = null ;
 
     // ----
     
@@ -102,7 +100,7 @@ public class HttpAction
     }
 
     /** Initialization after action creation during lifecycle setup */
-    public void setRequestRef(DatasetRef desc) {
+    public void setRequestRef(DatasetRef desc, String datasetUri) {
         if ( this.dsRef != null )
             throw new FusekiException("Redefintion of DatasetRef in the request action") ;
         
@@ -110,6 +108,7 @@ public class HttpAction
         if ( desc == null || desc.dataset == null )
             throw new FusekiException("Null DatasetRef in the request action") ;
         
+        this.datasetName = datasetUri ;
         this.dsg = desc.dataset ;
         DatasetGraph basedsg = unwrap(dsg) ;
 
@@ -125,13 +124,14 @@ public class HttpAction
         }
     }
     
-    public void setControlRef(DatasetRef desc) {
+    public void setControlRef(DatasetRef desc, String datasetUri) {
         if ( desc == null )
             throw new FusekiException("Null DatasetRef in the control action") ;
 
         if ( this.dsRef != null )
             throw new FusekiException("Redefintion of DatasetRef in the control action") ;
         this.dsRef = desc ;
+        this.datasetName = datasetUri ;
     }
     
     private static boolean isTransactional(DatasetGraph dsg) {
@@ -145,8 +145,9 @@ public class HttpAction
         return dsg ;
     }
         
-    public void setService(ServiceRef srvRef) {
+    public void setService(ServiceRef srvRef, String endpointName) {
         this.srvRef = srvRef ; 
+        this.endpointName = endpointName ;
     }
     
     /**

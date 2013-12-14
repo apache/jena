@@ -39,7 +39,9 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
@@ -106,7 +108,7 @@ public class ActionDatasets extends ActionCtl {
         else if ( method.equals("DELETE") )
             execDelete(action) ;
         else
-            error(HttpSC.METHOD_NOT_ALLOWED_405) ;
+            ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405) ;
         
 //      system.begin(ReadWrite.READ) ;
 //      try { RDFDataMgr.write(System.out, system, Lang.TRIG); }
@@ -128,8 +130,8 @@ public class ActionDatasets extends ActionCtl {
             JSON.write(out, v) ;
             out.println() ; 
             out.flush() ;
-        } catch (IOException ex) { errorOccurred(ex) ; }
-        success(action);
+        } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
+        ServletOps.success(action);
     }
     
     // This does not consult the system database for dormant etc.
@@ -148,7 +150,7 @@ public class ActionDatasets extends ActionCtl {
         String datasetPath = DatasetRef.canocialDatasetPath(action.dsRef.name) ;
         DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
         if ( dsDesc == null )
-            errorNotFound("Not found: dataset "+action.dsRef.name);
+            ServletOps.errorNotFound("Not found: dataset "+action.dsRef.name);
         JsonDescription.describe(builder, dsDesc) ;
         return builder.build() ;
     }
@@ -172,11 +174,11 @@ public class ActionDatasets extends ActionCtl {
         action.log.info(format("[%d] POST dataset %s", action.id, name)) ;
         
         if ( action.dsRef.dataset == null )
-            errorNotFound("Not found: dataset "+action.dsRef.name);
+            ServletOps.errorNotFound("Not found: dataset "+action.dsRef.name);
         DatasetRef dsDesc = action.dsRef ;
         String s = action.request.getParameter("status") ;
         if ( s == null || s.isEmpty() )
-            errorBadRequest("No state change given") ;
+            ServletOps.errorBadRequest("No state change given") ;
 
         // setDatasetState is a transaction on the pesistent state of the server. 
         if ( s.equalsIgnoreCase("active") ) {
@@ -186,8 +188,8 @@ public class ActionDatasets extends ActionCtl {
             setDatasetState(name, FusekiVocab.stateDormant) ;        
             dsDesc.dormant() ;
         } else
-            errorBadRequest("New state '"+s+"' not recognized");
-        success(action) ;
+            ServletOps.errorBadRequest("New state '"+s+"' not recognized");
+        ServletOps.success(action) ;
     }
 
     // Persistent state change.
@@ -236,15 +238,15 @@ public class ActionDatasets extends ActionCtl {
             if ( stmt == null ) {
                 StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
                 if ( ! sIter.hasNext() )
-                    errorBadRequest("No name given in description of Fuseki service") ;
+                    ServletOps.errorBadRequest("No name given in description of Fuseki service") ;
                 sIter.next() ;
                 if ( sIter.hasNext() )
-                    errorBadRequest("Multiple names given in description of Fuseki service") ;
+                    ServletOps.errorBadRequest("Multiple names given in description of Fuseki service") ;
                 throw new InternalErrorException("Inconsistent: getOne didn't fail the second time") ;
             }
                 
             if ( ! stmt.getObject().isLiteral() )
-                errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI") ;
+                ServletOps.errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI") ;
             
             Resource subject = stmt.getSubject() ;
             Literal object = stmt.getObject().asLiteral() ;
@@ -262,7 +264,7 @@ public class ActionDatasets extends ActionCtl {
             SPARQLServer.registerDataset(datasetPath, dsRef) ;
             system.commit();
             committed = true ;
-            success(action) ;
+            ServletOps.success(action) ;
         } finally { 
             if ( ! committed ) system.abort() ; 
             system.end() ; 
@@ -276,7 +278,7 @@ public class ActionDatasets extends ActionCtl {
             name = "" ;
         action.log.info(format("[%d] DELETE ds=%s", action.id, name)) ;
         if ( action.dsRef.name == null ) {
-            errorBadRequest("DELETE only to the container entries.") ;
+            ServletOps.errorBadRequest("DELETE only to the container entries.") ;
             return ;
         }
 
@@ -286,7 +288,7 @@ public class ActionDatasets extends ActionCtl {
             // Name to graph
             Quad q = getOne(SystemState.dsg, null, null, pServiceName.asNode(), null) ;
             if ( q == null )
-                errorBadRequest("Failed to find dataset for '"+name+"'");
+                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
             Node gn = q.getGraph() ;
             
             DatasetRef dsRef = DatasetRegistry.get().get(name) ;
@@ -296,7 +298,7 @@ public class ActionDatasets extends ActionCtl {
             systemDSG.deleteAny(gn, null, null, null) ;
             systemDSG.commit() ;
             committed = true ;
-            success(action) ;
+            ServletOps.success(action) ;
         } finally { 
             if ( ! committed ) systemDSG.abort() ; 
             systemDSG.end() ; 
@@ -335,15 +337,15 @@ public class ActionDatasets extends ActionCtl {
         } catch (IOException ex) { IO.exception(ex); }
     }
     
-    // XXX Merge with SPARQL_REST_RW.incomingData
+    // XXX Merge with Upload.incomingData
     
     private static void bodyAsGraph(HttpAction action, StreamRDF dest) {
         HttpServletRequest request = action.request ;
-        String base = wholeRequestURL(request) ;
+        String base = ActionLib.wholeRequestURL(request) ;
         ContentType ct = FusekiLib.getContentType(request) ;
         Lang lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
         if ( lang == null ) {
-            errorBadRequest("Unknown content type for triples: " + ct) ;
+            ServletOps.errorBadRequest("Unknown content type for triples: " + ct) ;
             return ;
         }
         InputStream input = null ;
@@ -373,7 +375,7 @@ public class ActionDatasets extends ActionCtl {
         ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(action.log) ;
         parser.getProfile().setHandler(errorHandler) ;
         try { parser.parse() ; } 
-        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
+        catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()) ; }
     }
 }
 

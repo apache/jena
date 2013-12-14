@@ -34,17 +34,16 @@ public abstract class ActionCtl extends ActionBase
     protected void execCommonWorker(HttpAction action)
     {
         DatasetRef dsRef = null ;
-        String name = mapRequestToDatasetName(action) ;
-        if ( name != null )
-            dsRef = DatasetRegistry.get().get(name) ;
+        String dsURI = mapRequestToDatasetName(action) ;
+        if ( dsURI != null )
+            dsRef = DatasetRegistry.get().get(dsURI) ;
         else {
             // This is a placeholder when creating new DatasetRefs
-            // and also if addressig a container, not a dataset
+            // and also if addressing a container, not a dataset
             dsRef = new DatasetRef() ;
-            dsRef.name = name ;
+            dsRef.name = dsURI ;
         }
-        action.datasetName = name ;
-        action.setControlRef(dsRef) ;
+        action.setControlRef(dsRef, dsURI) ;
         executeAction(action) ;
     }
 

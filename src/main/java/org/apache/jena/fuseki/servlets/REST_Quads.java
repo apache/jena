@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki.servlets ;
 
 import static java.lang.String.format ;
 
@@ -26,187 +26,201 @@ import javax.servlet.ServletOutputStream ;
 
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
-import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 
-/** 
- * Servlet that serves up quads for a dataset.
+/**
+ * Servlet for operations directly on a dataset - REST(ish) behaviour on the
+ * dataset URI.
  */
 
-public class REST_Quads extends SPARQL_REST
-{
-    public REST_Quads()     { super(); }
-    
+public class REST_Quads extends SPARQL_REST {
+    // Not supported: GSP direct naming.
+
+    public REST_Quads() {
+        super() ;
+    }
+
     @Override
-    protected void validate(HttpAction action)
-    {
+    protected void validate(HttpAction action) {
         // already checked?
     }
-    
+
     @Override
-    protected void doGet(HttpAction action)
-    {
+    protected void doGet(HttpAction action) {
         MediaType mediaType = HttpAction.contentNegotationQuads(action) ;
         ServletOutputStream output ;
-        try { output = action.response.getOutputStream() ; }
-        catch (IOException ex) { errorOccurred(ex) ; output = null ; }
-        
+        try {
+            output = action.response.getOutputStream() ;
+        } catch (IOException ex) {
+            ServletOps.errorOccurred(ex) ;
+            output = null ;
+        }
+
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
         Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType()) ;
         if ( lang == null )
             lang = RDFLanguages.TRIG ;
 
         if ( action.verbose )
-            action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
-                                  action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
-        if ( ! RDFLanguages.isQuads(lang) )
-            errorBadRequest("Not a quads format: "+mediaType) ;
-        
+            action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", action.id,
+                                   mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
+        if ( !RDFLanguages.isQuads(lang) )
+            ServletOps.errorBadRequest("Not a quads format: " + mediaType) ;
+
         action.beginRead() ;
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
             RDFDataMgr.write(out, dsg, lang) ;
-            success(action) ;
-        } finally { action.endRead() ; }
+            ServletOps.success(action) ;
+        } finally {
+            action.endRead() ;
+        }
     }
-    
+
     @Override
-    protected void doOptions(HttpAction action)
-    {
+    protected void doOptions(HttpAction action) {
         action.response.setHeader(HttpNames.hAllow, "GET, HEAD, OPTIONS") ;
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
-        success(action) ;
+        ServletOps.success(action) ;
     }
 
     @Override
-    protected void doHead(HttpAction action)
-    {
+    protected void doHead(HttpAction action) {
         action.beginRead() ;
-        try { 
+        try {
             MediaType mediaType = HttpAction.contentNegotationQuads(action) ;
-            success(action) ;
-        } finally { action.endRead() ; }
+            ServletOps.success(action) ;
+        } finally {
+            action.endRead() ;
+        }
     }
 
-    static int counter = 0 ;
     @Override
-    protected void doPost(HttpAction action)
-    { 
-        if ( ! action.getDatasetRef().allowDatasetUpdate )
-            errorMethodNotAllowed("POST") ;
+    protected void doPost(HttpAction action) {
+        if ( !action.getDatasetRef().allowDatasetUpdate )
+            ServletOps.errorMethodNotAllowed("POST") ;
 
-        // Graph Store Protocol mode - POST triples to dataset causes
-        // a new graph to be created and the new URI returned via Location.
-        // Normally off.  
-        // When off, POST of triples goes to default graph.
-        boolean gspMode = Fuseki.graphStoreProtocolPostCreate ;
-        
-        // Code to pass the GSP test suite.
-        // Not necessarily good code.
-        String x = action.request.getContentType() ;
-        if ( x == null )
-            errorBadRequest("Content-type required for data format") ;
-        
-        MediaType mediaType = MediaType.create(x) ;
-        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType()) ;
-        if ( lang == null )
-            lang = RDFLanguages.TRIG ;
-
-        if ( action.verbose )
-            action.log.info(format("[%d]   Post: Content-Type=%s, Charset=%s => %s", 
-                                  action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
-        
-        if ( RDFLanguages.isQuads(lang) )
-            doPostQuads(action, lang) ;
-        else if ( gspMode && RDFLanguages.isTriples(lang) )
-            doPostTriplesGSP(action, lang) ;
-        else if ( RDFLanguages.isTriples(lang) )
-            doPostTriples(action, lang) ;
+        if ( action.isTransactional() )
+            doPutPostTxn(action, false) ;
         else
-            errorBadRequest("Not a triples or quads format: "+mediaType) ;
+            doPutPostNonTxn(action, false) ;
     }
-        
-    protected void doPostQuads(HttpAction action, Lang lang)
-    {
+
+    @Override
+    protected void doPut(HttpAction action) {
+        if ( !action.getDatasetRef().allowDatasetUpdate )
+            ServletOps.errorMethodNotAllowed("POST") ;
+
+        if ( action.isTransactional() )
+            doPutPostTxn(action, false) ;
+        else
+            doPutPostNonTxn(action, false) ;
+    }
+
+    // These are very similar to SPARQL_REST_RW.addDataIntoTxn/nonTxn
+    // Maybe can be usually DRYed.
+
+    @Override
+    protected void doDelete(HttpAction action) {
+        ServletOps.errorMethodNotAllowed("DELETE") ;
+    }
+
+    @Override
+    protected void doPatch(HttpAction action) {
+        ServletOps.errorMethodNotAllowed("PATCH") ;
+    }
+
+    private void doPutPostTxn(HttpAction action, boolean clearFirst) {
         action.beginWrite() ;
         try {
-            String name = action.request.getRequestURL().toString() ;
             DatasetGraph dsg = action.getActiveDSG() ;
             StreamRDF dest = StreamRDFLib.dataset(dsg) ;
-            LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
-            parser.parse() ;
-            action.commit();
-            success(action) ;
-        } catch (IOException ex) { action.abort() ; } 
-        finally { action.endWrite() ; }
+            Upload.incomingData(action, dest, false) ;
+            action.commit() ;
+            ServletOps.success(action) ;
+        } catch (RiotException ex) {
+            // Parse error
+            action.abort() ;
+            ServletOps.errorBadRequest(ex.getMessage()) ;
+        } catch (Exception ex) {
+            // Something else went wrong. Backout.
+            action.abort() ;
+            ServletOps.errorOccurred(ex.getMessage()) ;
+        } finally {
+            action.endWrite() ;
+        }
     }
     
-  
-    // POST triples to dataset -- send to default graph.  
-    protected void doPostTriples(HttpAction action, Lang lang) 
-    {
+    // XXX Logging
+    // XXX Logging in Upload.incomingData
+
+    private void doPutPostNonTxn(HttpAction action, boolean clearFirst) {
+        DatasetGraph dsgTmp = DatasetGraphFactory.createMem() ;
+        StreamRDF dest = StreamRDFLib.dataset(dsgTmp) ;
+
+        try {
+            Upload.incomingData(action, dest, false) ;
+        } catch (RiotException ex) {
+            ServletOps.errorBadRequest(ex.getMessage()) ;
+        }
+        // Now insert into dataset
         action.beginWrite() ;
         try {
-            DatasetGraph dsg = action.getActiveDSG() ;
-            // This should not be anythign other than the datasets name via this route.  
-            String name = action.request.getRequestURL().toString() ;
-            //log.info(format("[%d] ** Content-length: %d", action.id, action.request.getContentLength())) ;  
-            Graph g = dsg.getDefaultGraph() ;
-            StreamRDF dest = StreamRDFLib.graph(g) ;
-            LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
-            parser.parse() ;
-            action.commit();
-            success(action) ;
-        } catch (IOException ex) { action.abort() ; } 
-        finally { action.endWrite() ; }
-    }
-    
-    protected void doPostTriplesGSP(HttpAction action, Lang lang) 
-    {
-        action.beginWrite() ;
-        try {
-            DatasetGraph dsg = action.getActiveDSG() ;
-            //log.info(format("[%d] ** Content-length: %d", action.id, action.request.getContentLength())) ;  
-            
-            String name = action.request.getRequestURL().toString() ;
-            if ( ! name.endsWith("/") )
-                name = name+ "/"  ;
-            name = name+(++counter) ;
-            Node gn = NodeFactory.createURI(name) ;
-            Graph g = dsg.getGraph(gn) ;
-            StreamRDF dest = StreamRDFLib.graph(g) ;
-            LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
-            parser.parse() ;
-            action.log.info(format("[%d] Location: %s", action.id, name)) ;
-            action.response.setHeader("Location",  name) ;
-            action.commit();
-            successCreated(action) ;
-        } catch (IOException ex) { action.abort() ; } 
-        finally { action.endWrite() ; }
+            FusekiLib.addDataInto(dsgTmp, action.getActiveDSG()) ;
+            action.commit() ;
+            ServletOps.success(action) ;
+        } catch (Exception ex) {
+            // We're in the non-transactional branch, this probably will not
+            // work
+            // but it might and there is no harm safely trying.
+            try {
+                action.abort() ;
+            } catch (Exception ex2) {}
+            ServletOps.errorOccurred(ex.getMessage()) ;
+        } finally {
+            action.endWrite() ;
+        }
+
     }
 
-    @Override
-    protected void doDelete(HttpAction action)
-    { errorMethodNotAllowed("DELETE") ; }
-
-    @Override
-    protected void doPut(HttpAction action)
-    { errorMethodNotAllowed("PUT") ; }
-
-    @Override
-    protected void doPatch(HttpAction action)
-    { errorMethodNotAllowed("PATCH") ; }
+//    static int counter = 0 ;
+//
+//    protected void doPostTriplesGSP(HttpAction action, Lang lang) {
+//        // Old code.
+//        // Assumes transactional.
+//        action.beginWrite() ;
+//        try {
+//            DatasetGraph dsg = action.getActiveDSG() ;
+//            // log.info(format("[%d] ** Content-length: %d", action.id,
+//            // action.request.getContentLength())) ;
+//
+//            String name = action.request.getRequestURL().toString() ;
+//            if ( !name.endsWith("/") )
+//                name = name + "/" ;
+//            name = name + (++counter) ;
+//            Node gn = NodeFactory.createURI(name) ;
+//            Graph g = dsg.getGraph(gn) ;
+//            StreamRDF dest = StreamRDFLib.graph(g) ;
+//            LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name, dest) ;
+//            parser.parse() ;
+//            action.log.info(format("[%d] Location: %s", action.id, name)) ;
+//            action.response.setHeader("Location", name) ;
+//            action.commit() ;
+//            ServletOps.successCreated(action) ;
+//        } catch (IOException ex) {
+//            action.abort() ;
+//        } finally {
+//            action.endWrite() ;
+//        }
+//    }
 }
-

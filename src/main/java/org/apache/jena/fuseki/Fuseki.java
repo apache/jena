@@ -66,17 +66,11 @@ public class Fuseki {
      */
     static public String    FusekiSymbolIRI              = "http://jena.apache.org/fuseki#" ;
 
-    /** ??? */
+    /** TODO Default location of the pages for the Fuseki UI  */
     static public String    PagesStatic                  = "pages" ;
 
     /**
-     * TEMPORARY - this enables POST of triples to the dataset URI causing a
-     * graph to be created. POSTing to /dataset?graph=uri is preferred
-     */
-    static public boolean   graphStoreProtocolPostCreate = false ;
-
-    /**
-     * an relative path to the location of <code>fuseki-properties.xml</code>
+     * A relative path to the location of <code>fuseki-properties.xml</code>
      * file
      */
     static private String   metadataLocation             = "org/apache/jena/fuseki/fuseki-properties.xml" ;
@@ -104,10 +98,7 @@ public class Fuseki {
     static public final String        VERSION           = metadata.get(PATH + ".version", "development") ;
 
     /** Date when Fuseki was built */
-    static public final String        BUILD_DATE        = metadata.get(PATH + ".build.datetime", "unknown") ; // call
-                                                                                                              // Date
-                                                                                                              // if
-                                                                                                              // unavailable.
+    static public final String        BUILD_DATE        = metadata.get(PATH + ".build.datetime", "unknown") ;
 
     /** An identifier for the HTTP Fuseki server instance */
     static public final String        serverHttpName    = NAME + " (" + VERSION + ")" ;

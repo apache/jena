@@ -18,8 +18,6 @@
 
 package org.apache.jena.fuseki.servlets ;
 
-import java.io.IOException ;
-import java.io.PrintWriter ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import javax.servlet.http.HttpServlet ;
@@ -29,9 +27,8 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.web.HttpSC ;
 
-// 
+// Move statics to a lib (ActionLib?)
 public abstract class ServletBase extends HttpServlet {
     private static AtomicLong     requestIdAlloc = new AtomicLong(0) ;
 
@@ -63,134 +60,6 @@ public abstract class ServletBase extends HttpServlet {
      */
     protected static void addRequestId(HttpServletResponse response, long id) {
         response.addHeader("Fuseki-Request-ID", Long.toString(id)) ;
-    }
-
-    protected static void responseSendError(HttpServletResponse response, int statusCode, String message) {
-        try {
-            response.sendError(statusCode, message) ;
-        } catch (IOException ex) {
-            errorOccurred(ex) ;
-        } catch (IllegalStateException ex) {}
-    }
-
-    protected static void responseSendError(HttpServletResponse response, int statusCode) {
-        try {
-            response.sendError(statusCode) ;
-        } catch (IOException ex) {
-            errorOccurred(ex) ;
-        }
-    }
-
-    protected static String wholeRequestURL(HttpServletRequest request) {
-        StringBuffer sb = request.getRequestURL() ;
-        String queryString = request.getQueryString() ;
-        if ( queryString != null ) {
-            sb.append("?") ;
-            sb.append(queryString) ;
-        }
-        return sb.toString() ;
-    }
-
-    protected static void successNoContent(HttpAction action) {
-        success(action, HttpSC.NO_CONTENT_204) ;
-    }
-
-    protected static void success(HttpAction action) {
-        success(action, HttpSC.OK_200) ;
-    }
-
-    protected static void successCreated(HttpAction action) {
-        success(action, HttpSC.CREATED_201) ;
-    }
-
-    // When 404 is no big deal e.g. HEAD
-    protected static void successNotFound(HttpAction action) {
-        success(action, HttpSC.NOT_FOUND_404) ;
-    }
-
-    //
-    protected static void success(HttpAction action, int httpStatusCode) {
-        action.response.setStatus(httpStatusCode) ;
-    }
-
-    protected static void successPage(HttpAction action, String message) {
-        try {
-            action.response.setContentType("text/html") ;
-            action.response.setStatus(HttpSC.OK_200) ;
-            PrintWriter out = action.response.getWriter() ;
-            out.println("<html>") ;
-            out.println("<head>") ;
-            out.println("</head>") ;
-            out.println("<body>") ;
-            out.println("<h1>Success</h1>") ;
-            if ( message != null ) {
-                out.println("<p>") ;
-                out.println(message) ;
-                out.println("</p>") ;
-            }
-            out.println("</body>") ;
-            out.println("</html>") ;
-            out.flush() ;
-        } catch (IOException ex) {
-            errorOccurred(ex) ;
-        }
-    }
-
-    protected static void warning(HttpAction action, String string) {
-        action.log.warn(string) ;
-    }
-
-    protected static void warning(HttpAction action, String string, Throwable thorwable) {
-        action.log.warn(string, thorwable) ;
-    }
-
-    protected static void errorBadRequest(String string) {
-        error(HttpSC.BAD_REQUEST_400, string) ;
-    }
-
-    protected static void errorNotFound(String string) {
-        error(HttpSC.NOT_FOUND_404, string) ;
-    }
-
-    protected static void errorNotImplemented(String msg) {
-        error(HttpSC.NOT_IMPLEMENTED_501, msg) ;
-    }
-
-    protected static void errorMethodNotAllowed(String method) {
-        error(HttpSC.METHOD_NOT_ALLOWED_405, "HTTP method not allowed: " + method) ;
-    }
-
-    protected static void errorForbidden(String msg) {
-        if ( msg != null )
-            error(HttpSC.FORBIDDEN_403, msg) ;
-        else
-            error(HttpSC.FORBIDDEN_403, "Forbidden") ;
-    }
-
-    protected static void error(int statusCode) {
-        throw new ActionErrorException(null, null, statusCode) ;
-    }
-
-    protected static void error(int statusCode, String string) {
-        throw new ActionErrorException(null, string, statusCode) ;
-    }
-
-    protected static void errorOccurred(String message) {
-        errorOccurred(message, null) ;
-    }
-
-    protected static void errorOccurred(Throwable ex) {
-        errorOccurred(null, ex) ;
-    }
-
-    protected static void errorOccurred(String message, Throwable ex) {
-        throw new ActionErrorException(ex, message, HttpSC.INTERNAL_SERVER_ERROR_500) ;
-    }
-
-    protected static String formatForLog(String string) {
-        string = string.replace('\n', ' ') ;
-        string = string.replace('\r', ' ') ;
-        return string ;
     }
 
     static String varyHeaderSetting = StrUtils.strjoin(",", HttpNames.hAccept, HttpNames.hAcceptEncoding,

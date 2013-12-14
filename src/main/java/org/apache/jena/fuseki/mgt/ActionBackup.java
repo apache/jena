@@ -37,6 +37,7 @@ import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.web.HttpSC ;
@@ -62,7 +63,7 @@ public class ActionBackup extends ActionCtl /* XXX This is a RequestAction not a
         String dataset = FusekiLib.safeParameter(action.request, "dataset") ;
         if ( dataset == null )
         {
-            errorBadRequest("Required parameter missing: ?dataset=") ;
+            ServletOps.errorBadRequest("Required parameter missing: ?dataset=") ;
             return ;
         }
         
@@ -76,14 +77,14 @@ public class ActionBackup extends ActionCtl /* XXX This is a RequestAction not a
         boolean known = DatasetRegistry.get().isRegistered(dataset) ;
         if (!known)
         {
-            errorBadRequest("No such dataset: " + dataset) ;
+            ServletOps.errorBadRequest("No such dataset: " + dataset) ;
             return ;
         }
         
         DatasetRef ref = DatasetRegistry.get().get(dataset) ;
-        action.setRequestRef(ref);
+        action.setRequestRef(ref, dataset);
         scheduleBackup(action) ;
-        success(action) ;
+        ServletOps.success(action) ;
     }
 
     static final String BackupArea = "backups" ;  

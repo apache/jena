@@ -72,20 +72,20 @@ public abstract class ActionBase extends ServletBase
                 // Also need the per query info ...
                 String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
                 // Possibility :: response.setHeader("Retry-after", "600") ;    // 5 minutes
-                responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
+                ServletOps.responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
             } catch (ActionErrorException ex) {
                 if ( ex.exception != null )
                     ex.exception.printStackTrace(System.err) ;
                 // Log message done by printResponse in a moment.
                 if ( ex.message != null )
-                    responseSendError(response, ex.rc, ex.message) ;
+                    ServletOps.responseSendError(response, ex.rc, ex.message) ;
                 else
-                    responseSendError(response, ex.rc) ;
+                    ServletOps.responseSendError(response, ex.rc) ;
             } catch (Throwable ex) {
                 // This should not happen.
                 //ex.printStackTrace(System.err) ;
                 log.warn(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
-                responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
+                ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
             }
     
             action.setFinishTime() ;
@@ -105,13 +105,11 @@ public abstract class ActionBase extends ServletBase
     }
 
     // Default start/finish steps. 
-    protected void startRequest(HttpAction action) {
-    }
+    protected void startRequest(HttpAction action) { }
     
     protected void finishRequest(HttpAction action) { }
     
-    private void archiveHttpAction(HttpAction action)
-    {
+    private void archiveHttpAction(HttpAction action) {
         action.minimize() ;
     }
 
@@ -123,9 +121,8 @@ public abstract class ActionBase extends ServletBase
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "HTTP PATCH not supported");
     }
     
-    private void printRequest(HttpAction action)
-    {
-        String url = wholeRequestURL(action.request) ;
+    private void printRequest(HttpAction action) {
+        String url = ActionLib.wholeRequestURL(action.request) ;
         String method = action.request.getMethod() ;
 
         log.info(format("[%d] %s %s", action.id, method, url)) ;
@@ -134,7 +131,7 @@ public abstract class ActionBase extends ServletBase
             for (; en.hasMoreElements();) {
                 String h = en.nextElement() ;
                 Enumeration<String> vals = action.request.getHeaders(h) ;
-                if (!vals.hasMoreElements())
+                if ( !vals.hasMoreElements() )
                     log.info(format("[%d]   ", action.id, h)) ;
                 else {
                     for (; vals.hasMoreElements();)
@@ -143,44 +140,41 @@ public abstract class ActionBase extends ServletBase
             }
         }
     }
-    
-    private void initResponse(HttpServletRequest request, HttpServletResponse response)
-    {
+
+    private void initResponse(HttpServletRequest request, HttpServletResponse response) {
         setCommonHeaders(response) ;
         String method = request.getMethod() ;
         // All GET and HEAD operations are sensitive to conneg so ...
         if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) || HttpNames.METHOD_HEAD.equalsIgnoreCase(method) )
             setVaryHeader(response) ;
     }
-    
-    private void printResponse(HttpAction action)
-    {
+
+    private void printResponse(HttpAction action) {
         long time = action.getTime() ;
-        
+
         HttpServletResponseTracker response = action.response ;
-        if ( action.verbose )
-        {
+        if ( action.verbose ) {
             if ( action.contentType != null )
                 log.info(format("[%d]   %-20s %s", action.id, HttpNames.hContentType, action.contentType)) ;
             if ( action.contentLength != -1 )
                 log.info(format("[%d]   %-20s %d", action.id, HttpNames.hContentLengh, action.contentLength)) ;
-            for ( Map.Entry<String, String> e: action.headers.entrySet() )
+            for (Map.Entry<String, String> e : action.headers.entrySet())
                 log.info(format("[%d]   %-20s %s", action.id, e.getKey(), e.getValue())) ;
         }
 
         String timeStr = fmtMillis(time) ;
 
         if ( action.message == null )
-            log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, HttpSC.getMessage(action.statusCode), timeStr)) ;
+            log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode,
+                                   HttpSC.getMessage(action.statusCode), timeStr)) ;
         else
             log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, action.message, timeStr)) ;
     }
-    
-    private static String fmtMillis(long time)
-    {
+
+    private static String fmtMillis(long time) {
         // Millis only? seconds only?
         if ( time < 1000 )
             return String.format("%,d ms", time) ;
-        return String.format("%,.3f s", time/1000.0) ;
+        return String.format("%,.3f s", time / 1000.0) ;
     }
 }
