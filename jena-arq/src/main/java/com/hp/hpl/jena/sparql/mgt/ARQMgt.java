@@ -52,11 +52,8 @@ public class ARQMgt {
         initialized = true ;
 
         try {
-
             mbs = ManagementFactory.getPlatformMBeanServer() ;
-
             String NS = ARQ.PATH ;
-
             ContextMBean cxtBean = new ContextMBean(ARQ.getContext()) ;
             QueryEngineInfo qeInfo = QueryEngineBase.queryEngineInfo ;
 
@@ -66,7 +63,7 @@ public class ARQMgt {
             register(NS + ".system:type=Engine", qeInfo) ;
 
         } catch (Throwable ex) {
-            Log.warn(ARQMgt.class, "Failed to initialize JMX", ex) ;
+            Log.debug(ARQMgt.class, "Failed to initialize JMX: "+ex.getMessage()) ;
             noJMX = true ;
             mbs = null ;
         }
