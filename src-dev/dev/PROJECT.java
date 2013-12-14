@@ -28,5 +28,9 @@ public class PROJECT {
     
     // Document (write/update) all protocol modes.
     // TESTS
+    
+    // JENA-201 - WAR Fuseki.
+    //   WEB.xml
+    //   ContextPath in uber dispatch.
 }
 

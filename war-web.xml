@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	 version="3.0">
+
+  <display-name>Apache Jena Fuseki Server</display-name>
+
+  <listener>
+    <listener-class>webapp.ServerInit</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>FusekiServlet</servlet-name>
+    <servlet-class>webapp.FusekiServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>FusekiServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+  <!-- pages -->
+
+  <!--
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  -->
+  <mime-mapping>
+    <extension>rdf</extension>
+    <mime-type>application/rdf+xml;charset=utf-8</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>ttl</extension>
+    <mime-type>text/turtle;charset=utf-8</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>nt</extension>
+    <mime-type>text/plain;charset=utf-8</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>nq</extension>
+    <mime-type>text/nquads;charset=utf-8</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>trig</extension>
+    <mime-type>application/trig;charset=utf-8</mime-type>
+  </mime-mapping>
+
+  <!-- If using security via Shiro - ->
+
+  <listener>
+    <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+  </listener>
+
+  <filter>
+    <filter-name>ShiroFilter</filter-name>
+    <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>ShiroFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+  -->
+
+</web-app>
