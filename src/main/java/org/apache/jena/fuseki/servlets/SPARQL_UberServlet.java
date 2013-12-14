@@ -122,10 +122,10 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
      */
     @Override
     protected String mapRequestToDataset(HttpAction action) {
-        return ActionLib.mapRequestToDatasetLongest$(action.request.getRequestURI()) ;
+        String uri = ActionLib.removeContextPath(action) ;
+        return ActionLib.mapRequestToDatasetLongest$(uri) ;
     }
     
-
     /** Intercept the processing cycle at the point where the action has been set up,
      *  the dataset target decided but no validation or execution has been done, 
      *  nor any stats have been done.
@@ -133,6 +133,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     @Override
     protected void executeAction(HttpAction action)
     {
+        // XXX Worry about context path.
         long id = action.id ;
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
@@ -305,7 +306,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         return true ;
     }
 
-    /** Find the graph (direct naming) or service name */ 
+    /** Find part after the dataset name: service name or the graph (direct naming) */ 
     protected String findTrailing(String uri, String dsname) 
     {
         if ( dsname.length() >= uri.length() )

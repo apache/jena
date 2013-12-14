@@ -11,6 +11,20 @@
     <listener-class>webapp.ServerInit</listener-class>
   </listener>
 
+  <filter>
+    <filter-name>FusekiFilter</filter-name>
+    <filter-class>org.apache.jena.fuseki.servlets.SPARQ_UberFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>FusekiFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+
   <servlet>
     <servlet-name>FusekiServlet</servlet-name>
     <servlet-class>webapp.FusekiServlet</servlet-class>

@@ -28,6 +28,7 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.web.HttpSC ;
@@ -46,6 +47,13 @@ public abstract class ActionBase extends ServletBase
         super() ;
         this.log = log ;
     }
+    
+    @Override 
+    public void init() {
+        Log.info(this, getServletContext().getServletContextName()) ;
+        //super.init() ;
+    }
+   
     
     // Common framework for handling HTTP requests
     protected void doCommon(HttpServletRequest request, HttpServletResponse response)

@@ -18,26 +18,56 @@
 
 package org.apache.jena.fuseki.server;
 
+import javax.servlet.ServletContext ;
 import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
+import org.apache.jena.fuseki.Fuseki ;
+import org.slf4j.Logger ;
+
 public class FusekiServletContextListener implements ServletContextListener {
+    private static Logger confLog = Fuseki.configLog ; 
+
     // This could do the initialization. 
     private final SPARQLServer sparqlServer ;
+    
+    // Embedded version.
     public FusekiServletContextListener(SPARQLServer sparqlServer) {
         this.sparqlServer = sparqlServer ;
     }
 
+    // web.xml version.
+    public FusekiServletContextListener() { sparqlServer = null ; }
+    
+    // Default.
+    static public String rootDirectory     = "/usr/share/fuseki" ;
+//    static public String staticContentDir  = rootDirectory + "/pages" ;
+    static public String configurationFile = rootDirectory + "/config-fuseki.ttl" ;
+
+    static public ServerConfig serverConfig = null ;
+    static Boolean initialized = false ;
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-//        Fuseki.serverLog.info("contextInitialized") ;
-//        for ( DatasetRef dsRef : sparqlServer.getDatasets() )
-//            Fuseki.serverLog.info("Dataset: "+dsRef.getName()) ;
+        //confLog.info("contextInitialized");
+        ServletContext cxt = sce.getServletContext() ;
+        confLog.info(cxt.getServletContextName()) ;
+        init() ;
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-//        Fuseki.serverLog.info("contextDestroyed") ;
+    public void contextDestroyed(ServletContextEvent sce) {}
+
+    public static void init() {
+        if ( initialized )
+            return ;
+        synchronized(initialized)
+        {
+            if ( initialized )
+                return ;
+            Fuseki.init() ;
+            confLog.error("Unconverted code - need to find configuration");
+        }
     }
 }
 

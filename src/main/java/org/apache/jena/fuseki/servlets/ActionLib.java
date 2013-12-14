@@ -104,6 +104,33 @@ public class ActionLib {
         return sb.toString() ;
     }
 
+    /* 
+     * The context path can be:
+     * "" for the root context
+     * "/webapp" for named contexts
+     * so:
+     * "/dataset/server" becomes "/dataset/server"
+     * "/webapp/dataset/server" becomes "/dataset/server"
+     */
+    public static String removeContextPath(HttpAction action) {
+//        Log.info(this, "URI                     = '"+action.request.getRequestURI()) ;
+//        Log.info(this, "Context path            = '"+action.request.getContextPath()+"'") ;
+//        Log.info(this, "Servlet path            = '"+action.request.getServletPath()+"'") ;
+//        ServletContext cxt = this.getServletContext() ;
+//        Log.info(this, "ServletContext path     = '"+cxt.getContextPath()+"'") ;
+
+        String uri = action.request.getRequestURI() ;
+        String contextPath = action.request.getServletContext().getContextPath() ;
+        if ( contextPath == null )
+            return uri ;
+        if ( contextPath.isEmpty())
+            return uri ;
+        String x = uri ;
+        if ( uri.startsWith(contextPath) )
+            x = uri.substring(contextPath.length()) ;
+        //log.info("removeContext: uri = "+uri+" contextPath="+contextPath+ "--> x="+x) ;
+        return x ;
+    }
 
 }
 

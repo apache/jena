@@ -32,8 +32,8 @@ import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.mgt.MgtFunctions ;
+import org.apache.jena.fuseki.servlets.FusekiFilter ;
 import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral ;
-import org.apache.jena.fuseki.servlets.SPARQL_UberFilter ;
 import org.apache.jena.fuseki.servlets.SimpleVelocityServlet ;
 import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
@@ -107,7 +107,7 @@ public class SPARQLServer {
         // registered, active datasets to the all purpose service dispatch servlet
         // SPARQL_UberServlet.
 
-        FilterHolder f = new FilterHolder(new SPARQL_UberFilter()) ;
+        FilterHolder f = new FilterHolder(new FusekiFilter()) ;
         EnumSet<DispatcherType> es = EnumSet.allOf(DispatcherType.class) ; 
         context.addFilter(f, "/*", es);
     }

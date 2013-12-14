@@ -31,9 +31,8 @@ import org.slf4j.Logger ;
 /** Look at all requests and see if they match a registered dataset name; 
  * if they do, pass down to the uber servlet, which can dispatch any request
  * for any service. 
- *  
  */
-public class SPARQL_UberFilter implements Filter {
+public class FusekiFilter implements Filter {
     private static Logger log = Fuseki.requestLog ; //LoggerFactory.getLogger(SomeFilter.class) ;
     private static SPARQL_UberServlet überServlet = new SPARQL_UberServlet.AccessByConfig() ;
     
@@ -41,12 +40,15 @@ public class SPARQL_UberFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
         try {
             // See SPARQL_Servlet.execCommonWorker
             HttpServletRequest req = (HttpServletRequest)request ;
             HttpServletResponse resp = (HttpServletResponse)response ;
 
+            // XXX Context path
+            
             String uri = req.getRequestURI() ;
             String datasetUri = ActionLib.mapRequestToDataset(uri) ;
 
