@@ -30,10 +30,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotParseException ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -97,7 +94,9 @@ public class Upload {
                 // Process the input stream
                 String contentTypeHeader = fileStream.getContentType() ;
                 ContentType ct = ContentType.create(contentTypeHeader) ;
-                Lang lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
+                Lang lang = null ;
+                if ( ! WebContent.contentTypeTextPlain.equals(ct.getContentType()) )
+                    lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
     
                 if ( lang == null ) {
                     String name = fileStream.getName() ; 

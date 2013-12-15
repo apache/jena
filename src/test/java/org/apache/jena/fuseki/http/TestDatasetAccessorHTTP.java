@@ -47,10 +47,10 @@ public class TestDatasetAccessorHTTP extends BaseTest
     @AfterClass public static void afterClass()     { ServerTest.freeServer() ; }
     @Before public void before()                    { ServerTest.resetServer() ; }
     
-    @Test(expected=HttpException.class)
+    @Test
     public void test_ds_1()
     {
-        // Can't GET the dataset service.
+        // Can GET the dataset service.
         try {
             HttpOp.execHttpGet(serviceREST) ;
         } catch (HttpException ex) {

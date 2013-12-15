@@ -70,8 +70,7 @@ public abstract class ActionSPARQL extends ActionBase
         executeAction(action) ;
     }
 
-    // Execute - no stats.
-    // Intercept point for the UberServlet 
+    // Execute - allow interception before stats added.
     protected void executeAction(HttpAction action) {
         executeLifecycle(action) ;
     }

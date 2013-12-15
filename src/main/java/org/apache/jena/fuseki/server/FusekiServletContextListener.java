@@ -51,7 +51,6 @@ public class FusekiServletContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         //confLog.info("contextInitialized");
         ServletContext cxt = sce.getServletContext() ;
-        confLog.info(cxt.getServletContextName()) ;
         init() ;
     }
 

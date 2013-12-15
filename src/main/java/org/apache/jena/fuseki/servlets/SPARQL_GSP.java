@@ -18,31 +18,20 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static org.apache.jena.fuseki.HttpNames.* ;
-
-import java.io.IOException ;
 import java.util.Enumeration ;
-import java.util.Locale ;
 
-import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.server.CounterName ;
 import org.apache.jena.riot.system.IRIResolver ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public abstract class SPARQL_REST extends ActionSPARQL
+public abstract class SPARQL_GSP extends ActionREST
 {
-    protected static Logger classLog = LoggerFactory.getLogger(SPARQL_REST.class) ;
-
     protected final static Target determineTarget(HttpAction action) {
         // Delayed until inside a transaction.
         if ( action.getActiveDSG() == null )
@@ -61,13 +50,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
                 ServletOps.errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
         }
         
-//        // Put these in action.
-//        String datasetUri = mapRequestToDataset(action) ;
-//        String reqUri = action.request.getRequestURI() ;
-//        String serviceName = ActionLib.mapRequestToService(dsRef, reqUri, reqUri) ;
-
         String dsTarget = action.datasetName ;
-        
         
         if ( dftGraph )
             return Target.createDefault(action.getActiveDSG()) ;
@@ -80,7 +63,7 @@ public abstract class SPARQL_REST extends ActionSPARQL
         // Strictly, a bit naughty on the URI resolution.  But more sensible. 
         // Base is dataset.
         
-        // XXX Remove service.
+        // XXX Remove any service.
         
         String base = action.request.getRequestURL().toString() ; //wholeRequestURL(request) ;
         // Make sure it ends in "/", ie. dataset as container.
@@ -176,138 +159,9 @@ public abstract class SPARQL_REST extends ActionSPARQL
         }
     }
 
-    public SPARQL_REST()
+    public SPARQL_GSP()
     { super() ; }
 
-    @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Direct all verbs to our common framework.
-        doCommon(request, response) ;
-    }
-    
-    private void maybeSetLastModified(HttpServletResponse resp, long lastModified) {
-        if (resp.containsHeader(HEADER_LASTMOD)) return ;
-        if (lastModified >= 0) resp.setDateHeader(HEADER_LASTMOD, lastModified);
-    }
-    
-    @Override
-    protected void perform(HttpAction action) {
-        dispatch(action) ;
-    }
-
-    private void dispatch(HttpAction action) {
-        HttpServletRequest req = action.request ;
-        HttpServletResponse resp = action.response ;
-        String method = req.getMethod().toUpperCase(Locale.ROOT) ;
-
-        if (method.equals(METHOD_GET))
-            doGet$(action);
-        else if (method.equals(METHOD_HEAD))
-            doHead$(action);
-        else if (method.equals(METHOD_POST))
-            doPost$(action);
-        else if (method.equals(METHOD_PATCH))
-            doPatch$(action) ;
-        else if (method.equals(METHOD_OPTIONS))
-            doOptions$(action) ;
-        else if (method.equals(METHOD_TRACE))
-            //doTrace(action) ;
-            ServletOps.errorMethodNotAllowed("TRACE") ;
-        else if (method.equals(METHOD_PUT))
-            doPut$(action) ;   
-        else if (method.equals(METHOD_DELETE))
-            doDelete$(action) ;
-        else
-            ServletOps.errorNotImplemented("Unknown method: "+method) ;
-    }
-
-    // Counter wrappers
-    
-    private final void doGet$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPget) ;
-        try {
-            doGet(action) ;
-            incCounter(action.srvRef, CounterName.GSPgetGood) ;
-        } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPgetBad) ;
-            throw ex ;
-        }
-    }
-
-    private final void doHead$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPhead) ;
-        try {
-            doHead(action) ;
-            incCounter(action.srvRef, CounterName.GSPheadGood) ;
-        } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPheadBad) ;
-            throw ex ;
-        }
-    }
-
-    private final void doPost$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPpost) ;
-        try {
-            doPost(action) ;
-            incCounter(action.srvRef, CounterName.GSPpostGood) ;
-        } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPpostBad) ;
-            throw ex ;
-        }
-    }
-
-    private final void doPatch$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPpatch) ;
-        try {
-            doPatch(action) ;
-            incCounter(action.srvRef, CounterName.GSPpatchGood) ;
-        } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPpatchBad) ;
-            throw ex ;
-        }
-    }
-
-    private final void doDelete$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPdelete) ;
-        try {
-            doDelete(action) ;
-            incCounter(action.srvRef, CounterName.GSPdeleteGood) ;
-        } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPdeleteBad) ;
-            throw ex ;
-        }
-    }
-
-    private final void doPut$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPput) ;
-        try {
-            doPut(action) ;
-            incCounter(action.srvRef, CounterName.GSPputGood) ;
-        } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPputBad) ;
-            throw ex ;
-        }
-    }
-
-    private final void doOptions$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPoptions) ;
-        try {
-            doOptions(action) ;
-            incCounter(action.srvRef, CounterName.GSPoptionsGood) ;
-        } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPoptionsBad) ;
-            throw ex ;
-        }
-    }
-    
-    protected abstract void doGet(HttpAction action) ;
-    protected abstract void doHead(HttpAction action) ;
-    protected abstract void doPost(HttpAction action) ;
-    protected abstract void doPatch(HttpAction action) ;
-    protected abstract void doDelete(HttpAction action) ;
-    protected abstract void doPut(HttpAction action) ;
-    protected abstract void doOptions(HttpAction action) ;
-    
     @Override
     protected void validate(HttpAction action)
     {

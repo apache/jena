@@ -31,9 +31,9 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 /** The WRITE operations added to the READ operations */
-public class SPARQL_REST_RW extends SPARQL_REST_R
+public class SPARQL_GSP_RW extends SPARQL_GSP_R
 {
-    public SPARQL_REST_RW()
+    public SPARQL_GSP_RW()
     { super() ; }
 
     @Override

@@ -21,6 +21,7 @@ package org.apache.jena.fuseki;
 import static org.apache.jena.fuseki.ServerTest.serviceREST ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
+import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
@@ -41,7 +42,11 @@ public class TestFileUpload extends BaseTest
         ServerTest.freeServer() ;
     }
     
-    @Test public void upload_01()
+    @Before public void beforeTest() {
+        ServerTest.resetServer() ;
+    }
+    
+    @Test public void upload_gsp_01()
     {
         FileSender x = new FileSender(ServerTest.serviceREST+"?default") ;
         x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/turtle") ;
@@ -52,7 +57,7 @@ public class TestFileUpload extends BaseTest
         assertEquals(1, m.size()) ;
     }
     
-    @Test public void upload_02()
+    @Test public void upload_gsp_02()
     {
         FileSender x = new FileSender(ServerTest.serviceREST+"?default") ;
         x.add("D.ttl", "<http://example/s> <http://example/p> 123 .", "text/turtle") ;
@@ -62,6 +67,62 @@ public class TestFileUpload extends BaseTest
         DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
         Model m = du.getModel() ;
         assertEquals(2, m.size()) ;
+    }
+
+    // Beyond strict GSP - no graph selector => dataset
+    @Test public void upload_gsp_03()
+    {
+        FileSender x = new FileSender(ServerTest.serviceREST) ;
+        x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/turtle") ;
+        x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> <http://example/o> }", "text/trig") ;
+        x.send("POST") ;
+        
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        Model m = du.getModel() ;
+        assertEquals(1, m.size()) ;
+    }
+
+    @Test public void upload_gsp_04()
+    {
+        {
+            DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+            Model m = du.getModel() ;
+            assertEquals(0, m.size()) ;
+        }
+        FileSender x = new FileSender(ServerTest.urlDataset) ;
+        x.add("D.ttl", "<http://example/s> <http://example/p> <http://example/o> .", "text/plain") ;
+        x.add("D.trig", "<http://example/g> { <http://example/s> <http://example/p> 123,456 }", "text/plain") ;
+        x.send("POST") ;
+        
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        Model m = du.getModel() ;
+        assertEquals(1, m.size()) ;
+        m = du.getModel("http://example/g") ;
+        assertEquals(2, m.size()) ;
+    }
+
+    @Test public void upload_dataset_01() {
+        FileSender x = new FileSender(ServerTest.urlDataset) ;
+        x.add("D.nq", "", "application/-n-quads") ;
+        x.send("PUT") ;
+        
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        Model m = du.getModel() ;
+        assertEquals(0, m.size()) ;
+        
+    }
+    
+    @Test public void upload_dataset_02() {
+        FileSender x = new FileSender(ServerTest.urlDataset) ;
+        x.add("D.nq", "<http://example/s> <http://example/p> <http://example/o-456> <http://example/g> .", "application/-n-quads") ;
+        x.send("PUT") ;
+        
+        DatasetAccessor du = DatasetAccessorFactory.createHTTP(serviceREST) ;
+        Model m = du.getModel("http://example/g") ;
+        assertEquals(1, m.size()) ;
+        m = du.getModel() ;
+        assertEquals(0, m.size()) ;
+        
     }
 
 }

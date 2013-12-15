@@ -32,9 +32,9 @@ import org.apache.jena.riot.* ;
 import com.hp.hpl.jena.graph.Graph ;
 
 /** Only the READ operations */
-public class SPARQL_REST_R extends SPARQL_REST
+public class SPARQL_GSP_R extends SPARQL_GSP
 {
-    public SPARQL_REST_R()
+    public SPARQL_GSP_R()
     { super() ; }
     
     

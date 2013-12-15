@@ -23,6 +23,12 @@ public class PROJECT {
     // All TODO and XXX
     // Graph upload in ActionDatasets == Upload.
 
+    // GSP, and no query string => quads operation. JENA-607
+    
+    // txn and nonTxn server set up for tests.
+    
+    // Enables, disable R/RW on SPARQL_UberServlet(renamed) and quads operations.
+    
     // Remove all direct naming (put in separate servlet if ever needed)  
     //   last place : SPARQL_UberServlet
     

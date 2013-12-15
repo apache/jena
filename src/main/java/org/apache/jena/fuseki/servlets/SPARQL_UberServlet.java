@@ -96,9 +96,10 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     private final ActionSPARQL queryServlet    = new SPARQL_QueryDataset() ;
     private final ActionSPARQL updateServlet   = new SPARQL_Update() ;
     private final ActionSPARQL uploadServlet   = new SPARQL_Upload() ;
-    private final ActionSPARQL restServlet_RW  = new SPARQL_REST_RW() ;
-    private final ActionSPARQL restServlet_R   = new SPARQL_REST_R() ;
-    private final ActionSPARQL restQuads       = new REST_Quads() ;
+    private final ActionSPARQL gspServlet_R    = new SPARQL_GSP_R() ;
+    private final ActionSPARQL gspServlet_RW   = new SPARQL_GSP_RW() ;
+    private final ActionSPARQL restQuads_R     = new REST_Quads_R() ;
+    private final ActionSPARQL restQuads_RW    = new REST_Quads_RW() ;
     
     public SPARQL_UberServlet() { super(); }
 
@@ -169,7 +170,10 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         
         if ( ! hasTrailing && ! hasParams )
         {
-            restQuads.executeLifecycle(action) ;
+            // Check enabled.  But no trailing here.
+            // if ( serviceDispatch(action, desc.readGraphStore, trailing, restQuads_R) ) return ;
+            // if ( serviceDispatch(action, desc.readWriteGraphStore, trailing, restQuads_RW) ) return ;
+            restQuads_RW.executeLifecycle(action) ;
             return ;
         }
         
@@ -212,9 +216,17 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
             // If so, dispatch to that service.
             if ( serviceDispatch(action, desc.query, trailing, queryServlet) ) return ; 
             if ( serviceDispatch(action, desc.update, trailing, updateServlet) ) return ; 
-            if ( serviceDispatch(action, desc.upload, trailing, uploadServlet) ) return ; 
-            if ( serviceDispatch(action, desc.readGraphStore, trailing, restServlet_R) ) return ; 
-            if ( serviceDispatch(action, desc.readWriteGraphStore, trailing, restServlet_RW) ) return ; 
+            if ( serviceDispatch(action, desc.upload, trailing, uploadServlet) ) return ;
+            if ( hasParams ) {
+                if ( serviceDispatch(action, desc.readGraphStore, trailing, gspServlet_R) ) return ; 
+                if ( serviceDispatch(action, desc.readWriteGraphStore, trailing, gspServlet_RW) ) return ;
+            } else {
+                // No parameters - do as a quads operation on the dataset.
+                if ( serviceDispatch(action, desc.readGraphStore, trailing, restQuads_R) ) return ;
+                if ( serviceDispatch(action, desc.readWriteGraphStore, trailing, restQuads_RW) ) return ;
+            }
+                
+            // If no params, its a daatset operation.
         }       
         // There is a trailing part - params are illegal by this point.
         if ( hasParams )
@@ -245,9 +257,9 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
            // Graphs Store Protocol, indirect naming, read
            // Indirect naming. Prefer the R service if available.
            if ( desc.readGraphStore.isActive() )
-               executeRequest(action, restServlet_R, desc.readGraphStore) ;
+               executeRequest(action, gspServlet_R, desc.readGraphStore) ;
            else if ( desc.readWriteGraphStore.isActive() )
-               executeRequest(action, restServlet_RW, desc.readWriteGraphStore) ;
+               executeRequest(action, gspServlet_RW, desc.readWriteGraphStore) ;
            else
                ServletOps.errorMethodNotAllowed(method) ;
            return ;
@@ -256,7 +268,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
        // Graphs Store Protocol, indirect naming, write
        if ( ! allowREST_W(action))
            ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : Write operation : "+method) ;
-       executeRequest(action, restServlet_RW, desc.readWriteGraphStore) ;
+       executeRequest(action, gspServlet_RW, desc.readWriteGraphStore) ;
        return ;
     }
 

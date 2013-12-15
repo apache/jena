@@ -23,6 +23,7 @@ import java.io.FileWriter ;
 import java.io.IOException ;
 import java.net.URI ;
 import java.net.URISyntaxException ;
+import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -32,6 +33,7 @@ import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator ;
 import org.apache.jena.atlas.web.auth.ScopedAuthenticator ;
 import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
@@ -98,7 +100,9 @@ public class TestAuth extends ServerTest {
     @AfterClass
     public static void teardown() {
         server.stop();
-
+        Collection<String> keys = DatasetRegistry.get().keys() ;
+        for ( String k : keys )
+            DatasetRegistry.get().remove(k);
         realmFile.delete();
     }
 

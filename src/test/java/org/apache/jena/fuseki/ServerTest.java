@@ -54,9 +54,10 @@ public class ServerTest
     public static final int port             = 3535 ;
     public static final String urlRoot       = "http://localhost:"+port+"/" ;
     public static final String datasetPath   = "/dataset" ;
-    public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
-    public static final String serviceQuery  = "http://localhost:"+port+datasetPath+"/query" ; 
-    public static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ;
+    public static final String urlDataset    = "http://localhost:"+port+datasetPath ;
+    public static final String serviceUpdate = urlDataset+"/update" ; 
+    public static final String serviceQuery  = urlDataset+"/query" ; 
+    public static final String serviceREST   = urlDataset+"/data" ;
     
     public static final String gn1       = "http://graph/1" ;
     public static final String gn2       = "http://graph/2" ;
@@ -104,6 +105,7 @@ public class ServerTest
         ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true, true) ;
         conf.port = ServerTest.port ;
         conf.pagesPort = ServerTest.port ;
+        
         server = new SPARQLServer(conf) ;
         server.start() ;
     }

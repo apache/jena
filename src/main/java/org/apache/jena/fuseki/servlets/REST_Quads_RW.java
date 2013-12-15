@@ -18,19 +18,7 @@
 
 package org.apache.jena.fuseki.servlets ;
 
-import static java.lang.String.format ;
-
-import java.io.IOException ;
-
-import javax.servlet.ServletOutputStream ;
-
-import org.apache.jena.atlas.web.MediaType ;
-import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -43,67 +31,14 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
  * dataset URI.
  */
 
-public abstract class REST_Quads extends SPARQL_GSP {
-    // Not supported: GSP direct naming.
+public class REST_Quads_RW extends REST_Quads_R {
 
-    public REST_Quads() {
+    public REST_Quads_RW() {
         super() ;
     }
 
     @Override
-    protected void validate(HttpAction action) {
-        // already checked?
-    }
-
-    @Override
-    protected void doGet(HttpAction action) {
-        MediaType mediaType = HttpAction.contentNegotationQuads(action) ;
-        ServletOutputStream output ;
-        try {
-            output = action.response.getOutputStream() ;
-        } catch (IOException ex) {
-            ServletOps.errorOccurred(ex) ;
-            output = null ;
-        }
-
-        TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
-        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentType()) ;
-        if ( lang == null )
-            lang = RDFLanguages.TRIG ;
-
-        if ( action.verbose )
-            action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", action.id,
-                                   mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
-        if ( !RDFLanguages.isQuads(lang) )
-            ServletOps.errorBadRequest("Not a quads format: " + mediaType) ;
-
-        action.beginRead() ;
-        try {
-            DatasetGraph dsg = action.getActiveDSG() ;
-            RDFDataMgr.write(out, dsg, lang) ;
-            ServletOps.success(action) ;
-        } finally {
-            action.endRead() ;
-        }
-    }
-
-    @Override
-    protected void doOptions(HttpAction action) {
-        action.response.setHeader(HttpNames.hAllow, "GET, HEAD, OPTIONS") ;
-        action.response.setHeader(HttpNames.hContentLengh, "0") ;
-        ServletOps.success(action) ;
-    }
-
-    @Override
-    protected void doHead(HttpAction action) {
-        action.beginRead() ;
-        try {
-            MediaType mediaType = HttpAction.contentNegotationQuads(action) ;
-            ServletOps.success(action) ;
-        } finally {
-            action.endRead() ;
-        }
-    }
+    protected void validate(HttpAction action) { }
 
     @Override
     protected void doPost(HttpAction action) {
@@ -161,9 +96,6 @@ public abstract class REST_Quads extends SPARQL_GSP {
         }
     }
     
-    // XXX Logging
-    // XXX Logging in Upload.incomingData
-
     private void doPutPostNonTxn(HttpAction action, boolean clearFirst) {
         DatasetGraph dsgTmp = DatasetGraphFactory.createMem() ;
         StreamRDF dest = StreamRDFLib.dataset(dsgTmp) ;
