@@ -65,8 +65,8 @@ public class FusekiServletContextListener implements ServletContextListener {
         {
             if ( initialized )
                 return ;
+            initialized = true ;
             Fuseki.init() ;
-            confLog.error("Unconverted code - need to find configuration");
         }
     }
 }

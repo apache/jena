@@ -28,7 +28,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
@@ -111,7 +111,7 @@ public class FusekiCmd extends CmdARQ {
             return ;
         }
         // Use built-in for Fuseki.
-        Log.resetLogging(log4Jsetup) ;
+        LogCtl.resetLogging(log4Jsetup) ;
     }
 
     static {

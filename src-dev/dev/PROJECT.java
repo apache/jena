@@ -22,7 +22,7 @@ public class PROJECT {
     // Andy's ToDo list
     // All TODO and XXX
     // Graph upload in ActionDatasets == Upload.
-    // REST_Quads
+
     // Remove all direct naming (put in separate servlet if ever needed)  
     //   last place : SPARQL_UberServlet
     
@@ -33,5 +33,7 @@ public class PROJECT {
     //   WEB.xml
     //   ContextPath in uber dispatch.
     //   FusekiServletContextListener
+    
+    // SPARQLServer.start kicks FusekiServletContextListener which could then do the main initialization. 
 }
 

@@ -56,7 +56,7 @@ public class ServerTest
     public static final String datasetPath   = "/dataset" ;
     public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
     public static final String serviceQuery  = "http://localhost:"+port+datasetPath+"/query" ; 
-    public static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ; // ??????
+    public static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ;
     
     public static final String gn1       = "http://graph/1" ;
     public static final String gn2       = "http://graph/2" ;

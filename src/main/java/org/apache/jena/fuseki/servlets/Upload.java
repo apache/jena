@@ -42,8 +42,7 @@ public class Upload {
     public static void incomingData(HttpAction action, StreamRDF dest, boolean isGraph) {
         ContentType ct = FusekiLib.getContentType(action) ;
          
-        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) 
-        {
+        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) {
             fileUploadWorker(action, dest, isGraph) ;
             return ;
         }
@@ -79,7 +78,7 @@ public class Upload {
     
     public static void fileUploadWorker(HttpAction action, StreamRDF dest, boolean isGraph) {
         String base = ActionLib.wholeRequestURL(action.request) ;
-        String item = (isGraph)?"quad":"triple" ;
+        String item = (isGraph)?"triple":"quad" ;
         ServletFileUpload upload = new ServletFileUpload();
         long count = -1 ;
         
@@ -137,7 +136,7 @@ public class Upload {
             }
         }
         catch (ActionErrorException ex) { throw ex ; }
-        catch (Exception ex)            { ServletOps.errorOccurred(ex) ; }
+        catch (Exception ex)            { ServletOps.errorOccurred(ex.getMessage()) ; }
     }
 }
 

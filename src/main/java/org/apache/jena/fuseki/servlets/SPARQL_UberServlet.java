@@ -163,7 +163,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         if ( ct != null )
             mt = MediaType.create(ct, charset) ;
         
-        action.log.info(format("[%d] All: %s %s :: '%s' :: %s ? %s", id, method, desc.name, trailing, (mt==null?"<none>":mt), (qs==null?"":qs))) ;
+        action.log.info(format("[%d] %s %s :: '%s' :: %s ? %s", id, method, desc.name, trailing, (mt==null?"<none>":mt), (qs==null?"":qs))) ;
                        
         boolean hasTrailing = ( trailing.length() != 0 ) ;
         
