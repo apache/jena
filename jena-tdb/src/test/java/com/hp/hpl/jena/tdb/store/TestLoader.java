@@ -24,7 +24,7 @@ import java.util.List ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -50,14 +50,14 @@ public class TestLoader extends BaseTest {
     @BeforeClass
     static public void beforeClass() {
         DIR = ConfigTest.getTestingDataRoot()+"/Loader/" ;
-        Log.disable(ARQ.logExecName) ;
-        Log.disable(TDB.logLoaderName) ;
+        LogCtl.disable(ARQ.logExecName) ;
+        LogCtl.disable(TDB.logLoaderName) ;
     }
 
     @AfterClass
     static public void afterClass() {
-        Log.enable(ARQ.logExecName) ;
-        Log.enable(TDB.logLoaderName) ;
+        LogCtl.enable(ARQ.logExecName) ;
+        LogCtl.enable(TDB.logLoaderName) ;
     }
 
     static DatasetGraphTDB fresh() {

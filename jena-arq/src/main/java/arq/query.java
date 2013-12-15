@@ -19,7 +19,7 @@
 package arq;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.SysRIOT ;
 import arq.cmd.CmdException ;
@@ -194,7 +194,7 @@ public class query extends CmdARQ
             }
             
             if ( isQuiet() )
-                Log.setError(SysRIOT.riotLoggerName) ;
+                LogCtl.setError(SysRIOT.riotLoggerName) ;
             Dataset dataset = getDataset() ;
             modTime.startTimer() ;
             QueryExecution qe = QueryExecutionFactory.create(query, dataset) ;

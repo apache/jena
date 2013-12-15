@@ -24,7 +24,7 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.ColumnMap ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 /** From a file of records, build a (packed) index */ 
 public class CmdIndexBuild
 {
-    static { Log.setLog4j() ; }
+    static { LogCtl.setLog4j() ; }
     
     public static void main(String...argv)
     {

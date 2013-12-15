@@ -18,7 +18,7 @@
 
 package arq.cmdline;
 
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
 
@@ -38,7 +38,7 @@ public abstract class CmdMain extends CmdLineArgs
 {
     // Do this very early so it happens before anything else
     // gets a chance to create a logger.
-    static { Log.setCmdLogging() ; }
+    static { LogCtl.setCmdLogging() ; }
     
     public CmdMain(String[] args)
     {

@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
@@ -39,9 +39,9 @@ import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 public class T_TxnDeadlockTest {
 
     static { 
-        Log.setLog4j() ; 
+        LogCtl.setLog4j() ; 
         //Log.enable("TDB") ;
-        if ( false ) Log.enable(TransactionManager.class) ;
+        if ( false ) LogCtl.enable(TransactionManager.class) ;
         //Log.enable(LockMRSW.class) ;
     }
     

@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.extra ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -47,10 +47,10 @@ public class T_QuadsObjectIsNull {
 
 	    if ( false )
 	    {
-    	    Log.enable(SystemTDB.syslog.getName()) ;
-    	    Log.enable(Journal.class) ;
-    	    Log.enable(JournalControl.class) ;
-    	    Log.enable(NodeTableTrans.class) ;
+    	    LogCtl.enable(SystemTDB.syslog.getName()) ;
+    	    LogCtl.enable(Journal.class) ;
+    	    LogCtl.enable(JournalControl.class) ;
+    	    LogCtl.enable(NodeTableTrans.class) ;
 	    }
 	    if ( false )
 	    {

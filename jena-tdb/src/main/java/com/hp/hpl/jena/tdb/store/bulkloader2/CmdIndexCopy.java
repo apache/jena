@@ -24,7 +24,7 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 /** Copy one index to another, probably with a different key order */
 public class CmdIndexCopy
 {
-    static { Log.setLog4j() ; }
+    static { LogCtl.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(CmdIndexCopy.class) ;
     
     static long tickQuantum = 100*1000 ;

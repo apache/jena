@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.transaction;
 import static com.hp.hpl.jena.query.ReadWrite.READ ;
 import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.junit.* ;
 
 import com.hp.hpl.jena.graph.Triple ;
@@ -39,8 +39,8 @@ public class TestTransactionTDB extends AbstractTestTransaction
     static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
     String DIR = null ; 
     
-    @BeforeClass public static void beforeClassLoggingOff() { Log.disable(SystemTDB.errlog.getName()) ; } 
-    @AfterClass public static void afterClassLoggingOn()    { Log.enable(SystemTDB.errlog.getName(), "info") ; }
+    @BeforeClass public static void beforeClassLoggingOff() { LogCtl.disable(SystemTDB.errlog.getName()) ; } 
+    @AfterClass public static void afterClassLoggingOn()    { LogCtl.setInfo(SystemTDB.errlog.getName()) ; }
     
     @Before public void before()
     {

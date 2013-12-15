@@ -26,7 +26,7 @@ import java.net.URISyntaxException ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator ;
 import org.apache.jena.atlas.web.auth.ScopedAuthenticator ;
@@ -77,9 +77,9 @@ public class TestAuth extends ServerTest {
         writer.write("forbidden: password, other");
         writer.close();
 
-        Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
-        Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
+        LogCtl.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
+        LogCtl.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
+        LogCtl.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
 
         DatasetGraph dsg = DatasetGraphFactory.createMem();
         // This must agree with ServerTest

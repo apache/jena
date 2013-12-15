@@ -58,7 +58,7 @@ import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 /** System testing of the transactions. */
 public class T_TransSystem
 {
-    static { org.apache.jena.atlas.logging.Log.setLog4j() ; }
+    static { org.apache.jena.atlas.logging.LogCtl.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(T_TransSystem.class) ;
 
     /* Notes:

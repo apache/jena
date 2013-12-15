@@ -22,7 +22,7 @@ import java.io.File ;
 import java.io.IOException ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.spatial.* ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.lucene.store.Directory ;
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
 /** Build a spatial search dataset */
 public class JenaSpatialExample1 {
 	static {
-		Log.setLog4j();
+		LogCtl.setLog4j();
 	}
 	static Logger log = LoggerFactory.getLogger("JenaSpatialExample");
 	

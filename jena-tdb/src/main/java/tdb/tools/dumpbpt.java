@@ -25,7 +25,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import tdb.cmdline.ModLocation ;
 import arq.cmdline.CmdGeneral ;
 
@@ -48,7 +48,7 @@ public class dumpbpt extends CmdGeneral
     
     static public void main(String... argv)
     { 
-        Log.setLog4j() ;
+        LogCtl.setLog4j() ;
         new dumpbpt(argv).mainRun() ;
     }
 

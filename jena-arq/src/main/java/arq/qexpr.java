@@ -21,7 +21,7 @@ package arq;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import arq.cmd.CmdException ;
 import arq.cmd.CmdUtils ;
 import arq.cmd.TerminationException ;
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 public class qexpr
 {
     // TODO Convert to extends CmdArgModule 
-    static { Log.setLog4j() ; CmdUtils.setN3Params() ; }
+    static { LogCtl.setLog4j() ; CmdUtils.setN3Params() ; }
 
     public static void main (String... argv)
     {

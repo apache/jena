@@ -26,6 +26,7 @@ import java.util.List ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import tdb.cmdline.ModLocation ;
 import arq.cmdline.CmdGeneral ;
 
@@ -48,7 +49,7 @@ public class dumpnodetable extends CmdGeneral
     
     static public void main(String... argv)
     { 
-        Log.setLog4j() ;
+        LogCtl.setLog4j() ;
         new dumpnodetable(argv).mainRun() ;
     }
 

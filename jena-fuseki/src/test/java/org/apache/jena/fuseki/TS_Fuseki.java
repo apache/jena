@@ -19,7 +19,7 @@
 package org.apache.jena.fuseki;
 
 import org.apache.http.client.HttpClient ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
@@ -28,7 +28,6 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -57,6 +56,6 @@ public class TS_Fuseki extends ServerTest
         HttpOp.setDefaultHttpClient(defaultHttpClient) ;
     }
     
-    @BeforeClass static public void beforeClass() { Log.disable(Fuseki.requestLogName) ; }
-    @AfterClass static public void afterClass()   { Log.setInfo(Fuseki.requestLogName) ;}
+    @BeforeClass static public void beforeClass() { LogCtl.disable(Fuseki.requestLogName) ; }
+    @AfterClass static public void afterClass()   { LogCtl.setInfo(Fuseki.requestLogName) ;}
 }

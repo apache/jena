@@ -31,7 +31,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -63,7 +63,7 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 /** Build node table - write triples/quads as text file */
 public class CmdNodeTableBuilder extends CmdGeneral
 {
-    static { Log.setLog4j() ; }
+    static { LogCtl.setLog4j() ; }
     private static Logger cmdLog =TDB.logLoader ;
 
     private static ArgDecl argLocation = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
