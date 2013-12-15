@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.tdb.base.block;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -32,7 +32,7 @@ public class TestBlockMgrMapped extends AbstractTestBlockMgr
 {
     static boolean logging = false ;
     
-    static { if ( logging ) Log.setLog4j() ; }
+    static { if ( logging ) LogCtl.setLog4j() ; }
     
     static final String filename = ConfigTest.getTestingDir()+"/block-mgr" ;
     

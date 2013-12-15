@@ -33,7 +33,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -63,7 +63,7 @@ public class T_TDBWriteTransaction {
         if ( true )
             SystemTDB.setFileMode(FileMode.direct) ;
 
-        Log.setLog4j() ;
+        LogCtl.setLog4j() ;
 	    TransactionManager.QueueBatchSize = 10;
 	    
 //		if (args.length == 0) {

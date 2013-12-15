@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.tdb.index.bplustree;
 
 import org.apache.jena.atlas.lib.RandomLib ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class CmdTestBPlusTreeRewriter
 {
-    static { Log.setLog4j() ; }
+    static { LogCtl.setLog4j() ; }
     
     public static void main(String...argv)
     {

@@ -19,7 +19,7 @@
 package examples;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextDatasetFactory ;
 import org.apache.jena.query.text.TextQuery ;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 /** Build a text search dataset */
 public class JenaTextExample1
 {
-    static { Log.setLog4j() ; }
+    static { LogCtl.setLog4j() ; }
     static Logger log = LoggerFactory.getLogger("JenaTextExample") ;
     
     public static void main(String ... argv)

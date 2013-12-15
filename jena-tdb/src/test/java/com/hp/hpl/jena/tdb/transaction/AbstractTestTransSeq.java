@@ -20,7 +20,7 @@ package com.hp.hpl.jena.tdb.transaction;
 
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -37,8 +37,8 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 /** Basic tests and tests of ordering (single thread) */
 public abstract class AbstractTestTransSeq extends BaseTest
 {
-    @BeforeClass public static void beforeClassLoggingOff() { Log.disable(SystemTDB.errlog.getName()) ; } 
-    @AfterClass public static void afterClassLoggingOn()    { Log.enable(SystemTDB.errlog.getName(), "info") ; }
+    @BeforeClass public static void beforeClassLoggingOff() { LogCtl.disable(SystemTDB.errlog.getName()) ; } 
+    @AfterClass public static void afterClassLoggingOn()    { LogCtl.setInfo(SystemTDB.errlog.getName()) ; }
     
     // Per test unique-ish.
     long x = System.currentTimeMillis() ;

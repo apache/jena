@@ -16,56 +16,58 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.web;
+package org.apache.jena.atlas.web ;
 
 import static org.apache.jena.atlas.lib.Lib.equal ;
 import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
 
-import java.util.Iterator ;
 import java.util.LinkedHashMap ;
 import java.util.Map ;
 
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** A structure to represent a <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">media type</a>.
- * See also the <a href="http://httpd.apache.org/docs/current/content-negotiation.html">Apache httpd documentation</a>.
+/**
+ * A structure to represent a <a
+ * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">media
+ * type</a>. See also the <a
+ * href="http://httpd.apache.org/docs/current/content-negotiation.html">Apache
+ * httpd documentation</a>.
  */
-public class MediaType
-{
-    private static Logger log = LoggerFactory.getLogger(MediaType.class) ; 
+public class MediaType {
+    private static Logger             log        = LoggerFactory.getLogger(MediaType.class) ;
 
-    private static final String strCharset              = "charset" ;
+    private static final String       strCharset = "charset" ;
 
-    private final String type ;
-    private final String subType ;
+    private final String              type ;
+    private final String              subType ;
     // Keys in insertion order.
-    private final Map<String, String> params ;//= new LinkedHashMap<String, String>() ;
-   
-    protected MediaType(ParsedMediaType parser)
-    {
+    private final Map<String, String> params ;                                                // =
+                                                                                              // new
+                                                                                              // LinkedHashMap<String,
+                                                                                              // String>()
+                                                                                              // ;
+
+    protected MediaType(ParsedMediaType parser) {
         this.type = parser.type ;
         this.subType = parser.subType ;
         this.params = parser.params ;
     }
-    
-    public MediaType(MediaType other)
-    {
+
+    public MediaType(MediaType other) {
         this.type = other.type ;
         this.subType = other.subType ;
         // Order preserving copy.
         this.params = new LinkedHashMap<String, String>(other.params) ;
     }
-    
+
     /** Create a media type from type and subType */
-    public MediaType(String type, String subType)
-    {
+    public MediaType(String type, String subType) {
         this(type, subType, null) ;
     }
 
     /** Create a media type from type and subType */
-    public MediaType(String type, String subType, String charset)
-    {
+    public MediaType(String type, String subType, String charset) {
         this.type = type ;
         this.subType = subType ;
         this.params = new LinkedHashMap<String, String>() ;
@@ -73,63 +75,56 @@ public class MediaType
             setParameter(strCharset, charset) ;
     }
 
-    public static MediaType create(String contentType, String charset)
-    {
+    public static MediaType create(String contentType, String charset) {
         ParsedMediaType mediaType = parse(contentType) ;
-        mediaType.params.put(strCharset, charset) ;
+        if ( charset != null )
+            mediaType.params.put(strCharset, charset) ;
         return new MediaType(mediaType) ;
     }
-    
-    public static MediaType createFromContentType(String string)
-    {
+
+    public static MediaType createFromContentType(String string) {
         return new MediaType(parse(string)) ;
     }
 
-    public static MediaType create(String contentType, String subType, String charset)
-    {
+    public static MediaType create(String contentType, String subType, String charset) {
         return new MediaType(contentType, subType, charset) ;
     }
-    
-    public static MediaType create(String string)
-    {
+
+    public static MediaType create(String string) {
         if ( string == null )
             return null ;
         return new MediaType(parse(string)) ;
     }
-    
-    public static ParsedMediaType parse(String string)
-    {
+
+    public static ParsedMediaType parse(String string) {
         ParsedMediaType mt = new ParsedMediaType() ;
-        
+
         String[] x = WebLib.split(string, ";") ;
         String[] t = WebLib.split(x[0], "/") ;
         mt.type = t[0] ;
         if ( t.length > 1 )
             mt.subType = t[1] ;
-        
-        for ( int i = 1 ; i < x.length ; i++ )
-        {
+
+        for (int i = 1; i < x.length; i++) {
             // Each a parameter
             String z[] = WebLib.split(x[i], "=") ;
             if ( z.length == 2 )
                 mt.params.put(z[0], z[1]) ;
             else
-                log.warn("Duff parameter: "+x[i]+" in "+string) ;
+                log.warn("Duff parameter: " + x[i] + " in " + string) ;
         }
         return mt ;
     }
-    
+
     /** Format for use in HTTP header */
-    
-    public String toHeaderString()
-    {
+
+    public String toHeaderString() {
         StringBuilder b = new StringBuilder() ;
         b.append(type) ;
         if ( subType != null )
             b.append("/").append(subType) ;
 
-        for ( Map.Entry<String, String> entry: params.entrySet() )
-        {
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             b.append(";") ;
             b.append(entry.getKey()) ;
             b.append("=") ;
@@ -137,22 +132,22 @@ public class MediaType
         }
         return b.toString() ;
     }
-    
-    /** Format to show structure - intentionally different from header
-     *  form so you can tell parsing happened correctly
-     */  
-    
+
+    /**
+     * Format to show structure - intentionally different from header form so
+     * you can tell parsing happened correctly
+     */
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuffer b = new StringBuffer() ;
         b.append("[") ;
         b.append(type) ;
         if ( subType != null )
             b.append("/").append(subType) ;
-        for ( Iterator<String> iter = params.keySet().iterator() ; iter.hasNext() ; )
-        {
-            String k = iter.next() ;
+        for (String k : params.keySet()) {
+            if ( k.equals("boundary") )
+                continue ;
             String v = params.get(k) ;
             b.append(" ") ;
             b.append(k) ;
@@ -162,55 +157,72 @@ public class MediaType
         b.append("]") ;
         return b.toString() ;
     }
-    
-//    private String type = null ;
-//    private String subType = null ;
-//    // Keys in insertion order.
-//    private Map<String, String> params = new LinkedHashMap<String, String>() ;
-    
+
+    // private String type = null ;
+    // private String subType = null ;
+    // // Keys in insertion order.
+    // private Map<String, String> params = new LinkedHashMap<String, String>()
+    // ;
+
     @Override
-    public int hashCode() 
-    {
-        return hashCodeObject(type, 1)^hashCodeObject(subType, 2)^hashCodeObject(params, 3) ;
+    public int hashCode() {
+        return hashCodeObject(type, 1) ^ hashCodeObject(subType, 2) ^ hashCodeObject(params, 3) ;
     }
-    
+
     @Override
-    public boolean equals(Object object) 
-    {
-        if (this == object) return true ;
-        if (!(object instanceof MediaType)) return false ;
+    public boolean equals(Object object) {
+        if ( this == object )
+            return true ;
+        if ( !(object instanceof MediaType) )
+            return false ;
         MediaType mt = (MediaType)object ;
         return equal(type, mt.type) && equal(subType, mt.subType) && equal(params, mt.params) ;
     }
 
-    public String getParameter(String name)             { return params.get(name) ; }
-    private void setParameter(String name, String value) { params.put(name, value) ; strContentType = null ; }
+    public String getParameter(String name) {
+        return params.get(name) ;
+    }
+
+    private void setParameter(String name, String value) {
+        params.put(name, value) ;
+        strContentType = null ;
+    }
 
     // A cache.
     private String strContentType = null ;
-    public String getContentType()
-    {
+
+    public String getContentType() {
         if ( strContentType != null )
             return strContentType ;
         if ( subType == null )
             return type ;
-        return type+"/"+subType ;
+        return type + "/" + subType ;
     }
-    
-    public String getCharset()              { return getParameter(strCharset) ; }
 
-    public String getSubType()              { return subType ; }
-//    public void setSubType(String subType)  { this.subType = subType ; strContentType = null ; }
-    public String getType()                 { return type ; }
-//    public void setType(String type)        { this.type = type ; strContentType = null ; }
-    
-    /** The outcome of parsing 
-     * @see MediaType#parse 
+    public String getCharset() {
+        return getParameter(strCharset) ;
+    }
+
+    public String getSubType() {
+        return subType ;
+    }
+
+    // public void setSubType(String subType) { this.subType = subType ;
+    // strContentType = null ; }
+    public String getType() {
+        return type ;
+    }
+    // public void setType(String type) { this.type = type ; strContentType =
+    // null ; }
+
+    /**
+     * The outcome of parsing
+     * 
+     * @see MediaType#parse
      */
-    /*package*/ static class ParsedMediaType
-    {
-        public String type ;
-        public String subType ;
+    /* package */static class ParsedMediaType {
+        public String              type ;
+        public String              subType ;
         public Map<String, String> params = new LinkedHashMap<String, String>() ;
     }
 }

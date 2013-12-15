@@ -22,8 +22,13 @@ import java.util.IllegalFormatException ;
 
 import org.slf4j.Logger ;
 
+/** Logging with String.format (which can be a expensive)
+ *  The formatting operations are not designed specifically for performance, 
+ *  but they do delay forming strings for output
+ *  until it is know that a log message is actually
+ *  required by level setting. 
+ */
 public class FmtLog {
-
     // -- Delayed argument formatting.
     /* Log at 'trace' level. */
     public static void trace(Logger log, String fmt, Object...args) {

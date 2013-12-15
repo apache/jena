@@ -20,7 +20,7 @@ package tdb;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
@@ -45,8 +45,8 @@ public class tdbreorder
             System.err.println("Usage: PATTERN STATS") ;
             System.exit(1) ;
         }
-        Log.enable(StatsMatcher.class) ;
-        Log.enable(ReorderTransformationSubstitution.class) ;
+        LogCtl.enable(StatsMatcher.class) ;
+        LogCtl.enable(ReorderTransformationSubstitution.class) ;
         
         if ( args.length != 2 )
         {
