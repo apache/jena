@@ -61,13 +61,14 @@ public class StreamManager {
     }
 
     /**
-     * Return a default configuration StreamManager with a {@link LocatorFile},
-     * {@link LocatorURL}, and {@link LocatorClassLoader}
+     * Return a default configuration StreamManager with a {@linkplain LocatorFile},
+     * {@linkplain LocatorHTTP}, {@linkplain LocatorFTP} and {@linkplain LocatorClassLoader}
      */
     public static StreamManager makeDefaultStreamManager() {
         StreamManager streamManager = new StreamManager() ;
         streamManager.addLocator(new LocatorFile(null)) ;
-        streamManager.addLocator(new LocatorURL()) ;
+        streamManager.addLocator(new LocatorHTTP()) ;
+        streamManager.addLocator(new LocatorFTP()) ;
         streamManager.addLocator(new LocatorClassLoader(streamManager.getClass().getClassLoader())) ;
         streamManager.setLocationMapper(JenaIOEnvironment.getLocationMapper()) ;
         return streamManager ;

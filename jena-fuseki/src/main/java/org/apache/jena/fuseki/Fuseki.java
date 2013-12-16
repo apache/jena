@@ -20,7 +20,8 @@ package org.apache.jena.fuseki;
 
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.riot.RIOT ;
-import org.apache.jena.riot.stream.LocatorURL ;
+import org.apache.jena.riot.stream.LocatorFTP ;
+import org.apache.jena.riot.stream.LocatorHTTP ;
 import org.apache.jena.riot.stream.StreamManager ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -123,8 +124,9 @@ public class Fuseki
     public static final StreamManager webStreamManager ;
     static {
         webStreamManager = new StreamManager() ;
-        // Only know how to handle http URLs 
-        webStreamManager.addLocator(new LocatorURL()) ;
+        // Only know how to handle http and ftp URLs - nothing local.
+        webStreamManager.addLocator(new LocatorHTTP()) ;
+        webStreamManager.addLocator(new LocatorFTP()) ;
     }
     
     private static boolean initialized = false ;

@@ -61,7 +61,7 @@ class AdapterLib {
             return new LocatorClassLoader(classLoc.getClassLoader()) ;
         }
         if ( oldloc instanceof com.hp.hpl.jena.util.LocatorURL )
-            return new LocatorURL() ;
+            return new LocatorHTTP() ;
         if ( oldloc instanceof com.hp.hpl.jena.util.LocatorZip ) {
             com.hp.hpl.jena.util.LocatorZip zipLoc = (com.hp.hpl.jena.util.LocatorZip)oldloc ;
             return new LocatorZip(zipLoc.getZipFileName()) ;

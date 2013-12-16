@@ -208,10 +208,22 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
 
     /** Add a URL locator */
     @Override
+    @Deprecated
     public void addLocatorURL() {
-        Locator loc = new LocatorURL() ;
+        Locator loc = new LocatorHTTP() ;
         streamManager.addLocator(loc) ;
     }
+
+    public void addLocatorHTTP() {
+        Locator loc = new LocatorHTTP() ;
+        streamManager.addLocator(loc) ;
+    }
+
+    public void addLocatorFTP() {
+        Locator loc = new LocatorFTP() ;
+        streamManager.addLocator(loc) ;
+    }
+
 
     /** Add a zip file locator */
     @Override
