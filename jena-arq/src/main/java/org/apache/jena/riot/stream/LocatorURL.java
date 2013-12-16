@@ -21,40 +21,33 @@ package org.apache.jena.riot.stream;
 import java.util.Locale ;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.web.HttpOp ;
 import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
-public class LocatorURL implements Locator
+public abstract class LocatorURL implements Locator
 {
-    private static Logger log = LoggerFactory.getLogger(LocatorURL.class) ;
-    private static final String[] schemeNames = { "http" , "https" } ;    // Must be lower case and not include the ":"
+    private final String[] schemeNames ;
+    
+    protected LocatorURL(String[] sNames) {
+        schemeNames = sNames ;
+    }
+    
+    protected abstract Logger log() ;
     
     @Override
-    public TypedInputStream open(String uri)
-    {
-        if ( ! acceptByScheme(uri) )
-        {
-            if ( StreamManager.logAllLookups && log.isTraceEnabled() )
-                log.trace("Not found : "+uri) ; 
+    public TypedInputStream open(String uri) {
+        if ( ! acceptByScheme(uri) ) {
+            if ( StreamManager.logAllLookups && log().isTraceEnabled() )
+                log().trace("Not found : "+uri) ; 
             return null;
         }
-        if ( uri.startsWith("http://") || uri.startsWith("https://"))
-            return HttpOp.execHttpGet(uri, WebContent.defaultGraphAcceptHeader) ;
-        return null ;
+        return performOpen(uri) ;
     }
 
-    @Override
-    public String getName()
-    {
-        return "LocatorURL" ;
-    }
-    
-    private static boolean acceptByScheme(String filenameOrURI)
-    {
+    protected abstract TypedInputStream performOpen(String uri) ;
+
+    protected boolean acceptByScheme(String filenameOrURI) {
         String uriSchemeName = FileUtils.getScheme(filenameOrURI) ;
         if ( uriSchemeName == null )
             return false ;
@@ -68,14 +61,10 @@ public class LocatorURL implements Locator
     }
 
     @Override
-    public int hashCode()
-    {
-        return 57 ;
-    }
+    public abstract int hashCode() ;
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj) return true ;
         if (obj == null) return false ;
         return getClass() == obj.getClass() ;

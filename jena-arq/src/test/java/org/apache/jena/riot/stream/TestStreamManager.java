@@ -49,12 +49,12 @@ public class TestStreamManager extends BaseTest
         streamMgrDir = new StreamManager() ;
         // Not current directory.
         streamMgrDir.addLocator(new LocatorFile(directory)) ;
-        streamMgrDir.addLocator(new LocatorURL()) ;
+        streamMgrDir.addLocator(new LocatorHTTP()) ;
         
         streamMgrHere = new StreamManager() ;
         // Not current directory.
         streamMgrHere.addLocator(new LocatorFile()) ;
-        streamMgrHere.addLocator(new LocatorURL()) ;
+        streamMgrHere.addLocator(new LocatorHTTP()) ;
         
         streamMgrNull = new StreamManager() ;
     }
