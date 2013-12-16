@@ -45,27 +45,40 @@ public class Lang
     // To avoid an initialization circularity, these are set by RDFLanguages.
     static { RDFLanguages.init() ; }
 
-    /** RDF/XML */
+    /** <a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML</a> */
     public static Lang RDFXML ;
-    /** N-triples */
-    public static Lang NTRIPLES ; 
-    /** N-triples */
-    public static Lang NT ;
-    /** N3 (RDF subset of N3) */ 
-    public static Lang N3 ; 
-    /** Turtle */
-    public static Lang TURTLE ; 
-    /** Turtle */
+    
+    /** <a href="http://www.w3.org/TR/turtle/">Turtle</a>*/
+    public static Lang TURTLE ;
+    
+    /** Alternative constant for {@linkplain #TURTLE} */
     public static Lang TTL ;
-    /** RDF/JSON (this is not JSON-LD) 
-     * See {@link "http://jena.apache.org/documentation/io/rdf-json.html"} */
-    public static Lang RDFJSON ; 
-    /** NQuads */
-    public static Lang NQUADS ;
-    /** NQuads */
-    public static Lang NQ ;
-    /** TriG */
+    
+    /** N3 (treat as Turtle) */
+    public static Lang N3 ;
+    
+    /** <a href="http://www.w3.org/TR/n-triples/">N-Triples</a>*/
+    public static Lang NTRIPLES ;
+    
+    /** Alternative constant for {@linkplain #NTRIPLES} */
+    public static Lang NT ;
+
+    /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
+    public static Lang JSONLD ;
+    
+    /** <a href="http://www.w3.org/TR/rdf-json/">RDF/JSON</a>.  This is not <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
+    public static Lang RDFJSON ;
+    
+    /** <a href="http://www.w3.org/TR/trig/">TriG</a> */
     public static Lang TRIG ;
+    
+    /** <a href="http://www.w3.org/TR/n-quads">N-Quads</a> */
+    public static Lang NQUADS ;
+    
+    /** Alternative constant {@linkplain #NQUADS} */
+    public static Lang NQ ;
+
+    /** The "null" language */
     public static Lang RDFNULL ;
 
     private final String label ;                    // Primary name
@@ -74,35 +87,35 @@ public class Lang
     private final List<String> altContentTypes ;
     private final List<String> fileExtensions ;
 
-    // NOT public.  This is to force use of the RDFLanguages which makes languages symbols and so == works
-    protected Lang(String langlabel, String mainContentType, List<String> altLangLabels, List<String> otherContentTypes, List<String> fileExt)
-    {
+    // NOT public. This is to force use of the RDFLanguages which makes
+    // languages symbols and so == works
+    protected Lang(String langlabel, String mainContentType, List<String> altLangLabels,
+                   List<String> otherContentTypes, List<String> fileExt) {
         if ( langlabel == null )
             throw new IllegalArgumentException("Null not allowed for language name") ;
         else
-            langlabel = langlabel.intern();
+            langlabel = langlabel.intern() ;
         label = langlabel ;
-        
+
         String mediaType = mainContentType ;
 
-        contentType = mediaType==null ? null : ContentType.create(mediaType) ;
-        
+        contentType = mediaType == null ? null : ContentType.create(mediaType) ;
+
         List<String> _altContentTypes = copy(otherContentTypes) ;
-        if ( ! _altContentTypes.contains(mainContentType) )
+        if ( !_altContentTypes.contains(mainContentType) )
             _altContentTypes.add(mainContentType) ;
         altContentTypes = Collections.unmodifiableList(_altContentTypes) ;
-        
+
         List<String> _altLabels = copy(altLangLabels) ;
-        if ( ! _altLabels.contains(label) )
+        if ( !_altLabels.contains(label) )
             _altLabels.add(label) ;
         altLabels = Collections.unmodifiableList(_altLabels) ;
-        
+
         List<String> _fileExtensions = copy(fileExt) ;
         fileExtensions = Collections.unmodifiableList(_fileExtensions) ;
     }
     
-    static <T> List<T> copy(List<T> original)
-    {
+    static <T> List<T> copy(List<T> original) {
         List<T> x = new ArrayList<T>() ;
         x.addAll(original) ;
         return x ;
@@ -112,8 +125,7 @@ public class Lang
     public int hashCode() { return label.hashCode() ; } 
 
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Object other) {
         if ( this == other ) return true ;
         if ( other == null ) return false ;
         if ( ! ( other instanceof Lang ) )
@@ -142,8 +154,7 @@ public class Lang
     @Override
     public String toString()  { return "Lang:"+label ; }
     
-    public String toLongString()
-    { 
+    public String toLongString() { 
         String x = "Lang:" + label + " " + getContentType() ;
         if (getAltNames().size() > 0)
             x = x + " " + getAltNames() ;
@@ -161,8 +172,7 @@ public class Lang
      * @deprecated Use {@link RDFLanguages#nameToLang(String)}
      */
     @Deprecated 
-    public static Lang get(String name)
-    {
+    public static Lang get(String name) {
         Lang lang =  RDFLanguages.nameToLang(name) ;
         if ( lang == null )
             throw new RiotException("No such language: "+name) ;
@@ -173,8 +183,7 @@ public class Lang
      * @deprecated Use {@link RDFLanguages#nameToLang(String)}
      */
     @Deprecated 
-    public static Lang get(String name, Lang dftLang)
-    {
+    public static Lang get(String name, Lang dftLang) {
         Lang lang =  RDFLanguages.nameToLang(name) ;
         if ( lang == null )
             return dftLang ;
@@ -186,8 +195,7 @@ public class Lang
      * @deprecated Use {@link RDFLanguages#filenameToLang(String,Lang)}
      */
     @Deprecated 
-    public static Lang guess(String resourceIRI, Lang dftLang)
-    {
+    public static Lang guess(String resourceIRI, Lang dftLang) {
         return RDFLanguages.filenameToLang(resourceIRI, dftLang) ;
     }
     
@@ -196,8 +204,7 @@ public class Lang
      * @deprecated Use {@link RDFLanguages#filenameToLang(String)}
      */
     @Deprecated
-    public static Lang guess(String resourceIRI)
-    {
+    public static Lang guess(String resourceIRI) {
         return RDFLanguages.filenameToLang(resourceIRI) ;
     }
 }
