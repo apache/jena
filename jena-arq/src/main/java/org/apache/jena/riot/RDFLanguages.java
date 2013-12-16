@@ -33,6 +33,7 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 /** Central registry of RDF langauges and syntaxes.
  * @see RDFParserRegistry
+ * @see RDFFormat
  */
 public class RDFLanguages
 {
@@ -42,6 +43,7 @@ public class RDFLanguages
     public static final String strLangNTriples   = "N-Triples" ;
     public static final String strLangN3         = "N3" ;
     public static final String strLangRDFJSON    = "RDF/JSON" ;
+    public static final String strLangJSONLD     = "JSON-LD" ;
     public static final String strLangNQuads     = "N-Quads" ;
     public static final String strLangTriG       = "TriG" ;
     
@@ -55,19 +57,19 @@ public class RDFLanguages
      * ".owx" is the OWL direct XML syntax.
      */
 
-    /** RDF/XML */
+    /** <a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML</a> */
     public static final Lang RDFXML   = LangBuilder.create(strLangRDFXML, contentTypeRDFXML)
                                                 .addAltNames("RDFXML", "RDF/XML-ABBREV", "RDFXML-ABBREV")
                                                 .addFileExtensions("rdf", "owl", "xml")
                                                 .build() ;
     
-    /** Turtle */
+    /** <a href="http://www.w3.org/TR/turtle/">Turtle</a>*/
     public static final Lang TURTLE   = LangBuilder.create(strLangTurtle, contentTypeTurtle)
                                                 .addAltNames("TTL")
                                                 .addAltContentTypes(contentTypeTurtleAlt1, contentTypeTurtleAlt2)
                                                 .addFileExtensions("ttl")
                                                 .build() ;
-    /** Common abbreviation for TURTLE */
+    /** Alternative constant for {@linkplain #TURTLE} */
     public static final Lang TTL    = TURTLE ;
     
     /** N3 (treat as Turtle) */
@@ -76,35 +78,41 @@ public class RDFLanguages
                                                 .addFileExtensions("n3")
                                                 .build() ;
     
-    /** N-Triples */
+    /** <a href="http://www.w3.org/TR/n-triples/">N-Triples</a>*/
     public static final Lang NTRIPLES = LangBuilder.create(strLangNTriples, contentTypeNTriples)
                                                 .addAltNames("NT", "NTriples", "NTriple", "N-Triple", "N-Triples")
                                                  // Remove? Causes more trouble than it's worth.
                                                 .addAltContentTypes(contentTypeNTriplesAlt)
                                                 .addFileExtensions("nt")
                                                 .build() ;
-    /** Common abbreviation for NTRIPLES */
+    /** Alternative constant for {@linkplain #NTRIPLES} */
     public static final Lang NT     = NTRIPLES ;
 
-    /** RDF/JSON (this is not JSON-LD) */
+    /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
+    public static Lang JSONLD = LangBuilder.create(strLangJSONLD, "application/ld+json")
+                                                .addFileExtensions("jsonld")
+                                                .build() ;
+    
+    /** <a href="http://www.w3.org/TR/rdf-json/">RDF/JSON</a>.  This is not <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
     public static final Lang RDFJSON  = LangBuilder.create(strLangRDFJSON, contentTypeRDFJSON)
                                                 .addAltNames("RDFJSON")
                                                 .addFileExtensions("rj", "json")
                                                 .build() ;
     
-    /** TriG */
+    /** <a href="http://www.w3.org/TR/trig/">TriG</a> */
     public static final Lang TRIG     = LangBuilder.create(strLangTriG, contentTypeTriG)
                                                 .addAltContentTypes(contentTypeTriGAlt1, contentTypeTriGAlt2)
                                                 .addFileExtensions("trig")
                                                 .build() ;
     
-    /** N-Quads */
+    /** <a href="http://www.w3.org/TR/n-quads">N-Quads</a> */
     public static final Lang NQUADS   = LangBuilder.create(strLangNQuads, contentTypeNQuads)
                                                 .addAltNames("NQ", "NQuads", "NQuad", "N-Quad", "N-Quads")   
                                                 .addAltContentTypes(contentTypeNQuadsAlt1, contentTypeNQuadsAlt2)
                                                 .addFileExtensions("nq")
                                                 .build() ;
-    /** Abbreviation for NQUADS */
+    
+    /** Alternative constant {@linkplain #NQUADS} */
     public static final Lang NQ     = NQUADS ;
 
     /** The "null" language */
@@ -139,6 +147,7 @@ public class RDFLanguages
         Lang.N3         = RDFLanguages.N3 ; 
         Lang.TURTLE     = RDFLanguages.TURTLE ;
         Lang.TTL        = RDFLanguages.TTL ;
+        Lang.JSONLD     = RDFLanguages.JSONLD ;
         Lang.RDFJSON    = RDFLanguages.RDFJSON ; 
         Lang.NQUADS     = RDFLanguages.NQUADS ;
         Lang.NQ         = RDFLanguages.NQ ;
@@ -155,6 +164,7 @@ public class RDFLanguages
         register(N3) ;
         register(NTRIPLES) ;
         register(RDFJSON) ;
+        //register(JSONLD) ; -- Done separately based on avilability of the external dependency.
         register(TRIG) ;
         register(NQUADS) ;
         register(RDFNULL) ;

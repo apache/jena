@@ -16,24 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot ;
 
 import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
-public class RDFFormatVariant
-{
+/** Modifier for an RDF Format */
+public class RDFFormatVariant {
     private final Symbol symbol ;
-    
-    public RDFFormatVariant(String name)
-    {
+
+    public RDFFormatVariant(String name) {
         symbol = Symbol.create(name) ;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31 ;
         int result = 1 ;
         result = prime * result + ((symbol == null) ? 0 : symbol.hashCode()) ;
@@ -41,19 +39,21 @@ public class RDFFormatVariant
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj) return true ;
-        if (obj == null) return false ;
-        if (getClass() != obj.getClass()) return false ;
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true ;
+        if ( obj == null )
+            return false ;
+        if ( getClass() != obj.getClass() )
+            return false ;
         RDFFormatVariant other = (RDFFormatVariant)obj ;
-        if ( ! Lib.equal(symbol, other.symbol) ) return false ;
+        if ( !Lib.equal(symbol, other.symbol) )
+            return false ;
         return true ;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return symbol.getSymbol() ;
     }
 }
