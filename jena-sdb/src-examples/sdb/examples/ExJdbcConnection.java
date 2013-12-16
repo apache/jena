@@ -22,15 +22,9 @@ import java.sql.Connection ;
 import java.sql.DriverManager ;
 import java.sql.SQLException ;
 
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.LogCtl ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sdb.SDBException ;
 import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sdb.StoreDesc ;
@@ -46,7 +40,7 @@ import com.hp.hpl.jena.sdb.store.StoreFactory ;
 
 public class ExJdbcConnection
 {
-    static { Log.setLog4j() ; }
+    static { LogCtl.setLog4j() ; }
     
     public static void main(String...argv)
     {
