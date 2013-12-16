@@ -27,9 +27,7 @@ import javax.servlet.ServletOutputStream ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.* ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
@@ -71,7 +69,10 @@ public class REST_Quads_R extends REST_Quads {
         action.beginRead() ;
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
-            RDFDataMgr.write(out, dsg, lang) ;
+            action.response.setHeader("Content-type", lang.getContentType().toHeaderString());
+            RDFFormat fmt =
+                ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang) ; 
+            RDFDataMgr.write(out, dsg, fmt) ;
             ServletOps.success(action) ;
         } finally {
             action.endRead() ;

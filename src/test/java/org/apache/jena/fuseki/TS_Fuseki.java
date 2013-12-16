@@ -38,7 +38,7 @@ import org.junit.runners.Suite ;
     , TestDatasetAccessorHTTP.class
     , TestQuery.class
     , TestAuth.class
-    , TestGSP.class
+    , TestDatasetOps.class
     , TestFileUpload.class
 })
 public class TS_Fuseki extends ServerTest
