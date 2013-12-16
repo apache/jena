@@ -20,6 +20,7 @@ package org.apache.jena.atlas.junit;
 
 import java.util.ArrayDeque ;
 import java.util.Deque ;
+import java.util.Locale ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.system.ErrorHandler ;
@@ -71,4 +72,18 @@ public class BaseTest extends Assert
          assertFalse(a == b ) ;
     }
     
+    public static void assertEqualsIgnoreCase(String a, String b)
+    {
+        a = a.toLowerCase(Locale.ROOT) ;
+        b = b.toLowerCase(Locale.ROOT) ;
+        assertEquals(a, b) ;
+    }
+
+    public static void assertEqualsIgnoreCase(String msg, String a, String b)
+    {
+        a = a.toLowerCase(Locale.ROOT) ;
+        b = b.toLowerCase(Locale.ROOT) ;
+        assertEquals(msg, a, b) ;
+    }
+
 }
