@@ -34,7 +34,6 @@ import org.apache.jena.atlas.web.auth.ScopedAuthenticator ;
 import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
 import org.junit.AfterClass ;
@@ -85,12 +84,13 @@ public class TestAuth extends ServerTest {
 
         DatasetGraph dsg = DatasetGraphFactory.createMem();
         // This must agree with ServerTest
-        ServerConfig conf = FusekiConfig.defaultConfiguration(datasetPath, dsg, true, true);
+        ServerConfig conf = ServerTest.make(dsg, true, true);
         conf.port = ServerTest.port;
         conf.pagesPort = ServerTest.port;
         conf.authConfigFile = realmFile.getAbsolutePath();
 
         server = new SPARQLServer(conf);
+        X_Config.configureDatasets(conf.datasets) ;
         server.start();
     }
 

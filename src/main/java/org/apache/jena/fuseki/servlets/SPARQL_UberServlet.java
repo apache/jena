@@ -171,8 +171,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         if ( ! hasTrailing && ! hasParams )
         {
             // Check enabled.  But no trailing here.
-            // if ( serviceDispatch(action, desc.readGraphStore, trailing, restQuads_R) ) return ;
             // if ( serviceDispatch(action, desc.readWriteGraphStore, trailing, restQuads_RW) ) return ;
+            // if ( serviceDispatch(action, desc.readGraphStore, trailing, restQuads_R) ) return ;
             restQuads_RW.executeLifecycle(action) ;
             return ;
         }

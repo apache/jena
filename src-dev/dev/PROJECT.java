@@ -19,15 +19,13 @@
 package dev;
 
 public class PROJECT {
-    // Andy's ToDo list
     // All TODO and XXX
     // Graph upload in ActionDatasets == Upload.
 
-    // GSP, and no query string => quads operation. JENA-607
-    
     // txn and nonTxn server set up for tests.
     
     // Enables, disable R/RW on SPARQL_UberServlet(renamed) and quads operations.
+    // Need a switch on whether quadding is support and whether it's RW or not.
     
     // Remove all direct naming (put in separate servlet if ever needed)  
     //   last place : SPARQL_UberServlet
@@ -40,6 +38,9 @@ public class PROJECT {
     //   ContextPath in uber dispatch.
     //   FusekiServletContextListener
     
-    // SPARQLServer.start kicks FusekiServletContextListener which could then do the main initialization. 
+    // SPARQLServer.start kicks FusekiServletContextListener which could then do the main initialization.
+    
+    // The whole X_Config thing
+    // Check compression enabled for UberServlet
 }
 

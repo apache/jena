@@ -28,9 +28,9 @@ import javax.servlet.DispatcherType ;
 import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.fuseki.X_Config ;
 import org.apache.jena.fuseki.mgt.MgtFunctions ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
 import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral ;
@@ -54,7 +54,6 @@ import org.eclipse.jetty.servlets.GzipFilter ;
 import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
 
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /**
@@ -86,32 +85,15 @@ public class SPARQLServer {
         this.serverConfig = config ;
         // Currently server-wide.
         Fuseki.verboseLogging = config.verboseLogging ;
-
-        // GZip compression
-        // Note that regardless of this setting we'll always leave it turned off
-        // for the servlets
-        // where it makes no sense to have it turned on e.g. update and upload
-
         ServletContextHandler context = buildServer(serverConfig.jettyConfigFile, config.enableCompression) ;
-        configureDatasets(context) ;
-    }
-
-    private void configureDatasets(ServletContextHandler context) {
-        // Build them all.
         
-        for (DatasetRef dsDesc : serverConfig.datasets)
-            configureOneDataset(context, dsDesc, serverConfig.enableCompression) ;
-
-        // Service operation dispatch:
-        // This filter looks at incoming HTTP requests and routes one that match
-        // registered, active datasets to the all purpose service dispatch servlet
-        // SPARQL_UberServlet.
-
+        // Filter to grab all request for dynamic dispatching.
         FilterHolder f = new FilterHolder(new FusekiFilter()) ;
         EnumSet<DispatcherType> es = EnumSet.allOf(DispatcherType.class) ; 
         context.addFilter(f, "/*", es);
+        // Datasets not initialized yet.
     }
-    
+
     /**
      * Initialize the {@link SPARQLServer} instance.
      */
@@ -135,8 +117,7 @@ public class SPARQLServer {
             serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;
             System.exit(1) ;
         }
-
-        ServletContextHandler context = (ServletContextHandler)server.getHandler() ;
+        X_Config.addJMX() ;
     }
 
     /**
@@ -150,7 +131,7 @@ public class SPARQLServer {
         } catch (Exception ex) {
             Fuseki.serverLog.warn("SPARQLServer: Exception while stopping server: " + ex.getMessage(), ex) ;
         }
-        removeJMX() ;
+        X_Config.removeJMX() ;
     }
 
     /**
@@ -164,15 +145,6 @@ public class SPARQLServer {
     public int getPort() {        
 
         return server.getConnectors()[0].getPort() ;
-    }
-
-    /**
-     * Get the datasets associated with the server.
-     * @return returns the datasets via {@link org.apache.jena.fuseki.server.ServerConfig#datasets        
-}
-     */
-    public List<DatasetRef> getDatasets() {
-        return serverConfig.datasets ;
     }
 
     /**
@@ -292,24 +264,6 @@ public class SPARQLServer {
         return context ;
     }
 
-    private static List<String> ListOfEmptyString = Arrays.asList("") ;
-
-    private void configureOneDataset(ServletContextHandler context, DatasetRef dsDesc, boolean enableCompression) {
-        
-        String datasetPath = DatasetRef.canocialDatasetPath(dsDesc.name) ;
-        registerDataset(datasetPath, dsDesc) ;
-        // Add JMX beans to record dataset and it's services.
-        addJMX(dsDesc) ;
-    }
-
-    public static void registerDataset(String datasetPath, DatasetRef dsDesc) {
-        dsDesc.enable() ;
-        if ( DatasetRegistry.get().isRegistered(datasetPath) )
-            throw new FusekiConfigException("Already registered: key = "+datasetPath) ;
-        DatasetRegistry.get().put(datasetPath, dsDesc) ;
-        serverLog.info(format("Dataset path = %s", datasetPath)) ;
-    }
-    
     private static Server configServer(String jettyConfig) {
         try {
             serverLog.info("Jetty server config file = " + jettyConfig) ;
@@ -412,39 +366,5 @@ public class SPARQLServer {
 
         if ( enableCompression )
             context.addFilter(GzipFilter.class, pathSpec, EnumSet.allOf(DispatcherType.class)) ;
-    }
-
-    private void addJMX() {
-        DatasetRegistry registry = DatasetRegistry.get() ;
-        for (String ds : registry.keys()) {
-            DatasetRef dsRef = registry.get(ds) ;
-            addJMX(dsRef) ;
-        }
-    }
-
-    private void addJMX(DatasetRef dsRef) {
-        String x = dsRef.name ;
-        // if ( x.startsWith("/") )
-        // x = x.substring(1) ;
-        ARQMgt.register(Fuseki.PATH + ".dataset:name=" + x, dsRef) ;
-        // For all endpoints
-        for (ServiceRef sRef : dsRef.getServiceRefs()) {
-            ARQMgt.register(Fuseki.PATH + ".dataset:name=" + x + "/" + sRef.name, sRef) ;
-        }
-    }
-
-    private void removeJMX() {
-        DatasetRegistry registry = DatasetRegistry.get() ;
-        for (String ds : registry.keys()) {
-            DatasetRef ref = registry.get(ds) ;
-        }
-    }
-
-    private void removeJMX(DatasetRef dsRef) {
-        String x = dsRef.getName() ;
-        ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x) ;
-        for (ServiceRef sRef : dsRef.getServiceRefs()) {
-            ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x + "/" + sRef.name) ;
-        }
     }
 }

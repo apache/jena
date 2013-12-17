@@ -66,6 +66,7 @@ public class FusekiServletContextListener implements ServletContextListener {
                 return ;
             initialized = true ;
             Fuseki.init() ;
+            
         }
     }
 }

@@ -102,12 +102,24 @@ public class ServerTest
     {
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         // This must agree with ServerTest
-        ServerConfig conf = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, true, true) ;
-        conf.port = ServerTest.port ;
-        conf.pagesPort = ServerTest.port ;
-        
-        server = new SPARQLServer(conf) ;
+        ServerConfig config = make(dsg, true, true) ;
+        server = new SPARQLServer(config) ;
+        X_Config.configureDatasets(config.datasets) ;
         server.start() ;
+    }
+    
+    public static ServerConfig make(DatasetGraph dsg, boolean allowUpdate, boolean listenLocal) {
+        ServerConfig config = new ServerConfig() ;
+        config.datasets = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, allowUpdate, listenLocal) ;
+        config.port = ServerTest.port ;
+        config.mgtPort = ServerTest.port ;
+        config.pagesPort = ServerTest.port ;
+        config.loopback = false ;
+        config.jettyConfigFile = null ;
+        config.pages = Fuseki.PagesStatic ;
+        config.enableCompression = true ;
+        config.verboseLogging = false ;
+        return config ;
     }
     
     protected static void teardownServer() {

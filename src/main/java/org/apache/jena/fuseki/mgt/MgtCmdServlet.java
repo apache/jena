@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServiceRef ;
 import org.apache.jena.web.HttpSC ;
@@ -123,8 +124,8 @@ public class MgtCmdServlet extends HttpServlet
             // out.printf("Port: %s\n",
             // server.getServer().getConnectors()[0].getPort()) ;
             out.println() ;
-
-            for ( DatasetRef dsRef : server.getDatasets() ) {
+            for ( String key : DatasetRegistry.get().keys() ) {
+                DatasetRef dsRef = DatasetRegistry.get().get(key) ;
                 datasetRefDetails(out, dsRef) ;
                 out.println() ;
             }

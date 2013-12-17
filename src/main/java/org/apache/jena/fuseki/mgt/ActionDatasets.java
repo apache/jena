@@ -38,6 +38,7 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.X_Config ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
@@ -261,7 +262,7 @@ public class ActionDatasets extends ActionCtl {
             String datasetPath = DatasetRef.canocialDatasetPath(datasetName) ;
             // Need to be in Resource space at this point.
             DatasetRef dsRef = FusekiConfig.processService(subject) ;
-            SPARQLServer.registerDataset(datasetPath, dsRef) ;
+            X_Config.registerDataset(datasetPath, dsRef) ;
             system.commit();
             committed = true ;
             ServletOps.success(action) ;

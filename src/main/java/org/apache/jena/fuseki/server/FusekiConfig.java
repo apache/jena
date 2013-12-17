@@ -41,7 +41,6 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -55,8 +54,6 @@ public class FusekiConfig {
     }
     
     // MASSIVE AMOUNT OF CODE TIDYING NEEDED
-    // 
-
     // The datastructure that captures a servers configuration.
 
     // Server port
@@ -67,8 +64,8 @@ public class FusekiConfig {
 
     private static Logger log      = Fuseki.configLog ;
 
-    public static ServerConfig defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate,
-                                                    boolean listenLocal) {
+    public static List<DatasetRef> defaultConfiguration(String datasetPath, DatasetGraph dsg,
+                                                        boolean allowUpdate, boolean listenLocal) {
         DatasetRef dbDesc = new DatasetRef() ;
         dbDesc.name = DatasetRef.canocialDatasetPath(datasetPath) ;
         dbDesc.dataset = dsg ;
@@ -82,17 +79,7 @@ public class FusekiConfig {
             dbDesc.allowDatasetUpdate = true ;
         } else
             dbDesc.readGraphStore.endpoints.add(HttpNames.ServiceData) ;
-        ServerConfig config = new ServerConfig() ;
-        config.datasets = new ArrayList<DatasetRef>(Arrays.asList(dbDesc)) ;
-        config.port = 3030 ;
-        config.mgtPort = 3031 ;
-        config.pagesPort = config.port ;
-        config.loopback = listenLocal ;
-        config.jettyConfigFile = null ;
-        config.pages = Fuseki.PagesStatic ;
-        config.enableCompression = true ;
-        config.verboseLogging = false ;
-        return config ;
+        return Arrays.asList(dbDesc) ; 
     }
 
     // NEW
@@ -106,7 +93,7 @@ public class FusekiConfig {
             }
         } ;
     
-    public static void additional(ServerConfig config) {
+    public static List<DatasetRef> additional() {
         String qs = StrUtils.strjoinNL
             (SystemState.PREFIXES ,
              "SELECT * {" ,
@@ -116,6 +103,8 @@ public class FusekiConfig {
              "  }",
              "}"
              ) ;
+        
+        List<DatasetRef> refs = new ArrayList<DatasetRef>() ;
         
         ResultSet rs = query(qs,SystemState.dataset) ;
         
@@ -134,8 +123,9 @@ public class FusekiConfig {
             //String name = row.getLiteral("name").getLexicalForm() ;
             DatasetRef ref = processService(s) ;
             ref.setStatus(status) ;
-            config.datasets.add(ref) ;
+            refs.add(ref) ;
         }
+        return refs ;
     }
     
     public static List<DatasetRef> readConfiguration(Model m) {
@@ -191,17 +181,16 @@ public class FusekiConfig {
     
     // OLD
     
-    public static ServerConfig configure(String filename) {
-        // Be absolutely sure everything has initialized.
-        // Some initialization registers assemblers and sets abbreviation
-        // vocabulary.
-        ARQ.init() ;
-        TDB.init() ;
-        Fuseki.init() ;
-        Model m = FileManager.get().loadModel(filename) ;
-
+    /** Has side effects in server setup */
+    public static List<DatasetRef> configure(String filename) {
+        Model model = FileManager.get().loadModel(filename) ;
+        server(model) ;
+        return servicesAndDatasets(model) ;
+    }
+    
+    private static void server(Model model) {
         // Find one server.
-        List<Resource> servers = getByType(FusekiVocab.tServer, m) ;
+        List<Resource> servers = getByType(FusekiVocab.tServer, model) ;
         if ( servers.size() == 0 )
             throw new FusekiConfigException("No server found (no resource with type "
                                             + strForResource(FusekiVocab.tServer)) ;
@@ -212,9 +201,11 @@ public class FusekiConfig {
         // ---- Server
         Resource server = servers.get(0) ;
         processServer(server) ;
-
+    }
+    
+    private static List<DatasetRef> servicesAndDatasets(Model model) {
         // ---- Services
-        ResultSet rs = query("SELECT * { ?s fu:services [ list:member ?member ] }", m) ;
+        ResultSet rs = query("SELECT * { ?s fu:services [ list:member ?member ] }", model) ;
         if ( !rs.hasNext() )
             log.warn("No services found") ;
 
@@ -226,18 +217,7 @@ public class FusekiConfig {
             DatasetRef sd = processService(svc) ;
             services.add(sd) ;
         }
-
-        // TODO Properties for the other fields.
-        ServerConfig config = new ServerConfig() ;
-        config.datasets = services ;
-        config.port = 3030 ;
-        config.mgtPort = 3031 ;
-        config.pagesPort = config.port ;
-        config.jettyConfigFile = null ;
-        config.pages = Fuseki.PagesStatic ;
-        config.enableCompression = true ;
-        config.verboseLogging = false ;
-        return config ;
+        return services ;
     }
 
     // DatasetRef used where there isn't a real Dataset e.g. the SPARQL
