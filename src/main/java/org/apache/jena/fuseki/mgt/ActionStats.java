@@ -31,6 +31,7 @@ import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.riot.WebContent ;
 
 public class ActionStats extends ActionCtl
@@ -46,6 +47,7 @@ public class ActionStats extends ActionCtl
     protected void perform(HttpAction action) {
         try {
             perform$(action) ;
+            ServletOps.success(action) ;
         } catch (IOException ex) { IO.exception(ex) ; }
     }
     

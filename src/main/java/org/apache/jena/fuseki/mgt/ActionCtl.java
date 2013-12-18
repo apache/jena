@@ -23,6 +23,7 @@ import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.servlets.ActionBase ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 
 /** Control/admin request lifecycle */
 public abstract class ActionCtl extends ActionBase
@@ -35,14 +36,18 @@ public abstract class ActionCtl extends ActionBase
     {
         DatasetRef dsRef = null ;
         String dsURI = mapRequestToDatasetName(action) ;
-        if ( dsURI != null )
+        if ( dsURI != null ) {
             dsRef = DatasetRegistry.get().get(dsURI) ;
+            if ( dsRef == null )
+                ServletOps.errorNotFound("Not found: "+dsURI) ;
+        }
         else {
             // This is a placeholder when creating new DatasetRefs
             // and also if addressing a container, not a dataset
             dsRef = new DatasetRef() ;
             dsRef.name = dsURI ;
         }
+        
         action.setControlRef(dsRef, dsURI) ;
         executeAction(action) ;
     }

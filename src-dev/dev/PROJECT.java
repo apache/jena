@@ -42,5 +42,7 @@ public class PROJECT {
     
     // The whole X_Config thing
     // Check compression enabled for UberServlet
+    
+    // In-memory system state.
 }
 

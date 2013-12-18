@@ -29,7 +29,7 @@ import org.apache.jena.fuseki.server.ServiceRef ;
 
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 
-// XX Organise!
+// XXX Organise!
 
 public class X_Config {
     
@@ -53,9 +53,6 @@ public class X_Config {
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
     }
     
-
-
-
     public static void addJMX() {
         DatasetRegistry registry = DatasetRegistry.get() ;
         for (String ds : registry.keys()) {

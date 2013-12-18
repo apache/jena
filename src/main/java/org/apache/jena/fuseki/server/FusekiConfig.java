@@ -106,7 +106,8 @@ public class FusekiConfig {
         
         List<DatasetRef> refs = new ArrayList<DatasetRef>() ;
         
-        ResultSet rs = query(qs,SystemState.dataset) ;
+        Dataset ds = SystemState.getDataset() ;
+        ResultSet rs = query(qs, ds) ;
         
 //        ResultSetFormatter.out(rs); 
 //        ((ResultSetRewindable)rs).reset();
@@ -118,7 +119,7 @@ public class FusekiConfig {
             Resource g = row.getResource("g") ;
             Resource rStatus = row.getResource("status") ;
             DatasetStatus status = DatasetStatus.status(rStatus) ;
-            Model m = SystemState.dataset.getNamedModel(g.getURI()) ;
+            Model m = ds.getNamedModel(g.getURI()) ;
             s = m.wrapAsResource(s.asNode()) ;
             //String name = row.getLiteral("name").getLexicalForm() ;
             DatasetRef ref = processService(s) ;

@@ -65,8 +65,9 @@ public class ManagementServer
         if ( !base.startsWith("/"))
             throw new FusekiException("Base URI does not start with a '/'") ; 
         // Dump request
-        addServlet(context, new DumpServlet(),         base+"dump") ;
+        addServlet(context, new DumpServlet(),         base+"dump") ;   // XXX Remove.?
         addServlet(context, new ActionDescription(),   base+"status") ;
+        addServlet(context, new ActionPing(),          base+"ping") ;
     }
     
     public static void addAdminFunctions(ServletContextHandler context, String base) {
@@ -75,7 +76,7 @@ public class ManagementServer
             base = base + "/" ;
         if ( !base.startsWith("/"))
             throw new FusekiException("Base URI does nto start with a '/'") ; 
-        addServlet(context, new MgtCmdServlet(),        base+"mgt") ;
+        addServlet(context, new MgtCmdServlet(),        base+"mgt") ;       // XXX Old - remove.
         addServlet(context, new ActionStats(),          base+"stats") ;
         addServlet(context, new ActionDatasets(),       base+"datasets/*") ; // Covers ".../datasets" as well. 
     }

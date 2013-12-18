@@ -23,13 +23,45 @@ import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class SystemState {
-    public static String SystemDatabaseLocation = "system" ;
-    static { FileOps.ensureDir(SystemDatabaseLocation); }
-    public static Dataset                 dataset   = TDBFactory.createDataset(SystemDatabaseLocation) ;
-    public static DatasetGraphTransaction dsg       = (DatasetGraphTransaction)(dataset.asDatasetGraph()) ;
+    // XXX  Make part of the mgt webapp. 
+    private static String SystemDatabaseLocation = "system" ;
+    // Testing may reset this.
+    public static Location location = new Location(SystemDatabaseLocation)  ;
+    
+    private  static Dataset                 dataset   = null ;
+    private  static DatasetGraphTransaction dsg       = null ;
+    
+    
+    public static Dataset getDataset() {
+        init() ;
+        return dataset ;
+    }
+    
+    public static DatasetGraphTransaction getDatasetGraph() {
+        init() ;
+        return dsg ;
+    }
+    
+    private static boolean initialized = false ; 
+    private static void init() {
+        if ( initialized )
+            return ;
+        initialized = true ;
+        init$() ;
+    }
+    
+    
+    public /* for testing */ static void init$() {
+        if ( ! location.isMem() )
+            FileOps.ensureDir(location.getDirectoryPath()) ;
+        dataset = TDBFactory.createDataset(location) ;
+        dsg     = (DatasetGraphTransaction)(dataset.asDatasetGraph()) ;
+    }
+
     
     public static String PREFIXES = StrUtils.strjoinNL
         ("BASE <http://example/base#>",

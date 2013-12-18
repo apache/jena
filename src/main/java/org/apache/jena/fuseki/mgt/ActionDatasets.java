@@ -71,8 +71,8 @@ public class ActionDatasets extends ActionCtl {
     // DatasetRef ref = processService(s) ;
     //   Needs to do the state.
     
-    private static Dataset system = SystemState.dataset ;
-    private static DatasetGraphTransaction systemDSG = SystemState.dsg ; 
+    private static Dataset system = SystemState.getDataset() ;
+    private static DatasetGraphTransaction systemDSG = SystemState.getDatasetGraph() ; 
     
     static private Property pServiceName = FusekiVocab.pServiceName ;
     static private Property pStatus = FusekiVocab.pStatus ;
@@ -136,7 +136,7 @@ public class ActionDatasets extends ActionCtl {
     }
     
     // This does not consult the system database for dormant etc.
-    private JsonValue execGetDataset(HttpAction action) { 
+    private JsonValue execGetContainer(HttpAction action) { 
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject() ;
         builder.key("datasets") ;
@@ -145,7 +145,7 @@ public class ActionDatasets extends ActionCtl {
         return builder.build() ;
     }
 
-    private JsonValue execGetContainer(HttpAction action) {
+    private JsonValue execGetDataset(HttpAction action) {
         action.log.info(format("[%d] GET ds=%s", action.id, action.dsRef.name)) ;
         JsonBuilder builder = new JsonBuilder() ;
         String datasetPath = DatasetRef.canocialDatasetPath(action.dsRef.name) ;
@@ -287,7 +287,7 @@ public class ActionDatasets extends ActionCtl {
         boolean committed =false ;
         try {
             // Name to graph
-            Quad q = getOne(SystemState.dsg, null, null, pServiceName.asNode(), null) ;
+            Quad q = getOne(SystemState.getDatasetGraph(), null, null, pServiceName.asNode(), null) ;
             if ( q == null )
                 ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
             Node gn = q.getGraph() ;

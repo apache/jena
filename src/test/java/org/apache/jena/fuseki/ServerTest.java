@@ -20,10 +20,9 @@ package org.apache.jena.fuseki;
 
 import java.util.Collection ;
 
-import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.fuseki.server.FusekiConfig ;
-import org.apache.jena.fuseki.server.SPARQLServer ;
-import org.apache.jena.fuseki.server.ServerConfig ;
+import org.apache.jena.fuseki.mgt.ManagementServer ;
+import org.apache.jena.fuseki.server.* ;
+import org.eclipse.jetty.servlet.ServletContextHandler ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -35,6 +34,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.modify.request.Target ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateExecutionFactory ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
@@ -100,16 +100,24 @@ public class ServerTest
     
     protected static void setupServer()
     {
+        SystemState.location = Location.mem() ;
+        SystemState.init$() ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         // This must agree with ServerTest
         ServerConfig config = make(dsg, true, true) ;
         server = new SPARQLServer(config) ;
         X_Config.configureDatasets(config.datasets) ;
+        
+        ServletContextHandler context = (ServletContextHandler)server.getServer().getHandler() ;
+        ManagementServer.addServerFunctions(context, "/$/") ;
+        ManagementServer.addAdminFunctions(context, "/$/") ;
+        
         server.start() ;
     }
     
     public static ServerConfig make(DatasetGraph dsg, boolean allowUpdate, boolean listenLocal) {
         ServerConfig config = new ServerConfig() ;
+        // Avoid any persistent record.
         config.datasets = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, allowUpdate, listenLocal) ;
         config.port = ServerTest.port ;
         config.mgtPort = ServerTest.port ;
