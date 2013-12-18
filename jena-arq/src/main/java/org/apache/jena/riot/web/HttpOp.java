@@ -658,7 +658,8 @@ public class HttpOp {
                                     HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         String requestURI = determineRequestURI(url);
         HttpPost httppost = new HttpPost(requestURI);
-        httppost.setEntity(entity);
+        if ( entity != null )
+            httppost.setEntity(entity);
         exec(url, httppost, acceptHeader, handler, httpClient, httpContext, authenticator);
     }
 
