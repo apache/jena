@@ -22,14 +22,9 @@ import java.lang.management.ManagementFactory ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import javax.management.InstanceAlreadyExistsException ;
-import javax.management.InstanceNotFoundException ;
-import javax.management.MBeanRegistrationException ;
-import javax.management.MBeanServer ;
-import javax.management.MalformedObjectNameException ;
-import javax.management.NotCompliantMBeanException ;
-import javax.management.ObjectName ;
+import javax.management.* ;
 
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -118,10 +113,10 @@ public class ARQMgt {
             log.warn("MBean not already registered: " + objName) ;
         try {
             mbs.unregisterMBean(objName) ;
-        } catch (InstanceNotFoundException ex) {
-            ex.printStackTrace() ;
-        } catch (MBeanRegistrationException ex) {
-            ex.printStackTrace() ;
+        } 
+        catch (InstanceNotFoundException ex) { }    // Meh, whatever
+        catch (MBeanRegistrationException ex) {
+            throw new InternalErrorException(ex) ;
         }
     }
 
