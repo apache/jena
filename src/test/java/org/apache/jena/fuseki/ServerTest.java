@@ -20,6 +20,7 @@ package org.apache.jena.fuseki;
 
 import java.util.Collection ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.* ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
@@ -135,7 +136,7 @@ public class ServerTest
             server.stop() ;
         server = null ;
         // Clear out the registry.
-        Collection<String> keys = DatasetRegistry.get().keys() ;
+        Collection<String> keys = Iter.toList(DatasetRegistry.get().keys()) ;
         for ( String k : keys )
             DatasetRegistry.get().remove(k);
     }

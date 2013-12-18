@@ -117,7 +117,6 @@ public class SPARQLServer {
             serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;
             System.exit(1) ;
         }
-        X_Config.addJMX() ;
     }
 
     /**

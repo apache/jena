@@ -51,9 +51,10 @@ public class X_Config {
             throw new FusekiConfigException("Already registered: key = "+datasetPath) ;
         DatasetRegistry.get().put(datasetPath, dsDesc) ;
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
+        X_Config.addJMX(dsDesc) ;
     }
     
-    public static void addJMX() {
+    public static void XaddJMX() {
         DatasetRegistry registry = DatasetRegistry.get() ;
         for (String ds : registry.keys()) {
             DatasetRef dsRef = registry.get(ds) ;

@@ -110,11 +110,6 @@ public class ActionDatasets extends ActionCtl {
             execDelete(action) ;
         else
             ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405) ;
-        
-//      system.begin(ReadWrite.READ) ;
-//      try { RDFDataMgr.write(System.out, system, Lang.TRIG); }
-//      finally { system.end() ; }
-
     }
 
     protected void execGet(HttpAction action) {
@@ -131,8 +126,9 @@ public class ActionDatasets extends ActionCtl {
             JSON.write(out, v) ;
             out.println() ; 
             out.flush() ;
+            ServletOps.success(action);
         } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
-        ServletOps.success(action);
+        
     }
     
     // This does not consult the system database for dormant etc.
@@ -146,7 +142,7 @@ public class ActionDatasets extends ActionCtl {
     }
 
     private JsonValue execGetDataset(HttpAction action) {
-        action.log.info(format("[%d] GET ds=%s", action.id, action.dsRef.name)) ;
+        action.log.info(format("[%d] GET dataset %s", action.id, action.dsRef.name)) ;
         JsonBuilder builder = new JsonBuilder() ;
         String datasetPath = DatasetRef.canocialDatasetPath(action.dsRef.name) ;
         DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
@@ -256,10 +252,15 @@ public class ActionDatasets extends ActionCtl {
                 action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
 
             String datasetName = object.getLexicalForm() ;
+            String datasetPath = DatasetRef.canocialDatasetPath(datasetName) ;
+            if ( DatasetRegistry.get().isRegistered(datasetPath) ) {
+                // And abort.
+                ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetName) ;
+            }
+                
             model.removeAll(null, pStatus, null) ;
             model.add(subject, pStatus, FusekiVocab.stateActive) ;
             
-            String datasetPath = DatasetRef.canocialDatasetPath(datasetName) ;
             // Need to be in Resource space at this point.
             DatasetRef dsRef = FusekiConfig.processService(subject) ;
             X_Config.registerDataset(datasetPath, dsRef) ;

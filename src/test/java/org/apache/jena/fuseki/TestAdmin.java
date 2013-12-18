@@ -22,6 +22,7 @@ import static org.apache.jena.fuseki.ServerTest.datasetPath ;
 import static org.apache.jena.fuseki.ServerTest.urlRoot ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opDatasets ;
 import static org.apache.jena.fuseki.mgt.MgtConst.opPing ;
+import static org.apache.jena.fuseki.mgt.MgtConst.opStats ;
 import static org.apache.jena.riot.web.HttpOp.execHttpDelete ;
 import static org.apache.jena.riot.web.HttpOp.execHttpGet ;
 import static org.apache.jena.riot.web.HttpOp.execHttpPost ;
@@ -83,34 +84,21 @@ public class TestAdmin extends BaseTest {
     
     @Test public void list_datasets_2() {
         TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets) ;
-        assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
-        JsonValue v = JSON.parse(in) ;
-        assertNotNull(v.getAsObject().get("datasets")) ; 
-        JsonArray a = v.getAsObject().get("datasets").getAsArray() ;
-        
-        JsonObject obj = a.get(0).getAsObject() ;
-        checkOne(obj) ;
-        try { in.close() ; }
-        catch (IOException e) { IO.exception(e); }
+        try {
+            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
+            JsonValue v = JSON.parse(in) ;
+            assertNotNull(v.getAsObject().get("datasets")) ; 
+            checkJsonDatasetsAll(v);
+        } finally { IO.close(in) ; }
     }
 
-    private void checkOne(JsonObject obj) {
-        assertNotNull(obj.get("ds.name")) ;
-        assertNotNull(obj.get("ds.services")) ;
-        assertTrue(obj.get("ds.services").isArray()) ;
-    }
-    
     // Specific dataset
     @Test public void list_datasets_5() {
-        TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+datasetPath) ;
-        try { in.close() ; }
-        catch (IOException e) { IO.exception(e); }
+        checkExists(datasetPath) ;
     }
     
     // Specific dataset
     @Test public void list_datasets_6() {
-        checkNotThere("does-not-exist") ;
-
         try {
             TypedInputStream in = execHttpGet(ServerTest.urlRoot+"$/"+opDatasets+"/does-not-exist") ;
         } catch (HttpException ex) {
@@ -120,30 +108,78 @@ public class TestAdmin extends BaseTest {
     
     // Specific dataset
     @Test public void list_datasets_7() {
-        TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+datasetPath) ;
-        JsonValue v = JSON.parse(in) ;
-        checkOne(v.getAsObject()) ;
-        try { in.close() ; }
-        catch (IOException e) { IO.exception(e); }
+        JsonValue v = execGetJSON(urlRoot+"$/"+opDatasets+datasetPath) ;
+        checkJsonDatasetsOne(v.getAsObject()) ;
     }
 
     // -- Add
     
     // Specific dataset
     @Test public void add_dataset_1() {
+        String dsTest = "test-ds2" ;
+        checkNotThere(dsTest) ;
+
         File f = new File("testing/config-ds-1.ttl") ;
         org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
         HttpEntity e = new FileEntity(f, ct) ;
         execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
         
         // Check exists.
-        execHttpGet(urlRoot+"$/"+opDatasets+"/test-ds2") ;
+        checkExists(dsTest) ;
         
         // Remove it.
-        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/test-ds2") ;
+        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest) ;
         checkNotThere("test-ds") ;
     }
 
+    // Try to add twice
+    @Test public void add_dataset_2() {
+        String dsTest = "test-ds2" ;
+        checkNotThere(dsTest) ;
+
+        File f = new File("testing/config-ds-1.ttl") ;
+        { 
+            org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
+            HttpEntity e = new FileEntity(f, ct) ;
+            execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
+        }
+        // Check exists.
+        checkExists(dsTest) ;
+        try {
+            org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
+            HttpEntity e = new FileEntity(f, ct) ;
+            execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
+        } catch (HttpException ex) {
+            assertEquals(HttpSC.CONFLICT_409, ex.getResponseCode()) ;
+        }
+        // Check exists.
+        checkExists(dsTest) ;
+    }
+    
+    // ---- Active/dormant.
+    
+    // ---- Backup
+
+    // ---- Server
+    
+    // ---- Stats
+    
+    @Test public void stats_1() {
+        JsonValue v = execGetJSON(urlRoot+"$/"+opStats) ;
+        checkJsonStatsAll(v); 
+    }
+    
+    // Auxilary
+    
+    private static void checkExists(String name)  {
+        if ( name.startsWith("/") )
+            name = name.substring(1) ;
+        TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+name) ; 
+        IO.close(in) ;
+        in = execHttpGet(urlRoot+name+"/sparql?query=ASK%7B%7D") ;
+        IO.close(in) ;
+    }
+    
     private static void checkNotThere(String name) {
         if ( name.startsWith("/") )
             name = name.substring(1) ;
@@ -163,7 +199,50 @@ public class TestAdmin extends BaseTest {
         catch (HttpException ex) {
             assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
         }
-        
+    }
+
+    private static void checkJsonDatasetsAll(JsonValue v) {
+        assertNotNull(v.getAsObject().get("datasets")) ; 
+        JsonArray a = v.getAsObject().get("datasets").getAsArray() ;
+        for ( JsonValue v2 : a ) {
+            checkJsonDatasetsOne(v2) ;
+        }
+
+    }
+    
+    private static void checkJsonDatasetsOne(JsonValue v) {
+        assertTrue(v.isObject()) ;
+        JsonObject obj = v.getAsObject() ;
+        assertNotNull(obj.get("ds.name")) ;
+        assertNotNull(obj.get("ds.services")) ;
+        assertTrue(obj.get("ds.services").isArray()) ;
+    }
+    
+    private static void checkJsonStatsAll(JsonValue v) {
+        assertNotNull(v.getAsObject().get("datasets")) ; 
+        JsonObject a = v.getAsObject().get("datasets").getAsObject() ;
+        for ( String dsname : a.keys() ) {
+            JsonValue obj = a.get(dsname).getAsObject() ;
+            checkJsonStatsOne(obj);
+        }
+    }
+    
+    private static void checkJsonStatsOne(JsonValue v) {
+        JsonObject obj = v.getAsObject() ;
+        assertTrue(obj.hasKey("Requests")) ;
+        assertTrue(obj.hasKey("RequestsGood")) ;
+        assertTrue(obj.hasKey("RequestsBad")) ;
+        assertTrue(obj.hasKey("services")) ;
+        JsonObject obj2 = obj.get("services").getAsObject() ;
+        // More
+    }
+
+    private static JsonValue execGetJSON(String url) {
+        TypedInputStream in = execHttpGet(url) ;
+        try { 
+            assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType()) ;
+            return JSON.parse(in) ; 
+        } finally { IO.close(in) ; }
     }
     
     /*
