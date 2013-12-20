@@ -29,8 +29,8 @@ public class TestJsonBuilder extends BaseTest{
     @Test public void jsonBuild01() {
         JsonValue x = JSON.parseAny("{ }") ;
         JsonBuilder builder = new JsonBuilder() ;
-        builder.startObject() ;
-        builder.finishObject() ;
+        builder.startObject("A") ;
+        builder.finishObject("A") ;
         JsonValue v = builder.build() ;
         assertEquals(x,v) ;
     }
@@ -38,10 +38,10 @@ public class TestJsonBuilder extends BaseTest{
     @Test public void jsonBuild02() {
         JsonValue x = JSON.parseAny("{ a: 'A', b:'B'}") ;
         JsonBuilder builder = new JsonBuilder() ;
-        builder.startObject() ;
+        builder.startObject("Obj1") ;
         builder.key("a").value("A") ;
         builder.key("b").value("B") ;
-        builder.finishObject() ;
+        builder.finishObject("Obj1") ;
         JsonValue v = builder.build() ;
         assertEquals(x,v) ;
     }
@@ -100,4 +100,12 @@ public class TestJsonBuilder extends BaseTest{
         builder.startObject() ;
         builder.finishArray() ;
     }
+    
+    @Test(expected=JsonException.class)
+    public void jsonBuildErr03() {
+        JsonBuilder builder = new JsonBuilder() ;
+        builder.startObject("A") ;
+        builder.finishObject("B") ;
+    }
+
 }
