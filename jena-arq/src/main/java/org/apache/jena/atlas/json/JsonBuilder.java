@@ -22,6 +22,7 @@ import java.math.BigDecimal ;
 import java.util.ArrayDeque ;
 import java.util.Deque ;
 
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
 
 /* Builder pattern for JSON.
@@ -29,50 +30,19 @@ import org.apache.jena.atlas.logging.Log ;
  */
 public class JsonBuilder {
 
-    public static void main(String... argv) throws Exception {
-
-        // c.f. JSWriter
-        
-        JsonBuilder builder = new JsonBuilder() ;
-        builder.startArray().value(3).value(4).finishArray() ;
-        JsonValue value1 = builder.build() ;
-        JSON.write(value1) ;
-        System.out.println() ;
-        System.out.println() ;
-        
-        builder.reset() ;
-        builder.startObject() ;
-
-        builder.key("bar").value("foo") ;
-        builder.key("bar2").value(5) ;
-        builder.key("bar3").startObject().key("inner1").value(true).key("inner2").value(false).finishObject() ;
-
-        builder.key("outer") ;
-        builder.startObject().key("array").startArray().value(3).value(4).finishArray().finishObject() ;
-
-        builder.finishObject() ;
-
-        JsonValue value2 = builder.build() ;
-        JSON.write(value2) ;
-        System.out.println() ;
-        System.out.println() ;
-        System.out.println("DONE") ;
-
-    }
-
-    // =============
-
     // If not an array or object.
-    private JsonValue         builtValue   = null ;
-    private Deque<JsonArray>  arrays  = new ArrayDeque<JsonArray>() ;
-    private Deque<JsonObject> objects = new ArrayDeque<JsonObject>() ;
+    private JsonValue         builtValue    = null ;
+    private static final String NoMarker    = "" ;
+    private Deque<String>     markers       = new ArrayDeque<String>() ;
+    private Deque<JsonArray>  arrays        = new ArrayDeque<JsonArray>() ;
+    private Deque<JsonObject> objects       = new ArrayDeque<JsonObject>() ;
 
     private static enum State {
         ARRAY, OBJECT
     }
     private Deque<State>  stack = new ArrayDeque<State>() ;
 
-    // The depth of this stack is the object depth.
+    // The depth of this stack is the object depth. key: { key: ... } 
     private Deque<String> keys  = new ArrayDeque<String>() ;
 
     public JsonBuilder() {
@@ -96,13 +66,18 @@ public class JsonBuilder {
         arrays.clear(); 
     }
 
-    public JsonBuilder startObject() {
+    public JsonBuilder startObject() { return startObject(NoMarker) ; }
+    
+    public JsonBuilder startObject(String startMarker) {
+        markers.push(startMarker); 
         objects.push(new JsonObject()) ;
         stack.push(State.OBJECT) ;
         return this ;
     }
 
-    public JsonBuilder finishObject() {
+    public JsonBuilder finishObject() { return finishObject(NoMarker) ; }
+
+    public JsonBuilder finishObject(String finishMarker) {
         if ( stack.isEmpty() )
             throw new JsonException("Alignment error : already built outer most object or array") ; 
         State state = stack.pop() ;
@@ -112,6 +87,9 @@ public class JsonBuilder {
         maybeObjectOrArray(value) ;
         if ( stack.isEmpty() )
             builtValue = value ;
+        String startMarker = markers.pop(); 
+        if ( ! Lib.equal(startMarker, finishMarker) )
+            throw new JsonException("JSON build error : start/finish alignment error: start="+startMarker+"  finish="+finishMarker) ;
         return this ;
     }
 
