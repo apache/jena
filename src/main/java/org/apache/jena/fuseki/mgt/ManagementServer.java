@@ -77,8 +77,8 @@ public class ManagementServer
         if ( !base.startsWith("/"))
             throw new FusekiException("Base URI does nto start with a '/'") ; 
         addServlet(context, new MgtCmdServlet(),        base+"mgt") ;       // XXX Old - remove.
-        addServlet(context, new ActionStats(),          base+"stats") ;
-        addServlet(context, new ActionDatasets(),       base+"datasets/*") ; // Covers ".../datasets" as well. 
+        addServlet(context, new ActionStats(),          base+"stats/*") ;   // "/abc/*" covers ".../abc" as well.
+        addServlet(context, new ActionDatasets(),       base+"datasets/*") ;  
     }
 
     // SHARE

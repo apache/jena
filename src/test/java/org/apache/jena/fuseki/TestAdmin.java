@@ -49,6 +49,12 @@ import org.junit.Test ;
 
 /** Tests of the admin functionality */
 public class TestAdmin extends BaseTest {
+    
+    // Name of the dataset in the assembler file.
+    static String dsTest = "test-ds2" ;
+
+    
+    
     @BeforeClass
     public static void beforeClass() {
         ServerTest.allocServer() ;
@@ -114,27 +120,33 @@ public class TestAdmin extends BaseTest {
 
     // -- Add
     
-    // Specific dataset
-    @Test public void add_dataset_1() {
-        String dsTest = "test-ds2" ;
-        checkNotThere(dsTest) ;
-
+    private static void addTestDataset() {
         File f = new File("testing/config-ds-1.ttl") ;
         org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.parse(WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8) ;
         HttpEntity e = new FileEntity(f, ct) ;
         execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
+    }
+    
+    private static void deleteTestDataset() {
+        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest) ;
+    }
+
+    // Specific dataset
+    @Test public void add_dataset_1() {
+        checkNotThere(dsTest) ;
+
+        addTestDataset() ;
         
         // Check exists.
         checkExists(dsTest) ;
         
         // Remove it.
-        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest) ;
-        checkNotThere("test-ds") ;
+        deleteTestDataset() ;
+        checkNotThere(dsTest) ;
     }
 
     // Try to add twice
     @Test public void add_dataset_2() {
-        String dsTest = "test-ds2" ;
         checkNotThere(dsTest) ;
 
         File f = new File("testing/config-ds-1.ttl") ;
@@ -157,6 +169,33 @@ public class TestAdmin extends BaseTest {
     }
     
     // ---- Active/dormant.
+
+    @Test public void state_1() {
+        // Add one
+        addTestDataset() ;
+        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=dormant", null) ;
+
+        checkExistsNotActive(dsTest); 
+        
+        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=active", null) ;
+        
+        checkExists(dsTest) ;
+        deleteTestDataset() ;
+    }
+    
+    @Test public void state_2() {
+        addTestDataset() ;
+        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=dormant", null) ;
+        deleteTestDataset() ;
+        checkNotThere(dsTest) ;
+    }
+
+    @Test public void state_3() {
+        addTestDataset() ;
+        try {
+            execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/DoesNotExist?state=dormant", null) ;
+        } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ; }
+    }
     
     // ---- Backup
 
@@ -169,33 +208,54 @@ public class TestAdmin extends BaseTest {
         checkJsonStatsAll(v); 
     }
     
+    @Test public void stats_2() {
+        JsonValue v = execGetJSON(urlRoot+"$/"+opStats+datasetPath) ;
+        checkJsonStatsAll(v); 
+    }
+
+    @Test public void stats_3() {
+        try {
+            JsonValue v = execGetJSON(urlRoot+"$/"+opStats+"/DoesNotExist") ;
+            checkJsonStatsAll(v);
+        } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()); }
+    }
+
     // Auxilary
     
-    private static void checkExists(String name)  {
+    private static void askPing(String name) {
         if ( name.startsWith("/") )
             name = name.substring(1) ;
-        TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+name) ; 
-        IO.close(in) ;
-        in = execHttpGet(urlRoot+name+"/sparql?query=ASK%7B%7D") ;
+        TypedInputStream in = execHttpGet(urlRoot+name+"/sparql?query=ASK%7B%7D") ; 
         IO.close(in) ;
     }
     
+    private static void adminPing(String name) {
+        TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+name) ; 
+        IO.close(in) ;
+    }
+
+    private static void checkExists(String name)  {
+        adminPing(name) ;
+        askPing(name) ;
+    }
+    
+    private static void checkExistsNotActive(String name)  {
+        adminPing(name) ;
+        try { askPing(name) ; 
+            fail("askPing did not cause an Http Exception") ;
+        } catch ( HttpException ex ) {}
+    }
+
     private static void checkNotThere(String name) {
         if ( name.startsWith("/") )
             name = name.substring(1) ;
         // Check gone exists.
-        try { 
-            TypedInputStream in = execHttpGet(urlRoot+"$/"+opDatasets+"/"+name) ; 
-            IO.close(in) ;
-        }
+        try { adminPing(name) ; }
         catch (HttpException ex) {
             assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
         }
         
-        try { 
-            TypedInputStream in = execHttpGet(urlRoot+name+"/sparql?query=ASK%7B%7D") ;
-            IO.close(in) ;
-        }
+        try { askPing(name) ; }
         catch (HttpException ex) {
             assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
         }
@@ -204,10 +264,8 @@ public class TestAdmin extends BaseTest {
     private static void checkJsonDatasetsAll(JsonValue v) {
         assertNotNull(v.getAsObject().get("datasets")) ; 
         JsonArray a = v.getAsObject().get("datasets").getAsArray() ;
-        for ( JsonValue v2 : a ) {
+        for ( JsonValue v2 : a )
             checkJsonDatasetsOne(v2) ;
-        }
-
     }
     
     private static void checkJsonDatasetsOne(JsonValue v) {

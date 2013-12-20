@@ -57,6 +57,8 @@ public abstract class ActionSPARQL extends ActionBase
                 ServletOps.errorNotFound("No dataset for URI: "+datasetUri) ;
                 return ;
             }
+            if ( !dsRef.isActive() )
+                ServletOps.errorNotFound("Dataset not active: "+datasetUri) ;
         } else
             dsRef = FusekiConfig.serviceOnlyDatasetRef() ;
 

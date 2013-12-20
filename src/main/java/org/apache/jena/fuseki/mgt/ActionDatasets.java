@@ -67,6 +67,8 @@ import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ActionDatasets extends ActionCtl {
+    // XXX ActionContainerItem
+    
     // XXX DatasetRef to include UUID : see execPostDataset
     // DatasetRef ref = processService(s) ;
     //   Needs to do the state.
@@ -128,16 +130,15 @@ public class ActionDatasets extends ActionCtl {
             out.flush() ;
             ServletOps.success(action);
         } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
-        
     }
     
     // This does not consult the system database for dormant etc.
     private JsonValue execGetContainer(HttpAction action) { 
         JsonBuilder builder = new JsonBuilder() ;
-        builder.startObject() ;
+        builder.startObject("D") ;
         builder.key("datasets") ;
         JsonDescription.arrayDatasets(builder, DatasetRegistry.get());
-        builder.finishObject() ;
+        builder.finishObject("D") ;
         return builder.build() ;
     }
 
@@ -164,6 +165,8 @@ public class ActionDatasets extends ActionCtl {
     
     // An action on a dataset.
     // XXX extend to backup etc??
+    // XXX Constant (throughout)
+    
     private void execPostDataset(HttpAction action) {
         String name = action.dsRef.name ;
         if ( name == null )
@@ -173,7 +176,7 @@ public class ActionDatasets extends ActionCtl {
         if ( action.dsRef.dataset == null )
             ServletOps.errorNotFound("Not found: dataset "+action.dsRef.name);
         DatasetRef dsDesc = action.dsRef ;
-        String s = action.request.getParameter("status") ;
+        String s = action.request.getParameter("state") ;
         if ( s == null || s.isEmpty() )
             ServletOps.errorBadRequest("No state change given") ;
 

@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.mgt;
 
+import static java.lang.String.format ;
+
 import java.io.IOException ;
 import java.util.Iterator ;
 
@@ -25,10 +27,7 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.json.JSON ;
-import org.apache.jena.atlas.json.JsonArray ;
-import org.apache.jena.atlas.json.JsonObject ;
+import org.apache.jena.atlas.json.* ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
@@ -45,74 +44,99 @@ public class ActionStats extends ActionCtl
     
     @Override
     protected void perform(HttpAction action) {
+        execGet(action) ;
+    }
+
+    protected void execGet(HttpAction action) {
+        JsonValue v ;
+        if (action.dsRef.name == null )
+            v = execGetContainer(action) ;
+        else
+            v = execGetDataset(action) ;
         try {
-            perform$(action) ;
-            ServletOps.success(action) ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+            HttpServletResponse response = action.response ;
+            ServletOutputStream out = response.getOutputStream() ;
+            response.setContentType(WebContent.contentTypeJSON);
+            response.setCharacterEncoding(WebContent.charsetUTF8) ;
+            JSON.write(out, v) ;
+            out.println() ; 
+            out.flush() ;
+            ServletOps.success(action);
+        } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
     }
     
-    protected void perform$(HttpAction action) throws IOException {
-        HttpServletResponse response = action.response ;
-        ServletOutputStream out = action.response.getOutputStream() ;
-        response.setContentType(WebContent.contentTypeJSON);
-        response.setCharacterEncoding(WebContent.charsetUTF8) ;
+    // This does not consult the system database for dormant etc.
+    private JsonValue execGetContainer(HttpAction action) { 
+        action.log.info(format("[%d] GET stats all", action.id)) ;
+        JsonBuilder builder = new JsonBuilder() ;
+        builder.startObject("top") ;
 
-        /*
-         * { "server" : ....   
-         *    "datasets" : {
-         *       "ds1": { counters... }
-         *       GSP stucture?
-         *         
-         */
+        builder.key("server") ;
+        builder.startObject("server") ;
+        builder.key("host").value(action.request.getLocalName()+":"+action.request.getLocalPort()) ;
+        builder.finishObject("server") ;
 
-        JsonObject obj = new JsonObject() ;
-        JsonObject datasets = new JsonObject() ;
-
-        JsonObject server = new JsonObject() ;
-        server.put("host", action.request.getLocalName()+":"+action.request.getLocalPort()) ;
-
+        builder.key("datasets") ;
+        builder.startObject("datasets") ;
         for ( String ds : DatasetRegistry.get().keys() )
-            statsJSON(datasets, ds) ; 
-
-        obj.put("server", server) ;
-        obj.put("datasets", datasets) ;
-
-        JSON.write(out, obj) ;
-        out.flush() ;
-    }
-    
-    private void statsJSON(JsonObject datasets, String ds) {
-        DatasetRef desc = DatasetRegistry.get().get(ds) ;
-        JsonObject stats = new JsonObject() ;
-        datasets.put(ds, stats) ;
-        stats.put(CounterName.Requests.name(),      desc.getCounters().value(CounterName.Requests)) ;
-        stats.put(CounterName.RequestsGood.name(),  desc.getCounters().value(CounterName.RequestsGood)) ;
-        stats.put(CounterName.RequestsBad.name(),   desc.getCounters().value(CounterName.RequestsBad)) ;
-        JsonObject services = new JsonObject() ;
-
-//        JsonArray endpoints = new JsonArray() ;
-//        services.put("endpoints", endpoints) ;
-//        JsonArray srvNames = new JsonArray() ;
-//        services.put("names", srvNames) ;
+            statsDataset(builder, ds) ; 
+        builder.finishObject("datasets") ;
         
-        // There can be several endpoints for one service.
-        for ( ServiceRef srvRef : desc.getServiceRefs() ) {
-            JsonObject epStats = new JsonObject() ;
-            statsJSON(epStats, srvRef) ;
-            services.put(srvRef.name, epStats) ;
-            JsonArray endpoints = new JsonArray() ;
-            epStats.put("endpoints", endpoints) ;
-            for ( String ep : srvRef.endpoints) {
-                endpoints.add(ep) ;
-            }
-        }
-        stats.put("services", services) ;
+        builder.finishObject("top") ;
+        return builder.build() ;
     }
 
-    private void statsJSON(JsonObject epStats, ServiceRef srvRef) {
+    private JsonValue execGetDataset(HttpAction action) {
+        action.log.info(format("[%d] GET stats dataset %s", action.id, action.dsRef.name)) ;
+        
+        JsonBuilder builder = new JsonBuilder() ;
+        String datasetPath = DatasetRef.canocialDatasetPath(action.dsRef.name) ;
+        builder.startObject("TOP") ;
+        
+        builder.key("datasets") ;
+        builder.startObject("datasets") ;
+        statsDataset(builder, datasetPath) ;
+        builder.finishObject("datasets") ;
+        
+        builder.finishObject("TOP") ;
+        return builder.build() ;
+    }
+
+    private void statsDataset(JsonBuilder builder, String ds) {
+        // Object started
+        builder.key(ds) ;
+        
+        DatasetRef desc = DatasetRegistry.get().get(ds) ;
+        builder.startObject("counters") ;
+        
+        builder.key(CounterName.Requests.name()).value(desc.getCounters().value(CounterName.Requests)) ;
+        builder.key(CounterName.RequestsGood.name()).value(desc.getCounters().value(CounterName.RequestsGood)) ;
+        builder.key(CounterName.RequestsBad.name()).value(desc.getCounters().value(CounterName.RequestsBad)) ;
+
+        
+        builder.key("services").startObject("services") ;
+        for ( ServiceRef srvRef : desc.getServiceRefs() ) {
+            builder.key(srvRef.name).startObject("service") ;
+            statsService(builder, srvRef) ;
+
+            
+            builder.key("endpoints") ;
+            builder.startArray() ;
+            for ( String ep : srvRef.endpoints)
+                builder.value(ep) ;
+            builder.finishArray() ;
+            
+            builder.finishObject("service") ;
+        }
+        builder.finishObject("services") ;
+        builder.finishObject("counters") ;
+
+    }
+
+    private void statsService(JsonBuilder builder, ServiceRef srvRef) {
         for (CounterName cn : srvRef.getCounters().counters()) {
             Counter c = srvRef.getCounters().get(cn) ;
-            epStats.put(cn.name(), c.value()) ;
+            builder.key(cn.name()).value(c.value()) ;
         }
     }
 

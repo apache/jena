@@ -54,13 +54,13 @@ public class X_Config {
         X_Config.addJMX(dsDesc) ;
     }
     
-    public static void XaddJMX() {
-        DatasetRegistry registry = DatasetRegistry.get() ;
-        for (String ds : registry.keys()) {
-            DatasetRef dsRef = registry.get(ds) ;
-            addJMX(dsRef) ;
-        }
-    }
+//    public static void addJMX() {
+//        DatasetRegistry registry = DatasetRegistry.get() ;
+//        for (String ds : registry.keys()) {
+//            DatasetRef dsRef = registry.get(ds) ;
+//            addJMX(dsRef) ;
+//        }
+//    }
 
     private static void addJMX(DatasetRef dsRef) {
         String x = dsRef.name ;
