@@ -29,9 +29,14 @@ import static org.apache.jena.riot.web.HttpOp.execHttpPost ;
 
 import java.io.File ;
 import java.io.IOException ;
+import java.util.ArrayList ;
+import java.util.List ;
 
 import org.apache.http.HttpEntity ;
+import org.apache.http.NameValuePair ;
+import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.entity.FileEntity ;
+import org.apache.http.message.BasicNameValuePair ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonArray ;
@@ -52,8 +57,6 @@ public class TestAdmin extends BaseTest {
     
     // Name of the dataset in the assembler file.
     static String dsTest = "test-ds2" ;
-
-    
     
     @BeforeClass
     public static void beforeClass() {
@@ -99,12 +102,12 @@ public class TestAdmin extends BaseTest {
     }
 
     // Specific dataset
-    @Test public void list_datasets_5() {
+    @Test public void list_datasets_3() {
         checkExists(datasetPath) ;
     }
     
     // Specific dataset
-    @Test public void list_datasets_6() {
+    @Test public void list_datasets_4() {
         try {
             TypedInputStream in = execHttpGet(ServerTest.urlRoot+"$/"+opDatasets+"/does-not-exist") ;
         } catch (HttpException ex) {
@@ -113,7 +116,7 @@ public class TestAdmin extends BaseTest {
     }
     
     // Specific dataset
-    @Test public void list_datasets_7() {
+    @Test public void list_datasets_5() {
         JsonValue v = execGetJSON(urlRoot+"$/"+opDatasets+datasetPath) ;
         checkJsonDatasetsOne(v.getAsObject()) ;
     }
@@ -127,8 +130,8 @@ public class TestAdmin extends BaseTest {
         execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
     }
     
-    private static void deleteTestDataset() {
-        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest) ;
+    private static void deleteDataset(String name) {
+        execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
     }
 
     // Specific dataset
@@ -141,7 +144,7 @@ public class TestAdmin extends BaseTest {
         checkExists(dsTest) ;
         
         // Remove it.
-        deleteTestDataset() ;
+        deleteDataset(dsTest) ;
         checkNotThere(dsTest) ;
     }
 
@@ -166,6 +169,21 @@ public class TestAdmin extends BaseTest {
         }
         // Check exists.
         checkExists(dsTest) ;
+        deleteDataset(dsTest) ;
+    }
+    
+    @Test public void add_dataset_3() throws Exception {
+        String name = "MEMTEST" ;
+        //String args = "dbType=mem&dbName="+name ;
+        
+        List<NameValuePair> args = new ArrayList<NameValuePair>() ;
+        args.add(new BasicNameValuePair("dbType", "mem")) ;
+        args.add(new BasicNameValuePair("dbName", name)) ;
+        
+        HttpEntity e = new UrlEncodedFormEntity(args) ;
+        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets, e) ;
+        checkExists(name) ;
+        deleteDataset(name) ;
     }
     
     // ---- Active/dormant.
@@ -180,13 +198,13 @@ public class TestAdmin extends BaseTest {
         execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=active", null) ;
         
         checkExists(dsTest) ;
-        deleteTestDataset() ;
+        deleteDataset(dsTest) ;
     }
     
     @Test public void state_2() {
         addTestDataset() ;
         execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=dormant", null) ;
-        deleteTestDataset() ;
+        deleteDataset(dsTest) ;
         checkNotThere(dsTest) ;
     }
 
@@ -195,6 +213,7 @@ public class TestAdmin extends BaseTest {
         try {
             execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/DoesNotExist?state=dormant", null) ;
         } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ; }
+        deleteDataset(dsTest) ;
     }
     
     // ---- Backup
@@ -209,15 +228,19 @@ public class TestAdmin extends BaseTest {
     }
     
     @Test public void stats_2() {
+        addTestDataset() ;
         JsonValue v = execGetJSON(urlRoot+"$/"+opStats+datasetPath) ;
         checkJsonStatsAll(v); 
+        deleteDataset(dsTest) ;
     }
 
     @Test public void stats_3() {
+        addTestDataset() ;
         try {
             JsonValue v = execGetJSON(urlRoot+"$/"+opStats+"/DoesNotExist") ;
             checkJsonStatsAll(v);
         } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()); }
+        deleteDataset(dsTest) ;
     }
 
     // Auxilary

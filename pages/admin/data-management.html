@@ -84,7 +84,7 @@
 
           <div class="form-group">
             <label for="inputDatabase">Database Name</label>
-            <div>
+            <div style="width: 300px">
               <input type="text" class="form-control" name="dbName" id="dbName" placeholder="Database name">
             </div>
           </div>
@@ -92,20 +92,28 @@
           <div class="checkbox">
             <label>
               <input type="radio" name="dbType" value="mem" checked>
-              In-Memory
+              In-Memory (restored on restart but changes lost).
             </label>
           </div>
           <div class="checkbox">
             <label>
               <input type="radio" name="dbType" value="tdb">
-              Persistent
+              Persistent (changes persist across system restarts)
             </label>
+          </div>
+          <button type="submit" class="btn btn-default">Create</button>
+        </form>
+        <hr/>
+        <h2>Create database (from Assembler Description)</h2>
+        <!-- From assembler -->
+        <form action="/$/datasets" enctype="multipart/form-data" method="post" role="form">
+          <div class="form-group">
+             Database assembler description file: <input type="file" name="UNSET" size="40"><br/>
           </div>
           <button type="submit" class="btn btn-default">Create</button>
         </form>
 
       </div>
-
 
       <hr/>
 

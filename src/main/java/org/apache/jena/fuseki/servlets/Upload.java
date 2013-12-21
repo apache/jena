@@ -39,7 +39,7 @@ public class Upload {
     public static void incomingData(HttpAction action, StreamRDF dest, boolean isGraph) {
         ContentType ct = FusekiLib.getContentType(action) ;
          
-        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) {
+        if ( WebContent.contentTypeMultipartFormData.equalsIgnoreCase(ct.getContentType()) ) {
             fileUploadWorker(action, dest, isGraph) ;
             return ;
         }

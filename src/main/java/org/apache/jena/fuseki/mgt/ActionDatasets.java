@@ -44,6 +44,7 @@ import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.fuseki.servlets.Upload ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
@@ -69,11 +70,6 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 public class ActionDatasets extends ActionCtl {
-    // XXX ActionContainerItem
-    
-    // XXX DatasetRef to include UUID : see execPostDataset
-    // DatasetRef ref = processService(s) ;
-    //   Needs to do the state.
     
     private static Dataset system = SystemState.getDataset() ;
     private static DatasetGraphTransaction systemDSG = SystemState.getDatasetGraph() ; 
@@ -165,7 +161,8 @@ public class ActionDatasets extends ActionCtl {
     }
     
     // XXX Split contained and per-dataset operations into separate servlets? 
-    
+    // XXX ActionContainerItem
+
     // ---- POST 
     
     // POST /$/datasets/ -- to the container -> register new dataset
@@ -218,6 +215,8 @@ public class ActionDatasets extends ActionCtl {
 
             if ( WebContent.isHtmlForm(ct) )
                 assemblerFromForm(action, dest) ;
+            else if ( WebContent.isMultiPartForm(ct) )
+                assemblerFromUpload(action, dest) ;
             else
                 assemblerFromBody(action, dest) ;
             
@@ -244,12 +243,10 @@ public class ActionDatasets extends ActionCtl {
             String datasetName = object.getLexicalForm() ;
             String datasetPath = DatasetRef.canocialDatasetPath(datasetName) ;
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
-
             
-            if ( DatasetRegistry.get().isRegistered(datasetPath) ) {
+            if ( DatasetRegistry.get().isRegistered(datasetPath) )
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetName) ;
-            }
                 
             model.removeAll(null, pStatus, null) ;
             model.add(subject, pStatus, FusekiVocab.stateActive) ;
@@ -257,10 +254,15 @@ public class ActionDatasets extends ActionCtl {
             // Need to be in Resource space at this point.
             DatasetRef dsRef = FusekiConfig.processService(subject) ;
             X_Config.registerDataset(datasetPath, dsRef) ;
+            action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
+            ServletOutputStream out = action.getResponse().getOutputStream() ;
+            out.println("That went well") ;
+            ServletOps.success(action) ;
             system.commit();
             committed = true ;
-            ServletOps.success(action) ;
-        } finally { 
+            
+        } catch (IOException ex) { IO.exception(ex); }
+        finally { 
             if ( ! committed ) system.abort() ; 
             system.end() ; 
         }
@@ -299,6 +301,10 @@ public class ActionDatasets extends ActionCtl {
     }
 
     // ---- DELETE
+
+    private void assemblerFromUpload(HttpAction action, StreamRDF dest) {
+        Upload.fileUploadWorker(action, dest, true);
+    }
 
     protected void execDelete(HttpAction action) {
         // Does not exist?
