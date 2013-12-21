@@ -86,7 +86,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             errorBadRequest("No Content-Type:") ;
 
         // Helper case - if it's a possible HTTP file upload, pretend that's the action.
-        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) ) {
+        if ( WebContent.contentTypeMultipartFormData.equalsIgnoreCase(ct.getContentType()) ) {
             String base = wholeRequestURL(action.request) ;
             SPARQL_Upload.upload(action, base) ;
             return ; 
