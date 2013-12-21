@@ -199,8 +199,6 @@ public class DatasetRef implements DatasetMXBean, Counters
         checkShutdown() ;
     }
     
-    // MBean
-    
     @Override
     public String getName()     { return name ; }
 

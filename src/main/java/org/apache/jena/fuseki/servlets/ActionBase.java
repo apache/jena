@@ -28,6 +28,7 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+
 //import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
@@ -37,6 +38,7 @@ import org.slf4j.Logger ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** General request lifecycle */
 public abstract class ActionBase extends ServletBase
@@ -50,10 +52,9 @@ public abstract class ActionBase extends ServletBase
     
     @Override 
     public void init() {
-        log.info("ServletContextName="+getServletContext().getServletContextName()) ;
+        log.info("["+Utils.className(this)+"] ServletContextName="+getServletContext().getServletContextName()) ;
         //super.init() ;
     }
-   
     
     // Common framework for handling HTTP requests
     protected void doCommon(HttpServletRequest request, HttpServletResponse response)

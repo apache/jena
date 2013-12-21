@@ -20,8 +20,9 @@ package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
 
-import java.io.* ;
-import java.nio.channels.FileChannel ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.StringReader ;
 import java.util.Iterator ;
 import java.util.Locale ;
 
@@ -65,6 +66,7 @@ import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class ActionDatasets extends ActionCtl {
     // XXX ActionContainerItem
@@ -78,6 +80,13 @@ public class ActionDatasets extends ActionCtl {
     
     static private Property pServiceName = FusekiVocab.pServiceName ;
     static private Property pStatus = FusekiVocab.pStatus ;
+
+    private static final String paramDatasetName    = "dbName" ;
+    private static final String paramDatasetType    = "dbType" ;
+    private static final String tDatabasetTDB       = "tdb" ;
+    private static final String tDatabasetMem       = "mem" ;
+    private static final String templateMemFN = "templates/config-mem" ;
+    private static final String templateTDBFN = "templates/config-tdb" ;
 
     public ActionDatasets() { super() ; }
     
@@ -132,8 +141,10 @@ public class ActionDatasets extends ActionCtl {
         } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
     }
     
-    // This does not consult the system database for dormant etc.
+    // ---- GET : return details of dataset or datasets.
+    
     private JsonValue execGetContainer(HttpAction action) { 
+        action.log.info(format("[%d] GET datasets", action.id)) ;
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("D") ;
         builder.key("datasets") ;
@@ -153,8 +164,12 @@ public class ActionDatasets extends ActionCtl {
         return builder.build() ;
     }
     
-    // POST container -> register new dataset
-    // POST contains/name -> change the state of an existing entry.
+    // XXX Split contained and per-dataset operations into separate servlets? 
+    
+    // ---- POST 
+    
+    // POST /$/datasets/ -- to the container -> register new dataset
+    // POST /$/datasets/name -- change something about an existing dataset
     
     protected void execPost(HttpAction action) {
         if (action.dsRef.name == null )
@@ -162,10 +177,6 @@ public class ActionDatasets extends ActionCtl {
         else
             execPostDataset(action) ;
     }
-    
-    // An action on a dataset.
-    // XXX extend to backup etc??
-    // XXX Constant (throughout)
     
     private void execPostDataset(HttpAction action) {
         String name = action.dsRef.name ;
@@ -180,7 +191,7 @@ public class ActionDatasets extends ActionCtl {
         if ( s == null || s.isEmpty() )
             ServletOps.errorBadRequest("No state change given") ;
 
-        // setDatasetState is a transaction on the pesistent state of the server. 
+        // setDatasetState is a transaction on the persistent state of the server. 
         if ( s.equalsIgnoreCase("active") ) {
             setDatasetState(name, FusekiVocab.stateActive) ;        
             dsDesc.activate() ;
@@ -190,6 +201,144 @@ public class ActionDatasets extends ActionCtl {
         } else
             ServletOps.errorBadRequest("New state '"+s+"' not recognized");
         ServletOps.success(action) ;
+    }
+
+    private void execPostContainer(HttpAction action) {
+
+        String newURI = JenaUUID.generate().asURI() ;
+        Node gn = NodeFactory.createURI(newURI) ;
+        
+        ContentType ct = FusekiLib.getContentType(action) ;
+        
+        boolean committed = false ;
+        system.begin(ReadWrite.WRITE) ;
+        try {
+            Model model = system.getNamedModel(gn.getURI()) ;
+            StreamRDF dest = StreamRDFLib.graph(model.getGraph()) ;
+
+            if ( WebContent.isHtmlForm(ct) )
+                assemblerFromForm(action, dest) ;
+            else
+                assemblerFromBody(action, dest) ;
+            
+            Statement stmt = getOne(model, null, pServiceName, null) ;
+            if ( stmt == null ) {
+                StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
+                if ( ! sIter.hasNext() )
+                    ServletOps.errorBadRequest("No name given in description of Fuseki service") ;
+                sIter.next() ;
+                if ( sIter.hasNext() )
+                    ServletOps.errorBadRequest("Multiple names given in description of Fuseki service") ;
+                throw new InternalErrorException("Inconsistent: getOne didn't fail the second time") ;
+            }
+                
+            if ( ! stmt.getObject().isLiteral() )
+                ServletOps.errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI") ;
+            
+            Resource subject = stmt.getSubject() ;
+            Literal object = stmt.getObject().asLiteral() ;
+            
+            if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
+                action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
+
+            String datasetName = object.getLexicalForm() ;
+            String datasetPath = DatasetRef.canocialDatasetPath(datasetName) ;
+            action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
+
+            
+            if ( DatasetRegistry.get().isRegistered(datasetPath) ) {
+                // And abort.
+                ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetName) ;
+            }
+                
+            model.removeAll(null, pStatus, null) ;
+            model.add(subject, pStatus, FusekiVocab.stateActive) ;
+            
+            // Need to be in Resource space at this point.
+            DatasetRef dsRef = FusekiConfig.processService(subject) ;
+            X_Config.registerDataset(datasetPath, dsRef) ;
+            system.commit();
+            committed = true ;
+            ServletOps.success(action) ;
+        } finally { 
+            if ( ! committed ) system.abort() ; 
+            system.end() ; 
+        }
+    }
+    
+    private void assemblerFromBody(HttpAction action, StreamRDF dest) {
+        bodyAsGraph(action, dest) ;
+    }
+
+    private void assemblerFromForm(HttpAction action, StreamRDF dest) {
+//        Enumeration<String> en = action.getRequest().getParameterNames() ;
+//        while( en.hasMoreElements() ) {
+//            String pn = en.nextElement() ;
+//            System.out.println(pn) ;
+//        }
+        
+        String dbType = action.getRequest().getParameter(paramDatasetType) ;
+        String dbName = action.getRequest().getParameter(paramDatasetName) ;
+        action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
+        if ( dbType == null || dbName == null )
+            ServletOps.errorBadRequest("Required parameters: dbName and dbType");
+        if ( ! dbType.equals(tDatabasetTDB) && ! dbType.equals(tDatabasetMem) )
+            ServletOps.errorBadRequest(format("dbType can be only '%s' or '%s'", tDatabasetTDB, tDatabasetMem)) ;
+        
+        String template = null ;
+        try {
+            if ( dbType.equals(tDatabasetTDB))
+                template = FileUtils.readWholeFileAsUTF8(templateTDBFN) ;
+            if ( dbType.equals(tDatabasetMem))
+                template = FileUtils.readWholeFileAsUTF8(templateMemFN) ;
+        } catch (IOException ex) { IO.exception(ex); }
+
+        // XXX Be careful.
+        template = template.replaceAll("\\{NAME\\}", dbName) ;
+        RDFDataMgr.parse(dest, new StringReader(template), "http://base/", Lang.TTL) ;
+    }
+
+    // ---- DELETE
+
+    protected void execDelete(HttpAction action) {
+        // Does not exist?
+        String name = action.dsRef.name ;
+        if ( name == null )
+            name = "" ;
+        action.log.info(format("[%d] DELETE ds=%s", action.id, name)) ;
+        if ( action.dsRef.name == null ) {
+            ServletOps.errorBadRequest("DELETE only applies to a specific dataset.") ;
+            return ;
+        }
+        
+        if ( ! DatasetRegistry.get().isRegistered(name) )
+            ServletOps.errorNotFound("No such dataset registered: "+name);
+
+        systemDSG.begin(ReadWrite.WRITE) ;
+        boolean committed =false ;
+        try {
+            DatasetRef dsRef = DatasetRegistry.get().get(name) ;
+            // Redo check inside transaction.
+            if ( dsRef == null )
+                ServletOps.errorNotFound("No such dataset registered: "+name);
+                
+            // Name to graph
+            Quad q = getOne(SystemState.getDatasetGraph(), null, null, pServiceName.asNode(), null) ;
+            if ( q == null )
+                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
+            Node gn = q.getGraph() ;
+
+            dsRef.gracefulShutdown() ;
+            DatasetRegistry.get().remove(name) ;
+            // XXX or set to state deleted.
+            systemDSG.deleteAny(gn, null, null, null) ;
+            systemDSG.commit() ;
+            committed = true ;
+            ServletOps.success(action) ;
+        } finally { 
+            if ( ! committed ) systemDSG.abort() ; 
+            systemDSG.end() ; 
+        }
     }
 
     // Persistent state change.
@@ -221,96 +370,9 @@ public class ActionDatasets extends ActionCtl {
         }
     }
     
-    private void execPostContainer(HttpAction action) {
-        String newURI = JenaUUID.generate().asURI() ;
-        Node gn = NodeFactory.createURI(newURI) ;
-        
-        //action.beginWrite() ;
-        boolean committed = false ;
-        system.begin(ReadWrite.WRITE) ;
-        try {
-            Model model = system.getNamedModel(newURI) ;
-            StreamRDF dest = StreamRDFLib.graph(model.getGraph()) ;
-            bodyAsGraph(action, dest) ;
-            // Find name.  SPARQL?
-            
-            Statement stmt = getOne(model, null, pServiceName, null) ;
-            if ( stmt == null ) {
-                StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
-                if ( ! sIter.hasNext() )
-                    ServletOps.errorBadRequest("No name given in description of Fuseki service") ;
-                sIter.next() ;
-                if ( sIter.hasNext() )
-                    ServletOps.errorBadRequest("Multiple names given in description of Fuseki service") ;
-                throw new InternalErrorException("Inconsistent: getOne didn't fail the second time") ;
-            }
-                
-            if ( ! stmt.getObject().isLiteral() )
-                ServletOps.errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI") ;
-            
-            Resource subject = stmt.getSubject() ;
-            Literal object = stmt.getObject().asLiteral() ;
-            
-            if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
-                action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
+    // ---- Auxilary functions
 
-            String datasetName = object.getLexicalForm() ;
-            String datasetPath = DatasetRef.canocialDatasetPath(datasetName) ;
-            if ( DatasetRegistry.get().isRegistered(datasetPath) ) {
-                // And abort.
-                ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetName) ;
-            }
-                
-            model.removeAll(null, pStatus, null) ;
-            model.add(subject, pStatus, FusekiVocab.stateActive) ;
-            
-            // Need to be in Resource space at this point.
-            DatasetRef dsRef = FusekiConfig.processService(subject) ;
-            X_Config.registerDataset(datasetPath, dsRef) ;
-            system.commit();
-            committed = true ;
-            ServletOps.success(action) ;
-        } finally { 
-            if ( ! committed ) system.abort() ; 
-            system.end() ; 
-        }
-    }
-    
-    protected void execDelete(HttpAction action) {
-        // Does not exist?
-        String name = action.dsRef.name ;
-        if ( name == null )
-            name = "" ;
-        action.log.info(format("[%d] DELETE ds=%s", action.id, name)) ;
-        if ( action.dsRef.name == null ) {
-            ServletOps.errorBadRequest("DELETE only to the container entries.") ;
-            return ;
-        }
-
-        systemDSG.begin(ReadWrite.WRITE) ;
-        boolean committed =false ;
-        try {
-            // Name to graph
-            Quad q = getOne(SystemState.getDatasetGraph(), null, null, pServiceName.asNode(), null) ;
-            if ( q == null )
-                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
-            Node gn = q.getGraph() ;
-            
-            DatasetRef dsRef = DatasetRegistry.get().get(name) ;
-            dsRef.gracefulShutdown() ;
-            DatasetRegistry.get().remove(name) ;
-            // XXX or set to state deleted.
-            systemDSG.deleteAny(gn, null, null, null) ;
-            systemDSG.commit() ;
-            committed = true ;
-            ServletOps.success(action) ;
-        } finally { 
-            if ( ! committed ) systemDSG.abort() ; 
-            systemDSG.end() ; 
-        }
-    }
-
-    private Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
+    private static Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
         Iterator<Quad> iter = dsg.findNG(g, s, p, o) ;
         if ( ! iter.hasNext() )
             return null ;
@@ -320,7 +382,7 @@ public class ActionDatasets extends ActionCtl {
         return q ;
     }
     
-    private Statement getOne(Model m, Resource s, Property p, RDFNode o) {
+    private static Statement getOne(Model m, Resource s, Property p, RDFNode o) {
         StmtIterator iter = m.listStatements(s, p, o) ;
         if ( ! iter.hasNext() )
             return null ;
@@ -328,18 +390,6 @@ public class ActionDatasets extends ActionCtl {
         if ( iter.hasNext() )
             return null ;
         return stmt ;
-    }
-    
-    private static void copyFile(File source, File dest) {
-        try {
-            @SuppressWarnings("resource")
-            FileChannel sourceChannel = new FileInputStream(source).getChannel();
-            @SuppressWarnings("resource")
-            FileChannel destChannel = new FileOutputStream(dest).getChannel();
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-            sourceChannel.close();
-            destChannel.close();
-        } catch (IOException ex) { IO.exception(ex); }
     }
     
     // XXX Merge with Upload.incomingData

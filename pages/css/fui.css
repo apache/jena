@@ -7,6 +7,15 @@ h1 + p {
   margin-bottom: 20px;
 }
 
+h2 {
+  margin-top: 0;
+  font-size: 16pt;
+}
+
+h2 + p {
+  margin-bottom: 18px;
+}
+
 a#server-status-light {
   display: inline-block;
   margin: 0;

@@ -1,0 +1,15 @@
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+<#service1> rdf:type fuseki:Service ;
+    # URI of the dataset -- http://host:port/ds
+    fuseki:name                        "test-ds2" ; 
+    fuseki:serviceQuery                "sparql" ;
+    fuseki:dataset                     <#emptyDataset> ;
+    .
+
+<#emptyDataset> rdf:type ja:RDFDataset .

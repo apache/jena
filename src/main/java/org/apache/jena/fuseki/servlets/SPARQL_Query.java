@@ -85,13 +85,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         String incoming = ct.getContentType() ;
 
         // POST application/sparql-query
-        if (WebContent.contentTypeSPARQLQuery.equals(incoming))
+        if ( WebContent.isHtmlForm(ct) )
         {
             executeBody(action) ;
             return ;
         }
         // POST application/x-www-form-url
-        if (WebContent.contentTypeForm.equals(incoming))
+        if (ActionLib.isHTMLForm(action) )
         {
             executeWithParameter(action) ;
             return ;

@@ -33,7 +33,7 @@ public abstract class ServletBase extends HttpServlet {
     private static AtomicLong     requestIdAlloc = new AtomicLong(0) ;
 
     protected ServletBase() {}
-
+    
     /**
      * Helper method which gets a unique request ID and appends it as a header
      * to the response

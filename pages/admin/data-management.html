@@ -57,8 +57,80 @@
       <div class="row">
         <h1>Data management</h1>
       </div>
-    </div>
 
+      <hr/>
+      <p>Focus on one database</p>
+      <ul>
+        <li>Statistics</li>
+        <li>Backup</li>
+        <li>Online/offline</li>
+        <li><em>Delete</em></li>
+      </ul>
+      <hr/>
+
+      <div class="row">
+        <h2>Create database</h2>
+        <small>
+          <p>This is just a quick sketch to get the system working.</p>
+          <p>Some Alternatives:</p>
+          <ul>
+            <li><p>Preset recipes (as below) that the server expands</p></li>
+            <li><p>Have a template area (assembler) in broswer with help to 
+                fill details like</p></li>
+            </ul>
+        </small>
+
+        <form action="/$/datasets" method="post" role="form">
+
+          <div class="form-group">
+            <label for="inputDatabase">Database Name</label>
+            <div>
+              <input type="text" class="form-control" name="dbName" id="dbName" placeholder="Database name">
+            </div>
+          </div>
+
+          <div class="checkbox">
+            <label>
+              <input type="radio" name="dbType" value="mem" checked>
+              In-Memory
+            </label>
+          </div>
+          <div class="checkbox">
+            <label>
+              <input type="radio" name="dbType" value="tdb">
+              Persistent
+            </label>
+          </div>
+          <button type="submit" class="btn btn-default">Create</button>
+        </form>
+
+      </div>
+
+
+      <hr/>
+
+      <!--
+      <div class="row">
+        <h2>Database Statistics</h2>
+      </div>
+
+      <div class="row">
+        <h2>Backup Database</h2>
+      </div>
+
+<p>            <li><p>Have a template area (assembler) in broswer with help to 
+                fill details like</p></li>
+      <div class="row">
+        <h2>Delete Database</h2>
+      </div>
+
+      <hr/>
+      <div class="row">
+        <h2>Change Active/Dormant Status</h2>
+      </div>
+      -->
+
+    </div>
     <script src="../js/lib/jquery-1.10.2.min.js"></script>
     <script src="../js/lib/bootstrap.min.js"></script>
   </body>
