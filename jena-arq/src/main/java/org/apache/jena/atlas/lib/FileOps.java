@@ -19,8 +19,13 @@
 package org.apache.jena.atlas.lib;
 
 import java.io.File ;
+import java.io.FileInputStream ;
+import java.io.FileOutputStream ;
+import java.io.IOException ;
+import java.nio.channels.FileChannel ;
 
 import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
 
 public class FileOps
@@ -188,6 +193,20 @@ public class FileOps
             return f.getAbsolutePath();
         }
     }
+    
+    /** Copy a file */
+    public static void copyFile(File source, File dest) {
+        try {
+            @SuppressWarnings("resource")
+            FileChannel sourceChannel = new FileInputStream(source).getChannel();
+            @SuppressWarnings("resource")
+            FileChannel destChannel = new FileOutputStream(dest).getChannel();
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+            sourceChannel.close();
+            destChannel.close();
+        } catch (IOException ex) { IO.exception(ex); }
+    }
+
     
 //    public static String getExt(String filename)
 //    {
