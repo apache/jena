@@ -46,6 +46,15 @@ public class Lib
         return obj1.equals(obj2) ;
     }
     
+    /** Return true if obj1 and obj are both null or are .equals, else return false */
+    public static final boolean equalsIgnoreCase(String str1, String str2)
+    {
+        if ( str1 == null )
+            return str2 == null ;
+        return str1.equalsIgnoreCase(str2) ;
+    }
+    
+
     /** Return true if obj1 and obj are ! equal */
     public static final <T> boolean notEqual(T obj1, T obj2)
     {
