@@ -18,6 +18,9 @@
 
 package org.apache.jena.riot;
 
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.web.ContentType ;
+
 
 public class WebContent
 {
@@ -115,6 +118,18 @@ public class WebContent
             return null ;
         return lang.getHeaderString() ;
         //return mapLangToContentType.get(lang) ;
+    }
+
+    public static boolean match(ContentType ct1, ContentType ct2)  {
+        return Lib.equal(ct1,  ct2) ;
+    }
+    
+    public static boolean matchContentType(String ct1, String ct2)  {
+        return Lib.equalsIgnoreCase(ct1,  ct2) ;
+    }
+
+    public static boolean isHtmlForm(ContentType ct) {
+        return contentTypeForm.equalsIgnoreCase(ct.getContentType()) ;
     }
 
     /** @deprecated Use {@linkplain RDFLanguages#contentTypeToLang(String)}*/
