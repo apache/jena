@@ -46,7 +46,7 @@ public class riot extends CmdLangParse
         if ( modLangParse.getLang() != null )
             return modLangParse.getLang() ;
         
-        if ( contentType != null && ! WebContent.contentTypeTextPlain.equals(contentType.getContentType()) )
+        if ( contentType != null && ! WebContent.matchContentType(WebContent.ctTextPlain, contentType) )
             return RDFLanguages.contentTypeToLang(contentType) ;
 
         Lang lang =  RDFLanguages.filenameToLang(filename) ;

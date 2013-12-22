@@ -55,8 +55,7 @@ import com.hp.hpl.jena.util.FileManager;
 public class QueryEngineHTTP implements QueryExecution {
     private static Logger log = LoggerFactory.getLogger(QueryEngineHTTP.class);
 
-    public static final String QUERY_MIME_TYPE = WebContent.contentTypeSPARQLQuery; // "application/sparql-query"
-                                                                                    // ;
+    public static final String QUERY_MIME_TYPE = WebContent.contentTypeSPARQLQuery;
     private final Query query;
     private final String queryString;
     private final String service;

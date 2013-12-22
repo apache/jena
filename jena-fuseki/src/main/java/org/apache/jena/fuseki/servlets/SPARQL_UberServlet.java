@@ -151,7 +151,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         boolean hasParamUpdate          = request.getParameter(HttpNames.paramUpdate) != null || request.getParameter(HttpNames.paramRequest) != null ;
         boolean hasParamGraph           = request.getParameter(HttpNames.paramGraph) != null ;
         boolean hasParamGraphDefault    = request.getParameter(HttpNames.paramGraphDefault) != null ;
-        boolean isForm                  = WebContent.contentTypeForm.equalsIgnoreCase(request.getContentType()) ;
+        boolean isForm                  = WebContent.contentTypeHTMLForm.equalsIgnoreCase(request.getContentType()) ;
 
         String ct = request.getContentType() ;
         String charset = request.getCharacterEncoding() ;

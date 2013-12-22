@@ -91,7 +91,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             return ;
         }
         // POST application/x-www-form-url
-        if (WebContent.contentTypeForm.equals(incoming))
+        if (WebContent.contentTypeHTMLForm.equals(incoming))
         {
             executeWithParameter(action) ;
             return ;
@@ -154,7 +154,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                 mustHaveQueryParam = false ;
                 //error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unofficial "+WebContent.contentTypeSPARQLQuery+" not supported") ;
             }
-            else if ( WebContent.contentTypeForm.equals(incoming) ) {}
+            else if ( WebContent.contentTypeHTMLForm.equals(incoming) ) {}
             else
                 error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: "+incoming) ;
         }

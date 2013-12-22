@@ -42,11 +42,7 @@ public class MediaType {
     private final String              type ;
     private final String              subType ;
     // Keys in insertion order.
-    private final Map<String, String> params ;                                                // =
-                                                                                              // new
-                                                                                              // LinkedHashMap<String,
-                                                                                              // String>()
-                                                                                              // ;
+    private final Map<String, String> params ;
 
     protected MediaType(ParsedMediaType parser) {
         this.type = parser.type ;
