@@ -48,14 +48,14 @@ public class SystemState {
     
     private static boolean initialized = false ; 
     private static void init() {
-        if ( initialized )
-            return ;
-        initialized = true ;
         init$() ;
     }
     
     
     public /* for testing */ static void init$() {
+        if ( initialized )
+            return ;
+        initialized = true ;
         if ( ! location.isMem() )
             FileOps.ensureDir(location.getDirectoryPath()) ;
         dataset = TDBFactory.createDataset(location) ;

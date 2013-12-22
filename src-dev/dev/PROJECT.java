@@ -24,6 +24,9 @@ public class PROJECT {
     //   SPARQL_Update
     //   DEFs
     
+    // Webapp-ization
+    //   Validators
+    
     // All TODO and XXX
     // Configuration and startup.
     // Change to using a real webapp.

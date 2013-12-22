@@ -61,7 +61,7 @@ public class TestAdmin extends BaseTest {
     @BeforeClass
     public static void beforeClass() {
         ServerTest.allocServer() ;
-        //ServerTest.resetServer() ;
+        ServerTest.resetServer() ;
     }
 
     @AfterClass

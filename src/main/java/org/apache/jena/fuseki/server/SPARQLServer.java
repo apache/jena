@@ -22,27 +22,18 @@ import static java.lang.String.format ;
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.FileInputStream ;
-import java.util.* ;
+import java.util.Arrays ;
+import java.util.EnumSet ;
+import java.util.List ;
 
 import javax.servlet.DispatcherType ;
 import javax.servlet.http.HttpServlet ;
 
+import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.X_Config ;
-import org.apache.jena.fuseki.mgt.MgtFunctions ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
-import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral ;
-import org.apache.jena.fuseki.servlets.SimpleVelocityServlet ;
-import org.apache.jena.fuseki.validation.DataValidator ;
-import org.apache.jena.fuseki.validation.IRIValidator ;
-import org.apache.jena.fuseki.validation.QueryValidator ;
-import org.apache.jena.fuseki.validation.UpdateValidator ;
-import static org.apache.jena.riot.WebContent.* ;
-import org.eclipse.jetty.http.MimeTypes ;
-import org.eclipse.jetty.security.* ;
-import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
@@ -51,7 +42,7 @@ import org.eclipse.jetty.servlet.FilterHolder ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.servlets.GzipFilter ;
-import org.eclipse.jetty.util.security.Constraint ;
+import org.eclipse.jetty.webapp.WebAppContext ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -85,12 +76,17 @@ public class SPARQLServer {
         this.serverConfig = config ;
         // Currently server-wide.
         Fuseki.verboseLogging = config.verboseLogging ;
-        ServletContextHandler context = buildServer(serverConfig.jettyConfigFile, config.enableCompression) ;
+        boolean webappBuild = true ;
         
-        // Filter to grab all request for dynamic dispatching.
-        FilterHolder f = new FilterHolder(new FusekiFilter()) ;
-        EnumSet<DispatcherType> es = EnumSet.allOf(DispatcherType.class) ; 
-        context.addFilter(f, "/*", es);
+        if ( webappBuild) 
+            buildServerWebapp(serverConfig.jettyConfigFile, config.enableCompression) ;
+        else {
+            ServletContextHandler context = buildServer(serverConfig.jettyConfigFile, config.enableCompression) ;
+            // Filter to grab all request for dynamic dispatching.
+            FilterHolder f = new FilterHolder(new FusekiFilter()) ;
+            EnumSet<DispatcherType> es = EnumSet.allOf(DispatcherType.class) ; 
+            context.addFilter(f, "/*", es);
+        }
         // Datasets not initialized yet.
     }
 
@@ -153,8 +149,7 @@ public class SPARQLServer {
         return serverConfig ;
     }
 
-    // Later : private and in constructor.
-    private ServletContextHandler buildServer(String jettyConfig, boolean enableCompression) {
+    private ServletContextHandler buildServerWebapp(String jettyConfig, boolean enableCompression) {
         if ( jettyConfig != null ) {
             // --jetty-config=jetty-fuseki.xml
             // for detailed configuration of the server using Jetty features.
@@ -162,110 +157,130 @@ public class SPARQLServer {
         } else
             server = defaultServerConfig(serverConfig.port, serverConfig.loopback) ;
         
-        
-//        WebAppContext app = new WebAppContext("Fuseki","/") ;
-//        server.setHandler(app);
-        
-        // Keep the server to a maximum number of threads.
-        // server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
-
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS) ;
+        WebAppContext context = new WebAppContext();
+        context.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
+        context.setDescriptor("war-web.xml");
+        context.setResourceBase("pages");
+        context.setContextPath("/");
+        context.setParentLoaderPriority(true);
         context.setErrorHandler(new FusekiErrorHandler()) ;
         context.addEventListener(new FusekiServletContextListener(this));
+        server.setHandler(context) ;
         
-        // Increase form size.
-        context.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
-
-        // Wire up authentication if appropriate
-        if ( jettyConfig == null && serverConfig.authConfigFile != null ) {
-            Constraint constraint = new Constraint() ;
-            constraint.setName(Constraint.__BASIC_AUTH) ;
-            constraint.setRoles(new String[]{"fuseki"}) ;
-            constraint.setAuthenticate(true) ;
-
-            ConstraintMapping mapping = new ConstraintMapping() ;
-            mapping.setConstraint(constraint) ;
-            mapping.setPathSpec("/*") ;
-
-            IdentityService identService = new DefaultIdentityService() ;
-
-            ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler() ;
-            securityHandler.addConstraintMapping(mapping) ;
-            securityHandler.setIdentityService(identService) ;
-
-            HashLoginService loginService = new HashLoginService("Fuseki Authentication", serverConfig.authConfigFile) ;
-            loginService.setIdentityService(identService) ;
-
-            securityHandler.setLoginService(loginService) ;
-            securityHandler.setAuthenticator(new BasicAuthenticator()) ;
-
-            context.setSecurityHandler(securityHandler) ;
-
-            serverLog.debug("Basic Auth Configuration = " + serverConfig.authConfigFile) ;
-        }
-
-        // Wire up context handler to server
-        server.setHandler(context) ;
-
-        // Constants. Add RDF types.
-        MimeTypes mt = new MimeTypes() ;
-        mt.addMimeMapping("rdf",    contentTypeRDFXML    + ";charset=utf-8") ;
-        mt.addMimeMapping("ttl",    contentTypeTurtle    + ";charset=utf-8") ;
-        mt.addMimeMapping("nt",     contentTypeNTriples  + ";charset=utf-8") ;
-        mt.addMimeMapping("nq",     contentTypeNQuads    + ";charset=utf-8") ;
-        mt.addMimeMapping("trig",   contentTypeTriG      + ";charset=utf-8") ;
-
-        // mt.addMimeMapping("tpl", "text/html;charset=utf-8") ;
-        context.setMimeTypes(mt) ;
-        server.setHandler(context) ;
-
-        serverLog.debug("Pages = " + serverConfig.pages) ;
-
-        boolean installServices = true ;
-
-        String validationRoot = "/validate" ;
-
-        // Should all services be /_/.... or some such?
-
-        if ( installServices ) {
-            // TODO Respect port.
-            if ( serverConfig.pagesPort != serverConfig.port )
-                serverLog.warn("Not supported yet - pages on a different port to services") ;
-
-            String base = serverConfig.pages ;
-            Map<String, Object> data = new HashMap<String, Object>() ;
-            data.put("mgt", new MgtFunctions()) ;
-            SimpleVelocityServlet templateEngine = new SimpleVelocityServlet(base, data) ;
-            addServlet(context, templateEngine, "*.tpl", false) ;
-        }
-
-        if ( installServices ) {
-            // Validators
-            HttpServlet validateQuery = new QueryValidator() ;
-            HttpServlet validateUpdate = new UpdateValidator() ;
-            
-            HttpServlet validateData = new DataValidator() ;
-            HttpServlet validateIRI = new IRIValidator() ;
-
-            HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
-
-            addServlet(context, validateQuery, validationRoot + "/query", false) ;
-            addServlet(context, validateUpdate, validationRoot + "/update", false) ;
-            addServlet(context, validateData, validationRoot + "/data", false) ;
-            addServlet(context, validateIRI, validationRoot + "/iri", false) ;
-
-            // general query processor.
-            addServlet(context, generalQueryService, HttpNames.ServiceGeneralQuery, enableCompression) ;
-        }
-
-        if ( installServices ) {
-            String[] files = {"fuseki.html", "index.html"} ;
-            context.setWelcomeFiles(files) ;
-            addContent(context, "/", serverConfig.pages) ;
-        }
-
+        // XXX Security
+        
         return context ;
     }
+    
+    
+    private ServletContextHandler buildServer(String jettyConfig, boolean enableCompression) {
+        throw new NotImplemented("Use the webapps setup") ;
+    }
+    
+//    private ServletContextHandler buildServer(String jettyConfig, boolean enableCompression) {
+//        if ( jettyConfig != null ) {
+//            // --jetty-config=jetty-fuseki.xml
+//            // for detailed configuration of the server using Jetty features.
+//            server = configServer(jettyConfig) ;
+//        } else
+//            server = defaultServerConfig(serverConfig.port, serverConfig.loopback) ;
+//        
+//        // Keep the server to a maximum number of threads.
+//        // server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
+//
+//        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS) ;
+//        context.setErrorHandler(new FusekiErrorHandler()) ;
+//        context.addEventListener(new FusekiServletContextListener(this));
+//        // Increase form size.
+//        context.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
+//        // Constants. Add RDF types.
+//        MimeTypes mt = new MimeTypes() ;
+//        mt.addMimeMapping("rdf",    contentTypeRDFXML    + ";charset=utf-8") ;
+//        mt.addMimeMapping("ttl",    contentTypeTurtle    + ";charset=utf-8") ;
+//        mt.addMimeMapping("nt",     contentTypeNTriples  + ";charset=utf-8") ;
+//        mt.addMimeMapping("nq",     contentTypeNQuads    + ";charset=utf-8") ;
+//        mt.addMimeMapping("trig",   contentTypeTriG      + ";charset=utf-8") ;
+//        // mt.addMimeMapping("tpl", "text/html;charset=utf-8") ;
+//        context.setMimeTypes(mt) ;
+//
+//        // Wire up authentication if appropriate
+//        // XXX Use Shiro and web.xml
+//        if ( jettyConfig == null && serverConfig.authConfigFile != null ) {
+//            Constraint constraint = new Constraint() ;
+//            constraint.setName(Constraint.__BASIC_AUTH) ;
+//            constraint.setRoles(new String[]{"fuseki"}) ;
+//            constraint.setAuthenticate(true) ;
+//
+//            ConstraintMapping mapping = new ConstraintMapping() ;
+//            mapping.setConstraint(constraint) ;
+//            mapping.setPathSpec("/*") ;
+//
+//            IdentityService identService = new DefaultIdentityService() ;
+//
+//            ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler() ;
+//            securityHandler.addConstraintMapping(mapping) ;
+//            securityHandler.setIdentityService(identService) ;
+//
+//            HashLoginService loginService = new HashLoginService("Fuseki Authentication", serverConfig.authConfigFile) ;
+//            loginService.setIdentityService(identService) ;
+//
+//            securityHandler.setLoginService(loginService) ;
+//            securityHandler.setAuthenticator(new BasicAuthenticator()) ;
+//
+//            context.setSecurityHandler(securityHandler) ;
+//
+//            serverLog.debug("Basic Auth Configuration = " + serverConfig.authConfigFile) ;
+//        }
+//
+//        server.setHandler(context) ;
+//
+//        serverLog.debug("Pages = " + serverConfig.pages) ;
+//
+//        boolean installServices = true ;
+//
+//        String validationRoot = "/validate" ;
+//
+//        // Should all services be /_/.... or some such?
+//
+//        if ( installServices ) {
+//            // TODO Respect port.
+//            if ( serverConfig.pagesPort != serverConfig.port )
+//                serverLog.warn("Not supported yet - pages on a different port to services") ;
+//
+//            String base = serverConfig.pages ;
+//            Map<String, Object> data = new HashMap<String, Object>() ;
+//            data.put("mgt", new MgtFunctions()) ;
+//            SimpleVelocityServlet templateEngine = new SimpleVelocityServlet(base, data) ;
+//            addServlet(context, templateEngine, "*.tpl", false) ;
+//        }
+//
+//        if ( installServices ) {
+//            // Validators
+//            HttpServlet validateQuery = new QueryValidator() ;
+//            HttpServlet validateUpdate = new UpdateValidator() ;
+//            
+//            HttpServlet validateData = new DataValidator() ;
+//            HttpServlet validateIRI = new IRIValidator() ;
+//
+//            HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
+//
+//            addServlet(context, validateQuery, validationRoot + "/query", false) ;
+//            addServlet(context, validateUpdate, validationRoot + "/update", false) ;
+//            addServlet(context, validateData, validationRoot + "/data", false) ;
+//            addServlet(context, validateIRI, validationRoot + "/iri", false) ;
+//
+//            // general query processor.
+//            addServlet(context, generalQueryService, HttpNames.ServiceGeneralQuery, enableCompression) ;
+//        }
+//
+//        if ( installServices ) {
+//            String[] files = {"fuseki.html", "index.html"} ;
+//            context.setWelcomeFiles(files) ;
+//            addContent(context, "/", serverConfig.pages) ;
+//        }
+//
+//        return context ;
+//    }
 
     private static Server configServer(String jettyConfig) {
         try {

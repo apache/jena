@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 
 public class ActionPing extends ActionCtl
 {
@@ -60,8 +60,8 @@ public class ActionPing extends ActionCtl
     protected void perform$(HttpAction action) throws IOException {
         HttpServletResponse response = action.response ;
         ServletOutputStream out = action.response.getOutputStream() ;
-        response.setContentType(WebContent.contentTypeTextPlain);
-        response.setCharacterEncoding(WebContent.charsetUTF8) ;
+        response.setContentType(contentTypeTextPlain);
+        response.setCharacterEncoding(charsetUTF8) ;
         
     }
 }

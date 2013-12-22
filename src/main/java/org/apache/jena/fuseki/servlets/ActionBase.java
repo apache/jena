@@ -52,7 +52,9 @@ public abstract class ActionBase extends ServletBase
     
     @Override 
     public void init() {
-        log.info("["+Utils.className(this)+"] ServletContextName="+getServletContext().getServletContextName()) ;
+        log.info("["+Utils.className(this)+"] ServletContextName = "+getServletContext().getServletContextName()) ;
+        log.info("["+Utils.className(this)+"] ContextPath        = "+getServletContext().getContextPath()) ;
+
         //super.init() ;
     }
     

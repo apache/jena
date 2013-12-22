@@ -40,7 +40,8 @@ public class FusekiFilter implements Filter {
     
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("Filter: ["+Utils.className(this)+"] ServletContextName="+filterConfig.getServletContext().getServletContextName()) ;
+        log.info("Filter: ["+Utils.className(this)+"] ServletContextName = "+filterConfig.getServletContext().getServletContextName()) ;
+        log.info("Filter: ["+Utils.className(this)+"] ContextPath        = "+filterConfig.getServletContext().getContextPath()) ;
     }
 
     @Override
@@ -52,10 +53,17 @@ public class FusekiFilter implements Filter {
             HttpServletResponse resp = (HttpServletResponse)response ;
 
             // XXX Context path
+            // Put this somewhere.
+            String x = request.getServletContext().getContextPath() ;
+            
             
             String uri = req.getRequestURI() ;
             String datasetUri = ActionLib.mapRequestToDataset(uri) ;
 
+            if ( x != null )
+                datasetUri = datasetUri.substring(x.length()) ;
+            
+            
             if ( datasetUri != null ) {        
                 if ( DatasetRegistry.get().isRegistered(datasetUri) ) {
                     // Intercept and redirect
