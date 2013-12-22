@@ -19,6 +19,8 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
+import static org.apache.jena.riot.WebContent.ctMultipartFormData ;
+import static org.apache.jena.riot.WebContent.matchContentType ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -30,7 +32,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotParseException ;
+import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -39,7 +44,7 @@ public class Upload {
     public static void incomingData(HttpAction action, StreamRDF dest, boolean isGraph) {
         ContentType ct = FusekiLib.getContentType(action) ;
          
-        if ( WebContent.contentTypeMultipartFormData.equalsIgnoreCase(ct.getContentType()) ) {
+        if ( matchContentType(ctMultipartFormData, ct) ) {
             fileUploadWorker(action, dest, isGraph) ;
             return ;
         }
@@ -95,7 +100,7 @@ public class Upload {
                 String contentTypeHeader = fileStream.getContentType() ;
                 ContentType ct = ContentType.create(contentTypeHeader) ;
                 Lang lang = null ;
-                if ( ! WebContent.contentTypeTextPlain.equals(ct.getContentType()) )
+                if ( ! matchContentType(ctTextPlain, ct) )
                     lang = RDFLanguages.contentTypeToLang(ct.getContentType()) ;
     
                 if ( lang == null ) {

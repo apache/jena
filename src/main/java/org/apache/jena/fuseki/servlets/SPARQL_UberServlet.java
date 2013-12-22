@@ -32,7 +32,7 @@ import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.ServiceRef ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.web.HttpSC ;
 
 /** This servlet can be attached to a dataset location
@@ -155,7 +155,6 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         boolean hasParamUpdate          = request.getParameter(HttpNames.paramUpdate) != null || request.getParameter(HttpNames.paramRequest) != null ;
         boolean hasParamGraph           = request.getParameter(HttpNames.paramGraph) != null ;
         boolean hasParamGraphDefault    = request.getParameter(HttpNames.paramGraphDefault) != null ;
-        boolean isForm                  = WebContent.contentTypeForm.equalsIgnoreCase(request.getContentType()) ;
 
         String ct = request.getContentType() ;
         String charset = request.getCharacterEncoding() ;
@@ -180,7 +179,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         if ( ! hasTrailing )
         {
             // Has params of some kind.
-            if ( hasParamQuery || WebContent.contentTypeSPARQLQuery.equalsIgnoreCase(ct) )
+            if ( hasParamQuery || contentTypeSPARQLQuery.equalsIgnoreCase(ct) )
             {
                 // SPARQL Query
                 if ( ! allowQuery(action))
@@ -189,7 +188,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                 return ;
             }
                  
-            if ( hasParamUpdate || WebContent.contentTypeSPARQLUpdate.equalsIgnoreCase(ct) )
+            if ( hasParamUpdate || contentTypeSPARQLUpdate.equalsIgnoreCase(ct) )
             {
                 // SPARQL Update
                 if ( ! allowQuery(action))

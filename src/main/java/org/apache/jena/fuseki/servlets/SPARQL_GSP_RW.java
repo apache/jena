@@ -22,7 +22,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.web.HttpSC ;
@@ -77,7 +77,7 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
         if ( ct == null )
             ServletOps.errorBadRequest("No Content-Type:") ;
 
-        if ( WebContent.contentTypeMultiMixed.equals(ct.getContentType()) ) {
+        if ( matchContentType(ctMultipartMixed, ct) ) {
             ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/mixed not supported") ;
         }
         

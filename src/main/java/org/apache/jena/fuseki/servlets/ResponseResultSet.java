@@ -35,7 +35,7 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -61,12 +61,12 @@ public class ResponseResultSet
     public static Map<String,String> shortNamesResultSet = new HashMap<String, String>() ;
     static {
         // Some short names.  keys are lowercase.
-        ResponseOps.put(shortNamesResultSet, contentOutputJSON,   WebContent.contentTypeResultsJSON) ;
-        ResponseOps.put(shortNamesResultSet, contentOutputSPARQL, WebContent.contentTypeResultsXML) ;
-        ResponseOps.put(shortNamesResultSet, contentOutputXML,    WebContent.contentTypeResultsXML) ;
-        ResponseOps.put(shortNamesResultSet, contentOutputText,   WebContent.contentTypeTextPlain) ;
-        ResponseOps.put(shortNamesResultSet, contentOutputCSV,    WebContent.contentTypeTextCSV) ;
-        ResponseOps.put(shortNamesResultSet, contentOutputTSV,    WebContent.contentTypeTextTSV) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputJSON,   contentTypeResultsJSON) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputSPARQL, contentTypeResultsXML) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputXML,    contentTypeResultsXML) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputText,   contentTypeTextPlain) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputCSV,    contentTypeTextCSV) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputTSV,    contentTypeTextTSV) ;
     }
     
     interface OutputContent { void output(ServletOutputStream out) ; }
@@ -124,24 +124,24 @@ public class ResponseResultSet
              
         // Stylesheet - change to application/xml.
         final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
-        if ( stylesheetURL != null && equal(serializationType,WebContent.contentTypeResultsXML) )
-            contentType = WebContent.contentTypeXML ;
+        if ( stylesheetURL != null && equal(serializationType,contentTypeResultsXML) )
+            contentType = contentTypeXML ;
         
         // Force to text/plain?
         String forceAccept = ResponseOps.paramForceAccept(request) ;
         if ( forceAccept != null )
-            contentType = WebContent.contentTypeTextPlain ;
+            contentType = contentTypeTextPlain ;
 
         // Better : dispatch on MediaType
-        if ( equal(serializationType, WebContent.contentTypeResultsXML) )
+        if ( equal(serializationType, contentTypeResultsXML) )
             sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
-        else if ( equal(serializationType, WebContent.contentTypeResultsJSON) )
+        else if ( equal(serializationType, contentTypeResultsJSON) )
             jsonOutput(action, contentType, resultSet, booleanResult) ;
-        else if ( equal(serializationType, WebContent.contentTypeTextPlain) )
+        else if ( equal(serializationType, contentTypeTextPlain) )
             textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
-        else if ( equal(serializationType, WebContent.contentTypeTextCSV) ) 
+        else if ( equal(serializationType, contentTypeTextCSV) ) 
             csvOutput(action, contentType, resultSet, booleanResult) ;
-        else if (equal(serializationType, WebContent.contentTypeTextTSV) )
+        else if (equal(serializationType, contentTypeTextTSV) )
             tsvOutput(action, contentType, resultSet, booleanResult) ;
         else
             ServletOps.errorBadRequest("Can't determine output serialization: "+serializationType) ;
@@ -172,9 +172,9 @@ public class ResponseResultSet
 
     private static boolean isXML(String contentType)
     {
-        return contentType.equals(WebContent.contentTypeRDFXML)
-            || contentType.equals(WebContent.contentTypeResultsXML)
-            || contentType.equals(WebContent.contentTypeXML) ; 
+        return contentType.equals(contentTypeRDFXML)
+            || contentType.equals(contentTypeResultsXML)
+            || contentType.equals(contentTypeXML) ; 
     }
 
     private static void sparqlXMLOutput(HttpAction action, String contentType, final ResultSet resultSet, final String stylesheetURL, final Boolean booleanResult)
@@ -217,7 +217,7 @@ public class ResponseResultSet
                 out.println("(") ;
             }
 
-            output(action, contentType, WebContent.charsetUTF8, proc) ;
+            output(action, contentType, charsetUTF8, proc) ;
 
             if ( callback != null )
                 out.println(")") ;
@@ -238,7 +238,7 @@ public class ResponseResultSet
             }
         };
 
-        output(action, contentType, WebContent.charsetUTF8, proc) ;
+        output(action, contentType, charsetUTF8, proc) ;
     }
 
     private static void csvOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
@@ -252,7 +252,7 @@ public class ResponseResultSet
                     ResultSetFormatter.outputAsCSV(out, booleanResult.booleanValue()) ;
             }
         } ;
-        output(action, contentType, WebContent.charsetUTF8, proc) ; 
+        output(action, contentType, charsetUTF8, proc) ; 
     }
 
     private static void tsvOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
@@ -266,7 +266,7 @@ public class ResponseResultSet
                     ResultSetFormatter.outputAsTSV(out, booleanResult.booleanValue()) ;
             }
         } ;
-        output(action, contentType, WebContent.charsetUTF8, proc) ; 
+        output(action, contentType, charsetUTF8, proc) ; 
     }
 
     private static void output(HttpAction action, String contentType, String charset, OutputContent proc) 

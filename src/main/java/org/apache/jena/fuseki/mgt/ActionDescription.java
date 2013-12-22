@@ -18,6 +18,9 @@
 
 package org.apache.jena.fuseki.mgt;
 
+import static org.apache.jena.riot.WebContent.charsetUTF8 ;
+import static org.apache.jena.riot.WebContent.contentTypeJSON ;
+
 import java.io.IOException ;
 
 import javax.servlet.ServletOutputStream ;
@@ -31,7 +34,6 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.riot.WebContent ;
 import org.eclipse.jetty.server.Server ;
 
 /** Description of datasets for a server */ 
@@ -57,8 +59,8 @@ public class ActionDescription extends ActionCtl
     
     private void description(HttpAction action) throws IOException {
         ServletOutputStream out = action.response.getOutputStream() ;
-        action.response.setContentType(WebContent.contentTypeJSON);
-        action.response.setCharacterEncoding(WebContent.charsetUTF8) ;
+        action.response.setContentType(contentTypeJSON);
+        action.response.setCharacterEncoding(charsetUTF8) ;
         
         JsonBuilder builder = new JsonBuilder() ; 
         builder.startObject() ;

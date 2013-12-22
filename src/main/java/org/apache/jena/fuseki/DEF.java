@@ -24,9 +24,9 @@ import org.apache.jena.riot.WebContent ;
 
 public class DEF
 {
-    public static final MediaType acceptRDFXML        = MediaType.create(WebContent.contentTypeRDFXML) ;
-    public static final MediaType acceptNQuads        = MediaType.create(WebContent.contentTypeNQuads) ;
-    public static final MediaType acceptRSXML         = MediaType.create(WebContent.contentTypeResultsXML) ;
+    public static final MediaType acceptRDFXML          = MediaType.create(WebContent.contentTypeRDFXML) ;
+    public static final MediaType acceptNQuads          = MediaType.create(WebContent.contentTypeNQuads) ;
+    public static final MediaType acceptRSXML           = MediaType.create(WebContent.contentTypeResultsXML) ;
     
     private static final MediaType acceptTurtle1       = MediaType.create(WebContent.contentTypeTurtle) ;
     private static final MediaType acceptTurtle2       = MediaType.create(WebContent.contentTypeTurtleAlt1) ;
@@ -39,7 +39,6 @@ public class DEF
     private static final MediaType acceptRDFJSON       = MediaType.create(WebContent.contentTypeRDFJSON) ; 
     private static final MediaType acceptNQuadsAlt1    = MediaType.create(WebContent.contentTypeNQuadsAlt1) ;
     private static final MediaType acceptNQuadsAlt2    = MediaType.create(WebContent.contentTypeNQuadsAlt2) ;
-   
 
     public static final AcceptList rdfOffer           = AcceptList.create(acceptTurtle1, acceptTurtle2, acceptTurtle3, 
                                                                           acceptNTriples, acceptNTriplesAlt,

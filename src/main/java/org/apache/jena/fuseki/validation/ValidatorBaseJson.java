@@ -34,7 +34,7 @@ import org.apache.jena.fuseki.servlets.ActionErrorException ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.ServletBase ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 
@@ -77,8 +77,8 @@ public abstract class ValidatorBaseJson extends ServletBase
             JsonObject obj = execute(action) ;
             action.statusCode = HttpSC.OK_200 ;
             action.message = "OK" ;
-            response.setCharacterEncoding(WebContent.charsetUTF8);
-            response.setContentType(WebContent.contentTypeJSON);
+            response.setCharacterEncoding(charsetUTF8);
+            response.setContentType(contentTypeJSON);
             //response.setContentType(WebContent.contentTypeTextPlain);
             action.response.setStatus(HttpSC.OK_200) ;
             OutputStream out = response.getOutputStream() ; 
@@ -164,8 +164,8 @@ public abstract class ValidatorBaseJson extends ServletBase
 
     protected void setHeaders(HttpServletResponse httpResponse)
     {
-        httpResponse.setCharacterEncoding(WebContent.charsetUTF8) ;
-        httpResponse.setContentType(WebContent.contentTypeJSON) ;
+        httpResponse.setCharacterEncoding(charsetUTF8) ;
+        httpResponse.setContentType(contentTypeJSON) ;
         httpResponse.setHeader(respService, "Jena Fuseki Validator / "+validatorName()+": http://jena.apache.org/") ;
     }
 

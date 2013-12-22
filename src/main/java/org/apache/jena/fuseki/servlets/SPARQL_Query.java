@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki.servlets ;
 
 import static java.lang.String.format ;
 import static org.apache.jena.fuseki.HttpNames.* ;
@@ -37,7 +37,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
 
@@ -46,37 +46,37 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
-public abstract class SPARQL_Query extends SPARQL_Protocol
-{
-    public SPARQL_Query()   { super() ; }
+public abstract class SPARQL_Query extends SPARQL_Protocol {
+    public SPARQL_Query() {
+        super() ;
+    }
 
     // Choose REST verbs to support.
-    
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    { doCommon(request, response) ; }
-    
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        doCommon(request, response) ;
+    }
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    { doCommon(request, response) ; }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        doCommon(request, response) ;
+    }
 
     // HEAD
-    
+
     @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
-    {
-        //response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,POST");
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
+        // response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,POST");
         setCommonHeaders(response) ;
-        response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST");
+        response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
-    
+
     @Override
-    protected final void perform(HttpAction action)
-    {
+    protected final void perform(HttpAction action) {
         // GET
-        if ( action.request.getMethod().equals(HttpNames.METHOD_GET) )
-        {
+        if ( action.request.getMethod().equals(HttpNames.METHOD_GET) ) {
             executeWithParameter(action) ;
             return ;
         }
@@ -84,136 +84,120 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         ContentType ct = FusekiLib.getContentType(action) ;
         String incoming = ct.getContentType() ;
 
-        // POST application/sparql-query
-        if ( WebContent.isHtmlForm(ct) )
-        {
-            executeBody(action) ;
-            return ;
-        }
         // POST application/x-www-form-url
-        if (ActionLib.isHTMLForm(action) )
-        {
+        if ( isHtmlForm(ct) ) {
             executeWithParameter(action) ;
             return ;
         }
 
-        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: "+incoming) ;
+        // POST application/sparql-query
+        if ( matchContentType(ct, ctSPARQLQuery) ) {
+            executeBody(action) ;
+            return ;
+        }
+
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + incoming) ;
     }
 
     // All the params we support
 
-    protected static List<String> allParams  = Arrays.asList(paramQuery, 
-                                                             paramDefaultGraphURI, paramNamedGraphURI, 
-                                                             paramQueryRef,
-                                                             paramStyleSheet,
-                                                             paramAccept,
-                                                             paramOutput1, paramOutput2, 
-                                                             paramCallback, 
-                                                             paramForceAccept,
-                                                             paramTimeout) ;
-    
+    protected static List<String> allParams = Arrays.asList(paramQuery, paramDefaultGraphURI, paramNamedGraphURI,
+                                                            paramQueryRef, paramStyleSheet, paramAccept, paramOutput1,
+                                                            paramOutput2, paramCallback, paramForceAccept, paramTimeout) ;
+
     /** Called to validate arguments */
     @Override
-    protected void validate(HttpAction action)
-    {
+    protected void validate(HttpAction action) {
         String method = action.request.getMethod().toUpperCase(Locale.ROOT) ;
-        
-        if ( ! HttpNames.METHOD_POST.equals(method) && ! HttpNames.METHOD_GET.equals(method) )
+
+        if ( !HttpNames.METHOD_POST.equals(method) && !HttpNames.METHOD_GET.equals(method) )
             ServletOps.errorMethodNotAllowed("Not a GET or POST request") ;
-            
-        if ( HttpNames.METHOD_GET.equals(method) && action.request.getQueryString() == null )
-        {
-            ServletOps.warning(action, "Service Description / SPARQL Query / "+action.request.getRequestURI()) ;
-            ServletOps.errorNotFound("Service Description: "+action.request.getRequestURI()) ;
+
+        if ( HttpNames.METHOD_GET.equals(method) && action.request.getQueryString() == null ) {
+            ServletOps.warning(action, "Service Description / SPARQL Query / " + action.request.getRequestURI()) ;
+            ServletOps.errorNotFound("Service Description: " + action.request.getRequestURI()) ;
         }
-        
+
         // Use of the dataset describing parameters is check later.
         try {
             validateParams(action, allParams) ;
-            validateRequest(action) ; 
-        } catch (ActionErrorException ex) { 
-            throw ex ; 
-        } 
+            validateRequest(action) ;
+        } catch (ActionErrorException ex) {
+            throw ex ;
+        }
         // Query not yet parsed.
     }
-    
-    /** Validate the request after checking HTTP method and HTTP Parameters */ 
+
+    /** Validate the request after checking HTTP method and HTTP Parameters */
     protected abstract void validateRequest(HttpAction action) ;
-    
+
     /** Helper for validating request */
-    protected void validateParams(HttpAction action, Collection<String> params)
-    {
+    protected void validateParams(HttpAction action, Collection<String> params) {
         HttpServletRequest request = action.request ;
         ContentType ct = FusekiLib.getContentType(request) ;
         boolean mustHaveQueryParam = true ;
-        if ( ct != null )
-        {
+        if ( ct != null ) {
             String incoming = ct.getContentType() ;
-            
-            if ( WebContent.contentTypeSPARQLQuery.equals(incoming) )
-            {
+
+            if ( matchContentType(ctSPARQLQuery, ct) ) {
                 mustHaveQueryParam = false ;
-                //error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unofficial "+WebContent.contentTypeSPARQLQuery+" not supported") ;
-            }
-            else if ( WebContent.contentTypeForm.equals(incoming) ) {}
+            } else if ( matchContentType(ctHTMLForm, ct))
+            {} 
             else
-                ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: "+incoming) ;
+                ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: " + incoming) ;
         }
-        
+
         // GET/POST of a form at this point.
-        
-        if ( mustHaveQueryParam )
-        {
-            int N = countParamOccurences(request, paramQuery) ; 
-            
-            if ( N == 0 ) ServletOps.errorBadRequest("SPARQL Query: No 'query=' parameter") ;
-            if ( N > 1 ) ServletOps.errorBadRequest("SPARQL Query: Multiple 'query=' parameters") ;
-            
+
+        if ( mustHaveQueryParam ) {
+            int N = countParamOccurences(request, paramQuery) ;
+
+            if ( N == 0 )
+                ServletOps.errorBadRequest("SPARQL Query: No 'query=' parameter") ;
+            if ( N > 1 )
+                ServletOps.errorBadRequest("SPARQL Query: Multiple 'query=' parameters") ;
+
             // application/sparql-query does not use a query param.
             String queryStr = request.getParameter(HttpNames.paramQuery) ;
-            
+
             if ( queryStr == null )
                 ServletOps.errorBadRequest("SPARQL Query: No query specified (no 'query=' found)") ;
             if ( queryStr.isEmpty() )
                 ServletOps.errorBadRequest("SPARQL Query: Empty query string") ;
         }
 
-        if ( params != null )
-        {
+        if ( params != null ) {
             Enumeration<String> en = request.getParameterNames() ;
-            for ( ; en.hasMoreElements() ; )
-            {
+            for (; en.hasMoreElements();) {
                 String name = en.nextElement() ;
-                if ( ! params.contains(name) )
-                    ServletOps.warning(action, "SPARQL Query: Unrecognize request parameter (ignored): "+name) ;
+                if ( !params.contains(name) )
+                    ServletOps.warning(action, "SPARQL Query: Unrecognize request parameter (ignored): " + name) ;
             }
         }
     }
 
-    private void executeWithParameter(HttpAction action)
-    {
+    private void executeWithParameter(HttpAction action) {
         String queryString = action.request.getParameter(paramQuery) ;
         execute(queryString, action) ;
     }
 
-    private void executeBody(HttpAction action)
-    {
+    private void executeBody(HttpAction action) {
         String queryString = null ;
-        try { 
-            InputStream input = action.request.getInputStream() ; 
+        try {
+            InputStream input = action.request.getInputStream() ;
             queryString = IO.readWholeFileAsUTF8(input) ;
+        } catch (IOException ex) {
+            ServletOps.errorOccurred(ex) ;
         }
-        catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
         execute(queryString, action) ;
     }
 
-    private void execute(String queryString, HttpAction action)
-    {
+    private void execute(String queryString, HttpAction action) {
         String queryStringLog = ServletOps.formatForLog(queryString) ;
         if ( action.verbose )
-            action.log.info(format("[%d] Query = \n%s", action.id, queryString));
+            action.log.info(format("[%d] Query = \n%s", action.id, queryString)) ;
         else
-            action.log.info(format("[%d] Query = %s", action.id, queryStringLog));
+            action.log.info(format("[%d] Query = %s", action.id, queryStringLog)) ;
 
         Query query = null ;
         try {
@@ -232,119 +216,116 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         catch (QueryException ex) {
             ServletOps.errorBadRequest("Error: \n" + queryString + "\n\r" + ex.getMessage()) ;
         }
-        
-        // Assumes finished whole thing by end of sendResult. 
+
+        // Assumes finished whole thing by end of sendResult.
         action.beginRead() ;
         QueryExecution qExec = null ;
         try {
-            Dataset dataset = decideDataset(action, query, queryStringLog) ; 
+            Dataset dataset = decideDataset(action, query, queryStringLog) ;
             qExec = createQueryExecution(query, dataset) ;
             SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
-            
+
             // Deals with exceptions itself.
             sendResults(action, result, query.getPrologue()) ;
         } catch (QueryCancelledException ex) {
             // Additional counter information.
-            incCounter(action.srvRef, QueryTimeouts) ; 
-            throw ex ; 
-        } catch (QueryExecException ex) { 
+            incCounter(action.srvRef, QueryTimeouts) ;
+            throw ex ;
+        } catch (QueryExecException ex) {
             // Additional counter information.
-            incCounter(action.srvRef, QueryExecErrors) ; 
-            throw ex ; 
-        } finally { 
+            incCounter(action.srvRef, QueryExecErrors) ;
+            throw ex ;
+        } finally {
             if ( qExec != null )
                 qExec.close() ;
             action.endRead() ;
         }
     }
 
-    /** Check the query - if unacceptable, throw ActionErrorException or call super.error */
+    /**
+     * Check the query - if unacceptable, throw ActionErrorException or call
+     * super.error
+     */
     protected abstract void validateQuery(HttpAction action, Query query) ;
 
-    protected QueryExecution createQueryExecution(Query query, Dataset dataset)
-    {
+    protected QueryExecution createQueryExecution(Query query, Dataset dataset) {
         return QueryExecutionFactory.create(query, dataset) ;
     }
 
-    protected SPARQLResult executeQuery(HttpAction action, QueryExecution qExec, Query query, String queryStringLog)
-    {
-        setAnyTimeouts(qExec, action);
+    protected SPARQLResult executeQuery(HttpAction action, QueryExecution qExec, Query query, String queryStringLog) {
+        setAnyTimeouts(qExec, action) ;
 
-        if ( query.isSelectType() )
-        {
+        if ( query.isSelectType() ) {
             ResultSet rs = qExec.execSelect() ;
-            
+
             // Force some query execution now.
             //
-            // If the timeout-first-row goes off, the output stream has not 
-            // been started so the HTTP error code is sent. 
-            
+            // If the timeout-first-row goes off, the output stream has not
+            // been started so the HTTP error code is sent.
+
             rs.hasNext() ;
 
-            // If we wanted perfect query time cancellation, we could consume the result now
-            // to see if the timeout-end-of-query goes off.  
-            
-            //rs = ResultSetFactory.copyResults(rs) ;
+            // If we wanted perfect query time cancellation, we could consume
+            // the result now
+            // to see if the timeout-end-of-query goes off.
+
+            // rs = ResultSetFactory.copyResults(rs) ;
 
             action.log.info(format("[%d] exec/select", action.id)) ;
             return new SPARQLResult(rs) ;
         }
 
-        if ( query.isConstructType() )
-        {
+        if ( query.isConstructType() ) {
             Model model = qExec.execConstruct() ;
             action.log.info(format("[%d] exec/construct", action.id)) ;
             return new SPARQLResult(model) ;
         }
 
-        if ( query.isDescribeType() )
-        {
+        if ( query.isDescribeType() ) {
             Model model = qExec.execDescribe() ;
-            action.log.info(format("[%d] exec/describe",action.id)) ;
+            action.log.info(format("[%d] exec/describe", action.id)) ;
             return new SPARQLResult(model) ;
         }
 
-        if ( query.isAskType() )
-        {
+        if ( query.isAskType() ) {
             boolean b = qExec.execAsk() ;
-            action.log.info(format("[%d] exec/ask",action.id)) ;
+            action.log.info(format("[%d] exec/ask", action.id)) ;
             return new SPARQLResult(b) ;
         }
 
-        ServletOps.errorBadRequest("Unknown query type - "+queryStringLog) ;
+        ServletOps.errorBadRequest("Unknown query type - " + queryStringLog) ;
         return null ;
     }
 
     private void setAnyTimeouts(QueryExecution qexec, HttpAction action) {
-        if (!(action.getDatasetRef().allowTimeoutOverride))
-            return;
+        if ( !(action.getDatasetRef().allowTimeoutOverride) )
+            return ;
 
-        long desiredTimeout = Long.MAX_VALUE;
-        String timeoutHeader = action.request.getHeader("Timeout");
-        String timeoutParameter = action.request.getParameter("timeout");
-        if (timeoutHeader != null) {
+        long desiredTimeout = Long.MAX_VALUE ;
+        String timeoutHeader = action.request.getHeader("Timeout") ;
+        String timeoutParameter = action.request.getParameter("timeout") ;
+        if ( timeoutHeader != null ) {
             try {
-                desiredTimeout = (int) Float.parseFloat(timeoutHeader) * 1000;
+                desiredTimeout = (int)Float.parseFloat(timeoutHeader) * 1000 ;
             } catch (NumberFormatException e) {
-                throw new FusekiException("Timeout header must be a number", e);
+                throw new FusekiException("Timeout header must be a number", e) ;
             }
-        } else if (timeoutParameter != null) {
+        } else if ( timeoutParameter != null ) {
             try {
-                desiredTimeout = (int) Float.parseFloat(timeoutParameter) * 1000;
+                desiredTimeout = (int)Float.parseFloat(timeoutParameter) * 1000 ;
             } catch (NumberFormatException e) {
-                throw new FusekiException("timeout parameter must be a number", e);
+                throw new FusekiException("timeout parameter must be a number", e) ;
             }
         }
 
-        desiredTimeout = Math.min(action.getDatasetRef().maximumTimeoutOverride, desiredTimeout);
-        if (desiredTimeout != Long.MAX_VALUE)
-            qexec.setTimeout(desiredTimeout);
+        desiredTimeout = Math.min(action.getDatasetRef().maximumTimeoutOverride, desiredTimeout) ;
+        if ( desiredTimeout != Long.MAX_VALUE )
+            qexec.setTimeout(desiredTimeout) ;
     }
 
     protected abstract Dataset decideDataset(HttpAction action, Query query, String queryStringLog) ;
 
-    protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue)
-    {
+    protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue) {
         if ( result.isResultSet() )
             ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue) ;
         else if ( result.isGraph() )
@@ -354,17 +335,15 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         else
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }
-    
-    private String formatForLog(Query query)
-    {
+
+    private String formatForLog(Query query) {
         IndentedLineBuffer out = new IndentedLineBuffer() ;
         out.setFlatMode(true) ;
         query.serialize(out) ;
         return out.asString() ;
     }
-        
-    private String getRemoteString(String queryURI)
-    {
+
+    private String getRemoteString(String queryURI) {
         return HttpOp.execHttpGetString(queryURI) ;
     }
 

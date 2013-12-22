@@ -20,11 +20,8 @@ package org.apache.jena.fuseki.servlets;
 
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.riot.WebContent ;
 
 /** Operations related to servlets */
 
@@ -134,12 +131,5 @@ public class ActionLib {
         //log.info("removeContext: uri = "+uri+" contextPath="+contextPath+ "--> x="+x) ;
         return x ;
     }
-
-    public static boolean isHTMLForm(HttpAction action ) {
-        ContentType ct = FusekiLib.getContentType(action) ;
-        String incoming = ct.getContentType() ;
-        return WebContent.contentTypeForm.equalsIgnoreCase(incoming) ;
-    }
-
 }
 

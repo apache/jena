@@ -31,7 +31,7 @@ import org.apache.jena.atlas.json.* ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 
 public class ActionStats extends ActionCtl
 {
@@ -56,8 +56,8 @@ public class ActionStats extends ActionCtl
         try {
             HttpServletResponse response = action.response ;
             ServletOutputStream out = response.getOutputStream() ;
-            response.setContentType(WebContent.contentTypeJSON);
-            response.setCharacterEncoding(WebContent.charsetUTF8) ;
+            response.setContentType(contentTypeJSON);
+            response.setCharacterEncoding(charsetUTF8) ;
             JSON.write(out, v) ;
             out.println() ; 
             out.flush() ;
@@ -143,8 +143,8 @@ public class ActionStats extends ActionCtl
     private void statsTxt(HttpServletResponse resp) throws IOException
     {
         ServletOutputStream out = resp.getOutputStream() ;
-        resp.setContentType(WebContent.contentTypeTextPlain);
-        resp.setCharacterEncoding(WebContent.charsetUTF8) ;
+        resp.setContentType(contentTypeTextPlain);
+        resp.setCharacterEncoding(charsetUTF8) ;
 
         Iterator<String> iter = DatasetRegistry.get().keys().iterator() ;
         while(iter.hasNext())

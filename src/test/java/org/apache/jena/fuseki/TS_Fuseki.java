@@ -40,6 +40,7 @@ import org.junit.runners.Suite ;
     , TestAuth.class
     , TestDatasetOps.class
     , TestFileUpload.class
+    , TestAdmin.class
 })
 public class TS_Fuseki extends ServerTest
 {

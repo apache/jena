@@ -44,7 +44,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.web.HttpSC ;
 
@@ -96,17 +96,17 @@ public class SPARQL_Update extends SPARQL_Protocol
         {
             ContentType ct = FusekiLib.getContentType(action) ;
             if ( ct == null )
-                ctStr = WebContent.contentTypeSPARQLUpdate ;
+                ctStr = contentTypeSPARQLUpdate ;
             else
                 ctStr = ct.getContentType() ;
         }
 
-        if (WebContent.contentTypeSPARQLUpdate.equals(ctStr))
+        if (contentTypeSPARQLUpdate.equals(ctStr))
         {
             executeBody(action) ;
             return ;
         }
-        if (WebContent.contentTypeForm.equals(ctStr))
+        if (contentTypeHTMLForm.equals(ctStr))
         {
             executeForm(action) ;
             return ;
@@ -127,19 +127,19 @@ public class SPARQL_Update extends SPARQL_Protocol
             ServletOps.errorMethodNotAllowed("SPARQL Update : use POST") ;
         
         ContentType incoming = FusekiLib.getContentType(action) ;
-        String ctStr = ( incoming == null ) ? WebContent.contentTypeSPARQLUpdate : incoming.getContentType() ;
+        String ctStr = ( incoming == null ) ? contentTypeSPARQLUpdate : incoming.getContentType() ;
         // ----
         
-        if ( WebContent.contentTypeSPARQLUpdate.equals(ctStr) )
+        if ( contentTypeSPARQLUpdate.equals(ctStr) )
         {
             String charset = request.getCharacterEncoding() ;
-            if ( charset != null && ! charset.equalsIgnoreCase(WebContent.charsetUTF8) )
+            if ( charset != null && ! charset.equalsIgnoreCase(charsetUTF8) )
                 ServletOps.errorBadRequest("Bad charset: "+charset) ;
             validate(action, paramsPOST) ;
             return ;
         }
         
-        if ( WebContent.contentTypeForm.equals(ctStr) )
+        if ( contentTypeHTMLForm.equals(ctStr) )
         {
             int x = countParamOccurences(request, paramUpdate) + countParamOccurences(request, paramRequest) ;
             if ( x == 0 )
@@ -156,7 +156,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             return ;
         }
         
-        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm+" (got "+ctStr+")") ;
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+contentTypeSPARQLUpdate+" or "+contentTypeHTMLForm+" (got "+ctStr+")") ;
     }
     
     protected void validate(HttpAction action, Collection<String> params)

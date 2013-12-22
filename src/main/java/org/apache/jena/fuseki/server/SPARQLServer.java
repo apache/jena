@@ -39,7 +39,7 @@ import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
 import org.apache.jena.fuseki.validation.QueryValidator ;
 import org.apache.jena.fuseki.validation.UpdateValidator ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 import org.eclipse.jetty.http.MimeTypes ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
@@ -142,7 +142,6 @@ public class SPARQLServer {
     }
     
     public int getPort() {        
-
         return server.getConnectors()[0].getPort() ;
     }
 
@@ -162,6 +161,11 @@ public class SPARQLServer {
             server = configServer(jettyConfig) ;
         } else
             server = defaultServerConfig(serverConfig.port, serverConfig.loopback) ;
+        
+        
+//        WebAppContext app = new WebAppContext("Fuseki","/") ;
+//        server.setHandler(app);
+        
         // Keep the server to a maximum number of threads.
         // server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
 
@@ -205,11 +209,11 @@ public class SPARQLServer {
 
         // Constants. Add RDF types.
         MimeTypes mt = new MimeTypes() ;
-        mt.addMimeMapping("rdf", WebContent.contentTypeRDFXML + ";charset=utf-8") ;
-        mt.addMimeMapping("ttl", WebContent.contentTypeTurtle + ";charset=utf-8") ;
-        mt.addMimeMapping("nt", WebContent.contentTypeNTriples + ";charset=ascii") ;
-        mt.addMimeMapping("nq", WebContent.contentTypeNQuads + ";charset=ascii") ;
-        mt.addMimeMapping("trig", WebContent.contentTypeTriG + ";charset=utf-8") ;
+        mt.addMimeMapping("rdf",    contentTypeRDFXML    + ";charset=utf-8") ;
+        mt.addMimeMapping("ttl",    contentTypeTurtle    + ";charset=utf-8") ;
+        mt.addMimeMapping("nt",     contentTypeNTriples  + ";charset=utf-8") ;
+        mt.addMimeMapping("nq",     contentTypeNQuads    + ";charset=utf-8") ;
+        mt.addMimeMapping("trig",   contentTypeTriG      + ";charset=utf-8") ;
 
         // mt.addMimeMapping("tpl", "text/html;charset=utf-8") ;
         context.setMimeTypes(mt) ;

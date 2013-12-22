@@ -33,7 +33,7 @@ import org.apache.jena.fuseki.conneg.WebLib ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -51,11 +51,11 @@ public class ResponseModel
     static {
 
         // Some short names.  keys are lowercase.
-        ResponseOps.put(shortNamesModel, contentOutputJSON, WebContent.contentTypeRDFJSON) ;
-        ResponseOps.put(shortNamesModel, contentOutputXML,  WebContent.contentTypeRDFXML) ;
-        ResponseOps.put(shortNamesModel, contentOutputText, WebContent.contentTypeTurtle) ;
-        ResponseOps.put(shortNamesModel, contentOutputTTL,  WebContent.contentTypeTurtle) ;
-        ResponseOps.put(shortNamesModel, contentOutputNT,   WebContent.contentTypeNTriples) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSON, contentTypeRDFJSON) ;
+        ResponseOps.put(shortNamesModel, contentOutputXML,  contentTypeRDFXML) ;
+        ResponseOps.put(shortNamesModel, contentOutputText, contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputTTL,  contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputNT,   contentTypeNTriples) ;
     }
 
     public static void doResponseModel(HttpAction action, Model model) 
@@ -89,13 +89,13 @@ public class ResponseModel
         }
 
         String contentType = mimeType ;
-        String charset =     WebContent.charsetUTF8 ;
+        String charset =     charsetUTF8 ;
 
         String forceAccept = ResponseOps.paramForceAccept(request) ;
         if ( forceAccept != null )
         {
             contentType = forceAccept ;
-            charset = WebContent.charsetUTF8 ;
+            charset = charsetUTF8 ;
         }
 
         Lang lang = RDFLanguages.contentTypeToLang(contentType) ;

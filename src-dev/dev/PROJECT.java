@@ -19,8 +19,16 @@
 package dev;
 
 public class PROJECT {
+    
+    // WebConent tidying
+    //   SPARQL_Update
+    //   DEFs
+    
     // All TODO and XXX
-    // Graph upload in ActionDatasets == Upload.
+    // Configuration and startup.
+    // Change to using a real webapp.
+    
+	// WebContent.ctXYZ for each WebContent.contentTypeXYZ
 
     // txn and nonTxn server set up for tests.
     
@@ -43,6 +51,6 @@ public class PROJECT {
     // The whole X_Config thing
     // Check compression enabled for UberServlet
     
-    // In-memory system state.
+    // http://localhost:3030/$/optimize
 }
 
