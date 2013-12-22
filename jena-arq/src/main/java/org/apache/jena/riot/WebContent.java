@@ -177,8 +177,9 @@ public class WebContent
         //return mapLangToContentType.get(lang) ;
     }
 
+    /** Match content type (ignores charsets and other parameters) */ 
     public static boolean matchContentType(ContentType ct1, ContentType ct2)  {
-        return Lib.equal(ct1, ct2) ;
+        return matchContentType(ct1.getContentType(), ct2.getContentType()) ;
     }
     
     public static boolean matchContentType(String ct1, String ct2)  {
