@@ -106,7 +106,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             executeBody(action) ;
             return ;
         }
-        if (WebContent.contentTypeForm.equals(ctStr))
+        if (WebContent.contentTypeHTMLForm.equals(ctStr))
         {
             executeForm(action) ;
             return ;
@@ -139,7 +139,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             return ;
         }
         
-        if ( WebContent.contentTypeForm.equals(ctStr) )
+        if ( WebContent.contentTypeHTMLForm.equals(ctStr) )
         {
             int x = countParamOccurences(request, paramUpdate) + countParamOccurences(request, paramRequest) ;
             if ( x == 0 )
@@ -156,7 +156,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             return ;
         }
         
-        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm+" (got "+ctStr+")") ;
+        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeHTMLForm+" (got "+ctStr+")") ;
     }
     
     protected void validate(HttpServletRequest request, Collection<String> params)

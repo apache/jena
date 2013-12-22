@@ -92,9 +92,8 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             return ; 
         }
 
-        if ( WebContent.contentTypeMultiMixed.equals(ct.getContentType()) ) {
+        if ( WebContent.matchContentType(WebContent.ctMultipartMixed, ct) )
             error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/mixed not supported") ;
-        }
         
         boolean existedBefore = false ;
         if ( action.isTransactional() )
