@@ -34,6 +34,8 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.X_Config ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
+import org.eclipse.jetty.security.* ;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
 import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
@@ -42,6 +44,7 @@ import org.eclipse.jetty.servlet.FilterHolder ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.servlets.GzipFilter ;
+import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.webapp.WebAppContext ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
 
@@ -168,6 +171,8 @@ public class SPARQLServer {
         server.setHandler(context) ;
         
         // XXX Security
+        if ( jettyConfig == null && serverConfig.authConfigFile != null )
+            security(context, serverConfig.authConfigFile) ;
         
         return context ;
     }
@@ -175,6 +180,35 @@ public class SPARQLServer {
     
     private ServletContextHandler buildServer(String jettyConfig, boolean enableCompression) {
         throw new NotImplemented("Use the webapps setup") ;
+    }
+    
+    
+    private static void security(ServletContextHandler context, String authfile) {
+        Constraint constraint = new Constraint() ;
+        constraint.setName(Constraint.__BASIC_AUTH) ;
+        constraint.setRoles(new String[]{"fuseki"}) ;
+        constraint.setAuthenticate(true) ;
+
+        ConstraintMapping mapping = new ConstraintMapping() ;
+        mapping.setConstraint(constraint) ;
+        mapping.setPathSpec("/*") ;
+
+        IdentityService identService = new DefaultIdentityService() ;
+
+        ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler() ;
+        securityHandler.addConstraintMapping(mapping) ;
+        securityHandler.setIdentityService(identService) ;
+
+        HashLoginService loginService = new HashLoginService("Fuseki Authentication", authfile) ;
+        loginService.setIdentityService(identService) ;
+
+        securityHandler.setLoginService(loginService) ;
+        securityHandler.setAuthenticator(new BasicAuthenticator()) ;
+
+        context.setSecurityHandler(securityHandler) ;
+
+        serverLog.debug("Basic Auth Configuration = " + authfile) ;
+
     }
     
 //    private ServletContextHandler buildServer(String jettyConfig, boolean enableCompression) {
