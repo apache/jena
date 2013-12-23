@@ -8,16 +8,16 @@
   <display-name>Apache Jena Fuseki Server</display-name>
 
   <listener>
-    <listener-class>webapp.ServerInit</listener-class>
+    <listener-class>org.apache.jena.fuseki.server.FusekiServletContextListener</listener-class>
   </listener>
 
   <filter>
-    <filter-name>FusekiFilter</filter-name>
-    <filter-class>org.apache.jena.fuseki.servlets.SPARQ_UberFilter</filter-class>
+    <filter-name>Fuseki</filter-name>
+    <filter-class>org.apache.jena.fuseki.servlets.FusekiFilter</filter-class>
   </filter>
 
   <filter-mapping>
-    <filter-name>FusekiFilter</filter-name>
+    <filter-name>Fuseki</filter-name>
     <url-pattern>/*</url-pattern>
     <dispatcher>REQUEST</dispatcher>
     <dispatcher>FORWARD</dispatcher>
@@ -25,23 +25,103 @@
     <dispatcher>ERROR</dispatcher>
   </filter-mapping>
 
+  <!-- Validators -->
   <servlet>
-    <servlet-name>FusekiServlet</servlet-name>
-    <servlet-class>webapp.FusekiServlet</servlet-class>
+    <servlet-name>QueryValidator</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.validation.QueryValidator</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>UpdateValidator</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.validation.UpdateValidator</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>DataValidator</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.validation.DataValidator</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>IRIValidator</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.validation.IRIValidator</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>FusekiServlet</servlet-name>
-    <url-pattern>/</url-pattern>
+    <servlet-name>QueryValidator</servlet-name>
+    <url-pattern>/validate/query</url-pattern>
   </servlet-mapping>
 
-  <!-- pages -->
+  <servlet-mapping>
+    <servlet-name>UpdateValidator</servlet-name>
+    <url-pattern>/validate/update</url-pattern>
+  </servlet-mapping>
 
-  <!--
+  <servlet-mapping>
+    <servlet-name>IRIValidator</servlet-name>
+    <url-pattern>/validate/iri</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DataValidator</servlet-name>
+    <url-pattern>/validate/data</url-pattern>
+  </servlet-mapping>
+
+  <!-- Admin controls-->
+  
+  <servlet>
+    <servlet-name>DumpServlet</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.DumpServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>StatusServlet</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionDescription</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>PingServlet</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionPing</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+   <servlet-name>DumpServlet</servlet-name>
+   <url-pattern>/$/dump</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>StatusServlet</servlet-name>
+    <url-pattern>/$/status</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>PingServlet</servlet-name>
+    <url-pattern>/$/ping</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>ActionStats</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionStats</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ActionDatasets</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionDatasets</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ActionStats</servlet-name>
+    <url-pattern>/$/stats/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionDatasets</servlet-name>
+    <url-pattern>/$/datasets/*</url-pattern>
+  </servlet-mapping>
+
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
-  -->
+
   <mime-mapping>
     <extension>rdf</extension>
     <mime-type>application/rdf+xml;charset=utf-8</mime-type>

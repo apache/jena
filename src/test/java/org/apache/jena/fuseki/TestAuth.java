@@ -23,7 +23,6 @@ import java.io.FileWriter ;
 import java.io.IOException ;
 import java.net.URI ;
 import java.net.URISyntaxException ;
-import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Map ;
 
@@ -33,9 +32,6 @@ import org.apache.jena.atlas.web.auth.PreemptiveBasicAuthenticator ;
 import org.apache.jena.atlas.web.auth.ScopedAuthenticator ;
 import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
 import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.fuseki.server.SPARQLServer ;
-import org.apache.jena.fuseki.server.ServerConfig ;
 import org.junit.AfterClass ;
 import org.junit.Assert ;
 import org.junit.BeforeClass ;
@@ -46,8 +42,6 @@ import com.hp.hpl.jena.query.DatasetAccessor ;
 import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
 import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP ;
 import com.hp.hpl.jena.sparql.engine.http.Service ;
@@ -63,7 +57,6 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 public class TestAuth extends ServerTest {
 
     private static File realmFile;
-    private static SPARQLServer server;
 
     /**
      * Sets up the authentication for tests
@@ -82,16 +75,7 @@ public class TestAuth extends ServerTest {
         LogCtl.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
         LogCtl.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
 
-        DatasetGraph dsg = DatasetGraphFactory.createMem();
-        // This must agree with ServerTest
-        ServerConfig conf = ServerTest.make(dsg, true, true);
-        conf.port = ServerTest.port;
-        conf.pagesPort = ServerTest.port;
-        conf.authConfigFile = realmFile.getAbsolutePath();
-
-        server = new SPARQLServer(conf);
-        X_Config.configureDatasets(conf.datasets) ;
-        server.start();
+        ServerTest.setupServer(realmFile.getAbsolutePath());
     }
 
     /**
@@ -99,10 +83,7 @@ public class TestAuth extends ServerTest {
      */
     @AfterClass
     public static void teardown() {
-        server.stop();
-        Collection<String> keys = DatasetRegistry.get().keys() ;
-        for ( String k : keys )
-            DatasetRegistry.get().remove(k);
+        ServerTest.teardownServer(); 
         realmFile.delete();
     }
 

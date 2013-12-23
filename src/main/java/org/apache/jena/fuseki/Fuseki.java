@@ -187,44 +187,44 @@ public class Fuseki {
     private static Server       jettyServer ;
     private static Server       mgtJettyServer ;
 
-    /**
-     * set/specify the {@link org.apache.jena.fuseki.server.SPARQLServer}
-     * instance.
-     */
-    public static void setServer(SPARQLServer _server) {
-        server = _server ;
-    }
-
-    /** get the {@link org.apache.jena.fuseki.server.SPARQLServer} instance. */
-    public static SPARQLServer getServer() {
-        return server ;
-    }
-
-    /**
-     * set/specify the {@link org.apache.jena.fuseki.server.SPARQLServer}
-     * instance.
-     */
-    public static void setJettyServer(Server _server) {
-        jettyServer = _server ;
-    }
-
-    /** get the {@link org.apache.jena.fuseki.server.SPARQLServer} instance. */
-    public static Server getJettyServer() {
-        return jettyServer ;
-    }
-
-    /**
-     * set/specify the {@link org.apache.jena.fuseki.server.SPARQLServer}
-     * instance.
-     */
-    public static void setJettyMgtServer(Server _server) {
-        mgtJettyServer = _server ;
-    }
-
-    /** get the {@link org.apache.jena.fuseki.server.SPARQLServer} instance. */
-    public static Server getJettyMgtServer() {
-        return mgtJettyServer ;
-    }
+//    /**
+//     * set/specify the {@link SPARQLServer}
+//     * instance.
+//     */
+//    public static void setServer(SPARQLServer _server) {
+//        server = _server ;
+//    }
+//
+//    /** get the {@link SPARQLServer} instance. */
+//    public static SPARQLServer getServer() {
+//        return server ;
+//    }
+//
+//    /**
+//     * set/specify the {@link org.apache.jena.fuseki.server.SPARQLServer}
+//     * instance.
+//     */
+//    public static void setJettyServer(Server _server) {
+//        jettyServer = _server ;
+//    }
+//
+//    /** get the {@link org.apache.jena.fuseki.server.SPARQLServer} instance. */
+//    public static Server getJettyServer() {
+//        return jettyServer ;
+//    }
+//
+//    /**
+//     * set/specify the {@link org.apache.jena.fuseki.server.SPARQLServer}
+//     * instance.
+//     */
+//    public static void setJettyMgtServer(Server _server) {
+//        mgtJettyServer = _server ;
+//    }
+//
+//    /** get the {@link org.apache.jena.fuseki.server.SPARQLServer} instance. */
+//    public static Server getJettyMgtServer() {
+//        return mgtJettyServer ;
+//    }
 
     // Force a call to init.
     static {

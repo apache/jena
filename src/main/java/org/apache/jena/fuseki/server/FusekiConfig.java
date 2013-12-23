@@ -53,26 +53,16 @@ public class FusekiConfig {
         Fuseki.init() ;
     }
     
-    // MASSIVE AMOUNT OF CODE TIDYING NEEDED
-    // The datastructure that captures a servers configuration.
-
-    // Server port
-    int                   port ;
-    // Management command port - -1 for none.
-    int                   mgtPort ;
-    List<DatasetRef>      datasets = null ;
-
     private static Logger log      = Fuseki.configLog ;
 
-    public static List<DatasetRef> defaultConfiguration(String datasetPath, DatasetGraph dsg,
-                                                        boolean allowUpdate, boolean listenLocal) {
+    public static List<DatasetRef> defaultConfiguration(ServerInitialConfig params) {
         DatasetRef dbDesc = new DatasetRef() ;
-        dbDesc.name = DatasetRef.canocialDatasetPath(datasetPath) ;
-        dbDesc.dataset = dsg ;
+        dbDesc.name = DatasetRef.canocialDatasetPath(params.datasetPath) ;
+        dbDesc.dataset = params.dsg ;
         dbDesc.query.endpoints.add(HttpNames.ServiceQuery) ;
         dbDesc.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
 
-        if ( allowUpdate ) {
+        if ( params.allowUpdate ) {
             dbDesc.update.endpoints.add(HttpNames.ServiceUpdate) ;
             dbDesc.upload.endpoints.add(HttpNames.ServiceUpload) ;
             dbDesc.readWriteGraphStore.endpoints.add(HttpNames.ServiceData) ;
@@ -345,7 +335,7 @@ public class FusekiConfig {
             QuerySolution soln = rs.next() ;
             String epName = soln.getLiteral("ep").getLexicalForm() ;
             service.endpoints.add(epName) ;
-            log.info("  " + label + " = /" + name + "/" + epName) ;
+            log.info("  " + label + " = " + name + "/" + epName) ;
         }
     }
 

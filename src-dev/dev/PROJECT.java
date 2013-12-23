@@ -25,31 +25,26 @@ public class PROJECT {
     //   DEFs
     
     // Webapp-ization
-    //   Validators
+    //   Shiro - security.
+    //   Initialize in webapp. See FusekiCmd.exec
+    //   Need server wide configuration - ARQ context setting. 
+    //   ContextPath
+    //   Fuseki.configure/defaultConfiguration
+    
+    // 1/ have command line insert direct into the DatasetRegistry?
+    // 2/ 
+    
     
     // All TODO and XXX
     // Configuration and startup.
     // Change to using a real webapp.
     
-	// WebContent.ctXYZ for each WebContent.contentTypeXYZ
-
     // txn and nonTxn server set up for tests.
     
     // Enables, disable R/RW on SPARQL_UberServlet(renamed) and quads operations.
     // Need a switch on whether quadding is support and whether it's RW or not.
     
-    // Remove all direct naming (put in separate servlet if ever needed)  
-    //   last place : SPARQL_UberServlet
-    
     // Document (write/update) all protocol modes.
-    // TESTS
-    
-    // JENA-201 - WAR Fuseki.
-    //   WEB.xml
-    //   ContextPath in uber dispatch.
-    //   FusekiServletContextListener
-    
-    // SPARQLServer.start kicks FusekiServletContextListener which could then do the main initialization.
     
     // The whole X_Config thing
     // Check compression enabled for UberServlet

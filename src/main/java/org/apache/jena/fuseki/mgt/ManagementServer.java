@@ -20,54 +20,51 @@ package org.apache.jena.fuseki.mgt;
 
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
-import java.util.List ;
-
 import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.server.FusekiErrorHandler ;
+import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
-import org.eclipse.jetty.server.nio.SelectChannelConnector ;
+import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 
 public class ManagementServer
 {
-    /** Create but do not initialize */
-    public static Server createManagementServer(int mgtPort)
-    {
-        // Separate Jetty server
-        Server server = new Server() ;
-        
-//        BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;
-//        bcConnector.setUseDirectBuffers(false) ;
-//        Connector connector = bcConnector ;
-        
-        Connector connector = new SelectChannelConnector() ;
-        // Ignore idle time. 
-        // If set, then if this goes off, it keeps going off and you get a lot of log messages.
-        connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
-        connector.setPort(mgtPort);
-        server.addConnector(connector) ;
-        
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setErrorHandler(new FusekiErrorHandler()) ;
-        server.setHandler(context);
-        return server  ;
-    }
+    public static ServletContextHandler addManagementServer(SPARQLServer server, int port) {
+        Server jettyServer = server.getServer() ;
+        BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;
+        // bcConnector.setUseDirectBuffers(false) ;
 
+        Connector connector = bcConnector ;
+        connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
+
+        //if ( loopback )
+        if ( true )
+            connector.setHost("localhost");
+        connector.setPort(port) ;
+        // Some people do try very large operations ...
+        connector.setRequestHeaderSize(64 * 1024) ;
+        connector.setRequestBufferSize(5 * 1024 * 1024) ;
+        connector.setResponseBufferSize(5 * 1024 * 1024) ;
+        jettyServer.addConnector(connector);
+        ServletContextHandler context = new ServletContextHandler() ;
+        jettyServer.setHandler(context) ;
+        return context ; 
+    }
+    
     public static void addServerFunctions(ServletContextHandler context, String base) {
         Fuseki.serverLog.info("Adding server information functions") ;
         if ( !base.endsWith("/" ) )
             base = base + "/" ;
         if ( !base.startsWith("/"))
             throw new FusekiException("Base URI does not start with a '/'") ; 
-        // Dump request
-        addServlet(context, new DumpServlet(),         base+"dump") ;   // XXX Remove.?
-        addServlet(context, new ActionDescription(),   base+"status") ;
-        addServlet(context, new ActionPing(),          base+"ping") ;
+
+        addServlet(context, new DumpServlet(),         base+MgtConst.opDump) ;   // XXX Remove.?
+        addServlet(context, new ActionDescription(),   base+MgtConst.opStatus) ;
+        addServlet(context, new ActionPing(),          base+MgtConst.opPing) ;
     }
     
     public static void addAdminFunctions(ServletContextHandler context, String base) {
@@ -75,36 +72,17 @@ public class ManagementServer
         if ( !base.endsWith("/" ) )
             base = base + "/" ;
         if ( !base.startsWith("/"))
-            throw new FusekiException("Base URI does nto start with a '/'") ; 
-        addServlet(context, new MgtCmdServlet(),        base+"mgt") ;       // XXX Old - remove.
-        addServlet(context, new ActionStats(),          base+"stats/*") ;   // "/abc/*" covers ".../abc" as well.
-        addServlet(context, new ActionDatasets(),       base+"datasets/*") ;  
-    }
-
-    // SHARE
-    private static void addServlet(ServletContextHandler context, String datasetPath, HttpServlet servlet, List<String> pathSpecs)
-    {
-        for ( String pathSpec : pathSpecs )
-        {
-            if ( pathSpec.endsWith("/") )
-                pathSpec = pathSpec.substring(0, pathSpec.length()-1) ;
-            if ( pathSpec.startsWith("/") )
-                pathSpec = pathSpec.substring(1, pathSpec.length()) ;
-            addServlet(context, servlet, datasetPath+"/"+pathSpec) ;
-        }
-    }
-
-    private static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec)
-    {
-        ServletHolder holder = new ServletHolder(servlet) ;
-        addServlet(context, holder, pathSpec) ;
+            throw new FusekiException("Base URI does not start with a '/'") ; 
+        
+        addServlet(context, new ActionStats(),          base+MgtConst.opStats+"/*") ;   // "/abc/*" covers ".../abc" as well.
+        addServlet(context, new ActionDatasets(),       base+MgtConst.opDatasets+"/*") ;  
     }
     
-    private static void addServlet(ServletContextHandler context, ServletHolder holder, String pathSpec)
+    public static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec)
     {
+        ServletHolder holder = new ServletHolder(servlet) ;
         serverLog.debug("Add servlet @ "+pathSpec) ;
         context.addServlet(holder, pathSpec) ;
     }
-
 }
 

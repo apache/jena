@@ -16,14 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki ;
 
 import java.util.Collection ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.* ;
-import org.eclipse.jetty.servlet.ServletContextHandler ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -40,109 +38,109 @@ import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateExecutionFactory ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 
-/** Manage a server for testing.
- * Example for one server per test suite: 
+/**
+ * Manage a server for testing. Example for one server per test suite:
+ * 
  * <pre>
-    \@BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
-    \@AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
-    \@Before      public void beforeTest()         { ServerTest.resetServer() ; }
-    </pre>
+ *     \@BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
+ *     \@AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
+ *     \@Before      public void beforeTest()         { ServerTest.resetServer() ; }
+ * </pre>
  */
-public class ServerTest
-{
+public class ServerTest {
     // Abstraction that runs a SPARQL server for tests.
-    
-    public static final int port             = 3535 ;
-    public static final String urlRoot       = "http://localhost:"+port+"/" ;
-    public static final String datasetPath   = "/dataset" ;
-    public static final String urlDataset    = "http://localhost:"+port+datasetPath ;
-    public static final String serviceUpdate = urlDataset+"/update" ; 
-    public static final String serviceQuery  = urlDataset+"/query" ; 
-    public static final String serviceREST   = urlDataset+"/data" ;
-    
-    public static final String gn1       = "http://graph/1" ;
-    public static final String gn2       = "http://graph/2" ;
-    public static final String gn99      = "http://graph/99" ;
-    
-    public static final Node n1          = NodeFactory.createURI("http://graph/1") ;
-    public static final Node n2          = NodeFactory.createURI("http://graph/2") ;
-    public static final Node n99         = NodeFactory.createURI("http://graph/99") ;
-    
-    public static final Graph graph1     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))") ;
-    public static final Graph graph2     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))") ;
-    
-    public static final Model model1     = ModelFactory.createModelForGraph(graph1) ;
-    public static final Model model2     = ModelFactory.createModelForGraph(graph2) ;
-    
-    private static SPARQLServer server = null ;
-    
-    // reference count of start/stop server
-    private static int countServer = 0 ; 
-    
-    // This will cause there to be one server over all tests.
-    // Must be after initialization of counters 
-    //static { allocServer() ; }
 
-    static public void allocServer()
-    {
+    public static final int     port          = 3535 ;
+    public static final String  urlRoot       = "http://localhost:" + port + "/" ;
+    public static final String  datasetPath   = "/dataset" ;
+    public static final String  urlDataset    = "http://localhost:" + port + datasetPath ;
+    public static final String  serviceUpdate = urlDataset + "/update" ;
+    public static final String  serviceQuery  = urlDataset + "/query" ;
+    public static final String  serviceREST   = urlDataset + "/data" ;
+
+    public static final String  gn1           = "http://graph/1" ;
+    public static final String  gn2           = "http://graph/2" ;
+    public static final String  gn99          = "http://graph/99" ;
+
+    public static final Node    n1            = NodeFactory.createURI("http://graph/1") ;
+    public static final Node    n2            = NodeFactory.createURI("http://graph/2") ;
+    public static final Node    n99           = NodeFactory.createURI("http://graph/99") ;
+
+    public static final Graph   graph1        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))") ;
+    public static final Graph   graph2        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))") ;
+
+    public static final Model   model1        = ModelFactory.createModelForGraph(graph1) ;
+    public static final Model   model2        = ModelFactory.createModelForGraph(graph2) ;
+
+    private static SPARQLServer server        = null ;
+
+    // reference count of start/stop server
+    private static int          countServer   = 0 ;
+
+    // This will cause there to be one server over all tests.
+    // Must be after initialization of counters
+    // static { allocServer() ; }
+
+    static public void allocServer() {
         if ( countServer == 0 )
             setupServer() ;
         countServer++ ;
     }
-    
-    static public void freeServer() 
-    {
+
+    static public void freeServer() {
         if ( countServer >= 0 ) {
-            countServer -- ;
+            countServer-- ;
             if ( countServer == 0 )
                 teardownServer() ;
         }
     }
-    
-    protected static void setupServer()
-    {
-        SystemState.location = Location.mem() ;
-        SystemState.init$() ;
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        // This must agree with ServerTest
-        ServerConfig config = make(dsg, true, true) ;
-        server = new SPARQLServer(config) ;
-        X_Config.configureDatasets(config.datasets) ;
-        
-        ServletContextHandler context = (ServletContextHandler)server.getServer().getHandler() ;
-        ManagementServer.addServerFunctions(context, "/$/") ;
-        ManagementServer.addAdminFunctions(context, "/$/") ;
-        
-        server.start() ;
+
+    protected static void setupServer() {
+        setupServer(null) ;
     }
     
-    public static ServerConfig make(DatasetGraph dsg, boolean allowUpdate, boolean listenLocal) {
+    protected static void setupServer(String authConfigFile) {
+        SystemState.location = Location.mem() ;
+        SystemState.init$() ;
+        
+        ServerInitialConfig params = new ServerInitialConfig() ;
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        params.dsg = dsg ;
+        params.datasetPath = ServerTest.datasetPath ;
+        params.allowUpdate = true ;
+        FusekiServletContextListener.initialSetup = params ;
+        
+        ServerConfig config = make(true, true) ;
+        config.authConfigFile = authConfigFile ;
+        server = new SPARQLServer(config) ;
+        server.start() ;
+    }
+
+    public static ServerConfig make(boolean allowUpdate, boolean listenLocal) {
         ServerConfig config = new ServerConfig() ;
         // Avoid any persistent record.
-        config.datasets = FusekiConfig.defaultConfiguration(ServerTest.datasetPath, dsg, allowUpdate, listenLocal) ;
         config.port = ServerTest.port ;
         config.mgtPort = ServerTest.port ;
         config.pagesPort = ServerTest.port ;
-        config.loopback = false ;
+        config.loopback = listenLocal ;
         config.jettyConfigFile = null ;
         config.pages = Fuseki.PagesStatic ;
         config.enableCompression = true ;
         config.verboseLogging = false ;
         return config ;
     }
-    
+
     protected static void teardownServer() {
         if ( server != null )
             server.stop() ;
         server = null ;
         // Clear out the registry.
         Collection<String> keys = Iter.toList(DatasetRegistry.get().keys()) ;
-        for ( String k : keys )
-            DatasetRegistry.get().remove(k);
+        for (String k : keys)
+            DatasetRegistry.get().remove(k) ;
     }
-    
-    public static void resetServer()
-    {
+
+    public static void resetServer() {
         Update clearRequest = new UpdateDrop(Target.ALL) ;
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, ServerTest.serviceUpdate) ;
         proc.execute() ;
