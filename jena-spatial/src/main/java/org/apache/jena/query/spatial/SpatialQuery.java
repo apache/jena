@@ -18,26 +18,18 @@
 
 package org.apache.jena.query.spatial;
 
-import org.apache.jena.query.spatial.assembler.SpatialAssembler;
-import org.apache.jena.query.spatial.pfunction.library.EastPF;
-import org.apache.jena.query.spatial.pfunction.library.IntersectsBoxPF;
-import org.apache.jena.query.spatial.pfunction.library.IsNearByPF;
-import org.apache.jena.query.spatial.pfunction.library.IsWithinBoxPF;
-import org.apache.jena.query.spatial.pfunction.library.IsWithinCirclePF;
-import org.apache.jena.query.spatial.pfunction.library.NorthPF;
-import org.apache.jena.query.spatial.pfunction.library.SouthPF;
-import org.apache.jena.query.spatial.pfunction.library.WestPF;
+import org.apache.jena.query.spatial.assembler.SpatialAssembler ;
+import org.apache.jena.query.spatial.pfunction.library.* ;
 
-import com.hp.hpl.jena.sparql.SystemARQ;
-import com.hp.hpl.jena.sparql.lib.Metadata;
-import com.hp.hpl.jena.sparql.mgt.ARQMgt;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
-import com.hp.hpl.jena.sparql.util.Symbol;
-import com.hp.hpl.jena.tdb.TDB;
-import com.spatial4j.core.context.SpatialContext;
+import com.hp.hpl.jena.sparql.SystemARQ ;
+import com.hp.hpl.jena.sparql.lib.Metadata ;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.spatial4j.core.context.SpatialContext ;
 
 public class SpatialQuery
 {
@@ -72,8 +64,7 @@ public class SpatialQuery
             TDB.init() ;
             SpatialAssembler.init() ;
             
-            SystemInfo sysInfo = new SystemInfo(IRI, VERSION, BUILD_DATE) ;
-            ARQMgt.register(PATH+".system:type=SystemInfo", sysInfo) ;
+            SystemInfo sysInfo = new SystemInfo(IRI, PATH, VERSION, BUILD_DATE) ;
             SystemARQ.registerSubSystem(sysInfo) ;
             
             PropertyFunctionRegistry.get().put("http://jena.apache.org/spatial#withinCircle", new PropertyFunctionFactory() {

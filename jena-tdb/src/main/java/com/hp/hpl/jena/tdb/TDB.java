@@ -38,7 +38,6 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappingRegistry ;
@@ -255,10 +254,7 @@ public class TDB {
 
     private static void initialization2() {
         // Set management information.
-        // Needs ARQ > 2.8.0
-        String NS = TDB.PATH ;
-        SystemInfo systemInfo = new SystemInfo(TDB.tdbIRI, TDB.VERSION, TDB.BUILD_DATE) ;
-        ARQMgt.register(NS + ".system:type=SystemInfo", systemInfo) ;
+        SystemInfo systemInfo = new SystemInfo(TDB.tdbIRI, TDB.PATH, TDB.VERSION, TDB.BUILD_DATE) ;
         SystemARQ.registerSubSystem(systemInfo) ;
     }
 
