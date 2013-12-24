@@ -188,7 +188,6 @@ public class TestTransformFilters extends AbstractTestTransform
              (String[])null);
     }
 
-    // Related to JENA-432
     @Test public void optionalEqualitySubQuery_01() {
         // Presence of ?test in the projection blocks the rewrite.
         // (this is actually over cautious).
@@ -202,15 +201,14 @@ public class TestTransformFilters extends AbstractTestTransform
         
         String ops = StrUtils.strjoinNL
             ("(sequence"
-            ,"   (filter (= ?test <http://localhost/t1>)"
-            ,"     (bgp (triple ?test ?p1 ?X)))"
+            ,"   (assign ((?test <http://localhost/t1>))"
+            ,"     (bgp (triple <http://localhost/t1> ?p1 ?X)))"
             ,"   (project (?s1 ?test)"
             ,"     (bgp (triple ?test ?/p2 ?/o2))))"
             ) ;
         TestOptimizer.check(qs, ops) ;
     }
     
-    // Related to JENA-432
     @Test public void optionalEqualitySubQuery_02() {
         String qs = StrUtils.strjoinNL
             ( "SELECT *"
@@ -219,13 +217,24 @@ public class TestTransformFilters extends AbstractTestTransform
             , "    FILTER ( ?test = <http://localhost/t1> )"
             , "    { SELECT ?s1 { ?test ?p2 ?o2 } }"
             , "}") ;
+        // JENA-616
+        // Answer if FILTER equality done only after filter placement. 
         String ops = StrUtils.strjoinNL
-            ( "  (assign ((?test <http://localhost/t1>))"
-            , "    (sequence"
-            , "       (bgp (triple <http://localhost/t1> ?p1 ?X))"
-            , "       (project (?s1)"
-            , "         (bgp (triple ?/test ?/p2 ?/o2))) ))"
+            ( "(sequence"
+            , "  (assign ((?test <http://localhost/t1>))"
+            , "     (bgp (triple <http://localhost/t1> ?p1 ?X)))"
+            , "  (project (?s1)"
+            , "     (bgp (triple ?/test ?/p2 ?/o2))) )"
             ) ;
+        // Answer if FILTER equality done only before filter placement
+        // (and possibly after as well).
+//        String ops = StrUtils.strjoinNL
+//            ( "(assign ((?test <http://localhost/t1>))"
+//            , "  (sequence"
+//            , "    (bgp (triple <http://localhost/t1> ?p1 ?X))"
+//            , "    (project (?s1)"
+//            , "      (bgp (triple ?/test ?/p2 ?/o2)) )))"
+//            ) ;
         
         TestOptimizer.check(qs, ops) ;
     }
@@ -286,6 +295,7 @@ public class TestTransformFilters extends AbstractTestTransform
 
     // JENA-294 part II
     @Test public void optionalEqualityScope_02() {
+        // Safe to transform:  ?x is fixed.
         String qs = StrUtils.strjoinNL
             ( "PREFIX : <http://example/> SELECT * {"
               , "    ?x :p ?o2"
@@ -293,14 +303,24 @@ public class TestTransformFilters extends AbstractTestTransform
               , "    FILTER(?x = :x)"
               , "}"
                 ) ;
-        // Safe to transform:  ?x is fixed. 
+        // JENA-616
+        // Answer if FILTER equality optimization done only after FILTER placement.
         String ops = StrUtils.strjoinNL
-            ( "(assign ((?x <http://example/x>))"
-            , "   (conditional"
-            , "     (bgp (triple <http://example/x> <http://example/p> ?o2))"
-            , "     (bgp (triple <http://example/x> <http://example/q> ?o))"
-            , "   ))"
+            ( "(conditional"
+            , "  (assign ((?x <http://example/x>))"
+            , "     (bgp (triple <http://example/x> <http://example/p> ?o2)))"
+            , "  (bgp (triple ?x <http://example/q> ?o))"
+            , "  )"
             ) ;
+        // Answer if FILTER equality optimization done before FILTER placement
+        // (and possible afterwards as well).
+//        String ops = StrUtils.strjoinNL
+//            ( "(assign ((?x <http://example/x>))"
+//            , "  (conditional"
+//            , "    (bgp (triple <http://example/x> <http://example/p> ?o2))"
+//            , "    (bgp (triple <http://example/x> <http://example/q> ?o))"
+//            , "  ))"
+//            ) ;
         TestOptimizer.check(qs, ops) ;
     }
     
