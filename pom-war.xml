@@ -19,11 +19,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
-  <artifactId>jena-fuseki2</artifactId>
-  <packaging>jar</packaging>
+  <artifactId>jena-fuseki-webapp</artifactId>
+  <packaging>war</packaging>
   <name>Apache Jena - Fuseki (SPARQL 1.1 Server)</name>
-  <version>1.0.1-SNAPSHOT</version>
-  <description>Fuseki is a SPARQL 1.1 Server which provides query, update and graph store protocol endpoints that can be used to expose triple store(s) over HTTP</description>
+  <version>0.0.0-SNAPSHOT</version>
+  <description>Fuseki packages as a WAR file.</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
@@ -58,31 +58,18 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-fuseki</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-fuseki</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-fuseki</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.10.2-SNAPSHOT/jena-fuseki</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.10.2-SNAPSHOT/jena-fuseki</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.10.2-SNAPSHOT/jena-fuseki</url>
   </scm>
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <!-- and the classifier is added using the id -->
-    <!--
-    <server.jar.name>fuseki-server-${project.version}</server.jar.name>
-    -->
-    <server.jar.name>${this.root}-server</server.jar.name>
-    <assembly.name>${this.root}</assembly.name>
-    <assembly.soh.name>${this.root}</assembly.soh.name>
-    <assembly.zip.name>${this.root}</assembly.zip.name>
-
-    <!-- Switch to webapp deployment first -->
-    <!--<ver.jetty>9.1.0.v20131115</ver.jetty>-->
+    <ver.fuseki>1.0.1-SNAPSHOT</ver.fuseki>
     <ver.jetty>8.1.11.v20130520</ver.jetty>
-
-    <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
@@ -109,15 +96,6 @@
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
 
-    <!--
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>sdb</artifactId>
-      <version>${ver.sdb}</version>
-      <optional>true</optional>
-    </dependency>
-    -->
-
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
@@ -134,7 +112,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-      <version>${ver.junit}</version>
+      <version>4.11</version>
     </dependency>
 
     <dependency>
@@ -153,7 +131,7 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>${ver.commons-fileupload}</version>
+      <version>1.2.2</version>
     </dependency>
 
     <dependency>
@@ -211,30 +189,18 @@
         </exclusion>
       </exclusions> 
     </dependency>
+
+
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <filtering>false</filtering>
-        <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>org/apache/jena/fuseki/fuseki-properties.xml</exclude>
-        </excludes>
-      </resource>
-      <resource>
-        <filtering>true</filtering>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>org/apache/jena/fuseki/fuseki-properties.xml</include>
-        </includes>
-      </resource>
-    </resources>
-    
+    <finalName>apache-jena-fuseki</finalName>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
         <configuration>
           <encoding>UTF-8</encoding>
           <optimize>true</optimize>
@@ -247,48 +213,14 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-         <executions> 
-          <execution>
-            <id>attach-sources</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <version>true</version>
-          <show>public</show>
-          <quiet>true</quiet>
-          <encoding>UTF-8</encoding>
-          <windowtitle>Apache Jena Fuseki</windowtitle>
-          <doctitle>Apache Jena Fuseki ${project.version}</doctitle>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
-        </configuration>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
+	<version>2.4</version>
       </plugin>
-
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.9</version>
         <configuration>
           <includes>
             <include>**/TS_*.java</include>
@@ -306,88 +238,44 @@
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-shade-plugin</artifactId>
-	<version>2.1</version>
-	<configuration>
-	  <shadedArtifactAttached>true</shadedArtifactAttached>
-	  <shadedClassifierName>server</shadedClassifierName>
-	  <transformers>
-	    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-	      <mainClass>org.apache.jena.fuseki.FusekiCmd</mainClass>
-	    </transformer>
-	    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-	    <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
-	    <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
-	      <addHeader>false</addHeader>
-	    </transformer>
-	  </transformers>
-	  <filters>
-	    <filter>
-	      <artifact>*:*</artifact>
-	      <excludes>
-		<!-- Some jars are signed but shading breaks that.
-		     Don't include signing files.
-		-->
-		<exclude>META-INF/*.SF</exclude>
-		<exclude>META-INF/*.DSA</exclude>
-		<exclude>META-INF/*.RSA</exclude>
-	      </excludes>
-	    </filter>
-	  </filters>
-	</configuration>
-	<executions>
-	  <execution>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>shade</goal>
-	    </goals>
-	  </execution>
-	</executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-	<!-- After shared jar - same phase -->
-        <executions>
-	  <!--
-          <execution>
-            <id>create-soh-assembly</id>
-            <phase>package</phase>
-            <goals><goal>single</goal></goals>
-            <configuration>
-              <finalName>${assembly.soh.name}</finalName>
-              <!- -<appendAssemblyId>false</appendAssemblyId> - ->
-              <descriptors>
-                <descriptor>assembly-soh.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-          -->
-
-          <execution>
-            <id>create-zip-assembly</id>
-            <phase>package</phase>
-            <goals><goal>single</goal></goals>
-            <configuration>
-              <!--
-              <finalName>${assembly.zip.name}</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
-              -->
-              <descriptors>
-                <descriptor>assembly-dist.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-war-plugin</artifactId>
+	<version>2.4</version>
+	<configuration>
+	  <webXml>war-web.xml</webXml>
+	  <!--
+	    When using the Fuseki build of a standalone server,
+	    miss out the embedded jetty server, and the servlet API
+	    jar (2 names possible).
+	    Later - refactor the Fuseki build.
+	  -->
+	  <packagingExcludes>WEB-INF/lib/servlet-api*.jar,WEB-INF/lib/javax.servlet*.jar,WEB-INF/lib/jetty-*.jar</packagingExcludes>
+	</configuration>
+
+      </plugin>
+
+      <!-- Run the application using "mvn jetty:run" -->
+      <!-- org.eclipse at v9 -->
+      <plugin>
+	<groupId>org.mortbay.jetty</groupId>
+	<artifactId>jetty-maven-plugin</artifactId>
+	<version>${ver.jetty}</version>
+	<!--
+	<configuration>
+	  <webApp>
+	    <contextPath>/FUSEKI</contextPath>
+	  </webApp>
+	</configuration>
+	-->
       </plugin>
 
     </plugins>

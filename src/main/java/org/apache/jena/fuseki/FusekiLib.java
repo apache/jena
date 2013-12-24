@@ -22,7 +22,6 @@ import java.util.Iterator ;
 
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.commons.lang.StringUtils ;
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.MultiMapToList ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -121,11 +120,11 @@ public class FusekiLib {
     
     public static String safeParameter(HttpServletRequest request, String pName) {
         String value = request.getParameter(pName) ;
-        value = StringUtils.replaceChars(value, "\r", "") ;
-        value = StringUtils.replaceChars(value, "\n", "") ;
+        value = value.replace("\r", "") ;
+        value = value.replace("\n", "") ;
         return value ;
     }
-
+    
     // Do the addition directly on the dataset
     public static void addDataInto(Graph data, DatasetGraph dsg, Node graphName) {
         // Prefixes?

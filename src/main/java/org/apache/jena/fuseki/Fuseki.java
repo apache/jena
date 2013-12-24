@@ -30,27 +30,12 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
-/**
- * <p>
- * The main class enabling us to:
- * </p>
- * <ol>
- * <li>create instances of a Fuseki server e.g. the ARQ, RIOT and TDB server
- * stack</li>
- * <li>get server global {@link com.hp.hpl.jena.sparql.util.Context} e.g. named
- * values used to pass implementation-specific parameters across general
- * interfaces.</li>
- * <li>get the {@link org.apache.jena.fuseki.server.SPARQLServer} instance.</li>
- * <li>set the {@link org.apache.jena.fuseki.server.SPARQLServer} instance.</li>
- * 
- */
 public class Fuseki {
     /** Path to ??? */
     static public String    PATH                         = "org.apache.jena.fuseki" ;
@@ -160,8 +145,7 @@ public class Fuseki {
             return ;
         initialized = true ;
         ARQ.init() ;
-        SystemInfo sysInfo = new SystemInfo(FusekiIRI, VERSION, BUILD_DATE) ;
-        ARQMgt.register(PATH + ".system:type=SystemInfo", sysInfo) ;
+        SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;
         SystemARQ.registerSubSystem(sysInfo) ;
         RIOT.init() ;
         TDB.init() ;

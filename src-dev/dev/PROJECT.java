@@ -26,7 +26,6 @@ public class PROJECT {
     
     // Webapp-ization
     //   Shiro - security.
-    //   Initialize in webapp. See FusekiCmd.exec
     //   Need server wide configuration - ARQ context setting. 
     //   ContextPath
     //   Fuseki.configure/defaultConfiguration
@@ -48,7 +47,5 @@ public class PROJECT {
     
     // The whole X_Config thing
     // Check compression enabled for UberServlet
-    
-    // http://localhost:3030/$/optimize
 }
 

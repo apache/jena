@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.apache.jena.atlas.lib.Lib.equal ;
+import static org.apache.jena.riot.WebContent.* ;
 
 import java.io.IOException ;
 import java.util.HashMap ;
@@ -29,13 +30,11 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.commons.lang.StringUtils ;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
-import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -211,8 +210,8 @@ public class ResponseResultSet
 
             if ( callback != null )
             {
-                callback = StringUtils.replaceChars(callback, "\r", "") ;
-                callback = StringUtils.replaceChars(callback, "\n", "") ;
+                callback = callback.replace("\r", "") ;
+                callback = callback.replace("\n", "") ;
                 out.print(callback) ;
                 out.println("(") ;
             }

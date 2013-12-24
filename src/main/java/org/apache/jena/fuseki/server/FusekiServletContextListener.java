@@ -66,6 +66,11 @@ public class FusekiServletContextListener implements ServletContextListener {
             initialized = true ;
             Fuseki.init() ;
 
+            if ( initialSetup == null ) {
+                initialSetup = new ServerInitialConfig() ;
+                initialSetup.fusekiConfigFile = "config.ttl" ;
+            }
+            
             if ( initialSetup != null ) {
                 List<DatasetRef> datasets = findDatasets(initialSetup) ;
                 List<DatasetRef> additionalDatasets = FusekiConfig.additional() ;
