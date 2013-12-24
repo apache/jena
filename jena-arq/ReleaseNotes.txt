@@ -6,6 +6,9 @@ ChangeLog for ARQ
 
 RDF 1.1 Language support (Turtle, TriG, N-Triples, N-Quads)
 
++ JENA-595 : Improved filter placement optimization.
+  See also JENA-293, JENA-383, JENA-432, JENA-616
+
 + JENA-606 : URIs for prefixes are resolved (made absolute) before adding
              to a models prefix mapping. Previously, they were left as
              relative, ifrelative URis in the document.

@@ -173,11 +173,11 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optImplicitLeftJoin) )
             op = apply("Implicit Left Join", new TransformImplicitLeftJoin(), op);
         
-        if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
-        {
-            //boolean termStrings = context.isDefined(ARQ.optTermStrings) ;
-            op = apply("Filter Equality", new TransformFilterEquality(), op) ;
-        }
+        // Replace suitable FILTER(?x = TERM) with (assign) and write the TERM for ?x in the pattern. 
+        // This is also applied a second time after FILTER placement.
+        // This application maximises the scope of the (assign).  See JENA-616.
+//        if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
+//            op = apply("Filter Equality", new TransformFilterEquality(), op) ;
         
         // Can promote table empty at this point since only the implicit join optimizations 
         // are currently capable of introducing it
@@ -216,10 +216,16 @@ public class Optimize implements Rewrite
         // of a filter in a (sequence) from each half of a (join).  This is harmless,
         // because filters are generally cheap, but it looks a bit bad.
         if ( context.isTrueOrUndef(ARQ.optFilterPlacement) ) {
-            // Wether to push into BGPs 
+            // Whether to push into BGPs 
             boolean b = context.isTrueOrUndef(ARQ.optFilterPlacementBGP) ;
             op = apply("Filter Placement", new TransformFilterPlacement(b), op) ;
         }
+
+        // Replace suitable FILTER(?x = TERM) with (assign) and write the TERm for ?x in the pattern.    
+        // Apply (possible a second time) after FILTER placement as it can create new possibilities.
+        // See JENA-616.
+        if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
+            op = apply("Filter Equality", new TransformFilterEquality(), op) ;
 
         // Merge adjacent BGPs
         if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
