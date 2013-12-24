@@ -32,7 +32,6 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappingRegistry ;
@@ -173,9 +172,7 @@ public class SDB
 
     private static void initlization2()
     { 
-        String NS = SDB.PATH ;
-        SystemInfo systemInfo = new SystemInfo(SDB.sdbIRI, SDB.VERSION, SDB.BUILD_DATE) ;
-        ARQMgt.register(NS+".system:type=SystemInfo", systemInfo) ;
+        SystemInfo systemInfo = new SystemInfo(SDB.sdbIRI, SDB.PATH, SDB.VERSION, SDB.BUILD_DATE) ;
         SystemARQ.registerSubSystem(systemInfo) ;
     }
 }

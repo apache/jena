@@ -22,7 +22,6 @@ import org.apache.jena.query.text.assembler.TextAssembler ;
 
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory ;
@@ -58,8 +57,7 @@ public class TextQuery
             TDB.init() ;
             TextAssembler.init() ;
             
-            SystemInfo sysInfo = new SystemInfo(IRI, VERSION, BUILD_DATE) ;
-            ARQMgt.register(PATH+".system:type=SystemInfo", sysInfo) ;
+            SystemInfo sysInfo = new SystemInfo(IRI, PATH, VERSION, BUILD_DATE) ;
             SystemARQ.registerSubSystem(sysInfo) ;
             
             PropertyFunctionRegistry.get().put("http://jena.apache.org/text#query", new PropertyFunctionFactory() {

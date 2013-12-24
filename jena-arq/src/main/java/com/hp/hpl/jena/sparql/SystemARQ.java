@@ -33,6 +33,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.reasoner.InfGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.graph.GraphWrapper ;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
 public class SystemARQ
@@ -114,6 +115,7 @@ public class SystemARQ
     private static List<SystemInfo> versions = new ArrayList<SystemInfo>() ;
     public static void registerSubSystem(SystemInfo systemInfo)
     {
+        ARQMgt.register(systemInfo.getJmxPath()+".system:type=SystemInfo", systemInfo) ;
         versions.add(systemInfo) ;
     }
     
