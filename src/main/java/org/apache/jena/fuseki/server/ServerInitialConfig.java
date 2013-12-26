@@ -22,8 +22,9 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** Dataset setup (command line, config file) for a dataset (or several if config file) */
 public class ServerInitialConfig {
+    // Either dsg/datasetPath are null or fusekiConfigFile is null.
     public DatasetGraph dsg               = null ;
-    public String       datasetPath       = null ;
+    public String datasetPath             = null ;
     public boolean      allowUpdate       = false ;
     public String       fusekiConfigFile  = null ;
 }

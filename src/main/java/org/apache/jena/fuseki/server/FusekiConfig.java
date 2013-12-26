@@ -18,11 +18,16 @@
 
 package org.apache.jena.fuseki.server ;
 
+import static java.lang.String.format ;
+import static org.apache.jena.fuseki.Fuseki.serverLog ;
+
 import java.io.File ;
+import java.io.FileFilter ;
 import java.io.FilenameFilter ;
 import java.lang.reflect.Method ;
 import java.util.ArrayList ;
 import java.util.Arrays ;
+import java.util.Collections ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
@@ -30,6 +35,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
@@ -41,6 +47,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -55,7 +62,52 @@ public class FusekiConfig {
     
     private static Logger log      = Fuseki.configLog ;
 
+    private static FileFilter visibleFilesX = null ; 
+        
+    private static FilenameFilter visibleFiles = 
+        new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                if ( name.startsWith(".") )
+                    return false ;
+                File f = new File(dir, name) ;
+                return f.isFile() ;
+            }
+        } ;
+
+    // ---- DatasetRef used where there isn't a real Dataset e.g. the SPARQL processor.
+    
+    private static DatasetRef   noDataset = new DatasetRef() ;
+
+    private static DatasetGraph dummyDSG  = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
+    static {
+        noDataset.name = "" ;
+        noDataset.dataset = dummyDSG ;
+        noDataset.query.endpoints.add(HttpNames.ServiceQuery) ;
+        noDataset.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
+        noDataset.allowDatasetUpdate = false ;
+        noDataset.activate() ;
+        // Don't register it.
+        // This is used as a placeholder and shoudl not be found by
+        // "all datasets"
+        // DatasetRegistry.get().put("", noDataset) ;
+    }
+
+    // ---- DatasetRef used where there isn't a real Dataset e.g. the SPARQL processor.
+    
+    /**
+     * Return the DatasetRef (read-only) for when there is no dataset, just a
+     * SPARQL Query processor
+     */
+    public static DatasetRef serviceOnlyDatasetRef() {
+        return noDataset ;
+    }
+
+    /** Setup the server configuration based on ServerInitialConfig (from command line) */ 
     public static List<DatasetRef> defaultConfiguration(ServerInitialConfig params) {
+        if ( params.fusekiConfigFile != null )
+            log.warn("Configuration file found while processing command line dataset configuration") ;
+        
         DatasetRef dbDesc = new DatasetRef() ;
         dbDesc.name = DatasetRef.canocialDatasetPath(params.datasetPath) ;
         dbDesc.dataset = params.dsg ;
@@ -72,18 +124,60 @@ public class FusekiConfig {
         return Arrays.asList(dbDesc) ; 
     }
 
-    // NEW
-    public static final String configurationsDirectory = "configure" ;
-    public static final String fusekiService = "http://jena.apache.org/fuseki#Service" ;
-    private static FilenameFilter visibleFiles = 
-        new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return ! name.startsWith(".") ;
-            }
-        } ;
+//    /** Read one of more dataset descriptions in a model */
+//    public static List<DatasetRef> readConfiguration(Model m) {
+//        additionalRDF(m) ;
+//        List<Resource> services = getByType(FusekiVocab.fusekiService, m) ; 
+//            
+//        if ( services.size() == 0 ) {
+//            log.error("No services found") ;
+//            throw new FusekiConfigException() ;
+//        }
+//        
+//        // Remove?
+//        if ( services.size() > 1 ) {
+//            log.error("Multiple services found") ;
+//            throw new FusekiConfigException() ;
+//        }
+//        
+//        List<DatasetRef> refs = new ArrayList<DatasetRef>() ;
+//        
+//        Resource service = services.get(0) ;
+//        String name = ((Literal)getOne(service, "fuseki:name")).getLexicalForm() ;
+//        log.info("name = "+name); 
+//        DatasetRef dsDesc = processService(service) ;
+//        String datasetPath = dsDesc.name ;
+//        refs.add(dsDesc) ;
+//        return refs ;
+//    }
     
-    public static List<DatasetRef> additional() {
+    /** Has side effects in server setup */
+    public static List<DatasetRef> readConfigFile(String filename) {
+        // Old-style config file.
+        Model model = FileManager.get().loadModel(filename) ;
+        additionalRDF(model) ;
+        server(model) ;
+        return servicesAndDatasets(model) ;
+    }
+
+    public static List<DatasetRef> readConfigurationDirectory(String dir) {
+        List<DatasetRef> datasets = new ArrayList<DatasetRef>() ;
+        File d = new File(dir) ;
+        String[] aFiles = d.list(visibleFiles) ;
+        if ( aFiles == null ) {
+            log.warn("Not found: directory for assembler files for services: '"+dir+"'") ;
+            return Collections.emptyList() ;
+        }
+        for ( String assemFile : aFiles ) {
+            Model m = RDFDataMgr.loadModel(assemFile) ;
+            // Same code as ActionDatasets
+        }
+        
+        return datasets ;
+    }
+        
+        
+    public static List<DatasetRef> readSystemDatabase(Dataset ds) {
         String qs = StrUtils.strjoinNL
             (SystemState.PREFIXES ,
              "SELECT * {" ,
@@ -96,7 +190,6 @@ public class FusekiConfig {
         
         List<DatasetRef> refs = new ArrayList<DatasetRef>() ;
         
-        Dataset ds = SystemState.getDataset() ;
         ResultSet rs = query(qs, ds) ;
         
 //        ResultSetFormatter.out(rs); 
@@ -119,65 +212,7 @@ public class FusekiConfig {
         return refs ;
     }
     
-    public static List<DatasetRef> readConfiguration(Model m) {
-        additionalRDF(m) ;
-        Resource t = m.createResource(fusekiService) ;
-        List<Resource> services = getByType(t, m) ; 
-            
-        if ( services.size() == 0 ) {
-            log.error("No services found") ;
-            throw new FusekiConfigException() ;
-        }
-        
-        // Remove?
-        if ( services.size() > 1 ) {
-            log.error("Multiple services found") ;
-            throw new FusekiConfigException() ;
-        }
-        
-        List<DatasetRef> refs = new ArrayList<DatasetRef>() ;
-        
-        Resource service = services.get(0) ;
-        String name = ((Literal)getOne(service, "fuseki:name")).getLexicalForm() ;
-        log.info("name = "+name); 
-        DatasetRef dsDesc = FusekiConfig.processService(service) ;
-        String datasetPath = dsDesc.name ;
-        refs.add(dsDesc) ;
-        return refs ;
-    }
-    
-    private static Model additionalRDF(Model m ) {
-        String x1 = StrUtils.strjoinNL
-            ( SystemState.PREFIXES, 
-              "INSERT                    { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' }",
-              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' } }"
-             ) ;
-        String x2 = StrUtils.strjoinNL
-            (SystemState.PREFIXES,
-             "INSERT DATA {",
-             "   tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .",
-             "   tdb:GraphTDB    rdfs:subClassOf  ja:Model .",
-             "}" 
-             ) ;
-        execute(m, x1) ;
-        execute(m, x2) ;
-        return m ;
-        
-    }
-    
-    private static void execute(Model m, String x) {
-        UpdateRequest req = UpdateFactory.create(x) ;
-        UpdateAction.execute(req, m);
-    }
-    
-    // OLD
-    
-    /** Has side effects in server setup */
-    public static List<DatasetRef> configure(String filename) {
-        Model model = FileManager.get().loadModel(filename) ;
-        server(model) ;
-        return servicesAndDatasets(model) ;
-    }
+    // ---- Old style config file processing
     
     private static void server(Model model) {
         // Find one server.
@@ -195,6 +230,7 @@ public class FusekiConfig {
     }
     
     private static List<DatasetRef> servicesAndDatasets(Model model) {
+        // Old style configuration file : server to services.
         // ---- Services
         ResultSet rs = query("SELECT * { ?s fu:services [ list:member ?member ] }", model) ;
         if ( !rs.hasNext() )
@@ -209,32 +245,6 @@ public class FusekiConfig {
             services.add(sd) ;
         }
         return services ;
-    }
-
-    // DatasetRef used where there isn't a real Dataset e.g. the SPARQL
-    // processor.
-
-    private static DatasetRef   noDataset = new DatasetRef() ;
-    private static DatasetGraph dummyDSG  = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
-    static {
-        noDataset.name = "" ;
-        noDataset.dataset = dummyDSG ;
-        noDataset.query.endpoints.add(HttpNames.ServiceQuery) ;
-        noDataset.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
-        noDataset.allowDatasetUpdate = false ;
-        noDataset.activate() ;
-        // Don't register it.
-        // This is used as a placeholder and shoudl not be found by
-        // "all datasets"
-        // DatasetRegistry.get().put("", noDataset) ;
-    }
-
-    /**
-     * Return the DatasetRef (read-only) for when there is no dataset, just a
-     * SPARQL Query processor
-     */
-    public static DatasetRef serviceOnlyDatasetRef() {
-        return noDataset ;
     }
 
     private static void processServer(Resource server) {
@@ -263,8 +273,10 @@ public class FusekiConfig {
                 className = ((Literal)rn).getLexicalForm() ;
             /* Loader. */loadAndInit(className) ;
         }
-        // ----
     }
+
+
+    // ---- DatasetRef used where there isn't a real Dataset e.g. the SPARQL processor.
 
     private static void loadAndInit(String className) {
         try {
@@ -281,6 +293,7 @@ public class FusekiConfig {
         }
     }
 
+    /** Build a DatasetRef from an assember starting at Resource svc */
     public static DatasetRef processService(Resource svc) {
         log.info("Service: " + nodeLabel(svc)) ;
         DatasetRef sDesc = new DatasetRef() ;
@@ -313,6 +326,91 @@ public class FusekiConfig {
 
     }
 
+    
+    /** Initial configuration - for all the datasets, call the per dataset initization  */ 
+    public static void configureDatasets(List<DatasetRef> datasets) {
+        for (DatasetRef dsDesc : datasets)
+            configureOneDataset(dsDesc) ;
+    }
+
+    public static void configureOneDataset(DatasetRef dsDesc) {
+        String datasetPath = DatasetRef.canocialDatasetPath(dsDesc.name) ;
+        registerDataset(datasetPath, dsDesc) ;
+        // Add JMX beans to record dataset and it's services.
+        addJMX(dsDesc) ;
+    }
+    
+    /** Register a DatasetRef, which should no already be registered */  
+    
+    public static void registerDataset(String datasetPath, DatasetRef dsDesc) {
+        dsDesc.enable() ;
+        if ( DatasetRegistry.get().isRegistered(datasetPath) )
+            throw new FusekiConfigException("Already registered: key = "+datasetPath) ;
+        DatasetRegistry.get().put(datasetPath, dsDesc) ;
+        serverLog.info(format("Dataset path = %s", datasetPath)) ;
+        addJMX(dsDesc) ;
+    }
+    
+//    public static void addJMX() {
+//        DatasetRegistry registry = DatasetRegistry.get() ;
+//        for (String ds : registry.keys()) {
+//            DatasetRef dsRef = registry.get(ds) ;
+//            addJMX(dsRef) ;
+//        }
+//    }
+
+    private static void addJMX(DatasetRef dsRef) {
+        String x = dsRef.name ;
+        // if ( x.startsWith("/") )
+        // x = x.substring(1) ;
+        ARQMgt.register(Fuseki.PATH + ".dataset:name=" + x, dsRef) ;
+        // For all endpoints
+        for (ServiceRef sRef : dsRef.getServiceRefs()) {
+            ARQMgt.register(Fuseki.PATH + ".dataset:name=" + x + "/" + sRef.name, sRef) ;
+        }
+    }
+
+    public static void removeJMX() {
+        DatasetRegistry registry = DatasetRegistry.get() ;
+        for (String ds : registry.keys()) {
+            DatasetRef ref = registry.get(ds) ;
+            removeJMX(ref) ;
+        }
+    }
+
+    private static void removeJMX(DatasetRef dsRef) {
+        String x = dsRef.getName() ;
+        ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x) ;
+        for (ServiceRef sRef : dsRef.getServiceRefs()) {
+            ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x + "/" + sRef.name) ;
+        }
+    }
+
+    
+    private static Model additionalRDF(Model m) {
+        String x1 = StrUtils.strjoinNL
+            ( SystemState.PREFIXES, 
+              "INSERT                    { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' }",
+              "WHERE { FILTER NOT EXISTS { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' } }"
+             ) ;
+        String x2 = StrUtils.strjoinNL
+            (SystemState.PREFIXES,
+             "INSERT DATA {",
+             "   tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .",
+             "   tdb:GraphTDB    rdfs:subClassOf  ja:Model .",
+             "}" 
+             ) ;
+        execute(m, x1) ;
+        execute(m, x2) ;
+        return m ;
+    }
+
+    private static void execute(Model m, String x) {
+        UpdateRequest req = UpdateFactory.create(x) ;
+        UpdateAction.execute(req, m);
+    }
+
+    // Helpers
     private static RDFNode getOne(Resource svc, String property) {
         String ln = property.substring(property.indexOf(':') + 1) ;
         ResultSet rs = query("SELECT * { ?svc " + property + " ?x}", svc.getModel(), "svc", svc) ;
@@ -339,6 +437,8 @@ public class FusekiConfig {
         }
     }
 
+//    // ---- Helper code
+//    
     private static ResultSet query(String string, Model m) {
         return query(string, m, null, null) ;
     }

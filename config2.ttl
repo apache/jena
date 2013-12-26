@@ -6,12 +6,12 @@
 @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-## ## ## Always.
-## ## @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
-## ## [] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
-## ## tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
-## ## tdb:GraphTDB    rdfs:subClassOf  ja:Model .
-## ## ##
+## ## Always.
+## @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+## [] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+## tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+## tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+## ##
 
 <#service_tdb> rdf:type fuseki:Service ;
     rdfs:label                      "TDB Service" ;

@@ -39,7 +39,6 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.X_Config ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
@@ -81,8 +80,8 @@ public class ActionDatasets extends ActionCtl {
     private static final String paramDatasetType    = "dbType" ;
     private static final String tDatabasetTDB       = "tdb" ;
     private static final String tDatabasetMem       = "mem" ;
-    private static final String templateMemFN = "templates/config-mem" ;
-    private static final String templateTDBFN = "templates/config-tdb" ;
+    private static final String templateMemFN       = "templates/config-mem" ;
+    private static final String templateTDBFN       = "templates/config-tdb" ;
 
     public ActionDatasets() { super() ; }
     
@@ -220,6 +219,9 @@ public class ActionDatasets extends ActionCtl {
             else
                 assemblerFromBody(action, dest) ;
             
+            
+            //FusekiConfig.readConfiguration(model) ;
+            
             Statement stmt = getOne(model, null, pServiceName, null) ;
             if ( stmt == null ) {
                 StmtIterator sIter = model.listStatements(null, pServiceName, (RDFNode)null ) ;
@@ -253,7 +255,7 @@ public class ActionDatasets extends ActionCtl {
             
             // Need to be in Resource space at this point.
             DatasetRef dsRef = FusekiConfig.processService(subject) ;
-            X_Config.registerDataset(datasetPath, dsRef) ;
+            FusekiConfig.registerDataset(datasetPath, dsRef) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOutputStream out = action.getResponse().getOutputStream() ;
             out.println("That went well") ;

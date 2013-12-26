@@ -32,6 +32,9 @@ public class FusekiVocab
 
     public static final Resource tServer = resource("Server") ;
 
+    // XXX Constants
+    public static final Resource fusekiService = resource("Service") ;
+
     public static final Property pServices = property("services") ;
     public static final Property pServiceName = property("name") ;
     

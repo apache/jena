@@ -20,38 +20,35 @@ package org.apache.jena.fuseki;
 
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
-import org.apache.jena.riot.WebContent ;
+import static org.apache.jena.riot.WebContent.* ;
 
 public class DEF
 {
-    public static final MediaType acceptRDFXML          = MediaType.create(WebContent.contentTypeRDFXML) ;
-    public static final MediaType acceptNQuads          = MediaType.create(WebContent.contentTypeNQuads) ;
-    public static final MediaType acceptRSXML           = MediaType.create(WebContent.contentTypeResultsXML) ;
-    
-    private static final MediaType acceptTurtle1       = MediaType.create(WebContent.contentTypeTurtle) ;
-    private static final MediaType acceptTurtle2       = MediaType.create(WebContent.contentTypeTurtleAlt1) ;
-    private static final MediaType acceptTurtle3       = MediaType.create(WebContent.contentTypeTurtleAlt2) ;
-    private static final MediaType acceptNTriples      = MediaType.create(WebContent.contentTypeNTriples) ;
-    private static final MediaType acceptNTriplesAlt   = MediaType.create(WebContent.contentTypeNTriplesAlt) ;
-    private static final MediaType acceptTriG          = MediaType.create(WebContent.contentTypeTriG) ;
-    private static final MediaType acceptTriGAlt1      = MediaType.create(WebContent.contentTypeTriGAlt1) ;
-    private static final MediaType acceptTriGAlt2      = MediaType.create(WebContent.contentTypeTriGAlt2) ;
-    private static final MediaType acceptRDFJSON       = MediaType.create(WebContent.contentTypeRDFJSON) ; 
-    private static final MediaType acceptNQuadsAlt1    = MediaType.create(WebContent.contentTypeNQuadsAlt1) ;
-    private static final MediaType acceptNQuadsAlt2    = MediaType.create(WebContent.contentTypeNQuadsAlt2) ;
+    public static final MediaType acceptRDFXML        = MediaType.create(contentTypeRDFXML) ;
+    public static final MediaType acceptNQuads        = MediaType.create(contentTypeNQuads) ;
+    public static final MediaType acceptRSXML         = MediaType.create(contentTypeResultsXML) ;
 
-    public static final AcceptList rdfOffer           = AcceptList.create(acceptTurtle1, acceptTurtle2, acceptTurtle3, 
-                                                                          acceptNTriples, acceptNTriplesAlt,
-                                                                          acceptRDFXML, 
-                                                                          acceptRDFJSON) ;
-    
-    public static final AcceptList quadsOffer         = AcceptList.create(acceptTriG, acceptTriGAlt1, acceptTriGAlt2,
-                                                                          acceptNQuads, acceptNQuadsAlt1, acceptNQuadsAlt2 
+    public static final AcceptList rdfOffer           = AcceptList.create(contentTypeTurtle, 
+                                                                          contentTypeTurtleAlt1,
+                                                                          contentTypeTurtleAlt2,
+                                                                          contentTypeNTriples,
+                                                                          contentTypeNTriplesAlt,
+                                                                          contentTypeRDFXML,
+                                                                          contentTypeRDFJSON
                                                                           ) ;
     
-    public static final AcceptList rsOffer            = AcceptList.create(WebContent.contentTypeResultsJSON,
-                                                                          WebContent.contentTypeTextCSV,
-                                                                          WebContent.contentTypeTextTSV,
-                                                                          WebContent.contentTypeResultsXML,
-                                                                          WebContent.contentTypeTextPlain) ;
+    public static final AcceptList quadsOffer         = AcceptList.create(contentTypeTriG,
+                                                                          contentTypeTriGAlt1,
+                                                                          contentTypeTriGAlt2,
+                                                                          contentTypeNQuads,
+                                                                          contentTypeNQuadsAlt1,
+                                                                          contentTypeNQuadsAlt2 
+                                                                          ) ;
+    
+    public static final AcceptList rsOffer            = AcceptList.create(contentTypeResultsJSON,
+                                                                          contentTypeTextCSV,
+                                                                          contentTypeTextTSV,
+                                                                          contentTypeResultsXML,
+                                                                          contentTypeTextPlain
+                                                                          ) ;
 }

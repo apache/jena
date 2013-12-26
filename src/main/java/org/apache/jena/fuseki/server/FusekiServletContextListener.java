@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.util.ArrayList ;
 import java.util.List ;
 
 import javax.servlet.ServletContext ;
@@ -26,7 +27,6 @@ import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.X_Config ;
 import org.slf4j.Logger ;
 
 public class FusekiServletContextListener implements ServletContextListener {
@@ -40,9 +40,10 @@ public class FusekiServletContextListener implements ServletContextListener {
 
     // --- later: Play the "hunt the config files" game 
     // Default.
-    static public String rootDirectory     = "/usr/share/fuseki" ;
-    static public String configurationFile = rootDirectory + "/config-fuseki.ttl" ;
+    static public final String rootDirectory     = "/usr/share/fuseki" ;
+    static public final String configurationFile = rootDirectory + "/config-fuseki.ttl" ;
     // ----
+    static public final String configDir = "configuration" ;
     
     private Boolean initialized = false ;
 
@@ -72,10 +73,22 @@ public class FusekiServletContextListener implements ServletContextListener {
             }
             
             if ( initialSetup != null ) {
-                List<DatasetRef> datasets = findDatasets(initialSetup) ;
-                List<DatasetRef> additionalDatasets = FusekiConfig.additional() ;
-                datasets.addAll(additionalDatasets) ;
-                X_Config.configureDatasets(datasets);
+                // Places to look:
+                // 1 - Fuseki v1 config file (deprecated)
+                // 2 - Directory of assemblers files "assemblers"
+                // 3 - The system database
+                 
+                List<DatasetRef> configFileDBs = findDatasets(initialSetup) ;
+                List<DatasetRef> directoryDBs = FusekiConfig.readConfigurationDirectory(configDir) ;
+                List<DatasetRef> systemDBs = FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
+                
+                List<DatasetRef> datasets = new ArrayList<DatasetRef>() ;
+                datasets.addAll(configFileDBs) ;
+                datasets.addAll(directoryDBs) ;
+                datasets.addAll(systemDBs) ;
+                
+                // Having found them, set them all running.
+                FusekiConfig.configureDatasets(datasets);
             }
         }
     }
@@ -87,7 +100,7 @@ public class FusekiServletContextListener implements ServletContextListener {
 
         if ( params.fusekiConfigFile != null ) {
             Fuseki.configLog.info("Configuration file: " + params.fusekiConfigFile) ;
-            List<DatasetRef> cmdLineDatasets = FusekiConfig.configure(params.fusekiConfigFile) ;
+            List<DatasetRef> cmdLineDatasets = FusekiConfig.readConfigFile(params.fusekiConfigFile) ;
             datasets.addAll(cmdLineDatasets) ;
         } else {
             List<DatasetRef> cmdLineDatasets = FusekiConfig.defaultConfiguration(params) ;

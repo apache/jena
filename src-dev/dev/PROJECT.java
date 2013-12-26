@@ -19,9 +19,10 @@
 package dev;
 
 public class PROJECT {
-    
-    // WebConent tidying
-    //   SPARQL_Update
+    // Naming 
+    //  fuseki:Service is the endpoints = dataset
+
+    // WebContent tidying
     //   DEFs
     
     // Webapp-ization
@@ -29,10 +30,6 @@ public class PROJECT {
     //   Need server wide configuration - ARQ context setting. 
     //   ContextPath
     //   Fuseki.configure/defaultConfiguration
-    
-    // 1/ have command line insert direct into the DatasetRegistry?
-    // 2/ 
-    
     
     // All TODO and XXX
     // Configuration and startup.
@@ -45,7 +42,6 @@ public class PROJECT {
     
     // Document (write/update) all protocol modes.
     
-    // The whole X_Config thing
     // Check compression enabled for UberServlet
 }
 
