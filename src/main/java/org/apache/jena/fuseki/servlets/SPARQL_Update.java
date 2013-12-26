@@ -91,23 +91,15 @@ public class SPARQL_Update extends SPARQL_Protocol
     @Override
     protected void perform(HttpAction action)
     {
-        // WebContent needs to migrate to using ContentType.
-        String ctStr ;
-        {
-            ContentType ct = FusekiLib.getContentType(action) ;
-            if ( ct == null )
-                ctStr = contentTypeSPARQLUpdate ;
-            else
-                ctStr = ct.getContentType() ;
-        }
-
-        if (contentTypeSPARQLUpdate.equals(ctStr))
-        {
+        ContentType ct = FusekiLib.getContentType(action) ;
+        if ( ct == null )
+            ct = ctSPARQLUpdate ;
+        
+        if ( matchContentType(ctSPARQLUpdate, ct) ) {
             executeBody(action) ;
             return ;
         }
-        if (contentTypeHTMLForm.equals(ctStr))
-        {
+        if ( isHtmlForm(ct) ) {
             executeForm(action) ;
             return ;
         }
@@ -126,11 +118,12 @@ public class SPARQL_Update extends SPARQL_Protocol
         if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(request.getMethod()) )
             ServletOps.errorMethodNotAllowed("SPARQL Update : use POST") ;
         
-        ContentType incoming = FusekiLib.getContentType(action) ;
-        String ctStr = ( incoming == null ) ? contentTypeSPARQLUpdate : incoming.getContentType() ;
+        ContentType ct = FusekiLib.getContentType(action) ;
+        if ( ct == null )
+            ct = ctSPARQLUpdate ;
         // ----
         
-        if ( contentTypeSPARQLUpdate.equals(ctStr) )
+        if ( matchContentType(ctSPARQLUpdate, ct) )
         {
             String charset = request.getCharacterEncoding() ;
             if ( charset != null && ! charset.equalsIgnoreCase(charsetUTF8) )
@@ -139,7 +132,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             return ;
         }
         
-        if ( contentTypeHTMLForm.equals(ctStr) )
+        if ( isHtmlForm(ct) )
         {
             int x = countParamOccurences(request, paramUpdate) + countParamOccurences(request, paramRequest) ;
             if ( x == 0 )
@@ -156,7 +149,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             return ;
         }
         
-        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+contentTypeSPARQLUpdate+" or "+contentTypeHTMLForm+" (got "+ctStr+")") ;
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+contentTypeSPARQLUpdate+" or "+contentTypeHTMLForm+" (got "+ct.getContentType()+")") ;
     }
     
     protected void validate(HttpAction action, Collection<String> params)
