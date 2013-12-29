@@ -28,13 +28,18 @@ import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapFactory ;
+import org.apache.jena.riot.system.Prologue ;
+import org.apache.jena.riot.system.RiotChars ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Presentation utilitiles for Nodes, Triples, Quads and more */ 
 public class NodeFmtLib
@@ -59,8 +64,23 @@ public class NodeFmtLib
     {
         return strNodes(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
     }
-    
 
+    public static String str(Node n)
+    {
+        IndentedLineBuffer sw = new IndentedLineBuffer() ;
+        str(sw, n) ;
+        return sw.toString() ; 
+    }
+
+    /** A displayable string for an RDFNode. Includes common abbreviations */
+    public static String displayStr(RDFNode obj)
+    {
+        return FmtUtils.stringForRDFNode(obj) ;
+    }
+    
+    public static String displayStr(Node n) { return FmtUtils.stringForNode(n) ; }
+
+    
     // Worker
     public static String strNodes(Node ... nodes)
     {
@@ -76,23 +96,25 @@ public class NodeFmtLib
         return sw.toString() ; 
     }
 
-    public static String str(Node n)
-    {
-        IndentedLineBuffer sw = new IndentedLineBuffer() ;
-        str(sw, n) ;
-        return sw.toString() ; 
-    }
-
-    private static final boolean onlySafeBNodeLabels = true ;
-
     //public static String displayStr(Node n) { return serialize(n) ; }
 
     public static void str(IndentedWriter w, Node n)
     { serialize(w, n, null, null) ; }
 
+    public static String str(Node n, Prologue prologue)
+    {
+        return str(n, prologue.getBaseURI(), prologue.getPrefixMap()) ;
+    }
+
+    public static String str(Node n, String base, PrefixMap prefixMap)
+    {
+        IndentedLineBuffer sw = new IndentedLineBuffer() ;
+        serialize(sw, n, base, prefixMap) ;
+        return sw.toString() ;
+    }
+
     public static void serialize(IndentedWriter w, Node n, Prologue prologue)
     { serialize(w, n, prologue.getBaseURI(), prologue.getPrefixMap()) ; }
-
     
     public static void serialize(IndentedWriter w, Node n, String base, PrefixMap prefixMap)
     {

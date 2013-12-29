@@ -28,6 +28,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.out.NodeFmtLib ;
 import arq.cmd.CmdException ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -110,7 +111,7 @@ public class DumpOps
             Pair<NodeId, Node> pair = iter.next() ;
             NodeId nid = pair.car() ;
             Node n = pair.cdr();
-            String x = NodeFmtLib.serialize(n) ;
+            String x = NodeFmtLib.str(n) ;
             System.out.printf("%016X %s\n", nid.getId(), x) ; 
         }
         dumpedNodeTables.add(nodeTable) ;

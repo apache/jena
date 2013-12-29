@@ -21,12 +21,12 @@ package com.hp.hpl.jena.tdb.solver;
 import java.util.* ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.out.NodeFmtLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingBase ;
-import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
