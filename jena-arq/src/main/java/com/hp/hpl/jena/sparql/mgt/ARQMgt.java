@@ -34,6 +34,12 @@ import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineBase ;
 
 public class ARQMgt {
+//    // No-op version.
+//    public static void init() {}
+//    public static void register(String name, Object bean) { }
+//    public static void unregister(String name) { }
+    // Or noJMX=true
+    
     // In some environments, JMX does not exist.
     static private Logger                  log         = LoggerFactory.getLogger(ARQMgt.class) ;
     private static boolean                 initialized = false ;
@@ -45,23 +51,27 @@ public class ARQMgt {
         if (initialized)
             return ;
         initialized = true ;
+        if ( noJMX )
+            return ;
 
         try {
             mbs = ManagementFactory.getPlatformMBeanServer() ;
-            String NS = ARQ.PATH ;
-            ContextMBean cxtBean = new ContextMBean(ARQ.getContext()) ;
-            QueryEngineInfo qeInfo = QueryEngineBase.queryEngineInfo ;
-
-            // Done in ARQ initialization --
-            // register(NS+".system:type=SystemInfo", ARQ.systemInfo) ;
-            register(NS + ".system:type=Context", cxtBean) ;
-            register(NS + ".system:type=Engine", qeInfo) ;
-
         } catch (Throwable ex) {
             Log.debug(ARQMgt.class, "Failed to initialize JMX: "+ex.getMessage()) ;
             noJMX = true ;
             mbs = null ;
         }
+    }
+    
+    public static void register() {
+        init() ;
+        String NS = ARQ.PATH ;
+        ContextMBean cxtBean = new ContextMBean(ARQ.getContext()) ;
+        QueryEngineInfo qeInfo = QueryEngineBase.queryEngineInfo ;
+        // Done in ARQ initialization --
+        // register(NS+".system:type=SystemInfo", ARQ.systemInfo) ;
+        register(NS + ".system:type=Context", cxtBean) ;
+        register(NS + ".system:type=Engine", qeInfo) ;
     }
 
     public static void register(String name, Object bean) {

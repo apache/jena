@@ -28,13 +28,14 @@ import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
-public class DatasetGraphWrapper implements DatasetGraph, Sync
+public class DatasetGraphWrapper implements DatasetGraph, Sync 
 {
+    // Associated query engine factory - QueryEngineFactoryWrapper
+    // which executes on the unwraped DSG. 
     private final DatasetGraph dsg ;
     public final DatasetGraph getWrapped() { return dsg ; }
 
-    public DatasetGraphWrapper(DatasetGraph dsg)
-    {
+    public DatasetGraphWrapper(DatasetGraph dsg) {
         this.dsg = dsg ;
     }
 

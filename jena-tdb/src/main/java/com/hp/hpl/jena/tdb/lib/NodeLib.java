@@ -33,6 +33,7 @@ import org.apache.jena.atlas.lib.Pool ;
 import org.apache.jena.atlas.lib.PoolBase ;
 import org.apache.jena.atlas.lib.PoolSync ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.out.NodeFmtLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
@@ -204,7 +205,7 @@ public class NodeLib
         {
             if ( i != 0 ) 
                 b.append(sep) ;
-            b.append(NodeFmtLib.serialize(nodes[i])) ;
+            b.append(NodeFmtLib.str(nodes[i])) ;
         }
         return b.toString() ;
     }

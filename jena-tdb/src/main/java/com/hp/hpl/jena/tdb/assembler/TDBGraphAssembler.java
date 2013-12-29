@@ -21,22 +21,19 @@ package com.hp.hpl.jena.tdb.assembler;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.*;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.*;
 import org.apache.jena.atlas.logging.Log ;
-
+import org.apache.jena.riot.out.NodeFmtLib ;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.*;
-
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
-
 import com.hp.hpl.jena.tdb.TDB;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.IndexAssembler;
 import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 
 public class TDBGraphAssembler extends AssemblerBase implements Assembler
 {

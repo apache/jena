@@ -20,6 +20,7 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.out.NodeFmtLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
@@ -27,7 +28,6 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
-import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 
 /** Utilities for encoding/decoding nodes as strings.
@@ -58,7 +58,7 @@ public class NodecLib
                 node = NodeFactory.createURI(x) ; 
         }
         
-        return NodeFmtLib.serialize(node) ;
+        return NodeFmtLib.str(node) ;
     }
 
     public static Node decode(String s)     { return decode(s, null) ; }

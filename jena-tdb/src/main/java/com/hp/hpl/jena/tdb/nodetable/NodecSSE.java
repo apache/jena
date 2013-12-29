@@ -23,6 +23,9 @@ import java.nio.ByteBuffer ;
 import org.apache.jena.atlas.io.BlockUTF8 ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.out.NodeFmtLib ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapNull ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
@@ -33,7 +36,6 @@ import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.lib.StringAbbrev ;
 
 /** Simple encoder/decoder for nodes that uses Turtle term string encoding. */
@@ -53,9 +55,13 @@ public class NodecSSE implements Nodec
         return maxLength(node) ;
     }
 
+    private static final PrefixMap pmap0 = PrefixMapNull.empty ;
+    private static final boolean onlySafeBNodeLabels = false ;
     @Override
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap)
     {
+        String str = null ;
+
         if ( node.isURI() ) 
         {
             // Pesky spaces etc
@@ -66,22 +72,24 @@ public class NodecSSE implements Nodec
         
         if ( node.isLiteral() && node.getLiteralLanguage() != null )
         {
-            // Check syntactcally valid.
+            // Check syntactically valid.
             String lang = node.getLiteralLanguage() ;
             if ( ! LangTag.check(lang) )
                 throw new TDBException("bad language tag: "+node) ;
         }
         
+        if ( node.isBlank() && ! onlySafeBNodeLabels ) {
+            // Special case.
+            str = "_:"+node.getBlankNodeLabel() ;
+        }
+        
         // Node->String
-        String str = NodeFmtLib.serialize(node) ;
+        if ( str == null )
+            str = NodeFmtLib.str(node, (String)null, pmap0) ;
         // String -> bytes ;
         BlockUTF8.fromChars(str, bb) ;
         bb.flip() ;
         return bb.limit() ;
-//        int x = Bytes.toByteBuffer(str, bb) ;
-//        bb.position(0) ;        // Around the space used
-//        bb.limit(x) ;           // The space we have used.
-//        return x ;
     }
 
     @Override
