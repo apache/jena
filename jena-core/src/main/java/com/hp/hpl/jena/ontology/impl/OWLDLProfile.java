@@ -250,7 +250,7 @@ public class OWLDLProfile
             {  Individual.class,    new SupportsCheck() {
                 @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
-                    if (n instanceof Node_URI || n instanceof Node_Blank) {
+                    if ( n.isURI() || n.isBlank() ) { 
                         return !hasType( n, g, new Resource[] {RDFS.Class, RDF.Property, OWL.Class,
                                                                OWL.ObjectProperty, OWL.DatatypeProperty, OWL.TransitiveProperty,
                                                                OWL.FunctionalProperty, OWL.InverseFunctionalProperty} );
@@ -264,7 +264,7 @@ public class OWLDLProfile
             {  DataRange.class,    new SupportsCheck() {
                 @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
-                    return n instanceof Node_Blank  &&
+                    return n.isBlank()  &&
                            g.asGraph().contains( n, RDF.type.asNode(), OWL.DataRange.asNode() );
                 }
             }

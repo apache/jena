@@ -266,7 +266,7 @@ public class OWLLiteProfile
             {  Individual.class,    new SupportsCheck() {
                 @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
-                    if (n instanceof Node_URI || n instanceof Node_Blank) {
+                    if (n.isURI() || n.isBlank() ) {
                         // OWL Lite individuals are disjoint from other language classes
                         return !hasType( n, g, new Resource[] {RDFS.Class, RDF.Property, OWL.Class,
                                                                OWL.ObjectProperty, OWL.DatatypeProperty, OWL.TransitiveProperty,
