@@ -534,14 +534,14 @@ public class OWLProfile
         {  Individual.class,    new SupportsCheck() {
                                             @Override
                                             public boolean doCheck( Node n, EnhGraph g ) {
-                                                return n instanceof Node_URI || n instanceof Node_Blank;
+                                                return n.isURI() || n.isBlank() ;
                                             }
                                         }
         },
         {  DataRange.class,    new SupportsCheck() {
                                             @Override
                                             public boolean doCheck( Node n, EnhGraph g ) {
-                                                return n instanceof Node_Blank  &&
+                                                return n.isBlank()  &&
                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.DataRange.asNode() );
                                             }
                                         }
