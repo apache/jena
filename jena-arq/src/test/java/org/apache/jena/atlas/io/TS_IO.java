@@ -24,9 +24,7 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     // Basic classes
-    
     TestIndentedWriter.class
-    , TestBufferingWriter.class
     , TestStreamUTF8.class
     , TestBlockUTF8.class
     , TestInputStreamBuffered.class
