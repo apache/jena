@@ -27,7 +27,7 @@ import org.apache.jena.atlas.lib.Pair ;
 import com.hp.hpl.jena.graph.Node ;
 
 /** Capture a record of quad actions */ 
-class DatasetChangesCapture implements DatasetChanges
+public class DatasetChangesCapture implements DatasetChanges
 {
     final private List<Pair<QuadAction, Quad>> actions = new ArrayList<Pair<QuadAction, Quad>>() ;
     final private boolean captureAdd ;
