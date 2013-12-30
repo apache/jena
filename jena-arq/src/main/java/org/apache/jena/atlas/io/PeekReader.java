@@ -34,8 +34,6 @@ import com.hp.hpl.jena.shared.JenaException ;
 
 /**
  * Parsing-centric reader. This class is not thread safe.
- * 
- * @see BufferingWriter
  * @see PeekInputStream
  */
 
