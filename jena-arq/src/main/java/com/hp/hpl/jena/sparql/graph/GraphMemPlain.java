@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import java.util.Locale ;
 import java.util.Set ;
 
+import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -33,12 +34,23 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.Filter ;
 
-/** A version of Graph that does term equality only */ 
+/** */ 
+/**
+ * A version of Graph that does term equality only 
+ * 
+ * @deprecated  use com.hp.hpl.jena.graph.impl.CollectionGraph instead.
+ */
+@Deprecated 
 public class GraphMemPlain extends GraphBase
 {
     private Set<Triple> triples = new HashSet<Triple>() ;
     
     public GraphMemPlain() {}
+    
+    @Override
+	public Capabilities getCapabilities() {
+		return gmpCapabilities;
+	}
     
     @Override
     public void performAdd( Triple t )
@@ -125,4 +137,52 @@ public class GraphMemPlain extends GraphBase
         
     }
     
+    private static Capabilities gmpCapabilities = new Capabilities() {
+
+		@Override
+		public boolean sizeAccurate() {
+			return true;
+		}
+
+		@Override
+		public boolean addAllowed() {
+			return true;
+		}
+
+		@Override
+		public boolean addAllowed(boolean everyTriple) {
+			return true;
+		}
+
+		@Override
+		public boolean deleteAllowed() {
+			return true;
+		}
+
+		@Override
+		public boolean deleteAllowed(boolean everyTriple) {
+			return true;
+		}
+
+		@Override
+		public boolean iteratorRemoveAllowed() {
+			return false;
+		}
+
+		@Override
+		public boolean canBeEmpty() {
+			return true;
+		}
+
+		@Override
+		public boolean findContractSafe() {
+			return true;
+		}
+
+		@Override
+		public boolean handlesLiteralTyping() {
+			return false;
+		}
+		
+	};
 }
