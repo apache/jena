@@ -28,6 +28,7 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A simple graph implementation that wraps a collection of triples.
@@ -138,8 +139,9 @@ public class CollectionGraph extends GraphBase
 	}
 
 	// the collection
-	private Collection<Triple> triples;
-
+	private final Collection<Triple> triples;
+	private final boolean uniqueOnly;
+	
 	/**
 	 * Construct an empty graph using an empty HashSet.
 	 */
@@ -158,6 +160,7 @@ public class CollectionGraph extends GraphBase
 	{
 		super();
 		this.triples = triples;
+		this.uniqueOnly = triples instanceof Set;
 	}
 
 	@Override
@@ -170,7 +173,7 @@ public class CollectionGraph extends GraphBase
 	@Override
 	public void performAdd( final Triple t )
 	{
-		if (!triples.contains(t))
+		if (uniqueOnly || !triples.contains(t))
 		{
 			triples.add(t);
 		}
