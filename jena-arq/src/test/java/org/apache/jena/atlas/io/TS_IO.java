@@ -33,8 +33,9 @@ import org.junit.runners.Suite ;
     , TestPeekReaderSource.class
     , TestPeekReaderCharSequence.class
     , TestPeekInputStreamSource.class
-    //, TestPeekInputStreamBytes.class
-    
+
+    // Writers
+    , TestBufferingWriter.class
     // Other
     , TestPrintUtils.class
 } )
