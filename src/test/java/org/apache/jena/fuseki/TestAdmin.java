@@ -135,7 +135,7 @@ public class TestAdmin extends BaseTest {
     }
 
     // Specific dataset
-    @Test public void add_dataset_1() {
+    @Test public void add_delete_dataset_1() {
         checkNotThere(dsTest) ;
 
         addTestDataset() ;
@@ -149,7 +149,7 @@ public class TestAdmin extends BaseTest {
     }
 
     // Try to add twice
-    @Test public void add_dataset_2() {
+    @Test public void add_delete_dataset_2() {
         checkNotThere(dsTest) ;
 
         File f = new File("testing/config-ds-1.ttl") ;
@@ -172,7 +172,7 @@ public class TestAdmin extends BaseTest {
         deleteDataset(dsTest) ;
     }
     
-    @Test public void add_dataset_3() throws Exception {
+    @Test public void add_delete_dataset_3() throws Exception {
         String name = "MEMTEST" ;
         //String args = "dbType=mem&dbName="+name ;
         
@@ -186,6 +186,16 @@ public class TestAdmin extends BaseTest {
         deleteDataset(name) ;
     }
     
+    @Test public void delete_dataset_1() {
+        String name = "NoSuchDataset" ;
+        try {
+            execHttpDelete(ServerTest.urlRoot+"$/"+opDatasets+"/"+name) ;
+            fail("delete did not cause an Http Exception") ;
+        } catch ( HttpException ex ) {
+            assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ;
+        }
+    }
+
     // ---- Active/dormant.
 
     @Test public void state_1() {

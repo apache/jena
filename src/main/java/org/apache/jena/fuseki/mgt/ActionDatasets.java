@@ -120,10 +120,11 @@ public class ActionDatasets extends ActionCtl {
 
     protected void execGet(HttpAction action) {
         JsonValue v ;
-        if (action.dsRef.name == null )
+        if ( isContainerAction(action)  )
             v = execGetContainer(action) ;
         else
             v = execGetDataset(action) ;
+        
         try {
             HttpServletResponse response = action.response ;
             ServletOutputStream out = response.getOutputStream() ;
@@ -159,16 +160,13 @@ public class ActionDatasets extends ActionCtl {
         return builder.build() ;
     }
     
-    // XXX Split contained and per-dataset operations into separate servlets? 
-    // XXX ActionContainerItem
-
     // ---- POST 
     
     // POST /$/datasets/ -- to the container -> register new dataset
     // POST /$/datasets/name -- change something about an existing dataset
     
     protected void execPost(HttpAction action) {
-        if (action.dsRef.name == null )
+        if ( isContainerAction(action) )
             execPostContainer(action) ;
         else
             execPostDataset(action) ;
@@ -314,7 +312,8 @@ public class ActionDatasets extends ActionCtl {
         if ( name == null )
             name = "" ;
         action.log.info(format("[%d] DELETE ds=%s", action.id, name)) ;
-        if ( action.dsRef.name == null ) {
+
+        if ( isContainerAction(action) ) {
             ServletOps.errorBadRequest("DELETE only applies to a specific dataset.") ;
             return ;
         }

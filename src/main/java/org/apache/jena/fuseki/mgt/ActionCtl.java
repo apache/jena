@@ -89,6 +89,11 @@ public abstract class ActionCtl extends ActionBase
         finishRequest(action) ;
     }
     
+    final
+    protected boolean isContainerAction(HttpAction action) {
+        return (action.dsRef.name == null ) ;
+    }
+    
     protected abstract void perform(HttpAction action) ;
 
 //    /** Map request to uri in the registry.

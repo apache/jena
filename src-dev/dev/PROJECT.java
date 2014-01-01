@@ -22,6 +22,13 @@ public class PROJECT {
     // Naming 
     //  fuseki:Service is the endpoints = dataset
 
+    // Test for servlet context
+    
+    // async operations e.g. backup, stats
+    
+    // TDB and server configuration parameters.
+    //   per database -> assembler.
+    
     // WebContent tidying
     //   DEFs
     

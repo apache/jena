@@ -27,14 +27,12 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class SystemState {
-    // XXX  Make part of the mgt webapp. 
     private static String SystemDatabaseLocation = "system" ;
     // Testing may reset this.
     public static Location location = new Location(SystemDatabaseLocation)  ;
     
     private  static Dataset                 dataset   = null ;
     private  static DatasetGraphTransaction dsg       = null ;
-    
     
     public static Dataset getDataset() {
         init() ;

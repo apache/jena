@@ -42,13 +42,13 @@ public class ManagementServer
         connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
 
         //if ( loopback )
-        if ( true )
+        if ( server.getServerPort() == port )
             connector.setHost("localhost");
         connector.setPort(port) ;
-        // Some people do try very large operations ...
-        connector.setRequestHeaderSize(64 * 1024) ;
-        connector.setRequestBufferSize(5 * 1024 * 1024) ;
-        connector.setResponseBufferSize(5 * 1024 * 1024) ;
+        // Control - defaults OK 
+//        connector.setRequestHeaderSize(64 * 1024) ;
+//        connector.setRequestBufferSize(5 * 1024 * 1024) ;
+//        connector.setResponseBufferSize(5 * 1024 * 1024) ;
         jettyServer.addConnector(connector);
         ServletContextHandler context = new ServletContextHandler() ;
         jettyServer.setHandler(context) ;
@@ -62,7 +62,7 @@ public class ManagementServer
         if ( !base.startsWith("/"))
             throw new FusekiException("Base URI does not start with a '/'") ; 
 
-        addServlet(context, new DumpServlet(),         base+MgtConst.opDump) ;   // XXX Remove.?
+        addServlet(context, new DumpServlet(),         base+MgtConst.opDump) ;
         addServlet(context, new ActionDescription(),   base+MgtConst.opStatus) ;
         addServlet(context, new ActionPing(),          base+MgtConst.opPing) ;
     }

@@ -350,21 +350,6 @@
         <artifactId>maven-assembly-plugin</artifactId>
 	<!-- After shared jar - same phase -->
         <executions>
-	  <!--
-          <execution>
-            <id>create-soh-assembly</id>
-            <phase>package</phase>
-            <goals><goal>single</goal></goals>
-            <configuration>
-              <finalName>${assembly.soh.name}</finalName>
-              <!- -<appendAssemblyId>false</appendAssemblyId> - ->
-              <descriptors>
-                <descriptor>assembly-soh.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-          -->
-
           <execution>
             <id>create-zip-assembly</id>
             <phase>package</phase>
