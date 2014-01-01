@@ -21,7 +21,6 @@ package com.hp.hpl.jena.sparql.util;
 import java.util.Locale ;
 import java.util.regex.Pattern ;
 
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -31,6 +30,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
+
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class FmtUtils
 {
-    // OLD CODE - being replaces by riot.NodeFmtLib 
+    // OLD CODE - being replaced by riot.NodeFmtLib 
     
     // Consider withdrawing non-serialzation context forms of this.
     // Or a temporary SerialzationContext does not abbreviate bNodes.

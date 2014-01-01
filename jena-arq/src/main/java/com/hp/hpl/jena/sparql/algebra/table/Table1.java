@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.riot.out.NodeFmtLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -33,7 +34,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** A table of one row of one binding */
 public class Table1 extends TableBase {
@@ -115,6 +115,6 @@ public class Table1 extends TableBase {
 
     @Override
     public String toString() {
-        return "Table1(" + var + "," + FmtUtils.stringForNode(value) + ")" ;
+        return "Table1(" + var + "," + NodeFmtLib.displayStr(value) + ")" ;
     }
 }

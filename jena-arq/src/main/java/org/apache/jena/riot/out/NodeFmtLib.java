@@ -41,9 +41,16 @@ import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** Presentation utilitiles for Nodes, Triples, Quads and more */ 
+/** Presentation utilitiles for Nodes, Triples, Quads and more.
+ * <p>
+ * Methods <tt>str</tt> generate a reparsable string.
+ * <p>
+ * Methods <tt>displayStr</tt> do not guarantee a reparsable string 
+ * e.g. may use abbreviations or common prefixes.   
+ */
 public class NodeFmtLib
 {
+    // Replaces FmtUtils
     // See OutputLangUtils.
     // See and use EscapeStr
     
@@ -75,6 +82,7 @@ public class NodeFmtLib
     /** A displayable string for an RDFNode. Includes common abbreviations */
     public static String displayStr(RDFNode obj)
     {
+        //XXX Move code over
         return FmtUtils.stringForRDFNode(obj) ;
     }
     
