@@ -21,17 +21,15 @@ package arq.examples;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.riot.out.NodeFmtLib ;
+
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Property ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
@@ -45,7 +43,6 @@ import com.hp.hpl.jena.sparql.expr.E_LessThan ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Build an algebra expression and execute it */
 
@@ -82,7 +79,7 @@ public class AlgebraExec
             {
                 Binding b = qIter.nextBinding() ;
                 Node n = b.get(var_x) ;
-                System.out.println(FmtUtils.stringForNode(n)) ;
+                System.out.println(NodeFmtLib.displayStr(n)) ;
                 System.out.println(b) ; 
             }
             qIter.close() ;

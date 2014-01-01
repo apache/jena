@@ -26,8 +26,6 @@ import org.apache.jena.riot.system.MapWithScope ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Node_Literal ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Map nodes to string (usually, blank nodes to labels).
  * See {@link SyntaxLabels#createNodeToLabel} for getting a default setup.
@@ -133,7 +131,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
 
         protected String labelForLiteral(Node node)
         {
-            return FmtUtils.stringForLiteral((Node_Literal)node, null) ;
+            return NodeFmtLib.str(node) ;
         }
 
         protected String labelForVar(Node node)

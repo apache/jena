@@ -22,6 +22,7 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.riot.out.NodeFmtLib ;
 import arq.cmd.CmdException ;
 import arq.cmd.CmdUtils ;
 import arq.cmd.TerminationException ;
@@ -43,7 +44,6 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /** A program to execute expressions from the command line. */
@@ -194,7 +194,7 @@ public class qexpr
                         NodeValue r = expr.eval(null, env) ;
                         //System.out.println(r.asQuotedString()) ;
                         Node n = r.asNode() ;
-                        String s = FmtUtils.stringForNode(n) ;
+                        String s = NodeFmtLib.displayStr(n) ;
                         System.out.println(s) ;
                     }
                 } catch (ExprEvalException ex)
