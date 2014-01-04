@@ -25,6 +25,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
 
+/** Track the transactional state of a DatasetGraph */ 
 public abstract class DatasetGraphTrackActive implements DatasetGraph, Transactional
 {
     protected abstract DatasetGraph get() ;
@@ -42,14 +43,14 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     }
     
     @Override
-    public void commit()
+    public final void commit()
     {
         checkActive() ;
         _commit() ;
     }
 
     @Override
-    public void abort()
+    public final void abort()
     {
         checkActive() ;
         // Set before calling _abort, which might throw an exception. 
@@ -57,7 +58,7 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     }
     
     @Override
-    public void end()
+    public final void end()
     {
         // Don't check if active.  We may have committed or aborted already.
         _end() ;
