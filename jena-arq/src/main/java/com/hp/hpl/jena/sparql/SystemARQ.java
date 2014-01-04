@@ -103,7 +103,7 @@ public class SystemARQ
     /** Sync an object if synchronizable (model, graph, dataset). 
      *  If force is true, synchronize as much as possible (e.g. file metadata)
      *  else make a reasonable attenpt at synchronization but does not gauarantee disk state. 
-     *  Do nothing otherwise 
+     *  Do nothing otherwise.
      */
     public static void syncObject(Object object)
     {
