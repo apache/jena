@@ -20,39 +20,53 @@ package com.hp.hpl.jena.sparql.core;
 
 import com.hp.hpl.jena.graph.Node ;
 
-/** Count changes */
+/** Count changes, or simply note if a change has been made. */
 public class DatasetChangesCounter implements DatasetChanges
 {
-    long countStart = 0 ;
-    long countFinish = 0 ;
-    long countAdd = 0 ;
-    long countDelete = 0 ;
-    long countNoAdd = 0 ;
+    long countStart    = 0 ;
+    long countFinish   = 0 ;
+    
+    long countAdd      = 0 ;
+    long countDelete   = 0 ;
+    long countNoAdd    = 0 ;
     long countNoDelete = 0 ;
     
-    
     @Override
-    public void start()
-    {
+    public void start() {
         countStart++ ;
     }
 
     @Override
-    public void change(QuadAction qaction, Node g, Node s, Node p, Node o)
-    {
-        switch (qaction)
-        {
+    public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
+        if ( qaction == null )
+            throw new NullPointerException() ;
+        switch (qaction) {
             case ADD:       countAdd++ ; break ;
             case DELETE:    countDelete++ ; break ;
             case NO_ADD:    countNoAdd++ ; break ;
             case NO_DELETE: countNoDelete++ ; break ;
-            //default : break ; 
+            //default : break ;        
         }
     }
 
     @Override
-    public void finish()
-    {
+    public void finish() {
         countFinish++ ;
     }
+    
+    public boolean hasChanged() {
+        return countAdd > 0 || countDelete > 0 ;
+    }
+    
+    public void reset() { 
+        countStart    = 0 ;
+        countFinish   = 0 ;
+        
+        countAdd      = 0 ;
+        countDelete   = 0 ;
+        countNoAdd    = 0 ;
+        countNoDelete = 0 ;
+    }
+
 }
+
