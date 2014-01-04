@@ -19,6 +19,7 @@ package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.Capabilities;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
@@ -28,6 +29,8 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -51,46 +54,12 @@ import java.util.Set;
 public class CollectionGraph extends GraphBase
 {
 
-	private Capabilities cgCapabilities = new Capabilities() {
-
-		@Override
-		public boolean sizeAccurate() {
-			return true;
-		}
-
-		@Override
-		public boolean addAllowed() {
-			return true;
-		}
-
-		@Override
-		public boolean addAllowed(boolean everyTriple) {
-			return true;
-		}
-
-		@Override
-		public boolean deleteAllowed() {
-			return true;
-		}
-
-		@Override
-		public boolean deleteAllowed(boolean everyTriple) {
-			return true;
-		}
+	// override methods that need to be false off.
+	private Capabilities cgCapabilities = new AllCapabilities() {
 
 		@Override
 		public boolean iteratorRemoveAllowed() {
-			return false;
-		}
-
-		@Override
-		public boolean canBeEmpty() {
-			return true;
-		}
-
-		@Override
-		public boolean findContractSafe() {
-			return true;
+			return iteratorDeleteAllowed;
 		}
 
 		@Override
@@ -100,76 +69,109 @@ public class CollectionGraph extends GraphBase
 		
 	};
 	
-	/**
-	 * Finds matching triples
-	 */
-	private class MatchFilter extends Filter<Triple>
-	{
-		TripleMatch m;
+	static class TripleMatchFilterEquality extends Filter<Triple>
+    {
+        final protected Triple tMatch;
+    
+        /** Creates new TripleMatchFilter */
+        public TripleMatchFilterEquality(Triple tMatch) 
+            { this.tMatch = tMatch; }
+        
+        @Override
+        public boolean accept(Triple t)
+        {
+            return tripleContained(tMatch, t) ;
+        }
+        
+    }
+	static boolean tripleContained(Triple patternTriple, Triple dataTriple)
+    {
+        return
+            equalNode(patternTriple.getSubject(),   dataTriple.getSubject()) &&
+            equalNode(patternTriple.getPredicate(), dataTriple.getPredicate()) &&
+            equalNode(patternTriple.getObject(),    dataTriple.getObject()) ;
+    }
+    
+    private static boolean equalNode(Node m, Node n)
+    {
+        // m should not be null unless .getMatchXXXX used to get the node.
+        // Language tag canonicalization
+        n = fixupNode(n) ;
+        m = fixupNode(m) ;
+        return (m==null) || (m == Node.ANY) || m.equals(n) ;
+    }
+    
+    private static Node fixupNode(Node node)
+    {
+        if ( node == null || node == Node.ANY )
+            return node ;
 
-		public MatchFilter( final TripleMatch m )
-		{
-			if (m == null)
-			{
-				throw new IllegalArgumentException("Match must not be null");
-			}
-			this.m = m;
-		}
-
-		@Override
-		public boolean accept( final Triple t )
-		{
-			if (t == null)
-			{
-				throw new IllegalArgumentException("triple must not be null");
-			}
-			return matches(t.getMatchSubject(), m.getMatchSubject())
-					&& matches(t.getMatchPredicate(), m.getMatchPredicate())
-					&& matches(t.getMatchObject(), m.getMatchObject());
-		}
-
-		private boolean isWild( final Node n )
-		{
-			return (n == null) || Node.ANY.equals(n);
-		}
-
-		private boolean matches( final Node t, final Node m )
-		{
-			return isWild(m) || isWild(t) || m.equals(t);
-		}
-
-	}
-
+        // RDF says ... language tags should be canonicalized to lower case.
+        if ( node.isLiteral() )
+        {
+            String lang = node.getLiteralLanguage() ;
+            if ( lang != null && ! lang.equals("") )
+                node = NodeFactory.createLiteral(node.getLiteralLexicalForm(),
+                                          lang.toLowerCase(Locale.ROOT),
+                                          node.getLiteralDatatype()) ;
+        }
+        return node ; 
+    }
+    
 	// the collection
 	private final Collection<Triple> triples;
 	private final boolean uniqueOnly;
+	private final boolean iteratorDeleteAllowed;
 	
 	/**
 	 * Construct an empty graph using an empty HashSet.
+	 * Iterator deletion is supported.
 	 */
 	public CollectionGraph()
 	{
-		this(new HashSet<Triple>());
+		this(new HashSet<Triple>(), true);
 	}
 
 	/**
 	 * Construct a graph from a collection.
 	 * 
+	 * Iterator deletion is not supported.
 	 * @param triples
 	 *            The collection of triples.
 	 */
 	public CollectionGraph( final Collection<Triple> triples )
 	{
-		super();
+		this(triples, false);
+	}
+	
+	/**
+	 * Construct a graph from a collection.
+	 * @param triples The collection of triples.
+	 * @param iteratorDeleteAllowed if true iterator on triple supports deletion and we want to enable iterator deletion.
+	 */
+	public CollectionGraph( final Collection<Triple> triples, boolean iteratorDeleteAllowed)
+	{
 		this.triples = triples;
 		this.uniqueOnly = triples instanceof Set;
+		this.iteratorDeleteAllowed = iteratorDeleteAllowed;
 	}
 
 	@Override
 	protected ExtendedIterator<Triple> graphBaseFind( final TripleMatch m )
 	{
-		return WrappedIterator.createNoRemove(triples.iterator()).filterKeep(
-				new MatchFilter(m));
+		ExtendedIterator<Triple> iter =null;
+		if (iteratorDeleteAllowed)
+		{
+			
+	        iter =
+	            SimpleEventManager.notifyingRemove( this, triples.iterator() );
+		}
+		else
+		{
+			iter = WrappedIterator.createNoRemove( triples.iterator() );
+		}
+		return iter 
+	            .filterKeep ( new TripleMatchFilterEquality( m.asTriple() ) );
 	}
 
 	@Override

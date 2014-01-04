@@ -162,7 +162,7 @@ public class GraphMemPlain extends GraphBase
 
 		@Override
 		public boolean iteratorRemoveAllowed() {
-			return false;
+			return true;
 		}
 
 		@Override
