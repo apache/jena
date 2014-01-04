@@ -34,13 +34,9 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.Filter ;
 
-/** */ 
 /**
  * A version of Graph that does term equality only 
- * 
- * @deprecated  use com.hp.hpl.jena.graph.impl.CollectionGraph instead.
  */
-@Deprecated 
 public class GraphMemPlain extends GraphBase
 {
     private Set<Triple> triples = new HashSet<Triple>() ;

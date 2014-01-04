@@ -44,6 +44,8 @@ import java.util.Set;
  * Does not support deleting triples from the iterator
  * </li><li>
  * Does not handle literal typing
+ * </li><li>
+ * Does not handle lang tag equality.
  * </li></ul>
  */
 public class CollectionGraph extends GraphBase
