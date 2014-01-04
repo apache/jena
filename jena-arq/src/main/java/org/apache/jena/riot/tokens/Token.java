@@ -431,7 +431,9 @@ public final class Token
         {
             // Assumes that bnode labels have been sorted out already.
             case BNODE : return NodeFactory.createAnon(new AnonId(tokenImage)) ;
-            case IRI :   return NodeFactory.createURI(tokenImage) ; 
+            case IRI :
+                // RiotLib.createIRIorBNode(tokenImage) includes processing <_:label>
+                return NodeFactory.createURI(tokenImage) ; 
             case PREFIXED_NAME :
                 if ( pmap == null )
                     return NodeFactory.createURI("urn:prefixed-name:"+tokenImage+":"+tokenImage2) ;
