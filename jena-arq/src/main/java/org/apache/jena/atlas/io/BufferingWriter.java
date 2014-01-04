@@ -44,12 +44,16 @@ public final class BufferingWriter extends Writer {
 
     private char[]           buffer    = new char[SIZE] ;
     private int              idx       = 0 ;
-    // *** AWriter?
     private Writer           out ;
 
     /** Create a buffering writer */
     public BufferingWriter(Writer dest) {
         this(dest, SIZE, BLOB_SIZE) ;
+    }
+
+    /** Create a buffering writer */
+    public BufferingWriter(Writer dest, int size) {
+        this(dest, size, size/2) ;
     }
 
     /** Create a buffering writer */

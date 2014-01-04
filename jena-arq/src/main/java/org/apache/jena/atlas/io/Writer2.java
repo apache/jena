@@ -32,8 +32,12 @@ public class Writer2 extends AWriterBase implements AWriter, Closeable
 
     public static Writer2 wrap(Writer writer)
     {
-        if ( ! ( writer instanceof BufferedWriter ) )
-            writer = new BufferedWriter(writer) ;
+        if ( writer instanceof BufferedWriter )
+            return new Writer2(writer) ;
+        if ( writer instanceof BufferingWriter )
+            return new Writer2(writer) ;
+        
+        writer = new BufferingWriter(writer) ;
         return new Writer2(writer) ;
     }
     
