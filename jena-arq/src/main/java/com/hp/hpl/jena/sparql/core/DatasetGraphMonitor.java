@@ -26,6 +26,7 @@ import java.util.List ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /** Connect a DatasetGraph to a DatasetChanges monitor.
@@ -191,6 +192,12 @@ public class DatasetGraphMonitor extends DatasetGraphWrapper
     private void record(QuadAction action, Node g, Node s, Node p, Node o)
     {
         monitor.change(action, g, s, p, o) ;
+    }
+    
+    @Override
+    public void sync() {
+        SystemARQ.syncObject(monitor) ;
+        super.sync() ;
     }
 }
 

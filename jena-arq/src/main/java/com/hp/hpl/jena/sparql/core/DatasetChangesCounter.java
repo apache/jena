@@ -67,6 +67,5 @@ public class DatasetChangesCounter implements DatasetChanges
         countNoAdd    = 0 ;
         countNoDelete = 0 ;
     }
-
 }
 

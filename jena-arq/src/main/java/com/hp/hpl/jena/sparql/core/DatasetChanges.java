@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.Node ;
 /** Interface for notification of changes
  * (adds and deletes of quads) to a DatasetGraph
  */
-public interface DatasetChanges //extends Transactional
+public interface DatasetChanges
 {
     /** Indicator that a sequence of changes is about to start */ 
     public void start() ;
