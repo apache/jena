@@ -130,7 +130,7 @@ public class IO
     /** Create a writer that uses UTF-8 encoding and is buffered. */ 
     static public Writer asBufferedUTF8(OutputStream out) {
         Writer w =  new OutputStreamWriter(out, utf8.newEncoder());
-        return new BufferedWriter(w) ;
+        return new BufferingWriter(w) ;
     }
 
     /** Wrap in a general writer interface */ 
