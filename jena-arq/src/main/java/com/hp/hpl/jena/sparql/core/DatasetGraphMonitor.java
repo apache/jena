@@ -18,17 +18,17 @@
 
 package com.hp.hpl.jena.sparql.core ;
 
+import static org.apache.jena.atlas.iterator.Iter.take ;
+
 import java.util.Iterator ;
 import java.util.List ;
-
-import static org.apache.jena.atlas.iterator.Iter.take ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
-/** Connect a DatasetChanges instance to a DatasetGraph.
+/** Connect a DatasetGraph to a DatasetChanges monitor.
  *  Any add or delete to the DatasetGraph is notified to the
  *  monitoring object with a {@linkplain QuadAction} to indicate
  *  the change made.   
@@ -36,20 +36,52 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class DatasetGraphMonitor extends DatasetGraphWrapper
 {
-    /** Whether to see if a quad action will change the dataset - test before add for existence, test before elete for absence */   
+    /** Whether to see if a quad action will change the dataset - test before add for existence, test before delete for absence */   
     private boolean CheckFirst = true ;
     /** Whether to record a no-op (maybe as a comment) */   
     private boolean RecordNoAction = true ;
     /** Where to send the notifications */  
     private final DatasetChanges monitor ;
 
+    /**
+     * Create a DatasetGraph wrapper that monitors the dataset for changes (add or delete quads).
+     * Use this DatasetGraph for all operations in order to record changes.
+     * Note whether additions of deletions cause an actual change to the dataset or not.
+     * @param dsg       The DatasetGraph to monitor
+     * @param monitor   The handler for a change
+     *         
+     * @see DatasetChanges
+     * @see QuadAction
+     */
     public DatasetGraphMonitor(DatasetGraph dsg, DatasetChanges monitor) 
     {
         super(dsg) ;
         this.monitor = monitor ;
     }
 
+    /**
+     * Create a DatasetGraph wrapper that monitors the dataset for changes (add or delete quads).
+     * Use this DatasetGraph for all operations in order to record changes.  
+     * @param dsg       The DatasetGraph to monitor
+     * @param monitor   The handler for a change
+     * @param recordOnlyIfRealChange
+     *         If true, check to see if the chnage would have an effect (e.g. add is a new quad).
+     *         If false, log changes as ADD/DELETE regardless of whether the dataset actually changes.
+     *         
+     * @see DatasetChanges
+     * @see QuadAction
+     */
+    public DatasetGraphMonitor(DatasetGraph dsg, DatasetChanges monitor, boolean recordOnlyIfRealChange) 
+    {
+        super(dsg) ;
+        CheckFirst = recordOnlyIfRealChange ;
+        this.monitor = monitor ;
+    }
+
+    /** Return the monitor */ 
     public DatasetChanges getMonitor()      { return monitor ; }
+    
+    /** Return the monitored DatasetGraph */
     public DatasetGraph   monitored()       { return getWrapped() ; }
 
     @Override public void add(Quad quad)
