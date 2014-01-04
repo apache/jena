@@ -46,9 +46,9 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
         }
     }
 
-    private final DatasetGraph         dsg ;
     private final ThreadLocalReadWrite readWrite     = new ThreadLocalReadWrite() ;
     private final ThreadLocalBoolean   inTransaction = new ThreadLocalBoolean() ;
+    private DatasetGraph dsg ;
 
     public DatasetGraphWithLock(DatasetGraph dsg) {
         this.dsg = dsg ;
@@ -76,19 +76,23 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
         return inTransaction.get() ;
     }
 
+    protected boolean isTransactionType(ReadWrite readWriteType) {
+        return readWrite.get() == readWriteType ;
+    }
+
     @Override
     protected void _begin(ReadWrite readWrite) {
         this.readWrite.set(readWrite) ;
-        boolean b = (readWrite == ReadWrite.READ) ;
-        dsg.getLock().enterCriticalSection(b) ;
+        boolean b = isTransactionType(ReadWrite.READ) ;
+        get().getLock().enterCriticalSection(b) ;
         inTransaction.set(true) ;
     }
 
     @Override
     protected void _commit() {
-        if ( readWrite.get() == ReadWrite.WRITE )
+        if ( isTransactionType(ReadWrite.WRITE) )
             sync() ;
-        dsg.getLock().leaveCriticalSection() ;
+        get().getLock().leaveCriticalSection() ;
         this.readWrite.set(null) ;
         inTransaction.set(false) ;
     }
@@ -96,7 +100,7 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     @Override
     protected void _abort() {
         // OK for read, not for write.
-        if ( readWrite.get() == ReadWrite.WRITE ) {
+        if ( isTransactionType(ReadWrite.WRITE) ) {
             // Still clean up.
             _end() ;
             throw new JenaTransactionException("Can't abort a write lock-transaction") ;
@@ -107,14 +111,14 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     @Override
     protected void _end() {
         if ( isInTransaction() )
-            dsg.getLock().leaveCriticalSection() ;
+            get().getLock().leaveCriticalSection() ;
         inTransaction.set(false) ;
     }
 
     @Override
     protected void _close() {
-        if ( dsg != null )
-            dsg.close() ;
+        if ( get() != null )
+            get().close() ;
     }
 
     @Override
@@ -124,13 +128,13 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
 
     @Override
     public void sync() {
-        SystemARQ.sync(dsg) ;
+        SystemARQ.sync(get()) ;
     }
 
     @Override
     public String toString() {
         try {
-            return dsg.toString() ;
+            return get().toString() ;
         } catch (Exception ex) {
             return Lib.className(this) ;
         }
