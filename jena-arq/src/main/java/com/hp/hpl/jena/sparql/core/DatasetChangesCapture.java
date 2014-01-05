@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.ArrayList ;
 import java.util.Collections ;
+import java.util.LinkedList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.Pair ;
@@ -29,7 +29,14 @@ import com.hp.hpl.jena.graph.Node ;
 /** Capture a record of quad actions */ 
 public class DatasetChangesCapture implements DatasetChanges
 {
-    final private List<Pair<QuadAction, Quad>> actions = new ArrayList<Pair<QuadAction, Quad>>() ;
+    // ArrayLists have an annoying issue that they grow by copying the internal []-array.
+    // This growth is by a fixed factor of adding 50% which for an array
+    // with little guidance as to likely size, can lead to undesirable GC
+    // and copy-time issues.
+    // Using a LinkedList avoids this although it adds overhead for list entries.  
+    final private List<Pair<QuadAction, Quad>> actions = new LinkedList<Pair<QuadAction,Quad>>() ;  
+        //new ArrayList<Pair<QuadAction, Quad>>() ;
+        
     final private boolean captureAdd ;
     final private boolean captureDelete ;
     final private boolean captureNoAdd ;
