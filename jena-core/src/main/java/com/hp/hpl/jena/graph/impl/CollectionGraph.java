@@ -29,7 +29,6 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
@@ -47,8 +46,6 @@ import java.util.Set;
  * Does not support deleting triples from the iterator
  * </li><li>
  * Does not handle literal typing
- * </li><li>
- * Does not handle lang tag equality.
  * </li></ul>
  */
 public class CollectionGraph extends GraphBase
