@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.transaction;
 
+import org.junit.Ignore ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.Dataset ;
@@ -37,11 +38,12 @@ public class TestTransactionMem extends AbstractTestTransaction
     }
     
     // Tests that don't make sense because they abort a write transaction.
-    @Test @Override public void transaction_err_10() {} 
-    @Test @Override public void transaction_err_12() {} 
-    @Test @Override public void transaction_03() {} 
-    @Test @Override public void transaction_05() {} 
-    @Test @Override public void transaction_06() {} 
+    // (Using org.junit.Assume would be better?)
+    @Test @Override @Ignore public void transaction_err_10() {} 
+    @Test @Override @Ignore public void transaction_err_12() {} 
+    @Test @Override @Ignore public void transaction_03() {} 
+    @Test @Override @Ignore public void transaction_05() {} 
+    @Test @Override @Ignore public void transaction_06() {} 
     
  }
 
