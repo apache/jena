@@ -27,6 +27,7 @@ import com.hp.hpl.jena.sparql.algebra.Transform ;
 public class TestTransformFilters extends AbstractTestTransform
 {
     private Transform t_equality    = new TransformFilterEquality() ;
+    private Transform t_inequality  = new TransformFilterInequality() ;
     private Transform t_disjunction = new TransformFilterDisjunction() ;
     private Transform t_expandOneOf = new TransformExpandOneOf() ;
     private Transform t_implicitJoin = new TransformFilterImplicitJoin() ;
@@ -904,5 +905,82 @@ public class TestTransformFilters extends AbstractTestTransform
              "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))",
              new TransformJoinStrategy(),
              "(conditional (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))");
+    }
+    
+    @Test public void inequality01()
+    {
+        testOp("(filter (!= ?x <x>) (bgp ( ?s ?p ?x)) )",
+             t_inequality,
+             "(minus (bgp ( ?s ?p ?x)) (table (vars ?x) (row [?x <x>])))") ;
+    }
+    
+    @Test public void inequality02()
+    {
+        // Not safe on strings
+        testOp("(filter (!= ?x 'x') (bgp ( ?s ?p ?x)) )",
+             t_inequality,
+             (String[])null) ;
+    }
+
+    @Test public void inequality03()
+    {
+        // Not safe on numbers
+        testOp("(filter (!= ?x 123) (bgp ( ?s ?p ?x)) )",
+             t_inequality,
+             (String[])null) ;
+    }
+    
+    @Test public void inequality04()
+    {
+        // Unused
+        testOp("(filter (!= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
+             t_inequality,
+             "(table empty)") ;
+    }
+    
+    @Test public void inequality05()
+    {
+        // Can't optimize if filter does not cover vars in LHS 
+        testOp("(filter (!= ?x2 <x>) (conditional (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))",
+             t_equality,
+             (String[])null) ;
+    }
+    
+    @Test public void inequality06()
+    {
+        testOp("(filter (!= ?x <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))",
+             t_inequality,
+             "(minus (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))) (table (vars ?x) (row [?x <x>])))") ;
+    }
+    
+    @Test public void inequality07()
+    {
+        testOp("(filter (!= ?x <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))",
+             t_inequality,
+             "(minus (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))) (table (vars ?x) (row [?x <x>])))") ;
+    }
+    
+    @Test public void inequality08()
+    {
+        // Tests use of multiple != conditions on same variable
+        testOp("(filter ((!= ?x <x>) (!= ?x <y>)) (bgp ( ?s ?p ?x)) )",
+             t_inequality,
+             "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?x <y>]) (row [?x <x>])))") ;
+    }
+    
+    @Test public void inequality09()
+    {
+        // Tests use of multiple != conditions on different variables
+        testOp("(filter ((!= ?x <x>) (!= ?p <y>)) (bgp ( ?s ?p ?x)) )",
+             t_inequality,
+             "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <y>] [?x <x>])))") ;
+    }
+    
+    @Test public void inequality10()
+    {
+        // Tests use of multiple != conditions on both same and different variables
+        testOp("(filter ((!= ?x <x>) (!= ?x <y>) (!= ?p <type>)) (bgp ( ?s ?p ?x)) )",
+             t_inequality,
+             "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <type>] [?x <y>]) (row [?p <type>] [?x <x>])))") ;
     }
 }
