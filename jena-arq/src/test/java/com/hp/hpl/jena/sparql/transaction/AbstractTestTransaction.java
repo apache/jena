@@ -29,103 +29,102 @@ import com.hp.hpl.jena.sparql.JenaTransactionException ;
 
 public abstract class AbstractTestTransaction extends BaseTest
 {
-    //MIGRATE
     protected abstract Dataset create() ;
     
-    @Test public void transaction_err_00()
-    {
+    @Test
+    public void transaction_err_00() {
         Dataset ds = create() ;
         assertTrue(ds.supportsTransactions()) ;
     }
-    
-    @Test public void transaction_01()
-    {
+
+    @Test
+    public void transaction_01() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.READ) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.end() ;
-        assertFalse(ds.isInTransaction()) ; 
+        assertFalse(ds.isInTransaction()) ;
     }
 
-    @Test public void transaction_02()
-    {
+    @Test
+    public void transaction_02() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.commit() ;
-        assertFalse(ds.isInTransaction()) ; 
+        assertFalse(ds.isInTransaction()) ;
     }
 
-    @Test public void transaction_03()
-    {
+    @Test
+    public void transaction_03() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.abort() ;
-        assertFalse(ds.isInTransaction()) ; 
+        assertFalse(ds.isInTransaction()) ;
     }
 
-    @Test public void transaction_04()
-    {
+    @Test
+    public void transaction_04() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.commit() ;
-        assertFalse(ds.isInTransaction()) ; 
+        assertFalse(ds.isInTransaction()) ;
         ds.end() ;
-        assertFalse(ds.isInTransaction()) ; 
+        assertFalse(ds.isInTransaction()) ;
     }
 
-    @Test public void transaction_05()
-    {
+    @Test
+    public void transaction_05() {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.abort() ;
-        assertFalse(ds.isInTransaction()) ; 
+        assertFalse(ds.isInTransaction()) ;
         ds.end() ;
-        assertFalse(ds.isInTransaction()) ; 
+        assertFalse(ds.isInTransaction()) ;
     }
 
-    @Test public void transaction_06()
-    {
+    @Test
+    public void transaction_06() {
         // .end is not necessary
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.abort() ;
         assertFalse(ds.isInTransaction()) ;
 
         ds.begin(ReadWrite.WRITE) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.abort() ;
         assertFalse(ds.isInTransaction()) ;
     }
-    
+
     // Patterns.
-    @Test public void transaction_07()
-    {
+    @Test
+    public void transaction_07() {
         Dataset ds = create() ;
         read1(ds) ;
         read1(ds) ;
     }
-    
-    @Test public void transaction_08()
-    {
+
+    @Test
+    public void transaction_08() {
         Dataset ds = create() ;
         read2(ds) ;
         read2(ds) ;
     }
-    
-    @Test public void transaction_09()
-    {
+
+    @Test
+    public void transaction_09() {
         Dataset ds = create() ;
         write(ds) ;
         write(ds) ;
     }
-    
-    @Test public void transaction_10()
-    {
+
+    @Test
+    public void transaction_10() {
         Dataset ds = create() ;
         write(ds) ;
         read2(ds) ;
@@ -170,95 +169,93 @@ public abstract class AbstractTestTransaction extends BaseTest
     @Test 
     public void transaction_err_12()    { testAbortCommit(WRITE) ; }
 
-    private void read1(Dataset ds)
-    {
+    private void read1(Dataset ds) {
         ds.begin(ReadWrite.READ) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.commit() ;
         assertFalse(ds.isInTransaction()) ;
         ds.end() ;
     }
-    
-    private void read2(Dataset ds)
-    {
+
+    private void read2(Dataset ds) {
         ds.begin(ReadWrite.READ) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.end() ;
         assertFalse(ds.isInTransaction()) ;
     }
 
-    private void write(Dataset ds)
-    {
+    private void write(Dataset ds) {
         ds.begin(ReadWrite.WRITE) ;
-        assertTrue(ds.isInTransaction()) ; 
+        assertTrue(ds.isInTransaction()) ;
         ds.commit() ;
         assertFalse(ds.isInTransaction()) ;
         ds.end() ;
     }
-    
 
     // Error conditions that should be detected.
-    
-    private void testBeginBegin(ReadWrite mode1, ReadWrite mode2)
-    {
+
+    private void testBeginBegin(ReadWrite mode1, ReadWrite mode2) {
         Dataset ds = create() ;
         ds.begin(mode1) ;
         try {
             ds.begin(mode2) ;
-            fail("Expected transaction exception - begin-begin ("+mode1+", "+mode2+")") ;
-        } catch (JenaTransactionException ex)
-        { ds.end() ; }
+            fail("Expected transaction exception - begin-begin (" + mode1 + ", " + mode2 + ")") ;
+        }
+        catch (JenaTransactionException ex) {
+            ds.end() ;
+        }
     }
     
-    private void testCommitCommit(ReadWrite mode)
-    {
+    private void testCommitCommit(ReadWrite mode) {
         Dataset ds = create() ;
         ds.begin(mode) ;
         ds.commit() ;
         try {
             ds.commit() ;
-            fail("Expected transaction exception - commit-commit("+mode+")") ;
-        } catch (JenaTransactionException ex)
-        { ds.end() ; }
+            fail("Expected transaction exception - commit-commit(" + mode + ")") ;
+        }
+        catch (JenaTransactionException ex) {
+            ds.end() ;
+        }
     }
-    
-    private void testCommitAbort(ReadWrite mode)
-    {
+
+    private void testCommitAbort(ReadWrite mode) {
         Dataset ds = create() ;
         ds.begin(mode) ;
         ds.commit() ;
         try {
             ds.abort() ;
-            fail("Expected transaction exception - commit-commit("+mode+")") ;
-        } catch (JenaTransactionException ex)
-        { ds.end() ; }
+            fail("Expected transaction exception - commit-abort(" + mode + ")") ;
+        }
+        catch (JenaTransactionException ex) {
+            ds.end() ;
+        }
     }
 
-    private void testAbortAbort(ReadWrite mode)
-    {
+    private void testAbortAbort(ReadWrite mode) {
         Dataset ds = create() ;
         ds.begin(mode) ;
         ds.abort() ;
         try {
             ds.abort() ;
-            fail("Expected transaction exception - commit-commit("+mode+")") ;
-        } catch (JenaTransactionException ex)
-        { ds.end() ; }
+            fail("Expected transaction exception - abort-abort(" + mode + ")") ;
+        }
+        catch (JenaTransactionException ex) {
+            ds.end() ;
+        }
     }
 
-
-    private void testAbortCommit(ReadWrite mode)
-    {
+    private void testAbortCommit(ReadWrite mode) {
         Dataset ds = create() ;
         ds.begin(mode) ;
         ds.abort() ;
         try {
             ds.commit() ;
-            fail("Expected transaction exception - commit-commit("+mode+")") ;
-        } catch (JenaTransactionException ex)
-        { ds.end() ; }
-    }
-    
-
+            fail("Expected transaction exception - abort-commit(" + mode + ")") ;
+        }
+        catch (JenaTransactionException ex) {
+            ds.end() ;
+        }
+    }    
 }
 

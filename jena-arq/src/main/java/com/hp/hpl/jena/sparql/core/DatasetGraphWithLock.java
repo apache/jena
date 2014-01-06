@@ -28,8 +28,9 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 /**
  * A DatasetGraph that uses the dataset lock to give weak transactional
- * behaviour. Only supports multiple-reader OR single-writer, and no write-transction
- * abort. Transactions are not durable.
+ * behaviour, that is the application see transaction but they are not durable.
+ * Only provides multiple-reader OR single-writer, and no write-transction
+ * abort.
  */
 public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Sync {
     static class ThreadLocalBoolean extends ThreadLocal<Boolean> {
@@ -92,33 +93,42 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
     protected void _commit() {
         if ( isTransactionType(ReadWrite.WRITE) )
             sync() ;
-        get().getLock().leaveCriticalSection() ;
-        this.readWrite.set(null) ;
-        inTransaction.set(false) ;
+        _end() ;
     }
 
     @Override
     protected void _abort() {
-        // OK for read, not for write.
-        if ( isTransactionType(ReadWrite.WRITE) ) {
+        if ( isTransactionType(ReadWrite.WRITE) && ! abortImplemented() ) {
             // Still clean up.
-            _end() ;
+            _end() ; // This clears the transaction type.  
             throw new JenaTransactionException("Can't abort a write lock-transaction") ;
         }
         _end() ;
     }
 
+    /** Return whether abort is provided.
+     *  Just by locking, a transaction can not write-abort (the chnages have been made and not recorded).
+     *  Subclasses may do better and still rely on this locking class.  
+     */
+    protected boolean abortImplemented() { return false ; }
+
     @Override
     protected void _end() {
-        if ( isInTransaction() )
+        if ( isInTransaction() ) {
             get().getLock().leaveCriticalSection() ;
-        inTransaction.set(false) ;
+            clearState() ;
+        }
     }
 
     @Override
     protected void _close() {
         if ( get() != null )
             get().close() ;
+    }
+    
+    private void clearState() {
+        inTransaction.set(false) ;
+        readWrite.set(null) ;
     }
 
     @Override
