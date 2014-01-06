@@ -47,6 +47,7 @@ public abstract class AbstractTestTransform extends BaseTest {
 
     public void testOp(String input, Transform transform, String... output) {
         Op op1 = SSE.parseOp(input) ;
+        test(op1, transform, output);
     }
 
     public void test(Op op1, Transform transform, String... output) {
