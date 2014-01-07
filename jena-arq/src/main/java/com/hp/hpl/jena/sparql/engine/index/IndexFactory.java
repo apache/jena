@@ -22,7 +22,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.index.HashIndexTable.MissingBindingException ;
+import com.hp.hpl.jena.sparql.engine.index.HashIndexTable.MissingBindingException;
 
 /**
  * Creates {@link com.hp.hpl.jena.sparql.engine.index.IndexTable}s for use by
@@ -32,13 +32,15 @@ import com.hp.hpl.jena.sparql.engine.index.HashIndexTable.MissingBindingExceptio
  */
 public class IndexFactory {
 
-	public static IndexTable createIndex(Set<Var> commonVars, QueryIterator data)
-	{
-		try {
-			return new HashIndexTable(commonVars, data) ;
-		} catch (MissingBindingException e) {
-			return new LinearIndex(commonVars, data, e.getData(), e.getMap()) ;
-		}
-	}
+    public static IndexTable createIndex(Set<Var> commonVars, QueryIterator data) {
+        try {
+            if (commonVars.size() == 1) {
+                return new SetIndexTable(commonVars, data);
+            } else {
+                return new HashIndexTable(commonVars, data);
+            }
+        } catch (MissingBindingException e) {
+            return new LinearIndex(commonVars, data, e.getData(), e.getMap());
+        }
+    }
 }
-
