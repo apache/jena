@@ -317,6 +317,14 @@ public class ARQ
     public static final Symbol optFilterEquality = ARQConstants.allocSymbol("optFilterEquality") ;
     
     /**
+     * Context key controlling whether the standard optimizer applies 
+     * optimizations to inequalities in FILTERs
+     * This optimization is conservative - it does not take place if
+     * there is a potential risk of changing query semantics
+     */
+    public static final Symbol optFilterInequality = ARQConstants.allocSymbol("optFilterInequality") ;
+    
+    /**
      * Context key controlling whether the standard optimizer applies optimizations to implicit joins in FILTERs.
      * This optimization is conservative - it does not take place if there is a potential risk of changing query semantics.
      */
