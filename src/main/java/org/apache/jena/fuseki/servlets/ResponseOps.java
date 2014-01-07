@@ -24,7 +24,7 @@ import java.util.Map ;
 
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.web.HttpNames ;
 
 public class ResponseOps
 {

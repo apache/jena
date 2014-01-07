@@ -22,7 +22,7 @@ import java.util.Enumeration ;
 
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.graph.Graph ;

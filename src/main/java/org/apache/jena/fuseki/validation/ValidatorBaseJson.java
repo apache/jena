@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.fuseki.servlets.ActionErrorException ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.ServletBase ;

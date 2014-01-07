@@ -35,8 +35,11 @@ import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class DatasetRef implements DatasetMXBean, Counters
 {
-    public String name                          = null ;
-    public DatasetGraph dataset                 = null ;
+    public final String name ;
+    
+    // EITHER a link OR a dataset  
+    private DatasetGraph dataset                = null ;
+    private DatasetRef   link                   = null ;
 
     public ServiceRef query                     = new ServiceRef("query") ;
     public ServiceRef update                    = new ServiceRef("update") ;
@@ -53,7 +56,7 @@ public class DatasetRef implements DatasetMXBean, Counters
     private List<ServiceRef> serviceRefs        = new ArrayList<ServiceRef>() ;
     private volatile DatasetStatus state = UNINITIALIZED ;
     
-    public DatasetRef() {}
+    public DatasetRef(String name) { this.name = DatasetRef.canonicalDatasetPath(name) ; }
     
     public boolean isActive() { return getState() == ACTIVE ; }  
     
@@ -106,6 +109,14 @@ public class DatasetRef implements DatasetMXBean, Counters
         serviceRefs.add(srvRef) ;
         for ( String ep : srvRef.endpoints )
             endpoints.put(ep, srvRef) ;
+    }
+
+    public DatasetGraph getDataset() {
+        return dataset ;
+    }
+
+    public void setDataset(DatasetGraph dataset) {
+        this.dataset = dataset ;
     }
 
     public ServiceRef getServiceRef(String service) {
@@ -278,7 +289,9 @@ public class DatasetRef implements DatasetMXBean, Counters
         cs.add(CounterName.GSPoptionsBad) ;
     }
     
-    public static String canocialDatasetPath(String datasetPath) {
+    public static String canonicalDatasetPath(String datasetPath) {
+        if ( datasetPath == null )
+            return datasetPath ;
         if ( datasetPath.equals("/") )
             datasetPath = "" ;
         else

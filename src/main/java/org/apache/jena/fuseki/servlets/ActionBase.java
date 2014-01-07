@@ -28,10 +28,8 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-
-//import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 

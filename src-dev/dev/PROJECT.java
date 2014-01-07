@@ -21,10 +21,14 @@ package dev;
 public class PROJECT {
     // Naming 
     //  fuseki:Service is the endpoints = dataset
-
+    
     // Test for servlet context
     
     // async operations e.g. backup, stats
+    
+    // RDF patch
+    //   /ds/patch service to apply a patch.
+    // "This DSG is that DSG + wrapper"
     
     // TDB and server configuration parameters.
     //   per database -> assembler.

@@ -152,7 +152,7 @@ public class ActionDatasets extends ActionCtl {
     private JsonValue execGetDataset(HttpAction action) {
         action.log.info(format("[%d] GET dataset %s", action.id, action.dsRef.name)) ;
         JsonBuilder builder = new JsonBuilder() ;
-        String datasetPath = DatasetRef.canocialDatasetPath(action.dsRef.name) ;
+        String datasetPath = DatasetRef.canonicalDatasetPath(action.dsRef.name) ;
         DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
         if ( dsDesc == null )
             ServletOps.errorNotFound("Not found: dataset "+action.dsRef.name);
@@ -178,7 +178,7 @@ public class ActionDatasets extends ActionCtl {
             name = "" ;
         action.log.info(format("[%d] POST dataset %s", action.id, name)) ;
         
-        if ( action.dsRef.dataset == null )
+        if ( action.dsRef.getDataset() == null )
             ServletOps.errorNotFound("Not found: dataset "+action.dsRef.name);
         DatasetRef dsDesc = action.dsRef ;
         String s = action.request.getParameter("state") ;
@@ -241,12 +241,12 @@ public class ActionDatasets extends ActionCtl {
                 action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
 
             String datasetName = object.getLexicalForm() ;
-            String datasetPath = DatasetRef.canocialDatasetPath(datasetName) ;
+            String datasetPath = DatasetRef.canonicalDatasetPath(datasetName) ;
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
             
             if ( DatasetRegistry.get().isRegistered(datasetPath) )
                 // And abort.
-                ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetName) ;
+                ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
                 
             model.removeAll(null, pStatus, null) ;
             model.add(subject, pStatus, FusekiVocab.stateActive) ;

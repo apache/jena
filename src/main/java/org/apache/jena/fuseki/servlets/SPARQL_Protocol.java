@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static org.apache.jena.fuseki.HttpNames.paramDefaultGraphURI ;
-import static org.apache.jena.fuseki.HttpNames.paramNamedGraphURI ;
+import static org.apache.jena.riot.web.HttpNames.paramDefaultGraphURI ;
+import static org.apache.jena.riot.web.HttpNames.paramNamedGraphURI ;
 
 import java.util.Arrays ;
 import java.util.Collections ;

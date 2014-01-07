@@ -26,7 +26,7 @@ import javax.servlet.ServletOutputStream ;
 
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
-import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.* ;
 
 import com.hp.hpl.jena.graph.Graph ;

@@ -90,7 +90,7 @@ public class ActionStats extends ActionCtl
         action.log.info(format("[%d] GET stats dataset %s", action.id, action.dsRef.name)) ;
         
         JsonBuilder builder = new JsonBuilder() ;
-        String datasetPath = DatasetRef.canocialDatasetPath(action.dsRef.name) ;
+        String datasetPath = DatasetRef.canonicalDatasetPath(action.dsRef.name) ;
         builder.startObject("TOP") ;
         
         builder.key("datasets") ;

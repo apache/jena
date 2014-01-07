@@ -34,7 +34,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.slf4j.Logger ;
 
@@ -77,12 +77,11 @@ public class FusekiConfig {
 
     // ---- DatasetRef used where there isn't a real Dataset e.g. the SPARQL processor.
     
-    private static DatasetRef   noDataset = new DatasetRef() ;
+    private static DatasetRef   noDataset = new DatasetRef("") ;
 
     private static DatasetGraph dummyDSG  = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
     static {
-        noDataset.name = "" ;
-        noDataset.dataset = dummyDSG ;
+        noDataset.setDataset(dummyDSG) ; 
         noDataset.query.endpoints.add(HttpNames.ServiceQuery) ;
         noDataset.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
         noDataset.allowDatasetUpdate = false ;
@@ -108,9 +107,8 @@ public class FusekiConfig {
         if ( params.fusekiConfigFile != null )
             log.warn("Configuration file found while processing command line dataset configuration") ;
         
-        DatasetRef dbDesc = new DatasetRef() ;
-        dbDesc.name = DatasetRef.canocialDatasetPath(params.datasetPath) ;
-        dbDesc.dataset = params.dsg ;
+        DatasetRef dbDesc = new DatasetRef(params.datasetPath) ;
+        dbDesc.setDataset(params.dsg) ;
         dbDesc.query.endpoints.add(HttpNames.ServiceQuery) ;
         dbDesc.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
 
@@ -296,9 +294,9 @@ public class FusekiConfig {
     /** Build a DatasetRef from an assember starting at Resource svc */
     public static DatasetRef processService(Resource svc) {
         log.info("Service: " + nodeLabel(svc)) ;
-        DatasetRef sDesc = new DatasetRef() ;
-        sDesc.name = ((Literal)getOne(svc, "fu:name")).getLexicalForm() ;
-        sDesc.name = DatasetRef.canocialDatasetPath(sDesc.name) ;
+        
+        String name = ((Literal)getOne(svc, "fu:name")).getLexicalForm() ;
+        DatasetRef sDesc = new DatasetRef(name) ;
         log.info("  name = " + sDesc.name) ;
 
         addServiceEP("query", sDesc.name, sDesc.query, svc, "fu:serviceQuery") ;
@@ -321,7 +319,7 @@ public class FusekiConfig {
             throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
 
         Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
-        sDesc.dataset = ds.asDatasetGraph() ;
+        sDesc.setDataset(ds.asDatasetGraph()) ;
         return sDesc ;
 
     }
@@ -334,9 +332,7 @@ public class FusekiConfig {
     }
 
     public static void configureOneDataset(DatasetRef dsDesc) {
-        String datasetPath = DatasetRef.canocialDatasetPath(dsDesc.name) ;
-        registerDataset(datasetPath, dsDesc) ;
-        // Add JMX beans to record dataset and it's services.
+        registerDataset(dsDesc.name, dsDesc) ;
         addJMX(dsDesc) ;
     }
     

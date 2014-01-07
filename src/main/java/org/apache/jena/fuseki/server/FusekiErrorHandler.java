@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.web.HttpSC ;
-import org.eclipse.jetty.http.HttpHeaders ;
 import org.eclipse.jetty.http.HttpMethods ;
 import org.eclipse.jetty.http.MimeTypes ;
 import org.eclipse.jetty.server.AbstractHttpConnection ;
@@ -47,7 +47,7 @@ public class FusekiErrorHandler extends ErrorHandler
             return;
         
         response.setContentType(MimeTypes.TEXT_PLAIN_UTF_8) ;
-        response.setHeader(HttpHeaders.CACHE_CONTROL, "must-revalidate,no-cache,no-store") ;
+        FusekiLib.setNoCache(response) ;
         
         ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024) ;
         //String writer = IO.UTF8(null) ;

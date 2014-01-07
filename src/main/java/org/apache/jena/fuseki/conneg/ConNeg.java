@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.conneg;
 
-import static org.apache.jena.fuseki.HttpNames.hAcceptCharset ;
+import static org.apache.jena.riot.web.HttpNames.hAcceptCharset ;
 
 import javax.servlet.http.HttpServletRequest ;
 

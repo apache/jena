@@ -21,6 +21,7 @@ package org.apache.jena.fuseki;
 import java.util.Iterator ;
 
 import javax.servlet.http.HttpServletRequest ;
+import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.MultiMapToList ;
@@ -28,6 +29,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.web.HttpNames ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -71,6 +73,11 @@ public class FusekiLib {
         return RDFLanguages.contentTypeToLang(contentTypeHeader) ;
     }
 
+    public static void setNoCache(HttpServletResponse response) {
+        response.setHeader(HttpNames.hCacheControl, "must-revalidate,no-cache,no-store");
+        response.setHeader(HttpNames.hPragma, "no-cache");
+    }
+    
     static String fmtRequest(HttpServletRequest request) {
         StringBuffer sbuff = new StringBuffer() ;
         sbuff.append(request.getMethod()) ;

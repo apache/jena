@@ -105,11 +105,11 @@ public class HttpAction
             throw new FusekiException("Redefintion of DatasetRef in the request action") ;
         
         this.dsRef = desc ;
-        if ( desc == null || desc.dataset == null )
+        if ( desc == null || desc.getDataset() == null )
             throw new FusekiException("Null DatasetRef in the request action") ;
         
         this.datasetName = datasetUri ;
-        this.dsg = desc.dataset ;
+        this.dsg = desc.getDataset() ;
         DatasetGraph basedsg = unwrap(dsg) ;
 
         if ( isTransactional(basedsg) && isTransactional(dsg) ) {

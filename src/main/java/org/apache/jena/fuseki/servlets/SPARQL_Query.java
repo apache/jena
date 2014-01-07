@@ -19,7 +19,7 @@
 package org.apache.jena.fuseki.servlets ;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.HttpNames.* ;
+import static org.apache.jena.riot.web.HttpNames.* ;
 import static org.apache.jena.fuseki.server.CounterName.QueryExecErrors ;
 import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts ;
 import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
@@ -36,7 +36,7 @@ import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.web.HttpNames ;
 import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;

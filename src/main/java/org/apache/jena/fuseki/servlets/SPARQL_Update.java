@@ -20,10 +20,7 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
 import static org.apache.jena.fuseki.Fuseki.requestLog ;
-import static org.apache.jena.fuseki.HttpNames.paramRequest ;
-import static org.apache.jena.fuseki.HttpNames.paramUpdate ;
-import static org.apache.jena.fuseki.HttpNames.paramUsingGraphURI ;
-import static org.apache.jena.fuseki.HttpNames.paramUsingNamedGraphURI ;
+import static org.apache.jena.riot.web.HttpNames.* ;
 import static org.apache.jena.fuseki.server.CounterName.UpdateExecErrors ;
 
 import java.io.ByteArrayInputStream ;
@@ -42,7 +39,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.iri.IRI ;
 import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.riot.system.IRIResolver ;

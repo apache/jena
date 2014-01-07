@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.web.HttpNames ;
 
 // Move statics to a lib (ActionLib?)
 public abstract class ServletBase extends HttpServlet {
