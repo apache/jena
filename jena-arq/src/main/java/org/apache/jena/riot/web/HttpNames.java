@@ -21,18 +21,22 @@ package org.apache.jena.riot.web;
 public class HttpNames
 {
     public static final String hAccept              = "Accept" ;
-    public static final String hAllow               = "Allow" ;
     public static final String hAcceptEncoding      = "Accept-Encoding" ;
     public static final String hAcceptCharset       = "Accept-Charset" ;
     public static final String hAcceptRanges        = "Accept-Ranges" ;
     
+    public static final String hAllow               = "Allow" ;
     public static final String hContentEncoding     = "Content-Encoding" ;
     public static final String hContentLengh        = "Content-Length" ;
     public static final String hContentLocation     = "Content-Location" ;
     public static final String hContentRange        = "Content-Range" ;
     public static final String hContentType         = "Content-Type" ;
+    public static final String hPragma              = "Pragma" ;
+    public static final String hCacheControl        = "Cache-Control" ;
+    public static final String hRetryAfter          = "Retry-After" ;
     public static final String hServer              = "Server" ;
     public static final String hLocation            = "Location" ; 
+    public static final String hVary                = "Vary" ;
     public static final String charset              = "charset" ;
     
     // CORS: 
@@ -54,10 +58,12 @@ public class HttpNames
     public static final String paramOutput2         = "format" ;        // Alternative name 
     public static final String paramCallback        = "callback" ;
     public static final String paramForceAccept     = "force-accept" ;  // Force the accept header at the last moment
+    public static final String paramTimeout         = "timeout" ;
     
     public static final String paramUpdate          = "update" ;
-    public static final String paramRequest         = "request" ;       // Alternative name. 
-    
+    public static final String paramRequest         = "request" ; 
+    public static final String paramUsingGraphURI        = "using-graph-uri" ;
+    public static final String paramUsingNamedGraphURI   = "using-named-graph-uri" ;
     
     public static final String METHOD_DELETE        = "DELETE";
     public static final String METHOD_HEAD          = "HEAD";
@@ -71,14 +77,5 @@ public class HttpNames
     public static final String HEADER_IFMODSINCE    = "If-Modified-Since";
     public static final String HEADER_LASTMOD       = "Last-Modified";
     
-    public static final String ServiceQuery     = "/query" ;
-    public static final String ServiceQueryAlt  = "/sparql" ;
-    public static final String ServiceUpdate    = "/update" ;
-    public static final String ServiceData      = "/data" ;
-    public static final String ServiceUpload    = "/upload" ;
-    
-    // Posisble values of fields.
-    // TODO Pull in from results writer.
     public static final String valueDefault    = "default" ;
-    
 }
