@@ -226,6 +226,11 @@ public class Optimize implements Rewrite
         // See JENA-616.
         if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
             op = apply("Filter Equality", new TransformFilterEquality(), op) ;
+        
+        // Replace suitable FILTER(?x != TERM) with (minus (original) (table)) where the table contains
+        // the candidate rows to be eliminated
+        if ( context.isTrue(ARQ.optFilterInequality) )
+            op = apply("Filter Inequality", new TransformFilterInequality(), op);
 
         // Merge adjacent BGPs
         if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
