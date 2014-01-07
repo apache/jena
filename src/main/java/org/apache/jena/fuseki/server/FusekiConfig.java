@@ -32,9 +32,9 @@ import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.slf4j.Logger ;
 
@@ -82,8 +82,8 @@ public class FusekiConfig {
     private static DatasetGraph dummyDSG  = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
     static {
         noDataset.setDataset(dummyDSG) ; 
-        noDataset.query.endpoints.add(HttpNames.ServiceQuery) ;
-        noDataset.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
+        noDataset.query.endpoints.add(DEF.ServiceQuery) ;
+        noDataset.query.endpoints.add(DEF.ServiceQueryAlt) ;
         noDataset.allowDatasetUpdate = false ;
         noDataset.activate() ;
         // Don't register it.
@@ -109,16 +109,16 @@ public class FusekiConfig {
         
         DatasetRef dbDesc = new DatasetRef(params.datasetPath) ;
         dbDesc.setDataset(params.dsg) ;
-        dbDesc.query.endpoints.add(HttpNames.ServiceQuery) ;
-        dbDesc.query.endpoints.add(HttpNames.ServiceQueryAlt) ;
+        dbDesc.query.endpoints.add(DEF.ServiceQuery) ;
+        dbDesc.query.endpoints.add(DEF.ServiceQueryAlt) ;
 
         if ( params.allowUpdate ) {
-            dbDesc.update.endpoints.add(HttpNames.ServiceUpdate) ;
-            dbDesc.upload.endpoints.add(HttpNames.ServiceUpload) ;
-            dbDesc.readWriteGraphStore.endpoints.add(HttpNames.ServiceData) ;
+            dbDesc.update.endpoints.add(DEF.ServiceUpdate) ;
+            dbDesc.upload.endpoints.add(DEF.ServiceUpload) ;
+            dbDesc.readWriteGraphStore.endpoints.add(DEF.ServiceData) ;
             dbDesc.allowDatasetUpdate = true ;
         } else
-            dbDesc.readGraphStore.endpoints.add(HttpNames.ServiceData) ;
+            dbDesc.readGraphStore.endpoints.add(DEF.ServiceData) ;
         return Arrays.asList(dbDesc) ; 
     }
 

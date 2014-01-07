@@ -51,4 +51,12 @@ public class DEF
                                                                           contentTypeResultsXML,
                                                                           contentTypeTextPlain
                                                                           ) ;
+    
+    // Names for services in the default configuration
+    public static final String ServiceQuery         = "query" ;
+    public static final String ServiceQueryAlt      = "sparql" ;
+    public static final String ServiceUpdate        = "update" ;
+    public static final String ServiceData          = "data" ;
+    public static final String ServiceUpload        = "upload" ;
+    public static final String ServiceGeneralQuery  = "/sparql" ;
 }
