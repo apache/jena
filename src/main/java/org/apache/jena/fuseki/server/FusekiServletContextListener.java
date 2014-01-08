@@ -26,6 +26,7 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.atlas.lib.DS ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.slf4j.Logger ;
 
@@ -43,7 +44,7 @@ public class FusekiServletContextListener implements ServletContextListener {
     static public final String rootDirectory     = "/usr/share/fuseki" ;
     static public final String configurationFile = rootDirectory + "/config-fuseki.ttl" ;
     // ----
-    static public final String configDir = "configuration" ;
+    static public final String configDir = /* dir root + */ Fuseki.configDirName ;
     
     private Boolean initialized = false ;
 
@@ -73,6 +74,11 @@ public class FusekiServletContextListener implements ServletContextListener {
             }
             
             if ( initialSetup != null ) {
+                //FileOps.ensureDir(Fuseki.systemDatabaseName) ; 
+                // XXX Make relative.
+                FileOps.ensureDir(Fuseki.configDirName) ;
+                FileOps.ensureDir(Fuseki.systemFileArea) ;
+                
                 // Places to look:
                 // 1 - Fuseki v1 config file (deprecated)
                 // 2 - Directory of assemblers files "assemblers"

@@ -22,6 +22,8 @@ public class PROJECT {
     // Naming 
     //  fuseki:Service is the endpoints = dataset
     
+    // TDB : insert a lock file?
+    
     // Test for servlet context
     
     // async operations e.g. backup, stats

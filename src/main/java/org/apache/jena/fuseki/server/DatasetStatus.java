@@ -21,20 +21,19 @@ package org.apache.jena.fuseki.server;
 import com.hp.hpl.jena.rdf.model.Resource ;
 
 public enum DatasetStatus {
-    UNINITIALIZED("Uninitialized"), ACTIVE("Active"), CLOSING("Closing"), CLOSED("Closed"), DORMANT("Dormant") ;
+    UNINITIALIZED("Uninitialized"), ACTIVE("Active"), OFFLINE("Offline"), CLOSING("Closing"), CLOSED("Closed") ;
     public final String name ; 
     DatasetStatus(String string) { name = string ; }
     
     public static DatasetStatus status(Resource r) {
         if ( FusekiVocab.stateActive.equals(r) )
             return ACTIVE ;
-        if ( FusekiVocab.stateDormant.equals(r) )
-            return DORMANT ;
+        if ( FusekiVocab.stateOffline.equals(r) )
+            return OFFLINE ;
         if ( FusekiVocab.stateClosing.equals(r) )
             return CLOSING ;
         if ( FusekiVocab.stateClosed.equals(r) )
             return CLOSED ;
-        
         return null ;
     }
 }

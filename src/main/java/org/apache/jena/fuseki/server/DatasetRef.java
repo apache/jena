@@ -18,9 +18,8 @@
 
 package org.apache.jena.fuseki.server;
 
-import static org.apache.jena.fuseki.server.DatasetStatus.ACTIVE ;
+import static org.apache.jena.fuseki.server.DatasetStatus.* ;
 import static org.apache.jena.fuseki.server.DatasetStatus.CLOSING ;
-import static org.apache.jena.fuseki.server.DatasetStatus.DORMANT ;
 import static org.apache.jena.fuseki.server.DatasetStatus.UNINITIALIZED ;
 
 import java.util.* ;
@@ -86,12 +85,14 @@ public class DatasetRef implements DatasetMXBean, Counters
         setState(ACTIVE) ;
     }
     
-    public void dormant() {
-        if ( getState() == DORMANT )
-            Fuseki.serverLog.warn("Already dormant: dataset = "+name) ;
+    public void offline() {
+        if ( getState() == OFFLINE ) {
+            Fuseki.serverLog.warn("Already offline: dataset = "+name) ;
+            return ;
+        }
         if ( getState() == UNINITIALIZED )
             initServices() ;    
-        setState(DORMANT) ;
+        setState(OFFLINE) ;
     }
 
     @Override public String toString() { return "DatasetRef:'"+name+"'" ; }  
@@ -185,7 +186,7 @@ public class DatasetRef implements DatasetMXBean, Counters
             DatasetGraphTransaction dsgtxn = (DatasetGraphTransaction)dataset ;
             StoreConnection.release(dsgtxn.getLocation()) ;
         }
-        setState(DORMANT) ;
+        setState(OFFLINE) ;
     }
     
     //TODO Need to be able to set this from the config file.  

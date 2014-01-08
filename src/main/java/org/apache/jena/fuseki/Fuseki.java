@@ -74,6 +74,15 @@ public class Fuseki {
         return m ;
     }
 
+    /** Relative name of the directory for addition assembler descriptions */
+    static public final String        configDirName         = "configruation" ;
+    
+    /** Relative name of the directory for keeping files of assembler descriptions */
+    static public final String        systemDatabaseName    = "system" ;
+    
+    /** Relative name of the directory for keeping files controlled by Fuseki (e..g upload assmbler descriptions) */
+    static public final String        systemFileArea        = "system_files" ;
+
     /**
      * The name of the Fuseki server. Set to the string <code>Fuseki</code> by
      * default.

@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.server;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.fuseki.Fuseki ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
@@ -27,7 +28,8 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class SystemState {
-    private static String SystemDatabaseLocation = "system" ;
+    // XXX Make relative to Fuseki area 
+    private static String SystemDatabaseLocation = Fuseki.systemDatabaseName ;
     // Testing may reset this.
     public static Location location = new Location(SystemDatabaseLocation)  ;
     
@@ -48,7 +50,6 @@ public class SystemState {
     private static void init() {
         init$() ;
     }
-    
     
     public /* for testing */ static void init$() {
         if ( initialized )

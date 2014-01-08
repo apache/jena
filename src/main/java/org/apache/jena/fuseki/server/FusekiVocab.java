@@ -49,12 +49,12 @@ public class FusekiVocab
     // Internal
     
     private static final String stateNameActive      = DatasetStatus.ACTIVE.name ;
-    private static final String stateNameDormant     = DatasetStatus.DORMANT.name ;
+    private static final String stateNameOffline     = DatasetStatus.OFFLINE.name ;
     private static final String stateNameClosing     = DatasetStatus.CLOSING.name ;
     private static final String stateNameClosed      = DatasetStatus.CLOSED.name ;
     
     public static final Resource stateActive        = resource(stateNameActive) ;
-    public static final Resource stateDormant       = resource(stateNameDormant) ;
+    public static final Resource stateOffline       = resource(stateNameOffline) ;
     public static final Resource stateClosing       = resource(stateNameClosing) ;
     public static final Resource stateClosed        = resource(stateNameClosed) ;
     

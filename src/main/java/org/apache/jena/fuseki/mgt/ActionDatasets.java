@@ -20,9 +20,7 @@ package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
 
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.StringReader ;
+import java.io.* ;
 import java.util.Iterator ;
 import java.util.Locale ;
 
@@ -38,6 +36,7 @@ import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
@@ -189,9 +188,9 @@ public class ActionDatasets extends ActionCtl {
         if ( s.equalsIgnoreCase("active") ) {
             setDatasetState(name, FusekiVocab.stateActive) ;        
             dsDesc.activate() ;
-        } else if ( s.equalsIgnoreCase("dormant") ) {
-            setDatasetState(name, FusekiVocab.stateDormant) ;        
-            dsDesc.dormant() ;
+        } else if ( s.equalsIgnoreCase("offline") ) {
+            setDatasetState(name, FusekiVocab.stateOffline) ;        
+            dsDesc.offline() ;
         } else
             ServletOps.errorBadRequest("New state '"+s+"' not recognized");
         ServletOps.success(action) ;
@@ -199,7 +198,8 @@ public class ActionDatasets extends ActionCtl {
 
     private void execPostContainer(HttpAction action) {
 
-        String newURI = JenaUUID.generate().asURI() ;
+        JenaUUID uuid = JenaUUID.generate() ;
+        String newURI = uuid.asURI() ;
         Node gn = NodeFactory.createURI(newURI) ;
         
         ContentType ct = FusekiLib.getContentType(action) ;
@@ -217,8 +217,10 @@ public class ActionDatasets extends ActionCtl {
             else
                 assemblerFromBody(action, dest) ;
             
-            
-            //FusekiConfig.readConfiguration(model) ;
+            // Keep a persistent copy.
+            OutputStream outCopy = new FileOutputStream(Fuseki.systemFileArea+"/"+uuid.asString()) ;
+            RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
+            IO.close(outCopy) ;
             
             Statement stmt = getOne(model, null, pServiceName, null) ;
             if ( stmt == null ) {
@@ -273,12 +275,6 @@ public class ActionDatasets extends ActionCtl {
     }
 
     private void assemblerFromForm(HttpAction action, StreamRDF dest) {
-//        Enumeration<String> en = action.getRequest().getParameterNames() ;
-//        while( en.hasMoreElements() ) {
-//            String pn = en.nextElement() ;
-//            System.out.println(pn) ;
-//        }
-        
         String dbType = action.getRequest().getParameter(paramDatasetType) ;
         String dbName = action.getRequest().getParameter(paramDatasetName) ;
         action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
@@ -300,11 +296,11 @@ public class ActionDatasets extends ActionCtl {
         RDFDataMgr.parse(dest, new StringReader(template), "http://base/", Lang.TTL) ;
     }
 
-    // ---- DELETE
-
     private void assemblerFromUpload(HttpAction action, StreamRDF dest) {
         Upload.fileUploadWorker(action, dest, true);
     }
+
+    // ---- DELETE
 
     protected void execDelete(HttpAction action) {
         // Does not exist?
