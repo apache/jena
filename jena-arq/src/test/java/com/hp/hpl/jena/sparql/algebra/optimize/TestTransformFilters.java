@@ -973,7 +973,7 @@ public class TestTransformFilters extends AbstractTestTransform
         // Tests use of multiple != conditions on different variables
         testOp("(filter ((!= ?x <x>) (!= ?p <y>)) (bgp ( ?s ?p ?x)) )",
              t_inequality,
-             "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <y>] [?x <x>])))") ;
+             "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <y>]) (row [?x <x>])))") ;
     }
     
     @Test public void inequality10()
@@ -981,6 +981,14 @@ public class TestTransformFilters extends AbstractTestTransform
         // Tests use of multiple != conditions on both same and different variables
         testOp("(filter ((!= ?x <x>) (!= ?x <y>) (!= ?p <type>)) (bgp ( ?s ?p ?x)) )",
              t_inequality,
-             "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <type>] [?x <y>]) (row [?p <type>] [?x <x>])))") ;
+             "(minus (bgp (?s ?p ?x)) (table (vars ?p ?x) (row [?p <type>]) (row [?x <y>]) (row [?x <x>])))") ;
+    }
+    
+    @Test public void inequality11()
+    {
+        // Other filter conditions should be preserved
+        testOp("(filter ((!= ?x <x>) (> ?x 10)) (bgp ( ?s ?p ?x)) )",
+             t_inequality,
+             "(filter (> ?x 10) (minus (bgp ( ?s ?p ?x)) (table (vars ?x) (row [?x <x>]))))") ;
     }
 }
