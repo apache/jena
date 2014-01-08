@@ -394,24 +394,18 @@ public class TransformFilterInequality extends TransformCopy {
         if (possibleValues.size() == 0)
             return TableFactory.createEmpty();
         Table table = TableFactory.create();
-        buildRows(table, BindingFactory.create(), possibleValues);
-        return table;
-    }
 
-    private static void buildRows(Table table, BindingMap rowBase, Map<Var, Set<NodeValue>> possibleValues) {
-        if (possibleValues.size() == 0) {
-            table.addBinding(rowBase);
-        } else {
-            Var v = possibleValues.keySet().iterator().next();
-            Set<NodeValue> values = possibleValues.get(v);
-            possibleValues.remove(v);
-
-            for (NodeValue value : values) {
-                BindingMap b = BindingFactory.create(rowBase);
+        // Although each filter condition must apply for a row to be accepted
+        // they are actually independent since only one condition needs to fail
+        // for the filter to reject the row. Thus for each unique variable/value
+        // combination a single row must be produced
+        for (Var v : possibleValues.keySet()) {
+            for (NodeValue value : possibleValues.get(v)) {
+                BindingMap b = BindingFactory.create();
                 b.add(v, value.asNode());
-
-                buildRows(table, b, possibleValues);
+                table.addBinding(b);
             }
         }
+        return table;
     }
 }
