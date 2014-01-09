@@ -99,6 +99,8 @@
 					<excludes>
 						<exclude>**/*.xml</exclude>
 						<exclude>**/*.properties</exclude>
+						<exclude>**/LICENSE</exclude>
+						<exclude>**/NOTICE</exclude>
 					</excludes>
 					<useDefaultMapping>true</useDefaultMapping>
 					<strictCheck>true</strictCheck>
