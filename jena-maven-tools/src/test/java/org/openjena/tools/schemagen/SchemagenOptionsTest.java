@@ -31,8 +31,6 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 /**
  * <p>Unit tests for {@link SchemagenOptions}</p>
- *
- * @author ian
  */
 public class SchemagenOptionsTest
 {
@@ -44,7 +42,6 @@ public class SchemagenOptionsTest
     /* Static variables                */
     /***********************************/
 
-    @SuppressWarnings( value = "unused" )
     private static final Logger log = LoggerFactory.getLogger( SchemagenOptionsTest.class );
 
     /***********************************/

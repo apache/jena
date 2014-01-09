@@ -16,18 +16,17 @@ package org.openjena.tools.schemagen;
 // Imports
 ///////////////
 
-import java.lang.reflect.Method;
-import java.util.List;
+import java.lang.reflect.Method ;
+import java.util.List ;
 
-import jena.schemagen;
-import jena.schemagen.OptionDefinition;
+import jena.schemagen ;
+import jena.schemagen.OptionDefinition ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 
 
 /**
@@ -39,8 +38,6 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
  * entire group of files to be processed with maven, while still allowing each
  * file to have its own local options.
  * </p>
- *
- * @author Ian Dickinson, Epimorphics (mailto:ian@epimorphics.com)
 */
 public class SchemagenOptions
     extends schemagen.SchemagenOptionsImpl
@@ -53,7 +50,6 @@ public class SchemagenOptions
     /* Static variables                */
     /***********************************/
 
-    @SuppressWarnings( value = "unused" )
     private static final Logger log = LoggerFactory.getLogger( SchemagenOptions.class );
 
     /***********************************/
@@ -125,7 +121,6 @@ public class SchemagenOptions
      * @return The value of the option as a string, or null if the option is not defined. If
      * the parent is non-null and the option is not defined, delegate the <code>getOption</code>
      * to the parent.
-     * @return The string value of the option, or null
      */
     public String getStringOption( OPT option ) {
         String v = getStringValue( option );
@@ -140,7 +135,6 @@ public class SchemagenOptions
      * @return The value of the option as an RDFNode, or null if the option is not defined. If
      * the parent is non-null and the option is not defined, delegate the <code>getOption</code>
      * to the parent.
-     * @return The RDFnode value of the option, or null
      */
     public RDFNode getOption( OPT option ) {
         RDFNode v = getValue( option );

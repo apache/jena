@@ -24,9 +24,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Use Parameter annotations on fields to designate Maven properties and
  * SchemagenOption annotations on getters to designate SchemagenOptions
  * destination options. 
- *
- * @author Ian Dickinson, Epimorphics (mailto:ian@epimorphics.com)
- * @author Shane StClair, Axiom Alaska (mailto:shane@axiomalaska.com) 
  */
 public class Source {
     /** Name of default options element */

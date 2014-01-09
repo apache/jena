@@ -43,8 +43,6 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
  * <p>Maven plugin to execute Jena schemagen as part of a Jena-based
  * project build cycle
  * </p>
- *
- * @author Ian Dickinson, Epimorphics (mailto:ian@epimorphics.com)
 */
 @Mojo(name="translate", defaultPhase=LifecyclePhase.GENERATE_SOURCES)
 public class SchemagenMojo

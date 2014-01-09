@@ -25,8 +25,6 @@ import org.openjena.tools.schemagen.SchemagenMojo;
 
 /**
  * <p>Unit tests for {@link SchemagenMojo}</p>
- *
- * @author ian
  */
 public class SchemagenMojoTest {
 
