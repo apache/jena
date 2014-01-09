@@ -41,6 +41,7 @@ public class TextIndexSolr implements TextIndex
     private static Logger log = LoggerFactory.getLogger(TextIndexSolr.class) ;
     private final SolrServer solrServer ;
     private EntityDefinition docDef ;
+    private static int MAX_N    = 10000 ;
 
     public TextIndexSolr(SolrServer server, EntityDefinition def)
     {
@@ -187,6 +188,11 @@ public class TextIndexSolr implements TextIndex
     private SolrDocumentList solrQuery(String qs, int limit)
     {
         SolrQuery sq = new SolrQuery(qs) ;
+        // The default limit 
+        if ( limit > 0 )
+            sq.setTermsLimit(limit) ;
+        else 
+            sq.setTermsLimit(MAX_N) ;   // The Solr default is 10.
         try {
             QueryResponse rsp = solrServer.query( sq ) ;
             SolrDocumentList docs = rsp.getResults();
