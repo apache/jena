@@ -31,8 +31,6 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>Additional unit test cases for {@link Source}, in addition
  * to parameter coverage tests in {@link SourceParameterTest}. </p>
- *
- * @author Ian Dickinson, Epimorphics (mailto:ian@epimorphics.com)
  */
 public class SourceTest
 {
@@ -44,7 +42,6 @@ public class SourceTest
     /* Static variables                */
     /***********************************/
 
-    @SuppressWarnings( value = "unused" )
     private static final Logger log = LoggerFactory.getLogger( SourceTest.class );
 
     /***********************************/

@@ -34,8 +34,6 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>This test checks basic coverage of the options from schemagen: if more options are added,
  * without updating the option setters, this test should give a compile warning in @{@link #setParamValue(Source)}</p>
- *
- * @author Ian Dickinson, Epimorphics (mailto:ian@epimorphics.com)
  */
 @RunWith( Parameterized.class )
 public class SourceParameterTest
@@ -66,7 +64,6 @@ public class SourceParameterTest
     /* Static variables                */
     /***********************************/
 
-    @SuppressWarnings( value = "unused" )
     private static final Logger log = LoggerFactory.getLogger( SourceParameterTest.class );
 
     /**
@@ -99,7 +96,6 @@ public class SourceParameterTest
     /***********************************/
 
     /**
-     * Test method for {@link org.openjena.tools.schemagen.Source#getFileName()}.
      * @throws SchemagenOptionsConfigurationException 
      */
     @Test
