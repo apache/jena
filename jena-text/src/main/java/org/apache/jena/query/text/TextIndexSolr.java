@@ -188,11 +188,10 @@ public class TextIndexSolr implements TextIndex
     private SolrDocumentList solrQuery(String qs, int limit)
     {
         SolrQuery sq = new SolrQuery(qs) ;
-        // The default limit 
         if ( limit > 0 )
-            sq.setTermsLimit(limit) ;
+            sq.setRows(limit) ;
         else 
-            sq.setTermsLimit(MAX_N) ;   // The Solr default is 10.
+            sq.setRows(MAX_N) ;   // The Solr default is 10.
         try {
             QueryResponse rsp = solrServer.query( sq ) ;
             SolrDocumentList docs = rsp.getResults();
