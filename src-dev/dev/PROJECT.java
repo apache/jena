@@ -21,7 +21,39 @@ package dev;
 public class PROJECT {
     // Naming 
     //  fuseki:Service is the endpoints = dataset
+    // DataService : 
     
+    // Shiro - log failures
+    
+    // DatasetRef -> DataService 
+    // DataService has "target"
+    
+    // DSG_Switchable does not work : need to access underlying DB by name.
+    //  ==>
+    //    [] a fuseki:Service, fuseki:Switchable ;
+    //        fuseki:name1 "" ;
+    //        fuseki:name2 "" ;
+    //        .
+    
+    // Assembler for switchable?
+    //   Still need to be able to contact each subDSG for update?
+    //   OR assume just active/offline?
+    
+    // DatasetGraphSwitchable(dsg1, dsg2) + assembler.
+    //   NB The need to query the right DSG 
+    
+    // Stats need to chase down links?
+    
+    // Chase down DatasetRef.getDataset and split into "for action" (follows link) and not
+    // Where do the stats go?
+    // If we want 
+    
+    /* Use of:
+<context-param>
+  <param-name>org.apache.jena.fuseki.config</param-name>
+  <param-value>{webapp}/WEB-INF/app.conf</param-value>
+</context-param>
+     */
     // TDB : insert a lock file?
     
     // Test for servlet context

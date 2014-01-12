@@ -444,26 +444,6 @@ public class FusekiCmd extends CmdARQ {
     }
         
     private SPARQLServer initializeServer(ServerConfig serverConfig) {  
-//        ServerConfig serverConfig = new ServerConfig() ;
-//        // Default values
-//        serverConfig.port = 3030 ;
-//        serverConfig.mgtPort = 3031 ;
-//        serverConfig.pagesPort = serverConfig.port ;
-//        serverConfig.jettyConfigFile = null ;
-//        serverConfig.pages = Fuseki.PagesStatic ;
-//        serverConfig.enableCompression = true ;
-//        serverConfig.verboseLogging = false ;
-//        
-//        serverConfig.port = params.port ;
-//        serverConfig.pages = params.pages ;
-//        serverConfig.mgtPort = params.mgtPort ;
-//        serverConfig.pagesPort = params.port ;
-//        serverConfig.loopback = params.loopback ;
-//        serverConfig.enableCompression = params.enableCompression ;
-//        serverConfig.jettyConfigFile = params.jettyConfigFile ;
-//        serverConfig.authConfigFile = params.authConfigFile ;
-//        serverConfig.verboseLogging = (super.isVerbose() || super.isDebug()) ;
-
         SPARQLServer server = new SPARQLServer(serverConfig) ;
         return server ;
     }

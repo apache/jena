@@ -65,18 +65,16 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <!-- and the classifier is added using the id -->
     <!--
     <server.jar.name>fuseki-server-${project.version}</server.jar.name>
     -->
     <server.jar.name>${this.root}-server</server.jar.name>
-    <assembly.name>${this.root}</assembly.name>
-    <assembly.soh.name>${this.root}</assembly.soh.name>
     <assembly.zip.name>${this.root}</assembly.zip.name>
 
     <!-- Switch to webapp deployment first -->
     <!--<ver.jetty>9.1.0.v20131115</ver.jetty>-->
     <ver.jetty>8.1.11.v20130520</ver.jetty>
+    <ver.shiro>1.2.2</ver.shiro>
 
     <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
   </properties>
@@ -128,6 +126,18 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-spatial</artifactId>
       <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+      <version>${ver.shiro}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <version>${ver.shiro}</version>
     </dependency>
 
     <dependency>

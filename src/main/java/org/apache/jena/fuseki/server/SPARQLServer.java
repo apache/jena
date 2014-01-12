@@ -81,7 +81,7 @@ public class SPARQLServer {
         Fuseki.verboseLogging = config.verboseLogging ;
         boolean webappBuild = true ;
         
-        if ( webappBuild) 
+        if ( webappBuild ) 
             buildServerWebapp(serverConfig.jettyConfigFile, config.enableCompression) ;
         else {
             ServletContextHandler context = buildServer(serverConfig.jettyConfigFile, config.enableCompression) ;
@@ -89,6 +89,8 @@ public class SPARQLServer {
             FilterHolder f = new FilterHolder(new FusekiFilter()) ;
             EnumSet<DispatcherType> es = EnumSet.allOf(DispatcherType.class) ; 
             context.addFilter(f, "/*", es);
+            context.addEventListener(new FusekiServletContextListener());
+            // No security.
         }
         
         instance = this ;

@@ -56,8 +56,8 @@ public class Fuseki {
     static public String    PagesStatic                  = "pages" ;
 
     /**
-     * A relative path to the location of <code>fuseki-properties.xml</code>
-     * file
+     * A relative resources path to the location of 
+     * <code>fuseki-properties.xml</code> file.
      */
     static private String   metadataLocation             = "org/apache/jena/fuseki/fuseki-properties.xml" ;
 
@@ -75,7 +75,7 @@ public class Fuseki {
     }
 
     /** Relative name of the directory for addition assembler descriptions */
-    static public final String        configDirName         = "configruation" ;
+    static public final String        configDirName         = "configuration" ;
     
     /** Relative name of the directory for keeping files of assembler descriptions */
     static public final String        systemDatabaseName    = "system" ;

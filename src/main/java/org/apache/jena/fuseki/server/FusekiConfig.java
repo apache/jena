@@ -73,15 +73,16 @@ public class FusekiConfig {
                 File f = new File(dir, name) ;
                 return f.isFile() ;
             }
-        } ;
+        } 
+    ;
 
     // ---- DatasetRef used where there isn't a real Dataset e.g. the SPARQL processor.
     
-    private static DatasetRef   noDataset = new DatasetRef("") ;
-
     private static DatasetGraph dummyDSG  = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
+
+    private static DatasetRef   noDataset = DatasetRef.create("", dummyDSG) ;
+
     static {
-        noDataset.setDataset(dummyDSG) ; 
         noDataset.query.endpoints.add(DEF.ServiceQuery) ;
         noDataset.query.endpoints.add(DEF.ServiceQueryAlt) ;
         noDataset.allowDatasetUpdate = false ;
@@ -107,8 +108,7 @@ public class FusekiConfig {
         if ( params.fusekiConfigFile != null )
             log.warn("Configuration file found while processing command line dataset configuration") ;
         
-        DatasetRef dbDesc = new DatasetRef(params.datasetPath) ;
-        dbDesc.setDataset(params.dsg) ;
+        DatasetRef dbDesc = DatasetRef.create(params.datasetPath, params.dsg) ;
         dbDesc.query.endpoints.add(DEF.ServiceQuery) ;
         dbDesc.query.endpoints.add(DEF.ServiceQueryAlt) ;
 
@@ -296,7 +296,16 @@ public class FusekiConfig {
         log.info("Service: " + nodeLabel(svc)) ;
         
         String name = ((Literal)getOne(svc, "fu:name")).getLexicalForm() ;
-        DatasetRef sDesc = new DatasetRef(name) ;
+        
+        Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
+
+        // Check if it is in the model.
+        if ( !datasetDesc.hasProperty(RDF.type) )
+            throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
+
+        Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
+        // If builder for DatasetRefs, put assembling dataset after services. 
+        DatasetRef sDesc = DatasetRef.create(name, ds.asDatasetGraph()) ;
         log.info("  name = " + sDesc.name) ;
 
         addServiceEP("query", sDesc.name, sDesc.query, svc, "fu:serviceQuery") ;
@@ -312,14 +321,6 @@ public class FusekiConfig {
             }
         }
 
-        Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
-
-        // Check if it is in the model.
-        if ( !datasetDesc.hasProperty(RDF.type) )
-            throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
-
-        Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
-        sDesc.setDataset(ds.asDatasetGraph()) ;
         return sDesc ;
 
     }

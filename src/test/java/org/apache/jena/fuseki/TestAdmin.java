@@ -196,12 +196,12 @@ public class TestAdmin extends BaseTest {
         }
     }
 
-    // ---- Active/dormant.
+    // ---- Active/Offline.
 
     @Test public void state_1() {
         // Add one
         addTestDataset() ;
-        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=dormant", null) ;
+        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=offline", null) ;
 
         checkExistsNotActive(dsTest); 
         
@@ -213,7 +213,7 @@ public class TestAdmin extends BaseTest {
     
     @Test public void state_2() {
         addTestDataset() ;
-        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=dormant", null) ;
+        execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=offline", null) ;
         deleteDataset(dsTest) ;
         checkNotThere(dsTest) ;
     }
@@ -221,7 +221,7 @@ public class TestAdmin extends BaseTest {
     @Test public void state_3() {
         addTestDataset() ;
         try {
-            execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/DoesNotExist?state=dormant", null) ;
+            execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/DoesNotExist?state=offline", null) ;
         } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()) ; }
         deleteDataset(dsTest) ;
     }
@@ -343,7 +343,7 @@ public class TestAdmin extends BaseTest {
         GET     /$/datasets/
         DELETE  /$/datasets/*{name}*    
         GET     /$/datasets/*{name}*    
-        POST    /$/datasets/*{name}*?state=dormant  
+        POST    /$/datasets/*{name}*?state=offline  
         POST    /$/datasets/*{name}*?state=active   
         POST    /$/backup/*{name}*  
         GET     /$/server   

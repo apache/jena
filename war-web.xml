@@ -7,6 +7,33 @@
 
   <display-name>Apache Jena Fuseki Server</display-name>
 
+  <!-- Apache Shiro setup -->
+  <!-- First filter -->
+  <listener>
+    <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+  </listener>
+
+  <filter>
+    <filter-name>ShiroFilter</filter-name>
+    <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>ShiroFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+
+  <context-param>
+    <param-name>shiroConfigLocations</param-name>
+    <param-value>file:shiro.ini</param-value>
+  </context-param>
+
+  <!-- Apache Jena Fuseki setup -->
+
   <listener>
     <listener-class>org.apache.jena.fuseki.server.FusekiServletContextListener</listener-class>
   </listener>

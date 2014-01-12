@@ -19,13 +19,12 @@
 package org.apache.jena.fuseki.server;
 
 import static org.apache.jena.fuseki.server.DatasetStatus.* ;
-import static org.apache.jena.fuseki.server.DatasetStatus.CLOSING ;
-import static org.apache.jena.fuseki.server.DatasetStatus.UNINITIALIZED ;
 
 import java.util.* ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiException ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -34,6 +33,8 @@ import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class DatasetRef implements DatasetMXBean, Counters
 {
+    // Split into build and runtime thing?
+    
     public final String name ;
     
     // EITHER a link OR a dataset  
@@ -55,9 +56,43 @@ public class DatasetRef implements DatasetMXBean, Counters
     private List<ServiceRef> serviceRefs        = new ArrayList<ServiceRef>() ;
     private volatile DatasetStatus state = UNINITIALIZED ;
     
-    public DatasetRef(String name) { this.name = DatasetRef.canonicalDatasetPath(name) ; }
+    public static DatasetRef nullRef() {
+        return new DatasetRef(null, null, null ) ; 
+    }
+
+    public static DatasetRef create(String name, DatasetGraph dataset) {
+        return new DatasetRef(name, dataset, null ) ; 
+    }
+
+    public static DatasetRef createLink(String name, DatasetRef other) {
+        return new DatasetRef(name, null, other) ; 
+    }
+
+    private DatasetRef(String name, DatasetGraph dsg, DatasetRef link)
+    { 
+        this.name = DatasetRef.canonicalDatasetPath(name) ;
+        this.dataset = dsg ;
+        this.link = link ;
+    }
     
-    public boolean isActive() { return getState() == ACTIVE ; }  
+    public boolean isActive() { return getState() == ACTIVE ; }
+    
+    /** Follow links */
+    public DatasetRef resolve() {
+        // Expect chain to be one, or at most two elements.
+        List<DatasetRef> x = new ArrayList<DatasetRef>() ;
+        DatasetRef here = this ;
+        x.add(here) ;
+        while ( here.link != null ) {
+            DatasetRef next = here.link ;
+            if ( x.contains(next) )
+                throw new FusekiException("Loop in DatasetRef links from: "+this.name) ; 
+            here = here.link ;
+        }
+            
+        return here ;
+    }
+     
     
     public DatasetStatus getStatus()                    { return state ; }
     public void setStatus(DatasetStatus newStatus)      { setState(newStatus) ; }
@@ -112,12 +147,9 @@ public class DatasetRef implements DatasetMXBean, Counters
             endpoints.put(ep, srvRef) ;
     }
 
+    /** Get the dataset - this follows links */ 
     public DatasetGraph getDataset() {
         return dataset ;
-    }
-
-    public void setDataset(DatasetGraph dataset) {
-        this.dataset = dataset ;
     }
 
     public ServiceRef getServiceRef(String service) {

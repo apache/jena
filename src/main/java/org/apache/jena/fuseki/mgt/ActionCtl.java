@@ -44,7 +44,7 @@ public abstract class ActionCtl extends ActionBase
         else {
             // This is a placeholder when creating new DatasetRefs
             // and also if addressing a container, not a dataset
-            dsRef = new DatasetRef(dsURI) ;
+            dsRef = DatasetRef.nullRef() ;
         }
         
         action.setControlRef(dsRef, dsURI) ;
