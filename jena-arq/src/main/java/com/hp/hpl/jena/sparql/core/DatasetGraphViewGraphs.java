@@ -31,12 +31,9 @@ import com.hp.hpl.jena.graph.Node ;
 
 public class DatasetGraphViewGraphs extends DatasetGraphWrapper
 {
-    // Sort of temporary and may not be a good way to do this.
-    // This class is a converter.
-    // may integrate into DatasetGraph hierarchy.
+    // May integrate into DatasetGraph hierarchy into DatasetGraphBase.
 
-    public DatasetGraphViewGraphs(DatasetGraph dsg)
-    {
+    public DatasetGraphViewGraphs(DatasetGraph dsg) {
         super(dsg) ;
     }
 
@@ -47,7 +44,5 @@ public class DatasetGraphViewGraphs extends DatasetGraphWrapper
     @Override
     public Graph getGraph(Node graphNode)
     { return GraphView.createNamedGraph(getWrapped(), graphNode) ; }
-    
-    
 }
 

@@ -33,7 +33,19 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     // Associated query engine factory - QueryEngineFactoryWrapper
     // which executes on the unwraped DSG. 
     private final DatasetGraph dsg ;
-    public final DatasetGraph getWrapped() { return dsg ; }
+    
+    /** Return the DatasetGraph being wrapped. */
+    public final DatasetGraph getWrapped() { 
+        // Maybe should be "getQueryExecutionDatasetGraph"
+        return get() ;
+    }
+    
+    /** The dataset to use for redirection - can be overridden.
+     *  It is also guarantee that this is called only once per
+     *  delegated call.  Changes to the wrapped object can be
+     *  made based on that contract. 
+     */
+    protected DatasetGraph get() { return dsg ; }
 
     public DatasetGraphWrapper(DatasetGraph dsg) {
         this.dsg = dsg ;
@@ -41,103 +53,103 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
 
     @Override
     public boolean containsGraph(Node graphNode)
-    { return dsg.containsGraph(graphNode) ; }
+    { return get().containsGraph(graphNode) ; }
 
     @Override
     public Graph getDefaultGraph()
-    { return dsg.getDefaultGraph(); }
+    { return get().getDefaultGraph(); }
 
     @Override
     public Graph getGraph(Node graphNode)
-    { return dsg.getGraph(graphNode) ; }
+    { return get().getGraph(graphNode) ; }
 
     @Override
     public void addGraph(Node graphName, Graph graph)
-    { dsg.addGraph(graphName, graph) ; }
+    { get().addGraph(graphName, graph) ; }
 
     @Override
     public void removeGraph(Node graphName)
-    { dsg.removeGraph(graphName) ; }
+    { get().removeGraph(graphName) ; }
 
     @Override
     public void setDefaultGraph(Graph g)
-    { dsg.setDefaultGraph(g) ; }
+    { get().setDefaultGraph(g) ; }
 
     @Override
     public Lock getLock()
-    { return dsg.getLock() ; }
+    { return get().getLock() ; }
 
     @Override
     public Iterator<Node> listGraphNodes()
-    { return dsg.listGraphNodes() ; }
+    { return get().listGraphNodes() ; }
 
     @Override
     public void add(Quad quad)
-    { dsg.add(quad) ; }
+    { get().add(quad) ; }
 
     @Override
     public void delete(Quad quad)
-    { dsg.delete(quad) ; }
+    { get().delete(quad) ; }
 
     @Override
     public void add(Node g, Node s, Node p, Node o)
-    { dsg.add(g, s, p, o) ; }
+    { get().add(g, s, p, o) ; }
 
     @Override
     public void delete(Node g, Node s, Node p, Node o)
-    { dsg.delete(g, s, p, o) ; }
+    { get().delete(g, s, p, o) ; }
     
     @Override
     public void deleteAny(Node g, Node s, Node p, Node o)
-    { dsg.deleteAny(g, s, p, o) ; }
+    { get().deleteAny(g, s, p, o) ; }
 
     @Override
     public boolean isEmpty()
-    { return dsg.isEmpty() ; }
+    { return get().isEmpty() ; }
     
     @Override
     public Iterator<Quad> find()
-    { return dsg.find() ; }
+    { return get().find() ; }
 
     @Override
     public Iterator<Quad> find(Quad quad)
-    { return dsg.find(quad) ; }
+    { return get().find(quad) ; }
 
     @Override
     public Iterator<Quad> find(Node g, Node s, Node p, Node o)
-    { return dsg.find(g, s, p, o) ; }
+    { return get().find(g, s, p, o) ; }
 
     @Override
     public Iterator<Quad> findNG(Node g, Node s, Node p, Node o)
-    { return dsg.findNG(g, s, p, o) ; }
+    { return get().findNG(g, s, p, o) ; }
 
     @Override
     public boolean contains(Quad quad)
-    { return dsg.contains(quad) ; }
+    { return get().contains(quad) ; }
 
     @Override
     public boolean contains(Node g, Node s, Node p, Node o)
-    { return dsg.contains(g, s, p, o) ; }
+    { return get().contains(g, s, p, o) ; }
 
     @Override
     public Context getContext()
-    { return dsg.getContext() ; }
+    { return get().getContext() ; }
 
     @Override
     public long size()
-    { return dsg.size() ; }
+    { return get().size() ; }
 
     @Override
     public void close()
-    { dsg.close() ; }
+    { get().close() ; }
     
     @Override
-    public String toString() { return dsg.toString() ; }
+    public String toString() { return get().toString() ; }
 
     @Override
     public void sync() {
         // Pass down sync.
-        SystemARQ.sync(dsg) ; 
+        SystemARQ.sync(get()) ; 
     }
     
 }
