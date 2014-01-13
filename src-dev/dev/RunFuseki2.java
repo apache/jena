@@ -20,7 +20,7 @@ package dev;
 
 import org.apache.jena.fuseki.FusekiCmd ;
 
-public class RunFuseki
+public class RunFuseki2
 {
     public static void main(String[] args)
     {
