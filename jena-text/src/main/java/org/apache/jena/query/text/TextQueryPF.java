@@ -159,23 +159,8 @@ public class TextQueryPF extends PropertyFunctionBase {
             return IterLib.noResults(execCxt) ;
         }
 
-        String uri = s.getURI() ;
-        
-        // Restrict to matching and entity field be right.
         String qs = match.getQueryString() ;
-        if ( false ) {
-            // This should work but it doesn't. Why?
-            String escaped = QueryParser.escape(uri) ;
-            String qs2 = server.getDocDef().getEntityField() + ":" + escaped ;
-            qs = qs2 + " AND " + qs ;
-            List<Node> x = query(qs, 1, execCxt) ;
-            if (x == null || x.isEmpty())
-                return IterLib.noResults(execCxt) ;
-            else
-                return IterLib.result(binding, execCxt) ;
-        }
-        // Crude.
-        List<Node> x = query(qs, -1, execCxt) ;
+        List<Node> x = query(match.getQueryString(), -1, execCxt) ;
         if ( x == null || ! x.contains(s) )
             return IterLib.noResults(execCxt) ;
         else
