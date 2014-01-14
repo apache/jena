@@ -214,7 +214,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             throw new TextIndexException("Change in object list size") ;
 
         Node predicate = null ;
-        String field = docDef.getPrimaryField() ;
+        String field = null ;       // Do not prepend the feild name - rely on default field
         int idx = 0 ;
         Node x = list.get(0) ;
         // Property?

@@ -29,6 +29,7 @@ import org.apache.solr.client.solrj.util.ClientUtils ;
 import org.apache.solr.common.SolrDocument ;
 import org.apache.solr.common.SolrDocumentList ;
 import org.apache.solr.common.SolrInputDocument ;
+import org.apache.solr.common.params.CommonParams ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -193,6 +194,8 @@ public class TextIndexSolr implements TextIndex
         else 
             sq.setRows(MAX_N) ;   // The Solr default is 10.
         try {
+            // Set default field.
+            sq.add(CommonParams.DF, docDef.getPrimaryField()) ;
             QueryResponse rsp = solrServer.query( sq ) ;
             SolrDocumentList docs = rsp.getResults();
             return docs ;
