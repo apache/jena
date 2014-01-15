@@ -52,13 +52,14 @@ public class LocatorClassLoader  implements Locator
         if ( classLoader == null )
             return null ;
             
-        String fn = FileUtils.toFilename(filenameOrURI) ;
-        if ( fn == null )
-        {
-            if ( FileManager.logAllLookups && log.isTraceEnabled() )
-                log.trace("Not found: "+filenameOrURI) ; 
-            return null ;
-        }
+        String fn = filenameOrURI ;
+//        String fn = FileUtils.toFilename(filenameOrURI) ;
+//        if ( fn == null )
+//        {
+//            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+//                log.trace("Not found: "+filenameOrURI) ; 
+//            return null ;
+//        }
         InputStream in = classLoader.getResourceAsStream(fn) ;
         if ( in == null )
         {

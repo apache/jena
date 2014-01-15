@@ -69,7 +69,7 @@ public class OntDocumentManager
     ////////////////////////////////////
 
     /** The default path for searching for the metadata on locally cached ontologies */
-    public static final String DEFAULT_METADATA_PATH = "file:ont-policy.rdf;file:etc/ont-policy.rdf";
+    public static final String DEFAULT_METADATA_PATH = "file:ont-policy.rdf;file:etc/ont-policy.rdf;ont-policy.rdf";
 
     /** Namespace for ontology metadata resources and properties */
     public static final String NS = "http://jena.hpl.hp.com/schemas/2003/03/ont-manager#";

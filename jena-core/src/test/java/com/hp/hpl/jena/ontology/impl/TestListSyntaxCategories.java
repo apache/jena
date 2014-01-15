@@ -713,7 +713,7 @@ public class TestListSyntaxCategories
         public void runTest() {
             Logger logger = LoggerFactory.getLogger( getClass() );
             OntModel m = ModelFactory.createOntologyModel( m_spec, null );
-            m.getDocumentManager().setMetadataSearchPath( "file:ont-policy-test.rdf", true );
+            m.getDocumentManager().setMetadataSearchPath( "ont-policy-test.rdf", true );
 
             if (m_fileName != null) {
                 m.read( m_fileName );
