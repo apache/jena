@@ -155,7 +155,7 @@ public class TestOntDocumentManager
     }
 
     public void testInitialisation() {
-        OntDocumentManager mgr = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager mgr = new OntDocumentManager( "ont-policy-test.rdf" );
 
         assertTrue( "Should be at least one specification loaded", mgr.listDocuments().hasNext() );
         assertNotNull( "cache URL for owl should not be null", mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
@@ -171,10 +171,10 @@ public class TestOntDocumentManager
     }
 
     public void testSetMetadataSearchPath() {
-        OntDocumentManager odm = new OntDocumentManager( "file:ont-policy-test.rdf" );
-        assertEquals( "file:ont-policy-test.rdf", odm.getMetadataSearchPath() );
+        OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
+        assertEquals( "ont-policy-test.rdf", odm.getMetadataSearchPath() );
         assertTrue( odm.listDocuments().hasNext() );
-        assertEquals( "file:ont-policy-test.rdf", odm.getLoadedPolicyURL() );
+        assertEquals( "ont-policy-test.rdf", odm.getLoadedPolicyURL() );
 
         odm.setMetadataSearchPath( "file:notexist.rdf", false );
         assertTrue( odm.listDocuments().hasNext() );
@@ -184,9 +184,9 @@ public class TestOntDocumentManager
         assertFalse( odm.listDocuments().hasNext() );
         assertNull( odm.getLoadedPolicyURL() );
 
-        odm.setMetadataSearchPath( "file:ont-policy-test.rdf", false );
+        odm.setMetadataSearchPath( "ont-policy-test.rdf", false );
         assertTrue( odm.listDocuments().hasNext() );
-        assertEquals( "file:ont-policy-test.rdf", odm.getLoadedPolicyURL() );
+        assertEquals( "ont-policy-test.rdf", odm.getLoadedPolicyURL() );
     }
 
     public void testConfigure0() {
@@ -196,7 +196,7 @@ public class TestOntDocumentManager
         r.addProperty( OntDocManagerVocab.publicURI, m.createResource("http://example.com/foo") );
         r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
 
-        OntDocumentManager odm = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         TestUtil.assertIteratorLength( odm.listDocuments(), 3 );
 
         odm.configure( m, false );
@@ -210,7 +210,7 @@ public class TestOntDocumentManager
         r.addProperty( OntDocManagerVocab.publicURI, m.createResource("http://example.com/foo") );
         r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
 
-        OntDocumentManager odm = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         TestUtil.assertIteratorLength( odm.listDocuments(), 3 );
 
         odm.configure( m );
@@ -253,7 +253,7 @@ public class TestOntDocumentManager
     }
 
     public void testDoAltMapping() {
-        OntDocumentManager odm = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         assertEquals( "file:vocabularies/owl.owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
         assertEquals( "http://example.com/nocache", odm.doAltURLMapping( "http://example.com/nocache" ));
     }
@@ -329,7 +329,7 @@ public class TestOntDocumentManager
     }
 
     public void testForget() {
-        OntDocumentManager odm = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         assertEquals( "file:vocabularies/owl.owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
         OntModel m = ModelFactory.createOntologyModel();
         odm.addModel( "http://www.w3.org/2002/07/owl#", m );
@@ -343,7 +343,7 @@ public class TestOntDocumentManager
     }
 
     public void testGetOntology() {
-        OntDocumentManager odm = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         OntModel m = odm.getOntology( "http://www.w3.org/2002/07/owl", OntModelSpec.OWL_MEM );
         assertNotNull( m );
         assertSame( odm, m.getDocumentManager() );
@@ -352,14 +352,14 @@ public class TestOntDocumentManager
     }
 
     public void testProcessImports() {
-        OntDocumentManager odm = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         assertTrue( odm.getProcessImports() );
         odm.setProcessImports( false );
         assertFalse( odm.getProcessImports() );
     }
 
     public void testCacheModels() {
-        OntDocumentManager odm = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         assertTrue( odm.getCacheModels() );
         odm.setCacheModels( false );
         assertFalse( odm.getCacheModels() );
@@ -499,24 +499,24 @@ public class TestOntDocumentManager
     }
 
     public void testSearchPath() {
-        OntDocumentManager o1 = new OntDocumentManager( "file:ont-policy-test.rdf" );
-        assertEquals( "Did not return correct loaded search path", "file:ont-policy-test.rdf", o1.getLoadedPolicyURL() );
+        OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
+        assertEquals( "Did not return correct loaded search path", "ont-policy-test.rdf", o1.getLoadedPolicyURL() );
 
-        OntDocumentManager o2 = new OntDocumentManager( "file:ont-policy-test.notexist.rdf;file:ont-policy-test.rdf" );
-        assertEquals( "Did not return correct loaded search path", "file:ont-policy-test.rdf", o2.getLoadedPolicyURL() );
+        OntDocumentManager o2 = new OntDocumentManager( "ont-policy-test.notexist.rdf;ont-policy-test.rdf" );
+        assertEquals( "Did not return correct loaded search path", "ont-policy-test.rdf", o2.getLoadedPolicyURL() );
 
         OntDocumentManager o3 = new OntDocumentManager( (String) null );
         assertNull( "Most recent policy should be null", o3.getLoadedPolicyURL() );
 
-        o3.setMetadataSearchPath( "file:ont-policy-test.rdf", true );
-        assertEquals( "Did not return correct loaded search path", "file:ont-policy-test.rdf", o2.getLoadedPolicyURL() );
+        o3.setMetadataSearchPath( "ont-policy-test.rdf", true );
+        assertEquals( "Did not return correct loaded search path", "ont-policy-test.rdf", o2.getLoadedPolicyURL() );
 
-        o3.setMetadataSearchPath( "file:ont-policy-test.notexist.rdf", true );
+        o3.setMetadataSearchPath( "ont-policy-test.notexist.rdf", true );
         assertNull( "Most recent policy should be null", o3.getLoadedPolicyURL() );
     }
 
     public void testReadFailHandler0() {
-        OntDocumentManager o1 = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
         assertNull( o1.getReadFailureHandler() );
 
         OntDocumentManager.ReadFailureHandler rfh = new OntDocumentManager.ReadFailureHandler() {
@@ -534,7 +534,7 @@ public class TestOntDocumentManager
      * <a href="http://tools.ietf.org/html/rfc2606#section-2">tools.ietf.org/html/rfc2606#section-2</a>
      */
     public void testReadFailHandler1() {
-        OntDocumentManager o1 = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
 
         TestFailHandler rfh = new TestFailHandler();
         o1.setReadFailureHandler( rfh );
@@ -551,7 +551,7 @@ public class TestOntDocumentManager
 
     public void testReadHook0() {
         TestReadHook rh = new TestReadHook( false );
-        OntDocumentManager o1 = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
         o1.setReadHook( rh );
         o1.reset();
 
@@ -569,7 +569,7 @@ public class TestOntDocumentManager
 
     public void testReadHook1() {
         TestReadHook rh = new TestReadHook( true );
-        OntDocumentManager o1 = new OntDocumentManager( "file:ont-policy-test.rdf" );
+        OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
         o1.setReadHook( rh );
         o1.reset();
 
