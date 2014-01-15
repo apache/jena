@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-maven-tools</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.4-SNAPSHOT</version>
   <name>Jena plugins for Apache Maven,including schemagen</name>
   <description>Plugins for Apache Maven to perform source management activities,
                such as generating Java files from RDF vocabulary sources using
@@ -104,7 +104,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>    
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -131,7 +131,7 @@
           <execution>
             <id>integration-test</id>
             <goals>
-              <goal>install</goal>            
+              <goal>install</goal>
               <goal>run</goal>
             </goals>
           </execution>
@@ -162,9 +162,9 @@
           <groupId>org.codehaus.plexus</groupId>
           <artifactId>plexus-utils</artifactId>
         </exclusion>
-      </exclusions>      
+      </exclusions>
       <scope>provided</scope>
-    </dependency>  
+    </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>

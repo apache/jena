@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.tools.schemagen;
+package org.apache.jena.tools.schemagen;
 
 // Imports
 ///////////////
@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
-import org.openjena.tools.schemagen.SchemagenMojo;
+import org.apache.jena.tools.schemagen.SchemagenMojo;
 
 /**
  * <p>Unit tests for {@link SchemagenMojo}</p>

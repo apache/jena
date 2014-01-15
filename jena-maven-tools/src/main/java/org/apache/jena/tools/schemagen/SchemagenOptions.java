@@ -16,22 +16,18 @@
  * limitations under the License.
  */
 
-package org.openjena.tools.schemagen;
+package org.apache.jena.tools.schemagen;
 
 // Imports
 ///////////////
 
-import java.lang.reflect.Method ;
-import java.util.List ;
+import java.lang.reflect.Method;
+import java.util.List;
 
-import jena.schemagen ;
-import jena.schemagen.OptionDefinition ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import jena.schemagen;
+import jena.schemagen.OptionDefinition;
 
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.ResourceFactory ;
+import com.hp.hpl.jena.rdf.model.*;
 
 
 /**
@@ -54,8 +50,6 @@ public class SchemagenOptions
     /***********************************/
     /* Static variables                */
     /***********************************/
-
-    private static final Logger log = LoggerFactory.getLogger( SchemagenOptions.class );
 
     /***********************************/
     /* Instance variables              */
@@ -83,7 +77,7 @@ public class SchemagenOptions
         if (defaultOutputDir != null) {
             setOption( OPT.OUTPUT, defaultOutputDir );
         }
-        
+
         //set schemagen options from Maven plugin config Source
         if (options != null) {
             configure(options);
@@ -192,7 +186,7 @@ public class SchemagenOptions
     /**
      * Configure SchemagenOptions from Source object
      * @param options Options from Maven configuration
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     protected void configure(Source options) throws SchemagenOptionsConfigurationException {
         for(Method method : options.getClass().getMethods()) {
@@ -208,9 +202,9 @@ public class SchemagenOptions
                 OPT option = schemagenOptionAnnotation.opt();
                 if (optionValue != null) {
                     if (optionValue instanceof String) {
-                        setOption(option, (String) optionValue);    
+                        setOption(option, (String) optionValue);
                     } else if (optionValue instanceof Boolean) {
-                        setOption(option, (Boolean) optionValue);                        
+                        setOption(option, (Boolean) optionValue);
                     } else {
                         throw new IllegalArgumentException("Schemagen options of type "
                                 + optionValue.getClass().getCanonicalName()
@@ -220,7 +214,7 @@ public class SchemagenOptions
             }
         }
     }
-    
+
     protected OPT asOption( String optString ) {
         return OPT.valueOf( optString );
     }

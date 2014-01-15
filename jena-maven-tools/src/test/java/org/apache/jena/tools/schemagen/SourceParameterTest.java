@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-package org.openjena.tools.schemagen;
+package org.apache.jena.tools.schemagen;
 
 
 // Imports
 ///////////////
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,8 +34,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>This test checks basic coverage of the options from schemagen: if more options are added,
@@ -70,8 +68,6 @@ public class SourceParameterTest
     /* Static variables                */
     /***********************************/
 
-    private static final Logger log = LoggerFactory.getLogger( SourceParameterTest.class );
-
     /**
      * @throws java.lang.Exception
      */
@@ -102,7 +98,7 @@ public class SourceParameterTest
     /***********************************/
 
     /**
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testGetOption() throws SchemagenOptionsConfigurationException {

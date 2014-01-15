@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.tools.schemagen;
+package org.apache.jena.tools.schemagen;
 
 
 // Imports
@@ -28,9 +28,8 @@ import java.util.List;
 
 import jena.schemagen.SchemagenOptions.OPT;
 
-import org.junit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
@@ -47,8 +46,6 @@ public class SchemagenOptionsTest
     /***********************************/
     /* Static variables                */
     /***********************************/
-
-    private static final Logger log = LoggerFactory.getLogger( SchemagenOptionsTest.class );
 
     /***********************************/
     /* Instance variables              */
@@ -72,7 +69,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getParent()}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testGetParent() throws SchemagenOptionsConfigurationException {
@@ -82,7 +79,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#setParent(org.openjena.tools.schemagen.SchemagenOptions)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testSetParent() throws SchemagenOptionsConfigurationException {
@@ -94,7 +91,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#hasParent()}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testHasParent() throws SchemagenOptionsConfigurationException {
@@ -107,7 +104,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getOption(jena.schemagen.SchemagenOptions.OPT)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testGetOption0() throws SchemagenOptionsConfigurationException {
@@ -160,7 +157,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#setOption(java.lang.String, java.lang.String)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testSetOptionStringString() throws SchemagenOptionsConfigurationException {
@@ -171,7 +168,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#asOption(java.lang.String)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testAsOption() throws SchemagenOptionsConfigurationException {
@@ -181,7 +178,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#isTrue(jena.schemagen.SchemagenOptions.OPT)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testIsTrueOPT0() throws SchemagenOptionsConfigurationException {
@@ -198,7 +195,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#hasValue(jena.schemagen.SchemagenOptions.OPT)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testHasValueOPT0() throws SchemagenOptionsConfigurationException {
@@ -224,7 +221,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getValue(jena.schemagen.SchemagenOptions.OPT)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testGetValueOPT0() throws SchemagenOptionsConfigurationException {
@@ -260,7 +257,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#hasResourceValue(jena.schemagen.SchemagenOptions.OPT)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testHasResourceValueOPT0() throws SchemagenOptionsConfigurationException {
@@ -288,7 +285,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getResource(jena.schemagen.SchemagenOptions.OPT)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testGetResourceOPT0() throws SchemagenOptionsConfigurationException {
@@ -328,7 +325,7 @@ public class SchemagenOptionsTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.SchemagenOptions#getAllValues(jena.schemagen.SchemagenOptions.OPT)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testGetAllValuesOPT0() throws SchemagenOptionsConfigurationException {

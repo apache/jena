@@ -19,7 +19,7 @@
 // Package
 ///////////////
 
-package org.openjena.tools.schemagen;
+package org.apache.jena.tools.schemagen;
 
 
 // Imports
@@ -80,11 +80,11 @@ public class SchemagenMojo
     /**
      * @parameter property="project.build.directory"
      */
-    
+
     @Parameter(property="project.build.directory")
     private String projectBuildDir;
 
-    
+
     /**
      * Array of file patterns to include in processing
      */
@@ -94,13 +94,13 @@ public class SchemagenMojo
     /**
      * Array of file patterns to exclude from processing
      */
-    @Parameter    
+    @Parameter
     private String[] excludes = new String[0];
 
     /**
      * Options for individual files
      */
-    @Parameter    
+    @Parameter
     private List<Source> fileOptions;
 
     /**
@@ -149,7 +149,7 @@ public class SchemagenMojo
             // then the files themselves
             for (String fileName: matchFileNames()) {
                 processFile( fileName );
-            }            
+            }
         } catch (SchemagenOptionsConfigurationException e) {
             throw new MojoExecutionException(
                     "Error during default schemagen options creation", e);
@@ -200,7 +200,7 @@ public class SchemagenMojo
      * Handle the default options by creating a default options object and assigning
      * the options values from the given source object.
      * @param defOptionsSource The source object containing the default options
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     protected void handleDefaultOptions( Source defOptionsSource )
             throws SchemagenOptionsConfigurationException {
@@ -217,7 +217,7 @@ public class SchemagenMojo
      * by attaching the default options and indexing.
      *
      * @param optionSpec Specification of the options for a given file
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     protected void handleOption( Source optionSpec ) throws SchemagenOptionsConfigurationException {
         SchemagenOptions so = new SchemagenOptions(getDefaultOutputDir(), optionSpec);
@@ -233,7 +233,7 @@ public class SchemagenMojo
     /**
      * Delegate the processing of the given file to schemagen itself
      * @param fileName
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     protected void processFile( String fileName )
         throws MojoExecutionException, SchemagenOptionsConfigurationException
