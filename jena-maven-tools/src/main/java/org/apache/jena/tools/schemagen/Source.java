@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.tools.schemagen;
+package org.apache.jena.tools.schemagen;
 
 import jena.schemagen.SchemagenOptions.OPT;
 
@@ -26,10 +26,10 @@ import org.apache.maven.plugins.annotations.Parameter;
  * <p>Simple container object to hold the per-source configuration
  * values from the <code>pom.xml</code>.</p> Source objects are used
  * configure SchemagenOptions object during plugin execution.
- * 
+ *
  * Use Parameter annotations on fields to designate Maven properties and
  * SchemagenOption annotations on getters to designate SchemagenOptions
- * destination options. 
+ * destination options.
  */
 public class Source {
     /** Name of default options element */
@@ -76,7 +76,7 @@ public class Source {
 
     @Parameter(property="classname")
     private String className;
-    
+
     @Parameter(property="classdec")
     private String classDec;
 
@@ -96,16 +96,16 @@ public class Source {
     private String individualsSection;
 
     @Parameter(property="noproperties")
-    private Boolean noProperties;    
+    private Boolean noProperties;
 
     @Parameter(property="noclasses")
-    private Boolean noClasses;    
+    private Boolean noClasses;
 
     @Parameter(property="noindividuals")
     private Boolean noIndividuals;
 
     @Parameter(property="noheader")
-    private Boolean noHeader;    
+    private Boolean noHeader;
 
     @Parameter(property="prop-template")
     private String propTemplate;
@@ -132,7 +132,7 @@ public class Source {
     private Boolean help;
 
     @Parameter
-    private Boolean dos;    
+    private Boolean dos;
 
     @Parameter(property="use-inf")
     private Boolean useInf;
@@ -144,7 +144,7 @@ public class Source {
     private Boolean includeSource;
 
     @Parameter(property="no-strict")
-    private Boolean noStrict;    
+    private Boolean noStrict;
 
     @SchemagenOption(opt=OPT.CONFIG_FILE)
     public String getConfigFile() {
@@ -171,7 +171,7 @@ public class Source {
         return langOwl;
     }
 
-    @SchemagenOption(opt=OPT.LANG_RDFS)    
+    @SchemagenOption(opt=OPT.LANG_RDFS)
     public Boolean isLangRdfs() {
         return langRdfs;
     }
@@ -338,7 +338,7 @@ public class Source {
     public void setNoComments(Boolean noComments) {
         this.noComments = noComments;
     }
-    
+
     public void setInput(String input) {
         this.input = input;
     }

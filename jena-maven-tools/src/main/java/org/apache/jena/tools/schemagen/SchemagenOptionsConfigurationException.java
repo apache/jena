@@ -16,21 +16,12 @@
  * limitations under the License.
  */
 
-package org.openjena.tools.schemagen;
+package org.apache.jena.tools.schemagen;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class SchemagenOptionsConfigurationException extends Exception {
+    private static final long serialVersionUID = -133784377465911397L;
 
-import jena.schemagen.SchemagenOptions;
-
-/**
- * Annotation to designate linkages between Maven configured properties
- * in Source and options in SchemagenOptions.  
- */
-@Target(ElementType.METHOD)
-@Retention(value = RetentionPolicy.RUNTIME)
-public @interface SchemagenOption {
-    SchemagenOptions.OPT opt();
+    public SchemagenOptionsConfigurationException(Throwable cause){
+        super(cause);
+    }
 }

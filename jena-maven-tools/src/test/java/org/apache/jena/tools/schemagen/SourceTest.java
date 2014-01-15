@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.tools.schemagen;
+package org.apache.jena.tools.schemagen;
 
 
 // Imports
@@ -28,11 +28,7 @@ import java.util.List;
 
 import jena.schemagen.SchemagenOptions.OPT;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.*;
 
 /**
  * <p>Additional unit test cases for {@link Source}, in addition
@@ -47,8 +43,6 @@ public class SourceTest
     /***********************************/
     /* Static variables                */
     /***********************************/
-
-    private static final Logger log = LoggerFactory.getLogger( SourceTest.class );
 
     /***********************************/
     /* Instance variables              */
@@ -72,20 +66,20 @@ public class SourceTest
 
     /**
      * Test method for {@link org.openjena.tools.schemagen.Source#setInput(java.lang.String)}.
-     * @throws SchemagenOptionsConfigurationException 
+     * @throws SchemagenOptionsConfigurationException
      */
     @Test
     public void testSetInput0() throws SchemagenOptionsConfigurationException {
-        SchemagenOptions so = new SchemagenOptions(null, new Source()); 
+        SchemagenOptions so = new SchemagenOptions(null, new Source());
         List<String> values = so.getAllValues( OPT.INPUT );
         assertListMatch( new String[] {}, new String[] {}, 0, values );
     }
 
     @Test
     public void testSetInput1() throws SchemagenOptionsConfigurationException {
-        Source s = new Source();        
+        Source s = new Source();
         s.setInput( "__file1" );
-        SchemagenOptions so = new SchemagenOptions(null, s);        
+        SchemagenOptions so = new SchemagenOptions(null, s);
         List<String> values = so.getAllValues( OPT.INPUT );
         assertListMatch( new String[] {"__file1"}, new String[] {}, 1, values );
     }
@@ -93,10 +87,10 @@ public class SourceTest
     @Test
     @Ignore //jena-maven-tools doesn't support multiple inputs as of now
     public void testSetInput2() throws SchemagenOptionsConfigurationException {
-        Source s = new Source();        
+        Source s = new Source();
         s.setInput( "__file1" );
         s.setInput( "__file2" );
-        SchemagenOptions so = new SchemagenOptions(null, s);        
+        SchemagenOptions so = new SchemagenOptions(null, s);
         List<String> values = so.getAllValues( OPT.INPUT );
         assertListMatch( new String[] {"__file1", "__file2"}, new String[] {}, 2, values );
     }
