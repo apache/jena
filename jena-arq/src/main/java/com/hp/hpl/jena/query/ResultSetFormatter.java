@@ -624,7 +624,7 @@ public class ResultSetFormatter
     // ---- SSE
     
     /** Output a boolean result in the SSE format
-     *  Format: <a href="http://openjena.org/wiki/SSE">SSE</a> 
+     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a> 
      *  
      * @param booleanResult The boolean result to encode
      */
@@ -633,7 +633,7 @@ public class ResultSetFormatter
     { outputAsSSE(System.out, booleanResult ) ; }
     
     /** Output a boolean result in the SSE format
-     *  Format: <a href="http://openjena.org/wiki/SSE">SSE</a> 
+     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a> 
      *  
      * @param outStream     output stream
      * @param booleanResult The boolean result to encode
@@ -645,7 +645,7 @@ public class ResultSetFormatter
     }
 
     /** Output a result set in the SSE format
-     *  Format: <a href="http://openjena.org/wiki/SSE">SSE</a>
+     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
      *  @param resultSet     result set
      */
     
@@ -653,7 +653,7 @@ public class ResultSetFormatter
     { outputAsSSE(System.out, resultSet) ; }
     
     /** Output a result set in the SSE format
-     *  Format: <a href="http://openjena.org/wiki/SSE">SSE</a>
+     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
      *  @param resultSet     result set
      */
     
@@ -661,7 +661,7 @@ public class ResultSetFormatter
     { outputAsSSE(System.out, resultSet, prologue) ; }
 
     /** Output a result set in the SSE format
-     *  Format: <a href="http://openjena.org/wiki/SSE">SSE</a>
+     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
      * @param outStream  The output stream
      * @param resultSet     The result set
      */
@@ -670,7 +670,7 @@ public class ResultSetFormatter
     { outputAsSSE(outStream, resultSet, null) ; }
     
     /** Output a result set in the SSE format
-     *  Format: <a href="http://openjena.org/wiki/SSE">SSE</a>
+     *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
      * @param outStream     output stream
      * @param resultSet     result set
      * @param prologue

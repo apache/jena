@@ -195,11 +195,11 @@ public class LogCtl {
          // Handlers - output
          // All (comma
          // separated)
-         // "handlers=java.util.logging.ConsoleHandler,org.openjena.atlas.logging.java.ConsoleHandlerStdout",
+         // "handlers=java.util.logging.ConsoleHandler,org.apache.jena.atlas.logging.java.ConsoleHandlerStdout",
     
          // Atlas.
          "handlers=org.openjena.atlas.logging.java.ConsoleHandlerStdout",
-         "org.openjena.atlas.logging.java.ConsoleHandlerStdout.level=INFO",
+         "org.apache.atlas.jena.logging.java.ConsoleHandlerStdout.level=INFO",
          "java.util.logging.ConsoleHandler.formatter=atlas.logging.java.TextFormatter"
     ) ;
 
