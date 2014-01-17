@@ -43,6 +43,5 @@ then
     fi
 fi
 export SORT_ARGS
-echo $SORT_ARGS
-exit
+
 exec "$TDBROOT/bin/tdbloader2worker" "$@"
