@@ -22,17 +22,17 @@
   <artifactId>jena-text</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SPARQL Text Search</name>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>8</version>
+    <version>9-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
   <properties>
-    <ver.jena>2.11.1</ver.jena>
+    <ver.jena>2.11.2-SNAPSHOT</ver.jena>
     <ver.lucene>4.3.1</ver.lucene>
     <ver.solr>4.3.1</ver.solr>
 
