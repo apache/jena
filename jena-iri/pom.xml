@@ -24,7 +24,7 @@
   <artifactId>jena-iri</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - IRI</name>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <description>
     The IRI module provides an implementation of the IRI and URI specifications (RFC 3987 and 3986) which are used across Jena in order to comply with relevant W3C specifications for RDF and SPARQL which require conformance to these specifications.
   </description>
@@ -32,7 +32,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>8-SNAPSHOT</version>
+    <version>8</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -49,9 +49,9 @@
   </repositories>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-iri</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-iri</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-iri</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1/jena-iri</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.11.1/jena-iri</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1/jena-iri</url>
   </scm>
   
   <properties>
