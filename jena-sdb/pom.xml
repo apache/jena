@@ -22,7 +22,7 @@
   <artifactId>jena-sdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SDB (SQL based triple store)</name>
-  <version>1.4.2-SNAPSHOT</version>
+  <version>1.4.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
