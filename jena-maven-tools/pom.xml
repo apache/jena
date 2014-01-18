@@ -76,7 +76,7 @@
     <url>http://www.apache.org</url>
   </organization>
   <properties>
-    <jenaCoreVersion>2.11.2-SNAPSHOT</jenaCoreVersion>
+    <jenaCoreVersion>2.11.1-SNAPSHOT</jenaCoreVersion>
     <version>${project.version}</version>
   </properties>
   <build>
