@@ -7,7 +7,7 @@ define(
         fui = require( "fui" ),
         qonsole = require( "lib/qonsole" );
 
-    var ValidationController = function() {
+    var QueryController = function() {
       this.initEvents();
     };
 
@@ -41,6 +41,6 @@ define(
 
     } );
 
-    return ValidationController;
+    return QueryController;
   }
 );

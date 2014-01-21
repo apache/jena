@@ -3,16 +3,18 @@
   <head>
     <title>Apache Jena Fuseki</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="../css/font-awesome.min.css" rel="stylesheet" media="screen">
-    <link href="../css/codemirror.css" rel="stylesheet" media="screen">
-    <link href="../css/qonsole.css" rel="stylesheet" media="screen">
-    <link href="../css/jquery.dataTables.css" rel="stylesheet" media="screen">
-    <link href="../css/fui.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/font-awesome.min.css" rel="stylesheet" media="screen">
+    <link href="css/codemirror.css" rel="stylesheet" media="screen">
+    <link href="css/qonsole.css" rel="stylesheet" media="screen">
+    <link href="css/jquery.dataTables.css" rel="stylesheet" media="screen">
+    <link href="css/fui.css" rel="stylesheet" media="screen">
+
+    <script data-main="js/app/main.data-management.js" src="js/lib/require.min.js"></script>
 
     <!--[if lt IE 9]>
-      <script src="../js/lib/html5shiv.js"></script>
-      <script src="../js/lib/respond.min.js"></script>
+      <script src="js/lib/html5shiv.js"></script>
+      <script src="js/lib/respond.min.js"></script>
     <![endif]-->
   </head>
   <body>
@@ -36,9 +38,12 @@
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
-              <li class=""><a href="index.html">Current status</a></li>
-              <li class="active"><a href="data-management.html">Data management</a></li>
-              <li class=""><a href="logs.html">Logs</a></li>
+              <li class=""><a href="index.html">Home</a></li>
+              <li class=""><a href="query.html">Query</a></li>
+              <li class=""><a href="validation.html">Validation</a></li>
+              <li class="admin active"><a href="admin-data-management.html">Dataset administration</a></li>
+              <li class="admin"><a href="admin-logs.html">Logs</a></li>
+              <li class=""><a href="documentation.html">Documentation</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li>
@@ -55,19 +60,11 @@
 
     <div class="container">
       <div class="row">
-        <h1>Data management</h1>
+        <h1>Administer datasets</h1>
       </div>
 
-      <hr/>
-      <p>Focus on one database</p>
-      <ul>
-        <li>Statistics</li>
-        <li>Backup</li>
-        <li>Online/offline</li>
-        <li><em>Delete</em></li>
-      </ul>
-      <hr/>
-
+      <div id="data-management"></div>
+<!--
       <div class="row">
         <h2>Create database</h2>
         <small>
@@ -75,7 +72,7 @@
           <p>Some Alternatives:</p>
           <ul>
             <li><p>Preset recipes (as below) that the server expands</p></li>
-            <li><p>Have a template area (assembler) in broswer with help to 
+            <li><p>Have a template area (assembler) in broswer with help to
                 fill details like</p></li>
             </ul>
         </small>
@@ -105,7 +102,7 @@
         </form>
         <hr/>
         <h2>Create database (from Assembler Description)</h2>
-        <!-- From assembler -->
+        <!-- From assembler - ->
         <form action="../$/datasets" enctype="multipart/form-data" method="post" role="form">
           <div class="form-group">
              Database assembler description file: <input type="file" name="UNSET" size="40"><br/>
@@ -126,7 +123,7 @@
         <h2>Backup Database</h2>
       </div>
 
-<p>            <li><p>Have a template area (assembler) in broswer with help to 
+<p>            <li><p>Have a template area (assembler) in broswer with help to
                 fill details like</p></li>
       <div class="row">
         <h2>Delete Database</h2>
