@@ -285,9 +285,9 @@ public class ActionDatasets extends ActionCtl {
         
         String template = null ;
         try {
-            if ( dbType.equals(tDatabasetTDB))
+            if ( dbType.equalsIgnoreCase(tDatabasetTDB))
                 template = FileUtils.readWholeFileAsUTF8(templateTDBFN) ;
-            if ( dbType.equals(tDatabasetMem))
+            if ( dbType.equalsIgnoreCase(tDatabasetMem))
                 template = FileUtils.readWholeFileAsUTF8(templateMemFN) ;
         } catch (IOException ex) { IO.exception(ex); }
 

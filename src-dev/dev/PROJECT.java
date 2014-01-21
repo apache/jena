@@ -19,6 +19,21 @@
 package dev;
 
 public class PROJECT {
+    // Backup
+    
+    // Create dataset - check for existing. 
+    
+    
+//    Add DS1
+//    Add DS2
+//    Add symbolic link
+//    Offline DS2
+//
+//    ==>
+//      check offlining works.
+//      how do we manage assembler descriptions?
+//        System database is only status + link to assembler?
+    
     // Naming 
     //  fuseki:Service is the endpoints = dataset
     // DataService : 

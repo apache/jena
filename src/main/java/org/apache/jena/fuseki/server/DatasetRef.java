@@ -37,7 +37,8 @@ public class DatasetRef implements DatasetMXBean, Counters
     
     public final String name ;
     
-    // EITHER a link OR a dataset  
+    // EITHER a link OR a dataset (if offline?)
+    // In-use?
     private DatasetGraph dataset                = null ;
     private DatasetRef   link                   = null ;
 
@@ -128,6 +129,11 @@ public class DatasetRef implements DatasetMXBean, Counters
         if ( getState() == UNINITIALIZED )
             initServices() ;    
         setState(OFFLINE) ;
+        
+        if ( dataset instanceof DatasetGraphTransaction )
+            StoreConnection.release( ((DatasetGraphTransaction)dataset).getLocation() ) ;
+        else 
+            dataset.close() ;
     }
 
     @Override public String toString() { return "DatasetRef:'"+name+"'" ; }  
