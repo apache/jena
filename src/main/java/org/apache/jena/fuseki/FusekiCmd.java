@@ -134,6 +134,7 @@ public class FusekiCmd extends CmdARQ {
     // pages/control/
     // pages/query/ or /pages/sparql/
 
+    private static ArgDecl             argMgt          = new ArgDecl(ArgDecl.NoValue, "mgt") ;
     private static ArgDecl             argMgtPort      = new ArgDecl(ArgDecl.HasValue, "mgtPort", "mgtport") ;
     private static ArgDecl             argMem          = new ArgDecl(ArgDecl.NoValue, "mem") ;
     private static ArgDecl             argAllowUpdate  = new ArgDecl(ArgDecl.NoValue, "update", "allowUpdate") ;
@@ -227,7 +228,8 @@ public class FusekiCmd extends CmdARQ {
         add(argJettyConfig, "--jetty-config=FILE", "Set up the server (not services) with a Jetty XML file") ;
         add(argBasicAuth, "--basic-auth=FILE",
             "Configure basic auth using provided Jetty realm file, ignored if --jetty-config is used") ;
-        add(argMgtPort, "--mgtPort=port", "Enable the management commands on the given port") ;
+        add(argMgt,     "--mgt",          "Enable the management commands") ;
+        add(argMgtPort, "--mgtPort=port", "Port for management optations") ;
         add(argHome, "--home=DIR", "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ;
         add(argGZip, "--gzip=on|off", "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
 
@@ -350,12 +352,18 @@ public class FusekiCmd extends CmdARQ {
             }
         }
 
-        if ( contains(argMgtPort) ) {
-            String mgtPortStr = getValue(argMgtPort) ;
-            try {
-                jettyServerConfig.mgtPort = Integer.parseInt(mgtPortStr) ;
-            } catch (NumberFormatException ex) {
-                throw new CmdException(argMgtPort.getKeyName() + " : bad port number: " + mgtPortStr) ;
+        if ( ! contains(argMgt) && contains(argMgtPort) )
+            Fuseki.configLog.warn("Management port specified by admin fucntions not enabled with --"+argMgt.getKeyName()) ;
+        
+        if ( contains(argMgt) ) {
+            jettyServerConfig.mgtPort = 0 ;
+            if (  contains(argMgtPort) ) {
+                String mgtPortStr = getValue(argMgtPort) ;
+                try {
+                    jettyServerConfig.mgtPort = Integer.parseInt(mgtPortStr) ;
+                } catch (NumberFormatException ex) {
+                    throw new CmdException("--"+argMgtPort.getKeyName() + " : bad port number: " + mgtPortStr) ;
+                }
             }
         }
 
