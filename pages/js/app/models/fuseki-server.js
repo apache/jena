@@ -78,43 +78,6 @@ define(
        * complete with the JSON object denoted by the path.
        */
       getJSON: function( path, data ) {
-//        // debugging - also temp hack while we sort out the CORS issue
-//        if (true) {
-//          return new $.Deferred().resolveWith(
-//                  { "datasets" : [ {"ds.name" : "/testing" ,
-//                                    "ds.services" :
-//                                      [ { "srv.endpoints" :
-//                                            [ "query" ,
-//                                              "sparql"
-//                                            ] ,
-//                                          "srv.type" : "query"
-//                                        }  ,
-//                                        { "srv.endpoints" : [ "update" ] ,
-//                                          "srv.type" : "update"
-//                                        }  ,
-//                                        { "srv.endpoints" : [ "upload" ] ,
-//                                          "srv.type" : "upload"
-//                                        }  ,
-//                                        { "srv.endpoints" : [ ] ,
-//                                          "srv.type" : "gspRead"
-//                                        }  ,
-//                                        { "srv.endpoints" : [ "data" ] ,
-//                                          "srv.type" : "gspReadWrite"
-//                                        }
-//                                      ]
-//                                  }  ] ,
-//                    "server" : { "port" : 3030 }
-//            } );
-//        }
-//
-//        var url = this.managementURL();
-//        if (url) {
-//          return $.getJSON( sprintf( url, path ), data );
-//        }
-//        else {
-//          return new $.Deferred().rejectWith( this, [{unavailable: true}] );
-//        }
-//      }
         return $.getJSON( path, data );
       }
     } );
