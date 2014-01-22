@@ -5,6 +5,7 @@
 define( ['jquery', 'underscore', 'sprintf'],
   function( $, _, sprintf ) {
 
+    var PING_URL = "$/ping"
     var DEFAULT_PING_TIME = 5000;
     var _startTime = 0;
 
@@ -30,14 +31,19 @@ define( ['jquery', 'underscore', 'sprintf'],
                                       .attr( "title", statusText );
     };
 
+    /** Return a cache-defeating ping URL */
+    var ping_url = function() {
+      return PING_URL + "?_=" + Math.random();
+    };
+
     var start = function( period ) {
       ping( period || DEFAULT_PING_TIME );
     };
 
     var ping = function( period ) {
       onBeforeSend();
-      $.getJSON( "/ping.txt" ).done( onPingSuccess )
-                          .fail( onPingFail );
+      $.get( ping_url() ).done( onPingSuccess )
+                         .fail( onPingFail );
       setTimeout( function() {ping( period );}, period );
     };
 
