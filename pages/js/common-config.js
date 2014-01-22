@@ -29,6 +29,9 @@ require.config({
     'lib/jquery.dataTables.min': {
       deps: ['jquery']
     },
+    'lib/jquery.form': {
+      deps: ['jquery']
+    },
     'lib/qonsole': {
       deps: ['codemirror/brace-fold', 'codemirror/comment-fold', 'codemirror/foldgutter', 'codemirror/xml-fold',
              'codemirror/javascript', 'codemirror/sparql', 'codemirror/xml', 'lib/jquery.dataTables.min' ],

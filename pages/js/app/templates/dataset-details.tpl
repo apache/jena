@@ -64,17 +64,34 @@
       </div>
 
       <div class="tab-pane" id="upload">
+        <p>&nbsp;</p>
         <div class="row">
           <p class="col-sm-12">If you have a Fuseki config file (i.e. a Jena assembler description),
           you can upload it here:</p>
         </div>
         <div class="row controls">
-          <div class="col-md-3">
+          <form id="uploadForm" method="post" action="$/datasets" class="form-horizontal col-sm-12">
+            <div class="form-group">
+              <label for="assemblerFile" class="col-sm-2 control-label">Configuration file</label>
+              <div class="col-sm-10">
+                <div class="validation-warning assemblerFileValidation">A file name is required</div>
+                <input type="file" class="form-control" name="assemblerFile" />
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="row">
+          <div class="errorOutput col-sm-12"></div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
             <a href="admin-data-management.html" class="btn btn-sm btn-default"><i class="fa fa-mail-reply"></i> cancel</a>
             <a href="#" class="btn btn-sm btn-primary action upload"><i class="fa fa-upload"></i> upload config file</a>
           </div>
         </div>
-        </div>
+      </div>
     </div>
 
   </div><!-- /.col-md-span-12 -->

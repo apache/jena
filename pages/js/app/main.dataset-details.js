@@ -7,7 +7,8 @@ define( ['require', '../common-config'],
        'models/fuseki-server', 'models/dataset',
        'views/dataset-details',
        'services/ping-service',
-       'lib/jquery.xdomainrequest'
+       'lib/jquery.xdomainrequest',
+       'lib/jquery.form'
       ],
       function( _, $, Backbone, Marionette, fui, DatasetDetailsController ) {
         var options = {
