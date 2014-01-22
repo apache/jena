@@ -28,10 +28,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.atlas.web.MediaType ;
-import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.ServiceRef ;
 import org.slf4j.Logger ;
@@ -210,7 +207,11 @@ public class HttpAction
         transactional.end() ;
         activeDSG = null ;
     }
-   
+
+    public void startRequest()  { if ( dsRef != null ) dsRef.startRequest(this) ; }
+
+    public void finishRequest() { if ( dsRef != null ) dsRef.finishRequest(this) ; }
+    
     public final DatasetGraph getActiveDSG() {
         return activeDSG ;
     }
@@ -258,20 +259,5 @@ public class HttpAction
 
     public void sync() {
         SystemARQ.sync(dsg) ;
-    }
-
-    public static MediaType contentNegotationRDF(HttpAction action) {
-        MediaType mt = ConNeg.chooseContentType(action.request, DEF.rdfOffer, DEF.acceptRDFXML) ;
-        if ( mt == null )
-            return null ;
-        if ( mt.getContentType() != null )
-            action.response.setContentType(mt.getContentType()) ;
-        if ( mt.getCharset() != null )
-            action.response.setCharacterEncoding(mt.getCharset()) ;
-        return mt ;
-    }
-
-    public static MediaType contentNegotationQuads(HttpAction action) {
-        return ConNeg.chooseContentType(action.request, DEF.quadsOffer, DEF.acceptNQuads) ;
     }
 }

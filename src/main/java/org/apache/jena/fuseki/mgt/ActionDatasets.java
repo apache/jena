@@ -177,8 +177,9 @@ public class ActionDatasets extends ActionCtl {
             name = "" ;
         action.log.info(format("[%d] POST dataset %s", action.id, name)) ;
         
-        if ( action.dsRef.getDataset() == null )
-            ServletOps.errorNotFound("Not found: dataset "+action.dsRef.name);
+//        if ( action.dsRef.getDataset() == null )
+//            ServletOps.errorNotFound("Not found: dataset "+action.dsRef.name);
+        
         DatasetRef dsDesc = action.dsRef ;
         String s = action.request.getParameter("state") ;
         if ( s == null || s.isEmpty() )
@@ -186,7 +187,10 @@ public class ActionDatasets extends ActionCtl {
 
         // setDatasetState is a transaction on the persistent state of the server. 
         if ( s.equalsIgnoreCase("active") ) {
-            setDatasetState(name, FusekiVocab.stateActive) ;        
+            action.log.info(format("[%d] REBUILD DATASET %s", action.id, name)) ;
+            setDatasetState(name, FusekiVocab.stateActive) ;
+            // DatasetGraph dsg = ???? ;
+            //dsDesc.activate(dsg) ; 
             dsDesc.activate() ;
         } else if ( s.equalsIgnoreCase("offline") ) {
             setDatasetState(name, FusekiVocab.stateOffline) ;        

@@ -83,29 +83,33 @@ public abstract class ActionSPARQL extends ActionBase
     {
         incCounter(action.dsRef, Requests) ;
         incCounter(action.srvRef, Requests) ;
-
+        
         startRequest(action) ;
         try {
-            validate(action) ;
-        } catch (ActionErrorException ex) {
-            incCounter(action.dsRef,RequestsBad) ;
-            incCounter(action.srvRef, RequestsBad) ;
-            throw ex ;
-        }
+            // Either exit this via "bad request" on validation
+            // or in 
+            try {
+                validate(action) ;
+            } catch (ActionErrorException ex) {
+                incCounter(action.dsRef,RequestsBad) ;
+                incCounter(action.srvRef, RequestsBad) ;
+                throw ex ;
+            }
 
-        try {
-            perform(action) ;
-            // Success
-            incCounter(action.srvRef, RequestsGood) ;
-            incCounter(action.dsRef, RequestsGood) ;
-        } catch (ActionErrorException ex) {
-            incCounter(action.srvRef, RequestsBad) ;
-            incCounter(action.dsRef, RequestsBad) ;
-            throw ex ;
-        } catch (QueryCancelledException ex) {
-            incCounter(action.srvRef, RequestsBad) ;
-            incCounter(action.dsRef, RequestsBad) ;
-            throw ex ;
+            try {
+                perform(action) ;
+                // Success
+                incCounter(action.srvRef, RequestsGood) ;
+                incCounter(action.dsRef, RequestsGood) ;
+            } catch (ActionErrorException ex) {
+                incCounter(action.srvRef, RequestsBad) ;
+                incCounter(action.dsRef, RequestsBad) ;
+                throw ex ;
+            } catch (QueryCancelledException ex) {
+                incCounter(action.srvRef, RequestsBad) ;
+                incCounter(action.dsRef, RequestsBad) ;
+                throw ex ;
+            }
         } finally {
             finishRequest(action) ;
         }

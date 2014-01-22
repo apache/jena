@@ -114,9 +114,13 @@ public abstract class ActionBase extends ServletBase
     }
 
     // Default start/finish steps. 
-    protected void startRequest(HttpAction action) { }
+    protected final void startRequest(HttpAction action) {
+        action.startRequest() ;
+    }
     
-    protected void finishRequest(HttpAction action) { }
+    protected final void finishRequest(HttpAction action) {
+        action.finishRequest() ;
+    }
     
     private void archiveHttpAction(HttpAction action) {
         action.minimize() ;

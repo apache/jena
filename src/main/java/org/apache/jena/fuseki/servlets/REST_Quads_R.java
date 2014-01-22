@@ -46,7 +46,7 @@ public class REST_Quads_R extends REST_Quads {
 
     @Override
     protected void doGet(HttpAction action) {
-        MediaType mediaType = HttpAction.contentNegotationQuads(action) ;
+        MediaType mediaType = ActionLib.contentNegotationQuads(action) ;
         ServletOutputStream output ;
         try {
             output = action.response.getOutputStream() ;
@@ -90,7 +90,7 @@ public class REST_Quads_R extends REST_Quads {
     protected void doHead(HttpAction action) {
         action.beginRead() ;
         try {
-            MediaType mediaType = HttpAction.contentNegotationQuads(action) ;
+            MediaType mediaType = ActionLib.contentNegotationQuads(action) ;
             ServletOps.success(action) ;
         } finally {
             action.endRead() ;

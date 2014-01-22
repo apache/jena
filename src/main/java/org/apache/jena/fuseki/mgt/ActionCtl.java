@@ -60,6 +60,10 @@ public abstract class ActionCtl extends ActionBase
         // if /*
         //    request.getPathInfo() ; otherwise it's null.
         
+        // PathInfo is after the servlet name. 
+        String x1 = action.request.getServletPath() ;
+        String x2 = action.request.getPathInfo() ;
+        
         String pathInfo = action.request.getPathInfo() ;
         if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") )
             // Includes calling as a container. 

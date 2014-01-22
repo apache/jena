@@ -353,7 +353,7 @@ public class FusekiCmd extends CmdARQ {
         }
 
         if ( ! contains(argMgt) && contains(argMgtPort) )
-            Fuseki.configLog.warn("Management port specified by admin fucntions not enabled with --"+argMgt.getKeyName()) ;
+            Fuseki.configLog.warn("Management port specified by admin functions not enabled with --"+argMgt.getKeyName()) ;
         
         if ( contains(argMgt) ) {
             jettyServerConfig.mgtPort = 0 ;

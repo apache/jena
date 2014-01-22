@@ -18,13 +18,19 @@
 
 package org.apache.jena.fuseki.server;
 
-import static org.apache.jena.fuseki.server.DatasetStatus.* ;
+import static org.apache.jena.fuseki.server.DatasetStatus.ACTIVE ;
+import static org.apache.jena.fuseki.server.DatasetStatus.CLOSING ;
+import static org.apache.jena.fuseki.server.DatasetStatus.OFFLINE ;
+import static org.apache.jena.fuseki.server.DatasetStatus.UNINITIALIZED ;
+import static java.lang.String.format ;
 
 import java.util.* ;
+import java.util.concurrent.atomic.AtomicBoolean ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.servlets.HttpAction ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -53,6 +59,10 @@ public class DatasetRef implements DatasetMXBean, Counters
     @Override
     public  CounterSet getCounters() { return counters ; }
     
+    private final AtomicLong    requestCounter          = new AtomicLong(0) ;   
+    private final AtomicBoolean offlineInProgress       = new AtomicBoolean(false) ;
+    private final AtomicBoolean offline                 = new AtomicBoolean(false) ;
+    
     private Map<String, ServiceRef> endpoints   = new HashMap<String, ServiceRef>() ;
     private List<ServiceRef> serviceRefs        = new ArrayList<ServiceRef>() ;
     private volatile DatasetStatus state = UNINITIALIZED ;
@@ -76,6 +86,28 @@ public class DatasetRef implements DatasetMXBean, Counters
         this.link = link ;
     }
     
+    public void startRequest(HttpAction action)  {
+        // Deny if going offline
+        if ( offline.get() ) {
+            Fuseki.serverLog.warn("Dataset "+name+" is offline"); 
+        }
+        
+        requestCounter.incrementAndGet() ;
+    }
+
+    public void finishRequest(HttpAction action) { 
+        long x = requestCounter.decrementAndGet() ;
+        action.log.info(format("[%d] Action finishRequest : now %d", action.id, x)) ;
+        // TRANSITION ONCE
+        
+        if ( x == 0 && offlineInProgress.get() ) {
+            // No operations should be coming in so we're the only one here.
+            // caveat management operations.
+            shutdown() ;
+            offlineInProgress.set(false) ;
+        }
+    }
+
     public boolean isActive() { return getState() == ACTIVE ; }
     
     /** Follow links */
@@ -94,8 +126,9 @@ public class DatasetRef implements DatasetMXBean, Counters
         return here ;
     }
      
-    
+    @Deprecated
     public DatasetStatus getStatus()                    { return state ; }
+    @Deprecated
     public void setStatus(DatasetStatus newStatus)      { setState(newStatus) ; }
     
     private DatasetStatus getState() {
@@ -130,10 +163,10 @@ public class DatasetRef implements DatasetMXBean, Counters
             initServices() ;    
         setState(OFFLINE) ;
         
-        if ( dataset instanceof DatasetGraphTransaction )
-            StoreConnection.release( ((DatasetGraphTransaction)dataset).getLocation() ) ;
-        else 
-            dataset.close() ;
+        offline.set(true) ;
+        offlineInProgress.set(true) ;
+        // finishRequest will perform the shutdown. 
+        // XXX Check with the mgt operations that they have the right dsRef and hence this works. 
     }
 
     @Override public String toString() { return "DatasetRef:'"+name+"'" ; }  
@@ -219,12 +252,19 @@ public class DatasetRef implements DatasetMXBean, Counters
     }
     
     private void shutdown() {
+        Fuseki.serverLog.info("Shutting down dataset: "+name);
+        
+//        if ( dataset instanceof DatasetGraphTransaction )
+//            StoreConnection.release( ((DatasetGraphTransaction)dataset).getLocation() ) ;
+//        else 
+//            dataset.close() ;
+
         dataset.close() ;
         if ( dataset instanceof DatasetGraphTransaction ) {
             DatasetGraphTransaction dsgtxn = (DatasetGraphTransaction)dataset ;
             StoreConnection.release(dsgtxn.getLocation()) ;
         }
-        setState(OFFLINE) ;
+        dataset = null ; 
     }
     
     //TODO Need to be able to set this from the config file.  
@@ -249,6 +289,7 @@ public class DatasetRef implements DatasetMXBean, Counters
         checkShutdown() ;
     }
     
+    // DatasetMXBean
     @Override
     public String getName()     { return name ; }
 

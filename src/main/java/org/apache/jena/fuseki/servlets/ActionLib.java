@@ -20,6 +20,10 @@ package org.apache.jena.fuseki.servlets;
 
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.jena.atlas.web.AcceptList ;
+import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.fuseki.DEF ;
+import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 
@@ -130,6 +134,29 @@ public class ActionLib {
             x = uri.substring(contextPath.length()) ;
         //log.info("removeContext: uri = "+uri+" contextPath="+contextPath+ "--> x="+x) ;
         return x ;
+    }
+
+    /** Negotiate the content-type and set the response headers */ 
+    public static MediaType contentNegotation(HttpAction action, AcceptList myPrefs,
+                                              MediaType defaultMediaType) {
+        MediaType mt = ConNeg.chooseContentType(action.request, myPrefs, defaultMediaType) ;
+        if ( mt == null )
+            return null ;
+        if ( mt.getContentType() != null )
+            action.response.setContentType(mt.getContentType()) ;
+        if ( mt.getCharset() != null )
+            action.response.setCharacterEncoding(mt.getCharset()) ;
+        return mt ;
+    }
+    
+    /** Negotiate the content-type for an RDF triples syntax and set the response headers */ 
+    public static MediaType contentNegotationRDF(HttpAction action) {
+        return contentNegotation(action, DEF.rdfOffer, DEF.acceptRDFXML) ;
+    }
+
+    /** Negotiate the content-type for an RDF quads syntax and set the response headers */ 
+    public static MediaType contentNegotationQuads(HttpAction action) {
+        return contentNegotation(action, DEF.quadsOffer, DEF.acceptNQuads) ;
     }
 }
 

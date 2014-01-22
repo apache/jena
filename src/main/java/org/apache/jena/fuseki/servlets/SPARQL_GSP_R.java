@@ -46,7 +46,7 @@ public class SPARQL_GSP_R extends SPARQL_GSP
     {
         // Assume success - do the set up before grabbing the lock.
         // Sets content type.
-        MediaType mediaType = HttpAction.contentNegotationRDF(action) ;
+        MediaType mediaType = ActionLib.contentNegotationRDF(action) ;
         
         ServletOutputStream output ;
         try { output = action.response.getOutputStream() ; }
@@ -102,7 +102,7 @@ public class SPARQL_GSP_R extends SPARQL_GSP
                 ServletOps.successNotFound(action) ;
                 return ;
             }
-            MediaType mediaType = HttpAction.contentNegotationRDF(action) ;
+            MediaType mediaType = ActionLib.contentNegotationRDF(action) ;
             ServletOps.success(action) ;
         } finally { action.endRead() ; }
     }

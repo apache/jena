@@ -55,24 +55,14 @@ Pattern: `/$/server`
 
 The URL `/$/server` returns details about the server and it's current status in JSON.
 
-@@details of JSON format.
+_@@details of JSON format._
 
 ## Datasets and Services
 Pattern: `/$/datasets/`
 
 `/$/datasets/` is a container representing all datasets present in the server. 
-`/$/datasets/*{name}*` names a specific dataset.
-
-### Backup 
-Pattern: `/$/backup/*{name}*`
-
-> _Not implemented_
-
-This operation initiates a backup and returns. It returns, via the Location head (@@?)
-the location of a resource that can be used to monitor the backup operation. Backup
-operations run asynchronously and may take a long time.
-
-Backups are written to the sever local directory 'backups' as  gzip-compressed N-Quads files.
+`/$/datasets/*{name}*` names a specific dataset.  As a container, operations on items
+in the container, via `GET`, `POST` and `DELETE`, operate on specific dataset.
 
 ### Adding a Dataset and its Services.
 
@@ -98,7 +88,7 @@ For in-memory datasets, the dataset is rebuilt from it's description
 #### Templates
 
 A short-cut form for some common set-ups is provided by <tt>POST</tt>ing with
-the following parameters (query string or HTMl form):
+the following parameters (query string or HTML form):
 
 | Parameter |                 |
 |-----------|-----------------|
@@ -136,6 +126,17 @@ is known about by the server but the dataset is not attached to the server.  Whe
 any persistent data can be manipulated outside the server.
 
 Datasets are initially "active".  The transition from "active" to "offline" is graceful - all outstanding requests are completed.
+
+### Backup 
+Pattern: `/$/backup/*{name}*`
+
+> _Not implemented_
+
+This operation initiates a backup and returns. It returns, via the Location head (@@?)
+the location of a resource that can be used to monitor the backup operation. Backup
+operations run asynchronously and may take a long time.
+
+Backups are written to the sever local directory 'backups' as  gzip-compressed N-Quads files.
 
 ## Statistics
 > **`/$/stats/*{name}*`**
