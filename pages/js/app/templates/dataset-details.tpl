@@ -14,7 +14,8 @@
           <div class="form-group">
             <label for="datasetName" class="col-sm-2 control-label">Dataset name</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="datasetName" placeholder="dataset name"
+              <div class="validation-warning dbNameValidation">A name for the dataset is required</div>
+              <input type="text" class="form-control" name="dbName" placeholder="dataset name"
                 <%= newDataset ? "" : ( "value='" + datasetId + "'") %>
                />
             </div>
@@ -24,23 +25,27 @@
             <div class="col-sm-10">
               <div class="radio">
                 <label>
-                  <input type="radio" name="optionsDatasetType" id="optionsDatasetTypeMem" value="mem" checked>
+                  <input type="radio" name="dbType" value="mem" checked>
                   In-memory &ndash; dataset will be recreated when Fuseki restarts, but contents will be lost
                 </label>
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optionsDatasetType" id="optionsDatasetTypeTDB" value="tdb">
+                  <input type="radio" name="dbType" value="tdb">
                   Persistent &ndash; dataset will persist across Fuseki restarts
                 </label>
               </div>
             </div>
           </div>
 
+          <div class="row">
+            <div class="errorOutput"></div>
+          </div>
+
           <div class="row controls">
             <div class="col-md-3">
               <a href="admin-data-management.html" class="btn btn-sm btn-default"><i class="fa fa-mail-reply"></i> cancel</a>
-              <a href="#" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> <%= commitAction %></a>
+              <a href="#" class="btn btn-sm btn-primary action commit simple"><i class="fa fa-check"></i> <%= commitAction %></a>
             </div>
           </div>
         </form>
@@ -53,7 +58,7 @@
         <div class="row controls">
           <div class="col-md-3">
             <a href="admin-data-management.html" class="btn btn-sm btn-default"><i class="fa fa-mail-reply"></i> cancel</a>
-            <a href="#" class="btn btn-sm btn-primary"><i class="fa fa-check"></i> <%= commitAction %></a>
+            <a href="#" class="btn btn-sm btn-primary action commit advanced"><i class="fa fa-check"></i> <%= commitAction %></a>
           </div>
         </div>
       </div>
@@ -66,7 +71,7 @@
         <div class="row controls">
           <div class="col-md-3">
             <a href="admin-data-management.html" class="btn btn-sm btn-default"><i class="fa fa-mail-reply"></i> cancel</a>
-            <a href="#" class="btn btn-sm btn-primary"><i class="fa fa-upload"></i> upload config file</a>
+            <a href="#" class="btn btn-sm btn-primary action upload"><i class="fa fa-upload"></i> upload config file</a>
           </div>
         </div>
         </div>
@@ -74,4 +79,5 @@
 
   </div><!-- /.col-md-span-12 -->
 </div><!-- /.row -->
+
 

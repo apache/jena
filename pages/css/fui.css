@@ -62,3 +62,11 @@ a.navbar-brand {
 .options-list {
   margin-bottom: 5px;
 }
+
+# validation
+.validation-warning {
+  display:none;
+}
+.has-error .validation-warning, .has-warning .validation-warning {
+  display:block;
+}

@@ -21,13 +21,7 @@ define(
       /** This initializer occurs when the module starts, not when the constructor is invoked */
       init: function( options ) {
         this._baseURL = sprintf( "http://%s:%s", window.location.hostname, window.location.port );
-        if (options.managementPort) {
-          this._managementURL = sprintf( "http://%s:%s%s", window.location.hostname,
-              options.managementPort, window.location.pathname );
-        }
-        else {
-          this._managementURL = null;
-        }
+        this._managementURL = null;
       },
 
       baseURL: function() {
@@ -59,11 +53,11 @@ define(
       saveServerDescription: function( serverDesc ) {
         // wrap each dataset JSON description as a dataset model
         var bURL = this.baseURL();
-//        var mgmtURL = sprintf( "%s/%s", this.managementURL(), "/$/status" );
         var mgmtURL = bURL;
 
         if (serverDesc.admin) {
           mgmtURL = bURL.replace( ":" + window.location.port, ":" + serverDesc.admin.port );
+          this._managementURL = mgmtURL;
         }
 
         var datasets = _.map( serverDesc.datasets, function( d ) {
@@ -79,6 +73,19 @@ define(
        */
       getJSON: function( path, data ) {
         return $.getJSON( path, data );
+      },
+
+      /** Update or create a dataset by posting to its endpoint */
+      updateOrCreateDataset: function( datasetId, data ) {
+        var url = sprintf( "%s/$/datasets%s", this.managementURL(),
+                           datasetId ? ("/" + datasetId) : ""
+                         );
+
+        return $.ajax( url,
+                       { data: data,
+                         method: "post"
+                       }
+                     );
       }
     } );
 

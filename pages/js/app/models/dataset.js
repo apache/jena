@@ -58,22 +58,8 @@ define(
       queryURL: function() {
         var qurl = this.endpointOfType( "query" );
         return qurl ? sprintf( "%s%s/%s", this.baseURL(), this.name(), qurl ) : null;
-      },
-
-      /**
-       * Get the given relative path from the server, and return a promise object which will
-       * complete with the JSON object denoted by the path.
-       */
-      getJSON: function( path, data ) {
-        // TODO: will need to know the dataset UUID
-//        var url = this.managementURL();
-//        if (url) {
-//          return $.getJSON( sprintf( url, path, data ) );
-//        }
-//        else {
-//          return new $.Deferred().rejectWith( this, [{unavailable: true}] );
-//        }
       }
+
     } );
 
     return Dataset;
