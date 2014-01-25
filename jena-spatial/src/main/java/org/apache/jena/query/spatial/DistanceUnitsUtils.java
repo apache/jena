@@ -25,17 +25,25 @@ import com.spatial4j.core.distance.DistanceUtils;
 
 public class DistanceUnitsUtils {
 
+    public final static String defaultDistanceUnit = "kilometres" ;
+    
 	public final static List<String> SUPPORTED_UNITS;
 	static {
+	 // International spelling "metres" 
+	 // As used by http://en.wikipedia.org/wiki/International_Bureau_of_Weights_and_Measures
 		SUPPORTED_UNITS = new ArrayList<String>();
-		SUPPORTED_UNITS.add("kilometers");
+		SUPPORTED_UNITS.add("kilometres");           
+        SUPPORTED_UNITS.add("kilometers");           // America spelling
 		SUPPORTED_UNITS.add("km");
-		SUPPORTED_UNITS.add("meters");
+		SUPPORTED_UNITS.add("meters");        
+        SUPPORTED_UNITS.add("metres");
 		SUPPORTED_UNITS.add("m");
 		SUPPORTED_UNITS.add("centimeters");
+        SUPPORTED_UNITS.add("centimetres");
 		SUPPORTED_UNITS.add("cm");
-		SUPPORTED_UNITS.add("milimeters");
-		SUPPORTED_UNITS.add("mm");
+		SUPPORTED_UNITS.add("millimetres");
+        SUPPORTED_UNITS.add("millimeters");
+        SUPPORTED_UNITS.add("mm");
 		SUPPORTED_UNITS.add("miles");
 		SUPPORTED_UNITS.add("mi");
 		SUPPORTED_UNITS.add("degrees");
@@ -45,19 +53,20 @@ public class DistanceUnitsUtils {
 	public static double dist2Degrees(double dist, String units) {
 		double degrees = dist;
 
-		if (units.equals("kilometers") || units.equals("km"))
+		if (units.equals("kilometers") || units.equals("kilometres") || units.equals("km"))
 			return DistanceUtils.dist2Degrees(dist,
 					DistanceUtils.EARTH_MEAN_RADIUS_KM);
 
-		else if (units.equals("meters") || units.equals("m"))
+		else if (units.equals("meters") || units.equals("metres") || units.equals("m"))
 			return DistanceUtils.dist2Degrees(dist / 1000,
 					DistanceUtils.EARTH_MEAN_RADIUS_KM);
 
-		else if (units.equals("centimeters") || units.equals("cm"))
+		else if (units.equals("centimeters") || units.equals("centimetres") || units.equals("cm"))
 			return DistanceUtils.dist2Degrees(dist / (1000 * 100),
 					DistanceUtils.EARTH_MEAN_RADIUS_KM) ;
 
-		else if (units.equals("milimeters") || units.equals("mm"))
+		else if ( units.equals("millimeters") || units.equals("millimetres") || units.equals("mm") || 
+		          units.equals("milimeters") || units.equals("milimetres") ) // Common spelling mistake.
 			return DistanceUtils.dist2Degrees(dist / (1000 * 1000),
 					DistanceUtils.EARTH_MEAN_RADIUS_KM) ;
 

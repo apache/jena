@@ -182,7 +182,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
-				" ?s spatial:nearby (51.3000 -2.71000 100.0 'kilometers') .", "}");
+				" ?s spatial:nearby (51.3000 -2.71000 100.0 'kilometres') .", "}");
 		expectedURIs = (new HashSet<String>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
@@ -208,7 +208,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
-				" ?s spatial:nearby (51.3000 -2.71000 10000.0 'meters') .", "}");
+				" ?s spatial:nearby (51.3000 -2.71000 10000.0 'metres') .", "}");
 		expectedURIs = (new HashSet<String>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
@@ -231,7 +231,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
-				" ?s spatial:nearby (51.3000 -2.71000 1000000.0 'centimeters') .", "}");
+				" ?s spatial:nearby (51.3000 -2.71000 1000000.0 'centimetres') .", "}");
 		expectedURIs = (new HashSet<String>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
@@ -254,7 +254,7 @@ public abstract class AbstractTestIsNearByPF extends AbstractTestDatasetWithSpat
 		
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
-				" ?s spatial:nearby (51.3000 -2.71000 10000000.0 'milimeters') .", "}");
+				" ?s spatial:nearby (51.3000 -2.71000 10000000.0 'millimetres') .", "}");
 		expectedURIs = (new HashSet<String>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]

@@ -121,7 +121,7 @@ public abstract class SpatialOperationWithCircleBase extends SpatialOperationPFB
 			return null;
 		}
 
-		String units = "miles";
+		String units = DistanceUnitsUtils.defaultDistanceUnit  ;         // Kilometres
 		int limit = -1;
 
 		idx++;
