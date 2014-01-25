@@ -208,7 +208,7 @@ public abstract class AbstractTestIsWithinCirclePF extends AbstractTestDatasetWi
 		
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
-				" ?s spatial:withinCircle (51.3000 -2.71000 10000.0 'meters') .", "}");
+				" ?s spatial:withinCircle (51.3000 -2.71000 10000.0 'metres') .", "}");
 		expectedURIs = (new HashSet<String>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
@@ -231,7 +231,7 @@ public abstract class AbstractTestIsWithinCirclePF extends AbstractTestDatasetWi
 		
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
-				" ?s spatial:withinCircle (51.3000 -2.71000 1000000.0 'centimeters') .", "}");
+				" ?s spatial:withinCircle (51.3000 -2.71000 1000000.0 'centimetres') .", "}");
 		expectedURIs = (new HashSet<String>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
@@ -254,7 +254,7 @@ public abstract class AbstractTestIsWithinCirclePF extends AbstractTestDatasetWi
 		
 		queryString = StrUtils.strjoinNL(QUERY_PROLOG, "SELECT ?s",
 				"WHERE {",
-				" ?s spatial:withinCircle (51.3000 -2.71000 10000000.0 'milimeters') .", "}");
+				" ?s spatial:withinCircle (51.3000 -2.71000 10000000.0 'millimeters') .", "}");
 		expectedURIs = (new HashSet<String>());
 		expectedURIs.addAll( Arrays.asList((
 				new String[]
