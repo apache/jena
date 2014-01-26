@@ -35,8 +35,12 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
     /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */
     public static Iterator<Record> iterator(int pageId, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
     {
-        if ( ! pageMgr.valid(pageId) )
-            throw new BlockException("RecordRangeIterator.iterator No such block (pageId="+pageId+", fromRec="+fromRec+", toRec="+toRec+ ")") ;
+        if ( ! pageMgr.valid(pageId) ) {
+            String msg = "RecordRangeIterator.iterator -- No such block (pageId="+pageId+", fromRec="+fromRec+", toRec="+toRec+ ")" ;
+            System.err.println(msg) ;
+            System.exit(0) ;
+            throw new BlockException(msg) ;
+        }
         return new RecordRangeIterator(pageId, fromRec, toRec, pageMgr) ;
     }
 
