@@ -93,7 +93,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
 
     @Test public void place_sequence_04a() {
         testNoBGP("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1)) (bgp (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
-                "(sequence (filter (= ?x 123) (sequence (bgp (?s ?p ?x1)) (bgp (?s ?p ?x)))) (bgp (?s ?p ?x2)) )") ;
+                "(sequence (bgp (?s ?p ?x1)) (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x2)))") ;
     }
 
     @Test public void place_sequence_05() {
@@ -103,7 +103,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
 
     @Test public void place_sequence_05a() {
         testNoBGP("(filter (= ?x 123) (sequence (bgp (?s ?p ?x) (?s ?p ?x1)) (bgp (?s ?p ?x2)) ))",
-                "(sequence (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1))) (bgp (?s ?p ?x2)) )") ;
+                "(sequence (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1))) (bgp (?s ?p ?x2)))") ;
     }
 
 
@@ -122,6 +122,16 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     @Test public void place_sequence_08() {
         test("(sequence (bgp (?s ?p ?x)) (filter (= ?z 123) (bgp (?s ?p ?z))) )",
              null) ;
+    }
+    
+    @Test public void place_sequence_09() {
+        test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
+             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x1) (?s ?p ?x))) (bgp (?s ?p ?x2)) )") ;
+    }
+
+    @Test public void place_sequence_09a() {
+        testNoBGP("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
+                "(sequence (filter (= ?x 123) (bgp (?s ?p ?x1) (?s ?p ?x))) (bgp (?s ?p ?x2)) )") ;
     }
     
     // Join : one sided push.
@@ -269,6 +279,23 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         // Caution - OpFilter equality is sensitive to the order of expressions 
         test("(filter (= ?x 123) (assign ((?x1 123)) (filter (< ?x 456) (bgp (?s ?p ?x) (?s ?p ?z))) ))",
              "(assign (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
+    }
+    
+    @Test public void place_assign_05() {
+        // Even with No BGP we can still wrap a BGP without breaking it
+        testNoBGP("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x)) ))",
+             "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
+    }
+    
+    @Test public void place_assign_06() {
+        test("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x) (?s ?p ?x1) )))",
+             "(assign ((?z 123)) (sequence (filter (= ?x 123) (bgp (?s ?p ?x)) ) (bgp (?s ?p ?x1)) ) )") ;
+    }
+    
+    @Test public void place_assign_06a() {
+        // With No BGP we won't break up the BGP but we will still push the filter down
+        testNoBGP("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x) (?s ?p ?x1) )))",
+             "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1)) ) )") ;
     }
 
     @Test public void place_filter_01() {
