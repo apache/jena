@@ -210,8 +210,6 @@ public class TDB {
     }
 
     private static void wireIntoExecution() {
-        // TDB does it itself.
-        TDB.getContext().set(ARQ.optFilterPlacementBGP, false) ;
         // Globally change the stage generator to intercept BGP on TDB
         StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
 
