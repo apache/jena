@@ -36,7 +36,6 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.syntax.PatternVars;
 import com.hp.hpl.jena.sparql.util.VarUtils ;
 
 /**
@@ -71,7 +70,8 @@ public class TransformFilterPlacement extends TransformCopy {
         return placement == noChangePlacement ;
     }
 
-    private Op transform(ExprList exprs, BasicPattern bgp) {
+    /** Apply filter placement to a BGP */
+    public static Op transform(ExprList exprs, BasicPattern bgp) {
         Placement placement = placeBGP(exprs, bgp) ;
         Op op = ( placement == null ) ? new OpBGP(bgp) : placement.op ;
         if ( placement != null )
@@ -79,7 +79,8 @@ public class TransformFilterPlacement extends TransformCopy {
         return op ;
     }
 
-    private Op transform(ExprList exprs, Node graphNode, BasicPattern bgp) {
+    /** Apply filter placement to a named graph BGP */
+    public static Op transform(ExprList exprs, Node graphNode, BasicPattern bgp) {
         Placement placement = placeQuadPattern(exprs, graphNode, bgp) ;
         Op op = ( placement == null ) ? new OpQuadPattern(graphNode, bgp) : placement.op ;
         if ( placement != null )
@@ -116,12 +117,10 @@ public class TransformFilterPlacement extends TransformCopy {
         // Dispatch by visitor??
         Placement placement = null ;
 
-        if ( input instanceof OpBGP ) {
-            placement = placeBGP(exprs, (OpBGP)input) ;
-        }
-        else if ( input instanceof OpQuadPattern ) {
-            placement = placeQuadPattern(exprs, (OpQuadPattern)input) ;   
-        }
+        if ( input instanceof OpBGP )
+            placement = placeOrWrapBGP(exprs, (OpBGP)input) ;
+        else if ( input instanceof OpQuadPattern )
+            placement = placeOrWrapQuadPattern(exprs, (OpQuadPattern)input) ;   
         else if ( input instanceof OpSequence )
             placement = placeSequence(exprs, (OpSequence)input) ;
         else if ( input instanceof OpJoin )
@@ -150,10 +149,6 @@ public class TransformFilterPlacement extends TransformCopy {
         return placement ;
     }
     
-    private Placement x_placeNoOp(ExprList exprs, Op op) {
-        return result(op, exprs) ;
-    }
-
     private Placement placeFilter(ExprList exprs, OpFilter input) {
         Placement p = transform(exprs, input.getSubOp()) ;
         if ( p == null )
@@ -164,33 +159,19 @@ public class TransformFilterPlacement extends TransformCopy {
         return p ;
     }
 
-    private Placement placeBGP(ExprList exprs, OpBGP x) {
-        return placeBGP(exprs, x.getPattern()) ;
+    private Placement placeOrWrapBGP(ExprList exprs, OpBGP x) {
+        return placeOrWrapBGP(exprs, x.getPattern()) ;
     }
 
-    private Placement placeBGP(ExprList exprsIn, BasicPattern pattern) {
-        if (!includeBGPs) {
-            // Can't push into the BGP in this case but still may be able to place the filter around this BGP if all necessary variables are in-scope
-            Set<Var> vs = DS.set();
-            VarUtils.addVars(vs, pattern);
-            ExprList pushed = new ExprList();
-            ExprList unpushed = new ExprList();
-            for (Expr e : exprsIn) {
-                Set<Var> eVars = e.getVarsMentioned();
-                if (vs.containsAll(eVars)) {
-                    pushed.add(e);
-                } else {
-                    unpushed.add(e);
-                }
-            }
-            
-            // Can't push anything into a filter around this BGP
-            if (pushed.size() == 0) return null;
-            
-            // Safe to place some conditions around the BGP
-            return new Placement(OpFilter.filter(pushed, new OpBGP(pattern)), unpushed);
-        }
-        
+    /** Either just wrap the BGP with possible expressions or also consider breaking up the BGP */
+    private Placement placeOrWrapBGP(ExprList exprsIn, BasicPattern pattern) {
+        if ( includeBGPs )
+            return placeBGP(exprsIn, pattern) ;
+        else
+            return wrapBGP(exprsIn, pattern) ;
+    }
+    
+    private static Placement placeBGP(ExprList exprsIn, BasicPattern pattern) {
         ExprList exprs = new ExprList(exprsIn) ;
         Set<Var> patternVarsScope = DS.set() ;
         // Any filters that depend on no variables.
@@ -219,6 +200,31 @@ public class TransformFilterPlacement extends TransformCopy {
         return result(op, exprs) ;
     }
 
+    /** Wrap the Basic Pattern with any applicable expressions from the ExprList
+     * but do not break up the BasicPattern in any way.
+     */
+    private Placement wrapBGP(ExprList exprsIn, BasicPattern pattern) {
+        Set<Var> vs = DS.set();
+        VarUtils.addVars(vs, pattern);
+        ExprList pushed = new ExprList();
+        ExprList unpushed = new ExprList();
+        for (Expr e : exprsIn) {
+            Set<Var> eVars = e.getVarsMentioned();
+            if (vs.containsAll(eVars)) {
+                pushed.add(e);
+            } else {
+                unpushed.add(e);
+            }
+        }
+        
+        // Can't push anything into a filter around this BGP
+        if (pushed.size() == 0) return null;
+        
+        // Safe to place some conditions around the BGP
+        return new Placement(OpFilter.filter(pushed, new OpBGP(pattern)), unpushed);
+
+    }
+
     /** Find the current OpBGP, or return null. */
     private static OpBGP getBGP(Op op) {
         if ( op instanceof OpBGP )
@@ -239,35 +245,18 @@ public class TransformFilterPlacement extends TransformCopy {
         return null ;
     }
 
-    private Placement placeQuadPattern(ExprList exprs, OpQuadPattern pattern) {
+    private Placement placeOrWrapQuadPattern(ExprList exprs, OpQuadPattern pattern) {
         return placeQuadPattern(exprs, pattern.getGraphNode(), pattern.getBasicPattern()) ;
     }
 
-    private Placement placeQuadPattern(ExprList exprsIn, Node graphNode, BasicPattern pattern) {
-        if (!includeBGPs) {
-            // Can't push into the quadpattern in this case but still may be able to place the filter around this quadpattern if all necessary variables are in-scope
-            Set<Var> vs = DS.set();
-            VarUtils.addVars(vs, pattern);
-            if (Var.isVar(graphNode)) 
-                vs.add(Var.alloc(graphNode));
-            ExprList pushed = new ExprList();
-            ExprList unpushed = new ExprList();
-            for (Expr e : exprsIn) {
-                Set<Var> eVars = e.getVarsMentioned();
-                if (vs.containsAll(eVars)) {
-                    pushed.add(e);
-                } else {
-                    unpushed.add(e);
-                }
-            }
-            
-            // Can't push anything into a filter around this quadpattern
-            if (pushed.size() == 0) return null;
-            
-            // Safe to place some conditions around the quadpattern
-            return new Placement(OpFilter.filter(pushed, new OpQuadPattern(graphNode, pattern)), unpushed);
-        }
-        
+    private Placement placeOrWrapQuadPattern(ExprList exprsIn, Node graphNode, BasicPattern pattern) {
+        if ( includeBGPs )
+            return placeQuadPattern(exprsIn, graphNode, pattern) ;
+        else
+            return wrapQuadPattern(exprsIn, graphNode, pattern) ;
+    }
+    
+    private static Placement placeQuadPattern(ExprList exprsIn, Node graphNode, BasicPattern pattern) {
         ExprList exprs = new ExprList(exprsIn) ;
         Set<Var> patternVarsScope = DS.set() ;
         // Any filters that depend on no variables.
@@ -293,6 +282,33 @@ public class TransformFilterPlacement extends TransformCopy {
         // Place any filters this whole quad block covers. 
         op = insertAnyFilter(exprs, patternVarsScope, op) ;
         return result(op, exprs) ;
+    }
+
+    
+    /** Wrap the Graph node, Basic Pattern with any applicable expressions from the ExprList
+     *  but do not break up the BasicPattern in any way.
+     */
+    private static Placement wrapQuadPattern(ExprList exprsIn, Node graphNode, BasicPattern pattern) {
+        Set<Var> vs = DS.set();
+        VarUtils.addVars(vs, pattern);
+        if (Var.isVar(graphNode)) 
+            vs.add(Var.alloc(graphNode));
+        ExprList pushed = new ExprList();
+        ExprList unpushed = new ExprList();
+        for (Expr e : exprsIn) {
+            Set<Var> eVars = e.getVarsMentioned();
+            if (vs.containsAll(eVars)) {
+                pushed.add(e);
+            } else {
+                unpushed.add(e);
+            }
+        }
+
+        // Can't push anything into a filter around this quadpattern
+        if (pushed.size() == 0) return null;
+
+        // Safe to place some conditions around the quadpattern
+        return new Placement(OpFilter.filter(pushed, new OpQuadPattern(graphNode, pattern)), unpushed);
     }
 
     /** Find the current OpQuadPattern, or return null. */
