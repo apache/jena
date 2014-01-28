@@ -54,6 +54,17 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     @Test public void place_bgp_04() {
         test("(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))", "(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))") ;
     }
+    
+    @Test public void place_bgp_05() {
+        test("(filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1) (?s ?p ?x2)) )",
+             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x1) (?s ?p ?x2)) )") ;
+    }
+
+    @Test public void place_bgp_05a() {
+        // Won't push and break up the BGP
+        testNoBGP("(filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1) (?s ?p ?x2)) )",
+                null) ;
+    }
 
     @Test public void place_no_match_01() {
         // Unbound
@@ -312,6 +323,26 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         test("(filter (= ?x 123) (union (bgp (?s ?p ?x) (?s ?p ?y)) (bgp (?s ?p ?z)  (?s1 ?p1 ?x)) ))",
              "(union  (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y))) "+
                       "(filter (= ?x 123) (bgp (?s ?p ?z)  (?s1 ?p1 ?x)) ))") ;
+    }
+    
+    @Test public void place_union_02() {
+        test("(filter 1 (union (bgp (triple ?s ?p ?o)) (filter 0 (table unit))) )",
+             "(union (sequence (filter 1 (table unit)) (bgp (triple ?s ?p ?o))) (filter (exprlist 1 0) (table unit)))");
+    }
+    
+    @Test public void place_union_02a() {
+        testNoBGP("(filter 1 (union (bgp (triple ?s ?p ?o)) (filter 0 (table unit))) )",
+             "(union (filter 1 (bgp (triple ?s ?p ?o))) (filter (exprlist 1 0) (table unit)))");
+    }
+    
+    @Test public void place_union_03() {
+        test("(slice _ 1 (project (?s ?p ?o) (filter 1 (union (bgp (?s ?p ?o)) (filter 0 (table unit))))))",
+             "(slice _ 1 (project (?s ?p ?o) (union (sequence (filter 1 (table unit)) (bgp (?s ?p ?o))) (filter (exprlist 1 0) (table unit)))))");
+    }
+    
+    @Test public void place_union_03a() {
+        testNoBGP("(slice _ 1 (project (?s ?p ?o) (filter 1 (union (bgp (?s ?p ?o)) (filter 0 (table unit))))))",
+             "(slice _ 1 (project (?s ?p ?o) (union (filter 1 (bgp (?s ?p ?o))) (filter (exprlist 1 0) (table unit)))))");
     }
         
     public static void test(String input, String output) {
