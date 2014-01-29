@@ -215,15 +215,9 @@ public class TDB {
 
         // Wire in the TDB stage generator which will make TDB work whether
         // or not the TDB executor is used. This means that datasets of mixed
-        // graph
-        // types inside a general purpose dataset work.
+        // graph types inside a general purpose dataset work.
         StageGenerator stageGenerator = new StageGeneratorDirectTDB(orig) ;
         StageBuilder.setGenerator(ARQ.getContext(), stageGenerator) ;
-
-        // Wire in the new OpExecutor.
-        // This is normal way to execute with a general dataset or a
-        // model that is TDB-backed. (Is it?)
-        // QC.setFactory(ARQ.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
     }
 
     // ---- Static constants read by modVersion
