@@ -33,8 +33,13 @@ import com.hp.hpl.jena.sparql.util.Context ;
 public class ExprList implements Iterable<Expr>
 {
     private final List<Expr> expressions ;
+    /** Create a copy which does not share the list of expressions with the original */ 
+    public static ExprList copy(ExprList other) { return new ExprList(other) ; }
     
     public ExprList() { expressions = new ArrayList<Expr>() ; }
+    
+    /** @deprecated Deprecated as a public constructor.  Use {@plainlink ExprList#copy(ExprList) instead.} */
+    @Deprecated
     public ExprList(ExprList other) { this() ; expressions.addAll(other.expressions) ; }
     public ExprList(Expr expr)
     {
