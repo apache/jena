@@ -99,18 +99,18 @@ public class TransformFilterPlacement extends TransformCopy {
     public Op transform(OpFilter opFilter, Op x) {
         ExprList exprs = opFilter.getExprs() ;
         Placement placement = transform(exprs, x) ;
-        if ( placement == null || placement.op == x )
+        if ( placement == null )  
             // Didn't do anything.
             return super.transform(opFilter, x) ;
         Op op = buildFilter(placement) ;
         return op ;
     }
 
-    // Recurse
     private Op transformOp(ExprList exprs, Op x) {
         Placement placement = transform(exprs, x) ;
-        Op op = buildFilter(placement) ;
-        return op ;
+        if ( placement == null )
+            return buildFilter(exprs, x) ;
+        return buildFilter(placement) ;
     }
 
     private Placement transform(ExprList exprs, Op input) {
@@ -150,12 +150,14 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private Placement placeFilter(ExprList exprs, OpFilter input) {
+        // Thrown the filter expressions into the 
+        if ( exprs.size() != 0 ) {
+            exprs = ExprList.copy(exprs) ;
+            exprs.addAll(input.getExprs());
+        } else
+            exprs = input.getExprs() ;
+        
         Placement p = transform(exprs, input.getSubOp()) ;
-        if ( p == null )
-            p = new Placement(input.getSubOp(), exprs) ;
-        // These would have already been placed (bottom up conversion)
-        // so no point in including in the transform() call above.
-        p.unplaced.addAll(input.getExprs());
         return p ;
     }
 
@@ -172,7 +174,7 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private static Placement placeBGP(ExprList exprsIn, BasicPattern pattern) {
-        ExprList exprs = new ExprList(exprsIn) ;
+        ExprList exprs = ExprList.copy(exprsIn) ;
         Set<Var> patternVarsScope = DS.set() ;
         // Any filters that depend on no variables.
         Op op = null ;
@@ -257,7 +259,7 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private static Placement placeQuadPattern(ExprList exprsIn, Node graphNode, BasicPattern pattern) {
-        ExprList exprs = new ExprList(exprsIn) ;
+        ExprList exprs = ExprList.copy(exprsIn) ;
         Set<Var> patternVarsScope = DS.set() ;
         // Any filters that depend on no variables.
 
@@ -343,7 +345,7 @@ public class TransformFilterPlacement extends TransformCopy {
      */
 
     private Placement placeSequence(ExprList exprsIn, OpSequence opSequence) {
-        ExprList exprs = new ExprList(exprsIn) ;
+        ExprList exprs = ExprList.copy(exprsIn) ;
         Set<Var> varScope = DS.set() ;
         List<Op> ops = opSequence.getElements() ;
 
@@ -439,15 +441,11 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private Placement placeUnion(ExprList exprs, OpUnion input) {
-        // Unsubtle - push into both sides.
-        // Neater - for all unpushed put outside the union. 
+        // Push into both sides.
         Op left = input.getLeft() ;
-        Placement pLeft = transform(exprs, left) ;
-        left = buildFilter(pLeft) ;
-        
+        left = transformOp(exprs, left) ;
         Op right = input.getRight() ;
-        Placement pRight = transform(exprs, right) ;
-        right = buildFilter(pRight) ;
+        right = transformOp(exprs, right) ;
         
         Op op2 = OpUnion.create(left, right) ;
         return result(op2, emptyList) ;
