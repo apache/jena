@@ -102,7 +102,15 @@ public class Service
         // in the first place.
         // Any substitution is also safe because it replaced variables by values. 
         Op opRemote = Rename.reverseVarRename(op.getSubOp(), true) ;
-
+        
+        // JENA-494 There is a bug here that the renaming means that if this is deeply nested 
+        // and joined to other things at the same level of you end up with the variables being
+        // disjoint and the same results
+        // Fixing this requires somehow tracking the renamings that get undone and then wrapping
+        // the resulting query iterator with something to remap it
+        // Likely this means extending UnrenameAnyVars to track the unrenames it does and this
+        // approach may fall over if there are multiple levels of renaming going on
+        
         //Explain.explain("HTTP", opRemote, context) ;
         
         Query query ;
