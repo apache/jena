@@ -327,33 +327,64 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     
     @Test public void place_union_02() {
         test("(filter 1 (union (bgp (triple ?s ?p ?o)) (filter 0 (table unit))) )",
-             "(union (sequence (filter 1 (table unit)) (bgp (triple ?s ?p ?o))) (filter (exprlist 1 0) (table unit)))");
+             "(union (sequence (filter 1 (table unit)) (bgp (triple ?s ?p ?o))) (filter (exprlist 0 1) (table unit)))");
     }
     
     @Test public void place_union_02a() {
         testNoBGP("(filter 1 (union (bgp (triple ?s ?p ?o)) (filter 0 (table unit))) )",
-             "(union (filter 1 (bgp (triple ?s ?p ?o))) (filter (exprlist 1 0) (table unit)))");
+             "(union (filter 1 (bgp (triple ?s ?p ?o))) (filter (exprlist 0 1) (table unit)))");
     }
     
     @Test public void place_union_03() {
         test("(slice _ 1 (project (?s ?p ?o) (filter 1 (union (bgp (?s ?p ?o)) (filter 0 (table unit))))))",
-             "(slice _ 1 (project (?s ?p ?o) (union (sequence (filter 1 (table unit)) (bgp (?s ?p ?o))) (filter (exprlist 1 0) (table unit)))))");
+             "(slice _ 1 (project (?s ?p ?o) (union (sequence (filter 1 (table unit)) (bgp (?s ?p ?o))) (filter (exprlist 0 1) (table unit)))))");
     }
     
     @Test public void place_union_03a() {
         testNoBGP("(slice _ 1 (project (?s ?p ?o) (filter 1 (union (bgp (?s ?p ?o)) (filter 0 (table unit))))))",
-             "(slice _ 1 (project (?s ?p ?o) (union (filter 1 (bgp (?s ?p ?o))) (filter (exprlist 1 0) (table unit)))))");
+             "(slice _ 1 (project (?s ?p ?o) (union (filter 1 (bgp (?s ?p ?o))) (filter (exprlist 0 1) (table unit)))))");
     }
     
+    // Union - push outer filters into each arm.
     @Test public void place_union_04() {
-        test("(filter (= 1 1) (union (bgp (triple ?s ?p ?o)) (filter (!= 0 0) (table unit))))",
-             "(union (sequence (filter (= 1 1) (table unit)) (bgp (triple ?s ?p ?o))) (filter (exprlist (= 1 1) (!= 0 0)) (table unit)))");
+        String in = StrUtils.strjoinNL
+            ("(filter (= 1 1)"
+            ,"  (union"
+            ,"    (bgp (triple ?s ?p ?o))"
+            ,"    (filter (!= 0 0)"
+            ,"      (table unit))))"
+             ) ;
+      String out = StrUtils.strjoinNL
+          ("(union"
+           ,"  (sequence"
+           ,"    (filter (= 1 1)"
+           ,"      (table unit))"
+           ,"    (bgp (triple ?s ?p ?o)))"
+           ,"  (filter (exprlist (!= 0 0) (= 1 1))"
+           ,"   (table unit)))"
+              ) ;
+        test ( in, out ) ;
     }
     
     @Test public void place_union_04a() {
-        testNoBGP("(filter (= 1 1) (union (bgp (triple ?s ?p ?o)) (filter (!= 0 0) (table unit))))",
-             "(union (filter (= 1 1) (bgp (triple ?s ?p ?o))) (filter (exprlist (= 1 1) (!= 0 0)) (table unit)))");
+        String in = StrUtils.strjoinNL
+            ("(filter (= 1 1)"
+            ,"    (union"
+            ,"        (bgp (triple ?s ?p ?o))"
+            ,"        (filter (!= 0 0)"
+            ,"          (table unit))))"
+             ) ;
+        String out = StrUtils.strjoinNL
+            ("(union"
+            ,"   (filter (= 1 1)"
+            ,"     (bgp (triple ?s ?p ?o)))"
+            ,"   (filter (exprlist (!= 0 0) (= 1 1))"
+            ,"     (table unit)))"
+            ) ;
+        testNoBGP ( in, out ) ;
     }
+    // Reverse arms.
+
         
     public static void test(String input, String output) {
         test$(input, output, true) ;
