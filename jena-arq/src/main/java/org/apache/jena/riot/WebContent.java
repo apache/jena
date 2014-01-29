@@ -187,6 +187,8 @@ public class WebContent
     }
 
     public static boolean isHtmlForm(ContentType ct) {
+        if ( ct == null )
+            return false ;
         return contentTypeHTMLForm.equalsIgnoreCase(ct.getContentType()) ;
     }
 
