@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.FileUtils ;
 // especially error cases abnd unusual usage that the higher level APIs don't use.
 public class TestHttpOp extends BaseTest {
     
-    static String pingURL = ServerTest.urlRoot+"ping.txt" ;
+    static String pingURL = ServerTest.urlRoot+"$/ping" ;
     @BeforeClass public static void beforeClass() { ServerTest.allocServer() ; }
     @AfterClass  public static void afterClass()  { ServerTest.freeServer() ; }
     
@@ -68,10 +68,8 @@ public class TestHttpOp extends BaseTest {
         }
     }
 
-    @Test public void httpGet_03() throws IOException {
+    @Test public void httpGet_03() {
         String x = HttpOp.execHttpGetString(pingURL) ;
-        String y = FileUtils.readWholeFileAsUTF8("pages/ping.txt") ;
-        assertEquals(y,x) ;
     }   
     
     @Test public void httpGet_04() {
