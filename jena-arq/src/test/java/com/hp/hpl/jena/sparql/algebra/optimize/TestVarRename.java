@@ -79,6 +79,12 @@ public class TestVarRename extends BaseTest
                                            "(project (?s) (project (?s) (table (vars ?/obj) (row [?/obj 123])) ))",
                                            true,
                                            "s") ; }
+    
+    // JENA-494 : sub-query and service interaction
+    @Test public void rename_14() { rename("(project (?z) (project (?z) (sequence (service <http://foo> (bgp (?c ?p ?z)) ) (bgp (?c ?q ?z)) ) ) )",
+                                           "(project (?z) (project (?z) (sequence (service <http://foo> (bgp (?/c ?/p ?z)) ) (bgp (?/c ?/q ?z)) ) ) )",
+                                           true,
+                                           "z") ; }
 
     
     @Test public void rename_reverse_01() { reverse("(project (?s ?/p) (bgp (?s ?/p ?/o)))",

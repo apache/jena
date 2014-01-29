@@ -215,5 +215,5 @@ class NodeTransformOp extends TransformCopy
         }
         
         return new OpGroup(subOp, groupVars, aggregators) ;
-    }
+    }    
 }
