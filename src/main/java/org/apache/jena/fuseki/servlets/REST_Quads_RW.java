@@ -42,7 +42,7 @@ public class REST_Quads_RW extends REST_Quads_R {
 
     @Override
     protected void doPost(HttpAction action) {
-        if ( !action.getDatasetRef().allowDatasetUpdate )
+        if ( !action.getDataService().allowUpdate() )
             ServletOps.errorMethodNotAllowed("POST") ;
 
         if ( action.isTransactional() )
@@ -53,7 +53,7 @@ public class REST_Quads_RW extends REST_Quads_R {
 
     @Override
     protected void doPut(HttpAction action) {
-        if ( !action.getDatasetRef().allowDatasetUpdate )
+        if ( !action.getDataService().allowUpdate() )
             ServletOps.errorMethodNotAllowed("POST") ;
 
         if ( action.isTransactional() )

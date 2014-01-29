@@ -201,6 +201,8 @@ public class TestAdmin extends BaseTest {
     @Test public void state_1() {
         // Add one
         addTestDataset() ;
+        checkExists(dsTest) ;
+
         execHttpPost(ServerTest.urlRoot+"$/"+opDatasets+"/"+dsTest+"?state=offline", null) ;
 
         checkExistsNotActive(dsTest); 

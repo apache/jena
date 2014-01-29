@@ -149,12 +149,11 @@ public class ActionDatasets extends ActionCtl {
     }
 
     private JsonValue execGetDataset(HttpAction action) {
-        action.log.info(format("[%d] GET dataset %s", action.id, action.dsRef.name)) ;
+        action.log.info(format("[%d] GET dataset %s", action.id, action.getDatasetName())) ;
         JsonBuilder builder = new JsonBuilder() ;
-        String datasetPath = DatasetRef.canonicalDatasetPath(action.dsRef.name) ;
-        DatasetRef dsDesc = DatasetRegistry.get().get(datasetPath) ;
+        DataAccessPoint dsDesc = DatasetRegistry.get().get(action.getDatasetName()) ;
         if ( dsDesc == null )
-            ServletOps.errorNotFound("Not found: dataset "+action.dsRef.name);
+            ServletOps.errorNotFound("Not found: dataset "+action.getDatasetName());
         JsonDescription.describe(builder, dsDesc) ;
         return builder.build() ;
     }
@@ -172,15 +171,19 @@ public class ActionDatasets extends ActionCtl {
     }
     
     private void execPostDataset(HttpAction action) {
-        String name = action.dsRef.name ;
+        String name = action.getDatasetName() ;
         if ( name == null )
-            name = "" ;
+            name = "''" ;
         action.log.info(format("[%d] POST dataset %s", action.id, name)) ;
         
-//        if ( action.dsRef.getDataset() == null )
-//            ServletOps.errorNotFound("Not found: dataset "+action.dsRef.name);
+        if ( action.getDataAccessPoint() == null )
+            ServletOps.errorNotFound("Not found: dataset "+action.getDatasetName());
         
-        DatasetRef dsDesc = action.dsRef ;
+        DataService dSrv = action.getDataService() ;
+        if ( dSrv == null )
+            // If not set explicitly, take from DataAccessPoint
+            dSrv = action.getDataAccessPoint().getDataService() ;
+        
         String s = action.request.getParameter("state") ;
         if ( s == null || s.isEmpty() )
             ServletOps.errorBadRequest("No state change given") ;
@@ -189,19 +192,30 @@ public class ActionDatasets extends ActionCtl {
         if ( s.equalsIgnoreCase("active") ) {
             action.log.info(format("[%d] REBUILD DATASET %s", action.id, name)) ;
             setDatasetState(name, FusekiVocab.stateActive) ;
+            dSrv.goActive() ; 
             // DatasetGraph dsg = ???? ;
-            //dsDesc.activate(dsg) ; 
-            dsDesc.activate() ;
+            //dSrv.activate(dsg) ; 
+            //dSrv.activate() ;
         } else if ( s.equalsIgnoreCase("offline") ) {
-            setDatasetState(name, FusekiVocab.stateOffline) ;        
-            dsDesc.offline() ;
-        } else
-            ServletOps.errorBadRequest("New state '"+s+"' not recognized");
+            action.log.info(format("[%d] OFFLINE DATASET %s", action.id, name)) ;
+            DataAccessPoint access = action.getDataAccessPoint() ;
+            //access.goOffline() ;
+            dSrv.goOffline() ;  // Affects the target of the name. 
+            setDatasetState(name, FusekiVocab.stateOffline) ;  
+            //dSrv.offline() ;
+        } else if ( s.equalsIgnoreCase("unlink") ) {
+            action.log.info(format("[%d] UNLINK ACCESS NAME %s", action.id, name)) ;
+            DataAccessPoint access = action.getDataAccessPoint() ;
+            ServletOps.errorNotImplemented("unlink: dataset"+action.getDatasetName());
+            //access.goOffline() ;
+            // Registry?
+        }
+        else
+            ServletOps.errorBadRequest("State change operation '"+s+"' not recognized");
         ServletOps.success(action) ;
     }
 
     private void execPostContainer(HttpAction action) {
-
         JenaUUID uuid = JenaUUID.generate() ;
         String newURI = uuid.asURI() ;
         Node gn = NodeFactory.createURI(newURI) ;
@@ -247,7 +261,7 @@ public class ActionDatasets extends ActionCtl {
                 action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
 
             String datasetName = object.getLexicalForm() ;
-            String datasetPath = DatasetRef.canonicalDatasetPath(datasetName) ;
+            String datasetPath = DataAccessPoint.canonical(datasetName) ;
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
             
             if ( DatasetRegistry.get().isRegistered(datasetPath) )
@@ -258,8 +272,8 @@ public class ActionDatasets extends ActionCtl {
             model.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             // Need to be in Resource space at this point.
-            DatasetRef dsRef = FusekiConfig.processService(subject) ;
-            FusekiConfig.registerDataset(datasetPath, dsRef) ;
+            DataAccessPoint ref = FusekiConfig.processService(subject) ;
+            FusekiConfig.registerDataset(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOutputStream out = action.getResponse().getOutputStream() ;
             out.println("That went well") ;
@@ -308,7 +322,7 @@ public class ActionDatasets extends ActionCtl {
 
     protected void execDelete(HttpAction action) {
         // Does not exist?
-        String name = action.dsRef.name ;
+        String name = action.getDatasetName() ;
         if ( name == null )
             name = "" ;
         action.log.info(format("[%d] DELETE ds=%s", action.id, name)) ;
@@ -324,9 +338,9 @@ public class ActionDatasets extends ActionCtl {
         systemDSG.begin(ReadWrite.WRITE) ;
         boolean committed =false ;
         try {
-            DatasetRef dsRef = DatasetRegistry.get().get(name) ;
+            DataAccessPoint ref = DatasetRegistry.get().get(name) ;
             // Redo check inside transaction.
-            if ( dsRef == null )
+            if ( ref == null )
                 ServletOps.errorNotFound("No such dataset registered: "+name);
                 
             // Name to graph
@@ -335,9 +349,8 @@ public class ActionDatasets extends ActionCtl {
                 ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
             Node gn = q.getGraph() ;
 
-            dsRef.gracefulShutdown() ;
+            action.log.info("SHUTDOWN NEEDED");
             DatasetRegistry.get().remove(name) ;
-            // XXX or set to state deleted.
             systemDSG.deleteAny(gn, null, null, null) ;
             systemDSG.commit() ;
             committed = true ;

@@ -20,48 +20,26 @@ package dev;
 
 public class PROJECT {
     // Backup
-    
+    // Access point stats? HTTP stats?
     // Create dataset - check for existing. 
+    // Timeouts
+    // Active/offline - names of data services? 
+    // Operation to have several endpoints?
+    //  Need Operation and "OperationInstance" = endpoint.
+    //   OperationName == Operation Type?
+    // Check variable nameds on DataAccessPoint,  DataService, Operation
+    // Per HTTP operation counters
+    // Counters interface -> 
+    //   Add to other things? e.g. DatseService
+    // HTTP stats
+    // Per service timeouts. e.g. 
+    // Per service context setting e.g. timeouts, tdb:unionDefaultGraph
+    //   SPARQL_Query.setAnyTimeouts
     
-    
-//    Add DS1
-//    Add DS2
-//    Add symbolic link
-//    Offline DS2
-//
-//    ==>
-//      check offlining works.
-//      how do we manage assembler descriptions?
-//        System database is only status + link to assembler?
-    
-    // Naming 
-    //  fuseki:Service is the endpoints = dataset
-    // DataService : 
+    // Testing - all in-mmeory
+    //   Don't save assemblers 
     
     // Shiro - log failures
-    
-    // DatasetRef -> DataService 
-    // DataService has "target"
-    
-    // DSG_Switchable does not work : need to access underlying DB by name.
-    //  ==>
-    //    [] a fuseki:Service, fuseki:Switchable ;
-    //        fuseki:name1 "" ;
-    //        fuseki:name2 "" ;
-    //        .
-    
-    // Assembler for switchable?
-    //   Still need to be able to contact each subDSG for update?
-    //   OR assume just active/offline?
-    
-    // DatasetGraphSwitchable(dsg1, dsg2) + assembler.
-    //   NB The need to query the right DSG 
-    
-    // Stats need to chase down links?
-    
-    // Chase down DatasetRef.getDataset and split into "for action" (follows link) and not
-    // Where do the stats go?
-    // If we want 
     
     /* Use of:
 <context-param>

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,14 +18,18 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.fuseki.migrate.Registry ;
-
-// XXX rename
-public class DatasetRegistry extends Registry<DataAccessPoint>
-{
-    private static DatasetRegistry singleton = new DatasetRegistry() ;
-
-    public static DatasetRegistry get() { return singleton ; }
+public enum OperationName {
+    // Fixed names give the codebase some resilience.
     
-    private DatasetRegistry() {}
+    Query("query"),
+    Update("update"),
+    Upload("upload"),
+    GSP("graph store protocol"),
+    GSP_R("graph store protocol (Read)")
+    ;
+    
+    public final String name ;
+    private OperationName(String name) { this.name = name ; }
+    
 }
+

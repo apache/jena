@@ -84,11 +84,11 @@ public class FusekiServletContextListener implements ServletContextListener {
                 // 2 - Directory of assemblers files "assemblers"
                 // 3 - The system database
                  
-                List<DatasetRef> configFileDBs = findDatasets(initialSetup) ;
-                List<DatasetRef> directoryDBs = FusekiConfig.readConfigurationDirectory(configDir) ;
-                List<DatasetRef> systemDBs = FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
+                List<DataAccessPoint> configFileDBs = findDatasets(initialSetup) ;
+                List<DataAccessPoint> directoryDBs = FusekiConfig.readConfigurationDirectory(configDir) ;
+                List<DataAccessPoint> systemDBs = FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
                 
-                List<DatasetRef> datasets = new ArrayList<DatasetRef>() ;
+                List<DataAccessPoint> datasets = new ArrayList<DataAccessPoint>() ;
                 datasets.addAll(configFileDBs) ;
                 datasets.addAll(directoryDBs) ;
                 datasets.addAll(systemDBs) ;
@@ -99,17 +99,17 @@ public class FusekiServletContextListener implements ServletContextListener {
         }
     }
     
-    private static List<DatasetRef> findDatasets(ServerInitialConfig params) {  
+    private static List<DataAccessPoint> findDatasets(ServerInitialConfig params) {  
         // Has a side effect of global context setting.
 
-        List<DatasetRef> datasets = DS.list() ;
+        List<DataAccessPoint> datasets = DS.list() ;
 
         if ( params.fusekiConfigFile != null ) {
             Fuseki.configLog.info("Configuration file: " + params.fusekiConfigFile) ;
-            List<DatasetRef> cmdLineDatasets = FusekiConfig.readConfigFile(params.fusekiConfigFile) ;
+            List<DataAccessPoint> cmdLineDatasets = FusekiConfig.readConfigFile(params.fusekiConfigFile) ;
             datasets.addAll(cmdLineDatasets) ;
         } else {
-            List<DatasetRef> cmdLineDatasets = FusekiConfig.defaultConfiguration(params) ;
+            List<DataAccessPoint> cmdLineDatasets = FusekiConfig.defaultConfiguration(params) ;
             datasets.addAll(cmdLineDatasets) ;
         }
         return datasets ;

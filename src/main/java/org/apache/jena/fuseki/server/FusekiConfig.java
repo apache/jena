@@ -43,11 +43,7 @@ import com.hp.hpl.jena.assembler.JA ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -78,48 +74,35 @@ public class FusekiConfig {
 
     // ---- DatasetRef used where there isn't a real Dataset e.g. the SPARQL processor.
     
-    private static DatasetGraph dummyDSG  = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
-
-    private static DatasetRef   noDataset = DatasetRef.create("", dummyDSG) ;
-
-    static {
-        noDataset.query.endpoints.add(DEF.ServiceQuery) ;
-        noDataset.query.endpoints.add(DEF.ServiceQueryAlt) ;
-        noDataset.allowDatasetUpdate = false ;
-        noDataset.activate() ;
-        // Don't register it.
-        // This is used as a placeholder and shoudl not be found by
-        // "all datasets"
-        // DatasetRegistry.get().put("", noDataset) ;
-    }
-
-    // ---- DatasetRef used where there isn't a real Dataset e.g. the SPARQL processor.
-    
     /**
-     * Return the DatasetRef (read-only) for when there is no dataset, just a
+     * Return the DataService (read-only) for when there is no dataset, just a
      * SPARQL Query processor
      */
-    public static DatasetRef serviceOnlyDatasetRef() {
-        return noDataset ;
+    public static DataService serviceOnlyDatasetRef() {
+        return DataService.dummy ;
     }
 
     /** Setup the server configuration based on ServerInitialConfig (from command line) */ 
-    public static List<DatasetRef> defaultConfiguration(ServerInitialConfig params) {
+    public static List<DataAccessPoint> defaultConfiguration(ServerInitialConfig params) {
         if ( params.fusekiConfigFile != null )
             log.warn("Configuration file found while processing command line dataset configuration") ;
         
-        DatasetRef dbDesc = DatasetRef.create(params.datasetPath, params.dsg) ;
-        dbDesc.query.endpoints.add(DEF.ServiceQuery) ;
-        dbDesc.query.endpoints.add(DEF.ServiceQueryAlt) ;
-
+        // Use a template assembler.
+        
+        DataService dbSvc = DataService.create(params.dsg) ;
+        DataAccessPoint dataAccess = new DataAccessPoint(params.datasetPath) ;
+        dataAccess.setDataService(dbSvc); 
+        dbSvc.addEndpoint(OperationName.Query, DEF.ServiceQuery);
+        dbSvc.addEndpoint(OperationName.Query, DEF.ServiceQueryAlt) ;
+        
         if ( params.allowUpdate ) {
-            dbDesc.update.endpoints.add(DEF.ServiceUpdate) ;
-            dbDesc.upload.endpoints.add(DEF.ServiceUpload) ;
-            dbDesc.readWriteGraphStore.endpoints.add(DEF.ServiceData) ;
-            dbDesc.allowDatasetUpdate = true ;
+            dbSvc.addEndpoint(OperationName.Update, DEF.ServiceUpdate) ;
+            dbSvc.addEndpoint(OperationName.Upload, DEF.ServiceUpload) ;
+            dbSvc.addEndpoint(OperationName.GSP, DEF.ServiceData) ;
         } else
-            dbDesc.readGraphStore.endpoints.add(DEF.ServiceData) ;
-        return Arrays.asList(dbDesc) ; 
+            dbSvc.addEndpoint(OperationName.GSP_R, DEF.ServiceData) ;
+
+        return Arrays.asList(dataAccess) ; 
     }
 
 //    /** Read one of more dataset descriptions in a model */
@@ -150,7 +133,7 @@ public class FusekiConfig {
 //    }
     
     /** Has side effects in server setup */
-    public static List<DatasetRef> readConfigFile(String filename) {
+    public static List<DataAccessPoint> readConfigFile(String filename) {
         // Old-style config file.
         Model model = FileManager.get().loadModel(filename) ;
         additionalRDF(model) ;
@@ -158,8 +141,8 @@ public class FusekiConfig {
         return servicesAndDatasets(model) ;
     }
 
-    public static List<DatasetRef> readConfigurationDirectory(String dir) {
-        List<DatasetRef> datasets = new ArrayList<DatasetRef>() ;
+    public static List<DataAccessPoint> readConfigurationDirectory(String dir) {
+        List<DataAccessPoint> dataServiceRef = new ArrayList<DataAccessPoint>() ;
         File d = new File(dir) ;
         String[] aFiles = d.list(visibleFiles) ;
         if ( aFiles == null ) {
@@ -171,11 +154,11 @@ public class FusekiConfig {
             // Same code as ActionDatasets
         }
         
-        return datasets ;
+        return dataServiceRef ;
     }
         
         
-    public static List<DatasetRef> readSystemDatabase(Dataset ds) {
+    public static List<DataAccessPoint> readSystemDatabase(Dataset ds) {
         String qs = StrUtils.strjoinNL
             (SystemState.PREFIXES ,
              "SELECT * {" ,
@@ -186,7 +169,7 @@ public class FusekiConfig {
              "}"
              ) ;
         
-        List<DatasetRef> refs = new ArrayList<DatasetRef>() ;
+        List<DataAccessPoint> refs = new ArrayList<DataAccessPoint>() ;
         
         ResultSet rs = query(qs, ds) ;
         
@@ -203,8 +186,7 @@ public class FusekiConfig {
             Model m = ds.getNamedModel(g.getURI()) ;
             s = m.wrapAsResource(s.asNode()) ;
             //String name = row.getLiteral("name").getLexicalForm() ;
-            DatasetRef ref = processService(s) ;
-            ref.setStatus(status) ;
+            DataAccessPoint ref = processService(s) ;
             refs.add(ref) ;
         }
         return refs ;
@@ -227,22 +209,22 @@ public class FusekiConfig {
         processServer(server) ;
     }
     
-    private static List<DatasetRef> servicesAndDatasets(Model model) {
+    private static List<DataAccessPoint> servicesAndDatasets(Model model) {
         // Old style configuration file : server to services.
         // ---- Services
         ResultSet rs = query("SELECT * { ?s fu:services [ list:member ?member ] }", model) ;
         if ( !rs.hasNext() )
             log.warn("No services found") ;
 
-        List<DatasetRef> services = new ArrayList<DatasetRef>() ;
+        List<DataAccessPoint> accessPoints = new ArrayList<DataAccessPoint>() ;
 
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             Resource svc = soln.getResource("member") ;
-            DatasetRef sd = processService(svc) ;
-            services.add(sd) ;
+            DataAccessPoint acc = processService(svc) ;
+            accessPoints.add(acc) ;
         }
-        return services ;
+        return accessPoints ;
     }
 
     private static void processServer(Resource server) {
@@ -292,60 +274,62 @@ public class FusekiConfig {
     }
 
     /** Build a DatasetRef from an assember starting at Resource svc */
-    public static DatasetRef processService(Resource svc) {
+    public static DataAccessPoint processService(Resource svc) {
         log.info("Service: " + nodeLabel(svc)) ;
         
         String name = ((Literal)getOne(svc, "fu:name")).getLexicalForm() ;
         
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
-
         // Check if it is in the model.
         if ( !datasetDesc.hasProperty(RDF.type) )
             throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc)) ;
-
         Dataset ds = (Dataset)Assembler.general.open(datasetDesc) ;
-        // If builder for DatasetRefs, put assembling dataset after services. 
-        DatasetRef sDesc = DatasetRef.create(name, ds.asDatasetGraph()) ;
-        log.info("  name = " + sDesc.name) ;
+        // Assembler to do all this. 
+        DataService dataService = new DataService(svc, ds.asDatasetGraph()) ;
+        
+        DataAccessPoint dataAccess = new DataAccessPoint(name) ;
+        dataAccess.setDataService(dataService) ;
+        DatasetRegistry.get().put(name, dataAccess) ; 
+        
+        log.info("  name = " + dataAccess.getName()) ;
 
-        addServiceEP("query", sDesc.name, sDesc.query, svc, "fu:serviceQuery") ;
-        addServiceEP("update", sDesc.name, sDesc.update, svc, "fu:serviceUpdate") ;
-        addServiceEP("upload", sDesc.name, sDesc.upload, svc, "fu:serviceUpload") ;
-        addServiceEP("graphStore(RW)", sDesc.name, sDesc.readWriteGraphStore, svc, "fu:serviceReadWriteGraphStore") ;
-        addServiceEP("graphStore(R)", sDesc.name, sDesc.readGraphStore, svc, "fu:serviceReadGraphStore") ;
-        // Extract timeout overriding configuration if present.
-        if ( svc.hasProperty(FusekiVocab.pAllowTimeoutOverride) ) {
-            sDesc.allowTimeoutOverride = svc.getProperty(FusekiVocab.pAllowTimeoutOverride).getObject().asLiteral().getBoolean() ;
-            if ( svc.hasProperty(FusekiVocab.pMaximumTimeoutOverride) ) {
-                sDesc.maximumTimeoutOverride = (int)(svc.getProperty(FusekiVocab.pMaximumTimeoutOverride).getObject().asLiteral().getFloat() * 1000) ;
-            }
-        }
+        addServiceEP(dataAccess, dataService, OperationName.Query,  svc,    "fu:serviceQuery") ;
+        addServiceEP(dataAccess, dataService, OperationName.Update, svc,    "fu:serviceUpdate") ;
+        addServiceEP(dataAccess, dataService, OperationName.Upload, svc,    "fu:serviceUpload") ;
+        addServiceEP(dataAccess, dataService, OperationName.GSP_R,  svc,    "fu:serviceReadGraphStore") ;
+        addServiceEP(dataAccess, dataService, OperationName.GSP,    svc,    "fu:serviceReadWriteGraphStore") ;
+        // XXX 
+//        // Extract timeout overriding configuration if present.
+//        if ( svc.hasProperty(FusekiVocab.pAllowTimeoutOverride) ) {
+//            sDesc.allowTimeoutOverride = svc.getProperty(FusekiVocab.pAllowTimeoutOverride).getObject().asLiteral().getBoolean() ;
+//            if ( svc.hasProperty(FusekiVocab.pMaximumTimeoutOverride) ) {
+//                sDesc.maximumTimeoutOverride = (int)(svc.getProperty(FusekiVocab.pMaximumTimeoutOverride).getObject().asLiteral().getFloat() * 1000) ;
+//            }
+//        }
 
-        return sDesc ;
-
+        return dataAccess ;
     }
 
     
     /** Initial configuration - for all the datasets, call the per dataset initization  */ 
-    public static void configureDatasets(List<DatasetRef> datasets) {
-        for (DatasetRef dsDesc : datasets)
+    public static void configureDatasets(List<DataAccessPoint> datasets) {
+        for (DataAccessPoint dsDesc : datasets)
             configureOneDataset(dsDesc) ;
     }
 
-    public static void configureOneDataset(DatasetRef dsDesc) {
-        registerDataset(dsDesc.name, dsDesc) ;
-        addJMX(dsDesc) ;
+    public static void configureOneDataset(DataAccessPoint dsDesc) {
+        registerDataset(dsDesc.getName(), dsDesc) ;
+        //addJMX(dsDesc) ;
     }
     
     /** Register a DatasetRef, which should no already be registered */  
     
-    public static void registerDataset(String datasetPath, DatasetRef dsDesc) {
-        dsDesc.enable() ;
+    public static void registerDataset(String datasetPath, DataAccessPoint dataAccess) {
         if ( DatasetRegistry.get().isRegistered(datasetPath) )
             throw new FusekiConfigException("Already registered: key = "+datasetPath) ;
-        DatasetRegistry.get().put(datasetPath, dsDesc) ;
-        serverLog.info(format("Dataset path = %s", datasetPath)) ;
-        addJMX(dsDesc) ;
+        DatasetRegistry.get().put(datasetPath, dataAccess) ;
+        serverLog.info(format("Register dataset path = %s", datasetPath)) ;
+        //addJMX(dsDesc) ;
     }
     
 //    public static void addJMX() {
@@ -356,34 +340,34 @@ public class FusekiConfig {
 //        }
 //    }
 
-    private static void addJMX(DatasetRef dsRef) {
-        String x = dsRef.name ;
-        // if ( x.startsWith("/") )
-        // x = x.substring(1) ;
-        ARQMgt.register(Fuseki.PATH + ".dataset:name=" + x, dsRef) ;
-        // For all endpoints
-        for (ServiceRef sRef : dsRef.getServiceRefs()) {
-            ARQMgt.register(Fuseki.PATH + ".dataset:name=" + x + "/" + sRef.name, sRef) ;
-        }
+    private static void addJMX(DataAccessPoint dsRef) {
+//        String x = datasetNames ;
+//        // if ( x.startsWith("/") )
+//        // x = x.substring(1) ;
+//        ARQMgt.register(Fuseki.PATH + ".dataset:name=" + x, dsRef) ;
+//        // For all endpoints
+//        for (ServiceRef sRef : dsRef.getServiceRefs()) {
+//            ARQMgt.register(Fuseki.PATH + ".dataset:name=" + x + "/" + sRef.name, sRef) ;
+//        }
     }
 
     public static void removeJMX() {
-        DatasetRegistry registry = DatasetRegistry.get() ;
-        for (String ds : registry.keys()) {
-            DatasetRef ref = registry.get(ds) ;
-            removeJMX(ref) ;
-        }
+//        DatasetRegistry registry = DatasetRegistry.get() ;
+//        for (String ds : registry.keys()) {
+//            DatasetRef ref = registry.get(ds) ;
+//            removeJMX(ref) ;
+//        }
     }
 
-    private static void removeJMX(DatasetRef dsRef) {
-        String x = dsRef.getName() ;
-        ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x) ;
-        for (ServiceRef sRef : dsRef.getServiceRefs()) {
-            ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x + "/" + sRef.name) ;
-        }
-    }
+//    private static void removeJMX(DatasetRef dsRef) {
+//        String x = dsRef.getName() ;
+//        ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x) ;
+//        for (ServiceRef sRef : dsRef.getServiceRefs()) {
+//            ARQMgt.unregister(Fuseki.PATH + ".dataset:name=" + x + "/" + sRef.name) ;
+//        }
+//    }
 
-    
+    // XXX Move to utils
     private static Model additionalRDF(Model m) {
         String x1 = StrUtils.strjoinNL
             ( SystemState.PREFIXES, 
@@ -419,18 +403,19 @@ public class FusekiConfig {
         return x ;
     }
 
-    private static List<Resource> getByType(Resource type, Model m) {
+    public static List<Resource> getByType(Resource type, Model m) {
         ResIterator rIter = m.listSubjectsWithProperty(RDF.type, type) ;
         return Iter.toList(rIter) ;
     }
 
-    private static void addServiceEP(String label, String name, ServiceRef service, Resource svc, String property) {
+    private static void addServiceEP(DataAccessPoint dataAccessPoint, DataService dataService, OperationName opName, Resource svc, String property) {
         ResultSet rs = query("SELECT * { ?svc " + property + " ?ep}", svc.getModel(), "svc", svc) ;
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             String epName = soln.getLiteral("ep").getLexicalForm() ;
-            service.endpoints.add(epName) ;
-            log.info("  " + label + " = " + name + "/" + epName) ;
+            Operation operation = new Operation(opName, epName) ;
+            dataService.addEndpoint(opName, epName); 
+            log.info("  " + opName.name + " = " + dataAccessPoint.getName() + "/" + epName) ;
         }
     }
 
@@ -488,11 +473,13 @@ public class FusekiConfig {
         return lit.getLexicalForm() ;
     }
 
-    private static String strForResource(Resource r) {
+    // XXX Lib
+    public static String strForResource(Resource r) {
         return strForResource(r, r.getModel()) ;
     }
 
-    private static String strForResource(Resource r, PrefixMapping pm) {
+    // XXX Lib
+    public static String strForResource(Resource r, PrefixMapping pm) {
         if ( r == null )
             return "NULL " ;
         if ( r.hasProperty(RDFS.label) ) {

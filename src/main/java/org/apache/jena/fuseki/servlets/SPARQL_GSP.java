@@ -45,12 +45,12 @@ public abstract class SPARQL_GSP extends ActionREST
             
             // Direct naming or error.
             uri = action.request.getRequestURL().toString() ;
-            if ( action.request.getRequestURI().equals(action.getDatasetRef().name) )
+            if ( action.request.getRequestURI().equals(action.getDatasetName()) )
                 // No name 
                 ServletOps.errorBadRequest("Neither default graph nor named graph specified; no direct name") ;
         }
         
-        String dsTarget = action.datasetName ;
+        String dsTarget = action.getDatasetName() ;
         
         if ( dftGraph )
             return Target.createDefault(action.getActiveDSG()) ;

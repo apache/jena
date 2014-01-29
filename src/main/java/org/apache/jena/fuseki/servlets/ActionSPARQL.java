@@ -45,30 +45,34 @@ public abstract class ActionSPARQL extends ActionBase
     protected abstract void perform(HttpAction action) ;
 
     @Override
-    protected void execCommonWorker(HttpAction action)
-    {
-        DatasetRef dsRef = null ;
-
+    protected void execCommonWorker(HttpAction action) {
+        DataAccessPoint dataAccessPoint = null ;
+        DataService dSrv = null ;
+        
         String datasetUri = mapRequestToDataset(action) ;
         
         if ( datasetUri != null ) {
-            dsRef = DatasetRegistry.get().get(datasetUri) ;
-            if ( dsRef == null ) {
+            dataAccessPoint = DatasetRegistry.get().get(datasetUri) ;
+            if ( dataAccessPoint == null ) {
                 ServletOps.errorNotFound("No dataset for URI: "+datasetUri) ;
                 return ;
             }
-            if ( !dsRef.isActive() )
+            //dataAccessPoint.
+            dSrv = dataAccessPoint.getDataService() ;
+            if ( ! dSrv.isAcceptingRequests() ) {
                 ServletOps.errorNotFound("Dataset not active: "+datasetUri) ;
-        } else
-            dsRef = FusekiConfig.serviceOnlyDatasetRef() ;
+                return ;
+            }
+        } else {
+            dataAccessPoint = null ;
+            dSrv = FusekiConfig.serviceOnlyDatasetRef() ;
+        }
 
         String uri = action.request.getRequestURI() ;
-        String serviceEndpointName = ActionLib.mapRequestToService(dsRef, uri, datasetUri) ;
-        ServiceRef srvRef = dsRef.getServiceRef(serviceEndpointName) ;
-
-        action.setRequestRef(dsRef, datasetUri) ;
-        action.setService(srvRef, serviceEndpointName) ;
-        
+        String operationName = ActionLib.mapRequestToOperation(dataAccessPoint, uri, datasetUri) ;
+        action.setRequest(dataAccessPoint, dSrv) ;
+        Operation op = dSrv.getOperation(operationName) ;
+        action.setOperation(op, operationName) ;
         executeAction(action) ;
     }
 
@@ -79,35 +83,37 @@ public abstract class ActionSPARQL extends ActionBase
     
     // This is the service request lifecycle.
     final
-    protected void executeLifecycle(HttpAction action)
-    {
-        incCounter(action.dsRef, Requests) ;
-        incCounter(action.srvRef, Requests) ;
-        
+    protected void executeLifecycle(HttpAction action) {
         startRequest(action) ;
+        // And also HTTP counter
+        CounterSet csService = action.getDataService().getCounters() ;
+        CounterSet csOperation = action.getDataService().getCounters() ;
+        
+        incCounter(csService, Requests) ;
+        incCounter(csOperation, Requests) ;
         try {
             // Either exit this via "bad request" on validation
-            // or in 
+            // or in execution in perform. 
             try {
                 validate(action) ;
             } catch (ActionErrorException ex) {
-                incCounter(action.dsRef,RequestsBad) ;
-                incCounter(action.srvRef, RequestsBad) ;
+                incCounter(csOperation, RequestsBad) ;
+                incCounter(csService,RequestsBad) ;
                 throw ex ;
             }
 
             try {
                 perform(action) ;
                 // Success
-                incCounter(action.srvRef, RequestsGood) ;
-                incCounter(action.dsRef, RequestsGood) ;
-            } catch (ActionErrorException ex) {
-                incCounter(action.srvRef, RequestsBad) ;
-                incCounter(action.dsRef, RequestsBad) ;
+                incCounter(csOperation, RequestsGood) ;
+                incCounter(csService, RequestsGood) ;
+            } catch (ActionErrorException /*JAVA7 | QueryCancelledException*/ ex) {
+                incCounter(csOperation, RequestsBad) ;
+                incCounter(csService, RequestsBad) ;
                 throw ex ;
             } catch (QueryCancelledException ex) {
-                incCounter(action.srvRef, RequestsBad) ;
-                incCounter(action.dsRef, RequestsBad) ;
+                incCounter(csOperation, RequestsBad) ;
+                incCounter(csService, RequestsBad) ;
                 throw ex ;
             }
         } finally {
@@ -124,22 +130,32 @@ public abstract class ActionSPARQL extends ActionBase
     }
     
     protected static void incCounter(Counters counters, CounterName name) {
+        if ( counters == null ) return ;
+        incCounter(counters.getCounters(), name) ; 
+    }
+    
+    protected static void decCounter(Counters counters, CounterName name) {
+        if ( counters == null ) return ;
+        decCounter(counters.getCounters(), name) ; 
+    }
+
+    protected static void incCounter(CounterSet counters, CounterName name) {
         if ( counters == null )
             return ;
         try {
-            if ( counters.getCounters().contains(name) )
-                counters.getCounters().inc(name) ;
+            if ( counters.contains(name) )
+                counters.inc(name) ;
         } catch (Exception ex) {
             Fuseki.serverLog.warn("Exception on counter inc", ex) ;
         }
     }
     
-    protected static void decCounter(Counters counters, CounterName name) {
+    protected static void decCounter(CounterSet counters, CounterName name) {
         if ( counters == null )
             return ;
         try {
-            if ( counters.getCounters().contains(name) )
-                counters.getCounters().dec(name) ;
+            if ( counters.contains(name) )
+                counters.dec(name) ;
         } catch (Exception ex) {
             Fuseki.serverLog.warn("Exception on counter dec", ex) ;
         }

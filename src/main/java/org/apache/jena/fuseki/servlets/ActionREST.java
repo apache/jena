@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.server.CounterName ;
 
-/** Common point for */ 
+/** Common point for operations that are "REST"ish (use GET/PUT etc as operations). */ 
 public abstract class ActionREST extends ActionSPARQL
 {
     public ActionREST()
@@ -75,78 +75,78 @@ public abstract class ActionREST extends ActionSPARQL
     // Counter wrappers
     
     private final void doGet$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPget) ;
+        incCounter(action.getOperation(), CounterName.HTTPget) ;
         try {
             doGet(action) ;
-            incCounter(action.srvRef, CounterName.GSPgetGood) ;
+            incCounter(action.getOperation(), CounterName.HTTPgetGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPgetBad) ;
+            incCounter(action.getOperation(), CounterName.HTTPGetBad) ;
             throw ex ;
         }
     }
 
     private final void doHead$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPhead) ;
+        incCounter(action.getOperation(), CounterName.HTTPhead) ;
         try {
             doHead(action) ;
-            incCounter(action.srvRef, CounterName.GSPheadGood) ;
+            incCounter(action.getOperation(), CounterName.HTTPheadGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPheadBad) ;
+            incCounter(action.getOperation(), CounterName.HTTPheadBad) ;
             throw ex ;
         }
     }
 
     private final void doPost$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPpost) ;
+        incCounter(action.getOperation(), CounterName.HTTPpost) ;
         try {
             doPost(action) ;
-            incCounter(action.srvRef, CounterName.GSPpostGood) ;
+            incCounter(action.getOperation(), CounterName.HTTPpostGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPpostBad) ;
+            incCounter(action.getOperation(), CounterName.HTTPpostBad) ;
             throw ex ;
         }
     }
 
     private final void doPatch$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPpatch) ;
+        incCounter(action.getOperation(), CounterName.HTTPpatch) ;
         try {
             doPatch(action) ;
-            incCounter(action.srvRef, CounterName.GSPpatchGood) ;
+            incCounter(action.getOperation(), CounterName.HTTPpatchGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPpatchBad) ;
+            incCounter(action.getOperation(), CounterName.HTTPpatchBad) ;
             throw ex ;
         }
     }
 
     private final void doDelete$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPdelete) ;
+        incCounter(action.getOperation(), CounterName.HTTPdelete) ;
         try {
             doDelete(action) ;
-            incCounter(action.srvRef, CounterName.GSPdeleteGood) ;
+            incCounter(action.getOperation(), CounterName.HTTPdeleteGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPdeleteBad) ;
+            incCounter(action.getOperation(), CounterName.HTTPdeleteBad) ;
             throw ex ;
         }
     }
 
     private final void doPut$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPput) ;
+        incCounter(action.getOperation(), CounterName.HTTPput) ;
         try {
             doPut(action) ;
-            incCounter(action.srvRef, CounterName.GSPputGood) ;
+            incCounter(action.getOperation(), CounterName.HTTPputGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPputBad) ;
+            incCounter(action.getOperation(), CounterName.HTTPputBad) ;
             throw ex ;
         }
     }
 
     private final void doOptions$(HttpAction action) {
-        incCounter(action.srvRef, CounterName.GSPoptions) ;
+        incCounter(action.getOperation(), CounterName.HTTPoptions) ;
         try {
             doOptions(action) ;
-            incCounter(action.srvRef, CounterName.GSPoptionsGood) ;
+            incCounter(action.getOperation(), CounterName.HTTPoptionsGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.srvRef, CounterName.GSPoptionsBad) ;
+            incCounter(action.getOperation(), CounterName.HTTPoptionsBad) ;
             throw ex ;
         }
     }

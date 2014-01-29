@@ -24,14 +24,12 @@ import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
-import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 
 /** Operations related to servlets */
 
 public class ActionLib {
-
-    
     // TODO Combine ServletOps?
     
     /** Map request to uri in the registry.
@@ -56,13 +54,14 @@ public class ActionLib {
         return uri.substring(0, i) ;
     }
 
-    public static String mapRequestToService(DatasetRef dsRef, String uri, String datasetURI)
+    public static String mapRequestToOperation(DataAccessPoint dsRef, String uri, String datasetURI)
     {
         if ( dsRef == null )
             return "" ;
-        if ( dsRef.name.length() >= uri.length() )
+        String name = dsRef.getName();
+        if ( name.length() >= uri.length() )
             return "" ;
-        return uri.substring(dsRef.name.length()+1) ;   // Skip the separating "/"
+        return uri.substring(name.length()+1) ;   // Skip the separating "/"
         
     }
     

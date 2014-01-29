@@ -19,9 +19,9 @@
 package org.apache.jena.fuseki.mgt;
 
 import org.apache.jena.atlas.json.JsonBuilder ;
-import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.fuseki.server.ServiceRef ;
+import org.apache.jena.fuseki.server.Operation ;
 
 /** Create a description of a service */
 public class JsonDescription {
@@ -35,38 +35,38 @@ public class JsonDescription {
     public static void arrayDatasets(JsonBuilder builder, DatasetRegistry registry) {
         builder.startArray() ;
         for ( String ds : registry.keys() ) {
-            DatasetRef desc = DatasetRegistry.get().get(ds) ;
-            JsonDescription.describe(builder, desc) ;
+            DataAccessPoint access = DatasetRegistry.get().get(ds) ;
+            JsonDescription.describe(builder, access) ;
         }
         builder.finishArray() ;
     }
     
-    public static void describe(JsonBuilder builder, ServiceRef serviceref) {
+    public static void describe(JsonBuilder builder, DataAccessPoint access) {
+        builder.startObject() ;
+        builder.key(dsName).value(access.getName()) ;
+        
+        builder.key(dsService) ;
+        builder.startArray() ;
+        for ( Operation sRef : access.getDataService().getOperations() )
+            describe(builder, sRef) ;
+        builder.finishArray() ;
+        builder.finishObject() ;
+    }
+    
+    
+    public static void describe(JsonBuilder builder, Operation operation) {
         builder.startObject() ;
         
-        builder.key(srvType).value(serviceref.name) ;
+        builder.key(srvType).value(operation.getName().name) ;
 
+        //Group same operation type? 
         builder.key(srvEndpoints) ;
         builder.startArray() ;
-        for ( String ep : serviceref.endpoints )
-            builder.value(ep) ;
+        builder.value(operation.endpointName) ;
         builder.finishArray() ;
         
         builder.finishObject() ;
     }
     
-    public static void describe(JsonBuilder builder, DatasetRef ds) {
-        
-        builder.startObject() ;
-        
-        builder.key(dsName).value(ds.getName()) ;
-        
-        builder.key(dsService) ;
-        builder.startArray() ;
-        for ( ServiceRef sRef : ds.getServiceRefs() )
-            describe(builder, sRef) ;
-        builder.finishArray() ;
-        builder.finishObject() ;
-    }
 }
 

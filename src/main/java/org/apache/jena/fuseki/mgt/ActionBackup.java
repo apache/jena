@@ -34,7 +34,8 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.fuseki.server.DataAccessPoint ;
+import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
@@ -81,8 +82,10 @@ public class ActionBackup extends ActionCtl
             return ;
         }
 
-        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
-        action.setRequestRef(ref, dataset) ;
+        DataAccessPoint dataAccessPoint = DatasetRegistry.get().get(dataset) ;
+        DataService dSrv = dataAccessPoint.getDataService() ;
+        action.setControlRequest(dataAccessPoint, dataset) ;
+        action.setOperation(null, null) ;       // No operation or service name.
         scheduleBackup(action) ;
         ServletOps.success(action) ;
     }
@@ -90,7 +93,7 @@ public class ActionBackup extends ActionCtl
     static final String BackupArea = "backups" ;
 
     private void scheduleBackup(final HttpAction action) {
-        String dsName = action.dsRef.name ;
+        String dsName = action.getDatasetName() ;
         final String ds = dsName.startsWith("/") ? dsName : "/" + dsName ;
 
         String timestamp = Utils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;

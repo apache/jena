@@ -230,7 +230,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             action.commit() ;
         } catch (UpdateException ex) {
             action.abort() ;
-            incCounter(action.srvRef, UpdateExecErrors) ;
+            incCounter(action.getOperation().getCounters(), UpdateExecErrors) ;
             ServletOps.errorOccurred(ex.getMessage()) ;
         } catch (QueryParseException ex) {
             action.abort() ;

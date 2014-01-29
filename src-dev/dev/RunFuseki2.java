@@ -18,6 +18,7 @@
 
 package dev;
 
+import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.FusekiCmd ;
 
 public class RunFuseki2
@@ -29,15 +30,13 @@ public class RunFuseki2
         main1() ;
     }
     
-    public static void demo()
-    {
+    public static void demo() {
         String DIR="DemoServer" ;
         FusekiCmd.main("--config="+name(DIR,"config.ttl"), "--pages="+name(DIR, "demo-pages")) ;
         System.exit(0) ;
     }
     
-    public static String name(String DIR, String filename)
-    {
+    public static String name(String DIR, String filename) {
         StringBuilder sb = new StringBuilder() ;
         if ( ! filename.startsWith("/") )
         {
@@ -49,8 +48,11 @@ public class RunFuseki2
         return sb.toString() ;
     }
     
-    private static void main1()
-    {
+    private static void main1() {
+        // Clean server state?
+        if ( true )
+            FileOps.clearDirectory("system") ; 
+        
         String tmpdir = System.getenv("TMPDIR") ;
         if ( tmpdir == null )
             tmpdir = System.getenv("TMP") ;

@@ -29,8 +29,9 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.server.DatasetRef ;
-import org.apache.jena.fuseki.server.ServiceRef ;
+import org.apache.jena.fuseki.server.DataAccessPoint ;
+import org.apache.jena.fuseki.server.DataService ;
+import org.apache.jena.fuseki.server.Operation ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -53,7 +54,7 @@ public class HttpAction
     // -- Valid only for operational actions (e.g. SPARQL).
     
     public  String          endpointName    = null ;        // Endpoint name srv was found under 
-    public  ServiceRef      srvRef          = null ;
+    public  Operation       operation       = null ;
     private Transactional   transactional   = null ;
     private boolean         isTransactional = false ;
     private DatasetGraph    activeDSG       = null ;        // Set when inside begin/end.
@@ -63,8 +64,9 @@ public class HttpAction
     
     // -- Shared items (but exact meaning may differ)
     /** Handle to dataset+services being acted on (maybe null) */
-    public  DatasetRef dsRef                = null ;
-    public  String datasetName              = null ;        // Dataset URI used (e.g. registry)
+    private DataAccessPoint dataAccessPoint = null ;
+    private DataService dataService         = null ;
+    private String datasetName              = null ;        // Dataset URI used (e.g. registry)
     private DatasetGraph dsg                = null ;
 
     // ----
@@ -97,16 +99,20 @@ public class HttpAction
     }
 
     /** Initialization after action creation during lifecycle setup */
-    public void setRequestRef(DatasetRef desc, String datasetUri) {
-        if ( this.dsRef != null )
-            throw new FusekiException("Redefintion of DatasetRef in the request action") ;
+    public void setRequest(DataAccessPoint dataAccessPoint, DataService dService) {
+        this.dataAccessPoint = dataAccessPoint ;
+        if ( dataAccessPoint != null )
+            this.datasetName = dataAccessPoint.getName() ; 
+
+        if ( this.dataService != null )
+            throw new FusekiException("Redefinition of DatasetRef in the request action") ;
         
-        this.dsRef = desc ;
-        if ( desc == null || desc.getDataset() == null )
-            throw new FusekiException("Null DatasetRef in the request action") ;
+        this.dataService = dService ;
+        if ( dService == null || dService.getDataset() == null )
+            // Null does not happens for service requests, (it does for admin requests - call setControlRequest) 
+            throw new FusekiException("Null DataService in the request action") ;
         
-        this.datasetName = datasetUri ;
-        this.dsg = desc.getDataset() ;
+        this.dsg = dService.getDataset() ;
         DatasetGraph basedsg = unwrap(dsg) ;
 
         if ( isTransactional(basedsg) && isTransactional(dsg) ) {
@@ -114,20 +120,16 @@ public class HttpAction
             transactional = (Transactional)dsg ;
             isTransactional = true ;
         } else {
-            // Unsure if safe
+            // Unsure if safesetControlRef
             transactional = new DatasetGraphWithLock(dsg) ;
             // No real abort.
             isTransactional = false ;
         }
     }
     
-    public void setControlRef(DatasetRef desc, String datasetUri) {
-        if ( desc == null )
-            throw new FusekiException("Null DatasetRef in the control action") ;
-
-        if ( this.dsRef != null )
-            throw new FusekiException("Redefintion of DatasetRef in the control action") ;
-        this.dsRef = desc ;
+    public void setControlRequest(DataAccessPoint dataAccessPoint, String datasetUri) {
+        this.dataAccessPoint = dataAccessPoint ;
+        this.dataService = null ;
         this.datasetName = datasetUri ;
     }
     
@@ -142,11 +144,15 @@ public class HttpAction
         return dsg ;
     }
         
-    public void setService(ServiceRef srvRef, String endpointName) {
-        this.srvRef = srvRef ; 
+    public void setOperation(Operation srvRef, String endpointName) {
+        this.operation = srvRef ; 
         this.endpointName = endpointName ;
     }
     
+    public Operation getOperation() {
+        return operation ; 
+    }
+
     /**
      * Returns whether or not the underlying DatasetGraph is fully transactional (supports rollback)
      */
@@ -158,11 +164,11 @@ public class HttpAction
         activeMode = READ ;
         transactional.begin(READ) ;
         activeDSG = dsg ;
-        dsRef.startTxn(READ) ;
+        dataService.startTxn(READ) ;
     }
 
     public void endRead() {
-        dsRef.finishTxn(READ) ;
+        dataService.finishTxn(READ) ;
         activeMode = null ;
         transactional.end() ;
         activeDSG = null ;
@@ -172,7 +178,7 @@ public class HttpAction
         transactional.begin(WRITE) ;
         activeMode = WRITE ;
         activeDSG = dsg ;
-        dsRef.startTxn(WRITE) ;
+        dataService.startTxn(WRITE) ;
     }
 
     public void commit() {
@@ -193,7 +199,7 @@ public class HttpAction
     }
 
     public void endWrite() {
-        dsRef.finishTxn(WRITE) ;
+        dataService.finishTxn(WRITE) ;
         activeMode = null ;
 
         if ( transactional.isInTransaction() ) {
@@ -208,22 +214,55 @@ public class HttpAction
         activeDSG = null ;
     }
 
-    public void startRequest()  { if ( dsRef != null ) dsRef.startRequest(this) ; }
+    public final void startRequest()
+    { 
+        if ( dataAccessPoint != null ) 
+            dataAccessPoint.startRequest(this) ;
+    }
 
-    public void finishRequest() { if ( dsRef != null ) dsRef.finishRequest(this) ; }
+    public final void finishRequest() { 
+        if ( dataAccessPoint != null ) 
+            dataAccessPoint.finishRequest(this) ;
+    }
     
     public final DatasetGraph getActiveDSG() {
         return activeDSG ;
     }
 
-    public final DatasetRef getDatasetRef() {
-        return dsRef ;
+    public final DataAccessPoint getDataAccessPoint() {
+        return dataAccessPoint;
     }
 
-    /** Reduce to a size that can be kept around for sometime */
+//    public void setDataAccessPoint(DataAccessPoint dataAccessPoint) {
+//        this.dataAccessPoint = dataAccessPoint;
+//    }
+
+    public final DataService getDataService() {
+        return dataService;
+    }
+
+//    public final void setDataService(DataService dataService) {
+//        this.dataService = dataService;
+//    }
+
+    public final String getDatasetName() {
+        return datasetName;
+    }
+
+//    public void setDatasetName(String datasetName) {
+//        this.datasetName = datasetName;
+//    }
+
+    /** Reduce to a size that can be kept around for sometime. 
+     * Release resources like datasets that may be closed, reset etc.
+     */
     public void minimize() {
         this.request = null ;
         this.response = null ;
+        this.dsg = null ;
+        this.dataService = null ;
+        this.activeDSG = null ;
+        this.operation = null ;
     }
 
     public void setStartTime() {

@@ -49,7 +49,7 @@ public class ActionStats extends ActionCtl
 
     protected void execGet(HttpAction action) {
         JsonValue v ;
-        if (action.dsRef.name == null )
+        if (action.getDatasetName() == null )
             v = execGetContainer(action) ;
         else
             v = execGetDataset(action) ;
@@ -87,10 +87,10 @@ public class ActionStats extends ActionCtl
     }
 
     private JsonValue execGetDataset(HttpAction action) {
-        action.log.info(format("[%d] GET stats dataset %s", action.id, action.dsRef.name)) ;
+        action.log.info(format("[%d] GET stats dataset %s", action.id, action.getDatasetName())) ;
         
         JsonBuilder builder = new JsonBuilder() ;
-        String datasetPath = DatasetRef.canonicalDatasetPath(action.dsRef.name) ;
+        String datasetPath = DataAccessPoint.canonical(action.getDatasetName()) ;
         builder.startObject("TOP") ;
         
         builder.key("datasets") ;
@@ -106,24 +106,26 @@ public class ActionStats extends ActionCtl
         // Object started
         builder.key(ds) ;
         
-        DatasetRef desc = DatasetRegistry.get().get(ds) ;
+        DataAccessPoint access = DatasetRegistry.get().get(ds) ;
+        DataService dSrv = access.getDataService() ;
         builder.startObject("counters") ;
         
-        builder.key(CounterName.Requests.name()).value(desc.getCounters().value(CounterName.Requests)) ;
-        builder.key(CounterName.RequestsGood.name()).value(desc.getCounters().value(CounterName.RequestsGood)) ;
-        builder.key(CounterName.RequestsBad.name()).value(desc.getCounters().value(CounterName.RequestsBad)) ;
+        builder.key(CounterName.Requests.name()).value(dSrv.getCounters().value(CounterName.Requests)) ;
+        builder.key(CounterName.RequestsGood.name()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
+        builder.key(CounterName.RequestsBad.name()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
 
         
         builder.key("services").startObject("services") ;
-        for ( ServiceRef srvRef : desc.getServiceRefs() ) {
-            builder.key(srvRef.name).startObject("service") ;
-            statsService(builder, srvRef) ;
-
+        for ( Operation operation : dSrv.getOperations() ) {
+            builder.key(operation.getEndpoint()).startObject("service") ;
+            statsService(builder, operation) ;
             
             builder.key("endpoints") ;
+            // SHARE WITH ActionDataset.
             builder.startArray() ;
-            for ( String ep : srvRef.endpoints)
-                builder.value(ep) ;
+            builder.value(operation.endpointName) ;
+//            for ( String ep : operation.endpoints)
+//                builder.value(ep) ;
             builder.finishArray() ;
             
             builder.finishObject("service") ;
@@ -133,9 +135,9 @@ public class ActionStats extends ActionCtl
 
     }
 
-    private void statsService(JsonBuilder builder, ServiceRef srvRef) {
-        for (CounterName cn : srvRef.getCounters().counters()) {
-            Counter c = srvRef.getCounters().get(cn) ;
+    private void statsService(JsonBuilder builder, Operation operation) {
+        for (CounterName cn : operation.getCounters().counters()) {
+            Counter c = operation.getCounters().get(cn) ;
             builder.key(cn.name()).value(c.value()) ;
         }
     }
@@ -150,50 +152,56 @@ public class ActionStats extends ActionCtl
         while(iter.hasNext())
         {
             String ds = iter.next() ;
-            DatasetRef desc = DatasetRegistry.get().get(ds) ;
+            DataAccessPoint desc = DatasetRegistry.get().get(ds) ;
             statsTxt(out, desc) ;
             if ( iter.hasNext() )
                 out.println() ;
         }
         out.flush() ;
     }
-    private void statsTxt(ServletOutputStream out, DatasetRef desc) throws IOException
+    
+    private void statsTxt(ServletOutputStream out, DataAccessPoint desc) throws IOException
     {
-        out.println("Dataset: "+desc.name) ;
-        out.println("    Requests      = "+desc.getCounters().value(CounterName.Requests)) ;
-        out.println("    Good          = "+desc.getCounters().value(CounterName.RequestsGood)) ;
-        out.println("    Bad           = "+desc.getCounters().value(CounterName.RequestsBad)) ;
+        DataService dSrv = desc.getDataService() ;
+        out.println("Dataset: "+desc.getName()) ;
+        out.println("    Requests      = "+dSrv.getCounters().value(CounterName.Requests)) ;
+        out.println("    Good          = "+dSrv.getCounters().value(CounterName.RequestsGood)) ;
+        out.println("    Bad           = "+dSrv.getCounters().value(CounterName.RequestsBad)) ;
 
         out.println("  SPARQL Query:") ;
-        out.println("    Request       = "+desc.query.getCounters().value(CounterName.Requests)) ;
-        out.println("    Good          = "+desc.query.getCounters().value(CounterName.RequestsGood)) ;
-        out.println("    Bad requests  = "+desc.query.getCounters().value(CounterName.RequestsBad)) ;
-        out.println("    Timeouts      = "+desc.query.getCounters().value(CounterName.QueryTimeouts)) ;
-        out.println("    Bad exec      = "+desc.query.getCounters().value(CounterName.QueryExecErrors)) ;
+        out.println("    Request       = "+counter(dSrv, OperationName.Query, CounterName.Requests)) ;
+        out.println("    Good          = "+counter(dSrv, OperationName.Query, CounterName.RequestsGood)) ;
+        out.println("    Bad requests  = "+counter(dSrv, OperationName.Query, CounterName.RequestsBad)) ;
+        out.println("    Timeouts      = "+counter(dSrv, OperationName.Query, CounterName.QueryTimeouts)) ;
+        out.println("    Bad exec      = "+counter(dSrv, OperationName.Query, CounterName.QueryExecErrors)) ;
 
         out.println("  SPARQL Update:") ;
-        out.println("    Request       = "+desc.update.getCounters().value(CounterName.Requests)) ;
-        out.println("    Good          = "+desc.update.getCounters().value(CounterName.RequestsGood)) ;
-        out.println("    Bad requests  = "+desc.update.getCounters().value(CounterName.RequestsBad)) ;
-        out.println("    Bad exec      = "+desc.update.getCounters().value(CounterName.UpdateExecErrors)) ;
+        out.println("    Request       = "+counter(dSrv, OperationName.Update, CounterName.Requests)) ;
+        out.println("    Good          = "+counter(dSrv, OperationName.Update, CounterName.RequestsGood)) ;
+        out.println("    Bad requests  = "+counter(dSrv, OperationName.Update, CounterName.RequestsBad)) ;
+        out.println("    Bad exec      = "+counter(dSrv, OperationName.Update, CounterName.UpdateExecErrors)) ;
         
         out.println("  Upload:") ;
-        out.println("    Requests      = "+desc.upload.getCounters().value(CounterName.Requests)) ;
-        out.println("    Good          = "+desc.upload.getCounters().value(CounterName.RequestsGood)) ;
-        out.println("    Bad           = "+desc.upload.getCounters().value(CounterName.RequestsBad)) ;
+        out.println("    Requests      = "+counter(dSrv, OperationName.Upload, CounterName.Requests)) ;
+        out.println("    Good          = "+counter(dSrv, OperationName.Upload, CounterName.RequestsGood)) ;
+        out.println("    Bad           = "+counter(dSrv, OperationName.Upload, CounterName.RequestsBad)) ;
         
         out.println("  SPARQL Graph Store Protocol:") ;
-        out.println("    GETs          = "+gspValue(desc, CounterName.GSPget)+ " (good="+gspValue(desc, CounterName.GSPgetGood)+"/bad="+gspValue(desc, CounterName.GSPgetBad)+")") ;
-        out.println("    PUTs          = "+gspValue(desc, CounterName.GSPput)+ " (good="+gspValue(desc, CounterName.GSPputGood)+"/bad="+gspValue(desc, CounterName.GSPputBad)+")") ;
-        out.println("    POSTs         = "+gspValue(desc, CounterName.GSPpost)+ " (good="+gspValue(desc, CounterName.GSPpostGood)+"/bad="+gspValue(desc, CounterName.GSPpostBad)+")") ;
-        out.println("    DELETEs       = "+gspValue(desc, CounterName.GSPdelete)+ " (good="+gspValue(desc, CounterName.GSPdeleteGood)+"/bad="+gspValue(desc, CounterName.GSPdeleteBad)+")") ;
-        out.println("    HEADs         = "+gspValue(desc, CounterName.GSPhead)+ " (good="+gspValue(desc, CounterName.GSPheadGood)+"/bad="+gspValue(desc, CounterName.GSPheadBad)+")") ;
+        out.println("    GETs          = "+gspValue(dSrv, CounterName.HTTPget)+ " (good="+gspValue(dSrv, CounterName.HTTPgetGood)+"/bad="+gspValue(dSrv, CounterName.HTTPGetBad)+")") ;
+        out.println("    PUTs          = "+gspValue(dSrv, CounterName.HTTPput)+ " (good="+gspValue(dSrv, CounterName.HTTPputGood)+"/bad="+gspValue(dSrv, CounterName.HTTPputBad)+")") ;
+        out.println("    POSTs         = "+gspValue(dSrv, CounterName.HTTPpost)+ " (good="+gspValue(dSrv, CounterName.HTTPpostGood)+"/bad="+gspValue(dSrv, CounterName.HTTPpostBad)+")") ;
+        out.println("    DELETEs       = "+gspValue(dSrv, CounterName.HTTPdelete)+ " (good="+gspValue(dSrv, CounterName.HTTPdeleteGood)+"/bad="+gspValue(dSrv, CounterName.HTTPdeleteBad)+")") ;
+        out.println("    HEADs         = "+gspValue(dSrv, CounterName.HTTPhead)+ " (good="+gspValue(dSrv, CounterName.HTTPheadGood)+"/bad="+gspValue(dSrv, CounterName.HTTPheadBad)+")") ;
     }
     
-    private long gspValue(DatasetRef desc, CounterName cn) {
-        long x1 = desc.readGraphStore.getCounters().value(cn) ;
-        long x2 = desc.readWriteGraphStore.getCounters().value(cn) ;
-        return x1+x2 ;
+    private long counter(DataService dSrv, OperationName opName, CounterName cName) {
+        return 0 ;
+    }
+    
+    private long gspValue(DataService dSrv, CounterName cn) {
+        // XXX Check
+        return  counter(dSrv, OperationName.GSP, cn) +
+                counter(dSrv, OperationName.GSP_R, cn) ;
     }
     
     

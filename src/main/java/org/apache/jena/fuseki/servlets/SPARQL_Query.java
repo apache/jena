@@ -206,10 +206,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol {
             queryStringLog = formatForLog(query) ;
             validateQuery(action, query) ;
         } catch (ActionErrorException ex) {
-            incCounter(action.srvRef, RequestsBad) ;
+            incCounter(action.getOperation().getCounters(), RequestsBad) ;
             throw ex ;
         } catch (QueryParseException ex) {
-            incCounter(action.srvRef, RequestsBad) ;
+            incCounter(action.getOperation().getCounters(), RequestsBad) ;
             ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
         }
         // Should not happen.
@@ -229,11 +229,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol {
             sendResults(action, result, query.getPrologue()) ;
         } catch (QueryCancelledException ex) {
             // Additional counter information.
-            incCounter(action.srvRef, QueryTimeouts) ;
+            incCounter(action.getOperation().getCounters(), QueryTimeouts) ;
             throw ex ;
         } catch (QueryExecException ex) {
             // Additional counter information.
-            incCounter(action.srvRef, QueryExecErrors) ;
+            incCounter(action.getOperation().getCounters(), QueryExecErrors) ;
             throw ex ;
         } finally {
             if ( qExec != null )
@@ -298,8 +298,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol {
     }
 
     private void setAnyTimeouts(QueryExecution qexec, HttpAction action) {
-        if ( !(action.getDatasetRef().allowTimeoutOverride) )
-            return ;
+//        if ( !(action.getDataService().allowTimeoutOverride) )
+//            return ;
 
         long desiredTimeout = Long.MAX_VALUE ;
         String timeoutHeader = action.request.getHeader("Timeout") ;
@@ -318,7 +318,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol {
             }
         }
 
-        desiredTimeout = Math.min(action.getDatasetRef().maximumTimeoutOverride, desiredTimeout) ;
+//        desiredTimeout = Math.min(action.getDataService().maximumTimeoutOverride, desiredTimeout) ;
         if ( desiredTimeout != Long.MAX_VALUE )
             qexec.setTimeout(desiredTimeout) ;
     }

@@ -37,13 +37,11 @@ public class SPARQL_GSP_R extends SPARQL_GSP
     public SPARQL_GSP_R()
     { super() ; }
     
-    
     @Override
     protected String mapRequestToDataset(HttpAction action) { return ActionLib.mapRequestToDatasetLongest$(action.request.getRequestURI()) ; } 
 
     @Override
-    protected void doGet(HttpAction action)
-    {
+    protected void doGet(HttpAction action) {
         // Assume success - do the set up before grabbing the lock.
         // Sets content type.
         MediaType mediaType = ActionLib.contentNegotationRDF(action) ;
@@ -82,16 +80,14 @@ public class SPARQL_GSP_R extends SPARQL_GSP
     }
     
     @Override
-    protected void doOptions(HttpAction action)
-    {
+    protected void doOptions(HttpAction action) {
         action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS") ;
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
         ServletOps.success(action) ;
     }
 
     @Override
-    protected void doHead(HttpAction action)
-    {
+    protected void doHead(HttpAction action) {
         action.beginRead() ;
         try { 
             Target target = determineTarget(action) ;

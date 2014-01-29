@@ -20,8 +20,9 @@ package org.apache.jena.fuseki.server;
 
 /** Names for all counters */ 
 public enum CounterName {
-    // There are generic names - apply to all services and datasets
-    // and specific ones.
+    // There are generic names - apply to all services and datasets - and
+    // also specific ones that relate only to a particular kind of service.
+    // By having a fixed list, we 
 
     
     // Total request received
@@ -44,40 +45,41 @@ public enum CounterName {
     
     // Upload ... standard counters
     
-    // Graph Store Protocol.
+    // Graph Store Protocol. uses HTTP codes.
 
     // For each HTTP method
-    GSPget("gsp.get.requests") ,
-    GSPgetGood("gsp.get.requests.good") ,
-    GSPgetBad("gsp.get.requests.bad") ,
 
-    GSPpost("gsp.post.requests") ,
-    GSPpostGood("gsp.post.requests.good") ,
-    GSPpostBad("gsp.post.requests.bad") ,
+    HTTPget("http.get.requests") ,
+    HTTPgetGood("http.get.requests.good") ,
+    HTTPGetBad("http.get.requests.bad") ,
 
-    GSPdelete("gsp.delete.requests") ,
-    GSPdeleteGood("gsp.delete.requests.good") ,
-    GSPdeleteBad("gsp.delete.requests.bad") ,
+    HTTPpost("http.post.requests") ,
+    HTTPpostGood("http.post.requests.good") ,
+    HTTPpostBad("http.post.requests.bad") ,
 
-    GSPput("gsp.put.requests") ,
-    GSPputGood("gsp.put.requests.good") ,
-    GSPputBad("gsp.put.requests.bad") ,
+    HTTPdelete("http.delete.requests") ,
+    HTTPdeleteGood("http.delete.requests.good") ,
+    HTTPdeleteBad("http.delete.requests.bad") ,
 
-    GSPhead("gsp.head.requests") ,
-    GSPheadGood("gsp.head.requests.good") ,
-    GSPheadBad("gsp.head.requests.bad") ,
+    HTTPput("http.put.requests") ,
+    HTTPputGood("http.put.requests.good") ,
+    HTTPputBad("http.put.requests.bad") ,
 
-    GSPpatch("gsp.patch.requests") ,
-    GSPpatchGood("gsp.patch.requests.good") ,
-    GSPpatchBad("gsp.patch.requests.bad") ,
+    HTTPhead("http.head.requests") ,
+    HTTPheadGood("http.head.requests.good") ,
+    HTTPheadBad("http.head.requests.bad") ,
 
-    GSPoptions("gsp.options.requests") ,
-    GSPoptionsGood("gsp.options.requests.good") ,
-    GSPoptionsBad("gsp.options.requests.bad") ,
+    HTTPpatch("http.patch.requests") ,
+    HTTPpatchGood("http.patch.requests.good") ,
+    HTTPpatchBad("http.patch.requests.bad") ,
+
+    HTTPoptions("http.options.requests") ,
+    HTTPoptionsGood("http.options.requests.good") ,
+    HTTPoptionsBad("http.options.requests.bad") ,
     
     ;
     
-    private String name ;
+    public final String name ;
     private CounterName(String name) { this.name = name ; }
     
 }
