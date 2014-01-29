@@ -38,7 +38,7 @@ public class ExprList implements Iterable<Expr>
     
     public ExprList() { expressions = new ArrayList<Expr>() ; }
     
-    /** @deprecated Deprecated as a public constructor.  Use {@plainlink ExprList#copy(ExprList) instead.} */
+    /** @deprecated Deprecated as a public constructor.  Use {@linkplain ExprList#copy(ExprList)} instead. */
     @Deprecated
     public ExprList(ExprList other) { this() ; expressions.addAll(other.expressions) ; }
     public ExprList(Expr expr)
