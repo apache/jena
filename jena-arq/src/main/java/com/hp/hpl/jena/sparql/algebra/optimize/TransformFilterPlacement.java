@@ -66,6 +66,7 @@ public class TransformFilterPlacement extends TransformCopy {
     private Placement resultNoChange(Op original) { 
         return noChangePlacement ;
     }
+    
     private boolean isNoChange(Placement placement) { 
         return placement == noChangePlacement ;
     }
@@ -212,11 +213,10 @@ public class TransformFilterPlacement extends TransformCopy {
         ExprList unpushed = new ExprList();
         for (Expr e : exprsIn) {
             Set<Var> eVars = e.getVarsMentioned();
-            if (vs.containsAll(eVars)) {
+            if (vs.containsAll(eVars))
                 pushed.add(e);
-            } else {
+            else
                 unpushed.add(e);
-            }
         }
         
         // Can't push anything into a filter around this BGP
@@ -531,9 +531,14 @@ public class TransformFilterPlacement extends TransformCopy {
         return OpVars.fixedVars(op) ;
     }
 
-    /** For any expression now in scope, wrap the op with a filter */
-    private static Op insertAnyFilter(ExprList exprs, Set<Var> patternVarsScope, Op op) {
-        for (Iterator<Expr> iter = exprs.iterator(); iter.hasNext();) {
+    /** For any expression now in scope, wrap the op with a filter.
+     * Caution - the ExprList is an in-out argument which is modified.
+     * This function modifies ExprList passed in to remove any filter
+     * that is placed. 
+     */
+    
+    private static Op insertAnyFilter(ExprList unplacedExprs, Set<Var> patternVarsScope, Op op) {
+        for (Iterator<Expr> iter = unplacedExprs.iterator(); iter.hasNext();) {
             Expr expr = iter.next() ;
             // Cache
             Set<Var> exprVars = expr.getVarsMentioned() ;
@@ -542,7 +547,6 @@ public class TransformFilterPlacement extends TransformCopy {
                     op = OpTable.unit() ;
                 op = OpFilter.filter(expr, op) ;
                 iter.remove() ;
-                // Record expr.
             }
         }
         return op ;
@@ -570,7 +574,6 @@ public class TransformFilterPlacement extends TransformCopy {
             if ( op == null )
                 op = OpTable.unit() ;
             op = OpFilter.filter(expr, op) ;
-            iter.remove() ;
         }
         return op ;
     }
