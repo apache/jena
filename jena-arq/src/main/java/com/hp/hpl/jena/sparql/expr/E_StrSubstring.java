@@ -43,7 +43,7 @@ public class E_StrSubstring extends ExprFunctionN
     }
 
     @Override
-    protected Expr copy(ExprList newArgs)
+    public Expr copy(ExprList newArgs)
     {
         if ( newArgs.size() == 2 )
             return new E_StrSubstring(newArgs.get(0), newArgs.get(1), null) ; 

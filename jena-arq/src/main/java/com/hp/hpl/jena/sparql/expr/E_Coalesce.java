@@ -50,7 +50,7 @@ public class E_Coalesce extends ExprFunctionN
     }
     
     @Override
-    protected Expr copy(ExprList newArgs)
+    public Expr copy(ExprList newArgs)
     {
         return new E_Coalesce(newArgs) ;
     }

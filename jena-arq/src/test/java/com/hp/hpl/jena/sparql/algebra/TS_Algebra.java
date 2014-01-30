@@ -33,6 +33,7 @@ import org.junit.runners.Suite ;
     , TestClassify.class
     , TestTransformFilters.class
     , TestTransformFilterPlacement.class
+    , TestTransformConstantFolding.class
     , TestTransformQuads.class
     , TestSemanticEquivalence.class
 

@@ -57,7 +57,7 @@ public class E_StrReplace extends ExprFunctionN
     }
 
     @Override
-    protected Expr copy(ExprList newArgs)
+    public Expr copy(ExprList newArgs)
     {
         if ( newArgs.size() == 3 )
             return new E_StrReplace(newArgs.get(0), newArgs.get(1), newArgs.get(2), null) ;

@@ -121,7 +121,7 @@ public class E_Regex extends ExprFunctionN
 //    public final Expr getFlags() { return expr3 ; }
 
     @Override
-    protected Expr copy(ExprList newArgs)
+    public Expr copy(ExprList newArgs)
     {
         if ( newArgs.size() == 2 )
             return new E_Regex(newArgs.get(0), newArgs.get(1), null) ; 

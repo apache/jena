@@ -35,7 +35,7 @@ public class E_StrConcat extends ExprFunctionN
     }
 
     @Override
-    protected Expr copy(ExprList newArgs)
+    public Expr copy(ExprList newArgs)
     {
         return new E_StrConcat(newArgs) ;
     }
