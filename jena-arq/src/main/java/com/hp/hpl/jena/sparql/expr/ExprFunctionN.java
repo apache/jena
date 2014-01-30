@@ -21,8 +21,6 @@ package com.hp.hpl.jena.sparql.expr;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.atlas.lib.ListUtils;
-
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
