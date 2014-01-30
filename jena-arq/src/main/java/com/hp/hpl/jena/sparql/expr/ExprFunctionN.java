@@ -21,6 +21,8 @@ package com.hp.hpl.jena.sparql.expr;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.atlas.lib.ListUtils;
+
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
@@ -77,7 +79,24 @@ public abstract class ExprFunctionN extends ExprFunction
             e = e.copySubstitute(binding, foldConstants) ;
             newArgs.add(e) ;
         }
-        return copy(newArgs) ;
+        
+        if (!foldConstants) 
+            return copy(newArgs);
+        
+        // Can we fold the whole expression?
+        List<NodeValue> values = new ArrayList<NodeValue>();
+        for (Expr e : newArgs) {
+            // Can't fold if anything is null/non-constant
+            if (e == null || !e.isConstant()) return copy(newArgs);
+            values.add(e.getConstant());
+        }
+        
+        try {
+            // Try to fold whole expression
+            return eval(values);
+        } catch (ExprEvalException ex) {
+            return copy(newArgs);
+        }
     }
 
     @Override
@@ -116,7 +135,7 @@ public abstract class ExprFunctionN extends ExprFunction
 
     protected abstract NodeValue eval(List<NodeValue> args) ;
 
-    protected abstract Expr copy(ExprList newArgs) ;
+    public abstract Expr copy(ExprList newArgs) ;
     
     @Override
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }

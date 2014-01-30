@@ -89,7 +89,7 @@ public class E_BNode extends ExprFunctionN // 0 or one
     { throw new ARQInternalErrorException() ; }
 
     @Override
-    protected Expr copy(ExprList newArgs)
+    public Expr copy(ExprList newArgs)
     {
         if ( newArgs.size() == 0 )
             return new E_BNode() ;

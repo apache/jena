@@ -39,5 +39,5 @@ public class E_FunctionDynamic extends E_Call
     }
     
     @Override
-    protected Expr copy(ExprList newArgs)       { return new E_FunctionDynamic(newArgs) ; }
+    public Expr copy(ExprList newArgs)       { return new E_FunctionDynamic(newArgs) ; }
 }

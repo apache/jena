@@ -130,7 +130,7 @@ public class E_Function extends ExprFunctionN
 
 
     @Override
-    protected Expr copy(ExprList newArgs)
+    public Expr copy(ExprList newArgs)
     {
         return new E_Function(getFunctionIRI(), newArgs) ;
     }

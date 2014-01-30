@@ -75,7 +75,7 @@ public class E_Call extends ExprFunctionN
      
     
     @Override
-    protected Expr copy(ExprList newArgs)       { return new E_Call(newArgs) ; }
+    public Expr copy(ExprList newArgs)       { return new E_Call(newArgs) ; }
 
     @Override
     public NodeValue eval(List<NodeValue> args, FunctionEnv env) {

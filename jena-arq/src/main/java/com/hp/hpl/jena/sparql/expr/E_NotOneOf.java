@@ -51,7 +51,7 @@ public class E_NotOneOf extends E_OneOfBase
     { throw new ARQInternalErrorException() ; }
 
     @Override
-    protected Expr copy(ExprList newArgs)
+    public Expr copy(ExprList newArgs)
     {
         return new E_NotOneOf(newArgs) ;
     }
