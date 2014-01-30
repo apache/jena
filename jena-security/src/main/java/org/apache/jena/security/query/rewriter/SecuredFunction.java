@@ -126,7 +126,7 @@ public class SecuredFunction extends ExprFunctionN
 	}
 
 	@Override
-	protected Expr copy( ExprList newArgs )
+	public Expr copy( ExprList newArgs )
 	{
 		// TODO Auto-generated method stub
 		return null;
