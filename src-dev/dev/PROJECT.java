@@ -19,7 +19,9 @@
 package dev;
 
 public class PROJECT {
-    // Backup
+    // status -> two entries
+    
+    // Backup task + polling
     // Access point stats? HTTP stats?
     // Create dataset - check for existing. 
     // Timeouts

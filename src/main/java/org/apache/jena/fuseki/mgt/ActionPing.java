@@ -18,19 +18,25 @@
 
 package org.apache.jena.fuseki.mgt;
 
+import static org.apache.jena.riot.WebContent.charsetUTF8 ;
+import static org.apache.jena.riot.WebContent.contentTypeTextPlain ;
+
 import java.io.IOException ;
 
 import javax.servlet.ServletOutputStream ;
+import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import static org.apache.jena.riot.WebContent.* ;
+import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.web.HttpSC ;
 
-public class ActionPing extends ActionCtl
+public class ActionPing extends HttpServlet
 {
+    // Ping is special.
+    // To avoid excessive logging and id allocation for a "noise" operation,
+    // this is a raw servlet.
     public ActionPing() { super() ; } 
     
     @Override
@@ -49,20 +55,16 @@ public class ActionPing extends ActionCtl
         doCommon(req, resp); 
     }
 
-    @Override
-    protected void perform(HttpAction action) {
+    protected void doCommon(HttpServletRequest request, HttpServletResponse response) {
         try {
-            perform$(action) ;
-            ServletOps.success(action);
-        } catch (IOException ex) { IO.exception(ex) ; }
-    }
-    
-    protected void perform$(HttpAction action) throws IOException {
-        HttpServletResponse response = action.response ;
-        ServletOutputStream out = action.response.getOutputStream() ;
-        response.setContentType(contentTypeTextPlain);
-        response.setCharacterEncoding(charsetUTF8) ;
-        
+            FusekiLib.setNoCache(response) ; 
+            ServletOutputStream out = response.getOutputStream() ;
+            response.setContentType(contentTypeTextPlain);
+            response.setCharacterEncoding(charsetUTF8) ;
+            response.setStatus(HttpSC.OK_200);
+        } catch (IOException ex) {
+            Fuseki.serverLog.warn("ping :: IOException :: "+ex.getMessage());
+        }
     }
 }
 

@@ -12,7 +12,7 @@ define(
     };
 
     // add the behaviours defined on the controller
-    _.extend( ValidationController.prototype, {
+    _.extend( QueryController.prototype, {
       initEvents: function() {
         _.bindAll( this, "onServerModelReady" );
         fui.vent.on( "models.fuseki-server.ready", this.onServerModelReady );
