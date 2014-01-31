@@ -226,8 +226,7 @@ public class FusekiCmd extends CmdARQ {
         add(argAllowUpdate, "--update", "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         add(argFusekiConfig, "--config=", "Use a configuration file to determine the services") ;
         add(argJettyConfig, "--jetty-config=FILE", "Set up the server (not services) with a Jetty XML file") ;
-        add(argBasicAuth, "--basic-auth=FILE",
-            "Configure basic auth using provided Jetty realm file, ignored if --jetty-config is used") ;
+        add(argBasicAuth) ;
         add(argMgt,     "--mgt",          "Enable the management commands") ;
         add(argMgtPort, "--mgtPort=port", "Port for management optations") ;
         add(argHome, "--home=DIR", "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ;
@@ -343,6 +342,9 @@ public class FusekiCmd extends CmdARQ {
         }
 
         // ---- Jetty server
+        if ( contains(argBasicAuth) )
+            Fuseki.configLog.warn("--basic-auth ignored: Use Apache Shiro security - see shiro.ini") ;
+            
         if ( contains(argPort) ) {
             String portStr = getValue(argPort) ;
             try {
