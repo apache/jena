@@ -18,8 +18,11 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import java.util.Map;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -56,6 +59,11 @@ public abstract class QueryIter extends QueryIteratorBase
     public static QueryIterator materialize(QueryIterator qIter)
     {
         return new QueryIteratorCopy(qIter) ;
+    }
+    
+    public static QueryIterator map(QueryIterator qIter, Map<Var, Var> varMapping)
+    {
+        return new QueryIteratorMapped(qIter, varMapping);
     }
     
     @Override
