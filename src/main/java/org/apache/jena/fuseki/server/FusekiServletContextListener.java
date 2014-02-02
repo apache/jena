@@ -28,6 +28,7 @@ import javax.servlet.ServletContextListener ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.slf4j.Logger ;
 
 public class FusekiServletContextListener implements ServletContextListener {
@@ -46,7 +47,7 @@ public class FusekiServletContextListener implements ServletContextListener {
     // ----
     static public final String configDir = /* dir root + */ Fuseki.configDirName ;
     
-    private Boolean initialized = false ;
+    private volatile Boolean initialized = false ;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -74,45 +75,13 @@ public class FusekiServletContextListener implements ServletContextListener {
             }
             
             if ( initialSetup != null ) {
-                //FileOps.ensureDir(Fuseki.systemDatabaseName) ; 
-                // XXX Make relative.
-                FileOps.ensureDir(Fuseki.configDirName) ;
-                FileOps.ensureDir(Fuseki.systemFileArea) ;
-                
-                // Places to look:
-                // 1 - Fuseki v1 config file (deprecated)
-                // 2 - Directory of assemblers files "assemblers"
-                // 3 - The system database
-                 
-                List<DataAccessPoint> configFileDBs = findDatasets(initialSetup) ;
-                List<DataAccessPoint> directoryDBs = FusekiConfig.readConfigurationDirectory(configDir) ;
-                List<DataAccessPoint> systemDBs = FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
-                
-                List<DataAccessPoint> datasets = new ArrayList<DataAccessPoint>() ;
-                datasets.addAll(configFileDBs) ;
-                datasets.addAll(directoryDBs) ;
-                datasets.addAll(systemDBs) ;
-                
-                // Having found them, set them all running.
-                FusekiConfig.configureDatasets(datasets);
+                FusekiServer.init(initialSetup, configDir) ;
+            } else {
+                Fuseki.serverLog.error("No configuration") ;
+                System.exit(0) ;
             }
+                
         }
-    }
-    
-    private static List<DataAccessPoint> findDatasets(ServerInitialConfig params) {  
-        // Has a side effect of global context setting.
-
-        List<DataAccessPoint> datasets = DS.list() ;
-
-        if ( params.fusekiConfigFile != null ) {
-            Fuseki.configLog.info("Configuration file: " + params.fusekiConfigFile) ;
-            List<DataAccessPoint> cmdLineDatasets = FusekiConfig.readConfigFile(params.fusekiConfigFile) ;
-            datasets.addAll(cmdLineDatasets) ;
-        } else {
-            List<DataAccessPoint> cmdLineDatasets = FusekiConfig.defaultConfiguration(params) ;
-            datasets.addAll(cmdLineDatasets) ;
-        }
-        return datasets ;
     }
 }
 

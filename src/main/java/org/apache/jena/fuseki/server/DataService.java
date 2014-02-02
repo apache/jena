@@ -32,9 +32,9 @@ import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.MultiMapToList ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.build.DataServiceDesc ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
@@ -43,6 +43,11 @@ import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class DataService { //implements DatasetMXBean {
     // XXX Add a "null model assembler".
+    
+    public static DataService serviceOnlyDataService() {
+        return dummy ; 
+    }
+    
     public static DataService dummy = new DataService(null, null) ;
     static {
         dummy.dataset = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
@@ -50,9 +55,8 @@ public class DataService { //implements DatasetMXBean {
         dummy.addEndpoint(OperationName.Query, DEF.ServiceQueryAlt) ;
     }
     
-    private final Resource assemblerItem ;
+    private final DataServiceDesc svcDesc ;
     private DatasetGraph dataset = null ;              // Only valid if active.
-
 
     private MultiMapToList<OperationName, Operation> operations     = MultiMap.createMapList() ;
     private Map<String, Operation> endpoints                        = new HashMap<String, Operation>() ;
@@ -65,15 +69,8 @@ public class DataService { //implements DatasetMXBean {
     private final AtomicBoolean offlineInProgress       = new AtomicBoolean(false) ;
     private final AtomicBoolean acceptingRequests       = new AtomicBoolean(true) ;
 
-    @Deprecated
-    // Change to use assemblers everywhere.
-    public static DataService create(DatasetGraph dataset) {
-        DataService dServ = new DataService(null, dataset) ; 
-        return dServ ;
-    }
-    
-    public DataService(Resource item, DatasetGraph dataset) { 
-        this.assemblerItem = item ;
+    public DataService(DataServiceDesc desc, DatasetGraph dataset) {
+        this.svcDesc = desc ;
         this.dataset = dataset ;
         counters.add(CounterName.Requests) ;
         counters.add(CounterName.RequestsGood) ;
@@ -138,99 +135,62 @@ public class DataService { //implements DatasetMXBean {
         return counters.value(CounterName.RequestsBad) ;
     }
 
-    
-    
-//    public static DataService nullRef() {
-//        return new DataService(null, null, null ) ; 
-//    }
-//
-//    public static DataService create(String name, DatasetGraph dataset) {
-//        return new DataService(name, dataset, null ) ; 
-//    }
-//
-//    public static DatasetRef createLink(String name, DatasetRef other) {
-//        return new DataService(name, null, other) ; 
-//    }
+    /** Counter of active read transactions */
+    public AtomicLong   activeReadTxn           = new AtomicLong(0) ;
 
-//    public static DataService build(Model assembler) {
-//        List<Resource> services = FusekiConfig.getByType(FusekiVocab.fusekiService, assembler) ;
-//        if ( services.size() == 0 )
-//            throw new FusekiConfigException("No services found (no resource with type "
-//                                            + FusekiConfig.strForResource(FusekiVocab.fusekiService)) ;
-//        if ( services.size() > 1 )
-//            throw new FusekiConfigException("Found "+services.size()+
-//                                            " data services (must be exactly one in a configuration file)") ;
-//        
-//        Resource service = services.get(0) ;
-//        FusekiConfig.processService(service) ;
-//        
-//        return null ;
-//    }
+    /** Counter of active write transactions */
+    public AtomicLong   activeWriteTxn          = new AtomicLong(0) ;
 
-  /** Counter of active read transactions */
-  public AtomicLong   activeReadTxn           = new AtomicLong(0) ;
-  
-  /** Counter of active write transactions */
-  public AtomicLong   activeWriteTxn          = new AtomicLong(0) ;
+    /** Cumulative counter of read transactions */
+    public AtomicLong   totalReadTxn            = new AtomicLong(0) ;
 
-  /** Cumulative counter of read transactions */
-  public AtomicLong   totalReadTxn            = new AtomicLong(0) ;
+    /** Cumulative counter of writer transactions */
+    public AtomicLong   totalWriteTxn           = new AtomicLong(0) ;
 
-  /** Cumulative counter of writer transactions */
-  public AtomicLong   totalWriteTxn           = new AtomicLong(0) ;
-  
-  public void startTxn(ReadWrite mode)
-  {
-      switch(mode)
-      {
-          case READ:  
-              activeReadTxn.getAndIncrement() ;
-              totalReadTxn.getAndIncrement() ;
-              break ;
-          case WRITE:
-              activeWriteTxn.getAndIncrement() ;
-              totalWriteTxn.getAndIncrement() ;
-              break ;
-      }
-  }
-  
-  public void finishTxn(ReadWrite mode)
-  {
-      switch(mode)
-      {
-          case READ:  
-              activeReadTxn.decrementAndGet() ;
-              break ;
-          case WRITE:
-              activeWriteTxn.decrementAndGet() ;
-              break ;
-      }
-      checkShutdown() ;
-  }
+    public void startTxn(ReadWrite mode)
+    {
+        switch(mode)
+        {
+            case READ:  
+                activeReadTxn.getAndIncrement() ;
+                totalReadTxn.getAndIncrement() ;
+                break ;
+            case WRITE:
+                activeWriteTxn.getAndIncrement() ;
+                totalWriteTxn.getAndIncrement() ;
+                break ;
+        }
+    }
 
-  private void checkShutdown() {
-      if ( state == CLOSING ) {
-          if ( activeReadTxn.get() == 0 && activeWriteTxn.get() == 0 )
-              shutdown() ;
-      }
-  }
-  
-  private void shutdown() {
-      Fuseki.serverLog.info("Shutting down dataset") ;
-      
-//      if ( dataset instanceof DatasetGraphTransaction )
-//          StoreConnection.release( ((DatasetGraphTransaction)dataset).getLocation() ) ;
-//      else 
-//          dataset.close() ;
+    public void finishTxn(ReadWrite mode)
+    {
+        switch(mode)
+        {
+            case READ:  
+                activeReadTxn.decrementAndGet() ;
+                break ;
+            case WRITE:
+                activeWriteTxn.decrementAndGet() ;
+                break ;
+        }
+        checkShutdown() ;
+    }
 
-      dataset.close() ;
-      if ( dataset instanceof DatasetGraphTransaction ) {
-          DatasetGraphTransaction dsgtxn = (DatasetGraphTransaction)dataset ;
-          StoreConnection.release(dsgtxn.getLocation()) ;
-      }
-      dataset = null ; 
-  }
+    private void checkShutdown() {
+        if ( state == CLOSING ) {
+            if ( activeReadTxn.get() == 0 && activeWriteTxn.get() == 0 )
+                shutdown() ;
+        }
+    }
 
-    
+    private void shutdown() {
+        Fuseki.serverLog.info("Shutting down dataset") ;
+        dataset.close() ;
+        if ( dataset instanceof DatasetGraphTransaction ) {
+            DatasetGraphTransaction dsgtxn = (DatasetGraphTransaction)dataset ;
+            StoreConnection.release(dsgtxn.getLocation()) ;
+        }
+        dataset = null ; 
+    }
 }
 

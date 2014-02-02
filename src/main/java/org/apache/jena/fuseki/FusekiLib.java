@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.MultiMapToList ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.server.SystemState ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -34,10 +35,16 @@ import org.apache.jena.riot.web.HttpNames ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Convert ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class FusekiLib {
     // ==> ActionLib
@@ -159,6 +166,104 @@ public class FusekiLib {
         PrefixMapping pmapSrc = src.getDefaultGraph().getPrefixMapping() ;
         PrefixMapping pmapDest = dest.getDefaultGraph().getPrefixMapping() ;
         pmapDest.withDefaultMappings(pmapSrc) ;
+    }
+
+    // ---- Helper code
+    public static ResultSet query(String string, Model m) {
+        return query(string, m, null, null) ;
+    }
+
+    public static ResultSet query(String string, Dataset ds) {
+        return query(string, ds, null, null) ;
+    }
+
+    public static ResultSet query(String string, Model m, String varName, RDFNode value) {
+        Query query = QueryFactory.create(SystemState.PREFIXES + string) ;
+        QuerySolutionMap initValues = null ;
+        if ( varName != null )
+            initValues = querySolution(varName, value) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, m, initValues) ;
+        ResultSet rs = ResultSetFactory.copyResults(qExec.execSelect()) ;
+        qExec.close() ;
+        return rs ;
+    }
+
+    public static ResultSet query(String string, Dataset ds, String varName, RDFNode value) {
+        Query query = QueryFactory.create(SystemState.PREFIXES + string) ;
+        QuerySolutionMap initValues = null ;
+        if ( varName != null )
+            initValues = querySolution(varName, value) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds, initValues) ;
+        ResultSet rs = ResultSetFactory.copyResults(qExec.execSelect()) ;
+        qExec.close() ;
+        return rs ;
+    }
+
+    private static QuerySolutionMap querySolution(String varName, RDFNode value) {
+        QuerySolutionMap qsm = new QuerySolutionMap() ;
+        querySolution(qsm, varName, value) ;
+        return qsm ;
+    }
+
+    public static QuerySolutionMap querySolution(QuerySolutionMap qsm, String varName, RDFNode value) {
+        qsm.add(varName, value) ;
+        return qsm ;
+    }
+    
+    public static RDFNode getOne(Resource svc, String property) {
+        String localName = property.substring(property.indexOf(':') + 1) ;
+        ResultSet rs = FusekiLib.query("SELECT * { ?svc " + property + " ?x}", svc.getModel(), "svc", svc) ;
+        if ( !rs.hasNext() )
+            throw new FusekiConfigException("No " + localName + " for service " + FusekiLib.nodeLabel(svc)) ;
+        RDFNode x = rs.next().get("x") ;
+        if ( rs.hasNext() )
+            throw new FusekiConfigException("Multiple " + localName + " for service " + FusekiLib.nodeLabel(svc)) ;
+        return x ;
+    }
+    
+    // Node presentation
+    public static String nodeLabel(RDFNode n) {
+        if ( n == null )
+            return "<null>" ;
+        if ( n instanceof Resource )
+            return strForResource((Resource)n) ;
+    
+        Literal lit = (Literal)n ;
+        return lit.getLexicalForm() ;
+    }
+
+    // XXX Lib
+    public static String strForResource(Resource r) {
+        return strForResource(r, r.getModel()) ;
+    }
+
+    // XXX Lib
+    public static String strForResource(Resource r, PrefixMapping pm) {
+        if ( r == null )
+            return "NULL " ;
+        if ( r.hasProperty(RDFS.label) ) {
+            RDFNode n = r.getProperty(RDFS.label).getObject() ;
+            if ( n instanceof Literal )
+                return ((Literal)n).getString() ;
+        }
+    
+        if ( r.isAnon() )
+            return "<<blank node>>" ;
+    
+        if ( pm == null )
+            pm = r.getModel() ;
+    
+        return strForURI(r.getURI(), pm) ;
+    }
+
+    public static String strForURI(String uri, PrefixMapping pm) {
+        if ( pm != null ) {
+            String x = pm.shortForm(uri) ;
+    
+            if ( !x.equals(uri) )
+                return x ;
+        }
+        return "<" + uri + ">" ;
     }
 
 }

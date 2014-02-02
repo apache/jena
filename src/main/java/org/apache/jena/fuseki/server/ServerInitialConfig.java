@@ -18,13 +18,23 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.util.HashMap ;
+import java.util.Map ;
+
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** Dataset setup (command line, config file) for a dataset (or several if config file) */
 public class ServerInitialConfig {
-    // Either dsg/datasetPath are null or fusekiConfigFile is null.
-    public DatasetGraph dsg               = null ;
-    public String datasetPath             = null ;
-    public boolean      allowUpdate       = false ;
-    public String       fusekiConfigFile  = null ;
+    // Either this ...
+    public String    templateFile     = null ;
+    public Map<String,String> params  = new HashMap<String,String>() ;
+    public String    datasetPath      = null ;
+    public boolean   allowUpdate      = false ;
+    // Or this ...
+    public String    fusekiConfigFile = null ;
+    
+    // Special case - directly pass in the dataset graphs - datasetPath must be given.
+    // This is not persistet across server restarts. 
+    public DatasetGraph dsg           = null ;
+    
 }

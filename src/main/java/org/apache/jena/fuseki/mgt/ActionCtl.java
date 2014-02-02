@@ -19,10 +19,10 @@
 package org.apache.jena.fuseki.mgt;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.servlets.ActionBase ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
@@ -47,7 +47,7 @@ public abstract class ActionCtl extends ActionBase
             // This is a placeholder when creating new DatasetRefs
             // and also if addressing a container, not a dataset
             dataAccessPoint = null ;
-            dSrv = FusekiConfig.serviceOnlyDatasetRef() ;
+            dSrv = DataService.serviceOnlyDataService() ;
         }
         
         action.setControlRequest(dataAccessPoint, datasetUri) ;

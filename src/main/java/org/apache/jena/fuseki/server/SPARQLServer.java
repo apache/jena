@@ -31,6 +31,7 @@ import javax.servlet.DispatcherType ;
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.mgt.MgtJMX ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
@@ -134,7 +135,7 @@ public class SPARQLServer {
         } catch (Exception ex) {
             Fuseki.serverLog.warn("SPARQLServer: Exception while stopping server: " + ex.getMessage(), ex) ;
         }
-        FusekiConfig.removeJMX() ;
+        MgtJMX.removeJMX() ;
     }
 
     /**

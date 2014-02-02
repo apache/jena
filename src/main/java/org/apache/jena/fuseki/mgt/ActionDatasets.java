@@ -21,8 +21,10 @@ package org.apache.jena.fuseki.mgt;
 import static java.lang.String.format ;
 
 import java.io.* ;
+import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Locale ;
+import java.util.Map ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.ServletOutputStream ;
@@ -38,6 +40,9 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.build.Builder ;
+import org.apache.jena.fuseki.build.Template ;
+import org.apache.jena.fuseki.build.TemplateFunctions ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.ActionLib ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
@@ -79,8 +84,6 @@ public class ActionDatasets extends ActionCtl {
     private static final String paramDatasetType    = "dbType" ;
     private static final String tDatabasetTDB       = "tdb" ;
     private static final String tDatabasetMem       = "mem" ;
-    private static final String templateMemFN       = "templates/config-mem" ;
-    private static final String templateTDBFN       = "templates/config-tdb" ;
 
     public ActionDatasets() { super() ; }
     
@@ -272,8 +275,8 @@ public class ActionDatasets extends ActionCtl {
             model.add(subject, pStatus, FusekiVocab.stateActive) ;
             
             // Need to be in Resource space at this point.
-            DataAccessPoint ref = FusekiConfig.processService(subject) ;
-            FusekiConfig.registerDataset(datasetPath, ref) ;
+            DataAccessPoint ref = Builder.buildDataAccessPoint(subject) ;
+            DatasetRegistry.register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOutputStream out = action.getResponse().getOutputStream() ;
             out.println("That went well") ;
@@ -295,6 +298,9 @@ public class ActionDatasets extends ActionCtl {
     private void assemblerFromForm(HttpAction action, StreamRDF dest) {
         String dbType = action.getRequest().getParameter(paramDatasetType) ;
         String dbName = action.getRequest().getParameter(paramDatasetName) ;
+        Map<String, String> params = new HashMap<String, String>() ;
+        params.put(Template.NAME, dbName) ;
+        
         action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
         if ( dbType == null || dbName == null )
             ServletOps.errorBadRequest("Required parameters: dbName and dbType");
@@ -302,15 +308,10 @@ public class ActionDatasets extends ActionCtl {
             ServletOps.errorBadRequest(format("dbType can be only '%s' or '%s'", tDatabasetTDB, tDatabasetMem)) ;
         
         String template = null ;
-        try {
-            if ( dbType.equalsIgnoreCase(tDatabasetTDB))
-                template = FileUtils.readWholeFileAsUTF8(templateTDBFN) ;
-            if ( dbType.equalsIgnoreCase(tDatabasetMem))
-                template = FileUtils.readWholeFileAsUTF8(templateMemFN) ;
-        } catch (IOException ex) { IO.exception(ex); }
-
-        // XXX Be careful.
-        template = template.replaceAll("\\{NAME\\}", dbName) ;
+        if ( dbType.equalsIgnoreCase(tDatabasetTDB))
+            template = TemplateFunctions.template(Template.templateTDBFN, params) ;
+        if ( dbType.equalsIgnoreCase(tDatabasetMem))
+            template = TemplateFunctions.template(Template.templateMemFN, params) ;
         RDFDataMgr.parse(dest, new StringReader(template), "http://base/", Lang.TTL) ;
     }
 

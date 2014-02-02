@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.authz;
 
-import org.apache.commons.collections.FunctorException ;
-import org.apache.jena.fuseki.migrate.Registry ;
+import javax.servlet.ServletRequest ;
+import javax.servlet.ServletResponse ;
 
-// XXX rename
-public class DatasetRegistry extends Registry<DataAccessPoint>
-{
-    public static void register(String name, DataAccessPoint accessPt) {
-        if ( get().isRegistered(name) )
-            throw new FunctorException("Already registered: "+name) ;
-        get().put(name, accessPt);
+/** An authorization filter that always denies access and sends back HTTP 403 */
+public class DenyFilter extends AuthorizationFilter403 {
+
+    protected DenyFilter() { super("Access denied") ; }
+
+    @Override
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        return false ;
     }
-    
-    private static DatasetRegistry singleton = new DatasetRegistry() ;
-
-    public static DatasetRegistry get() { return singleton ; }
-    
-    private DatasetRegistry() {}
 }
+

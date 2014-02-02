@@ -65,7 +65,7 @@ public abstract class ActionSPARQL extends ActionBase
             }
         } else {
             dataAccessPoint = null ;
-            dSrv = FusekiConfig.serviceOnlyDatasetRef() ;
+            dSrv = DataService.serviceOnlyDataService() ;
         }
 
         String uri = action.request.getRequestURI() ;

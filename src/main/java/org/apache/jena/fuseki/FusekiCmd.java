@@ -19,14 +19,13 @@
 package org.apache.jena.fuseki ;
 
 import java.io.File ;
-import java.io.InputStream ;
 import java.util.List ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.FusekiServletContextListener ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
@@ -47,7 +46,6 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
@@ -281,36 +279,37 @@ public class FusekiCmd extends CmdARQ {
         if ( contains(argMem) ) {
             log.info("Dataset: in-memory") ;
             cmdLineDataset = new ServerInitialConfig() ;
-            cmdLineDataset.dsg = DatasetGraphFactory.createMem() ;
+            cmdLineDataset.templateFile = Template.templateMemFN ; 
         }
         
         if ( contains(argFile) ) {
-            cmdLineDataset.dsg = DatasetGraphFactory.createMem() ;
             String filename = getValue(argFile) ;
             log.info("Dataset: in-memory: load file: " + filename) ;
             if ( !FileOps.exists(filename) )
                 throw new CmdException("File not found: " + filename) ;
 
+            // Directly populate the dataset.
+            cmdLineDataset = new ServerInitialConfig() ;
+            cmdLineDataset.dsg = DatasetGraphFactory.createMem() ;
+
+            // INITIAL DATA.
             Lang language = RDFLanguages.filenameToLang(filename) ;
             if ( language == null )
                 throw new CmdException("Can't guess language for file: " + filename) ;
-            InputStream input = IO.openFile(filename) ;
-
-            if ( RDFLanguages.isQuads(language) )
-                RDFDataMgr.read(cmdLineDataset.dsg, filename) ;
-            else
-                RDFDataMgr.read(cmdLineDataset.dsg.getDefaultGraph(), filename) ;
+            RDFDataMgr.read(cmdLineDataset.dsg, filename) ;
         }
 
         if ( contains(argMemTDB) ) {
             log.info("TDB dataset: in-memory") ;
             cmdLineDataset = new ServerInitialConfig() ;
-            cmdLineDataset.dsg = TDBFactory.createDatasetGraph() ;
+            cmdLineDataset.templateFile = Template.templateTDBMemFN ;
         }
 
         if ( contains(argTDB) ) {
+            cmdLineDataset = new ServerInitialConfig() ;
+            cmdLineDataset.templateFile = Template.templateTDBDirFN ;
+            
             String dir = getValue(argTDB) ;
-
             if ( Lib.equal(dir, Names.memName) ) {
                 log.info("TDB dataset: in-memory") ;
             } else {
@@ -318,18 +317,18 @@ public class FusekiCmd extends CmdARQ {
                     throw new CmdException("Directory not found: " + dir) ;
                 log.info("TDB dataset: directory=" + dir) ;
             }
-            cmdLineDataset = new ServerInitialConfig() ;
-            cmdLineDataset.dsg = TDBFactory.createDatasetGraph(dir) ;
+            cmdLineDataset.params.put(Template.DIR, dir) ;
         }
 
         // Otherwise
         if ( contains(assemblerDescDecl) ) {
             log.info("Dataset from assembler") ;
+            // Need to add service details.
             Dataset ds = modDataset.createDataset() ;
-            cmdLineDataset.dsg = ds.asDatasetGraph() ;
+            //cmdLineDataset.dsg = ds.asDatasetGraph() ;
         }
 
-        if ( cmdLineDataset.dsg != null ) {
+        if ( cmdLineDataset != null ) {
             if ( getPositional().size() == 0 )
                 throw new CmdException("No dataset path name given") ;
             if ( getPositional().size() > 1 )
@@ -337,7 +336,6 @@ public class FusekiCmd extends CmdARQ {
             cmdLineDataset.datasetPath = getPositionalArg(0) ;
             if ( cmdLineDataset.datasetPath.length() > 0 && !cmdLineDataset.datasetPath.startsWith("/") )
                 throw new CmdException("Dataset path name must begin with a /: " + cmdLineDataset.datasetPath) ;
-
             cmdLineDataset.allowUpdate = contains(argAllowUpdate) ;
         }
 

@@ -27,7 +27,6 @@ import java.util.List ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;

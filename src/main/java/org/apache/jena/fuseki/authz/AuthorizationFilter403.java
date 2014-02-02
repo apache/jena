@@ -33,7 +33,8 @@ public abstract class AuthorizationFilter403 extends AuthorizationFilter
 {    
     private String message ;
 
-    protected AuthorizationFilter403(String text) { setMessage(text) ; }
+    protected AuthorizationFilter403(String text)   { setMessage(text) ; }
+    protected AuthorizationFilter403()              { this(null) ; }
     
     /** Set the message used in HTTP 403 responses */
     public void setMessage(String msg) { message = msg ; }
@@ -48,7 +49,10 @@ public abstract class AuthorizationFilter403 extends AuthorizationFilter
             // Not a HTTP Servlet operation
             return super.onAccessDenied(request, response) ;
         }
-        httpResponse.sendError(HttpSC.FORBIDDEN_403, message) ;
+        if ( message == null )
+            httpResponse.sendError(HttpSC.FORBIDDEN_403) ;
+        else
+            httpResponse.sendError(HttpSC.FORBIDDEN_403, message) ;
         return false ;  // No further processing.
     }
 }

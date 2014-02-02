@@ -19,9 +19,24 @@
 package dev;
 
 public class PROJECT {
+    // Assembler file mgt
+    // AssemblerRef ==> ServiceDesc
+    
+    // Tests for DataServiceDesc and configuration.
+    // Other DataServiceDesc
+    //  -- contains a DS and can't put it down (update/in-memory) (+file)
+    //  -- TDB various
+    
     // status -> two entries
+    // Cleaner -> access point -> dataService -> endpoints 
+    
+    // --set affects the system DB! 
     
     // Backup task + polling
+    //  Generalize to queries, updates, etc
+    //   /dataset/operation/1234
+    //   /dataset/query/1234
+    
     // Access point stats? HTTP stats?
     // Create dataset - check for existing. 
     // Timeouts

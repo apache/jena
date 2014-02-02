@@ -30,7 +30,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     .
 
 <#tdb_dataset_readwrite> rdf:type      tdb:DatasetTDB ;
-    tdb:location "databases/{NAME}" ;
-    ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "3000" ] ;
-    ##tdb:unionDefaultGraph true ;
+    tdb:location "--mem--" ;
+    ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
+    # tdb:unionDefaultGraph true ;
     .

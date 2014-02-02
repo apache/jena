@@ -24,16 +24,17 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.servlets.ActionBase ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.slf4j.Logger ;
 
-public class ActionAsync extends ActionCtl {
+/** Base class for actions on long running operations */
+public class ActionAsync extends ActionBase {
 
-    @Override
-    protected void perform(HttpAction action) {
-        
+    protected ActionAsync(Logger log) {
+        super(log) ;
     }
 
-    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         doCommon(request, response) ;
@@ -44,6 +45,9 @@ public class ActionAsync extends ActionCtl {
         FusekiLib.setNoCache(response) ;
         doCommon(request, response) ;
     }
+
+    @Override
+    protected void execCommonWorker(HttpAction action) {}
 
 }
 

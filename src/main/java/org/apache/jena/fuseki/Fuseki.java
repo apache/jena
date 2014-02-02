@@ -110,6 +110,12 @@ public class Fuseki {
     /** Instance of log for operations */
     public static final Logger        adminLog          = LoggerFactory.getLogger(adminLogName) ;
 
+    /** Admin log file for operations */
+    public static final String        builderLogName    = PATH + ".Builder" ;
+
+    /** Instance of log for operations */
+    public static final Logger        builderLog        = LoggerFactory.getLogger(builderLogName) ;
+
     /** Validation log file for operations */
     public static final String        validationLogName = PATH + ".Validate" ;
 

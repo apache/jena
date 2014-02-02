@@ -48,21 +48,20 @@ public class FusekiFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
         throws IOException, ServletException {
         try {
-            // See SPARQL_Servlet.execCommonWorker
             HttpServletRequest req = (HttpServletRequest)request ;
             HttpServletResponse resp = (HttpServletResponse)response ;
 
             // XXX Context path
-            // Put this somewhere.
             String x = request.getServletContext().getContextPath() ;
-            
-            
             String uri = req.getRequestURI() ;
             String datasetUri = ActionLib.mapRequestToDataset(uri) ;
 
+            // is it a long running operation?
+            // (this could be a separate filter)
+            
+            // is it a request to a DataService via an access point.
             if ( x != null )
                 datasetUri = datasetUri.substring(x.length()) ;
-            
             
             if ( datasetUri != null ) {        
                 if ( DatasetRegistry.get().isRegistered(datasetUri) ) {
