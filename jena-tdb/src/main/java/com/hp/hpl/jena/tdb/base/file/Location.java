@@ -34,6 +34,8 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 public class Location {
     static String    pathSeparator = File.separator ; // Or just "/"
 
+    private static String memNamePath = Names.memName+pathSeparator ;
+    
     private String   pathname ;
     private MetaFile metafile      = null ;
     private boolean  isMem         = false ;
@@ -75,6 +77,11 @@ public class Location {
         super() ;
         if ( rootname.equals(Names.memName) ) {
             memInit(this, null) ;
+            return ;
+        }
+        if ( rootname.startsWith(memNamePath) ) {
+            String name = rootname.substring(memNamePath.length()) ;
+            memInit(this, name) ;
             return ;
         }
 
