@@ -135,9 +135,9 @@ public class ServerTest {
             server.stop() ;
         server = null ;
         // Clear out the registry.
-        Collection<String> keys = Iter.toList(DatasetRegistry.get().keys()) ;
+        Collection<String> keys = Iter.toList(DataAccessPointRegistry.get().keys()) ;
         for (String k : keys)
-            DatasetRegistry.get().remove(k) ;
+            DataAccessPointRegistry.get().remove(k) ;
     }
 
     public static void resetServer() {

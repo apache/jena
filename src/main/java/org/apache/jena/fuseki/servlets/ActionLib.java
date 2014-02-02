@@ -25,7 +25,7 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 
 /** Operations related to servlets */
 
@@ -79,7 +79,7 @@ public class ActionLib {
         // forms.
 
         String ds = null ;
-        for ( String ds2 : DatasetRegistry.get().keys() ) {
+        for ( String ds2 : DataAccessPointRegistry.get().keys() ) {
             if ( ! uri.startsWith(ds2) )
                 continue ;
 

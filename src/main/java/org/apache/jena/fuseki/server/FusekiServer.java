@@ -67,7 +67,7 @@ public class FusekiServer
     private static void enable(List<DataAccessPoint> datapoints) {
         for ( DataAccessPoint dap : datapoints ) {
             Fuseki.configLog.info("Register: "+dap.getName()) ;
-            DatasetRegistry.register(dap.getName(), dap); 
+            DataAccessPointRegistry.register(dap.getName(), dap); 
         }
     }
 

@@ -24,7 +24,7 @@ import javax.servlet.ServletResponse ;
 /** An authorization filter that always denies access and sends back HTTP 403 */
 public class DenyFilter extends AuthorizationFilter403 {
 
-    protected DenyFilter() { super("Access denied") ; }
+    public DenyFilter() { super("Access denied") ; }
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {

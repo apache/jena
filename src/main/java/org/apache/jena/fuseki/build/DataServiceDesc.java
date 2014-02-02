@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
-public class DataServiceDesc
+public abstract class DataServiceDesc
 {
     public static DataServiceDesc createFromTemplate(String templateFile, String dbName) {
         Map<String, String> params = new HashMap<String, String>() ;
@@ -59,20 +59,46 @@ public class DataServiceDesc
         } catch (TypeNotUniqueException ex) {
             throw new FusekiConfigException("Multiple items of type: " + FusekiVocab.fusekiService) ;
         }
-        return new DataServiceDesc(root) ;
+        return new DataServiceDescResource(root) ;
     }
-    
-    protected Resource resource ; 
-    
-    protected DataServiceDesc(Resource resource) {
-        this.resource = resource ;
-    }
-    
-    public Resource getResource() { return resource ; }
 
-    /** Build a thing - ClassCastException error if it's a different thing  */ 
-    public DataService build() {
-        return Builder.buildDataService(resource) ;
+    public static DataServiceDesc create(DataService dataService) {
+        return new DataServiceDescPrebuilt(dataService) ;
     }
+    
+    //public abstract Resource getResource() ;
+
+    public abstract DataService build() ;
+//    public abstract void unbuild() ;
+
+
+    private static class DataServiceDescResource extends DataServiceDesc {
+        protected Resource resource ; 
+
+        protected DataServiceDescResource(Resource resource) {
+            this.resource = resource ;
+        }
+
+        public Resource getResource() { return resource ; }
+
+        @Override
+        public DataService build() {
+            return Builder.buildDataService(resource) ;
+        }
+    }
+    
+    private static class DataServiceDescPrebuilt extends DataServiceDesc {
+
+        private DataService dataService ;
+
+        protected DataServiceDescPrebuilt(DataService dataService) {
+            this.dataService = dataService ;
+        }
+
+        @Override
+        public DataService build() {
+            return dataService ;
+        }
+    }
+
 }
-

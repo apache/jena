@@ -36,7 +36,7 @@ import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.riot.Lang ;
@@ -76,13 +76,13 @@ public class ActionBackup extends ActionCtl
         // session.setAttribute("dataset", dataset) ;
         // session.setMaxInactiveInterval(15*60) ; // 10 mins
 
-        boolean known = DatasetRegistry.get().isRegistered(dataset) ;
+        boolean known = DataAccessPointRegistry.get().isRegistered(dataset) ;
         if ( !known ) {
             ServletOps.errorBadRequest("No such dataset: " + dataset) ;
             return ;
         }
 
-        DataAccessPoint dataAccessPoint = DatasetRegistry.get().get(dataset) ;
+        DataAccessPoint dataAccessPoint = DataAccessPointRegistry.get().get(dataset) ;
         DataService dSrv = dataAccessPoint.getDataService() ;
         action.setControlRequest(dataAccessPoint, dataset) ;
         action.setOperation(null, null) ;       // No operation or service name.

@@ -146,7 +146,7 @@ public class ActionDatasets extends ActionCtl {
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("D") ;
         builder.key("datasets") ;
-        JsonDescription.arrayDatasets(builder, DatasetRegistry.get());
+        JsonDescription.arrayDatasets(builder, DataAccessPointRegistry.get());
         builder.finishObject("D") ;
         return builder.build() ;
     }
@@ -154,7 +154,7 @@ public class ActionDatasets extends ActionCtl {
     private JsonValue execGetDataset(HttpAction action) {
         action.log.info(format("[%d] GET dataset %s", action.id, action.getDatasetName())) ;
         JsonBuilder builder = new JsonBuilder() ;
-        DataAccessPoint dsDesc = DatasetRegistry.get().get(action.getDatasetName()) ;
+        DataAccessPoint dsDesc = DataAccessPointRegistry.get().get(action.getDatasetName()) ;
         if ( dsDesc == null )
             ServletOps.errorNotFound("Not found: dataset "+action.getDatasetName());
         JsonDescription.describe(builder, dsDesc) ;
@@ -267,7 +267,7 @@ public class ActionDatasets extends ActionCtl {
             String datasetPath = DataAccessPoint.canonical(datasetName) ;
             action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath)) ;
             
-            if ( DatasetRegistry.get().isRegistered(datasetPath) )
+            if ( DataAccessPointRegistry.get().isRegistered(datasetPath) )
                 // And abort.
                 ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath) ;
                 
@@ -276,7 +276,7 @@ public class ActionDatasets extends ActionCtl {
             
             // Need to be in Resource space at this point.
             DataAccessPoint ref = Builder.buildDataAccessPoint(subject) ;
-            DatasetRegistry.register(datasetPath, ref) ;
+            DataAccessPointRegistry.register(datasetPath, ref) ;
             action.getResponse().setContentType(WebContent.contentTypeTextPlain); 
             ServletOutputStream out = action.getResponse().getOutputStream() ;
             out.println("That went well") ;
@@ -333,13 +333,13 @@ public class ActionDatasets extends ActionCtl {
             return ;
         }
         
-        if ( ! DatasetRegistry.get().isRegistered(name) )
+        if ( ! DataAccessPointRegistry.get().isRegistered(name) )
             ServletOps.errorNotFound("No such dataset registered: "+name);
 
         systemDSG.begin(ReadWrite.WRITE) ;
         boolean committed =false ;
         try {
-            DataAccessPoint ref = DatasetRegistry.get().get(name) ;
+            DataAccessPoint ref = DataAccessPointRegistry.get().get(name) ;
             // Redo check inside transaction.
             if ( ref == null )
                 ServletOps.errorNotFound("No such dataset registered: "+name);
@@ -351,7 +351,7 @@ public class ActionDatasets extends ActionCtl {
             Node gn = q.getGraph() ;
 
             action.log.info("SHUTDOWN NEEDED");
-            DatasetRegistry.get().remove(name) ;
+            DataAccessPointRegistry.get().remove(name) ;
             systemDSG.deleteAny(gn, null, null, null) ;
             systemDSG.commit() ;
             committed = true ;

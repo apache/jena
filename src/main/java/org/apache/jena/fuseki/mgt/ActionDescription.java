@@ -31,7 +31,7 @@ import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
@@ -93,7 +93,7 @@ public class ActionDescription extends ActionCtl
     
     private void describeDataset(JsonBuilder builder) {
         builder.key("datasets") ;
-        JsonDescription.arrayDatasets(builder, DatasetRegistry.get());
+        JsonDescription.arrayDatasets(builder, DataAccessPointRegistry.get());
     }
 
 }

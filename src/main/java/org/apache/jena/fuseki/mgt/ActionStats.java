@@ -78,7 +78,7 @@ public class ActionStats extends ActionCtl
 
         builder.key("datasets") ;
         builder.startObject("datasets") ;
-        for ( String ds : DatasetRegistry.get().keys() )
+        for ( String ds : DataAccessPointRegistry.get().keys() )
             statsDataset(builder, ds) ; 
         builder.finishObject("datasets") ;
         
@@ -106,7 +106,7 @@ public class ActionStats extends ActionCtl
         // Object started
         builder.key(ds) ;
         
-        DataAccessPoint access = DatasetRegistry.get().get(ds) ;
+        DataAccessPoint access = DataAccessPointRegistry.get().get(ds) ;
         DataService dSrv = access.getDataService() ;
         builder.startObject("counters") ;
         
@@ -148,11 +148,11 @@ public class ActionStats extends ActionCtl
         resp.setContentType(contentTypeTextPlain);
         resp.setCharacterEncoding(charsetUTF8) ;
 
-        Iterator<String> iter = DatasetRegistry.get().keys().iterator() ;
+        Iterator<String> iter = DataAccessPointRegistry.get().keys().iterator() ;
         while(iter.hasNext())
         {
             String ds = iter.next() ;
-            DataAccessPoint desc = DatasetRegistry.get().get(ds) ;
+            DataAccessPoint desc = DataAccessPointRegistry.get().get(ds) ;
             statsTxt(out, desc) ;
             if ( iter.hasNext() )
                 out.println() ;

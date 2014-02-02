@@ -18,21 +18,20 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.commons.collections.FunctorException ;
+import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.migrate.Registry ;
 
-// XXX rename
-public class DatasetRegistry extends Registry<DataAccessPoint>
+public class DataAccessPointRegistry extends Registry<DataAccessPoint>
 {
     public static void register(String name, DataAccessPoint accessPt) {
         if ( get().isRegistered(name) )
-            throw new FunctorException("Already registered: "+name) ;
+            throw new FusekiException("Already registered: "+name) ;
         get().put(name, accessPt);
     }
     
-    private static DatasetRegistry singleton = new DatasetRegistry() ;
+    private static DataAccessPointRegistry singleton = new DataAccessPointRegistry() ;
 
-    public static DatasetRegistry get() { return singleton ; }
+    public static DataAccessPointRegistry get() { return singleton ; }
     
-    private DatasetRegistry() {}
+    private DataAccessPointRegistry() {}
 }

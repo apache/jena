@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 import org.slf4j.Logger ;
 
 /** Look at all requests and see if they match a registered dataset name; 
@@ -64,7 +64,7 @@ public class FusekiFilter implements Filter {
                 datasetUri = datasetUri.substring(x.length()) ;
             
             if ( datasetUri != null ) {        
-                if ( DatasetRegistry.get().isRegistered(datasetUri) ) {
+                if ( DataAccessPointRegistry.get().isRegistered(datasetUri) ) {
                     // Intercept and redirect
                     //log.info("Redirect: "+uri);
                     überServlet.doCommon(req, resp) ;
