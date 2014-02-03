@@ -19,19 +19,24 @@
 package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
+import static org.apache.jena.riot.WebContent.charsetUTF8 ;
+import static org.apache.jena.riot.WebContent.contentTypeJSON ;
+import static org.apache.jena.riot.WebContent.contentTypeTextPlain ;
 
 import java.io.IOException ;
 import java.util.Iterator ;
+import java.util.List ;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.json.* ;
+import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonBuilder ;
+import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
-import static org.apache.jena.riot.WebContent.* ;
 
 public class ActionStats extends ActionCtl
 {
@@ -102,6 +107,39 @@ public class ActionStats extends ActionCtl
         return builder.build() ;
     }
 
+//    private void statsDataset(JsonBuilder builder, String ds) {
+//        // Object started
+//        builder.key(ds) ;
+//        
+//        DataAccessPoint access = DataAccessPointRegistry.get().get(ds) ;
+//        DataService dSrv = access.getDataService() ;
+//        builder.startObject("counters") ;
+//        
+//        builder.key(CounterName.Requests.name()).value(dSrv.getCounters().value(CounterName.Requests)) ;
+//        builder.key(CounterName.RequestsGood.name()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
+//        builder.key(CounterName.RequestsBad.name()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
+//
+//        
+//        builder.key("services").startObject("services") ;
+//        for ( Operation operation : dSrv.getOperations() ) {
+//            builder.key(operation.getEndpoint()).startObject("service") ;
+//            statsService(builder, operation) ;
+//            
+//            builder.key("endpoints") ;
+//            // SHARE WITH ActionDataset.
+//            builder.startArray() ;
+//            builder.value(operation.endpointName) ;
+////            for ( String ep : operation.endpoints)
+////                builder.value(ep) ;
+//            builder.finishArray() ;
+//            
+//            builder.finishObject("service") ;
+//        }
+//        builder.finishObject("services") ;
+//        builder.finishObject("counters") ;
+//
+//    }
+    
     private void statsDataset(JsonBuilder builder, String ds) {
         // Object started
         builder.key(ds) ;
@@ -113,29 +151,31 @@ public class ActionStats extends ActionCtl
         builder.key(CounterName.Requests.name()).value(dSrv.getCounters().value(CounterName.Requests)) ;
         builder.key(CounterName.RequestsGood.name()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
         builder.key(CounterName.RequestsBad.name()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
-
         
         builder.key("services").startObject("services") ;
-        for ( Operation operation : dSrv.getOperations() ) {
-            builder.key(operation.getEndpoint()).startObject("service") ;
-            statsService(builder, operation) ;
+        
+        for ( OperationName operName : dSrv.getOperations() ) {
+            List<Endpoint> endpoints = access.getDataService().getOperation(operName) ;
             
-            builder.key("endpoints") ;
-            // SHARE WITH ActionDataset.
-            builder.startArray() ;
-            builder.value(operation.endpointName) ;
-//            for ( String ep : operation.endpoints)
-//                builder.value(ep) ;
-            builder.finishArray() ;
-            
-            builder.finishObject("service") ;
+            for ( Endpoint endpoint : endpoints ) {
+                builder.key(endpoint.getEndpoint()) ;
+                builder.startObject() ;
+                
+                operationCounters(builder, endpoint);
+                builder.key("endpoints") ;
+                builder.startArray() ;
+                builder.value(endpoint.getEndpoint()) ;
+                builder.finishArray() ;
+                
+                builder.finishObject() ;
+            }
         }
         builder.finishObject("services") ;
         builder.finishObject("counters") ;
 
     }
 
-    private void statsService(JsonBuilder builder, Operation operation) {
+    private void operationCounters(JsonBuilder builder, Endpoint operation) {
         for (CounterName cn : operation.getCounters().counters()) {
             Counter c = operation.getCounters().get(cn) ;
             builder.key(cn.name()).value(c.value()) ;

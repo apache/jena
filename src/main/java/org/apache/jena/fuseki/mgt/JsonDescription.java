@@ -18,10 +18,13 @@
 
 package org.apache.jena.fuseki.mgt;
 
+import java.util.List ;
+
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
-import org.apache.jena.fuseki.server.Operation ;
+import org.apache.jena.fuseki.server.Endpoint ;
+import org.apache.jena.fuseki.server.OperationName ;
 
 /** Create a description of a service */
 public class JsonDescription {
@@ -47,24 +50,27 @@ public class JsonDescription {
         
         builder.key(dsService) ;
         builder.startArray() ;
-        for ( Operation sRef : access.getDataService().getOperations() )
-            describe(builder, sRef) ;
+        
+        for ( OperationName opName : access.getDataService().getOperations() ) {
+            List<Endpoint> endpoints = access.getDataService().getOperation(opName) ;
+            describe(builder, opName, endpoints) ;
+        }
         builder.finishArray() ;
         builder.finishObject() ;
     }
     
     
-    public static void describe(JsonBuilder builder, Operation operation) {
+    private static void describe(JsonBuilder builder, OperationName opName, List<Endpoint> endpoints) {
         builder.startObject() ;
         
-        builder.key(srvType).value(operation.getName().name) ;
+        builder.key(srvType).value(opName.name) ;
 
-        //Group same operation type? 
         builder.key(srvEndpoints) ;
         builder.startArray() ;
-        builder.value(operation.endpointName) ;
+        for ( Endpoint endpoint : endpoints )
+            builder.value(endpoint.getEndpoint()) ;
         builder.finishArray() ;
-        
+
         builder.finishObject() ;
     }
     
