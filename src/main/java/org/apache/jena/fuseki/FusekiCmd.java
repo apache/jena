@@ -69,6 +69,8 @@ public class FusekiCmd extends CmdARQ {
          "log4j.logger.org.openjena=WARN",
          "log4j.logger.org.apache.jena=WARN",
 
+         "log4j.logger.org.apache.jena=WARN",
+
          "# System logs.",
          "log4j.logger." + Fuseki.serverLogName     + "=INFO",
          "log4j.logger." + Fuseki.requestLogName    + "=INFO",
@@ -78,6 +80,7 @@ public class FusekiCmd extends CmdARQ {
          
          "log4j.logger.org.apache.jena.tdb.loader=INFO",
          "log4j.logger.org.eclipse.jetty=ERROR" ,
+         "log4j.logger.org.apache.shiro=WARN",
 
          "## Parser output", 
          "log4j.additivity" + SysRIOT.riotLoggerName + "=false",
@@ -337,6 +340,8 @@ public class FusekiCmd extends CmdARQ {
             if ( cmdLineDataset.datasetPath.length() > 0 && !cmdLineDataset.datasetPath.startsWith("/") )
                 throw new CmdException("Dataset path name must begin with a /: " + cmdLineDataset.datasetPath) ;
             cmdLineDataset.allowUpdate = contains(argAllowUpdate) ;
+            // Include the dataset name as NAME for any templates.
+            cmdLineDataset.params.put(Template.NAME,  cmdLineDataset.datasetPath) ;            
         }
 
         // ---- Jetty server
