@@ -61,7 +61,6 @@ public class JsonWriter implements JsonVisitor
         boolean first = true ; 
         Set<String> x = jsonObject.keySet() ;
         
-        // Sort keys.
         out.print(ObjectStart) ;
         if ( x.size() == 0 ) {
             out.print(SPC) ;
@@ -108,9 +107,10 @@ public class JsonWriter implements JsonVisitor
     }
     
     private void writeObjectLong(JsonObject jsonObject, Set<String> x) {
+        // Just after the opening { 
         SortedSet<String> y = new TreeSet<String>(x) ;
         boolean first = true ;
-        //out.println();
+        out.println() ;
         for ( String k : y ) {
             if ( ! first ) {    
                 out.print(ObjectSep) ;
