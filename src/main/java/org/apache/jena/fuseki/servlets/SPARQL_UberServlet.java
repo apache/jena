@@ -33,7 +33,7 @@ import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Operation ;
+import org.apache.jena.fuseki.server.Endpoint ;
 import org.apache.jena.fuseki.server.OperationName ;
 import org.apache.jena.riot.web.HttpNames ;
 
@@ -84,10 +84,10 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action, OperationName.GSP) ; }
 
         private boolean isEnabled(HttpAction action, OperationName opName)
-        {  Operation operation = action.getOperation() ;
+        {  Endpoint operation = action.getOperation() ;
         
             return operation != null &&
-                operation.getName() == opName &&
+                operation.getOperationName() == opName &&
                 // XXX Active
                 operation.endpointName != null ;
         }
@@ -262,7 +262,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     private void doGraphStoreProtocol(HttpAction action)
     {
         // The GSP servlets handle direct and indirect naming. 
-        Operation operation = action.getOperation() ;
+        Endpoint operation = action.getOperation() ;
         String method = action.request.getMethod() ;
         
         if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) ||
@@ -271,9 +271,9 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
            if ( ! allowREST_R(action))
            // Graphs Store Protocol, indirect naming, read
            // Indirect naming. Prefer the R service if available.
-           if ( OperationName.GSP_R == operation.getName() )
+           if ( OperationName.GSP_R == operation.getOperationName() )
                executeRequest(action, gspServlet_R) ;
-           else if ( OperationName.GSP == operation.getName() )
+           else if ( OperationName.GSP == operation.getOperationName() )
                executeRequest(action, gspServlet_RW) ;
            else
                ServletOps.errorMethodNotAllowed(method) ;
@@ -321,7 +321,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
      * @param opName */
     private boolean serviceDispatch(HttpAction action, OperationName opName , ActionSPARQL servlet)
     {
-        Operation operation = action.getOperation() ;
+        Endpoint operation = action.getOperation() ;
         if ( ! operation.isType(opName) ) 
             return false ;
         servlet.executeLifecycle(action) ;

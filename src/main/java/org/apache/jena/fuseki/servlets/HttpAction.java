@@ -31,7 +31,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Operation ;
+import org.apache.jena.fuseki.server.Endpoint ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -54,7 +54,7 @@ public class HttpAction
     // -- Valid only for operational actions (e.g. SPARQL).
     
     public  String          endpointName    = null ;        // Endpoint name srv was found under 
-    public  Operation       operation       = null ;
+    public  Endpoint       operation       = null ;
     private Transactional   transactional   = null ;
     private boolean         isTransactional = false ;
     private DatasetGraph    activeDSG       = null ;        // Set when inside begin/end.
@@ -144,12 +144,12 @@ public class HttpAction
         return dsg ;
     }
         
-    public void setOperation(Operation srvRef, String endpointName) {
+    public void setOperation(Endpoint srvRef, String endpointName) {
         this.operation = srvRef ; 
         this.endpointName = endpointName ;
     }
     
-    public Operation getOperation() {
+    public Endpoint getOperation() {
         return operation ; 
     }
 

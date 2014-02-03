@@ -20,15 +20,14 @@ package org.apache.jena.fuseki.server;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 
-
-public class Operation implements Counters {
+public class Endpoint implements Counters {
     
     public final OperationName opName ;
     public final String endpointName ;
     // Endpoint-level counters.
     private final CounterSet counters           = new CounterSet() ;
 
-    public Operation(OperationName opName, String endpointName) {
+    public Endpoint(OperationName opName, String endpointName) {
         this.opName = opName ;
         if ( opName == null )
             throw new InternalErrorException("opName is null") ;
@@ -39,21 +38,11 @@ public class Operation implements Counters {
         counters.add(CounterName.RequestsBad) ;
     }
 
-//    /** Endpoints (as absolute path URLs) */
-//    private List<String> endpoints               = new ArrayList<String>() ;
-//    private List<String> endpointsRO             = Collections.unmodifiableList(endpoints) ;
-    
     @Override
     public  CounterSet getCounters()    { return counters ; }
 
-//    /** Endpoints */
-//    public  List<String> getEndpoints() { return endpointsRO ; }
-
-//    /** Endpoints */
-//    public void addEndpoint(String endpoint) { endpoints.add(endpoint) ; }
-
     //@Override
-    public OperationName getName()      { return opName ; }
+    public OperationName getOperationName()      { return opName ; }
     
     //@Override
     public boolean isType(OperationName operationName) { 

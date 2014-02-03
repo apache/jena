@@ -58,8 +58,8 @@ public class DataService { //implements DatasetMXBean {
     private final DataServiceDesc svcDesc ;
     private DatasetGraph dataset = null ;              // Only valid if active.
 
-    private MultiMapToList<OperationName, Operation> operations     = MultiMap.createMapList() ;
-    private Map<String, Operation> endpoints                        = new HashMap<String, Operation>() ;
+    private MultiMapToList<OperationName, Endpoint> operations     = MultiMap.createMapList() ;
+    private Map<String, Endpoint> endpoints                        = new HashMap<String, Endpoint>() ;
     
     private volatile DatasetStatus state = UNINITIALIZED ;
 
@@ -82,21 +82,24 @@ public class DataService { //implements DatasetMXBean {
     }
     
     public void addEndpoint(OperationName operationName, String endpointName) {
-        Operation oper = new Operation(operationName, endpointName) ;
+        Endpoint oper = new Endpoint(operationName, endpointName) ;
         endpoints.put(endpointName, oper) ;
         operations.put(operationName, oper);
     }
     
-    public Operation getOperation(String endpointName) {
+    public Endpoint getOperation(String endpointName) {
         return endpoints.get(endpointName) ;
     }
 
-    public List<Operation> getOperation(OperationName opName) {
+    public List<Endpoint> getOperation(OperationName opName) {
         return operations.get(opName) ;
     }
 
-    public Collection<Operation> getOperations() {
-        return endpoints.values() ;
+    /** Return the OperationNames available here.
+     *  @see #getOperation(OperationName) to ge the endpoint list
+     */
+    public Collection<OperationName> getOperations() {
+        return operations.keys() ;
     }
 
     //@Override

@@ -26,7 +26,7 @@ import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
 import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Operation ;
+import org.apache.jena.fuseki.server.Endpoint ;
 import org.apache.jena.fuseki.server.OperationName ;
 import org.slf4j.Logger ;
 
@@ -132,7 +132,7 @@ public class Builder
         for ( ; rs.hasNext() ; ) {
             QuerySolution soln = rs.next() ;
             String epName = soln.getLiteral("ep").getLexicalForm() ;
-            Operation operation = new Operation(opName, epName) ;
+            Endpoint operation = new Endpoint(opName, epName) ;
             dataService.addEndpoint(opName, epName); 
             //log.info("  " + opName.name + " = " + dataAccessPoint.getName() + "/" + epName) ;
         }

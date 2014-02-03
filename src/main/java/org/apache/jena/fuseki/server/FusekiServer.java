@@ -46,10 +46,7 @@ public class FusekiServer
     public static void init(ServerInitialConfig initialSetup, String configDir) {
         FileOps.ensureDir(Fuseki.configDirName) ;
         FileOps.ensureDir(Fuseki.systemFileArea) ;
-        
         //FileOps.ensureDir(Fuseki.systemDatabaseName) ; 
-        // XXX Make relative.
-        
 
         List<DataAccessPoint> configFileDBs = findDatasets(initialSetup) ;
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir) ;
@@ -89,18 +86,29 @@ public class FusekiServer
             datasets.add(dap) ;
         } else if ( params.templateFile != null ) {
             Fuseki.configLog.info("Template file: " + params.templateFile) ;
-            DataAccessPoint dap = configFromTemplate(params.templateFile, params.datasetPath) ;
+            DataAccessPoint dap = configFromTemplate(params.templateFile, params.datasetPath, params.params) ;
             datasets.add(dap) ;
         } else
             throw new FusekiConfigException("Invalid ServerInitialConfig") ;
         return datasets ;
     }
     
-    private static DataAccessPoint configFromTemplate(String templateFile, String datasetPath) {
+    private static DataAccessPoint configFromTemplate(String templateFile, 
+                                                      String datasetPath, 
+                                                      Map<String, String> params) {
         datasetPath = DataAccessPoint.canonical(datasetPath) ;
+        
         // DRY -- ActionDatasets (and others?)
-        Map<String, String> params = new HashMap<String, String>() ;
-        params.put(Template.NAME, datasetPath) ;
+        if ( params == null ) {
+            params = new HashMap<String, String>() ;
+            params.put(Template.NAME, datasetPath) ;
+        } else {
+            if ( ! params.containsKey(Template.NAME) ) {
+                Fuseki.configLog.warn("No NAME found in template parameters (added)") ;
+                params.put(Template.NAME, datasetPath) ;   
+            }
+        }
+        
         String str = TemplateFunctions.template(templateFile, params) ;
         Lang lang = RDFLanguages.filenameToLang(str, Lang.TTL) ;
         StringReader sr =  new StringReader(str) ;
