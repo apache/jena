@@ -2,6 +2,10 @@ ChangeLog for ARQ
 =================
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
+==== Jena 2.11.2
+
++ JENA-634 : Add JSON-LD
+
 ==== Jena 2.11.1
 
 RDF 1.1 Language support (Turtle, TriG, N-Triples, N-Quads)
