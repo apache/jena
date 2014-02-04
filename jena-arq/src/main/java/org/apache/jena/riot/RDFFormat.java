@@ -25,7 +25,7 @@ public class RDFFormat {
     /** Pretty printing variant */
     public static RDFFormatVariant PRETTY         = new RDFFormatVariant("pretty") ;
     /**
-     * Print in blocks, typically all triples with teh same subject in an
+     * Print in blocks, typically all triples with the same subject in an
      * incoming triple/quad stream
      */
     public static RDFFormatVariant BLOCKS         = new RDFFormatVariant("blocks") ;

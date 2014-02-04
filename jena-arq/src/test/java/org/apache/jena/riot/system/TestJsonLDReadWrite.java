@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.jsonld;
+package org.apache.jena.riot.system;
 
 import static org.apache.jena.riot.RDFLanguages.JSONLD ;
 
