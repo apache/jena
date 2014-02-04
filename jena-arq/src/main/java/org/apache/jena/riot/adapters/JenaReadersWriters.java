@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.adapters;
 
+import static org.apache.jena.riot.RDFLanguages.JSONLD ;
+
 import com.hp.hpl.jena.n3.N3JenaWriter ;
 
 public class JenaReadersWriters
@@ -28,6 +30,7 @@ public class JenaReadersWriters
     public static class RDFReaderRIOT_RDFXML        extends RDFReaderRIOT   { public RDFReaderRIOT_RDFXML()     { super("RDF/XML") ; } }
     public static class RDFReaderRIOT_TTL           extends RDFReaderRIOT   { public RDFReaderRIOT_TTL()        { super("TTL") ; } }
     public static class RDFReaderRIOT_NT            extends RDFReaderRIOT   { public RDFReaderRIOT_NT()         { super("N-TRIPLE") ; } }
+    public static class RDFReaderRIOT_RDFJSONLD     extends RDFReaderRIOT   { public RDFReaderRIOT_RDFJSONLD()  { super(JSONLD.getName()) ; } }
     public static class RDFReaderRIOT_RDFJSON       extends RDFReaderRIOT   { public RDFReaderRIOT_RDFJSON()    { super("RDF/JSON") ; } }
     
     // Unused - we use the original RDF/XML writers directly to preserve property setting.  
@@ -42,6 +45,10 @@ public class JenaReadersWriters
     public static class RDFWriterRIOT_Turtle        extends RDFWriterRIOT   { public RDFWriterRIOT_Turtle()         { super(N3JenaWriter.turtleWriter) ; } }
     public static class RDFWriterRIOT_Turtle1       extends RDFWriterRIOT   { public RDFWriterRIOT_Turtle1()        { super(N3JenaWriter.turtleWriterAlt1) ; } }
     public static class RDFWriterRIOT_Turtle2       extends RDFWriterRIOT   { public RDFWriterRIOT_Turtle2()        { super(N3JenaWriter.turtleWriterAlt2) ; } }
+
+    public static class RDFWriterRIOT_JSONLD        extends RDFWriterRIOT   { public RDFWriterRIOT_JSONLD()         { super("JSON-LD") ; } }
+    public static class RDFWriterRIOT_JSONLDAlt     extends RDFWriterRIOT   { public RDFWriterRIOT_JSONLDAlt()      { super("JSONLD") ; } }
+    
     public static class RDFWriterRIOT_RDFJSON       extends RDFWriterRIOT   { public RDFWriterRIOT_RDFJSON()        { super("RDF/JSON") ; } }
 }
 

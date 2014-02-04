@@ -59,6 +59,9 @@ public class IO_JenaWriters
         setFormatForJenaWriter(N3JenaWriter.turtleWriter,           RDFFormat.TURTLE) ;
         setFormatForJenaWriter(N3JenaWriter.turtleWriterAlt1,       RDFFormat.TURTLE) ;
         setFormatForJenaWriter(N3JenaWriter.turtleWriterAlt2,       RDFFormat.TURTLE) ;
+
+        setFormatForJenaWriter("JSON-LD",                           RDFFormat.JSONLD) ; 
+        setFormatForJenaWriter("JSONLD",                            RDFFormat.JSONLD) ; 
         
         setFormatForJenaWriter("RDF/JSON",                          RDFFormat.RDFJSON) ;
         setFormatForJenaWriter("RDFJSON",                           RDFFormat.RDFJSON) ;
@@ -84,9 +87,12 @@ public class IO_JenaWriters
         registerForModelWrite(N3JenaWriter.turtleWriter,            RDFWriterRIOT_Turtle.class) ;
         registerForModelWrite(N3JenaWriter.turtleWriterAlt1,        RDFWriterRIOT_Turtle1.class) ;
         registerForModelWrite(N3JenaWriter.turtleWriterAlt2,        RDFWriterRIOT_Turtle2.class) ;
+
+        registerForModelWrite("JSON-LD",                            RDFWriterRIOT_JSONLD.class) ;
+        registerForModelWrite("JSONLD",                             RDFWriterRIOT_JSONLD.class) ;
         
-        registerForModelWrite("RDF/JSON",       RDFWriterRIOT_RDFJSON.class) ;
-        registerForModelWrite("RDFJSON",        RDFWriterRIOT_RDFJSON.class) ;
+        registerForModelWrite("RDF/JSON",                           RDFWriterRIOT_RDFJSON.class) ;
+        registerForModelWrite("RDFJSON",                            RDFWriterRIOT_RDFJSON.class) ;
     }
     
     public static void resetJena()
@@ -109,9 +115,11 @@ public class IO_JenaWriters
         RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.turtleWriterAlt1,        Jena.PATH + ".n3.N3TurtleJenaWriter") ;
         RDFWriterFImpl.setBaseWriterClassName(N3JenaWriter.turtleWriterAlt2,        Jena.PATH + ".n3.N3TurtleJenaWriter") ;
         
-        RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", "");
-        RDFWriterFImpl.setBaseWriterClassName("RDFJSON", "");
+        RDFWriterFImpl.setBaseWriterClassName("JSON-LD",    "");
+        RDFWriterFImpl.setBaseWriterClassName("JSON",       "");
 
+        RDFWriterFImpl.setBaseWriterClassName("RDF/JSON",   "");
+        RDFWriterFImpl.setBaseWriterClassName("RDFJSON",    "");
     }
     
     /** Register for use with Model.write  (old style compatibility) */ 

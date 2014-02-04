@@ -1,0 +1,50 @@
+[ {
+  "@id" : "_:b0",
+  "http://example/r" : [ {
+    "@value" : "4.5",
+    "@type" : "http://www.w3.org/2001/XMLSchema#decimal"
+  } ]
+}, {
+  "@id" : "_:b3"
+}, {
+  "@id" : "http://example/a"
+}, {
+  "@id" : "http://example/s",
+  "http://example/p" : [ {
+    "@value" : 2
+  }, {
+    "@value" : 1
+  } ]
+}, {
+  "@id" : "http://example/s1",
+  "http://example/b" : [ {
+    "@id" : "http://example/a"
+  } ]
+}, {
+  "@id" : "http://example/s2",
+  "http://example/b2" : [ {
+    "@id" : "_:b3"
+  } ],
+  "http://example/b" : [ {
+    "@id" : "http://example/a"
+  } ]
+}, {
+  "@id" : "http://example/s3",
+  "http://example/b1" : [ {
+    "@id" : "_:b3"
+  } ]
+}, {
+  "@id" : "http://example/x1",
+  "http://example/q" : [ {
+    "@list" : [ {
+      "@value" : "a"
+    }, {
+      "@value" : "b"
+    } ]
+  } ]
+}, {
+  "@id" : "http://example/x2",
+  "http://example/q" : [ {
+    "@id" : "_:b0"
+  } ]
+} ]

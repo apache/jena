@@ -26,6 +26,7 @@ import java.util.Locale ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.DS ;
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.MediaType ;
 
@@ -90,6 +91,7 @@ public class RDFLanguages
 
     /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
     public static Lang JSONLD = LangBuilder.create(strLangJSONLD, "application/ld+json")
+                                                .addAltNames("JSONLD")
                                                 .addFileExtensions("jsonld")
                                                 .build() ;
     
@@ -163,11 +165,24 @@ public class RDFLanguages
         register(TURTLE) ;
         register(N3) ;
         register(NTRIPLES) ;
+        register(JSONLD) ;
         register(RDFJSON) ;
-        //register(JSONLD) ; -- Done separately based on avilability of the external dependency.
         register(TRIG) ;
         register(NQUADS) ;
         register(RDFNULL) ;
+        
+        // Check for JSON-LD engine.
+        String clsName = "com.github.jsonldjava.core.JSONLD" ;
+        try {
+            Class.forName(clsName) ;
+        } catch (ClassNotFoundException ex) {
+            Log.warn(RDFLanguages.class, "java-jsonld classes not on the classpath - JSON-LD input-output not available.") ;
+            Log.warn(RDFLanguages.class, "Minimum jarfiles are jsonld-java, jackson-core, jackson-annotations") ;
+            Log.warn(RDFLanguages.class, "In a Jena distribution, pout all jars in the lib/ directory") ;
+            return ;
+        }
+        
+        
     }
 
     /** Register a language.

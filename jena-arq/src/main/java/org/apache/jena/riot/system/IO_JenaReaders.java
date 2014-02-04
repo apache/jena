@@ -30,20 +30,21 @@ public class IO_JenaReaders
     private static String streamManagerSymbolStr = riotBase+"streammanager" ; 
     public static Symbol streamManagerSymbol = Symbol.create(streamManagerSymbolStr) ; 
 
-    public static void wireIntoJena()
-    {
-      registerForModelRead("RDF",        RDFReaderRIOT_Web.class) ;                             // Default
-      registerForModelRead("RDF/XML",    JenaReadersWriters.RDFReaderRIOT_RDFXML.class) ;
-      registerForModelRead("RDF/XML-ABBREV", JenaReadersWriters.RDFReaderRIOT_RDFXML.class) ;
+    public static void wireIntoJena() {
+        registerForModelRead("RDF",             RDFReaderRIOT_Web.class) ; // Default
+        registerForModelRead("RDF/XML",         JenaReadersWriters.RDFReaderRIOT_RDFXML.class) ;
+        registerForModelRead("RDF/XML-ABBREV",  JenaReadersWriters.RDFReaderRIOT_RDFXML.class) ;
 
-      registerForModelRead("N-TRIPLES",  JenaReadersWriters.RDFReaderRIOT_NT.class) ;
-      registerForModelRead("N-Triples",  JenaReadersWriters.RDFReaderRIOT_NT.class) ;
-      registerForModelRead("N-TRIPLE",   JenaReadersWriters.RDFReaderRIOT_NT.class) ;
-      registerForModelRead("N3",         JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
-      registerForModelRead("TURTLE",     JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
-      registerForModelRead("Turtle",     JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
-      registerForModelRead("TTL",        JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
-      registerForModelRead("RDF/JSON",   JenaReadersWriters.RDFReaderRIOT_RDFJSON.class) ;
+        registerForModelRead("N-TRIPLES",       JenaReadersWriters.RDFReaderRIOT_NT.class) ;
+        registerForModelRead("N-Triples",       JenaReadersWriters.RDFReaderRIOT_NT.class) ;
+        registerForModelRead("N-TRIPLE",        JenaReadersWriters.RDFReaderRIOT_NT.class) ;
+        registerForModelRead("N3",              JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
+        registerForModelRead("TURTLE",          JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
+        registerForModelRead("Turtle",          JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
+        registerForModelRead("TTL",             JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
+        registerForModelRead("JSON-LD",         JenaReadersWriters.RDFReaderRIOT_RDFJSONLD.class) ;
+        registerForModelRead("JSONLD",          JenaReadersWriters.RDFReaderRIOT_RDFJSONLD.class) ;
+        registerForModelRead("RDF/JSON",        JenaReadersWriters.RDFReaderRIOT_RDFJSON.class) ;
     }
     
     static String jenaNTriplesReader = "com.hp.hpl.jena.rdf.model.impl.NTripleReader" ; 
@@ -51,23 +52,25 @@ public class IO_JenaReaders
     static String jenaN3Reader = jenaTurtleReader ;
     static String jenaRDFReader = "com.hp.hpl.jena.rdf.arp.JenaReader"; 
     
-    public static void resetJena()
-    {
-        RDFReaderFImpl.setBaseReaderClassName("RDF",            jenaRDFReader) ;
-        RDFReaderFImpl.setBaseReaderClassName("RDF/XML",        jenaRDFReader) ;
+    public static void resetJena() {
+        RDFReaderFImpl.setBaseReaderClassName("RDF", jenaRDFReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("RDF/XML", jenaRDFReader) ;
         RDFReaderFImpl.setBaseReaderClassName("RDF/XML-ABBREV", jenaRDFReader) ;
-        
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES",      jenaNTriplesReader) ;
-        RDFReaderFImpl.setBaseReaderClassName("N-Triples",      jenaNTriplesReader) ;
-        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",       jenaNTriplesReader) ;
-        
-        RDFReaderFImpl.setBaseReaderClassName("N3",             jenaTurtleReader) ;
-        RDFReaderFImpl.setBaseReaderClassName("TURTLE",         jenaTurtleReader) ;
-        RDFReaderFImpl.setBaseReaderClassName("Turtle",         jenaTurtleReader) ;
-        RDFReaderFImpl.setBaseReaderClassName("TTL",            jenaTurtleReader) ;
 
-        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON",       "") ;
-        RDFReaderFImpl.setBaseReaderClassName("RDFJSON",        "") ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", jenaNTriplesReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("N-Triples", jenaNTriplesReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE", jenaNTriplesReader) ;
+
+        RDFReaderFImpl.setBaseReaderClassName("N3", jenaTurtleReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("TURTLE", jenaTurtleReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("Turtle", jenaTurtleReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("TTL", jenaTurtleReader) ;
+
+        RDFReaderFImpl.setBaseReaderClassName("JSON-LD", "") ;
+        RDFReaderFImpl.setBaseReaderClassName("JSONLD", "") ;
+
+        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", "") ;
+        RDFReaderFImpl.setBaseReaderClassName("RDFJSON", "") ;
     }
     
     /** Register for use with Model.read (old style compatibility) */ 

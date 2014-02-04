@@ -1,0 +1,10 @@
+@prefix : <http://example/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+{ :s1 :p 1 .
+  :s2 :q 2 . }
+
+:G {
+    :z1 :b :a .
+    :z2 :b :a .
+}

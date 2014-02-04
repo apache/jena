@@ -27,6 +27,7 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.out.JsonLDWriter ;
 import org.apache.jena.riot.system.RiotLib ;
 
 public class RDFWriterRegistry
@@ -91,7 +92,25 @@ public class RDFWriterRegistry
                 return RiotWriter.createRDFNULL() ;
             return null ;
     }} ;
-
+    
+    
+    
+    static WriterDatasetRIOTFactory wdsJsonldfactory = new WriterDatasetRIOTFactory() {
+    //private static class WriterDatasetJSONLDFactory implements WriterDatasetRIOTFactory {
+        @Override
+        public WriterDatasetRIOT create(RDFFormat syntaxForm) {
+            return new JsonLDWriter(syntaxForm) ;
+        }
+    } ;
+    
+    static WriterGraphRIOTFactory wgJsonldfactory = new WriterGraphRIOTFactory() {
+    //private static class WriterGraphJSONLDFactory implements WriterGraphRIOTFactory {
+        @Override
+        public WriterGraphRIOT create(RDFFormat syntaxForm) {
+            return RiotLib.adapter(new JsonLDWriter(syntaxForm)) ;
+        }
+    } ;
+    
      public static void init() {}
      static { init$() ; }
      private static void init$()
@@ -101,6 +120,8 @@ public class RDFWriterRegistry
          register(Lang.N3,          RDFFormat.TURTLE) ;
          register(Lang.NTRIPLES,    RDFFormat.NTRIPLES) ;
          register(Lang.RDFXML,      RDFFormat.RDFXML) ;
+         
+         register(Lang.JSONLD,      RDFFormat.JSONLD) ;
          register(Lang.RDFJSON,     RDFFormat.RDFJSON) ;
 
          register(Lang.TRIG,        RDFFormat.TRIG) ;
@@ -114,6 +135,11 @@ public class RDFWriterRegistry
 
          register(RDFFormat.NTRIPLES,       wgfactory) ;
          register(RDFFormat.NTRIPLES_ASCII, wgfactory) ;
+         
+         register(RDFFormat.JSONLD,         wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_FLAT,    wgJsonldfactory) ;
+         register(RDFFormat.JSONLD_PRETTY,  wgJsonldfactory) ;
+         
          register(RDFFormat.RDFJSON,        wgfactory) ;
 
          register(RDFFormat.RDFXML_PRETTY,  wgfactory) ;
@@ -136,6 +162,10 @@ public class RDFWriterRegistry
          register(RDFFormat.NQUADS,         wdsfactory) ;
          register(RDFFormat.NQUADS_ASCII,   wdsfactory) ;
          register(RDFFormat.RDFNULL,        wdsfactory) ;
+         
+         register(RDFFormat.JSONLD,         wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_FLAT,    wdsJsonldfactory) ;
+         register(RDFFormat.JSONLD_PRETTY,  wdsJsonldfactory) ;
      }
     
     /** Register the serialization for graphs and it's associated factory
