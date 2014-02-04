@@ -20,6 +20,7 @@ a#server-status-light {
   display: inline-block;
   margin: 0;
   padding-left: 8px;
+  padding-top: 2px;
 }
 #server-status-light span {
   width: 24px;
@@ -57,6 +58,30 @@ a#server-status-light {
 a.navbar-brand {
   padding-top: 0;
   padding-bottom: 0;
+  font-size: 15px;
+  line-height: 1.0;
+}
+
+a.navbar-brand div {
+  display: inline-block;
+}
+
+a.navbar-brand img {
+  margin-top: -25px;
+}
+
+.navbar-right {
+  color: #777;
+  line-height: 1.0;
+}
+
+.navbar-item {
+  padding-top: 15px;
+  padding-right: 4px;
+}
+
+.navbar-nav > li > a > i {
+  color: #428bca;
 }
 
 .options-list {
