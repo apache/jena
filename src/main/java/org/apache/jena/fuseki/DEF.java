@@ -34,12 +34,14 @@ public class DEF
                                                                           contentTypeNTriples,
                                                                           contentTypeNTriplesAlt,
                                                                           contentTypeRDFXML,
+                                                                          contentTypeJSONLD,
                                                                           contentTypeRDFJSON
                                                                           ) ;
     
     public static final AcceptList quadsOffer         = AcceptList.create(contentTypeTriG,
                                                                           contentTypeTriGAlt1,
                                                                           contentTypeTriGAlt2,
+                                                                          contentTypeJSONLD,
                                                                           contentTypeNQuads,
                                                                           contentTypeNQuadsAlt1,
                                                                           contentTypeNQuadsAlt2 
