@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,41 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.jsonld;
 
-import org.apache.jena.riot.adapters.TS_RIOTAdapters ;
-import org.apache.jena.riot.jsonld.TS_JenaJsonLD ;
-import org.apache.jena.riot.lang.TS_Lang ;
-import org.apache.jena.riot.out.TS_Out ;
-import org.apache.jena.riot.process.TS_Process ;
-import org.apache.jena.riot.stream.TS_IO2 ;
-import org.apache.jena.riot.system.TS_RiotSystem ;
-import org.apache.jena.riot.web.TS_RiotWeb ;
-import org.apache.jena.riot.writer.TS_RiotWriter ;
-import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TS_Out.class
-    , TS_Lang.class
-    , TS_LangSuite.class
-    , TS_ReaderRIOT.class
-    , TS_IO2.class
-    , TS_RIOTAdapters.class
-    , TS_Process.class
-    , TS_RiotWriter.class
-    , TS_RiotSystem.class
-    , TS_RiotWeb.class
-    , TS_JenaJsonLD.class // Needs merging with other tests
+    TestJenaSystem.class        // To TestIO_Jena(Readers|Writers)
+    , TestJsonLDReadWrite.class   // To ??
 })
 
+public class TS_JenaJsonLD
+{ }
 
-public class TC_Riot
-{
-    @BeforeClass public static void beforeClass()
-    { 
-        RIOT.init() ;
-    }
-}

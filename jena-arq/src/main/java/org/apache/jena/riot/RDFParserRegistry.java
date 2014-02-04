@@ -18,7 +18,14 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.* ;
+import static org.apache.jena.riot.RDFLanguages.JSONLD ;
+import static org.apache.jena.riot.RDFLanguages.N3 ;
+import static org.apache.jena.riot.RDFLanguages.NQUADS ;
+import static org.apache.jena.riot.RDFLanguages.NTRIPLES ;
+import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
+import static org.apache.jena.riot.RDFLanguages.RDFXML ;
+import static org.apache.jena.riot.RDFLanguages.TRIG ;
+import static org.apache.jena.riot.RDFLanguages.TURTLE ;
 
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -26,7 +33,9 @@ import java.util.Map ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.DS ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.riot.lang.JsonLDReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.StreamRDF ;
 
@@ -57,6 +66,7 @@ public class RDFParserRegistry
 
     /** Generic parser factory. */
     private static ReaderRIOTFactory parserFactory = new ReaderRIOTFactoryImpl() ;
+    private static ReaderRIOTFactory parserFactoryJsonLD = new ReaderRIOTFactoryJSONLD() ;
     
     private static boolean initialized = false ;
     static { init() ; }
@@ -76,8 +86,10 @@ public class RDFParserRegistry
         registerLangTriples(NTRIPLES,   parserFactory) ;
         registerLangTriples(N3,         parserFactory) ;
         registerLangTriples(TURTLE,     parserFactory) ;
+        registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
         registerLangTriples(RDFJSON,    parserFactory) ;
         
+        registerLangQuads(JSONLD,       parserFactoryJsonLD) ;
         registerLangQuads(NQUADS,       parserFactory) ;
         registerLangQuads(TRIG,         parserFactory) ;
     }
@@ -148,7 +160,15 @@ public class RDFParserRegistry
                 }
             } ;
         }
-
+    } ;
+    
+    private static class ReaderRIOTFactoryJSONLD implements  ReaderRIOTFactory {
+        @Override
+        public ReaderRIOT create(Lang language) {
+            if ( ! Lang.JSONLD.equals(language) )
+                throw new InternalErrorException("Attempt to parse "+language+" as JSON-LD") ;
+            return new JsonLDReader() ;
+        }
     } ;
 }
 

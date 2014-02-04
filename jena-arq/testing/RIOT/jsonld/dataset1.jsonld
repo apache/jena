@@ -1,0 +1,26 @@
+[ {
+  "@id" : "http://example/G",
+  "@graph" : [ {
+    "@id" : "http://example/a"
+  }, {
+    "@id" : "http://example/z1",
+    "http://example/b" : [ {
+      "@id" : "http://example/a"
+    } ]
+  }, {
+    "@id" : "http://example/z2",
+    "http://example/b" : [ {
+      "@id" : "http://example/a"
+    } ]
+  } ]
+}, {
+  "@id" : "http://example/s1",
+  "http://example/p" : [ {
+    "@value" : 1
+  } ]
+}, {
+  "@id" : "http://example/s2",
+  "http://example/q" : [ {
+    "@value" : 2
+  } ]
+} ]
