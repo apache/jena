@@ -42,8 +42,8 @@ public class IO_JenaReaders
         registerForModelRead("TURTLE",          JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
         registerForModelRead("Turtle",          JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
         registerForModelRead("TTL",             JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
-        registerForModelRead("JSON-LD",         JenaReadersWriters.RDFReaderRIOT_RDFJSONLD.class) ;
-        registerForModelRead("JSONLD",          JenaReadersWriters.RDFReaderRIOT_RDFJSONLD.class) ;
+        registerForModelRead("JSON-LD",         JenaReadersWriters.RDFReaderRIOT_JSONLD.class) ;
+        registerForModelRead("JSONLD",          JenaReadersWriters.RDFReaderRIOT_JSONLD.class) ;
         registerForModelRead("RDF/JSON",        JenaReadersWriters.RDFReaderRIOT_RDFJSON.class) ;
     }
     

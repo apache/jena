@@ -19,7 +19,6 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.riot.adapters.TS_RIOTAdapters ;
-import org.apache.jena.riot.jsonld.TS_JenaJsonLD ;
 import org.apache.jena.riot.lang.TS_Lang ;
 import org.apache.jena.riot.out.TS_Out ;
 import org.apache.jena.riot.process.TS_Process ;
@@ -43,7 +42,6 @@ import org.junit.runners.Suite ;
     , TS_RiotWriter.class
     , TS_RiotSystem.class
     , TS_RiotWeb.class
-    , TS_JenaJsonLD.class // Needs merging with other tests
 })
 
 

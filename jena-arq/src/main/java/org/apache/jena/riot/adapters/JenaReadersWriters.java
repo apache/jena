@@ -30,7 +30,7 @@ public class JenaReadersWriters
     public static class RDFReaderRIOT_RDFXML        extends RDFReaderRIOT   { public RDFReaderRIOT_RDFXML()     { super("RDF/XML") ; } }
     public static class RDFReaderRIOT_TTL           extends RDFReaderRIOT   { public RDFReaderRIOT_TTL()        { super("TTL") ; } }
     public static class RDFReaderRIOT_NT            extends RDFReaderRIOT   { public RDFReaderRIOT_NT()         { super("N-TRIPLE") ; } }
-    public static class RDFReaderRIOT_RDFJSONLD     extends RDFReaderRIOT   { public RDFReaderRIOT_RDFJSONLD()  { super(JSONLD.getName()) ; } }
+    public static class RDFReaderRIOT_JSONLD        extends RDFReaderRIOT   { public RDFReaderRIOT_JSONLD()  { super(JSONLD.getName()) ; } }
     public static class RDFReaderRIOT_RDFJSON       extends RDFReaderRIOT   { public RDFReaderRIOT_RDFJSON()    { super("RDF/JSON") ; } }
     
     // Unused - we use the original RDF/XML writers directly to preserve property setting.  

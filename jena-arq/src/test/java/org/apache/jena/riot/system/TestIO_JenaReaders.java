@@ -27,6 +27,7 @@ import java.util.Properties ;
 import org.apache.jena.riot.IO_Jena ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_NT ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFJSON ;
+import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_JSONLD ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_RDFXML ;
 import org.apache.jena.riot.adapters.JenaReadersWriters.RDFReaderRIOT_TTL ;
 import org.apache.jena.riot.adapters.* ;
@@ -67,7 +68,10 @@ public class TestIO_JenaReaders {
         assertEquals(RDFReaderRIOT_TTL.class,       readerF.getReader("TURTLE").getClass());
         assertEquals(RDFReaderRIOT_TTL.class,       readerF.getReader("Turtle").getClass());
         assertEquals(RDFReaderRIOT_TTL.class,       readerF.getReader("TTL").getClass());
+        assertEquals(RDFReaderRIOT_JSONLD.class,    readerF.getReader("JSON-LD").getClass());
+        assertEquals(RDFReaderRIOT_JSONLD.class,    readerF.getReader("JSONLD").getClass());
         assertEquals(RDFReaderRIOT_RDFJSON.class,   readerF.getReader("RDF/JSON").getClass());
+        
     }
     
     @Test
@@ -87,6 +91,7 @@ public class TestIO_JenaReaders {
         }
         
         // And unregistered our additional langs
+        assertEquals("", readerF.getLangToClassName().get("JSON-LD"));
         assertEquals("", readerF.getLangToClassName().get("RDF/JSON"));
         IO_JenaReaders.wireIntoJena();
     }

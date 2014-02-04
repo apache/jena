@@ -206,7 +206,7 @@ public class RDFWriterRegistry
         return langToFormat.get(lang) ;
     }
 
-    /** Does the language have a registerdd output format? */
+    /** Does the language have a registered output format? */
     public static boolean contains(Lang lang)
     { 
         if ( ! langToFormat.containsKey(lang) ) return false ;

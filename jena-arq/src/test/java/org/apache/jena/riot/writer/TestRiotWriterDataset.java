@@ -43,6 +43,9 @@ public class TestRiotWriterDataset extends AbstractWriterTest
             , { RDFFormat.TRIG_PRETTY }
             , { RDFFormat.TRIG_BLOCKS }
             , { RDFFormat.TRIG_FLAT }
+            , { RDFFormat.JSONLD }
+            , { RDFFormat.JSONLD_PRETTY }
+            , { RDFFormat.JSONLD_FLAT }
             , { RDFFormat.NQUADS}
             , { RDFFormat.NQUADS_UTF8}
             , { RDFFormat.NQUADS_ASCII}

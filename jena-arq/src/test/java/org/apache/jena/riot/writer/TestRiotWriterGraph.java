@@ -50,6 +50,10 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.RDFXML }
             , { RDFFormat.RDFXML_PRETTY }
             , { RDFFormat.RDFXML_PLAIN }
+            // RDF 1.1 style -- "" and ""^^xsd:string are the same.  
+//            , { RDFFormat.JSONLD }
+//            , { RDFFormat.JSONLD_PRETTY }
+//            , { RDFFormat.JSONLD_FLAT }
             , { RDFFormat.RDFJSON }
 
             // graph in quad formats.
