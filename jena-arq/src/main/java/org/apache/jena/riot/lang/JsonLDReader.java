@@ -26,6 +26,7 @@ import java.util.Map ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.RiotException ;
@@ -38,6 +39,7 @@ import com.github.jsonldjava.core.JSONLDTripleCallback ;
 import com.github.jsonldjava.core.RDFDataset ;
 import com.github.jsonldjava.utils.JSONUtils ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -120,6 +122,8 @@ public class JsonLDReader implements ReaderRIOT
         return createNode(x) ;
     }
 
+    private static final String xsdString = XSDDatatype.XSDstring.getURI() ;
+    
     private Node createNode(Map<String, Object> map) {
         String type = (String)map.get("type") ;
         String lex = (String)map.get("value") ;
@@ -130,6 +134,10 @@ public class JsonLDReader implements ReaderRIOT
         else if ( type.equals(LITERAL) ) {
             String lang = (String)map.get("language") ;
             String datatype = (String)map.get("datatype") ;
+            if ( Lib.equal(xsdString, datatype) )
+                // In RDF 1.1, simple literals and xsd:string are the same.
+                // During migration, we prefer simple literals to xsd:strings. 
+                datatype = null ;
             if ( lang == null && datatype == null )
                 return NodeFactory.createLiteral(lex) ;
             if ( lang != null )
