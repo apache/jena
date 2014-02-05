@@ -21,12 +21,14 @@ package org.apache.jena.atlas.web.auth;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.HttpContext;
@@ -106,7 +108,17 @@ public class FormsAuthenticator extends AbstractScopedAuthenticator<FormLogin> {
                 CookieStore store = login.getCookies();
                 if (store != null)
                     client.setCookieStore(store);
-                return;
+
+                // Check if any of the cookies have expired
+                if (!store.clearExpired(Calendar.getInstance().getTime())) {
+                    // No cookies were cleared so our cookies are still fresh
+                    // and we don't need to login again
+                    return;
+                }
+
+                // If we reach here then some of our cookies have expired and we
+                // may no longer be logged in and should login again instead of
+                // proceeding with the existing cookies
             }
 
             try {
@@ -145,7 +157,8 @@ public class FormsAuthenticator extends AbstractScopedAuthenticator<FormLogin> {
     }
 
     /**
-     * Adds a login to the authenticator preserving any existing cookies associated with the login
+     * Adds a login to the authenticator preserving any existing cookies
+     * associated with the login
      * 
      * @param target
      *            Target URI
@@ -156,7 +169,7 @@ public class FormsAuthenticator extends AbstractScopedAuthenticator<FormLogin> {
         if (target == null)
             throw new IllegalArgumentException("Target URI cannot be null");
         this.logins.put(target, login);
-        
+
     }
 
     @Override
