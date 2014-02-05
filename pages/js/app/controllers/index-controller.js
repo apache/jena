@@ -5,7 +5,8 @@ define(
         Backbone = require( "backbone" ),
         _ = require( "underscore" ),
         fui = require( "fui" ),
-        qonsole = require( "lib/qonsole" );
+        qonsole = require( "lib/qonsole" ),
+        DatasetSelectionListView = require( "views/dataset-selection-list" );
 
     var IndexController = function() {
       this.initEvents();
@@ -20,19 +21,7 @@ define(
 
       /** When the fuseki server is ready, we can init the qonsole */
       onServerModelReady: function( event ) {
-        // when ready, initialise the qonsole component
-        var datasets = fui.models.fusekiServer.datasets();
-        var endpoints = {};
-        var elem = $("ul.datasets");
-
-        _.each( datasets, function( ds ) {
-          var queryURL = ds.queryURL();
-          if (queryURL) {
-            // TODO this should be moved to a template and made more interesting
-            elem.append( sprintf( "<li>%s (with services: %s)</li>\n", ds.name(), ds.serviceTypes().join(", ") ) );
-          }
-        } );
-
+        new DatasetSelectionListView( {model: fui.models.fusekiServer} ).render();
       }
 
     } );

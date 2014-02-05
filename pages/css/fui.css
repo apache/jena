@@ -94,3 +94,11 @@ a.navbar-brand img {
 .has-error .validation-warning, .has-warning .validation-warning {
   display:block;
 }
+
+.current-dataset {
+  margin-right: 20px;
+}
+
+.status-indicator {
+  padding-top: 10px;
+}

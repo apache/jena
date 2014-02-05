@@ -5,13 +5,15 @@ define(
         fui = require( "fui" ),
         datasetSelectionListTemplate = require( "plugins/text!templates/dataset-selection-list.tpl" );
 
-    var DatasetSelectionList = Backbone.Marionette.ItemView.extend( {
+    var DatasetSelectionListView = Backbone.Marionette.ItemView.extend( {
       initialize: function(){
 //        _.bindAll(this, "onFilter", "onModelChange");
         this.listenTo( this.model, "change", this.onModelChange, this );
       },
 
       template: _.template( datasetSelectionListTemplate ),
+
+      el: "#dataset-selection-list",
 
       ui: {
       },
@@ -46,6 +48,6 @@ define(
     });
 
 
-    return DatasetSelectionList;
+    return DatasetSelectionListView;
   }
 );

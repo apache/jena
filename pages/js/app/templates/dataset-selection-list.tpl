@@ -1,8 +1,23 @@
-<h2>Known datasets:</h2>
-<ul class=''>
-  <% _.each( datasets, function( ds ) { %>
-    <li>
-      <%= ds.name() %>
-    </li>
-  <% }) %>
-</ul>
+<div class="col-md-span-12">
+  <table class='table'>
+    <tr class="headings"><th>Name</th><th>Services</th><th></th></tr>
+    <% _.each( datasets, function( ds ) { %>
+      <tr>
+        <td>
+          <%= ds.name() %>
+        </td>
+        <td>
+          <% _.each( ds.serviceTypes(), function( st ) { %>
+            <span class='badge'><%= st %></span>
+          <% }) %>
+        </td>
+        <td>
+          <a class="btn btn-sm action remove btn-primary" href="query.html?ds=<%= ds.name() %>"><i class='fa fa-question-circle'></i> query</a>
+          <a class="btn btn-sm action remove btn-primary" href="explore.html?ds=<%= ds.name() %>"><i class='fa fa-globe'></i> explore</a>
+          <a class="btn btn-sm action configure btn-primary" href="admin-dataset-details.html?ds=<%= ds.name() %>"><i class='fa fa-wrench'></i> manage</a>
+        </td>
+      </tr>
+    <% }) %>
+
+  </table>
+</div>

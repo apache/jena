@@ -46,10 +46,10 @@
               <li class=""><a href="documentation.html"><i class="fa fa-info-circle"></i> help</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              <li>
+              <li class="status-indicator">
                 <div>Server<br />status:</div>
               </li>
-              <li>
+              <li class="status-indicator">
                 <a class="" href="admin/server-log.html" id="server-status-light" title="current server status">
                   <span class="server-up"></span>
                 </a>
@@ -62,28 +62,29 @@
 
     <div class="container">
       <div class="row">
-        <h1>Welcome to Fuseki</h1>
-        <p>This is Apache Jena Fuseki, version TODO<span class='host-details'></span>.</p>
-
-        <p>
-          This server hosts the following currently-active datasets:
-        </p>
-        <ul class="datasets">
-
-        </ul>
-
+        <h1>Welcome to Apache Jena Fuseki <small>version <span class='host-details'>TODO</span></small></h1>
+      </div>
+      <div class="row">
+        <h2>
+          Existing datasets:
+        </h2>
+        <div id="dataset-selection-list"></div>
+      </div>
+      <div class="row">
         <h2>Operations</h2>
         <p>Use the following pages to perform actions or tasks on this server:</p>
         <dl class="dl-horizontal">
           <dt><a href="query.html">SPARQL query form</a></dt>
           <dd>to run a SPARQL query against one of the active datasets hosted by this server</dd>
-          <dt><a href="validation.html">validation form</a></dt>
+          <dt><a href="validation.html">validate</a></dt>
           <dd>to validate SPARQL query syntax, or RDF data syntax</dd>
-          <dt><a href="documentation.html">help pages</a></dt>
-          <dd>for a cheat-sheet summary of commands, and links to online documentation</dd>
-          <dt><a href="admin/index.html">administration</a></dt>
+          <dt><a href="admin/index.html">administer</a></dt>
           <dd>to administer the datasets on this server, including adding and removing datasets,
               enabling data services, uploading data and performing backups. </dd>
+          <dt><a href="documentation.html">logs</a></dt>
+          <dd>to view server log files</dd>
+          <dt><a href="documentation.html">help</a></dt>
+          <dd>for a summary of commands, and links to online documentation</dd>
 
         </dl>
       </div>
