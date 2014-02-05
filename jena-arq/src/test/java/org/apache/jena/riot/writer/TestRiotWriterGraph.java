@@ -50,10 +50,9 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.RDFXML }
             , { RDFFormat.RDFXML_PRETTY }
             , { RDFFormat.RDFXML_PLAIN }
-            // RDF 1.1 style -- "" and ""^^xsd:string are the same.  
-//            , { RDFFormat.JSONLD }
-//            , { RDFFormat.JSONLD_PRETTY }
-//            , { RDFFormat.JSONLD_FLAT }
+            , { RDFFormat.JSONLD }
+            , { RDFFormat.JSONLD_PRETTY }
+            , { RDFFormat.JSONLD_FLAT }
             , { RDFFormat.RDFJSON }
 
             // graph in quad formats.
@@ -80,7 +79,10 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     @Test public void writer03() { test("writer-rt-03.ttl") ; }
     @Test public void writer04() { test("writer-rt-04.ttl") ; }
     @Test public void writer05() { test("writer-rt-05.ttl") ; }
-    @Test public void writer06() { test("writer-rt-06.ttl") ; }
+    @Test public void writer06() { 
+        // com.github.jsonld-java does not deal with lists with shared tails. (v0.2)
+        if ( format.getLang() != Lang.JSONLD )
+            test("writer-rt-06.ttl") ; }
     @Test public void writer07() { test("writer-rt-07.ttl") ; }
     @Test public void writer08() { test("writer-rt-08.ttl") ; }
     @Test public void writer09() { test("writer-rt-09.ttl") ; }
@@ -90,7 +92,11 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     @Test public void writer13() { test("writer-rt-13.ttl") ; }
     @Test public void writer14() { test("writer-rt-14.ttl") ; }
     @Test public void writer15() { test("writer-rt-15.ttl") ; }
-    @Test public void writer16() { test("writer-rt-16.ttl") ; }
+    @Test public void writer16() {
+        // com.github.jsonld-java does not deal with lists with shared tails. (v0.2)
+        if ( format.getLang() != Lang.JSONLD )
+            test("writer-rt-16.ttl") ;
+    }
     @Test public void writer17() { test("writer-rt-17.ttl") ; }
 
     private void test(String filename)
