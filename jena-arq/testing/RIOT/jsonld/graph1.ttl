@@ -3,7 +3,7 @@
 
 :s :p 1 , 2 .
 
-:x1 :q ("a"^^xsd:string "b"^^xsd:string) .
+:x1 :q ("a" "b") .
 
 :s1 :b :a .
 :s2 :b :a .
