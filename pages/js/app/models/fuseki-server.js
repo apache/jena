@@ -38,6 +38,11 @@ define(
         return this.get( "datasets" );
       },
 
+      /** Return the dataset with the given name */
+      dataset: function( dsName ) {
+        return _.find( this.datasets(), function( ds ) {return dsName === ds.name();} )
+      },
+
       /** Load and cache the remote server description. Trigger change event when done */
       loadServerDescription: function() {
         var self = this;
