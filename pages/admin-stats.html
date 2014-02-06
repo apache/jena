@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Apache Jena Fuseki - documentation</title>
+    <title>Apache Jena Fuseki statistics</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/font-awesome.min.css" rel="stylesheet" media="screen">
-    <link href="css/codemirror.css" rel="stylesheet" media="screen">
-    <link href="css/qonsole.css" rel="stylesheet" media="screen">
-    <link href="css/jquery.dataTables.css" rel="stylesheet" media="screen">
-    <link href="css/fui.css" rel="stylesheet" media="screen">
+    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="../css/font-awesome.min.css" rel="stylesheet" media="screen">
+    <link href="../css/codemirror.css" rel="stylesheet" media="screen">
+    <link href="../css/qonsole.css" rel="stylesheet" media="screen">
+    <link href="../css/jquery.dataTables.css" rel="stylesheet" media="screen">
+    <link href="../css/fui.css" rel="stylesheet" media="screen">
+
+    <script data-main="js/app/main.stats.js" src="js/lib/require.min.js"></script>
 
     <!--[if lt IE 9]>
       <script src="../js/lib/html5shiv.js"></script>
@@ -40,11 +42,21 @@
               <li class=""><a href="query.html"><i class="fa fa-question-circle"></i> query</a></li>
               <li class=""><a href="validate.html"><i class="fa fa-check-circle"></i> validate</a></li>
               <li class="admin"><a href="admin-data-management.html"><i class="fa fa-cogs"></i> administer</a></li>
-              <li class="admin"><a href="admin-stats.html"><i class="fa fa-dashboard"></i> stats</a></li>
+              <li class="admin active"><a href="admin-stats.html"><i class="fa fa-dashboard"></i> stats</a></li>
               <li class="admin"><a href="admin-logs.html"><i class="fa fa-book"></i> logs</a></li>
-              <li class="active"><a href="documentation.html"><i class="fa fa-info-circle"></i> help</a></li>
+              <li class=""><a href="documentation.html"><i class="fa fa-info-circle"></i> help</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+              <li>
+                <div class="dropdown navbar-item">
+                  <a data-toggle="dropdown" href="#"><i class="fa fa-chevron-circle-down"></i> dataset:</a>
+                  <ul class="dropdown-menu dataset-list" role="menu" aria-labelledby="dLabel">
+                  </ul>
+                </div>
+              </li>
+              <li>
+                <div class="current-dataset navbar-item">...</div>
+              </li>
               <li class="status-indicator">
                 <div>Server<br />status:</div>
               </li>
@@ -61,7 +73,7 @@
 
     <div class="container">
       <div class="row">
-        <h1>Fuseki &ndash; documentation</h1>
+        <h1>Statistics</h1>
       </div>
     </div>
 
