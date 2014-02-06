@@ -15,10 +15,10 @@ define(
      * This model represents the statistics available on a given named dataset
      */
     var DatasetStats = Backbone.Model.extend( {
-      initialize: function( fusekiServer, dsName ) {
+      initialize: function( fusekiServer, options ) {
         _.bindAll( this, "onLoadDone", "onLoadFail" );
-        this.set( {"ds.name": dsName,
-                   url: fusekiServer.statsURL( dsName )
+        this.set( {"ds.name": options.dsName,
+                   url: fusekiServer.statsURL( options.dsName )
                   } );
 
         this.load();
@@ -65,7 +65,7 @@ define(
               }
             }
             else {
-              row.push( "" );
+              row.push( "&ndash;" );
             }
           } );
 
@@ -107,7 +107,7 @@ define(
       },
 
       columnHeadings: function( services ) {
-        return ["Service name", "overall", "good", "bad"].concat( services );
+        return ["Service name", "overall", "overall good", "overall bad"].concat( services );
       }
     } );
 

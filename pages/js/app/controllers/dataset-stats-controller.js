@@ -22,10 +22,8 @@ define(
 
       onServerModelReady: function( event ) {
         var dsName = PageUtils.queryParam( "ds" );
-        if (dsName) {
-          fui.models.datasetStats = new DatasetStatsModel( fui.models.fusekiServer, dsName );
-          new DatasetStatsView( {model: fui.models.datasetStats} ).render();
-        }
+        fui.models.datasetStats = new DatasetStatsModel( fui.models.fusekiServer, {dsName: dsName} );
+        new DatasetStatsView( {model: fui.models.datasetStats} ).render();
       }
 
     } );

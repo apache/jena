@@ -13,7 +13,8 @@ define(
 
     /** Return the value of a query parameter, or null */
     var queryParam = function( param ) {
-      return param && queryParams()[param];
+      var p = param && queryParams()[param];
+      return p ? p : null;
     };
 
     /** Return the current query params as a map */
