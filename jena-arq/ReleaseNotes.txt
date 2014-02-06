@@ -5,6 +5,7 @@ ChangeLog for ARQ
 ==== Jena 2.11.2
 
 + JENA-634 : Add JSON-LD
++ JENA_518 : Add getter/setter for the error handler to ReaderRIOT.
 
 ==== Jena 2.11.1
 
