@@ -25,6 +25,8 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.adapters.RDFReaderRIOT ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -76,6 +78,8 @@ public class ExRIOT_5
 
     static class SSEReader implements ReaderRIOT
     {
+        private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
+        
         // This is just an example - it reads a graph in
         // http://jena.apache.org/documentation/notes/sse.html
         // format. It is not a streaming parser; it creates some triples,
@@ -101,6 +105,9 @@ public class ExRIOT_5
             for ( ; iter.hasNext() ; )
                 output.triple(iter.next()) ;
         }
+
+        @Override public ErrorHandler getErrorHandler()                     { return errorHandler ; }
+        @Override public void setErrorHandler(ErrorHandler errorHandler)    { this.errorHandler = errorHandler ; }
     }
 
     // Model.read adapter - must be public.

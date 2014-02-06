@@ -30,6 +30,8 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
@@ -48,6 +50,11 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 public class JsonLDReader implements ReaderRIOT
 {
+    private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
+
+    @Override public ErrorHandler getErrorHandler() { return errorHandler ; }
+    @Override public void setErrorHandler(ErrorHandler errorHandler) { this.errorHandler = errorHandler ; }
+    
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
         try {

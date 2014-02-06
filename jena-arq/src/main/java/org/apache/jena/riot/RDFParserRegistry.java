@@ -18,14 +18,7 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.JSONLD ;
-import static org.apache.jena.riot.RDFLanguages.N3 ;
-import static org.apache.jena.riot.RDFLanguages.NQUADS ;
-import static org.apache.jena.riot.RDFLanguages.NTRIPLES ;
-import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
-import static org.apache.jena.riot.RDFLanguages.RDFXML ;
-import static org.apache.jena.riot.RDFLanguages.TRIG ;
-import static org.apache.jena.riot.RDFLanguages.TURTLE ;
+import static org.apache.jena.riot.RDFLanguages.* ;
 
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -37,6 +30,8 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.JsonLDReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -153,22 +148,29 @@ public class RDFParserRegistry
     private static class ReaderRIOTLang implements ReaderRIOT
     {
         private final Lang lang ;
+        private ErrorHandler errorHandler ; 
 
         ReaderRIOTLang(Lang lang) {
             this.lang = lang ;
+            errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
         }
 
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
+            parser.getProfile().setHandler(errorHandler) ;
             parser.parse() ;
         }
 
         @Override
         public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
+            parser.getProfile().setHandler(errorHandler) ; 
             parser.parse() ;
         }
+
+        @Override public ErrorHandler getErrorHandler()                     { return errorHandler ; }
+        @Override public void setErrorHandler(ErrorHandler errorHandler)    { this.errorHandler = errorHandler ; }
     }
 
     private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory
