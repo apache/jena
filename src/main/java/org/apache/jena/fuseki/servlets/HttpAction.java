@@ -54,7 +54,7 @@ public class HttpAction
     // -- Valid only for operational actions (e.g. SPARQL).
     
     public  String          endpointName    = null ;        // Endpoint name srv was found under 
-    public  Endpoint       operation       = null ;
+    public  Endpoint        endpoint        = null ;
     private Transactional   transactional   = null ;
     private boolean         isTransactional = false ;
     private DatasetGraph    activeDSG       = null ;        // Set when inside begin/end.
@@ -144,13 +144,13 @@ public class HttpAction
         return dsg ;
     }
         
-    public void setOperation(Endpoint srvRef, String endpointName) {
-        this.operation = srvRef ; 
+    public void setEndpoint(Endpoint srvRef, String endpointName) {
+        this.endpoint = srvRef ; 
         this.endpointName = endpointName ;
     }
     
-    public Endpoint getOperation() {
-        return operation ; 
+    public Endpoint getEndpoint() {
+        return endpoint ; 
     }
 
     /**
@@ -262,7 +262,7 @@ public class HttpAction
         this.dsg = null ;
         this.dataService = null ;
         this.activeDSG = null ;
-        this.operation = null ;
+        this.endpoint = null ;
     }
 
     public void setStartTime() {

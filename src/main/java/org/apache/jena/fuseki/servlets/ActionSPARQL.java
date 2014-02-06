@@ -72,7 +72,7 @@ public abstract class ActionSPARQL extends ActionBase
         String operationName = ActionLib.mapRequestToOperation(dataAccessPoint, uri, datasetUri) ;
         action.setRequest(dataAccessPoint, dSrv) ;
         Endpoint op = dSrv.getOperation(operationName) ;
-        action.setOperation(op, operationName) ;
+        action.setEndpoint(op, operationName);
         executeAction(action) ;
     }
 
@@ -87,7 +87,7 @@ public abstract class ActionSPARQL extends ActionBase
         startRequest(action) ;
         // And also HTTP counter
         CounterSet csService = action.getDataService().getCounters() ;
-        CounterSet csOperation = action.getDataService().getCounters() ;
+        CounterSet csOperation = action.getEndpoint().getCounters() ;
         
         incCounter(csService, Requests) ;
         incCounter(csOperation, Requests) ;
@@ -98,7 +98,7 @@ public abstract class ActionSPARQL extends ActionBase
                 validate(action) ;
             } catch (ActionErrorException ex) {
                 incCounter(csOperation, RequestsBad) ;
-                incCounter(csService,RequestsBad) ;
+                incCounter(csService, RequestsBad) ;
                 throw ex ;
             }
 

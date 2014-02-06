@@ -84,7 +84,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action, OperationName.GSP) ; }
 
         private boolean isEnabled(HttpAction action, OperationName opName)
-        {  Endpoint operation = action.getOperation() ;
+        {  Endpoint operation = action.getEndpoint() ;
         
             return operation != null &&
                 operation.getOperationName() == opName &&
@@ -262,7 +262,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
     private void doGraphStoreProtocol(HttpAction action)
     {
         // The GSP servlets handle direct and indirect naming. 
-        Endpoint operation = action.getOperation() ;
+        Endpoint operation = action.getEndpoint() ;
         String method = action.request.getMethod() ;
         
         if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) ||
@@ -321,7 +321,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
      * @param opName */
     private boolean serviceDispatch(HttpAction action, OperationName opName , ActionSPARQL servlet)
     {
-        Endpoint operation = action.getOperation() ;
+        Endpoint operation = action.getEndpoint() ;
         if ( ! operation.isType(opName) ) 
             return false ;
         servlet.executeLifecycle(action) ;

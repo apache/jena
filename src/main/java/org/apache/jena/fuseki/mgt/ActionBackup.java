@@ -85,7 +85,7 @@ public class ActionBackup extends ActionCtl
         DataAccessPoint dataAccessPoint = DataAccessPointRegistry.get().get(dataset) ;
         DataService dSrv = dataAccessPoint.getDataService() ;
         action.setControlRequest(dataAccessPoint, dataset) ;
-        action.setOperation(null, null) ;       // No operation or service name.
+        action.setEndpoint(null, null) ;       // No operation or service name.
         scheduleBackup(action) ;
         ServletOps.success(action) ;
     }

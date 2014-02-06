@@ -74,79 +74,81 @@ public abstract class ActionREST extends ActionSPARQL
 
     // Counter wrappers
     
+    // XXX Out of date - we now add HTTP counters to all endpoints. 
+    
     private final void doGet$(HttpAction action) {
-        incCounter(action.getOperation(), CounterName.HTTPget) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPget) ;
         try {
             doGet(action) ;
-            incCounter(action.getOperation(), CounterName.HTTPgetGood) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPgetGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.getOperation(), CounterName.HTTPGetBad) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPGetBad) ;
             throw ex ;
         }
     }
 
     private final void doHead$(HttpAction action) {
-        incCounter(action.getOperation(), CounterName.HTTPhead) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPhead) ;
         try {
             doHead(action) ;
-            incCounter(action.getOperation(), CounterName.HTTPheadGood) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPheadGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.getOperation(), CounterName.HTTPheadBad) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPheadBad) ;
             throw ex ;
         }
     }
 
     private final void doPost$(HttpAction action) {
-        incCounter(action.getOperation(), CounterName.HTTPpost) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPpost) ;
         try {
             doPost(action) ;
-            incCounter(action.getOperation(), CounterName.HTTPpostGood) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPpostGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.getOperation(), CounterName.HTTPpostBad) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPpostBad) ;
             throw ex ;
         }
     }
 
     private final void doPatch$(HttpAction action) {
-        incCounter(action.getOperation(), CounterName.HTTPpatch) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPpatch) ;
         try {
             doPatch(action) ;
-            incCounter(action.getOperation(), CounterName.HTTPpatchGood) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPpatchGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.getOperation(), CounterName.HTTPpatchBad) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPpatchBad) ;
             throw ex ;
         }
     }
 
     private final void doDelete$(HttpAction action) {
-        incCounter(action.getOperation(), CounterName.HTTPdelete) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPdelete) ;
         try {
             doDelete(action) ;
-            incCounter(action.getOperation(), CounterName.HTTPdeleteGood) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPdeleteGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.getOperation(), CounterName.HTTPdeleteBad) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPdeleteBad) ;
             throw ex ;
         }
     }
 
     private final void doPut$(HttpAction action) {
-        incCounter(action.getOperation(), CounterName.HTTPput) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPput) ;
         try {
             doPut(action) ;
-            incCounter(action.getOperation(), CounterName.HTTPputGood) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPputGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.getOperation(), CounterName.HTTPputBad) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPputBad) ;
             throw ex ;
         }
     }
 
     private final void doOptions$(HttpAction action) {
-        incCounter(action.getOperation(), CounterName.HTTPoptions) ;
+        incCounter(action.getEndpoint(), CounterName.HTTPoptions) ;
         try {
             doOptions(action) ;
-            incCounter(action.getOperation(), CounterName.HTTPoptionsGood) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPoptionsGood) ;
         } catch ( ActionErrorException ex) {
-            incCounter(action.getOperation(), CounterName.HTTPoptionsBad) ;
+            incCounter(action.getEndpoint(), CounterName.HTTPoptionsBad) ;
             throw ex ;
         }
     }

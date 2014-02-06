@@ -19,10 +19,23 @@
 package org.apache.jena.fuseki.servlets ;
 
 import static java.lang.String.format ;
-import static org.apache.jena.riot.web.HttpNames.* ;
 import static org.apache.jena.fuseki.server.CounterName.QueryExecErrors ;
 import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts ;
-import static org.apache.jena.fuseki.server.CounterName.RequestsBad ;
+import static org.apache.jena.riot.WebContent.ctHTMLForm ;
+import static org.apache.jena.riot.WebContent.ctSPARQLQuery ;
+import static org.apache.jena.riot.WebContent.isHtmlForm ;
+import static org.apache.jena.riot.WebContent.matchContentType ;
+import static org.apache.jena.riot.web.HttpNames.paramAccept ;
+import static org.apache.jena.riot.web.HttpNames.paramCallback ;
+import static org.apache.jena.riot.web.HttpNames.paramDefaultGraphURI ;
+import static org.apache.jena.riot.web.HttpNames.paramForceAccept ;
+import static org.apache.jena.riot.web.HttpNames.paramNamedGraphURI ;
+import static org.apache.jena.riot.web.HttpNames.paramOutput1 ;
+import static org.apache.jena.riot.web.HttpNames.paramOutput2 ;
+import static org.apache.jena.riot.web.HttpNames.paramQuery ;
+import static org.apache.jena.riot.web.HttpNames.paramQueryRef ;
+import static org.apache.jena.riot.web.HttpNames.paramStyleSheet ;
+import static org.apache.jena.riot.web.HttpNames.paramTimeout ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -37,7 +50,6 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.riot.web.HttpNames ;
-import static org.apache.jena.riot.WebContent.* ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
 
@@ -206,10 +218,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol {
             queryStringLog = formatForLog(query) ;
             validateQuery(action, query) ;
         } catch (ActionErrorException ex) {
-            incCounter(action.getOperation().getCounters(), RequestsBad) ;
             throw ex ;
         } catch (QueryParseException ex) {
-            incCounter(action.getOperation().getCounters(), RequestsBad) ;
             ServletOps.errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
         }
         // Should not happen.
@@ -229,11 +239,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol {
             sendResults(action, result, query.getPrologue()) ;
         } catch (QueryCancelledException ex) {
             // Additional counter information.
-            incCounter(action.getOperation().getCounters(), QueryTimeouts) ;
+            incCounter(action.getEndpoint().getCounters(), QueryTimeouts) ;
             throw ex ;
         } catch (QueryExecException ex) {
             // Additional counter information.
-            incCounter(action.getOperation().getCounters(), QueryExecErrors) ;
+            incCounter(action.getEndpoint().getCounters(), QueryExecErrors) ;
             throw ex ;
         } finally {
             if ( qExec != null )
