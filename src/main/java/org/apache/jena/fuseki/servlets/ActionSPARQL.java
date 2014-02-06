@@ -27,9 +27,9 @@ import java.io.InputStream ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
@@ -162,13 +162,14 @@ public abstract class ActionSPARQL extends ActionBase
     }
 
     public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
-            // Need to adjust the error handler.
-    //        try { RDFDataMgr.parse(dest, input, base, lang) ; }
-    //        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
-            LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
-            ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(action.log); 
-            parser.getProfile().setHandler(errorHandler) ;
-            try { parser.parse() ; } 
-            catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()) ; }
-        }
+        try {
+            ReaderRIOT r = RDFDataMgr.createReader(lang) ;
+            if ( r == null )
+                ServletOps.errorBadRequest("No parser for language '"+lang.getName()+"'") ;
+            ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(action.log);
+            r.setErrorHandler(errorHandler); 
+            r.read(input, base, null, dest, null) ; 
+        } 
+        catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()) ; }
+    }
 }

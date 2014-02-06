@@ -44,14 +44,11 @@ import org.apache.jena.fuseki.build.Builder ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.build.TemplateFunctions ;
 import org.apache.jena.fuseki.server.* ;
-import org.apache.jena.fuseki.servlets.ActionLib ;
-import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.fuseki.servlets.Upload ;
-import org.apache.jena.riot.* ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.fuseki.servlets.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.web.HttpSC ;
@@ -70,7 +67,6 @@ import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 public class ActionDatasets extends ActionCtl {
     
@@ -438,20 +434,6 @@ public class ActionDatasets extends ActionCtl {
 //                                ct.getCharset(), lang.getName())) ;
 //        }
         dest.prefix("root", base+"#");
-        parse(action, dest, input, lang, base) ;
-         
-    }
-
-    // See SPARQL_REST for common code.
-    public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
-        // Need to adjust the error handler.
-//        try { RDFDataMgr.parse(dest, input, base, lang) ; }
-//        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
-        LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
-        ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(action.log) ;
-        parser.getProfile().setHandler(errorHandler) ;
-        try { parser.parse() ; } 
-        catch (RiotException ex) { ServletOps.errorBadRequest("Parse error: "+ex.getMessage()) ; }
+        ActionSPARQL.parse(action, dest, input, lang, base) ;
     }
 }
-
