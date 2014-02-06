@@ -75,12 +75,7 @@ public class ActionStats extends ActionCtl
         action.log.info(format("[%d] GET stats all", action.id)) ;
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("top") ;
-
-        builder.key("server") ;
-        builder.startObject("server") ;
-        builder.key("host").value(action.request.getLocalName()+":"+action.request.getLocalPort()) ;
-        builder.finishObject("server") ;
-
+        
         builder.key("datasets") ;
         builder.startObject("datasets") ;
         for ( String ds : DataAccessPointRegistry.get().keys() )
@@ -107,39 +102,6 @@ public class ActionStats extends ActionCtl
         return builder.build() ;
     }
 
-//    private void statsDataset(JsonBuilder builder, String ds) {
-//        // Object started
-//        builder.key(ds) ;
-//        
-//        DataAccessPoint access = DataAccessPointRegistry.get().get(ds) ;
-//        DataService dSrv = access.getDataService() ;
-//        builder.startObject("counters") ;
-//        
-//        builder.key(CounterName.Requests.name()).value(dSrv.getCounters().value(CounterName.Requests)) ;
-//        builder.key(CounterName.RequestsGood.name()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
-//        builder.key(CounterName.RequestsBad.name()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
-//
-//        
-//        builder.key("services").startObject("services") ;
-//        for ( Operation operation : dSrv.getOperations() ) {
-//            builder.key(operation.getEndpoint()).startObject("service") ;
-//            statsService(builder, operation) ;
-//            
-//            builder.key("endpoints") ;
-//            // SHARE WITH ActionDataset.
-//            builder.startArray() ;
-//            builder.value(operation.endpointName) ;
-////            for ( String ep : operation.endpoints)
-////                builder.value(ep) ;
-//            builder.finishArray() ;
-//            
-//            builder.finishObject("service") ;
-//        }
-//        builder.finishObject("services") ;
-//        builder.finishObject("counters") ;
-//
-//    }
-    
     private void statsDataset(JsonBuilder builder, String ds) {
         // Object started
         builder.key(ds) ;
@@ -239,12 +201,9 @@ public class ActionStats extends ActionCtl
     }
     
     private long gspValue(DataService dSrv, CounterName cn) {
-        // XXX Check
         return  counter(dSrv, OperationName.GSP, cn) +
                 counter(dSrv, OperationName.GSP_R, cn) ;
     }
-    
-    
 }
 
 
