@@ -33,6 +33,11 @@ define(
         return this._managementURL;
       },
 
+      /** Return the URL for getting the stats for a named dataset */
+      statsURL: function( dsName ) {
+        return sprintf( "%s/$/stats%s", this.managementURL(), dsName ? dsName : "" );
+      },
+
       /** Return the list of datasets that this server knows about. Each dataset will be a Dataset model object */
       datasets: function() {
         return this.get( "datasets" );

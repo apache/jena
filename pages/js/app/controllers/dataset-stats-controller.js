@@ -5,7 +5,9 @@ define(
         Backbone = require( "backbone" ),
         _ = require( "underscore" ),
         fui = require( "fui" ),
-        DatasetStatsView = require( "views/dataset-stats" );
+        DatasetStatsView = require( "views/dataset-stats" ),
+        DatasetStatsModel = require( "models/dataset-stats" ),
+        PageUtils = require( "util/page-utils" );
 
     var DatasetStatsController = function() {
       this.initEvents();
@@ -18,23 +20,12 @@ define(
         fui.vent.on( "models.fuseki-server.ready", this.onServerModelReady );
       },
 
-      /** When the fuseki server is ready, we can list the initial datasets */
       onServerModelReady: function( event ) {
-        new DatasetStatsView( {model: this.assembleViewModel( fui )} ).render();
-      },
-
-      /** Assemble a model which we can pass to the dataset details view to render */
-      assembleViewModel: function( fui ) {
-        var viewModel = {};
-
-        viewModel.fusekiServer = fui.models.fusekiServer;
-
-        return viewModel;
-      },
-
-      getDatasetId: function() {
-        var dsId = $.trim( location.hash );
-        return (dsId == "") ? null : dsId.substr(1).replace( "/", "" );
+        var dsName = PageUtils.queryParam( "ds" );
+        if (dsName) {
+          fui.models.datasetStats = new DatasetStatsModel( fui.models.fusekiServer, dsName );
+          new DatasetStatsView( {model: fui.models.datasetStats} ).render();
+        }
       }
 
     } );

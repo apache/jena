@@ -14,7 +14,7 @@ define(
       ui: {
       },
 
-      el: "#dataset-stats",
+      el: "#stats",
 
       events: {
 //        "click a.action.commit.simple": "onCommitSimple",
@@ -24,8 +24,12 @@ define(
       templateHelpers: {
       },
 
-      serializeData: function() {
-        return this.model;
+      modelEvents: {
+        'change': "modelChanged"
+      },
+
+      modelChanged: function() {
+          this.render();
       }
 
       // event handlers

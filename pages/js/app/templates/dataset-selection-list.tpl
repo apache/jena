@@ -14,7 +14,7 @@
         <td>
           <a class="btn btn-sm action remove btn-primary" href="query.html?ds=<%= ds.name() %>"><i class='fa fa-question-circle'></i> query</a>
           <a class="btn btn-sm action remove btn-primary" href="explore.html?ds=<%= ds.name() %>"><i class='fa fa-globe'></i> explore</a>
-          <a class="btn btn-sm action configure btn-primary" href="admin-dataset-details.html?ds=<%= ds.name() %>"><i class='fa fa-wrench'></i> manage</a>
+          <a class="btn btn-sm action configure btn-primary" href="admin-stats.html?ds=<%= ds.name() %>"><i class='fa fa-dashboard'></i> stats</a>
         </td>
       </tr>
     <% }) %>

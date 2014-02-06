@@ -4,7 +4,7 @@ define( ['require', '../common-config'],
     require(
       ['underscore', 'jquery', 'backbone', 'marionette', 'fui', 'controllers/dataset-stats-controller',
        'sprintf', 'bootstrap',
-       'models/fuseki-server', 'models/dataset',
+       'models/fuseki-server', 'models/dataset-stats',
        'views/dataset-stats',
        'services/ping-service',
        'lib/jquery.xdomainrequest',
