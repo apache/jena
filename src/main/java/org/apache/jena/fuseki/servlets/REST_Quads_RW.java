@@ -124,35 +124,4 @@ public class REST_Quads_RW extends REST_Quads_R {
         }
 
     }
-
-//    static int counter = 0 ;
-//
-//    protected void doPostTriplesGSP(HttpAction action, Lang lang) {
-//        // Old code.
-//        // Assumes transactional.
-//        action.beginWrite() ;
-//        try {
-//            DatasetGraph dsg = action.getActiveDSG() ;
-//            // log.info(format("[%d] ** Content-length: %d", action.id,
-//            // action.request.getContentLength())) ;
-//
-//            String name = action.request.getRequestURL().toString() ;
-//            if ( !name.endsWith("/") )
-//                name = name + "/" ;
-//            name = name + (++counter) ;
-//            Node gn = NodeFactory.createURI(name) ;
-//            Graph g = dsg.getGraph(gn) ;
-//            StreamRDF dest = StreamRDFLib.graph(g) ;
-//            LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name, dest) ;
-//            parser.parse() ;
-//            action.log.info(format("[%d] Location: %s", action.id, name)) ;
-//            action.response.setHeader("Location", name) ;
-//            action.commit() ;
-//            ServletOps.successCreated(action) ;
-//        } catch (IOException ex) {
-//            action.abort() ;
-//        } finally {
-//            action.endWrite() ;
-//        }
-//    }
 }
