@@ -145,28 +145,38 @@ public class RDFParserRegistry
     private static class ReaderRIOTFactoryImpl implements ReaderRIOTFactory
     {
         @Override
-        public ReaderRIOT create(final Lang lang)
-        {
-            return new ReaderRIOT() {
-                @Override
-                public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-                    LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
-                    parser.parse() ;
-                }
-                @Override
-                public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-                    LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
-                    parser.parse() ;
-                }
-            } ;
+        public ReaderRIOT create(Lang lang) {
+            return new ReaderRIOTLang(lang) ;
         }
     } ;
-    
-    private static class ReaderRIOTFactoryJSONLD implements  ReaderRIOTFactory {
+
+    private static class ReaderRIOTLang implements ReaderRIOT
+    {
+        private final Lang lang ;
+
+        ReaderRIOTLang(Lang lang) {
+            this.lang = lang ;
+        }
+
+        @Override
+        public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
+            parser.parse() ;
+        }
+
+        @Override
+        public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
+            parser.parse() ;
+        }
+    }
+
+    private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory
+    {
         @Override
         public ReaderRIOT create(Lang language) {
-            if ( ! Lang.JSONLD.equals(language) )
-                throw new InternalErrorException("Attempt to parse "+language+" as JSON-LD") ;
+            if ( !Lang.JSONLD.equals(language) )
+                throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD") ;
             return new JsonLDReader() ;
         }
     } ;
