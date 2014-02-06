@@ -27,6 +27,8 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import com.hp.hpl.jena.sparql.util.Utils ;
+
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
@@ -75,10 +77,16 @@ public class ActionDescription extends ActionCtl
     }
 
     private void describeServer(JsonBuilder builder) {
+        String versionStr = Fuseki.VERSION ;
+        String builtDateStr = Fuseki.BUILD_DATE ;
+        if ( versionStr == null )
+            versionStr = "Development" ;
+        if ( builtDateStr == null )
+            builtDateStr = "Unknown" ;
+            
         builder
             .key("server")
             .startObject()
-            //.key("hostname").value(req.getLocalName())
             .key("port").value(SPARQLServer.instance.getServerPort())
             .finishObject() ;
         builder
@@ -88,9 +96,10 @@ public class ActionDescription extends ActionCtl
             .key("port").value(SPARQLServer.instance.getMgtPort())
             .finishObject() ;
         builder
-            .key("version").value(Fuseki.VERSION) ;
+            .key("version").value(versionStr)
+            .key("built").value(builtDateStr) ;
     }
-    
+
     private void describeDataset(JsonBuilder builder) {
         builder.key("datasets") ;
         JsonDescription.arrayDatasets(builder, DataAccessPointRegistry.get());
