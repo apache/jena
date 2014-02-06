@@ -872,9 +872,25 @@ public class RDFDataMgr
         reader.read(in, baseUri, ct, destination, context) ;
     }
 
+    /** 
+     * @see RDFLanguages#shortnameToLang  to go from Jena short name to {@linkplain Lang}
+     * @see RDFLanguages#contentTypeToLang to go from content type to {@linkplain Lang}
+     */
+
+    public static ReaderRIOT createReader(Lang lang) {
+        if ( lang == null )
+            throw new NullPointerException("Argument lang can not be null in RDFDataMgr.createReader") ;   
+        ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang) ;
+        if ( r == null )
+            return null ;
+        return r.create(lang) ;
+    }
+    
     private static ReaderRIOT getReader(ContentType ct)
     {
         Lang lang = RDFLanguages.contentTypeToLang(ct) ;
+        if ( lang == null )
+            return null ;
         ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang) ;
         if ( r == null )
             return null ;

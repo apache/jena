@@ -32,9 +32,9 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.CounterName ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
@@ -292,12 +292,13 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     // @@ Move to SPARQL_ServletBase
     // Check for all RiotReader
     public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
-        // Need to adjust the error handler.
-//        try { RDFDataMgr.parse(dest, input, base, lang) ; }
-//        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
-        LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
-        parser.getProfile().setHandler(errorHandler) ;
-        try { parser.parse() ; } 
+        try {
+            ReaderRIOT r = RDFDataMgr.createReader(lang) ;
+            if ( r == null )
+                errorBadRequest("No parser for language '"+lang.getName()+"'") ;
+            r.setErrorHandler(errorHandler); 
+            r.read(input, base, null, dest, null) ; 
+        } 
         catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
     }
 
