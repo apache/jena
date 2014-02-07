@@ -54,9 +54,9 @@
     <ver.slf4j>1.6.4</ver.slf4j>
     <ver.log4j>1.2.16</ver.log4j>
     <ver.junit>4.11</ver.junit>
-    <ver.jsonldjava>0.2</ver.jsonldjava>
     <ver.xerces>2.11.0</ver.xerces>
     <ver.httpclient>4.2.3</ver.httpclient>
+    <ver.jsonldjava>0.3</ver.jsonldjava>
 
     <jdk.version>1.6</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->

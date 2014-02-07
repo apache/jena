@@ -172,7 +172,7 @@ public class RDFLanguages
         register(RDFNULL) ;
         
         // Check for JSON-LD engine.
-        String clsName = "com.github.jsonldjava.core.JSONLD" ;
+        String clsName = "com.github.jsonldjava.core.JsonLdProcessor" ;
         try {
             Class.forName(clsName) ;
         } catch (ClassNotFoundException ex) {

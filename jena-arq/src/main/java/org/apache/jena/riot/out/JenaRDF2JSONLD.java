@@ -24,7 +24,7 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
-import com.github.jsonldjava.core.JSONLDProcessingError ;
+import com.github.jsonldjava.core.JsonLdError ;
 import com.github.jsonldjava.core.RDFDataset ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -36,7 +36,7 @@ class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
     NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
 
     @Override
-    public RDFDataset parse(Object object) throws JSONLDProcessingError {
+    public RDFDataset parse(Object object) throws JsonLdError {
         RDFDataset result = new RDFDataset() ;
         if ( object instanceof DatasetGraph )
         {

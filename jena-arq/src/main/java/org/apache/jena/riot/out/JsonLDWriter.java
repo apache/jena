@@ -38,9 +38,9 @@ import org.apache.jena.riot.writer.WriterDatasetRIOTBase ;
 
 import com.fasterxml.jackson.core.JsonGenerationException ;
 import com.fasterxml.jackson.databind.JsonMappingException ;
-import com.github.jsonldjava.core.JSONLD ;
-import com.github.jsonldjava.core.JSONLDProcessingError ;
-import com.github.jsonldjava.core.Options ;
+import com.github.jsonldjava.core.JsonLdError ;
+import com.github.jsonldjava.core.JsonLdOptions ;
+import com.github.jsonldjava.core.JsonLdProcessor ;
 import com.github.jsonldjava.utils.JSONUtils ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -84,31 +84,23 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         addPrefixes(ctx, prefixMap) ;
 
         try {
-            Object obj = JSONLD.fromRDF(dataset, new JenaRDF2JSONLD()) ;
-            Options opts = new Options() ;
-            opts.graph = false ;
-            opts.addBlankNodeIDs = false ;
-            opts.useRdfType = false ;
-            opts.useNativeTypes = false ;
-            opts.skipExpansion = false ;
-            opts.compactArrays = true ;
-            opts.keepFreeFloatingNodes = false ;
+            Object obj = JsonLdProcessor.fromRDF(dataset, new JenaRDF2JSONLD()) ;
+            JsonLdOptions opts = new JsonLdOptions(baseURI);
+            opts.setUseRdfType(true);
+            opts.setUseNativeTypes(true);
+            opts.setCompactArrays(true);
             Map<String, Object> localCtx = new HashMap<String, Object>() ;
             localCtx.put("@context", ctx) ;
 
-            // AT A MINIMUM
-            if ( false )
-                obj = JSONLD.simplify(obj, opts) ;
-            else
-                // Unclear as to the way to set better printing.
-                obj = JSONLD.compact(obj, localCtx) ;
+            // Unclear as to the way to set better printing.
+            obj = JsonLdProcessor.compact(obj, localCtx, opts) ;
 
             if ( isPretty() )
                 JSONUtils.writePrettyPrint(writer, obj) ;
             else
                 JSONUtils.write(writer, obj) ;
         }
-        catch (JSONLDProcessingError e) {
+        catch (JsonLdError e) {
             throw new RiotException(e) ;
         }
         catch (JsonGenerationException e) {
