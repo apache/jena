@@ -35,10 +35,7 @@ import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
-import com.github.jsonldjava.core.JSONLD ;
-import com.github.jsonldjava.core.JSONLDProcessingError ;
-import com.github.jsonldjava.core.JSONLDTripleCallback ;
-import com.github.jsonldjava.core.RDFDataset ;
+import com.github.jsonldjava.core.* ;
 import com.github.jsonldjava.utils.JSONUtils ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -110,9 +107,12 @@ public class JsonLDReader implements ReaderRIOT
                     return null ;
                 }
             } ;
-            JSONLD.toRDF(jsonObject, callback) ;
+            JsonLdOptions options = new JsonLdOptions(baseURI);
+            options.useNamespaces = true;
+            JsonLdProcessor.toRDF(jsonObject, callback) ;
         }
-        catch (JSONLDProcessingError e) {
+        catch (JsonLdError e) {
+            errorHandler.error(e.getMessage(), -1, -1); 
             throw new RiotException(e) ;
         }
     }
