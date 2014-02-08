@@ -18,12 +18,7 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.* ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -33,11 +28,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterTriplePattern ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
+import com.hp.hpl.jena.sparql.engine.iterator.* ;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple ;
 import com.hp.hpl.jena.sparql.util.IterLib ;
 import com.hp.hpl.jena.sparql.util.graph.GraphContainerUtils ;
@@ -70,8 +61,9 @@ public class container extends PFuncSimple
     private QueryIterator execEvaluatedConcrete(Binding binding, Node containerNode, Node predicate, Node member,
                                                 ExecutionContext execCxt)
     {
+        QueryIterator input = QueryIterSingleton.create(binding, execCxt) ;
         Graph graph = execCxt.getActiveGraph() ;
-        QueryIterator qIter = new QueryIterTriplePattern(QueryIterRoot.create(execCxt), new Triple(containerNode, predicate, member), execCxt) ;
+        QueryIterator qIter = new QueryIterTriplePattern(input, new Triple(containerNode, predicate, member), execCxt) ;
         return qIter ;
     }
 
