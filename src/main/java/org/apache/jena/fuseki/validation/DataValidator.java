@@ -103,7 +103,7 @@ public class DataValidator extends ValidatorBaseJson {
     // Error handler that records messages
     private static class ErrorHandlerMsg implements ErrorHandler
     {
-        private List<String> messages = new ArrayList<String>() ;
+        private List<String> messages = new ArrayList<>() ;
 
         ErrorHandlerMsg(List<String> messages) { this.messages = messages; }
         

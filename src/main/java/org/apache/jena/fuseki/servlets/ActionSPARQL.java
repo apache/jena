@@ -71,6 +71,9 @@ public abstract class ActionSPARQL extends ActionBase
         String uri = action.request.getRequestURI() ;
         String operationName = ActionLib.mapRequestToOperation(dataAccessPoint, uri, datasetUri) ;
         action.setRequest(dataAccessPoint, dSrv) ;
+        
+        //operationName = ""
+        
         Endpoint op = dSrv.getOperation(operationName) ;
         action.setEndpoint(op, operationName);
         executeAction(action) ;

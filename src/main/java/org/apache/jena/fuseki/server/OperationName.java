@@ -25,7 +25,8 @@ public enum OperationName {
     Update("update"),
     Upload("upload"),
     GSP("graph store protocol"),
-    GSP_R("graph store protocol (Read)")
+    GSP_R("graph store protocol (Read)"),
+    Quads("Quads")
     ;
     
     public final String name ;

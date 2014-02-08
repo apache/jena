@@ -82,7 +82,10 @@ public class Builder
         addServiceEP(dataService, OperationName.GSP_R,  svc,    "fu:serviceReadGraphStore") ;
         addServiceEP(dataService, OperationName.GSP,    svc,    "fu:serviceReadWriteGraphStore") ;
         
-        
+        if ( ! dataService.getOperation(OperationName.GSP).isEmpty() )
+            dataService.addEndpoint(OperationName.Quads, "") ;
+        else if ( ! dataService.getOperation(OperationName.GSP_R).isEmpty() )
+            dataService.addEndpoint(OperationName.Quads, "") ;
         
         // XXX 
 //        // Extract timeout overriding configuration if present.
@@ -102,12 +105,14 @@ public class Builder
         addServiceEP(dataService, OperationName.Query, "query") ;
         addServiceEP(dataService, OperationName.Query, "sparql") ;
         if ( ! allowUpdate ) {
+            addServiceEP(dataService, OperationName.Quads, "") ;
             addServiceEP(dataService, OperationName.GSP_R, "data") ;
             return dataService ;
         }
         addServiceEP(dataService, OperationName.GSP,    "data") ;
         addServiceEP(dataService, OperationName.Update, "update") ;
         addServiceEP(dataService, OperationName.Upload, "upload") ;
+        addServiceEP(dataService, OperationName.Quads,  "") ;
         return dataService ;
     }
 
@@ -133,7 +138,7 @@ public class Builder
             QuerySolution soln = rs.next() ;
             String epName = soln.getLiteral("ep").getLexicalForm() ;
             Endpoint operation = new Endpoint(opName, epName) ;
-            dataService.addEndpoint(opName, epName); 
+            addServiceEP(dataService, opName, epName); 
             //log.info("  " + opName.name + " = " + dataAccessPoint.getName() + "/" + epName) ;
         }
     }

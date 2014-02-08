@@ -21,10 +21,7 @@ package org.apache.jena.fuseki.server;
 import static org.apache.jena.fuseki.server.DatasetStatus.CLOSING ;
 import static org.apache.jena.fuseki.server.DatasetStatus.UNINITIALIZED ;
 
-import java.util.Collection ;
-import java.util.HashMap ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.* ;
 import java.util.concurrent.atomic.AtomicBoolean ;
 import java.util.concurrent.atomic.AtomicLong ;
 
@@ -82,9 +79,9 @@ public class DataService { //implements DatasetMXBean {
     }
     
     public void addEndpoint(OperationName operationName, String endpointName) {
-        Endpoint oper = new Endpoint(operationName, endpointName) ;
-        endpoints.put(endpointName, oper) ;
-        operations.put(operationName, oper);
+        Endpoint endpoint = new Endpoint(operationName, endpointName) ;
+        endpoints.put(endpointName, endpoint) ;
+        operations.put(operationName, endpoint);
     }
     
     public Endpoint getOperation(String endpointName) {
@@ -92,7 +89,10 @@ public class DataService { //implements DatasetMXBean {
     }
 
     public List<Endpoint> getOperation(OperationName opName) {
-        return operations.get(opName) ;
+        List<Endpoint> x = operations.get(opName) ;
+        if ( x == null )
+            x = Collections.emptyList() ;
+        return x ;  
     }
 
     /** Return the OperationNames available here.
