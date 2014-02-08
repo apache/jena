@@ -59,7 +59,7 @@ public class DataService { //implements DatasetMXBean {
     private DatasetGraph dataset = null ;              // Only valid if active.
 
     private MultiMapToList<OperationName, Endpoint> operations     = MultiMap.createMapList() ;
-    private Map<String, Endpoint> endpoints                        = new HashMap<String, Endpoint>() ;
+    private Map<String, Endpoint> endpoints                        = new HashMap<>() ;
     
     private volatile DatasetStatus state = UNINITIALIZED ;
 

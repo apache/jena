@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 public class ServerInitialConfig {
     // Either this ...
     public String    templateFile     = null ;
-    public Map<String,String> params  = new HashMap<String,String>() ;
+    public Map<String,String> params  = new HashMap<>() ;
     public String    datasetPath      = null ;
     public boolean   allowUpdate      = false ;
     // Or this ...

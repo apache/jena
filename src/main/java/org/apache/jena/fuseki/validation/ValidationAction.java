@@ -44,7 +44,7 @@ public class ValidationAction
     int contentLength = -1 ;
     String contentType = null ;
     
-    Map <String, String> headers = new HashMap<String, String>() ;
+    Map <String, String> headers = new HashMap<>() ;
     public HttpServletRequest request;
     public HttpServletResponse response ;
     

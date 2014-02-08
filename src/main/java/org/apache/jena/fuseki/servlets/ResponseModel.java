@@ -47,7 +47,7 @@ public class ResponseModel
     private static final String contentOutputTTL           = "ttl" ;
     private static final String contentOutputNT            = "nt" ;
 
-    public static Map<String,String> shortNamesModel = new HashMap<String, String>() ;
+    public static Map<String,String> shortNamesModel = new HashMap<>() ;
     static {
 
         // Some short names.  keys are lowercase.

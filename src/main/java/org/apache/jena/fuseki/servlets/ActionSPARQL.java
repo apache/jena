@@ -107,11 +107,7 @@ public abstract class ActionSPARQL extends ActionBase
                 // Success
                 incCounter(csOperation, RequestsGood) ;
                 incCounter(csService, RequestsGood) ;
-            } catch (ActionErrorException /*JAVA7 | QueryCancelledException*/ ex) {
-                incCounter(csOperation, RequestsBad) ;
-                incCounter(csService, RequestsBad) ;
-                throw ex ;
-            } catch (QueryCancelledException ex) {
+            } catch (ActionErrorException | QueryCancelledException ex) {
                 incCounter(csOperation, RequestsBad) ;
                 incCounter(csService, RequestsBad) ;
                 throw ex ;

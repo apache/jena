@@ -18,17 +18,11 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.util.ArrayList ;
-import java.util.List ;
-
 import javax.servlet.ServletContext ;
 import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
-import org.apache.jena.atlas.lib.DS ;
-import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.slf4j.Logger ;
 
 public class FusekiServletContextListener implements ServletContextListener {

@@ -39,7 +39,7 @@ import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 public abstract class DataServiceDesc
 {
     public static DataServiceDesc createFromTemplate(String templateFile, String dbName) {
-        Map<String, String> params = new HashMap<String, String>() ;
+        Map<String, String> params = new HashMap<>() ;
         params.put(Template.NAME, dbName) ;
         String template = TemplateFunctions.template(templateFile, params) ;
         Lang lang = RDFLanguages.filenameToLang(templateFile, Lang.TTL) ;

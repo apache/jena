@@ -100,7 +100,7 @@ public class FusekiServer
         
         // DRY -- ActionDatasets (and others?)
         if ( params == null ) {
-            params = new HashMap<String, String>() ;
+            params = new HashMap<>() ;
             params.put(Template.NAME, datasetPath) ;
         } else {
             if ( ! params.containsKey(Template.NAME) ) {

@@ -112,7 +112,8 @@ public class ServerTest {
         
         ServerConfig config = make(true, true) ;
         config.authConfigFile = authConfigFile ;
-        server = new SPARQLServer(config) ;
+        SPARQLServer.initializeServer(config);
+        server = SPARQLServer.instance ;
         server.start() ;
     }
 

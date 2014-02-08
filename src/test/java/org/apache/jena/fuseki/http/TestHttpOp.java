@@ -18,8 +18,6 @@
 
 package org.apache.jena.fuseki.http;
 
-import java.io.IOException ;
-
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.HttpException ;
@@ -34,7 +32,6 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.sparql.engine.http.Params ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 // This a mixture of testing HttpOp and testing basic operation of the SPARQL server
 // especially error cases abnd unusual usage that the higher level APIs don't use.

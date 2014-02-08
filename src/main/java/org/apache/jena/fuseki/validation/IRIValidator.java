@@ -62,8 +62,8 @@ public class IRIValidator extends ValidatorBaseJson {
             IRI iri = iriFactory.create(iriStr) ;
 
 
-            List<String> errors = new ArrayList<String>() ;
-            List<String> warnings = new ArrayList<String>() ;
+            List<String> errors = new ArrayList<>() ;
+            List<String> warnings = new ArrayList<>() ;
 
             if ( iri.isRelative() )
                 warnings.add("Relative IRI: "+iriStr) ;

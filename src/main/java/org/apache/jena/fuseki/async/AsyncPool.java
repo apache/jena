@@ -38,7 +38,7 @@ public class AsyncPool
                                                               new LinkedBlockingQueue<Runnable>()) ;
 
     private final Object mutex = new Object() ; 
-    private List<AsyncTask> running = new ArrayList<AsyncTask>() ; 
+    private List<AsyncTask> running = new ArrayList<>() ; 
     
     private AsyncPool() { }
     
@@ -52,7 +52,7 @@ public class AsyncPool
     
     public Collection<AsyncTask> task() {
         synchronized(mutex) {
-            return new ArrayList<AsyncTask>(running) ;
+            return new ArrayList<>(running) ;
         }
     }
     

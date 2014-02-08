@@ -58,7 +58,7 @@ public class ResponseResultSet
     private static final String contentOutputCSV           = "csv" ;
     private static final String contentOutputTSV           = "tsv" ;
     
-    public static Map<String,String> shortNamesResultSet = new HashMap<String, String>() ;
+    public static Map<String,String> shortNamesResultSet = new HashMap<>() ;
     static {
         // Some short names.  keys are lowercase.
         ResponseOps.put(shortNamesResultSet, contentOutputJSON,   contentTypeResultsJSON) ;

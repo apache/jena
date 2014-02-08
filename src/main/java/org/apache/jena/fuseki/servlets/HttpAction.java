@@ -84,7 +84,7 @@ public class HttpAction
     String contentType = null ;
     
     // Cleared to archive:
-    Map <String, String> headers = new HashMap<String, String>() ;
+    Map <String, String> headers = new HashMap<>() ;
     public HttpServletRequest request;
     public HttpServletResponseTracker response ;
     

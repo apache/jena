@@ -294,7 +294,7 @@ public class ActionDatasets extends ActionCtl {
     private void assemblerFromForm(HttpAction action, StreamRDF dest) {
         String dbType = action.getRequest().getParameter(paramDatasetType) ;
         String dbName = action.getRequest().getParameter(paramDatasetName) ;
-        Map<String, String> params = new HashMap<String, String>() ;
+        Map<String, String> params = new HashMap<>() ;
         params.put(Template.NAME, dbName) ;
         
         action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
