@@ -35,9 +35,7 @@ import org.apache.jena.fuseki.mgt.MgtJMX ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
-import org.eclipse.jetty.server.Connector ;
-import org.eclipse.jetty.server.Server ;
-import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
+import org.eclipse.jetty.server.* ;
 import org.eclipse.jetty.servlet.FilterHolder ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.util.security.Constraint ;
@@ -59,11 +57,10 @@ public class SPARQLServer {
         Fuseki.init() ;
     }
 
-    // Temporarary
     public static SPARQLServer  instance = null ;
 
-    private Connector serverConnector = null ;
-    private Connector mgtConnector = null ;
+    private ServerConnector serverConnector = null ;
+    private ServerConnector mgtConnector = null ;
     
     private ServerConfig        serverConfig ;
 
@@ -95,8 +92,8 @@ public class SPARQLServer {
         }
         
         instance = this ;
-        mgtConnector = serverConnector ;
-        // Datasets not initialized yet.
+        if ( mgtConnector == null )
+            mgtConnector = serverConnector ;
     }
 
     /**
@@ -108,10 +105,11 @@ public class SPARQLServer {
         // This does not get set usefully for Jetty as we use it.
         // String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
         // serverLog.info(format("Jetty %s",jettyVersion)) ;
-        String host = server.getConnectors()[0].getHost() ;
+        
+        String host = serverConnector.getHost() ;
         if ( host != null )
             serverLog.info("Incoming connections limited to " + host) ;
-        serverLog.info(format("Started %s on port %d", now, server.getConnectors()[0].getPort())) ;
+        serverLog.info(format("Started %s on port %d", now, serverConnector.getPort())) ;
 
         try {
             server.start() ;
@@ -129,7 +127,7 @@ public class SPARQLServer {
      */
     public void stop() {
         String now = Utils.nowAsString() ;
-        serverLog.info(format("Stopped %s on port %d", now, server.getConnectors()[0].getPort())) ;
+        serverLog.info(format("Stopped %s on port %d", now, serverConnector.getPort())) ;
         try {
             server.stop() ;
         } catch (Exception ex) {
@@ -152,10 +150,6 @@ public class SPARQLServer {
 
     public int getMgtPort() {
         return mgtConnector.getPort() ;
-    }
-
-    public void setMgtConnector(Connector connector) {
-        mgtConnector = connector ;
     }
 
     /**
@@ -228,7 +222,7 @@ public class SPARQLServer {
             server = new Server() ;
             XmlConfiguration configuration = new XmlConfiguration(new FileInputStream(jettyConfig)) ;
             configuration.configure(server) ;
-            serverConnector = server.getConnectors()[0] ;
+            serverConnector = (ServerConnector)server.getConnectors()[0] ;
         } catch (Exception ex) {
             serverLog.error("SPARQLServer: Failed to configure server: " + ex.getMessage(), ex) ;
             throw new FusekiException("Failed to configure a server using configuration file '" + jettyConfig + "'") ;
@@ -239,29 +233,16 @@ public class SPARQLServer {
         // Server, with one NIO-based connector, large input buffer size (for
         // long URLs, POSTed forms (queries, updates)).
         server = new Server() ;
-
-        // BlockingChannelConnector is better for pumping large responses back
-        // but there have been observed problems with DirectMemory allocation
-        // (-XX:MaxDirectMemorySize=1G does not help)
-        // Connector connector = new SelectChannelConnector() ;
-
-        // Connector and specific settings.
-        BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;
-        // bcConnector.setUseDirectBuffers(false) ;
-
-        Connector connector = bcConnector ;
-        // Ignore. If set, then if this goes off, it keeps going off
-        // and you get a lot of log messages.
-        connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this
-                                      // goes off.
+        ConnectionFactory f1 = new HttpConnectionFactory() ;
+        ConnectionFactory f2 = new SslConnectionFactory() ;
+        
+        ServerConnector connector = new ServerConnector(server, f1) ; //, f2) ;
+        connector.setPort(port);
+        server.addConnector(connector);
+        
         if ( loopback )
             connector.setHost("localhost");
         connector.setPort(port) ;
-        // Some people do try very large operations ...
-        connector.setRequestHeaderSize(64 * 1024) ;
-        connector.setRequestBufferSize(5 * 1024 * 1024) ;
-        connector.setResponseBufferSize(5 * 1024 * 1024) ;
-        server.addConnector(connector) ;
         serverConnector = connector ;
     }
 }

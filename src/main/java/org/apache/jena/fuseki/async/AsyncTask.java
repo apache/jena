@@ -18,9 +18,46 @@
 
 package org.apache.jena.fuseki.async;
 
-/** An asynchronous task */ 
-public class AsyncTask
-{
+import java.util.concurrent.Callable ;
 
+import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.server.DataService ;
+import org.slf4j.Logger ;
+
+/** An asynchronous task */ 
+public class AsyncTask implements Callable<Object>  
+{
+    private static Logger log = Fuseki.serverLog ; 
+    
+    private Callable<Object> callable ;
+    private AsyncPool pool ;
+
+    private final String displayName ;
+    private final DataService dataService ;
+
+    public AsyncTask(Callable<Object> callable, 
+                     AsyncPool pool,
+                     String displayName,
+                     DataService dataService ) {
+        this.callable = callable ;
+        this.pool = pool ;
+        this.displayName = displayName ;
+        this.dataService = dataService ;
+    }
+
+    /** Display name - no newlines */
+    public String displayName() { return displayName ; }
+    
+    public DataService getDataService() { return dataService ; }
+
+    @Override
+    public Object call() {
+        try { return  callable.call() ; } 
+        catch (Exception ex) {
+            log.error("Async task threw an expection", ex) ;
+            return null ; 
+        }
+        finally { pool.finished(this) ; } 
+    }
 }
 

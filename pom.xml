@@ -72,8 +72,8 @@
     <assembly.zip.name>${this.root}</assembly.zip.name>
 
     <!-- Switch to webapp deployment first -->
-    <!--<ver.jetty>9.1.0.v20131115</ver.jetty>-->
-    <ver.jetty>8.1.11.v20130520</ver.jetty>
+    <ver.jetty>9.1.1.v20140108</ver.jetty>
+    <!--<ver.jetty>8.1.14.v20131031</ver.jetty>-->
     <ver.shiro>1.2.2</ver.shiro>
 
     <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
@@ -250,8 +250,8 @@
           <optimize>true</optimize>
           <debug>true</debug>
           <debuglevel>source,lines,vars</debuglevel>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
 

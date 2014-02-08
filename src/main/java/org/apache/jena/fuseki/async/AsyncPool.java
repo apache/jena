@@ -18,17 +18,48 @@
 
 package org.apache.jena.fuseki.async;
 
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.List ;
 import java.util.concurrent.* ;
 
-
+import org.apache.jena.fuseki.server.DataService ;
 
 /** The set of currently active async tasks */
 public class AsyncPool
 {
+    private static AsyncPool instance = new AsyncPool() ;
+    public static AsyncPool get() { return instance ; }
+    
     private static int nMaxThreads = 2 ;
     // See Executors.newCachedThreadPool and Executors.newFixedThreadPool 
-    private static ExecutorService executor = new ThreadPoolExecutor(0, nMaxThreads,
-                                                                     120L, TimeUnit.SECONDS,
-                                                                     new LinkedBlockingQueue<Runnable>()) ;
+    private ExecutorService executor = new ThreadPoolExecutor(0, nMaxThreads,
+                                                              120L, TimeUnit.SECONDS,
+                                                              new LinkedBlockingQueue<Runnable>()) ;
+
+    private final Object mutex = new Object() ; 
+    private List<AsyncTask> running = new ArrayList<AsyncTask>() ; 
+    
+    private AsyncPool() { }
+    
+    public AsyncTask add(Runnable task, String displayName, DataService dataService) { 
+        synchronized(mutex) {
+            Callable<Object> c = Executors.callable(task) ;
+            AsyncTask t = new AsyncTask(c, this, displayName, dataService) ;
+            return t ;
+        }
+    }
+    
+    public Collection<AsyncTask> task() {
+        synchronized(mutex) {
+            return new ArrayList<AsyncTask>(running) ;
+        }
+    }
+    
+    public void finished(AsyncTask task) { 
+        synchronized(mutex) {
+            running.remove(task) ;
+        }
+    }
 }
 

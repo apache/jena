@@ -28,10 +28,10 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.web.HttpSC ;
-import org.eclipse.jetty.http.HttpMethods ;
+import org.eclipse.jetty.http.HttpMethod ;
 import org.eclipse.jetty.http.MimeTypes ;
-import org.eclipse.jetty.server.AbstractHttpConnection ;
 import org.eclipse.jetty.server.Request ;
+import org.eclipse.jetty.server.Response ;
 import org.eclipse.jetty.server.handler.ErrorHandler ;
 
 public class FusekiErrorHandler extends ErrorHandler
@@ -39,21 +39,23 @@ public class FusekiErrorHandler extends ErrorHandler
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        AbstractHttpConnection connection = AbstractHttpConnection.getCurrentConnection();
-        connection.getRequest().setHandled(true);
+//        AbstractHttpConnection connection = AbstractHttpConnection.getCurrentConnection();
+//        connection.getRequest().setHandled(true);
         String method = request.getMethod();
      
-        if(!method.equals(HttpMethods.GET) && !method.equals(HttpMethods.POST) && !method.equals(HttpMethods.HEAD))
-            return;
+        if ( !method.equals(HttpMethod.GET.asString())
+             && !method.equals(HttpMethod.POST.asString())
+             && !method.equals(HttpMethod.HEAD.asString()) )
+            return ;
         
-        response.setContentType(MimeTypes.TEXT_PLAIN_UTF_8) ;
+        response.setContentType(MimeTypes.Type.TEXT_PLAIN_UTF_8.asString()) ;
         FusekiLib.setNoCache(response) ;
         
         ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024) ;
         //String writer = IO.UTF8(null) ;
         Writer writer = new OutputStreamWriter(bytes, "UTF-8") ;
-        
-        handleErrorPage(request, writer, connection.getResponse().getStatus(), connection.getResponse().getReason());
+        String reason=(response instanceof Response)?((Response)response).getReason():null;
+        handleErrorPage(request, writer, response.getStatus(), reason) ;
         
         if ( ! Fuseki.VERSION.equalsIgnoreCase("development") )
         {

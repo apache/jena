@@ -461,23 +461,23 @@ public class FusekiCmd extends CmdARQ {
         return server ;
     }
 
-    private void initializeManagement(SPARQLServer server, ServerConfig params) {
-        if ( params.mgtPort > 0 && params.mgtPort != params.port ) {
-            ServletContextHandler context = ManagementServer.addManagementServer(server, params.mgtPort) ;
-            Fuseki.configLog.warn("**** Management services on different port **** Ignored ****") ;
-            Fuseki.configLog.info("Management services on port " + params.mgtPort) ;
-            ManagementServer.addServerFunctions(context, "/$/") ;
-            ManagementServer.addAdminFunctions(context, "/$/") ;
-            return ;
-        }
-        
-        if ( params.mgtPort == 0 || params.mgtPort == params.port ) {
-            ServletContextHandler context = (ServletContextHandler)server.getServer().getHandler() ;
-            ManagementServer.addServerFunctions(context, "/$/") ;
-            ManagementServer.addAdminFunctions(context, "/$/") ;
-        }
+//    private void initializeManagement(SPARQLServer server, ServerConfig params) {
+//        if ( params.mgtPort > 0 && params.mgtPort != params.port ) {
+//            ServletContextHandler context = ManagementServer.addManagementServer(server, params.mgtPort) ;
+//            Fuseki.configLog.warn("**** Management services on different port **** Ignored ****") ;
+//            Fuseki.configLog.info("Management services on port " + params.mgtPort) ;
+//            ManagementServer.addServerFunctions(context, "/$/") ;
+//            ManagementServer.addAdminFunctions(context, "/$/") ;
+//            return ;
+//        }
+//        
+//        if ( params.mgtPort == 0 || params.mgtPort == params.port ) {
+//            ServletContextHandler context = (ServletContextHandler)server.getServer().getHandler() ;
+//            ManagementServer.addServerFunctions(context, "/$/") ;
+//            ManagementServer.addAdminFunctions(context, "/$/") ;
+//        }
+//    }
 
-    }
     @Override
     protected String getCommandName() {
         return "fuseki" ;

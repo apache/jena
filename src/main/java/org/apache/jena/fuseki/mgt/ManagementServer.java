@@ -25,9 +25,7 @@ import javax.servlet.http.HttpServlet ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
-import org.eclipse.jetty.server.Connector ;
-import org.eclipse.jetty.server.Server ;
-import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
+import org.eclipse.jetty.server.* ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 
@@ -35,20 +33,12 @@ public class ManagementServer
 {
     public static ServletContextHandler addManagementServer(SPARQLServer server, int port) {
         Server jettyServer = server.getServer() ;
-        BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;
-        // bcConnector.setUseDirectBuffers(false) ;
-
-        Connector connector = bcConnector ;
-        connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
-
-        //if ( loopback )
-        if ( server.getServerPort() == port )
-            connector.setHost("localhost");
-        connector.setPort(port) ;
-        // Control - defaults OK 
-//        connector.setRequestHeaderSize(64 * 1024) ;
-//        connector.setRequestBufferSize(5 * 1024 * 1024) ;
-//        connector.setResponseBufferSize(5 * 1024 * 1024) ;
+        
+        ConnectionFactory f1 = new HttpConnectionFactory() ;
+        ConnectionFactory f2 = new SslConnectionFactory() ;
+        
+        ServerConnector connector = new ServerConnector(jettyServer, f1, f2) ;
+        connector.setPort(port);
         jettyServer.addConnector(connector);
         ServletContextHandler context = new ServletContextHandler() ;
         jettyServer.setHandler(context) ;
