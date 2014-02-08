@@ -57,10 +57,10 @@ public class SPARQLServer {
         Fuseki.init() ;
     }
 
-    public static SPARQLServer  instance = null ;
+    public static SPARQLServer  instance    = null ;
 
     private ServerConnector serverConnector = null ;
-    private ServerConnector mgtConnector = null ;
+    private ServerConnector mgtConnector    = null ;
     
     private ServerConfig        serverConfig ;
 
@@ -73,10 +73,15 @@ public class SPARQLServer {
      * etc. 
      * @param config
      */
-    public SPARQLServer(ServerConfig config) {
-        this.serverConfig = config ;
+    
+    public static void initializeServer(ServerConfig config) {
         // Currently server-wide.
         Fuseki.verboseLogging = config.verboseLogging ;
+        instance = new SPARQLServer(config) ;
+    }
+    
+    private SPARQLServer(ServerConfig config) {
+        this.serverConfig = config ;
         boolean webappBuild = true ;
         
         if ( webappBuild ) 
@@ -91,7 +96,6 @@ public class SPARQLServer {
             // No security.
         }
         
-        instance = this ;
         if ( mgtConnector == null )
             mgtConnector = serverConnector ;
     }

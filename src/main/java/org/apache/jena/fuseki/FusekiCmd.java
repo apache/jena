@@ -26,7 +26,6 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.FusekiServletContextListener ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
@@ -35,7 +34,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.SysRIOT ;
-import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.slf4j.Logger ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
@@ -421,12 +419,9 @@ public class FusekiCmd extends CmdARQ {
         Fuseki.init() ;
         FusekiServletContextListener.initialSetup = cmdLineDataset ;
         // For standalone, command line use ...
-        SPARQLServer server = initializeServer(jettyServerConfig) ;
-        // Not needed for webapp version.
-        //initializeManagement(server, params);
-        
-        server.start() ;
-        try { server.getServer().join() ; }
+        SPARQLServer.initializeServer(jettyServerConfig) ;
+        SPARQLServer.instance.start() ;
+        try { SPARQLServer.instance.getServer().join() ; }
         catch (Exception ex) {}
         System.exit(0) ;
     }
@@ -456,28 +451,6 @@ public class FusekiCmd extends CmdARQ {
         return pages ;
     }
         
-    private SPARQLServer initializeServer(ServerConfig serverConfig) {  
-        SPARQLServer server = new SPARQLServer(serverConfig) ;
-        return server ;
-    }
-
-//    private void initializeManagement(SPARQLServer server, ServerConfig params) {
-//        if ( params.mgtPort > 0 && params.mgtPort != params.port ) {
-//            ServletContextHandler context = ManagementServer.addManagementServer(server, params.mgtPort) ;
-//            Fuseki.configLog.warn("**** Management services on different port **** Ignored ****") ;
-//            Fuseki.configLog.info("Management services on port " + params.mgtPort) ;
-//            ManagementServer.addServerFunctions(context, "/$/") ;
-//            ManagementServer.addAdminFunctions(context, "/$/") ;
-//            return ;
-//        }
-//        
-//        if ( params.mgtPort == 0 || params.mgtPort == params.port ) {
-//            ServletContextHandler context = (ServletContextHandler)server.getServer().getHandler() ;
-//            ManagementServer.addServerFunctions(context, "/$/") ;
-//            ManagementServer.addAdminFunctions(context, "/$/") ;
-//        }
-//    }
-
     @Override
     protected String getCommandName() {
         return "fuseki" ;
