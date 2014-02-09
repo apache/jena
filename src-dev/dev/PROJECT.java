@@ -19,10 +19,9 @@
 package dev;
 
 public class PROJECT {
-    // Jetty 9.1 - Java7!
+    // Backup and long-lived tasks.
     
     // Assembler file mgt
-    // AssemblerRef ==> ServiceDesc
     
     // Tests for DataServiceDesc and configuration.
     // Other DataServiceDesc
@@ -47,7 +46,7 @@ public class PROJECT {
     // Per service context setting e.g. timeouts, tdb:unionDefaultGraph
     //   SPARQL_Query.setAnyTimeouts
     
-    // Shiro - log failures
+    // Shiro - log failures?
     
     /* Use of:
 <context-param>

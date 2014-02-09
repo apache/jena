@@ -31,4 +31,3 @@ public class DenyFilter extends AuthorizationFilter403 {
         return false ;
     }
 }
-

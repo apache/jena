@@ -33,10 +33,10 @@ import org.apache.shiro.web.filter.authz.PortFilter ;
  * Example:
  * <pre>
  * [main]
- * localhost=org.apache.shiro.web.filter.authz.LocalhostFilter
+ * localhost=org.apache.jena.fuseki.authz.LocalhostFilter
  * ...
  * [urls]
- * /localFilesforLocalPeople/** = localhost
+ * /LocalFilesForLocalPeople/** = localhost
  * </pre>
  * @see PortFilter
  */
@@ -57,8 +57,6 @@ public class LocalhostFilter extends AuthorizationFilter403 {
             return true ;
         return false ;
     }
-    
-   
 }
 
 
