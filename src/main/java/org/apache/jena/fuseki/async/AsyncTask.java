@@ -29,22 +29,29 @@ public class AsyncTask implements Callable<Object>
 {
     private static Logger log = Fuseki.serverLog ; 
     
-    private Callable<Object> callable ;
-    private AsyncPool pool ;
+    private final Callable<Object> callable ;
+    private final AsyncPool pool ;
 
     private final String displayName ;
     private final DataService dataService ;
 
-    public AsyncTask(Callable<Object> callable, 
-                     AsyncPool pool,
-                     String displayName,
-                     DataService dataService ) {
+    private final String taskId ;
+
+    /*package*/ AsyncTask(Callable<Object> callable, 
+                          AsyncPool pool,
+                          String taskId,
+                          String displayName,
+                          DataService dataService ) {
         this.callable = callable ;
         this.pool = pool ;
+        this.taskId = taskId ; 
         this.displayName = displayName ;
         this.dataService = dataService ;
     }
 
+    /** Unique task id */
+    public String getTaskId() { return taskId ; }
+    
     /** Display name - no newlines */
     public String displayName() { return displayName ; }
     

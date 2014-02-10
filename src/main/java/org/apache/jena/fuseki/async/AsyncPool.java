@@ -20,10 +20,13 @@ package org.apache.jena.fuseki.async;
 
 import java.util.ArrayList ;
 import java.util.Collection ;
-import java.util.List ;
+import java.util.HashMap ;
+import java.util.Map ;
 import java.util.concurrent.* ;
+import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.fuseki.server.DataService ;
+import org.eclipse.jetty.util.thread.Scheduler.Task ;
 
 /** The set of currently active async tasks */
 public class AsyncPool
@@ -35,7 +38,8 @@ public class AsyncPool
                                                               120L, TimeUnit.SECONDS,
                                                               new LinkedBlockingQueue<Runnable>()) ;
     private final Object mutex = new Object() ; 
-    private List<AsyncTask> running = new ArrayList<>() ; 
+    private AtomicLong counter = new AtomicLong(0) ;
+    private Map<String, AsyncTask> running = new HashMap<>() ; 
     
     private static AsyncPool instance = new AsyncPool() ;
     public static AsyncPool get() 
@@ -43,24 +47,26 @@ public class AsyncPool
 
     private AsyncPool() { }
     
-    public AsyncTask add(Runnable task, String displayName, DataService dataService) { 
+    public AsyncTask submit(Runnable task, String displayName, DataService dataService) { 
         synchronized(mutex) {
+            String taskId = Long.toString(counter.incrementAndGet()) ;
             Callable<Object> c = Executors.callable(task) ;
-            AsyncTask t = new AsyncTask(c, this, displayName, dataService) ;
-            Future<Object> x = executor.submit(t) ; 
-            return t ;
+            AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService) ;
+            Future<Object> x = executor.submit(asyncTask) ;
+            running.put(taskId, asyncTask) ;
+            return asyncTask ;
         }
     }
     
-    public Collection<AsyncTask> task() {
+    public Collection<AsyncTask> tasks() {
         synchronized(mutex) {
-            return new ArrayList<>(running) ;
+            return new ArrayList<>(running.values()) ;
         }
     }
     
     public void finished(AsyncTask task) { 
         synchronized(mutex) {
-            running.remove(task) ;
+            running.remove(task.getTaskId()) ;
         }
     }
 }

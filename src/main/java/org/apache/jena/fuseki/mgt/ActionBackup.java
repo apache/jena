@@ -62,16 +62,19 @@ public class ActionBackup extends ActionItem
     @Override
     protected JsonValue execPostItem(HttpAction action) {
         String name = action.getDatasetName() ;
-        if ( name == null )
-            name = "''" ;
+        if ( name == null ) {
+            action.log.error("Null for dataset name in item request") ;  
+            ServletOps.errorOccurred("Null for dataset name in item request");
+            return null ;
+        }
         action.log.info(format("[%d] Backup dataset %s", action.id, name)) ;
         
         Task task = new Task(action) ;
-        AsyncTask asyncTask = asyncPool.add(task, name, null) ;
+        AsyncTask asyncTask = asyncPool.submit(task, "backup", action.getDataService()) ;
         
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("outer") ;
-        builder.key("task").value(action.id) ;
+        builder.key("task").value(asyncTask.getTaskId()) ;
         builder.finishObject("outer") ;
         return builder.build() ;
     }

@@ -22,7 +22,10 @@ import static java.lang.String.format ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.async.AsyncPool ;
+import org.apache.jena.fuseki.async.AsyncTask ;
 import org.apache.jena.fuseki.servlets.ActionBase ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
@@ -30,6 +33,8 @@ import org.apache.jena.web.HttpSC ;
 
 public class ActionTasks extends ActionBase //ActionContainerItem
 {
+    private static AsyncPool[] pools = { AsyncPool.get() } ; 
+    
     public ActionTasks() { super(Fuseki.serverLog) ; }
     
     @Override
@@ -67,7 +72,22 @@ public class ActionTasks extends ActionBase //ActionContainerItem
     private void execGet(HttpAction action, String name) {
         String _name = (name==null)?"''":name ;
         log.info(format("[%d] Task %s", action.id, _name));
-        ServletOps.success(action);
+        
+        if ( name == null ) {
+            JsonBuilder builder = new JsonBuilder() ;
+            builder.startArray() ;
+            
+            for ( AsyncPool pool : pools ) {
+                for ( AsyncTask aTask : pool.tasks() ) {
+                    builder.value(aTask.getTaskId()) ;
+                }
+            }
+            
+            builder.startArray() ;
+            ServletOps.success(action);
+        } else {
+            // Ping the task is active
+        }
     }
 
     private void execPost(HttpAction action, String name) {
