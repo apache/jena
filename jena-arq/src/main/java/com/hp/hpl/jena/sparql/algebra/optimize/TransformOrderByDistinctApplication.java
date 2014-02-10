@@ -82,7 +82,7 @@ import com.hp.hpl.jena.sparql.core.Var;
  * are querying.
  * </p>
  */
-public class TransformOrderByDistinctAppplication extends TransformCopy {
+public class TransformOrderByDistinctApplication extends TransformCopy {
 
     @Override
     public Op transform(OpDistinct opDistinct, Op subOp) {

@@ -52,7 +52,7 @@ import com.hp.hpl.jena.sparql.core.Var;
  * </ul>
  * <h3>Related Optimizations</h3>
  * <p>
- * See also {@link TransformOrderByDistinctAppplication} which is a better
+ * See also {@link TransformOrderByDistinctApplication} which is a better
  * optimization for these kinds of queries but only applies to a more limited range
  * of queries. Where possible that optimization is applied in preference to this
  * one.
@@ -61,7 +61,7 @@ import com.hp.hpl.jena.sparql.core.Var;
  * {@link TransformTopN} covers the case of {@code DISTINCT} plus
  * {@code ORDER BY} where there is also a {@code LIMIT}. Where possible that
  * optimization is applied in preference to either this or
- * {@link TransformOrderByDistinctAppplication}.
+ * {@link TransformOrderByDistinctApplication}.
  * </p>
  * 
  */
