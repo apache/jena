@@ -69,6 +69,7 @@ import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ActionDatasets extends ActionCtl {
+    // XXX Use ActionContainerItem
     
     private static Dataset system = SystemState.getDataset() ;
     private static DatasetGraphTransaction systemDSG = SystemState.getDatasetGraph() ; 
@@ -105,12 +106,12 @@ public class ActionDatasets extends ActionCtl {
 
     @Override
     protected void perform(HttpAction action) {
-        String method = action.request.getMethod().toUpperCase(Locale.ROOT) ;
-        if ( method.equals("GET") )
+        String method = action.request.getMethod() ; // No need - guarentteed .toUpperCase(Locale.ROOT) ;
+        if ( method.equals(METHOD_GET) )
             execGet(action) ;
-        else if ( method.equals("POST") )
+        else if ( method.equals(METHOD_POST) )
             execPost(action) ;
-        else if ( method.equals("DELETE") )
+        else if ( method.equals(METHOD_DELETE) )
             execDelete(action) ;
         else
             ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405) ;

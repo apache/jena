@@ -23,6 +23,7 @@ import java.io.PrintWriter ;
 
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.web.HttpSC ;
 
 public class ServletOps {
@@ -145,5 +146,13 @@ public class ServletOps {
         return string ;
     }
 
+    public static void setNoCache(HttpAction action) {
+        setNoCache(action.response) ;
+    }
+
+    public static void setNoCache(HttpServletResponse response) {
+        response.setHeader(HttpNames.hCacheControl, "must-revalidate,no-cache,no-store");
+        response.setHeader(HttpNames.hPragma, "no-cache");
+    }
 }
 

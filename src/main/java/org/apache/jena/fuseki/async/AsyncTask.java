@@ -52,7 +52,7 @@ public class AsyncTask implements Callable<Object>
 
     @Override
     public Object call() {
-        try { return  callable.call() ; } 
+        try { return callable.call() ; } 
         catch (Exception ex) {
             log.error("Async task threw an expection", ex) ;
             return null ; 

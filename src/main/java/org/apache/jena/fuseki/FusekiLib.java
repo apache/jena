@@ -80,11 +80,6 @@ public class FusekiLib {
         return RDFLanguages.contentTypeToLang(contentTypeHeader) ;
     }
 
-    public static void setNoCache(HttpServletResponse response) {
-        response.setHeader(HttpNames.hCacheControl, "must-revalidate,no-cache,no-store");
-        response.setHeader(HttpNames.hPragma, "no-cache");
-    }
-    
     static String fmtRequest(HttpServletRequest request) {
         StringBuffer sbuff = new StringBuffer() ;
         sbuff.append(request.getMethod()) ;

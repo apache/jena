@@ -16,182 +16,88 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.mgt ;
+package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format ;
-
-import java.io.* ;
-import java.util.concurrent.Callable ;
-import java.util.concurrent.ExecutorService ;
-import java.util.concurrent.Executors ;
-import java.util.zip.GZIPOutputStream ;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.server.DataAccessPoint ;
-import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
+import org.apache.jena.atlas.json.JsonBuilder ;
+import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.fuseki.async.AsyncPool ;
+import org.apache.jena.fuseki.async.AsyncTask ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.web.HttpSC ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-
-public class ActionBackup extends ActionCtl
+public class ActionBackup extends ActionItem
 {
-    // OLD WORLD
-    public ActionBackup() {
-        super() ;
-    }
+    private static AsyncPool asyncPool = AsyncPool.get() ;
+    
+    public ActionBackup() { super() ; }
+    
+//    @Override
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+//        doCommon(request, response);
+//    }
 
-    // Limit to one backup at a time.
-    public static final ExecutorService backupService = Executors.newFixedThreadPool(1) ;
+    // Only POST
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        doCommon(request, response);
+    }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        doCommon(request, response) ;
+    protected JsonValue execGetItem(HttpAction action) { 
+        throw new InternalErrorException("GET for backup -- Should not be here!") ;
+//        ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405);
+//        return null ;
     }
 
     @Override
-    protected void perform(HttpAction action) {
-        String dataset = FusekiLib.safeParameter(action.request, "dataset") ;
-        if ( dataset == null ) {
-            ServletOps.errorBadRequest("Required parameter missing: ?dataset=") ;
-            return ;
-        }
-
-        if ( !dataset.startsWith("/") )
-            dataset = "/" + dataset ;
-
-        // HttpSession session = request.getSession(true) ;
-        // session.setAttribute("dataset", dataset) ;
-        // session.setMaxInactiveInterval(15*60) ; // 10 mins
-
-        boolean known = DataAccessPointRegistry.get().isRegistered(dataset) ;
-        if ( !known ) {
-            ServletOps.errorBadRequest("No such dataset: " + dataset) ;
-            return ;
-        }
-
-        DataAccessPoint dataAccessPoint = DataAccessPointRegistry.get().get(dataset) ;
-        DataService dSrv = dataAccessPoint.getDataService() ;
-        action.setControlRequest(dataAccessPoint, dataset) ;
-        action.setEndpoint(null, null) ;       // No operation or service name.
-        scheduleBackup(action) ;
-        ServletOps.success(action) ;
+    protected JsonValue execPostItem(HttpAction action) {
+        String name = action.getDatasetName() ;
+        if ( name == null )
+            name = "''" ;
+        action.log.info(format("[%d] Backup dataset %s", action.id, name)) ;
+        
+        Task task = new Task(action) ;
+        AsyncTask asyncTask = asyncPool.add(task, name, null) ;
+        
+        JsonBuilder builder = new JsonBuilder() ;
+        builder.startObject("outer") ;
+        builder.key("task").value(action.id) ;
+        builder.finishObject("outer") ;
+        return builder.build() ;
     }
 
-    static final String BackupArea = "backups" ;
-
-    private void scheduleBackup(final HttpAction action) {
-        String dsName = action.getDatasetName() ;
-        final String ds = dsName.startsWith("/") ? dsName : "/" + dsName ;
-
-        String timestamp = Utils.nowAsString("yyyy-MM-dd_HH-mm-ss") ;
-        final String filename = BackupArea + ds + "_" + timestamp ;
-        FileOps.ensureDir(BackupArea) ;
-
-        try {
-            final Callable<Boolean> task = new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    action.log.info(format("[%d] Start backup %s to '%s'", action.id, ds, filename)) ;
-                    action.beginRead() ;
-                    try {
-                        backup(action.getActiveDSG(), filename) ;
-                        action.log.info(format("[%d] Finish backup %s to '%s'", action.id, ds, filename)) ;
-                    } catch (RuntimeException ex) {
-                        action.log.info(format("[%d] Exception during backup: ", action.id, ex.getMessage()), ex) ;
-                        return Boolean.FALSE ;
-                    } finally {
-                        action.endRead() ;
-                    }
-                    return Boolean.TRUE ;
-                }
-            } ;
-
-            action.log.info(format("[%d] Schedule backup %s to '%s'", action.id, ds, filename)) ;
-            backupService.submit(task) ;
+    @Override
+    protected void execDelete(HttpAction action) { ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405); }
+    
+    static class Task implements Runnable {
+        static private Logger log = LoggerFactory.getLogger("Backup") ;
+        
+        private final long actionId ;
+        
+        public Task(HttpAction action) {
+            actionId = action.id ;
         }
-        // catch (FusekiException ex)
-        catch (RuntimeException ex) {
-            action.log.warn("Unanticipated exception", ex) ;
+
+        @Override
+        public void run() {
             try {
-                action.response.sendError(HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
-            } catch (IOException e) {
-                IO.exception(e) ;
+                log.info(format("[%d] >>>> Start", actionId)) ;
+                Lib.sleep(5000) ;
+                log.info(format("[%d] <<<< Finish", actionId)) ;
+            } catch (Exception ex) {
+                log.info(format("[%d] **** Exception", actionId), ex) ;
             }
-            return ;
-        }
-
-        successPage(action, "Backup scheduled - see server log for details") ;
-    }
-
-    // Share with new ServletBase.
-    protected static void successPage(HttpAction action, String message) {
-        try {
-            action.response.setContentType("text/html") ;
-            action.response.setStatus(HttpSC.OK_200) ;
-            PrintWriter out = action.response.getWriter() ;
-            out.println("<html>") ;
-            out.println("<head>") ;
-            out.println("</head>") ;
-            out.println("<body>") ;
-            out.println("<h1>Success</h1>") ;
-            if ( message != null ) {
-                out.println("<p>") ;
-                out.println(message) ;
-                out.println("</p>") ;
-            }
-            out.println("</body>") ;
-            out.println("</html>") ;
-            out.flush() ;
-        } catch (IOException ex) {
-            IO.exception(ex) ;
-        }
-    }
-
-    public static void backup(DatasetGraph dsg, String backupfile) {
-        if ( !backupfile.endsWith(".nq") )
-            backupfile = backupfile + ".nq" ;
-
-        OutputStream out = null ;
-        try {
-            if ( true ) {
-                // This seems to achive about the same as "gzip -6"
-                // It's not too expensive in elapsed time but it's not zero
-                // cost.
-                // GZip, large buffer.
-                out = new FileOutputStream(backupfile + ".gz") ;
-                out = new GZIPOutputStream(out, 8 * 1024) ;
-                out = new BufferedOutputStream(out) ;
-            } else {
-                out = new FileOutputStream(backupfile) ;
-                out = new BufferedOutputStream(out) ;
-            }
-
-            RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
-            out.close() ;
-            out = null ;
-        } catch (FileNotFoundException e) {
-            Log.warn(ActionBackup.class, "File not found: " + backupfile) ;
-            throw new FusekiException("File not found: " + backupfile) ;
-        } catch (IOException e) {
-            IO.exception(e) ;
-        } finally {
-            try {
-                if ( out != null )
-                    out.close() ;
-            } catch (IOException e) { /* ignore */}
         }
     }
 }
+

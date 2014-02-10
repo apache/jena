@@ -18,36 +18,28 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import java.io.IOException ;
-
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
-
-import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.servlets.ActionBase ;
+import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
-import org.slf4j.Logger ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
+import org.apache.jena.web.HttpSC ;
 
-/** Base class for actions on long running operations */
-public class ActionAsync extends ActionBase {
-
-    protected ActionAsync(Logger log) {
-        super(log) ;
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        doCommon(request, response) ;
-    }
+/** Action on items in a container, but not the container itself */ 
+public abstract class ActionItem extends ActionContainerItem
+{
+    public ActionItem() { super() ; }
     
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        FusekiLib.setNoCache(response) ;
-        doCommon(request, response) ;
+    final
+    protected JsonValue execGetContainer(HttpAction action) {
+        ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405) ;
+        return null ;
     }
 
     @Override
-    protected void execCommonWorker(HttpAction action) {}
-
+    final
+    protected JsonValue execPostContainer(HttpAction action) {
+        ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405) ;
+        return null ;
+    }
 }
 

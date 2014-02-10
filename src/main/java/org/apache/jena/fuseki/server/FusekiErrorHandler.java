@@ -25,8 +25,9 @@ import java.io.* ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.web.HttpSC ;
 import org.eclipse.jetty.http.HttpMethod ;
 import org.eclipse.jetty.http.MimeTypes ;
@@ -39,8 +40,6 @@ public class FusekiErrorHandler extends ErrorHandler
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-//        AbstractHttpConnection connection = AbstractHttpConnection.getCurrentConnection();
-//        connection.getRequest().setHandled(true);
         String method = request.getMethod();
      
         if ( !method.equals(HttpMethod.GET.asString())
@@ -49,15 +48,15 @@ public class FusekiErrorHandler extends ErrorHandler
             return ;
         
         response.setContentType(MimeTypes.Type.TEXT_PLAIN_UTF_8.asString()) ;
-        FusekiLib.setNoCache(response) ;
+        ServletOps.setNoCache(response) ;
         
         ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024) ;
-        //String writer = IO.UTF8(null) ;
-        Writer writer = new OutputStreamWriter(bytes, "UTF-8") ;
+        Writer writer = IO.asUTF8(bytes) ;
         String reason=(response instanceof Response)?((Response)response).getReason():null;
         handleErrorPage(request, writer, response.getStatus(), reason) ;
         
-        if ( ! Fuseki.VERSION.equalsIgnoreCase("development") )
+        if ( ! Fuseki.VERSION.equalsIgnoreCase("development") &&
+             ! Fuseki.VERSION.equals("${project.version}") )
         {
             writer.write("\n") ;
             writer.write("\n") ;

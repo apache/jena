@@ -34,7 +34,6 @@ import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
@@ -156,7 +155,7 @@ public class ResponseResultSet
         // ---- Set up HTTP Response
         // Stop caching (not that ?queryString URLs are cached anyway)
         if ( true )
-            FusekiLib.setNoCache(action.response) ;
+            ServletOps.setNoCache(action) ;
         // See: http://www.w3.org/International/O-HTTP-charset.html
         if ( contentType != null )
         {

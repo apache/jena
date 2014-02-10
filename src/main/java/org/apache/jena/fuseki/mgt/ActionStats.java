@@ -40,6 +40,7 @@ import org.apache.jena.fuseki.servlets.ServletOps ;
 
 public class ActionStats extends ActionCtl
 {
+    // XXX Use ActionContainerItem
     public ActionStats() { super() ; } 
     
     @Override

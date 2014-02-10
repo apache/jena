@@ -1,0 +1,3 @@
+#!/bin/bash
+
+curl -XPOST 'http://localhost:3030/$/backup/ds'

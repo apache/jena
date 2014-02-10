@@ -140,6 +140,16 @@
     <servlet-class>org.apache.jena.fuseki.mgt.ActionLogs</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>ActionBackup</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionBackup</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ActionTasks</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionTasks</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>ActionDatasets</servlet-name>
     <url-pattern>/$/datasets/*</url-pattern>
@@ -153,6 +163,21 @@
   <servlet-mapping>
     <servlet-name>ActionLogs</servlet-name>
     <url-pattern>/$/logs</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionBackup</servlet-name>
+    <url-pattern>/$/backup/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionBackup</servlet-name>
+    <url-pattern>/$/backups/*</url-pattern>         <!-- Alt spelling -->
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionTasks</servlet-name>
+    <url-pattern>/$/tasks/*</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

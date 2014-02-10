@@ -28,24 +28,26 @@ import org.apache.jena.fuseki.server.DataService ;
 /** The set of currently active async tasks */
 public class AsyncPool
 {
-    private static AsyncPool instance = new AsyncPool() ;
-    public static AsyncPool get() { return instance ; }
-    
     private static int nMaxThreads = 2 ;
+    
     // See Executors.newCachedThreadPool and Executors.newFixedThreadPool 
     private ExecutorService executor = new ThreadPoolExecutor(0, nMaxThreads,
                                                               120L, TimeUnit.SECONDS,
                                                               new LinkedBlockingQueue<Runnable>()) ;
-
     private final Object mutex = new Object() ; 
     private List<AsyncTask> running = new ArrayList<>() ; 
     
+    private static AsyncPool instance = new AsyncPool() ;
+    public static AsyncPool get() 
+    { return instance ; }
+
     private AsyncPool() { }
     
     public AsyncTask add(Runnable task, String displayName, DataService dataService) { 
         synchronized(mutex) {
             Callable<Object> c = Executors.callable(task) ;
             AsyncTask t = new AsyncTask(c, this, displayName, dataService) ;
+            Future<Object> x = executor.submit(t) ; 
             return t ;
         }
     }

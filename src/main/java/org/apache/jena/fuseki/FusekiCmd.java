@@ -77,7 +77,7 @@ public class FusekiCmd extends CmdARQ {
          "log4j.logger." + Fuseki.configLogName     + "=INFO",
          
          "log4j.logger.org.apache.jena.tdb.loader=INFO",
-         "log4j.logger.org.eclipse.jetty=ERROR" ,
+         "log4j.logger.org.eclipse.jetty=WARN" ,
          "log4j.logger.org.apache.shiro=WARN",
 
          "## Parser output", 

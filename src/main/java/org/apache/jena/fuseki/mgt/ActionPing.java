@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.web.HttpSC ;
 
 public class ActionPing extends HttpServlet
@@ -57,7 +57,7 @@ public class ActionPing extends HttpServlet
 
     protected void doCommon(HttpServletRequest request, HttpServletResponse response) {
         try {
-            FusekiLib.setNoCache(response) ; 
+            ServletOps.setNoCache(response) ; 
             ServletOutputStream out = response.getOutputStream() ;
             response.setContentType(contentTypeTextPlain);
             response.setCharacterEncoding(charsetUTF8) ;

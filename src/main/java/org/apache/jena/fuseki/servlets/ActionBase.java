@@ -41,7 +41,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 /** General request lifecycle */
 public abstract class ActionBase extends ServletBase
 {
-    private final Logger log ;
+    protected final Logger log ;
 
     protected ActionBase(Logger log) {
         super() ;
@@ -128,6 +128,35 @@ public abstract class ActionBase extends ServletBase
 
     /** execution point */
     protected abstract void execCommonWorker(HttpAction action) ;
+    
+    /** Extract the name after the container name (serverlet name).
+     * Returns "/name" or null 
+     */  
+    protected static String extractItemName(HttpAction action) {
+//      action.log.info("context path  = "+action.request.getContextPath()) ;
+//      action.log.info("pathinfo      = "+action.request.getPathInfo()) ;
+//      action.log.info("servlet path  = "+action.request.getServletPath()) ;
+      // if /name
+      //    request.getServletPath() otherwise it's null
+      // if /*
+      //    request.getPathInfo() ; otherwise it's null.
+      
+      // PathInfo is after the servlet name. 
+      String x1 = action.request.getServletPath() ;
+      String x2 = action.request.getPathInfo() ;
+      
+      String pathInfo = action.request.getPathInfo() ;
+      if ( pathInfo == null || pathInfo.isEmpty() || pathInfo.equals("/") )
+          // Includes calling as a container. 
+          return null ;
+      String name = pathInfo ;
+      // pathInfo starts with a "/"
+      int idx = pathInfo.lastIndexOf('/') ;
+      if ( idx > 0 )
+          name = name.substring(idx) ;
+      // Returns "/name"
+      return name ; 
+  }
 
     @SuppressWarnings("unused") // ServletException
     protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
