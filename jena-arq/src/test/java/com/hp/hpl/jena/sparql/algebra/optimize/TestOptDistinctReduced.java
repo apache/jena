@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.algebra.Transform ;
 public class TestOptDistinctReduced extends AbstractTestTransform
 {
     Transform tDistinctToReduced            = new TransformDistinctToReduced() ;
-    Transform tOrderByDistinctApplication  = new TransformOrderByDistinctAppplication() ;
+    Transform tOrderByDistinctApplication  = new TransformOrderByDistinctApplication() ;
     
     @Test public void distinct_to_reduced_01()
     {

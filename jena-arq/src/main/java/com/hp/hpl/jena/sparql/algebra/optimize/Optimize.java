@@ -195,7 +195,7 @@ public class Optimize implements Rewrite
         // better performance than just transforming DISTINCT to REDUCED
         
         if ( context.isTrueOrUndef(ARQ.optOrderByDistinctApplication) )
-            op = apply("Apply DISTINCT prior to ORDER BY where possible", new TransformOrderByDistinctAppplication(), op);
+            op = apply("Apply DISTINCT prior to ORDER BY where possible", new TransformOrderByDistinctApplication(), op);
 
         // Transform some DISTINCT to REDUCED, slightly more liberal transform that ORDER BY+DISTINCT application
         // but doesn't improve performance as much though should keep memory usage down

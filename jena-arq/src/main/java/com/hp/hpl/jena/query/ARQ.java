@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformOrderByDistinctAppplication;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
@@ -303,7 +303,7 @@ public class ARQ
      * when default SPARQL semantics usually mean ORDER BY applies before DISTINCT.  This optimization applies only
      * in a subset of cases unlike the more general {@link #optDistinctToReduced} optimization.
      * <p>
-     * See {@link TransformOrderByDistinctAppplication} for more discussion on exactly when this may apply
+     * See {@link TransformOrderByDistinctApplication} for more discussion on exactly when this may apply
      * </p>
      */
     public static final Symbol optOrderByDistinctApplication = ARQConstants.allocSymbol("optOrderByDistinctApplication");
