@@ -18,9 +18,11 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
+import com.hp.hpl.jena.sparql.algebra.Transformer;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.expr.*;
 
 /**
  * An expression transform that simplifies expressions by constant folding
@@ -52,7 +54,17 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
 
     @Override
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) {
-        return funcOp.copySubstitute(this.b, true);
+        // Calling copySubstitute() likely won't work for these cases
+
+        // Manually transform each argument
+        Op op = Transformer.transform(new TransformCopy(), this, funcOp.getGraphPattern());
+        ExprList newArgs = new ExprList();
+        for (int i = 0; i < funcOp.getArgs().size(); i++) {
+            Expr curr = funcOp.getArg(i);
+            Expr newArg = curr.copySubstitute(this.b, true);
+            newArgs.add(newArg);
+        }
+        return funcOp.copy(newArgs, op);
     }
 
 }

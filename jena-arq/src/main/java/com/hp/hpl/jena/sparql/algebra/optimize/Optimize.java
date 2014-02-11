@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.OpLabel ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -153,6 +154,10 @@ public class Optimize implements Rewrite
         // Prepare expressions.
         OpWalker.walk(op, new OpVisitorExprPrepare(context)) ;
         
+        // Expression constant folding
+        if ( context.isTrue(ARQ.optExprConstantFolding) )
+            op = Transformer.transform(new TransformCopy(), new ExprTransformConstantFold(), op);
+        
         // Need to allow subsystems to play with this list.
         
         if ( context.isTrueOrUndef(ARQ.propertyFunctions) )
@@ -164,26 +169,14 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
             op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
 
-        // Either, do filter placement and other sequence generating transformations.
-        // or improve to place in a sequence (latter is better?)
+        // Apply some general purpose filter transformations
                 
         if ( context.isTrueOrUndef(ARQ.optFilterImplicitJoin) )
             op = apply("Filter Implicit Join", new TransformFilterImplicitJoin(), op);
         
         if ( context.isTrueOrUndef(ARQ.optImplicitLeftJoin) )
             op = apply("Implicit Left Join", new TransformImplicitLeftJoin(), op);
-        
-        // Replace suitable FILTER(?x = TERM) with (assign) and write the TERM for ?x in the pattern. 
-        // This is also applied a second time after FILTER placement.
-        // This application maximises the scope of the (assign).  See JENA-616.
-//        if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
-//            op = apply("Filter Equality", new TransformFilterEquality(), op) ;
-        
-        // Can promote table empty at this point since only the implicit join optimizations 
-        // are currently capable of introducing it
-        if ( context.isTrueOrUndef(ARQ.optPromoteTableEmpty) )
-            op = apply("Table Empty Promotion", new TransformPromoteTableEmpty(), op) ;
-        
+                
         if ( context.isTrueOrUndef(ARQ.optFilterDisjunction) )
             op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;
         
@@ -226,11 +219,16 @@ public class Optimize implements Rewrite
         // See JENA-616.
         if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
             op = apply("Filter Equality", new TransformFilterEquality(), op) ;
-        
+                
         // Replace suitable FILTER(?x != TERM) with (minus (original) (table)) where the table contains
         // the candidate rows to be eliminated
         if ( context.isTrue(ARQ.optFilterInequality) )
             op = apply("Filter Inequality", new TransformFilterInequality(), op);
+        
+        // Promote table empty as late as possible since this will only be produced by other 
+        // optimizations and never directly from algebra generation
+        if ( context.isTrueOrUndef(ARQ.optPromoteTableEmpty) )
+            op = apply("Table Empty Promotion", new TransformPromoteTableEmpty(), op) ;
 
         // Merge adjacent BGPs
         if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
