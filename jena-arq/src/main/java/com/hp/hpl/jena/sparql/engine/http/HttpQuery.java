@@ -77,6 +77,7 @@ public class HttpQuery extends Params {
     private boolean allowGZip = false;
     private boolean allowDeflate = false;
     private HttpClient client;
+    private boolean requireClientShutdown = true;
 
     // static final String ENC_UTF8 = "UTF-8" ;
 
@@ -203,6 +204,14 @@ public class HttpQuery extends Params {
     public HttpClient getClient() {
         return this.client;
     }
+    
+    /**
+     * Gets whether the HTTP client used should be shutdown
+     * @return True if the client should be shutdown, false otherwise
+     */
+    public boolean shouldShutdownClient() {
+        return this.requireClientShutdown;
+    }
 
     /**
      * Return whether this request will go by GET or POST
@@ -301,7 +310,8 @@ public class HttpQuery extends Params {
 
         try {
             try {
-                this.client = new SystemDefaultHttpClient();
+                // Select the appropriate HttpClient to use
+                this.selectClient();
                 
                 // Always apply a 10 second timeout to obtaining a connection lease from HTTP Client
                 // This prevents a potential lock up
@@ -353,8 +363,9 @@ public class HttpQuery extends Params {
         ARQ.getHttpRequestLogger().trace(target.toExternalForm());
 
         try {
-            this.client = new SystemDefaultHttpClient();
-            
+            // Select the appropriate HttpClient to use
+            this.selectClient();
+                    
             // Always apply a 10 second timeout to obtaining a connection lease from HTTP Client
             // This prevents a potential lock up
             this.client.getParams().setLongParameter(ConnManagerPNames.TIMEOUT, TimeUnit.SECONDS.toMillis(10));
@@ -383,6 +394,19 @@ public class HttpQuery extends Params {
             // Unwrap and re-wrap the HTTP Exception
             responseCode = httpEx.getResponseCode();
             throw new QueryExceptionHTTP(responseCode, "Error making the query, see cause for details", httpEx.getCause());
+        }
+    }
+    
+    private void selectClient() {
+        // May use configured default client where appropriate
+        this.client = HttpOp.getDefaultHttpClient();
+        if (this.client == null || (this.authenticator != null && !HttpOp.getUseDefaultClientWithAuthentication())) {
+            // If no configured default or authentication is in-use and the user has not configured
+            // to use authentication with the default client use a fresh SystemDefaultHttpClient instance
+            this.client = new SystemDefaultHttpClient();
+        } else {
+            // When using the configured default client we don't want to shut it down at the end of a request
+            this.requireClientShutdown = false;
         }
     }
 

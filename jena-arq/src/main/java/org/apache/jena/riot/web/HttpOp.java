@@ -18,57 +18,58 @@
 
 package org.apache.jena.riot.web;
 
-import static java.lang.String.format ;
+import static java.lang.String.format;
 
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.UnsupportedEncodingException ;
-import java.net.URI ;
-import java.net.URISyntaxException ;
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.concurrent.atomic.AtomicLong ;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.http.HttpEntity ;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpMessage;
-import org.apache.http.HttpResponse ;
-import org.apache.http.NameValuePair ;
-import org.apache.http.StatusLine ;
-import org.apache.http.client.HttpClient ;
-import org.apache.http.client.entity.UrlEncodedFormEntity ;
-import org.apache.http.client.methods.* ;
-import org.apache.http.conn.ClientConnectionManager ;
-import org.apache.http.entity.InputStreamEntity ;
-import org.apache.http.entity.StringEntity ;
-import org.apache.http.impl.client.AbstractHttpClient ;
-import org.apache.http.impl.client.SystemDefaultHttpClient ;
-import org.apache.http.impl.conn.PoolingClientConnectionManager ;
-import org.apache.http.impl.conn.SchemeRegistryFactory ;
-import org.apache.http.message.BasicNameValuePair ;
-import org.apache.http.protocol.BasicHttpContext ;
-import org.apache.http.protocol.HttpContext ;
-import org.apache.http.util.EntityUtils ;
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.web.HttpException ;
-import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
-import org.apache.jena.atlas.web.auth.ServiceAuthenticator ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.WebContent ;
-import org.apache.jena.web.HttpSC ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.*;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.impl.client.SystemDefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.conn.SchemeRegistryFactory;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.atlas.web.auth.ServiceAuthenticator;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.web.HttpSC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.engine.http.Params ;
-import com.hp.hpl.jena.sparql.engine.http.Params.Pair ;
+import com.hp.hpl.jena.sparql.engine.http.Params;
+import com.hp.hpl.jena.sparql.engine.http.Params.Pair;
 
 /**
  * Simplified HTTP operations; simplification means only supporting certain uses
  * of HTTP. The expectation is that the simplified operations in this class can
  * be used by other code to generate more application specific HTTP interactions
- * (e.g. SPARQL queries). For more complictaed requirments of HTTP, then the
+ * (e.g. SPARQL queries). For more complicated requirements of HTTP, then the
  * application wil need to use org.apache.http.client directly.
  * 
  * <p>
@@ -107,22 +108,26 @@ public class HttpOp {
     /** System wide HTTP operation counter for log messages */
     static private AtomicLong counter = new AtomicLong(0);
 
-    
-    /** Default HttpClient.
-     *  This is used only if there is no authentication set.
+    /**
+     * Default HttpClient. This is used only if there is no authentication set.
      */
-    static private HttpClient defaultHttpClient = null ; 
-    
+    static private HttpClient defaultHttpClient = null;
+
+    /**
+     * Whether the default HttpClient is used in conjunction with authentication
+     */
+    static private boolean useDefaultClientWithAuthentication = false;
+
     /**
      * Default authenticator used for HTTP authentication
      */
     static private HttpAuthenticator defaultAuthenticator = new ServiceAuthenticator();
-    
+
     /**
      * Constant for the default User-Agent header that ARQ will use
      */
     public static final String ARQ_USER_AGENT = "Apache-Jena-ARQ/" + ARQ.VERSION;
-    
+
     /**
      * User-Agent header to use
      */
@@ -152,8 +157,8 @@ public class HttpOp {
     };
 
     /**
-     * TypedInputStream from an HTTP response. 
-     * The TypedInputStream must be explicitly closed.
+     * TypedInputStream from an HTTP response. The TypedInputStream must be
+     * explicitly closed.
      */
     public static class CaptureInput implements HttpCaptureResponse<TypedInputStream> {
         private TypedInputStream stream;
@@ -162,7 +167,7 @@ public class HttpOp {
         public void handle(String baseIRI, HttpResponse response) throws IOException {
 
             HttpEntity entity = response.getEntity();
-            String ct = (entity.getContentType()==null) ? null : entity.getContentType().getValue() ;
+            String ct = (entity.getContentType() == null) ? null : entity.getContentType().getValue();
             stream = new TypedInputStream(entity.getContent(), ct);
         }
 
@@ -171,14 +176,15 @@ public class HttpOp {
             return stream;
         }
     };
-    
+
     /**
      * Gets the default authenticator used for authenticate requests if no
      * specific authenticator is provided.
+     * 
      * @return HTTP authenticator
      */
     public static HttpAuthenticator getDefaultAuthenticator() {
-        return defaultAuthenticator ;
+        return defaultAuthenticator;
     }
 
     /**
@@ -194,63 +200,122 @@ public class HttpOp {
         defaultAuthenticator = authenticator;
     }
 
-    /** Return the current default HttpClient.  This may be null, meaning a new
-     * Httpclient is created each time, if none is provided in the HttpOp function call. 
+    /**
+     * Return the current default {@link HttpClient}. This may be null, meaning
+     * a new {@linkplain HttpClient} is created each time, if none is provided
+     * in the HttpOp function call.
+     * 
+     * @return Default HTTP Client
      */
     public static HttpClient getDefaultHttpClient() {
-        return defaultHttpClient ;
+        return defaultHttpClient;
     }
 
-    /* Performance can be improved by using a shared HttpClient that uses
+    /**
+     * <p>
+     * Performance can be improved by using a shared HttpClient that uses
      * connection pooling. However, pool management is complicated and can lead
-     * to starvation (the system locks-up, especially on Java6; it's JVM sensitive).
-     * The default HttpClient is not used if an HttpAuthenticator is provided.
+     * to starvation (the system locks-up, especially on Java6; it's JVM
+     * sensitive).
+     * </p>
      * <p>
-     * Set to "null" to create a new HttpClient for each call (default behaviour, more reliable, 
-     * but slower when many HTTP operation are attempted).  
+     * The default HttpClient is not used if an HttpAuthenticator is provided
+     * since this can potentially leak authentication credentials to be leaked
+     * between requests to different services. However in some cases it may be
+     * valuable to share the client regardless in which case you can also set
+     * the
+     * </p>
      * <p>
-     * See the Apache Http Client documentation for more details. 
+     * Set to "null" to create a new HttpClient for each call (default
+     * behaviour, more reliable, but slower when many HTTP operation are
+     * attempted).
+     * <p>
+     * See the Apache Http Client documentation for more details.
+     * 
+     * @param httpClient
+     *            HTTP Client
      */
     public static void setDefaultHttpClient(HttpClient httpClient) {
         defaultHttpClient = httpClient;
     }
-    
-    
-    /** Create an HttpClient that performs connection pooling.  This can be used
+
+    /**
+     * Gets whether the configured default HttpClient will be used in
+     * conjunction with authentication.
+     * <p>
+     * This defaults to false because this can potentially leak authentication
+     * credentials between requests to different services. However in some cases
+     * it may be valuable to share the client regardless e.g. when you have a
+     * specially configured HttpClient for your environment.
+     * </p>
+     * 
+     * @return True if the configured default client will be used with
+     *         authentication, false otherwise
+     */
+    public static boolean getUseDefaultClientWithAuthentication() {
+        return useDefaultClientWithAuthentication;
+    }
+
+    /**
+     * Sets whether the configured default HttpClient will be used in
+     * conjunction with authentication.
+     * <p>
+     * This defaults to false because this can potentially leak authentication
+     * credentials between requests to different services. However in some cases
+     * it may be valuable to share the client regardless e.g. when you have a
+     * specially configured HttpClient for your environment.
+     * </p>
+     * 
+     * @param useWithAuth
+     *            True if the configured default client should be used with
+     *            authentication, false if it should not
+     */
+    public static void setUseDefaultClientWithAuthentication(boolean useWithAuth) {
+        useDefaultClientWithAuthentication = useWithAuth;
+    }
+
+    /**
+     * Create an HttpClient that performs connection pooling. This can be used
      * with {@link #setDefaultHttpClient} or provided in the HttpOp calls.
      */
     public static HttpClient createCachingHttpClient() {
         return new SystemDefaultHttpClient() {
-          /** See SystemDefaultHttpClient (4.2).  This version always sets the connection cache */  
-          @Override
-          protected ClientConnectionManager createClientConnectionManager() {
-              PoolingClientConnectionManager connmgr = new PoolingClientConnectionManager(
-                      SchemeRegistryFactory.createSystemDefault());
-              String s = System.getProperty("http.maxConnections", "5");
-              int max = Integer.parseInt(s);
-              connmgr.setDefaultMaxPerRoute(max);
-              connmgr.setMaxTotal(2 * max);
-              return connmgr;
-          }
-        } ;
-    } ;
-    
+            /**
+             * See SystemDefaultHttpClient (4.2). This version always sets the
+             * connection cache
+             */
+            @Override
+            protected ClientConnectionManager createClientConnectionManager() {
+                PoolingClientConnectionManager connmgr = new PoolingClientConnectionManager(
+                        SchemeRegistryFactory.createSystemDefault());
+                String s = System.getProperty("http.maxConnections", "5");
+                int max = Integer.parseInt(s);
+                connmgr.setDefaultMaxPerRoute(max);
+                connmgr.setMaxTotal(2 * max);
+                return connmgr;
+            }
+        };
+    };
+
     /**
      * Gets the User-Agent string that ARQ is applying to all HTTP requests
+     * 
      * @return User-Agent string
      */
     public static String getUserAgent() {
         return userAgent;
     }
-    
+
     /**
      * Sets the User-Agent string that ARQ will apply to all HTTP requests
-     * @param userAgent User-Agent string
+     * 
+     * @param userAgent
+     *            User-Agent string
      */
     public static void setUserAgent(String userAgent) {
         HttpOp.userAgent = userAgent;
     }
-    
+
     // ---- HTTP GET
     /**
      * Executes a HTTP Get request, handling the response with given handler.
@@ -312,9 +377,8 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpGet(String url, 
-                                   String acceptHeader, HttpResponseHandler handler, 
-                                   HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+    public static void execHttpGet(String url, String acceptHeader, HttpResponseHandler handler, HttpClient httpClient,
+            HttpContext httpContext, HttpAuthenticator authenticator) {
         String requestURI = determineRequestURI(url);
         HttpGet httpget = new HttpGet(requestURI);
         exec(url, httpget, acceptHeader, handler, httpClient, httpContext, authenticator);
@@ -455,9 +519,9 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPost(String url, String contentType, String content, 
-                                    HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
-        execHttpPost(url, contentType, content, null, nullHandler, httpClient, httpContext, authenticator) ;
+    public static void execHttpPost(String url, String contentType, String content, HttpClient httpClient,
+            HttpContext httpContext, HttpAuthenticator authenticator) {
+        execHttpPost(url, contentType, content, null, nullHandler, httpClient, httpContext, authenticator);
     }
 
     /**
@@ -481,20 +545,22 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPost(String url, String contentType, String content, 
-                                    String acceptType, HttpResponseHandler handler,
-                                    HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+    public static void execHttpPost(String url, String contentType, String content, String acceptType,
+            HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         StringEntity e = null;
         try {
             e = new StringEntity(content, "UTF-8");
             e.setContentType(contentType);
             execHttpPost(url, e, acceptType, handler, httpClient, httpContext, authenticator);
+        } catch (UnsupportedCharsetException e1) {
+            throw new InternalErrorException("Platform does not support required UTF-8");
         } catch (UnsupportedEncodingException e1) {
             throw new InternalErrorException("Platform does not support required UTF-8");
         } finally {
             closeEntity(e);
         }
     }
+
     /**
      * Executes a HTTP POST with a request body from an input stream without
      * response body with no response handling
@@ -533,8 +599,8 @@ public class HttpOp {
      * @param handler
      *            Response handler called to process the response
      */
-    public static void execHttpPost(String url, String contentType, InputStream input, long length, 
-                                    String acceptType, HttpResponseHandler handler) {
+    public static void execHttpPost(String url, String contentType, InputStream input, long length, String acceptType,
+            HttpResponseHandler handler) {
         execHttpPost(url, contentType, input, length, acceptType, handler, null, null, null);
     }
 
@@ -564,9 +630,8 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPost(String url, String contentType, InputStream input, long length, 
-                                    String acceptType, HttpResponseHandler handler, 
-                                    HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+    public static void execHttpPost(String url, String contentType, InputStream input, long length, String acceptType,
+            HttpResponseHandler handler, HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         InputStreamEntity e = new InputStreamEntity(input, length);
         e.setContentType(contentType);
         e.setContentEncoding("UTF-8");
@@ -624,9 +689,9 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPost(String url, HttpEntity entity, 
-                                    HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
-        
+    public static void execHttpPost(String url, HttpEntity entity, HttpClient httpClient, HttpContext httpContext,
+            HttpAuthenticator authenticator) {
+
         execHttpPost(url, entity, null, nullHandler, httpClient, httpContext, authenticator);
     }
 
@@ -653,12 +718,11 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPost(String url, HttpEntity entity, 
-                                    String acceptHeader, HttpResponseHandler handler,
-                                    HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+    public static void execHttpPost(String url, HttpEntity entity, String acceptHeader, HttpResponseHandler handler,
+            HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         String requestURI = determineRequestURI(url);
         HttpPost httppost = new HttpPost(requestURI);
-        if ( entity != null )
+        if (entity != null)
             httppost.setEntity(entity);
         exec(url, httppost, acceptHeader, handler, httpClient, httpContext, authenticator);
     }
@@ -666,8 +730,8 @@ public class HttpOp {
     // ---- HTTP POST as a form.
 
     /**
-     * Executes a HTTP POST and returns a TypedInputStream,
-     * The TypedInputStream must be closed.
+     * Executes a HTTP POST and returns a TypedInputStream, The TypedInputStream
+     * must be closed.
      * 
      * @param url
      *            URL
@@ -691,33 +755,35 @@ public class HttpOp {
         execHttpPostForm(url, params, null, nullHandler);
     }
 
-//    /**
-//     * Executes a HTTP POST Form.
-//     * @param url
-//     *            URL
-//     * @param acceptHeader
-//     *            Accept Header
-//     * @param params
-//     *            Parameters to POST
-//     * @param httpClient
-//     *            HTTP Client
-//     * @param httpContext
-//     *            HTTP Context
-//     * @param authenticator
-//     *            HTTP Authenticator
-//     */
-//    public static void execHttpPostForm(String url, Params params, 
-//                                        String acceptHeader,  
-//                                        HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
-//        try {
-//            execHttpPostForm(url, params, acceptHeader, HttpResponseLib.nullResponse, httpClient, httpContext, authenticator);
-//        } catch (HttpException ex) {
-//            if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
-//                return ;
-//            throw ex;
-//        }
-//        return ;
-//    }
+    // /**
+    // * Executes a HTTP POST Form.
+    // * @param url
+    // * URL
+    // * @param acceptHeader
+    // * Accept Header
+    // * @param params
+    // * Parameters to POST
+    // * @param httpClient
+    // * HTTP Client
+    // * @param httpContext
+    // * HTTP Context
+    // * @param authenticator
+    // * HTTP Authenticator
+    // */
+    // public static void execHttpPostForm(String url, Params params,
+    // String acceptHeader,
+    // HttpClient httpClient, HttpContext httpContext, HttpAuthenticator
+    // authenticator) {
+    // try {
+    // execHttpPostForm(url, params, acceptHeader, HttpResponseLib.nullResponse,
+    // httpClient, httpContext, authenticator);
+    // } catch (HttpException ex) {
+    // if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
+    // return ;
+    // throw ex;
+    // }
+    // return ;
+    // }
 
     /**
      * Executes a HTTP POST Form and returns a TypedInputStream
@@ -744,15 +810,15 @@ public class HttpOp {
      */
     public static TypedInputStream execHttpPostFormStream(String url, Params params, String acceptHeader, HttpClient httpClient,
             HttpContext httpContext, HttpAuthenticator authenticator) {
-        CaptureInput handler = new CaptureInput() ;
+        CaptureInput handler = new CaptureInput();
         try {
             execHttpPostForm(url, params, acceptHeader, handler, httpClient, httpContext, authenticator);
         } catch (HttpException ex) {
             if (ex.getResponseCode() == HttpSC.NOT_FOUND_404)
-                return null ;
+                return null;
             throw ex;
         }
-        return handler.get(); 
+        return handler.get();
     }
 
     /**
@@ -789,11 +855,10 @@ public class HttpOp {
      * @param authenticator
      *            HTTP Authenticator
      */
-    public static void execHttpPostForm(String url, Params params, 
-                                        String acceptHeader, HttpResponseHandler handler,
-                                        HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
-        if ( handler == null )
-            throw new IllegalArgumentException("A HttpResponseHandler must be provided (e.g. HttpResponseLib.nullhandler)") ;
+    public static void execHttpPostForm(String url, Params params, String acceptHeader, HttpResponseHandler handler,
+            HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+        if (handler == null)
+            throw new IllegalArgumentException("A HttpResponseHandler must be provided (e.g. HttpResponseLib.nullhandler)");
         String requestURI = url;
         HttpPost httppost = new HttpPost(requestURI);
         httppost.setEntity(convertFormParams(params));
@@ -837,6 +902,8 @@ public class HttpOp {
             e = new StringEntity(content, "UTF-8");
             e.setContentType(contentType);
             execHttpPut(url, e, httpClient, httpContext, authenticator);
+        } catch (UnsupportedCharsetException e1) {
+            throw new InternalErrorException("Platform does not support required UTF-8");
         } catch (UnsupportedEncodingException e1) {
             throw new InternalErrorException("Platform does not support required UTF-8");
         } finally {
@@ -1017,17 +1084,16 @@ public class HttpOp {
     // ---- Perform the operation!
     // With logging.
 
-    private static void exec(String url, HttpUriRequest request, 
-                             String acceptHeader, HttpResponseHandler handler,
-                             HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
+    private static void exec(String url, HttpUriRequest request, String acceptHeader, HttpResponseHandler handler,
+            HttpClient httpClient, HttpContext httpContext, HttpAuthenticator authenticator) {
         try {
-            if ( handler == null )
-                // This cleans up. 
-                handler = nullHandler ;
-            
+            if (handler == null)
+                // This cleans up.
+                handler = nullHandler;
+
             long id = counter.incrementAndGet();
             String requestURI = determineRequestURI(url);
-            String baseURI = determineBaseIRI(url) ;
+            String baseURI = determineBaseIRI(url);
             if (log.isDebugEnabled())
                 log.debug(format("[%d] %s %s", id, request.getMethod(), request.getURI().toString()));
             // Accept
@@ -1047,7 +1113,8 @@ public class HttpOp {
             int statusCode = statusLine.getStatusCode();
             if (HttpSC.isClientError(statusCode) || HttpSC.isServerError(statusCode)) {
                 log.debug(format("[%d] %s %s", id, statusLine.getStatusCode(), statusLine.getReasonPhrase()));
-                // Error responses can have bodies so it is important to clear up. 
+                // Error responses can have bodies so it is important to clear
+                // up.
                 EntityUtils.consume(response.getEntity());
                 throw new HttpException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
             }
@@ -1060,20 +1127,35 @@ public class HttpOp {
     }
 
     /**
-     * Ensures that a HTTP Client is non-null, uses a Jena-wide
-     * {@link SystemDefaultHttpClient} if available when no
-     * authentication is required, else create a new instance.
+     * Ensures that a HTTP Client is non-null
+     * <p>
+     * Prefers the {@link HttpClient} provided for the request if available.
+     * Then it tries to use a Jena-wide user configurable
+     * {@link HttpClient} if available. This is used only when no
+     * authentication is required unless the user has indicated they want to use
+     * the default client with authentication regardless.
+     * </p>
+     * <p>
+     * In all other cases it creates a fresh instance of a
+     * {@link SystemDefaultHttpClient} each time.
+     * </p>
      * 
      * @param client
      *            HTTP Client
      * @return HTTP Client
      */
     private static HttpClient ensureClient(HttpClient client, HttpAuthenticator auth) {
-        if ( client != null )
-            return client ;
-        if ( defaultHttpClient != null && auth == null )
-            return defaultHttpClient ;
-        return new SystemDefaultHttpClient() ;
+        // Use user provided client if available
+        if (client != null)
+            return client;
+
+        // Use configured default client if no authentication involved or
+        // configured to use it with authentication
+        if (defaultHttpClient != null && (auth == null || useDefaultClientWithAuthentication))
+            return defaultHttpClient;
+
+        // Otherwise use a fresh client each time
+        return new SystemDefaultHttpClient();
     }
 
     private static AbstractHttpClient asAbstractClient(HttpClient client) {
@@ -1094,10 +1176,12 @@ public class HttpOp {
     private static HttpContext ensureContext(HttpContext context) {
         return context != null ? context : new BasicHttpContext();
     }
-    
+
     /**
      * Applies the configured User-Agent string to the HTTP request
-     * @param message HTTP request
+     * 
+     * @param message
+     *            HTTP request
      */
     public static void applyUserAgent(HttpMessage message) {
         if (userAgent != null) {
@@ -1168,8 +1252,9 @@ public class HttpOp {
         }
     }
 
-    /** Calculate the request URI from a general URI.
-     * This means remove any fragment. 
+    /**
+     * Calculate the request URI from a general URI. This means remove any
+     * fragment.
      */
     private static String determineRequestURI(String uri) {
         String requestURI = uri;
@@ -1181,9 +1266,10 @@ public class HttpOp {
         return requestURI;
     }
 
-    /** Calculate the base IRI to use from a URI.
-     *  The base is without fragement and without query string.
-     */ 
+    /**
+     * Calculate the base IRI to use from a URI. The base is without fragement
+     * and without query string.
+     */
     private static String determineBaseIRI(String uri) {
         // Defrag
         String baseIRI = determineRequestURI(uri);

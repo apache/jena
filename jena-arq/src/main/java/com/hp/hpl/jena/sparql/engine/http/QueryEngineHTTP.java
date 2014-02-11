@@ -352,7 +352,7 @@ public class QueryEngineHTTP implements QueryExecution {
         }
 
         retainedConnection = in; // This will be closed on close()
-        retainedClient = httpQuery.getClient();
+        retainedClient = httpQuery.shouldShutdownClient() ? httpQuery.getClient() : null;
 
         // TODO: Find a way to auto-detect how to create the ResultSet based on
         // the content type in use
