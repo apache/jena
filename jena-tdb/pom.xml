@@ -46,9 +46,9 @@
   <description>TDB is a storage subsystem for Jena and ARQ, it is a native triple store providing persisent disk based storage of triples/quads.</description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-tdb</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-tdb</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-tdb</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-tdb</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-tdb</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-tdb</url>
   </scm>
   
   <dependencies>
