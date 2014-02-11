@@ -69,5 +69,11 @@ public class AsyncPool
             running.remove(task.getTaskId()) ;
         }
     }
+    
+    public AsyncTask get(String taskId) {
+        synchronized(mutex) {
+            return running.get(taskId) ;
+        }
+    }
 }
 

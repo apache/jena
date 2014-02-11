@@ -21,8 +21,12 @@ package org.apache.jena.fuseki.servlets;
 import java.io.IOException ;
 import java.io.PrintWriter ;
 
+import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.web.HttpSC ;
 
@@ -154,5 +158,26 @@ public class ServletOps {
         response.setHeader(HttpNames.hCacheControl, "must-revalidate,no-cache,no-store");
         response.setHeader(HttpNames.hPragma, "no-cache");
     }
+    
+    /** Send a JSON value as a 200 response.  Null objetc means no response body and no content-type headers. */
+    public static void sendJsonReponse(HttpAction action, JsonValue v) {
+        if ( v == null ) {
+            ServletOps.success(action);
+            return ;
+        }
+        
+        try {
+            HttpServletResponse response = action.response ;
+            ServletOutputStream out = response.getOutputStream() ;
+            response.setContentType(WebContent.contentTypeJSON);
+            response.setCharacterEncoding(WebContent.charsetUTF8) ;
+            JSON.write(out, v) ;
+            out.println() ; 
+            out.flush() ;
+            ServletOps.success(action);
+        } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
+    }
+    
+
 }
 

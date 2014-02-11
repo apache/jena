@@ -24,16 +24,18 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.fuseki.async.AsyncPool ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class ActionBackup extends ActionAsyncTask
+/** A task that kicks off a asynchornous operation that simply waits and exits.  For testing. */
+public class ActionSleep extends ActionAsyncTask
 {
-    public ActionBackup() { super() ; }
+    public ActionSleep() { super() ; }
     
-    // Only POST
+    // And only POST
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         doCommon(request, response);
@@ -47,25 +49,36 @@ public class ActionBackup extends ActionAsyncTask
             ServletOps.errorOccurred("Null for dataset name in item request");
             return null ;
         }
-        action.log.info(format("[%d] Backup dataset %s", action.id, name)) ;
-        return new BackupTask(action) ;
+        
+        String interval = action.request.getParameter("interval") ;
+        int sleepMilli = 5000 ;
+        if ( interval != null )
+            try {
+                sleepMilli = Integer.parseInt(interval) ;
+            } catch (NumberFormatException ex) {
+                action.log.error(format("[%d] NumberFormatException: %s", action.id, interval)) ; 
+            }
+        action.log.info(format("[%d] Sleep %s %d ms", action.id, name, sleepMilli)) ;
+        return new SleepTask(action, sleepMilli) ;
     }
 
-    static class BackupTask implements Runnable {
-        static private Logger log = LoggerFactory.getLogger("Backup") ;
-        
+    static class SleepTask implements Runnable {
+        private final Logger log ;
         private final long actionId ;
+        private final int sleepMilli ;
         
-        public BackupTask(HttpAction action) {
-            actionId = action.id ;
+        public SleepTask(HttpAction action, int sleepMilli ) {
+            this.log = action.log ;
+            this.actionId = action.id ;
+            this.sleepMilli = sleepMilli ;
         }
 
         @Override
         public void run() {
             try {
-                log.info(format("[%d] >>>> Start", actionId)) ;
-                Lib.sleep(5000) ;
-                log.info(format("[%d] <<<< Finish", actionId)) ;
+                log.info(format("[%d] >> Sleep start", actionId)) ;
+                Lib.sleep(sleepMilli) ;
+                log.info(format("[%d] << Sleep finish", actionId)) ;
             } catch (Exception ex) {
                 log.info(format("[%d] **** Exception", actionId), ex) ;
             }

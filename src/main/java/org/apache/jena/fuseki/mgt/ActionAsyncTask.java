@@ -1,0 +1,69 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.fuseki.mgt;
+
+import javax.servlet.http.HttpServletRequest ;
+import javax.servlet.http.HttpServletResponse ;
+
+import org.apache.jena.atlas.json.JsonBuilder ;
+import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.fuseki.async.AsyncPool ;
+import org.apache.jena.fuseki.async.AsyncTask ;
+import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
+
+/** Base helper class for creating async tasks on "items", based on POST  */ 
+public abstract class ActionAsyncTask extends ActionItem
+{
+    private static AsyncPool asyncPool = AsyncPool.get() ;
+    
+    public ActionAsyncTask() { super() ; }
+    
+    // Block GET - caching issues.
+    @Override
+    final
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        ServletOps.errorMethodNotAllowed(METHOD_GET);
+    }
+
+    @Override
+    protected void execDelete(HttpAction action) { ServletOps.errorMethodNotAllowed(METHOD_DELETE); }
+
+    @Override
+    final
+    protected JsonValue execGetItem(HttpAction action) { 
+        throw new InternalErrorException("GET for backup -- Should not be here!") ;
+    }
+
+    @Override
+    final
+    protected JsonValue execPostItem(HttpAction action) {
+        Runnable task = createRunnable(action) ;
+        AsyncTask asyncTask = asyncPool.submit(task, "backup", action.getDataService()) ;
+        JsonBuilder builder = new JsonBuilder() ;
+        builder.startObject("outer") ;
+        builder.key("task").value(asyncTask.getTaskId()) ;
+        builder.finishObject("outer") ;
+        return builder.build() ;
+    }
+    
+    protected abstract Runnable createRunnable(HttpAction action) ;
+}
+

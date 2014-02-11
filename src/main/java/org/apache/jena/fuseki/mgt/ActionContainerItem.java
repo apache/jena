@@ -113,24 +113,8 @@ public abstract class ActionContainerItem extends ActionCtl {
             v = execGetContainer(action) ;
         else
             v = execGetItem(action) ;
-        if ( v == null )
-            ServletOps.success(action);
-        else
-            sendJsonReponse(action, v);
-    }
-    
-    // ServlerOps?
-    protected static void sendJsonReponse(HttpAction action, JsonValue v) {
-        try {
-            HttpServletResponse response = action.response ;
-            ServletOutputStream out = response.getOutputStream() ;
-            response.setContentType(WebContent.contentTypeJSON);
-            response.setCharacterEncoding(WebContent.charsetUTF8) ;
-            JSON.write(out, v) ;
-            out.println() ; 
-            out.flush() ;
-            ServletOps.success(action);
-        } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
+        
+        ServletOps.sendJsonReponse(action, v);
     }
     
     /** GET request on the container - respond with JSON, or null for plain 200 */  
@@ -144,10 +128,8 @@ public abstract class ActionContainerItem extends ActionCtl {
             v = execPostContainer(action) ;
         else
             v = execPostItem(action) ;
-        if ( v == null )
-            ServletOps.success(action);
-        else
-            sendJsonReponse(action, v);
+        
+        ServletOps.sendJsonReponse(action, v);
     }
     
     /** POST request on an item in the container - respond with JSON, or null for plain 200 */  

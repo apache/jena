@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.json.JsonBuilder ;
+import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.async.AsyncPool ;
 import org.apache.jena.fuseki.async.AsyncTask ;
@@ -72,6 +73,8 @@ public class ActionTasks extends ActionBase //ActionContainerItem
     private void execGet(HttpAction action, String name) {
         String _name = (name==null)?"''":name ;
         log.info(format("[%d] Task %s", action.id, _name));
+
+        JsonValue responseBody = null ;
         
         if ( name == null ) {
             JsonBuilder builder = new JsonBuilder() ;
@@ -82,16 +85,34 @@ public class ActionTasks extends ActionBase //ActionContainerItem
                     builder.value(aTask.getTaskId()) ;
                 }
             }
-            
-            builder.startArray() ;
-            ServletOps.success(action);
+            builder.finishArray() ;
+            responseBody = builder.build(); 
         } else {
-            // Ping the task is active
+            for ( AsyncPool pool : pools ) {
+                AsyncTask aTask = pool.get(name) ;
+                if ( aTask != null ) {
+                    JsonBuilder builder = new JsonBuilder() ;
+                    descOneTask(builder, aTask);
+                    responseBody = builder.build() ;
+                }
+            }
         }
+        
+        if ( responseBody == null )
+            ServletOps.errorNotFound("Task '"+name+"' not found") ;
+        else
+            ServletOps.sendJsonReponse(action, responseBody); 
     }
 
     private void execPost(HttpAction action, String name) {
         
+    }
+    
+    private static void descOneTask(JsonBuilder builder, AsyncTask aTask) {
+        builder.startObject("SingleTask") ;
+        builder.key("task").value(aTask.displayName()) ; 
+        builder.key("taskId").value(aTask.getTaskId()) ;
+        builder.finishObject("SingleTask") ;
     }
 }
 

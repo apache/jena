@@ -150,6 +150,15 @@
     <servlet-class>org.apache.jena.fuseki.mgt.ActionTasks</servlet-class>
   </servlet>
 
+  <!-- A management action that only creates a background task that sleeps.
+       Useful for writing tests for managegemt tools that exercise the
+        background task functionality.
+  -->
+  <servlet>
+    <servlet-name>ActionSleep</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionSleep</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>ActionDatasets</servlet-name>
     <url-pattern>/$/datasets/*</url-pattern>
@@ -178,6 +187,11 @@
   <servlet-mapping>
     <servlet-name>ActionTasks</servlet-name>
     <url-pattern>/$/tasks/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionSleep</servlet-name>
+    <url-pattern>/$/sleep/*</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>
