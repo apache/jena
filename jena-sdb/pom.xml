@@ -34,9 +34,9 @@
   <description>SDB is a persistence layer for use with Apache Jena that uses an SQL database to store triples/quads.</description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-sdb</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.1-SNAPSHOT/jena-sdb</developerConnection>
-    <url>http://svn.apache.org/viewvc/jena/tags/jena-2.11.1-SNAPSHOT/jena-sdb</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-sdb</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-sdb</developerConnection>
+    <url>http://svn.apache.org/viewvc/jena/tags/jena-2.11.2-SNAPSHOT/jena-sdb</url>
   </scm>
 
   <properties>
