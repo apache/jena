@@ -342,6 +342,11 @@ public class ARQ
      *  When in doubt, xsd:strings are assumed to be the same value as simple literals   
      */  
     public static final Symbol optTermStrings = ARQConstants.allocSymbol("optTermStrings") ;
+    
+    /**
+     * Context key controlling whether the standard optimizer applies constant folding to expressions
+     */
+    public static final Symbol optExprConstantFolding = ARQConstants.allocSymbol("optExprConstantFolding");
 
     /** 
      *  Context key controlling whether the standard optimizer applies

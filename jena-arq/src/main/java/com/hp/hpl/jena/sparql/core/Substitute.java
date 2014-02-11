@@ -155,7 +155,7 @@ public class Substitute
     
     private static boolean isNotNeeded(Binding b)
     {
-        return b.isEmpty() ; 
+        return b == null || b.isEmpty() ; 
     }
     
     // ----
