@@ -69,15 +69,15 @@
     <!--
     <server.jar.name>fuseki-server-${project.version}</server.jar.name>
     -->
-    <server.jar.name>${this.root}-server</server.jar.name>
     <assembly.name>${this.root}</assembly.name>
+    <server.jar.name>${this.root}-server</server.jar.name>
     <assembly.soh.name>${this.root}</assembly.soh.name>
     <assembly.zip.name>${this.root}</assembly.zip.name>
 
-    <ver.jetty>8.1.11.v20130520</ver.jetty>
+    <ver.jetty>8.1.14.v20131031</ver.jetty>
     <ver.velocity>1.7</ver.velocity>
 
-    <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
+    <ver.commons-fileupload>1.3.1</ver.commons-fileupload>
   </properties>
 
   <dependencies>
@@ -121,6 +121,17 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
       <version>1.0.2-SNAPSHOT</version>
+      <exclusions>
+        <!-- 
+	  Get this via commons-fileupload and also via jena-text/sol4j
+	  Choose the commons-fileupload route
+	-->
+        <exclusion>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
+      </exclusions>
+
     </dependency>
 
     <dependency>

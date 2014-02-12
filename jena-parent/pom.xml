@@ -51,12 +51,16 @@
   </scm>
 
   <properties>
-    <ver.slf4j>1.6.4</ver.slf4j>
-    <ver.log4j>1.2.16</ver.log4j>
+    <ver.slf4j>1.7.6</ver.slf4j>
+    <ver.log4j>1.2.17</ver.log4j>
     <ver.junit>4.11</ver.junit>
     <ver.xerces>2.11.0</ver.xerces>
-    <ver.httpclient>4.2.3</ver.httpclient>
     <ver.jsonldjava>0.3</ver.jsonldjava>
+
+    <!-- These are connected because slr4j depends on httpclient as well -->
+    <ver.httpclient>4.2.3</ver.httpclient>
+    <ver.lucene>4.3.1</ver.lucene>
+    <ver.solr>4.3.1</ver.solr>
 
     <jdk.version>1.6</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
