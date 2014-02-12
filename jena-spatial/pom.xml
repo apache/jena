@@ -32,9 +32,6 @@
   </parent>
 
   <properties>
-    <ver.jena>2.11.2-SNAPSHOT</ver.jena>
-    <ver.lucene>4.3.1</ver.lucene>
-    <ver.solr>4.3.1</ver.solr>
     <ver.spatial4j>0.3</ver.spatial4j>
     <ver.jts>1.13</ver.jts>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,7 +49,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>${ver.jena}</version>
+      <version>2.11.2-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
@@ -60,7 +57,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>${ver.jena}</version>
+      <version>2.11.2-SNAPSHOT</version>
       <type>jar</type>
       <classifier>tests</classifier>
       <scope>test</scope>

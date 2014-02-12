@@ -31,25 +31,13 @@
     <relativePath>../jena-parent</relativePath>
   </parent>
 
-  <properties>
-    <ver.jena>2.11.2-SNAPSHOT</ver.jena>
-    <ver.lucene>4.3.1</ver.lucene>
-    <ver.solr>4.3.1</ver.solr>
-
-    <jdk.version>1.6</jdk.version>
-    <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-  </properties>
-
   <dependencies>
 
     <!-- All Jena libs (not Fuseki) -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>${ver.jena}</version>
+      <version>2.11.2-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 
@@ -57,7 +45,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>${ver.jena}</version>
+      <version>2.11.2-SNAPSHOT</version>
       <type>jar</type>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -86,9 +74,9 @@
     </dependency>
 
     <!-- Solr client -->
-    <!-- Exclusion of slf4: Necessary otherwise maven complains about a "Dependency 
-	 convergence error" of slf4j-api 1.6.1 (from zookeeper) vs 1.6.4 (Jena) possibly 
-	 due to the use of scope-test -->
+    <!-- Exclusion of slf4: Necessary so as to pick the version
+	 we want. solrj->zookeeper has a dependency on slf4j
+    -->
 
     <dependency>
       <artifactId>solr-solrj</artifactId>
