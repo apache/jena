@@ -26,7 +26,6 @@ import java.util.concurrent.* ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.fuseki.server.DataService ;
-import org.eclipse.jetty.util.thread.Scheduler.Task ;
 
 /** The set of currently active async tasks */
 public class AsyncPool

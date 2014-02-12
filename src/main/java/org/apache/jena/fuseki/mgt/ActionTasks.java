@@ -71,8 +71,10 @@ public class ActionTasks extends ActionBase //ActionContainerItem
     
 
     private void execGet(HttpAction action, String name) {
-        String _name = (name==null)?"''":name ;
-        log.info(format("[%d] Task %s", action.id, _name));
+        if ( name == null )
+            log.info(format("[%d] Tasks", action.id));
+        else
+            log.info(format("[%d] Task %s", action.id, name));
 
         JsonValue responseBody = null ;
         
@@ -89,6 +91,7 @@ public class ActionTasks extends ActionBase //ActionContainerItem
             responseBody = builder.build(); 
         } else {
             for ( AsyncPool pool : pools ) {
+                // Assumes first is only.
                 AsyncTask aTask = pool.get(name) ;
                 if ( aTask != null ) {
                     JsonBuilder builder = new JsonBuilder() ;
