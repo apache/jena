@@ -142,7 +142,7 @@ public class ActionDatasets extends ActionCtl {
         action.log.info(format("[%d] GET datasets", action.id)) ;
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("D") ;
-        builder.key("datasets") ;
+        builder.key(JsonConst.datasets) ;
         JsonDescription.arrayDatasets(builder, DataAccessPointRegistry.get());
         builder.finishObject("D") ;
         return builder.build() ;

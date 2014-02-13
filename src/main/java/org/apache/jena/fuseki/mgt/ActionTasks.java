@@ -84,7 +84,8 @@ public class ActionTasks extends ActionBase //ActionContainerItem
             
             for ( AsyncPool pool : pools ) {
                 for ( AsyncTask aTask : pool.tasks() ) {
-                    builder.value(aTask.getTaskId()) ;
+                    //builder.value(aTask.getTaskId()) ;
+                    descOneTask(builder, aTask) ;
                 }
             }
             builder.finishArray() ;
@@ -92,7 +93,7 @@ public class ActionTasks extends ActionBase //ActionContainerItem
         } else {
             for ( AsyncPool pool : pools ) {
                 // Assumes first is only.
-                AsyncTask aTask = pool.get(name) ;
+                AsyncTask aTask = pool.getTask(name) ;
                 if ( aTask != null ) {
                     JsonBuilder builder = new JsonBuilder() ;
                     descOneTask(builder, aTask);
@@ -103,8 +104,8 @@ public class ActionTasks extends ActionBase //ActionContainerItem
         
         if ( responseBody == null )
             ServletOps.errorNotFound("Task '"+name+"' not found") ;
-        else
-            ServletOps.sendJsonReponse(action, responseBody); 
+        ServletOps.setNoCache(action) ; 
+        ServletOps.sendJsonReponse(action, responseBody); 
     }
 
     private void execPost(HttpAction action, String name) {
@@ -113,8 +114,12 @@ public class ActionTasks extends ActionBase //ActionContainerItem
     
     private static void descOneTask(JsonBuilder builder, AsyncTask aTask) {
         builder.startObject("SingleTask") ;
-        builder.key("task").value(aTask.displayName()) ; 
-        builder.key("taskId").value(aTask.getTaskId()) ;
+        builder.key(JsonConst.task).value(aTask.displayName()) ;
+        builder.key(JsonConst.taskId).value(aTask.getTaskId()) ;
+        if ( aTask.getStartPoint() != null )
+            builder.key(JsonConst.started).value(aTask.getStartPoint()) ;
+        if ( aTask.getFinishPoint() != null )
+            builder.key(JsonConst.finished).value(aTask.getFinishPoint()) ;
         builder.finishObject("SingleTask") ;
     }
 }

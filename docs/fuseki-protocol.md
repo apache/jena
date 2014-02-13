@@ -36,12 +36,16 @@ Further operations may be added within this naming scheme.
 | <tt>GET</tt>    | `/$/datasets/*{name}*` |               |
 | <tt>POST</tt>   | `/$/datasets/*{name}*?state=offline` |               |
 | <tt>POST</tt>   | `/$/datasets/*{name}*?state=active`  |               |
-| <tt>POST</tt>   | `/$/backup/*{name}*`   | Not yet implemented  |
 ||
 | <tt>POST</tt>   | `/$/server/shutdown`   | Not yet implemented  | 
 ||
 | <tt>GET</tt>    | `/$/stats/`            |               | 
 | <tt>GET</tt>    | `/$/stats/*{name}*`    |               |
+||
+| <tt>POST</tt>   | `/$/backup/*{name}*`   |             |
+||
+| <tt>GET</tt>    | `/$/tasks/`            |               | 
+| <tt>GET</tt>    | `/$/tasks/*{name}*`    |               |
 
 ## Ping
 Pattern: `/$/ping`
@@ -127,17 +131,6 @@ any persistent data can be manipulated outside the server.
 
 Datasets are initially "active".  The transition from "active" to "offline" is graceful - all outstanding requests are completed.
 
-### Backup 
-Pattern: `/$/backup/*{name}*`
-
-> _Not implemented_
-
-This operation initiates a backup and returns. It returns, via the Location head (@@?)
-the location of a resource that can be used to monitor the backup operation. Backup
-operations run asynchronously and may take a long time.
-
-Backups are written to the sever local directory 'backups' as  gzip-compressed N-Quads files.
-
 ## Statistics
 > **`/$/stats/*{name}*`**
 
@@ -146,3 +139,22 @@ Statistics can be obtained for each dataset or all datasets in a single response
 
 > _@@ stats details_
 > See [Fuseki Statistics](fuseki-stats.html) for details of statistics kept by a Fuseki server.
+
+### Backup 
+Pattern: `/$/backup/*{name}*`
+
+This operation initiates a backup and returns a JSON object with the task Id in it.
+
+Backups are written to the sever local directory 'backups' as  gzip-compressed N-Quads files.
+
+See [Tasks](#tasks) for how to monitor a backups progress.
+
+### Tasks
+Pattern: `/$/tasks` &ndash; All asynchronous tasks.<br/>
+Pattern: `/$/tasks/*{taskId}*` &ndash; All asynchronous tasks.
+
+Background tasks, such as 'backup', can be monitored by polling.  The URL `/$/tasks` returns a description of all running and recently tasks. A finished task can be indentified by having a "finishPoint" field.
+
+Each background task has an id.  The URL `/$/tasks/*{taskId}*` gets a description about one single task.
+
+Details of the last few completed tasks are retained, up to a fixed number. The records will eventually be removed as laters taks complete, and the task URL will then return 404.

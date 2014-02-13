@@ -23,15 +23,15 @@ import static java.lang.String.format ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.fuseki.async.AsyncPool ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 /** A task that kicks off a asynchornous operation that simply waits and exits.  For testing. */
-public class ActionSleep extends ActionAsyncTask
+public class ActionSleep extends ActionCtl
 {
     public ActionSleep() { super() ; }
     
@@ -42,12 +42,19 @@ public class ActionSleep extends ActionAsyncTask
     }
 
     @Override
+    protected void perform(HttpAction action) {
+        Runnable task = createRunnable(action) ;
+        JsonValue v = Async.asyncTask(AsyncPool.get(), "sleep", null, task) ;
+        ServletOps.sendJsonReponse(action, v);
+    }
+
     protected Runnable createRunnable(HttpAction action) {
         String name = action.getDatasetName() ;
         if ( name == null ) {
-            action.log.error("Null for dataset name in item request") ;  
-            ServletOps.errorOccurred("Null for dataset name in item request");
-            return null ;
+//            action.log.error("Null for dataset name in item request") ;  
+//            ServletOps.errorOccurred("Null for dataset name in item request");
+//            return null ;
+            name = "''" ;
         }
         
         String interval = action.request.getParameter("interval") ;

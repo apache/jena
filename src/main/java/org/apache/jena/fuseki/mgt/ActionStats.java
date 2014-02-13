@@ -77,7 +77,7 @@ public class ActionStats extends ActionCtl
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("top") ;
         
-        builder.key("datasets") ;
+        builder.key(JsonConst.datasets) ;
         builder.startObject("datasets") ;
         for ( String ds : DataAccessPointRegistry.get().keys() )
             statsDataset(builder, ds) ; 
@@ -94,7 +94,7 @@ public class ActionStats extends ActionCtl
         String datasetPath = DataAccessPoint.canonical(action.getDatasetName()) ;
         builder.startObject("TOP") ;
         
-        builder.key("datasets") ;
+        builder.key(JsonConst.datasets) ;
         builder.startObject("datasets") ;
         statsDataset(builder, datasetPath) ;
         builder.finishObject("datasets") ;
@@ -115,7 +115,7 @@ public class ActionStats extends ActionCtl
         builder.key(CounterName.RequestsGood.name()).value(dSrv.getCounters().value(CounterName.RequestsGood)) ;
         builder.key(CounterName.RequestsBad.name()).value(dSrv.getCounters().value(CounterName.RequestsBad)) ;
         
-        builder.key("services").startObject("services") ;
+        builder.key(JsonConst.services).startObject("services") ;
         
         for ( OperationName operName : dSrv.getOperations() ) {
             List<Endpoint> endpoints = access.getDataService().getOperation(operName) ;
@@ -125,7 +125,7 @@ public class ActionStats extends ActionCtl
                 builder.startObject() ;
                 
                 operationCounters(builder, endpoint);
-                builder.key("endpoints") ;
+                builder.key(JsonConst.endpoints) ;
                 builder.startArray() ;
                 builder.value(endpoint.getEndpoint()) ;
                 builder.finishArray() ;

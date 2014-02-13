@@ -50,19 +50,14 @@ public abstract class ActionAsyncTask extends ActionItem
     @Override
     final
     protected JsonValue execGetItem(HttpAction action) { 
-        throw new InternalErrorException("GET for backup -- Should not be here!") ;
+        throw new InternalErrorException("GET for AsyncTask -- Should not be here!") ;
     }
 
     @Override
     final
     protected JsonValue execPostItem(HttpAction action) {
         Runnable task = createRunnable(action) ;
-        AsyncTask asyncTask = asyncPool.submit(task, "backup", action.getDataService()) ;
-        JsonBuilder builder = new JsonBuilder() ;
-        builder.startObject("outer") ;
-        builder.key("task").value(asyncTask.getTaskId()) ;
-        builder.finishObject("outer") ;
-        return builder.build() ;
+        return Async.asyncTask(asyncPool, "backup", action.getDataService(), task) ;
     }
     
     protected abstract Runnable createRunnable(HttpAction action) ;

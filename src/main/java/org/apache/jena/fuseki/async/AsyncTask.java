@@ -18,8 +18,14 @@
 
 package org.apache.jena.fuseki.async;
 
+import static java.lang.String.format ;
+
 import java.util.concurrent.Callable ;
 
+import com.hp.hpl.jena.sparql.util.Utils ;
+
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DataService ;
 import org.slf4j.Logger ;
@@ -34,6 +40,9 @@ public class AsyncTask implements Callable<Object>
 
     private final String displayName ;
     private final DataService dataService ;
+
+    private String startPoint = null ;
+    private String finishPoint = null ;
 
     private final String taskId ;
 
@@ -57,14 +66,47 @@ public class AsyncTask implements Callable<Object>
     
     public DataService getDataService() { return dataService ; }
 
+    private void start() {
+        if ( startPoint != null ) {
+            String msg = format("[%s] Async task has already been started", taskId) ;
+            Log.warn(Fuseki.serverLog, msg) ;
+            throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]") ; 
+        }
+            
+        startPoint = Utils.nowAsXSDDateTimeString() ;
+    }
+    
+    public void finish() {
+        if ( finishPoint != null ) {
+            String msg = format("[%s] Async task has already been finished", taskId) ;
+            Log.warn(Fuseki.serverLog, msg) ;
+            throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]") ; 
+        }
+        finishPoint = Utils.nowAsXSDDateTimeString() ;
+    }
+    
     @Override
     public Object call() {
-        try { return callable.call() ; } 
+        try {
+            start() ;
+            return callable.call() ;
+        }
         catch (Exception ex) {
             log.error("Async task threw an expection", ex) ;
-            return null ; 
+            return null ;
         }
-        finally { pool.finished(this) ; } 
+        finally {
+            finish() ;
+            pool.finished(this) ;
+        }
+    }
+
+    public String getStartPoint() {
+        return startPoint ;
+    }
+
+    public String getFinishPoint() {
+        return finishPoint ;
     }
 }
 

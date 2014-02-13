@@ -29,10 +29,12 @@ import static org.apache.jena.riot.web.HttpOp.execHttpPost ;
 
 import java.io.File ;
 import java.io.IOException ;
+import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.http.HttpEntity ;
+import org.apache.http.HttpResponse ;
 import org.apache.http.NameValuePair ;
 import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.entity.FileEntity ;
@@ -46,6 +48,8 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.riot.web.HttpResponseHandler ;
 import org.apache.jena.web.HttpSC ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
@@ -253,6 +257,45 @@ public class TestAdmin extends BaseTest {
             checkJsonStatsAll(v);
         } catch (HttpException ex) { assertEquals(HttpSC.NOT_FOUND_404, ex.getResponseCode()); }
         deleteDataset(dsTest) ;
+    }
+
+    @Test public void task_1() {
+        String x = execSleepTask(null, 10) ;
+        assertNotNull(x) ;
+        Integer.parseInt(x) ;
+    }
+    
+    static class JsonResponseHandler implements HttpResponseHandler {
+
+        private JsonValue result = null ;
+        
+        public JsonValue getJSON() {
+            return result ;
+        }
+        
+        @Override
+        public void handle(String baseIRI, HttpResponse response) throws IOException {
+            InputStream in = response.getEntity().getContent() ;
+            try {
+                result = JSON.parseAny(in) ;
+            } finally { IO.close(in) ; }
+        }
+        
+    }
+    
+    private String execSleepTask(String name, int millis) {
+        String url = urlRoot+"$/sleep" ;
+        if ( name != null ) {
+            if ( name.startsWith("/") )
+                name = name.substring(1) ;
+            url = url + "/"+name ; 
+        }
+        
+        JsonResponseHandler x = new JsonResponseHandler() ; 
+        HttpOp.execHttpPost(url+"?interval="+millis, null, WebContent.contentTypeJSON, x) ;
+        JsonValue v = x.getJSON() ;
+        String id = v.getAsObject().get("taskId").getAsString().toString() ;
+        return id ;
     }
 
     // Auxilary

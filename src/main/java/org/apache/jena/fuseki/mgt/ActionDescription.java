@@ -83,23 +83,23 @@ public class ActionDescription extends ActionCtl
             builtDateStr = "Unknown" ;
             
         builder
-            .key("server")
+            .key(JsonConst.server)
             .startObject()
-            .key("port").value(SPARQLServer.instance.getServerPort())
+            .key(JsonConst.port).value(SPARQLServer.instance.getServerPort())
             .finishObject() ;
         builder
-            .key("admin")
+            .key(JsonConst.admin)
             .startObject()
-            //.key("hostname").value(req.getLocalName())
-            .key("port").value(SPARQLServer.instance.getMgtPort())
+            //.key(JsonConst.hostname).value(req.getLocalName())
+            .key(JsonConst.port).value(SPARQLServer.instance.getMgtPort())
             .finishObject() ;
         builder
-            .key("version").value(versionStr)
-            .key("built").value(builtDateStr) ;
+            .key(JsonConst.version).value(versionStr)
+            .key(JsonConst.built).value(builtDateStr) ;
     }
 
     private void describeDataset(JsonBuilder builder) {
-        builder.key("datasets") ;
+        builder.key(JsonConst.datasets) ;
         JsonDescription.arrayDatasets(builder, DataAccessPointRegistry.get());
     }
 

@@ -18,81 +18,16 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import static java.lang.String.format ;
-
-import java.io.* ;
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.Locale ;
-import java.util.Map ;
-
-import javax.servlet.ServletException ;
-import javax.servlet.ServletOutputStream ;
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
-
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.json.JSON ;
-import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.fuseki.build.Builder ;
-import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.build.TemplateFunctions ;
-import org.apache.jena.fuseki.server.* ;
-import org.apache.jena.fuseki.servlets.* ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.fuseki.servlets.HttpAction ;
+import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.web.HttpSC ;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.shared.uuid.JenaUUID ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 /** Base for actions that are container and also have action on items */ 
 public abstract class ActionContainerItem extends ActionCtl {
     
     public ActionContainerItem() { super() ; }
     
-//    @Override
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-//        doCommon(request, response);
-//    }
-//
-//    @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-//        doCommon(request, response);
-//    }
-//    
-//    @Override
-//    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        doCommon(request, response);
-//    }
-//    
-//    @Override
-//    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        doCommon(request, response);
-//    }
-
     @Override
     final
     protected void perform(HttpAction action) {

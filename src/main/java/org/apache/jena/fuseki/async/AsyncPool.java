@@ -18,10 +18,7 @@
 
 package org.apache.jena.fuseki.async;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.* ;
 import java.util.concurrent.* ;
 import java.util.concurrent.atomic.AtomicLong ;
 
@@ -31,6 +28,7 @@ import org.apache.jena.fuseki.server.DataService ;
 public class AsyncPool
 {
     private static int nMaxThreads = 2 ;
+    private static int MAX_FINISHED = 20 ;
     
     // See Executors.newCachedThreadPool and Executors.newFixedThreadPool 
     private ExecutorService executor = new ThreadPoolExecutor(0, nMaxThreads,
@@ -38,7 +36,8 @@ public class AsyncPool
                                                               new LinkedBlockingQueue<Runnable>()) ;
     private final Object mutex = new Object() ; 
     private AtomicLong counter = new AtomicLong(0) ;
-    private Map<String, AsyncTask> running = new HashMap<>() ; 
+    private Map<String, AsyncTask> runningTasks = new LinkedHashMap<>() ; 
+    private Map<String, AsyncTask> finishedTasks = new LinkedHashMap<>() ;
     
     private static AsyncPool instance = new AsyncPool() ;
     public static AsyncPool get() 
@@ -52,26 +51,43 @@ public class AsyncPool
             Callable<Object> c = Executors.callable(task) ;
             AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService) ;
             Future<Object> x = executor.submit(asyncTask) ;
-            running.put(taskId, asyncTask) ;
+            runningTasks.put(taskId, asyncTask) ;
             return asyncTask ;
         }
     }
     
     public Collection<AsyncTask> tasks() {
         synchronized(mutex) {
-            return new ArrayList<>(running.values()) ;
+            List<AsyncTask> x = new ArrayList<>(runningTasks.size()+finishedTasks.size()) ;
+            x.addAll(runningTasks.values()) ;
+            x.addAll(finishedTasks.values()) ;
+            return x ;
         }
     }
     
     public void finished(AsyncTask task) { 
         synchronized(mutex) {
-            running.remove(task.getTaskId()) ;
+            String id = task.getTaskId() ;
+            runningTasks.remove(id) ;
+            while ( finishedTasks.size() >= MAX_FINISHED )
+                finishedTasks.remove(task.getTaskId()) ;
+            finishedTasks.put(id, task) ;
         }
     }
-    
-    public AsyncTask get(String taskId) {
+
+    public AsyncTask getRunningTask(String taskId) {
         synchronized(mutex) {
-            return running.get(taskId) ;
+            return runningTasks.get(taskId) ;
+        }
+    }
+
+    /** Get for any state */
+    public AsyncTask getTask(String taskId) {
+        synchronized(mutex) {
+            AsyncTask task = runningTasks.get(taskId) ;
+            if ( task != null )
+                return task ;
+            return finishedTasks.get(taskId) ;
         }
     }
 }

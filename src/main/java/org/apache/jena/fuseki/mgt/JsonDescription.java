@@ -29,12 +29,6 @@ import org.apache.jena.fuseki.server.OperationName ;
 /** Create a description of a service */
 public class JsonDescription {
     
-    static final String dsName = "ds.name" ;
-    static final String dsService = "ds.services" ;
-    
-    static final String srvType = "srv.type" ;
-    static final String srvEndpoints = "srv.endpoints" ;
-    
     public static void arrayDatasets(JsonBuilder builder, DataAccessPointRegistry registry) {
         builder.startArray() ;
         for ( String ds : registry.keys() ) {
@@ -46,9 +40,9 @@ public class JsonDescription {
     
     public static void describe(JsonBuilder builder, DataAccessPoint access) {
         builder.startObject() ;
-        builder.key(dsName).value(access.getName()) ;
+        builder.key(JsonConst.dsName).value(access.getName()) ;
         
-        builder.key(dsService) ;
+        builder.key(JsonConst.dsService) ;
         builder.startArray() ;
         
         for ( OperationName opName : access.getDataService().getOperations() ) {
@@ -63,9 +57,9 @@ public class JsonDescription {
     private static void describe(JsonBuilder builder, OperationName opName, List<Endpoint> endpoints) {
         builder.startObject() ;
         
-        builder.key(srvType).value(opName.name) ;
+        builder.key(JsonConst.srvType).value(opName.name) ;
 
-        builder.key(srvEndpoints) ;
+        builder.key(JsonConst.srvEndpoints) ;
         builder.startArray() ;
         for ( Endpoint endpoint : endpoints )
             builder.value(endpoint.getEndpoint()) ;

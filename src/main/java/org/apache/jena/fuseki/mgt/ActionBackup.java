@@ -23,11 +23,12 @@ import static java.lang.String.format ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class ActionBackup extends ActionAsyncTask
 {
@@ -55,21 +56,29 @@ public class ActionBackup extends ActionAsyncTask
         static private Logger log = LoggerFactory.getLogger("Backup") ;
         
         private final long actionId ;
+        private final DatasetGraph dataset ;
+        private final String datasetName ;
         
         public BackupTask(HttpAction action) {
-            actionId = action.id ;
+            this.actionId = action.id ;
+            action.getDataAccessPoint() ;
+            action.getDataAccessPoint().getDataService() ;
+            action.getDataAccessPoint().getDataService().getDataset() ;
+            this.dataset = action.getDataAccessPoint().getDataService().getDataset() ;
+            this.datasetName = action.getDatasetName() ;
         }
 
         @Override
         public void run() {
             try {
-                log.info(format("[%d] >>>> Start", actionId)) ;
-                Lib.sleep(5000) ;
-                log.info(format("[%d] <<<< Finish", actionId)) ;
+                String backupFilename = Backup.chooseFileName(datasetName) ;
+                log.info(format("[%d] >>>> Start backup %s -> %s", actionId, datasetName, backupFilename)) ;
+                Backup.backup(dataset, backupFilename) ;
+                log.info(format("[%d] <<<< Finish backup %s -> %s", actionId, datasetName, backupFilename)) ;
             } catch (Exception ex) {
-                log.info(format("[%d] **** Exception", actionId), ex) ;
+                log.info(format("[%d] **** Exception in backup", actionId), ex) ;
             }
         }
     }
 }
-
+    
