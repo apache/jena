@@ -25,10 +25,12 @@ package org.apache.jena.atlas.web;
 public class HttpException extends RuntimeException {
     private static final long serialVersionUID = -7224224620679594095L;
     private int responseCode = -1;
+    private String statusLine = null ;;
 
     public HttpException(int responseCode, String statusLine) {
         super(responseCode + " - " + statusLine);
         this.responseCode = responseCode;
+        this.statusLine = statusLine ;
     }
     
     public HttpException(String message) {
@@ -50,4 +52,13 @@ public class HttpException extends RuntimeException {
     public int getResponseCode() {
         return this.responseCode;
     }
+    
+    /**
+     * Gets the response code, may be null if unknown
+     * @return Status line
+     */
+    public String getStatusLine() {
+        return this.statusLine;
+    }
+
 }

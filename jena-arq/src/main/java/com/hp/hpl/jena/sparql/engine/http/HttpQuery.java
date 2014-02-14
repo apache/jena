@@ -155,6 +155,16 @@ public class HttpQuery extends Params {
     }
 
     /**
+     * Gets the HTTP Response Message returned by the request (returns null if request
+     * has yet to be made)
+     * 
+     * @return Response Message
+     */
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    /**
      * Sets whether the HTTP request will include a Accept-Encoding: gzip header
      * 
      * @param allow
@@ -347,7 +357,8 @@ public class HttpQuery extends Params {
         } catch (HttpException httpEx) {
             // Unwrap and re-wrap the HTTP exception
             responseCode = httpEx.getResponseCode();
-            throw new QueryExceptionHTTP(responseCode, "Error making the query, see cause for details", httpEx.getCause());
+            responseMessage = httpEx.getStatusLine() ;
+            throw new QueryExceptionHTTP(responseCode, "Error making the query: "+responseMessage, httpEx.getCause());
         }
     }
 
@@ -393,7 +404,8 @@ public class HttpQuery extends Params {
         } catch (HttpException httpEx) {
             // Unwrap and re-wrap the HTTP Exception
             responseCode = httpEx.getResponseCode();
-            throw new QueryExceptionHTTP(responseCode, "Error making the query, see cause for details", httpEx.getCause());
+            responseMessage = httpEx.getStatusLine() ;
+            throw new QueryExceptionHTTP(responseCode, "Error making the query: "+responseMessage, httpEx.getCause());
         }
     }
     
@@ -413,6 +425,7 @@ public class HttpQuery extends Params {
     private InputStream execCommon(TypedInputStream stream) throws QueryExceptionHTTP {
         // Assume response code must be 200 if we got here
         responseCode = 200;
+        responseMessage = "OK" ;
 
         // Get the returned content type so we can expose this later via the
         // getContentType() method
