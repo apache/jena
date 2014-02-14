@@ -18,16 +18,9 @@
 
 package org.apache.jena.fuseki;
 
-import java.io.File ;
-
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
-import org.apache.jena.riot.SysRIOT ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
@@ -45,19 +38,4 @@ import org.junit.runners.Suite ;
     , TestAdmin.class
 })
 public class TS_Fuseki extends ServerTest
-{
-//    static HttpClient defaultHttpClient = HttpOp.getDefaultHttpClient() ;
-//    // Used for all tests except auth tests.
-//    static HttpClient globalCachingClient = HttpOp.createCachingHttpClient() ;
-//    
-//    @BeforeClass public static void beforeClassAbstract1() {
-//        HttpOp.setDefaultHttpClient(globalCachingClient) ;
-//    }
-//    
-//    @AfterClass public static void afterClassAbstract1() {
-//        HttpOp.setDefaultHttpClient(defaultHttpClient) ;
-//    }
-    
-    @BeforeClass static public void beforeClass() { LogCtl.disable(Fuseki.requestLogName) ; }
-    @AfterClass static public void afterClass()   { LogCtl.setInfo(Fuseki.requestLogName) ;}
-}
+{ }
