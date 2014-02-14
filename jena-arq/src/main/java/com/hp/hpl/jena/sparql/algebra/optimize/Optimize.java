@@ -180,8 +180,10 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optFilterDisjunction) )
             op = apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;
         
+        // Some ORDER BY-LIMIT N queries can be done more efficiently by only recording
+        // the top N items, so a full sort is not needed.
         if ( context.isTrueOrUndef(ARQ.optTopNSorting) )
-        	op = apply("TopN Sorting", new TransformTopN(), op) ;
+            op = apply("TopN Sorting", new TransformTopN(), op) ;
         
         // ORDER BY+DISTINCT optimizations
         // We apply the one that changes evaluation order first since when it does apply it will give much
@@ -191,7 +193,7 @@ public class Optimize implements Rewrite
             op = apply("Apply DISTINCT prior to ORDER BY where possible", new TransformOrderByDistinctApplication(), op);
 
         // Transform some DISTINCT to REDUCED, slightly more liberal transform that ORDER BY+DISTINCT application
-        // but doesn't improve performance as much though should keep memory usage down
+        // Reduces memory consumption.
         if ( context.isTrueOrUndef(ARQ.optDistinctToReduced) )
             op = apply("Distinct replaced with reduced", new TransformDistinctToReduced(), op) ;
         
