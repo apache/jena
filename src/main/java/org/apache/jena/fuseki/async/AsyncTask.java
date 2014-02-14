@@ -68,21 +68,23 @@ public class AsyncTask implements Callable<Object>
 
     private void start() {
         if ( startPoint != null ) {
-            String msg = format("[%s] Async task has already been started", taskId) ;
+            String msg = format("[Task %s] Async task has already been started", taskId) ;
             Log.warn(Fuseki.serverLog, msg) ;
             throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]") ; 
         }
             
+        Fuseki.serverLog.info(format("[Task %s] starts : %s",taskId, displayName)) ;
         startPoint = Utils.nowAsXSDDateTimeString() ;
     }
     
     public void finish() {
         if ( finishPoint != null ) {
-            String msg = format("[%s] Async task has already been finished", taskId) ;
+            String msg = format("[Task %s] Async task has already been finished", taskId) ;
             Log.warn(Fuseki.serverLog, msg) ;
             throw new InternalErrorException("Finish has already been called ["+getTaskId()+"]") ; 
         }
         finishPoint = Utils.nowAsXSDDateTimeString() ;
+        Fuseki.serverLog.info(format("[Task %s] finishes : %s",taskId, displayName)) ;
     }
     
     @Override

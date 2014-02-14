@@ -18,10 +18,14 @@
 
 package org.apache.jena.fuseki;
 
+import java.io.File ;
+
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
+import org.apache.jena.riot.SysRIOT ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;

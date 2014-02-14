@@ -25,4 +25,5 @@ Other parts:
 [fuseki-main](fuseki-main.html)
 [fuseki-protocol](fuseki-protocol.html)
 [fuseki-stats](fuseki-stats.html)
+[fuseki-logging](fuseki-logging.html)
 

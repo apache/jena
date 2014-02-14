@@ -18,16 +18,18 @@
 
 package org.apache.jena.fuseki.async;
 
+import static java.lang.String.format ;
+
 import java.util.* ;
 import java.util.concurrent.* ;
-import java.util.concurrent.atomic.AtomicLong ;
 
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DataService ;
 
 /** The set of currently active async tasks */
 public class AsyncPool
 {
-    private static int nMaxThreads = 2 ;
+    private static int nMaxThreads = 4 ;
     private static int MAX_FINISHED = 20 ;
     
     // See Executors.newCachedThreadPool and Executors.newFixedThreadPool 
@@ -35,7 +37,7 @@ public class AsyncPool
                                                               120L, TimeUnit.SECONDS,
                                                               new LinkedBlockingQueue<Runnable>()) ;
     private final Object mutex = new Object() ; 
-    private AtomicLong counter = new AtomicLong(0) ;
+    private long counter = 0 ;
     private Map<String, AsyncTask> runningTasks = new LinkedHashMap<>() ; 
     private Map<String, AsyncTask> finishedTasks = new LinkedHashMap<>() ;
     
@@ -47,7 +49,8 @@ public class AsyncPool
     
     public AsyncTask submit(Runnable task, String displayName, DataService dataService) { 
         synchronized(mutex) {
-            String taskId = Long.toString(counter.incrementAndGet()) ;
+            String taskId = Long.toString(++counter) ;
+            Fuseki.serverLog.info(format("Task : %s : %s",taskId, displayName)) ;
             Callable<Object> c = Executors.callable(task) ;
             AsyncTask asyncTask = new AsyncTask(c, this, taskId, displayName, dataService) ;
             Future<Object> x = executor.submit(asyncTask) ;

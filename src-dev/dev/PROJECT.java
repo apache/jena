@@ -19,10 +19,7 @@
 package dev;
 
 public class PROJECT {
-    // Backup and long-lived tasks.
-    
-    // Mixins: CopntainsItem + Async
-    //   Make ActionAsyncTask into a library AsyncLib
+    // POM changes from jena-fuseki.
     
     // Use ActionContainerItem for ActionDatasets
     // Use Action(Container)Item for ActionStats
@@ -33,9 +30,6 @@ public class PROJECT {
     // Other DataServiceDesc
     //  -- contains a DS and can't put it down (update/in-memory) (+file)
     //  -- TDB various
-    
-    // status -> two entries
-    // Cleaner -> access point -> dataService -> endpoints 
     
     // --set affects the system DB! 
     

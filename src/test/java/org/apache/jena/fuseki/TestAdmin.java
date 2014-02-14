@@ -45,6 +45,7 @@ import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.WebContent ;
@@ -259,12 +260,74 @@ public class TestAdmin extends BaseTest {
         deleteDataset(dsTest) ;
     }
 
+    // Sync task testing
+    
     @Test public void task_1() {
         String x = execSleepTask(null, 10) ;
         assertNotNull(x) ;
         Integer.parseInt(x) ;
     }
     
+    @Test public void task_2() {
+        String x = "NoSuchTask" ;
+        String url = urlRoot+"$/tasks/"+x ;
+        try {
+            httpGetJson(url) ;
+        } catch (HttpException ex) {
+            assertEquals(404, ex.getResponseCode()) ;
+        }
+        try { 
+            checkInTasks(x) ;
+            fail("No failure!") ;
+        } catch (AssertionError ex) {}
+    }
+
+    
+    @Test public void task_3() {
+        // Timing dependent.
+        // Create a "long" running task so we can find it.  
+        String x = execSleepTask(null, 100) ;
+        checkTask(x) ;
+        checkInTasks(x) ;
+        assertNotNull(x) ;
+        Integer.parseInt(x) ;
+    }
+
+    @Test public void task_4() {
+        // Timing dependent.
+        // Create a "short" running task  
+        String x = execSleepTask(null, 1) ;
+        // Check exists in the list of all tasks (should be "finished")
+        checkInTasks(x) ;
+        String url = urlRoot+"$/tasks/"+x ;
+        
+        boolean finished = false ; 
+        for ( int i = 0 ; i < 10 ; i++ ) {
+            if ( i != 0 )
+                Lib.sleep(25) ;
+            JsonValue v = httpGetJson(url) ;
+            checkTask(v) ;
+            if ( v.getAsObject().hasKey("finished") ) {
+                finished = true ;
+                break ;
+            }
+        }
+        if ( ! finished )
+            fail("Task has not finished") ;
+    }
+    
+    @Test public void task_5() {
+        // Short ruuning task - still in info API call.
+        String x = execSleepTask(null, 1) ;
+        checkInTasks(x) ;
+    }
+
+    private JsonValue getTask(String taskId) {
+        String url = urlRoot+"$/tasks/"+taskId ;
+        return httpGetJson(url) ;
+    }
+    
+
     static class JsonResponseHandler implements HttpResponseHandler {
 
         private JsonValue result = null ;
@@ -283,6 +346,8 @@ public class TestAdmin extends BaseTest {
         
     }
     
+    
+    
     private String execSleepTask(String name, int millis) {
         String url = urlRoot+"$/sleep" ;
         if ( name != null ) {
@@ -294,8 +359,53 @@ public class TestAdmin extends BaseTest {
         JsonResponseHandler x = new JsonResponseHandler() ; 
         HttpOp.execHttpPost(url+"?interval="+millis, null, WebContent.contentTypeJSON, x) ;
         JsonValue v = x.getJSON() ;
-        String id = v.getAsObject().get("taskId").getAsString().toString() ;
+        String id = v.getAsObject().get("taskId").getAsString().value() ;
         return id ;
+    }
+
+    private JsonValue httpGetJson(String url) {
+        JsonResponseHandler x = new JsonResponseHandler() ; 
+        HttpOp.execHttpGet(url, WebContent.contentTypeJSON, x) ;
+        return x.getJSON() ;
+    }
+    
+    private void checkTask(String x) {
+        String url = urlRoot+"$/tasks/"+x ;
+        JsonValue v = httpGetJson(url) ;
+        checkTask(v) ;
+    }    
+    
+    private void checkTask(JsonValue v) {
+        assertNotNull(v) ;
+        assertTrue(v.isObject()) ;
+        //System.out.println(v) ;
+        JsonObject obj = v.getAsObject() ;
+        try {
+            assertTrue(obj.hasKey("task")) ;
+            assertTrue(obj.hasKey("taskId")) ;
+            // Not present until it runs : "started"
+        } catch (AssertionError ex) { 
+            System.out.println(obj) ;
+            throw ex ; 
+        }
+    }
+        
+   private void checkInTasks(String x) {
+       String url = urlRoot+"$/tasks" ;
+       JsonValue v = httpGetJson(url) ;
+       assertTrue(v.isArray()) ;
+       JsonArray array = v.getAsArray() ; 
+       int found = 0 ;
+       for ( int i = 0 ; i < array.size() ; i++ ) {
+           JsonValue jv = array.get(i) ;
+           assertTrue(jv.isObject()) ;
+           JsonObject obj = jv.getAsObject() ;
+           checkTask(obj) ;
+           if ( obj.get("taskId").getAsString().value().equals(x) ) {
+               found++ ;
+           }
+        }
+       assertEquals("Occurence of taskId count", 1, found) ;
     }
 
     // Auxilary

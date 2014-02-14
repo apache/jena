@@ -23,6 +23,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
@@ -59,6 +60,7 @@ public class SystemState {
             FileOps.ensureDir(location.getDirectoryPath()) ;
         dataset = TDBFactory.createDataset(location) ;
         dsg     = (DatasetGraphTransaction)(dataset.asDatasetGraph()) ;
+        dsg.getContext().set(TDB.symUnionDefaultGraph, false) ;
     }
 
     

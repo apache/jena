@@ -46,7 +46,8 @@ public class FusekiServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         confLog.info("contextInitialized");
-        ServletContext cxt = sce.getServletContext() ;
+        ServletContext servletContext = sce.getServletContext() ;
+        servletContext.log("") ;
         init() ;
     }
 

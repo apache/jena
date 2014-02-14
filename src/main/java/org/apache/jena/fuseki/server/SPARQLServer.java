@@ -38,6 +38,7 @@ import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.* ;
 import org.eclipse.jetty.servlet.FilterHolder ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
+import org.eclipse.jetty.util.log.Log ;
 import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.webapp.WebAppContext ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
@@ -177,6 +178,15 @@ public class SPARQLServer {
         context.setDescriptor("war-web.xml");
         context.setResourceBase("pages");
         context.setContextPath("/");
+        
+        //-- Jetty setup for the ServletContext logger.
+        // The name of the Jetty-allocated slf4j/log4j logger is
+        // the display name or, if null, the context path name.   
+        // It is set, without checking for a previous call of setLogger in "doStart"
+        // which happens during server startup. 
+        // This the name of the ServletContext logger as well
+        context.setDisplayName(Fuseki.serverLogName);  
+        
         context.setParentLoaderPriority(true);  // Normal Java classloader behaviour.
         context.setErrorHandler(new FusekiErrorHandler()) ;
         server.setHandler(context) ;
