@@ -18,8 +18,6 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static org.apache.jena.riot.web.HttpNames.* ;
-
 import java.io.IOException ;
 import java.util.Locale ;
 

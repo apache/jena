@@ -21,7 +21,6 @@ package org.apache.jena.fuseki;
 import java.util.Iterator ;
 
 import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.MultiMapToList ;
@@ -30,7 +29,6 @@ import org.apache.jena.fuseki.server.SystemState ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.web.HttpNames ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

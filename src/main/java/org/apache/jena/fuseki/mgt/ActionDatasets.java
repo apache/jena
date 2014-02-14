@@ -23,7 +23,6 @@ import static java.lang.String.format ;
 import java.io.* ;
 import java.util.HashMap ;
 import java.util.Iterator ;
-import java.util.Locale ;
 import java.util.Map ;
 
 import javax.servlet.ServletException ;

@@ -38,7 +38,6 @@ import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.* ;
 import org.eclipse.jetty.servlet.FilterHolder ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
-import org.eclipse.jetty.util.log.Log ;
 import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.webapp.WebAppContext ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
