@@ -21,6 +21,8 @@ package dev;
 public class PROJECT {
     // POM changes from jena-fuseki.
     
+    // Convert FmtLog to own logging.
+    
     // Use ActionContainerItem for ActionDatasets
     // Use Action(Container)Item for ActionStats
     
