@@ -36,10 +36,23 @@ public class FmtLog {
             log.trace(format(fmt, args)) ;
     }
 
+    /* Log at 'trace' level. */
+    public static void trace(Logger log, Throwable th, String fmt, Object...args) {
+        if ( log.isTraceEnabled() )
+            log.trace(format(fmt, args), th) ;
+    }
+
+
     /* Log at 'debug' level */
     public static void debug(Logger log, String fmt, Object...args) {
         if ( log.isDebugEnabled() )
             log.debug(format(fmt, args)) ;
+    }
+
+    /* Log at 'debug' level */
+    public static void debug(Logger log, Throwable th, String fmt, Object...args) {
+        if ( log.isDebugEnabled() )
+            log.debug(format(fmt, args), th) ;
     }
 
     /* Log at 'info' level */
@@ -48,16 +61,35 @@ public class FmtLog {
             log.info(format(fmt, args)) ;
     }
 
+    /* Log at 'info' level */
+    public static void info(Logger log, Throwable th, String fmt, Object...args) {
+        if ( log.isInfoEnabled() )
+            log.info(format(fmt, args), th) ;
+    }
+
+
     /* Log at 'warn' level */
     public static void warn(Logger log, String fmt, Object...args) {
         if ( log.isWarnEnabled() )
             log.warn(format(fmt, args)) ;
     }
 
+    /* Log at 'warn' level */
+    public static void warn(Logger log, Throwable th, String fmt, Object...args) {
+        if ( log.isWarnEnabled() )
+            log.warn(format(fmt, args), th) ;
+    }
+
     /* Log at 'error' level */
     public static void error(Logger log, String fmt, Object...args) {
         if ( log.isErrorEnabled() )
             log.error(format(fmt, args)) ;
+    }
+
+    /* Log at 'error' level */
+    public static void error(Logger log, Throwable th, String fmt, Object...args) {
+        if ( log.isErrorEnabled() )
+            log.error(format(fmt, args), th) ;
     }
 
     private static String format(String fmt, Object[] args) {

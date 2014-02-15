@@ -33,7 +33,9 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger ;
 
 public class TestOptimizer extends AbstractTestTransform
 {
+    // These test call the whole optimzier.
     // A lot of the optimizer is tested by using the scripted queries.
+    // Theer are many tests of individual transforms.
     
     @Test public void slice_order_to_topn_01()
     {

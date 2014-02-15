@@ -28,11 +28,11 @@ import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.ExprVars ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.util.VarUtils ;
 
@@ -444,11 +444,7 @@ public class OpVars
 
         @Override
         public void visit(OpOrder opOrder) {
-            for (Iterator<SortCondition> iter = opOrder.getConditions().iterator(); iter.hasNext();) {
-                SortCondition sc = iter.next() ;
-                Set<Var> x = sc.getExpression().getVarsMentioned() ;
-                acc.addAll(x) ;
-            }
+            ExprVars.varsMentioned(acc, opOrder.getConditions()) ;
         }
     }
 }

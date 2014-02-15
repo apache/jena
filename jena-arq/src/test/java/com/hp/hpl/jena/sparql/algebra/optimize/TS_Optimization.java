@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.optimize;
 
 
 import junit.framework.TestSuite ;
@@ -25,15 +25,17 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // This package
-    TestAlgebraTranslate.class
-    , TestClassify.class
-    , TestOpAsQuery.class
-    , TestOpVars.class
-    , TestPattern2Join.class
-    , TestTransformQuads.class
-    , TestVarFinder.class
+    TestOptDistinctReduced.class
+    , TestOptimizer.class
+    , TestSemanticEquivalence.class
+    , TestTransformConstantFolding.class
+    , TestTransformFilters.class
+    , TestTransformFilterPlacement.class
+    , TestTransformMergeBGPs.class
+    , TestTransformPromoteTableEmpty.class
+    , TestTransformTopN.class
+    , TestVarRename.class
 })
 
-public class TS_Algebra extends TestSuite
-{ }
+public class TS_Optimization extends TestSuite
+{}

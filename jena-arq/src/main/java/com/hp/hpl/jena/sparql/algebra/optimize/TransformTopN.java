@@ -18,18 +18,18 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import java.util.List ;
+import java.util.Set ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
-import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
-import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
-import com.hp.hpl.jena.sparql.algebra.op.OpReduced ;
-import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTopN ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.ExprVars ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class TransformTopN extends TransformCopy {
@@ -37,17 +37,31 @@ public class TransformTopN extends TransformCopy {
 	private static final int defaultTopNSortingThreshold = 1000;
 	public static final Symbol externalSortBufferSize = ARQConstants.allocSymbol("topNSortingThreshold") ;
 
+	/* For reference: from the algebra generation of a query, the order of operations is: 
+	 *  Limit/Offset
+	 *   Distinct/reduce
+	 *     project
+	 *       OrderBy
+	 *         Values
+	 *           having
+	 *             select expressions
+	 *               group
+	 * but note that a subquery can be used to create other orders.                 
+	 */
+
     @Override
-	public Op transform(OpSlice opSlice, Op subOp) { 
+	public Op transform(final OpSlice opSlice, final Op inSubOp) { 
         /* 
          * This looks for all the following cases of slice with optionally 
-         * distinct and/or project follow by order
+         * distinct and/or project follow by order. It is quicker to execute
+         * by avoiding the full sort, just track the top items. 
          * 
-         *  + slice order
-         *  + slice distinct|reduced order
-         *  + slice project order
-         *  but not:
-         *  + slice distinct project order
+         *  + slice-order                   => topN
+         *  + slice-distinct|reduced-order  => top-distinct
+         *  + slice-project-order           => project-top 
+         *  + slice distinct project order  => topN distinct project  (only some cases)  
+         *
+         * If the slice has an offset, a (slice X _) is added. 
          *
          * In detail:
          * 
@@ -65,7 +79,7 @@ public class TransformTopN extends TransformCopy {
          * ==>  
          * (slice X _
          *   (top (X+N cond) (distinct PATTERN))
-         *   
+         *
          * Case 3: 
          * (slice X N
          *   (project (vars)
@@ -75,11 +89,26 @@ public class TransformTopN extends TransformCopy {
          * (slice X _
          *   (project (vars) 
          *     (top (X+N cond) (distinct PATTERN)))
-         * The project can also be over the slice.    
+         *     
+         * Care needed: reversing (order) and (project) can only be done if 
+         * c.f. TransformOrderByDistinctApplication 
+
+         * Case 4:
+         * (slice X N
+         *   (distinct 
+         *     (project (vars) 
+         *       (order (cond) PATTERN) )))
+         * ==> 
+         * If project-order can be swapped, 
+         * (slice X N
+         *   (top (X+N) (cond)
+         *    (distinct
+         *      (project (vars)   
+         *         PATTERN) )))
+         * 
+         * "(slice 0 _)" is a no-op and is not added.
          *
-         * The case of (slice (distinct (project (vars) (order ...))))
-         * does not work because distinct-project means we do not know how
-         * but to make topN buffer.
+         * More on slice-distinct-project-order:
          * 
          * When there is no project, we can push the distinct under the topN,
          * but because the sort variables may include one projected away, it's not possible
@@ -88,70 +117,107 @@ public class TransformTopN extends TransformCopy {
          *
          * A partial optimization is to see if "cond" only uses projected variables could be considered.
          * We could add project understanding to topN.
-         *     
-         * Note that in TransformDistinctToReduced (distinct (order X)) is turned into (reduced (order X))
-         * and that this optimization should be before that one but this is order independent
-         * as we process reduced or distinct in the same way. 
          */
         
-        if ( opSlice.getLength() == Query.NOLIMIT )
-            return super.transform(opSlice, subOp) ;
+        /* Algorthm:
+         *    Test to see if the slice is small enough.
+         *    Extract distinct/reduce, and projection details. 
+         *    Is it an (order)? If no - not applicable. 
+         * 
+         * If slice-project-order
+         *   Treat as project-slice-order
+         *   Output project-top
+         * If slice-distinct-project-order
+         *   Test to see if project and order can swap
+         *   If they can, output top-distinct-project
+         *   else no action.
+         *  
+         * Add a slice if there was an OFFSET. 
+         * Distinct and reduce are treated as distinct.
+         */
         
-        int threshold = (Integer)ARQ.getContext().get(externalSortBufferSize, defaultTopNSortingThreshold) ;
+        Op subOp = inSubOp ;
+        
+        if ( opSlice.getLength() == Query.NOLIMIT )
+            return doNothing(opSlice, inSubOp) ;
+        long limit = opSlice.getLength() ;
         long offset = ( opSlice.getStart() != Query.NOLIMIT ) ? opSlice.getStart() : 0L ;
+        long N = limit+offset ;
+        
+        int threshold = (Integer)ARQ.getContext().get(externalSortBufferSize, defaultTopNSortingThreshold) ;         //XXX
 
-        if ( offset + opSlice.getLength() >= threshold )
-            return super.transform(opSlice, subOp) ;
+        if ( N >= threshold )
+            return doNothing(opSlice, inSubOp) ;
+        
+        boolean distinct = false ;
+        boolean reduce   = false ;
+        // Extract any distinct/reduce.
+        if ( subOp instanceof OpDistinct ) {
+            distinct = true ;
+            subOp = ((Op1)subOp).getSubOp() ;
+        } else if ( subOp instanceof OpReduced ) {
+            distinct = true ;
+            subOp = ((Op1)subOp).getSubOp() ;
+        }
+        
+        // Extract any projection.
+        List<Var> projection = null ;
+        if ( subOp instanceof OpProject ) {
+            OpProject opProject = (OpProject)subOp ;
+            projection = opProject.getVars() ;
+            subOp = opProject.getSubOp() ;
+        }
+        
+        if ( ! ( subOp instanceof OpOrder ) )
+            return doNothing(opSlice, inSubOp) ;
+        // We have found an (order)
+        OpOrder opOrder = (OpOrder)subOp ;
+        subOp = opOrder.getSubOp() ;
+        
+        // Check safety for the distinct/reduce case  
+        
+        if ( (reduce || distinct) && projection != null ) {
+            List<SortCondition> sortConditions = opOrder.getConditions() ;            
+            Set<Var> orderVars = ExprVars.getVarsMentioned(sortConditions) ;
             
-        if ( subOp instanceof OpOrder ) 
-        {
-            // First case: slice-order
-            OpOrder opOrder = (OpOrder)subOp ;
-            OpTopN opTopN = new OpTopN( opOrder.getSubOp(), (int)(offset+opSlice.getLength()), opOrder.getConditions() ) ;
-            if ( offset == 0 ) {
-                return opTopN ;
-            } else {
-                return new OpSlice( opTopN, offset, Query.NOLIMIT ) ;        	        
-            }
-        }
+            // Slice and distinct interact.
+            
+            // Is the ordering stable with respect to the project? 
+            //  i.e. can we swap them and put a (top) for slice-order  
+            // All project vars must be in the order so we can have:
+            // slice-distinct-project-order => top-distinct-project 
+            
+            // If the projection is narrower than the order it is not safe.
 
-        if ( subOp instanceof OpDistinct || subOp instanceof OpReduced )
-        {
-            // Second case: slice-distinct-order or slice-reduced-order 
-            Op subSubOp = ((Op1)subOp).getSubOp() ;
-            if ( subSubOp instanceof OpOrder ) {
-                OpOrder opOrder = (OpOrder)subSubOp ;
-                Op opDistinct2 = OpDistinct.create(opOrder.getSubOp()) ;
-                OpTopN opTopN = new OpTopN( opDistinct2, (int)(offset+opSlice.getLength()), opOrder.getConditions() ) ; 
-                if ( offset == 0 ) {
-                    return opTopN ;
-                } else {
-                    return new OpSlice( opTopN, offset, Query.NOLIMIT ) ;         	            
-                }
-            }
+            if ( ! projection.containsAll(orderVars) )
+                return doNothing(opSlice, inSubOp) ;
         }
+        
+        Op newOp = subOp ;
+        
+        if ( ( reduce || distinct ) && projection != null )
+            newOp = new OpProject(newOp, projection) ;
+        
+        if ( distinct )
+            newOp = OpDistinct.create(newOp) ;
+        if ( reduce )
+            newOp = OpReduced.create(newOp) ;
 
-        if ( subOp instanceof OpProject )
-        {
-            // Third case: slice-project-order 
-            Op subSubOp = ((Op1)subOp).getSubOp() ;
-            if ( subSubOp instanceof OpOrder ) 
-            {
-                OpProject opProject = (OpProject)subOp ;
-                OpOrder opOrder = (OpOrder)subSubOp ;
-                // NB leave project over topN, unlike the distinct case where distinct goes under topN.
-                OpTopN opTopN = new OpTopN( opOrder.getSubOp(), (int)(offset+opSlice.getLength()), opOrder.getConditions() ) ;
-                Op proj = new OpProject(opTopN, opProject.getVars()) ;
-                if ( offset == 0 ) {
-                    return proj ;
-                } else {
-                    return new OpSlice( proj, offset, Query.NOLIMIT ) ;                       
-                }
-            }
-        }
+        newOp = new OpTopN( newOp, (int)N, opOrder.getConditions() ) ;
 
-    	// Pass through.
-    	return super.transform(opSlice, subOp) ; 
-   	}
+        if ( ! reduce &&  ! distinct && projection != null )
+            newOp = new OpProject(newOp, projection) ;
+        
+        if ( opSlice.getStart() > 0 )
+            newOp = new OpSlice(newOp, opSlice.getStart(), Query.NOLIMIT) ;
+
+        return newOp ;
+    }
+
+    /** Marker to indicate that this transform is not applied at this point */
+    private Op doNothing(OpSlice opSlice, Op subOp) {
+        return super.transform(opSlice, subOp) ;
+    }
+    
 	
 }

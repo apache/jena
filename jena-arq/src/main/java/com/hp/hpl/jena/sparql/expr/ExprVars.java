@@ -22,13 +22,14 @@ import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 public class ExprVars
 {
     interface Action<T> { void var(Collection<T> acc, Var var) ; }
-    
+
     public static Set<Var> getVarsMentioned(Expr expr)
     {
         Set<Var> acc = new HashSet<Var>() ;
@@ -79,6 +80,28 @@ public class ExprVars
         ExprWalker.walk(vv, expr) ;
     }
     
+    
+    public static Set<Var> getVarsMentioned(SortCondition sortCondition) {
+        Set<Var> acc = new HashSet<Var>() ;
+        varsMentioned(acc, sortCondition) ;
+        return acc ;
+    }
+    
+    public static Set<Var> getVarsMentioned(Collection<SortCondition> sortConditions) {
+        Set<Var> acc = new HashSet<Var>() ;
+        varsMentioned(acc, sortConditions) ;
+        return acc ;
+    }
+
+    public static  void varsMentioned(Collection<Var> acc, SortCondition sortCondition) {
+        sortCondition.getExpression().varsMentioned(acc) ;
+    }
+
+    public static void varsMentioned(Collection<Var> acc, Collection<SortCondition> sortConditions) {
+        for (SortCondition sc : sortConditions )
+            varsMentioned(acc, sc) ;
+    }
+
     static class ExprVarsWorker<T> extends ExprVisitorBase
     {
         final Collection<T> acc ;
