@@ -28,11 +28,6 @@ import com.hp.hpl.jena.sparql.algebra.optimize.TransformTopN ;
 public class TestTransformTopN  extends AbstractTestTransform {
     public TestTransformTopN() {}
 
-    private void test(String input, String output) {
-        Transform transform = new TransformTopN() ;
-        testOp(input, transform, output) ;
-    }
-
     @Test public void topN_01() {
         String input = StrUtils.strjoinNL
             ("(slice _ 5"
@@ -271,6 +266,57 @@ public class TestTransformTopN  extends AbstractTestTransform {
                 );
         test(input, output) ;
     }
+    
+    // ---- From query to transfomed algebra.
+    
+    @Test public void topN_query_01() {
+        String output = StrUtils.strjoinNL
+            ("    (project (?s)"
+            ," (order (?p ?o)"
+            ,"   (bgp (triple ?s ?p ?o))))"
+            );
+        testQuery("SELECT ?s { ?s ?p ?o } ORDER BY ?p ?o", output);
+    }
+    
+    @Test public void topN_query_02() {
+        String output = StrUtils.strjoinNL
+            ("  (slice 1 _"
+            ,"  (project (?s)"
+            ,"    (top (6 ?p ?o)"
+            ,"      (bgp (triple ?s ?p ?o)))))"
+            ) ;
+        testQuery("SELECT ?s { ?s ?p ?o } ORDER BY ?p ?o OFFSET 1 LIMIT 5", output);
+    }
+    
+    @Test public void topN_query_03() {
+        String output = StrUtils.strjoinNL
+            ("(slice 1 _"
+            ,"  (project (?s)"
+            ,"    (top (6 ?p ?o)"
+            ,"      (bgp (triple ?s ?p ?o)))))"
+                );
+        testQuery("SELECT ?s { ?s ?p ?o } ORDER BY ?p ?o OFFSET 1 LIMIT 5", output);
+    }
 
+    @Test public void topN_query_04() {
+        String output = StrUtils.strjoinNL
+            ("(slice 1 _"
+            ,"  (project (?s)"
+            ,"    (top (6 ?p ?o)"
+            ,"      (bgp (triple ?s ?p ?o)))))"
+            );        testQuery("SELECT ?s { ?s ?p ?o } ORDER BY ?p ?o OFFSET 1 LIMIT 5", output);
+    }
+
+    private void test(String input, String output) {
+        Transform transform = new TransformTopN() ;
+        testOp(input, transform, output) ;
+    }
+
+    // ---- From query to transfomed algebra.
+    
+    private void testQuery(String input, String output) {
+        Transform transform = new TransformTopN() ;
+        testQuery(input, transform, output) ;
+    }
 }
 
