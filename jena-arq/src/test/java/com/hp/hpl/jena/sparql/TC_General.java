@@ -27,6 +27,7 @@ import org.junit.runners.Suite ;
 
 import com.hp.hpl.jena.query.TS_ParamString ;
 import com.hp.hpl.jena.sparql.algebra.TS_Algebra ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TS_Optimization ;
 import com.hp.hpl.jena.sparql.api.TS_API ;
 import com.hp.hpl.jena.sparql.core.TS_Core ;
 import com.hp.hpl.jena.sparql.engine.TS_Engine ;
@@ -64,6 +65,7 @@ import com.hp.hpl.jena.sparql.util.TS_Util ;
     , TS_Negation.class
     , TS_Solver.class
     , TS_Algebra.class
+    , TS_Optimization.class
     , TS_ResultSet.class
     , TS_Serialization.class
     , TS_API.class
