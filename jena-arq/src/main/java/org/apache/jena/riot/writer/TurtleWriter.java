@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.Graph ;
 public class TurtleWriter extends TurtleWriterBase
 {
     @Override
-    protected void output$(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI)
+    protected void output(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI)
     {
           TurtleWriter$ w = new TurtleWriter$(iOut, prefixMap, baseURI) ;
           w.write(graph) ;

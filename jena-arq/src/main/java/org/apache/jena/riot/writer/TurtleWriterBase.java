@@ -16,13 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.writer;
+package org.apache.jena.riot.writer ;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.RiotLib ;
 
@@ -32,26 +33,28 @@ import com.hp.hpl.jena.sparql.util.Context ;
 public abstract class TurtleWriterBase extends WriterGraphRIOTBase
 {
     @Override
-    public Lang getLang()
-    {
+    public Lang getLang() {
         return Lang.TURTLE ;
     }
 
     @Override
-    public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
-    {
+    public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         IndentedWriter iOut = RiotLib.create(out) ;
         output$(iOut, graph, prefixMap, baseURI) ;
-        iOut.flush() ;
     }
 
     @Override
-    public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
-    {
+    public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
         IndentedWriter iOut = new IndentedWriter(out) ;
         output$(iOut, graph, prefixMap, baseURI) ;
+    }
+
+    private void output$(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI) {
+        if ( baseURI != null )
+            baseURI = IRIResolver.resolveString(baseURI) ;
+        output(iOut, graph, prefixMap, baseURI) ;
         iOut.flush() ;
     }
-    
-    protected abstract void output$(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI) ;
+
+    protected abstract void output(IndentedWriter iOut, Graph graph, PrefixMap prefixMap, String baseURI) ;
 }

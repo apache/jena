@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Graph ;
 public class TurtleWriterBlocks extends TurtleWriterBase
 {
     @Override
-    protected void output$(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI)
+    protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI)
     {
         StreamRDF dest = new WriterStreamRDFBlocks(out) ;
         WriterStream.write(dest, graph, prefixMap, baseURI) ;

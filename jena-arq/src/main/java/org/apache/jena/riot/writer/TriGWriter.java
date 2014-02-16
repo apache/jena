@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class TriGWriter extends TriGWriterBase
 {
     @Override
-    protected void output$(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI)
+    protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI)
     {
         TriGWriter$ w = new TriGWriter$(iOut, prefixMap, baseURI) ;
         w.write(dsg) ;

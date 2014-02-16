@@ -28,7 +28,7 @@ import com.hp.hpl.jena.graph.Graph ;
 public class TurtleWriterFlat extends TurtleWriterBase
 {
     @Override
-    protected void output$(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI)
+    protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI)
     {
         StreamRDF dest = new WriterStreamRDFFlat(out) ;
         WriterStream.write(dest, graph, prefixMap, baseURI) ;
