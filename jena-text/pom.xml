@@ -55,46 +55,25 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>${ver.lucene}</version>
-      <type>jar</type>
     </dependency>
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-analyzers-common</artifactId>
-      <version>${ver.lucene}</version>
-      <type>jar</type>
     </dependency>
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-queryparser</artifactId>
-      <version>${ver.lucene}</version>
-      <type>jar</type>
     </dependency>
 
     <!-- Solr client -->
-    <!-- Exclusion of slf4: Necessary so as to pick the version
-	 we want. solrj->zookeeper has a dependency on slf4j
-    -->
-
     <dependency>
       <artifactId>solr-solrj</artifactId>
       <groupId>org.apache.solr</groupId>
-      <version>${ver.solr}</version>
-      <exclusions>
-	<exclusion>
-	  <groupId>org.slf4j</groupId>
-	  <artifactId>slf4j-api</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.slf4j</groupId>
-	  <artifactId>slf4j-jdk14</artifactId>
-	</exclusion>
-      </exclusions>
     </dependency>
 
-    <!-- Embedded server / testing -->
+    <!-- Embedded server if used for testing
     <dependency>
       <artifactId>solr-core</artifactId>
       <groupId>org.apache.solr</groupId>
@@ -114,13 +93,13 @@
       </exclusions>
     </dependency>
 
-    <!-- Embedded Solr server -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.5</version>
       <scope>test</scope>
     </dependency>
+    -->
 
   </dependencies>
 

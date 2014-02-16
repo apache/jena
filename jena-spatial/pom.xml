@@ -32,8 +32,6 @@
   </parent>
 
   <properties>
-    <ver.spatial4j>0.3</ver.spatial4j>
-    <ver.jts>1.13</ver.jts>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <jdk.version>1.6</jdk.version>
@@ -67,63 +65,33 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <version>${ver.lucene}</version>
-      <type>jar</type>
     </dependency>
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-spatial</artifactId>
-      <version>${ver.lucene}</version>
-      <type>jar</type>
     </dependency>
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-analyzers-common</artifactId>
-      <version>${ver.lucene}</version>
-      <type>jar</type>
     </dependency>
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-queryparser</artifactId>
-      <version>${ver.lucene}</version>
-      <type>jar</type>
     </dependency>
 
     <dependency>
       <groupId>com.spatial4j</groupId>
       <artifactId>spatial4j</artifactId>
-      <version>0.3</version>
     </dependency>
     
-    <!-- Solr client -->
-    <!-- Exclusion of slf4: Necessary otherwise maven complains about a "Dependency 
-	 convergence error" of slf4j-api 1.6.1 (from zookeeper) vs 1.6.4 (Jena) possibly 
-	 due to the use of scope-test -->
-
     <dependency>
       <artifactId>solr-solrj</artifactId>
       <groupId>org.apache.solr</groupId>
-      <version>${ver.solr}</version>
-      <exclusions>
-	<exclusion>
-	  <groupId>org.slf4j</groupId>
-	  <artifactId>slf4j-api</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.slf4j</groupId>
-	  <artifactId>slf4j-jdk14</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>commons-codec</groupId>
-	  <artifactId>commons-codec</artifactId>
-	</exclusion>
-      </exclusions>
     </dependency>
-
-    <!-- Embedded server / testing -->
+      <!--
     <dependency>
       <artifactId>solr-core</artifactId>
       <groupId>org.apache.solr</groupId>
@@ -141,15 +109,14 @@
 	</exclusion>
       </exclusions>
     </dependency>
-
-    <!-- Embedded Solr server -->
+    
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.5</version>
       <scope>test</scope>
     </dependency>
-
+    -->
   </dependencies>
 
   <build>

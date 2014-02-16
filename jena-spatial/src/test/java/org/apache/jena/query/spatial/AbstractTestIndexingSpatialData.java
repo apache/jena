@@ -61,7 +61,7 @@ public class AbstractTestIndexingSpatialData extends
 					SpatialQuery.JTS_SPATIAL_CONTEXT_FACTORY_CLASS);
 			jts_context_ready = true;
 		}catch (NoClassDefFoundError e){
-			Log.warn(this, "JTS lib is not ready in classpath! An exception should be thrown later on!");
+			//Log.warn(this, "JTS lib is not on the classpath!");
 		}
 		
 		final String turtle = StrUtils
@@ -84,9 +84,6 @@ public class AbstractTestIndexingSpatialData extends
 		
 		try {
 			doTestSearch(turtle, queryString, expectedURIs);
-			if (!jts_context_ready){
-				fail("An exception is supposed to be thrown for reading WKT shapes without JTS!");
-			}
 		}catch (InvalidShapeException e){
 			if (jts_context_ready){
 				fail("The exception is not supposed to be thrown: "+ e.getMessage());

@@ -52,7 +52,7 @@ public class SpatialIndexLucene implements SpatialIndex {
 			.getLogger(SpatialIndexLucene.class);
 
 	private static int MAX_N = 10000;
-	public static final Version VER = Version.LUCENE_43;
+	public static final Version VER = Version.LUCENE_46;
 
 	public static final FieldType ftIRI;
 	static {
