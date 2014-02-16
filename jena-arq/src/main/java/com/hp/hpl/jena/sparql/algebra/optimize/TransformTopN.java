@@ -32,6 +32,12 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.ExprVars ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
+
+/**
+ * Optimization that changes queries that uses <tt>OFFSET/LIMIT</tt> and <tt>ORDER BY</tt>
+ * to execute using <tt>Top N</tt>: i.e. while executing, keep only the top N items seen.  
+ * This avoids full sort of the whole results, saving space and time.   
+ */
 public class TransformTopN extends TransformCopy {
 
 	private static final int defaultTopNSortingThreshold = 1000;
@@ -40,12 +46,12 @@ public class TransformTopN extends TransformCopy {
 	/* For reference: from the algebra generation of a query, the order of operations is: 
 	 *  Limit/Offset
 	 *   Distinct/reduce
-	 *     project
+	 *     Project
 	 *       OrderBy
 	 *         Values
-	 *           having
-	 *             select expressions
-	 *               group
+	 *           Having
+	 *             Select Expressions
+	 *               Group
 	 * but note that a subquery can be used to create other orders.                 
 	 */
 
@@ -61,7 +67,7 @@ public class TransformTopN extends TransformCopy {
          *  + slice-project-order           => project-top 
          *  + slice distinct project order  => topN distinct project  (only some cases)  
          *
-         * If the slice has an offset, a (slice X _) is added. 
+         * If the slice has an offset, a (slice X _) is added. (slice 0 _) is a no-op and it not added.   
          *
          * In detail:
          * 
@@ -88,11 +94,8 @@ public class TransformTopN extends TransformCopy {
          * ==>
          * (slice X _
          *   (project (vars) 
-         *     (top (X+N cond) (distinct PATTERN)))
-         *     
-         * Care needed: reversing (order) and (project) can only be done if 
-         * c.f. TransformOrderByDistinctApplication 
-
+         *     (top (X+N cond) PATTERN) ))
+         *
          * Case 4:
          * (slice X N
          *   (distinct 
@@ -106,17 +109,16 @@ public class TransformTopN extends TransformCopy {
          *      (project (vars)   
          *         PATTERN) )))
          * 
-         * "(slice 0 _)" is a no-op and is not added.
-         *
-         * More on slice-distinct-project-order:
+         * Care needed: because of the need to keep distinct, we can't
+         * process like case 3. Reversing (order) and (project) can only
+         * be done if the projection variables include all variables used
+         * by the sort conditions.
          * 
          * When there is no project, we can push the distinct under the topN,
-         * but because the sort variables may include one projected away, it's not possible
-         * to do this with project.  The key is that distinct-project can change the number
-         * of rows in ways that mean we can not predict the topN slice.
-         *
-         * A partial optimization is to see if "cond" only uses projected variables could be considered.
-         * We could add project understanding to topN.
+         * but, when there is, the sort variables may include one projected away,
+         * it's not possible to do this with project.  The key is that 
+         * distinct-project can change the number of rows in ways that mean
+         * we can not predict the topN slice.
          */
         
         /* Algorthm:
@@ -144,7 +146,7 @@ public class TransformTopN extends TransformCopy {
         long offset = ( opSlice.getStart() != Query.NOLIMIT ) ? opSlice.getStart() : 0L ;
         long N = limit+offset ;
         
-        int threshold = (Integer)ARQ.getContext().get(externalSortBufferSize, defaultTopNSortingThreshold) ;         //XXX
+        int threshold = (Integer)ARQ.getContext().get(externalSortBufferSize, defaultTopNSortingThreshold) ;
 
         if ( N >= threshold )
             return doNothing(opSlice, inSubOp) ;
@@ -218,6 +220,4 @@ public class TransformTopN extends TransformCopy {
     private Op doNothing(OpSlice opSlice, Op subOp) {
         return super.transform(opSlice, subOp) ;
     }
-    
-	
 }
