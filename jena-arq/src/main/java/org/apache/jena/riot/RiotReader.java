@@ -119,7 +119,10 @@ public class RiotReader
 
     // -------- Parsers
     
-    /** Create a parser */  
+    /** Create a parser 
+     * @deprecated Use {@linkplain RDFDataMgr#createReader(Lang)}
+     */
+    @Deprecated
     public static LangRIOT createParser(InputStream input, Lang lang, String baseIRI, StreamRDF dest)
     {
         if ( lang == RDFXML )
@@ -134,7 +137,10 @@ public class RiotReader
         return createParser(tokenizer, lang, baseIRI, dest) ;
     }
 
-    /** Create a parser */  
+    /** Create a parser 
+     * @deprecated Use {@linkplain RDFDataMgr#createReader(Lang)}
+     */
+    @Deprecated
     public static LangRIOT createParser(Reader input, Lang lang, String baseIRI, StreamRDF dest)
     {
         if ( lang == RDFXML )
@@ -149,7 +155,10 @@ public class RiotReader
         return createParser(tokenizer, lang, baseIRI, dest) ;
     }
 
-    /** Create a parser */  
+    /** Create a parser 
+     * @deprecated Use {@linkplain RDFDataMgr#createReader(Lang)}
+     */
+    @Deprecated  
     public static LangRIOT createParser(Tokenizer tokenizer, Lang lang, String baseIRI, StreamRDF dest)
     {
         if ( RDFLanguages.sameLang(RDFXML, lang) )

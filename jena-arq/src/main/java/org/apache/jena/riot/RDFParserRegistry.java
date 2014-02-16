@@ -157,6 +157,7 @@ public class RDFParserRegistry
 
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            @SuppressWarnings("deprecation")
             LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
             parser.getProfile().setHandler(errorHandler) ;
             parser.parse() ;
@@ -164,6 +165,7 @@ public class RDFParserRegistry
 
         @Override
         public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            @SuppressWarnings("deprecation")
             LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
             parser.getProfile().setHandler(errorHandler) ; 
             parser.parse() ;
