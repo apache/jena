@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.atlas.logging.Log;
 import org.junit.Test;
 import static org.junit.Assert.fail;
 
