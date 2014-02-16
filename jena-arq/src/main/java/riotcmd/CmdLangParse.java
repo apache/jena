@@ -250,6 +250,7 @@ public abstract class CmdLangParse extends CmdGeneral
         s = null ;
         
         // Need low level control over the parser.
+        @SuppressWarnings("deprecation")
         LangRIOT parser = RiotReader.createParser(in, lang, baseURI, sink) ;
         try
         {
