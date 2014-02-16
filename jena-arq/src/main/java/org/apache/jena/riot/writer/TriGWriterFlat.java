@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 public class TriGWriterFlat extends TriGWriterBase
 {
     @Override
-    protected void output$(IndentedWriter iOut, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI)
+    protected void output(IndentedWriter iOut, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI)
     {
         StreamRDF dest = new WriterStreamRDFFlat(iOut) ;
         WriterStream.write(dest, datasetGraph, prefixMap, baseURI) ;
