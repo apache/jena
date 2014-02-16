@@ -111,7 +111,6 @@ public class rdfcopy extends java.lang.Object {
                 base = "file:///"+f.getCanonicalPath().replace('\\','/') ;
                 rdr.read(m, new FileInputStream(in), base) ;
             }
-			//rdr.read(m, in);
 			RDFWriter w = m.getWriter(outlang);
 			j++;
 			for (; j < lastOutProp; j++) {
@@ -120,7 +119,7 @@ public class rdfcopy extends java.lang.Object {
 					args[j].substring(0, eq),
 					args[j].substring(eq + 1));
 			}
-            w.write(m,System.out,base);
+			w.write(m, System.out, null) ;
 			System.exit(0);
 		} catch (Exception e) {
 			System.err.println("Unhandled exception:");
