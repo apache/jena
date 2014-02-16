@@ -53,7 +53,7 @@ public class TextIndexLucene implements TextIndex {
     private static Logger          log      = LoggerFactory.getLogger(TextIndexLucene.class) ;
 
     private static int             MAX_N    = 10000 ;
-    public static final Version    VER      = Version.LUCENE_43 ;
+    public static final Version    VER      = Version.LUCENE_46 ;
 
     public static final FieldType  ftIRI ;
     static {
