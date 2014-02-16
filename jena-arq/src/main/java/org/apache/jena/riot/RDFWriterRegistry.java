@@ -45,6 +45,7 @@ public class RDFWriterRegistry
     
     // Writing a graph
     static WriterGraphRIOTFactory wgfactory = new WriterGraphRIOTFactory() {
+        @SuppressWarnings("deprecation")
         @Override
         public WriterGraphRIOT create(RDFFormat serialization)
         {
@@ -75,6 +76,7 @@ public class RDFWriterRegistry
     
     // Writing a dataset
     static WriterDatasetRIOTFactory wdsfactory = new WriterDatasetRIOTFactory() {
+        @SuppressWarnings("deprecation")
         @Override
         public WriterDatasetRIOT create(RDFFormat serialization)
         {

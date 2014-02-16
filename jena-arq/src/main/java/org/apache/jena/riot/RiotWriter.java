@@ -48,7 +48,7 @@ public class RiotWriter
         NQuadsWriter.write(out, it) ;
     }
 
-    /** @deprecated Use RDFDataMgr.write(OutputStream, Graph, Lang.NTRIPLES) */
+    /** @deprecated Use {@linkplain RDFDataMgr#write(OutputStream, Graph, Lang)} with <tt>Lang.NTRIPLES</tt>. */
     @Deprecated
     public static void writeTriples(OutputStream out, Graph graph)
     {
@@ -60,7 +60,7 @@ public class RiotWriter
         NTriplesWriter.write(out, it) ;
     }
 
-    /** @deprecated Use RDFDataMgr.write(OutputStream, Graph, Lang.RDFJSON) */
+    /** @deprecated Use {@linkplain RDFDataMgr#write(OutputStream, Graph, Lang)} with <tt>Lang.RDFJSON</tt>. */
     @Deprecated
     public static void writeRDFJSON(OutputStream out, Graph graph)
     {
@@ -69,50 +69,88 @@ public class RiotWriter
 
     // ---- Create writers
 
-    /** Create a Turtle writer */
+    /** Create a Turtle writer
+     @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(Lang)} 
+     */
+    @Deprecated
     public static WriterGraphRIOT createTurtle()            { return new TurtleWriter() ; }
 
-    /** Create a streaming Turtle writer */
+    /** Create a streaming Turtle writer
+     *  @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(RDFFormat)} and <tt>RDFFormat.TURTLE_BLOCKS</tt> 
+     */
+    @Deprecated
     public static WriterGraphRIOT createTurtleStreaming()   { return new TurtleWriterBlocks() ; }
 
-    /** Create a streaming Turtle outputing one triple per line using Turtle abbreviations */
+    /** Create a streaming Turtle writer
+     *  @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(RDFFormat)} and <tt>RDFFormat.TURTLE_FLAT</tt> 
+     */
+    @Deprecated
     public static WriterGraphRIOT createTurtleFlat()        { return new TurtleWriterFlat() ; }
 
-    /** Create an N-Triples writer */
+    /** Create am N-Triples writer
+     *  @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(Lang)} 
+     */
+    @Deprecated
     public static WriterGraphRIOT createNTriples()          { return new NTriplesWriter() ; }
 
     /** Create an N-Triples writer, restricted to ASCII characters in the output. 
      * Other chars escaped in \ u sequences.
+     * @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(RDFFormat)} and <tt>RDFFormat.NTRIPLES_ASCII</tt> 
      */
+    @Deprecated
     public static WriterGraphRIOT createNTriplesASCII()     { return new NTriplesWriter(CharSpace.ASCII) ; }
 
-    /** Create an RDF/XML writer which pretty-prints */
+    /** Create an RDF/XML writer which pretty-prints
+    *   @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(RDFFormat)} and <tt>RDFFormat.RDFXML_ABBREV</tt>
+    */
+    @Deprecated
     public static WriterGraphRIOT createRDFXMLAbbrev()      { return new RDFXMLAbbrevWriter() ; }
 
-    /** Create an RDF/XML writer which does not pretty-print */
+    /** Create an RDF/XML writer which pretty-prints
+    *   @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(RDFFormat)} and <tt>RDFFormat.RDFXML_PLAIN</tt>
+    */
+    @Deprecated
     public static WriterGraphRIOT createRDFXMLPlain()       { return new RDFXMLPlainWriter() ; }
 
-    /** Create an RDF/JSON writer */
+    /** Create an RDF/JSON writer
+     *  @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(Lang)} and <tt>Lang.RDFJSON</tt>
+     */
+    @Deprecated
     public static WriterGraphRIOT createRDFJSON()           { return new RDFJSONWriter() ; }
 
-    /** Create a TriG writer */
+    /** Create a TriG writer
+     *  @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(Lang)} and <tt>Lang.TRIG</tt>
+     */
+    @Deprecated
     public static WriterDatasetRIOT createTrig()            { return new TriGWriter() ; }
 
-    /** Create a TriG writer that streams */
+    /** Create a streaming TriG writer
+     *  @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(RDFFormat)} and <tt>RDFFormat.TRIG_BLOCKS</tt> 
+     */
+    @Deprecated
     public static WriterDatasetRIOT createTrigStreaming()   { return new TriGWriterBlocks() ; }
 
-    /** Create a TriG writer that writes one quad per line in Trig, using abbreviated forms */ 
+    /** Create a streaming TriG writer with one quad per line.
+     *  @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(RDFFormat)} and <tt>RDFFormat.TRIG_FLAT</tt> 
+     */
+    @Deprecated
     public static WriterDatasetRIOT createTrigFlat()        { return new TriGWriterFlat() ; }
 
-    /** Create an N-Quads writer */
+    /** Create an N-Quads writer
+     * @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(Lang)} and <tt>Lang.NQUADS</tt>     
+     */
+    @Deprecated
     public static WriterDatasetRIOT createNQuads()          { return new NQuadsWriter() ; }
     
     /** Create an N-Quads writer, restricted to ASCII characters in the output. 
      * Other chars escaped in \ u sequences.
+     * @deprecated Use {@linkplain RDFDataMgr#createGraphWriter(RDFFormat)} and <tt>RDFFormat.NQUADS_ASCII</tt> 
      */
+    @Deprecated
     public static WriterDatasetRIOT createNQuadsASCII()     { return new NQuadsWriter(CharSpace.ASCII) ; }
 
     /** Create a sink writer */
+    @Deprecated
     public static WriterDatasetRIOT createRDFNULL()         { return NullWriter.factory.create(RDFFormat.RDFNULL) ; }           
 }
 
