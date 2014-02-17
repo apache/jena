@@ -56,7 +56,9 @@ import com.hp.hpl.jena.sparql.procedure.Procedure ;
  * 
  * Does not consider optimizing the algebra expression (that should happen
  * elsewhere). BGPs are still subject to StageBuilding during iterator
- * execution. During execution, when a substitution into an algebra expression
+ * execution.
+ * 
+ * During execution, when a substitution into an algebra expression
  * happens (in other words, a streaming operation, index-join-like), there is a
  * call into the executor each time so it does not just happen once before a
  * query starts.
@@ -64,16 +66,12 @@ import com.hp.hpl.jena.sparql.procedure.Procedure ;
 
 public class OpExecutor
 {
-    // Set this to a different factory implementation to have a different
-    // OpExecutor.
     protected static final OpExecutorFactory stdFactory = new OpExecutorFactory() {
                                                             @Override
                                                             public OpExecutor create(ExecutionContext execCxt) {
                                                                 return new OpExecutor(execCxt) ;
                                                             }
                                                         } ;
-
-    // public static Factory factory = stdFactory ;
 
     private static OpExecutor createOpExecutor(ExecutionContext execCxt) {
         OpExecutorFactory factory = execCxt.getExecutor() ;
@@ -90,7 +88,7 @@ public class OpExecutor
         return execute(op, createRootQueryIterator(execCxt), execCxt) ;
     }
 
-    // Public interface is via QC.execute.
+    /** Public interface is via QC.execute. **/
     static QueryIterator execute(Op op, QueryIterator qIter, ExecutionContext execCxt) {
         OpExecutor exec = createOpExecutor(execCxt) ;
         QueryIterator q = exec.exec(op, qIter) ;
@@ -114,11 +112,6 @@ public class OpExecutor
         this.stageGenerator = StageBuilder.chooseStageGenerator(execCxt.getContext()) ;
     }
 
-//    public QueryIterator executeOp(Op op) {
-//        return executeOp(op, root()) ;
-//    }
-
-    
     // Public interface 
     public QueryIterator executeOp(Op op, QueryIterator input) {
         return exec(op, input) ;
@@ -243,7 +236,6 @@ public class OpExecutor
             Op sub = iter.next() ;
             qIter = exec(sub, qIter) ;
         }
-
         return qIter ;
     }
 
@@ -335,21 +327,13 @@ public class OpExecutor
     }
 
     protected QueryIterator execute(OpTable opTable, QueryIterator input) {
-        // if ( input instanceof QueryIteratorBase )
-        // {
-        // String x = ((QueryIteratorBase)input).debug();
-        // System.out.println(x) ;
-        // }
-        //
         if (opTable.isJoinIdentity())
             return input ;
         if (input instanceof QueryIterRoot) {
             input.close() ;
             return opTable.getTable().iterator(execCxt) ;
         }
-        // throw new ARQNotImplemented("Not identity table") ;
         QueryIterator qIterT = opTable.getTable().iterator(execCxt) ;
-        // QueryIterator qIterT = root() ;
         QueryIterator qIter = new QueryIterJoin(input, qIterT, execCxt) ;
         return qIter ;
     }
@@ -390,9 +374,9 @@ public class OpExecutor
     protected QueryIterator execute(OpTopN opTop, QueryIterator input) {
         QueryIterator qIter = null ;
         // We could also do (reduced) here as well.
-        // but it's detected in TrabsformTopN and turned into (distinct)
+        // but it's detected in TransformTopN and turned into (distinct)
         // there so that code catches that already.
-        // We leave this to do the strict case of (top N (distinct ...))
+        // We leave this to do the strict case of (top (distinct ...))
         if (opTop.getSubOp() instanceof OpDistinct) {
             OpDistinct opDistinct = (OpDistinct)opTop.getSubOp() ;
             qIter = exec(opDistinct.getSubOp(), input) ;
@@ -406,7 +390,7 @@ public class OpExecutor
 
     protected QueryIterator execute(OpProject opProject, QueryIterator input) {
         // This may be under a (graph) in which case we need to operate
-        // the active graph.
+        // on the active graph.
 
         // More intelligent QueryIterProject needed.
 
@@ -416,7 +400,6 @@ public class OpExecutor
             return qIter ;
         }
         // Nested projected : need to ensure the input is seen.
-        // ROLL into QueryIterProject
         QueryIterator qIter = new QueryIterProjectMerge(opProject, input, this, execCxt) ;
         return qIter ;
     }
@@ -446,7 +429,6 @@ public class OpExecutor
     }
 
     protected QueryIterator execute(OpAssign opAssign, QueryIterator input) {
-        // Need prepare?
         QueryIterator qIter = exec(opAssign.getSubOp(), input) ;
         qIter = new QueryIterAssign(qIter, opAssign.getVarExprList(), execCxt, false) ;
         return qIter ;
