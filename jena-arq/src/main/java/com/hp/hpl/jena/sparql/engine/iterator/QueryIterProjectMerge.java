@@ -30,12 +30,11 @@ import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
 
 /**
  * Execute a projection in the middle of an execution. This requires the outcome
- * of each stage of execution (substituion evaluation assumed) to be merged with
+ * of each stage of execution (substitution evaluation assumed) to be merged with
  * the input binding. Bindings should already be compatible, otherwise this code
  * should not be used.
  */
 public class QueryIterProjectMerge extends QueryIterRepeatApply {
-    // This is a merge/substitution join
     private final OpProject  opProject ;
     private final OpExecutor engine ;
 
