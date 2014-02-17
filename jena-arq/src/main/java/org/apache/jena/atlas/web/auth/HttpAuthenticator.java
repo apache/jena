@@ -50,4 +50,20 @@ public interface HttpAuthenticator {
      *            Target URI to which code wants to authenticate
      */
     public void apply(AbstractHttpClient client, HttpContext httpContext, URI target);
+
+    /**
+     * Invalidates the authenticator
+     * <p>
+     * Allows code to inform the authenticator that any cached authentication
+     * information should be invalidated. This can be useful after an
+     * authentication attempt fails or after a certain amount of time is passed.
+     * For many authenticators this may actually be a no-op since when using
+     * standard HTTP authentication typically you authenticate on every request
+     * and there are no cached authentication information. However more complex
+     * authentication mechanisms such as Form Based authentication may have
+     * cached information that discarding will force subsequent requests to
+     * re-authenticate.
+     * </p>
+     */
+    public void invalidate();
 }

@@ -49,6 +49,11 @@ public abstract class AbstractCredentialsAuthenticator implements HttpAuthentica
         
         client.setCredentialsProvider(provider);
     }
+    
+    @Override
+    public void invalidate() {
+        // Does nothing by default
+    }
 
     /**
      * Gets whether there is a user name available for the target URI

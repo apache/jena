@@ -86,5 +86,10 @@ public class PreemptiveBasicAuthenticator implements HttpAuthenticator {
         authCache.put(new HttpHost(target.getHost(), target.getPort()), basicAuth);
         httpContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
     }
+    
+    @Override
+    public void invalidate() {
+        // Does nothing
+    }
 
 }

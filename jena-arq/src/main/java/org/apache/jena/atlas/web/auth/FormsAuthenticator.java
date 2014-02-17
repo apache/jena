@@ -154,6 +154,14 @@ public class FormsAuthenticator extends AbstractScopedAuthenticator<FormLogin> {
             }
         }
     }
+    
+    @Override
+    public void invalidate() {
+        // Discard all cookies we have currently
+        for (FormLogin login : this.logins.values()) {
+            login.clearCookies();
+        }
+    }
 
     /**
      * Adds a login to the authenticator preserving any existing cookies
