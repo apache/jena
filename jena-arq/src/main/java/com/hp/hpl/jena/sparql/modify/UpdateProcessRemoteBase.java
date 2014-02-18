@@ -18,26 +18,26 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.http.protocol.HttpContext ;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
-import org.apache.jena.riot.web.HttpOp ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.http.protocol.HttpContext;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
+import org.apache.jena.riot.web.HttpOp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.sparql.engine.http.HttpParams ;
-import com.hp.hpl.jena.sparql.engine.http.Params ;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
-import com.hp.hpl.jena.sparql.engine.http.Service ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.sparql.engine.http.HttpParams;
+import com.hp.hpl.jena.sparql.engine.http.Params;
+import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
+import com.hp.hpl.jena.sparql.engine.http.Service;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.update.GraphStore;
+import com.hp.hpl.jena.update.UpdateProcessor;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 /**
  * Abstract base class for update processors that perform remote updates over
@@ -57,6 +57,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     private final String endpoint;
     private final Context context;
     private HttpAuthenticator authenticator;
+    private Params params;
 
     protected List<String> defaultGraphURIs = new ArrayList<String>();
     protected List<String> namedGraphURIs = new ArrayList<String>();
@@ -155,7 +156,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      * @return Parameters
      */
     public Params getParams() {
-        Params ps = new Params();
+        Params ps = this.params != null ? new Params(this.params) : new Params();
         if (this.defaultGraphURIs != null) {
             for (String defaultGraph : this.defaultGraphURIs) {
                 ps.addParam(HttpParams.pUsingGraph, defaultGraph);
@@ -202,6 +203,20 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
             this.namedGraphURIs = new ArrayList<String>();
         }
         this.namedGraphURIs.add(namedGraph);
+    }
+
+    /**
+     * Adds a custom parameter to the request
+     * 
+     * @param field
+     *            Field
+     * @param value
+     *            Value
+     */
+    public void addParam(String field, String value) {
+        if (this.params == null)
+            this.params = new Params();
+        this.params.addParam(field, value);
     }
 
     /**
