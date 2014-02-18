@@ -186,6 +186,9 @@ public class BlockAccessMapped extends BlockAccessBase
         // The MappedByteBuffer must be sliced and reset once found/allocated
         // so as not to mess up the underlying MappedByteBuffer in segments[].
         
+        // Only allocSegment(seg) and flushDirtySegements() and close()
+        // directly access segments[] 
+
         if ( seg < 0 )
         {
             getLog().error("Segment negative: "+seg) ;
@@ -212,8 +215,6 @@ public class BlockAccessMapped extends BlockAccessBase
             throw new FileException("Negative segment offset: "+seg) ;
         }
         
-        // This, the relocation code above, and flushDirtySegements(), 
-        // are the only places to directly access segments[] while running. 
         MappedByteBuffer segBuffer = segments[seg] ;
         if ( segBuffer == null )
         {
@@ -229,7 +230,6 @@ public class BlockAccessMapped extends BlockAccessBase
                 throw new FileException("BlockMgrMapped.segmentAllocate: Segment = "+seg, ex) ;
             }
         }
-        //segmentDirty[seg] = true ; // Old - why was it ever here?
         return segBuffer ;
     }
 
