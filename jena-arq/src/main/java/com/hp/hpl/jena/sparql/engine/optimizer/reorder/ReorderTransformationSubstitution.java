@@ -243,9 +243,9 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
      *    NUMERIC   Use value returned by {@link defaultWeight}
      * The default, default choice is LAST.   
      */
-    protected /*abstract*/ DefaultChoice defaultChoice(PatternTriple pt) { return null ; } // return DefaultChoice.LAST ; }
+    protected DefaultChoice defaultChoice(PatternTriple pt) { return null ; } // return DefaultChoice.LAST ; }
     
-    protected /*abstract*/ double defaultWeight(PatternTriple pt) { return -1 ; }
+    protected double defaultWeight(PatternTriple pt) { return -1 ; }
 
     /** Update components to note any variables from triple */
     protected static void update(Triple triple, List<PatternTriple> components)
