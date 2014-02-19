@@ -43,26 +43,12 @@ class RecordRangeIterator implements Iterator<Record>, Closeable
         }
         return new RecordRangeIterator(pageId, fromRec, toRec, pageMgr) ;
     }
-
-    
-    
-    // ITER release the page and re-get it as a   
-//    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */
-//    public static Iterator<Record> iterator(RecordBufferPage page, Record fromRec, Record toRec, RecordBufferPageMgr pageMgr)
-//    {
-//        return new RecordRangeIterator(page, fromRec, toRec, pageMgr) ;
-//    }
-//    
-//    /** Iterate over all records from this page onwards */
-//    public static Iterator<Record> iterator(RecordBufferPage page, RecordBufferPageMgr pageMgr)
-//    {
-//        return new RecordRangeIterator(page, null, null, pageMgr) ;
-//    }
     
     private RecordBufferPage currentPage ;      // Set null when finished.
-    private RecordBufferPageMgr pageMgr ;
     private int currentIdx ;
     private Record slot = null ;
+    
+    private final RecordBufferPageMgr pageMgr ;
     private final Record maxRec ;
     private final Record minRec ;
     
