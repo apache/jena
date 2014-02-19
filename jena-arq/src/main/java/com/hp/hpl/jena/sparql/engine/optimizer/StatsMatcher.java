@@ -73,9 +73,9 @@ public final class StatsMatcher
     }
 
     // General structure
-    List<Pattern> patterns = new ArrayList<Pattern>() ;
+    protected List<Pattern> patterns = new ArrayList<Pattern>() ;
     // Map keyed by P for faster lookup (if no P available, we'll use the full list).  
-    Map<Item, List<Pattern>> mapPatterns = new HashMap<Item,  List<Pattern>>() ;
+    protected Map<Item, List<Pattern>> mapPatterns = new HashMap<Item,  List<Pattern>>() ;
     
     // Default behaviour
     double DefaultMatch = NOMATCH ;
@@ -410,7 +410,7 @@ public final class StatsMatcher
                 continue ;
             if ( ! matchNode(pred, pattern.predItem, match) )
                 continue ;
-            if ( ! matchNode(obj, pattern.objItem, match) )
+            if ( ! matchNode(obj,  pattern.objItem,  match) )
                 continue ;
             // First match.
             return pattern.weight ;
