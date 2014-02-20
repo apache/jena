@@ -88,8 +88,8 @@ public class FusekiServer
             Fuseki.configLog.info("Template file: " + params.templateFile) ;
             DataAccessPoint dap = configFromTemplate(params.templateFile, params.datasetPath, params.params) ;
             datasets.add(dap) ;
-        } else
-            throw new FusekiConfigException("Invalid ServerInitialConfig") ;
+        }
+        // No datasets is valid.
         return datasets ;
     }
     

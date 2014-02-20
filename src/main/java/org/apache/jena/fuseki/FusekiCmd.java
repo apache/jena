@@ -273,8 +273,8 @@ public class FusekiCmd extends CmdARQ {
             if ( x > 1 )
                 throw new CmdException("Dataset specified on the command line and also a configuration file specified.") ;
         } else {
-            if ( x == 0 )
-                throw new CmdException("Required: either --config=FILE or one of --mem, --file, --loc or --desc") ;
+//            if ( x == 0 )
+//                throw new CmdException("Required: either --config=FILE or one of --mem, --file, --loc or --desc") ;
         }
 
         if ( contains(argMem) ) {
@@ -330,16 +330,16 @@ public class FusekiCmd extends CmdARQ {
         }
 
         if ( cmdLineDataset != null ) {
-            if ( getPositional().size() == 0 )
-                throw new CmdException("No dataset path name given") ;
             if ( getPositional().size() > 1 )
                 throw new CmdException("Multiple dataset path names given") ;
-            cmdLineDataset.datasetPath = getPositionalArg(0) ;
-            if ( cmdLineDataset.datasetPath.length() > 0 && !cmdLineDataset.datasetPath.startsWith("/") )
-                throw new CmdException("Dataset path name must begin with a /: " + cmdLineDataset.datasetPath) ;
-            cmdLineDataset.allowUpdate = contains(argAllowUpdate) ;
-            // Include the dataset name as NAME for any templates.
-            cmdLineDataset.params.put(Template.NAME,  cmdLineDataset.datasetPath) ;            
+            if ( getPositional().size() != 0 ) {
+                cmdLineDataset.datasetPath = getPositionalArg(0) ;
+                if ( cmdLineDataset.datasetPath.length() > 0 && !cmdLineDataset.datasetPath.startsWith("/") )
+                    throw new CmdException("Dataset path name must begin with a /: " + cmdLineDataset.datasetPath) ;
+                cmdLineDataset.allowUpdate = contains(argAllowUpdate) ;
+                // Include the dataset name as NAME for any templates.
+                cmdLineDataset.params.put(Template.NAME,  cmdLineDataset.datasetPath) ;
+            }
         }
 
         // ---- Jetty server

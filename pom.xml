@@ -119,7 +119,6 @@
       <exclusions>
         <!-- 
 	  Get this via commons-fileupload and also via jena-text/sol4j
-	  Choose the commons-fileupload route
 	-->
         <exclusion>
           <groupId>commons-io</groupId>
@@ -178,12 +177,13 @@
       <version>${ver.jetty}</version>
     </dependency>    
 
+    <!-- Jetty's useful servlets, inc compression -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
       <version>${ver.jetty}</version>
     </dependency>    
-
+    
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -203,7 +203,7 @@
       <version>${ver.slf4j}</version>
     </dependency>
 
-    <!-- Needed because the Fuseki test suite resets logging levels -->
+    <!-- Needed because the Fuseki command line and the test suite reset logging levels -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -360,6 +360,43 @@
 	    </goals>
 	  </execution>
 	</executions>
+      </plugin>
+
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-war-plugin</artifactId>
+	<version>2.4</version>
+	<configuration>
+	  <webappDirectory>${project.build.webappDirectory}</webappDirectory>
+	  <warName>fuseki-webapp</warName> <!-- Temp name -->
+	  
+	  <nonFilteredFileExtensions>
+	    <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
+	    <nonFilteredFileExtension>png</nonFilteredFileExtension>
+	    <nonFilteredFileExtension>gif</nonFilteredFileExtension>
+	    <nonFilteredFileExtension>jsp</nonFilteredFileExtension>
+	  </nonFilteredFileExtensions>
+
+	  <webXml>war-web.xml</webXml>
+
+	  <!-- Exclude jetty! -->
+
+	  <webResources>
+	    <resource>
+	      <directory>pages</directory>
+	    </resource>
+	  </webResources>
+	</configuration>
+      </plugin>
+
+      <plugin>
+	<groupId>org.eclipse.jetty</groupId>
+	<artifactId>jetty-maven-plugin</artifactId>
+	<version>${ver.jetty}</version>
+	<configuration>
+	  <war>target/fuseki-webapp.war</war>
+	</configuration>
       </plugin>
 
       <plugin>

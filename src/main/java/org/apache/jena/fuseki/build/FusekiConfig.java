@@ -156,6 +156,7 @@ public class FusekiConfig {
     
     // XXX Move to utils
     private static Model additionalRDF(Model m) {
+        SystemState.init$();        // Why? mvn jetty:run-war
         String x1 = StrUtils.strjoinNL
             ( SystemState.PREFIXES, 
               "INSERT                    { [] ja:loadClass 'com.hp.hpl.jena.tdb.TDB' }",
