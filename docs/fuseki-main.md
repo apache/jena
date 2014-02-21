@@ -18,11 +18,15 @@ Contents
     SPARQL Over HTTP
     Use from Java
 
-Other parts:
+All parts:
 
-[fuseki-data-services](fuseki-data-services.html)
-[fuseki-java](fuseki-java.html)
 [fuseki-main](fuseki-main.html)
+[fuseki-data-services](fuseki-data-services.html)
+  Architechure
+
+[fuseki-run](fuseki-run.html)
+
+[fuseki-java](fuseki-java.html)
 [fuseki-protocol](fuseki-protocol.html)
 [fuseki-stats](fuseki-stats.html)
 [fuseki-logging](fuseki-logging.html)
