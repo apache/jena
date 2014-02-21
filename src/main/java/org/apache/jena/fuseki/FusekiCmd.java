@@ -19,12 +19,12 @@
 package org.apache.jena.fuseki ;
 
 import java.io.File ;
+import java.net.URL ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.server.FusekiServletContextListener ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
@@ -34,6 +34,8 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.SysRIOT ;
+import org.apache.log4j.PropertyConfigurator ;
+import org.apache.log4j.helpers.Loader ;
 import org.slf4j.Logger ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
@@ -90,7 +92,7 @@ public class FusekiCmd extends CmdARQ {
     // 2/ Use file:log4j.properties
     // 3/ Use Built in.
 
-    static void setLogging() {
+    public static void setLogging() {
         // No loggers have been created but configuration may have been set up.
         String x = System.getProperty("log4j.configuration", null) ;
 
@@ -100,16 +102,34 @@ public class FusekiCmd extends CmdARQ {
             return ;
         }
 
-        String fn = "log4j.properties" ;
-        File f = new File(fn) ;
-        if ( f.exists() ) {
-            System.out.println("File") ;
-            // Use file log4j.properties
-            System.setProperty("log4j.configuration", "file:" + fn) ;
-            return ;
-        }
+        // Look for a log4j.properties in the current working directory for easy customization.
+        try {
+            String fn = "log4j.properties" ;
+            File f = new File(fn) ;
+            if ( f.exists() ) {
+                System.out.println("File") ;
+                // Use file log4j.properties
+                System.setProperty("log4j.configuration", "file:" + fn) ;
+                return ;
+            }
+        } catch (Throwable th) {}
+
+        // CmdMain will have set logging. 
+
         // Use built-in for Fuseki.
-        LogCtl.resetLogging(log4Jsetup) ;
+        
+        // The log4j general is initialization done in a class static in LogManager
+        // so it can't be called again in any sensible manner.  Instead, we include
+        // the same mechanism ...
+        try {
+            URL url = Loader.getResource("log4j.properties") ;
+            PropertyConfigurator.configure(url);
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+        
+        // Alt: set wheer from the java-based string. 
+        //LogCtl.resetLogging(log4Jsetup) ;
     }
 
     static {

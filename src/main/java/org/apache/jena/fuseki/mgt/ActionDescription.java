@@ -82,17 +82,19 @@ public class ActionDescription extends ActionCtl
         if ( builtDateStr == null )
             builtDateStr = "Unknown" ;
             
-        builder
-            .key(JsonConst.server)
-            .startObject()
-            .key(JsonConst.port).value(SPARQLServer.instance.getServerPort())
-            .finishObject() ;
-        builder
-            .key(JsonConst.admin)
-            .startObject()
-            //.key(JsonConst.hostname).value(req.getLocalName())
-            .key(JsonConst.port).value(SPARQLServer.instance.getMgtPort())
-            .finishObject() ;
+        if ( SPARQLServer.instance != null ) {
+            builder
+                .key(JsonConst.server)
+                .startObject()
+                .key(JsonConst.port).value(SPARQLServer.instance.getServerPort())
+                .finishObject() ;
+            builder
+                .key(JsonConst.admin)
+                .startObject()
+                //.key(JsonConst.hostname).value(req.getLocalName())
+                .key(JsonConst.port).value(SPARQLServer.instance.getMgtPort())
+                .finishObject() ;
+        }
         builder
             .key(JsonConst.version).value(versionStr)
             .key(JsonConst.built).value(builtDateStr) ;

@@ -28,7 +28,6 @@ import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.build.Builder ;
 import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.apache.jena.fuseki.build.Template ;

@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>8-SNAPSHOT</version>
+    <version>9-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -65,86 +65,28 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <ver.fuseki>1.0.1-SNAPSHOT</ver.fuseki>
-    <ver.jetty>8.1.11.v20130520</ver.jetty>
+    
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>2.11.1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>2.11.1-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
-      <version>2.11.1-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <artifactId>jena-libs</artifactId>
+      <version>2.11.2-SNAPSHOT</version>
+      <classifier>pom</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-spatial</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.2-SNAPSHOT</version>
     </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-      <version>4.11</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>${ver.httpclient}</version>
-      <exclusions>
-        <!-- Replace with slf4j adapter -->
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-fileupload</groupId>
-      <artifactId>commons-fileupload</artifactId>
-      <version>1.2.2</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-webapp</artifactId>
-      <version>${ver.jetty}</version>
-    </dependency>    
-
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlets</artifactId>
-      <version>${ver.jetty}</version>
-    </dependency>    
 
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -162,34 +104,13 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-      <version>${ver.slf4j}</version>
     </dependency>
 
     <!-- Needed because the Fuseki test suite resets logging levels -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>${ver.log4j}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.jms</groupId>
-          <artifactId>jms</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.sun.jdmk</groupId>
-          <artifactId>jmxtools</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.sun.jmx</groupId>
-          <artifactId>jmxri</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.mail</groupId>
-          <artifactId>mail</artifactId>
-        </exclusion>
-      </exclusions> 
     </dependency>
-
 
   </dependencies>
 
@@ -197,46 +118,6 @@
     <finalName>apache-jena-fuseki</finalName>
 
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <encoding>UTF-8</encoding>
-          <optimize>true</optimize>
-          <debug>true</debug>
-          <debuglevel>source,lines,vars</debuglevel>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-	<version>2.4</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.9</version>
-        <configuration>
-          <includes>
-            <include>**/TS_*.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <overWriteReleases>false</overWriteReleases>
-          <overWriteIfNewer>true</overWriteIfNewer>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -252,30 +133,8 @@
 	<version>2.4</version>
 	<configuration>
 	  <webXml>war-web.xml</webXml>
-	  <!--
-	    When using the Fuseki build of a standalone server,
-	    miss out the embedded jetty server, and the servlet API
-	    jar (2 names possible).
-	    Later - refactor the Fuseki build.
-	  -->
-	  <packagingExcludes>WEB-INF/lib/servlet-api*.jar,WEB-INF/lib/javax.servlet*.jar,WEB-INF/lib/jetty-*.jar</packagingExcludes>
+	  <packagingExcludes>WEB-INF/lib/jetty-*,WEB-INF/lib/javax.servlet*</packagingExcludes>
 	</configuration>
-
-      </plugin>
-
-      <!-- Run the application using "mvn jetty:run" -->
-      <!-- org.eclipse at v9 -->
-      <plugin>
-	<groupId>org.mortbay.jetty</groupId>
-	<artifactId>jetty-maven-plugin</artifactId>
-	<version>${ver.jetty}</version>
-	<!--
-	<configuration>
-	  <webApp>
-	    <contextPath>/FUSEKI</contextPath>
-	  </webApp>
-	</configuration>
-	-->
       </plugin>
 
     </plugins>
