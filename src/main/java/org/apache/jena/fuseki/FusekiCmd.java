@@ -27,9 +27,9 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.server.FusekiServletContextListener ;
-import org.apache.jena.fuseki.server.SPARQLServer ;
-import org.apache.jena.fuseki.server.ServerConfig ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
+import org.apache.jena.fuseki.jetty.JettyServerConfig ;
+import org.apache.jena.fuseki.jetty.SPARQLServer ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -210,7 +210,7 @@ public class FusekiCmd extends CmdARQ {
 //    public String authConfigFile ;
     
     public String       homeDir                 = null ;
-    private ServerConfig jettyServerConfig          = new ServerConfig() ;
+    private JettyServerConfig jettyServerConfig          = new JettyServerConfig() ;
     {
         jettyServerConfig.port = 3030 ;
         jettyServerConfig.mgtPort = 3031 ;

@@ -18,12 +18,10 @@
 
 package org.apache.jena.fuseki ;
 
-import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.stream.LocatorFTP ;
 import org.apache.jena.riot.stream.LocatorHTTP ;
 import org.apache.jena.riot.stream.StreamManager ;
-import org.eclipse.jetty.server.Server ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -180,50 +178,6 @@ public class Fuseki {
     public static Context getContext() {
         return ARQ.getContext() ;
     }
-
-    // Temporary ...
-    private static SPARQLServer server ;
-    private static Server       jettyServer ;
-    private static Server       mgtJettyServer ;
-
-//    /**
-//     * set/specify the {@link SPARQLServer}
-//     * instance.
-//     */
-//    public static void setServer(SPARQLServer _server) {
-//        server = _server ;
-//    }
-//
-//    /** get the {@link SPARQLServer} instance. */
-//    public static SPARQLServer getServer() {
-//        return server ;
-//    }
-//
-//    /**
-//     * set/specify the {@link org.apache.jena.fuseki.server.SPARQLServer}
-//     * instance.
-//     */
-//    public static void setJettyServer(Server _server) {
-//        jettyServer = _server ;
-//    }
-//
-//    /** get the {@link org.apache.jena.fuseki.server.SPARQLServer} instance. */
-//    public static Server getJettyServer() {
-//        return jettyServer ;
-//    }
-//
-//    /**
-//     * set/specify the {@link org.apache.jena.fuseki.server.SPARQLServer}
-//     * instance.
-//     */
-//    public static void setJettyMgtServer(Server _server) {
-//        mgtJettyServer = _server ;
-//    }
-//
-//    /** get the {@link org.apache.jena.fuseki.server.SPARQLServer} instance. */
-//    public static Server getJettyMgtServer() {
-//        return mgtJettyServer ;
-//    }
 
     // Force a call to init.
     static {

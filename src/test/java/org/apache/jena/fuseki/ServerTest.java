@@ -22,6 +22,8 @@ import java.util.Collection ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.fuseki.server.* ;
+import org.apache.jena.fuseki.jetty.JettyServerConfig ;
+import org.apache.jena.fuseki.jetty.SPARQLServer ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -110,15 +112,15 @@ public class ServerTest {
         params.allowUpdate = true ;
         FusekiServletContextListener.initialSetup = params ;
         
-        ServerConfig config = make(true, true) ;
+        JettyServerConfig config = make(true, true) ;
         config.authConfigFile = authConfigFile ;
         SPARQLServer.initializeServer(config);
         server = SPARQLServer.instance ;
         server.start() ;
     }
 
-    public static ServerConfig make(boolean allowUpdate, boolean listenLocal) {
-        ServerConfig config = new ServerConfig() ;
+    public static JettyServerConfig make(boolean allowUpdate, boolean listenLocal) {
+        JettyServerConfig config = new JettyServerConfig() ;
         // Avoid any persistent record.
         config.port = ServerTest.port ;
         config.mgtPort = ServerTest.port ;

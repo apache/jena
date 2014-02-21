@@ -18,9 +18,11 @@
 
 package org.apache.jena.fuseki;
 
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
+import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
@@ -38,4 +40,19 @@ import org.junit.runners.Suite ;
     , TestAdmin.class
 })
 public class TS_Fuseki extends ServerTest
-{ }
+{ 
+    @BeforeClass public static void setQuietLogging() {
+        org.apache.log4j.Level WARN1 = org.apache.log4j.Level.WARN ; 
+        java.util.logging.Level WARN2 = java.util.logging.Level.WARNING ;
+
+        // Occasionally log4j.properties gets out of step.
+//        LogCtl.logLevel("org.apache.shiro",    WARN1, WARN2);
+//        LogCtl.logLevel("org.eclipse.jetty",    WARN1, WARN2);
+        
+        LogCtl.logLevel(Fuseki.serverLogName,   WARN1, WARN2);
+        LogCtl.logLevel(Fuseki.configLogName,   WARN1, WARN2);
+        LogCtl.logLevel(Fuseki.adminLogName,    WARN1, WARN2);
+        LogCtl.logLevel(Fuseki.builderLogName,  WARN1, WARN2);
+        LogCtl.logLevel(Fuseki.requestLogName,  WARN1, WARN2);
+    }
+}

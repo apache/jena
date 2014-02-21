@@ -32,7 +32,6 @@ import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
-import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 
@@ -64,7 +63,7 @@ public class ActionDescription extends ActionCtl
         
         JsonBuilder builder = new JsonBuilder() ; 
         builder.startObject() ;
-        describeServer(builder) ;
+        describeServer(builder, action.request.getLocalPort()) ;
         describeDataset(builder) ;
         builder.finishObject() ;
         
@@ -74,27 +73,25 @@ public class ActionDescription extends ActionCtl
         out.flush() ;
     }
 
-    private void describeServer(JsonBuilder builder) {
+    private void describeServer(JsonBuilder builder, int port) {
         String versionStr = Fuseki.VERSION ;
         String builtDateStr = Fuseki.BUILD_DATE ;
         if ( versionStr == null )
             versionStr = "Development" ;
         if ( builtDateStr == null )
             builtDateStr = "Unknown" ;
-            
-        if ( SPARQLServer.instance != null ) {
-            builder
-                .key(JsonConst.server)
-                .startObject()
-                .key(JsonConst.port).value(SPARQLServer.instance.getServerPort())
-                .finishObject() ;
-            builder
-                .key(JsonConst.admin)
-                .startObject()
-                //.key(JsonConst.hostname).value(req.getLocalName())
-                .key(JsonConst.port).value(SPARQLServer.instance.getMgtPort())
-                .finishObject() ;
-        }
+
+//        builder
+//            .key(JsonConst.server)
+//            .startObject()
+//            .key(JsonConst.port).value(port)
+//            .finishObject() ;
+        builder
+            .key(JsonConst.admin)
+            .startObject()
+            .key(JsonConst.port).value(port)
+            .finishObject() ;
+
         builder
             .key(JsonConst.version).value(versionStr)
             .key(JsonConst.built).value(builtDateStr) ;
