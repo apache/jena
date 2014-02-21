@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server ;
+package org.apache.jena.fuseki.jetty ;
 
 import static java.lang.String.format ;
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
@@ -32,6 +32,7 @@ import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
+import org.apache.jena.fuseki.server.FusekiServletContextListener ;
 import org.apache.jena.fuseki.servlets.FusekiFilter ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
@@ -50,9 +51,11 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  * immediate access to the {@link org.eclipse.jetty.server.Server#start()} and 
  * {@link org.eclipse.jetty.server.Server#stop()} commands as well as obtaining
  * instances of the server and server configuration. Finally we can obtain 
- * instances of {@link org.apache.jena.fuseki.server.ServerConfig}.
+ * instances of {@link org.apache.jena.fuseki.jetty.JettyServerConfig}.
  */
 public class SPARQLServer {
+    // Jetty specific.
+    // All jetty code should be here and in 
     static {
         Fuseki.init() ;
     }
@@ -62,25 +65,25 @@ public class SPARQLServer {
     private ServerConnector serverConnector = null ;
     private ServerConnector mgtConnector    = null ;
     
-    private ServerConfig        serverConfig ;
+    private JettyServerConfig        serverConfig ;
 
     private Server              server         = null ;
     private static List<String> epDataset      = Arrays.asList("*") ;
 
     /**
-     * Default constructor which requires a {@link org.apache.jena.fuseki.server.ServerConfig}
+     * Default constructor which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}
      * object as input. We use this config to specify (verbose) logging, enable compression
      * etc. 
      * @param config
      */
     
-    public static void initializeServer(ServerConfig config) {
+    public static void initializeServer(JettyServerConfig config) {
         // Currently server-wide.
         Fuseki.verboseLogging = config.verboseLogging ;
         instance = new SPARQLServer(config) ;
     }
     
-    private SPARQLServer(ServerConfig config) {
+    private SPARQLServer(JettyServerConfig config) {
         this.serverConfig = config ;
         boolean webappBuild = true ;
         
@@ -156,14 +159,6 @@ public class SPARQLServer {
         return mgtConnector.getPort() ;
     }
 
-    /**
-     * Obtain the {@link org.apache.jena.fuseki.server.ServerConfig}
-     * @return ServerConfig
-     */
-    public ServerConfig getServerConfig() {
-        return serverConfig ;
-    }
-
     private ServletContextHandler buildServerWebapp(String jettyConfig, boolean enableCompression) {
         if ( jettyConfig != null )
             // --jetty-config=jetty-fuseki.xml
@@ -226,7 +221,6 @@ public class SPARQLServer {
         context.setSecurityHandler(securityHandler) ;
 
         serverLog.debug("Basic Auth Configuration = " + authfile) ;
-
     }
 
     private void configServer(String jettyConfig) {

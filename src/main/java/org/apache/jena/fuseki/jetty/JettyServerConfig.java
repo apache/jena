@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.jetty;
 
 
 /** This represents a configuration of a SPARQL server.
  */
 
-public class ServerConfig
+public class JettyServerConfig
 {
-    public ServerConfig() {}
+    public JettyServerConfig() {}
     
     /** Port to run the server service on */
     public int port ;
