@@ -73,7 +73,7 @@ public class ActionDescription extends ActionCtl
         out.flush() ;
     }
 
-    private void describeServer(JsonBuilder builder, int port) {
+    private void describeServer(JsonBuilder builder, int requestPort) {
         String versionStr = Fuseki.VERSION ;
         String builtDateStr = Fuseki.BUILD_DATE ;
         if ( versionStr == null )
@@ -89,7 +89,7 @@ public class ActionDescription extends ActionCtl
         builder
             .key(JsonConst.admin)
             .startObject()
-            .key(JsonConst.port).value(port)
+            .key(JsonConst.port).value(requestPort)
             .finishObject() ;
 
         builder

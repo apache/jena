@@ -22,22 +22,13 @@ import static java.lang.String.format ;
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.FileInputStream ;
-import java.util.Arrays ;
-import java.util.EnumSet ;
-import java.util.List ;
 
-import javax.servlet.DispatcherType ;
-
-import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
-import org.apache.jena.fuseki.server.FusekiServletContextListener ;
-import org.apache.jena.fuseki.servlets.FusekiFilter ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.* ;
-import org.eclipse.jetty.servlet.FilterHolder ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.util.security.Constraint ;
 import org.eclipse.jetty.webapp.WebAppContext ;
@@ -55,25 +46,37 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  */
 public class SPARQLServer {
     // Jetty specific.
-    // All jetty code should be here and in 
-    static {
-        Fuseki.init() ;
-    }
+    // This class is becoming less important - it now sets up a Jetty server for in-process use
+    // either for the command line (including the fuskei service init.d script)  
+    // or testing but not direct webapp deployments. 
+    static { Fuseki.init() ; }
 
     public static SPARQLServer  instance    = null ;
 
     private ServerConnector serverConnector = null ;
+    // If a separate ...
     private ServerConnector mgtConnector    = null ;
     
-    private JettyServerConfig        serverConfig ;
+    private JettyServerConfig serverConfig ;
 
+    // The jetty server.
     private Server              server         = null ;
-    private static List<String> epDataset      = Arrays.asList("*") ;
+    
+    // webapp setup.
+    public static final String descriptorFile = "war-web.xml" ;
+    public static final String resourceBase   = "pages" ;
+    public static final String contextpath    = "/" ;
+    
+//    public static final String descriptorFile = "src/main/webapp/WEB-INF/web.xml" ;
+//    public static final String resourceBase   = "src/main/webapp" ;
+//    public static final String contextpath    = "/" ;
+    
+
 
     /**
-     * Default constructor which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}
-     * object as input. We use this config to specify (verbose) logging, enable compression
-     * etc. 
+     * Default setup which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}
+     * object as input.  We use this config to pass in the command line arguments for dataset, 
+     * name etc. 
      * @param config
      */
     
@@ -83,21 +86,21 @@ public class SPARQLServer {
         instance = new SPARQLServer(config) ;
     }
     
+    /** Build a Jetty server using the development files for the webapp
+     *  No command line configuration. 
+     */
+    public static Server create(int port) {
+        Server server = new Server(port) ;
+        WebAppContext webapp = createWebApp() ;
+        server.setHandler(webapp) ;
+        return server ;
+    }
+
     private SPARQLServer(JettyServerConfig config) {
         this.serverConfig = config ;
         boolean webappBuild = true ;
         
-        if ( webappBuild ) 
-            buildServerWebapp(serverConfig.jettyConfigFile, config.enableCompression) ;
-        else {
-            ServletContextHandler context = buildServer(serverConfig.jettyConfigFile, config.enableCompression) ;
-            // Filter to grab all request for dynamic dispatching.
-            FilterHolder f = new FilterHolder(new FusekiFilter()) ;
-            EnumSet<DispatcherType> es = EnumSet.allOf(DispatcherType.class) ; 
-            context.addFilter(f, "/*", es);
-            context.addEventListener(new FusekiServletContextListener());
-            // No security.
-        }
+        buildServerWebapp(serverConfig.jettyConfigFile, config.enableCompression) ;
         
         if ( mgtConnector == null )
             mgtConnector = serverConnector ;
@@ -130,6 +133,16 @@ public class SPARQLServer {
     }
 
     /**
+     * Sync with the {@link SPARQLServer} instance.
+     * Returns only if the server exits cleanly 
+     */
+    public void join() {
+        try {
+            server.join() ;
+        } catch (InterruptedException ex) { }
+    }
+
+        /**
      * Stop the {@link SPARQLServer} instance.
      */
     public void stop() {
@@ -143,57 +156,38 @@ public class SPARQLServer {
         MgtJMX.removeJMX() ;
     }
 
-    /**
-     * Get the Jetty instance.
-     * @return Server
-     */
-    public Server getServer() {
-        return server ;
+    public static WebAppContext createWebApp() {
+      WebAppContext webapp = new WebAppContext();
+      webapp.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
+      webapp.setDescriptor(descriptorFile);
+      webapp.setResourceBase(resourceBase);
+      webapp.setContextPath(contextpath);
+      
+      //-- Jetty setup for the ServletContext logger.
+      // The name of the Jetty-allocated slf4j/log4j logger is
+      // the display name or, if null, the context path name.   
+      // It is set, without checking for a previous call of setLogger in "doStart"
+      // which happens during server startup. 
+      // This the name of the ServletContext logger as well
+      webapp.setDisplayName(Fuseki.serverLogName);  
+      
+      webapp.setParentLoaderPriority(true);  // Normal Java classloader behaviour.
+      webapp.setErrorHandler(new FusekiErrorHandler()) ;
+      return webapp ;
     }
-
-    public int getServerPort() {
-        return serverConnector.getPort() ;
-    }
-
-    public int getMgtPort() {
-        return mgtConnector.getPort() ;
-    }
-
-    private ServletContextHandler buildServerWebapp(String jettyConfig, boolean enableCompression) {
+    
+    private void buildServerWebapp(String jettyConfig, boolean enableCompression) {
         if ( jettyConfig != null )
             // --jetty-config=jetty-fuseki.xml
             // for detailed configuration of the server using Jetty features.
             configServer(jettyConfig) ;
         else
             defaultServerConfig(serverConfig.port, serverConfig.loopback) ;
-        
-        WebAppContext context = new WebAppContext();
-        context.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
-        context.setDescriptor("war-web.xml");
-        context.setResourceBase("pages");
-        context.setContextPath("/");
-        
-        //-- Jetty setup for the ServletContext logger.
-        // The name of the Jetty-allocated slf4j/log4j logger is
-        // the display name or, if null, the context path name.   
-        // It is set, without checking for a previous call of setLogger in "doStart"
-        // which happens during server startup. 
-        // This the name of the ServletContext logger as well
-        context.setDisplayName(Fuseki.serverLogName);  
-        
-        context.setParentLoaderPriority(true);  // Normal Java classloader behaviour.
-        context.setErrorHandler(new FusekiErrorHandler()) ;
-        server.setHandler(context) ;
-
+        WebAppContext webapp = createWebApp() ;
+        server.setHandler(webapp) ;
         // XXX Security
         if ( jettyConfig == null && serverConfig.authConfigFile != null )
-            security(context, serverConfig.authConfigFile) ;
-        
-        return context ;
-    }
-    
-    private ServletContextHandler buildServer(String jettyConfig, boolean enableCompression) {
-        throw new NotImplemented("Use the webapps setup") ;
+            security(webapp, serverConfig.authConfigFile) ;
     }
     
     private static void security(ServletContextHandler context, String authfile) {
@@ -237,8 +231,6 @@ public class SPARQLServer {
     }
 
     private void defaultServerConfig(int port, boolean loopback) {
-        // Server, with one NIO-based connector, large input buffer size (for
-        // long URLs, POSTed forms (queries, updates)).
         server = new Server() ;
         ConnectionFactory f1 = new HttpConnectionFactory() ;
         ConnectionFactory f2 = new SslConnectionFactory() ;
