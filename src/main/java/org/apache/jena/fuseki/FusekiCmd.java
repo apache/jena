@@ -31,7 +31,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
@@ -72,8 +71,7 @@ public class FusekiCmd {
         private static ArgDecl             argJettyConfig  = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
         private static ArgDecl             argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip") ;
 
-        // Ignored - it's always dynamic dispatch 
-        private static ArgDecl             argUber         = new ArgDecl(ArgDecl.NoValue, "uber", "über") ;
+        // Deprecated.  Use shiro.
         private static ArgDecl             argBasicAuth    = new ArgDecl(ArgDecl.HasValue, "basic-auth") ;
 
         private static ArgDecl             argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
