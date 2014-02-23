@@ -27,9 +27,11 @@ import org.slf4j.Logger ;
  *  but they do delay forming strings for output
  *  until it is know that a log message is actually
  *  required by level setting. 
+ *  
+ *  An odd effect is order of the arguments - vararg arguments must be last
+ *  so the order is Logger/Format/Thorwable?/args
  */
 public class FmtLog {
-    // -- Delayed argument formatting.
     /* Log at 'trace' level. */
     public static void trace(Logger log, String fmt, Object...args) {
         if ( log.isTraceEnabled() )
@@ -41,7 +43,6 @@ public class FmtLog {
         if ( log.isTraceEnabled() )
             log.trace(format(fmt, args), th) ;
     }
-
 
     /* Log at 'debug' level */
     public static void debug(Logger log, String fmt, Object...args) {
@@ -100,7 +101,5 @@ public class FmtLog {
             return fmt+" "+args ;
         }
     }
-    // ----
-
 }
 
