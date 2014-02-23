@@ -68,6 +68,8 @@
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <server.jar.name>${this.root}-server</server.jar.name>
+    <!-- base name of built WAR file. Does not have to be run with this name. -->
+    <webapp.name>fuseki</webapp.name>
     <!-- Eventually, move to jena-parent -->
     <ver.jetty>9.1.1.v20140108</ver.jetty>
     <ver.shiro>1.2.2</ver.shiro>
@@ -379,7 +381,7 @@
 
 	<configuration>
 	  <webappDirectory>${project.build.webappDirectory}</webappDirectory>
-	  <warName>fuseki-webapp</warName> <!-- Temp name -->
+	  <warName>${webapp.name}</warName>
 	  
 	  <nonFilteredFileExtensions>
 	    <nonFilteredFileExtension>pdf</nonFilteredFileExtension>

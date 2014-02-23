@@ -22,6 +22,7 @@ import java.io.File ;
 import java.net.URL ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.apache.log4j.helpers.Loader ;
@@ -101,18 +102,16 @@ public class FusekiLogging
         // the same mechanism ...
         try {
             URL url = Loader.getResource("log4j.properties") ;
-            PropertyConfigurator.configure(url);
+            if ( url != null )
+                PropertyConfigurator.configure(url);
+            else
+                // When in doubt, use builtin.
+                LogCtl.resetLogging(log4Jsetup) ;
         } catch (Throwable ex) {
             ex.printStackTrace();
         }
-        
-        // Stop anythign attempting to do it again.
+        // Stop anything attempting to do it again.
         System.setProperty("log4j.configuration", "set") ;
-        
-        // Alt: set where from the java-based string. 
-        //LogCtl.resetLogging(log4Jsetup) ;
     }
-
-
 }
 

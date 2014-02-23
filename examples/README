@@ -1,0 +1,6 @@
+This directory includes some examples - they will need to be adapted to
+local requirements.
+
+service-* ; Examples of service assembler descriptions
+
+jetty-fuseki.xml : A Jetty XML configuration file.

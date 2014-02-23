@@ -64,9 +64,7 @@ public class FusekiConfig {
             File f = new File(dir, name) ;
             return f.isFile() ;
         }
-    } 
-    ;
-
+    } ;
     
     /** Has side effects in server setup */
     public static List<DataAccessPoint> readConfigFile(String filename) {

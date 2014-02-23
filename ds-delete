@@ -1,3 +1,0 @@
-#!/bin/bash
-
-curl -XDELETE 'http://localhost:3030/$/datasets/NEW'

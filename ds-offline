@@ -1,3 +1,0 @@
-#!/bin/bash
-
-curl -XPOST 'http://localhost:3030/$/datasets/NEW?state=offline'
