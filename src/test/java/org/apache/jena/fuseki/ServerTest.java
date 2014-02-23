@@ -116,6 +116,7 @@ public class ServerTest {
         config.authConfigFile = authConfigFile ;
         SPARQLServer.initializeServer(config);
         SPARQLServer.instance.start() ;
+        server = SPARQLServer.instance ;
     }
 
     public static JettyServerConfig make(boolean allowUpdate, boolean listenLocal) {
