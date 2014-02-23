@@ -1,4 +1,4 @@
-# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 # Example of a data service with only SPARQL query on an 
 # in-memory inference model.  Data is taken from a file

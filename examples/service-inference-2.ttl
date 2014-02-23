@@ -1,4 +1,4 @@
- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 @prefix :        <#> .
 @prefix fuseki:  <http://jena.apache.org/fuseki#> .
