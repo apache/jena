@@ -50,18 +50,12 @@ public class FusekiServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        confLog.info("contextInitialized");
+        confLog.info("Fuseki contextInitialized");
         ServletContext servletContext = sce.getServletContext() ;
-        String x = System.getProperty("user.dir") ;
-
-        Path currentRelativePath = Paths.get("");
-        String s = currentRelativePath.toAbsolutePath().toString();
-        //            File currentDirectory = new File(new File(".").getAbsolutePath());
-        //            System.out.println(currentDirectory.getCanonicalPath());
-        //            System.out.println(currentDirectory.getAbsolutePath());
-        servletContext.log("dir1 = "+x) ;
-        servletContext.log("dir2 = "+s) ;
-        confLog.info("dir1 = "+x+" : dir2 = "+s) ;
+//        String x = System.getProperty("user.dir") ;
+//        Path currentRelativePath = Paths.get("");
+//        String s = currentRelativePath.toAbsolutePath().toString();
+//        confLog.info("dir1 = "+x+" : dir2 = "+s) ;
         init() ;
     }
 
