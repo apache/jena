@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+ 
+<!-- 
+Simple example of using a jetty configuration file for setting up a Jetty server.
+-->
+
+<!-- 
+http://www.eclipse.org/jetty/documentation/current/configuring-connectors.html
+-->
+
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+  <Call name="addConnector">
+    <Arg>
+      <New class="org.eclipse.jetty.server.ServerConnector">
+	<Arg name="server"><Ref refid="Server" /></Arg>
+	<Arg name="factories">
+	  <Array type="org.eclipse.jetty.server.ConnectionFactory">
+	    <Item>
+	      <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+		<Arg name="config"><Ref refid="httpConfig" /></Arg>
+	      </New>
+	    </Item>
+	  </Array>
+	</Arg>
+        <Set name="port"><Property name="jetty.port" default="3535" /></Set>
+	<!--<Set name="host"><Property name="jetty.host" default="localhost" /></Set>-->
+      </New>
+    </Arg>
+  </Call>
+</Configure>

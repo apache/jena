@@ -48,8 +48,6 @@ import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
-// XXX CLEAN ME
-
 public class FusekiConfig {
     static { Fuseki.init() ; }
     
@@ -177,13 +175,15 @@ public class FusekiConfig {
         UpdateAction.execute(req, m);
     }
 
-    public static List<Resource> getByType(Resource type, Model m) {
+    // XXX Move to a library
+    private static List<Resource> getByType(Resource type, Model m) {
         ResIterator rIter = m.listSubjectsWithProperty(RDF.type, type) ;
         return Iter.toList(rIter) ;
     }
     
     // ---- Directory of assemblers
     
+    /** Read service descriptions in the given directory */ 
     public static List<DataAccessPoint> readConfigurationDirectory(String dir) {
         List<DataAccessPoint> dataServiceRef = new ArrayList<>() ;
         File d = new File(dir) ;
@@ -200,8 +200,6 @@ public class FusekiConfig {
 
         return dataServiceRef ;
     }
-
-    
 
     private static DataAccessPoint readConfiguration(Model m) {
         additionalRDF(m) ;
@@ -224,6 +222,7 @@ public class FusekiConfig {
     }
 
     // ---- System database
+    /** Read the system database */
     public static List<DataAccessPoint> readSystemDatabase(Dataset ds) {
         String qs = StrUtils.strjoinNL
             (SystemState.PREFIXES ,
@@ -245,14 +244,15 @@ public class FusekiConfig {
         for ( ; rs.hasNext() ; ) {
             QuerySolution row = rs.next() ;
             Resource s = row.getResource("s") ;
-            // The result set was copied so we need to find the model again.
             Resource g = row.getResource("g") ;
             Resource rStatus = row.getResource("status") ;
-            DatasetStatus status = DatasetStatus.status(rStatus) ;
-            Model m = ds.getNamedModel(g.getURI()) ;
-            s = m.wrapAsResource(s.asNode()) ;  // Copy to m
             //String name = row.getLiteral("name").getLexicalForm() ;
-            DataAccessPoint ref = Builder.buildDataAccessPoint(s) ;
+            DatasetStatus status = DatasetStatus.status(rStatus) ;
+            
+            Model m = ds.getNamedModel(g.getURI()) ;
+            // Rebase the resoure of the service description to the containing graph.
+            Resource svc = m.wrapAsResource(s.asNode()) ;
+            DataAccessPoint ref = Builder.buildDataAccessPoint(svc) ;
             refs.add(ref) ;
         }
         return refs ;

@@ -69,47 +69,42 @@ public class FusekiLogging
     // Set logging.
     // 1/ Use log4j.configuration is defined.
     // 2/ Use file:log4j.properties
-    // 3/ Use Built in.
+    // 3/ Use log4j.properties on the classpath.
+    // 4/ Use Built in.
 
     public static void setLogging() {
         // No loggers have been created but configuration may have been set up.
         String x = System.getProperty("log4j.configuration", null) ;
 
-        if ( x != null && !x.equals("set") ) {
-            // "set" indicates that CmdMain set logging.
-            // Use standard log4j initialization.
+        if ( x != null && !x.equals("set") )
+            // "set" indicates that logging was set before.
             return ;
-        }
 
         // Look for a log4j.properties in the current working directory for easy customization.
         try {
             String fn = "log4j.properties" ;
             File f = new File(fn) ;
             if ( f.exists() ) {
-                System.out.println("File") ;
-                // Use file log4j.properties
+                PropertyConfigurator.configure(fn) ;
                 System.setProperty("log4j.configuration", "file:" + fn) ;
                 return ;
             }
         } catch (Throwable th) {}
-
-        // CmdMain will have set logging. 
-
-        // Use built-in for Fuseki.
         
-        // The log4j general is initialization done in a class static in LogManager
-        // so it can't be called again in any sensible manner.  Instead, we include
-        // the same mechanism ...
-        try {
-            URL url = Loader.getResource("log4j.properties") ;
-            if ( url != null )
-                PropertyConfigurator.configure(url);
-            else
-                // When in doubt, use builtin.
-                LogCtl.resetLogging(log4Jsetup) ;
-        } catch (Throwable ex) {
-            ex.printStackTrace();
+        // Try log4j.properties
+
+        // The log4j general is initialization done in a class static
+        // in LogManager so it can't be called again in any sensible manner.
+        // Instead, we include the same basic mechanism ...
+        URL url = Loader.getResource("log4j.properties") ;
+        if ( url != null ) {
+            PropertyConfigurator.configure(url);
+            System.setProperty("log4j.configuration", url.toString()) ;
+            return ;
         }
+
+        // Use builtin.
+        LogCtl.resetLogging(log4Jsetup) ;
         // Stop anything attempting to do it again.
         System.setProperty("log4j.configuration", "set") ;
     }
