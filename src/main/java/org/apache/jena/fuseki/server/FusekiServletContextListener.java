@@ -18,6 +18,11 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.io.File ;
+import java.io.IOException ;
+import java.nio.file.Path ;
+import java.nio.file.Paths ;
+
 import javax.servlet.ServletContext ;
 import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
@@ -47,7 +52,16 @@ public class FusekiServletContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         confLog.info("contextInitialized");
         ServletContext servletContext = sce.getServletContext() ;
-        servletContext.log("") ;
+        String x = System.getProperty("user.dir") ;
+
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+        //            File currentDirectory = new File(new File(".").getAbsolutePath());
+        //            System.out.println(currentDirectory.getCanonicalPath());
+        //            System.out.println(currentDirectory.getAbsolutePath());
+        servletContext.log("dir1 = "+x) ;
+        servletContext.log("dir2 = "+s) ;
+        confLog.info("dir1 = "+x+" : dir2 = "+s) ;
         init() ;
     }
 
@@ -77,6 +91,10 @@ public class FusekiServletContextListener implements ServletContextListener {
             }
                 
         }
+    }
+    
+    public static String chooseFusekiDirectory() {
+        return "" ;
     }
 }
 

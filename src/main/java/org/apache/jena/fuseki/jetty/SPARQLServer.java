@@ -62,16 +62,10 @@ public class SPARQLServer {
     // The jetty server.
     private Server              server         = null ;
     
-    // webapp setup.
-    public static final String descriptorFile = "war-web.xml" ;
-    public static final String resourceBase   = "pages" ;
+    // webapp setup - standard maven layout
     public static final String contextpath    = "/" ;
-    
-//    public static final String descriptorFile = "src/main/webapp/WEB-INF/web.xml" ;
-//    public static final String resourceBase   = "src/main/webapp" ;
-//    public static final String contextpath    = "/" ;
-    
-
+    public static final String descriptorFile = "src/main/webapp/WEB-INF/web.xml" ;
+    public static final String resourceBase   = "src/main/webapp" ;
 
     /**
      * Default setup which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}

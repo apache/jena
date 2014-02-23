@@ -390,17 +390,19 @@
 	    <nonFilteredFileExtension>jsp</nonFilteredFileExtension>
 	  </nonFilteredFileExtensions>
 
-	  <webXml>war-web.xml</webXml>
+	  <!--<webXml>war-web.xml</webXml>-->
 
 	  <!-- Exclude jetty! -->
 
           <packagingExcludes>WEB-INF/lib/jetty-*,WEB-INF/lib/javax.servlet*</packagingExcludes>
 
+	  <!--
 	  <webResources>
 	    <resource>
 	      <directory>pages</directory>
 	    </resource>
 	  </webResources>
+	  -->
 	</configuration>
       </plugin>
 

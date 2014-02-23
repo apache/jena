@@ -120,8 +120,10 @@ public class FusekiConfig {
         // Old style configuration file : server to services.
         // ---- Services
         ResultSet rs = FusekiLib.query("SELECT * { ?s fu:services [ list:member ?member ] }", model) ;
-        if ( !rs.hasNext() )
-            log.warn("No services found") ;
+        // If the old config.ttl file becomes just the server configuration file,
+        // then don't warn here.
+//        if ( !rs.hasNext() )
+//            log.warn("No services found") ;
 
         List<DataAccessPoint> accessPoints = new ArrayList<>() ;
 
