@@ -172,7 +172,6 @@ public class SystemTDB
      *  Used for retriveing results.
      */
     public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", ( is64bitSystem ? 500*1000 : 50*1000 ) ) ;
-
     
     /** Size of Node lookup miss cache. */
     public static final int NodeMissCacheSize       = 100 ;

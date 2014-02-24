@@ -63,7 +63,7 @@ public class BlockAccessMapped extends BlockAccessBase
         super(filename, blockSize) ;
         blocksPerSegment = SegmentSize/blockSize ;
         if ( SegmentSize%blockSize != 0 )
-            getLog().warn(format("%s: Segement size(%d) not a multiple of blocksize (%d)", filename, SegmentSize, blockSize)) ;
+            getLog().warn(format("%s: Segment size(%d) not a multiple of blocksize (%d)", filename, SegmentSize, blockSize)) ;
         
         for ( int i = 0 ; i < initialNumSegements ; i++ )
             // Not strictly necessary - default value is false.
