@@ -23,6 +23,10 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-fuseki2</artifactId>
 
+  <!-- We make the JAR file so that the shade plugin includes it.
+       The war:war goal is added to the package phase. It creates
+       a WAR file with a specific name.
+  -->
   <packaging>jar</packaging>
   <version>2.0.0.M1-SNAPSHOT</version>
   <description>Fuseki is a SPARQL 1.1 Server which provides query, update and graph store protocol endpoints that can be used to expose triple stores over HTTP</description>
@@ -42,7 +46,7 @@
       <name>Apache Snapshot Repository</name>
       <url>http://repository.apache.org/snapshots</url>
       <releases>
-	<enabled>false</enabled>
+        <enabled>false</enabled>
       </releases>
     </repository>
   </repositories>
@@ -68,8 +72,6 @@
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <server.jar.name>${this.root}-server</server.jar.name>
-    <!-- base name of built WAR file. Does not have to be run with this name. -->
-    <webapp.name>fuseki</webapp.name>
     <!-- Eventually, move to jena-parent -->
     <ver.jetty>9.1.1.v20140108</ver.jetty>
     <ver.shiro>1.2.2</ver.shiro>
@@ -120,8 +122,8 @@
       <version>1.0.2-SNAPSHOT</version>
       <exclusions>
         <!-- 
-	  Get this via commons-fileupload and also via jena-text/sol4j
-	-->
+          Get this via commons-fileupload and also via jena-text/sol4j
+        -->
         <exclusion>
           <groupId>commons-io</groupId>
           <artifactId>commons-io</artifactId>
@@ -266,9 +268,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-	<executions> 
-	  <execution>
-	    <id>attach-sources</id>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
             <phase>package</phase>
             <goals>
               <goal>jar-no-fork</goal>
@@ -325,99 +327,79 @@
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-shade-plugin</artifactId>
-	<version>2.1</version>
-	<configuration>
-	  <shadedArtifactAttached>true</shadedArtifactAttached>
-	  <shadedClassifierName>server</shadedClassifierName>
-	  <transformers>
-	    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-	      <mainClass>org.apache.jena.fuseki.FusekiCmd</mainClass>
-	    </transformer>
-	    <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-	    <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
-	    <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
-	      <addHeader>false</addHeader>
-	    </transformer>
-	  </transformers>
-	  <filters>
-	    <filter>
-	      <artifact>*:*</artifact>
-	      <excludes>
-		<!-- Some jars are signed but shading breaks that.
-		     Don't include signing files.
-		-->
-		<exclude>META-INF/*.SF</exclude>
-		<exclude>META-INF/*.DSA</exclude>
-		<exclude>META-INF/*.RSA</exclude>
-	      </excludes>
-	    </filter>
-	  </filters>
-	</configuration>
-	<executions>
-	  <execution>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>shade</goal>
-	    </goals>
-	  </execution>
-	</executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <shadedArtifactAttached>true</shadedArtifactAttached>
+          <shadedClassifierName>server</shadedClassifierName>
+          <transformers>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+              <mainClass>org.apache.jena.fuseki.FusekiCmd</mainClass>
+            </transformer>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+              <addHeader>false</addHeader>
+            </transformer>
+          </transformers>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <!-- Some jars are signed but shading breaks that.
+                     Don't include signing files.
+                -->
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
-
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-war-plugin</artifactId>
-	<version>2.4</version>
-
-	<executions> 
-	  <execution>
-	    <id>attach-sources</id>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.4</version>
+        <executions> 
+          <execution>
+            <id>generate-webapp</id>
             <phase>package</phase>
             <goals><goal>war</goal></goals>
           </execution>
         </executions>
+        <configuration>
+          <webappDirectory>${project.build.webappDirectory}</webappDirectory>
+          <!-- This can't be set because then maven will not install/deploy the war file -->
+          <!--<warName>${webapp.name}</warName>-->
 
-	<configuration>
-	  <webappDirectory>${project.build.webappDirectory}</webappDirectory>
-	  <warName>${webapp.name}</warName>
-	  
-	  <nonFilteredFileExtensions>
-	    <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
-	    <nonFilteredFileExtension>png</nonFilteredFileExtension>
-	    <nonFilteredFileExtension>gif</nonFilteredFileExtension>
-	    <nonFilteredFileExtension>jsp</nonFilteredFileExtension>
-	  </nonFilteredFileExtensions>
-
-	  <!--<webXml>war-web.xml</webXml>-->
-
-	  <!-- Exclude jetty! -->
-
+          <!-- Don't put in the Jetty dependency nor javax.servlet -->
           <packagingExcludes>WEB-INF/lib/jetty-*,WEB-INF/lib/javax.servlet*</packagingExcludes>
-
-	  <!--
-	  <webResources>
-	    <resource>
-	      <directory>pages</directory>
-	    </resource>
-	  </webResources>
-	  -->
-	</configuration>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.eclipse.jetty</groupId>
-	<artifactId>jetty-maven-plugin</artifactId>
-	<version>${ver.jetty}</version>
-	<configuration>
-	  <war>target/fuseki-webapp.war</war>
-	</configuration>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>${ver.jetty}</version>
+        <configuration>
+          <war>target/${this.root}.war</war>
+        </configuration>
       </plugin>
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-	<!-- After shared jar - same phase -->
+        <!-- After shared jar, after war file - same phase -->
         <executions>
           <execution>
             <id>create-zip-assembly</id>
