@@ -6,3 +6,4 @@
   <entry key="org.apache.jena.query.text.version">${project.version}</entry>
   <entry key="org.apache.jena.query.text.datetime">${build.time.xsd}</entry>
 </properties>
+ 

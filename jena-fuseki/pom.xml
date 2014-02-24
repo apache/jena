@@ -73,6 +73,9 @@
 
     <ver.jetty>8.1.14.v20131031</ver.jetty>
     <ver.velocity>1.7</ver.velocity>
+    
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
 
   </properties>
 
