@@ -34,8 +34,9 @@ public abstract class ActionCtl extends ActionBase
     @Override
     final
     protected void execCommonWorker(HttpAction action) {
-        DataAccessPoint dataAccessPoint = null ;
-        DataService dSrv = null ;
+        DataAccessPoint dataAccessPoint ;
+        DataService dSrv ;
+        
         String datasetUri = mapRequestToDatasetName(action) ;
         if ( datasetUri != null ) {
             dataAccessPoint = DataAccessPointRegistry.get().get(datasetUri) ;

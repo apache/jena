@@ -46,8 +46,8 @@ public abstract class ActionSPARQL extends ActionBase
 
     @Override
     protected void execCommonWorker(HttpAction action) {
-        DataAccessPoint dataAccessPoint = null ;
-        DataService dSrv = null ;
+        DataAccessPoint dataAccessPoint ;
+        DataService dSrv ;
         
         String datasetUri = mapRequestToDataset(action) ;
         
