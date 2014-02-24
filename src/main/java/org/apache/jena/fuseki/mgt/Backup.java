@@ -19,6 +19,8 @@
 package org.apache.jena.fuseki.mgt;
 
 import java.io.* ;
+import java.util.HashSet ;
+import java.util.Set ;
 import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.io.IO ;
@@ -46,17 +48,29 @@ public class Backup
         return filename ;
     }
     
+    // Rcord of all backups so we don't attempt to backup the
+    // same dataset multiple times at the same time. 
+    private static Set<DatasetGraph> activeBackups = new HashSet<>() ;
+    
     public static void backup(DatasetGraph dsg, String backupfile) {
         if ( !backupfile.endsWith(".nq") )
             backupfile = backupfile + ".nq" ;
 
+        // Per backup source lock. 
+        synchronized(activeBackups) {
+            // Atomically check-and-set
+            if ( activeBackups.contains(backupfile) )
+                Log.warn(Fuseki.serverLog, "Backup already in progress") ;
+            activeBackups.add(dsg) ;
+        }
+
         OutputStream out = null ;
         try {
+            
             if ( true ) {
                 // This seems to achive about the same as "gzip -6"
-                // It's not too expensive in elapsed time but it's not zero
-                // cost.
-                // GZip, large buffer.
+                // It's not too expensive in elapsed time but it's not
+                // zero cost. GZip, large buffer.
                 out = new FileOutputStream(backupfile + ".gz") ;
                 out = new GZIPOutputStream(out, 8 * 1024) ;
                 out = new BufferedOutputStream(out) ;
@@ -78,8 +92,11 @@ public class Backup
                 if ( out != null )
                     out.close() ;
             } catch (IOException e) { /* ignore */}
+            // Remove lock.
+            synchronized(activeBackups) {
+                activeBackups.remove(dsg) ;
+            }
         }
     }
-
 }
 
