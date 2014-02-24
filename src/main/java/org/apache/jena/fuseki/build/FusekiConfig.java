@@ -150,7 +150,6 @@ public class FusekiConfig {
             throw new FusekiConfigException(e) ;
         }
     }
-
     
     // XXX Move to utils
     private static Model additionalRDF(Model m) {
