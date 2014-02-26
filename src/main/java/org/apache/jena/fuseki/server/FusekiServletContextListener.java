@@ -34,13 +34,6 @@ public class FusekiServletContextListener implements ServletContextListener {
     
     public static ServerInitialConfig initialSetup = null ;
 
-    // --- later: Play the "hunt the config files" game 
-    // Default.
-    static public final String rootDirectory     = "/usr/share/fuseki" ;
-    static public final String configurationFile = rootDirectory + "/config-fuseki.ttl" ;
-    // ----
-    static public final String configDir = /* dir root + */ Fuseki.configDirName ;
-    
     private volatile Boolean initialized = false ;
 
     @Override
@@ -65,20 +58,21 @@ public class FusekiServletContextListener implements ServletContextListener {
             if ( initialized )
                 return ;
             initialized = true ;
-            Fuseki.init() ;
-
+            
+            Fuseki.init() ;         // Java wiring
+            FusekiServer.init() ;   // Server and the filesystem 
+            
             if ( initialSetup == null ) {
                 initialSetup = new ServerInitialConfig() ;
                 initialSetup.fusekiConfigFile = "config.ttl" ;
             }
             
             if ( initialSetup != null ) {
-                FusekiServer.init(initialSetup, configDir) ;
+                FusekiServer.initializeDataAccessPoints(initialSetup, FusekiServer.dirConfiguration.toString()) ;
             } else {
                 Fuseki.serverLog.error("No configuration") ;
                 System.exit(0) ;
             }
-                
         }
     }
     

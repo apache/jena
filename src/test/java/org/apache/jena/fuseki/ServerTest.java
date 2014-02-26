@@ -18,9 +18,11 @@
 
 package org.apache.jena.fuseki ;
 
+import java.nio.file.Paths ;
 import java.util.Collection ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.jetty.SPARQLServer ;
@@ -98,6 +100,10 @@ public class ServerTest {
     }
 
     protected static void setupServer() {
+        FusekiServer.FUSEKI_HOME = Paths.get(".") ;
+        FileOps.ensureDir("target");
+        FileOps.ensureDir("target/run");
+        FusekiServer.FUSEKI_BASE = Paths.get("target/run") ;
         setupServer(null) ;
     }
     

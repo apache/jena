@@ -20,7 +20,6 @@ package org.apache.jena.fuseki.server;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.fuseki.Fuseki ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -29,10 +28,9 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class SystemState {
-    // XXX Make relative to Fuseki area 
-    private static String SystemDatabaseLocation = Fuseki.systemDatabaseName ;
+    private static String SystemDatabaseLocation ;
     // Testing may reset this.
-    public static Location location = new Location(SystemDatabaseLocation)  ;
+    public static Location location ; 
     
     private  static Dataset                 dataset   = null ;
     private  static DatasetGraphTransaction dsg       = null ;
@@ -56,8 +54,13 @@ public class SystemState {
         if ( initialized )
             return ;
         initialized = true ;
+        
+        if ( location == null )
+            location = new Location(FusekiServer.dirSystemDatabase.toString()) ;
+        
         if ( ! location.isMem() )
             FileOps.ensureDir(location.getDirectoryPath()) ;
+        
         dataset = TDBFactory.createDataset(location) ;
         dsg     = (DatasetGraphTransaction)(dataset.asDatasetGraph()) ;
         dsg.getContext().set(TDB.symUnionDefaultGraph, false) ;

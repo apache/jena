@@ -18,16 +18,19 @@
 
 package org.apache.jena.fuseki.server;
 
+import java.io.File ;
 import java.io.StringReader ;
+import java.nio.file.Path ;
+import java.nio.file.Paths ;
 import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.DS ;
-import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.build.Builder ;
 import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.apache.jena.fuseki.build.Template ;
@@ -42,11 +45,80 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class FusekiServer
 {
-    public static void init(ServerInitialConfig initialSetup, String configDir) {
-        FileOps.ensureDir(Fuseki.configDirName) ;
-        FileOps.ensureDir(Fuseki.systemFileArea) ;
-        //FileOps.ensureDir(Fuseki.systemDatabaseName) ; 
+    /** Root of the Fuseki installation for fixed files. */ 
+    public static Path FUSEKI_HOME = null ;
+    /** Root of the varying files in this deployment. */ 
+    public static Path FUSEKI_BASE = null ;
 
+    // Relative names of directories
+    private static final String        backupDirNameBase        = "backups" ;
+    private static final String        configDirNameBase        = "configuration" ;
+    private static final String        logsNameBase             = "logs" ;
+    private static final String        systemDatabaseNameBase   = "system" ;
+    private static final String        systemFileAreaBase       = "system_files" ;
+    private static final String        templatesNameBase        = "templates" ;
+    
+    // --- Set during server initialization
+    /*
+    backups/
+    configuration/
+    logs/
+    system/
+    system_files/
+    */
+    
+    /** Directory for addition assembler descriptions */
+    public static Path        dirBackups         = null ;
+
+    /** Directory for assembler files */
+    public static Path        dirConfiguration   = null ;
+    
+    /** Directory for assembler files */
+    public static Path        dirLogs            = null ;
+
+    /** Directory for system database */
+    public static Path        dirSystemDatabase  = null ;
+
+    /** Directory for files uploaded (e.g upload assmbler descriptions); not data uploads. */
+    public static Path        dirFileArea        = null ;
+    
+    /** Directory for assembler files */
+    public static Path        dirTemplates       = null ;
+
+    
+    public static void init() {
+        if ( FUSEKI_HOME == null ) {
+            // Make absolute
+            String x1 = System.getenv("FUSEKI_HOME") ;
+            if ( x1 != null )
+                FUSEKI_HOME = Paths.get(x1) ;
+        }
+        if ( FUSEKI_BASE == null ) {
+            String x2 = System.getenv("FUSEKI_BASE") ;
+            if ( x2 != null )
+                FUSEKI_BASE = Paths.get(x2) ;
+            else
+                FUSEKI_BASE = FUSEKI_HOME ;
+        }
+
+        mustExist(FUSEKI_HOME) ;
+        dirTemplates        = makePath(FUSEKI_HOME, templatesNameBase) ;
+        mustExist(dirTemplates) ;
+
+        ensureDir(FUSEKI_BASE) ;
+        dirBackups          = makePath(FUSEKI_BASE, backupDirNameBase) ;
+        dirConfiguration    = makePath(FUSEKI_BASE, configDirNameBase) ;
+        dirLogs             = makePath(FUSEKI_BASE, logsNameBase) ;
+        dirSystemDatabase   = makePath(FUSEKI_BASE, systemDatabaseNameBase) ;
+        dirFileArea         = makePath(FUSEKI_BASE, systemFileAreaBase) ;
+        ensureDir(dirBackups) ;
+        ensureDir(dirConfiguration) ;
+        ensureDir(dirLogs) ;
+        ensureDir(dirSystemDatabase) ;
+        ensureDir(dirFileArea) ;
+    }
+
+    public static void initializeDataAccessPoints(ServerInitialConfig initialSetup, String configDir) {
         List<DataAccessPoint> configFileDBs = findDatasets(initialSetup) ;
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir) ;
         List<DataAccessPoint> systemDBs =     FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
@@ -141,7 +213,6 @@ public class FusekiServer
         return stmt ;
     }
     
-    // ----
     private static DataAccessPoint defaultConfiguration( String name, DatasetGraph dsg, boolean updatable) {
         name = DataAccessPoint.canonical(name) ;
         DataAccessPoint dap = new DataAccessPoint(name) ;
@@ -149,5 +220,30 @@ public class FusekiServer
         dap.setDataService(ds) ;
         return dap ;
     }
-}
+    
+    // ---- Helpers
 
+    private static void ensureDir(Path directory) {
+        File dir = directory.toFile() ;
+        if ( ! dir.exists() )
+            dir.mkdirs() ;
+        else if ( ! dir.isDirectory())
+            throw new FusekiConfigException("Not a directory: "+directory) ;
+    }
+
+    private static void mustExist(Path directory) {
+        File dir = directory.toFile() ;
+        if ( ! dir.exists() )
+            throw new FusekiConfigException("Does not exist: "+directory) ; 
+        if ( ! dir.isDirectory())
+            throw new FusekiConfigException("Not a directory: "+directory) ;
+    }
+
+    private static Path makePath(Path root , String relName ) {
+        Path path = root.resolve(relName) ;
+        // Must exist
+//        try { path = path.toRealPath() ; }
+//        catch (IOException e) { IO.exception(e) ; }
+        return path ;
+    }
+}

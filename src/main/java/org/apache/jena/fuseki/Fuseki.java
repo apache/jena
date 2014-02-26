@@ -35,6 +35,9 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class Fuseki {
+    // General fixed constants.
+    // See also FusekiServer for the naming on the filesystem
+    
     /** Path to ??? */
     static public String    PATH                         = "org.apache.jena.fuseki" ;
 
@@ -72,19 +75,7 @@ public class Fuseki {
         return m ;
     }
 
-    /** Relative name of the directory for addition assembler descriptions */
-    static public final String        configDirName         = "configuration" ;
-    
-    /** Relative name of the directory for keeping files of assembler descriptions */
-    static public final String        systemDatabaseName    = "system" ;
-    
-    /** Relative name of the directory for keeping files controlled by Fuseki (e..g upload assmbler descriptions) */
-    static public final String        systemFileArea        = "system_files" ;
-
-    /**
-     * The name of the Fuseki server. Set to the string <code>Fuseki</code> by
-     * default.
-     */
+    /** The name of the Fuseki server. Set to the string <code>Fuseki</code> by default. */
     static public final String        NAME              = "Fuseki" ;
 
     /** Version of this Fuseki instance */
@@ -148,6 +139,11 @@ public class Fuseki {
         webStreamManager.addLocator(new LocatorFTP()) ;
     }
 
+    /** Default (and development) root of the Fuseki installation for fixed files. */ 
+    public static String DFT_FUSEKI_HOME = "." ;
+    /** Default (and development) root of the varying files in this deployment. */ 
+    public static String DFT_FUSEKI_BASE = "." ;
+    
     private static boolean            initialized       = false ;
 
     /**
@@ -169,7 +165,7 @@ public class Fuseki {
         // This can be slower, but it less memory hungry and more predictable.
         TransactionManager.QueueBatchSize = 0 ;
     }
-
+    
     /**
      * Get server global {@link com.hp.hpl.jena.sparql.util.Context}.
      * 

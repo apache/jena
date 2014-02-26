@@ -37,7 +37,6 @@ import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.build.Builder ;
 import org.apache.jena.fuseki.build.Template ;
@@ -235,7 +234,8 @@ public class ActionDatasets extends ActionCtl {
                 assemblerFromBody(action, dest) ;
             
             // Keep a persistent copy.
-            OutputStream outCopy = new FileOutputStream(Fuseki.systemFileArea+"/"+uuid.asString()) ;
+            String filename = FusekiServer.dirFileArea.resolve(uuid.asString()).toString() ;
+            OutputStream outCopy = new FileOutputStream(filename) ;
             RDFDataMgr.write(outCopy, model, Lang.TURTLE) ;
             IO.close(outCopy) ;
             

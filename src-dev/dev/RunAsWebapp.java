@@ -18,8 +18,11 @@
 
 package dev;
 
+import java.nio.file.Paths ;
+
 import org.apache.jena.fuseki.FusekiLogging ;
 import org.apache.jena.fuseki.jetty.SPARQLServer ;
+import org.apache.jena.fuseki.server.FusekiServer ;
 import org.apache.jena.fuseki.server.FusekiServletContextListener ;
 import org.eclipse.jetty.server.Server ;
 
@@ -28,6 +31,8 @@ public class RunAsWebapp
  // See also http://www.eclipse.org/jetty/documentation/current/embedded-examples.html#embedded-one-webapp
     public static void main(String[] args) //throws Exception
     {
+        FusekiServer.FUSEKI_HOME = Paths.get(".").toAbsolutePath() ;
+        FusekiServer.FUSEKI_BASE = Paths.get("run") ;
         FusekiLogging.setLogging() ; 
         // No command line.
         FusekiServletContextListener.initialSetup = null ;
