@@ -78,6 +78,40 @@
         for the data and also specific the named graph within the dataset.
         <code class="btn btn-custom-2">Set Destination</code> button.</p>
 
+         <div class="col-md-12 well">
+
+        <p><b>File upload</b></p>
+        <form class="form-inline" role="form" enctype="multipart/form-data" method="post">
+          
+          <div class="form-group">
+            <div class="dropdown ">
+              <a data-toggle="dropdown" class="btn btn-custom2" href="#">
+                      Dataset <i class="icon-collapse"></i>
+              </a>
+              <ul class="dropdown-menu endpoints" role="menu" aria-labelledby="dropdownMenu1">
+              </ul>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sparqlEndpoint">Data upload</label>
+            <input type="file" name="UNSET FILE NAME" size="40"
+                       multiple="">
+          </div>
+
+          <div class="form-group">
+            Graph: <input name="graph" size="20" value="default"/><br/>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" value="Upload">
+          </div>
+
+        </form>
+
+
+        </div>
+
         <!-- Choose a file or C&P into a box -->
 
         <!-- Choose dataset destination -->
