@@ -85,8 +85,13 @@ public class FusekiServer
     /** Directory for assembler files */
     public static Path        dirTemplates       = null ;
 
+    private static boolean            initialized       = false ;
     
-    public static void init() {
+    public synchronized static void init() {
+        if ( initialized )
+            return ;
+        initialized = true ;
+        
         if ( FUSEKI_HOME == null ) {
             // Make absolute
             String x1 = System.getenv("FUSEKI_HOME") ;

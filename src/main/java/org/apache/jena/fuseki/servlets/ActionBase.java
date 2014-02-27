@@ -36,7 +36,6 @@ import org.slf4j.Logger ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** General request lifecycle */
 public abstract class ActionBase extends ServletBase
@@ -50,8 +49,8 @@ public abstract class ActionBase extends ServletBase
     
     @Override 
     public void init() {
-        log.info("["+Utils.className(this)+"] ServletContextName = "+getServletContext().getServletContextName()) ;
-        log.info("["+Utils.className(this)+"] ContextPath        = "+getServletContext().getContextPath()) ;
+//        log.info("["+Utils.className(this)+"] ServletContextName = "+getServletContext().getServletContextName()) ;
+//        log.info("["+Utils.className(this)+"] ContextPath        = "+getServletContext().getContextPath()) ;
 
         //super.init() ;
     }

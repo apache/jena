@@ -29,8 +29,7 @@ public class FusekiServletContextListener implements ServletContextListener {
     private static Logger confLog = Fuseki.configLog ; 
 
     public FusekiServletContextListener() {
-        
-        confLog.info("FusekiServletContextListener created") ;
+        confLog.debug("FusekiServletContextListener created") ;
     }
     
     public static ServerInitialConfig initialSetup = null ;
@@ -39,8 +38,10 @@ public class FusekiServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        confLog.info("Fuseki contextInitialized");
         ServletContext servletContext = sce.getServletContext() ;
+        String x = servletContext.getContextPath() ;
+        if ( ! x.isEmpty() ) 
+            confLog.info("Context path = "+x) ;
 //        String x = System.getProperty("user.dir") ;
 //        Path currentRelativePath = Paths.get("");
 //        String s = currentRelativePath.toAbsolutePath().toString();

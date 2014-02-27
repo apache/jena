@@ -23,6 +23,7 @@ import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.FileInputStream ;
 
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
@@ -104,8 +105,17 @@ public class SPARQLServer {
      * Initialize the {@link SPARQLServer} instance.
      */
     public void start() {
-        String now = Utils.nowAsString() ;
-        serverLog.info(format("%s %s %s", Fuseki.NAME, Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
+        
+        String version = Fuseki.VERSION ;
+        String buildDate = Fuseki.BUILD_DATE ;
+        
+        if ( version != null && version.equals("${project.version}") )
+            version = null ;
+        if ( buildDate != null && buildDate.equals("${build.time.xsd}") )
+            buildDate = Utils.nowAsXSDDateTimeString() ;
+        
+        if ( version != null && buildDate != null )
+            serverLog.info(format("%s %s %s", Fuseki.NAME, version, buildDate)) ;
         // This does not get set usefully for Jetty as we use it.
         // String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
         // serverLog.info(format("Jetty %s",jettyVersion)) ;
@@ -113,7 +123,6 @@ public class SPARQLServer {
         String host = serverConnector.getHost() ;
         if ( host != null )
             serverLog.info("Incoming connections limited to " + host) ;
-        serverLog.info(format("Started %s on port %d", now, serverConnector.getPort())) ;
 
         try {
             server.start() ;
@@ -124,6 +133,8 @@ public class SPARQLServer {
             serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;
             System.exit(1) ;
         }
+        String now = Utils.nowAsString() ;
+        serverLog.info(format("Started %s on port %d", now, serverConnector.getPort())) ;
     }
 
     /**
@@ -163,7 +174,8 @@ public class SPARQLServer {
       // It is set, without checking for a previous call of setLogger in "doStart"
       // which happens during server startup. 
       // This the name of the ServletContext logger as well
-      webapp.setDisplayName(Fuseki.serverLogName);  
+      webapp.setDisplayName(Fuseki.servletRequestLogName);  
+      LogCtl.set(Fuseki.servletRequestLogName, "WARN"); 
       
       webapp.setParentLoaderPriority(true);  // Normal Java classloader behaviour.
       webapp.setErrorHandler(new FusekiErrorHandler()) ;
@@ -179,7 +191,7 @@ public class SPARQLServer {
             defaultServerConfig(serverConfig.port, serverConfig.loopback) ;
         WebAppContext webapp = createWebApp() ;
         server.setHandler(webapp) ;
-        // XXX Security
+        // Replaced by Shiro.
         if ( jettyConfig == null && serverConfig.authConfigFile != null )
             security(webapp, serverConfig.authConfigFile) ;
     }

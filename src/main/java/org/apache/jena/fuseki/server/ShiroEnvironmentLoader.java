@@ -22,6 +22,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.net.URL ;
 
+import javax.servlet.ServletContext ;
 import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
@@ -39,11 +40,14 @@ import org.slf4j.Logger ;
  */
 public class ShiroEnvironmentLoader extends EnvironmentLoader implements ServletContextListener {
     private static Logger confLog = Fuseki.configLog ;
-    private ServletContextEvent sce ; 
+    private ServletContext servletContext ; 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        this.sce = sce ;
-        initEnvironment(sce.getServletContext());
+        Fuseki.init() ;
+        FusekiServer.init() ;
+        this.servletContext = sce.getServletContext() ;
+        // Shiro.
+        initEnvironment(servletContext);
     }
 
     @Override
@@ -89,10 +93,10 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             if (!ResourceUtils.hasResourcePrefix(resource)) {
                 //Sort out "path" and open as a webapp resource.
                 resource = WebUtils.normalize(resource);
-                //is = getServletContextResourceStream(path);
-                URL url = sce.getServletContext().getResource(resource) ;
+                URL url = servletContext.getResource(resource) ;
                 return ( url == null ) ;
             } else {
+                // Treat as a plain name. 
                 InputStream is = ResourceUtils.getInputStreamForPath(resource);
                 boolean exists = (is != null ) ;
                 is.close() ;
