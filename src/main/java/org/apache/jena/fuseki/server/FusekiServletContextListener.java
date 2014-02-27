@@ -28,8 +28,9 @@ import org.slf4j.Logger ;
 public class FusekiServletContextListener implements ServletContextListener {
     private static Logger confLog = Fuseki.configLog ; 
 
-    public FusekiServletContextListener() { 
-        confLog.info("FusekiServletContextListener") ;
+    public FusekiServletContextListener() {
+        
+        confLog.info("FusekiServletContextListener created") ;
     }
     
     public static ServerInitialConfig initialSetup = null ;

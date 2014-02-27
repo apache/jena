@@ -10,7 +10,9 @@
   <!-- Apache Shiro setup -->
   <!-- First filter -->
   <listener>
-    <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+    <!--<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>-->
+    <!-- Support multiple locations -->
+    <listener-class>org.apache.jena.fuseki.server.ShiroEnvironmentLoader</listener-class>
   </listener>
 
   <filter>
@@ -29,7 +31,8 @@
 
   <context-param>
     <param-name>shiroConfigLocations</param-name>
-    <param-value>file:shiro.ini</param-value>
+    <!-- Try : cwd, FUSEKI_BASE, FUSEKI_HOME, war resource -->
+    <param-value>file:shiro.ini,shiro.ini</param-value>
   </context-param>
 
   <!-- Apache Jena Fuseki setup -->
