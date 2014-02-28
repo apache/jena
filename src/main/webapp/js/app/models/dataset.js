@@ -54,10 +54,25 @@ define(
         return service && _.first( service["srv.endpoints"] );
       },
 
+      /* Return URL for a service of a given type or null, if no such service */
+	    endpointURL: function( serviceType ) {
+        var url = this.endpointOfType( serviceType );
+        return url ? sprintf( "%s%s/%s", this.baseURL(), this.name(), url ) : null;
+      } ,
+
       /** Return the sparql query URL for this dataset, if it has one, or null */
       queryURL: function() {
-        var qurl = this.endpointOfType( "query" );
-        return qurl ? sprintf( "%s%s/%s", this.baseURL(), this.name(), qurl ) : null;
+        return this.endpointURL( "query" ) ;
+      } ,
+
+      /** Return the sparql update URL for this dataset, if it has one, or null */
+      updateURL: function() {
+        return this.endpointURL( "update" ) ;
+      } ,
+
+      /** Return the sparql upload URL for this dataset, if it has one, or null */
+      uploadURL: function() {
+        return this.endpointURL( "upload" ) ;
       }
 
     } );

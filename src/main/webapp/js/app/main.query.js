@@ -11,16 +11,12 @@ define( ['require', '../common-config'],
       ],
       function( _, $, Backbone, Marionette, fui, QueryController ) {
 
-        // TODO: these variables need to be set dynamically based on the current server config
-        var options = {
-          serverPort: 3030,
-          managementPort: 3131
-        };
+        var options = { } ;
 
         // initialise the backbone application
         fui.controllers.queryController = new QueryController();
         fui.start( options );
-
+	  
         // additional services
         require( 'services/ping-service' ).start();
       });

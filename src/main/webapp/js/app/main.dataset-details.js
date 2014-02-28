@@ -11,8 +11,7 @@ define( ['require', '../common-config'],
        'lib/jquery.form'
       ],
       function( _, $, Backbone, Marionette, fui, DatasetDetailsController ) {
-        var options = {
-        };
+          var options = { };
 
         // initialise the backbone application
         fui.controllers.datasetDetailsController = new DatasetDetailsController();

@@ -10,7 +10,7 @@
     <link href="css/jquery.dataTables.css" rel="stylesheet" media="screen">
     <link href="css/fui.css" rel="stylesheet" media="screen">
 
-    <script data-main="js/app/main.query.js" src="js/lib/require.min.js"></script>
+    <script data-main="js/app/main.upload.js" src="js/lib/require.min.js"></script>
 
     <!--[if lt IE 9]>
       <script src="js/lib/html5shiv.js"></script>
@@ -78,47 +78,44 @@
         for the data and also specific the named graph within the dataset.
         <code class="btn btn-custom-2">Set Destination</code> button.</p>
 
-         <div class="col-md-12 well">
-
-        <p><b>File upload</b></p>
-        <form class="form-inline" role="form" enctype="multipart/form-data" method="post">
-          
-          <div class="form-group">
-            <div class="dropdown ">
-              <a data-toggle="dropdown" class="btn btn-custom2" href="#">
-                      Dataset <i class="icon-collapse"></i>
-              </a>
-              <ul class="dropdown-menu endpoints" role="menu" aria-labelledby="dropdownMenu1">
-              </ul>
-            </div>
+        <div class="col-md-12 well">
+          <div class="query-chrome">
+            <form class="form-inline" role="form">
+              <div class="form-group">
+                <label for="uploadEndpoint"></label>
+                <div class="dropdown ">
+                  <a data-toggle="dropdown" class="btn btn-custom2" href="#">
+                    Select Destination <i class="icon-collapse"></i></a>
+                  <ul class="dropdown-menu endpoints" role="menu" aria-labelledby="dropdownMenu1"></ul>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="uploadEndpoint">Destination</label>
+                <input type="text" class="form-control" id="uploadEndpoint" />
+              </div>
+              <div class="form-group">
+                <input type="file" id="uploadFiles"  multiple="">
+              </div>
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <a href="#" class="btn btn-success run-upload form-control">upload</a>
+              </div>
+            </form>
           </div>
-
-          <div class="form-group">
-            <label for="sparqlEndpoint">Data upload</label>
-            <input type="file" name="UNSET FILE NAME" size="40"
-                       multiple="">
-          </div>
-
+        <!--
           <div class="form-group">
             Graph: <input name="graph" size="20" value="default"/><br/>
           </div>
-
-          <div class="form-group">
-            <input type="submit" value="Upload">
-          </div>
-
-        </form>
-
-
+          -->
         </div>
+        </div>
+      
+      <!-- Choose a file or C&P into a box -->
+      
+      <!-- Choose dataset destination -->
+      <!-- Optionally choose dest graph -->
 
-        <!-- Choose a file or C&P into a box -->
-
-        <!-- Choose dataset destination -->
-        <!-- Optionally choose dest graph -->
-
-      </div>
     </div>
-
+    
   </body>
 </html>
