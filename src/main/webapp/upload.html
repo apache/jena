@@ -16,6 +16,28 @@
       <script src="js/lib/html5shiv.js"></script>
       <script src="js/lib/respond.min.js"></script>
     <![endif]-->
+    <style>
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 999px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+      </style>
+
   </head>
   <body>
     <nav class="navbar navbar-default" role="navigation">
@@ -76,11 +98,12 @@
         <h1>Data upload</h1>
         <p>Load data into a dataset. You can select one of the active datasets as the destination
         for the data and also specific the named graph within the dataset.
-        <code class="btn btn-custom-2">Set Destination</code> button.</p>
+        <span class="btn btn-custom2">Select Destination</span> button.</p>
 
         <div class="col-md-12 well">
           <div class="query-chrome">
             <form class="form-inline" role="form">
+
               <div class="form-group">
                 <label for="uploadEndpoint"></label>
                 <div class="dropdown ">
@@ -89,12 +112,17 @@
                   <ul class="dropdown-menu endpoints" role="menu" aria-labelledby="dropdownMenu1"></ul>
                 </div>
               </div>
+
               <div class="form-group">
                 <label for="uploadEndpoint">Destination</label>
                 <input type="text" class="form-control" id="uploadEndpoint" />
               </div>
+
               <div class="form-group">
-                <input type="file" id="uploadFiles"  multiple="">
+                <label for="uploadEndpoint">Data</label>
+                <span class="btn btn-primary btn-file choose-files form-control">
+                  Choose Files<input type="file" class="form-control" id="uploadFiles" multiple=""/>
+                </span>
               </div>
               <div class="form-group">
                 <label>&nbsp;</label>
