@@ -48,6 +48,8 @@ public class ResponseModel
     private static Logger slog = ServletBase.log ;
 
     // Short names for "output="
+    private static final String contentOutputJSONLD        = "json-ld" ;
+    private static final String contentOutputJSONRDF       = "json-rdf" ;
     private static final String contentOutputJSON          = "json" ;
     private static final String contentOutputXML           = "xml" ;
     private static final String contentOutputText          = "text" ;
@@ -58,7 +60,9 @@ public class ResponseModel
     static {
 
         // Some short names.  keys are lowercase.
-        ResponseOps.put(shortNamesModel, contentOutputJSON, WebContent.contentTypeRDFJSON) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSONLD, WebContent.contentTypeJSONLD) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSONRDF, WebContent.contentTypeRDFJSON) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSON, WebContent.contentTypeJSONLD) ;
         ResponseOps.put(shortNamesModel, contentOutputXML,  WebContent.contentTypeRDFXML) ;
         ResponseOps.put(shortNamesModel, contentOutputText, WebContent.contentTypeTurtle) ;
         ResponseOps.put(shortNamesModel, contentOutputTTL,  WebContent.contentTypeTurtle) ;
