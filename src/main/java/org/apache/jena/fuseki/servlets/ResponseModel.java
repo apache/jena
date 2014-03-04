@@ -41,21 +41,25 @@ import com.hp.hpl.jena.rdf.model.Model ;
 public class ResponseModel
 {
     // Short names for "output="
+    private static final String contentOutputJSONLD        = "json-ld" ;
+    private static final String contentOutputJSONRDF       = "json-rdf" ;
     private static final String contentOutputJSON          = "json" ;
     private static final String contentOutputXML           = "xml" ;
     private static final String contentOutputText          = "text" ;
     private static final String contentOutputTTL           = "ttl" ;
     private static final String contentOutputNT            = "nt" ;
 
-    public static Map<String,String> shortNamesModel = new HashMap<>() ;
+    public static Map<String,String> shortNamesModel = new HashMap<String, String>() ;
     static {
 
         // Some short names.  keys are lowercase.
-        ResponseOps.put(shortNamesModel, contentOutputJSON, contentTypeRDFJSON) ;
-        ResponseOps.put(shortNamesModel, contentOutputXML,  contentTypeRDFXML) ;
-        ResponseOps.put(shortNamesModel, contentOutputText, contentTypeTurtle) ;
-        ResponseOps.put(shortNamesModel, contentOutputTTL,  contentTypeTurtle) ;
-        ResponseOps.put(shortNamesModel, contentOutputNT,   contentTypeNTriples) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSONLD,   contentTypeJSONLD) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSONRDF,  contentTypeRDFJSON) ;
+        ResponseOps.put(shortNamesModel, contentOutputJSON,     contentTypeJSONLD) ;
+        ResponseOps.put(shortNamesModel, contentOutputXML,      contentTypeRDFXML) ;
+        ResponseOps.put(shortNamesModel, contentOutputText,     contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputTTL,      contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputNT,       contentTypeNTriples) ;
     }
 
     public static void doResponseModel(HttpAction action, Model model) 
