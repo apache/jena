@@ -217,7 +217,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         Query query = null ;
         try {
             // NB syntax is ARQ (a superset of SPARQL)
-            query = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
+            query = QueryFactory.create(queryString, "http://example/query-base", Syntax.syntaxARQ) ;
             queryStringLog = formatForLog(query) ;
             validateQuery(action, query) ;
         } catch (ActionErrorException ex) {
