@@ -53,8 +53,14 @@ public class Fuseki {
      */
     static public String    FusekiSymbolIRI              = "http://jena.apache.org/fuseki#" ;
 
-    /** TODO Default location of the pages for the Fuseki UI  */
+    /** Default location of the pages for the Fuseki UI  */
     static public String    PagesStatic                  = "pages" ;
+    
+    /** Dummy base URi string for parsing SPARQL Query and Update requests */
+    static public final String BaseParserSPARQL          = "http://server/unset-base/" ;
+    
+    /** Dummy base URi string for parsing SPARQL Query and Update requests */
+    static public final String BaseUpload                = "http://server/unset-base/" ;
 
     /**
      * A relative resources path to the location of 

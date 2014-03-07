@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.iri.IRI ;
@@ -55,10 +56,10 @@ import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public class SPARQL_Update extends SPARQL_Protocol
+public class SPARQL_Update extends SPARQL_Protocol 
 {
     // Base URI used to isolate parsing from the current directory of the server. 
-    private static final String UpdateParseBase = "http://example/update-base/" ;
+    private static final String UpdateParseBase = Fuseki.BaseParserSPARQL ;
     private static final IRIResolver resolver = IRIResolver.create(UpdateParseBase) ;
     
     public SPARQL_Update()

@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.riot.web.HttpNames ;
@@ -58,7 +59,10 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
-public abstract class SPARQL_Query extends SPARQL_Protocol {
+public abstract class SPARQL_Query extends SPARQL_Protocol
+{
+    private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
+    
     public SPARQL_Query() {
         super() ;
     }
@@ -214,7 +218,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol {
         Query query = null ;
         try {
             // NB syntax is ARQ (a superset of SPARQL)
-            query = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
+            query = QueryFactory.create(queryString, QueryParseBase, Syntax.syntaxARQ) ;
             queryStringLog = formatForLog(query) ;
             validateQuery(action, query) ;
         } catch (ActionErrorException ex) {

@@ -102,8 +102,10 @@
 
         <div class="col-md-12 well">
           <div class="query-chrome">
+            <!--
             <form class="form-inline" role="form">
-
+            -->
+            <form class="form-inline" action="/ds/upload" enctype="multipart/form-data" method="post">
               <div class="form-group">
                 <label for="uploadEndpoint"></label>
                 <div class="dropdown ">
@@ -124,10 +126,13 @@
                   Choose Files<input type="file" class="form-control" id="uploadFiles" multiple=""/>
                 </span>
               </div>
+              <!--
               <div class="form-group">
                 <label>&nbsp;</label>
                 <a href="#" class="btn btn-success run-upload form-control">upload</a>
               </div>
+              -->
+              <input type="submit" value="Upload">
             </form>
           </div>
         <!--
@@ -135,6 +140,7 @@
             Graph: <input name="graph" size="20" value="default"/><br/>
           </div>
           -->
+
         </div>
         </div>
       

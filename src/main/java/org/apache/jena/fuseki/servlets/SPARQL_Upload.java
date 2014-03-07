@@ -35,8 +35,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.commons.fileupload.util.Streams ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -44,6 +44,7 @@ import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -80,7 +81,7 @@ public class SPARQL_Upload extends ActionSPARQL
         boolean isMultipart = ServletFileUpload.isMultipartContent(action.request);
         if ( ! isMultipart )
             ServletOps.error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
-        long count = upload(action, "http://example/upload-base/") ;
+        long count = upload(action, Fuseki.BaseUpload) ;
         try {
             action.response.setContentType("text/html") ;
             action.response.setStatus(HttpSC.OK_200);
