@@ -41,7 +41,7 @@ public class tdbrecovery extends CmdTDB
     @Override
     protected String getSummary()
     {
-        return null ;
+        return getCommandName()+" --loc DIRECTORY\nRun database journal recovery." ;
     }
 
     @Override
