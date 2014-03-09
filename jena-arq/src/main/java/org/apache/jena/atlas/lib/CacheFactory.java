@@ -88,14 +88,6 @@ public class CacheFactory
         return new CacheStatsAtomic<Key, Value>(cache) ;
     }
 
-    /** Add a synchronization wrapper to an existing cache */
-    public static <Key, Value> Cache<Key, Value> createSync(Cache<Key, Value> cache)
-    {
-        if ( cache instanceof CacheSync<?,?>)
-            return cache ;
-        return new CacheSync<Key, Value>(cache) ;
-    }
-
     /** Create set-cache, rather than a map-cache.
      * @see Pool
      */
