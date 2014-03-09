@@ -60,16 +60,6 @@ public class TestCache extends BaseTest
         }
     ;
 
-    private static CacheMaker<Integer, Integer> syncStandard = 
-        new CacheMaker<Integer, Integer>()
-        {
-        @Override
-        public Cache<Integer, Integer> make(int size) { return CacheFactory.createSync(standard.make(size)) ; }
-        @Override
-        public String name() { return "Sync Standard" ; } 
-        }
-    ;
-
     private static CacheMaker<Integer, Integer> stats = 
         new CacheMaker<Integer, Integer>()
         {
@@ -102,26 +92,21 @@ public class TestCache extends BaseTest
     public static Collection<Object[]> cacheMakers()
     {
         return Arrays.asList(new Object[][] {
-//          { simple , 1 }
-
-                                              { simple , 10 }
-                                            , { simple , 2 } 
-                                            , { simple , 1 }
-                                            , { standard , 10 }
-                                            , { standard , 2 }
-                                            , { standard , 1 }
-                                            , { syncStandard , 10 }
-                                            , { syncStandard , 2 }
-                                            , { syncStandard , 1 }
-                                            , { stats , 10 }
-                                            , { stats , 2 }
-                                            , { stats , 1 }
-                                            , { statsAtomic , 10 }
-                                            , { statsAtomic , 2 }
-                                            , { statsAtomic , 1 }
-                                            } ) ; 
+            { simple , 10 }
+            , { simple , 2 } 
+            , { simple , 1 }
+            , { standard , 10 }
+            , { standard , 2 }
+            , { standard , 1 }
+            , { stats , 10 }
+            , { stats , 2 }
+            , { stats , 1 }
+            , { statsAtomic , 10 }
+            , { statsAtomic , 2 }
+            , { statsAtomic , 1 }
+        } ) ; 
     }
-    
+
     Cache<Integer, Integer> cache ;
     CacheMaker<Integer,Integer> cacheMaker ;
     int size ;
