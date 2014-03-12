@@ -113,47 +113,47 @@
 
           <div class="col-md-12 well">
             <div class="query-chrome">
+              <form class="form-inline" role="form">
 
-              <div class="form-group">
-                <label for="uploadEndpoint">Destination</label>
-                <input type="text" class="form-control" id="uploadEndpoint" />
-              </div>
-
-              <!-- UPLOAD -->
-              <!-- Form like settings -->
-
-              <div class="form-group">
-                <label for="uploadEndpoint"></label>
-                <div class="dropdown ">
-                  <a data-toggle="dropdown" class="btn btn-custom2" href="#">
-                    Select Destination <i class="icon-collapse"></i></a>
-                  <ul class="dropdown-menu endpoints" role="menu" aria-labelledby="dropdownMenu1"></ul>
+                <div class="form-group">
+                  <label for="uploadEndpoint"></label>
+                  <div class="dropdown ">
+                    <a data-toggle="dropdown" class="btn btn-custom2" href="#">
+                      Select Destination <i class="icon-collapse"></i></a>
+                    <ul class="dropdown-menu endpoints" role="menu" aria-labelledby="dropdownMenu1"></ul>
+                  </div>
                 </div>
+
+                <div class="form-group">
+                  <label for="uploadEndpoint">Destination</label>
+                  <input type="text" class="form-control" id="uploadEndpoint" />
+                </div>
+
+                <div class="form-group">
+                  <!-- The fileinput-button span is used to style the file input field as button -->
+                  <span class="btn btn-success fileinput-button">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <span>Select files...</span>
+                    <!-- The file input field used as target for the file upload widget -->
+                    <input id="fileupload" type="file" name="files[]" multiple>
+                  </span>
+                  <br>
+                  <br>
+                  <!-- The global progress bar -->
+                  <div id="progress" class="progress">
+                    <div class="progress-bar progress-bar-success"></div>
+                  </div>
+                  <!-- The container for the uploaded files -->
+                  <div id="files" class="files"></div>
+                </div>
+
+                </form>
               </div>
-
-
-              <!-- The fileinput-button span is used to style the file input field as button -->
-              <span class="btn btn-success fileinput-button">
-                <i class="glyphicon glyphicon-plus"></i>
-                <span>Select files...</span>
-                <!-- The file input field used as target for the file upload widget -->
-                <input id="fileupload" type="file" name="files[]" multiple>
-              </span>
-              <br>
-              <br>
-              <!-- The global progress bar -->
-              <div id="progress" class="progress">
-                <div class="progress-bar progress-bar-success"></div>
-              </div>
-              <!-- The container for the uploaded files -->
-              <div id="files" class="files"></div>
-              <br>
-
-            </div>
           </div>
-        </div>
 
-      </div>
+        </div> <!-- row -->
+      </div> <!-- container -->
+
 <script>
 /*global window, $ */
 $(function () {
