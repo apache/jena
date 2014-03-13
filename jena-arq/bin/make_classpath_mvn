@@ -27,12 +27,13 @@ CP=${CP:-}
 
 which mvn > /dev/null
 HAS_MAVEN=$?
-if [[ -e "$DIRROOT/pom.xml" && $HAS_MAVEN -eq 0 ]]; then
+if [ -e "$DIRROOT/pom.xml" ] && [ $HAS_MAVEN -eq 0 ]; then
     # Take advantage of maven dependency plugin
-    MVN_OUTPUT_PATTERN="(^\[INFO\])"
-    pushd $DIRROOT >/dev/null
-    MVN_CP=`mvn dependency:build-classpath | egrep -v ${MVN_OUTPUT_PATTERN}`
-    popd >/dev/null
+    MVN_OUTPUT_PATTERN="(^\[INFO\]|\[WARNING\]|Download)"
+    CURR_DIR=$PWD
+    cd $DIRROOT
+    MVN_CP=`mvn dependency:build-classpath -U | egrep -v ${MVN_OUTPUT_PATTERN}`
+    cd $CURR_DIR
     CP="${CP}${SEP}${MVN_CP}"
 else
     # Use the crude method
