@@ -33,7 +33,7 @@ if [ -e "$DIRROOT/pom.xml" ] && [ $HAS_MAVEN -eq 0 ]; then
     # We want to filter out maven's INFO, WARNING and dependency download messages
     # We leave ERROR messages alone even though they'll break the classpath we don't want
     # to suppress them
-    MVN_OUTPUT_PATTERN="(^\[INFO\]|\[WARNING\]|Download)"
+    MVN_OUTPUT_PATTERN="(^\[?(INFO|WARNING)|Download)"
     
     # Switch up to the root directory and run maven
     CURR_DIR=$PWD
