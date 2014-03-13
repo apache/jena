@@ -29,11 +29,19 @@ which mvn > /dev/null
 HAS_MAVEN=$?
 if [ -e "$DIRROOT/pom.xml" ] && [ $HAS_MAVEN -eq 0 ]; then
     # Take advantage of maven dependency plugin
+    
+    # We want to filter out maven's INFO, WARNING and dependency download messages
+    # We leave ERROR messages alone even though they'll break the classpath we don't want
+    # to suppress them
     MVN_OUTPUT_PATTERN="(^\[INFO\]|\[WARNING\]|Download)"
+    
+    # Switch up to the root directory and run maven
     CURR_DIR=$PWD
     cd $DIRROOT
     MVN_CP=`mvn dependency:build-classpath -U | egrep -v ${MVN_OUTPUT_PATTERN}`
     cd $CURR_DIR
+    
+    # Append the result to any user defined classpath
     CP="${CP}${SEP}${MVN_CP}"
 else
     # Use the crude method
