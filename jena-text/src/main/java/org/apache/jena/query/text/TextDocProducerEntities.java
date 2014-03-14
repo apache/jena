@@ -29,6 +29,8 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadAction ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
+// Currently unused 
+// This would index multiple quads at a time from batched stream of chnages (e.g. rdf-patch)
 public class TextDocProducerEntities extends DatasetChangesBatched implements TextDocProducer {
     private static Logger          log     = LoggerFactory.getLogger(TextDocProducer.class) ;
     private final EntityDefinition defn ;
