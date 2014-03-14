@@ -46,20 +46,20 @@ public class TestEntityMapAssembler {
 	private static final Resource specNoPrimaryFieldDef;
 	
 	@Test public void EntityHasPrimaryField() {
-		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		EntityDefinition entityDef = emAssembler.open(null, spec1, null);
+		EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+		EntityDefinition entityDef = entDefAssem.open(null, spec1, null);
 		assertEquals(SPEC1_DEFAULT_FIELD, entityDef.getPrimaryField());
 	}
 	
 	@Test public void EntityHasEntityField() {
-		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		EntityDefinition entityDef = emAssembler.open(null, spec1, null);
+		EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+		EntityDefinition entityDef = entDefAssem.open(null, spec1, null);
 		assertEquals(SPEC1_ENTITY_FIELD, entityDef.getEntityField());		
 	}
 	
 	@Test public void EntityHasMapEntries() {
-		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		EntityDefinition entityDef = emAssembler.open(null, spec1, null);
+		EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+		EntityDefinition entityDef = entDefAssem.open(null, spec1, null);
 		assertEquals(SPEC1_PREDICATE.asNode(), getOne(entityDef,SPEC1_DEFAULT_FIELD));
 	}
 	
@@ -73,31 +73,31 @@ public class TestEntityMapAssembler {
     }
 
     @Test public void EntityHasMultipleMapEntries() {
-		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		EntityDefinition entityDef = emAssembler.open(null, spec2, null);
+		EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+		EntityDefinition entityDef = entDefAssem.open(null, spec2, null);
 		assertEquals(SPEC2_PREDICATE1.asNode(), getOne(entityDef,SPEC2_DEFAULT_FIELD));
 		assertEquals(SPEC2_PREDICATE2.asNode(), getOne(entityDef, SPEC2_FIELD2));
 	}
 	
 	@Test(expected=TextIndexException.class) public void errorOnNoEntityField() {
-		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		emAssembler.open(null, specNoEntityField, null);
+		EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+		entDefAssem.open(null, specNoEntityField, null);
 	}
 	
 	@Test(expected=TextIndexException.class) public void errorOnNoDefaultField() {
-		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		emAssembler.open(null, specNoDefaultField, null);
+		EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+		entDefAssem.open(null, specNoDefaultField, null);
 	}
 	
 	@Test(expected=TextIndexException.class) public void errorOnNoMapProperty() {
-		EntityMapAssembler emAssembler = new EntityMapAssembler();
-		emAssembler.open(null, specNoMapProperty, null);
+		EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+		entDefAssem.open(null, specNoMapProperty, null);
 	}
 	
 	@Test(expected=TextIndexException.class) public void errorOnNoPrimaryFieldDef() {
-		EntityMapAssembler emAssembler = new EntityMapAssembler();
+		EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
 		try {
-		    emAssembler.open(null, specNoPrimaryFieldDef, null);
+		    entDefAssem.open(null, specNoPrimaryFieldDef, null);
 		} catch (TextIndexException e) {
 			assertTrue(e.getMessage().contains(SPEC1_DEFAULT_FIELD));
 			throw e ;

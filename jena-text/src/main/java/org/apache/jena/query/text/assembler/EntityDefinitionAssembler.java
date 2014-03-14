@@ -37,11 +37,8 @@ import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 
-public class EntityMapAssembler extends AssemblerBase implements Assembler
+public class EntityDefinitionAssembler extends AssemblerBase implements Assembler
 {
-    
-    // V1
-    
     /*
 <#entMap> a text:EntityMap ;
     text:entityField      "uri" ;
@@ -75,7 +72,7 @@ public class EntityMapAssembler extends AssemblerBase implements Assembler
         ResultSet rs1 = qexec1.execSelect() ;
         List<QuerySolution> results = ResultSetFormatter.toList(rs1) ;
         if ( results.size() == 0 ) {
-            //Log.warn(this, "Failed to find a valid EntityMap for : "+root) ;
+            Log.warn(this, "Failed to find a valid EntityMap for : "+root) ;
             throw new TextIndexException("Failed to find a valid EntityMap for : "+root) ;
         }
         
