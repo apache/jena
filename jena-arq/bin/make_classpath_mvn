@@ -42,7 +42,8 @@ if [ -e "$DIRROOT/pom.xml" ] && [ $HAS_MAVEN -eq 0 ]; then
     cd $CURR_DIR
     
     # Append the result to any user defined classpath
-    CP="${CP}${SEP}${MVN_CP}"
+    [ "$CP" != "" ] && CP="${CP}${SEP}"
+    CP="${CP}${MVN_CP}"
 else
     # Use the crude method
     M2_REPO="${M2_REPO:-$HOME/.m2/repository/}" ;
