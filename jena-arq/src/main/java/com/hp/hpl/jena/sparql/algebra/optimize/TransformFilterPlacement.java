@@ -18,10 +18,7 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize ;
 
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.atlas.lib.CollectionUtils ;
 import org.apache.jena.atlas.lib.DS ;
@@ -54,7 +51,10 @@ public class TransformFilterPlacement extends TransformCopy {
         Placement(Op op, ExprList remaining) { this.op = op ; this.unplaced = remaining ; }
     }
     
-    static final ExprList emptyList = new ExprList() ;
+    // Empty, immutable ExprList
+    static final ExprList emptyList = ExprList.emptyList  ;
+    
+    // No placement performed
     static final Placement noChangePlacement = null ; //new Placement(null, null) ;
     
     private static Placement result(Op op, ExprList remaining) { 
@@ -107,7 +107,8 @@ public class TransformFilterPlacement extends TransformCopy {
         return op ;
     }
 
-    private Op transformOp(ExprList exprs, Op x) {
+    /** Transform and always at least wrap the op with the exprs */
+    private Op transformOpAlways(ExprList exprs, Op x) {
         Placement placement = transform(exprs, x) ;
         if ( placement == null )
             return buildFilter(exprs, x) ;
@@ -146,20 +147,23 @@ public class TransformFilterPlacement extends TransformCopy {
             placement = placeAssign(exprs, (OpAssign)input) ;
         else if ( input instanceof OpProject )
             placement = placeProject(exprs, (OpProject)input) ;
+        else if ( input instanceof OpTable )
+            placement = placeTable(exprs, (OpTable)input) ;
 
         return placement ;
     }
     
     private Placement placeFilter(ExprList exprs, OpFilter input) {
-        // Thrown the filter expressions into the 
-        if ( exprs.size() != 0 ) {
-            exprs = ExprList.copy(exprs) ;
-            exprs.addAll(input.getExprs());
-        } else
-            exprs = input.getExprs() ;
+        if ( exprs.size() == 0 )
+            // Unpack the filter,
+            return transform(input.getExprs(), input.getSubOp()) ;
         
-        Placement p = transform(exprs, input.getSubOp()) ;
-        return p ;
+        // Thrown the filter expressions into the general list to be placed.
+        // Add to keep the application order (original filter then additional exprs)
+        // Not important, but nice.
+        ExprList exprs2 = ExprList.copy(input.getExprs()) ;
+        exprs2.addAll(exprs);
+        return transform(exprs2, input.getSubOp()) ;
     }
 
     private Placement placeOrWrapBGP(ExprList exprs, OpBGP x) {
@@ -182,7 +186,7 @@ public class TransformFilterPlacement extends TransformCopy {
 
         for (Triple triple : pattern) {
             // Place any filters that are now covered.
-            op = insertAnyFilter(exprs, patternVarsScope, op) ;
+            op = insertAnyFilter$(exprs, patternVarsScope, op) ;
             // Consider this triple.
             // Get BGP that is accumulating triples.
             OpBGP opBGP = getBGP(op) ;
@@ -199,7 +203,7 @@ public class TransformFilterPlacement extends TransformCopy {
         }
         
         // Place any filters this whole BGP covers. 
-        op = insertAnyFilter(exprs, patternVarsScope, op) ;
+        op = insertAnyFilter$(exprs, patternVarsScope, op) ;
         return result(op, exprs) ;
     }
 
@@ -270,7 +274,7 @@ public class TransformFilterPlacement extends TransformCopy {
         Op op = null ;
         
         for (Triple triple : pattern) {
-            op = insertAnyFilter(exprs, patternVarsScope, op) ;
+            op = insertAnyFilter$(exprs, patternVarsScope, op) ;
             OpQuadPattern opQuad = getQuads(op) ;
             if ( opQuad == null ) {
                 opQuad = new OpQuadPattern(graphNode, new BasicPattern()) ;
@@ -282,7 +286,7 @@ public class TransformFilterPlacement extends TransformCopy {
             VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
         }
         // Place any filters this whole quad block covers. 
-        op = insertAnyFilter(exprs, patternVarsScope, op) ;
+        op = insertAnyFilter$(exprs, patternVarsScope, op) ;
         return result(op, exprs) ;
     }
 
@@ -352,7 +356,7 @@ public class TransformFilterPlacement extends TransformCopy {
         Op op = null ;
         // No point placing on the last element as that is the same as filtering the entire expression.
         for (int i = 0 ; i < ops.size() ; i++ ) {
-            op = insertAnyFilter(exprs, varScope, op) ;
+            op = insertAnyFilter$(exprs, varScope, op) ;
             Op seqElt = ops.get(i) ;
             if ( i != ops.size()-1 ) {
                 Placement p = transform(exprs, seqElt) ;
@@ -407,11 +411,11 @@ public class TransformFilterPlacement extends TransformCopy {
 
         Op opLeftNew = left ;
         if ( !pushLeft.isEmpty() )
-            opLeftNew = transformOp(pushLeft, opLeftNew) ;
+            opLeftNew = transformOpAlways(pushLeft, opLeftNew) ;
 
         Op opRightNew = right ;
         if ( !pushRight.isEmpty() )
-            opRightNew = transformOp(pushRight, opRightNew) ;
+            opRightNew = transformOpAlways(pushRight, opRightNew) ;
 
         Op op = OpJoin.create(opLeftNew, opRightNew) ;
         return result(op, unpushed) ;
@@ -441,25 +445,82 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private Placement placeUnion(ExprList exprs, OpUnion input) {
-        // Push into both sides.
+        if ( false )
+            // Safely but inefficiently do nothing.
+            return null ; //new Placement(input, exprs) ;
+        
+        if ( false ) {
+         // Push into both sides.
+            Op left = input.getLeft() ;
+            Placement pLeft = transform(exprs, left) ;
+            
+            Op right = input.getRight() ;
+            Placement pRight = transform(exprs, right) ;
+            
+            // JENA-652 Temporary fix
+            if ( pLeft != null && ! pLeft.unplaced.isEmpty() )
+                return noChangePlacement ;
+            if ( pRight != null && ! pRight.unplaced.isEmpty() )
+                return noChangePlacement ;
+
+            // Old, buggy if not guarded by the above.
+            left = transformOpAlways(exprs, left) ;
+            right = transformOpAlways(exprs, right) ;
+            
+            Op op2 = OpUnion.create(left, right) ;
+            return result(op2, emptyList) ;
+        }
+        
         Op left = input.getLeft() ;
         Placement pLeft = transform(exprs, left) ;
         
         Op right = input.getRight() ;
         Placement pRight = transform(exprs, right) ;
         
-        // JENA-652 Temporary fix
-        if ( pLeft != null && ! pLeft.unplaced.isEmpty() )
-            return null ;
-        if ( pRight != null && ! pRight.unplaced.isEmpty() )
-            return null ;
-
-        // Old code.
-        left = transformOp(exprs, left) ;
-        right = transformOp(exprs, right) ;
+        // If it's placed in neitehr arm it should be passed back out for placement.
+        //
+        // If it's done in both arms, then expression can be left pushed in
+        // and not passed back out for placement.
         
-        Op op2 = OpUnion.create(left, right) ;
-        return result(op2, emptyList) ;
+        // If it is done in one arm and not the other, then it can be left pushed
+        // in but needs to be redone for the other arm as if it were no placed at all.
+        
+        // A filter applied twice is safe.
+        // Placement = null => nothing done => unplaced. 
+        
+        ExprList exprs2 = null ;
+        
+        for ( Expr expr : exprs ) {
+            boolean unplacedLeft =  ( pLeft == null  || pLeft.unplaced.getList().contains(expr) ) ;
+            boolean unplacedRight = ( pRight == null || pRight.unplaced.getList().contains(expr) ) ;
+            
+//            if ( unplacedLeft && unplacedRight ) {
+//                System.out.println("Unplaced:     "+expr) ;
+//            } else if ( unplacedLeft ) {
+//                System.out.println("Unplaced(L):  "+expr) ;
+//            } else if ( unplacedRight ) {
+//                System.out.println("Unplaced(R):  "+expr) ;
+//            } else
+//                System.out.println("Placed(L+R):  "+expr) ;
+            
+            boolean placed = !unplacedLeft && !unplacedRight ;
+            if ( placed )
+                // Went into both arms - expression has been handled completely.
+                continue ;
+            
+            if ( exprs2 == null )
+                exprs2 = new ExprList() ;
+            exprs2.add(expr) ;
+        }
+        
+        
+        Op newLeft = (pLeft == null ) ? left : pLeft.op ;
+        Op newRight = (pRight == null ) ? right : pRight.op ;
+        if ( exprs2 == null )
+            exprs2 = emptyList ;
+        
+        Op op2 = OpUnion.create(newLeft, newRight) ;
+        return result(op2, exprs2) ;
     }
 
     /** Try to optimize (filter (extend ...)) */
@@ -538,6 +599,12 @@ public class TransformFilterPlacement extends TransformCopy {
         return result(op2, unpushed) ;
     }
     
+    private Placement placeTable(ExprList exprs, OpTable input) {
+        exprs = ExprList.copy(exprs) ;
+        Op op = insertAnyFilter$(exprs, input.getTable().getVars(), input) ;
+        return result(op, exprs) ;
+    }
+
     private Set<Var> fixedVars(Op op) {
         return OpVars.fixedVars(op) ;
     }
@@ -548,7 +615,7 @@ public class TransformFilterPlacement extends TransformCopy {
      * that is placed. 
      */
     
-    private static Op insertAnyFilter(ExprList unplacedExprs, Set<Var> patternVarsScope, Op op) {
+    private static Op insertAnyFilter$(ExprList unplacedExprs, Collection<Var> patternVarsScope, Op op) {
         for (Iterator<Expr> iter = unplacedExprs.iterator(); iter.hasNext();) {
             Expr expr = iter.next() ;
             // Cache
