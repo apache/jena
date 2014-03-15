@@ -18,12 +18,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.* ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -35,6 +30,8 @@ public class ExprList implements Iterable<Expr>
     private final List<Expr> expressions ;
     /** Create a copy which does not share the list of expressions with the original */ 
     public static ExprList copy(ExprList other) { return new ExprList(other) ; }
+    /** Empty, immutable ExprList */
+    public static final ExprList emptyList = new ExprList(Collections.<Expr> emptyList()) ;
     
     public ExprList() { expressions = new ArrayList<Expr>() ; }
     
