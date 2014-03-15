@@ -441,6 +441,9 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private Placement placeUnion(ExprList exprs, OpUnion input) {
+        // JENA-653, temporary fix.
+        if ( true ) return null ;
+        
         // Push into both sides.
         Op left = input.getLeft() ;
         left = transformOp(exprs, left) ;
