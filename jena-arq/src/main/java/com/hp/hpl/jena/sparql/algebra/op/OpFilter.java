@@ -30,6 +30,7 @@ public class OpFilter extends Op1
 {
     protected ExprList expressions ;
     
+    /** Add expression - mutates an existing filter */  
     public static Op filter(Expr expr, Op op)
     {
         OpFilter f = filter(op) ;
@@ -45,6 +46,7 @@ public class OpFilter extends Op1
            return new OpFilter(op) ;  
     }
     
+    /** Add expressions - mutates an existing filter */  
     public static Op filter(ExprList exprs, Op op)
     {
         if ( exprs.isEmpty() )
