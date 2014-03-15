@@ -383,6 +383,20 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
             ) ;
         testNoBGP ( in, out ) ;
     }
+    
+    // Urelated filter 
+    @Test public void place_union_05() {
+        String in = StrUtils.strjoinNL
+            ("(filter (= ?x 1)"
+            ,"  (union"
+            ,"    (bgp (triple ?s ?p ?o))"
+            ,"    (bgp (triple ?s ?p ?o))"
+            ,"))"
+             ) ;
+        String out = in ;
+        test ( in, out ) ;
+    }
+    
     // Reverse arms.
 
         
