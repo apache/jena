@@ -13,7 +13,7 @@
         </td>
         <td>
           <a class="btn btn-sm action remove btn-primary" href="query.html?ds=<%= ds.name() %>"><i class='fa fa-question-circle'></i> query</a>
-          <a class="btn btn-sm action remove btn-primary" href="upload.html?ds=<%= ds.name() %>"><i class='fa fa-plus-circle'></i> upload</a>
+          <a class="btn btn-sm action remove btn-primary" href="upload.html?ds=<%= ds.name() %>"><i class='fa fa-plus-circle'></i> add data</a>
 
 <!--          
           <a class="btn btn-sm action remove btn-primary" href="explore.html?ds=<%= ds.name() %>"><i class='fa fa-globe'></i> explore</a>
