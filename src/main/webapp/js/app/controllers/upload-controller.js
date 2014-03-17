@@ -42,6 +42,7 @@ define(
           var ds = fusekiServer.dataset( dsName );
           endpoints["default"] = ds.uploadURL();
         }
+        $
       },  
 
       /** Return a hashmap in a form we can pass to initUploader (c.f. a qconsole config)  */
@@ -114,6 +115,7 @@ define(
     /** Set the current endpoint text */
     var setCurrentEndpoint = function( url ) {
       $("[id=uploadEndpoint]").val( url );
+      $('#fileuploadForm').attr('action', url) ;
     };
 
     /** Return the current endpoint text */

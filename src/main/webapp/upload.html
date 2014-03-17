@@ -10,13 +10,13 @@
     <link href="css/jquery.dataTables.css" rel="stylesheet" media="screen">
     <link href="css/fui.css" rel="stylesheet" media="screen">
 
-    <script src="js/lib/jquery-1.10.2.min.js"></script>
+    <script src="js/lib/jquery-1.10.2.js"></script>
     <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
     <script src="js2/vendor/jquery.ui.widget.js"></script>
     <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
     <script src="js2/jquery.iframe-transport.js"></script>
     <!-- The basic File Upload plugin -->
-    <script src="js2/jquery.fileupload.js"></script>
+    <script src="js2/jquery.fileupload.local.js"></script>
 
     <!-- Set the URL for the upload -->
     <script data-main="js/app/main.upload.js" src="js/lib/require.min.js"></script>
@@ -113,7 +113,7 @@
 
           <div class="col-md-12 well">
             <div class="query-chrome">
-              <form class="form-inline" role="form">
+              <form id="fileuploadForm" class="form-inline" role="form">
 
                 <div class="form-group">
                   <label for="uploadEndpoint"></label>
@@ -162,7 +162,7 @@ $(function () {
     //var url = window.location.hostname === ... : ... ? 
     var url = '/ds/upload' ;
     $('#fileupload').fileupload({
-        url: url,
+        //url: url,
         dataType: 'json',
         done: function (e, data) {
             $.each(data.result.files, function (index, file) {
