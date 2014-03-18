@@ -1,12 +1,4 @@
-## index file
-
-> _Process_
-
-fuseki-main
-  WAR module not ready.
-
-
-> _@@_
+## Apache Jena Fuseki
 
 Apache Jena Fuseki is a SPARQL server.  It can run as a operating system service,
 as a Java web application (WAR file), and as a standalone server.  It provides security
@@ -34,7 +26,7 @@ for other RDF query and storage systems.
 - Architecture
   - [Server URI scheme](fuseki-data-services.html)
   - [Server Protocol](fuseki-server-protocol.html)
-- [Fuseki Configuration](#fuseki-configuration.html)
+- [Fuseki Configuration](fuseki-configuration.html)
 - [Logging](fuseki-logging.html)
 - [How to Contribute](#how-to-contribute)
 - Client access
@@ -56,9 +48,10 @@ and previous releases are available from [the archive](http://archive.apache.org
 We strongly recommend that users use the latest official Apache releases of Jena Fuseki in
 preference to any older versions or of development builds.
 
-It is also available via maven 
+Fuseki requires Java7.
 
-See "[Using Jena with Apache Maven](maven.html)" for full details.
+> _@@ Not ready yet_
+It is also available as a Java web application WAR file via maven.
 
     <dependency>
        <groupId>org.apache.jena</groupId>
