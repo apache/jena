@@ -51,6 +51,7 @@ public class FusekiServer
     public static Path FUSEKI_BASE = null ;
 
     // Relative names of directories
+    private static final String        databasesLocationBase    = "databases" ;
     private static final String        backupDirNameBase        = "backups" ;
     private static final String        configDirNameBase        = "configuration" ;
     private static final String        logsNameBase             = "logs" ;
@@ -59,15 +60,11 @@ public class FusekiServer
     private static final String        templatesNameBase        = "templates" ;
     
     // --- Set during server initialization
-    /*
-    backups/
-    configuration/
-    logs/
-    system/
-    system_files/
-    */
     
-    /** Directory for addition assembler descriptions */
+    /** Directory for TDB databases - this is known to the assembler templates */
+    public static Path        dirDatabases       = null ;
+    
+    /** Directory for writing backups */
     public static Path        dirBackups         = null ;
 
     /** Directory for assembler files */
