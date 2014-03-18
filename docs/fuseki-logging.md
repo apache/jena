@@ -4,7 +4,8 @@ Fuseki logs separately from any web application server it is used in.
 Logging is enabaled by default.
 
 The server uses a number of logs, 
-which can be controlled with `log4j`, 
+which can be controlled with `log4j`.
+A `log4j.properties` file in the FUSEKI_BASE directory overrides the built configuration.
 
 | Full Log name | Usage |
 |---------------|-------|
@@ -17,13 +18,11 @@ which can be controlled with `log4j`,
 
 ## Logrotate
 
-Below is an example logrotate(1) configuration (to go in `/etc/logrotate.d`) that
-rotates the logs once a month,
-compresses previous logs and keeps them for 6 months.
+Below is an example logrotate(1) configuration (to go in `/etc/logrotate.d`) 
+based on the default service mode deployment.
+It rotates the logs once a month, compresses logs on rotation and keeps them for 6 months.
 
 It uses `copytruncate`.  This may lead to at most one broken log file line.
-
-Replace `/etc/fuseki` if you are running with the server file are elsewhere.
 
     /etc/fuseki/logs/fuseki.log
     {
