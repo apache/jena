@@ -315,6 +315,41 @@ public class TestResultSetFormat2 {
         //@formatter:on
         parseJSON(input);
     }
+    
+    @Test(expected = ResultSetException.class)
+    public void resultset_json_02() {
+        //@formatter:off
+        String input = StrUtils.strjoinNL("{\"head\":{\"vars\":[\"s\"]},",
+                                          "     \"results\": {",
+                                          "      \"bindings\":[",
+                                          "       {\"s\":{\"type\":\"uri\"}}",
+                                          "      ]",
+                                          "     },",
+                                          "     \"warnings\": [\"parser warning: Variable o was bound but is unused in the query on line 1\",",
+                                          "     \"parser warning: Variable p was bound but is unused in the query on line 1\"]",
+                                          "    })",
+                                          "    }");
+        //@formatter:on
+        
+        // No value for URI is illegal
+        parseJSON(input);
+    }
+    
+    @Test(expected = ResultSetException.class)
+    public void resultset_json_03() {
+        String input = "{\"head\":{\"vars\":[\"s\"]}}";
+        
+        // Missing results is illegal
+        parseJSON(input);
+    }
+    
+    @Test(expected = ResultSetException.class)
+    public void resultset_json_04() {
+        String input = "{\"results\":{}}";
+        
+        // Missing head is illegal
+        parseJSON(input);
+    }
 
     private void parseTSV(String x) {
         byte[] b = StrUtils.asUTF8bytes(x);
