@@ -126,7 +126,7 @@ public class JSONInput extends SPARQLResult
         
         if ( obj.hasKey(kBoolean) )
         {
-            checkContains(obj, true, kHead, kBoolean) ;
+            checkContains(obj, true, true, kHead, kBoolean) ;
             booleanResult = obj.get(kBoolean).getAsBoolean().value() ;
             rows = null ;
             return ;
@@ -134,10 +134,7 @@ public class JSONInput extends SPARQLResult
         
         rows = new ArrayList<Binding>(1000) ;
         
-        checkContains(obj, true, kHead, kResults) ;
-
-        if ( ! obj.hasKey(kHead) )    throw new ResultSetException("No 'head' for results") ;
-        if ( ! obj.hasKey(kResults) ) throw new ResultSetException("No 'results' for results") ;
+        checkContains(obj, true, true, kHead, kResults) ;
         
         // process head
         if ( ! obj.get(kHead).isObject() )
@@ -221,14 +218,14 @@ public class JSONInput extends SPARQLResult
     LabelToNode labelMap = SyntaxLabels.createLabelToNode() ;
     private Node parseOneTerm(JsonObject term)
     {
-        checkContains(term, false, kType, kValue, kXmlLang, kDatatype) ;
+        checkContains(term, false, false, kType, kValue, kXmlLang, kDatatype) ;
         
         String type = stringOrNull(term, kType) ;
         String v = stringOrNull(term, kValue) ;
         
         if ( kUri.equals(type) )
         {
-            checkContains(term, false, kType, kValue) ;
+            checkContains(term, false, true, kType, kValue) ;
             String uri = v ;
             Node n = NodeFactory.createURI(v) ;
             return n ;
@@ -260,14 +257,19 @@ public class JSONInput extends SPARQLResult
         
     }
     
-    private static void checkContains(JsonObject term, boolean allowUndefinedKeys, String...keys)
+    private static void checkContains(JsonObject term, boolean allowUndefinedKeys, boolean requireAllExpectedKeys, String...keys)
     {
-        List<String> x = Arrays.asList(keys) ;
+        List<String> expectedKeys = Arrays.asList(keys) ;
+        Set<String> declared = new HashSet<String>();
         for ( String k : term.keys() )
         {
-            if ( !x.contains(k) && !allowUndefinedKeys )
-                throw new ResultSetException("Expected only object keys "+Arrays.asList(keys)+" but encountered '"+k+"'") ; 
+            if ( !expectedKeys.contains(k) && !allowUndefinedKeys )
+                throw new ResultSetException("Expected only object keys "+Arrays.asList(keys)+" but encountered '"+k+"'") ;
+            if (expectedKeys.contains(k))
+                declared.add(k);
         }
+        
+        if (requireAllExpectedKeys && declared.size() < expectedKeys.size()) throw new ResultSetException("One or more of the required keys " + expectedKeys + " was not found");
     }
 }
 
