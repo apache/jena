@@ -126,7 +126,7 @@ public class JSONInput extends SPARQLResult
         
         if ( obj.hasKey(kBoolean) )
         {
-            checkContains(obj, kHead, kBoolean) ;
+            checkContains(obj, true, kHead, kBoolean) ;
             booleanResult = obj.get(kBoolean).getAsBoolean().value() ;
             rows = null ;
             return ;
@@ -134,7 +134,7 @@ public class JSONInput extends SPARQLResult
         
         rows = new ArrayList<Binding>(1000) ;
         
-        checkContains(obj, kHead, kResults) ;
+        checkContains(obj, true, kHead, kResults) ;
 
         if ( ! obj.hasKey(kHead) )    throw new ResultSetException("No 'head' for results") ;
         if ( ! obj.hasKey(kResults) ) throw new ResultSetException("No 'results' for results") ;
@@ -221,14 +221,14 @@ public class JSONInput extends SPARQLResult
     LabelToNode labelMap = SyntaxLabels.createLabelToNode() ;
     private Node parseOneTerm(JsonObject term)
     {
-        checkContains(term, kType, kValue, kXmlLang, kDatatype) ;
+        checkContains(term, false, kType, kValue, kXmlLang, kDatatype) ;
         
         String type = stringOrNull(term, kType) ;
         String v = stringOrNull(term, kValue) ;
         
         if ( kUri.equals(type) )
         {
-            checkContains(term, kType, kValue) ;
+            checkContains(term, false, kType, kValue) ;
             String uri = v ;
             Node n = NodeFactory.createURI(v) ;
             return n ;
@@ -260,12 +260,12 @@ public class JSONInput extends SPARQLResult
         
     }
     
-    private static void checkContains(JsonObject term, String...keys)
+    private static void checkContains(JsonObject term, boolean allowUndefinedKeys, String...keys)
     {
         List<String> x = Arrays.asList(keys) ;
         for ( String k : term.keys() )
         {
-            if ( !x.contains(k) )
+            if ( !x.contains(k) && !allowUndefinedKeys )
                 throw new ResultSetException("Expected only object keys "+Arrays.asList(keys)+" but encountered '"+k+"'") ; 
         }
     }

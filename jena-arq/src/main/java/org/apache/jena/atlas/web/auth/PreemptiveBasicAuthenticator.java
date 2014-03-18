@@ -32,15 +32,28 @@ import org.apache.http.protocol.HttpContext;
  * A decorator for other authenticators that may be used to enable preemptive
  * basic authentication.
  * <p>
+ * This can <strong>only</strong> be used with servers that support Basic HTTP
+ * authentication.  For any other authentication scheme the use of this
+ * authenticator will result in authentication failures.
+ * </p>
+ * <h3>Security Concerns</h3>
+ * <p>
  * It is <strong>important</strong> to note that preemptive basic authentication
  * is less secure because it can expose credentials to servers that do not
  * require them.
  * </p>
+ * <h3>Standard vs Proxy Authentication</h3>
  * <p>
  * Doing preemptive authentication requires knowing in advance whether you will
  * be doing standard or proxy authentication i.e. whether the remote server will
- * challenge with 401 or 407.  If you need both you can take advantage of this
+ * challenge with 401 or 407. If you need both you can take advantage of this
  * being a decorator and simply layer multiple instances of this.
+ * </p>
+ * <p>
+ * However you must remember that this <strong>only</strong> works for Basic
+ * HTTP authentication, any other authentication scheme cannot be done
+ * preemptively because it requires a more complex and secure challenge response
+ * process.
  * </p>
  */
 public class PreemptiveBasicAuthenticator implements HttpAuthenticator {
@@ -82,11 +95,12 @@ public class PreemptiveBasicAuthenticator implements HttpAuthenticator {
         if (authCache == null)
             authCache = new BasicAuthCache();
         BasicScheme basicAuth = new BasicScheme(this.isProxy ? ChallengeState.PROXY : ChallengeState.TARGET);
-        // TODO It is possible that this overwrites existing cached credentials so potentially not ideal.
+        // TODO It is possible that this overwrites existing cached credentials
+        // so potentially not ideal.
         authCache.put(new HttpHost(target.getHost(), target.getPort()), basicAuth);
         httpContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
     }
-    
+
     @Override
     public void invalidate() {
         // Does nothing

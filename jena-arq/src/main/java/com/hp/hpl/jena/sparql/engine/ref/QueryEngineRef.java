@@ -40,7 +40,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 /** "Reference" query engine - this simply executes the algebra expression as-is
  *  using a simple (non-scalable) execution strategy that follows the definition
- *  of SPARQL as closely as possible.  The referenc query engine does provide the
+ *  of SPARQL as closely as possible.  The reference query engine does provide the
  *  algebra extensions. 
  */
 public class QueryEngineRef extends QueryEngineBase
