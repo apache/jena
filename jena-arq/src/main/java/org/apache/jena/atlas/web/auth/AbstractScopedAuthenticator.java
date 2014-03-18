@@ -26,27 +26,30 @@ import java.net.URISyntaxException;
  * </p>
  * <h3>Credentials Scope</h3>
  * <p>
- * Note that credentials are not necessarily considered to be exclusively scoped to the exact URI rather they
- * are scoped to any URI derived from the given URI. For example if you declared
- * credentials for {@code http://example.org} they would also apply to
- * {@code http://example.org/some/path/}. When determining credentials the
- * longest match applies, so in the previous example you could define different
- * credentials for the two URIs and URIs derived from
+ * Note that credentials are not necessarily considered to be exclusively scoped
+ * to the exact URI rather they are scoped to any URI derived from the given
+ * URI. For example if you declared credentials for {@code http://example.org}
+ * they would also apply to {@code http://example.org/some/path/}. When
+ * determining credentials the longest match applies, so in the previous example
+ * you could define different credentials for the two URIs and URIs derived from
  * {@code http://example.org/some/path/} would prefer the credentials for that
  * URI over those for {@code http://example.org}
  * </p>
  * <p>
- * Implementations that wish to follow the above scoping policy should make use of the findCredentials method
+ * Implementations that wish to follow the above scoping policy should make use
+ * of the findCredentials method
  * </p>
- * @param <T> Type used to store credential information
+ * 
+ * @param <T>
+ *            Type used to store credential information
  */
 public abstract class AbstractScopedAuthenticator<T> extends AbstractCredentialsAuthenticator {
-    
+
     @Override
     protected final String getUserName(URI target) {
         return getUserNameFromCredentials(this.findCredentials(target));
     }
-    
+
     @Override
     protected final char[] getPassword(URI target) {
         return getPasswordFromCredentials(this.findCredentials(target));
@@ -61,33 +64,41 @@ public abstract class AbstractScopedAuthenticator<T> extends AbstractCredentials
     protected final boolean hasPassword(URI target) {
         return this.getPassword(target) != null;
     }
-    
+
     /**
      * Gets the credentials associated with the exact URI given
      * <p>
-     * Called from {@link #findCredentials(URI)} as part of the credential lookup process
+     * Called from {@link #findCredentials(URI)} as part of the credential
+     * lookup process
      * </p>
-     * @param target Target URI
+     * 
+     * @param target
+     *            Target URI
      * @return Credentials
      */
     protected abstract T getCredentials(URI target);
-    
+
     /**
      * Extract the user name from the given credentials
-     * @param credentials Credentials
+     * 
+     * @param credentials
+     *            Credentials
      * @return User Name
      */
     protected abstract String getUserNameFromCredentials(T credentials);
-    
+
     /**
      * Extract the password from the given credentials
-     * @param credentials Credentials
+     * 
+     * @param credentials
+     *            Credentials
      * @return Password
      */
     protected abstract char[] getPasswordFromCredentials(T credentials);
 
     /**
      * Finds credentials for the given URI using a longest match approach
+     * 
      * @param target
      * @return T
      */

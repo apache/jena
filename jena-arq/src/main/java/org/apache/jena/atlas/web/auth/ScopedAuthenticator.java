@@ -28,7 +28,12 @@ import org.apache.jena.atlas.lib.Pair;
  * <p>
  * A credentials based authenticator where credentials are scoped to URIs. This
  * allows for a single authenticator to present different credentials to
- * different URIs as appropriate.
+ * different URIs as appropriate. Works with the basic and digest HTTP
+ * authentication schemes.
+ * </p>
+ * <p>
+ * See {@link ScopedNTAuthenticator} for an implementation that works for the
+ * NTLM authentication scheme.
  * </p>
  * 
  */

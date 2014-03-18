@@ -20,27 +20,29 @@ package org.apache.jena.atlas.web.auth;
 
 import java.net.URI;
 
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.NTCredentials;
+
 /**
  * <p>
  * A HTTP Authenticator which provides authentication via user name and password
- * combinations. Works with the basic and digest HTTP authentication schemes.
+ * combinations. Works with the NTLM authentication scheme.
  * </p>
  * <p>
- * See {@link SimpleNTAuthenticator} for an implementation that works for the
- * NTLM authentication scheme.
+ * Use the parent class {@link SimpleAuthenticator} if you just need to do
+ * Basic/Digest authentication.
  * </p>
  * <p>
  * This authenticator will present the given credentials to any server that
  * request authentication even though the credentials may not be valid there. It
- * is typically more secure to use the {@link ScopedAuthenticator} instead which
- * only presents credentials to specific servers.
+ * is typically more secure to use the {@link ScopedNTAuthenticator} instead
+ * which only presents credentials to specific servers.
  * </p>
  * 
  */
-public class SimpleAuthenticator extends AbstractCredentialsAuthenticator {
+public class SimpleNTAuthenticator extends SimpleAuthenticator {
 
-    String username;
-    char[] password;
+    private String workstation, domain;
 
     /**
      * Creates a new authenticator
@@ -49,30 +51,21 @@ public class SimpleAuthenticator extends AbstractCredentialsAuthenticator {
      *            Username
      * @param password
      *            Password
+     * @param workstation
+     *            Workstation, this is the ID of your local workstation
+     * @param domain
+     *            Domain, this is the domain you are authenticating in which may
+     *            not necessarily be the domain your workstation is in
      */
-    public SimpleAuthenticator(String username, char[] password) {
-        this.username = username;
-        this.password = password;
+    public SimpleNTAuthenticator(String username, char[] password, String workstation, String domain) {
+        super(username, password);
+        this.workstation = workstation;
+        this.domain = domain;
     }
 
     @Override
-    protected boolean hasUserName(URI target) {
-        return this.username != null;
-    }
-
-    @Override
-    protected String getUserName(URI target) {
-        return this.username;
-    }
-
-    @Override
-    protected boolean hasPassword(URI target) {
-        return this.password != null;
-    }
-
-    @Override
-    protected char[] getPassword(URI target) {
-        return this.password;
+    protected Credentials createCredentials(URI target) {
+        return new NTCredentials(this.getUserName(target), new String(this.getPassword(target)), this.workstation, this.domain);
     }
 
 }

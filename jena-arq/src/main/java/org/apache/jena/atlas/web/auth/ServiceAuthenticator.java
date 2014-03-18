@@ -30,8 +30,10 @@ import com.hp.hpl.jena.sparql.util.Context;
  * A HTTP authenticator which selects credentials based upon service context
  * found in the provided {@link Context}. May also optionally use fallback
  * credentials for URIs for which authentication has not been explicitly
- * configured.
- * </p> 
+ * configured. This works only with the Basic and Digest authentication schemes
+ * so you may need to use an alternative authenticator if you need to use
+ * another authentication scheme.
+ * </p>
  */
 public class ServiceAuthenticator extends AbstractScopedAuthenticator<Context> {
 
