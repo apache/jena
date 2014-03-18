@@ -4,6 +4,10 @@ Fuseki provides a number of "data services" - each data service is an RDF datase
 and a configurable set of endpoints for various operations such as SPARQL query,
 SPARQL update and file upload.
 
+URI scheme.
+  Datasets and serviecs
+  Admin
+
 ----------------------------
 
 > _@@ Just rough notes : out-of-date and inconsistent_
