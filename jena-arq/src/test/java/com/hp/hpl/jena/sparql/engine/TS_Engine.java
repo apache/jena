@@ -22,7 +22,8 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 import com.hp.hpl.jena.sparql.engine.binding.TestBindingStreams ;
-import com.hp.hpl.jena.sparql.engine.http.TestService;
+import com.hp.hpl.jena.sparql.engine.http.TestQueryEngineHTTP ;
+import com.hp.hpl.jena.sparql.engine.http.TestService ;
 import com.hp.hpl.jena.sparql.engine.iterator.TestQueryIterSort ;
 
 @RunWith(Suite.class)
@@ -30,6 +31,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.TestQueryIterSort ;
         TestBindingStreams.class
       , TestQueryIterSort.class
       , TestService.class
+      , TestQueryEngineHTTP.class
       , TestQueryEngineMultiThreaded.class
 })
 
