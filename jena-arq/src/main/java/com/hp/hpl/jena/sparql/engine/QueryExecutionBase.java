@@ -588,6 +588,7 @@ public class QueryExecutionBase implements QueryExecution
         return dsg ;
     }
     
+    @Deprecated
     @Override
     public void setFileManager(FileManager fm) { fileManager = fm ; }
     

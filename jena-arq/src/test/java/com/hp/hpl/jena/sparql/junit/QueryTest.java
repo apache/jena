@@ -43,7 +43,6 @@ import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
-import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.FileUtils ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -53,7 +52,6 @@ public class QueryTest extends EarlTestCase
     private static int testCounter = 1 ;
     private int testNumber = testCounter++ ;
     private TestItem testItem ;
-    private FileManager queryFileManager ;
     private boolean resetNeeded = false ;
     
     private SPARQLResult results = null ;    // Maybe null if no testing of results
@@ -61,10 +59,9 @@ public class QueryTest extends EarlTestCase
     // If supplied with a model, the test will load that model with data from the source
     // If no model is supplied one is created or attached (e.g. a database)
 
-    public QueryTest(String testName, EarlReport earl, FileManager fm, TestItem t)
+    public QueryTest(String testName, EarlReport earl, TestItem t)
     {
         super(TestUtils.safeName(testName), t.getURI(), earl) ;
-        queryFileManager = fm ;
         testItem = t ;
     }
     private boolean oldWarningFlag  ;
@@ -166,7 +163,7 @@ public class QueryTest extends EarlTestCase
             QueryExecution qe = null ;
             
             if ( dataset == null )
-                qe = QueryExecutionFactory.create(query, queryFileManager) ;
+                qe = QueryExecutionFactory.create(query) ;
             else
                 qe = QueryExecutionFactory.create(query, dataset) ;
             

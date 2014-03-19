@@ -53,7 +53,7 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
     static public TestSuite make(String query, String data, String result)
     {
         TestItem item = TestItem.create(query, query, data, result) ;
-        QueryTest t = new QueryTest(item.getName(), null, FileManager.get(), item) ;
+        QueryTest t = new QueryTest(item.getName(), null, item) ;
         TestSuite ts = new TestSuite() ;
         ts.setName(TestUtils.safeName(query)) ;
         ts.addTest(t) ;
@@ -151,11 +151,11 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
             if ( testType.equals(TestManifest.QueryEvaluationTest)
                 || testType.equals(TestManifestX.TestQuery)
                 )
-                return new QueryTest(testName, results, fileManager, item) ;
+                return new QueryTest(testName, results, item) ;
             
             // Reduced is funny.
             if ( testType.equals(TestManifest.ReducedCardinalityTest) )
-                return new QueryTest(testName, results, fileManager, item) ;
+                return new QueryTest(testName, results, item) ;
             
             if ( testType.equals(TestManifestX.TestSurpressed) )
                 return new SurpressedTest(testName, results, item) ;
@@ -169,7 +169,7 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
             System.err.println("Test type '"+testType+"' not recognized") ;
         }
         // Default 
-        test = new QueryTest(testName, results, fileManager, item) ;
+        test = new QueryTest(testName, results, item) ;
         return test ;
     }
 }

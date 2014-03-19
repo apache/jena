@@ -125,7 +125,7 @@ public class QueryExecutionFactory
      * @param fm    FileManager 
      * @return QueryExecution
      */
-
+    @Deprecated
     static public QueryExecution create(Query query, FileManager fm)
     {
         checkArg(query) ;
