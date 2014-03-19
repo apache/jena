@@ -293,13 +293,14 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
             elt.object = Item.createNode(value) ;
     }
     
-    private static AccString<PatternTriple> formatter = 
-    new AccString<PatternTriple>() 
-    {   @Override 
-        protected String toString(PatternTriple pt) 
-          { return "("+printAbbrev(pt.toString())+")" ; }
+    private AccString<PatternTriple> formatter = 
+        new AccString<PatternTriple>() { 
+            @Override
+            protected String toString(PatternTriple pt) {
+                return "(" + printAbbrev(pt.toString()) + ")" ;
+        }
     } ;
-    
+
     // Triples to TriplePatterns.
     private static Transform<Triple, PatternTriple> convert = new Transform<Triple, PatternTriple>(){
         @Override
