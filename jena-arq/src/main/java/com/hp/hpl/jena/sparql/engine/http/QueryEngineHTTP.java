@@ -18,36 +18,34 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
+import java.io.ByteArrayInputStream ;
+import java.io.InputStream ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
+import java.util.concurrent.TimeUnit ;
 
-import org.apache.http.client.HttpClient;
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
-import org.apache.jena.atlas.web.auth.SimpleAuthenticator;
-import org.apache.jena.riot.*;
-import org.apache.jena.riot.web.HttpOp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.http.client.HttpClient ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
+import org.apache.jena.atlas.web.auth.SimpleAuthenticator ;
+import org.apache.jena.riot.* ;
+import org.apache.jena.riot.web.HttpOp ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.graph.GraphFactory;
-import com.hp.hpl.jena.sparql.resultset.CSVInput;
-import com.hp.hpl.jena.sparql.resultset.JSONInput;
-import com.hp.hpl.jena.sparql.resultset.TSVInput;
-import com.hp.hpl.jena.sparql.resultset.XMLInput;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.resultset.CSVInput ;
+import com.hp.hpl.jena.sparql.resultset.JSONInput ;
+import com.hp.hpl.jena.sparql.resultset.TSVInput ;
+import com.hp.hpl.jena.sparql.resultset.XMLInput ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.util.FileManager ;
 
 /**
  * A query execution implementation where queries are executed against a remote
@@ -84,9 +82,9 @@ public class QueryEngineHTTP implements QueryExecution {
     private boolean allowDeflate = true;
 
     // Content Types
-    private String selectContentType = getSelectContentTypes();
-    private String askContentType = getAskContentTypes();
-    private String modelContentType = getConstructContentTypes();
+    private String selectContentType    = defaultSelectHeader();
+    private String askContentType       = defaultAskHeader();
+    private String modelContentType     = defaultConstructHeader();
     /**
      * Supported content types for SELECT queries
      */
@@ -356,9 +354,6 @@ public class QueryEngineHTTP implements QueryExecution {
 
         retainedConnection = in; // This will be closed on close()
         retainedClient = httpQuery.shouldShutdownClient() ? httpQuery.getClient() : null;
-
-        // TODO: Find a way to auto-detect how to create the ResultSet based on
-        // the content type in use
 
         // Don't assume the endpoint actually gives back the content type we
         // asked for
@@ -745,47 +740,68 @@ public class QueryEngineHTTP implements QueryExecution {
             throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a RDF Graph format");
         modelContentType = contentType;
     }
+    
+    private static final String selectContentTypeHeader = initSelectContentTypes() ;
 
-    public static String getSelectContentTypes() {
-        Map<String, Double> datatypes = new HashMap<String, Double>();
-        datatypes.put(WebContent.contentTypeResultsXML, 1.0);
-        datatypes.put(WebContent.contentTypeResultsJSON, 1.0);
-        datatypes.put(WebContent.contentTypeJSON, 0.5);
-        datatypes.put(WebContent.contentTypeTextTSV, 0.5);
-        datatypes.put(WebContent.contentTypeTextCSV, 0.5);
-        datatypes.put(WebContent.contentTypeXML, 0.5);
-        return datatypesHashmapToString(datatypes);
+    public static String defaultSelectHeader() {
+        return selectContentTypeHeader ;
     }
 
-    public static String getAskContentTypes() {
-        return getSelectContentTypes();
+    private static String initSelectContentTypes() {
+        StringBuilder sBuff = new StringBuilder() ;
+        accumulateContentTypeString(sBuff, WebContent.contentTypeResultsJSON,  1.0);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeResultsXML,   0.9);     // Less efficient
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTextTSV,      0.7);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTextCSV,      0.5);
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeJSON,         0.2);     // We try to parse these in  
+        accumulateContentTypeString(sBuff, WebContent.contentTypeXML,          0.2) ;    // the hope they are right.
+        accumulateContentTypeString(sBuff, "*/*",                              0.1) ;    // Get something!
+        return sBuff.toString() ;
     }
 
-    public static String getConstructContentTypes() {
-        Map<String, Double> datatypes = new HashMap<String, Double>();
-        datatypes.put(WebContent.contentTypeTurtle, 1.0);
-        datatypes.put(WebContent.contentTypeTurtleAlt1, 1.0);
-        datatypes.put(WebContent.contentTypeTurtleAlt2, 1.0);
-        datatypes.put(WebContent.contentTypeRDFXML, 1.0);
-        datatypes.put(WebContent.contentTypeN3, 1.0);
-        datatypes.put(WebContent.contentTypeN3Alt1, 1.0);
-        datatypes.put(WebContent.contentTypeN3Alt2, 1.0);
-        datatypes.put(WebContent.contentTypeNTriples, 1.0);
-        datatypes.put(WebContent.contentTypeNTriplesAlt, 0.5);
-        return datatypesHashmapToString(datatypes);
+    private static final String askContentTypeHeader = initAskContentTypes() ;
+
+    public static String defaultAskHeader() {
+        return selectContentTypeHeader ;
     }
 
-    private static String datatypesHashmapToString(Map<String, Double> datatypes) {
-        Iterator<Entry<String, Double>> it = datatypes.entrySet().iterator();
-        StringBuilder datatypeString = new StringBuilder();
-        while (it.hasNext()) {
-            Entry<String, Double> curr = it.next();
-            if ( curr.getValue() < 1e0 )
-                datatypeString.append(curr.getKey() + ";q=" + curr.getValue());
-            if (it.hasNext()) {
-                datatypeString.append(", ");
-            }
-        }
-        return datatypeString.toString();
+    // These happen to be the same.
+    private static String initAskContentTypes() { return initSelectContentTypes(); }
+
+    private static final String constructContentTypeHeader = initConstructContentTypes() ;
+
+    public static String defaultConstructHeader() {
+        return constructContentTypeHeader ;
     }
+
+    private static String initConstructContentTypes() {
+        // Or use WebContent.defaultGraphAcceptHeader which is slightly
+        // narrower. Here, we have a tuned setting for SPARQL operations.
+        StringBuilder sBuff = new StringBuilder() ;
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtle,       1.0);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriples,     1.0);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeRDFXML,       0.9);
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtleAlt1,   0.8);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeTurtleAlt2,   0.8);
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeN3,           0.7);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeN3Alt1,       0.6);
+        accumulateContentTypeString(sBuff, WebContent.contentTypeN3Alt2,       0.6);
+        
+        accumulateContentTypeString(sBuff, WebContent.contentTypeNTriplesAlt,  0.5);
+        accumulateContentTypeString(sBuff, "*/*",                              0.1) ;
+
+        return sBuff.toString();
+    }
+
+    private static void accumulateContentTypeString(StringBuilder sBuff, String str, double v) {
+        if ( sBuff.length() != 0 )
+            sBuff.append(", ") ;
+        sBuff.append(str) ;
+        if ( v < 1 )
+            sBuff.append(";q=").append(v) ;
+    } 
 }

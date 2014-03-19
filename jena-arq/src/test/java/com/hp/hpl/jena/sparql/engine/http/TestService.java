@@ -51,8 +51,7 @@ public class TestService {
     
     @BeforeClass public static void recordContextState() { value = ARQ.getContext().get(Service.serviceContext) ; }
     @AfterClass public static void restoreContextState() { ARQ.getContext().set(Service.serviceContext, value) ; }
-       
-   
+
     @Test
     public void testNumericTimeout() {
         BasicPattern basicPattern = new BasicPattern();
