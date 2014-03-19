@@ -293,7 +293,8 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
             elt.object = Item.createNode(value) ;
     }
     
-    private static AccString<PatternTriple> formatter = 
+    // Formatter is not thread-safe, cannot be shared between instances
+    private AccString<PatternTriple> formatter = 
     new AccString<PatternTriple>() 
     {   @Override 
         protected String toString(PatternTriple pt) 
