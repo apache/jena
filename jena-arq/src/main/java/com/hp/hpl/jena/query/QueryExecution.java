@@ -34,6 +34,7 @@ public interface QueryExecution
     /** Set the FileManger that might be used to load files.
      *  May not be supported by all QueryExecution implementations.  
      */
+    @Deprecated
     public void setFileManager(FileManager fm) ;
     
     /** Set the initial association of variables and values.

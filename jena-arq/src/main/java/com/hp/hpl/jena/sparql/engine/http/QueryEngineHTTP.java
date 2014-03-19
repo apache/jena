@@ -64,11 +64,11 @@ public class QueryEngineHTTP implements QueryExecution {
     private final Context context;
 
     // Params
-    Params params = null;
+    private Params params = null;
 
     // Protocol
-    List<String> defaultGraphURIs = new ArrayList<String>();
-    List<String> namedGraphURIs = new ArrayList<String>();
+    private List<String> defaultGraphURIs = new ArrayList<String>();
+    private List<String> namedGraphURIs = new ArrayList<String>();
     private HttpAuthenticator authenticator;
 
     private boolean finished = false;
@@ -227,6 +227,7 @@ public class QueryEngineHTTP implements QueryExecution {
     // { this.params = params ; }
 
     // Meaning-less
+    @Deprecated
     @Override
     public void setFileManager(FileManager fm) {
         throw new UnsupportedOperationException("FileManagers do not apply to remote query execution");
