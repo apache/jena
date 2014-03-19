@@ -21,9 +21,11 @@ package com.hp.hpl.jena.sparql.engine.http;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.HttpClient;
@@ -82,9 +84,9 @@ public class QueryEngineHTTP implements QueryExecution {
     private boolean allowDeflate = true;
 
     // Content Types
-    private String selectContentType = WebContent.contentTypeResultsXML;
-    private String askContentType = WebContent.contentTypeResultsXML;
-    private String modelContentType = WebContent.contentTypeRDFXML;
+    private String selectContentType = getSelectContentTypes();
+    private String askContentType = getAskContentTypes();
+    private String modelContentType = getConstructContentTypes();
     /**
      * Supported content types for SELECT queries
      */
@@ -367,9 +369,9 @@ public class QueryEngineHTTP implements QueryExecution {
             actualContentType = selectContentType;
         }
 
-        if (actualContentType.equals(WebContent.contentTypeResultsXML))
+        if (actualContentType.equals(WebContent.contentTypeResultsXML) || actualContentType.equals(WebContent.contentTypeXML))
             return ResultSetFactory.fromXML(in);
-        if (actualContentType.equals(WebContent.contentTypeResultsJSON))
+        if (actualContentType.equals(WebContent.contentTypeResultsJSON) || actualContentType.equals(WebContent.contentTypeJSON))
             return ResultSetFactory.fromJSON(in);
         if (actualContentType.equals(WebContent.contentTypeTextTSV))
             return ResultSetFactory.fromTSV(in);
@@ -476,14 +478,12 @@ public class QueryEngineHTTP implements QueryExecution {
             if (actualContentType == null || actualContentType.equals("")) {
                 actualContentType = askContentType;
             }
-            Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
-            if (!RDFLanguages.isTriples(lang))
 
-                // Parse the result appropriately depending on the selected
-                // content type
-                if (actualContentType.equals(WebContent.contentTypeResultsXML))
-                    return XMLInput.booleanFromXML(in);
-            if (actualContentType.equals(WebContent.contentTypeResultsJSON))
+            // Parse the result appropriately depending on the
+            // selected content type.
+            if (actualContentType.equals(WebContent.contentTypeResultsXML) || actualContentType.equals(WebContent.contentTypeXML))
+                return XMLInput.booleanFromXML(in);
+            if (actualContentType.equals(WebContent.contentTypeResultsJSON) || actualContentType.equals(WebContent.contentTypeJSON))
                 return JSONInput.booleanFromJSON(in);
             if (actualContentType.equals(WebContent.contentTypeTextTSV))
                 return TSVInput.booleanFromTSV(in);
@@ -743,5 +743,48 @@ public class QueryEngineHTTP implements QueryExecution {
         if (!RDFLanguages.isTriples(lang))
             throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a RDF Graph format");
         modelContentType = contentType;
+    }
+
+    public static String getSelectContentTypes() {
+        Map<String, Double> datatypes = new HashMap<String, Double>();
+        datatypes.put(WebContent.contentTypeResultsXML, 1.0);
+        datatypes.put(WebContent.contentTypeResultsJSON, 1.0);
+        datatypes.put(WebContent.contentTypeJSON, 0.5);
+        datatypes.put(WebContent.contentTypeTextTSV, 0.5);
+        datatypes.put(WebContent.contentTypeTextCSV, 0.5);
+        datatypes.put(WebContent.contentTypeXML, 0.5);
+        return datatypesHashmapToString(datatypes);
+    }
+
+    public static String getAskContentTypes() {
+        return getSelectContentTypes();
+    }
+
+    public static String getConstructContentTypes() {
+        Map<String, Double> datatypes = new HashMap<String, Double>();
+        datatypes.put(WebContent.contentTypeTurtle, 1.0);
+        datatypes.put(WebContent.contentTypeTurtleAlt1, 1.0);
+        datatypes.put(WebContent.contentTypeTurtleAlt2, 1.0);
+        datatypes.put(WebContent.contentTypeRDFXML, 1.0);
+        datatypes.put(WebContent.contentTypeN3, 1.0);
+        datatypes.put(WebContent.contentTypeN3Alt1, 1.0);
+        datatypes.put(WebContent.contentTypeN3Alt2, 1.0);
+        datatypes.put(WebContent.contentTypeNTriples, 1.0);
+        datatypes.put(WebContent.contentTypeNTriplesAlt, 0.5);
+        return datatypesHashmapToString(datatypes);
+    }
+
+    private static String datatypesHashmapToString(Map<String, Double> datatypes) {
+        Iterator<Entry<String, Double>> it = datatypes.entrySet().iterator();
+        StringBuilder datatypeString = new StringBuilder();
+        while (it.hasNext()) {
+            Entry<String, Double> curr = it.next();
+            if ( curr.getValue() < 1e0 )
+                datatypeString.append(curr.getKey() + ";q=" + curr.getValue());
+            if (it.hasNext()) {
+                datatypeString.append(", ");
+            }
+        }
+        return datatypeString.toString();
     }
 }
