@@ -37,6 +37,8 @@ import org.eclipse.jetty.server.handler.ErrorHandler ;
 
 public class FusekiErrorHandler extends ErrorHandler
 {
+    public FusekiErrorHandler() {}
+    
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
     {

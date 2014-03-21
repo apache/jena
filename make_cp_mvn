@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# Write a run script.
+# Make the maven classpath
 
 $POM="pom.xml" ;
 $POM = @ARGV[0] if ( defined(@ARGV[0]) ) ;
@@ -32,4 +32,3 @@ print "   XCP=\"\$CP:\$XCP\"\n" ;
 print "fi\n" ;
 print "\n" ;
 print "echo \"\$XCP\"\n"
-

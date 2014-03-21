@@ -19,7 +19,8 @@
 package org.apache.jena.fuseki.jetty;
 
 
-/** This represents a configuration of a SPARQL server.
+/** Configuration of the Jetty server when run from the command line directly,
+ *  not as a webapp/war file.
  */
 
 public class JettyServerConfig

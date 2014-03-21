@@ -19,20 +19,37 @@
 ## Run Fuseki, include development code if it looks like it's available.
 ## Or --pages=
 
+function check_dir() {
+    local NAME="$1"
+    local DIR="$2"
+    if [ ! -e "$DIR" ]
+    then
+	echo "$NAME: '$DIR' does not exist" 1>&2
+	exit 1
+    fi
+    if [ ! -d "$DIR" ]
+    then
+	echo "$NAME: '$DIR' exists but is not a directory" 1>&2
+    exit 1
+    fi
+}
+
 export FUSEKI_HOME=$PWD
-if [ ! -e $FUSEKI_HOME ]
-then
-    echo "$FUSEKI_HOME does not exist" 1>&2
-    exit 1
-    fi
-if [ ! -d $FUSEKI_HOME ]
-then
-    echo "$FUSEKI_HOME exists but is not a directory" 1>&2
-    exit 1
-    fi
+check_dir "FUSEKI_HOME" "$FUSEKI_HOME"
 
-CP="$(. $FUSEKI_HOME/run_cp)"
+export FUSEKI_BASE="$FUSEKI_HOME/run"
+check_dir "FUSEKI_BASE" "$FUSEKI_BASE"
 
+CPF="$FUSEKI_HOME/fuseki.classpath"
+
+if [ ! -e "$CPF" ]; then
+    echo "Creating Fuseki classpath file"
+    exec "$FUSEKI_HOME/make_cp_bin" > $CPF
+fi
+
+CP="$(. $CPF)"
+
+# Add development directories.
 if [ -e "$FUSEKI_HOME/classes" ]
 then
     CP="$FUSEKI_HOME/classes:$CP"
@@ -54,9 +71,8 @@ done
 
 FUSEKI_LOG=${FUSEKI_LOG:-}
 JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
-#JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize=1G"
 
-# echo $CP
+exec java -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.FusekiCmd "$@"
 
-exec java -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.FusekiCmd \
-    --home="$FUSEKI_HOME" "$@"
+# Run as war file.
+# java -jar jetty-runner.jar fuseki-server.war

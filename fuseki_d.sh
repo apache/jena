@@ -70,7 +70,7 @@
 # Default-Start:     3 4 5
 # Default-Stop:      0 1 2 6
 # Short-Description: Start Jena Fuseki at boot time
-# Description:       Jena Fuseki is a service that provides a SPARQL API over HTTP to one more RDF triple stores
+# Description:       Jena Fuseki is a service that provides a SPARQL API over HTTP
 ### END INIT INFO
 
 # DEBUG=1

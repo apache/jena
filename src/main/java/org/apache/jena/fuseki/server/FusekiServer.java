@@ -47,10 +47,11 @@ public class FusekiServer
 {
     /** Root of the Fuseki installation for fixed files. */ 
     public static Path FUSEKI_HOME = null ;
-    /** Root of the varying files in this deployment. */ 
+    /** Root of the varying files in this deployment. Often $FUSEKI_HOME/run */ 
     public static Path FUSEKI_BASE = null ;
 
     // Relative names of directories
+    private static final String        runArea                  = "run" ;
     private static final String        databasesLocationBase    = "databases" ;
     private static final String        backupDirNameBase        = "backups" ;
     private static final String        configDirNameBase        = "configuration" ;
@@ -60,7 +61,7 @@ public class FusekiServer
     private static final String        templatesNameBase        = "templates" ;
     
     // --- Set during server initialization
-    
+
     /** Directory for TDB databases - this is known to the assembler templates */
     public static Path        dirDatabases       = null ;
     
@@ -100,7 +101,7 @@ public class FusekiServer
             if ( x2 != null )
                 FUSEKI_BASE = Paths.get(x2) ;
             else
-                FUSEKI_BASE = FUSEKI_HOME ;
+                FUSEKI_BASE = FUSEKI_HOME.resolve(runArea) ;
         }
 
         mustExist(FUSEKI_HOME) ;

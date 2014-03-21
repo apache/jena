@@ -90,7 +90,6 @@ public class FusekiCmd {
             new FusekiCmdInner(argv).mainRun() ;
         }
 
-        public String               homeDir           = null ;
         private JettyServerConfig   jettyServerConfig = new JettyServerConfig() ;
         {
             jettyServerConfig.port = 3030 ;
@@ -129,7 +128,7 @@ public class FusekiCmd {
             add(argBasicAuth) ;
             add(argMgt,     "--mgt",          "Enable the management commands") ;
             add(argMgtPort, "--mgtPort=port", "Port for management optations") ;
-            add(argHome, "--home=DIR", "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ;
+            //add(argHome, "--home=DIR", "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ;
             add(argGZip, "--gzip=on|off", "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
 
             //add(argUber) ;
@@ -292,8 +291,9 @@ public class FusekiCmd {
             }
 
             if ( contains(argHome) ) {
-                List<String> args = super.getValues(argHome) ;
-                homeDir = args.get(args.size() - 1) ;
+                Fuseki.configLog.warn("--home ignored (use enviroment variables $FUSEKI_HOME and $FUSEKI_BASE)") ;
+//                List<String> args = super.getValues(argHome) ;
+//                homeDir = args.get(args.size() - 1) ;
             }
 
             if ( contains(argPages) ) {
@@ -324,31 +324,6 @@ public class FusekiCmd {
             SPARQLServer.instance.start() ;
             SPARQLServer.instance.join() ;
             System.exit(0) ;
-        }
-
-        private String pagesDir(String pages) {
-            if ( homeDir == null ) {
-                if ( System.getenv(Fuseki.FusekiHomeEnv) != null )
-                    homeDir = System.getenv(Fuseki.FusekiHomeEnv) ;
-                else
-                    homeDir = "." ;
-            }
-
-            homeDir = sort_out_dir(homeDir) ;
-            Fuseki.configLog.info("Home Directory: " + FileOps.fullDirectoryPath(homeDir)) ;
-            if ( !FileOps.exists(homeDir) )
-                Fuseki.configLog.warn("No such directory for Fuseki home: " + homeDir) ;
-
-            if ( pages == null )
-                pages = homeDir + Fuseki.PagesStatic ;
-
-            Fuseki.configLog.debug("Static Content Directory: " + FileOps.fullDirectoryPath(pages)) ;
-
-            if ( !FileOps.exists(pages) ) {
-                Fuseki.configLog.warn("No such directory for static content: "+ FileOps.fullDirectoryPath(pages)) ;
-                Fuseki.configLog.warn("You may need to set the --pages or --home option to configure static content correctly") ;
-            }
-            return pages ;
         }
 
         @Override

@@ -37,7 +37,9 @@ import org.eclipse.jetty.xml.XmlConfiguration ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/**
+/** Standalone server, not run as a WAR file.
+ * Used in testing and development.
+ * 
  * SPARQLServer is the Jena server instance which wraps/utilizes 
  * {@link org.eclipse.jetty.server.Server}. This class provides
  * immediate access to the {@link org.eclipse.jetty.server.Server#start()} and 
@@ -48,8 +50,8 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 public class SPARQLServer {
     // Jetty specific.
     // This class is becoming less important - it now sets up a Jetty server for in-process use
-    // either for the command line (including the fuskei service init.d script)  
-    // or testing but not direct webapp deployments. 
+    // either for the command line in development  
+    // and in testing but not direct webapp deployments. 
     static { Fuseki.init() ; }
 
     public static SPARQLServer  instance    = null ;
@@ -65,8 +67,8 @@ public class SPARQLServer {
     
     // webapp setup - standard maven layout
     public static final String contextpath    = "/" ;
-    public static final String descriptorFile = "src/main/webapp/WEB-INF/web.xml" ;
     public static final String resourceBase   = "src/main/webapp" ;
+    public static final String descriptorFile = resourceBase+"/WEB-INF/web.xml" ;
 
     /**
      * Default setup which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}
@@ -164,7 +166,7 @@ public class SPARQLServer {
     public static WebAppContext createWebApp() {
       WebAppContext webapp = new WebAppContext();
       webapp.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
-      webapp.setDescriptor(descriptorFile);
+      webapp.setDescriptor(resourceBase+"/WEB-INF/web.xml");
       webapp.setResourceBase(resourceBase);
       webapp.setContextPath(contextpath);
       
