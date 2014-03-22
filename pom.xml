@@ -362,7 +362,8 @@
         </configuration>
         <executions>
           <execution>
-            <phase>package</phase>
+	    <phase>package</phase>
+	    <!--<phase/><!- - Switch off -->
             <goals>
               <goal>shade</goal>
             </goals>
@@ -402,11 +403,12 @@
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <!-- After shared jar, after war file - same phase -->
+        <!-- After shaded jar, after war file - same phase -->
         <executions>
           <execution>
             <id>create-zip-assembly</id>
-            <phase>package</phase>
+	    <phase>package</phase>
+	    <!--<phase/>-->
             <goals><goal>single</goal></goals>
             <configuration>
               <!--

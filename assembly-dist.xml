@@ -40,12 +40,12 @@ Assumes jar made and onejar has been assembled.
       <outputDirectory></outputDirectory>
       <destName>fuseki-server.jar</destName>
     </file>
-    <!-- include sources in binary distribution?
     <file>
-      <source>${project.artifactId}-${project.version}-sources.jar</source>
+      <source>${project.build.directory}/${project.build.finalName}.war</source>
       <outputDirectory></outputDirectory>
+      <destName>fuseki-server.war</destName>
     </file>
-    -->
+
     <file>
       <source>dist/LICENSE-dist</source>
       <destName>LICENSE</destName>
@@ -60,6 +60,7 @@ Assumes jar made and onejar has been assembled.
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
+	<include>templates/*</include>
         <include>README*</include>
         <include>DEPENDENCIES*</include>
         <include>ReleaseNotes.txt</include>
@@ -72,12 +73,12 @@ Assumes jar made and onejar has been assembled.
         <include>log4j.properties</include>
         <include>examples/**</include>
         <include>fuseki</include>
+        <include>fuseki_d/sh</include>
         <include>fuseki-server</include>
         <include>fuseki-server.bat</include>
         <include>config*.ttl</include>
+	<include>shiro.ini</include>
         <include>s-*</include>
-        <include>pages/*</include>
-        <include>Data/*</include>
       </includes>
     </fileSet>
   </fileSets>
