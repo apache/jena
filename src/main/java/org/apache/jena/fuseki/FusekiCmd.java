@@ -21,7 +21,6 @@ package org.apache.jena.fuseki ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.jetty.SPARQLServer ;
@@ -57,25 +56,25 @@ public class FusekiCmd {
     }
     
     static class FusekiCmdInner extends CmdARQ {
-        private static ArgDecl             argMgt          = new ArgDecl(ArgDecl.NoValue, "mgt") ;
-        private static ArgDecl             argMgtPort      = new ArgDecl(ArgDecl.HasValue, "mgtPort", "mgtport") ;
-        private static ArgDecl             argMem          = new ArgDecl(ArgDecl.NoValue, "mem") ;
-        private static ArgDecl             argAllowUpdate  = new ArgDecl(ArgDecl.NoValue, "update", "allowUpdate") ;
-        private static ArgDecl             argFile         = new ArgDecl(ArgDecl.HasValue, "file") ;
-        private static ArgDecl             argMemTDB       = new ArgDecl(ArgDecl.NoValue, "memtdb", "memTDB") ;
-        private static ArgDecl             argTDB          = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
-        private static ArgDecl             argPort         = new ArgDecl(ArgDecl.HasValue, "port") ;
-        private static ArgDecl             argLocalhost    = new ArgDecl(ArgDecl.NoValue, "localhost", "local") ;
-        private static ArgDecl             argTimeout      = new ArgDecl(ArgDecl.HasValue, "timeout") ;
-        private static ArgDecl             argFusekiConfig = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
-        private static ArgDecl             argJettyConfig  = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
-        private static ArgDecl             argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip") ;
+        private static ArgDecl  argMgt          = new ArgDecl(ArgDecl.NoValue, "mgt") ;
+        private static ArgDecl  argMgtPort      = new ArgDecl(ArgDecl.HasValue, "mgtPort", "mgtport") ;
+        private static ArgDecl  argMem          = new ArgDecl(ArgDecl.NoValue, "mem") ;
+        private static ArgDecl  argAllowUpdate  = new ArgDecl(ArgDecl.NoValue, "update", "allowUpdate") ;
+        private static ArgDecl  argFile         = new ArgDecl(ArgDecl.HasValue, "file") ;
+        private static ArgDecl  argMemTDB       = new ArgDecl(ArgDecl.NoValue, "memtdb", "memTDB") ;
+        private static ArgDecl  argTDB          = new ArgDecl(ArgDecl.HasValue, "loc", "location") ;
+        private static ArgDecl  argPort         = new ArgDecl(ArgDecl.HasValue, "port") ;
+        private static ArgDecl  argLocalhost    = new ArgDecl(ArgDecl.NoValue, "localhost", "local") ;
+        private static ArgDecl  argTimeout      = new ArgDecl(ArgDecl.HasValue, "timeout") ;
+        private static ArgDecl  argFusekiConfig = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
+        private static ArgDecl  argJettyConfig  = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
+        private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip") ;
 
         // Deprecated.  Use shiro.
-        private static ArgDecl             argBasicAuth    = new ArgDecl(ArgDecl.HasValue, "basic-auth") ;
+        private static ArgDecl  argBasicAuth    = new ArgDecl(ArgDecl.HasValue, "basic-auth") ;
 
-        private static ArgDecl             argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
-        private static ArgDecl             argPages        = new ArgDecl(ArgDecl.HasValue, "pages") ;
+        private static ArgDecl  argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
+        private static ArgDecl  argPages        = new ArgDecl(ArgDecl.HasValue, "pages") ;
 
         // private static ModLocation modLocation = new ModLocation() ;
         private static ModDatasetAssembler modDataset      = new ModDatasetAssembler() ;
@@ -181,6 +180,7 @@ public class FusekiCmd {
                 log.info("Dataset: in-memory") ;
                 cmdLineDataset = new ServerInitialConfig() ;
                 cmdLineDataset.templateFile = Template.templateMemFN ; 
+                //
             }
 
             if ( contains(argFile) ) {
@@ -201,9 +201,10 @@ public class FusekiCmd {
             }
 
             if ( contains(argMemTDB) ) {
-                log.info("TDB dataset: in-memory") ;
+                //log.info("TDB dataset: in-memory") ;
                 cmdLineDataset = new ServerInitialConfig() ;
                 cmdLineDataset.templateFile = Template.templateTDBMemFN ;
+                cmdLineDataset.params.put(Template.DIR, Names.memName) ;
             }
 
             if ( contains(argTDB) ) {
@@ -211,13 +212,6 @@ public class FusekiCmd {
                 cmdLineDataset.templateFile = Template.templateTDBDirFN ;
 
                 String dir = getValue(argTDB) ;
-                if ( Lib.equal(dir, Names.memName) ) {
-                    log.info("TDB dataset: in-memory") ;
-                } else {
-                    if ( !FileOps.exists(dir) )
-                        throw new CmdException("Directory not found: " + dir) ;
-                    log.info("TDB dataset: directory=" + dir) ;
-                }
                 cmdLineDataset.params.put(Template.DIR, dir) ;
             }
 

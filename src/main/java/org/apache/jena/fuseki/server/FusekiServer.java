@@ -19,16 +19,23 @@
 package org.apache.jena.fuseki.server;
 
 import java.io.File ;
+import java.io.FilenameFilter ;
+import java.io.IOException ;
 import java.io.StringReader ;
+import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
+import java.nio.file.StandardCopyOption ;
 import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.DS ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.build.Builder ;
@@ -39,9 +46,11 @@ import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import arq.cmd.CmdException ;
 
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class FusekiServer
 {
@@ -50,6 +59,13 @@ public class FusekiServer
     /** Root of the varying files in this deployment. Often $FUSEKI_HOME/run */ 
     public static Path FUSEKI_BASE = null ;
 
+    private static FilenameFilter filterConfig = new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.startsWith("config") ;
+        }
+    } ;
+    
     // Relative names of directories
     private static final String        runArea                  = "run" ;
     private static final String        databasesLocationBase    = "databases" ;
@@ -95,7 +111,10 @@ public class FusekiServer
             String x1 = System.getenv("FUSEKI_HOME") ;
             if ( x1 != null )
                 FUSEKI_HOME = Paths.get(x1) ;
+            else
+                FUSEKI_HOME = Paths.get("") ;
         }
+            
         if ( FUSEKI_BASE == null ) {
             String x2 = System.getenv("FUSEKI_BASE") ;
             if ( x2 != null )
@@ -104,21 +123,47 @@ public class FusekiServer
                 FUSEKI_BASE = FUSEKI_HOME.resolve(runArea) ;
         }
 
+        FUSEKI_HOME = FUSEKI_HOME.toAbsolutePath() ;
+        FUSEKI_BASE = FUSEKI_BASE.toAbsolutePath() ;
+        
+        Fuseki.configLog.info("FUSEKI_HOME="+FUSEKI_HOME.toString());
+        Fuseki.configLog.info("FUSEKI_BASE="+FUSEKI_BASE.toString());
+        
         mustExist(FUSEKI_HOME) ;
-        dirTemplates        = makePath(FUSEKI_HOME, templatesNameBase) ;
-        mustExist(dirTemplates) ;
+        
+        // Copy in defaults?
+        Path dirTemplatesMasters = makePath(FUSEKI_HOME, templatesNameBase) ;
+        mustExist(dirTemplatesMasters) ;
 
         ensureDir(FUSEKI_BASE) ;
-        dirBackups          = makePath(FUSEKI_BASE, backupDirNameBase) ;
-        dirConfiguration    = makePath(FUSEKI_BASE, configDirNameBase) ;
-        dirLogs             = makePath(FUSEKI_BASE, logsNameBase) ;
-        dirSystemDatabase   = makePath(FUSEKI_BASE, systemDatabaseNameBase) ;
-        dirFileArea         = makePath(FUSEKI_BASE, systemFileAreaBase) ;
-        ensureDir(dirBackups) ;
-        ensureDir(dirConfiguration) ;
-        ensureDir(dirLogs) ;
-        ensureDir(dirSystemDatabase) ;
-        ensureDir(dirFileArea) ;
+        
+        dirTemplates        = makePath(FUSEKI_BASE, templatesNameBase) ;
+        boolean copyTemplates = ! exists(dirTemplates) ;
+        ensureDir(dirTemplates) ; 
+
+        dirBackups          = makePathEnsureDir(FUSEKI_BASE, backupDirNameBase) ;
+        dirConfiguration    = makePathEnsureDir(FUSEKI_BASE, configDirNameBase) ;
+        dirLogs             = makePathEnsureDir(FUSEKI_BASE, logsNameBase) ;
+        dirSystemDatabase   = makePathEnsureDir(FUSEKI_BASE, systemDatabaseNameBase) ;
+        dirFileArea         = makePathEnsureDir(FUSEKI_BASE, systemFileAreaBase) ;
+        
+        if ( copyTemplates )
+            copyFileFilter(dirTemplatesMasters, dirTemplates, filterConfig) ;
+    }
+
+    private static void copyFileFilter(Path srcDir, Path dstDir, FilenameFilter filterConfig) {
+        String[] files = srcDir.toFile().list(filterConfig) ;
+        for ( String fn : files )
+        {
+            try {
+                Path src = srcDir.resolve(fn) ;
+                Path dst = dstDir.resolve(fn) ;
+                Files.copy(src, dst, StandardCopyOption.COPY_ATTRIBUTES) ;
+            } catch (IOException e) {
+                IO.exception("Failed to copy directory of files "+srcDir, e);
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void initializeDataAccessPoints(ServerInitialConfig initialSetup, String configDir) {
@@ -160,6 +205,17 @@ public class FusekiServer
             datasets.add(dap) ;
         } else if ( params.templateFile != null ) {
             Fuseki.configLog.info("Template file: " + params.templateFile) ;
+            String dir = params.params.get(Template.DIR) ;
+            if ( dir != null ) {
+                if ( Lib.equal(dir, Names.memName) ) {
+                    Fuseki.configLog.info("TDB dataset: in-memory") ;
+                } else {
+                    if ( !FileOps.exists(dir) )
+                        throw new CmdException("Directory not found: " + dir) ;
+                    Fuseki.configLog.info("TDB dataset: directory=" + dir) ;
+                }
+            }
+
             DataAccessPoint dap = configFromTemplate(params.templateFile, params.datasetPath, params.params) ;
             datasets.add(dap) ;
         }
@@ -183,7 +239,7 @@ public class FusekiServer
             }
         }
         
-        String str = TemplateFunctions.template(templateFile, params) ;
+        String str = TemplateFunctions.templateFile(templateFile, params) ;
         Lang lang = RDFLanguages.filenameToLang(str, Lang.TTL) ;
         StringReader sr =  new StringReader(str) ;
         Model model = ModelFactory.createDefaultModel() ;
@@ -241,7 +297,18 @@ public class FusekiServer
         if ( ! dir.isDirectory())
             throw new FusekiConfigException("Not a directory: "+directory) ;
     }
+    
+    private static boolean exists(Path directory) {
+        File dir = directory.toFile() ;
+        return dir.exists() ;
+    }
 
+    private static Path makePathEnsureDir(Path root , String relName ) {
+        Path p = makePath(root, relName) ;
+        ensureDir(p);
+        return p ;
+    }
+    
     private static Path makePath(Path root , String relName ) {
         Path path = root.resolve(relName) ;
         // Must exist

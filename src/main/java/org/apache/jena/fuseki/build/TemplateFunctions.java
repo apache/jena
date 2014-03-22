@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.build;
 
 import java.io.IOException ;
+import java.io.InputStream ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
@@ -29,14 +30,35 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class TemplateFunctions
 {
-    /** Read a template file, substitute for {NAME} and return the model. */
-    public static String template(String templateFile, Map<String, String> params) {
+    /** Read in a template from a file, substitute for {NAME} and return the string. */
+    public static String templateFile(String templateFile, Map<String, String> params) {
         String template ;
         try { template = FileUtils.readWholeFileAsUTF8(templateFile) ; }
         catch (IOException ex) { 
             Fuseki.serverLog.error("File not found: "+templateFile);
             IO.exception(ex); return null ;
         }
+        return templateString(template, params) ;
+    }
+    
+    /** Read a template file, substitute for {NAME} and return the model. */
+    public static String templateResource(String resourceName, Map<String, String> params) {
+        String template ;
+        try {
+            InputStream in = TemplateFunctions.class.getClassLoader().getResourceAsStream(resourceName) ;
+            if ( in == null )
+                Fuseki.serverLog.error("Resource not found: "+resourceName);
+            template = FileUtils.readWholeFileAsUTF8(in) ;
+        }
+        catch (IOException ex) { 
+            Fuseki.serverLog.error("Error reading resource: "+resourceName);
+            IO.exception(ex); return null ;
+        }
+        return templateString(template, params) ;
+    }
+
+    /** Create a template from a String */ 
+    public static String templateString(String template, Map<String, String> params) {
         for ( Entry<String, String> e : params.entrySet() ) {
             template = template.replaceAll("\\{"+e.getKey()+"\\}", e.getValue()) ;
         }

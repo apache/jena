@@ -30,7 +30,7 @@ import org.apache.jena.atlas.io.IO ;
 
 public class FileSender {
     // HttpClient 4.3 has MultipartEntity but the 4.2->4.3 change is less
-    // than trivial (and it seems some environemnt fix the HttpClient) 
+    // than trivial (and it seems some environment fix the HttpClient) 
     // so here's some code for testing support.
 //    MultipartEntity entity = new MultipartEntity();
 //    entity.addPart(...)

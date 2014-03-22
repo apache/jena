@@ -26,8 +26,7 @@ import org.apache.jena.fuseki.server.FusekiServer ;
 
 public class RunFuseki2
 {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws Exception {
         //demo() ;
         //FusekiCmd.main("--config=config.ttl") ; System.exit(0) ;
         main1() ;
@@ -70,7 +69,10 @@ public class RunFuseki2
         
         FusekiCmd.main(
                      //  "-v",
-                     "--update", "--memtdb", "--mgt", "/ds"
+                     //"--update", "--memtdb", "--mgt", "/ds"
+                     
+                     "--update", "--mem", "--mgt", "/ds"
+                     
                      //"--update", "--loc="+tmpdir+"DB", "--set=tdb:unionDefaultGraph=true", "/ds"
                      //"--update", "--mem", "/ds"
 

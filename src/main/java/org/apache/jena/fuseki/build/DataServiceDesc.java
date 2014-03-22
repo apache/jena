@@ -36,12 +36,13 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
+// Check whether this is used or needed
 public abstract class DataServiceDesc
 {
     public static DataServiceDesc createFromTemplate(String templateFile, String dbName) {
         Map<String, String> params = new HashMap<>() ;
         params.put(Template.NAME, dbName) ;
-        String template = TemplateFunctions.template(templateFile, params) ;
+        String template = TemplateFunctions.templateFile(templateFile, params) ;
         Lang lang = RDFLanguages.filenameToLang(templateFile, Lang.TTL) ;
         StringReader sr = new StringReader(template) ;
         return create(sr, lang) ;

@@ -305,9 +305,9 @@ public class ActionDatasets extends ActionCtl {
         
         String template = null ;
         if ( dbType.equalsIgnoreCase(tDatabasetTDB))
-            template = TemplateFunctions.template(Template.templateTDBFN, params) ;
+            template = TemplateFunctions.templateFile(Template.templateTDBFN, params) ;
         if ( dbType.equalsIgnoreCase(tDatabasetMem))
-            template = TemplateFunctions.template(Template.templateMemFN, params) ;
+            template = TemplateFunctions.templateFile(Template.templateMemFN, params) ;
         RDFDataMgr.parse(dest, new StringReader(template), "http://base/", Lang.TTL) ;
     }
 
