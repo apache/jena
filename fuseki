@@ -33,6 +33,9 @@
 # FUSEKI_HOME
 #   Where Fuseki is installed.  If not set, the script will try
 #   to guess it based on the script invokation path.
+# 
+# FUSEKI_BASE
+#   The root of the runtime area - logs files, system files, local configuration.
 #
 # FUSEKI_RUN
 #   Where the fuseki.pid file should be stored.  It defaults
@@ -52,10 +55,13 @@
 # FUSEKI_USER
 #   If set, the server will be run as this user
 #
+# ** v1 comaptibility
 # FUSEKI_DATA_DIR
 #   The location of the data directory Fuseki will use (i.e. the value of --loc).
+#   This is not the same as the databases/ area.
 #   Defaults to $FUSEKI_HOME/DB
 #
+# ** v1 comaptibility
 # FUSEKI_LOGS
 #   Directory where logs will be generated. Defaults to $FUSEKI_HOME/log
 #
@@ -70,18 +76,44 @@
 # Default-Start:     3 4 5
 # Default-Stop:      0 1 2 6
 # Short-Description: Start Jena Fuseki at boot time
-# Description:       Jena Fuseki is a service that provides a SPARQL API over HTTP to one more RDF triple stores
+# Description:       Jena Fuseki is a service that provides a SPARQL API over HTTP
 ### END INIT INFO
+
+# DEBUG=1
+NAME=fuseki
+if [ -f /etc/default/$NAME ]; then
+  . /etc/default/$NAME
+fi
+
+if [ -f /lib/lsb/init-functions ]; then
+  . /lib/lsb/init-functions
+else
+  # simple replacements for LSB daemon logging functions if not defined
+  log_daemon_msg() {
+    echo $1
+  }
+  log_begin_msg() {
+    echo $1
+  }
+  log_end_msg() {
+    if [ $1 -eq 0]; then
+      echo '[OK]'
+    else
+      echo '[failed]'
+    fi
+  }
+fi
 
 usage()
 {
-  echo "Usage: ${0##*/} {start|stop|restart|status}"
+  echo "Usage: ${0##*/} {start|stop|restart|run|status}"
   exit 1
 }
 
 [ $# -gt 0 ] || usage
 
-# Utility functions:
+# Utility functions
+
 findDirectory()
 {
   local L OP=$1
@@ -93,10 +125,21 @@ findDirectory()
   done
 }
 
+findFile()
+{
+  local L F=$1
+  shift
+  for L in "$@"; do
+    [ -f "${L}/${F}" ] || continue
+    printf %s "${L}/${F}"
+    break
+  done
+}
+
 running()
 {
   local PID=$(cat "$1" 2>/dev/null) || return 1
-  kill -0 "$PID" 2>/dev/null
+  ps -p "$PID" >/dev/null 2>&1
 }
 
 # Are we running in cygwin?
@@ -105,9 +148,6 @@ case "`uname`" in
     CYGWIN*) cygwin=true;;
 esac
 
-
-NAME=fuseki
-[ -f "/etc/default/$NAME" ] && . /etc/default/$NAME
 
 # Set FUSKEI_HOME to the script invocation directory if it is not specified
 if [ -z "$FUSEKI_HOME" ]
@@ -135,11 +175,9 @@ then
   FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
  fi
 
-#echo "DEBUG: FUSEKI_HOME=$FUSEKI_HOME"
-
 if [ ! -e "$FUSEKI_HOME" ]
 then
-  echo "$FUSEKI_HOME does not exist" 1>&2
+  log_daemon_message "$FUSEKI_HOME does not exist" 1>&2
   exit 1
 fi
 
@@ -159,7 +197,7 @@ fi
 # Log directory
 if [ -z "$FUSEKI_LOGS" ]
 then
-  FUSEKI_LOGS="$FUSEKI_HOME/log"
+  FUSEKI_LOGS="$FUSEKI_BASE/logs"
 fi
 
 # Std Err and Out log
@@ -181,12 +219,12 @@ then
 fi
 if [ -z "$JAVA" ]
 then
-  echo "Cannot find a Java JDK. Please set either set JAVA or put java (>=1.6) in your PATH." 2>&2
+  echo "Cannot find a Java JDK. Please set either set JAVA or put java (>=1.7) in your PATH." 2>&2
   exit 1
 fi
 
 # The location of the start up JAR
-FUSEKI_START=$FUSEKI_HOME/fuseki-server.jar
+FUSEKI_START=${FUSEKI_START:-$FUSEKI_HOME/fuseki-server.jar}
 
 # Deal with Cygwin path issues
 if [ "$cygwin" == "true" ]
@@ -196,11 +234,6 @@ then
 else
   DATA_DIR="$FUSEKI_DATA_DIR"
 fi
-
-#######################################
-#
-# TODO - Read these items from a Config file!
-#
 
 # Some JVM settings
 if [ -z "$JAVA_OPTIONS" ]
@@ -226,34 +259,31 @@ RUN_ARGS=(${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" $FUSEKI_ARGS)
 RUN_CMD=("$JAVA" ${RUN_ARGS[@]})
 
 
-#######################################
-
 #####################################################
 # Comment these out after you're happy with what
 # the script is doing.
 #####################################################
 if (( DEBUG ))
 then
-  echo "FUSEKI_HOME    =  $FUSEKI_HOME"
-  echo "FUSEKI_CONF    =  $FUSEKI_CONF"
-  echo "FUSEKI_RUN     =  $FUSEKI_RUN"
-  echo "FUSEKI_PID     =  $FUSEKI_PID"
-  echo "FUSEKI_ARGS    =  $FUSEKI_ARGS"
-  echo "FUSEKI_START   =  $FUSEKI_START"
-  echo "CONFIGS        =  ${CONFIGS[*]}"
-  echo "JAVA           =  $JAVA"
-  echo "JAVA_OPTIONS   =  ${JAVA_OPTIONS[*]}"
-  echo "RUN_ARGS       =  ${RUN_ARGS[@]}"
-  echo "RUN_CMD        =  ${RUN_CMD[@]}"
+  log_daemon_msg "FUSEKI_HOME    =  $FUSEKI_HOME"
+  log_daemon_msg "FUSEKI_CONF    =  $FUSEKI_CONF"
+  log_daemon_msg "FUSEKI_RUN     =  $FUSEKI_RUN"
+  log_daemon_msg "FUSEKI_PID     =  $FUSEKI_PID"
+  log_daemon_msg "FUSEKI_ARGS    =  $FUSEKI_ARGS"
+  log_daemon_msg "FUSEKI_START   =  $FUSEKI_START"
+  log_daemon_msg "CONFIGS        =  ${CONFIGS[*]}"
+  log_daemon_msg "JAVA           =  $JAVA"
+  log_daemon_msg "JAVA_OPTIONS   =  ${JAVA_OPTIONS[*]}"
+  log_daemon_msg "RUN_ARGS       =  ${RUN_ARGS[@]}"
+  log_daemon_msg "RUN_CMD        =  ${RUN_CMD[@]}"
 fi
 
 NO_START=0
 
 # Life cycle functions
 start() {
-
   if (( NO_START )); then
-    echo "Not starting Fuseki - NO_START=1";
+    log_daemon_msg "Not starting Fuseki - NO_START=1"
     exit
   fi
 
@@ -261,7 +291,13 @@ start() {
   mkdir -p "$FUSEKI_DATA_DIR"
   mkdir -p "$FUSEKI_LOGS"
 
-  echo -n "Starting Fuseki: "
+  # Make sure the .jar file exists
+  if [ ! -e $FUSEKI_START ]; then
+    log_daemon_msg "Could not see Fuseki .jar file: \$FUSEKI_START has value '$FUSEKI_START'"
+    exit 1
+  fi
+
+  log_begin_msg "Starting Fuseki"
   if type start-stop-daemon > /dev/null 2>&1
   then
     unset CH_USER
@@ -271,50 +307,53 @@ start() {
     fi
     if start-stop-daemon --start $CH_USER --chdir "$FUSEKI_HOME" --background --make-pidfile --pidfile "$FUSEKI_PID" --startas "$JAVA" -- "${RUN_ARGS[@]}"
     then
-      sleep 1
+      sleep 2
       if running "$FUSEKI_PID"
       then
+        log_end_msg 0
         print_started
       else
-        print_failed
+        log_end_msg 1
       fi
+    else
+      log_end_msg 1
+      log_daemon_msg "** start-stop-daemon failed to run"
     fi
   else
     if running $FUSEKI_PID
     then
-        echo "Already Running!"
-        exit 1
-      else
-        # dead pid file - remove
-        rm -f "$FUSEKI_PID"
+      log_end_msg 1
+      log_daemon_msg 'Already Running!'
+      exit 1
+    else
+      # dead pid file - remove
+      rm -f "$FUSEKI_PID"
     fi
+
     if [ "$FUSEKI_USER" ]
     then
       touch "$FUSEKI_PID"
       chown "$FUSEKI_USER" "$FUSEKI_PID"
       su - "$FUSEKI_USER" -c "
-        echo 'Redirecting Fuseki stderr/stdout to $FUSEKI_LOGS_STDERROUT'
+        log_daemon_msg "Redirecting Fuseki stderr/stdout to $FUSEKI_LOGS_STDERROUT"
         exec ${RUN_CMD[*]} &
         disown \$!
         echo \$! > '$FUSEKI_PID'"
     else
-      echo "Redirecting Fuseki stderr/stdout to $FUSEKI_LOGS_STDERROUT"
+      #log_daemon_msg "Redirecting Fuseki stderr/stdout to $FUSEKI_LOGS_STDERROUT"
       exec "${RUN_CMD[@]}" &> "$FUSEKI_LOGS_STDERROUT" &
       disown $!
       echo $! > "$FUSEKI_PID"
     fi
 
+    log_end_msg 0
     print_started
   fi
 }
 
 print_started() {
-  echo "STARTED Fuseki `date`"
-  echo "PID=$(cat "$FUSEKI_PID" 2>/dev/null)"
-}
-
-print_failed() {
-  echo "FAILED to start Fuseki `date`"
+  log_daemon_msg "STARTED Fuseki `date`"
+  log_daemon_msg "PID=$(cat "$FUSEKI_PID" 2>/dev/null)"
 }
 
 delete_fuseki_pid_file() {
@@ -322,12 +361,17 @@ delete_fuseki_pid_file() {
 }
 
 stop() {
-  echo -n "Stopping Fuseki: "
+  log_begin_msg "Stopping Fuseki: "
 
   if ! running "$FUSEKI_PID"
+  then
+    log_end_msg 1
+
+    # if a stop rather than a restart, signal failure to stop
+    if [ -z "$1" ]
     then
-    echo "Fuseki is not running"
-    exit 1
+      exit 1
+    fi
   fi
 
   ###############################################################
@@ -345,7 +389,7 @@ stop() {
         sleep 1
     done
     delete_fuseki_pid_file
-    echo OK
+    log_end_msg 0
   else
     PID=$(cat "$FUSEKI_PID" 2>/dev/null)
     kill "$PID" 2>/dev/null
@@ -358,8 +402,19 @@ stop() {
       sleep 1
     done
     delete_fuseki_pid_file
-    echo "OK"
+    log_end_msg 0
   fi
+}
+
+
+# Run in the foreground, as the current user
+run() {
+  # Make sure the .jar file exists
+  if [ ! -e $FUSEKI_START ]; then
+    log_daemon_msg "Could not see Fuseki .jar file: \$FUSEKI_START has value '$FUSEKI_START'"
+    exit 1
+  fi
+  exec "${RUN_CMD[@]}"
 }
 
 case $1 in
@@ -370,16 +425,20 @@ case $1 in
     stop
   ;;
   restart)
-    stop
+    stop "restarting"
     start
   ;;
+  run)
+    run
+  ;;
   status)
+    FUSEKI_PID=$(findFile fuseki.pid /var/run /usr/var/run $FUSEKI_HOME /tmp)
     if running $FUSEKI_PID
     then
-      echo -n "Fuseki is running with pid: "
-      echo `cat "$FUSEKI_PID"`
+      PID=`cat "$FUSEKI_PID"`
+      log_daemon_msg "Fuseki is running with pid: $PID"
     else
-      echo "Fuseki is not running"
+      log_daemon_msg "Fuseki is not running"
     fi
   ;;
   *)

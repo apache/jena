@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # Make the maven classpath
 
 $POM="pom.xml" ;
@@ -14,7 +14,7 @@ print "#!/bin/bash\n" ;
 print "\n" ;
 print 'XCP="' ;
 
-open(X, "mvn -f $POM dependency:build-classpath |") ;
+open(X, "mvn -f $POM dependency:build-classpath -DincludeScope=runtime |") ;
 while(<X>)
 {
     next if /\[INFO\]/ ;

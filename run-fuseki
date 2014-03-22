@@ -34,17 +34,17 @@ function check_dir() {
     fi
 }
 
-export FUSEKI_HOME=$PWD
+export FUSEKI_HOME="${FUSEKI_HOME:-$PWD}"
 check_dir "FUSEKI_HOME" "$FUSEKI_HOME"
 
-export FUSEKI_BASE="$FUSEKI_HOME/run"
+export FUSEKI_BASE="${FUSEKI_BASE:-$FUSEKI_HOME/run}"
 check_dir "FUSEKI_BASE" "$FUSEKI_BASE"
 
-CPF="$FUSEKI_HOME/fuseki.classpath"
+CPF="$PWD/fuseki.classpath"
 
 if [ ! -e "$CPF" ]; then
     echo "Creating Fuseki classpath file"
-    exec "$FUSEKI_HOME/make_cp_bin" > $CPF
+    "$PWD/make_cp_mvn" > $CPF
 fi
 
 CP="$(. $CPF)"
