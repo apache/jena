@@ -53,6 +53,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.* ;
@@ -118,8 +119,6 @@ public abstract class NodeValue extends ExprNode
     public static boolean VerboseWarnings = true ;
     public static boolean VerboseExceptions = false ;
     
-    private static boolean VALUE_EXTENSIONS = ARQ.getContext().isTrueOrUndef(ARQ.extensionValueTypes) ;
-    private static boolean sameValueAsString = VALUE_EXTENSIONS ;
     
     private static RefBoolean enableRomanNumerals = new RefBoolean(ARQ.enableRomanNumerals, false) ;
     //private static RefBoolean strictSPARQL = new RefBoolean(ARQ.strictSPARQL, false) ;
@@ -565,7 +564,7 @@ public abstract class NodeValue extends ExprNode
                 Node node1 = nv1.getNode() ;
                 Node node2 = nv2.getNode() ;
                 
-                if ( ! VALUE_EXTENSIONS )
+                if ( ! SystemARQ.ValueExtensions )
                     // No value extensions => raw rdfTermEquals
                     return NodeFunctions.rdfTermEquals(node1, node2) ;
 
@@ -592,7 +591,7 @@ public abstract class NodeValue extends ExprNode
             
             case VSPACE_DIFFERENT:
                 // Known to be incompatible.
-                if ( ! VALUE_EXTENSIONS && ( nv1.isLiteral() && nv2.isLiteral() ) )
+                if ( ! SystemARQ.ValueExtensions && ( nv1.isLiteral() && nv2.isLiteral() ) )
                     raise(new ExprEvalException("Incompatible: "+nv1+" and "+nv2)) ;
                 return false ;
         }
@@ -858,7 +857,7 @@ public abstract class NodeValue extends ExprNode
         if ( nv.isGMonthDay() )     return VSPACE_G_MONTHDAY ;
         if ( nv.isGDay() )          return VSPACE_G_DAY ;
         
-        if ( VALUE_EXTENSIONS && nv.isDate() )
+        if ( SystemARQ.ValueExtensions && nv.isDate() )
             return VSPACE_DATE ;
         
         if ( nv.isString())         return VSPACE_STRING ;
@@ -866,7 +865,7 @@ public abstract class NodeValue extends ExprNode
         
         if ( ! nv.isLiteral() )     return VSPACE_NODE ;
 
-        if ( VALUE_EXTENSIONS && nv.getNode() != null &&
+        if ( SystemARQ.ValueExtensions && nv.getNode() != null &&
              nv.getNode().isLiteral() &&
              ! nv.getNode().getLiteralLanguage().equals("") )
             return VSPACE_LANG ;
@@ -1032,7 +1031,7 @@ public abstract class NodeValue extends ExprNode
 
         try { // DatatypeFormatException - should not happen
             
-            if ( sameValueAsString && XSDstring.isValidLiteral(lit) ) 
+            if ( SystemARQ.SameValueAsString && XSDstring.isValidLiteral(lit) ) 
                     // String - plain or xsd:string
                 return new NodeValueString(lit.getLexicalForm(), node) ;
             

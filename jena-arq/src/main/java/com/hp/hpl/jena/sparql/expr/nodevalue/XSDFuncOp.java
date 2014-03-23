@@ -53,6 +53,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 /**
@@ -854,18 +855,9 @@ public class XSDFuncOp
     //  dateTimeCompare
     // works for dates as well because they are implemented as dateTimes on their start point.
 
-    /**
-     * Under strict F&O, dateTimes and dates with no timezone have one magically applied. 
-     * This default timezone is implementation dependent and can lead to different answers
-     * to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparions,
-     * which an yield "indeterminate", which in turn is an evaluation error. 
-     * F&O insists on true/false and so can lead to false positves and negatives. 
-     */
-    public static boolean strictDateTimeFO = false ;
-
     public static int compareDateTime(NodeValue nv1, NodeValue nv2)
     { 
-        if ( strictDateTimeFO )
+        if ( SystemARQ.StrictDateTimeFO )
             return compareDateTimeFO(nv1, nv2) ;
         return compareXSDDateTime(nv1.getDateTime(), nv2.getDateTime()) ;
     }

@@ -38,6 +38,26 @@ import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
 public class SystemARQ
 {
+    // NodeValues work without the context so something only have global settings.
+    
+    /** Control whether eadditon datattypes, over and above strict, minimal SPARQL compliance, are handled.
+     *  Examples incldue xsd;date and simple literal/xsd:string.
+     */
+    public static boolean ValueExtensions       = true ;
+    /** Control whether simple literals, string literals without datatype orlanguage tag, 
+     *  are created sameValueAs xsd:string.  Normally true. 
+     *  Some testing for pre-RDF-1.1 assumes otherwise.    
+     */
+    public static boolean SameValueAsString     = true ;
+    /**
+     * Under strict F&O, dateTimes and dates with no timezone have one magically applied. 
+     * This default timezone is implementation dependent and can lead to different answers
+     * to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparions,
+     * which an yield "indeterminate", which in turn is an evaluation error. 
+     * F&O insists on true/false and so can lead to false positves and negatives. 
+     */
+    public static boolean StrictDateTimeFO      = false ;
+
     /** Sync a Model if it provides the underlying graph provides sync . Do nothing otherwise. */
     public static void sync(Model model)
     {
@@ -123,4 +143,5 @@ public class SystemARQ
     {
         return versions.iterator() ;
     }
+
 }

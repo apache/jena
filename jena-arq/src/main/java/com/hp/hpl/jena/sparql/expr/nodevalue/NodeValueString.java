@@ -26,8 +26,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class NodeValueString extends NodeValue
 {
-    // A plain string - no lang tag, no datatype.
-    // If there is a lang tag, the node in the super class handled it.
+    // A plain string, no language tag or xsd:string.
     
     private String string ; 
     
