@@ -184,6 +184,16 @@
       <version>${ver.jetty}</version>
     </dependency>    
 
+
+    <!--
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-runner</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>    
+    -->
+
+    <!-- Development and standalone jar (if built) -->
     <!-- Jetty's useful servlets, inc compression -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>

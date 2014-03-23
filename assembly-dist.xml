@@ -73,7 +73,6 @@ Assumes jar made and onejar has been assembled.
         <include>log4j.properties</include>
         <include>examples/**</include>
         <include>fuseki</include>
-        <include>fuseki_d/sh</include>
         <include>fuseki-server</include>
         <include>fuseki-server.bat</include>
         <include>config*.ttl</include>
