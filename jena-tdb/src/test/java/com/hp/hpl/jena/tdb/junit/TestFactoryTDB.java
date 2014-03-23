@@ -22,9 +22,7 @@ import junit.framework.Test ;
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.DataFormat ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.sparql.junit.SurpressedTest ;
 import com.hp.hpl.jena.sparql.junit.TestItem ;
@@ -66,7 +64,7 @@ public class TestFactoryTDB extends TestFactoryManifest
         if ( testRootName != null )
             testName = testRootName+testName ;
         
-        TestItem testItem = TestItem.create(entry, null, Syntax.syntaxARQ, DataFormat.langXML) ;
+        TestItem testItem = TestItem.create(entry, null) ;
         
         TestCase test = null ;
         
