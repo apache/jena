@@ -67,9 +67,9 @@ public class QueryTest extends EarlTestCase
     private boolean oldWarningFlag  ;
     
     @Override
-    protected void setUp() throws Exception
+    public void setUpTest() throws Exception
     {
-        super.setUp() ;
+        super.setUpTest() ;
         // SPARQL and ARQ tests are done with no value matching (for query execution and results testing)
         resetNeeded = true ;
         ARQ.setTrue(ARQ.strictGraph) ;
@@ -82,19 +82,19 @@ public class QueryTest extends EarlTestCase
     }
     
     @Override
-    protected void tearDown() throws Exception
+    public void tearDownTest() throws Exception
     {
         if ( resetNeeded )
             ARQ.setFalse(ARQ.strictGraph) ;
         CheckerLiterals.WarnOnBadLiterals = oldWarningFlag ;
-        super.tearDown() ;
+        super.tearDownTest() ;
     }
     
-     private Dataset setUpDataset(Query query, TestItem testItem)
+    private Dataset setUpDataset(Query query, TestItem testItem)
     {
         try {
             //testItem.requiresTextIndex()
-            
+
             if ( doesQueryHaveDataset(query) && doesTestItemHaveDataset(testItem) )
             {
                 // Only warn if there are results to test
@@ -102,18 +102,16 @@ public class QueryTest extends EarlTestCase
                 if ( testItem.getResultFile() != null )
                     Log.warn(this, testItem.getName()+" : query data source and also in test file") ; 
             }
-            
+
             // In test file?
             if ( doesTestItemHaveDataset(testItem) )
                 // Not specified in the query - get from test item and load
                 return createDataset(testItem.getDefaultGraphURIs(), testItem.getNamedGraphURIs()) ;
-      
-          // Check 3 - were there any at all?
-          
-          if ( ! doesQueryHaveDataset(query) ) 
-              fail("No dataset") ;
-      
-          // Left to query
+
+            if ( ! doesQueryHaveDataset(query) ) 
+                fail("No dataset") ;
+
+            // Left to query
           return null ;
       
       } catch (JenaException jEx)

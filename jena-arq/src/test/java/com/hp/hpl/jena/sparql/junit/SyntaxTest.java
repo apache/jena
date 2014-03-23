@@ -42,23 +42,6 @@ public class SyntaxTest extends EarlTestCase
         expectLegalSyntax = positiveTest ; 
     }
 
-//    public SyntaxTest(String queryString, boolean positiveTest)
-//    {
-//        this(positiveTest?queryString:"X: "+queryString,
-//             queryString,
-//             positiveTest) ;
-//    }
-//
-//
-//    public SyntaxTest(String queryString)
-//    {
-//        this(queryString, true) ;
-//    }
-//    
-//    public SyntaxTest(String testName, String queryString)
-//    { this(testName, queryString, true) ; }
-
-    
     public SyntaxTest(String testName, EarlReport earl, String queryString,  boolean positiveTest)
     {
         super(testName, TestItem.fakeURI(), earl) ;

@@ -37,7 +37,7 @@ public abstract class LangTestCase extends EarlTestCase
     protected boolean sysRIOT_strictXSDLexicialForms ;
     
     @Override
-    final public void setUp()
+    final public void setUpTest()
     {        
         // The W3C Turtle and TriG test suites contain IRIs that generate warnings.
         // They are bad NFC for the version of UTF-8 that Java6 understands.
@@ -55,7 +55,7 @@ public abstract class LangTestCase extends EarlTestCase
     }
     
     @Override
-    final public void tearDown()
+    final public void tearDownTest()
     {
         _tearDown() ;
         SysRIOT.strictMode = sysRIOT_strictMode ;

@@ -25,7 +25,6 @@ import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.DataFormat ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestUpdate_11 ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
@@ -103,7 +102,7 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
             // Bodge.  Update results can be a Bnode.
             //  TestItem.create assumes it is a a URI or string.
             // Clean up.
-            item = TestItem.create(entry, defaultTestType, querySyntax, DataFormat.langXML) ;
+            item = TestItem.create(entry, defaultTestType) ;
         }
         
         TestCase test = null ;
