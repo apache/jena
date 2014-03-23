@@ -18,27 +18,21 @@
 
 package com.hp.hpl.jena.sdb.test.junit;
 
-import static com.hp.hpl.jena.sparql.junit.TestQueryUtils.getQuerySyntax;
-import static com.hp.hpl.jena.util.junit.TestUtils.getResource;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static com.hp.hpl.jena.sparql.junit.TestQueryUtils.getQuerySyntax ;
+import junit.framework.Test ;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.rdf.model.Resource;
-
-import com.hp.hpl.jena.util.junit.TestFactoryManifest;
-
-import com.hp.hpl.jena.sparql.core.DataFormat;
-import com.hp.hpl.jena.sparql.junit.EarlReport;
-import com.hp.hpl.jena.sparql.junit.QueryTestException;
-import com.hp.hpl.jena.sparql.junit.SurpressedTest;
-import com.hp.hpl.jena.sparql.junit.TestItem;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
-
-import com.hp.hpl.jena.query.Syntax;
-
-import com.hp.hpl.jena.sdb.StoreDesc;
-import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sdb.StoreDesc ;
+import com.hp.hpl.jena.sdb.util.Pair ;
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
+import com.hp.hpl.jena.sparql.junit.QueryTestException ;
+import com.hp.hpl.jena.sparql.junit.SurpressedTest ;
+import com.hp.hpl.jena.sparql.junit.TestItem ;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
+import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
 
 public class QueryTestSDBFactory extends TestFactoryManifest
 {
@@ -85,48 +79,35 @@ public class QueryTestSDBFactory extends TestFactoryManifest
     @Override
     public Test makeTest(Resource manifest, Resource entry, String testName, Resource action, Resource result)
     {
-            // Defaults.
-            Syntax querySyntax = getQuerySyntax(manifest)  ;
-            
-            if ( testRootName != null )
-                testName = testRootName+testName ;
-            
-            if ( querySyntax != null )
-            {
-                if ( ! querySyntax.equals(Syntax.syntaxARQ) &&
-                     ! querySyntax.equals(Syntax.syntaxSPARQL) )
-                    throw new QueryTestException("Unknown syntax: "+querySyntax) ;
-            }
-            
-            // May be null
-            Resource defaultTestType = getResource(manifest, TestManifestX.defaultTestType) ;
-            // test name
-            // test type
-            // action -> query specific query[+data]
-            // results
-            
-            TestItem testItem = TestItem.create(entry, defaultTestType, querySyntax, DataFormat.langXML) ;
-            TestCase test = null ;
-            
-            if ( testItem.getTestType() != null )
-            {
-                if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
-                    test = new QueryTestSDB(storeDesc, testName, results, testItem) ;
-                
-                if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
-                    test = new SurpressedTest(testName, results, testItem) ;
-                
-                if ( test == null )
-                    System.err.println("Unrecognized test type: "+testItem.getTestType()) ;
-            }
-            // Default 
-            if ( test == null )
-                test = new QueryTestSDB(storeDesc, testName, results, testItem) ;
+        // Defaults.
+        Syntax querySyntax = getQuerySyntax(manifest)  ;
 
-            Resource action2 = testItem.getAction() ;
-            if ( action2.hasProperty(TestManifestX.option))
-                System.out.println("OPTION") ;
-            
-            return test ;
+        if ( testRootName != null )
+            testName = testRootName+testName ;
+
+        if ( querySyntax != null )
+        {
+            if ( ! querySyntax.equals(Syntax.syntaxARQ) &&
+                ! querySyntax.equals(Syntax.syntaxSPARQL) )
+                throw new QueryTestException("Unknown syntax: "+querySyntax) ;
+        }
+
+        TestItem testItem = TestItem.create(entry, TestManifestX.TestQuery) ;
+        TestCase test = null ;
+
+        if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
+            test = new QueryTestSDB(storeDesc, testName, results, testItem) ;
+
+        if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
+            test = new SurpressedTest(testName, results, testItem) ;
+
+        if ( test == null )
+            System.err.println("Unrecognized test type: "+testItem.getTestType()) ;
+
+        Resource action2 = testItem.getAction() ;
+        if ( action2.hasProperty(TestManifestX.option))
+            System.out.println("OPTION") ;
+
+        return test ;
     }
 }
