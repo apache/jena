@@ -29,16 +29,6 @@ public class SurpressedTest extends EarlTestCase
         super(testName, testItem.getURI(), report) ;
         this.comment = testItem.getComment() ;
     }
-    
-//    protected void setUp() throws Exception
-//    {
-//        super.setUp() ;
-//    }
-//    
-//    protected void tearDown() throws Exception
-//    {
-//        super.tearDown() ;
-//    }
 
     @Override
     protected void runTestForReal() throws Throwable

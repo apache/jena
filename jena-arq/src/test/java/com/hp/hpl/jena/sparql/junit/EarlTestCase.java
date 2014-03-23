@@ -99,6 +99,21 @@ public abstract class EarlTestCase extends TestCase
     
     protected abstract void runTestForReal() throws Throwable ;
 
+    // Increase visibility.
+    @Override
+    protected void setUp() throws Exception {
+        setUpTest() ;
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        tearDownTest() ;
+    }
+
+    // Decouple from JUnit3.
+    public void setUpTest()    throws Exception {}
+    public void tearDownTest() throws Exception {}
+
     protected void success()
     {
         note() ;

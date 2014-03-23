@@ -82,9 +82,9 @@ public class UpdateTest extends EarlTestCase
     
     private boolean oldWarningFlag  ;
     @Override
-    protected void setUp() throws Exception
+    public void setUpTest() throws Exception
     {
-        super.setUp() ;
+        super.setUpTest() ;
         // Turn parser warnings off for the test data. 
         oldWarningFlag = CheckerLiterals.WarnOnBadLiterals ;
         //CheckerLiterals.WarnOnBadLiterals = false ;
@@ -93,14 +93,14 @@ public class UpdateTest extends EarlTestCase
     }
     
     @Override
-    protected void tearDown() throws Exception
+    public void tearDownTest() throws Exception
     {
 //        if ( resetNeeded )
 //            ARQ.setFalse(ARQ.strictGraph) ;
         CheckerLiterals.WarnOnBadLiterals = oldWarningFlag ;
         input = null ;
         output = null ;
-        super.tearDown() ;
+        super.tearDownTest() ;
     }
     
     @Override
