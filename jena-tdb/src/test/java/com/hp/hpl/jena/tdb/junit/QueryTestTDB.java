@@ -81,13 +81,13 @@ public class QueryTestTDB extends EarlTestCase
     }
     
     
-    @Override public void setUp()
+    @Override public void setUpTest()
     {
         dataset = TDBFactory.createDataset() ;
         setupData() ;
     }
     
-    @Override public void tearDown()
+    @Override public void tearDownTest()
     { 
         if ( dataset != null )
         {
