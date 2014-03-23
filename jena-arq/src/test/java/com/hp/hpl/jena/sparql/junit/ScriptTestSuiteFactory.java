@@ -32,7 +32,6 @@ import com.hp.hpl.jena.sparql.vocabulary.TestManifest_11 ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 
 public class ScriptTestSuiteFactory extends TestFactoryManifest
@@ -79,32 +78,8 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
                 throw new QueryTestException("Unknown syntax: "+querySyntax) ;
         }
         
-        // May be null
-        Resource defaultTestType = TestUtils.getResource(manifest, TestManifestX.defaultTestType) ;
-        // test name
-        // test type
-        // action -> query specific query[+data]
-        // results
-        
-        //TestItem only works for query - bodged for Update.
-
-        
-        Resource testType = defaultTestType ;
-        if ( entry.hasProperty(RDF.type) )
-            testType = entry.getProperty(RDF.type).getResource() ;
-        
-        TestItem item = null ;
-        if ( testType == null 
-            || // Not an update evaluation test.  
-                ! ( testType.equals(TestManifestUpdate_11.UpdateEvaluationTest) || testType.equals(TestManifest_11.UpdateEvaluationTest) )
-           )
-        {
-            // Bodge.  Update results can be a Bnode.
-            //  TestItem.create assumes it is a a URI or string.
-            // Clean up.
-            item = TestItem.create(entry, defaultTestType) ;
-        }
-        
+        TestItem item = TestItem.create(entry, TestManifest.QueryEvaluationTest) ;
+        Resource testType = item.getTestType() ;
         TestCase test = null ;
 
         // Frankly this all needs rewriting.

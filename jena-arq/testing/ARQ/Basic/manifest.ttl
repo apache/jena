@@ -22,32 +22,37 @@
     rdfs:label "Basic test cases" ;
     mf:entries
     ( 
-      [  mf:name    "Prefix/Base 1" ;
-         mf:action
+      [ rdf:type mf:QueryEvaluationTest ;
+        mf:name    "Prefix/Base 1" ;
+        mf:action
             [ qt:query  <q-base-prefix-1.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <r-base-prefix-1.ttl>
       ]
-      [  mf:name    "Prefix/Base 2" ;
-         mf:action
+      [ rdf:type mf:QueryEvaluationTest ;
+        mf:name    "Prefix/Base 2" ;
+        mf:action
             [ qt:query  <q-base-prefix-2.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <r-base-prefix-2.ttl>
       ]
-      [  mf:name    "Prefix/Base 3" ;
-         mf:action
+      [ rdf:type mf:QueryEvaluationTest ;
+        mf:name    "Prefix/Base 3" ;
+        mf:action
             [ qt:query  <q-base-prefix-3.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <r-base-prefix-3.ttl>
       ]
-      [  mf:name    "Prefix/Base 4" ;
-         mf:action
+      [ rdf:type mf:QueryEvaluationTest ;
+        mf:name    "Prefix/Base 4" ;
+        mf:action
             [ qt:query  <q-base-prefix-4.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <r-base-prefix-4.ttl>
       ]
-      [  mf:name    "Prefix/Base 5" ;
-         mf:action
+      [ rdf:type mf:QueryEvaluationTest ;
+        mf:name    "Prefix/Base 5" ;
+        mf:action
             [ qt:query  <q-base-prefix-5.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <r-base-prefix-5.ttl>
