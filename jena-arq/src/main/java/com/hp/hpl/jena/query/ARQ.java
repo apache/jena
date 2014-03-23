@@ -24,9 +24,8 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
@@ -410,47 +409,63 @@ public class ARQ
      */
     public static final Symbol generateToList = ARQConstants.allocSymbol("generateToList") ;
 
-    /** Set global strict mode */
+    /** Set strict mode, including expression evaluation */
     public static void setStrictMode() { setStrictMode(ARQ.getContext()) ; }
     
-    /** Set strict mode for a given Context */
-    
+    /** Set strict mode for a given Context.
+     *  
+     *  Does not influence expression evaluation because NodeValues
+     *  are controlled globally, not per context.
+     */
     public static void setStrictMode(Context context)
     {
-        XSDFuncOp.strictDateTimeFO = true ;
-        context.set(optimization,           false) ;
+        SystemARQ.StrictDateTimeFO      = true ;
+        SystemARQ.ValueExtensions    = false ;
+        SystemARQ.SameValueAsString  = false ;
         
-        context.set(hideNonDistiguishedVariables, true) ;
-        context.set(strictGraph,                true) ;
-        context.set(strictSPARQL,               true) ;
-        context.set(extensionValueTypes,        false) ;
-        context.set(constantBNodeLabels,        false) ;
-        context.set(enablePropertyFunctions,    false) ;
-        context.set(generateToList,             true) ;
-        context.set(regexImpl,                  xercesRegex) ;
+        context.set(optimization,                   false) ;
+        context.set(hideNonDistiguishedVariables,   true) ;
+        context.set(strictGraph,                    true) ;
+        context.set(strictSPARQL,                   true) ;
+        context.set(enablePropertyFunctions,        false) ;
+        
+        context.set(extensionValueTypes,            false) ;
+        context.set(constantBNodeLabels,            false) ;
+        context.set(generateToList,                 true) ;
+        context.set(regexImpl,                      xercesRegex) ;
+        context.set(enableRomanNumerals,            false) ;
+         
         //context.set(filterPlacement,            false) ;
 //        XSDFuncOp.strictDateTimeFO = false ;
     }
-    
+
     public static boolean isStrictMode()       { return ARQ.getContext().isTrue(strictSPARQL) ; }
     
-    public static void setNormalMode() { setNormalMode(ARQ.getContext()) ; }
+    /** Set normal mode, including expression evaluation */
+    public static void setNormalMode() {
+        SystemARQ.StrictDateTimeFO      = false ;
+        SystemARQ.ValueExtensions    = true ;
+        SystemARQ.SameValueAsString  = true ;
+        setNormalMode(ARQ.getContext()) ; 
+    }
         
+    /** Explicitly set the values for normal operation.
+     *  Does not influence expression evaluation.
+     */
     public static void setNormalMode(Context context)
     {
-        XSDFuncOp.strictDateTimeFO = false ;
-        context.unset(optimization) ;
-
-        //context.set(hideNonDistiguishedVariables, true) ;
-        context.set(strictSPARQL,                  false) ; 
-        context.set(constantBNodeLabels,           true) ;
-        context.set(enablePropertyFunctions,       true) ;
-        context.set(strictGraph,                   false) ;
+        context.set(optimization,                   true) ;
+        context.set(hideNonDistiguishedVariables,   false) ;
+        context.set(strictGraph,                    false) ;
+        context.set(strictSPARQL,                   false) ;
+        context.set(enablePropertyFunctions,        true) ;
         
-        //context.set(useSAX,                        false) ;
-        context.set(enableRomanNumerals,           false) ;
-        // enableBlankNodeLabels() ;
-        context.set(regexImpl,                     javaRegex) ;
+        context.set(extensionValueTypes,            true) ;
+        context.set(constantBNodeLabels,            true) ;
+        context.set(generateToList,                 false) ;
+        context.set(regexImpl,                      javaRegex) ;
+        context.set(enableRomanNumerals,            true) ;
+        
 //        if (  getContext().isTrue(romanNumeralsAsFirstClassDatatypes) )
 //            RomanNumeralDatatype.enableAsFirstClassDatatype() ; // Wires into the TypeMapper.
     }
@@ -496,6 +511,7 @@ public class ARQ
                 return ;
             initialized = true ;
             globalContext = defaultSettings() ;
+            
             RIOT.init() ;
             StageBuilder.init() ;
             ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
@@ -514,10 +530,22 @@ public class ARQ
     // Force a call
     static { init() ; }
     
-    private static Context defaultSettings()    
+    private static Context defaultSettings()
     {
+        SystemARQ.StrictDateTimeFO      = false ;
+        SystemARQ.ValueExtensions    = true ;
+        SystemARQ.SameValueAsString  = true ;
+
         Context context = new Context() ;
-        setNormalMode(context) ;
+        context.unset(optimization) ;
+        //context.set(hideNonDistiguishedVariables, true) ;
+        context.set(strictSPARQL,                  false) ; 
+        context.set(constantBNodeLabels,           true) ;
+        context.set(enablePropertyFunctions,       true) ;
+        context.set(strictGraph,                   false) ;
+        context.set(enableRomanNumerals,           false) ;
+        context.set(regexImpl,                     javaRegex) ;
+
         return context ; 
     }
 
