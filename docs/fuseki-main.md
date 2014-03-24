@@ -50,6 +50,14 @@ preference to any older versions or of development builds.
 
 Fuseki requires Java7.
 
+**Fuseki download files**
+
+Filename | Description
+--------- | -----------
+`fuseki-*VER*.distribution.zip` | Fuseki download, includes everything.
+`fuseki-*VER*-server.jar`  | Fuseki server, as an executable jar.
+`fuseki-*VER*-server.war`  | Fuseki server, as a web application archive (.war) file.
+
 > _@@ Not ready yet_
 It is also available as a Java web application WAR file via maven.
 
