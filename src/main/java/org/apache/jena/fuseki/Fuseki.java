@@ -44,9 +44,6 @@ public class Fuseki {
     /** a unique IRI for the Fuseki namespace */
     static public String    FusekiIRI                    = "http://jena.apache.org/Fuseki" ;
 
-    /** Fuseki home environment, usually set to $FUSEKI_HOME */
-    static public String    FusekiHomeEnv                = "FUSEKI_HOME" ;
-
     /**
      * a unique IRI including the symbol notation for which properties should be
      * appended
