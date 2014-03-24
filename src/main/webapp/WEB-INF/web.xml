@@ -31,8 +31,8 @@
 
   <context-param>
     <param-name>shiroConfigLocations</param-name>
-    <!-- Try : cwd, FUSEKI_BASE, FUSEKI_HOME, war resource -->
-    <param-value>file:shiro.ini,shiro.ini</param-value>
+    <!-- Try : FUSEKI_BASE, FUSEKI_HOME, war resource -->
+    <param-value>shiro.ini</param-value>
   </context-param>
 
   <!-- Apache Jena Fuseki setup -->
