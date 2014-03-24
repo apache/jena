@@ -24,8 +24,7 @@
   <artifactId>jena-fuseki2</artifactId>
 
   <!-- We make the JAR file so that the shade plugin includes it.
-       The war:war goal is added to the package phase. It creates
-       a WAR file with a specific name.
+       The war:war goal is added to the package phase.
   -->
   <packaging>jar</packaging>
   <version>2.0.0.M1-SNAPSHOT</version>
@@ -396,12 +395,12 @@
           <webappDirectory>${project.build.webappDirectory}</webappDirectory>
           <!-- This can't be set because then maven will not install/deploy the war file -->
           <!--<warName>${webapp.name}</warName>-->
-
           <!-- Don't put in the Jetty dependency nor javax.servlet -->
           <packagingExcludes>WEB-INF/lib/jetty-*,WEB-INF/lib/javax.servlet*</packagingExcludes>
         </configuration>
       </plugin>
 
+      <!-- Untested.
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
@@ -410,6 +409,7 @@
           <war>target/${this.root}.war</war>
         </configuration>
       </plugin>
+      -->
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
