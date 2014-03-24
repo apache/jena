@@ -20,7 +20,6 @@ package dev;
 
 import java.nio.file.Paths ;
 
-import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.FusekiCmd ;
 import org.apache.jena.fuseki.server.FusekiServer ;
 
@@ -51,13 +50,9 @@ public class RunFuseki2
     }
     
     private static void main1() {
-        FusekiServer.FUSEKI_HOME = Paths.get(".").toAbsolutePath() ;
+        FusekiServer.FUSEKI_HOME = Paths.get("").toAbsolutePath() ;
         FusekiServer.FUSEKI_BASE = Paths.get("run") ;
         FusekiServer.init() ;
-        
-        // Clean server state?
-        if ( true )
-            FileOps.clearDirectory(FusekiServer.dirSystemDatabase.toString()) ; 
         
         String tmpdir = System.getenv("TMPDIR") ;
         if ( tmpdir == null )

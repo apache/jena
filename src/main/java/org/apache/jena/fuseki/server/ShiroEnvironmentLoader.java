@@ -72,6 +72,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             ResourceBasedWebEnvironment env = (ResourceBasedWebEnvironment)environment ;
             String[] locations = env.getConfigLocations() ;
             String loc = huntForShiroIni(locations) ;
+            Fuseki.configLog.info("Shiro file: "+loc);
             if (loc != null )
                 locations = new String[] {loc} ;
             env.setConfigLocations(locations);
@@ -107,10 +108,10 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             Path p = Paths.get(loc) ;
             String fn = resolve(FusekiServer.FUSEKI_BASE, p) ;
             if ( fn != null )
-                return "file:/"+fn ;
+                return "file://"+fn ;
             fn = resolve(FusekiServer.FUSEKI_HOME, p) ;
             if ( fn != null )
-                return "file:/"+fn ;
+                return "file://"+fn ;
             
             // Try in webapp.
             
@@ -128,7 +129,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
     private static String resolve(Path dir, Path file) {
         Path p = dir.resolve(file) ;
         if ( p.toFile().exists() )
-            return p.toString() ;
+            return p.normalize().toString() ;
         return null ;
     }
 

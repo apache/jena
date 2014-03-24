@@ -11,7 +11,7 @@
   <!-- First filter -->
   <listener>
     <!--<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>-->
-    <!-- Support multiple locations -->
+    <!-- Support multiple locations, looks in Fuseki-relevant places -->
     <listener-class>org.apache.jena.fuseki.server.ShiroEnvironmentLoader</listener-class>
   </listener>
 
@@ -31,7 +31,9 @@
 
   <context-param>
     <param-name>shiroConfigLocations</param-name>
-    <!-- Try : FUSEKI_BASE, FUSEKI_HOME, war resource -->
+    <!-- Try a path name in: FUSEKI_BASE, FUSEKI_HOME, war resource
+	 If a "file:" then look there and there only.
+    -->
     <param-value>shiro.ini</param-value>
   </context-param>
 

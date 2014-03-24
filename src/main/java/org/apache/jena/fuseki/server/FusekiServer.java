@@ -134,27 +134,47 @@ public class FusekiServer
         // Copy in defaults?
         Path dirTemplatesMasters = makePath(FUSEKI_HOME, templatesNameBase) ;
         mustExist(dirTemplatesMasters) ;
-
-        ensureDir(FUSEKI_BASE) ;
         
+        if ( Files.isRegularFile(FUSEKI_BASE) ) 
+            throw new FusekiConfigException("FUSEKI_BASE exists but is a file") ;
+        boolean initFusekiBase = ! Files.exists(FUSEKI_BASE) || emptyDir(FUSEKI_BASE) ;
+        
+        ensureDir(FUSEKI_BASE) ;
+
         dirTemplates        = makePath(FUSEKI_BASE, templatesNameBase) ;
-        boolean copyTemplates = ! exists(dirTemplates) ;
         ensureDir(dirTemplates) ; 
 
+        dirDatabases        = makePathEnsureDir(FUSEKI_BASE, databasesLocationBase) ;
         dirBackups          = makePathEnsureDir(FUSEKI_BASE, backupDirNameBase) ;
         dirConfiguration    = makePathEnsureDir(FUSEKI_BASE, configDirNameBase) ;
         dirLogs             = makePathEnsureDir(FUSEKI_BASE, logsNameBase) ;
         dirSystemDatabase   = makePathEnsureDir(FUSEKI_BASE, systemDatabaseNameBase) ;
         dirFileArea         = makePathEnsureDir(FUSEKI_BASE, systemFileAreaBase) ;
         
-        if ( copyTemplates )
+        String dftShiroIniFile = "shiro.ini" ;
+        if ( initFusekiBase ) { 
+            Fuseki.configLog.info("Initializing FUSEKI_BASE") ;
+            copyFile(FUSEKI_HOME.resolve(dftShiroIniFile), FUSEKI_BASE.resolve(dftShiroIniFile)) ; 
             copyFileFilter(dirTemplatesMasters, dirTemplates, filterConfig) ;
+        }
+    }
+
+    private static boolean emptyDir(Path dir) {
+        return dir.toFile().list().length <= 2 ;
+    }
+    
+    private static void copyFile(Path src, Path dst) {
+        try {
+            Files.copy(src, dst, StandardCopyOption.COPY_ATTRIBUTES) ;
+        } catch (IOException e) {
+            IO.exception("Failed to copy file "+src, e);
+            e.printStackTrace();
+        }
     }
 
     private static void copyFileFilter(Path srcDir, Path dstDir, FilenameFilter filterConfig) {
         String[] files = srcDir.toFile().list(filterConfig) ;
-        for ( String fn : files )
-        {
+        for ( String fn : files ) {
             try {
                 Path src = srcDir.resolve(fn) ;
                 Path dst = dstDir.resolve(fn) ;
@@ -282,7 +302,9 @@ public class FusekiServer
     
     // ---- Helpers
 
-    private static void ensureDir(Path directory) {
+    /** Ensure a directory exists, creating it if necessary.
+     */
+    private static void  ensureDir(Path directory) {
         File dir = directory.toFile() ;
         if ( ! dir.exists() )
             dir.mkdirs() ;
