@@ -36,6 +36,7 @@
 # 
 # FUSEKI_BASE
 #   The root of the runtime area - logs files, system files, local configuration.
+#   Defaults to /etc/fuseki.
 #
 # FUSEKI_RUN
 #   Where the fuseki.pid file should be stored.  It defaults
@@ -49,25 +50,27 @@
 #    --update --loc=$FUSKEI_DATA_DIR /ds    # if FUSEKI_CONF is not set
 #    --config=$FUSEKI_CONF                  # if FUSEKI_CONF is set
 #
+# FUSEKI_START
+#   Path to the jar file. Defaults to $FUSEKI_HOME/fuseki-server.jar 
+
 # FUSEKI_CONF
 #   The Fuseki configuration file, usually in RDF Turtle notation.
 #
 # FUSEKI_USER
 #   If set, the server will be run as this user
 #
-# ** v1 comaptibility
 # FUSEKI_DATA_DIR
 #   The location of the data directory Fuseki will use (i.e. the value of --loc).
 #   This is not the same as the databases/ area.
 #   Defaults to $FUSEKI_HOME/DB
 #
-# ** v1 comaptibility
 # FUSEKI_LOGS
-#   Directory where logs will be generated. Defaults to $FUSEKI_HOME/log
+#   Directory where logs will be generated. 
+#   Fixed as $FUSEKI_BASE/logs.
 #
 # FUSEKI_LOGS_STDERROUT
-#   Log file with stderr and stdout log output from Fuseki. Defaults to
-#   $FUSEKI_LOGS/stderrout.log
+#   Log file with stderr and stdout log output from Fuseki. 
+#   Defaults to $FUSEKI_LOGS/stderrout.log
 
 ### BEGIN INIT INFO
 # Provides:          fuseki
@@ -169,18 +172,48 @@ then
 
 fi
 
-# Deal with more Cygwin path issues
+# Deal with Cygwin path issues
 if [ "$cygwin" == "true" ]
 then
   FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
- fi
+fi
 
 if [ ! -e "$FUSEKI_HOME" ]
 then
-  log_daemon_message "$FUSEKI_HOME does not exist" 1>&2
+  log_daemon_msg "FUSEKI_HOME '$FUSEKI_HOME' does not exist" 1>&2
   exit 1
 fi
 
+if [ -z "$FUSEKI_BASE" ]
+then
+  FUSEKI_BASE="/etc/fuseki"
+fi
+
+if [ "$cygwin" == "true" ]
+then
+  FUSEKI_BASE=`cygpath -w "$FUSEKI_BASE"`
+fi
+
+
+if [ ! -e "$FUSEKI_BASE" -o ! -d "$FUSEKI_BASE" ]
+then
+  log_daemon_msg "FUSEKI_BASE '$FUSEKI_BASE' does not exist or is not a directory" 1>&2
+  exit 1
+fi
+
+if [ ! -w "$FUSEKI_BASE" ]
+then
+  log_daemon_msg "FUSEKI_BASE '$FUSEKI_BASE' is not writable." 1>&2
+  exit 1
+fi
+
+
+# Deal with Cygwin path issues
+if [ "$cygwin" == "true" ]
+then
+  FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
+  FUSEKI_BASE=`cygpath -w "$FUSEKI_BASE"`
+ fi
 
 # Find a location for the pid file
 if [ -z "$FUSEKI_RUN" ]
@@ -195,10 +228,11 @@ then
 fi
 
 # Log directory
-if [ -z "$FUSEKI_LOGS" ]
+if [ -n "$FUSEKI_LOGS" ]
 then
-  FUSEKI_LOGS="$FUSEKI_BASE/logs"
+    log_daemon_message "FUSEKI_LOGS can not be set externally - ignored" 1>&2
 fi
+FUSEKI_LOGS="$FUSEKI_BASE/logs"
 
 # Std Err and Out log
 if [ -z "$FUSEKI_LOGS_STDERROUT" ]
@@ -240,7 +274,6 @@ if [ -z "$JAVA_OPTIONS" ]
 then
   JAVA_OPTIONS="-Xmx1200M"
 fi
-
 
 # Default Fuseki Arguments
 if [ -z "$FUSEKI_ARGS" ]
