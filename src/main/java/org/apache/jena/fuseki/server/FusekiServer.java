@@ -53,6 +53,7 @@ public class FusekiServer
 {
     /** Root of the Fuseki installation for fixed files. THis may be null (e.g. running inside a web application container) */ 
     public static Path FUSEKI_HOME = null ;
+    
     /** Root of the varying files in this deployment. Often $FUSEKI_HOME/run.
      * This is not null - it may be /etc/fuseki, which must be writable.
      */ 
@@ -60,13 +61,6 @@ public class FusekiServer
     
     public static final String FUSEKI_BASE_ETC = "/etc/fuseki" ;  
 
-    private static FilenameFilter filterConfig = new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.startsWith("config") ;
-        }
-    } ;
-    
     // Relative names of directories
     private static final String        runArea                  = "run" ;
     private static final String        databasesLocationBase    = "databases" ;
@@ -76,6 +70,7 @@ public class FusekiServer
     private static final String        systemDatabaseNameBase   = "system" ;
     private static final String        systemFileAreaBase       = "system_files" ;
     private static final String        templatesNameBase        = "templates" ;
+    private static final String        dftShiroIniFile          = "shiro.ini" ; // This is in web.xml as well. 
     
     // --- Set during server initialization
 
@@ -120,8 +115,13 @@ public class FusekiServer
             String x2 = System.getenv("FUSEKI_BASE") ;
             if ( x2 != null )
                 FUSEKI_BASE = Paths.get(x2) ;
-            else if ( FUSEKI_HOME != null )
-                FUSEKI_BASE = FUSEKI_HOME.resolve(runArea) ;
+            else {
+                if ( FUSEKI_HOME != null )
+                    FUSEKI_BASE = FUSEKI_HOME.resolve(runArea) ;
+                else
+                    // Neither FUSEKI_HOME nor FUSEKI_BASE set.
+                    FUSEKI_BASE = Paths.get(FUSEKI_BASE_ETC) ;
+            }
         }
         
         if ( FUSEKI_HOME != null )
@@ -129,7 +129,7 @@ public class FusekiServer
         
         FUSEKI_BASE = FUSEKI_BASE.toAbsolutePath() ;
         
-        Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "null" : FUSEKI_HOME.toString())) ;
+        Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "unset" : FUSEKI_HOME.toString())) ;
         Fuseki.configLog.info("FUSEKI_BASE="+FUSEKI_BASE.toString());
 
         // If FUSEKI_HOME exists, it may be FUSEKI_BASE.
@@ -160,24 +160,13 @@ public class FusekiServer
         
         // ---- Initialize with files.
         
-        // Copy shiro.ini
-        // Copy templates
-        
-        // Copy in defaults?
-        Path dirTemplatesMasters = makePath(FUSEKI_HOME, templatesNameBase) ;
-        mustExist(dirTemplatesMasters) ;
-        
         if ( Files.isRegularFile(FUSEKI_BASE) ) 
             throw new FusekiConfigException("FUSEKI_BASE exists but is a file") ;
-        boolean initFusekiBase = ! Files.exists(FUSEKI_BASE) || emptyDir(FUSEKI_BASE) ;
-        
-        String dftShiroIniFile = "shiro.ini" ;
         
         // Copy missing files into FUSEKI_BASE
-        Fuseki.configLog.info("Initializing FUSEKI_BASE") ;
-        copyFileIfMissing(FUSEKI_HOME, dftShiroIniFile, FUSEKI_BASE) ;
+        copyFileIfMissing(null, dftShiroIniFile, FUSEKI_BASE) ;
         for ( String n : Template.templateNames ) {
-            copyFileIfMissing(FUSEKI_HOME, n, FUSEKI_BASE) ;
+            copyFileIfMissing(null, n, FUSEKI_BASE) ;
         }
     }
 
@@ -187,6 +176,10 @@ public class FusekiServer
     
     /** Copy a file from src to dst under name fn.
      * If src is null, try as a classpath resource
+     * @param src   Source directory, or null meaning use java resource. 
+     * @param fn    File name, a relative path.
+     * @param dst   Destination directory.
+     * 
      */
     private static void copyFileIfMissing(Path src, String fn, Path dst) {
         
@@ -204,6 +197,7 @@ public class FusekiServer
             }
         } else {
             try {
+                // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
                 InputStream in = FusekiServer.class.getResource(fn).openStream() ;
                 Files.copy(in, dstFile) ;
             }
@@ -212,25 +206,10 @@ public class FusekiServer
                 e.printStackTrace();
             }
         }
-        
     }
 
-//    private static void copyFileFilter(Path srcDir, Path dstDir, FilenameFilter filterConfig) {
-//        String[] files = srcDir.toFile().list(filterConfig) ;
-//        for ( String fn : files ) {
-//            try {
-//                Path src = srcDir.resolve(fn) ;
-//                Path dst = dstDir.resolve(fn) ;
-//                Files.copy(src, dst, StandardCopyOption.COPY_ATTRIBUTES) ;
-//            } catch (IOException e) {
-//                IO.exception("Failed to copy directory of files "+srcDir, e);
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
     public static void initializeDataAccessPoints(ServerInitialConfig initialSetup, String configDir) {
-        List<DataAccessPoint> configFileDBs = findDatasets(initialSetup) ;
+        List<DataAccessPoint> configFileDBs = initServerConfiguration(initialSetup) ;
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir) ;
         List<DataAccessPoint> systemDBs =     FusekiConfig.readSystemDatabase(SystemState.getDataset()) ;
         
@@ -250,7 +229,7 @@ public class FusekiServer
         }
     }
 
-    private static List<DataAccessPoint> findDatasets(ServerInitialConfig params) { 
+    private static List<DataAccessPoint> initServerConfiguration(ServerInitialConfig params) { 
         // Has a side effect of global context setting
         // when processing a config file.
         // Compatibility.
