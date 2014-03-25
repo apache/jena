@@ -102,7 +102,7 @@
             <div class="query-chrome">
               <form class="form-inline" role="form">
                 <div class="form-group">
-                  <label for="sparqlEndpoint"></label>
+                  <label>SPARQL endpoint</label>
                   <div class="dropdown ">
                     <a data-toggle="dropdown" class="btn btn-custom2" href="#">
                       Select endpoint <i class="icon-collapse"></i>
@@ -112,11 +112,14 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="sparqlEndpoint">SPARQL endpoint</label>
-                  <input type="text" class="form-control" id="sparqlEndpoint" />
+                  <label></label>
+                  <div>
+                    <input type="text" class="form-control" id="sparqlEndpoint" />
+                  </div>
                 </div>
+
                 <div class="form-group">
-                  <label for="displayFormat">Results</label>
+                  <label>Results</label>
                   <div class="dropdown ">
                     <a data-toggle="dropdown" class="btn btn-custom2 display-format" href="#" data-value="tsv">
                       <span>table</span> <i class="icon-collapse"></i>
@@ -128,11 +131,13 @@
                       <li role='presentation' class="" ><a data-value="xml"role='menuitem' tabindex='-1' href='#'>XML</a></li>
                     </ul>
                   </div>
-
                 </div>
+
                 <div class="form-group">
-                  <label>&nbsp;</label>
-                  <a href="#" class="btn btn-success run-query form-control">perform query</a>
+                  <label></label>
+                  <div>
+                    <a id="perform-btn" href="#" class="btn btn-success run-query form-control">perform query</a>
+                  </div>
                 </div>
 
               </form>
