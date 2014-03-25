@@ -18,15 +18,31 @@
 
 package org.apache.jena.fuseki.build;
 
+import java.nio.file.Path ;
+
+import org.apache.jena.fuseki.server.FusekiServer ;
+
 public class Template
 {
-    public static final String TemplateDir = "templates"; 
-
-    public static final String templateMemFN        = TemplateDir+"/config-mem" ;
-    public static final String templateTDBFN        = TemplateDir+"/config-tdb" ;
-    public static final String templateTDBMemFN     = TemplateDir+"/config-tdb-mem" ; 
-    public static final String templateTDBDirFN     = TemplateDir+"/config-tdb-dir" ;
+    public static Path getPath(String templateName) {
+        return FusekiServer.FUSEKI_BASE.resolve(templateName) ;
+    }
     
+    public static final String templateDir          = "templates" ;
+    public static final String templateMemFN        = templateDir+"/config-mem" ;
+    public static final String templateTDBFN        = templateDir+"/config-tdb" ;
+    public static final String templateTDBMemFN     = templateDir+"/config-tdb-mem" ; 
+    public static final String templateTDBDirFN     = templateDir+"/config-tdb-dir" ;
+    public static final String templateServiceFN    = templateDir+"/config-service" ;       // Dummy used by dataset-less service.
+    
+    // Template may be in a resources area of a jar file so you can't do a directory listing.
+    public static final String[] templateNames = {
+        templateMemFN ,
+        templateTDBFN ,
+        templateTDBMemFN ,
+        templateTDBDirFN ,
+        templateServiceFN
+    } ;
     
     public static final String NAME = "NAME" ;
     public static final String DATA = "DATA" ;

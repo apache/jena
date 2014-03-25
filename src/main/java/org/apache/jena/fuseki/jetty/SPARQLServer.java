@@ -129,7 +129,7 @@ public class SPARQLServer {
         try {
             server.start() ;
         } catch (java.net.BindException ex) {
-            serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage()) ;
+            serverLog.error("SPARQLServer (port="+serverConnector.getPort()+"): Failed to start server: " + ex.getMessage()) ;
             System.exit(1) ;
         } catch (Exception ex) {
             serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;

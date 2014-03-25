@@ -31,11 +31,12 @@ import com.hp.hpl.jena.util.FileUtils ;
 public class TemplateFunctions
 {
     /** Read in a template from a file, substitute for {NAME} and return the string. */
-    public static String templateFile(String templateFile, Map<String, String> params) {
+    public static String templateFile(String templateName, Map<String, String> params) {
+        String templateFilename = Template.getPath(templateName).toString() ;
         String template ;
-        try { template = FileUtils.readWholeFileAsUTF8(templateFile) ; }
+        try { template = FileUtils.readWholeFileAsUTF8(templateFilename) ; }
         catch (IOException ex) { 
-            Fuseki.serverLog.error("File not found: "+templateFile);
+            Fuseki.serverLog.error("File not found: "+templateFilename);
             IO.exception(ex); return null ;
         }
         return templateString(template, params) ;

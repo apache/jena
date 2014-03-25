@@ -28,6 +28,7 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.shiro.config.ConfigurationException ;
 import org.apache.shiro.io.ResourceUtils ;
 import org.apache.shiro.web.env.EnvironmentLoader ;
 import org.apache.shiro.web.env.ResourceBasedWebEnvironment ;
@@ -48,8 +49,15 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
         Fuseki.init() ;
         FusekiServer.init() ;
         this.servletContext = sce.getServletContext() ;
+        try { 
         // Shiro.
-        initEnvironment(servletContext);
+            initEnvironment(servletContext);
+        } catch (ConfigurationException  ex) {
+            Fuseki.configLog.error("Shiro initialization failed: "+ex.getMessage());
+            // Exit?
+            throw ex ;
+        }
+        
     }
 
     @Override

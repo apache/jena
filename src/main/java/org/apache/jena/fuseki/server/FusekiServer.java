@@ -18,10 +18,7 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.io.File ;
-import java.io.FilenameFilter ;
-import java.io.IOException ;
-import java.io.StringReader ;
+import java.io.* ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
@@ -54,10 +51,14 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class FusekiServer
 {
-    /** Root of the Fuseki installation for fixed files. */ 
+    /** Root of the Fuseki installation for fixed files. THis may be null (e.g. running inside a web application container) */ 
     public static Path FUSEKI_HOME = null ;
-    /** Root of the varying files in this deployment. Often $FUSEKI_HOME/run */ 
+    /** Root of the varying files in this deployment. Often $FUSEKI_HOME/run.
+     * This is not null - it may be /etc/fuseki, which must be writable.
+     */ 
     public static Path FUSEKI_BASE = null ;
+    
+    public static final String FUSEKI_BASE_ETC = "/etc/fuseki" ;  
 
     private static FilenameFilter filterConfig = new FilenameFilter() {
         @Override
@@ -106,30 +107,61 @@ public class FusekiServer
             return ;
         initialized = true ;
         
+        // --  Set and check FUSEKI_HOME and FUSEKI_BASE
+        
         if ( FUSEKI_HOME == null ) {
             // Make absolute
             String x1 = System.getenv("FUSEKI_HOME") ;
             if ( x1 != null )
                 FUSEKI_HOME = Paths.get(x1) ;
-            else
-                FUSEKI_HOME = Paths.get("") ;
         }
             
         if ( FUSEKI_BASE == null ) {
             String x2 = System.getenv("FUSEKI_BASE") ;
             if ( x2 != null )
                 FUSEKI_BASE = Paths.get(x2) ;
-            else
+            else if ( FUSEKI_HOME != null )
                 FUSEKI_BASE = FUSEKI_HOME.resolve(runArea) ;
         }
-
-        FUSEKI_HOME = FUSEKI_HOME.toAbsolutePath() ;
+        
+        if ( FUSEKI_HOME != null )
+            FUSEKI_HOME = FUSEKI_HOME.toAbsolutePath() ;
+        
         FUSEKI_BASE = FUSEKI_BASE.toAbsolutePath() ;
         
-        Fuseki.configLog.info("FUSEKI_HOME="+FUSEKI_HOME.toString());
+        Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "null" : FUSEKI_HOME.toString())) ;
         Fuseki.configLog.info("FUSEKI_BASE="+FUSEKI_BASE.toString());
+
+        // If FUSEKI_HOME exists, it may be FUSEKI_BASE.
         
-        mustExist(FUSEKI_HOME) ;
+        if ( FUSEKI_HOME != null ) {
+            if ( ! Files.isDirectory(FUSEKI_HOME) )
+                throw new FusekiConfigException("FUSEKI_HOME is not a directory: "+FUSEKI_HOME) ;
+            if ( ! Files.isReadable(FUSEKI_HOME) )
+                throw new FusekiConfigException("FUSEKI_HOME is not readable: "+FUSEKI_HOME) ;
+        }
+            
+        if ( Files.exists(FUSEKI_BASE) ) {
+            if ( ! Files.isDirectory(FUSEKI_BASE) )
+                throw new FusekiConfigException("FUSEKI_BASE is not a directory: "+FUSEKI_BASE) ;
+            if ( ! Files.isWritable(FUSEKI_BASE) )
+                throw new FusekiConfigException("FUSEKI_BASE is not writable: "+FUSEKI_BASE) ;
+        } else
+            ensureDir(FUSEKI_BASE);
+
+        // Ensure FUSEKI_BASE has the assumed directories.
+        dirTemplates        = writeableDirectory(FUSEKI_BASE, templatesNameBase) ;
+        dirDatabases        = writeableDirectory(FUSEKI_BASE, databasesLocationBase) ;
+        dirBackups          = writeableDirectory(FUSEKI_BASE, backupDirNameBase) ;
+        dirConfiguration    = writeableDirectory(FUSEKI_BASE, configDirNameBase) ;
+        dirLogs             = writeableDirectory(FUSEKI_BASE, logsNameBase) ;
+        dirSystemDatabase   = writeableDirectory(FUSEKI_BASE, systemDatabaseNameBase) ;
+        dirFileArea         = writeableDirectory(FUSEKI_BASE, systemFileAreaBase) ;
+        
+        // ---- Initialize with files.
+        
+        // Copy shiro.ini
+        // Copy templates
         
         // Copy in defaults?
         Path dirTemplatesMasters = makePath(FUSEKI_HOME, templatesNameBase) ;
@@ -139,23 +171,13 @@ public class FusekiServer
             throw new FusekiConfigException("FUSEKI_BASE exists but is a file") ;
         boolean initFusekiBase = ! Files.exists(FUSEKI_BASE) || emptyDir(FUSEKI_BASE) ;
         
-        ensureDir(FUSEKI_BASE) ;
-
-        dirTemplates        = makePath(FUSEKI_BASE, templatesNameBase) ;
-        ensureDir(dirTemplates) ; 
-
-        dirDatabases        = makePathEnsureDir(FUSEKI_BASE, databasesLocationBase) ;
-        dirBackups          = makePathEnsureDir(FUSEKI_BASE, backupDirNameBase) ;
-        dirConfiguration    = makePathEnsureDir(FUSEKI_BASE, configDirNameBase) ;
-        dirLogs             = makePathEnsureDir(FUSEKI_BASE, logsNameBase) ;
-        dirSystemDatabase   = makePathEnsureDir(FUSEKI_BASE, systemDatabaseNameBase) ;
-        dirFileArea         = makePathEnsureDir(FUSEKI_BASE, systemFileAreaBase) ;
-        
         String dftShiroIniFile = "shiro.ini" ;
-        if ( initFusekiBase ) { 
-            Fuseki.configLog.info("Initializing FUSEKI_BASE") ;
-            copyFile(FUSEKI_HOME.resolve(dftShiroIniFile), FUSEKI_BASE.resolve(dftShiroIniFile)) ; 
-            copyFileFilter(dirTemplatesMasters, dirTemplates, filterConfig) ;
+        
+        // Copy missing files into FUSEKI_BASE
+        Fuseki.configLog.info("Initializing FUSEKI_BASE") ;
+        copyFileIfMissing(FUSEKI_HOME, dftShiroIniFile, FUSEKI_BASE) ;
+        for ( String n : Template.templateNames ) {
+            copyFileIfMissing(FUSEKI_HOME, n, FUSEKI_BASE) ;
         }
     }
 
@@ -163,28 +185,49 @@ public class FusekiServer
         return dir.toFile().list().length <= 2 ;
     }
     
-    private static void copyFile(Path src, Path dst) {
-        try {
-            Files.copy(src, dst, StandardCopyOption.COPY_ATTRIBUTES) ;
-        } catch (IOException e) {
-            IO.exception("Failed to copy file "+src, e);
-            e.printStackTrace();
-        }
-    }
-
-    private static void copyFileFilter(Path srcDir, Path dstDir, FilenameFilter filterConfig) {
-        String[] files = srcDir.toFile().list(filterConfig) ;
-        for ( String fn : files ) {
+    /** Copy a file from src to dst under name fn.
+     * If src is null, try as a classpath resource
+     */
+    private static void copyFileIfMissing(Path src, String fn, Path dst) {
+        
+        Path dstFile = dst.resolve(fn) ;
+        if ( Files.exists(dstFile) )
+            return ;
+        
+        // fn may be a path.
+        if ( src != null ) {
             try {
-                Path src = srcDir.resolve(fn) ;
-                Path dst = dstDir.resolve(fn) ;
-                Files.copy(src, dst, StandardCopyOption.COPY_ATTRIBUTES) ;
+                Files.copy(src.resolve(fn), dstFile, StandardCopyOption.COPY_ATTRIBUTES) ;
             } catch (IOException e) {
-                IO.exception("Failed to copy directory of files "+srcDir, e);
+                IO.exception("Failed to copy file "+src, e);
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                InputStream in = FusekiServer.class.getResource(fn).openStream() ;
+                Files.copy(in, dstFile) ;
+            }
+            catch (IOException e) {
+                IO.exception("Failed to copy file from resource: "+src, e);
                 e.printStackTrace();
             }
         }
+        
     }
+
+//    private static void copyFileFilter(Path srcDir, Path dstDir, FilenameFilter filterConfig) {
+//        String[] files = srcDir.toFile().list(filterConfig) ;
+//        for ( String fn : files ) {
+//            try {
+//                Path src = srcDir.resolve(fn) ;
+//                Path dst = dstDir.resolve(fn) ;
+//                Files.copy(src, dst, StandardCopyOption.COPY_ATTRIBUTES) ;
+//            } catch (IOException e) {
+//                IO.exception("Failed to copy directory of files "+srcDir, e);
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     public static void initializeDataAccessPoints(ServerInitialConfig initialSetup, String configDir) {
         List<DataAccessPoint> configFileDBs = findDatasets(initialSetup) ;
@@ -304,7 +347,7 @@ public class FusekiServer
 
     /** Ensure a directory exists, creating it if necessary.
      */
-    private static void  ensureDir(Path directory) {
+    private static void ensureDir(Path directory) {
         File dir = directory.toFile() ;
         if ( ! dir.exists() )
             dir.mkdirs() ;
@@ -325,9 +368,11 @@ public class FusekiServer
         return dir.exists() ;
     }
 
-    private static Path makePathEnsureDir(Path root , String relName ) {
+    private static Path writeableDirectory(Path root , String relName ) {
         Path p = makePath(root, relName) ;
         ensureDir(p);
+        if ( ! Files.isWritable(p) )
+            throw new FusekiConfigException("Not writable: "+p) ;
         return p ;
     }
     
