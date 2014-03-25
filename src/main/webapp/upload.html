@@ -54,7 +54,6 @@
     <nav class="navbar navbar-default" role="navigation">
       <div class="container">
         <div class="row">
-          <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
               <span class="sr-only">Toggle navigation</span>
@@ -109,50 +108,51 @@
         <h1>Data upload</h1>
         <p>Load data into a dataset. You can select one of the active datasets as the destination
           for the data and also specific the named graph within the dataset.
-          <span class="btn btn-custom2">Select Destination</span> button.</p>
+          <span class="btn btn-custom2">Select Destination</span> button.
+        </p>
 
-          <div class="col-md-12 well">
-            <div class="query-chrome">
-              <form id="fileuploadForm" class="form-inline" role="form">
-
-                <div class="form-group">
-                  <label for="uploadEndpoint"></label>
-                  <div class="dropdown ">
-                    <a data-toggle="dropdown" class="btn btn-custom2" href="#">
-                      Select Destination <i class="icon-collapse"></i></a>
+        <div class="col-md-12 well">
+          <div class="query-chrome">
+            <form id="fileuploadForm" class="form-inline" role="form">
+              <div class="form-group">
+                <label>Destination</label>
+                <div class="dropdown ">
+                  <a data-toggle="dropdown" class="btn btn-custom2" href="#">
+                    Select Destination <i class="icon-collapse"></i></a>
                     <ul class="dropdown-menu endpoints" role="menu" aria-labelledby="dropdownMenu1"></ul>
                   </div>
+                  <label></label>
                 </div>
 
                 <div class="form-group">
-                  <label for="uploadEndpoint">Destination</label>
-                  <input type="text" class="form-control" id="uploadEndpoint" />
-                </div>
-
-                <div class="form-group">
-                  <!-- The fileinput-button span is used to style the file input field as button -->
-                  <span class="btn btn-success fileinput-button">
-                    <i class="glyphicon glyphicon-plus"></i>
-                    <span>Select files...</span>
-                    <!-- The file input field used as target for the file upload widget -->
-                    <input id="fileupload" type="file" name="files[]" multiple>
-                  </span>
-                  <br>
-                  <br>
-                  <!-- The global progress bar -->
-                  <div id="progress" class="progress">
-                    <div class="progress-bar progress-bar-success"></div>
+                  <label></label>
+                  <div>
+                    <input type="text" class="form-control" id="uploadEndpoint" />
                   </div>
-                  <!-- The container for the uploaded files -->
-                  <div id="files" class="files"></div>
+                  <label></label>
                 </div>
 
-                </form>
+                <div class="form-group">
+                  <label>Select files...</label>
+                  <div>
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span class="btn btn-success fileinput-button">
+                      <!-- The file input field used as target for the file upload widget -->
+                      <input id="fileupload" type="file" name="files[]" multiple>
+                    </span>
+                    <!-- The global progress bar -->
+                    <div id="progress" class="progress">
+                      <div class="progress-bar progress-bar-success"></div>
+                      <!-- The container for the uploaded files -->
+                      <div id="files" class="files"></div>
+                    </div>
+                </div>
               </div>
+            </form>
           </div>
-
-        </div> <!-- row -->
-      </div> <!-- container -->
+        </div>
+      </div> <!-- row -->
+    </div> <!-- container -->
 
 <script>
 /*global window, $ */
