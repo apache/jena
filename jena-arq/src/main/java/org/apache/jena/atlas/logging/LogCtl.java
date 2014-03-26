@@ -50,7 +50,7 @@ public class LogCtl {
 
     /** Turn on a logger (specific level levels) */
     static public void set(Class<? > logger, String level) {
-        set(logger.getClass().getName(), level) ;
+        set(logger.getName(), level) ;
     }
 
     static public void set(String logger, String level) {
