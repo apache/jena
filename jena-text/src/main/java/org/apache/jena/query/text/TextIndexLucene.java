@@ -83,6 +83,14 @@ public class TextIndexLucene implements TextIndex {
         analyzerPerField.put(def.getEntityField(), new KeywordAnalyzer()) ;
         if ( def.getGraphField() != null )
             analyzerPerField.put(def.getGraphField(), new KeywordAnalyzer()) ;
+        
+        for (String field : def.fields()) {
+        	Analyzer analyzer = def.getAnalyzer(field);
+        	if (analyzer != null) {
+        		analyzerPerField.put(field, analyzer);
+        	}
+        }
+        
         this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
 
         // force creation of the index if it don't exist
