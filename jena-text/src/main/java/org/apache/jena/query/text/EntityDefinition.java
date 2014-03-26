@@ -24,6 +24,7 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.MultiMap ;
+import org.apache.lucene.analysis.Analyzer ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Resource ;
@@ -33,6 +34,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
  */
 public class EntityDefinition {
     private final Map<Node, String>      predicateToField = new HashMap<Node, String>() ;
+    private final Map<String, Analyzer>    fieldToAnalyzer  = new HashMap<String, Analyzer>();
     private final MultiMap<String, Node> fieldToPredicate = MultiMap.createMapList() ;
     private final Collection<String>     fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
     // private final Collection<String> fields =
@@ -124,6 +126,14 @@ public class EntityDefinition {
 
     public String getField(Node predicate) {
         return predicateToField.get(predicate) ;
+    }
+    
+    public void setAnalyzer(String field, Analyzer analyzer) {
+    	fieldToAnalyzer.put(field, analyzer);
+    }
+    
+    public Analyzer getAnalyzer(String field) {
+    	return fieldToAnalyzer.get(field);
     }
 
     public String getPrimaryField() {

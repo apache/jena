@@ -41,6 +41,9 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestTextIndexLuceneAssembler.class
     , TestTextIndexSolrAssembler.class
     , TestTextTDB.class
+    , TestDatasetWithSimpleAnalyzer.class
+    , TestDatasetWithStandardAnalyzer.class
+    , TestDatasetWithKeywordAnalyzer.class
 })
 
 public class TS_Text

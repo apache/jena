@@ -24,22 +24,37 @@ import static org.junit.Assert.assertTrue ;
 import java.util.Collection ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextIndexException ;
+import org.apache.lucene.analysis.core.KeywordAnalyzer ;
+import org.apache.lucene.analysis.core.SimpleAnalyzer ;
+import org.apache.lucene.analysis.standard.StandardAnalyzer ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 /**
  * Test assembler for EntityMap
  */
 public class TestEntityMapAssembler {
+    
+    // Suppress warnings
+    @BeforeClass public static void beforeClass() { LogCtl.setError(EntityDefinitionAssembler.class); }
+    @AfterClass  public static void afterClass()  { LogCtl.setInfo(EntityDefinitionAssembler.class); }
 	
 	private static final String TESTBASE = "http://example.org/test/";
 	private static final Resource spec1;
 	private static final Resource spec2;
+	private static final Resource spec3;
+	private static final Resource spec4;
+	private static final Resource spec5;
 	private static final Resource specNoEntityField;
 	private static final Resource specNoDefaultField;
 	private static final Resource specNoMapProperty;
@@ -78,6 +93,24 @@ public class TestEntityMapAssembler {
 		assertEquals(SPEC2_PREDICATE1.asNode(), getOne(entityDef,SPEC2_DEFAULT_FIELD));
 		assertEquals(SPEC2_PREDICATE2.asNode(), getOne(entityDef, SPEC2_FIELD2));
 	}
+    
+    @Test public void EntityHasMapEntryWithSimpleAnalyzer() {
+    	EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+    	EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec3,  null);
+    	assertEquals(SimpleAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
+    }
+    
+    @Test public void EntityHasMapEntryWithStandardAnalyzerAndStopWords() {
+    	EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+    	EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec4,  null);
+    	assertEquals(StandardAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
+    }
+    
+    @Test public void EntityHasMapEntryWithKeywordAnalyzer() {
+    	EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+    	EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec5,  null);
+    	assertEquals(KeywordAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
+    }    
 	
 	@Test(expected=TextIndexException.class) public void errorOnNoEntityField() {
 		EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
@@ -115,6 +148,7 @@ public class TestEntityMapAssembler {
 	private static final Property SPEC2_PREDICATE1 = RDFS.label;
 	private static final Property SPEC2_PREDICATE2 = RDFS.comment;
 	static {
+		TextAssembler.init();
 		Model model = ModelFactory.createDefaultModel();
 		
 		// create a simple entity map specification
@@ -148,7 +182,57 @@ public class TestEntityMapAssembler {
 				    		    				    
 				    		    		  }))
 				     ;
+		
+		// create a simple entity map specification using a keyword analyzer
+		
+				spec3 = model.createResource(TESTBASE + "spec3")
+						     .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
+						     .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
+						     .addProperty(TextVocab.pMap,
+						    		      model.createList(
+						    		    		  new RDFNode[] {
+						    		    				model.createResource()
+						    		    				     .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
+						    		    				     .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
+						    		    				     .addProperty(TextVocab.pAnalyzer, 
+						    		    				    		      model.createResource()
+						    		    				    		           .addProperty(RDF.type, TextVocab.simpleAnalyzer))
+						    		    		  }))
+						     ;
+				// create a simple entity map specification using a standard analyzer with stop words
+				
+				spec4 = model.createResource(TESTBASE + "spec4")
+						     .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
+						     .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
+						     .addProperty(TextVocab.pMap,
+						    		      model.createList(
+						    		    		  new RDFNode[] {
+						    		    				model.createResource()
+						    		    				     .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
+						    		    				     .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
+						    		    				     .addProperty(TextVocab.pAnalyzer, 
+						    		    				    		      model.createResource()
+						    		    				    		           .addProperty(RDF.type, TextVocab.standardAnalyzer))
+						    		    				    		           .addProperty(TextVocab.pStopWords, toList(model, "and the but"))
+						    		    		  }));		
+		// create a simple entity map specification using a keyword analyzer
+		
+				spec5 = model.createResource(TESTBASE + "spec5")
+						     .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
+						     .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
+						     .addProperty(TextVocab.pMap,
+						    		      model.createList(
+						    		    		  new RDFNode[] {
+						    		    				model.createResource()
+						    		    				     .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
+						    		    				     .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
+						    		    				     .addProperty(TextVocab.pAnalyzer, 
+						    		    				    		      model.createResource()
+						    		    				    		           .addProperty(RDF.type, TextVocab.keywordAnalyzer))
+						    		    		  }));
+				
 		// bad assembler spec
+				
 		specNoEntityField = 
 				model.createResource(TESTBASE + "specNoEntityField")
 				     .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
@@ -160,7 +244,9 @@ public class TestEntityMapAssembler {
 				    		    				     .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
 				    		    		  }))
 				     ;
+		
 		// bad assembler spec
+		
 		specNoDefaultField = 
 				model.createResource(TESTBASE + "specNoDefaultField")
 				     .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
@@ -192,5 +278,17 @@ public class TestEntityMapAssembler {
 				    		    				     .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
 				    		    		  }))
 				     ;
+	}
+	
+	private static Resource toList(Model model, String string) {
+		String[] members = string.split("\\s");
+		Resource current = RDF.nil;
+		for (int i = members.length-1; i>=0; i--) {
+			Resource previous = current;
+			current = model.createResource();
+			current.addProperty(RDF.rest, previous);
+			current.addProperty(RDF.first, members[i]);			
+		}
+		return current;	
 	}
 }

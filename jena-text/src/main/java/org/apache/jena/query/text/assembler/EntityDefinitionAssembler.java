@@ -21,21 +21,28 @@ package org.apache.jena.query.text.assembler;
 import static org.apache.jena.query.text.assembler.TextVocab.NS ;
 
 import java.util.Collection ;
+import java.util.HashMap;
 import java.util.List ;
+import java.util.Map;
 
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextIndexException ;
+import org.apache.lucene.analysis.Analyzer;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public class EntityDefinitionAssembler extends AssemblerBase implements Assembler
 {
@@ -85,20 +92,67 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         String entityField = qsol1.getLiteral("entityField").getLexicalForm() ;
         String graphField = qsol1.contains("graphField") ? qsol1.getLiteral("graphField").getLexicalForm() : null;
         String defaultField = qsol1.contains("dftField") ? qsol1.getLiteral("dftField").getLexicalForm() : null ;
-        
-        String qs2 = StrUtils.strjoinNL("SELECT * { ?map list:member [ :field ?field ; :predicate ?predicate ] }") ;
-        Query query2 = QueryFactory.create(prologue+" "+qs2) ;
-        QueryExecution qexec2 = QueryExecutionFactory.create(query2, model, qsol1) ;
-        ResultSet rs2 = qexec2.execSelect() ;
-        List<QuerySolution> mapEntries = ResultSetFormatter.toList(rs2) ;
-        
+              
         MultiMap<String, Node> mapDefs = MultiMap.createMapList() ; 
-        for ( QuerySolution qsol : mapEntries ) {
-            String field =  qsol.getLiteral("field").getLexicalForm() ;
-            Resource p = qsol.getResource("predicate") ;
-            mapDefs.put(field, p.asNode()) ;
-        }
+        Map<String, Analyzer> analyzerDefs = new HashMap<String, Analyzer>();
         
+        Statement listStmt = root.getProperty(TextVocab.pMap);
+        while (listStmt != null) {
+        	RDFNode n = listStmt.getObject();
+        	if (! n.isResource()) {
+        		throw new TextIndexException("Text list node is not a resource : " + n);
+        	}
+        	Resource listResource = (Resource) n;
+        	if (listResource.equals(RDF.nil)) {
+        		break;  // end of the list
+        	}
+        	
+        	Statement listEntryStmt = listResource.getProperty(RDF.first);
+        	if (listEntryStmt == null) {
+        		throw new TextIndexException("Text map list is not well formed.  No rdf:first property");
+        	}
+        	n = listEntryStmt.getObject();
+        	if (! n.isResource()) {
+        		throw new TextIndexException("Text map list entry is not a resource : " + n);
+        	}
+        	Resource listEntry = (Resource) n;
+        	
+        	Statement fieldStatement = listEntry.getProperty(TextVocab.pField);
+        	if (fieldStatement == null) {
+        		throw new TextIndexException("Text map entry has no field property");
+        	}
+        	n = fieldStatement.getObject();
+        	if (! n.isLiteral()) {
+        		throw new TextIndexException("Text map entry field property has no literal value : " + n);
+        	}
+        	String field = ((Literal)n).getLexicalForm();
+        	
+        	Statement predicateStatement = listEntry.getProperty(TextVocab.pPredicate);
+        	if (predicateStatement == null) {
+        		throw new TextIndexException("Text map entry has no predicate property");
+        	}
+        	n = predicateStatement.getObject();
+        	if (! n.isURIResource()) {
+        		throw new TextIndexException("Text map entry predicate property has non resource value : " + n);
+        	}
+        	Resource predicate = (Resource) n;
+        	mapDefs.put(field, predicate.asNode()) ;
+        	
+        	Statement analyzerStatement = listEntry.getProperty(TextVocab.pAnalyzer);
+        	if (analyzerStatement != null) {
+        		n = analyzerStatement.getObject();
+        		if (! n.isResource()) {
+        			throw new TextIndexException("Text map entry analyzer property is not a resource : " + n);
+        		}
+        		Resource analyzerResource = (Resource) n;
+        		Analyzer analyzer = (Analyzer) a.open(analyzerResource);
+        		analyzerDefs.put(field, analyzer);
+        	}
+        	
+        	// move on to the next element in the list
+        	listStmt = listResource.getProperty(RDF.rest);
+        }
+
         // Primary field/predicate
         if ( defaultField != null ) {
             Collection<Node> c = mapDefs.get(defaultField) ;
@@ -106,11 +160,13 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
                 throw new TextIndexException("No definition of primary field '"+defaultField+"'") ;
         }
         
-        
         EntityDefinition docDef = new EntityDefinition(entityField, defaultField, graphField) ;
         for ( String f : mapDefs.keys() ) {
             for ( Node p : mapDefs.get(f)) 
                 docDef.set(f, p) ;
+        }
+        for (String f : analyzerDefs.keySet()) {
+        	docDef.setAnalyzer(f, analyzerDefs.get(f));
         }
         return docDef ;
     }

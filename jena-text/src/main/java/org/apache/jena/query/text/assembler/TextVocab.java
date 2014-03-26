@@ -47,6 +47,13 @@ public class TextVocab
     public static final Property pField             = Vocab.property(NS, "field") ;
     public static final Property pPredicate         = Vocab.property(NS, "predicate") ;
     public static final Property pOptional          = Vocab.property(NS, "optional") ;
+    
+    // Analyzers
+    public static final Property pAnalyzer          = Vocab.property(NS, "analyzer");
+    public static final Resource standardAnalyzer   = Vocab.resource(NS, "StandardAnalyzer");
+    public static final Property pStopWords         = Vocab.property(NS, "stopWords");
+    public static final Resource simpleAnalyzer     = Vocab.resource(NS, "SimpleAnalyzer");
+    public static final Resource keywordAnalyzer    = Vocab.resource(NS, "KeywordAnalyzer");
 
 }
 
