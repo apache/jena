@@ -46,12 +46,32 @@ import com.hp.hpl.jena.shared.JenaException ;
 public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
     // Test for this class are in Fuseki so they can be run with a server.
 
+    private static final HttpResponseHandler noResponse        = HttpResponseLib.nullResponse ;
+    /** Format used to send a graph to the server */
+    private static final RDFFormat           defaultSendLang   = RDFFormat.RDFXML_PLAIN ;
+
     private final String                     remote ;
-    private static final HttpResponseHandler noResponse = HttpResponseLib.nullResponse ;
     private HttpAuthenticator                authenticator ;
 
-    /** Format used to send a graph to the server */
-    private static RDFFormat                 defaultSendLang   = RDFFormat.RDFXML_PLAIN ;
+    private RDFFormat                        formatPutPost     = defaultSendLang ;
+
+    /**
+     * Accept header for fetching graphs - prefer N-triples.
+     * @See WebContent.defaultGraphAcceptHeader
+     */
+    private String                           graphAcceptHeader = WebContent.defaultGraphAcceptHeader ;  
+
+    /** RDF syntax to use when sending graphs with POST and PUT. */
+    public RDFFormat getOutboundSyntax()  { return formatPutPost ; }
+
+    /** Set the RDF syntax to use when sending graphs with POST and PUT. Defaults to RDF/XML. */
+    public void setOutboundSyntax(RDFFormat format)  { formatPutPost = format ; }
+
+    /** HTTP accept header used to GET a graph. */
+    public String getGraphAcceptHeader()  { return graphAcceptHeader ; }
+
+    /** Set the HTTP accept header used to GET a graph. */
+    public void setGraphAcceptHeader(String header)  { graphAcceptHeader = header ; }
 
     /**
      * Create a DatasetUpdater for the remote URL
@@ -108,18 +128,10 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
         return doGet(target(graphName)) ;
     }
 
-    /**
-     * Accept header for fetching graphs - prefer N-triples
-     * 
-     * @See WebContent.defaultGraphAcceptHeader
-     * 
-     */
-    private static String GetAcceptHeader = "application/n-triples,text/turtle;q=0.9,application/rdf+xml;q=0.8,application/xml;q=0.7" ;
-
     protected Graph doGet(String url) {
         HttpCaptureResponse<Graph> graph = HttpResponseLib.graphHandler() ;
         try {
-            HttpOp.execHttpGet(url, GetAcceptHeader, graph, this.authenticator) ;
+            HttpOp.execHttpGet(url, graphAcceptHeader, graph, this.authenticator) ;
         } catch (HttpException ex) {
             if ( ex.getResponseCode() == HttpSC.NOT_FOUND_404 )
                 return null ;
@@ -222,11 +234,6 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor {
         return remote + "?" + HttpNames.paramGraph + "=" + guri ;
     }
 
-    /**
-     * RDF syntax to use when sending graphs  with POST and PUT  
-     */
-    protected RDFFormat getOutboundSyntax()  { return defaultSendLang ; } 
-    
     /** Create an HttpEntity for the graph */  
     protected HttpEntity graphToHttpEntity(final Graph graph) {
 
