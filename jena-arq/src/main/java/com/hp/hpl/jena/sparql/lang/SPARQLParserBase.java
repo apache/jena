@@ -29,6 +29,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
@@ -204,12 +205,27 @@ public class SPARQLParserBase extends ParserBase
         return sink.createDeleteDataSink();
     }
     
-    protected void startSubSelect(int line, int col)
+    protected void pushQuery()
     {
         if ( query == null )
             throw new ARQInternalErrorException("Parser query object is null") ;
         stack.push(query) ;
-        query = new Query(getPrologue()) ;
+    }
+    
+    protected void startSubSelect(int line, int col)
+    {
+        pushQuery();
+        query = newSubQuery(getPrologue()) ;
+    }
+    
+    protected Query newSubQuery(Prologue progloue)
+    {
+        return new Query(getPrologue());
+    }
+    
+    protected void popQuery()
+    {
+        query = stack.pop();
     }
     
     protected Query endSubSelect(int line, int column)
@@ -217,7 +233,7 @@ public class SPARQLParserBase extends ParserBase
         Query subQuery = query ;
         if ( ! subQuery.isSelectType() )
             throwParseException("Subquery not a SELECT query", line, column) ;
-        query = stack.pop();
+        popQuery();
         return subQuery ;
     }
     
