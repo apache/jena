@@ -1,6 +1,6 @@
 # Configuring Fuseki
 
-Configuration consists of definign the data services (data and actiosn available on the data) together with configuring the server.  Explcitily configuring the server is often unnecessary.
+Configuration consists of defining the data services (data and actions available on the data) together with configuring the server.  Explicitly configuring the server is often unnecessary.
 
 The data services configuration can coem from:
 
@@ -51,7 +51,7 @@ objects.
 
 ### Defining the service name and endpoints available 
 
-Each data ervice assembler defines:
+Each data service assembler defines:
 
 * The base name
 * The operations and endpoint names

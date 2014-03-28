@@ -6,7 +6,7 @@ Provided by [Apache Shiro](http://shiro.apache.org/).
 
 Defaults:
 
-Datsets are open
+Datasets are open
 
 Admin functions that require security use, by default, user 'admin', password 'pw'.
 
