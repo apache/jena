@@ -57,6 +57,8 @@ then
     FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
 fi
 
+export FUSEKI_BASE="${FUSEKI_BASE:-$PWD/run}"
+
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 
 exec java  $JVM_ARGS -jar "$JAR" "$@"
