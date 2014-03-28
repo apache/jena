@@ -95,14 +95,14 @@ public class FusekiServer
     /** Directory for assembler files */
     public static Path        dirTemplates       = null ;
 
-    private static boolean            initialized       = false ;
+    private static boolean    initialized        = false ;
     
     public synchronized static void init() {
         if ( initialized )
             return ;
         initialized = true ;
         
-        // --  Set and check FUSEKI_HOME and FUSEKI_BASE
+        // ----  Set and check FUSEKI_HOME and FUSEKI_BASE
         
         if ( FUSEKI_HOME == null ) {
             // Make absolute
