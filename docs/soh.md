@@ -1,4 +1,4 @@
-Title: SOH - SPARQL over HTTP
+# SOH - SPARQL over HTTP
 
 **SOH** (SPARQL Over HTTP) is a set of command-line scripts for
 working with SPARQL 1.1. SOH is server-independent and will work

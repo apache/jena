@@ -2,11 +2,11 @@
 
 Configuration consists of defining the data services (data and actions available on the data) together with configuring the server.  Explicitly configuring the server is often unnecessary.
 
-The data services configuration can coem from:
+The data services configuration can come from:
 
 1. The directory `FUSEKI_BASE/configuration/` with one data service assembler per file (includes endpoint details and the dataset description.)
-2. The system database. This incldues uplaoded assembler files.  It also keeps the state of each data service (whetehr it's active or offline).
-3. The service configuration file.  For compabibility, the service configuration file can also have data services. [See below](#relationship-to-fuseki-1-configuration).
+2. The system database. This includes uploaded assembler files.  It also keeps the state of each data service (whether it's active or offline).
+3. The service configuration file.  For compatibility, the service configuration file can also have data services. [See below](#relationship-to-fuseki-1-configuration).
 4. The command line, if not running as a web application from a .war file.
 
 `FUSEKI_BASE` is the location of the [Fuseki run area](#fuseki-layout.html).
@@ -62,7 +62,7 @@ Store protocol, as well as file upload.
 
 The base name is `/ds`.
 
-    ## Updatable in-memory dataset.
+    ## Updateable in-memory dataset.
 
     <#service1> rdf:type fuseki:Service ;
         fuseki:name                       "ds" ;       # http://host:port/ds
