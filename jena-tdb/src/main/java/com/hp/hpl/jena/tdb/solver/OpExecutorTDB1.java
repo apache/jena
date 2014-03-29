@@ -54,22 +54,22 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
  * 
  * See also: StageGeneratorDirectTDB, a non-reordering 
  */
-public class OpExecutorTDB extends OpExecutor
+public class OpExecutorTDB1 extends OpExecutor
 {
-    private static final Logger log = LoggerFactory.getLogger(OpExecutorTDB.class) ;
+    private static final Logger log = LoggerFactory.getLogger(OpExecutorTDB1.class) ;
     
     public final static OpExecutorFactory OpExecFactoryTDB = new OpExecutorFactory()
     {
         @Override
         public OpExecutor create(ExecutionContext execCxt)
-        { return new OpExecutorTDB(execCxt) ; }
+        { return new OpExecutorTDB1(execCxt) ; }
     } ;
     
     private final boolean isForTDB ;
     
     // A new compile object is created for each op compilation.
     // So the execCxt is changing as we go through the query-compile-execute process  
-    public OpExecutorTDB(ExecutionContext execCxt)
+    public OpExecutorTDB1(ExecutionContext execCxt)
     {
         super(execCxt) ;
         // NB. The dataset may be a TDB one, or a general one.

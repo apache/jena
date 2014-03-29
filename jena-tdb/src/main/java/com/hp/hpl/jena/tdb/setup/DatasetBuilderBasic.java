@@ -31,7 +31,7 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;
+import com.hp.hpl.jena.tdb.solver.OpExecutorTDB1 ;
 import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
@@ -81,7 +81,7 @@ public class DatasetBuilderBasic implements DatasetBuilder
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, null) ;
         // TDB does filter placement on BGPs itself.
         dsg.getContext().set(ARQ.optFilterPlacementBGP, false);
-        QC.setFactory(dsg.getContext(), OpExecutorTDB.OpExecFactoryTDB) ;
+        QC.setFactory(dsg.getContext(), OpExecutorTDB1.OpExecFactoryTDB) ;
         return dsg ;
     }
     
