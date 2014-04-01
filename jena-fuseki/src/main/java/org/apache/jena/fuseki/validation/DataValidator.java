@@ -167,6 +167,7 @@ public class DataValidator extends ValidatorBase
         } ;
 
         StreamRDF dest = StreamRDFLib.sinkQuads(sink) ;
+        @SuppressWarnings("deprecation")
         LangRIOT parser = RiotReader.createParser(tokenizer, language, null, dest) ;
         // Don't resolve IRIs.  Do checking.
         parser.setProfile(RiotLib.profile(null, false, true, errorHandler)) ;

@@ -142,6 +142,7 @@ public class REST_Quads extends SPARQL_REST
             String name = action.request.getRequestURL().toString() ;
             DatasetGraph dsg = action.getActiveDSG() ;
             StreamRDF dest = StreamRDFLib.dataset(dsg) ;
+            @SuppressWarnings("deprecation")
             LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
             parser.parse() ;
             action.commit();
@@ -162,6 +163,7 @@ public class REST_Quads extends SPARQL_REST
             //log.info(format("[%d] ** Content-length: %d", action.id, action.request.getContentLength())) ;  
             Graph g = dsg.getDefaultGraph() ;
             StreamRDF dest = StreamRDFLib.graph(g) ;
+            @SuppressWarnings("deprecation")
             LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
             parser.parse() ;
             action.commit();
@@ -184,6 +186,7 @@ public class REST_Quads extends SPARQL_REST
             Node gn = NodeFactory.createURI(name) ;
             Graph g = dsg.getGraph(gn) ;
             StreamRDF dest = StreamRDFLib.graph(g) ;
+            @SuppressWarnings("deprecation")
             LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
             parser.parse() ;
             log.info(format("[%d] Location: %s", action.id, name)) ;
