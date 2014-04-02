@@ -76,7 +76,7 @@ public class StageBuilder
         }
     }
     
-    /** The plain StageGenerator, no reordring */
+    /** The plain StageGenerator, no reordering */
     public static StageGenerator executeInline = new StageGenerator() {
         @Override
         public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
