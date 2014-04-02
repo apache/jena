@@ -99,7 +99,7 @@ public class Test_rdfcat extends TestCase
     }
 
     /**
-     * Change the default input langauge
+     * Change the default input language
      */
     public void testRdfcatConcat1() {
         Model source = ModelFactory.createDefaultModel();

@@ -112,7 +112,7 @@ public class TestManifest {
     
     public static final Resource proposed = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#proposed" );
     
-    /** <p>Tests that require langauge tag handling in FILTERs</p> */
+    /** <p>Tests that require language tag handling in FILTERs</p> */
     public static final Resource LangTagAwareness = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#LangTagAwareness" );
     
     public static final Resource rejected = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#rejected" );

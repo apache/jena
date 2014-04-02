@@ -34,7 +34,7 @@ public interface LanguageTagCodes {
     public static final int LT_DEFAULT = 0x0100;
     
 /** A tag with non-standard extra subtags.
- * Set for langauge tags with
+ * Set for language tags with
  * additional subtags over their
  * IANA registration, or a third subtag
  * for unregistered tags of the form
@@ -68,7 +68,7 @@ public interface LanguageTagCodes {
     public static final int LT_LOCAL_USE = 0x0800;
     
 /** The special ISO639-2 language tag <CODE>mul</CODE>.
- * This indicates multiple langauges.
+ * This indicates multiple languages.
  */    
     public static final int LT_MULTIPLE = 0x0400;
     
@@ -81,7 +81,7 @@ public interface LanguageTagCodes {
  */    
     public static final int LT_UNDETERMINED = 0x0200;
     
-/** A langauge tag that is deprecated in the IANA registry.
+/** A language tag that is deprecated in the IANA registry.
  */    
     public static final int LT_IANA_DEPRECATED = 0x2000;
     

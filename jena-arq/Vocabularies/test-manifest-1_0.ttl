@@ -144,7 +144,7 @@ expected results.""" .
     rdfs:comment "Values in disjoint value spaces are not equal" .
     
 :LangTagAwareness	rdf:type :Requirement ;
-    rdfs:comment "Tests that require langauge tag handling in FILTERs" .
+    rdfs:comment "Tests that require language tag handling in FILTERs" .
 
 ## ---- Notable features ----
 

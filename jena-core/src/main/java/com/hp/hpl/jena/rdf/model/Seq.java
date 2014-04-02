@@ -132,7 +132,7 @@ public interface Seq extends Container {
      * have their index increased by one.</p>
      * @param index The index of the new member,
      * @param o The member to be added.
-     * @param l the langauge of the value added
+     * @param l the language of the value added
      .
      * @return this object to enable cascading of method calls.
      */

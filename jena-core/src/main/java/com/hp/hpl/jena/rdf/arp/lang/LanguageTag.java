@@ -175,7 +175,7 @@ public class LanguageTag implements LanguageTagCodes {
                     case 'i':
                         if ( IanaLanguageTag.find(this)!=null )
                             return null;
-                        return toString() + " not found in IANA langauge registry.";
+                        return toString() + " not found in IANA language registry.";
                     default:
                             return "Only 'x' and 'i' single character primary language subtags are defined in RFC3066.";
                 }
@@ -183,14 +183,14 @@ public class LanguageTag implements LanguageTagCodes {
                 if (Iso639.find(tags[0])==null) {
                     return 
                     
-                    "ISO-639 does not define langauge: '"+tags[0]+"'.";
+                    "ISO-639 does not define language: '"+tags[0]+"'.";
                 }
                 break;
             case 3:
                 Iso639 lang = Iso639.find(tags[0]);
                 if (lang==null) {
                     return 
-                    "ISO-639 does not define langauge: '"+tags[0]+"'.";
+                    "ISO-639 does not define language: '"+tags[0]+"'.";
                 }
                 if ( lang.twoCharCode != null ) {
                     return 
