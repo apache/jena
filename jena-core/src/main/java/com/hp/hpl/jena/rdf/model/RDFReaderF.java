@@ -49,13 +49,13 @@ public interface RDFReaderF {
     
 /** return an RDFReader instance for the specified serialization language.
  * @return the RDFWriter instance
- * @param lang the serialization langauge - <code>null</code> selects the
+ * @param lang the serialization language - <code>null</code> selects the
  *            default
  
  */    
     public RDFReader getReader(String lang) ;
     
-/** set the class name for the RDFReader for a langauge
+/** set the class name for the RDFReader for a language
  * @param lang the language for which this class should be used
  * @param className the class name for readers for this language
  * @return the old class name for this language

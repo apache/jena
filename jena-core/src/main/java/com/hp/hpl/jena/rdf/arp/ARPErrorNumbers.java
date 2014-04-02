@@ -63,7 +63,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     /**
      An xml:lang attribute uses one or more of the extension
      facilities in RFC3066 or ISO639. 
-     *In some way, the langauge specified is non-standard.
+     *In some way, the language specified is non-standard.
      *
      *In both default and strict modes this is ignored; a conservative application
      *in verbose mode may wish to raise a warning.

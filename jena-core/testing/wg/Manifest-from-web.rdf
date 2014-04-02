@@ -391,7 +391,7 @@ Obsoleted: datatyped literals have no language tag.
    <test:description>
 Language does not affect the denotation of rdf:XMLLiteral. NOTE that this
 is a change from previous versions of the spec.
-Langauge tags do not live on XMLLiterals.
+Language tags do not live on XMLLiterals.
    </test:description>
 
    <test:entailmentRules rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#" />

@@ -423,7 +423,7 @@ public interface Model
      *    for more information about concrete syntaxes.
      *  </p>
 	     
-	 * @param lang the langauge of the serialization <code>null</code>
+	 * @param lang the language of the serialization <code>null</code>
 	 * selects the default
 	 * @param in the source of the input serialization
 	 */
@@ -492,7 +492,7 @@ public interface Model
          the model</i>. This is typically unwise and will usually generate errors
          when writing the model back out.
 
-	 * @param lang the langauge of the serialization <code>null</code>
+	 * @param lang the language of the serialization <code>null</code>
 	 * selects the default
 	 * @param reader the source of the input serialization
 	 */
@@ -572,7 +572,7 @@ public interface Model
      * "RDF/XML-ABBREV", "N-TRIPLE", "TURTLE", (and "TTL") and "N3".  The default value,
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
-     * @param lang The output langauge
+     * @param lang The output language
      * @return This model
      */
 	public Model write( OutputStream out, String lang ) ;

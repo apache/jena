@@ -29,7 +29,7 @@ import java.io.*;
 /** A program which read an RDF model and copy it to the standard output stream.
  *
  *  <p>This program will read an RDF model, in a variety of languages,
- *     and copy it to the output stream in a possibly different langauge.
+ *     and copy it to the output stream in a possibly different language.
  *     Input can be read either from a URL or from a file.
  *     The program writes its results to the standard output stream and sets
  *     its exit code to 0 if the program terminate normally,  and

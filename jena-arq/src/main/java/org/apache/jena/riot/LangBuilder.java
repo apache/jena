@@ -23,7 +23,7 @@ import java.util.List ;
 
 
 
-/** Builder for RDF langauges (Syntaxes).
+/** Builder for RDF languages (Syntaxes).
  * 
  *  Example usage:
  *  <pre>

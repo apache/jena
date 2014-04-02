@@ -32,7 +32,7 @@ import org.apache.jena.atlas.web.MediaType ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
-/** Central registry of RDF langauges and syntaxes.
+/** Central registry of RDF languages and syntaxes.
  * @see RDFParserRegistry
  * @see RDFFormat
  */

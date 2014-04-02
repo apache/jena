@@ -194,7 +194,7 @@ public class TestJenaReaderRIOT extends BaseTest
         
         // Read via Jena model API.
         Model m2 = ModelFactory.createDefaultModel() ;
-        // The range of names for mode.read is less - canonicalise the langauge name.
+        // The range of names for mode.read is less - canonicalise the language name.
         String x = RDFLanguages.nameToLang(lang).getName() ;
         m2.read(dataurl, x) ;
         assertTrue(m2.size() != 0 ) ;
