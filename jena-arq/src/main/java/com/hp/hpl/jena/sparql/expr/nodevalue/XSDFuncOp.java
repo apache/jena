@@ -1260,7 +1260,7 @@ public class XSDFuncOp
 
     private static DateTimeStruct parseAnyDT(NodeValue nv)
     {
-        String lex = nv.getNode().getLiteralLexicalForm() ;
+        String lex = nv.asNode().getLiteralLexicalForm() ;
         if ( nv.isDateTime() )
             return DateTimeStruct.parseDateTime(lex) ;
         if ( nv.isDate() ) 
@@ -1282,7 +1282,7 @@ public class XSDFuncOp
 
     private static DateTimeStruct parseTime(NodeValue nv)
     {
-        String lex = nv.getNode().getLiteralLexicalForm() ;
+        String lex = nv.asNode().getLiteralLexicalForm() ;
         if ( nv.isDateTime() )
             return DateTimeStruct.parseDateTime(lex) ;
         else if ( nv.isTime() )
