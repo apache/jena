@@ -328,8 +328,11 @@ public class OneToManyMap<From, To> implements Map<From, To>
      *
      * @param key The key object
      * @param value The value object
+     * @return {@code true} if an entry was removed. 
      */
-    public void remove( Object key, Object value ) {
+    //@Override
+    public boolean remove( Object key, Object value ) {
+        // Java 8 added a default method with the above signature.
         List<To> entries = m_table.get( key );
 
         if (entries != null) {
@@ -337,8 +340,10 @@ public class OneToManyMap<From, To> implements Map<From, To>
             
             if (entries.isEmpty()) {
                 m_table.remove( key );
+                return true;
             }
         }
+        return false ;
     }
 
 
