@@ -48,6 +48,9 @@ public abstract class OpN extends OpBase
     // Tests the sub-elements for equalTo.
     protected boolean equalsSubOps(OpN op, NodeIsomorphismMap labelMap)
     {
+        if (elements.size() != op.elements.size() )
+            return false ;
+        
         Iterator<Op> iter1 = elements.listIterator() ;
         Iterator<Op> iter2 = op.elements.listIterator() ;
         
