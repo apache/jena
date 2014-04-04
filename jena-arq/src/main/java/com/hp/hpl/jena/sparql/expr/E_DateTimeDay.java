@@ -31,7 +31,7 @@ public class E_DateTimeDay extends ExprFunction1
     }
     
     @Override
-    public NodeValue eval(NodeValue v) { return XSDFuncOp.dtGetDay(v) ; }
+    public NodeValue eval(NodeValue v) { return XSDFuncOp.getDay(v) ; }
     
     @Override
     public Expr copy(Expr expr) { return new E_DateTimeDay(expr) ; } 

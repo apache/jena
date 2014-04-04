@@ -31,7 +31,7 @@ public class E_DateTimeYear extends ExprFunction1
     }
     
     @Override
-    public NodeValue eval(NodeValue v) { return XSDFuncOp.dtGetYear(v) ; }
+    public NodeValue eval(NodeValue v) { return XSDFuncOp.getYear(v) ; }
     
     @Override
     public Expr copy(Expr expr) { return new E_DateTimeYear(expr) ; } 
