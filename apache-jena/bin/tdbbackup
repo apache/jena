@@ -25,7 +25,7 @@ JVM_ARGS=${JVM_ARGS:--Xmx1024M}
 # Expand JENA_HOME but literal *
 JENA_CP="$JENA_HOME"'/lib/*'
 SOCKS=
-LOGGING="-Dlog4j.configuration=file:$JENA_HOME/jena-log4j.properties"
+LOGGING="${LOGGING:--Dlog4j.configuration=file:$JENA_HOME/jena-log4j.properties}"
 
 # Platform specific fixup
 # On CYGWIN convert path and end with a ';' 

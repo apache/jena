@@ -87,4 +87,4 @@ do
 done
 
 ## Specials
-cp ../jena-tdb/bin/tdbloader2 bin/tdbloader2worker
+cp ../jena-tdb/bin/tdbloader2worker bin/tdbloader2worker
