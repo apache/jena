@@ -179,16 +179,23 @@ public class Prologue
     
     /** Expand prefixed name 
      * 
-     * @param qname  The prefixed name to be expanded
+     * @param prefixed  The prefixed name to be expanded
      * @return URI, or null if not expanded.
      */
 
-    public String expandPrefixedName(String qname)
+    public String expandPrefixedName(String prefixed)
     {
-        String s = prefixMap.expandPrefix(qname) ;
-        if ( s.equals(qname) )
+        //From PrefixMappingImpl.expandPrefix( String prefixed )
+        int colon = prefixed.indexOf( ':' );
+        if (colon < 0) 
             return null ;
-        return s ;
+        else {
+            String prefix = prefixed.substring( 0, colon ) ;
+            String uri = prefixMap.getNsPrefixURI(prefix);
+            if ( uri == null )
+                return null ;
+            return uri + prefixed.substring( colon + 1 );
+        }
     }
     
     /** Use the prefix map to turn a URI into a qname, or return the original URI */
