@@ -44,11 +44,12 @@ import com.hp.hpl.jena.sparql.util.VarUtils ;
  */
 
 public class TransformFilterPlacement extends TransformCopy {
-    
     static class Placement {
         final Op op ;
         final ExprList unplaced ; 
         Placement(Op op, ExprList remaining) { this.op = op ; this.unplaced = remaining ; }
+        @Override
+        public String toString() { return ""+op+" : "+unplaced ; } 
     }
     
     // Empty, immutable ExprList
@@ -178,17 +179,23 @@ public class TransformFilterPlacement extends TransformCopy {
             return wrapBGP(exprsIn, pattern) ;
     }
     
+    public static Placement debugPlaceBGP(ExprList exprsIn, BasicPattern pattern) {
+        return placeBGP(exprsIn, pattern) ;
+    }
+    
+    // See also placeQuadPattern.
+    // 
+    // An improvement might be to put any filters that apply to exactly one triple
+    // directly on the triple pattern.  At the moment, the filter is put over
+    // the block leading up to the triple pattern.
+    
     private static Placement placeBGP(ExprList exprsIn, BasicPattern pattern) {
         ExprList exprs = ExprList.copy(exprsIn) ;
         Set<Var> patternVarsScope = DS.set() ;
         // Any filters that depend on no variables.
-        Op op = null ;
+        Op op = insertAnyFilter$(exprs, patternVarsScope, null) ;
 
         for (Triple triple : pattern) {
-            // Place any filters that are now covered.
-            op = insertAnyFilter$(exprs, patternVarsScope, op) ;
-            // Consider this triple.
-            // Get BGP that is accumulating triples.
             OpBGP opBGP = getBGP(op) ;
             if ( opBGP == null ) {
                 // Last thing was not a BGP (so it likely to be a filter)
@@ -200,10 +207,9 @@ public class TransformFilterPlacement extends TransformCopy {
             opBGP.getPattern().add(triple) ;
             // Update variables in scope.
             VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
+            op = insertAnyFilter$(exprs, patternVarsScope, op) ;
         }
         
-        // Place any filters this whole BGP covers. 
-        op = insertAnyFilter$(exprs, patternVarsScope, op) ;
         return result(op, exprs) ;
     }
 
@@ -271,10 +277,9 @@ public class TransformFilterPlacement extends TransformCopy {
             // Add in the graph node of the quad block.
             VarUtils.addVar(patternVarsScope, Var.alloc(graphNode)) ;
         }
-        Op op = null ;
+        Op op = insertAnyFilter$(exprs, patternVarsScope, null) ;
         
         for (Triple triple : pattern) {
-            op = insertAnyFilter$(exprs, patternVarsScope, op) ;
             OpQuadPattern opQuad = getQuads(op) ;
             if ( opQuad == null ) {
                 opQuad = new OpQuadPattern(graphNode, new BasicPattern()) ;
@@ -284,9 +289,8 @@ public class TransformFilterPlacement extends TransformCopy {
             opQuad.getBasicPattern().add(triple) ;
             // Update variables in scope.
             VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
+            op = insertAnyFilter$(exprs, patternVarsScope, op) ;
         }
-        // Place any filters this whole quad block covers. 
-        op = insertAnyFilter$(exprs, patternVarsScope, op) ;
         return result(op, exprs) ;
     }
 
@@ -341,11 +345,11 @@ public class TransformFilterPlacement extends TransformCopy {
      * substituted into the right, i.e. there are no scoping issues. Assuming a
      * substitution join is going to be done, filtering once as soon as the
      * accumulated variables cover the filter is a good thing to do. It is
-     * effectively pusing on teh left side only - the right side, by
+     * effectively pusing on the left side only - the right side, by
      * substitution, will never see the variables. The variable can not be
      * reintroduced (it will have been renamed away if it's the same name,
      * different scope, which is a different variable with the same name in the
-     * orginal query.
+     * orginal query).
      */
 
     private Placement placeSequence(ExprList exprsIn, OpSequence opSequence) {
@@ -354,18 +358,15 @@ public class TransformFilterPlacement extends TransformCopy {
         List<Op> ops = opSequence.getElements() ;
 
         Op op = null ;
-        // No point placing on the last element as that is the same as filtering the entire expression.
         for (int i = 0 ; i < ops.size() ; i++ ) {
             op = insertAnyFilter$(exprs, varScope, op) ;
             Op seqElt = ops.get(i) ;
-            if ( i != ops.size()-1 ) {
-                Placement p = transform(exprs, seqElt) ;
-                if ( p != null ) {
-                    exprs = p.unplaced ;
-                    seqElt = p.op ;
-                }
-                varScope.addAll(fixedVars(seqElt)) ;
+            Placement p = transform(exprs, seqElt) ;
+            if ( p != null ) {
+                exprs = p.unplaced ;
+                seqElt = p.op ;
             }
+            varScope.addAll(fixedVars(seqElt)) ;
             op = OpSequence.create(op, seqElt) ;
         }
         return result(op, exprs) ;

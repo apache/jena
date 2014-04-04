@@ -4,7 +4,8 @@ ChangeLog for ARQ
 
 ==== Jena 2.11.2
 
-+ JENA-638 : Imporve coverage of TopN optimziation
++ JENA-671 : More filter placement optimization.
++ JENA-638 : Improve coverage of TopN optimziation
 + JENA-634 : Add JSON-LD
 + JENA-518 : Add getter/setter for the error handler to ReaderRIOT.
 

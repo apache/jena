@@ -227,8 +227,7 @@ public class TestTransformFilters extends AbstractTestTransform
             , "  (project (?s1)"
             , "     (bgp (triple ?/test ?/p2 ?/o2))) )"
             ) ;
-        // Answer if FILTER equality done only before filter placement
-        // (and possibly after as well).
+        // Answer if weaker filter placement done, leaving the filter on the whole sequence. 
 //        String ops = StrUtils.strjoinNL
 //            ( "(assign ((?test <http://localhost/t1>))"
 //            , "  (sequence"
@@ -251,15 +250,27 @@ public class TestTransformFilters extends AbstractTestTransform
               , "    ?x :p ?o2"
               , "}"
                 ) ;
+        // Answer if weaker filter placement done, leaving the filter on the whole sequence. JENA-671
+//        String ops = StrUtils.strjoinNL
+//            ( "(filter (= ?x <http://example/x>)"
+//            , "  (sequence"
+//            , "     (conditional"
+//            , "        (table unit)"
+//            , "        (bgp (triple ?x <http://example/q> ?o)))"
+//            , "     (bgp (triple ?x <http://example/p> ?o2))"
+//            , " ))" 
+//            ) ;
+        //JENA-671
         String ops = StrUtils.strjoinNL
-            ( "(filter (= ?x <http://example/x>)"
-            , "  (sequence"
-            , "     (conditional"
-            , "        (table unit)"
-            , "        (bgp (triple ?x <http://example/q> ?o)))"
-            , "     (bgp (triple ?x <http://example/p> ?o2))"
-            , " ))" 
-            ) ;
+            ("(sequence"
+             , "   (conditional"
+             , "      (table unit)"
+             , "      (bgp (triple ?x <http://example/q> ?o)))"
+             , "    (assign ((?x <http://example/x>))"
+             , "      (bgp (triple <http://example/x> <http://example/p> ?o2)))"
+             , ")" 
+                ) ;
+
         TestOptimizer.check(qs, ops) ;
     }
     
@@ -271,8 +282,8 @@ public class TestTransformFilters extends AbstractTestTransform
               , "    ?x :p ?o2"
               , "}"
                 ) ;
-        // Possible transformation:
-        // Safe to transform:  This (sequence) always defined ?x 
+        // Transformation if ilter place not happening.
+        // Weaker placement.
         String ops = StrUtils.strjoinNL
             ("(assign ((?x <http://example/x>))"
             , "   (sequence"
@@ -281,17 +292,19 @@ public class TestTransformFilters extends AbstractTestTransform
             , "         (bgp (triple <http://example/x> <http://example/q> ?o)))"
             , "       (bgp (triple <http://example/x> <http://example/p> ?o2))))"
             ) ;
-        // Currently :
-        String ops1 = StrUtils.strjoinNL
-            ("(filter (= ?x <http://example/x>)"
-            ,"  (sequence"
-            ,"    (conditional"
-            ,"      (table unit)"
-            ,"      (bgp (triple ?x <http://example/q> ?o)) )"
-            ,"    (bgp (triple ?x <http://example/p> ?o2)) ))"
+        //JENA-671
+        // Note that "assign" is a filter as well
+        // so it filters the ?x fro the RHS of the conditional.
+        String ops2 = StrUtils.strjoinNL
+            ("(sequence"
+            ,"  (conditional"
+            ,"    (table unit)"
+            ,"    (bgp (triple ?x <http://example/q> ?o)) )"
+            ,"  (assign ((?x <http://example/x>))"
+            ,"    (bgp (triple <http://example/x> <http://example/p> ?o2)))"
+            ,"  )"     
             ) ;
-        
-        TestOptimizer.check(qs, ops1) ;
+        TestOptimizer.check(qs, ops2) ;
     }
 
     // JENA-294 part II
