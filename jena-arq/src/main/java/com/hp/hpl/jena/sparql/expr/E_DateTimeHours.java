@@ -31,7 +31,7 @@ public class E_DateTimeHours extends ExprFunction1
     }
     
     @Override
-    public NodeValue eval(NodeValue v) { return XSDFuncOp.dtGetHours(v) ; }
+    public NodeValue eval(NodeValue v) { return XSDFuncOp.getHours(v) ; }
     
     @Override
     public Expr copy(Expr expr) { return new E_DateTimeHours(expr) ; } 

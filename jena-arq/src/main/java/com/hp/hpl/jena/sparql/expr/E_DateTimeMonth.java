@@ -31,7 +31,7 @@ public class E_DateTimeMonth extends ExprFunction1
     }
     
     @Override
-    public NodeValue eval(NodeValue v) { return XSDFuncOp.dtGetMonth(v) ; }
+    public NodeValue eval(NodeValue v) { return XSDFuncOp.getMonth(v) ; }
     
     @Override
     public Expr copy(Expr expr) { return new E_DateTimeMonth(expr) ; } 

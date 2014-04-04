@@ -321,6 +321,9 @@ public class TestFunctions2 extends BaseTest
     public void year_26()               { test("year('--12-24-08:00'^^xsd:gMonthDay)", "2010") ; }
     @Test(expected=ExprEvalException.class)
     public void year_27()               { test("year('---24-08:00'^^xsd:gDay)", "2010") ; }
+    
+    @Test public void year_dur_01()     { test("year('P1Y2M3DT4H5M6S'^^xsd:duration)", "1") ; }
+
 
     // MONTH
     @Test public void month_01()        { test("month('2010-12-24T16:24:01.123'^^xsd:dateTime)", "12") ; }
@@ -354,6 +357,8 @@ public class TestFunctions2 extends BaseTest
     public void month_26()              { test("month('--12-24-08:00'^^xsd:gMonthDay)", "12") ; }
     @Test(expected=ExprEvalException.class)
     public void month_27()              { test("month('---24-08:00'^^xsd:gDay)", "12") ; }
+
+    @Test public void month_dur_01()    { test("month('P1Y2M3DT4H5M6S'^^xsd:duration)", "2") ; }
 
     // DAY
     @Test public void day_01()          { test("day('2010-12-24T16:24:01.123'^^xsd:dateTime)", "24") ; }
@@ -390,6 +395,8 @@ public class TestFunctions2 extends BaseTest
     @Test public void day_26()          { test("day('--12-24-08:00'^^xsd:gMonthDay)", "24") ; }
     @Test public void day_27()          { test("day('---24-08:00'^^xsd:gDay)", "24") ; }
 
+    @Test public void day_dur_01()      { test("day('P1Y2M3DT4H5M6S'^^xsd:duration)", "3") ; }
+
     // HOURS
     
     @Test public void hours_01()        { test("hours('2010-12-24T16:24:01.123'^^xsd:dateTime)", "16") ; }
@@ -403,6 +410,8 @@ public class TestFunctions2 extends BaseTest
     @Test public void hours_20()        { test("hours('2010-12-24T16:24:01.123-08:00'^^xsd:dateTime)", "16") ; }
     @Test public void hours_21()        { test("hours('16:24:24-08:00'^^xsd:time)", "16") ; }
 
+    @Test public void hours_dur_01()     { test("hours('P1Y2M3DT4H5M6S'^^xsd:duration)", "4") ; }
+    
     // MINUTES
     @Test public void minutes_01()        { test("minutes('2010-12-24T16:24:01.123'^^xsd:dateTime)", "24") ; }
     @Test(expected=ExprEvalException.class)
@@ -414,6 +423,8 @@ public class TestFunctions2 extends BaseTest
 
     @Test public void minutes_20()        { test("minutes('2010-12-24T16:24:01.123-08:00'^^xsd:dateTime)", "24") ; }
     @Test public void minutes_21()        { test("minutes('16:24:01.01-08:00'^^xsd:time)", "24") ; }
+
+    @Test public void minutes_dur_01()    { test("minutes('P1Y2M3DT4H5M6S'^^xsd:duration)", "5") ; }
 
     // SECONDS
     @Test public void seconds_01()        { test("seconds('2010-12-24T16:24:01.123'^^xsd:dateTime)", "01.123") ; }
@@ -427,6 +438,8 @@ public class TestFunctions2 extends BaseTest
     @Test public void seconds_20()        { test("seconds('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "35.123") ; }
     @Test public void seconds_21()        { test("seconds('16:24:01.01-08:00'^^xsd:time)", "'01.01'^^xsd:decimal") ; }
     
+    @Test public void seconds_dur_01()    { test("seconds('P1Y2M3DT4H5M6S'^^xsd:duration)", "'6'^^xsd:decimal") ; }
+
     // TIMEZONE
     @Test public void timezone_01()       { test("timezone('2010-12-24T16:24:35.123Z'^^xsd:dateTime)", "'PT0S'^^xsd:dayTimeDuration") ; }
     @Test public void timezone_02()       { test("timezone('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "'-PT8H'^^xsd:dayTimeDuration") ; }
