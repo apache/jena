@@ -28,12 +28,10 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.SyntaxLabels ;
+import org.apache.jena.riot.system.* ;
 
 import com.github.jsonldjava.core.* ;
 import com.github.jsonldjava.utils.JSONUtils ;
@@ -48,12 +46,18 @@ import com.hp.hpl.jena.sparql.util.Context ;
 public class JsonLDReader implements ReaderRIOT
 {
     private ErrorHandler errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
-
+    private ParserProfile parserProfile = null ; 
+    
     @Override public ErrorHandler getErrorHandler() { return errorHandler ; }
     @Override public void setErrorHandler(ErrorHandler errorHandler) { this.errorHandler = errorHandler ; }
     
+    @Override public ParserProfile getParserProfile()                   { return parserProfile ; }
+    @Override public void setParserProfile(ParserProfile parserProfile) { this.parserProfile = parserProfile ; }
+    
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        if ( parserProfile == null )
+            parserProfile = RiotLib.profile(RDFLanguages.JSONLD, baseURI, errorHandler) ;
         try {
             Object jsonObject = JSONUtils.fromReader(reader) ;
             read$(jsonObject, baseURI, ct, output, context) ;
@@ -65,6 +69,8 @@ public class JsonLDReader implements ReaderRIOT
 
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        if ( parserProfile == null )
+            parserProfile = RiotLib.profile(RDFLanguages.JSONLD, baseURI, errorHandler) ;
         try {
             Object jsonObject = JSONUtils.fromInputStream(in) ;
             read$(jsonObject, baseURI, ct, output, context) ;
@@ -73,7 +79,7 @@ public class JsonLDReader implements ReaderRIOT
             IO.exception(e) ;
         }
     }
-
+    
     private void read$(Object jsonObject, String baseURI, ContentType ct, final StreamRDF output, Context context) {
         try {
             JSONLDTripleCallback callback = new JSONLDTripleCallback() {
@@ -89,18 +95,19 @@ public class JsonLDReader implements ReaderRIOT
                                 Node s = createNode(t, "subject") ;
                                 Node p = createNode(t, "predicate") ;
                                 Node o = createNode(t, "object") ;
-                                Triple triple = Triple.create(s, p, o) ;
+                                Triple triple = parserProfile.createTriple(s, p, o, -1, -1) ;
                                 output.triple(triple) ;
                             }
                         } else {
                             @SuppressWarnings("unchecked")
                             List<Map<String, Object>> quads = (List<Map<String, Object>>)x ;
-                            Node g = NodeFactory.createURI(gn) ; // Bnodes?
+                            Node g = createURI(gn) ; 
                             for ( Map<String, Object> q : quads ) {
                                 Node s = createNode(q, "subject") ;
                                 Node p = createNode(q, "predicate") ;
                                 Node o = createNode(q, "object") ;
-                                output.quad(Quad.create(g, s, p, o)) ;
+                                Quad quad = parserProfile.createQuad(g, s, p, o, -1, -1) ;
+                                output.quad(quad) ;
                             }
                         }
                     }
@@ -135,9 +142,9 @@ public class JsonLDReader implements ReaderRIOT
         String type = (String)map.get("type") ;
         String lex = (String)map.get("value") ;
         if ( type.equals(IRI) )
-            return NodeFactory.createURI(lex) ;
+            return createURI(lex) ;
         else if ( type.equals(BLANK_NODE) )
-            return labels.get(null, lex) ;
+            return labels.get(null, lex) ;  //??
         else if ( type.equals(LITERAL) ) {
             String lang = (String)map.get("language") ;
             String datatype = (String)map.get("datatype") ;
@@ -146,11 +153,11 @@ public class JsonLDReader implements ReaderRIOT
                 // During migration, we prefer simple literals to xsd:strings. 
                 datatype = null ;
             if ( lang == null && datatype == null )
-                return NodeFactory.createLiteral(lex) ;
+                return parserProfile.createStringLiteral(lex,-1, -1) ;
             if ( lang != null )
-                return NodeFactory.createLiteral(lex, lang, null) ;
+                return parserProfile.createLangLiteral(lex, lang, -1, -1) ;
             RDFDatatype dt = NodeFactory.getType(datatype) ;
-            return NodeFactory.createLiteral(lex, dt) ;
+            return parserProfile.createTypedLiteral(lex, dt, -1, -1) ;
         } else
             throw new InternalErrorException("Node is not a IRI, bNode or a literal: " + type) ;
     }
@@ -159,7 +166,7 @@ public class JsonLDReader implements ReaderRIOT
         if ( str.startsWith("_:") )
             return labels.get(null, str) ;
         else
-            return NodeFactory.createURI(str) ;
+            return parserProfile.createURI(str, -1, -1) ;
     }
 
     private Node createLiteral(String lex, String datatype, String lang) {
