@@ -178,8 +178,8 @@ public class ParseHandlerResolver extends ParseHandlerForm
         if ( ! StrUtils.contains(pname, ":") )
             throwException("Prefixed name does not have a ':': "+pname, line, column) ;
         
-        String uri =  prologue.getPrefixMapping().expandPrefix(pname) ;
-        if ( uri == null || uri.equals(pname) )
+        String uri =  prologue.expandPrefixedName(pname) ;
+        if ( uri == null )
             throwException("Can't resolve prefixed name: "+pname, line, column) ;
         return uri ;
     }
