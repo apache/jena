@@ -52,7 +52,10 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     }
 
     @Test public void place_bgp_04() {
-        test("(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))", "(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))") ;
+        test("(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))", 
+             "(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))") ;
+        // and not 
+        // "(sequence (bgp (?s ?p ?x)) (filter (= ?XX 1) (?s1 ?p1 ?XX)) )" 
     }
     
     @Test public void place_bgp_05() {
@@ -120,9 +123,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
 
     @Test public void place_sequence_06() {
         test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x2)) (bgp (?s ?p ?x)) ))",
-             // If push filter to last element ... which is of no benefit
-            //"(sequence (bgp (?s ?p ?x1) (?s ?p ?x2)) (filter (= ?x 123) (bgp (?s ?p ?x))) )") ;
-             null) ;
+             "(sequence (bgp (?s ?p ?x1) (?s ?p ?x2)) (filter (= ?x 123) (bgp (?s ?p ?x))) )") ;
     }
 
     @Test public void place_sequence_07() {
@@ -262,7 +263,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     @Test public void place_extend_05() {
         // Filter further out than one place. 
     	test("(filter (= ?z 1) (sequence (extend (?x1 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))))",
-    	     null) ;
+    	     "(sequence (extend (?x1 123) (bgp (?s ?p ?x))) (filter (= ?z 1) (bgp (?s ?p ?z)) ))") ;
     }
 
     @Test public void place_extend_06() {
