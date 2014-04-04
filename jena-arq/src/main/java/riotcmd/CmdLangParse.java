@@ -28,7 +28,6 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
-import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.process.inf.InfFactory ;
@@ -249,35 +248,27 @@ public abstract class CmdLangParse extends CmdGeneral
         StreamRDFCounting sink = StreamRDFLib.count(s) ;
         s = null ;
         
-        // Need low level control over the parser.
-        @SuppressWarnings("deprecation")
-        LangRIOT parser = RiotReader.createParser(in, lang, baseURI, sink) ;
-        try
-        {
-            if ( checking )
-            {
-                if ( parser.getLang() == RDFLanguages.NTRIPLES ||  parser.getLang() == RDFLanguages.NQUADS )
-                    parser.setProfile(RiotLib.profile(baseURI, false, true, errHandler)) ;
+        ReaderRIOT reader = RDFDataMgr.createReader(lang) ;
+        try {
+            if ( checking ) {
+                if ( lang == RDFLanguages.NTRIPLES || lang == RDFLanguages.NQUADS )
+                    reader.setParserProfile(RiotLib.profile(baseURI, false, true, errHandler)) ;
                 else
-                    parser.setProfile(RiotLib.profile(baseURI, true, true, errHandler)) ;
-            }
-            else
-                parser.setProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
-            
+                    reader.setParserProfile(RiotLib.profile(baseURI, true, true, errHandler)) ;
+            } else
+                reader.setParserProfile(RiotLib.profile(baseURI, false, false, errHandler)) ;
+
             if ( labelsAsGiven )
-                parser.getProfile().setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
+                reader.getParserProfile().setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
             modTime.startTimer() ;
-            parser.parse() ;
-        }
-        catch (RiotException ex)
-        {
+            reader.read(in, baseURI, ct, sink, null) ;
+        } catch (RiotException ex) {
             // Should have handled the exception and logged a message by now.
-            //System.err.println("++++"+ex.getMessage()); 
-           
+            // System.err.println("++++"+ex.getMessage());
+
             if ( modLangParse.stopOnBadTerm() )
                 return ;
-        }
-        finally {
+        } finally {
             // Not close - we may write again to the underlying output stream in another call to parse a file.  
             sink.finish() ;
             IO.close(in) ;

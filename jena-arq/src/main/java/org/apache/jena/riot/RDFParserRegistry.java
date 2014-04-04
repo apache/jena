@@ -32,6 +32,7 @@ import org.apache.jena.riot.lang.JsonLDReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -149,6 +150,7 @@ public class RDFParserRegistry
     {
         private final Lang lang ;
         private ErrorHandler errorHandler ; 
+        private ParserProfile parserProfile = null ;
 
         ReaderRIOTLang(Lang lang) {
             this.lang = lang ;
@@ -159,7 +161,10 @@ public class RDFParserRegistry
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             @SuppressWarnings("deprecation")
             LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
-            parser.getProfile().setHandler(errorHandler) ;
+            if ( parserProfile != null )
+                parser.setProfile(parserProfile);
+            if ( errorHandler != null )
+                parser.getProfile().setHandler(errorHandler) ;
             parser.parse() ;
         }
 
@@ -173,6 +178,9 @@ public class RDFParserRegistry
 
         @Override public ErrorHandler getErrorHandler()                     { return errorHandler ; }
         @Override public void setErrorHandler(ErrorHandler errorHandler)    { this.errorHandler = errorHandler ; }
+
+        @Override public ParserProfile getParserProfile()                   { return parserProfile ; } 
+        @Override public void setParserProfile(ParserProfile parserProfile) { this.parserProfile = parserProfile ; }
     }
 
     private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory
