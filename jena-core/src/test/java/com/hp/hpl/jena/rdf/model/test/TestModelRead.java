@@ -56,29 +56,29 @@ public class TestModelRead extends AbstractModelTestBase
 		this( new TestPackage.PlainModelFactory(), "TestModelRead");
 	}
 	
-	public void testContentNegotiation()
-	{
-		try
-		{
-			model.read("http://jena.sourceforge.net/test/mime/test1");
-			Assert.assertEquals(model.size(), 1);
-		}
-		catch (final JenaException jx)
-		{
-			if ((jx.getCause() instanceof NoRouteToHostException)
-					|| (jx.getCause() instanceof UnknownHostException)
-					|| (jx.getCause() instanceof ConnectException)
-					|| (jx.getCause() instanceof IOException))
-			{
-				TestModelRead.logger
-						.warn("Cannot access public internet - content negotiation test not executed");
-			}
-			else
-			{
-				throw jx;
-			}
-		}
-	}
+//	public void testContentNegotiation()
+//	{
+//		try
+//		{
+//			model.read("http://jena.sourceforge.net/test/mime/test1");
+//			Assert.assertEquals(model.size(), 1);
+//		}
+//		catch (final JenaException jx)
+//		{
+//			if ((jx.getCause() instanceof NoRouteToHostException)
+//					|| (jx.getCause() instanceof UnknownHostException)
+//					|| (jx.getCause() instanceof ConnectException)
+//					|| (jx.getCause() instanceof IOException))
+//			{
+//				TestModelRead.logger
+//						.warn("Cannot access public internet - content negotiation test not executed");
+//			}
+//			else
+//			{
+//				throw jx;
+//			}
+//		}
+//	}
 
 	public void testDefaultLangXML() throws FileNotFoundException
 	{
