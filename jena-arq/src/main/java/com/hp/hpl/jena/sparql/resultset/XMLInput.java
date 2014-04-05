@@ -20,18 +20,14 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.io.InputStream ;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.util.RefBoolean ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 
 /** Code that reads an XML Result Set and builds the ARQ structure for the same. */
 
-
 public class XMLInput
 {
-    static RefBoolean useSAX = new RefBoolean(ARQ.useSAX) ;
-    
     public static ResultSet fromXML(InputStream in) 
     {
         return fromXML(in, null) ;
@@ -68,7 +64,7 @@ public class XMLInput
     
     public static SPARQLResult make(InputStream in, Model model)
     {
-        if ( useSAX.getValue() )
+        if ( SystemARQ.UseSAX )
             return new XMLInputSAX(in, model) ;
         return new XMLInputStAX(in, model) ;
     }
@@ -77,7 +73,7 @@ public class XMLInput
     
     public static SPARQLResult make(String str, Model model)
     {
-        if ( useSAX.getValue() )
+        if ( SystemARQ.UseSAX )
             return new XMLInputSAX(str, model) ;
         return new XMLInputStAX(str, model) ;
     }
