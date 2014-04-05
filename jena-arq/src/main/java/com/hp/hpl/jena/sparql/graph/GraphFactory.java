@@ -23,17 +23,14 @@ import org.apache.jena.atlas.data.ThresholdPolicy ;
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.util.RefBoolean ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.util.graph.GraphSink ;
 
 /** Ways to make graphs and models */
 public class GraphFactory
 {
-    private static RefBoolean usePlainGraph = new RefBoolean(ARQ.strictGraph) ;
-    
     /** Create a graph that is a Jena memory graph 
      * @see #createDefaultGraph
      */
@@ -45,7 +42,7 @@ public class GraphFactory
     /** Create a graph - ARQ-wide default type */
     public static Graph createDefaultGraph()
     {
-        return usePlainGraph.getValue() ? createPlainGraph() : createJenaDefaultGraph() ;
+        return SystemARQ.UsePlainGraph ? createPlainGraph() : createJenaDefaultGraph() ;
     }
 
     /** Create a graph - always the Jena default graph type */

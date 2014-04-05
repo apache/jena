@@ -38,9 +38,11 @@ import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
 public class SystemARQ
 {
-    // NodeValues work without the context so something only have global settings.
+    // Various system wide settings, "constants" that might chnage e,g test setups
+
+    // NodeValues work without the context so somethings only have global settings.
     
-    /** Control whether eadditon datattypes, over and above strict, minimal SPARQL compliance, are handled.
+    /** Control whether additon datatypes, over and above strict, minimal SPARQL compliance, are handled.
      *  Examples incldue xsd;date and simple literal/xsd:string.
      */
     public static boolean ValueExtensions       = true ;
@@ -57,6 +59,21 @@ public class SystemARQ
      * F&O insists on true/false and so can lead to false positves and negatives. 
      */
     public static boolean StrictDateTimeFO      = false ;
+    
+    /** Whether support for roman numerals (datatype http://rome.example.org/Numeral).
+     *  Mainly a test of datatype extension.
+     */
+    public static boolean EnableRomanNumerals   = true ;  
+    
+    /**
+     * Use a plain graph (sameValeuAs is term equality)
+     */
+    public static boolean UsePlainGraph         = true ;
+    
+    /**
+     * Whether to use StAX or SAX XML parsing for result sets (StAX preferred). 
+     */
+    public static boolean UseSAX                = false ;
 
     /** Sync a Model if it provides the underlying graph provides sync . Do nothing otherwise. */
     public static void sync(Model model)

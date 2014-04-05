@@ -163,10 +163,11 @@ public class ARQ
      */
     public static final Symbol queryTimeout = ARQConstants.allocSymbol("queryTimeout") ;
     
-    /**
-     * Context symbol controlling Roman Numerals in Filters.
-     */
-    public static final Symbol enableRomanNumerals = ARQConstants.allocSymbol("romanNumerals") ;
+    // This can't be a context constant because NodeValues don't look in the context.
+//    /**
+//     * Context symbol controlling Roman Numerals in Filters.
+//     */
+//    public static final Symbol enableRomanNumerals = ARQConstants.allocSymbol("romanNumerals") ;
 
     /**
      * Context key for StageBuilder used in BGP compilation 
@@ -420,8 +421,9 @@ public class ARQ
     public static void setStrictMode(Context context)
     {
         SystemARQ.StrictDateTimeFO      = true ;
-        SystemARQ.ValueExtensions    = false ;
-        SystemARQ.SameValueAsString  = false ;
+        SystemARQ.ValueExtensions       = false ;
+        SystemARQ.SameValueAsString     = false ;
+        SystemARQ.EnableRomanNumerals   = false ;
         
         context.set(optimization,                   false) ;
         context.set(hideNonDistiguishedVariables,   true) ;
@@ -433,10 +435,8 @@ public class ARQ
         context.set(constantBNodeLabels,            false) ;
         context.set(generateToList,                 true) ;
         context.set(regexImpl,                      xercesRegex) ;
-        context.set(enableRomanNumerals,            false) ;
-         
+        
         //context.set(filterPlacement,            false) ;
-//        XSDFuncOp.strictDateTimeFO = false ;
     }
 
     public static boolean isStrictMode()       { return ARQ.getContext().isTrue(strictSPARQL) ; }
@@ -444,8 +444,9 @@ public class ARQ
     /** Set normal mode, including expression evaluation */
     public static void setNormalMode() {
         SystemARQ.StrictDateTimeFO      = false ;
-        SystemARQ.ValueExtensions    = true ;
-        SystemARQ.SameValueAsString  = true ;
+        SystemARQ.ValueExtensions       = true ;
+        SystemARQ.SameValueAsString     = true ;
+        SystemARQ.EnableRomanNumerals   = false ;
         setNormalMode(ARQ.getContext()) ; 
     }
         
@@ -464,10 +465,6 @@ public class ARQ
         context.set(constantBNodeLabels,            true) ;
         context.set(generateToList,                 false) ;
         context.set(regexImpl,                      javaRegex) ;
-        context.set(enableRomanNumerals,            true) ;
-        
-//        if (  getContext().isTrue(romanNumeralsAsFirstClassDatatypes) )
-//            RomanNumeralDatatype.enableAsFirstClassDatatype() ; // Wires into the TypeMapper.
     }
     
     // ----------------------------------
@@ -530,11 +527,13 @@ public class ARQ
     // Force a call
     static { init() ; }
     
+    /* Side effects */
     private static Context defaultSettings()
     {
         SystemARQ.StrictDateTimeFO      = false ;
-        SystemARQ.ValueExtensions    = true ;
-        SystemARQ.SameValueAsString  = true ;
+        SystemARQ.ValueExtensions       = true ;
+        SystemARQ.SameValueAsString     = true ;
+        SystemARQ.EnableRomanNumerals   = false ; 
 
         Context context = new Context() ;
         context.unset(optimization) ;
@@ -543,7 +542,6 @@ public class ARQ
         context.set(constantBNodeLabels,           true) ;
         context.set(enablePropertyFunctions,       true) ;
         context.set(strictGraph,                   false) ;
-        context.set(enableRomanNumerals,           false) ;
         context.set(regexImpl,                     javaRegex) ;
 
         return context ; 

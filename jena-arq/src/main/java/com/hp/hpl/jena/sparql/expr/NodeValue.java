@@ -50,7 +50,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
@@ -118,10 +117,6 @@ public abstract class NodeValue extends ExprNode
     
     public static boolean VerboseWarnings = true ;
     public static boolean VerboseExceptions = false ;
-    
-    
-    private static RefBoolean enableRomanNumerals = new RefBoolean(ARQ.enableRomanNumerals, false) ;
-    //private static RefBoolean strictSPARQL = new RefBoolean(ARQ.strictSPARQL, false) ;
     
     public static final BigInteger IntegerZERO = BigInteger.ZERO ;
     public static final BigDecimal DecimalZERO = BigDecimal.ZERO ;
@@ -1023,7 +1018,7 @@ public abstract class NodeValue extends ExprNode
         // Only XSD supported.
         // And (for testing) roman numerals.
         String datatypeURI = datatype.getURI() ;
-        if ( ! datatypeURI.startsWith(xsdNamespace) && ! enableRomanNumerals.getValue() )
+        if ( ! datatypeURI.startsWith(xsdNamespace) && ! SystemARQ.EnableRomanNumerals )
         {
             // Not XSD.
             return null ;
@@ -1160,7 +1155,7 @@ public abstract class NodeValue extends ExprNode
 //            }
             
             // Not wired in
-            if ( enableRomanNumerals.getValue() )
+            if ( SystemARQ.EnableRomanNumerals )
             {
                 if ( lit.getDatatypeURI().equals(RomanNumeralDatatype.get().getURI()) )
                 {
