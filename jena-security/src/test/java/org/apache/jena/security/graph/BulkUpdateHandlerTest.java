@@ -20,6 +20,7 @@ package org.apache.jena.security.graph;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.impl.CollectionGraph;
 import com.hp.hpl.jena.sparql.graph.GraphFactory;
 
 import java.util.Arrays;
@@ -34,7 +35,6 @@ import org.apache.jena.security.SecurityEvaluatorParameters;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.graph.SecuredBulkUpdateHandler;
 import org.apache.jena.security.graph.SecuredGraph;
-import org.apache.jena.security.utils.CollectionGraph;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

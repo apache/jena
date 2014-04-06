@@ -22,6 +22,7 @@ import com.hp.hpl.jena.graph.GraphEventManager;
 import com.hp.hpl.jena.graph.GraphListener;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.impl.CollectionGraph;
 import com.hp.hpl.jena.sparql.graph.GraphFactory;
 
 import java.util.Arrays;
@@ -35,7 +36,6 @@ import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluatorParameters;
 import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.graph.SecuredGraph;
-import org.apache.jena.security.utils.CollectionGraph;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

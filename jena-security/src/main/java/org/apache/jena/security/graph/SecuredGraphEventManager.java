@@ -21,6 +21,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphEventManager;
 import com.hp.hpl.jena.graph.GraphListener;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.impl.CollectionGraph;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
@@ -42,7 +43,6 @@ import org.apache.jena.security.SecurityEvaluator.Action;
 import org.apache.jena.security.graph.impl.SecuredGraphImpl;
 import org.apache.jena.security.impl.CachedSecurityEvaluator;
 import org.apache.jena.security.impl.SecuredItemImpl;
-import org.apache.jena.security.utils.CollectionGraph;
 import org.apache.jena.security.utils.PermTripleFilter;
 
 /**
