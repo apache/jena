@@ -21,6 +21,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.impl.CollectionGraph;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -86,7 +87,6 @@ import org.apache.jena.security.model.SecuredRDFNode;
 import org.apache.jena.security.model.SecuredResource;
 import org.apache.jena.security.model.SecuredSeq;
 import org.apache.jena.security.model.SecuredStatement;
-import org.apache.jena.security.utils.CollectionGraph;
 
 /**
  * Implementation of SecuredModel to be used by a SecuredItemInvoker proxy.
