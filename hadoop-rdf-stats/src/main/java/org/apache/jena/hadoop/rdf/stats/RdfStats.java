@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.yarcdata.urika.hadoop.rdf.stats;
+package org.apache.jena.hadoop.rdf.stats;
 
 import io.airlift.command.Arguments;
 import io.airlift.command.Command;
@@ -43,8 +43,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.apache.jena.hadoop.rdf.stats.jobs.JobFactory;
 
-import com.yarcdata.urika.hadoop.rdf.stats.jobs.JobFactory;
 
 /**
  * Entry point for the Hadoop job, handles launching all the relevant Hadoop
