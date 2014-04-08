@@ -2,23 +2,23 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.yarcdata.urika</groupId>
+		<groupId>org.apache.jena</groupId>
 		<artifactId>hadoop-rdf</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.9.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>hadoop-rdf-stats</artifactId>
-	<name>Hadoop RDF Statistics</name>
-	<description>A JAR that can be run on Hadoop to produce a statistical analysis on arbitrary RDF inputs</description>
+	<name>Apache Jena - Hadoop RDF - Statistics Demo App</name>
+	<description>A demo application that can be run on Hadoop to produce a statistical analysis on arbitrary RDF inputs</description>
 
 	<dependencies>
 		<!-- Internal Project Dependencies -->
 		<dependency>
-			<groupId>com.yarcdata.urika</groupId>
+			<groupId>org.apache.jena</groupId>
 			<artifactId>hadoop-rdf-io</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.yarcdata.urika</groupId>
+			<groupId>org.apache.jena</groupId>
 			<artifactId>hadoop-rdf-mapreduce</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -46,7 +46,7 @@
 
 		<!-- Test Dependencies -->
 		<dependency>
-			<groupId>com.yarcdata.urika</groupId>
+			<groupId>org.apache.jena</groupId>
 			<artifactId>hadoop-rdf-mapreduce</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>

@@ -2,18 +2,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.yarcdata.urika</groupId>
+		<groupId>org.apache.jena</groupId>
 		<artifactId>hadoop-rdf</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.9.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>hadoop-rdf-mapreduce</artifactId>
-	<name>Hadoop RDF Map/Reduce</name>
+	<name>Apache Jena - Hadoop RDF - Map/Reduce</name>
 	<description>Contains some basic Map/Reduce implementations for working with RDF on Hadoop</description>
 
 	<dependencies>
 		<!-- Internal Project Dependencies -->
 		<dependency>
-			<groupId>com.yarcdata.urika</groupId>
+			<groupId>org.apache.jena</groupId>
 			<artifactId>hadoop-rdf-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
