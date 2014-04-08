@@ -21,9 +21,9 @@ package com.yarcdata.urika.hadoop.rdf.io.input.compressed.nquads;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.jena.hadoop.rdf.io.input.NQuadsInputFormat;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
-import com.yarcdata.urika.hadoop.rdf.io.input.NQuadsInputFormat;
 import com.yarcdata.urika.hadoop.rdf.io.input.compressed.AbstractCompressedQuadsInputFormatTests;
 
 /**

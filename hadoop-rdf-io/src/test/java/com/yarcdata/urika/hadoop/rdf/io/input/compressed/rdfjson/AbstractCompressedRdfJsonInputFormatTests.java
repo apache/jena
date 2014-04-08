@@ -21,10 +21,10 @@ package com.yarcdata.urika.hadoop.rdf.io.input.compressed.rdfjson;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.jena.hadoop.rdf.io.input.RdfJsonInputFormat;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 
-import com.yarcdata.urika.hadoop.rdf.io.input.RdfJsonInputFormat;
 import com.yarcdata.urika.hadoop.rdf.io.input.compressed.AbstractCompressedWholeFileTripleInputFormatTests;
 
 /**

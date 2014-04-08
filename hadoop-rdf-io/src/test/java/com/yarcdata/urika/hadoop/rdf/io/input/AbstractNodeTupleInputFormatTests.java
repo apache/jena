@@ -40,6 +40,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
 import org.apache.hadoop.mapreduce.task.JobContextImpl;
 import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
+import org.apache.jena.hadoop.rdf.io.HadoopIOConstants;
+import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.junit.After;
 import org.junit.Assert;
@@ -51,8 +53,6 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.yarcdata.urika.hadoop.rdf.io.HadoopIOConstants;
-import com.yarcdata.urika.hadoop.rdf.io.RdfIOConstants;
 
 /**
  * Abstract node tuple input format tests

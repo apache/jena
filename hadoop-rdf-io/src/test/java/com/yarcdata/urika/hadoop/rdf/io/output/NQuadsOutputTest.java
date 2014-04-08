@@ -20,6 +20,7 @@ package com.yarcdata.urika.hadoop.rdf.io.output;
 
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.OutputFormat;
+import org.apache.jena.hadoop.rdf.io.output.NQuadsOutputFormat;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 
