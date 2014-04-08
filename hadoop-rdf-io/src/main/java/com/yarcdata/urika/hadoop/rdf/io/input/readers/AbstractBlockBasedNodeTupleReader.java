@@ -32,6 +32,7 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.lang.PipedRDFIterator;
@@ -44,7 +45,6 @@ import com.yarcdata.urika.hadoop.rdf.io.input.util.BlockInputStream;
 import com.yarcdata.urika.hadoop.rdf.io.input.util.TrackableInputStream;
 import com.yarcdata.urika.hadoop.rdf.io.input.util.TrackedInputStream;
 import com.yarcdata.urika.hadoop.rdf.io.input.util.TrackedPipedRDFStream;
-import com.yarcdata.urika.hadoop.rdf.types.AbstractNodeTupleWritable;
 
 /**
  * An abstract implementation for a record reader that reads records from blocks

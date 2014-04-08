@@ -20,9 +20,9 @@ package com.yarcdata.urika.hadoop.rdf.io.input;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Tests for RDF/JSON input

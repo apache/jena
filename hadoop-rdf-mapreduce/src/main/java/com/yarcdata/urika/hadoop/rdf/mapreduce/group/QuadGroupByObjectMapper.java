@@ -18,8 +18,9 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.group;
 
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
 
 /**
  * A mapper which assists in grouping quads by object by reassigning their keys

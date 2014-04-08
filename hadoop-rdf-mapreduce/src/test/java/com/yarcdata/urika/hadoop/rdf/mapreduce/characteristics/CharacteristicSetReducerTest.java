@@ -26,14 +26,14 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
 import org.apache.hadoop.mrunit.types.Pair;
+import org.apache.jena.hadoop.rdf.types.CharacteristicSetWritable;
+import org.apache.jena.hadoop.rdf.types.CharacteristicWritable;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.AbstractMapReduceTests;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.characteristics.CharacteristicSetReducer;
-import com.yarcdata.urika.hadoop.rdf.types.CharacteristicSetWritable;
-import com.yarcdata.urika.hadoop.rdf.types.CharacteristicWritable;
 
 /**
  * Abstract tests for the {@link CharacteristicSetReducer}

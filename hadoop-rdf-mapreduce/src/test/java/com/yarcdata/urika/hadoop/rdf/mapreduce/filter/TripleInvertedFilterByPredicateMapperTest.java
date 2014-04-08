@@ -21,6 +21,7 @@ package com.yarcdata.urika.hadoop.rdf.mapreduce.filter;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.NodeFactory;
@@ -29,7 +30,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.RdfMapReduceConstants;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.filter.positional.TripleFilterByPredicateUriMapper;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Tests for the {@link TripleFilterByPredicateUriMapper}

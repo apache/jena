@@ -21,8 +21,9 @@ package com.yarcdata.urika.hadoop.rdf.mapreduce.filter;
 import java.io.IOException;
 
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
+
 import com.yarcdata.urika.hadoop.rdf.mapreduce.RdfMapReduceConstants;
-import com.yarcdata.urika.hadoop.rdf.types.AbstractNodeTupleWritable;
 
 /**
  * Abstract mapper implementation which helps in filtering tuples from the

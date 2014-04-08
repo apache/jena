@@ -21,9 +21,9 @@ package com.yarcdata.urika.hadoop.rdf.mapreduce.split;
 import java.io.IOException;
 
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
 
-import com.yarcdata.urika.hadoop.rdf.types.AbstractNodeTupleWritable;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
 
 /**
  * Abstract mapper implementation which splits the tuples into their constituent

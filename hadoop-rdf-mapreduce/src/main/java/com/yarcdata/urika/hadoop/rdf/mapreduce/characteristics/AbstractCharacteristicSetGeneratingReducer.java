@@ -27,13 +27,13 @@ import java.util.TreeMap;
 
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
+import org.apache.jena.hadoop.rdf.types.CharacteristicSetWritable;
+import org.apache.jena.hadoop.rdf.types.CharacteristicWritable;
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.yarcdata.urika.hadoop.rdf.types.CharacteristicSetWritable;
-import com.yarcdata.urika.hadoop.rdf.types.CharacteristicWritable;
-import com.yarcdata.urika.hadoop.rdf.types.AbstractNodeTupleWritable;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
 
 /**
  * Abstract reducer which takes in tuples grouped by some node and generating

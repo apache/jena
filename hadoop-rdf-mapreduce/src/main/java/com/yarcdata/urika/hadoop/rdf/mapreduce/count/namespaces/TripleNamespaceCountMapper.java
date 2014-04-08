@@ -18,10 +18,11 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.count.namespaces;
 
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
+
 import com.hp.hpl.jena.graph.Triple;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.TextCountReducer;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * A mapper for counting namespace usages within triples designed primarily for

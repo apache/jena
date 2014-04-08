@@ -22,10 +22,10 @@ import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 
 import com.yarcdata.urika.hadoop.rdf.io.RdfIOConstants;
 import com.yarcdata.urika.hadoop.rdf.io.output.writers.AbstractBatchedNodeTupleWriter;
-import com.yarcdata.urika.hadoop.rdf.types.AbstractNodeTupleWritable;
 
 /**
  * Abstract output format for formats that use a

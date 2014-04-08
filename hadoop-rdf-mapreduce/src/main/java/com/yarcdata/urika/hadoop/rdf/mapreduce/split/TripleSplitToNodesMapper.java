@@ -18,9 +18,10 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.split;
 
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
+
 import com.hp.hpl.jena.graph.Triple;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * A mapper which splits triples into their constituent nodes

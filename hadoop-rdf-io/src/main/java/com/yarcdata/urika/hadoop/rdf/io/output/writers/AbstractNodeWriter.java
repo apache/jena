@@ -26,13 +26,13 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.Writer2;
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterNT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
 
 /**
  * Abstract implementation of a record writer which writes pairs of nodes and

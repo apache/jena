@@ -20,12 +20,13 @@ package com.yarcdata.urika.hadoop.rdf.mapreduce.count;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * Tests for the {@link QuadNodeCountMapper}

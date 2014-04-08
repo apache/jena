@@ -18,10 +18,11 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.filter.positional;
 
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.filter.AbstractTripleFilterMapper;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * An abstract triple filter that filters triples based on different criteria

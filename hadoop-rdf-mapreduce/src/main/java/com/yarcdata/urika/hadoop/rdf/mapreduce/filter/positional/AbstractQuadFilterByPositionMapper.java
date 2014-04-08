@@ -18,10 +18,11 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.filter.positional;
 
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.filter.AbstractQuadFilterMapper;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * An abstract triple filter that filters quads based on different criteria for

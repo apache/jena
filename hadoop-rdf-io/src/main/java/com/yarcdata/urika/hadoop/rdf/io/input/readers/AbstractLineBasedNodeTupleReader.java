@@ -33,6 +33,7 @@ import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.util.LineReader;
+import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.riot.system.ParserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import com.yarcdata.urika.hadoop.rdf.io.HadoopIOConstants;
 import com.yarcdata.urika.hadoop.rdf.io.RdfIOConstants;
 import com.yarcdata.urika.hadoop.rdf.io.input.util.RdfIOUtils;
-import com.yarcdata.urika.hadoop.rdf.types.AbstractNodeTupleWritable;
 
 /**
  * An abstract implementation of a record reader that reads records from line

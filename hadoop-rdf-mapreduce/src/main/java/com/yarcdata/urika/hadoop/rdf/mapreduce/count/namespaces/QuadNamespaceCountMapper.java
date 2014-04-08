@@ -18,10 +18,11 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.count.namespaces;
 
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.TextCountReducer;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * A mapper for counting namespace usages within quads designed primarily for

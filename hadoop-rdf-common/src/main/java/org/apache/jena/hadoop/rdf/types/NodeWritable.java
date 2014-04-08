@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.yarcdata.urika.hadoop.rdf.types;
+package org.apache.jena.hadoop.rdf.types;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -29,6 +29,7 @@ import org.apache.hadoop.io.WritableComparator;
 import org.apache.hadoop.io.WritableUtils;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.Writer2;
+import org.apache.jena.hadoop.rdf.types.compators.NodeComparator;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.out.NodeFmtLib;
@@ -42,7 +43,6 @@ import org.apache.jena.riot.tokens.TokenizerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
-import com.yarcdata.urika.hadoop.rdf.types.compators.NodeComparator;
 
 /**
  * A writable for {@link Node} instances

@@ -21,11 +21,11 @@ package com.yarcdata.urika.hadoop.rdf.io.input.compressed.trig;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 
 import com.yarcdata.urika.hadoop.rdf.io.input.TriGInputFormat;
 import com.yarcdata.urika.hadoop.rdf.io.input.compressed.AbstractCompressedWholeFileQuadInputFormatTests;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * Abstract compressed Turtle input tests

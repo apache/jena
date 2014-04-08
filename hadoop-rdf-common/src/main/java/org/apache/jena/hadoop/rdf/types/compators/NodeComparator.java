@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.yarcdata.urika.hadoop.rdf.types.compators;
+package org.apache.jena.hadoop.rdf.types.compators;
 
 import java.io.IOException;
 

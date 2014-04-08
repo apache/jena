@@ -21,10 +21,10 @@ package com.yarcdata.urika.hadoop.rdf.io.output;
 import java.io.Writer;
 
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.yarcdata.urika.hadoop.rdf.io.output.writers.TriGWriter;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * Output format for TriG

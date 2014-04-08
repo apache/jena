@@ -24,9 +24,9 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
 import com.yarcdata.urika.hadoop.rdf.io.input.readers.TurtleReader;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Turtle input format

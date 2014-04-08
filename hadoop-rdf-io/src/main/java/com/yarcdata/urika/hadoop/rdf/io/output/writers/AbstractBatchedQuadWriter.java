@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.util.List;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFWriterRegistry;
@@ -30,7 +31,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * Abstract batched record writer for quad formats

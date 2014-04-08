@@ -20,10 +20,10 @@ package com.yarcdata.urika.hadoop.rdf.io.input.readers;
 
 import java.util.Iterator;
 
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.tokens.Tokenizer;
 import com.hp.hpl.jena.graph.Triple;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * An abstract record reader for line based triple formats

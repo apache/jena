@@ -18,13 +18,13 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.io.input.readers;
 
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.lang.PipedRDFIterator;
 
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.yarcdata.urika.hadoop.rdf.io.input.util.TrackableInputStream;
 import com.yarcdata.urika.hadoop.rdf.io.input.util.TrackedPipedQuadsStream;
 import com.yarcdata.urika.hadoop.rdf.io.input.util.TrackedPipedRDFStream;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * An abstract record reader for whole file triple formats

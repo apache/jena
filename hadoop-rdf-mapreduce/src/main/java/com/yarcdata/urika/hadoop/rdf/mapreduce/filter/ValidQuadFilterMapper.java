@@ -18,8 +18,9 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.filter;
 
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * A quad filter mapper which accepts only valid quads, by which we mean they

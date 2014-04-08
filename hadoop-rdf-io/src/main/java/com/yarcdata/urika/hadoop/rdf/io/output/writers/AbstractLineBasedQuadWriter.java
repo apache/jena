@@ -20,12 +20,12 @@ package com.yarcdata.urika.hadoop.rdf.io.output.writers;
 
 import java.io.Writer;
 
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterNT;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * An abstract writer for line based quad formats

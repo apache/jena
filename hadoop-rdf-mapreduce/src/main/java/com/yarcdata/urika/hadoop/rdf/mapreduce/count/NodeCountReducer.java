@@ -23,8 +23,8 @@ import java.util.Iterator;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
 
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
 
 /**
  * A reducer which takes node keys with a sequence of longs representing counts

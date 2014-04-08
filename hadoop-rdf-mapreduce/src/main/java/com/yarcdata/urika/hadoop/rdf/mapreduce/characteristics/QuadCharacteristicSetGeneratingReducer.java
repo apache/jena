@@ -18,9 +18,10 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.characteristics;
 
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * A reducer which converts quads grouped by some node into characteristic sets

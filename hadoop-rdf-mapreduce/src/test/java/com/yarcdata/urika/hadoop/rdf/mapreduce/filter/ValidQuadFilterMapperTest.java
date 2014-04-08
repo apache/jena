@@ -20,8 +20,8 @@ package com.yarcdata.urika.hadoop.rdf.mapreduce.filter;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * Tests for the {@link ValidQuadFilterMapper}

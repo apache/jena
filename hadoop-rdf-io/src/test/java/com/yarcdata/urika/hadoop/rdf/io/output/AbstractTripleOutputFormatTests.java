@@ -22,10 +22,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
+
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Abstract tests for triple output formats

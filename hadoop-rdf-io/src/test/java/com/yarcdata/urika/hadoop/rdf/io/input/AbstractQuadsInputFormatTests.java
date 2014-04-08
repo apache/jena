@@ -21,8 +21,9 @@ package com.yarcdata.urika.hadoop.rdf.io.input;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * Abstract tests for Quad input formats

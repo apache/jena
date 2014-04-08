@@ -22,10 +22,10 @@ import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.yarcdata.urika.hadoop.rdf.io.output.writers.RdfXmlWriter;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * RDF/XML output format

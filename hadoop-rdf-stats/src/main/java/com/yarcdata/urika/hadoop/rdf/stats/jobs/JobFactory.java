@@ -35,6 +35,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.StringUtils;
+import org.apache.jena.hadoop.rdf.types.CharacteristicSetWritable;
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.yarcdata.urika.hadoop.rdf.io.input.NQuadsInputFormat;
@@ -64,10 +68,6 @@ import com.yarcdata.urika.hadoop.rdf.mapreduce.filter.positional.QuadFilterByPre
 import com.yarcdata.urika.hadoop.rdf.mapreduce.filter.positional.TripleFilterByPredicateUriMapper;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.group.QuadGroupBySubjectMapper;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.group.TripleGroupBySubjectMapper;
-import com.yarcdata.urika.hadoop.rdf.types.CharacteristicSetWritable;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Factory that can produce {@link Job} instances for computing various RDF

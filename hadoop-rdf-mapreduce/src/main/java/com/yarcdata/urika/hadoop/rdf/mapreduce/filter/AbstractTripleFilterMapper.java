@@ -18,8 +18,9 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.filter;
 
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
+
 import com.hp.hpl.jena.graph.Triple;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Abstract mapper implementation for filtering triples

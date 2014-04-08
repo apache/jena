@@ -21,10 +21,10 @@ package com.yarcdata.urika.hadoop.rdf.io.output;
 import java.io.Writer;
 
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.yarcdata.urika.hadoop.rdf.io.output.writers.TurtleWriter;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Turtle output format

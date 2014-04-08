@@ -23,10 +23,10 @@ import java.util.Iterator;
 
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.jena.hadoop.rdf.types.CharacteristicSetWritable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.yarcdata.urika.hadoop.rdf.types.CharacteristicSetWritable;
 
 /**
  * Reducer which takes in characteristic sets and sums up all their usage counts

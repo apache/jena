@@ -20,13 +20,13 @@ package com.yarcdata.urika.hadoop.rdf.io.output.writers;
 
 import java.io.Writer;
 
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.graph.GraphFactory;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Abstract batched record writer for triple formats

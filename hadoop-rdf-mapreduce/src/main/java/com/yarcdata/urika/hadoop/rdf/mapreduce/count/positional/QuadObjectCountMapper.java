@@ -18,10 +18,11 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.count.positional;
 
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+
 import com.yarcdata.urika.hadoop.rdf.mapreduce.count.NodeCountReducer;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.count.QuadNodeCountMapper;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * A mapper for counting object node usages within quads designed primarily for

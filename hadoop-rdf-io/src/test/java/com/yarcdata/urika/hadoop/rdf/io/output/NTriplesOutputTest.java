@@ -20,9 +20,9 @@ package com.yarcdata.urika.hadoop.rdf.io.output;
 
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.OutputFormat;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Tests for NTriples output format

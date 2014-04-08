@@ -28,9 +28,10 @@ import java.io.Writer;
 import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
+
 import com.yarcdata.urika.hadoop.rdf.io.HadoopIOConstants;
 import com.yarcdata.urika.hadoop.rdf.io.input.AbstractNodeTupleInputFormatTests;
-import com.yarcdata.urika.hadoop.rdf.types.AbstractNodeTupleWritable;
 
 /**
  * @author rvesse

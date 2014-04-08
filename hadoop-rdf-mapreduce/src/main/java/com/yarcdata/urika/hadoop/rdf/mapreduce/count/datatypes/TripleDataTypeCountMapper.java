@@ -18,12 +18,13 @@ limitations under the License.
 
 package com.yarcdata.urika.hadoop.rdf.mapreduce.count.datatypes;
 
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.count.NodeCountReducer;
 import com.yarcdata.urika.hadoop.rdf.mapreduce.count.TripleNodeCountMapper;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * A mapper for counting data type usages within triples designed primarily for

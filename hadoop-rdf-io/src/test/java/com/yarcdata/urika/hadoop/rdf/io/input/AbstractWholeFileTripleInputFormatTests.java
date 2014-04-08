@@ -21,6 +21,7 @@ package com.yarcdata.urika.hadoop.rdf.io.input;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 
@@ -29,7 +30,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Abstract tests for Triple input formats

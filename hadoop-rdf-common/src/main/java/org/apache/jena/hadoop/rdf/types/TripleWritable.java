@@ -16,42 +16,38 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.yarcdata.urika.hadoop.rdf.types;
+package org.apache.jena.hadoop.rdf.types;
 
 import java.io.DataInput;
 import java.io.IOException;
 
-import org.apache.jena.atlas.lib.Tuple;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
 /**
- * A writable RDF tuple
- * <p>
- * Unlike the more specific {@link TripleWritable} and {@link QuadWritable} this
- * class allows for arbitrary length tuples and does not restrict tuples to
- * being of uniform size.
- * </p>
+ * A writable triple
  * 
  * @author rvesse
  * 
  */
-public class NodeTupleWritable extends AbstractNodeTupleWritable<Tuple<Node>> {
+public class TripleWritable extends AbstractNodeTupleWritable<Triple> {
 
     /**
-     * Creates a new empty instance
+     * Creates a new instance using the default NTriples node formatter
      */
-    public NodeTupleWritable() {
+    public TripleWritable() {
         this(null);
     }
 
     /**
-     * Creates a new instance with the given value
+     * Creates a new instance with a given value that uses a specific node
+     * formatter
      * 
-     * @param tuple
-     *            Tuple
+     * @param t
+     *            Triple
      */
-    public NodeTupleWritable(Tuple<Node> tuple) {
-        super(tuple);
+    public TripleWritable(Triple t) {
+        super(t);
     }
 
     /**
@@ -62,19 +58,23 @@ public class NodeTupleWritable extends AbstractNodeTupleWritable<Tuple<Node>> {
      * @return New instance
      * @throws IOException
      */
-    public static NodeTupleWritable read(DataInput input) throws IOException {
-        NodeTupleWritable t = new NodeTupleWritable();
+    public static TripleWritable read(DataInput input) throws IOException {
+        TripleWritable t = new TripleWritable();
         t.readFields(input);
         return t;
     }
 
     @Override
-    protected Tuple<Node> createTuple(Node[] ns) {
-        return Tuple.create(ns);
+    protected Triple createTuple(Node[] ns) {
+        if (ns.length != 3)
+            throw new IllegalArgumentException(String.format(
+                    "Incorrect number of nodes to form a triple - got %d but expected 3", ns.length));
+        return new Triple(ns[0], ns[1], ns[2]);
     }
 
     @Override
-    protected Node[] createNodes(Tuple<Node> tuple) {
-        return tuple.tuple();
+    protected Node[] createNodes(Triple tuple) {
+        Triple t = this.get();
+        return new Node[] { t.getSubject(), t.getPredicate(), t.getObject() };
     }
 }

@@ -20,12 +20,12 @@ package com.yarcdata.urika.hadoop.rdf.io.output.writers;
 
 import java.io.Writer;
 
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterNT;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * An abstract writer for line based triple formats

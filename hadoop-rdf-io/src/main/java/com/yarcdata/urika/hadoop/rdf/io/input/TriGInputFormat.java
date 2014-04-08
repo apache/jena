@@ -24,9 +24,9 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
 import com.yarcdata.urika.hadoop.rdf.io.input.readers.TriGReader;
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * Input format for TriG

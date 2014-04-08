@@ -20,8 +20,8 @@ package com.yarcdata.urika.hadoop.rdf.io.input;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
-import com.yarcdata.urika.hadoop.rdf.types.QuadWritable;
 
 /**
  * Tests for the NQuads input format

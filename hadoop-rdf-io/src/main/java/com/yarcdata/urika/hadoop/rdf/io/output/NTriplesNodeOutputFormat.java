@@ -22,9 +22,9 @@ import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
 
 import com.yarcdata.urika.hadoop.rdf.io.output.writers.NTriplesNodeWriter;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
 
 /**
  * NTriples based node output format

@@ -21,10 +21,10 @@ package com.yarcdata.urika.hadoop.rdf.io.input.compressed.ntriples;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
 import com.yarcdata.urika.hadoop.rdf.io.input.NTriplesInputFormat;
 import com.yarcdata.urika.hadoop.rdf.io.input.compressed.AbstractCompressedTriplesInputFormatTests;
-import com.yarcdata.urika.hadoop.rdf.types.TripleWritable;
 
 /**
  * Abstract compressed NTriples input tests

@@ -25,11 +25,11 @@ import java.util.Map.Entry;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
+import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.junit.Test;
 
 import com.yarcdata.urika.hadoop.rdf.mapreduce.AbstractMapReduceTests;
-import com.yarcdata.urika.hadoop.rdf.types.AbstractNodeTupleWritable;
-import com.yarcdata.urika.hadoop.rdf.types.NodeWritable;
 
 /**
  * Abstract tests for mappers derived from
