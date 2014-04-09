@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.expr;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
@@ -93,6 +94,9 @@ public abstract class ExprFunctionN extends ExprFunction
             // Try to fold whole expression
             return eval(values);
         } catch (ExprEvalException ex) {
+            return copy(newArgs);
+        } catch (ARQInternalErrorException ex) {
+            // May show up when trying to fold certain things
             return copy(newArgs);
         }
     }

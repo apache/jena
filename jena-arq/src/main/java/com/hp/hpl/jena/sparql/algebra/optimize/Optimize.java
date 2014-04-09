@@ -155,7 +155,7 @@ public class Optimize implements Rewrite
         OpWalker.walk(op, new OpVisitorExprPrepare(context)) ;
         
         // Expression constant folding
-        if ( context.isTrue(ARQ.optExprConstantFolding) )
+        if ( context.isTrueOrUndef(ARQ.optExprConstantFolding) )
             op = Transformer.transform(new TransformCopy(), new ExprTransformConstantFold(), op);
         
         // Need to allow subsystems to play with this list.
