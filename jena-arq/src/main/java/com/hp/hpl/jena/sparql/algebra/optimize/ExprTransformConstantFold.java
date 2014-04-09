@@ -34,6 +34,10 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
 
     @Override
     public Expr transform(ExprFunction1 func, Expr expr1) {
+        // System.out.println("transform ExprFunction1: " + func + " - " +
+        // expr1);
+        if (!func.getArg().equals(expr1))
+            func = (ExprFunction1) func.copy(expr1);
         Expr transformed = func.copySubstitute(this.b, true);
         if (transformed.equals(func))
             return super.transform(func, expr1);
@@ -42,14 +46,24 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
 
     @Override
     public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2) {
+        // System.out.println("transform ExprFunction2: " + func + " - " + expr1
+        // + " - " + expr2);
+        if (!func.getArg1().equals(expr1) || !func.getArg2().equals(expr2))
+            func = (ExprFunction2) func.copy(expr1, expr2);
         Expr transformed = func.copySubstitute(this.b, true);
         if (transformed.equals(func))
             return super.transform(func, expr1, expr2);
         return transformed;
+
     }
 
     @Override
     public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3) {
+        // System.out.println("transform ExprFunction3: " + func + " - " + expr1
+        // + " - " + expr2 + " - " + expr3);
+
+        if (!func.getArg1().equals(expr1) || !func.getArg2().equals(expr2) || !func.getArg3().equals(expr3))
+            func = (ExprFunction3) func.copy(expr1, expr2, expr3);
         Expr transformed = func.copySubstitute(this.b, true);
         if (transformed.equals(func))
             return super.transform(func, expr1, expr2, expr3);
@@ -58,6 +72,8 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
 
     @Override
     public Expr transform(ExprFunctionN func, ExprList args) {
+        if (!func.getArgs().equals(args.getList()))
+            func = (ExprFunctionN) func.copy(args);
         Expr transformed = func.copySubstitute(this.b, true);
         if (transformed.equals(func))
             return super.transform(func, args);
@@ -71,8 +87,8 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
         // Manually transform each argument
         Op op = Transformer.transform(new TransformCopy(), this, funcOp.getGraphPattern());
         ExprList newArgs = new ExprList();
-        for (int i = 0; i < funcOp.getArgs().size(); i++) {
-            Expr curr = funcOp.getArg(i);
+        for (int i = 0; i < args.size(); i++) {
+            Expr curr = args.get(i);
             Expr newArg = curr.copySubstitute(this.b, true);
             newArgs.add(newArg);
         }
