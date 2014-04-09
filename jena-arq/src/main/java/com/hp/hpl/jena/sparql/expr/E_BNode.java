@@ -85,7 +85,7 @@ public class E_BNode extends ExprFunctionN // 0 or one
     }
     
     @Override
-    protected NodeValue eval(List<NodeValue> args)
+    public NodeValue eval(List<NodeValue> args)
     { throw new ARQInternalErrorException() ; }
 
     @Override

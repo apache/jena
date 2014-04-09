@@ -33,7 +33,7 @@ public class E_StrSubstring extends ExprFunctionN
     }
     
     @Override
-    protected NodeValue eval(List<NodeValue> args)
+    public NodeValue eval(List<NodeValue> args)
     { 
         if ( args.size() == 2 )
             return XSDFuncOp.substring(args.get(0), args.get(1)) ;

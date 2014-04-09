@@ -56,6 +56,6 @@ public class E_Coalesce extends ExprFunctionN
     }
 
     @Override
-    protected NodeValue eval(List<NodeValue> args)
+    public NodeValue eval(List<NodeValue> args)
     { throw new ARQInternalErrorException() ; }
 }

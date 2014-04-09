@@ -97,7 +97,7 @@ public class E_Call extends ExprFunctionN
     }
     
 	@Override
-	protected NodeValue eval(List<NodeValue> args) {
+	public NodeValue eval(List<NodeValue> args) {
 	    // eval(List, FunctionEnv) should be called.
 		throw new ARQInternalErrorException();
 	}
