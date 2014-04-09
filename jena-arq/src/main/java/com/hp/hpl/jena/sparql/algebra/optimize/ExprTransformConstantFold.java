@@ -34,22 +34,34 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
 
     @Override
     public Expr transform(ExprFunction1 func, Expr expr1) {
-        return func.copySubstitute(this.b, true);
+        Expr transformed = func.copySubstitute(this.b, true);
+        if (transformed.equals(func))
+            return super.transform(func, expr1);
+        return transformed;
     }
 
     @Override
     public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2) {
-        return func.copySubstitute(this.b, true);
+        Expr transformed = func.copySubstitute(this.b, true);
+        if (transformed.equals(func))
+            return super.transform(func, expr1, expr2);
+        return transformed;
     }
 
     @Override
     public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3) {
-        return func.copySubstitute(this.b, true);
+        Expr transformed = func.copySubstitute(this.b, true);
+        if (transformed.equals(func))
+            return super.transform(func, expr1, expr2, expr3);
+        return transformed;
     }
 
     @Override
     public Expr transform(ExprFunctionN func, ExprList args) {
-        return func.copySubstitute(this.b, true);
+        Expr transformed = func.copySubstitute(this.b, true);
+        if (transformed.equals(func))
+            return super.transform(func, args);
+        return transformed;
     }
 
     @Override
