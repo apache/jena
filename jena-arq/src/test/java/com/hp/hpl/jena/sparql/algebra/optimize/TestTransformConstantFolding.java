@@ -129,6 +129,16 @@ public class TestTransformConstantFolding {
     }
     
     @Test
+    public void constant_fold_filter_09() {
+        test("(filter (exprlist (= ?x (+ 1 2))) (table unit))", "(filter (exprlist (= ?x 3)) (table unit))", transform);
+    }
+    
+    @Test
+    public void constant_fold_filter_10() {
+        test("(filter (exprlist (+ 1 (* (+ 5 6 ) (+ 8 9)))) (table unit))", "(filter (exprlist 188) (table unit))", transform);
+    }
+    
+    @Test
     public void constant_fold_group_01() {
         test("(project (?count) (extend ((?count ?.0)) (group () ((?.0 (count (+ 1 2)))) (table unit))))", "(project (?count) (extend ((?count ?.0)) (group () ((?.0 (count 3))) (table unit))))", transform);
     }
