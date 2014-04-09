@@ -73,7 +73,7 @@ public class E_Function extends ExprFunctionN
     }
     
     @Override
-    protected NodeValue eval(List<NodeValue> args)
+    public NodeValue eval(List<NodeValue> args)
     {
         // For functions, we delay argument evaluation to the "Function" heierarchy
         // so applications can add their own functional forms.

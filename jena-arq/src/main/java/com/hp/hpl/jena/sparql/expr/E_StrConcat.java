@@ -41,7 +41,7 @@ public class E_StrConcat extends ExprFunctionN
     }
 
     @Override
-    protected NodeValue eval(List<NodeValue> args)
+    public NodeValue eval(List<NodeValue> args)
     { 
         return XSDFuncOp.strConcat(args) ;
     }

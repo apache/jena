@@ -135,7 +135,7 @@ public abstract class ExprFunctionN extends ExprFunction
     
     public NodeValue eval(List<NodeValue> args, FunctionEnv env) { return eval(args) ; }
 
-    protected abstract NodeValue eval(List<NodeValue> args) ;
+    public abstract NodeValue eval(List<NodeValue> args) ;
 
     public abstract Expr copy(ExprList newArgs) ;
     

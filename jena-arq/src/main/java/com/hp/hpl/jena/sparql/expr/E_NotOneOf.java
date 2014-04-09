@@ -47,7 +47,7 @@ public class E_NotOneOf extends E_OneOfBase
     }
     
     @Override
-    protected NodeValue eval(List<NodeValue> args)
+    public NodeValue eval(List<NodeValue> args)
     { throw new ARQInternalErrorException() ; }
 
     @Override

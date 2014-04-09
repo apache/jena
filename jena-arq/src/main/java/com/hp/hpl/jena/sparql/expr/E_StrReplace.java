@@ -46,7 +46,7 @@ public class E_StrReplace extends ExprFunctionN
     private static boolean isString(Expr expr) { return expr.isConstant() && expr.getConstant().isString() ; }
     
     @Override
-    protected NodeValue eval(List<NodeValue> args)
+    public NodeValue eval(List<NodeValue> args)
     {
         if ( pattern != null )
             return XSDFuncOp.strReplace(args.get(0), pattern, args.get(2)) ;
