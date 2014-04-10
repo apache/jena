@@ -454,6 +454,7 @@ public abstract class NodeValue extends ExprNode
     @Override
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {  // return this ; 
+        //System.out.println("NodeValue: " + this);
         Node n = asNode() ;
         return makeNode(n) ;
     }

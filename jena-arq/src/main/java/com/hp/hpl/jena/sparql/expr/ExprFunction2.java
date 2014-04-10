@@ -91,6 +91,8 @@ public abstract class ExprFunction2 extends ExprFunction
     @Override
     final public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
+        //System.out.println("ExprFunction2: "+this) ;
+        
         Expr e1 = (expr1 == null ? null : expr1.copySubstitute(binding, foldConstants)) ;
         Expr e2 = (expr2 == null ? null : expr2.copySubstitute(binding, foldConstants)) ;
         
