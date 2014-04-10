@@ -38,6 +38,8 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
         // expr1);
         if (!func.getArg().equals(expr1))
             func = (ExprFunction1) func.copy(expr1);
+        if (!isFoldable(expr1))
+            return func.copy(expr1);
         Expr transformed = func.copySubstitute(this.b, true);
         if (transformed.equals(func))
             return super.transform(func, expr1);
@@ -46,10 +48,11 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
 
     @Override
     public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2) {
-        // System.out.println("transform ExprFunction2: " + func + " - " + expr1
-        // + " - " + expr2);
+        System.out.println("transform ExprFunction2: " + func + " - " + expr1 + " - " + expr2);
         if (!func.getArg1().equals(expr1) || !func.getArg2().equals(expr2))
             func = (ExprFunction2) func.copy(expr1, expr2);
+        if (!isFoldable(expr1, expr2))
+            return func.copy(expr1, expr2);
         Expr transformed = func.copySubstitute(this.b, true);
         if (transformed.equals(func))
             return super.transform(func, expr1, expr2);
@@ -64,6 +67,8 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
 
         if (!func.getArg1().equals(expr1) || !func.getArg2().equals(expr2) || !func.getArg3().equals(expr3))
             func = (ExprFunction3) func.copy(expr1, expr2, expr3);
+        if (!isFoldable(expr1, expr2, expr3))
+            return func.copy(expr1, expr2, expr3);
         Expr transformed = func.copySubstitute(this.b, true);
         if (transformed.equals(func))
             return super.transform(func, expr1, expr2, expr3);
@@ -74,6 +79,8 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
     public Expr transform(ExprFunctionN func, ExprList args) {
         if (!func.getArgs().equals(args.getList()))
             func = (ExprFunctionN) func.copy(args);
+        if (!isFoldable(args))
+            return func.copy(args);
         Expr transformed = func.copySubstitute(this.b, true);
         if (transformed.equals(func))
             return super.transform(func, args);
@@ -95,4 +102,19 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
         return funcOp.copy(newArgs, op);
     }
 
+    private boolean isFoldable(ExprList exprs) {
+        for (Expr e : exprs) {
+            if (e == null || !e.isConstant())
+                return false;
+        }
+        return true;
+    }
+
+    private boolean isFoldable(Expr... exprs) {
+        for (Expr e : exprs) {
+            if (e == null || !e.isConstant())
+                return false;
+        }
+        return true;
+    }
 }
