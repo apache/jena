@@ -48,7 +48,7 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
 
     @Override
     public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2) {
-        System.out.println("transform ExprFunction2: " + func + " - " + expr1 + " - " + expr2);
+        //System.out.println("transform ExprFunction2: " + func + " - " + expr1 + " - " + expr2);
         if (!func.getArg1().equals(expr1) || !func.getArg2().equals(expr2))
             func = (ExprFunction2) func.copy(expr1, expr2);
         if (!isFoldable(expr1, expr2))
@@ -77,6 +77,7 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
 
     @Override
     public Expr transform(ExprFunctionN func, ExprList args) {
+        //System.out.println("transform ExprFunctionN: " + func + " - " + args);
         if (!func.getArgs().equals(args.getList()))
             func = (ExprFunctionN) func.copy(args);
         if (!isFoldable(args))
