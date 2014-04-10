@@ -118,18 +118,17 @@ public class SecuredFunction extends ExprFunctionN
 		visitor.visit( this );
 	}
 
-//	@Override
-//	protected NodeValue eval( List<NodeValue> args )
-//	{
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public NodeValue eval( List<NodeValue> args )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public Expr copy( ExprList newArgs )
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override
