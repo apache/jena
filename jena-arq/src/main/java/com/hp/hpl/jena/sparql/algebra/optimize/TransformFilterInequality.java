@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.jena.atlas.lib.Pair;
 
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.Table;
@@ -42,10 +43,11 @@ import com.hp.hpl.jena.sparql.core.VarExprList;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.*;
+import com.hp.hpl.jena.sparql.util.Context;
 
 /**
  * A transform that aims to optimize queries where there is an inequality
- * constraint on a variable to speed up evaluation e.g
+ * constraint on a variable in an attempt to speed up evaluation e.g
  * 
  * <pre>
  * PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
@@ -70,6 +72,15 @@ import com.hp.hpl.jena.sparql.expr.*;
  *   MINUS { VALUES ?p { rdf:type } }
  * }
  * </pre>
+ * 
+ * <h3>Status</h3>
+ * <p>
+ * Performance testing has shown that often this gives minimal performance
+ * benefit so this optimization is not enabled by default. It may be explicitly
+ * enabled by setting the {@link ARQ#optFilterInequality} symbol in your
+ * {@link Context} or the ARQ global context ({@link ARQ#getContext()} to
+ * {@code true}
+ * </p>
  * 
  * <h3>Applicability</h3>
  * <p>
