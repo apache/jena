@@ -224,6 +224,7 @@ public class Optimize implements Rewrite
                 
         // Replace suitable FILTER(?x != TERM) with (minus (original) (table)) where the table contains
         // the candidate rows to be eliminated
+        // Off by default due to minimal performance difference
         if ( context.isTrue(ARQ.optFilterInequality) )
             op = apply("Filter Inequality", new TransformFilterInequality(), op);
         
