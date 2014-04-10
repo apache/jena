@@ -31,6 +31,7 @@ import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.jdbc.JdbcCompatibility;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.results.AskResults;
 import org.apache.jena.jdbc.results.MaterializedSelectResults;
@@ -65,6 +66,7 @@ public abstract class JenaStatement implements Statement {
     protected static final int DEFAULT_TRANSACTION_LEVEL = JenaConnection.DEFAULT_ISOLATION_LEVEL;
     protected static final int NO_LIMIT = 0;
     protected static final int DEFAULT_TYPE = ResultSet.TYPE_FORWARD_ONLY;
+    protected static final int USE_CONNECTION_COMPATIBILITY = Integer.MIN_VALUE;
 
     private List<String> commands = new ArrayList<String>();
     private SQLWarning warnings = null;
@@ -84,6 +86,7 @@ public abstract class JenaStatement implements Statement {
     @SuppressWarnings("unused")
     private boolean escapeProcessing = false;
     private int timeout = NO_LIMIT;
+    private int compatibilityLevel = USE_CONNECTION_COMPATIBILITY;
 
     /**
      * Creates a new statement
@@ -143,6 +146,49 @@ public abstract class JenaStatement implements Statement {
      */
     public JenaConnection getJenaConnection() {
         return this.connection;
+    }
+
+    /**
+     * Gets the JDBC compatibility level that is in use, see
+     * {@link JdbcCompatibility} for explanations
+     * <p>
+     * By default this is set at the connection level and inherited, however you
+     * may call {@link #setJdbcCompatibilityLevel(int)} to set the compatibility
+     * level for this statement. This allows you to change the compatibility
+     * level on a per-query basis if so desired.
+     * </p>
+     * 
+     * @return Compatibility level
+     */
+    public int getJdbcCompatibilityLevel() {
+        if (this.compatibilityLevel == USE_CONNECTION_COMPATIBILITY)
+            return this.connection.getJdbcCompatibilityLevel();
+        return this.compatibilityLevel;
+    }
+
+    /**
+     * Sets the JDBC compatibility level that is in use, see
+     * {@link JdbcCompatibility} for explanations.
+     * <p>
+     * By default this is set at the connection level and inherited, however you
+     * may call {@link #setJdbcCompatibilityLevel(int)} to set the compatibility
+     * level for this statement. This allows you to change the compatibility
+     * level on a per-query basis if so desired.
+     * </p>
+     * <p>
+     * Changing the level may not effect existing open objects, behaviour in
+     * this case will be implementation specific.
+     * </p>
+     * 
+     * @param level
+     *            Compatibility level
+     */
+    public void setJdbcCompatibilityLevel(int level) {
+        if (level == USE_CONNECTION_COMPATIBILITY) {
+            this.compatibilityLevel = USE_CONNECTION_COMPATIBILITY;
+        } else {
+            this.compatibilityLevel = JdbcCompatibility.normalizeLevel(level);
+        }
     }
 
     @Override
@@ -849,7 +895,8 @@ public abstract class JenaStatement implements Statement {
 
     @SuppressWarnings("javadoc")
     public void closeOnCompletion() throws SQLException {
-        // We don't support the JDBC 4.1 feature of closing statements automatically
+        // We don't support the JDBC 4.1 feature of closing statements
+        // automatically
         throw new SQLFeatureNotSupportedException();
     }
 }

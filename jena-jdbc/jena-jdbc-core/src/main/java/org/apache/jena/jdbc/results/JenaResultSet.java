@@ -77,7 +77,7 @@ public abstract class JenaResultSet implements ResultSet {
             throw new SQLException("Statement for a Result Set cannot be null");
         this.statement = statement;
         this.compatibilityLevel = JdbcCompatibility
-                .normalizeLevel(this.statement.getJenaConnection().getJdbcCompatibilityLevel());
+                .normalizeLevel(this.statement.getJdbcCompatibilityLevel());
     }
 
     /**
