@@ -31,7 +31,6 @@ import java.util.Set;
 import org.apache.jena.atlas.lib.Pair;
 
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.Table;
