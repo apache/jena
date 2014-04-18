@@ -351,7 +351,7 @@ public interface OntResource
 
     /**
      * <p>Answer an iterator over all of the label literals for this resource.</p>
-     * @param lang The language tag to restrict the listed comments to, or null to select all comments
+     * @param lang The language tag to restrict the listed labels to, or null to select all labels
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
