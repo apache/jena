@@ -22,7 +22,6 @@ import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 /** A function that has a single argument */
@@ -79,17 +78,9 @@ public abstract class ExprFunction1 extends ExprFunction
     protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
     
     @Override
-    final public Expr copySubstitute(Binding binding, boolean foldConstants)
+    final public Expr copySubstitute(Binding binding)
     {
-        Expr e = (expr == null ? null : expr.copySubstitute(binding, foldConstants)) ;
-        
-        if ( foldConstants)
-        {
-            try {
-                if ( e != null && e.isConstant() )
-                    return eval(e.getConstant(), new FunctionEnvBase()) ;
-            } catch (ExprEvalException ex) { /* Drop through */ }
-        }
+        Expr e = (expr == null ? null : expr.copySubstitute(binding)) ;
         return copy(e) ;
     }
 

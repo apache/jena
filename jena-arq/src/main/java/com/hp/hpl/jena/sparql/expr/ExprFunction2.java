@@ -86,23 +86,11 @@ public abstract class ExprFunction2 extends ExprFunction
 
     public abstract NodeValue eval(NodeValue x, NodeValue y) ; 
 
-    // ---- Duplication
-    
     @Override
-    final public Expr copySubstitute(Binding binding, boolean foldConstants)
+    final public Expr copySubstitute(Binding binding)
     {
-        //System.out.println("ExprFunction2: "+this) ;
-        
-        Expr e1 = (expr1 == null ? null : expr1.copySubstitute(binding, foldConstants)) ;
-        Expr e2 = (expr2 == null ? null : expr2.copySubstitute(binding, foldConstants)) ;
-        
-        if ( foldConstants)
-        {
-            try {
-                if ( e1 != null && e2 != null && e1.isConstant() && e2.isConstant() )
-                    return eval(e1.getConstant(), e2.getConstant()) ;
-            } catch (ExprEvalException ex) { /* Drop through */ }
-        }
+        Expr e1 = (expr1 == null ? null : expr1.copySubstitute(binding)) ;
+        Expr e2 = (expr2 == null ? null : expr2.copySubstitute(binding)) ;
         return copy(e1, e2) ;
     }
     

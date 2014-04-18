@@ -21,7 +21,6 @@ package com.hp.hpl.jena.sparql.expr;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
@@ -69,36 +68,16 @@ public abstract class ExprFunctionN extends ExprFunction
     public List<Expr> getArgs() { return args.getList() ; }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr copySubstitute(Binding binding)
     {
         ExprList newArgs = new ExprList() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
         {
             Expr e = getArg(i) ;
-            e = e.copySubstitute(binding, foldConstants) ;
+            e = e.copySubstitute(binding) ;
             newArgs.add(e) ;
         }
-        
-        if (!foldConstants) 
-            return copy(newArgs);
-        
-        // Can we fold the whole expression?
-        List<NodeValue> values = new ArrayList<NodeValue>();
-        for (Expr e : newArgs) {
-            // Can't fold if anything is null/non-constant
-            if (e == null || !e.isConstant()) return copy(newArgs);
-            values.add(e.getConstant());
-        }
-        
-        try {
-            // Try to fold whole expression
-            return eval(values);
-        } catch (ExprEvalException ex) {
-            return copy(newArgs);
-        } catch (ARQInternalErrorException ex) {
-            // May show up when trying to fold certain things
-            return copy(newArgs);
-        }
+        return copy(newArgs);
     }
 
     @Override

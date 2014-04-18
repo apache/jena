@@ -62,7 +62,7 @@ public abstract class ExprFunction0 extends ExprFunction
     public abstract Expr copy() ;
     
     @Override
-    final public Expr copySubstitute(Binding binding, boolean foldConstants)
+    final public Expr copySubstitute(Binding binding)
     {
         return copy() ;
     }

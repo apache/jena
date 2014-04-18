@@ -66,7 +66,7 @@ public class ExprVar extends ExprNode
     }
     
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr copySubstitute(Binding binding)
     {
         Var v = varNode ;  
         if ( binding == null || !binding.contains(v) )

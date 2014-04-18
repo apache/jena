@@ -18,11 +18,14 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.*;
+import java.util.ArrayList ;
+import java.util.List ;
+
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.* ;
 
 /**
  * An expression transform that simplifies expressions by constant folding
@@ -31,73 +34,59 @@ import com.hp.hpl.jena.sparql.expr.*;
 public class ExprTransformConstantFold extends ExprTransformCopy {
 
     private Binding b = null;
-
+    
     @Override
     public Expr transform(ExprFunction1 func, Expr expr1) {
-        // System.out.println("transform ExprFunction1: " + func + " - " +
-        // expr1);
-        if (!func.getArg().equals(expr1))
-            func = (ExprFunction1) func.copy(expr1);
-        if (!isFoldable(expr1))
-            return super.transform(func, expr1);
-        Expr transformed = func.copySubstitute(this.b, true);
-        if (transformed.equals(func))
-            return super.transform(func, expr1);
-        return transformed;
+        if (isFoldable(expr1)) {
+            try {
+                return func.eval(expr1.getConstant()) ;
+            } catch (Exception ex) { /* Drop through */ }
+        }
+        return super.transform(func, expr1);
     }
 
     @Override
     public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2) {
-        //System.out.println("transform ExprFunction2: " + func + " - " + expr1 + " - " + expr2);
-        if (!func.getArg1().equals(expr1) || !func.getArg2().equals(expr2))
-            func = (ExprFunction2) func.copy(expr1, expr2);
-        if (!isFoldable(expr1, expr2))
-            return super.transform(func, expr1, expr2);
-        Expr transformed = func.copySubstitute(this.b, true);
-        if (transformed.equals(func))
-            return super.transform(func, expr1, expr2);
-        return transformed;
-
+        if (isFoldable(expr1, expr2)) {
+            try {
+                return func.eval(expr1.getConstant(), expr2.getConstant()) ;
+            } catch (Exception ex) { /* Drop through */ }
+        }
+        return super.transform(func, expr1, expr2);
     }
 
     @Override
     public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3) {
-        // System.out.println("transform ExprFunction3: " + func + " - " + expr1
-        // + " - " + expr2 + " - " + expr3);
-
-        if (!func.getArg1().equals(expr1) || !func.getArg2().equals(expr2) || !func.getArg3().equals(expr3))
-            func = (ExprFunction3) func.copy(expr1, expr2, expr3);
-        if (!isFoldable(expr1, expr2, expr3))
-            return super.transform(func, expr1, expr2, expr3);
-        Expr transformed = func.copySubstitute(this.b, true);
-        if (transformed.equals(func))
-            return super.transform(func, expr1, expr2, expr3);
-        return transformed;
+        if (isFoldable(expr1, expr2, expr3)) {
+            try { 
+                return func.eval(expr1.getConstant(), expr2.getConstant(), expr3.getConstant()) ;
+            } catch (Exception ex) { /* Drop through */ }
+        }
+        return super.transform(func, expr1, expr2, expr3);
     }
 
     @Override
     public Expr transform(ExprFunctionN func, ExprList args) {
-        //System.out.println("transform ExprFunctionN: " + func + " - " + args);
-        if (!func.getArgs().equals(args.getList()))
-            func = (ExprFunctionN) func.copy(args);
-        if (!isFoldable(args))
-            return super.transform(func, args);
-        Expr transformed = func.copySubstitute(this.b, true);
-        if (transformed.equals(func))
-            return super.transform(func, args);
-        return transformed;
+        if (isFoldable(args)) {
+            List<NodeValue> args2 = new ArrayList<NodeValue>() ;
+            // Need to "cast" to constants
+            for ( Expr e : args )
+                args2.add(e.getConstant()) ;
+            try {
+                return func.eval(args2) ;
+            } catch (Exception ex) { /* Drop through */ }
+        }
+        return super.transform(func, args);
     }
 
     @Override
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) {
-        // Calling copySubstitute() likely won't work for these cases
-
         // Manually transform each argument
         Op op = Transformer.transform(new TransformCopy(), this, funcOp.getGraphPattern());
         ExprList newArgs = new ExprList();
         for (int i = 0; i < args.size(); i++) {
             Expr curr = args.get(i);
-            Expr newArg = curr.copySubstitute(this.b, true);
+            Expr newArg = ExprTransformer.transform(this, curr) ;
             newArgs.add(newArg);
         }
         return funcOp.copy(newArgs, op);
