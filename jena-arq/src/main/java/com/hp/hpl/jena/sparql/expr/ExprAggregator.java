@@ -99,7 +99,7 @@ public class ExprAggregator extends ExprNode
     { return aggregator.toString() ; }
     
     @Override
-    public ExprAggregator copySubstitute(Binding binding, boolean foldConstants)
+    public ExprAggregator copySubstitute(Binding binding)
     {
         Var v = var ;
         Aggregator agg = aggregator ;

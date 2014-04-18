@@ -101,7 +101,7 @@ public class SecuredFunction extends ExprFunctionN
 
 
 	@Override
-	public Expr copySubstitute( Binding binding, boolean foldConstants )
+	public Expr copySubstitute( Binding binding )
 	{
 		return this;
 	}

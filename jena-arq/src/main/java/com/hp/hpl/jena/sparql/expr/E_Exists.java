@@ -49,9 +49,8 @@ public class E_Exists extends ExprFunctionOp
     }
 
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
+    public Expr copySubstitute(Binding binding)
     {
-        // Does not pass down fold constants.  Oh well.
         Op op2 = Substitute.substitute(getGraphPattern(), binding) ;
         return new E_Exists(getElement(), op2) ;
     }

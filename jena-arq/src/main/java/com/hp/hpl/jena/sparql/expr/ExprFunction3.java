@@ -96,20 +96,11 @@ public abstract class ExprFunction3 extends ExprFunction
     // ---- Duplication
     
     @Override
-    final public Expr copySubstitute(Binding binding, boolean foldConstants)
+    final public Expr copySubstitute(Binding binding)
     {
-        Expr e1 = (expr1 == null ? null : expr1.copySubstitute(binding, foldConstants)) ;
-        Expr e2 = (expr2 == null ? null : expr2.copySubstitute(binding, foldConstants)) ;
-        Expr e3 = (expr3 == null ? null : expr3.copySubstitute(binding, foldConstants)) ;
-        
-        if ( foldConstants)
-        {
-            try {
-                if ( e1 != null && e2 != null && e3 != null &&
-                     e1.isConstant() && e2.isConstant() && e3.isConstant() )
-                    return eval(e1.getConstant(), e2.getConstant(), e3.getConstant()) ;
-            } catch (ExprEvalException ex) { /* Drop through */ }
-        }
+        Expr e1 = (expr1 == null ? null : expr1.copySubstitute(binding)) ;
+        Expr e2 = (expr2 == null ? null : expr2.copySubstitute(binding)) ;
+        Expr e3 = (expr3 == null ? null : expr3.copySubstitute(binding)) ;
         return copy(e1, e2, e3) ;
     }
     

@@ -37,9 +37,9 @@ import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprLib ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
@@ -166,7 +166,9 @@ public class qexpr
                 pmap.setNsPrefixes(ARQConstants.getGlobalPrefixMap()) ;
                 pmap.setNsPrefix("", "http://example/") ;
                 pmap.setNsPrefix("ex", "http://example/ns#") ;
-                
+//              Node n = asNode() ;
+//              return makeNode(n) ;
+
                 Expr expr = ExprUtils.parse(exprStr, pmap) ;
                 if ( verbose )
                     System.out.print(expr.toString()+" => ") ;
@@ -183,7 +185,7 @@ public class qexpr
                 try {
                     if ( actionCopySubstitute )
                     {
-                        Expr e = expr.copySubstitute(BindingFactory.create(), true) ;
+                        Expr e = ExprLib.foldConstants(expr) ;
                         System.out.println(e) ;
                     }
                     else

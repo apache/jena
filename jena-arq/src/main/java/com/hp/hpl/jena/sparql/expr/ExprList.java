@@ -75,14 +75,13 @@ public class ExprList implements Iterable<Expr>
             expr.varsMentioned(acc) ;
     }
     
-    public ExprList copySubstitute(Binding binding) { return copySubstitute(binding, false) ; }
-    public ExprList copySubstitute(Binding binding, boolean foldConstants)
+    public ExprList copySubstitute(Binding binding)
     {
         ExprList x = new ExprList() ;
         for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
         {
             Expr expr = iter.next();
-            expr = expr.copySubstitute(binding, foldConstants) ;
+            expr = expr.copySubstitute(binding) ;
             x.add(expr) ;
         }
         return x ;

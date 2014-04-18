@@ -78,15 +78,21 @@ public abstract class ExprNode implements Expr
     }
     
     @Override
-    final public Expr copySubstitute(Binding binding)
-    { return copySubstitute(binding, false) ; }
-    
-    @Override
     final public Expr deepCopy()                     
-    { return copySubstitute(null, false) ; }
+    { return copySubstitute(null) ; }
     
     @Override
-    public abstract Expr copySubstitute(Binding binding, boolean foldConstants) ;
+    public abstract Expr copySubstitute(Binding binding) ;
+    
+    @Override
+    @Deprecated
+    final
+    public Expr copySubstitute(Binding binding, boolean foldConstants) {
+        Expr expr = copySubstitute(binding) ;
+        if ( foldConstants )
+            expr = ExprLib.foldConstants(expr) ;
+        return expr ;
+    }
     
     @Override
     public abstract Expr applyNodeTransform(NodeTransform transform) ;

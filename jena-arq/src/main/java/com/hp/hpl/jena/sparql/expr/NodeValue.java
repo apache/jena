@@ -452,11 +452,9 @@ public abstract class NodeValue extends ExprNode
 
     // NodeValues are immutable so no need to duplicate.
     @Override
-    public Expr copySubstitute(Binding binding, boolean foldConstants)
-    {  // return this ; 
-        //System.out.println("NodeValue: " + this);
-        Node n = asNode() ;
-        return makeNode(n) ;
+    public Expr copySubstitute(Binding binding)
+    {
+        return this ;
     }
     
     @Override

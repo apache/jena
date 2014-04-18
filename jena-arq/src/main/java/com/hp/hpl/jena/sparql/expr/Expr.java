@@ -62,16 +62,14 @@ public interface Expr
      */
     public NodeValue eval(Binding binding, FunctionEnv env) ;
     
-    // These (copySubstitute, applyNodeTransform) predate transform support and should be changed.
-    // But they work so there is no hurry.
-    
     /** Deep copy with substitution */
     public Expr copySubstitute(Binding binding) ;
 
-//    /** Deep copy with substitution, possibly collapsing constant sub-expressions */
-// Issues: 
-// 1/ folding constants should be separated out (static optimization)
-// 2/ Danger of some functions not evaluating if the FunctionEnv is not available.
+    
+    /** Deep copy with substitution, possibly collapsing constant sub-expressions.
+     * @deprecated See ExprTransformConstantFold for constant folding.
+     */
+    @Deprecated  // To be removed.
     public Expr copySubstitute(Binding binding, boolean foldConstants) ;
 
     /**
@@ -79,9 +77,6 @@ public interface Expr
      */
     public Expr applyNodeTransform(NodeTransform transform) ;
 
-//    /** Transform. */
-//    public Expr apply(ExprTransform transform) ;
-    
     /** Deep copy */
     public Expr deepCopy() ;
     

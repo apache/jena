@@ -19,10 +19,20 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.algebra.optimize.ExprTransformConstantFold ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 public class ExprLib
 {
+    /** Attempt to fold any sub-expressions of the Expr.
+     * Return an expression that is euqivalent to the argument but maybe simpler.    
+     * @param expr
+     * @return Expression
+     */
+    public static Expr foldConstants(Expr expr) {
+        return ExprTransformer.transform(new ExprTransformConstantFold(), expr) ;
+    }
+
     /** transform an expression that may involve aggregates into one that just uses the variable for the aggregate */  
 
     public static Expr replaceAggregateByVariable(Expr expr)
