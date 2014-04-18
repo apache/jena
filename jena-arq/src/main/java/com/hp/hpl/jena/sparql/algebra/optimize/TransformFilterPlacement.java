@@ -258,7 +258,7 @@ public class TransformFilterPlacement extends TransformCopy {
     }
 
     private Placement placeOrWrapQuadPattern(ExprList exprs, OpQuadPattern pattern) {
-        return placeQuadPattern(exprs, pattern.getGraphNode(), pattern.getBasicPattern()) ;
+        return placeOrWrapQuadPattern(exprs, pattern.getGraphNode(), pattern.getBasicPattern()) ;
     }
 
     private Placement placeOrWrapQuadPattern(ExprList exprsIn, Node graphNode, BasicPattern pattern) {

@@ -27,6 +27,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 
 public class TestTransformFilterPlacement extends BaseTest { //extends AbstractTestTransform {
     
@@ -67,6 +68,58 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         // Won't push and break up the BGP
         testNoBGP("(filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1) (?s ?p ?x2)) )",
                 null) ;
+    }
+    
+    @Test public void place_bgp_06() {
+        test(StrUtils.strjoinNL("(filter (exprlist (|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>))) (! (sameTerm ?node2 <urn:foo>)))",
+                                " (quadpattern",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:foo>)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg2Pred1 ?node2)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?startDatePred1 ?startDate1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?endDatePred1 ?endDate1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:class>)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred1> ?arg1Pred1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred2> ?arg2Pred1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predStartDate> ?startDatePred1)",
+                                "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predEndDate> ?endDatePred1)",
+                                "))"),
+            StrUtils.strjoinNL("(sequence",
+                               "  (filter (|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)))",
+                               "   (sequence",
+                               "    (filter (! (sameTerm ?node2 <urn:foo>))",
+                               "       (quadpattern",
+                               "         (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:foo>)",
+                               "         (quad <urn:x-arq:DefaultGraphNode> ?inst1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class1)",
+                               "         (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg2Pred1 ?node2)",
+                               "       ))",
+                               "     (quadpattern",
+                               "       (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?startDatePred1 ?startDate1)",
+                               "       (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?endDatePred1 ?endDate1)",
+                               "     )))",
+                               " (quadpattern",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:class>)",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred1> ?arg1Pred1)",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred2> ?arg2Pred1)",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predStartDate> ?startDatePred1)",
+                               "   (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predEndDate> ?endDatePred1)",
+                               " ))"));
+    }
+    
+    @Test public void place_bgp_06a() {
+        testNoBGP(StrUtils.strjoinNL("(filter (exprlist (|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>))) (! (sameTerm ?node2 <urn:foo>)))",
+                                     " (quadpattern",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:foo>)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?class1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg2Pred1 ?node2)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?startDatePred1 ?startDate1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?endDatePred1 ?endDate1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:class>)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred1> ?arg1Pred1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:pred2> ?arg2Pred1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predStartDate> ?startDatePred1)",
+                                     "  (quad <urn:x-arq:DefaultGraphNode> ?class1 <urn:predEndDate> ?endDatePred1)",
+                                     "))"), null);
     }
 
     @Test public void place_no_match_01() {
@@ -527,6 +580,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         Transform t_placement = new TransformFilterPlacement(includeBGPs) ;
         Op op1 = SSE.parseOp(input) ;
         Op op2 = Transformer.transform(t_placement, op1) ;
+        System.out.println(op2.toString());
         if ( output == null ) {
             // No transformation.
             Assert.assertEquals(op1, op2) ;
