@@ -580,7 +580,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         Transform t_placement = new TransformFilterPlacement(includeBGPs) ;
         Op op1 = SSE.parseOp(input) ;
         Op op2 = Transformer.transform(t_placement, op1) ;
-        System.out.println(op2.toString());
+
         if ( output == null ) {
             // No transformation.
             Assert.assertEquals(op1, op2) ;
