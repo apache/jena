@@ -197,9 +197,9 @@ public interface OntResource
     public Resource getSeeAlso();
 
     /**
-     * <p>Answer an iterator over all of the resources that are declared to provide addition
+     * <p>Answer an iterator over all of the resources that are declared to provide additional
      * information about this resource.</p>
-     * @return An iterator over the resources providing additional definition on this resource.
+     * @return An iterator over the resources providing additional information on this resource.
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
     public ExtendedIterator<RDFNode> listSeeAlso();
