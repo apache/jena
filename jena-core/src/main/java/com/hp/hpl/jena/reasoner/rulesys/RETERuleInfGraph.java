@@ -78,11 +78,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
      */
     @Override
     protected void instantiateRuleEngine(List<Rule> rules) {
-        if (rules != null) {
-            engine = new RETEEngine(this, rules);
-        } else {
-            engine = new RETEEngine(this);
-        }
+        engine = FRuleEngineIFactory.getInstance().createFRuleEngineI(this, rules, true);
     }
 
     /**
