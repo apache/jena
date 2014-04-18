@@ -156,19 +156,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     @Override
     protected void instantiateRuleEngine(List<Rule> rules) {
-        if (rules != null) {
-            if (useRETE) {
-                engine = new RETEEngine(this, rules);
-            } else {
-                engine = new FRuleEngine(this, rules);
-            }
-        } else {
-            if (useRETE) {
-                engine = new RETEEngine(this);
-            } else {
-                engine = new FRuleEngine(this);
-            }
-        }
+        engine = FRuleEngineIFactory.getInstance().createFRuleEngineI(this, rules, useRETE);
     }
 
     /**

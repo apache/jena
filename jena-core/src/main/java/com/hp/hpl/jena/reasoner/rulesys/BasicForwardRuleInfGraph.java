@@ -18,23 +18,27 @@
 
 package com.hp.hpl.jena.reasoner.rulesys;
 
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.Iterator;
+import java.util.List;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.graph.Factory ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.reasoner.* ;
-import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngine ;
-import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngineI ;
-import com.hp.hpl.jena.reasoner.rulesys.impl.SafeGraph ;
-import com.hp.hpl.jena.util.OneToManyMap ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
-import com.hp.hpl.jena.util.iterator.NullIterator ;
+import com.hp.hpl.jena.graph.Factory;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.reasoner.BaseInfGraph;
+import com.hp.hpl.jena.reasoner.Derivation;
+import com.hp.hpl.jena.reasoner.FGraph;
+import com.hp.hpl.jena.reasoner.Finder;
+import com.hp.hpl.jena.reasoner.FinderUtil;
+import com.hp.hpl.jena.reasoner.Reasoner;
+import com.hp.hpl.jena.reasoner.ReasonerException;
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngineI;
+import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngineIFactory;
+import com.hp.hpl.jena.reasoner.rulesys.impl.SafeGraph;
+import com.hp.hpl.jena.util.OneToManyMap;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NullIterator;
 
 /**
  * An inference graph interface that runs a set of forward chaining
@@ -72,7 +76,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     protected boolean traceOn = false;
     
-    private static Logger logger = LoggerFactory.getLogger(BasicForwardRuleInfGraph.class);
+//    private static Logger logger = LoggerFactory.getLogger(BasicForwardRuleInfGraph.class);
     
 //=======================================================================
 // Core methods
@@ -132,11 +136,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * @param rules the rule set or null if there are not rules bound in yet.
      */
     protected void instantiateRuleEngine(List<Rule> rules) {
-        if (rules != null) {
-            engine = new FRuleEngine(this, rules);
-        } else {
-            engine = new FRuleEngine(this);
-        }
+        engine = FRuleEngineIFactory.getInstance().createFRuleEngineI(this, rules, false);
     }
     
     /**
