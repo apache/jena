@@ -60,7 +60,9 @@ public class TransformReorder extends TransformCopy {
 	@Override
 	public Op transform(OpBGP opBGP) {
 		BasicPattern pattern = opBGP.getPattern();
-		BasicPattern pattern2 = this.reorder.reorder(pattern);
+		if ( pattern.size() < 2 ) 
+		    return opBGP ; 
+		BasicPattern pattern2 = reorder.reorder(pattern);
 		return new OpBGP(pattern2);
 	}
 
@@ -70,7 +72,9 @@ public class TransformReorder extends TransformCopy {
 	@Override
 	public Op transform(OpQuadPattern opQuadPattern) {
 		BasicPattern pattern = opQuadPattern.getBasicPattern();
-		BasicPattern pattern2 = this.reorder.reorder(pattern);
+        if ( pattern.size() < 2 ) 
+            return opQuadPattern ; 
+		BasicPattern pattern2 = reorder.reorder(pattern);
 		return new OpQuadPattern(opQuadPattern.getGraphNode(), pattern2);
 	}
 
