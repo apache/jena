@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.StringUtils;
 
 public class TestTransformFilterPlacement extends BaseTest { //extends AbstractTestTransform {
     
