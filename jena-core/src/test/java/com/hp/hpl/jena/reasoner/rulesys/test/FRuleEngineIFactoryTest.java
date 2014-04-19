@@ -142,6 +142,7 @@ public class FRuleEngineIFactoryTest extends TestCase {
         @Override
         public TransactionHandler getTransactionHandler() { return null; }
 
+        @Deprecated
         @Override
         public BulkUpdateHandler getBulkUpdateHandler() { return null; }
 
