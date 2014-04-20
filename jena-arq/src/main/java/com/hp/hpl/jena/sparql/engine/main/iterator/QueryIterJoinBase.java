@@ -21,9 +21,9 @@ package com.hp.hpl.jena.sparql.engine.main.iterator;
 import com.hp.hpl.jena.sparql.algebra.JoinType ;
 import com.hp.hpl.jena.sparql.algebra.Table ;
 import com.hp.hpl.jena.sparql.algebra.TableFactory ;
-import com.hp.hpl.jena.sparql.algebra.TableLib ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.TableJoin ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
@@ -49,7 +49,7 @@ public class QueryIterJoinBase extends QueryIter
 
     private static QueryIterator calc(QueryIterator left, QueryIterator right, JoinType joinType, ExprList exprs, ExecutionContext execCxt) {
         Table tableRight = TableFactory.create(right) ;
-        return TableLib.joinWorker(left, tableRight, joinType, exprs, execCxt) ;
+        return TableJoin.joinWorker(left, tableRight, joinType, exprs, execCxt) ;
 
     }
     

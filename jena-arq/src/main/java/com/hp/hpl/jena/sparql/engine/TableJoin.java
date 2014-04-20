@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.engine;
 
 import static com.hp.hpl.jena.sparql.algebra.JoinType.* ;
 
@@ -24,9 +24,10 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.JoinType ;
+import com.hp.hpl.jena.sparql.algebra.Table ;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterFilterExpr ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
@@ -35,7 +36,7 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 /** Table join - this only haoppens if the patterns can not be streamed. */  
-public class TableLib
+public class TableJoin
 {
     public static QueryIterator join(QueryIterator left, Table right, ExprList condition, ExecutionContext execCxt) {
         return joinWorker(left, right, PLAIN, condition, execCxt) ;

@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
+import com.hp.hpl.jena.sparql.engine.TableJoin ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.* ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
@@ -275,7 +276,7 @@ public class EvaluatorSimple implements Evaluator
         // Have an iterator that yields one-by-one.
         QueryIterator left = tableLeft.iterator(execCxt) ;
         JoinType joinType = (leftJoin? JoinType.LEFT : JoinType.PLAIN ) ;
-        QueryIterator qIter = TableLib.joinWorker(left, tableRight, joinType, conditions, execCxt) ;
+        QueryIterator qIter = TableJoin.joinWorker(left, tableRight, joinType, conditions, execCxt) ;
         tableLeft.close() ;
         tableRight.close() ;
         return new TableN(qIter) ;
