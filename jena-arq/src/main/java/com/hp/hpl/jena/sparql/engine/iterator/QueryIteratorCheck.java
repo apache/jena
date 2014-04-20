@@ -86,7 +86,6 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
             warn(qIterOpen, "Open iterator: ") ;
             iterOpen.remove() ;
         }
-     
     }
 
     private static void warn(QueryIterator qIter, String str)
