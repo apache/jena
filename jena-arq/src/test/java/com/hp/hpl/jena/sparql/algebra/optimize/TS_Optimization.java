@@ -25,8 +25,9 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestOptDistinctReduced.class
-    , TestOptimizer.class
+    TestReorderBGP.class
+    , TestVarRename.class
+    , TestOptDistinctReduced.class
     , TestSemanticEquivalence.class
     , TestTransformConstantFolding.class
     , TestTransformFilters.class
@@ -34,7 +35,7 @@ import org.junit.runners.Suite ;
     , TestTransformMergeBGPs.class
     , TestTransformPromoteTableEmpty.class
     , TestTransformTopN.class
-    , TestVarRename.class
+    , TestOptimizer.class
 })
 
 public class TS_Optimization extends TestSuite

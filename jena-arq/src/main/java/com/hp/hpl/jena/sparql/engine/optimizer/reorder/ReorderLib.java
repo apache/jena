@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
+package com.hp.hpl.jena.sparql.engine.optimizer.reorder ;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.engine.optimizer.StatsMatcher ;
@@ -26,13 +26,12 @@ public class ReorderLib
     private static class ReorderProcIdentity implements ReorderProc
     {
         @Override
-        public BasicPattern reorder(BasicPattern pattern)
-        {
+        public BasicPattern reorder(BasicPattern pattern) {
             return pattern ;
-        } 
+        }
+
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "identity reorder" ;
         }
     }
@@ -41,35 +40,38 @@ public class ReorderLib
     private static class ReorderTransformationIdentity implements ReorderTransformation
     {
         @Override
-        public BasicPattern reorder(BasicPattern pattern)
-        {
+        public BasicPattern reorder(BasicPattern pattern) {
             return pattern ;
         }
 
         @Override
-        public ReorderProc reorderIndexes(BasicPattern pattern)
-        {
+        public ReorderProc reorderIndexes(BasicPattern pattern) {
             return _identityProc ;
         }
     }
     private static ReorderTransformation _identity = new ReorderTransformationIdentity() ;
 
-    /** Return a  ReorderProc that does no reordering  (leaving the query writer in-control)*/
-    public static ReorderProc identityProc()
-    { return _identityProc ; }
+    /**
+     * Return a ReorderProc that does no reordering (leaving the query writer
+     * in-control)
+     */
+    public static ReorderProc identityProc() {
+        return _identityProc ;
+    }
 
-    /** Return a ReorderTransformation that maps directly to the original (leaving the query writer in-control) */
-    public static ReorderTransformation identity()
-    { return _identity ; }
+    /**
+     * Return a ReorderTransformation that maps directly to the original
+     * (leaving the query writer in-control)
+     */
+    public static ReorderTransformation identity() {
+        return _identity ;
+    }
 
-    public static ReorderTransformation fixed()
-    {
+    public static ReorderTransformation fixed() {
         return new ReorderFixed() ;
     }
-    
-    
-    public static ReorderTransformation weighted(String filename)
-    {
+
+    public static ReorderTransformation weighted(String filename) {
         StatsMatcher stats = new StatsMatcher(filename) ;
         return new ReorderWeighted(stats) ;
     }
