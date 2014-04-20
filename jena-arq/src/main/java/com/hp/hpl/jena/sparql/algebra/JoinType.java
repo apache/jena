@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,25 +18,4 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.Iterator ;
-import java.util.List ;
-
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-
-public interface Table
-{
-    public void close() ;
-    public List<Var> getVars() ;
-    public List<String> getVarNames() ;
-    public int size() ;
-    public boolean isEmpty() ;
-    public QueryIterator iterator(ExecutionContext execCxt) ;
-    public Iterator<Binding> rows() ;
-    public void addBinding(Binding binding) ;
-    public boolean contains(Binding binding) ;
-    public ResultSet toResultSet() ;
-}
+public enum JoinType { PLAIN, LEFT /*, RIGHT , /*FULL* /OUTER*/}

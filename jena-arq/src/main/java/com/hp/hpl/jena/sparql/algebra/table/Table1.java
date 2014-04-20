@@ -31,9 +31,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 /** A table of one row of one binding */
 public class Table1 extends TableBase {
@@ -57,33 +55,6 @@ public class Table1 extends TableBase {
         Binding binding = BindingFactory.binding(var, value) ;
         QueryIterator qIter = QueryIterSingleton.create(binding, var, value, execCxt) ;
         return qIter ;
-    }
-
-    @Override
-    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch, ExprList conditions,
-                                        ExecutionContext execContext) {
-        boolean matches = true ;
-        Node other = bindingLeft.get(var) ;
-
-        if ( other == null ) {
-            // Not present - return the merge = the other binding + this
-            // (var/value)
-            Binding mergedBinding = BindingFactory.binding(bindingLeft, var, value) ;
-            return QueryIterSingleton.create(mergedBinding, execContext) ;
-        }
-
-        if ( !other.equals(value) )
-            matches = false ;
-        else {
-            if ( conditions != null )
-                matches = conditions.isSatisfied(bindingLeft, execContext) ;
-        }
-
-        if ( !matches && !includeOnNoMatch )
-            return QueryIterNullIterator.create(execContext) ;
-        // Matches, or does not match and it's a left join - return the left
-        // binding.
-        return QueryIterSingleton.create(bindingLeft, execContext) ;
     }
 
     @Override

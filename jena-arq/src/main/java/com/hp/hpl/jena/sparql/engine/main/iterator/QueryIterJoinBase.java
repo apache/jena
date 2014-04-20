@@ -18,124 +18,56 @@
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.algebra.JoinType ;
 import com.hp.hpl.jena.sparql.algebra.Table ;
 import com.hp.hpl.jena.sparql.algebra.TableFactory ;
+import com.hp.hpl.jena.sparql.algebra.TableLib ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIter2 ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 /** Join or LeftJoin by calculating both sides, then doing the join
  *  It usually better to use substitute algorithm (not this
  *  QueryIterator in other words) as that is effectively indexing
  *  from one side into the other. */ 
-public abstract class QueryIterJoinBase extends QueryIter2
+public class QueryIterJoinBase extends QueryIter
 {
-    // Use QueryIter2LoopOnLeft
-    private QueryIterator current ;
-    protected Table tableRight ;          // Materialized iterator
-    protected ExprList exprs ;
-    private Binding nextBinding = null ;
+    // This should be converted to a hash or sort-merge join.
+    private final QueryIterator left ;
+    private final QueryIterator right ;
+    private final QueryIter result ;
     
-    public QueryIterJoinBase(QueryIterator left, QueryIterator right, ExprList exprs, ExecutionContext execCxt)
+    protected QueryIterJoinBase(QueryIterator left, QueryIterator right, JoinType joinType, ExprList exprs, ExecutionContext execCxt)
     {
-        super(left, right, execCxt) ;
-        tableRight = TableFactory.create(getRight()) ;
-        getRight().close();
-        this.exprs = exprs ;
+        super(execCxt) ;
+        this.left = left ;
+        this.right = right ;
+        this.result = (QueryIter)calc(left, right, joinType, exprs, execCxt) ; 
     }
 
-    public QueryIterJoinBase(QueryIterator left, Table right, ExprList exprs, ExecutionContext execCxt)
-    {
-        super(left, right.iterator(execCxt), execCxt) ;
-        this.tableRight = right ;
-        this.exprs = exprs ;
+    private static QueryIterator calc(QueryIterator left, QueryIterator right, JoinType joinType, ExprList exprs, ExecutionContext execCxt) {
+        Table tableRight = TableFactory.create(right) ;
+        return TableLib.joinWorker(left, tableRight, joinType, exprs, execCxt) ;
+
     }
     
     @Override
-    protected boolean hasNextBinding()
-    {
-        if ( isFinished() )
-            return false ;
-        if ( nextBinding != null )
-            return true ;
-
-        // No nextBinding - only call to moveToNext
-        nextBinding = moveToNext() ;
-        return ( nextBinding != null ) ;
+    protected boolean hasNextBinding() {
+        return result.hasNext() ;
     }
 
     @Override
     protected Binding moveToNextBinding()
     {
-        if ( nextBinding == null )
-            throw new ARQInternalErrorException("moveToNextBinding: slot empty but hasNext was true)") ;
-        
-        Binding b = nextBinding ;
-        nextBinding = null ;
-        return b ;
+        return result.nextBinding() ;
     }
+    
 
     @Override
-    protected void closeSubIterator()
-    {
-        performClose(current) ;
-        if ( tableRight != null ) tableRight.close() ;
-        tableRight = null ;
-    }
-    
+    protected void closeIterator() { left.close() ; right.close() ; } 
+
     @Override
-    protected void requestSubCancel()
-    { 
-        closeSubIterator() ;
-    }
-
-    // Move on regardless.
-    private Binding moveToNext()
-    {
-
-        while(true)
-        {
-            if ( current != null )
-            {
-                if ( current.hasNext() )
-                    return current.nextBinding() ;
-                // curent ends.
-                current.close();
-                current = null ;
-            }
-            
-            // Move to next worker
-            current = joinWorker() ;
-            if ( current == null )
-                // No next worker. 
-                return null ;
-        }
-    }
-    
-    // Null iff there is no more results.  
-    abstract protected QueryIterator joinWorker() ;
-    
-    protected QueryIterator leftJoinWorker()
-    {
-        if ( !getLeft().hasNext() )
-            return null ;
-        Binding b =  getLeft().nextBinding() ;
-        QueryIterator x = tableRight.matchRightLeft(b, true, exprs, getExecContext()) ;
-        return x ;
-    }
-
-    protected QueryIterator equiJoinWorker()
-    {
-        if ( !getLeft().hasNext() )
-            return null ;
-        if ( exprs != null )
-            throw new ARQInternalErrorException("QueryIterJoinBase: expression not empty for equiJoin") ;
-        
-        Binding b =  getLeft().nextBinding() ;
-        QueryIterator x = tableRight.matchRightLeft(b, false, null, getExecContext()) ;
-        return x ;
-    }
+    protected void requestCancel() { left.cancel(); right.cancel(); }
 }

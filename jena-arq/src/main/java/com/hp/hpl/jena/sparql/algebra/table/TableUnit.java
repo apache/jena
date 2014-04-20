@@ -31,7 +31,6 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 public class TableUnit extends TableBase
 {
@@ -52,15 +51,6 @@ public class TableUnit extends TableBase
         // BindingRoot?
         Binding binding = BindingFactory.binding() ;
         return QueryIterSingleton.create(binding, execCxt) ;
-    }
-
-    @Override
-    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
-                                        ExprList conditions,
-                                        ExecutionContext execCxt)
-    {
-        // We are one row of no entries - joins with anything
-        return QueryIterSingleton.create(bindingLeft, execCxt) ;
     }
 
     @Override

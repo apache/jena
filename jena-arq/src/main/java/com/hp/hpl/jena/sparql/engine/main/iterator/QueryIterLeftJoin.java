@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
 
+import com.hp.hpl.jena.sparql.algebra.JoinType ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
@@ -25,15 +26,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList ;
 /** Left join by materializing the RHS */
 public class QueryIterLeftJoin extends QueryIterJoinBase
 {
-    public QueryIterLeftJoin(QueryIterator left, QueryIterator right, ExprList exprs, ExecutionContext qCxt)
-    {
-        super(left, right, exprs, qCxt) ;
-    }
-
-    
-    @Override
-    protected QueryIterator joinWorker()
-    {
-        return super.leftJoinWorker() ;
+    public QueryIterLeftJoin(QueryIterator left, QueryIterator right, ExprList exprs, ExecutionContext qCxt) {
+        super(left, right, JoinType.LEFT, exprs, qCxt) ;
     }
 }

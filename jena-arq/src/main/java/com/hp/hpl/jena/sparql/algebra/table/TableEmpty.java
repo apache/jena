@@ -29,8 +29,6 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 public class TableEmpty extends TableBase
 {
@@ -45,16 +43,6 @@ public class TableEmpty extends TableBase
     @Override
     public QueryIterator iterator(ExecutionContext execCxt) {
         return QueryIterNullIterator.create(execCxt) ;
-    }
-
-    @Override
-    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch, ExprList conditions,
-                                        ExecutionContext execContext) {
-        if ( includeOnNoMatch )
-            return QueryIterSingleton.create(bindingLeft, execContext) ;
-        else
-            // No rows - no match
-            return QueryIterNullIterator.create(execContext) ;
     }
 
     @Override
