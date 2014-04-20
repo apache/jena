@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.TestQueryIterSort ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
         TestBindingStreams.class
+      , TestTableLib.class
       , TestQueryIterSort.class
       , TestService.class
       , TestQueryEngineHTTP.class
