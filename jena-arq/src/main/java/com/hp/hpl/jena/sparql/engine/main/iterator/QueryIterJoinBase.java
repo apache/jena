@@ -37,14 +37,14 @@ public class QueryIterJoinBase extends QueryIter
     // This should be converted to a hash or sort-merge join.
     private final QueryIterator left ;
     private final QueryIterator right ;
-    private final QueryIter result ;
+    private final QueryIterator result ;
     
     protected QueryIterJoinBase(QueryIterator left, QueryIterator right, JoinType joinType, ExprList exprs, ExecutionContext execCxt)
     {
         super(execCxt) ;
         this.left = left ;
         this.right = right ;
-        this.result = (QueryIter)calc(left, right, joinType, exprs, execCxt) ; 
+        this.result = calc(left, right, joinType, exprs, execCxt) ; 
     }
 
     private static QueryIterator calc(QueryIterator left, QueryIterator right, JoinType joinType, ExprList exprs, ExecutionContext execCxt) {

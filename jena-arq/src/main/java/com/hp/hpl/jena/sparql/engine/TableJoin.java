@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
-/** Table join - this only haoppens if the patterns can not be streamed. */  
+/** Table join - this only happens if the patterns can not be streamed. */  
 public class TableJoin
 {
     public static QueryIterator join(QueryIterator left, Table right, ExprList condition, ExecutionContext execCxt) {
@@ -48,9 +48,11 @@ public class TableJoin
 
     public static QueryIterator joinWorker(QueryIterator left, Table right, JoinType joinType, ExprList conditions, ExecutionContext execCxt) {
         if ( right.isEmpty() ) {
-            if ( joinType == PLAIN )
+            if ( joinType == PLAIN ) {
                 // No rows - no match
+                left.close() ;
                 return QueryIterNullIterator.create(execCxt) ;
+            }
             else
                 return left ;
         }

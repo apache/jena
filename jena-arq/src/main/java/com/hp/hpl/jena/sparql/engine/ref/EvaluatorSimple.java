@@ -270,15 +270,12 @@ public class EvaluatorSimple implements Evaluator
 
     private Table joinWorker(Table tableLeft, Table tableRight, boolean leftJoin, ExprList conditions)
     {
-        // Conditional LeftJoin is (left, Filter(expr, Join(left, right)))
-        // This is done in matchRightLeft
-    
-        // Have an iterator that yields one-by-one.
         QueryIterator left = tableLeft.iterator(execCxt) ;
         JoinType joinType = (leftJoin? JoinType.LEFT : JoinType.PLAIN ) ;
         QueryIterator qIter = TableJoin.joinWorker(left, tableRight, joinType, conditions, execCxt) ;
         tableLeft.close() ;
         tableRight.close() ;
+        // qIter and left should be properly closed by use or called code. 
         return new TableN(qIter) ;
     }
     
