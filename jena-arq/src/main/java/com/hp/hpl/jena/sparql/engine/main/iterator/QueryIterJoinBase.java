@@ -63,11 +63,18 @@ public class QueryIterJoinBase extends QueryIter
     {
         return result.nextBinding() ;
     }
-    
 
     @Override
-    protected void closeIterator() { left.close() ; right.close() ; } 
+    protected void closeIterator() {
+        left.close() ;
+        right.close() ;
+        result.close() ;
+    }
 
     @Override
-    protected void requestCancel() { left.cancel(); right.cancel(); }
+    protected void requestCancel() {
+        left.cancel() ;
+        right.cancel() ;
+        result.cancel() ;
+    }
 }
