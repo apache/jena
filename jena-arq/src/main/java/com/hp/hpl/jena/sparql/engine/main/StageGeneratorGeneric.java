@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriples ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderFixed ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
