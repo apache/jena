@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.engine.main.iterator;
 
+import com.hp.hpl.jena.sparql.algebra.JoinType ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 
@@ -26,12 +27,6 @@ public class QueryIterJoin extends QueryIterJoinBase
 {
     public QueryIterJoin(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
     {
-        super(left, right, null, qCxt) ;
-    }
-    
-    @Override
-    protected QueryIterator joinWorker()
-    {
-        return super.equiJoinWorker() ;
+        super(left, right, JoinType.PLAIN, null, qCxt) ;
     }
 }

@@ -22,14 +22,11 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 public class TableN extends TableBase {
     protected List<Binding> rows = new ArrayList<Binding>() ;
@@ -77,29 +74,6 @@ public class TableN extends TableBase {
     @Override
     public boolean isEmpty() {
         return rows.isEmpty() ;
-    }
-
-    // Note - this table is the RIGHT table, and takes a LEFT binding.
-    @Override
-    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch, ExprList conditions,
-                                        ExecutionContext execContext) {
-        List<Binding> out = new ArrayList<Binding>() ;
-        for (Iterator<Binding> iter = rows.iterator(); iter.hasNext();) {
-            Binding bindingRight = iter.next() ;
-            Binding r = Algebra.merge(bindingLeft, bindingRight) ;
-            if ( r == null )
-                continue ;
-            // This does the conditional part. Theta-join.
-            if ( conditions == null || conditions.isSatisfied(r, execContext) )
-                out.add(r) ;
-        }
-
-        if ( out.size() == 0 && includeOnNoMatch )
-            out.add(bindingLeft) ;
-
-        if ( out.size() == 0 )
-            return QueryIterNullIterator.create(execContext) ;
-        return new QueryIterPlainWrapper(out.iterator(), execContext) ;
     }
 
     @Override

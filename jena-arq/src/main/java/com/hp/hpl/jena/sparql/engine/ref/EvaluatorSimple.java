@@ -25,9 +25,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.query.SortCondition ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Table ;
-import com.hp.hpl.jena.sparql.algebra.TableFactory ;
+import com.hp.hpl.jena.sparql.algebra.* ;
 import com.hp.hpl.jena.sparql.algebra.table.TableN ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
@@ -276,18 +274,11 @@ public class EvaluatorSimple implements Evaluator
     
         // Have an iterator that yields one-by-one.
         QueryIterator left = tableLeft.iterator(execCxt) ;
-        QueryIterConcat output = new QueryIterConcat(execCxt) ;
-        for ( ; left.hasNext() ; )
-        {
-            Binding b = left.nextBinding() ;
-            QueryIterator x = tableRight.matchRightLeft(b, leftJoin, conditions, execCxt) ;
-            if ( x == null )
-                continue ;
-            output.add(x) ;
-        }
+        JoinType joinType = (leftJoin? JoinType.LEFT : JoinType.PLAIN ) ;
+        QueryIterator qIter = TableLib.joinWorker(left, tableRight, joinType, conditions, execCxt) ;
         tableLeft.close() ;
         tableRight.close() ;
-        return new TableN(output) ;
+        return new TableN(qIter) ;
     }
     
     // @@ Abstract compatibility
