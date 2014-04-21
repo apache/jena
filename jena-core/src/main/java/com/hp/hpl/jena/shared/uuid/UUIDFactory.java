@@ -21,6 +21,6 @@ package com.hp.hpl.jena.shared.uuid;
 public interface UUIDFactory
 {
     public JenaUUID generate() ;
-    public JenaUUID parse(String s) throws JenaUUID.FormatException ;
+    public JenaUUID parse(String s) throws JenaUUID.UUIDFormatException ;
     public void reset() ;
 }

@@ -93,23 +93,6 @@ public class UUID_V1 extends JenaUUID
         return true ;
     }
     
-    @Override
-    public String toString()
-    { return UUID_V1_Gen.unparse(this) ; } 
-
-    // Time low - which includes the incremental count. 
-    @Override
-    public int hashCode() { return (int) Bits.unpack(bitsMostSignificant, 32, 64) ; }
-    
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( ! ( other instanceof UUID_V1 ) )
-            return false ;
-        UUID_V1 x = (UUID_V1)other ;
-        return this.bitsMostSignificant == x.bitsMostSignificant &&  this.bitsLeastSignificant == x.bitsLeastSignificant ;
-    }
-
     // Accessors
     
     long getTimeHigh()  { return Bits.unpack(bitsMostSignificant, 0,  12) ; } // ( uuid.bitsUpper & UUID_V1_Gen.maskTimeHigh ) ;

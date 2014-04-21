@@ -58,28 +58,7 @@ public class UUID_V4 extends JenaUUID
         return true ;
     }
     
-    @Override
-    public String toString()
-    {
-        return UUID_V4_Gen.unparse(this) ;
-    }
-
-    @Override
-    public int hashCode() { return (int) Bits.unpack(bitsMostSignificant, 32, 64) ; }
-    
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( ! (other instanceof UUID_V4 ) )
-            return false ;
-        UUID_V4 u = (UUID_V4)other ;
-        return this.bitsMostSignificant  == u.bitsMostSignificant &&
-               this.bitsLeastSignificant == u.bitsLeastSignificant ; 
-    }
-    
     static boolean initialized = false ;
-    
-	
     static public void init()
     {
         if ( !initialized )
