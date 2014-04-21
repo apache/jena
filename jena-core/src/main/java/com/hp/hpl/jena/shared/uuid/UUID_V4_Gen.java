@@ -20,7 +20,7 @@ package com.hp.hpl.jena.shared.uuid;
 
 import java.util.* ;
 
-import com.hp.hpl.jena.shared.uuid.JenaUUID.FormatException;
+import com.hp.hpl.jena.shared.uuid.JenaUUID.UUIDFormatException;
 
 
 /** Generator for for random number based UUIDs (version 2, variant 4)
@@ -60,16 +60,16 @@ public class UUID_V4_Gen implements UUIDFactory
         s = s.toLowerCase(Locale.ENGLISH) ;
 
         if ( s.length() != 36 )
-            throw new FormatException("UUID string is not 36 chars long: it's "+s.length()+" ["+s+"]") ;
+            throw new UUIDFormatException("UUID string is not 36 chars long: it's "+s.length()+" ["+s+"]") ;
 
         if ( s.charAt(8)  != '-' && s.charAt(13) != '-' && s.charAt(18) != '-' && s.charAt(23) != '-' )
-            throw new FormatException("String does not have dashes in the right places: "+s) ;
+            throw new UUIDFormatException("String does not have dashes in the right places: "+s) ;
 
         UUID_V4 u = parse$(s) ;
         if ( u.getVersion() != versionHere )
-            throw new FormatException("Wrong version (Expected: "+versionHere+"Got: "+u.getVersion()+"): "+s) ;
+            throw new UUIDFormatException("Wrong version (Expected: "+versionHere+"Got: "+u.getVersion()+"): "+s) ;
         if ( u.getVariant() != variantHere )
-            throw new FormatException("Wrong version (Expected: "+variantHere+"Got: "+u.getVariant()+"): "+s) ;
+            throw new UUIDFormatException("Wrong version (Expected: "+variantHere+"Got: "+u.getVariant()+"): "+s) ;
         return u ;
     }
     
@@ -89,21 +89,6 @@ public class UUID_V4_Gen implements UUIDFactory
         long leastSigBits = Bits.unpack(s, 19, 23) ;
         leastSigBits = leastSigBits<<48 | Bits.unpack(s, 24, 36) ;
         return new UUID_V4(mostSigBits, leastSigBits) ;
-    }
-    
-    public static String unparse(UUID_V4 uuid)
-    {
-        StringBuffer sb = new StringBuffer(36) ;
-        JenaUUID.toHex(sb, Bits.unpack(uuid.bitsMostSignificant,  32, 64), 4) ;
-        sb.append('-') ;
-        JenaUUID.toHex(sb, Bits.unpack(uuid.bitsMostSignificant,  16, 32), 2) ;
-        sb.append('-') ;
-        JenaUUID.toHex(sb, Bits.unpack(uuid.bitsMostSignificant,  0,  16), 2) ;
-        sb.append('-') ;
-        JenaUUID.toHex(sb, Bits.unpack(uuid.bitsLeastSignificant, 48, 64), 2) ;
-        sb.append('-') ;
-        JenaUUID.toHex(sb, Bits.unpack(uuid.bitsLeastSignificant, 0,  48), 6) ;
-        return sb.toString() ;
     }
     
     private void init()

@@ -73,5 +73,4 @@ class LibUUID
         seedInput.append(Long.toString(new Object().hashCode())) ;
         return seedInput.toString().getBytes() ;
     }
-
 }
