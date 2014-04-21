@@ -211,11 +211,15 @@ public class Optimize implements Rewrite
         // of a filter in a (sequence) from each half of a (join).  This is harmless,
         // because filters are generally cheap, but it looks a bit bad.
         if ( context.isTrueOrUndef(ARQ.optFilterPlacement) ) {
-            // Whether to push into BGPs 
-            boolean b = context.isTrueOrUndef(ARQ.optFilterPlacementBGP) ;
-            op = apply("Filter Placement", new TransformFilterPlacement(b), op) ;
+            if ( context.isTrue(ARQ.optFilterPlacementConservative))
+                op = apply("Filter Placement (conservative)", new TransformFilterPlacementConservative(), op) ;
+            else { 
+                // Whether to push into BGPs 
+                boolean b = context.isTrueOrUndef(ARQ.optFilterPlacementBGP) ;
+                op = apply("Filter Placement", new TransformFilterPlacement(b), op) ;
+            }
         }
-
+        
         // Replace suitable FILTER(?x = TERM) with (assign) and write the TERm for ?x in the pattern.    
         // Apply (possible a second time) after FILTER placement as it can create new possibilities.
         // See JENA-616.
