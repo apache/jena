@@ -1,0 +1,53 @@
+<!-- 
+   <xsd:schema xmlns:xsd ="http://www.w3.org/2000/10/XMLSchema">
+-->
+<xsd:schema xmlns:xsd ="http://www.w3.org/2001/XMLSchema">
+
+<xsd:simpleType name="over12">
+  <!-- over12 is an XMLS datatype based on decimal -->
+  <!-- with the added restriction that values must be >= 13 -->
+  <xsd:restriction base="xsd:decimal">
+  <xsd:minInclusive value="13"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="over17">
+  <!-- over17 is an XMLS datatype based on positiveIntege -->
+  <!-- with the added restriction that values must be >= 18 -->
+  <xsd:restriction base="xsd:positiveInteger">
+  <xsd:minInclusive value="18"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="over59">
+  <!-- over59 is an XMLS datatype based on positiveIntege -->
+  <!-- with the added restriction that values must be >= 59 -->
+  <xsd:restriction base="xsd:positiveInteger">
+  <xsd:minInclusive value="60"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="clothingsize">
+  <!-- clothingsize is an XMLS union datatype -->
+  <!-- values of clothingsize may be either integers or strings -->
+  <xsd:union>
+     <xsd:simpleType>
+       <xsd:restriction base='xsd:integer'/>
+     </xsd:simpleType>
+     <xsd:simpleType>
+       <xsd:restriction base='xsd:string'/>
+     </xsd:simpleType>
+  </xsd:union>
+</xsd:simpleType>
+
+<xsd:simpleType name="XSDEnumerationHeight">
+  <!-- This is an XMLS datatype valid values for which are the strings -->
+  <!-- "short", "medium" and "tall". -->
+  <xsd:restriction base="xsd:string">
+    <xsd:enumeration value="short"/>
+    <xsd:enumeration value="medium"/>
+    <xsd:enumeration value="tall"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+</xsd:schema>
