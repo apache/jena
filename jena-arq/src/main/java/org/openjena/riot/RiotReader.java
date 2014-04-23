@@ -335,7 +335,7 @@ public class RiotReader
     /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(InputStream input, StreamRDF dest)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNTriples(tokenizer, dest) ;
     }
     
@@ -349,7 +349,7 @@ public class RiotReader
     /** Create a parser for NQuads, with default behaviour */
     public static LangNQuads createParserNQuads(InputStream input, StreamRDF dest)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNQuads(tokenizer, dest) ;
     }
     
