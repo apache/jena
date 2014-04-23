@@ -151,7 +151,7 @@ abstract public class TestLangNTuples extends BaseTest
         parseCheck("<http://example/x\\u00E9> <http://example/p> <http://example/s> .") ; 
     }
     
-    @Test(expected=RiotException.class) 
+    @Test
     public void tuple_charset_2()
     {
         parseCheck("<http://example/é> <http://example/p> \"é\" .") ; 
@@ -159,11 +159,10 @@ abstract public class TestLangNTuples extends BaseTest
     
     static protected Tokenizer tokenizer(String string)
     {
-        //Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
-        // ASCII
+        // UTF-8
         byte b[] = StrUtils.asUTF8bytes(string) ;
         ByteArrayInputStream in = new ByteArrayInputStream(b) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
         return tokenizer ;
     }
     

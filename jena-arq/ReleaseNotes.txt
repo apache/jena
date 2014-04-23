@@ -8,6 +8,7 @@ ChangeLog for ARQ
 + JENA-638 : Improve coverage of TopN optimziation
 + JENA-634 : Add JSON-LD
 + JENA-518 : Add getter/setter for the error handler to ReaderRIOT.
++ JENA-688 : Update N-Triples and N-Quad parsers to UTF-8 instead of ASCII to match RDF 1.1 W3C Recommendation in all cases
 
 ==== Jena 2.11.1
 

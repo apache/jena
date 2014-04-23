@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertTrue ;
 
 import java.io.ByteArrayInputStream ;
+import java.io.UnsupportedEncodingException ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -34,11 +35,29 @@ import com.hp.hpl.jena.graph.Triple ;
 public class TestRiotReader
 {
     @Test
-    public void testCreateIteratorTriples_01()
+    public void testCreateIteratorTriples_01() throws UnsupportedEncodingException
     {
-        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("".getBytes()), RDFLanguages.NTRIPLES, "http://example/");
+        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("".getBytes("UTF-8")), RDFLanguages.NTRIPLES, "http://example/");
         
         assertFalse(it.hasNext());
+    }
+    
+    @Test
+    public void testEncodedUTF8() throws UnsupportedEncodingException
+    {
+        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"\\u263A\" .".getBytes("UTF-8")), RDFLanguages.NTRIPLES, null);
+        
+        assertTrue(it.hasNext());
+        assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
+    }
+    
+    @Test
+    public void testRawUTF8() throws UnsupportedEncodingException
+    {
+        Iterator<Triple> it = RiotReader.createIteratorTriples(new ByteArrayInputStream("<a> <b> \"☺\" .".getBytes("UTF-8")), RDFLanguages.NTRIPLES, null);
+        
+        assertTrue(it.hasNext());
+        assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
     }
     
     @Test

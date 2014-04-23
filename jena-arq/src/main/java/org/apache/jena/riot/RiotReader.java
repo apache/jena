@@ -391,7 +391,7 @@ public class RiotReader
     @Deprecated
     public static LangNTriples createParserNTriples(InputStream input, StreamRDF dest)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNTriples(tokenizer, dest) ;
     }
     
@@ -408,7 +408,7 @@ public class RiotReader
     @Deprecated
     public static LangNQuads createParserNQuads(InputStream input, StreamRDF dest)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNQuads(tokenizer, dest) ;
     }
     

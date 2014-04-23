@@ -23,7 +23,6 @@ import java.io.StringReader ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
@@ -84,7 +83,7 @@ public class TestLangNTriples extends TestLangNTuples
         parseCount("@base <http://example/> . <x> <p> <s> .") ; 
     }
 
-    @Test(expected=RiotException.class) 
+    @Test
     public void nt_only_5()
     {
         parseCount("<x> <p> \"é\" .") ; 
