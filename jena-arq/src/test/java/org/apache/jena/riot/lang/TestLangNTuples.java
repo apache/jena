@@ -22,14 +22,11 @@ import java.io.ByteArrayInputStream ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.StreamRDFCounting ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
