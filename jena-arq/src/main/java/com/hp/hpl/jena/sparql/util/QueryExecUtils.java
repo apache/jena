@@ -16,21 +16,14 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.util;
-
+package com.hp.hpl.jena.sparql.util ;
 
 import java.util.List ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.RDFWriter ;
@@ -52,80 +45,83 @@ import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
 
 /** Some utilities for query processing. */
-public class QueryExecUtils
-{
+public class QueryExecUtils {
     protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
     static {
         globalPrefixMap.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
         globalPrefixMap.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
         globalPrefixMap.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
+        globalPrefixMap.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
+        globalPrefixMap.setNsPrefix("ex" ,  "http://example.org/") ;
+        globalPrefixMap.setNsPrefix("ns" ,  "http://example.org/ns#") ;
+        globalPrefixMap.setNsPrefix("" ,    "http://example/") ;
+    }
+    protected static Prologue      dftPrologue     = new Prologue(globalPrefixMap) ;
 
-        globalPrefixMap.setNsPrefix("rs",  ResultSetGraphVocab.getURI()) ;
-        //globalPrefixMap.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
+    public static void executeQuery(QueryExecution queryExecution) {
+        executeQuery(null, queryExecution) ;
     }
 
-    public static void executeQuery(Query query, QueryExecution queryExecution)
-    {
-        executeQuery(query,  queryExecution, ResultsFormat.FMT_TEXT) ;
+    public static void executeQuery(Prologue prologue, QueryExecution queryExecution) {
+        executeQuery(prologue, queryExecution, ResultsFormat.FMT_TEXT) ;
     }
 
-    public static void executeQuery(Query query, QueryExecution queryExecution, ResultsFormat outputFormat)
-    {
+    public static void executeQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat) {
+
+        Query query = queryExecution.getQuery() ;
+        if ( prologue == null )
+            prologue = query.getPrologue() ;
+        if ( prologue == null )
+            prologue = dftPrologue ;
+
         if ( query.isSelectType() )
-            doSelectQuery(query, queryExecution, outputFormat) ;
+            doSelectQuery(prologue, queryExecution, outputFormat) ;
         if ( query.isDescribeType() )
-            doDescribeQuery(query, queryExecution, outputFormat) ;
+            doDescribeQuery(prologue, queryExecution, outputFormat) ;
         if ( query.isConstructType() )
-            doConstructQuery(query, queryExecution, outputFormat) ;
+            doConstructQuery(prologue, queryExecution, outputFormat) ;
         if ( query.isAskType() )
-            doAskQuery(query, queryExecution, outputFormat) ;
+            doAskQuery(prologue, queryExecution, outputFormat) ;
         queryExecution.close() ;
     }
 
-    public static void execute(Op op, DatasetGraph dsg)
-    {
+    public static void execute(Op op, DatasetGraph dsg) {
         execute(op, dsg, ResultsFormat.FMT_TEXT) ;
     }
-    
-    public static void execute(Op op, DatasetGraph dsg, ResultsFormat outputFormat)
-    {
+
+    public static void execute(Op op, DatasetGraph dsg, ResultsFormat outputFormat) {
         QueryIterator qIter = Algebra.exec(op, dsg) ;
 
         List<String> vars = null ;
         if ( op instanceof OpProject )
             vars = Var.varNames(((OpProject)op).getVars()) ;
         else
-            // The variables defined in patterns (not Filters, nor NOT EXISTS, nor ORDER BY)
+            // The variables defined in patterns (not Filters, nor NOT EXISTS,
+            // nor ORDER BY)
             vars = Var.varNames(OpVars.visibleVars(op)) ;
 
         ResultSet results = ResultSetFactory.create(qIter, vars) ;
         outputResultSet(results, null, outputFormat) ;
     }
-    
-    public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat)
-    {
+
+    public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat) {
         boolean done = false ;
         if ( prologue == null )
             prologue = new Prologue(globalPrefixMap) ;
 
         if ( outputFormat.equals(ResultsFormat.FMT_UNKNOWN) )
             outputFormat = ResultsFormat.FMT_TEXT ;
-        
-        if ( outputFormat.equals(ResultsFormat.FMT_NONE) ||
-             outputFormat.equals(ResultsFormat.FMT_COUNT) )
-        {
+
+        if ( outputFormat.equals(ResultsFormat.FMT_NONE) || outputFormat.equals(ResultsFormat.FMT_COUNT) ) {
             int count = ResultSetFormatter.consume(results) ;
-            if ( outputFormat.equals(ResultsFormat.FMT_COUNT) )
-            {
-                System.out.println("Count = "+count) ;
+            if ( outputFormat.equals(ResultsFormat.FMT_COUNT) ) {
+                System.out.println("Count = " + count) ;
             }
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) ||
-             outputFormat.equals(ResultsFormat.FMT_RDF_N3) ||
-             outputFormat.equals(ResultsFormat.FMT_RDF_TTL) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) || outputFormat.equals(ResultsFormat.FMT_RDF_N3)
+             || outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
             Model m = ResultSetFormatter.toModel(results) ;
             m.setNsPrefixes(prologue.getPrefixMapping()) ;
             RDFWriter rdfw = m.getWriter("TURTLE") ;
@@ -134,139 +130,118 @@ public class QueryExecUtils
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_XML) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_XML) ) {
             ResultSetFormatter.outputAsXML(System.out, results) ;
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_JSON) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_JSON) ) {
             ResultSetFormatter.outputAsJSON(System.out, results) ;
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_SSE) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_SSE) ) {
             ResultSetFormatter.outputAsSSE(System.out, results, prologue) ;
             done = true ;
         }
-        
-        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) )
-        {
+
+        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) ) {
             ResultSetFormatter.out(System.out, results, prologue) ;
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_TUPLES) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_TUPLES) ) {
             PlainFormat pFmt = new PlainFormat(System.out, prologue) ;
             ResultSetApply a = new ResultSetApply(results, pFmt) ;
             a.apply() ;
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_CSV ) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_CSV) ) {
             ResultSetFormatter.outputAsCSV(System.out, results) ;
             done = true ;
         }
-        
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_TSV ) )
-        {
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_TSV) ) {
             ResultSetFormatter.outputAsTSV(System.out, results) ;
             done = true ;
         }
-        
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_BIO ) )
-        {
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_BIO) ) {
             ResultSetFormatter.outputAsBIO(System.out, results) ;
             done = true ;
         }
-        
-        if ( ! done )
-            System.err.println("Unknown format request: "+outputFormat) ;
+
+        if ( !done )
+            System.err.println("Unknown format request: " + outputFormat) ;
         results = null ;
 
         System.out.flush() ;
     }
 
-    private static void doSelectQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
-    {
+    private static void doSelectQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
+        if ( prologue == null )
+            prologue = qe.getQuery().getPrologue() ;
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
-            outputFormat = ResultsFormat.FMT_TEXT ; 
+            outputFormat = ResultsFormat.FMT_TEXT ;
         ResultSet results = qe.execSelect() ;
-        outputResultSet(results, query, outputFormat) ;
+        outputResultSet(results, prologue, outputFormat) ;
     }
 
-    private static void doDescribeQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
-    {
+    private static void doDescribeQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_RDF_TTL ;
 
         Model r = qe.execDescribe() ;
-        writeModel(query, r, outputFormat) ;
+        writeModel(prologue, r, outputFormat) ;
     }
 
-
-    private static void doConstructQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
-    {
+    private static void doConstructQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_RDF_TTL ;
 
         Model r = qe.execConstruct() ;
-        writeModel(query, r, outputFormat) ;
+        writeModel(prologue, r, outputFormat) ;
     }
 
-    private static void writeModel(Query query, Model model, ResultsFormat outputFormat)
-    {
+    private static void writeModel(Prologue prologue, Model model, ResultsFormat outputFormat) {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_TEXT ;
 
         if ( outputFormat.equals(ResultsFormat.FMT_NONE) )
             return ;
 
-        if ( outputFormat.equals(ResultsFormat.FMT_TEXT))
-        {
-            String qType = "" ;
-            if ( query.isDescribeType() ) qType = "DESCRIBE" ;
-            if ( query.isConstructType() ) qType = "CONSTRUCT" ;
-
-            System.out.println("# ======== "+qType+" results ") ;
-            model.write(System.out, "N3", null) ; // Base is meaningless
+        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) ) {
+            System.out.println("# ======== ") ;
+            RDFDataMgr.write(System.out, model, Lang.TURTLE) ;
             System.out.println("# ======== ") ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) ) {
             model.write(System.out, "RDF/XML-ABBREV", null) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TTL) )
-        {
-            model.write(System.out, "N3", null) ;
-            return ;
-        }
-        
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_N3) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
             model.write(System.out, "N3", null) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NT) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_N3) ) {
+            model.write(System.out, "N3", null) ;
+            return ;
+        }
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NT) ) {
             model.write(System.out, "N-TRIPLES", null) ;
             return ;
         }
 
-        System.err.println("Unknown format: "+outputFormat) ;
+        System.err.println("Unknown format: " + outputFormat) ;
     }
 
-    private static void doAskQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
-    {
+    private static void doAskQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat) {
         boolean b = qe.execAsk() ;
 
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
@@ -274,106 +249,110 @@ public class QueryExecUtils
 
         if ( outputFormat.equals(ResultsFormat.FMT_NONE) )
             return ;
-        
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_XML) )
-        {
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_XML) ) {
             ResultSetFormatter.outputAsXML(System.out, b) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_N3) || 
-        outputFormat.equals(ResultsFormat.FMT_RDF_TTL) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_N3) || outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
             ResultSetFormatter.outputAsRDF(System.out, "TURTLE", b) ;
             System.out.flush() ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_JSON) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_JSON) ) {
             ResultSetFormatter.outputAsJSON(System.out, b) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) )
-        {
-            //ResultSetFormatter.out(System.out, b) ;
-            System.out.println("Ask => "+(b?"Yes":"No")) ;
+        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) ) {
+            // ResultSetFormatter.out(System.out, b) ;
+            System.out.println("Ask => " + (b ? "Yes" : "No")) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_CSV) )
-        {
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_CSV) ) {
             ResultSetFormatter.outputAsCSV(System.out, b) ;
             return ;
         }
-        
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_TSV) )
-        {
+
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_TSV) ) {
             ResultSetFormatter.outputAsTSV(System.out, b) ;
             return ;
         }
-        System.err.println("Unknown format: "+outputFormat) ;
+        System.err.println("Unknown format: " + outputFormat) ;
     }
-    
-    /** Execute a query, expecting the result to be one row, one column.  Return that one RDFNode */
-    public static RDFNode getExactlyOne(String qs, Model model)
-    { return getExactlyOne(qs, DatasetFactory.create(model)) ; }
-    
-    /** Execute a query, expecting the result to be one row, one column.  Return that one RDFNode */
-    public static RDFNode getExactlyOne(String qs, Dataset ds)
-    {
+
+    /**
+     * Execute a query, expecting the result to be one row, one column. Return
+     * that one RDFNode
+     */
+    public static RDFNode getExactlyOne(String qs, Model model) {
+        return getExactlyOne(qs, DatasetFactory.create(model)) ;
+    }
+
+    /**
+     * Execute a query, expecting the result to be one row, one column. Return
+     * that one RDFNode
+     */
+    public static RDFNode getExactlyOne(String qs, Dataset ds) {
         Query q = QueryFactory.create(qs) ;
         if ( q.getResultVars().size() != 1 )
             throw new ARQException("getExactlyOne: Must have exactly one result columns") ;
         String varname = q.getResultVars().get(0) ;
-        QueryExecution qExec = QueryExecutionFactory.create(q, ds);
+        QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
         return getExactlyOne(qExec, varname) ;
     }
-    
-    /** Execute, expecting the result to be one row, one column.  Return that one RDFNode or throw an exception */
-    public static RDFNode getExactlyOne(QueryExecution qExec, String varname)
-    {
+
+    /**
+     * Execute, expecting the result to be one row, one column. Return that one
+     * RDFNode or throw an exception
+     */
+    public static RDFNode getExactlyOne(QueryExecution qExec, String varname) {
         try {
             ResultSet rs = qExec.execSelect() ;
-            
-            if ( ! rs.hasNext() )
-                throw new ARQException("Not found: var ?"+varname) ;
+
+            if ( !rs.hasNext() )
+                throw new ARQException("Not found: var ?" + varname) ;
 
             QuerySolution qs = rs.nextSolution() ;
             RDFNode r = qs.get(varname) ;
             if ( rs.hasNext() )
-                throw new ARQException("More than one: var ?"+varname) ;
+                throw new ARQException("More than one: var ?" + varname) ;
             return r ;
-        } finally { qExec.close() ; }
+        }
+        finally {
+            qExec.close() ;
+        }
     }
-    
-    /** Execute, expecting the result to be one row, one column. 
-     * Return that one RDFNode or null
-     * Throw excpetion if more than one.
+
+    /**
+     * Execute, expecting the result to be one row, one column. Return that one
+     * RDFNode or null Throw excpetion if more than one.
      */
-    public static RDFNode getOne(QueryExecution qExec, String varname)
-    {
+    public static RDFNode getOne(QueryExecution qExec, String varname) {
         try {
             ResultSet rs = qExec.execSelect() ;
-            
-            if ( ! rs.hasNext() )
+
+            if ( !rs.hasNext() )
                 return null ;
 
             QuerySolution qs = rs.nextSolution() ;
             RDFNode r = qs.get(varname) ;
-            if ( rs.hasNext() )
-            {
-                QuerySolution qs2 = rs.next();
+            if ( rs.hasNext() ) {
+                QuerySolution qs2 = rs.next() ;
                 RDFNode r2 = qs2.get(varname) ;
                 if ( rs.hasNext() )
-                    throw new ARQException("More than one: var ?"+varname+ " -> "+r+", "+r2+", ...") ;
+                    throw new ARQException("More than one: var ?" + varname + " -> " + r + ", " + r2 + ", ...") ;
                 else
-                    throw new ARQException("Found two matches: var ?"+varname+ " -> "+r+", "+r2) ;
+                    throw new ARQException("Found two matches: var ?" + varname + " -> " + r + ", " + r2) ;
             }
             return r ;
-        } finally { qExec.close() ; }
+        }
+        finally {
+            qExec.close() ;
+        }
     }
-        
 
 }
