@@ -19,14 +19,16 @@
 package org.apache.jena.riot.lang;
 
 import java.io.ByteArrayInputStream ;
+import java.nio.charset.Charset;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExError ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
 import org.apache.jena.riot.* ;
+import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -152,6 +154,14 @@ abstract public class TestLangNTuples extends BaseTest
     public void tuple_charset_2()
     {
         parseCheck("<http://example/é> <http://example/p> \"é\" .") ; 
+    }
+    
+    static protected Tokenizer tokenizer(CharSpace charSpace, String string)
+    {
+        byte b[] = StrUtils.asUTF8bytes(string) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
+        Tokenizer tokenizer = charSpace == CharSpace.ASCII ? TokenizerFactory.makeTokenizerASCII(in) : TokenizerFactory.makeTokenizerUTF8(in) ;
+        return tokenizer ;
     }
     
     static protected Tokenizer tokenizer(String string)
