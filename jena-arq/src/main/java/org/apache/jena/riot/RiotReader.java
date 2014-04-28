@@ -38,6 +38,7 @@ import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.lang.* ;
+import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.RiotLib ;
@@ -391,7 +392,16 @@ public class RiotReader
     @Deprecated
     public static LangNTriples createParserNTriples(InputStream input, StreamRDF dest)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
+        return createParserNTriples(input, CharSpace.UTF8, dest) ;
+    }
+    
+    /** Create a parser for N-Triples
+     * @deprecated use an RDFDataMgr operation with argument Lang.NTRIPLES
+     */
+    @Deprecated
+    public static LangNTriples createParserNTriples(InputStream input, CharSpace charSpace, StreamRDF dest)
+    {
+        Tokenizer tokenizer = charSpace == CharSpace.ASCII ? TokenizerFactory.makeTokenizerASCII(input) : TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNTriples(tokenizer, dest) ;
     }
     
@@ -408,7 +418,16 @@ public class RiotReader
     @Deprecated
     public static LangNQuads createParserNQuads(InputStream input, StreamRDF dest)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
+        return createParserNQuads(input, CharSpace.UTF8, dest) ;
+    }
+    
+    /** Create a parser for NQuads
+     * @deprecated use an RDFDataMgr operation with argument Lang.NQUADS)
+     */
+    @Deprecated
+    public static LangNQuads createParserNQuads(InputStream input, CharSpace charSpace, StreamRDF dest)
+    {
+        Tokenizer tokenizer = charSpace == CharSpace.ASCII ? TokenizerFactory.makeTokenizerASCII(input) : TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNQuads(tokenizer, dest) ;
     }
     

@@ -41,6 +41,7 @@ import org.apache.jena.riot.lang.LangTurtle ;
 import org.apache.jena.riot.lang.PipedQuadsStream ;
 import org.apache.jena.riot.lang.PipedRDFIterator ;
 import org.apache.jena.riot.lang.PipedTriplesStream ;
+import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
@@ -335,7 +336,13 @@ public class RiotReader
     /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(InputStream input, StreamRDF dest)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
+        return createParserNTriples(input, CharSpace.UTF8, dest) ;
+    }
+    
+    /** Create a parser for N-Triples, with default behaviour */
+    public static LangNTriples createParserNTriples(InputStream input, CharSpace charSpace, StreamRDF dest)
+    {
+        Tokenizer tokenizer = charSpace == CharSpace.ASCII ? TokenizerFactory.makeTokenizerASCII(input) : TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNTriples(tokenizer, dest) ;
     }
     
@@ -349,7 +356,13 @@ public class RiotReader
     /** Create a parser for NQuads, with default behaviour */
     public static LangNQuads createParserNQuads(InputStream input, StreamRDF dest)
     {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
+        return createParserNQuads(input, CharSpace.UTF8, dest) ;
+    }
+    
+    /** Create a parser for NQuads, with default behaviour */
+    public static LangNQuads createParserNQuads(InputStream input, CharSpace charSpace, StreamRDF dest)
+    {
+        Tokenizer tokenizer = charSpace == CharSpace.ASCII ? TokenizerFactory.makeTokenizerASCII(input) : TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserNQuads(tokenizer, dest) ;
     }
     
