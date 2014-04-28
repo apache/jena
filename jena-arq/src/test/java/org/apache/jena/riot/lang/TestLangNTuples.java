@@ -19,7 +19,6 @@
 package org.apache.jena.riot.lang;
 
 import java.io.ByteArrayInputStream ;
-import java.nio.charset.Charset;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;

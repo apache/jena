@@ -66,8 +66,9 @@ public class SSE
         defaultDefaultPrefixMapRead.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
         defaultDefaultPrefixMapRead.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
         defaultDefaultPrefixMapRead.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
-        defaultDefaultPrefixMapRead.setNsPrefix("fn" ,  ARQConstants.fnPrefix) ; 
-        defaultDefaultPrefixMapRead.setNsPrefix("ex" ,  "http://example/ns#") ;
+        defaultDefaultPrefixMapRead.setNsPrefix("fn" ,  ARQConstants.fnPrefix) ;
+        defaultDefaultPrefixMapRead.setNsPrefix("ex" ,  "http://example.org/") ;
+        defaultDefaultPrefixMapRead.setNsPrefix("ns" ,  "http://example.org/ns#") ;
         defaultDefaultPrefixMapRead.setNsPrefix("" ,    "http://example/") ;
     }
     
