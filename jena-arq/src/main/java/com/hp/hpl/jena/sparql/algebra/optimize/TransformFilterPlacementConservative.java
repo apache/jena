@@ -70,29 +70,6 @@ public class TransformFilterPlacementConservative extends TransformCopy {
     
     public TransformFilterPlacementConservative( ) {}
 
-    // Original helper statics.
-    // Removed because this is not the best TransformFilterPlacement to use.
-//    public static Op transform(ExprList exprs, BasicPattern bgp) {
-//        if (!doFilterPlacement)
-//            return OpFilter.filter(exprs, new OpBGP(bgp));
-//        // Mutated
-//        ExprList exprs2 = ExprList.copy(exprs);
-//        Op op = transformFilterBGP(exprs2, new HashSet<Var>(), bgp);
-//        // Remaining filters? e.g. ones mentioning var s not used anywhere.
-//        op = buildFilter(exprs2, op);
-//        return op;
-//    }
-//
-//    public static Op transform(ExprList exprs, Node graphNode, BasicPattern bgp) {
-//        if (!doFilterPlacement)
-//            return OpFilter.filter(exprs, new OpQuadPattern(graphNode, bgp));
-//        // Mutated
-//        ExprList exprs2 = ExprList.copy(exprs);
-//        Op op = transformFilterQuadPattern(exprs2, new HashSet<Var>(), graphNode, bgp);
-//        op = buildFilter(exprs2, op);
-//        return op;
-//    }
-
     @Override
     public Op transform(OpFilter opFilter, Op x) {
         // Destructive use of exprs - copy it.
