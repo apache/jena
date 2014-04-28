@@ -23,9 +23,11 @@ import java.io.StringReader ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
+import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -89,11 +91,21 @@ public class TestLangNTriples extends TestLangNTuples
         parseCount("<x> <p> \"é\" .") ; 
     }
     
+    @Test(expected = RiotException.class)
+    public void nt_only_5b()
+    {
+        parseCount(CharSpace.ASCII, "<x> <p> \"é\" .") ; 
+    }
+    
     @Override
-    protected long parseCount(String... strings)
+    protected long parseCount(String... strings) {
+        return parseCount(CharSpace.UTF8, strings);
+    }
+    
+    private long parseCount(CharSpace charSpace, String... strings)
     {
         String string = StrUtils.strjoin("\n", strings) ;
-        Tokenizer tokenizer = tokenizer(string) ;
+        Tokenizer tokenizer = tokenizer(charSpace, string) ;
         StreamRDFCounting sink = StreamRDFLib.count() ;
         LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
         x.getProfile().setHandler(new ErrorHandlerEx()) ;
