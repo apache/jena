@@ -26,6 +26,7 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;
 import com.hp.hpl.jena.tdb.base.TC_Base ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
@@ -67,20 +68,19 @@ public class TC_TDB
         if ( false )
             SystemTDB.setFileMode(FileMode.direct) ;
     }
-    
+    static ReorderTransformation dftReorder = null ; 
+        
     @BeforeClass static public void beforeClass()   
     {
         //org.apache.log4j.LogManager.resetConfiguration() ;
         //org.apache.log4j.PropertyConfigurator.configure("log4j.properties") ;
         Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
         //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
+        dftReorder = SystemTDB.defaultOptimizer ;
         SystemTDB.defaultOptimizer = ReorderLib.identity() ;
     }
     
-    @AfterClass static public void afterClass() {}   
-    
-    // For "ant" before 1.7 that only understands JUnit3. 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(TC_TDB.class) ;
+    @AfterClass static public void afterClass() {
+        SystemTDB.defaultOptimizer = dftReorder ;
     }
 }
