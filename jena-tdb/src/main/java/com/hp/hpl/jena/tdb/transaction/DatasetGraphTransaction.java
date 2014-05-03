@@ -242,6 +242,23 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
         return getBaseDatasetGraph().getContext() ;
     }
 
+    /**
+     * Return some information about the store connection and transaction
+     * manager for this dataset.
+     */
+    public SysTxnState getTransMgrState() {
+        return sConn.getTransMgrState() ;
+    }
+
+    // Bypasses just about everything!
+//    /**
+//     * Return the StoreConnection - primarily for debugging; do not use if at all possible.
+//     * This access to internal state.
+//     */
+//    public StoreConnection getStoreConnection() {
+//        return sConn ;
+//    }
+
     @Override
     public void startRequest()
     {}
