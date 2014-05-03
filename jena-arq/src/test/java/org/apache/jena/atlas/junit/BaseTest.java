@@ -56,22 +56,6 @@ public class BaseTest extends Assert
         ErrorHandlerFactory.setDefaultErrorHandler(errHandler) ;
     }
 
-    
-    public static void assertNotEquals(Object a, Object b)
-    {
-         assertFalse(a.equals(b)) ;
-    }
-
-    public static void assertNotEquals(String msg, Object a, Object b)
-    {
-         assertFalse(msg, a.equals(b)) ;
-    }
-    
-    public static void assertNotEquals(long a, long b)
-    {
-         assertFalse(a == b ) ;
-    }
-    
     public static void assertEqualsIgnoreCase(String a, String b)
     {
         a = a.toLowerCase(Locale.ROOT) ;
