@@ -63,7 +63,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
         }
     }
 
-    // Transaction per thread.
+    // Transaction per thread per DatasetGraphTransaction object.
     private ThreadLocalTxn txn = new ThreadLocalTxn() ;
     private ThreadLocalBoolean inTransaction = new ThreadLocalBoolean() ;
     
