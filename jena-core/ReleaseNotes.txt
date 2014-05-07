@@ -2,6 +2,7 @@ Release Notes
 =============
 
 ==== Jena 2.11.2
++ Addition of Datatypes to SchemaGen
 
 ==== Jena 2.10.1
 

@@ -201,6 +201,7 @@ public class schemagen {
         writeProperties();
         writeClasses();
         writeIndividuals();
+        writeDatatypes();
         writeClassClose();
         processFooter();
         closeOutput();
@@ -1080,6 +1081,51 @@ public class schemagen {
 
         return accepted;
     }
+    
+    /** Write any datatypes in the vocabulary */
+    protected void writeDatatypes() {
+        if (m_options.hasNodatatypesOption()) {
+            return;
+        }
+
+        if (m_options.hasDatatypesSectionOption()) {
+            writeln( 0, m_options.getDatatypesSectionOption() );
+        }
+        
+        String template = m_options.hasDatatypeTemplateOption() ?  m_options.getDatatypeTemplateOption() : DEFAULT_TEMPLATE;
+        
+        // Cannot create a full RDFDatatype object since we don't know how to parse these custom types, but we can at least specify a Resource
+        for (Iterator<? extends RDFNode> i = selectDatatypes(); i.hasNext(); ) {
+            writeValue( (Resource) i.next(), template, "Resource", "createResource", "_DATATYPE" );
+        }
+    }
+    
+    /** Answer an iterator over the datatypes selected for output */
+    protected ExtendedIterator<? extends RDFNode> selectDatatypes() {
+        List<Resource> candidates = new ArrayList<Resource>();
+        for (StmtIterator i = m_source.listStatements( null, RDF.type, RDFS.Datatype ); i.hasNext(); ) {
+            Statement candidate = i.nextStatement();
+
+            if (candidate.getObject().isResource()) {
+                Resource candSubj = candidate.getSubject();
+
+                // ignore XSD builtins
+                if (!candSubj.isAnon()) {
+                    String candTypeURI = candSubj.getURI();
+                    if (candTypeURI.startsWith( XSD.getURI() )) {
+                        continue;
+                    }
+                }
+
+                // note that whether candSubj is included is tested later on by {@link #filter}
+                if (!candSubj.isAnon() && !candidates.contains( candSubj )) {
+                    candidates.add( candSubj );
+                }
+            }
+        }
+
+        return sorted( candidates );
+    }
 
     /** Write the value declaration out using the given template, optionally creating comments */
     protected void writeValue( Resource r, String template, String valueClass, String creator, String disambiguator ) {
@@ -1407,6 +1453,9 @@ public class schemagen {
 
             /** Section declaration for individuals section; use <code>--individualsSection &lt;...&gt;</code> on command line; use <code>sgen:individualsSection</code> in config file */
             INDIVIDUALS_SECTION,
+            
+            /** Section declaration for datatypes section; use <code>--datatypesSection &lt;...&gt;</code> on command line; use <code>sgen:datatypesSection</code> in config file */
+            DATATYPES_SECTION,
 
             /** Option to suppress properties in vocab file; use <code>--noproperties &lt;...&gt;</code> on command line; use <code>sgen:noproperties</code> in config file */
             NOPROPERTIES,
@@ -1416,6 +1465,9 @@ public class schemagen {
 
             /** Option to suppress individuals in vocab file; use <code>--noindividuals &lt;...&gt;</code> on command line; use <code>sgen:noindividuals</code> in config file */
             NOINDIVIDUALS,
+            
+            /** Option to suppress datatypes in vocab file; use <code>--nodatatypes &lt;...&gt;</code> on command line; use <code>sgen:nodatatypes</code> in config file */
+            NODATATYPES,
 
             /** Option for no file header; use <code>--noheader &lt;...&gt;</code> on command line; use <code>sgen:noheader</code> in config file */
             NOHEADER,
@@ -1428,6 +1480,9 @@ public class schemagen {
 
             /** Template for writing out individual declarations; use <code>--individualTemplate &lt;...&gt;</code> on command line; use <code>sgen:individualTemplate</code> in config file */
             INDIVIDUAL_TEMPLATE,
+            
+            /** Template for writing out datatype declarations; use <code>--datatypeTemplate &lt;...&gt;</code> on command line; use <code>sgen:datatypeTemplate</code> in config file */
+            DATATYPE_TEMPLATE,
 
             /** Option for mapping constant names to uppercase; use <code>--uppercase &lt;...&gt;</code> on command line; use <code>sgen:uppercase</code> in config file */
             UC_NAMES,
@@ -1482,12 +1537,15 @@ public class schemagen {
                 {OPT.PROPERTY_SECTION,    new OptionDefinition( "--propSection", "propSection" ) },
                 {OPT.CLASS_SECTION,       new OptionDefinition( "--classSection", "classSection" ) },
                 {OPT.INDIVIDUALS_SECTION, new OptionDefinition( "--individualsSection", "individualsSection" ) },
+                {OPT.DATATYPES_SECTION,   new OptionDefinition( "--datatypesSection", "datatypesSection" ) },
                 {OPT.NOPROPERTIES,        new OptionDefinition( "--noproperties", "noproperties" ) },
                 {OPT.NOCLASSES,           new OptionDefinition( "--noclasses", "noclasses" ) },
                 {OPT.NOINDIVIDUALS,       new OptionDefinition( "--noindividuals", "noindividuals" ) },
+                {OPT.NODATATYPES,         new OptionDefinition( "--nodatatypes", "nodatatypes" ) },
                 {OPT.PROP_TEMPLATE,       new OptionDefinition( "--propTemplate", "propTemplate" ) },
                 {OPT.CLASS_TEMPLATE,      new OptionDefinition( "--classTemplate", "classTemplate" ) },
                 {OPT.INDIVIDUAL_TEMPLATE, new OptionDefinition( "--individualTemplate", "individualTemplate" ) },
+                {OPT.DATATYPE_TEMPLATE,   new OptionDefinition( "--datatypeTemplate", "datatypeTemplate" ) },
                 {OPT.UC_NAMES,            new OptionDefinition( "--uppercase", "uppercase" ) },
                 {OPT.INCLUDE,             new OptionDefinition( "--include", "include" ) },
                 {OPT.CLASSNAME_SUFFIX,    new OptionDefinition( "--classnamesuffix", "classnamesuffix" )},
@@ -1539,15 +1597,20 @@ public class schemagen {
         public String getClassSectionOption();
         public boolean hasIndividualsSectionOption();
         public String getIndividualsSectionOption();
+        public boolean hasDatatypesSectionOption();
+        public String getDatatypesSectionOption();
         public boolean hasNopropertiesOption();
         public boolean hasNoclassesOption();
         public boolean hasNoindividualsOption();
+        public boolean hasNodatatypesOption();
         public boolean hasPropTemplateOption();
         public String getPropTemplateOption();
         public boolean hasClassTemplateOption();
         public String getClassTemplateOption();
         public boolean hasIndividualTemplateOption();
         public String getIndividualTemplateOption();
+        public boolean hasDatatypeTemplateOption();
+        public String getDatatypeTemplateOption();
         public boolean hasUcNamesOption();
         public boolean hasIncludeOption();
         public List<String> getIncludeOption();
@@ -1793,11 +1856,17 @@ public class schemagen {
         @Override
         public String getIndividualsSectionOption() { return getStringValue( OPT.INDIVIDUALS_SECTION ); }
         @Override
+        public boolean hasDatatypesSectionOption() { return hasValue( OPT.DATATYPES_SECTION ); }
+        @Override
+        public String getDatatypesSectionOption() { return getStringValue( OPT.DATATYPES_SECTION ); }
+        @Override
         public boolean hasNopropertiesOption() { return isTrue( OPT.NOPROPERTIES ); }
         @Override
         public boolean hasNoclassesOption() { return isTrue( OPT.NOCLASSES ); }
         @Override
         public boolean hasNoindividualsOption() { return isTrue( OPT.NOINDIVIDUALS ); }
+        @Override
+        public boolean hasNodatatypesOption() { return isTrue( OPT.NODATATYPES ); }
         @Override
         public boolean hasPropTemplateOption() { return hasValue( OPT.PROP_TEMPLATE ); }
         @Override
@@ -1810,6 +1879,10 @@ public class schemagen {
         public boolean hasIndividualTemplateOption() { return hasValue( OPT.INDIVIDUAL_TEMPLATE ); }
         @Override
         public String getIndividualTemplateOption() { return getStringValue( OPT.INDIVIDUAL_TEMPLATE ); }
+        @Override
+        public boolean hasDatatypeTemplateOption() { return hasValue( OPT.DATATYPE_TEMPLATE ); }
+        @Override
+        public String getDatatypeTemplateOption() { return getStringValue( OPT.DATATYPE_TEMPLATE ); }
         @Override
         public boolean hasUcNamesOption() { return isTrue( OPT.UC_NAMES ); }
         @Override
