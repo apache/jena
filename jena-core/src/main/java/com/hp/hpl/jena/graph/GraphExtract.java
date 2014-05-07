@@ -81,8 +81,11 @@ public class GraphExtract
                 {
                 Triple t = it.next();
                 Node subRoot = t.getObject();
-                toUpdate.add( t );
-                if (! (active.contains( subRoot ) || b.stopAt( t ))) extractInto( subRoot );
+                if (!(b.stopAt(t))) {
+                  toUpdate.add(t);
+                  if (!(active.contains(subRoot)))
+                    extractInto(subRoot);
+                  }
                 }
             }
         }

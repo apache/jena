@@ -83,7 +83,7 @@ public class TestGraphExtract extends GraphTestBase
     
     public void testExtractBoundary()
         {
-        testExtract( "a R b; b S _c", "a", "a R b; b S _c; _c T d", TripleBoundary.stopAtAnonObject );
+        testExtract( "a R b", "a", "a R b; b S _c; _c T d", TripleBoundary.stopAtAnonObject );
         }
     
     /**
