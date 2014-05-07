@@ -213,6 +213,22 @@ public class Test_schemagen
                              new String[] {".*valtype.*"} );
     }
 
+    public void testDatatype0() throws Exception {
+        String SOURCE = PREFIX + "ex:d a rdfs:Datatype . ex:d rdfs:comment \"custom datatype\" .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl"},
+                             new String[] {".*public static final Resource d.*"},
+                             new String[] {} );
+    }
+    
+    public void testDatatype1() throws Exception {
+        String SOURCE = PREFIX + "ex:d a rdfs:Datatype . ex:d rdfs:comment \"custom datatype\" .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--nodatatypes"},
+                             new String[] {},
+                             new String[] {".*public static final Resource d.*"} );
+    }
+    
     /** Bug report by Richard Cyganiak */
     public void testRC0() throws Exception {
         String SOURCE = PREFIX + "ex:class a owl:Class .";

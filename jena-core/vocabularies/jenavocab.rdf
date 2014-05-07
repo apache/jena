@@ -88,6 +88,11 @@
     ///////////////////////////
 </vocab:classSection>
 
+<vocab:datatypesSection>
+    // Vocabulary datatypes
+    ///////////////////////////
+</vocab:datatypessSection>
+
 <vocab:individualsSection>
     // Vocabulary individuals
     ///////////////////////////
