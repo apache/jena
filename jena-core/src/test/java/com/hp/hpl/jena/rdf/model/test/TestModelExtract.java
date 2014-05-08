@@ -159,12 +159,24 @@ public class TestModelExtract extends AbstractModelTestBase
 
 	public void testStatementTripleBoundaryAnon()
 	{
-		final TripleBoundary anon = TripleBoundary.stopAtAnonObject;
-		Assert.assertSame(anon,
-				new StatementTripleBoundary(anon).asTripleBoundary(null));
-		Assert.assertFalse(new StatementTripleBoundary(anon).stopAt(ModelHelper
+		final TripleBoundary anonObject = TripleBoundary.stopAtAnonObject;
+		Assert.assertSame(anonObject,
+				new StatementTripleBoundary(anonObject).asTripleBoundary(null));
+		Assert.assertFalse(new StatementTripleBoundary(anonObject).stopAt(ModelHelper
 				.statement("s P o")));
 		Assert.assertTrue(new StatementTripleBoundary(anon).stopAt(ModelHelper
+				Assert.assertFalse(new StatementTripleBoundary(anonObject).stopAt(ModelHelper
+						.statement("_s P o")));
+		Assert.assertTrue(new StatementTripleBoundary(anonObject).stopAt(ModelHelper
+				.statement("s P _o")));
+		final TripleBoundary anonSubject = TripleBoundary.stopAtAnonSubject;
+		Assert.assertSame(anonSubject,
+				new StatementTripleBoundary(anonSubject).asTripleBoundary(null));
+		Assert.assertFalse(new StatementTripleBoundary(anonSubject).stopAt(ModelHelper
+				.statement("s P o")));
+		Assert.assertTrue(new StatementTripleBoundary(anonSubject).stopAt(ModelHelper
+				.statement("_s P o")));
+		Assert.assertFalse(new StatementTripleBoundary(anonSubject).stopAt(ModelHelper
 				.statement("s P _o")));
 	}
 

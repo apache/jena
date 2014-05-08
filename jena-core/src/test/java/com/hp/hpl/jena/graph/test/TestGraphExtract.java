@@ -79,11 +79,15 @@ public class TestGraphExtract extends GraphTestBase
         assertFalse( TripleBoundary.stopAtAnonObject.stopAt( triple( "a R b" ) ) );
         assertFalse( TripleBoundary.stopAtAnonObject.stopAt( triple( "a _R b" ) ) );
         assertFalse( TripleBoundary.stopAtAnonObject.stopAt( triple( "_a R b" ) ) );
+		assertFalse( TripleBoundary.stopAtAnonSubject.stopAt( triple( "a R _b" ) ) );
+		assertFalse( TripleBoundary.stopAtAnonSubject.stopAt( triple( "a R b" ) ) );
+		assertFalse( TripleBoundary.stopAtAnonSubject.stopAt( triple( "a _R b" ) ) );
+		assertTrue( TripleBoundary.stopAtAnonSubject.stopAt( triple( "_a R b" ) ) );
         }
     
     public void testExtractBoundary()
         {
-        testExtract( "a R b; b S _c", "a", "a R b; b S _c; _c T d", TripleBoundary.stopAtAnonObject );
+        testExtract( "a R b", "a", "a R b; b S _c; _c T d", TripleBoundary.stopAtAnonObject );
         }
     
     /**

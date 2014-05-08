@@ -21,7 +21,7 @@ package com.hp.hpl.jena.graph;
 /**
      An interface for expressing a stopping condition on triples, such as in 
      sub-graph extraction.
-  */
+*/
 public interface TripleBoundary
     {
     /**
@@ -43,5 +43,10 @@ public interface TripleBoundary
     public static final TripleBoundary stopAtAnonObject = new TripleBoundary()
         { @Override
         public boolean stopAt( Triple t ) { return t.getObject().isBlank(); } };
-
+	/**
+	 	A TripleBoundary that stops at triples with anonymous subjects.
+	 */
+    public static final TripleBoundary stopAtAnonSubject = new TripleBoundary()
+        { @Override
+        public boolean stopAt( Triple t ) { return t.getSubject().isBlank(); } };
     }
