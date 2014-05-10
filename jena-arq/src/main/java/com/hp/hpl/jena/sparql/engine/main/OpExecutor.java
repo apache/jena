@@ -66,12 +66,12 @@ import com.hp.hpl.jena.sparql.procedure.Procedure ;
 
 public class OpExecutor
 {
-    protected static final OpExecutorFactory stdFactory = new OpExecutorFactory() {
-                                                            @Override
-                                                            public OpExecutor create(ExecutionContext execCxt) {
-                                                                return new OpExecutor(execCxt) ;
-                                                            }
-                                                        } ;
+    public static final OpExecutorFactory stdFactory = new OpExecutorFactory() {
+        @Override
+        public OpExecutor create(ExecutionContext execCxt) {
+            return new OpExecutor(execCxt) ;
+        }
+    } ;
 
     private static OpExecutor createOpExecutor(ExecutionContext execCxt) {
         OpExecutorFactory factory = execCxt.getExecutor() ;
