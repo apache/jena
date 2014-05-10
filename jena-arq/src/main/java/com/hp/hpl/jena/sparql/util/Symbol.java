@@ -22,8 +22,8 @@ package com.hp.hpl.jena.sparql.util;
 
 public class Symbol
 {
-    private final static String nilSymbolName = "nil" ;
-    String symbol ;
+    protected final static String nilSymbolName = "nil" ;
+    protected String symbol ;
     
     static public Symbol create(String symbolStr) { return new Symbol(symbolStr) ; }
     static public Symbol create(Symbol other) { return new Symbol(other) ; }
