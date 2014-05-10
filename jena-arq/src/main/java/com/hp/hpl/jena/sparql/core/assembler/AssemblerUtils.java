@@ -29,7 +29,6 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
@@ -88,8 +87,6 @@ public class AssemblerUtils
         { throw new ARQException("Failed reading assembler description: "+ex.getMessage()) ; }
 
         Resource root = null ;
-        InfoLevel level = ARQ.getExecutionLogging() ;
-        ARQ.setExecutionLogging(InfoLevel.NONE) ;
         try {
             root = GraphUtils.findRootByType(spec, type) ;
             if ( root == null )
@@ -97,8 +94,6 @@ public class AssemblerUtils
             
         } catch (TypeNotUniqueException ex)
         { throw new ARQException("Multiple types for: "+DatasetAssemblerVocab.tDataset) ; }
-        finally
-        { ARQ.setExecutionLogging(level) ; }
         return Assembler.general.open(root) ;
     }
     
