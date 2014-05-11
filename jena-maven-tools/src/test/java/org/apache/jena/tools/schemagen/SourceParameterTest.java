@@ -156,6 +156,18 @@ public class SourceParameterTest
 
                 expected = optionName;
                 break;
+                
+            case DATATYPES_SECTION:
+                s.setDatatypesSection( optionName );
+
+                expected = optionName;
+                break;
+
+            case DATATYPE_TEMPLATE:
+                s.setDatatypeTemplate( optionName );
+
+                expected = optionName;
+                break;
 
             case DECLARATIONS:
                 s.setDeclarations( optionName );
@@ -283,7 +295,12 @@ public class SourceParameterTest
 
                 expected = true;
                 break;
+                
+            case NODATATYPES:
+                s.setNoDatatypes( true );
 
+                expected = true;
+                break;
             case NOHEADER:
                 s.setNoHeader( true );
 
