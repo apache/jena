@@ -94,6 +94,9 @@ public class Source {
 
     @Parameter(property="individuals-section")
     private String individualsSection;
+    
+    @Parameter(property="datatypes-section")
+    private String datatypesSection;
 
     @Parameter(property="noproperties")
     private Boolean noProperties;
@@ -103,6 +106,9 @@ public class Source {
 
     @Parameter(property="noindividuals")
     private Boolean noIndividuals;
+    
+    @Parameter(property="nodatatypes")
+    private Boolean noDatatypes;
 
     @Parameter(property="noheader")
     private Boolean noHeader;
@@ -115,6 +121,9 @@ public class Source {
 
     @Parameter(property="individualtemplate")
     private String individualTemplate;
+    
+    @Parameter(property="datatypetemplate")
+    private String datatypeTemplate;
 
     @Parameter(property="uc-names")
     private Boolean ucNames;
@@ -245,6 +254,11 @@ public class Source {
     public String getIndividualsSection() {
         return individualsSection;
     }
+    
+    @SchemagenOption(opt=OPT.DATATYPES_SECTION)
+    public String getDatatypesSection() {
+        return datatypesSection;
+    }
 
     @SchemagenOption(opt=OPT.NOPROPERTIES)
     public Boolean isNoProperties() {
@@ -259,6 +273,11 @@ public class Source {
     @SchemagenOption(opt=OPT.NOINDIVIDUALS)
     public Boolean isNoIndividuals() {
         return noIndividuals;
+    }
+    
+    @SchemagenOption(opt=OPT.NODATATYPES)
+    public Boolean isNoDatatypes() {
+        return noDatatypes;
     }
 
     @SchemagenOption(opt=OPT.NOHEADER)
@@ -279,6 +298,11 @@ public class Source {
     @SchemagenOption(opt=OPT.INDIVIDUAL_TEMPLATE)
     public String getIndividualTemplate() {
         return individualTemplate;
+    }
+    
+    @SchemagenOption(opt=OPT.DATATYPE_TEMPLATE)
+    public String getDatatypeTemplate() {
+        return datatypeTemplate;
     }
 
     @SchemagenOption(opt=OPT.UC_NAMES)
@@ -410,6 +434,10 @@ public class Source {
     public void setIndividualsSection(String individualsSection) {
         this.individualsSection = individualsSection;
     }
+    
+    public void setDatatypesSection(String datatypesSection) {
+        this.datatypesSection = datatypesSection;
+    }
 
     public void setNoProperties(Boolean noProperties) {
         this.noProperties = noProperties;
@@ -421,6 +449,10 @@ public class Source {
 
     public void setNoIndividuals(Boolean noIndividuals) {
         this.noIndividuals = noIndividuals;
+    }
+    
+    public void setNoDatatypes(Boolean noDatatypes) {
+        this.noDatatypes = noDatatypes;
     }
 
     public void setNoHeader(Boolean noHeader) {
@@ -437,6 +469,10 @@ public class Source {
 
     public void setIndividualTemplate(String individualTemplate) {
         this.individualTemplate = individualTemplate;
+    }
+    
+    public void setDatatypeTemplate(String datatypeTemplate) {
+        this.datatypeTemplate = datatypeTemplate;
     }
 
     public void setUcNames(Boolean ucNames) {
