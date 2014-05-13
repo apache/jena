@@ -282,7 +282,7 @@ public class TestTransformFilters extends AbstractTestTransform
               , "    ?x :p ?o2"
               , "}"
                 ) ;
-        // Transformation if ilter place not happening.
+        // Transformation if filter place not happening.
         // Weaker placement.
         String ops = StrUtils.strjoinNL
             ("(assign ((?x <http://example/x>))"
@@ -476,7 +476,7 @@ public class TestTransformFilters extends AbstractTestTransform
              "(filter (exprlist (!= ?x <x>) (!= ?x 2) (!= ?x 3)) (bgp (?s ?p ?x)))") ;
     }
     
-    @Test public void implicitJoin1()
+    @Test public void implicitJoin01()
     {
         testOp(
              "(filter (= ?x ?y) (bgp (?x ?p ?o)(?y ?p1 ?o1)))",
@@ -484,7 +484,7 @@ public class TestTransformFilters extends AbstractTestTransform
              "(assign ((?x ?y)) (bgp (?y ?p ?o)(?y ?p1 ?o1)))");
     }
     
-    @Test public void implicitJoin2()
+    @Test public void implicitJoin02()
     {
         testOp(
              "(filter (= ?x ?y) (bgp (?x ?p ?o)))",
@@ -492,7 +492,7 @@ public class TestTransformFilters extends AbstractTestTransform
              "(table empty)");
     }
     
-    @Test public void implicitJoin3()
+    @Test public void implicitJoin03()
     {
         // Still safe to transform as at least one is guaranteed non-literal
         testOp(
@@ -501,7 +501,7 @@ public class TestTransformFilters extends AbstractTestTransform
              "(assign ((?x ?y)) (bgp (?y ?p ?o)(?a ?b ?y)))");
     }
     
-    @Test public void implicitJoin4()
+    @Test public void implicitJoin04()
     {
         // Not safe to transform as both may be literals
         testOp(
@@ -510,7 +510,7 @@ public class TestTransformFilters extends AbstractTestTransform
              "(filter (= ?x ?y) (bgp (?a ?b ?x)(?c ?d ?y)))");
     }
     
-    @Test public void implicitJoin5()
+    @Test public void implicitJoin05()
     {
         // Safe to transform as although both may be literals we are using sameTerm so already relying on term equality
         testOp(
@@ -519,7 +519,7 @@ public class TestTransformFilters extends AbstractTestTransform
              "(assign ((?x ?y)) (bgp (?a ?b ?y)(?c ?d ?y)))");
     }
     
-    @Test public void implicitJoin6()
+    @Test public void implicitJoin06()
     {
         // Not safe to transform as equality on same variable
         testOp(
@@ -528,7 +528,7 @@ public class TestTransformFilters extends AbstractTestTransform
              (String[])null);
     }
     
-    @Test public void implicitJoin7()
+    @Test public void implicitJoin07()
     {
         testOp(
              "(filter ((= ?x ?y) (= ?x ?z)) (bgp (?x ?p ?o)(?y ?p1 ?z)))",
@@ -536,7 +536,7 @@ public class TestTransformFilters extends AbstractTestTransform
              (String[])null);
     }
     
-    @Test public void implicitJoin8()
+    @Test public void implicitJoin08()
     {
         testOp(
              "(filter (= ?x ?y) (join (bgp (?x ?p ?o)) (bgp (?y ?p1 ?o1))))",
@@ -549,7 +549,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 "(assign ((?y ?x)) (join (bgp (?x ?p ?o)) (bgp (?x ?p1 ?o1))))");
     }
     
-    @Test public void implicitJoin9()
+    @Test public void implicitJoin09()
     {
         // A variable introduced by an assign cannot be considered safe
         testOp(
@@ -578,8 +578,71 @@ public class TestTransformFilters extends AbstractTestTransform
             t_implicitJoin,
             "(table empty)");
     }
+    
+    @Test public void implicitJoin12()
+    {
+    	// Test case from JENA-692
+    	// Implicit join should not apply to the whole union because the variables involved aren't fixed
+    	// However we can spot the special case of one branch of the union being invalid and throw it out
+    	testOp(
+			"(filter (= ?a ?b) (union (bgp (triple ?a :p :o1)) (bgp (triple ?b :p ?a))))", 
+			t_implicitJoin,
+			"(assign ((?a ?b)) (bgp (triple ?b :p ?b)))");
+    }
+    
+    @Test public void implicitJoin13()
+    {
+    	// Variation on test case from JENA-692
+    	// Implicit join should not apply to the whole union because the variables involved aren't fixed
+    	// However we can spot the special case of one branch of the union being invalid and throw it out
+    	testOp(
+			"(filter (= ?a ?b) (union (bgp (triple ?b :p ?a)) (bgp (triple ?a :p :o1))))", 
+			t_implicitJoin,
+			"(assign ((?a ?b)) (bgp (triple ?b :p ?b)))");
+    }
+    
+    @Test public void implicitJoin14()
+    {
+    	// Variation on test case from JENA-692
+    	// Implicit join should not apply to the whole union because the variables involved aren't fixed
+    	// However we can spot the special case where both branches are invalid
+    	testOp(
+			"(filter (= ?a ?b) (union (bgp (triple ?b :p :o1)) (bgp (triple ?a :p :o2))))", 
+			t_implicitJoin,
+			"(table empty)");
+    }
         
-    @Test public void implicitLeftJoin1()
+    @Test public void implicitJoin15()
+    {
+    	// Variation on the test case from JENA-692 with additional assignment added
+    	// Implicit join should not apply to the whole union because not all assignments are valid
+    	testOp(
+			"(filter ((= ?a ?b) (= ?a ?p)) (union (bgp (triple ?a ?p :o1)) (bgp (triple ?b ?p ?a))))", 
+			t_implicitJoin,
+			(String[])null);
+    }
+    
+    @Test public void implicitJoin16()
+    {
+    	// Variation on test case from JENA-692
+    	// Implicit join can apply because assignments are valid over both branches of the union
+    	testOp(
+			"(filter (= ?a ?b) (union (bgp (triple ?a :p ?b)) (bgp (triple ?b :p ?a))))", 
+			t_implicitJoin,
+			"(assign ((?a ?b)) (union (bgp (triple ?b :p ?b)) (bgp (triple ?b :p ?b))))");
+    }
+    
+    @Test public void implicitJoin17()
+    {
+    	// Variation on test case from JENA-692
+    	// Implicit join can apply because the filter is over the branch of the union where it is valid
+    	testOp(
+			"(union (bgp (triple ?a :p :o1)) (filter (= ?a ?b) (bgp (triple ?b :p ?a))))", 
+			t_implicitJoin,
+			"(union (bgp (triple ?a :p :o1)) (assign ((?a ?b)) (bgp (triple ?b :p ?b))))");
+    }
+        
+    @Test public void implicitLeftJoin01()
     {
         // Possible to optimize some cases where it's an implicit left join
         
@@ -596,7 +659,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))");
     }
     
-    @Test public void implicitLeftJoin2()
+    @Test public void implicitLeftJoin02()
     {
         // Possible to optimize some cases where it's an implicit left join
         
@@ -613,7 +676,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 "(leftjoin (bgp (?y ?p ?o)) (assign ((?x ?y)) (bgp (?y ?p1 ?o1))))");
     }
     
-    @Test public void implicitLeftJoin3()
+    @Test public void implicitLeftJoin03()
     {
         // Possible to optimize some cases where it's an implicit left join
         
@@ -630,7 +693,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 "(leftjoin (bgp (?x ?p ?o)) (assign ((?y ?x)) (bgp (?x <http://type> ?type)(?x ?p1 ?o1))))");
     }
     
-    @Test public void implicitLeftJoin4()
+    @Test public void implicitLeftJoin04()
     {
         // Possible to optimize some cases where it's an implicit left join
         
@@ -647,7 +710,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 "(leftjoin (bgp (?y ?p ?o)) (assign ((?x ?y)) (bgp (?y <http://type> ?type)(?y ?p1 ?o1))))");
     }
     
-    @Test public void implicitLeftJoin5()
+    @Test public void implicitLeftJoin05()
     {
         // Possible to optimize some cases where it's an implicit left join
         
@@ -664,7 +727,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?y ?x)) (bgp (?x ?p1 ?o1))))");
     }
     
-    @Test public void implicitLeftJoin6()
+    @Test public void implicitLeftJoin06()
     {
         // Possible to optimize some cases where it's an implicit left join
         
@@ -681,7 +744,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?x ?y)) (bgp (?y ?p1 ?o1))))");
     }
     
-    @Test public void implicitLeftJoin7()
+    @Test public void implicitLeftJoin07()
     {
         // Possible to optimize some cases where it's an implicit left join
         
@@ -698,7 +761,7 @@ public class TestTransformFilters extends AbstractTestTransform
                 "(leftjoin (bgp (?x ?p ?o)(?x <http://pred> ?y)) (assign ((?y ?x)) (bgp (?x <http://type> ?type)(?x ?p1 ?o1))))");
     }
     
-    @Test public void implicitLeftJoin8()
+    @Test public void implicitLeftJoin08()
     {
         // We don't currently optimize the case where the filter will evaluate to false
         // for all solutions because neither variable in on the RHS
@@ -708,7 +771,7 @@ public class TestTransformFilters extends AbstractTestTransform
              (String[])null);
     }
         
-    @Test public void implicitLeftJoin9()
+    @Test public void implicitLeftJoin09()
     {
         // && means both conditions must hold so can optimize out the implicit join
         testOp(
@@ -911,7 +974,17 @@ public class TestTransformFilters extends AbstractTestTransform
              "(leftjoin (table unit) (assign ((?y ?x)) (bgp (?x ?p ?o)(?x <http://pred> ?x))))");
     }
     
-    @Test public void implicitLeftJoinConditional1()
+    @Test public void implicitLeftJoin24()
+    {
+    	// Modified test case from JENA-692
+    	// Implicit join should not apply to the whole union because the variables involved aren't fixed
+    	testOp(
+			"(leftjoin (bgp (triple ?a <http://type> ?type)) (union (bgp (triple ?a :p :o1)) (bgp (triple ?b :p ?a))) ((= ?a ?b)))", 
+			t_implicitLeftJoin,
+			(String[])null);
+    }
+    
+    @Test public void implicitLeftJoinConditional01()
     {
         // Can be optimized because not all assigns block linearization
         testOp(

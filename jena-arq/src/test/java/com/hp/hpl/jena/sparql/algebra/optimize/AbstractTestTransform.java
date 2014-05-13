@@ -81,12 +81,20 @@ public abstract class AbstractTestTransform extends BaseTest {
         Op opExpected = SSE.parseOp(opExpectedString) ;
         assertEquals(opExpected, opOptimize) ;
     }
-
-    private static void checkAlgebra(String algString, String opExpectedString) {
+    
+    public static void checkAlgebra(String algString, Transform additionalOptimizer, String opExpectedString) {
         Op algebra = SSE.parseOp(algString) ;
         algebra = Algebra.optimize(algebra) ;
-        Op opExpexpected = SSE.parseOp(opExpectedString) ;
-        assertEquals(opExpexpected, algebra) ;
+        algebra = Transformer.transform(additionalOptimizer, algebra);
+        Op opExpected = SSE.parseOp(opExpectedString != null ? opExpectedString : algString);
+        assertEquals(opExpected, algebra) ;
+    }
+
+    public static void checkAlgebra(String algString, String opExpectedString) {
+        Op algebra = SSE.parseOp(algString) ;
+        algebra = Algebra.optimize(algebra) ;
+        Op opExpected = SSE.parseOp(opExpectedString != null ? opExpectedString : algString);
+        assertEquals(opExpected, algebra) ;
     }
 
 }

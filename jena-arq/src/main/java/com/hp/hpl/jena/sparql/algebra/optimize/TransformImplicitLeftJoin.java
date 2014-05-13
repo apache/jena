@@ -328,9 +328,19 @@ public class TransformImplicitLeftJoin extends TransformCopy {
             return true;
         }
 
-        if (op instanceof OpJoin || op instanceof OpUnion) {
+        if (op instanceof OpJoin) {
             Op2 op2 = (Op2) op;
             return safeToTransform(joins, varsEquality, op2.getLeft()) && safeToTransform(joins, varsEquality, op2.getRight());
+        }
+        
+        if (op instanceof OpUnion) {
+        	// True only if for any pairs that affect the pattern both variables occur
+        	Set<Var> fixedVars = OpVars.fixedVars(op);
+        	for (Pair<Var, Var> pair : joins) {
+        		if (fixedVars.contains(pair.getLeft()) && !fixedVars.contains(pair.getRight())) return false;
+        		if (!fixedVars.contains(pair.getLeft()) && fixedVars.contains(pair.getRight())) return false;
+        	}
+        	return true;
         }
 
         // Not safe unless filter variables are mentioned on the LHS.
