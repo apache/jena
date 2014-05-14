@@ -298,6 +298,20 @@ public class TestResultSetFormat2 {
         String x = "?x\t?y\n";
         parseTSVAsBoolean(x, false);
     }
+    
+    @Test
+    public void resultset_csv_01() {
+    	// Normal header
+    	String x = "x,y\n";
+    	parseCSV(x);
+    }
+    
+    @Test
+    public void resultset_csv_02() {
+    	// Header with variable names using CSV field encoding i.e. surrounded by quotes
+    	String x = "\"x\",\"y\"\n";
+    	parseCSV(x);
+    }
 
     @Test
     public void resultset_json_01() {
@@ -359,6 +373,16 @@ public class TestResultSetFormat2 {
         while (rs2.hasNext()) {
             rs2.nextBinding();
         }
+    }
+    
+    private void parseCSV(String x) {
+    	byte[] b = StrUtils.asUTF8bytes(x);
+    	ByteArrayInputStream in = new ByteArrayInputStream(b);
+    	ResultSet rs2 = CSVInput.fromCSV(in);
+    	
+    	while (rs2.hasNext()) {
+    		rs2.nextBinding();
+    	}
     }
 
     private void parseJSON(String input) {
