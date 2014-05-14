@@ -75,6 +75,10 @@ public class CSVInput
                 String[] tokens = str.split(",") ;
                 for ( String token : tokens ) 
                 {
+                	// It is perfectly valid for a variable name to be enclosed in quotes as part of CSV encoding even
+                	// though legal variable names should not contain a character which would require this
+                	if (token.startsWith("\"") && token.endsWith("\"")) token = token.substring(1, token.length() - 1);
+                	
                     Var var = Var.alloc(token);
                     vars.add(var);
                     varNames.add(var.getName());
@@ -109,6 +113,10 @@ public class CSVInput
     		str = reader.readLine();
     		if (str == null) throw new ARQException("CSV Boolean Results malformed, unexpected end of input after header row");
     		str = str.trim();
+    		
+        	// It is perfectly valid for a variable name to be enclosed in quotes as part of CSV encoding even
+        	// though legal variable names should not contain a character which would require this
+        	if (str.startsWith("\"") && str.endsWith("\"")) str = str.substring(1, str.length() - 1);
     		
     		if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes")) {
     			return true;
