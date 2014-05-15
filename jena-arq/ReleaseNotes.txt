@@ -4,11 +4,18 @@ ChangeLog for ARQ
 
 ==== Jena 2.11.2
 
-+ JENA-671 : More filter placement optimization.
++ JENA-671 : More filter placement optimization
+	See also JENA-619, JENA-627, JENA-628, JENA-653
 + JENA-638 : Improve coverage of TopN optimziation
-+ JENA-634 : Add JSON-LD
++ JENA-634 : Add JSON-LD support
 + JENA-518 : Add getter/setter for the error handler to ReaderRIOT.
 + JENA-688 : Update N-Triples and N-Quad parsers to UTF-8 instead of ASCII to match RDF 1.1 W3C Recommendation in all cases
++ JENA-692 : Fix for a case where implicit join optimisations could break the query
++ JENA-695 : SPARQL CSV parser 
++ JENA-630 : Add constant folding to query optimisation
++ JENA-637 : Fix for bug in rdfs:member property function
++ JENA-663 : Prefer Turtle when communicating with SPARQL Graph Store Protocol endpoints
++ JENA-685 : Improvements to fixed reordering for BGPs
 
 ==== Jena 2.11.1
 
