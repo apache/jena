@@ -18,6 +18,11 @@
 
 package com.hp.hpl.jena.sparql.pfunction.library ;
 
+import java.util.Arrays ;
+import java.util.Iterator ;
+
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -26,11 +31,11 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimpleAndList ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
-import com.hp.hpl.jena.sparql.util.IterLib ;
 
 /**
  * Property function that requires the subject to be unbound, and the object to
@@ -42,7 +47,7 @@ import com.hp.hpl.jena.sparql.util.IterLib ;
 public class strSplit extends PFuncSimpleAndList
 {
     @Override
-    public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, PropFuncArg object, ExecutionContext execCxt)
+    public QueryIterator execEvaluated(final Binding binding, final Node subject, final Node predicate, final PropFuncArg object, final ExecutionContext execCxt)
     {
         if (!Var.isVar(subject))
             throw new ExprEvalException("Subject is not a variable (" + subject + ")") ;
@@ -52,15 +57,19 @@ public class strSplit extends PFuncSimpleAndList
 
         String s = object.getArg(0).getLiteralLexicalForm() ;
         String regex = object.getArg(1).getLiteralLexicalForm() ;
-
-        QueryIterConcat cIter = new QueryIterConcat(execCxt) ;
+        
+        final Var subjectVar = Var.alloc(subject);
+        
         // StrUtils will also trim whitespace
-        for (String token : StrUtils.split(s, regex))
-        {
-            cIter.add(IterLib.oneResult(binding, Var.alloc(subject), NodeFactory.createLiteral(token), execCxt)) ;
-        }
-
-        return cIter ;
+        String[] tokens = StrUtils.split(s, regex);
+        Iterator<Binding> it = Iter.map(Arrays.asList(tokens).iterator(), new Transform<String,Binding>() {
+            @Override
+            public Binding convert(String item)
+            {
+                return BindingFactory.binding(binding, subjectVar, NodeFactory.createLiteral(item)) ;
+            }
+        });
+        return new QueryIterPlainWrapper(it, execCxt);
     }
 
 }
