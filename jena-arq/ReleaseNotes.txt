@@ -16,6 +16,7 @@ ChangeLog for ARQ
 + JENA-637 : Fix for bug in rdfs:member property function
 + JENA-663 : Prefer Turtle when communicating with SPARQL Graph Store Protocol endpoints
 + JENA-685 : Improvements to fixed reordering for BGPs
++ JENA-697 : Property function to split a string into multiple bindings (apf:strSplit)
 
 ==== Jena 2.11.1
 
