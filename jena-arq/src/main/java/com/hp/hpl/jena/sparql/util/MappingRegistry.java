@@ -23,7 +23,7 @@ import org.apache.jena.riot.system.PrefixMapFactory ;
 
 /** Assist with naming symbols by URI.
  *  This class keeps a prefix mapping so that subsystems can register their
- *  prefix and  
+ *  prefix and keep code shorter.
  */
 public class MappingRegistry
 {

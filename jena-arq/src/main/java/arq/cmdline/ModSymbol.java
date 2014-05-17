@@ -32,11 +32,8 @@ public class ModSymbol implements ArgModuleGeneral
 {
     protected final ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def") ;
     Context context = new Context() ;
-    private String namespace ;
     
-    public ModSymbol() { this(ARQ.arqSymbolPrefix) ; }
-    
-    public ModSymbol(String namespace) { this.namespace = namespace ; }
+    public ModSymbol() { }
     
     @Override
     public void registerWith(CmdGeneral cmdLine)
