@@ -79,6 +79,14 @@ public class OpExecutorTDB1 extends OpExecutor
         isForTDB = (execCxt.getActiveGraph() instanceof GraphTDB) ;
     }
 
+    @Override
+    protected QueryIterator exec(Op op, QueryIterator input) {
+        if ( level < 0 )
+            // Print only at top level (and we're called before level++) 
+            Explain.explain("TDB", op, super.execCxt.getContext()) ;
+        return super.exec(op, input) ;
+    } 
+    
     // Retrieving nodes isn't so bad because they will be needed anyway.
     // And if their duplicates, likely to be cached.
     // Need to work with SolverLib which wraps the NodeId bindgins with a converter. 
