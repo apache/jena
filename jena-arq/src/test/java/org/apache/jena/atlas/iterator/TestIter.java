@@ -27,9 +27,6 @@ import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.iterator.Filter ;
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.Transform ;
 import org.junit.Test ;
 
 public class TestIter
@@ -497,6 +494,46 @@ public class TestIter
         List<String> x = Arrays.asList("a", "a", "b", "b", "b", "a", "a") ;
         Iterator<String> iter = Iter.distinctAdjacent(x) ;
         test(iter, "a", "b", "a") ;
+    }
+    
+    private static class AlwaysAcceptFilter implements Filter<Object> {
+        @Override
+        public boolean accept(Object o) {
+            return true;
+        }
+    }
+
+    private static class NeverAcceptFilter implements Filter<Object> {
+        @Override
+        public boolean accept(Object o) {
+            return false;
+        }
+    }
+
+    
+    private static class AlwaysAcceptFilterStack extends FilterStack<Object> {
+        public AlwaysAcceptFilterStack(Filter<Object> f) {
+            super(f);
+        }
+
+        @Override
+        public boolean acceptAdditional(Object o) {
+            return true;
+        }
+    }
+
+    @Test
+    public void testFilterStack_01() {
+        Filter<Object> filter = new AlwaysAcceptFilter();
+        FilterStack<Object> filterStack = new AlwaysAcceptFilterStack(filter);
+        assertTrue(filterStack.accept(new Object()));
+    }
+    
+    @Test
+    public void testFilterStack_02() {
+        Filter<Object> filter = new NeverAcceptFilter();
+        FilterStack<Object> filterStack = new AlwaysAcceptFilterStack(filter);
+        assertFalse(filterStack.accept(new Object()));
     }
 
 }
