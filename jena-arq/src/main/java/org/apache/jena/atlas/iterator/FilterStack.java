@@ -58,7 +58,7 @@ public abstract class FilterStack<T> implements  Filter<T>
     {
         if ( other != null && ! other.accept(item) )
             return false ;
-        return  ! acceptAdditional(item) ;
+        return acceptAdditional(item) ;
     }
 
     
