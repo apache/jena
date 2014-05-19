@@ -178,7 +178,7 @@ public class RDFLanguages
         } catch (ClassNotFoundException ex) {
             Log.warn(RDFLanguages.class, "java-jsonld classes not on the classpath - JSON-LD input-output not available.") ;
             Log.warn(RDFLanguages.class, "Minimum jarfiles are jsonld-java, jackson-core, jackson-annotations") ;
-            Log.warn(RDFLanguages.class, "If using a Jena distribution, out all jars in the lib/ directory on the classpath") ;
+            Log.warn(RDFLanguages.class, "If using a Jena distribution, put all jars in the lib/ directory on the classpath") ;
             return ;
         }
     }
