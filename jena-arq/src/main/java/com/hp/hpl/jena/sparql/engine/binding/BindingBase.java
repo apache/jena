@@ -72,6 +72,7 @@ abstract public class BindingBase implements Binding
     @Override
     final public Iterator<Var> vars()
     {
+        // Hidesight - replace with accumulator style vars1(accumulator) 
         Iterator<Var> iter = vars1() ;
         if ( parent != null )
             iter = IteratorConcat.concat(parent.vars(), iter ) ;

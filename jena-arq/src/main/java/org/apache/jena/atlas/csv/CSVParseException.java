@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,31 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas;
+package org.apache.jena.atlas.csv;
 
-import org.apache.jena.atlas.csv.TestCSVParser ;
-import org.apache.jena.atlas.data.TS_Data ;
-import org.apache.jena.atlas.event.TS_Event ;
-import org.apache.jena.atlas.io.TS_IO ;
-import org.apache.jena.atlas.iterator.TS_Iterator ;
-import org.apache.jena.atlas.json.TS_JSON ;
-import org.apache.jena.atlas.lib.TS_Lib ;
-import org.apache.jena.atlas.web.TS_Web ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Library
-      TS_Lib.class
-    , TS_Iterator.class
-    , TS_Event.class
-    , TS_IO.class
-    , TS_JSON.class
-    , TS_Data.class
-    , TS_Web.class
-    , TestCSVParser.class
-}) 
-
-public class TC_Atlas
-{}
+class CSVParseException extends RuntimeException
+{
+    public CSVParseException(String msg, Throwable cause)    { super(msg, cause) ; }
+    public CSVParseException(String msg)                     { super(msg) ; }
+    public CSVParseException(Throwable cause)                { super(cause) ; }
+    public CSVParseException()                               { super() ; }
+}
