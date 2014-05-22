@@ -84,11 +84,13 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         addPrefixes(ctx, prefixMap) ;
 
         try {
-            Object obj = JsonLdProcessor.fromRDF(dataset, new JenaRDF2JSONLD()) ;
             JsonLdOptions opts = new JsonLdOptions(baseURI);
+            opts.useNamespaces = true ;
             opts.setUseRdfType(true);
             opts.setUseNativeTypes(true);
             opts.setCompactArrays(true);
+            Object obj = JsonLdProcessor.fromRDF(dataset, opts, new JenaRDF2JSONLD()) ;
+            
             Map<String, Object> localCtx = new HashMap<String, Object>() ;
             localCtx.put("@context", ctx) ;
 
@@ -131,7 +133,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
     }
 
-    private void addProperties(final Map<String, Object> ctx, Graph graph) {
+    private static void addProperties(final Map<String, Object> ctx, Graph graph) {
         // Add some properties directly so it becomes "localname": ....
         final Set<String> dups = new HashSet<String>() ;
         Action<Triple> x = new Action<Triple>() {
