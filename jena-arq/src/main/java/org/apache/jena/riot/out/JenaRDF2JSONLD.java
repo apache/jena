@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** Convert from JSON-LD syntax to JSON-LD internal representation of a daatset, using Jena Quads/Nodes etc */
+/** Convert from JSON-LD syntax to JSON-LD internal representation of a dataset, using Jena Quads/Nodes etc */
 class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
     NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
 

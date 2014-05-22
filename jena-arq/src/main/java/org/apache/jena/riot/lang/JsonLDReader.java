@@ -34,7 +34,7 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.* ;
 
 import com.github.jsonldjava.core.* ;
-import com.github.jsonldjava.utils.JSONUtils ;
+import com.github.jsonldjava.utils.JsonUtils ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -59,7 +59,7 @@ public class JsonLDReader implements ReaderRIOT
         if ( parserProfile == null )
             parserProfile = RiotLib.profile(RDFLanguages.JSONLD, baseURI, errorHandler) ;
         try {
-            Object jsonObject = JSONUtils.fromReader(reader) ;
+            Object jsonObject = JsonUtils.fromReader(reader) ;
             read$(jsonObject, baseURI, ct, output, context) ;
         }
         catch (IOException e) {
@@ -72,7 +72,7 @@ public class JsonLDReader implements ReaderRIOT
         if ( parserProfile == null )
             parserProfile = RiotLib.profile(RDFLanguages.JSONLD, baseURI, errorHandler) ;
         try {
-            Object jsonObject = JSONUtils.fromInputStream(in) ;
+            Object jsonObject = JsonUtils.fromInputStream(in) ;
             read$(jsonObject, baseURI, ct, output, context) ;
         }
         catch (IOException e) {
@@ -82,7 +82,7 @@ public class JsonLDReader implements ReaderRIOT
     
     private void read$(Object jsonObject, String baseURI, ContentType ct, final StreamRDF output, Context context) {
         try {
-            JSONLDTripleCallback callback = new JSONLDTripleCallback() {
+            JsonLdTripleCallback callback = new JsonLdTripleCallback() {
                 @Override
                 // public Object call(Map<String, Object> dataset) {
                 public Object call(RDFDataset dataset) {
