@@ -355,10 +355,7 @@ public class HttpQuery extends Params {
                 throw httpEx;
             }
         } catch (HttpException httpEx) {
-            // Unwrap and re-wrap the HTTP exception
-            responseCode = httpEx.getResponseCode();
-            responseMessage = httpEx.getStatusLine() ;
-            throw new QueryExceptionHTTP(responseCode, "Error making the query: "+responseMessage, httpEx.getCause());
+            throw rewrap(httpEx);
         }
     }
 
@@ -402,10 +399,28 @@ public class HttpQuery extends Params {
                 throw new QueryExceptionHTTP(404);
             return execCommon(stream);
         } catch (HttpException httpEx) {
-            // Unwrap and re-wrap the HTTP Exception
-            responseCode = httpEx.getResponseCode();
-            responseMessage = httpEx.getStatusLine() ;
-            throw new QueryExceptionHTTP(responseCode, "Error making the query: "+responseMessage, httpEx.getCause());
+        	throw rewrap(httpEx);
+        }
+    }
+    
+    private QueryExceptionHTTP rewrap(HttpException httpEx) {
+    	// The historical contract of HTTP Queries has been to throw QueryExceptionHTTP however using the standard
+    	// ARQ HttpOp machinery we use these days means the internal HTTP errors come back as HttpException
+        // Therefore we need to unnwrap and re-wrap  appropriately
+        responseCode = httpEx.getResponseCode();
+        if (responseCode != -1) {
+        	// Was an actual HTTP error
+        	String responseLine = httpEx.getStatusLine() != null ? httpEx.getStatusLine() : "No Status Line";
+        	return new QueryExceptionHTTP(responseCode, "HTTP " + responseCode + " error making the query: " + responseLine, httpEx.getCause());
+        } else if (httpEx.getMessage() != null) {
+        	// Some non-HTTP error with a valid message e.g. Socket Communications failed, IO error
+        	return new QueryExceptionHTTP("Unexpected error making the query: " + httpEx.getMessage(), httpEx.getCause());
+        } else if (httpEx.getCause() != null) {
+        	// Some other error with a cause e.g. Socket Communications failed, IO error
+        	return new QueryExceptionHTTP("Unexpected error making the query, see cause for further details", httpEx.getCause());
+        } else {
+        	// Some other error with no message and no further cause
+        	return new QueryExceptionHTTP("Unexpected error making the query", httpEx);
         }
     }
     
