@@ -86,7 +86,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         try {
             JsonLdOptions opts = new JsonLdOptions(baseURI);
             opts.useNamespaces = true ;
-            opts.setUseRdfType(true);
+            //opts.setUseRdfType(true);
             opts.setUseNativeTypes(true);
             opts.setCompactArrays(true);
             Object obj = JsonLdProcessor.fromRDF(dataset, opts, new JenaRDF2JSONLD()) ;
