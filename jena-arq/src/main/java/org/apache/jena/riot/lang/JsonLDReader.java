@@ -123,7 +123,7 @@ public class JsonLDReader implements ReaderRIOT
             } ;
             JsonLdOptions options = new JsonLdOptions(baseURI);
             options.useNamespaces = true;
-            JsonLdProcessor.toRDF(jsonObject, callback) ;
+            JsonLdProcessor.toRDF(jsonObject, callback, options) ;
         }
         catch (JsonLdError e) {
             errorHandler.error(e.getMessage(), -1, -1); 
