@@ -87,6 +87,9 @@ public class StandardFunctions
         
         add(registry, xfn+"contains",       FN_StrContains.class) ;
         add(registry, xfn+"ends-with",      FN_StrEndsWith.class) ;
+
+        add(registry, xfn+"substring-before",   FN_StrBefore.class) ;
+        add(registry, xfn+"substring-after",    FN_StrAfter.class) ;
         
         add(registry, xfn+"abs",            FN_Abs.class) ;
         add(registry, xfn+"ceiling",        FN_Ceiling.class) ;
