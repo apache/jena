@@ -23,6 +23,7 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.util.List ;
 import java.util.Map ;
+import java.util.Map.Entry;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
@@ -81,11 +82,17 @@ public class JsonLDReader implements ReaderRIOT
     }
     
     private void read$(Object jsonObject, String baseURI, ContentType ct, final StreamRDF output, Context context) {
-        try {
+        try {       	
             JsonLdTripleCallback callback = new JsonLdTripleCallback() {
                 @Override
-                // public Object call(Map<String, Object> dataset) {
                 public Object call(RDFDataset dataset) {
+                	
+                	// Copy across namespaces
+                	for (Entry<String, String> namespace : dataset.getNamespaces().entrySet()) {
+                		output.prefix(namespace.getKey(), namespace.getValue());
+                	}
+                	
+                	// Copy triples and quads
                     for ( String gn : dataset.keySet() ) {
                         Object x = dataset.get(gn) ;
                         if ( "@default".equals(gn) ) {
