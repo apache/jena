@@ -125,6 +125,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                 if ( iri != null ) {
                     // set default URI prefix
                     ctx.put("@base", e.getValue().toString()) ;
+                    ctx.put("", e.getValue().toString());
                 } // ignore if the value is empty
             } else {
                 ctx.put(e.getKey(), e.getValue().toString()) ;
