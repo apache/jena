@@ -30,8 +30,12 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
+/** Library class with helpers for writing streams of RDF (as {@linkplain StreamRDF}) */ 
 public class WriterStream
 {
+    // In development.
+    // This is really utilities for StreamRDF and should go into StreamRDFLib.
+    // It's the nature of the StreamRDF that does the writing. 
     private WriterStream() {}
     
     protected static void finish(StreamRDF dest)
