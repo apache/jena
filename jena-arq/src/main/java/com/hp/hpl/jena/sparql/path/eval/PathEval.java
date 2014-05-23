@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.path.eval;
+package com.hp.hpl.jena.sparql.path.eval ;
 
 import java.util.ArrayList ;
 import java.util.Collection ;
@@ -27,64 +27,55 @@ import org.apache.jena.atlas.iterator.Iter ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.path.Path ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Path evaluation - public interface */
 
 public class PathEval
 {
-    /** Evaluate a path : SPARQL semantics */ 
-    static public Iterator<Node> eval(Graph graph, Node node, Path path)
-    {
-        return eval$(graph, node, path, new PathEngineSPARQL(graph, true)) ;
-        //return eval$(graph, node, path, new PathEngineN(graph, true)) ;
+    /** Evaluate a path : SPARQL semantics */
+    static public Iterator<Node> eval(Graph graph, Node node, Path path, Context context) {
+        return eval$(graph, node, path, new PathEngineSPARQL(graph, true, context)) ;
+        // return eval$(graph, node, path, new PathEngineN(graph, true)) ;
     }
 
-    /** Evaluate a path */ 
-    static public Iterator<Node> evalReverse(Graph graph, Node node, Path path)
-    {
-        return eval$(graph, node, path, new PathEngineSPARQL(graph, false)) ;
-        //return eval$(graph, node, path, new PathEngineN(graph, false)) ;
+    /** Evaluate a path */
+    static public Iterator<Node> evalReverse(Graph graph, Node node, Path path, Context context) {
+        return eval$(graph, node, path, new PathEngineSPARQL(graph, false, context)) ;
+        // return eval$(graph, node, path, new PathEngineN(graph, false)) ;
     }
 
-    
-    /** Evaluate a path : counting semantics */ 
-    static public Iterator<Node> evalN(Graph graph, Node node, Path path)
-    {
+    /** Evaluate a path : counting semantics */
+    static public Iterator<Node> evalN(Graph graph, Node node, Path path) {
         return eval$(graph, node, path, new PathEngineN(graph, true)) ;
     }
 
-    /** Evaluate a path : counting semantics */ 
-    static public Iterator<Node> evalReverseN(Graph graph, Node node, Path path)
-    {
+    /** Evaluate a path : counting semantics */
+    static public Iterator<Node> evalReverseN(Graph graph, Node node, Path path) {
         return eval$(graph, node, path, new PathEngineN(graph, false)) ;
     }
 
-    /** Evaluate a path : unique results */ 
-    static public Iterator<Node> eval1(Graph graph, Node node, Path path)
-    {
+    /** Evaluate a path : unique results */
+    static public Iterator<Node> eval1(Graph graph, Node node, Path path) {
         return eval$(graph, node, path, new PathEngine1(graph, true)) ;
     }
 
-    /** Evaluate a path : unique results */ 
-    static public Iterator<Node> evalReverse1(Graph graph, Node node, Path path)
-    {
+    /** Evaluate a path : unique results */
+    static public Iterator<Node> evalReverse1(Graph graph, Node node, Path path) {
         return eval$(graph, node, path, new PathEngine1(graph, false)) ;
     }
 
-    /** Evaluate a path */ 
-    static void eval$(Graph graph, Node node, Path path, PathEngine engine, Collection<Node> acc)
-    {
+    /** Evaluate a path */
+    static void eval$(Graph graph, Node node, Path path, PathEngine engine, Collection<Node> acc) {
         PathEvaluator evaluator = new PathEvaluator(graph, node, acc, engine) ;
         path.visit(evaluator) ;
     }
 
-    /** Evaluate a path */ 
-    static Iter<Node> eval$(Graph graph, Node node, Path path, PathEngine engine)
-    {
+    /** Evaluate a path */
+    static Iter<Node> eval$(Graph graph, Node node, Path path, PathEngine engine) {
         Collection<Node> acc = new ArrayList<Node>() ;
         PathEvaluator evaluator = new PathEvaluator(graph, node, acc, engine) ;
         path.visit(evaluator) ;
         return Iter.iter(acc) ;
     }
-
 }

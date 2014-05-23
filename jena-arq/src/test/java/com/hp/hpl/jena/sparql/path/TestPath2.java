@@ -30,6 +30,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.path.eval.PathEval ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
@@ -112,8 +113,8 @@ public class TestPath2 extends BaseTest
 	    String ps = "(prefix "+prefixes+" "+pathStr+")" ;
 	    Path path = SSE.parsePath(ps) ;
 	    
-        List<Node> nodes1 = Iter.toList(PathEval.eval(graph, start, PathFactory.pathDistinct(path))) ;
-        List<Node> nodes2 = Iter.toList(PathEval.eval(graph, start, path)) ;
+        List<Node> nodes1 = Iter.toList(PathEval.eval(graph, start, PathFactory.pathDistinct(path), ARQ.getContext() )) ;
+        List<Node> nodes2 = Iter.toList(PathEval.eval(graph, start, path, ARQ.getContext() )) ;
         List<Node> expected = new ArrayList<Node>() ;
         for ( String n : results )
             expected.add(parse(n)) ;

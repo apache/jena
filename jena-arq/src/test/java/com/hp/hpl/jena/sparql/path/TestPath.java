@@ -333,7 +333,7 @@ public class TestPath extends BaseTest
     {
         Path p = PathParser.parse(string, pmap) ;
         Iterator<Node> resultsIter = 
-            directionForward ? PathEval.eval(graph, start, p) : PathEval.evalReverse(graph, start, p) ; 
+            directionForward ? PathEval.eval(graph, start, p, ARQ.getContext()) : PathEval.evalReverse(graph, start, p, ARQ.getContext()) ; 
         List<Node> results = Iter.toList(resultsIter) ;
         List<Node> expected = Arrays.asList(expectedNodes) ;
         // Unordered by counting equality.

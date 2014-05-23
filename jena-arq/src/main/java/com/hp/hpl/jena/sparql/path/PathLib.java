@@ -155,12 +155,12 @@ public class PathLib
         if ( Var.isVar(s) )
         {
             // Var subject, concrete object - do backwards.
-            iter = PathEval.evalReverse(graph, o, path) ;
+            iter = PathEval.evalReverse(graph, o, path, execCxt.getContext()) ;
             endNode = s ;
         } 
         else
         {
-            iter = PathEval.eval(graph, s, path) ;
+            iter = PathEval.eval(graph, s, path, execCxt.getContext()) ;
             endNode = o ;
         }
         return _execTriplePath(binding, iter, endNode, execCxt) ;
@@ -183,14 +183,14 @@ public class PathLib
             Node n = iter.next() ;
             results.add(BindingFactory.binding(binding, var, n)) ;
         }
-        return new QueryIterPlainWrapper(results.iterator()) ;
+        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
     }
 
     // Subject and object are nodes.
     private static QueryIterator groundedPath(Binding binding, Graph graph, Node subject, Path path, Node object,
                                               ExecutionContext execCxt)
     {
-        Iterator<Node> iter = PathEval.eval(graph, subject, path) ;
+        Iterator<Node> iter = PathEval.eval(graph, subject, path, execCxt.getContext()) ;
         // Now count the number of matches.
         
         int count = 0 ;
@@ -201,7 +201,7 @@ public class PathLib
                 count++ ;
         }
         
-        return new QueryIterYieldN(count, binding) ;
+        return new QueryIterYieldN(count, binding, execCxt) ;
     }
 
     // Brute force evaluation of a TriplePath where neither subject nor object are bound 
@@ -215,7 +215,7 @@ public class PathLib
         {
             Node n = iter.next() ;
             Binding b2 = BindingFactory.binding(binding, sVar, n) ;
-            Iterator<Node> pathIter = PathEval.eval(graph, n, path) ;
+            Iterator<Node> pathIter = PathEval.eval(graph, n, path, execCxt.getContext()) ;
             QueryIterator qIter = _execTriplePath(b2, pathIter, oVar, execCxt) ;
             qIterCat.add(qIter) ;
         }
@@ -233,7 +233,7 @@ public class PathLib
         {
             Node n = iter.next() ;
             Binding b2 = BindingFactory.binding(binding, var, n) ;
-            int x = existsPath(graph, n, path, n) ;
+            int x = existsPath(graph, n, path, n, execCxt) ;
             if ( x > 0 )
             {
                 QueryIterator qIter = new QueryIterYieldN(x, b2, execCxt) ;
@@ -243,11 +243,11 @@ public class PathLib
         return qIterCat ; 
     }
     
-    private static int existsPath(Graph graph, Node subject, Path path, final Node object)
+    private static int existsPath(Graph graph, Node subject, Path path, final Node object, ExecutionContext execCxt)
     {
         if ( ! subject.isConcrete() || !object.isConcrete() )
             throw new ARQInternalErrorException("Non concrete node for existsPath evaluation") ;
-        Iterator<Node> iter = PathEval.eval(graph, subject, path) ;
+        Iterator<Node> iter = PathEval.eval(graph, subject, path, execCxt.getContext()) ;
         Filter<Node> filter = new Filter<Node>() { @Override public boolean accept(Node node) { return Lib.equal(node,  object) ; } } ; 
         // See if we got to the node we're interested in finishing at.
         iter = Iter.filter(iter, filter) ;
