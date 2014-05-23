@@ -64,7 +64,7 @@ public class ProcEval
     public static Procedure build(Node procId, PropFuncArg subjArg, PropFuncArg objArg, ExecutionContext execCxt)
     {
         Context context = execCxt.getContext() ;
-        PropertyFunctionRegistry reg = choosePropFuncRegistry(context) ;
+        PropertyFunctionRegistry reg = PropertyFunctionRegistry.chooseRegistry(context) ;
         PropertyFunctionFactory f = reg.get(procId.getURI()) ;
         PropertyFunction pf = f.create(procId.getURI()) ;
         pf.build(subjArg, procId, objArg, execCxt) ;
@@ -73,22 +73,6 @@ public class ProcEval
     }
     
  
-    static public PropertyFunctionRegistry choosePropFuncRegistry(Context context)
-    {
-        PropertyFunctionRegistry registry = PropertyFunctionRegistry.get(context) ; 
-        if ( registry == null )
-            registry = PropertyFunctionRegistry.get() ;
-        return registry ;
-    }
-    
-    // ----
-
-//    /** Evaluate a procedure */
-//    public static QueryIterator eval(QueryIterator queryIterator, Procedure proc)
-//    {
-//        return eval(queryIterator, proc, null) ;
-//    }
-//
     /** Evaluate a procedure */
     public static QueryIterator eval(QueryIterator queryIterator, Procedure proc, ExecutionContext execCxt)
     {
