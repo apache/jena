@@ -40,10 +40,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     private final String      baseIRI ;
     private final IRI         iriResolver ;
 
-    // Replace with a single "OutputPolicy"
-    public NodeFormatterTTL(String baseIRI, PrefixMap prefixMap) // OutputPolicy
-                                                                 // outputPolicy)
-    {
+    public NodeFormatterTTL(String baseIRI, PrefixMap prefixMap) {
         this(baseIRI, prefixMap, NodeToLabel.createBNodeByLabelEncoded()) ;
     }
 
