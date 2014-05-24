@@ -163,6 +163,10 @@ public class Optimize implements Rewrite
         // Prepare expressions.
         OpWalker.walk(op, new OpVisitorExprPrepare(context)) ;
         
+        // Convert paths to triple patterns if possible.
+        if ( context.isTrueOrUndef(ARQ.optPathFlatten) )
+            op = apply("Path flattening", new TransformPathFlattern(), op) ;
+
         // Expression constant folding
         if ( context.isTrueOrUndef(ARQ.optExprConstantFolding) )
             op = Transformer.transform(new TransformCopy(), new ExprTransformConstantFold(), op);
@@ -206,10 +210,6 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optDistinctToReduced) )
             op = apply("Distinct replaced with reduced", new TransformDistinctToReduced(), op) ;
         
-        // Convert paths to triple patterns. 
-        // Also done in the AlgebraGenerator so this transform step catches programmatically built op expressions 
-        op = apply("Path flattening", new TransformPathFlattern(), op) ;
-
         // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
         if ( context.isTrueOrUndef(ARQ.optIndexJoinStrategy) )
             op = apply("Index Join strategy", new TransformJoinStrategy(), op) ;

@@ -274,11 +274,18 @@ public class ARQ
     public static final Symbol optimization = ARQConstants.allocSymbol("optimization") ;
     
     /** 
+     *  Context key controlling whether the main query engine flattens simple paths
+     *  (e.g. <tt>?x :p/:q ?z => ?x :p ?.0 . ?.0 ?q ?z</tt>)   
+     *  <p>Default is "true"
+     */  
+    public static final Symbol optPathFlatten = ARQConstants.allocSymbol("optPathFlatten") ;
+    
+    /** 
      *  Context key controlling whether the main query engine moves filters to the "best" place.
      *  Default is "true" - filter placement is done.
      */  
     public static final Symbol optFilterPlacement = ARQConstants.allocSymbol("optFilterPlacement") ;
-    
+
     /** 
      *  Context key controlling whether to do filter placement within BGP and quad blocks.
      *  Modies the effect of optFilterPlacement. 
