@@ -84,6 +84,7 @@ public class RDFParserRegistry
         registerLangTriples(TURTLE,     parserFactory) ;
         registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
         registerLangTriples(RDFJSON,    parserFactory) ;
+        registerLangTriples(CSV,        parserFactory) ;
         
         registerLangQuads(JSONLD,       parserFactoryJsonLD) ;
         registerLangQuads(NQUADS,       parserFactory) ;
