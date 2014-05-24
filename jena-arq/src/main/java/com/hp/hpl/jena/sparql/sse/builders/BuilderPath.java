@@ -76,7 +76,7 @@ public class BuilderPath
         
         dispatch.put(Tags.tagPathReverse,  buildReverse) ;
         dispatch.put(Tags.tagPathRev,      buildRev) ;
-        dispatch.put(Tags.tagPathLink,     buildTriple) ;   // Completeness.
+        dispatch.put(Tags.tagPathLink,     buildLink) ;   // Completeness.
         dispatch.put(Tags.tagPathNotOneOf, buildNotOneOf) ;
     }
     
@@ -315,7 +315,7 @@ public class BuilderPath
         }
     };
     
-    final protected Build buildTriple = new Build()
+    final protected Build buildLink = new Build()
     {
         @Override
         public Path make(ItemList list)

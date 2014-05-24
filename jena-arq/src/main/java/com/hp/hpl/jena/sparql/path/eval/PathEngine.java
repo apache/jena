@@ -28,17 +28,19 @@ import org.apache.jena.atlas.iterator.Transform ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.path.P_NegPropSet ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.path.eval.PathEvaluator.FilterExclude ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.graph.GraphContainerUtils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphList ;
+import com.hp.hpl.jena.sparql.vocabulary.ListPFunction ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 abstract public class PathEngine
 {
-
     private final Graph   graph ;
     private final Context context ;
 
@@ -69,7 +71,7 @@ abstract public class PathEngine
     // output) ;
 
     // --- Where we touch the graph
-    // Because it SP? or ?PO, no duplicates occur, so works for both strategies.
+    // Because for SP? or ?PO, no duplicates occur, so works for both strategies.
     protected final Iterator<Node> doOne(Node node, Node property) {
         Iterator<Node> iter2 = null ;
         if ( direction() ) {
@@ -167,25 +169,70 @@ abstract public class PathEngine
     }
 
     protected Iterator<Triple> graphFind(Node s, Node p, Node o) {
-        return graphFind(graph, s, p, o) ;
+        return graphFind(graph, s, p, o, context) ;
     }
 
     static Binding binding = BindingFactory.binding() ;
-
-    private/* package */static Iterator<Triple> graphFind(Graph graph, Node s, Node p, Node o) {
+    static Node RDFSmember = RDFS.Nodes.member ;
+    
+    
+    static Node ListMember = ListPFunction.member.asNode() ;
+    
+    
+    private/* package */static Iterator<Triple> graphFind(Graph graph, Node s, Node p, Node o, Context context) {
         // This is the only place this is called.
-        // It means we can add property functions here.s
+        // It means we can add property functions here.
+        if ( RDFSmember.equals(p) )
+            return GraphContainerUtils.rdfsMember(graph, s, o) ;
+        if ( ListMember.equals(p) )
+            return GraphList.listMember(graph, s, o) ;
         return graph.find(s, p, o) ;
     }
-
-    private static Node arg(Node x, String name) {
-        if ( x == null || Node.ANY.equals(x) ) { return Var.alloc(name) ; }
-        return x ;
-    }
-
-    private static Node value(Node x, Binding b) {
-        if ( !Var.isVar(x) )
-            return x ;
-        return b.get(Var.alloc(x)) ;
-    }
+    
+    // Not all property functions make sense in property path
+    // For example, ones taking list arguments only make sense at
+    // the start or finish, and then only in simple paths
+    // (e.g. ?x .../propertyFunction ?z) 
+    // which would have been packaged by the optimizer.
+    
+//        if ( p != null && p.isURI() ) {
+//            // XXX This is heavy weight
+//            PropertyFunctionRegistry reg = PropertyFunctionRegistry.chooseRegistry(context) ;
+//            PropertyFunctionFactory f = reg.get(p.getURI()) ;
+//            if ( f != null ) { 
+//                // Expensive.
+//                PropertyFunction pf = f.create(p.getURI()) ;
+//                // Must be a PFuncSimple -- no list arguments to the property function.
+//                if ( pf instanceof PFuncSimple) {
+//                    PFuncSimple pfs = (PFuncSimple)pf ;
+//                    Node sv = arg(s, "S") ;
+//                    Node ov = arg(o, "O") ;
+//                    QueryIterator qIter = pfs.execEvaluated(binding, sv, p, ov, new ExecutionContext(ARQ.getContext(), graph, null, null)) ;
+//                    if ( ! qIter.hasNext() )
+//                        return Iter.nullIterator() ;
+//                    List<Triple> array = new ArrayList<Triple>() ;
+//                    for ( ; qIter.hasNext() ; ) {
+//                        Binding b = qIter.next() ;
+//                        Node st = value(sv, b) ;
+//                        Node ot = value(ov, b) ;
+//                        array.add(Triple.create(st, p, ot)) ;
+//                    }
+//                    return array.iterator() ; 
+//                }
+//            }
+//        }
+//
+//        return graph.find(s, p, o) ;
+//    }
+//
+//    private static Node arg(Node x, String name) {
+//        if ( x == null || Node.ANY.equals(x) ) { return Var.alloc(name) ; }
+//        return x ;
+//    }
+//
+//    private static Node value(Node x, Binding b) {
+//        if ( !Var.isVar(x) )
+//            return x ;
+//        return b.get(Var.alloc(x)) ;
+//    }
 }
