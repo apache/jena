@@ -117,6 +117,27 @@ public class GraphList
 
     // ---------------------------------------------
     
+    /** Calculate ?s list:member ?o as if it were a graph.find */
+    public static Iterator<Triple> listMember(Graph graph, Node s, Node o) {
+        if ( isAny(s) ) {
+            if ( isAny(o)) {
+                
+            } else {
+                
+            }
+        }
+        
+        
+        //Set<Node> x = GraphList.findAllLists(graph) ;
+        
+        
+        return null ;
+    }
+
+    private static boolean isAny(Node x) {
+        return x == null || Node.ANY.equals(x) ; 
+    }
+    
     public static List<Node> members(GNode gnode)
     {
         List<Node> x = new ArrayList<Node>() ;

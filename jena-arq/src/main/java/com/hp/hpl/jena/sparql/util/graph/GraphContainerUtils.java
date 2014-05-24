@@ -19,21 +19,22 @@
 package com.hp.hpl.jena.sparql.util.graph;
 
 import java.util.Collection ;
+import java.util.Iterator ;
 import java.util.SortedMap ;
 import java.util.TreeMap ;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-
-import org.apache.jena.atlas.logging.Log ;
-
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.Filter ;
 import com.hp.hpl.jena.vocabulary.RDF ;
-
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class GraphContainerUtils
 {
@@ -41,7 +42,8 @@ public class GraphContainerUtils
     private static final Node BAG = RDF.Bag.asNode() ;
     private static final Node ALT = RDF.Alt.asNode() ;
     private static final Node SEQ = RDF.Seq.asNode() ;
-    private static final String membershipPattern = RDF.getURI()+"_(\\d+)" ;
+    private static final String membershipPattern$ = RDF.getURI()+"_(\\d+)" ;
+    private static final Pattern membershipPattern = Pattern.compile(membershipPattern$) ;
     private static final int NOT_FOUND = -9999 ;
 
     public static Collection<Node> containerMembers(Graph graph, Node container)
@@ -95,7 +97,26 @@ public class GraphContainerUtils
     {
         return countContainerMember(graph, container, containerType, member, false) ;
     }
+    
+    private static Node RDFSmember = RDFS.member.asNode() ;
+    private static Filter<Triple> filterRDFSmember = new Filter<Triple>() {
+        @Override
+        public boolean accept(Triple triple) {
+            Node p = triple.getPredicate() ;
+            if ( ! triple.getPredicate().isURI() )
+                return false ;
+            if (RDFSmember.equals(p) )
+                return true ;
+            String u = triple.getPredicate().getURI() ;
+            return membershipPattern.matcher(u).matches() ;
+        } } ; 
 
+    /** Calculate graph.find(?, rdfs:member, ?) */ 
+    public static Iterator<Triple> rdfsMember(Graph graph, Node s, Node o) {
+        ExtendedIterator<Triple> iter = graph.find(s, Node.ANY, o) ;
+        return iter.filterKeep(filterRDFSmember)  ;
+    }
+    
     private static int countContainerMember(Graph graph, Node container, Node containerType, Node member, boolean stopEarly)
     {
         if ( graph == null )
@@ -126,9 +147,8 @@ public class GraphContainerUtils
                 Triple t = iter.next() ;
                 Node p = t.getPredicate() ;
                 String u = p.getURI() ;
-                
-                if ( u.matches(membershipPattern) )
-                {
+                 
+                if ( membershipPattern.matcher(u).matches() ) {
                     count ++ ;
                     if ( stopEarly )
                         return count ;
@@ -154,12 +174,11 @@ public class GraphContainerUtils
         return graph.contains(container, RDFtype, containerType) ; 
     }
     
-    static Pattern pattern = Pattern.compile(membershipPattern);
     private static int getIndex(Triple triple)
     {
         String u = triple.getPredicate().getURI() ;
         // Must be _nnn.
-        Matcher m = pattern.matcher(u);
+        Matcher m = membershipPattern.matcher(u);
         if ( ! m.find() )
             return NOT_FOUND ; 
         String index = m.group(1) ;
