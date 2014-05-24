@@ -47,6 +47,7 @@ public class RDFLanguages
     public static final String strLangJSONLD     = "JSON-LD" ;
     public static final String strLangNQuads     = "N-Quads" ;
     public static final String strLangTriG       = "TriG" ;
+    public static final String strLangCSV        = "CSV";
     
     /*
      * ".owl" is not a formally registered file extension for OWL 
@@ -116,6 +117,12 @@ public class RDFLanguages
     
     /** Alternative constant {@linkplain #NQUADS} */
     public static final Lang NQ     = NQUADS ;
+    
+    /** CSV */
+    public static final Lang CSV   = LangBuilder.create(strLangCSV, contentTypeTextCSV)
+                                                .addAltNames("csv")   
+                                                .addFileExtensions("csv")
+                                                .build() ;
 
     /** The "null" language */
     public static final Lang RDFNULL  = LangBuilder.create("rdf/null", "null/rdf")

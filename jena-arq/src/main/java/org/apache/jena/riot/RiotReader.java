@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot;
 
+import static org.apache.jena.riot.RDFLanguages.CSV;
 import static org.apache.jena.riot.RDFLanguages.N3 ;
 import static org.apache.jena.riot.RDFLanguages.NQUADS ;
 import static org.apache.jena.riot.RDFLanguages.NTRIPLES ;
@@ -131,6 +132,8 @@ public class RiotReader
             if ( baseIRI != null )
                 baseIRI = IRIResolver.resolveString(baseIRI) ;
             return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
+        } else if ( lang == CSV){
+        	return new LangCSV (input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(),  dest);
         }
         Tokenizer tokenizer = ( lang == RDFJSON ) ?
             new TokenizerJSON(PeekReader.makeUTF8(input)) :
@@ -149,6 +152,8 @@ public class RiotReader
             if ( baseIRI != null )
                 baseIRI = IRIResolver.resolveString(baseIRI) ;
             return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
+        } else if ( lang == CSV){
+        	return new LangCSV (input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(),  dest);
         }
         Tokenizer tokenizer = ( lang == RDFJSON ) ?
             new TokenizerJSON(PeekReader.make(input)) :
