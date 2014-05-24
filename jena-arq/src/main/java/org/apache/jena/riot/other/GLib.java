@@ -43,21 +43,21 @@ public class GLib
     public static Iterator<Node> listSubjects(Graph graph)
     {
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        return Iter.iter(iter).map(projectTripeSubject).distinct() ;
+        return Iter.iter(iter).map(projectTripleSubject).distinct() ;
     }
 
     /** List the predicates in a graph (no duplicates) */
     public static Iterator<Node> listPredicates(Graph graph)
     {
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        return Iter.iter(iter).map(projectTripePredicate).distinct() ;
+        return Iter.iter(iter).map(projectTriplePredicate).distinct() ;
     }
     
     /** List the objects in a graph (no duplicates) */
     public static Iterator<Node> listObjects(Graph graph)
     {
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
-        return Iter.iter(iter).map(projectTripeObject).distinct() ;
+        return Iter.iter(iter).map(projectTripleObject).distinct() ;
     }
     
     private static Transform<Quad, Triple> transformQuad2Triple = new Transform<Quad, Triple> () {
@@ -89,15 +89,15 @@ public class GLib
     
     /** Project triple to subject */ 
     public static Iterator<Node> triple2subject(Iterator<Triple> iter)
-    { return Iter.map(iter, projectTripeSubject) ; }
+    { return Iter.map(iter, projectTripleSubject) ; }
     
     /** Project triple to predicate */ 
     public static Iterator<Node> triple2predicate(Iterator<Triple> iter)
-    { return Iter.map(iter, projectTripePredicate) ; }
+    { return Iter.map(iter, projectTriplePredicate) ; }
     
     /** Project triple to object */ 
     public static Iterator<Node> triple2object(Iterator<Triple> iter)
-    { return Iter.map(iter, projectTripeObject) ; }
+    { return Iter.map(iter, projectTripleObject) ; }
 
     /** Transform quad to graphname */
     public static Transform<Quad, Node> projectQuadGraphName = new Transform<Quad, Node>() {
@@ -116,15 +116,15 @@ public class GLib
         @Override public Node convert(Quad quad) { return quad.getObject() ; }
     } ;
     /** Transform triple to subject */ 
-    public static Transform<Triple, Node> projectTripeSubject   = new Transform<Triple, Node>() {
+    public static Transform<Triple, Node> projectTripleSubject   = new Transform<Triple, Node>() {
         @Override public Node convert(Triple triple) { return triple.getSubject() ; }
     } ;
     /** Transform triple to predicate */ 
-    public static Transform<Triple, Node> projectTripePredicate = new Transform<Triple, Node>() {
+    public static Transform<Triple, Node> projectTriplePredicate = new Transform<Triple, Node>() {
         @Override public Node convert(Triple triple) { return triple.getPredicate() ; }
     } ;
     /** Transform triple to object */ 
-    public static Transform<Triple, Node> projectTripeObject    = new Transform<Triple, Node>() {
+    public static Transform<Triple, Node> projectTripleObject    = new Transform<Triple, Node>() {
         @Override public Node convert(Triple triple) { return triple.getObject() ; }
     } ;
 }

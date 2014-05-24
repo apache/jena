@@ -144,12 +144,14 @@ public class PropertyFunctionRegistry
     /** Iterate over URIs */
     public Iterator<String> keys() { return registry.keySet().iterator() ; }
     
+    @SuppressWarnings("deprecation")
     private void loadStdDefs()
     {
         put(ListPFunction.member.getURI() , com.hp.hpl.jena.sparql.pfunction.library.listMember.class) ;
         put(ListPFunction.index.getURI() , com.hp.hpl.jena.sparql.pfunction.library.listIndex.class) ;
         put(ListPFunction.length.getURI() , com.hp.hpl.jena.sparql.pfunction.library.listLength.class) ;
 
+        // (Very) old forms
         put(ListPFunction.listMember.getURI() , com.hp.hpl.jena.sparql.pfunction.library.listMember.class) ;
         put(ListPFunction.listIndex.getURI() , com.hp.hpl.jena.sparql.pfunction.library.listIndex.class) ;
         put(ListPFunction.listLength.getURI() , com.hp.hpl.jena.sparql.pfunction.library.listLength.class) ;

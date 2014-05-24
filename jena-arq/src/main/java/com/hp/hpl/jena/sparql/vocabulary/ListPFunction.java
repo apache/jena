@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.vocabulary ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
@@ -41,19 +42,34 @@ public class ListPFunction {
     /** <p>The namespace of the vocabulary as a resource</p> */
     public static final Resource NAMESPACE = m_model.createResource( NS );
     
+    /** @deprecated : list:length preferred */
+    @Deprecated
     public static final Property listLength = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#listLength" );
     
     /** <p>Length relationship of a list [subject] to a length [object]</p> */
     public static final Property length = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#length" );
     
+    /** @deprecated : list:index preferred */
+    @Deprecated
     public static final Property listIndex = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#listIndex" );
     
     /** <p>Index relationship of a list [subject] to a query list (index member)</p> */
     public static final Property index = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#index" );
     
+    /** @deprecated : list:member preferred */
+    @Deprecated
     public static final Property listMember = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#listMember" );
     
     /** <p>Membership relationship of a list [subject] to a member [object] c.f. rdfs:member</p> */
     public static final Property member = m_model.createProperty( "http://jena.hpl.hp.com/ARQ/list#member" );
+
+    /** list:member as a node */
+    public static final Node nListMember = member.asNode() ;
+    
+    /** list:length as a node */
+    public static final Node nListLength = length.asNode() ;
+    
+    /** list:index as a node */
+    public static final Node nListIndex = member.asNode() ;
     
 }

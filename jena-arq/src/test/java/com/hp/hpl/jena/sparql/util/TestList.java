@@ -19,15 +19,22 @@
 package com.hp.hpl.jena.sparql.util;
 
 import java.io.StringReader ;
+import java.util.Arrays ;
+import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.other.GLib ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.graph.GNode ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -198,4 +205,48 @@ public class TestList extends BaseTest
     private static String listStr_1 = preamble + "() ." ;
     private static String listStr_2 = preamble + "(1 2 3 4) ." ;
     private static String listStr_3 = preamble + "(1 2 1 2) ." ;
+    
+    private static String data = 
+        "prefix : <http://example/>\n" +
+        ":s1 :p (1 2 3) .\n"+
+        ":s2 :p () .\n" + 
+        ":s3 :p (8) .\n" ;
+    private static Node s1 = NodeFactory.createURI("http://example/s1") ;
+    private static Node s2 = NodeFactory.createURI("http://example/s2") ;
+    private static Node s3 = NodeFactory.createURI("http://example/s3") ;
+    
+    private static Graph graph = Factory.createDefaultGraph() ;
+    static { RDFDataMgr.read(graph, new StringReader(data), null, Lang.TTL); }
+    
+    
+    
+    @Test public void testGraphListMember_01() {
+        testGraphListMember(s1, node1, node2, node3) ;
+    }
+    
+    @Test public void testGraphListMember_02() {
+        testGraphListMember(s2) ;
+    }
+
+    @Test public void testGraphListMember_03() {
+        testGraphListMember(s3, SSE.parseNode("8")) ;
+    }
+
+    private static void testGraphListMember(Node s, Node...expected) {
+        Node list = listOf(graph, s) ;
+        Iterator<Triple> iter = GraphList.listMember(graph, list, Node.ANY) ;
+        Iterator<Node> x = GLib.triple2object(iter) ;
+        List<Node> z = Iter.toList(x) ;
+        check(z, expected) ;
+    }
+
+    private static Node listOf(Graph graph, Node node) {
+        return graph.find(node, p, Node.ANY).next().getObject() ;
+    }
+    
+    private static void check(List<Node> z, Node...expected) {
+        List<Node> x = Arrays.asList(expected) ;
+        assertEqualsUnordered(x, z);
+    }
+    
 }
