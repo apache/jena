@@ -30,7 +30,11 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.vocabulary.ListPFunction ;
 
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorConcat ;
+import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.util.iterator.NiceIterator ;
@@ -118,20 +122,32 @@ public class GraphList
     // ---------------------------------------------
     
     /** Calculate ?s list:member ?o as if it were a graph.find */
-    public static Iterator<Triple> listMember(Graph graph, Node s, Node o) {
+    public static Iterator<Triple> listMember(Graph graph, final Node s, Node o) {
         if ( isAny(s) ) {
-            if ( isAny(o)) {
-                
-            } else {
-                
+            Set<Node> x = findAllLists(graph) ;
+            IteratorConcat<Triple> iterConcat = new IteratorConcat<Triple>() ;
+            for ( Node s2 : x ) {
+                Iterator<Triple> iter = listMember(graph, s2, o) ;
+                if ( iter.hasNext() )
+                    iterConcat.add(iter); 
             }
+            return iterConcat ;
         }
-        
-        
-        //Set<Node> x = GraphList.findAllLists(graph) ;
-        
-        
-        return null ;
+        GNode gn = new GNode(graph, s) ;
+        if ( ! isAny(o) ) {
+            if ( contains(gn, o) )
+                return Iter.singleton(Triple.create(s, ListPFunction.nListMember, o)) ;
+            else
+                return Iter.nullIterator() ;
+        }
+        List<Node> x = members(gn) ;
+        Transform<Node, Triple> transform = new Transform<Node, Triple>() {
+            @Override
+            public Triple convert(Node obj) {
+                return Triple.create(s, ListPFunction.nListMember, obj) ;
+            }
+        } ;
+        return Iter.map(x.iterator(), transform) ;
     }
 
     private static boolean isAny(Node x) {

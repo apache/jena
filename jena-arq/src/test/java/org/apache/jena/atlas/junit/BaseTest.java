@@ -18,9 +18,7 @@
 
 package org.apache.jena.atlas.junit;
 
-import java.util.ArrayDeque ;
-import java.util.Deque ;
-import java.util.Locale ;
+import java.util.* ;
 
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.system.ErrorHandler ;
@@ -69,5 +67,14 @@ public class BaseTest extends Assert
         b = b.toLowerCase(Locale.ROOT) ;
         assertEquals(msg, a, b) ;
     }
-
+    
+    public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2) {
+        if ( list1.size() != list2.size() )
+            fail("Expected: "+list1+" : Actual: "+list2) ;
+        List<T> list2a = new ArrayList<T>(list2) ;
+        for ( T elt : list1 )
+            list2a.remove(elt) ;
+        if ( list2a.size() != 0 )
+            fail("Expected: "+list1+" : Actual: "+list2) ;
+    }
 }

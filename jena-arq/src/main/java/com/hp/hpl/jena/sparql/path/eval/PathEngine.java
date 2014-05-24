@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.path.P_NegPropSet ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.path.eval.PathEvaluator.FilterExclude ;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.graph.GraphContainerUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
@@ -43,8 +44,10 @@ abstract public class PathEngine
 {
     private final Graph   graph ;
     private final Context context ;
+    private final PropertyFunctionRegistry registry ; 
 
     protected PathEngine(Graph graph, Context context) {
+        this.registry = PropertyFunctionRegistry.chooseRegistry(context) ;
         this.graph = graph ;
         this.context = context ;
     }
@@ -172,12 +175,9 @@ abstract public class PathEngine
         return graphFind(graph, s, p, o, context) ;
     }
 
-    static Binding binding = BindingFactory.binding() ;
-    static Node RDFSmember = RDFS.Nodes.member ;
-    
-    
-    static Node ListMember = ListPFunction.member.asNode() ;
-    
+    private static Binding binding = BindingFactory.binding() ;
+    private static Node RDFSmember = RDFS.Nodes.member ;
+    private static Node ListMember = ListPFunction.nListMember ;
     
     private/* package */static Iterator<Triple> graphFind(Graph graph, Node s, Node p, Node o, Context context) {
         // This is the only place this is called.
