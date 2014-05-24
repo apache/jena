@@ -20,19 +20,24 @@ package org.apache.jena.atlas.csv ;
 
 import static org.apache.jena.atlas.csv.CSVTokenType.* ;
 
-import java.io.InputStream ;
+import java.io.InputStream;
+import java.io.Reader;
 
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
 
-class CSVTokenIterator extends IteratorSlotted<CSVToken>
+public class CSVTokenIterator extends IteratorSlotted<CSVToken>
 {
     private PeekReader in ;
 
     // One EOF?
 
-    CSVTokenIterator(InputStream input) {
+    public CSVTokenIterator(InputStream input) {
         this.in = PeekReader.makeUTF8(input) ;
+    }
+    
+    public CSVTokenIterator(Reader reader) {
+        this.in = PeekReader.make(reader);
     }
 
     @Override
