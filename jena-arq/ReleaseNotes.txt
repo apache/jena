@@ -4,6 +4,7 @@ ChangeLog for ARQ
 
 ==== Jena 2.11.2
 
++ JENA-631 : rdfs:member supported in property paths.
 + JENA-671 : More filter placement optimization
 	See also JENA-619, JENA-627, JENA-628, JENA-653
 + JENA-638 : Improve coverage of TopN optimziation

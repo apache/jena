@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.path.eval ;
 
+import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
@@ -28,12 +29,17 @@ import org.apache.jena.atlas.iterator.Transform ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot ;
 import com.hp.hpl.jena.sparql.path.P_NegPropSet ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.path.eval.PathEvaluator.FilterExclude ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
+import com.hp.hpl.jena.sparql.pfunction.* ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.graph.GraphContainerUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
@@ -42,12 +48,22 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 
 abstract public class PathEngine
 {
+    private final boolean doingRDFSmember ;
+    private final boolean doingListMember ;
     private final Graph   graph ;
     private final Context context ;
     private final PropertyFunctionRegistry registry ; 
 
     protected PathEngine(Graph graph, Context context) {
         this.registry = PropertyFunctionRegistry.chooseRegistry(context) ;
+        if ( registry != null ) {
+            doingRDFSmember = ( registry.get(RDFSmember.getURI()) != null ) ;
+            doingListMember = ( registry.get(ListMember.getURI()) != null ) ;
+        } else {
+            doingRDFSmember = false ;
+            doingListMember = false ;
+        }
+        
         this.graph = graph ;
         this.context = context ;
     }
@@ -179,60 +195,66 @@ abstract public class PathEngine
     private static Node RDFSmember = RDFS.Nodes.member ;
     private static Node ListMember = ListPFunction.nListMember ;
     
-    private/* package */static Iterator<Triple> graphFind(Graph graph, Node s, Node p, Node o, Context context) {
+    private /*static*/ Iterator<Triple> graphFind(Graph graph, Node s, Node p, Node o, Context context) {
         // This is the only place this is called.
         // It means we can add property functions here.
-        if ( RDFSmember.equals(p) )
+
+        // Fast-path common cases.
+        if ( doingRDFSmember && RDFSmember.equals(p) )
             return GraphContainerUtils.rdfsMember(graph, s, o) ;
-        if ( ListMember.equals(p) )
+        if ( doingListMember && ListMember.equals(p) )
             return GraphList.listMember(graph, s, o) ;
+        // Potentially just allow the cases above.
+        //return graph.find(s, p, o) ;
+        return graphFind2(graph, s, p, o, context) ;
+    }
+
+    /* As general as possible property function inclusion */ 
+    private Iterator<Triple> graphFind2(Graph graph, Node s, Node p, Node o, Context context) {
+        // Not all property functions make sense in property path
+        // For example, ones taking list arguments only make sense at
+        // the start or finish, and then only in simple paths
+        // (e.g. ?x .../propertyFunction ?z) 
+        // which would have been packaged by the optimizer.
+        if ( p != null && p.isURI() && registry != null ) {
+            PropertyFunctionFactory f = registry.get(p.getURI()) ;
+            if ( f != null )
+                return graphFindWorker(graph, s, f, p, o, context) ;
+        }
+
         return graph.find(s, p, o) ;
     }
-    
-    // Not all property functions make sense in property path
-    // For example, ones taking list arguments only make sense at
-    // the start or finish, and then only in simple paths
-    // (e.g. ?x .../propertyFunction ?z) 
-    // which would have been packaged by the optimizer.
-    
-//        if ( p != null && p.isURI() ) {
-//            // XXX This is heavy weight
-//            PropertyFunctionRegistry reg = PropertyFunctionRegistry.chooseRegistry(context) ;
-//            PropertyFunctionFactory f = reg.get(p.getURI()) ;
-//            if ( f != null ) { 
-//                // Expensive.
-//                PropertyFunction pf = f.create(p.getURI()) ;
-//                // Must be a PFuncSimple -- no list arguments to the property function.
-//                if ( pf instanceof PFuncSimple) {
-//                    PFuncSimple pfs = (PFuncSimple)pf ;
-//                    Node sv = arg(s, "S") ;
-//                    Node ov = arg(o, "O") ;
-//                    QueryIterator qIter = pfs.execEvaluated(binding, sv, p, ov, new ExecutionContext(ARQ.getContext(), graph, null, null)) ;
-//                    if ( ! qIter.hasNext() )
-//                        return Iter.nullIterator() ;
-//                    List<Triple> array = new ArrayList<Triple>() ;
-//                    for ( ; qIter.hasNext() ; ) {
-//                        Binding b = qIter.next() ;
-//                        Node st = value(sv, b) ;
-//                        Node ot = value(ov, b) ;
-//                        array.add(Triple.create(st, p, ot)) ;
-//                    }
-//                    return array.iterator() ; 
-//                }
-//            }
-//        }
-//
-//        return graph.find(s, p, o) ;
-//    }
-//
-//    private static Node arg(Node x, String name) {
-//        if ( x == null || Node.ANY.equals(x) ) { return Var.alloc(name) ; }
-//        return x ;
-//    }
-//
-//    private static Node value(Node x, Binding b) {
-//        if ( !Var.isVar(x) )
-//            return x ;
-//        return b.get(Var.alloc(x)) ;
-//    }
+
+    private Iterator<Triple> graphFindWorker(Graph graph, Node s, PropertyFunctionFactory f, Node p, Node o, Context context) {
+        // Expensive?
+        PropertyFunction pf = f.create(p.getURI()) ;
+        PropFuncArg sv = arg(s, "S") ;
+        PropFuncArg ov = arg(o, "O") ;
+        QueryIterator r = QueryIterRoot.create(new ExecutionContext(context, graph, null, null)) ;
+        QueryIterator qIter = pf.exec(r, sv, p, ov, new ExecutionContext(ARQ.getContext(), graph, null, null)) ;
+        if ( ! qIter.hasNext() )
+            return Iter.nullIterator() ;
+        List<Triple> array = new ArrayList<Triple>() ;
+        for ( ; qIter.hasNext() ; ) {
+            Binding b = qIter.next() ;
+            Node st = value(sv, b) ;
+            Node ot = value(ov, b) ;
+            array.add(Triple.create(st, p, ot)) ;
+        }
+        // Materialise so the inner QueryIterators are used up. 
+        return array.iterator() ; 
+    }
+
+    private static PropFuncArg arg(Node x, String name) {
+        if ( x == null || Node.ANY.equals(x) ) 
+        { return new PropFuncArg(Var.alloc(name)) ; }
+        return new PropFuncArg(x) ;
+    }
+
+    private static Node value(PropFuncArg arg, Binding b) {
+        Node x = arg.getArg() ;
+        if ( !Var.isVar(x) )
+            return x ;
+        return b.get(Var.alloc(x)) ;
+    }
 }
