@@ -625,7 +625,7 @@ public interface Model
     Statement getProperty( Resource s, Property p );
 
 	/** 
-	    An alias for <code>istResourcesWithProperty(Property)</code>,
+	    An alias for <code>listResourcesWithProperty(Property)</code>,
 	    retained for backward compatability. It may be deprecated in later
 	    releases.
 	 */
