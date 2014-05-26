@@ -24,7 +24,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.csv.CSVParser ;
-import org.apache.jena.atlas.csv.CSVTokenIterator ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ErrorHandler ;
@@ -85,14 +84,7 @@ public class LangCSV implements LangRIOT {
 	@Override
 	public void parse() {
 		 sink.start() ;
-		 CSVTokenIterator iter;
-		 if ( input != null ){
-			 iter = new CSVTokenIterator(input) ;
-		 } else {
-			 iter = new CSVTokenIterator(reader) ;
-		 }
-		 
-		 CSVParser parser = new CSVParser(iter) ;
+		 CSVParser parser = ( input != null ) ? CSVParser.create(input) : CSVParser.create(reader) ;
 		 List<String> row = null ;
 		 ArrayList<Node> predicates = new ArrayList<Node>();
 		 int rowNum = 0;

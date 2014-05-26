@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.csv ;
 
 import java.io.InputStream ;
+import java.io.Reader ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
@@ -42,7 +43,12 @@ public class CSVParser implements Iterable<List<String>>
         CSVParser parser = new CSVParser(iter) ;
         return parser ; 
     }
-    // ----
+    
+    public static CSVParser create(Reader input) {
+        CSVTokenIterator iter = new CSVTokenIterator(input) ;
+        CSVParser parser = new CSVParser(iter) ;
+        return parser ; 
+    }
 
     private final CSVTokenIterator iter ;
     private final PeekIterator<CSVToken> pIter ;
