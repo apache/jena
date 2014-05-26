@@ -18,26 +18,19 @@
 
 package org.apache.jena.riot.lang;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.junit.Test ;
 
-import org.apache.jena.atlas.junit.BaseTest;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFLanguages;
-import org.junit.Test;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.util.PrintUtil ;
 
 public class TestLangCSV extends BaseTest
 {
-	  @Test public void RDFDataMgrReadTest() throws FileNotFoundException{
+	  @Test public void RDFDataMgrReadTest() {
 		  String file = "src/test/resources/test.csv";
-		  FileReader r= new FileReader(new File (file));
-		  Model m = ModelFactory.createDefaultModel() ;
-		  RDFDataMgr.read(m, r, file, RDFLanguages.CSV) ;
+		  Model m = RDFDataMgr.loadModel(file, RDFLanguages.CSV) ;
 		  assertEquals(6, m.size()) ;
 		  PrintUtil.printOut(m.listStatements());
 	  }
