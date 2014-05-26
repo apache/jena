@@ -78,6 +78,9 @@ public class Lang
     /** Alternative constant {@linkplain #NQUADS} */
     public static Lang NQ ;
 
+    /** "CSV" - CSV data read into an RDF model with simple conversion : See Jena-625 */
+    public static Lang CSV ;
+
     /** The "null" language */
     public static Lang RDFNULL ;
 
