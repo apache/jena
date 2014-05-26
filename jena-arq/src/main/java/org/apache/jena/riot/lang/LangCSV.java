@@ -18,26 +18,23 @@
 
 package org.apache.jena.riot.lang;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream ;
+import java.io.Reader ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import org.apache.jena.atlas.csv.CSVParser;
-import org.apache.jena.atlas.csv.CSVTokenIterator;
-import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.RiotLib;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.tokens.Token;
-import org.apache.jena.riot.tokens.Tokenizer;
-import org.apache.jena.riot.tokens.TokenizerFactory;
+import org.apache.jena.atlas.csv.CSVParser ;
+import org.apache.jena.atlas.csv.CSVTokenIterator ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ParserProfile ;
+import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.system.StreamRDF ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 public class LangCSV implements LangRIOT {
 	
@@ -103,24 +100,26 @@ public class LangCSV implements LangRIOT {
 			 rowNum++;
 			 if (rowNum==1){
 				 for (String column: row){
-					 Node predicate = this.profile.createURI(filename + "#" + column.trim(), -1, -1);
+					 Node predicate = this.profile.createURI(filename + "#" + column.trim(), rowNum, 0);
 					 predicates.add(predicate);
 				 }
 			 }else {
 				 Node subject = this.profile.createBlankNode(null, -1, -1);
 				 Node predicateRow = this.profile.createURI(CSV_ROW, -1, -1);
-				 Node objectRow = this.profile.createTypedLiteral( (rowNum+"").trim(), XSDDatatype.XSDinteger, -1, -1);
-				 sink.triple(this.profile.createTriple(subject, predicateRow, objectRow, -1, -1)   );
-				 for (int i=0;i<row.size();i++){
-					 Node predicate = predicates.get(i);
-					 
-				     String columnValue = row.get(i).trim();
-					 try{
-						 Double.parseDouble(columnValue);
-					 }catch(Exception e){
-						 columnValue = "\""+columnValue +"\"";
+				 Node objectRow = this.profile.createTypedLiteral( (rowNum+"").trim(), XSDDatatype.XSDinteger, rowNum, 0);
+				 sink.triple(this.profile.createTriple(subject, predicateRow, objectRow, rowNum, 0)   );
+				 for (int col=0;col<row.size();col++){
+					 Node predicate = predicates.get(col);
+				     String columnValue = row.get(col).trim();
+				     Node o ;
+					 try { 
+					     // Try for a double.
+					     double d = Double.parseDouble(columnValue);
+					     o = NodeFactory.createLiteral(columnValue, XSDDatatype.XSDdouble) ;
+					 } catch(Exception e) {
+						 o = NodeFactory.createLiteral(columnValue) ;
 					 }
-					 sink.triple(this.profile.createTriple(subject, predicate, parse(columnValue), -1, -1)   );
+					 sink.triple(this.profile.createTriple(subject, predicate, o, rowNum, col)   );
 				 }
 				 
 			 }
@@ -128,17 +127,4 @@ public class LangCSV implements LangRIOT {
 		 sink.finish() ;
 		
 	}
-	
-    private Node parse(String string)
-    {
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
-        if ( ! tokenizer.hasNext() )
-            return null ;
-        Token t = tokenizer.next();
-        Node n = profile.create(null, t) ;
-        if ( tokenizer.hasNext() )
-            Log.warn(RiotLib.class, "String has more than one token in it: "+string) ;
-        return n ;
-    }
-
 }
