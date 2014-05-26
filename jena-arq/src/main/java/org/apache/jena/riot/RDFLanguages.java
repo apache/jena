@@ -91,7 +91,7 @@ public class RDFLanguages
     public static final Lang NT     = NTRIPLES ;
 
     /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
-    public static Lang JSONLD = LangBuilder.create(strLangJSONLD, "application/ld+json")
+    public static final Lang JSONLD = LangBuilder.create(strLangJSONLD, "application/ld+json")
                                                 .addAltNames("JSONLD")
                                                 .addFileExtensions("jsonld")
                                                 .build() ;
@@ -118,7 +118,7 @@ public class RDFLanguages
     /** Alternative constant {@linkplain #NQUADS} */
     public static final Lang NQ     = NQUADS ;
     
-    /** CSV */
+    /** CSV - CSV data read into an RDF model with simple conversion : See Jena-625 */
     public static final Lang CSV   = LangBuilder.create(strLangCSV, contentTypeTextCSV)
                                                 .addAltNames("csv")   
                                                 .addFileExtensions("csv")
@@ -161,6 +161,7 @@ public class RDFLanguages
         Lang.NQUADS     = RDFLanguages.NQUADS ;
         Lang.NQ         = RDFLanguages.NQ ;
         Lang.TRIG       = RDFLanguages.TRIG ; 
+        Lang.CSV        = RDFLanguages.CSV ;
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
     }
     // ----------------------
@@ -176,6 +177,7 @@ public class RDFLanguages
         register(RDFJSON) ;
         register(TRIG) ;
         register(NQUADS) ;
+        register(CSV) ;
         register(RDFNULL) ;
         
         // Check for JSON-LD engine.
