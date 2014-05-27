@@ -22,12 +22,9 @@ import java.util.UUID ;
 
 import junit.framework.TestCase ;
 
-/** Java5-dependent tests.
- * java.util.UUID only appeared in Java5
- */
+/** Test comparing Java JRE UUID and Jena's for parsing existing UUIDs. */
 
-
-public class TestUUID_J5 extends TestCase
+public class TestUUID_JRE extends TestCase
 {
     UUID_V1_Gen factory1 = new UUID_V1_Gen() ;
     UUID_V4_Gen factory4 = new UUID_V4_Gen() ;

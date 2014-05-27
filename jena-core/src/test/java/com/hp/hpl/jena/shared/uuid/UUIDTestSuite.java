@@ -28,7 +28,10 @@ public class UUIDTestSuite  extends TestSuite
     
     private UUIDTestSuite()
     {
+        // The OS kernel can run out of entropy in which case these tests get very slow
+        // These tests may not be in the test suite.
         addTestSuite(TestBits.class) ;
         addTestSuite(TestUUID.class) ;
+        addTestSuite(TestUUID_JRE.class) ;
     }
 }
