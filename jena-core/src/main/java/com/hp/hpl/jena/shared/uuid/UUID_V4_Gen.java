@@ -32,7 +32,7 @@ public class UUID_V4_Gen implements UUIDFactory
     static final int versionHere = 4 ;	      // Version 4: random number
     static final int variantHere = JenaUUID.Var_Std ;
     
-	Random random = null ;
+	private Random random = null ;
     
     public UUID_V4_Gen() {}
     
