@@ -55,19 +55,25 @@ abstract public class PathEngine
     private final PropertyFunctionRegistry registry ; 
 
     protected PathEngine(Graph graph, Context context) {
-        this.registry = PropertyFunctionRegistry.chooseRegistry(context) ;
-        if ( registry != null ) {
-            doingRDFSmember = ( registry.get(RDFSmember.getURI()) != null ) ;
-            doingListMember = ( registry.get(ListMember.getURI()) != null ) ;
-        } else {
-            doingRDFSmember = false ;
-            doingListMember = false ;
+        boolean doingRDFSmember$ = false ;
+        boolean doingListMember$ = false ;
+        PropertyFunctionRegistry registry$ = null ;
+
+        if ( context == null || context.isTrueOrUndef(ARQ.propertyFunctions) ) {
+            registry$ = PropertyFunctionRegistry.chooseRegistry(context) ;
+            if ( registry$ != null ) {
+                doingRDFSmember$ = ( registry$.get(RDFSmember.getURI()) != null ) ;
+                doingRDFSmember$ = ( registry$.get(ListMember.getURI()) != null ) ;
+            }
         }
         
+        this.registry = registry$ ;
+        this.doingRDFSmember = doingRDFSmember$ ;
+        this.doingListMember = doingListMember$ ;
         this.graph = graph ;
         this.context = context ;
     }
-
+    
     protected final Iter<Node> eval(Path path, Node node) {
         return PathEval.eval$(graph, node, path, this) ;
     }
