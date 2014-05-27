@@ -19,10 +19,10 @@
 package com.hp.hpl.jena.shared.uuid;
 
 import junit.framework.TestCase;
+import static com.hp.hpl.jena.shared.uuid.UUIDTestSuite.* ;
 
 public class TestUUID extends TestCase
 {
-    
     public void testNilUUID1()
     {
         JenaUUID u = JenaUUID.nil();
@@ -59,7 +59,7 @@ public class TestUUID extends TestCase
 
     public void testTime3()
     {
-        UUID_V1 u1 = new UUID_V1_Gen().generateV1() ;
+        UUID_V1 u1 = factory1.generateV1() ;
         UUID_V1 u2 = UUID_V1_Gen.generate(u1.getVersion(), u1.getVariant(), u1.getTimestamp(), u1.getClockSequence(), u1.getNode()) ;
 
         assertEquals(u1.getVersion(),        u2.getVersion() ) ;
@@ -71,7 +71,7 @@ public class TestUUID extends TestCase
 
     public void testTime4()
     {
-        UUID_V1 u1 = new UUID_V1_Gen().generateV1() ;
+        UUID_V1 u1 = factory1.generateV1() ;
         UUID_V1 u2 = UUID_V1_Gen.generate(u1.getVersion(), u1.getVariant(), u1.getTimestamp(), u1.getClockSequence(), u1.getNode()) ;
         assertEquals(u1, u2) ;
         assertEquals(u1.asString(), u2.asString()) ;
@@ -80,7 +80,7 @@ public class TestUUID extends TestCase
     
     public void testTime5()
     {
-        UUID_V1 u1 = new UUID_V1_Gen().generateV1() ;
+        UUID_V1 u1 = factory1.generateV1() ;
         UUID_V1 u2 = UUID_V1_Gen.generate(u1.getVersion(), u1.getVariant(), u1.getTimestamp(), u1.getClockSequence(), u1.getNode()) ;
         assertEquals(u1.asString(), u2.asString()) ;
     }
@@ -92,11 +92,9 @@ public class TestUUID extends TestCase
         assertFalse(u1.equals(u2)) ;
     }
     
-    UUIDFactory randomFactory = new UUID_V4_Gen() ;
-    
     public void testRandom1()
     {
-        JenaUUID u = randomFactory.generate() ;
+        JenaUUID u = factory4.generate() ;
         assertEquals(u.getVersion(), UUID_V4.version) ;
         assertEquals(u.getVariant(), UUID_V4.variant) ;
     }
@@ -104,20 +102,20 @@ public class TestUUID extends TestCase
 
     public void testRandom2()
     {
-        JenaUUID u = randomFactory.generate() ;
+        JenaUUID u = factory4.generate() ;
         check(u) ;
     }
     
     public void testRandom3()
     {
-        JenaUUID u = randomFactory.generate() ;
+        JenaUUID u = factory4.generate() ;
         check(u.asString()) ;
     }
     
     public void testRandom4()
     {
-        JenaUUID u1 = randomFactory.generate() ;
-        JenaUUID u2 = randomFactory.generate() ;
+        JenaUUID u1 = factory4.generate() ;
+        JenaUUID u2 = factory4.generate() ;
         assertFalse(u1.equals(u2)) ;
     }
     
@@ -136,11 +134,11 @@ public class TestUUID extends TestCase
     
     public void testEquals2()
     {
-        JenaUUID u1 = randomFactory.generate() ;
+        JenaUUID u1 = factory4.generate() ;
         JenaUUID u2 = JenaUUID.parse(u1.asString()) ;
         assertNotSame(u1, u2) ;
         assertEquals(u1, u2) ;
-        JenaUUID u3 = randomFactory.generate() ;
+        JenaUUID u3 = factory4.generate() ;
         assertFalse(u1.equals(u3)) ;
         assertFalse(u3.equals(u1)) ;
         assertFalse(u2.equals(u3)) ;
@@ -160,7 +158,7 @@ public class TestUUID extends TestCase
     
     public void testHash2()
     {
-        JenaUUID u1 = randomFactory.generate() ;
+        JenaUUID u1 = factory4.generate() ;
         JenaUUID u2 = JenaUUID.parse(u1.asString()) ;
         assertNotSame(u1, u2) ;
         assertEquals(u1.hashCode(), u2.hashCode()) ;

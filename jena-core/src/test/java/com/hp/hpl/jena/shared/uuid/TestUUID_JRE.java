@@ -18,6 +18,9 @@
 
 package com.hp.hpl.jena.shared.uuid;
 
+import static com.hp.hpl.jena.shared.uuid.UUIDTestSuite.factory1 ;
+import static com.hp.hpl.jena.shared.uuid.UUIDTestSuite.factory4 ;
+
 import java.util.UUID ;
 
 import junit.framework.TestCase ;
@@ -26,9 +29,6 @@ import junit.framework.TestCase ;
 
 public class TestUUID_JRE extends TestCase
 {
-    UUID_V1_Gen factory1 = new UUID_V1_Gen() ;
-    UUID_V4_Gen factory4 = new UUID_V4_Gen() ;
-
     public void testU5_1()
     {
         JenaUUID u1 = JenaUUID.generate() ;

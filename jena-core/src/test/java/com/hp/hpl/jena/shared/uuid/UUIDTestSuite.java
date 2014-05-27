@@ -22,6 +22,9 @@ import junit.framework.TestSuite;
 
 public class UUIDTestSuite  extends TestSuite
 {
+    static UUID_V4_Gen factory4 = new UUID_V4_Gen() ;
+    static UUID_V1_Gen factory1 = new UUID_V1_Gen() ;
+    
     static public TestSuite suite() {
         return new UUIDTestSuite();
     }
