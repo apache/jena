@@ -38,10 +38,6 @@ import org.slf4j.LoggerFactory ;
 
 public abstract class JenaUUID
 {
-
-    // Java6: get MAC address:
-    // http://www.kodejava.org/examples/250.html
-
     static final int HEX          = 16 ;
     static final int Var_NCS      = 0 ;
     static final int Var_Std      = 2 ; // Same as DCE

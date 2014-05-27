@@ -193,10 +193,8 @@ public class UUID_V1_Gen implements UUIDFactory
     // See LibUUID.toString(JenaUUID)
     // The code here works on the specific fields and is kept for reference only.
     private static String unparse(UUID_V1 uuid) {
-        int _variant = uuid.getVariant() ; // (int)((UUID_V1_Gen.maskVariant &
-                                           // uuid.bitsLower)>>>62) ;
-        int _version = uuid.getVersion() ; // (int)((UUID_V1_Gen.maskVersion &
-                                           // uuid.bitsUpper)>>>12) ;
+        int _variant = uuid.getVariant() ;
+        int _version = uuid.getVersion() ;
 
         long timeHigh = uuid.getTimeHigh() ;
         long timeMid = uuid.getTimeMid() ;
@@ -223,7 +221,7 @@ public class UUID_V1_Gen implements UUIDFactory
     }
 
     // Testing.
-    public static UUID_V1 generate(int version, int variant, long timestamp, long clockSeq, long node) {
+    /*package*/ static UUID_V1 generate(int version, int variant, long timestamp, long clockSeq, long node) {
         long timeHigh = timestamp >>> (60 - 12) ;       // Top 12 bits of 60 bit number.
         long timeMid = (timestamp >>> 32) & 0xFFFFL ;   // 16 bits, bits 32-47 
         long timeLow = timestamp & 0xFFFFFFFFL ;        // Low 32 bits
@@ -232,8 +230,8 @@ public class UUID_V1_Gen implements UUIDFactory
     }
 
     private static UUID_V1 generate(int version, int variant, long timeHigh, long timeMid, long timeLow, long clockSeq, long node) {
-        long mostSigBits = (timeLow << 32) | (timeMid << 16) | (versionHere << 12) | timeHigh ;
-        long leastSigBits = (long)variantHere << 62 | (clockSeq << 48) | node ;
+        long mostSigBits = (timeLow << 32) | (timeMid << 16) | (version << 12) | timeHigh ;
+        long leastSigBits = (long)variant << 62 | (clockSeq << 48) | node ;
         return new UUID_V1(mostSigBits, leastSigBits) ;
     }
 
@@ -296,13 +294,11 @@ public class UUID_V1_Gen implements UUIDFactory
             if ( hwAddr != null && hwAddr.length > 4 ) { // Length is a sanity check.
                 node = 0 ;
                 for ( byte bv : hwAddr ) {
-                    node = node << 8 | bv ;
+                    node = (node << 8) | (bv&0xFF) ;
                 }
                 return ;
             }
-        } catch (Exception ex) { 
-            
-        }                      // Failed in some way.  Fallback.
+        } catch (Exception ex) { }                      // Failed in some way.  Fallback.
 
         
 
