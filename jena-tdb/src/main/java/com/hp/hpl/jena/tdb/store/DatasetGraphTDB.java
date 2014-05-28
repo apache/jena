@@ -117,8 +117,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public GraphTDB getGraphTDB(Node graphNode)
     { return (GraphTDB)getGraph(graphNode) ; }
 
-    // The effective graph may not be the concrete storage one (e.g. union)
-    
     @Override
     protected void _close() {
         if ( closed )
@@ -166,7 +164,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     protected Graph _createNamedGraph(Node graphNode)
     { return new GraphTDB(this, graphNode) ; }
 
-    public void setEffectiveDefaultGraph(GraphTDB g)       { effectiveDefaultGraph = g ; }
+    //public void setEffectiveDefaultGraph(GraphTDB g)       { effectiveDefaultGraph = g ; }
 
     public GraphTDB getEffectiveDefaultGraph()             { return effectiveDefaultGraph ; }
 
