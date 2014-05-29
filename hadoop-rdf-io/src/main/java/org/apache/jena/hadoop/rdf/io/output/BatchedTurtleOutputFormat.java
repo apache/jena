@@ -20,40 +20,34 @@ package org.apache.jena.hadoop.rdf.io.output;
 
 import java.io.Writer;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.writers.StreamRdfTripleWriter;
+import org.apache.jena.hadoop.rdf.io.output.writers.BatchedTurtleWriter;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.writer.WriterStreamRDFBlocks;
 
 import com.hp.hpl.jena.graph.Triple;
 
 /**
- * Turtle output format
+ * Output format for Turtle that uses a batched approach, note that this will
+ * produce invalid data where blank nodes span batches so it is typically better
+ * to use the {@link TurtleOutputFormat} instead
  * 
  * @author rvesse
  * 
  * @param <TKey>
  *            Key type
  */
-public class TurtleOutputFormat<TKey> extends
-		AbstractStreamRdfNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
+public class BatchedTurtleOutputFormat<TKey> extends
+		AbstractBatchedNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
+
+	@Override
+	protected RecordWriter<TKey, TripleWritable> getRecordWriter(Writer writer,
+			long batchSize) {
+		return new BatchedTurtleWriter<TKey>(writer, batchSize);
+	}
 
 	@Override
 	protected String getFileExtension() {
 		return ".ttl";
-	}
-
-	@Override
-	protected RecordWriter<TKey, TripleWritable> getRecordWriter(
-			StreamRDF stream, Writer writer, Configuration config) {
-		return new StreamRdfTripleWriter<TKey>(stream, writer);
-	}
-
-	@Override
-	protected StreamRDF getStream(Writer writer, Configuration config) {
-		return new WriterStreamRDFBlocks(writer);
 	}
 
 }

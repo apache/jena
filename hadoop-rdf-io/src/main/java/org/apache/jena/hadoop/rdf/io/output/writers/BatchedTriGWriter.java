@@ -23,29 +23,29 @@ import java.io.Writer;
 import org.apache.jena.riot.Lang;
 
 /**
- * A record writer for Turtle
- * 
- * @author rvesse
- * 
+ * A record writer for TriG that uses the batched approach, note that this
+ * approach will produce invalid data when blank nodes span batches
+ *  
  * @param <TKey>
+ *            Key type
  */
-public class TurtleWriter<TKey> extends AbstractBatchedTripleWriter<TKey> {
+public class BatchedTriGWriter<TKey> extends AbstractBatchedQuadWriter<TKey> {
 
-    /**
-     * Creates a new record writer
-     * 
-     * @param writer
-     *            Writer
-     * @param batchSize
-     *            Batch size
-     */
-    public TurtleWriter(Writer writer, long batchSize) {
-        super(writer, batchSize);
-    }
+	/**
+	 * Creates a new record writer
+	 * 
+	 * @param writer
+	 *            Writer
+	 * @param batchSize
+	 *            Batch size
+	 */
+	public BatchedTriGWriter(Writer writer, long batchSize) {
+		super(writer, batchSize);
+	}
 
-    @Override
-    protected Lang getRdfLanguage() {
-        return Lang.TURTLE;
-    }
+	@Override
+	protected Lang getRdfLanguage() {
+		return Lang.TRIG;
+	}
 
 }

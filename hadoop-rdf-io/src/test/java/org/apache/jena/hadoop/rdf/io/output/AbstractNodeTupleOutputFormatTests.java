@@ -115,7 +115,12 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
         return counter.count();
     }
 
-    protected final void checkTuples(File f, long expected) {
+    /**
+     * Checks that tuples are as expected
+     * @param f File
+     * @param expected Expected number of tuples
+     */
+    protected void checkTuples(File f, long expected) {
         Assert.assertEquals(expected, this.countTuples(f));
     }
 

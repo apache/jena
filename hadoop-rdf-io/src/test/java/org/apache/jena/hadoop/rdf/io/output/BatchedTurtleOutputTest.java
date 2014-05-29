@@ -25,8 +25,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
-import org.apache.jena.hadoop.rdf.io.output.TriGOutputFormat;
-import org.apache.jena.hadoop.rdf.types.QuadWritable;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,13 +33,13 @@ import org.junit.runners.Parameterized.Parameters;
 
 
 /**
- * Tests for TriG output
+ * Tests for Turtle output
  * 
  * @author rvesse
  * 
  */
 @RunWith(Parameterized.class)
-public class TriGOutputTest extends AbstractQuadOutputFormatTests {
+public class BatchedTurtleOutputTest extends AbstractTripleOutputFormatTests {
 
     static long $bs1 = RdfIOConstants.DEFAULT_OUTPUT_BATCH_SIZE;
     static long $bs2 = 1000;
@@ -63,20 +62,20 @@ public class TriGOutputTest extends AbstractQuadOutputFormatTests {
      * @param batchSize
      *            Batch size
      */
-    public TriGOutputTest(long batchSize) {
+    public BatchedTurtleOutputTest(long batchSize) {
         this.batchSize = batchSize;
     }
 
     @Override
     protected String getFileExtension() {
-        return ".trig";
+        return ".ttl";
     }
 
     @Override
     protected Lang getRdfLanguage() {
-        return Lang.TRIG;
+        return Lang.TURTLE;
     }
-
+    
     @Override
     protected Configuration prepareConfiguration() {
         Configuration config = super.prepareConfiguration();
@@ -85,8 +84,8 @@ public class TriGOutputTest extends AbstractQuadOutputFormatTests {
     }
 
     @Override
-    protected OutputFormat<NullWritable, QuadWritable> getOutputFormat() {
-        return new TriGOutputFormat<NullWritable>();
+    protected OutputFormat<NullWritable, TripleWritable> getOutputFormat() {
+        return new BatchedTurtleOutputFormat<NullWritable>();
     }
 
 }

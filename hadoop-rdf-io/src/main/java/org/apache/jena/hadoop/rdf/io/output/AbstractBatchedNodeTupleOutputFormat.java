@@ -35,20 +35,20 @@ import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
  * 
  * @param <TKey>
  *            Key type
- * @param <TValue>
+ * @param <TTuple>
  *            Tuple type
- * @param <T>
- *            Writable tuple type
+ * @param <TValue>
+ *            Writable tuple type i.e. the value type
  */
-public abstract class AbstractBatchedNodeTupleOutputFormat<TKey, TValue, T extends AbstractNodeTupleWritable<TValue>> extends
-        AbstractNodeTupleOutputFormat<TKey, TValue, T> {
+public abstract class AbstractBatchedNodeTupleOutputFormat<TKey, TTuple, TValue extends AbstractNodeTupleWritable<TTuple>> extends
+        AbstractNodeTupleOutputFormat<TKey, TTuple, TValue> {
 
     @Override
-    protected RecordWriter<TKey, T> getRecordWriter(Writer writer, Configuration config) {
+    protected RecordWriter<TKey, TValue> getRecordWriter(Writer writer, Configuration config) {
         long batchSize = config.getLong(RdfIOConstants.OUTPUT_BATCH_SIZE, RdfIOConstants.DEFAULT_OUTPUT_BATCH_SIZE);
         return this.getRecordWriter(writer, batchSize);
     }
     
-    protected abstract RecordWriter<TKey, T> getRecordWriter(Writer writer, long batchSize);
+    protected abstract RecordWriter<TKey, TValue> getRecordWriter(Writer writer, long batchSize);
 
 }

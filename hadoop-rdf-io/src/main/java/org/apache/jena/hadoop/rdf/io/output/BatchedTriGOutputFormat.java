@@ -20,40 +20,34 @@ package org.apache.jena.hadoop.rdf.io.output;
 
 import java.io.Writer;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.writers.StreamRdfTripleWriter;
-import org.apache.jena.hadoop.rdf.types.TripleWritable;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.writer.WriterStreamRDFBlocks;
+import org.apache.jena.hadoop.rdf.io.output.writers.BatchedTriGWriter;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.Quad;
 
 /**
- * Turtle output format
+ * Output format for TriG that uses a batched approach, note that this will
+ * produce invalid data where blank nodes span batches so it is typically better
+ * to use the {@link TriGOutputFormat} instead
  * 
  * @author rvesse
  * 
  * @param <TKey>
  *            Key type
  */
-public class TurtleOutputFormat<TKey> extends
-		AbstractStreamRdfNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
+public class BatchedTriGOutputFormat<TKey> extends
+		AbstractBatchedNodeTupleOutputFormat<TKey, Quad, QuadWritable> {
+
+	@Override
+	protected RecordWriter<TKey, QuadWritable> getRecordWriter(Writer writer,
+			long batchSize) {
+		return new BatchedTriGWriter<TKey>(writer, batchSize);
+	}
 
 	@Override
 	protected String getFileExtension() {
-		return ".ttl";
-	}
-
-	@Override
-	protected RecordWriter<TKey, TripleWritable> getRecordWriter(
-			StreamRDF stream, Writer writer, Configuration config) {
-		return new StreamRdfTripleWriter<TKey>(stream, writer);
-	}
-
-	@Override
-	protected StreamRDF getStream(Writer writer, Configuration config) {
-		return new WriterStreamRDFBlocks(writer);
+		return ".trig";
 	}
 
 }
