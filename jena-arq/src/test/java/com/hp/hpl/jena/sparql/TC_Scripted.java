@@ -29,8 +29,8 @@ public class TC_Scripted extends TestSuite
     static public TestSuite suite()
     {
         TestSuite ts = new TC_Scripted() ;
-        ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/manifest-arq.ttl")) ;
         ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Syntax/manifest-syntax.ttl")) ;
+        ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/manifest-arq.ttl")) ;
         ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Serialization/manifest.ttl")) ;
         return ts ;
     }
