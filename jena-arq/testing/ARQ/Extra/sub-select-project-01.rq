@@ -1,0 +1,7 @@
+PREFIX : <http://example/> 
+
+SELECT * {
+  ?s :p ?o .
+  { SELECT ?s { ?s :p ?z } }
+  { SELECT ?s { ?s :q ?z } }
+}

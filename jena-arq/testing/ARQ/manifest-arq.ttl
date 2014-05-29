@@ -77,12 +77,16 @@
         <EngineRef/manifest.ttl>
         <EngineMain/manifest.ttl>
 
-    ## ARQ extensions
+    ## SPARQL 1.1
         <Assign/manifest.ttl>
         <SelectExpr/manifest.ttl>
         <GroupBy/manifest.ttl>
         <SubQuery/manifest.ttl>
         <Paths/manifest.ttl>
         <Negation/manifest.ttl>
+
+    ## Addition misc tests
+        <Extra/manifest.ttl>
+
     ) .
 
