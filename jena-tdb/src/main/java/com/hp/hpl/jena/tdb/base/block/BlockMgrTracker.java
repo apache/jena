@@ -37,7 +37,7 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     public static boolean verbose = false ;
 
     static enum Action { Alloc, Promote, GetRead, GetWrite, Write, Release, Free, IterRead, 
-        BeginRead, EndRead, BeginUpdate, EndUpdate, BeginIter, EndIter } ;
+                         BeginRead, EndRead, BeginUpdate, EndUpdate, BeginIter, EndIter }
     static final Long NoId = Long.valueOf(-9) ;
 
     // ---- State for tracking

@@ -56,7 +56,7 @@ public class CacheStatsAtomic<Key,Value> extends CacheWrapper<Key,Value> impleme
             if ( other != null )
                 other.apply(key, thing) ;
         }
-    } ;
+    }
     // ----
 
     

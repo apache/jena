@@ -473,7 +473,7 @@ public final class Token
                 if ( tokenImage.equals(ImageTrue) )
                     return NodeConst.nodeTrue ;
                 if ( tokenImage.equals(ImageFalse) )
-                    return NodeConst.nodeFalse; ;
+                    return NodeConst.nodeFalse ;
                 //$FALL-THROUGH$
             default: break ;
         }

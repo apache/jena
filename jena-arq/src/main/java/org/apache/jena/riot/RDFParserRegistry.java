@@ -145,7 +145,7 @@ public class RDFParserRegistry
         public ReaderRIOT create(Lang lang) {
             return new ReaderRIOTLang(lang) ;
         }
-    } ;
+    }
 
     private static class ReaderRIOTLang implements ReaderRIOT
     {
@@ -192,6 +192,6 @@ public class RDFParserRegistry
                 throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD") ;
             return new JsonLDReader() ;
         }
-    } ;
+    }
 }
 

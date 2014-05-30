@@ -31,7 +31,8 @@ import com.hp.hpl.jena.sparql.path.* ;
 
 
 
-
+//This is javacc generated code
+@SuppressWarnings("all")
 public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10Constants {
     boolean allowAggregatesInExpressions = false ;
 

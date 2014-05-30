@@ -101,5 +101,5 @@ public class QueryEngineMain extends QueryEngineBase
             QueryEngineMain engine = new QueryEngineMain(op, dataset, binding, context) ;
             return engine.getPlan() ;
         }
-    } ;
+    }
 }

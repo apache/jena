@@ -226,7 +226,7 @@ public final class LoadMonitor
         if ( tickPoint(totalIndexItems, indexTickPoint) )
         {
             long readTimer = timer.readTimer() ;
-            long timePoint = readTimer - currentStartTime ; ;
+            long timePoint = readTimer - currentStartTime ;
             long thisTime = timePoint - lastTime ;
             
             long batchAvgRate = (currentItems * 1000L) / thisTime;

@@ -39,7 +39,7 @@ public class ItemLocation
     public int getColumn()              { return column ; }
     public int getLine()                { return line ; }
 
-    public String location() { return "["+getLine()+","+getColumn()+"]" ; } ;
+    public String location() { return "["+getLine()+","+getColumn()+"]" ; }
     
     @Override
     public String toString() { return location() ; }

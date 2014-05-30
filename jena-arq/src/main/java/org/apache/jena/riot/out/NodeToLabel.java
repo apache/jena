@@ -172,7 +172,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         {
             return "_:b"+Integer.toString(X++) ;
         }
-    } ;
+    }
     
     private static class AllocatorBNodeAsIRI extends AllocatorBase
     {
@@ -184,6 +184,6 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
             String str = node.getBlankNodeLabel() ;
             return "<_:"+str+">" ;
         }
-    } ;
+    }
 
 }

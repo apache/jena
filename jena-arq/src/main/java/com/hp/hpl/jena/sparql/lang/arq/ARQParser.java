@@ -26,6 +26,9 @@ import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 import com.hp.hpl.jena.update.* ;
 import com.hp.hpl.jena.sparql.modify.request.* ;
+
+// This is javacc generated code
+@SuppressWarnings("all")
 public class ARQParser extends ARQParserBase implements ARQParserConstants {
     boolean allowAggregatesInExpressions = false ;
 

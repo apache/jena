@@ -240,7 +240,7 @@ public class NodeTableCache implements NodeTable
             if ( notPresent.contains(n) )
                 throw new TDBException("Inconsistent: "+n+" in notPresent cache (1)") ;
         }
-        Iterator<NodeId> iter2 = Iter.toList(id2node_Cache.keys()).iterator() ; ;
+        Iterator<NodeId> iter2 = Iter.toList(id2node_Cache.keys()).iterator() ;
         for ( ; iter2.hasNext() ; )
         {
             NodeId nId = iter2.next() ;

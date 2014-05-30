@@ -102,7 +102,7 @@ public class NodeTableLogger implements NodeTable
     @Override
     public void close()
     {
-        info("close()") ; ;
+        info("close()") ;
         nodeTable.close() ;
     }
 

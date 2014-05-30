@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class Target
 {
-    static enum Decl { DEFAULT$, NAMED$, ALL$, IRI$} ;
+    static enum Decl { DEFAULT$, NAMED$, ALL$, IRI$}
     
     public static final Target DEFAULT = new Target(DEFAULT$) ;
     public static final Target NAMED = new Target(NAMED$) ;

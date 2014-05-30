@@ -221,7 +221,7 @@ public class ErrorHandlerFactory
         {
             throw new RiotException(fmtMessage(message, line, col)) ;
         }
-    } ;
+    }
 
     
     /** An error handler that logs messages for errors and warnings and attempt to carry on */ 
