@@ -24,15 +24,7 @@ import java.util.List ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sdb.StoreDesc ;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB ;
@@ -40,6 +32,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection ;
 import com.hp.hpl.jena.sdb.store.DatasetStore ;
 import com.hp.hpl.jena.sdb.util.StoreUtils ;
 import com.hp.hpl.jena.shared.Command ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
@@ -47,7 +40,6 @@ import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
 import com.hp.hpl.jena.sparql.junit.TestItem ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.query.ResultSetRewindable ;
 
 public class QueryTestSDB extends EarlTestCase
 {
@@ -72,6 +64,7 @@ public class QueryTestSDB extends EarlTestCase
     static List<String> lastNamedLoaded = new ArrayList<String>() ;
     
     boolean skipThisTest = false ;
+    boolean origValueUsePlainGraph = false ;
 
     @Override
     public void setUp()
@@ -118,11 +111,13 @@ public class QueryTestSDB extends EarlTestCase
         lastDftLoaded = filenamesDft ;
         lastNamedLoaded = filenamesNamed ;
         
+        origValueUsePlainGraph = SystemARQ.UsePlainGraph ;
     }
     
     @Override
     public void tearDown()
     { 
+        SystemARQ.UsePlainGraph = origValueUsePlainGraph ;
         if ( store != null )
         {
             // Other databases can have problems if all are running on the same machine at the same time.
@@ -166,10 +161,8 @@ public class QueryTestSDB extends EarlTestCase
         }
         
         // Make sure a plain, no sameValueAs graph is used.
-        Object oldValue = ARQ.getContext().get(ARQ.strictGraph) ;
-        ARQ.setTrue(ARQ.strictGraph) ;
+        SystemARQ.UsePlainGraph = true ;
         Dataset ds = DatasetFactory.create(item.getDefaultGraphURIs(), item.getNamedGraphURIs()) ;
-        ARQ.getContext().set(ARQ.strictGraph, oldValue) ;
         
         // ---- First, get the expected results by executing in-memory or from a results file.
         
