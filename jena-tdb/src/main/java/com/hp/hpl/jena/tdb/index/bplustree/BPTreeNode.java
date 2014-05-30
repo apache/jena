@@ -274,7 +274,7 @@ public final class BPTreeNode extends BPTreePage
             if ( ! node.isRoot() )
                 node.release() ;
             node = n ;
-        } ;
+        }
         // ... then find the id of the next step down, but do not touch the records buffer page. 
         int id ;
         if ( fromRec == null )

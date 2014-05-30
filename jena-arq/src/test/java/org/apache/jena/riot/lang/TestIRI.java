@@ -77,7 +77,7 @@ public class TestIRI extends BaseTest
     
     @Test public void fileIRI_1()
     {
-        String uri = testFileIRI("D.ttl"); ; 
+        String uri = testFileIRI("D.ttl") ; 
         assertTrue(uri.endsWith("D.ttl")) ;
     }
     

@@ -210,7 +210,7 @@ public class NodeTableNative implements NodeTable
     
     {
         // Could be quicker by hoping down the objects files.
-        Iterator<Record> iter = nodeHashToId.iterator() ; ;
+        Iterator<Record> iter = nodeHashToId.iterator() ;
 
         Transform<Record, Pair<NodeId, Node>> transform = new Transform<Record, Pair<NodeId, Node>>() {
             @Override

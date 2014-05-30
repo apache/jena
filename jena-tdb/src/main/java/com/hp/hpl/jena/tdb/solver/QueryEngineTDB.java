@@ -180,7 +180,7 @@ public class QueryEngineTDB extends QueryEngineMain
             QueryEngineTDB engine = new QueryEngineTDB(op, dsgToQuery(dataset), binding, context) ;
             return engine.getPlan() ;
         }
-    } ;
+    }
     
 //    // By rewrite, not using a general purpose dataset with the right graphs in.
 //    private static Op dynamicDatasetOp(Op op,  Context context)

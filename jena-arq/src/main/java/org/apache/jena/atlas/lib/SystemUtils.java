@@ -30,7 +30,7 @@ public class SystemUtils
     
     static public ClassLoader chooseClassLoader()
     {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); ;
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     
         if ( logging && classLoader != null )
             log.trace("Using thread classloader") ;

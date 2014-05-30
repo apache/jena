@@ -21,6 +21,8 @@ package com.hp.hpl.jena.sparql.sse.lang.parser ;
 
 import com.hp.hpl.jena.sparql.sse.lang.ParserSSEBase ;
 
+//This is javacc generated code
+@SuppressWarnings("all")
 
 public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConstants {
 

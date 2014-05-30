@@ -37,7 +37,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestRecordBuffer extends BaseTest
 {
-    static RecordFactory recordFactory = new RecordFactory(RecordLib.TestRecordLength, 0) ; ;
+    static RecordFactory recordFactory = new RecordFactory(RecordLib.TestRecordLength, 0) ;
     
     static boolean originalNullOut ; 
     @BeforeClass static public void beforeClass()

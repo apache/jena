@@ -77,7 +77,7 @@ class NormalizeValue2
         if ( iDot == chars.length )
             // No dot.
             // ??
-            ;
+            {}
         
         int start = 0 ;
         if ( chars[0] == CH_MINUS || chars[0] == NonChar )

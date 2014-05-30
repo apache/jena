@@ -766,7 +766,7 @@ public class BuilderOp
                 if ( label.getNode().isLiteral() )
                 {
                     if ( label.getNode().getLiteralLanguage() == null ||
-                        label.getNode().getLiteralLanguage().equals("") ) ;
+                        label.getNode().getLiteralLanguage().equals("") )
                     str = label.getNode().getLiteralLexicalForm() ;
                 }
                 else

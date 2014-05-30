@@ -154,7 +154,7 @@ public class HttpOp {
         public String get() {
             return result;
         }
-    };
+    }
 
     /**
      * TypedInputStream from an HTTP response. The TypedInputStream must be
@@ -175,7 +175,7 @@ public class HttpOp {
         public TypedInputStream get() {
             return stream;
         }
-    };
+    }
 
     /**
      * Gets the default authenticator used for authenticate requests if no
@@ -295,7 +295,7 @@ public class HttpOp {
                 return connmgr;
             }
         };
-    };
+    }
 
     /**
      * Gets the User-Agent string that ARQ is applying to all HTTP requests

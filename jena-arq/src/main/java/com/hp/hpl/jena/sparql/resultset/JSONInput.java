@@ -185,8 +185,7 @@ public class JSONInput extends SPARQLResult
             Set<String> varNames = x.keys() ;
             for ( String vn : varNames )
             {
-                if ( ! vars.contains(vn) )
-                    ; // Warning
+                //if ( ! vars.contains(vn) ) {}
                 JsonValue vt = x.get(vn) ;
                 if ( ! vt.isObject() )
                     throw new ResultSetException("Binding for variable '"+vn+"' is not a JSON object: "+vt)  ;

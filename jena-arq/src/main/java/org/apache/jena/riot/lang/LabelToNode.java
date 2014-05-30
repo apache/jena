@@ -217,7 +217,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
         }
         
         private BlankNodeAllocator make() { return new BlankNodeAllocatorHash() ; }
-    } ;
+    }
 
     
     // TODO Switch to BlankNodeAllocator and a single wrapper.

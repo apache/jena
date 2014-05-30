@@ -25,7 +25,7 @@ package org.apache.jena.atlas.web;
 public class HttpException extends RuntimeException {
     private static final long serialVersionUID = -7224224620679594095L;
     private int responseCode = -1;
-    private String statusLine = null ;;
+    private String statusLine = null ;
 
     public HttpException(int responseCode, String statusLine) {
         super(responseCode + " - " + statusLine);
