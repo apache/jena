@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
 public class SystemARQ
 {
-    // Various system wide settings, "constants" that might chnage e,g test setups
+    // Various system wide settings, "constants" that might change e.g. test setups
 
     // NodeValues work without the context so somethings only have global settings.
     
@@ -66,9 +66,9 @@ public class SystemARQ
     public static boolean EnableRomanNumerals   = true ;  
     
     /**
-     * Use a plain graph (sameValeuAs is term equality)
+     * Use a plain graph (sameValueAs is term equality)
      */
-    public static boolean UsePlainGraph         = true ;
+    public static boolean UsePlainGraph         = false ;
     
     /**
      * Whether to use StAX or SAX XML parsing for result sets (StAX preferred). 

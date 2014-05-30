@@ -31,6 +31,7 @@ import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
@@ -52,7 +53,6 @@ public class QueryTest extends EarlTestCase
     private static int testCounter = 1 ;
     private int testNumber = testCounter++ ;
     private TestItem testItem ;
-    private boolean resetNeeded = false ;
     
     private SPARQLResult results = null ;    // Maybe null if no testing of results
     
@@ -65,14 +65,15 @@ public class QueryTest extends EarlTestCase
         testItem = t ;
     }
     private boolean oldWarningFlag  ;
+    private boolean oldPlainGraphFlag  ;
     
     @Override
     public void setUpTest() throws Exception
     {
         super.setUpTest() ;
         // SPARQL and ARQ tests are done with no value matching (for query execution and results testing)
-        resetNeeded = true ;
-        ARQ.setTrue(ARQ.strictGraph) ;
+        oldPlainGraphFlag = SystemARQ.UsePlainGraph ;
+        SystemARQ.UsePlainGraph = true ;
         // Turn parser warnings off for the test data. 
         oldWarningFlag = CheckerLiterals.WarnOnBadLiterals ;
         CheckerLiterals.WarnOnBadLiterals = false ;
@@ -84,8 +85,7 @@ public class QueryTest extends EarlTestCase
     @Override
     public void tearDownTest() throws Exception
     {
-        if ( resetNeeded )
-            ARQ.setFalse(ARQ.strictGraph) ;
+        SystemARQ.UsePlainGraph = oldPlainGraphFlag ;
         CheckerLiterals.WarnOnBadLiterals = oldWarningFlag ;
         super.tearDownTest() ;
     }
