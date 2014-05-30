@@ -42,6 +42,7 @@ public class GraphFactory
     /** Create a graph - ARQ-wide default type */
     public static Graph createDefaultGraph()
     {
+        // Normal usage is SystemARQ.UsePlainGraph = false and use createJenaDefaultGraph
         return SystemARQ.UsePlainGraph ? createPlainGraph() : createJenaDefaultGraph() ;
     }
 

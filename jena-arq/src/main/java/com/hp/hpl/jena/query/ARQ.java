@@ -405,16 +405,6 @@ public class ARQ
      */  
     public static final Symbol propertyFunctions = ARQConstants.allocSymbol("propertyFunctions") ;
     
-    
-    
-    /**
-     * Use a simple (and non-scalable) graph implementation that does no
-     * value testing.  Needed for DAWG tests where matching is exact
-     * and results compared by graph-equivalence.
-     */
-    public static final Symbol strictGraph =
-        ARQConstants.allocSymbol("strictGraph") ;
-    
     /**
      * Expression evaluation without extension types (e.g. xsd:date, language tags)
      */
@@ -443,7 +433,6 @@ public class ARQ
         
         context.set(optimization,                   false) ;
         context.set(hideNonDistiguishedVariables,   true) ;
-        context.set(strictGraph,                    true) ;
         context.set(strictSPARQL,                   true) ;
         context.set(enablePropertyFunctions,        false) ;
         
@@ -473,7 +462,6 @@ public class ARQ
     {
         context.set(optimization,                   true) ;
         context.set(hideNonDistiguishedVariables,   false) ;
-        context.set(strictGraph,                    false) ;
         context.set(strictSPARQL,                   false) ;
         context.set(enablePropertyFunctions,        true) ;
         
@@ -557,7 +545,6 @@ public class ARQ
         context.set(strictSPARQL,                  false) ; 
         context.set(constantBNodeLabels,           true) ;
         context.set(enablePropertyFunctions,       true) ;
-        context.set(strictGraph,                   false) ;
         context.set(regexImpl,                     javaRegex) ;
 
         return context ; 
