@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
@@ -80,10 +81,14 @@ public class QueryTestTDB extends EarlTestCase
         this.results = rs ;
     }
     
+    boolean oldValueUsePlainGraph = SystemARQ.UsePlainGraph ;
     
     @Override public void setUpTest()
     {
         dataset = TDBFactory.createDataset() ;
+        // Make sure a plain, no sameValueAs graph is used.
+        oldValueUsePlainGraph = SystemARQ.UsePlainGraph ;
+        SystemARQ.UsePlainGraph = true ;
         setupData() ;
     }
     
@@ -94,6 +99,7 @@ public class QueryTestTDB extends EarlTestCase
             dataset.close() ;
             dataset = null ;
         }
+        SystemARQ.UsePlainGraph = oldValueUsePlainGraph ;
     }
     
     public void setupData()
@@ -125,12 +131,7 @@ public class QueryTestTDB extends EarlTestCase
         }
         
         Query query = QueryFactory.read(queryFile) ;
-        
-        // Make sure a plain, no sameValueAs graph is used.
-        Object oldValue = ARQ.getContext().get(ARQ.strictGraph) ;
-        ARQ.setTrue(ARQ.strictGraph) ;
         Dataset ds = DatasetFactory.create(defaultGraphURIs, namedGraphURIs) ;
-        ARQ.getContext().set(ARQ.strictGraph, oldValue) ;
         
         // ---- First, get the expected results by executing in-memory or from a results file.
         
