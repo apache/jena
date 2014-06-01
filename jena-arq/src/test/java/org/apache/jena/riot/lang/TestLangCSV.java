@@ -18,13 +18,14 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.junit.Test ;
+import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.junit.Test;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.util.PrintUtil ;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.PrintUtil;
 
 public class TestLangCSV extends BaseTest
 {
@@ -32,6 +33,11 @@ public class TestLangCSV extends BaseTest
 		  String file = "src/test/resources/test.csv";
 		  Model m = RDFDataMgr.loadModel(file, RDFLanguages.CSV) ;
 		  assertEquals(6, m.size()) ;
-		  PrintUtil.printOut(m.listStatements());
 	  }
+	  
+	  @Test public void ModelReadTest(){
+	      Model m = ModelFactory.createDefaultModel() ;
+	      m.read("test.csv", "CSV") ;
+	      assertEquals(6, m.size()) ;
+      }
 }
