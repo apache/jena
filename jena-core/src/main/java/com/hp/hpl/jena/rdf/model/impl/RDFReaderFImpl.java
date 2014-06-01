@@ -47,7 +47,8 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
                                               "TURTLE",
                                               "Turtle",
                                               "TTL",
-                                              "GRDDL"};
+                                              "GRDDL",
+                                              "CSV"};
     // default readers for each language
 
     protected static final String DEFAULTREADERS[] = {
@@ -61,7 +62,9 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         TURTLEREADER,
         TURTLEREADER,
         TURTLEREADER,
-        GRDDLREADER
+        GRDDLREADER,
+        "org.apache.jena.riot.adapters.RDFReaderRIOT_CSV",
+        
     };
 
     protected static final String DEFAULTLANG = LANGS[0];
