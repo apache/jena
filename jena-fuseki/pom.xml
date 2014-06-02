@@ -22,14 +22,14 @@
   <artifactId>jena-fuseki</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Fuseki (SPARQL 1.1 Server)</name>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.2</version>
   <description>Fuseki is a SPARQL 1.1 Server which provides query, update and graph store protocol endpoints that can be used to expose triple store(s) over HTTP</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>9-SNAPSHOT</version>
+    <version>9</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -58,9 +58,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-fuseki</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-fuseki</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-fuseki</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2/jena-fuseki</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2/jena-fuseki</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2/jena-fuseki</url>
   </scm>
 
   <properties>
@@ -84,13 +84,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.11.2-SNAPSHOT</version>
+      <version>2.11.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.11.2-SNAPSHOT</version>
+      <version>2.11.2</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -98,13 +98,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.11.2-SNAPSHOT</version>
+      <version>2.11.2</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.2</version>
     </dependency>
 
     <!--
@@ -119,7 +119,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.2</version>
       <exclusions>
         <!-- 
 	  Get this via commons-fileupload and also via jena-text/sol4j
@@ -136,7 +136,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-spatial</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
+      <version>1.0.2</version>
     </dependency>
 
     <dependency>
