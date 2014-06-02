@@ -22,12 +22,12 @@
   <artifactId>jena-spatial</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SPARQL Spatial Search</name>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.2</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>9-SNAPSHOT</version>
+    <version>9</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -47,7 +47,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>2.11.2-SNAPSHOT</version>
+      <version>2.11.2</version>
       <type>pom</type>
     </dependency>
 
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.11.2-SNAPSHOT</version>
+      <version>2.11.2</version>
       <type>jar</type>
       <classifier>tests</classifier>
       <scope>test</scope>

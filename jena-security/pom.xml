@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-security</artifactId>
-  <version>2.11.2-SNAPSHOT</version>
+  <version>2.11.2</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -34,7 +34,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>9-SNAPSHOT</version>
+    <version>9</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 	<organization>
@@ -42,9 +42,9 @@
     	<url>http://www.apache.org/</url>
 	</organization>
 	<scm>
-		<url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-security</url>
-		<connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-security</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-security</developerConnection>
+		<url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2/jena-security</url>
+		<connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2/jena-security</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2/jena-security</developerConnection>
 	</scm>
 	<issueManagement>
 		<url>http://issues.apache.org/jira/browse/JENA</url>
