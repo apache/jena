@@ -129,14 +129,21 @@ URIs as hrefs in results : Bob DuCharme & Andy Seaborne
     <xsl:text>&gt;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="res:literal[@datatype]">
-	<!-- datatyped literal value -->
-    "<xsl:value-of select="."/>"^^&lt;<xsl:value-of select="@datatype"/>&gt;
-  </xsl:template>
+  <xsl:template match="res:literal">
+    <xsl:text>"</xsl:text>
+    <xsl:value-of select="text()"/>
+    <xsl:text>"</xsl:text>
 
-  <xsl:template match="res:literal[@lang]">
-	<!-- datatyped literal value -->
-    "<xsl:value-of select="."/>"<xsl:value-of select="@xml:lang"/>
+    <xsl:choose>
+      <xsl:when test="@datatype">
+        <!-- datatyped literal value -->
+        ^^&lt;<xsl:value-of select="@datatype"/>&gt;
+      </xsl:when>
+      <xsl:when test="@xml:lang">
+        <!-- lang-string -->
+        @<xsl:value-of select="@xml:lang"/>
+      </xsl:when>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="res:sparql">
