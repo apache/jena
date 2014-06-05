@@ -73,7 +73,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * Factory that can produce {@link Job} instances for computing various RDF
  * statistics
  * 
- * @author rvesse
+ * 
  * 
  */
 public class JobFactory {
