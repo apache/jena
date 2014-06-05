@@ -30,7 +30,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Abstract compressed whole file NTriples input tests
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractCompressedWholeFileNTriplesInputFormatTests extends

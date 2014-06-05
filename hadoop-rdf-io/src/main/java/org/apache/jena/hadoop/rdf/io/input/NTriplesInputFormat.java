@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 /**
  * NTriples input format
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NTriplesInputFormat extends AbstractNLineFileInputFormat<LongWritable, TripleWritable> {

@@ -29,7 +29,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 /**
  * Abstract compressed NTriples input tests
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractCompressedNTriplesInputFormatTests extends AbstractCompressedTriplesInputFormatTests {

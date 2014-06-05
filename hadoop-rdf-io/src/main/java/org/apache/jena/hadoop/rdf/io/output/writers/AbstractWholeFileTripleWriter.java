@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.graph.GraphFactory;
 /**
  * An abstract record writer for whole file triple formats
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

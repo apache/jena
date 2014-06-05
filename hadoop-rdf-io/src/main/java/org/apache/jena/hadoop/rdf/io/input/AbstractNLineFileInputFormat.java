@@ -32,7 +32,7 @@ import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
  * Abstract line based input format that reuses the machinery from
  * {@link NLineInputFormat} to calculate the splits
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

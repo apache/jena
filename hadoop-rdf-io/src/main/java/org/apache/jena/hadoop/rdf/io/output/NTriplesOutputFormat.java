@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * NTriples output format
  * 
- * @author rvesse
+ * 
  * @param <TKey> 
  * 
  */

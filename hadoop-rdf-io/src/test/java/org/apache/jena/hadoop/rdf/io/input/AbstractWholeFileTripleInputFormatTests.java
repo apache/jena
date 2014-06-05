@@ -34,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /**
  * Abstract tests for Triple input formats
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractWholeFileTripleInputFormatTests extends AbstractNodeTupleInputFormatTests<Triple, TripleWritable> {

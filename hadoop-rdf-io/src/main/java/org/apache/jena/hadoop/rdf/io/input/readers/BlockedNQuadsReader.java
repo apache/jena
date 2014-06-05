@@ -31,7 +31,7 @@ import org.apache.jena.riot.Lang;
  * input files over multiple mappers.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BlockedNQuadsReader extends AbstractBlockBasedQuadReader {

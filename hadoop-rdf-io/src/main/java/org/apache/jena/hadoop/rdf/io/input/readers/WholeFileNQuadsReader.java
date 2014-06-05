@@ -28,7 +28,7 @@ import org.apache.jena.riot.Lang;
  * the disadvantage that the input cannot be split between multiple mappers.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  */
 public class WholeFileNQuadsReader extends AbstractWholeFileQuadReader {

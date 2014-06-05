@@ -21,7 +21,7 @@ package org.apache.jena.hadoop.rdf.io;
 /**
  * Hadoop IO related constants
  * 
- * @author rvesse
+ * 
  * 
  */
 public class HadoopIOConstants {

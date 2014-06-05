@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * it is the value portion that is used to convey the node tuples
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  * @param <TValue>

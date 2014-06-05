@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * NQuads output format
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

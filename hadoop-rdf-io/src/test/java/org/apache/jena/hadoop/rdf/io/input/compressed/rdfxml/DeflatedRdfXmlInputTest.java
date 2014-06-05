@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.DefaultCodec;
 /**
  * Tests for Deflated RDF/XML input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class DeflatedRdfXmlInputTest extends AbstractCompressedRdfXmlInputFormatTests {

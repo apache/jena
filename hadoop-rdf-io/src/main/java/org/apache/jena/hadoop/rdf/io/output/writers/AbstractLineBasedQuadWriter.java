@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * An abstract writer for line based quad formats
  * 
- * @author rvesse
+ * 
  * @param <TKey>
  * 
  */

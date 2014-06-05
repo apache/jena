@@ -28,7 +28,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Tests for RDF/JSON output
  * 
- * @author rvesse
+ * 
  * 
  */
 public class RdfJsonOutputTest extends AbstractTripleOutputFormatTests {

@@ -27,7 +27,7 @@ import org.apache.jena.riot.Lang;
 
 /**
  * Tests for blocked NTriples input
- * @author rvesse
+ * 
  *
  */
 public class BlockedNTriplesInputTest extends AbstractBlockedTripleInputFormatTests {

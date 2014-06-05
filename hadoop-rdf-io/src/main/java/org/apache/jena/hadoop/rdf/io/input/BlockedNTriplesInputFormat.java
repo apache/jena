@@ -38,7 +38,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
  * mappers.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BlockedNTriplesInputFormat extends AbstractNLineFileInputFormat<LongWritable, TripleWritable> {

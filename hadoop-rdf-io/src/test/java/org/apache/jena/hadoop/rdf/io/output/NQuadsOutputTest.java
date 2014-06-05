@@ -28,7 +28,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Tests for NQuads output format
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NQuadsOutputTest extends AbstractQuadOutputFormatTests {

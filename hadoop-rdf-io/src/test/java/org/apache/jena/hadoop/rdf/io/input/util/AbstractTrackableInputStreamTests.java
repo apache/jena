@@ -30,7 +30,7 @@ import org.junit.Test;
 /**
  * Abstract tests for {@link TrackableInputStream} implementations
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractTrackableInputStreamTests {

@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Abstract batched record writer for quad formats
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

@@ -34,7 +34,7 @@ import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 
 
 /**
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  * @param <T>

@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Triple;
  * produce invalid data where blank nodes span batches so it is typically better
  * to use the {@link TurtleOutputFormat} instead
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

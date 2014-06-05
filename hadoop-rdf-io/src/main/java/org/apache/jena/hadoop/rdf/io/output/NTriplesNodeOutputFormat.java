@@ -29,7 +29,7 @@ import org.apache.jena.hadoop.rdf.types.NodeWritable;
 /**
  * NTriples based node output format
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  *            Value type

@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Abstract tests for Quad input formats
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractCompressedQuadsInputFormatTests extends

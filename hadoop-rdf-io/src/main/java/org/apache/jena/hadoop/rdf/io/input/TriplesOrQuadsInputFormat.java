@@ -33,7 +33,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
  * supports selecting the format to use for each file based upon the file
  * extension. Triples are converted into quads in the default graph.
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TriplesOrQuadsInputFormat extends AbstractWholeFileInputFormat<LongWritable, QuadWritable> {

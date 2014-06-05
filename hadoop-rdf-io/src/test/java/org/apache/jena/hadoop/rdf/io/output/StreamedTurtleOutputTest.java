@@ -36,7 +36,7 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * Tests for Turtle output
  * 
- * @author rvesse
+ * 
  * 
  */
 @RunWith(Parameterized.class)

@@ -30,7 +30,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Abstract compressed RDF/XML input tests
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractCompressedRdfXmlInputFormatTests extends

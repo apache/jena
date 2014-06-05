@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
  * Abstract output format for formats that use a
  * {@link AbstractBatchedNodeTupleWriter} as their writer
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

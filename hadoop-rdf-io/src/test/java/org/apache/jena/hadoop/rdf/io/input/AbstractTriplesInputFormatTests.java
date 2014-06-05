@@ -28,7 +28,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * Abstract tests for Triple input formats
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractTriplesInputFormatTests extends AbstractNodeTupleInputFormatTests<Triple, TripleWritable> {

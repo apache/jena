@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.graph.GraphFactory;
 /**
  * Abstract batched record writer for triple formats
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

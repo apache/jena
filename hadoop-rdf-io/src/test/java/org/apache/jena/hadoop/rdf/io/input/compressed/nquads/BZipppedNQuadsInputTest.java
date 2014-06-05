@@ -24,7 +24,7 @@ import org.apache.hadoop.io.compress.BZip2Codec;
 /**
  * Tests for BZipped NQuads input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BZipppedNQuadsInputTest extends AbstractCompressedNQuadsInputFormatTests {

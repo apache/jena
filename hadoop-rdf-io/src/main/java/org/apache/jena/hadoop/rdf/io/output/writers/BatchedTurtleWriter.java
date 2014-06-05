@@ -26,7 +26,7 @@ import org.apache.jena.riot.Lang;
  * A record writer for Turtle that uses the batched approach, note that this
  * approach will produce invalid data when blank nodes span batches
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

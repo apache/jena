@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  * position and thus key.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  *            Value type

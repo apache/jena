@@ -30,7 +30,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Abstract compressed Turtle input tests
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractCompressedTriGInputFormatTests extends

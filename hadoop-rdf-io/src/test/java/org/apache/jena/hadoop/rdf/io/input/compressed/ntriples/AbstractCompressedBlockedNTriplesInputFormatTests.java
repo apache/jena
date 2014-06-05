@@ -28,7 +28,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 /**
  * Abstract compressed blocked NTriples input tests
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractCompressedBlockedNTriplesInputFormatTests extends

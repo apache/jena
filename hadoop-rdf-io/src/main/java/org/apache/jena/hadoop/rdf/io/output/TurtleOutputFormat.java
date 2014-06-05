@@ -32,7 +32,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * Turtle output format
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

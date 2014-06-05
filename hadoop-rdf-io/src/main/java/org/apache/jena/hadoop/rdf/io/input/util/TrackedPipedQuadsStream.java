@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * A tracked piped quads stream
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TrackedPipedQuadsStream extends TrackedPipedRDFStream<Quad> {

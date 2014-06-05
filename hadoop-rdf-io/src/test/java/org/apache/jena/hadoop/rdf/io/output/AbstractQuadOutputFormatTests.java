@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Abstract tests for quad output formats
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractQuadOutputFormatTests extends AbstractNodeTupleOutputFormatTests<Quad, QuadWritable> {

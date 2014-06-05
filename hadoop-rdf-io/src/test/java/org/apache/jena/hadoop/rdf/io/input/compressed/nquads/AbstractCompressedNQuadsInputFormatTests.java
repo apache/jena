@@ -29,7 +29,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
 /**
  * Abstract compressed NTriples input tests
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractCompressedNQuadsInputFormatTests extends AbstractCompressedQuadsInputFormatTests {

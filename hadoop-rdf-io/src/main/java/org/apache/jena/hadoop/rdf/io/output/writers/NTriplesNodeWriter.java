@@ -26,7 +26,7 @@ import org.apache.jena.riot.out.NodeFormatterNT;
 /**
  * A NTriples based node writer
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  *            Value type

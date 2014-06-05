@@ -28,7 +28,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Tests for RDF/JSON input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class RdfJsonInputTest extends AbstractWholeFileTripleInputFormatTests {

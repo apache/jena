@@ -30,7 +30,7 @@ import java.io.InputStream;
  * the appropriate start point
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  */
 public final class BlockInputStream extends TrackedInputStream {

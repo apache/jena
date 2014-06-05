@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.DefaultCodec;
 /**
  * Tests for Deflated TriG input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class DeflatedTriGInputTest extends AbstractCompressedTriGInputFormatTests {

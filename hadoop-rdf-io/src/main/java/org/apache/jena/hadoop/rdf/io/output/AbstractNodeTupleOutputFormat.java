@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * An abstract implementation of an output format for line based tuple formats
  * where the key is ignored and only the tuple values will be output
  * 
- * @author rvesse
+ * 
  * @param <TKey>
  *            Key type
  * @param <TValue>

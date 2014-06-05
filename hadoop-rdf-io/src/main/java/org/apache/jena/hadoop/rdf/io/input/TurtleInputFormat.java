@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 /**
  * Turtle input format
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TurtleInputFormat extends AbstractWholeFileInputFormat<LongWritable, TripleWritable> {

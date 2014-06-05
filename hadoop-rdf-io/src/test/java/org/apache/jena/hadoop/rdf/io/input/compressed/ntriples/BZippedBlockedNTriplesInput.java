@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.BZip2Codec;
 /**
  * Tests for BZipped blocked NTriples input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BZippedBlockedNTriplesInput extends AbstractCompressedBlockedNTriplesInputFormatTests {

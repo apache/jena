@@ -25,7 +25,7 @@ import org.apache.jena.riot.Lang;
 /**
  * A record writer for RDF/XML
  * 
- * @author rvesse
+ * 
  * @param <TKey>
  *            Key type
  * 

@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.GzipCodec;
 /**
  * Tests for GZipped RDF/XML input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class GZippedRdfXmlInputTest extends AbstractCompressedRdfXmlInputFormatTests {

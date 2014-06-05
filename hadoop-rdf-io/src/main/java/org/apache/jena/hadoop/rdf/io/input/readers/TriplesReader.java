@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Triple;
 
 /**
  * A record reader that reads triples from any RDF triples format
- * @author rvesse
+ * 
  *
  */
 public class TriplesReader extends AbstractRdfReader<Triple, TripleWritable> {

@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * selecting the actual record reader to use based on detecting the RDF language
  * from the file name
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  *            Tuple type

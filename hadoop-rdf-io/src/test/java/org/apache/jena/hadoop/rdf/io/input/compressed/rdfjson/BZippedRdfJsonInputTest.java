@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.BZip2Codec;
 /**
  * Tests for BZipped RDF/JSON input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BZippedRdfJsonInputTest extends AbstractCompressedRdfJsonInputFormatTests {

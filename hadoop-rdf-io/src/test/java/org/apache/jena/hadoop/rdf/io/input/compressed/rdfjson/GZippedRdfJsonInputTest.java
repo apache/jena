@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.GzipCodec;
 /**
  * Tests for GZipped RDF/JSON input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class GZippedRdfJsonInputTest extends AbstractCompressedRdfJsonInputFormatTests {

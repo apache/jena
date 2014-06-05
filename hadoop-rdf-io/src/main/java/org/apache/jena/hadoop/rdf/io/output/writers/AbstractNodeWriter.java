@@ -38,7 +38,7 @@ import com.hp.hpl.jena.graph.Node;
  * Abstract implementation of a record writer which writes pairs of nodes and
  * arbitrary values to text based files
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  */

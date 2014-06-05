@@ -23,7 +23,7 @@ import org.apache.jena.riot.Lang;
 /**
  * A record reader for TriG files
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TriGReader extends AbstractWholeFileQuadReader {

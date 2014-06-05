@@ -48,7 +48,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Tests for TriG output with blank nodes
  * 
- * @author rvesse
+ * 
  * 
  */
 @RunWith(Parameterized.class)

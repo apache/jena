@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * An abstract record reader for whole file triple formats
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractBlockBasedQuadReader extends AbstractBlockBasedNodeTupleReader<Quad, QuadWritable> {

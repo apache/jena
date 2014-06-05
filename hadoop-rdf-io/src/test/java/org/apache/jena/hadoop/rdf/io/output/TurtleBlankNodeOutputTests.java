@@ -49,7 +49,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /**
  * Tests for Turtle output with blank nodes
  * 
- * @author rvesse
+ * 
  * 
  */
 @RunWith(Parameterized.class)

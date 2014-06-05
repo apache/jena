@@ -27,7 +27,7 @@ import org.apache.jena.riot.lang.PipedRDFStream;
 /**
  * A tracked piped RDF stream
  * 
- * @author rvesse
+ * 
  * 
  * @param <T>
  *            Type corresponding to a supported RDF primitive

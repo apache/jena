@@ -28,7 +28,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Tests for turtle input format
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TurtleInputTest extends AbstractWholeFileTripleInputFormatTests {

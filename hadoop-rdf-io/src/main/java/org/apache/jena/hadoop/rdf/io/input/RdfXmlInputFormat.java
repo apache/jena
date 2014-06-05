@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 /**
  * RDF/XML input format
  * 
- * @author rvesse
+ * 
  * 
  */
 public class RdfXmlInputFormat extends AbstractWholeFileInputFormat<LongWritable, TripleWritable> {

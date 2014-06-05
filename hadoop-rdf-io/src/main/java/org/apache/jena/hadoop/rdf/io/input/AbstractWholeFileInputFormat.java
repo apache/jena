@@ -26,7 +26,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
  * Abstract implementation of a while file input format where each file is a
  * single split
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

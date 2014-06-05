@@ -27,7 +27,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 /**
  * Tests for the {@link NTriplesInputFormat}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NTriplesInputTest extends AbstractTriplesInputFormatTests {

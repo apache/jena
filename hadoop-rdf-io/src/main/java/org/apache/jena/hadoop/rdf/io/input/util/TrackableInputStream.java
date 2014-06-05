@@ -23,7 +23,7 @@ import java.io.InputStream;
 /**
  * An input stream that tracks the number of bytes read
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class TrackableInputStream extends InputStream {

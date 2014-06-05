@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract node tuple output format tests
  * 
- * @author rvesse
+ * 
  * @param <TValue>
  *            Tuple type
  * @param <T>

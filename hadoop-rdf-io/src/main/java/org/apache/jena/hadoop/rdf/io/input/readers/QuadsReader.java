@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * A record reader that reads triples from any RDF quads format
  * 
- * @author rvesse
+ * 
  * 
  */
 public class QuadsReader extends AbstractRdfReader<Quad, QuadWritable> {

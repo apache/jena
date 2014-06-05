@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.GzipCodec;
 /**
  * Tests for GZipped TriG input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class GZippedTriGInputTest extends AbstractCompressedTriGInputFormatTests {

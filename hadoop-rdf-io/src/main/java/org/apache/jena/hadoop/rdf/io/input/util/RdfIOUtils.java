@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 /**
  * RDF IO utility functions
  * 
- * @author rvesse
+ * 
  * 
  */
 public class RdfIOUtils {

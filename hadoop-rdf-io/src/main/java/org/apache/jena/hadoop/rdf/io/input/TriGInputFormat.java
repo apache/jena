@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
 /**
  * Input format for TriG
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TriGInputFormat extends AbstractWholeFileInputFormat<LongWritable, QuadWritable> {

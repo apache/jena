@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * converted into quads in the default graph. This behaviour can be changed by
  * deriving from this class and overriding the {@link #getGraphNode()} method
  * 
- * @author rvesse
+ * 
  * 
  */
 @SuppressWarnings("javadoc")

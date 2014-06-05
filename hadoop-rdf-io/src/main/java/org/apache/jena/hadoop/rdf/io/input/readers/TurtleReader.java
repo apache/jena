@@ -23,7 +23,7 @@ import org.apache.jena.riot.Lang;
 /**
  * A record reader for Turtle files
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TurtleReader extends AbstractWholeFileTripleReader {

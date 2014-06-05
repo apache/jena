@@ -38,7 +38,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
  * mappers.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BlockedNQuadsInputFormat extends AbstractNLineFileInputFormat<LongWritable, QuadWritable> {

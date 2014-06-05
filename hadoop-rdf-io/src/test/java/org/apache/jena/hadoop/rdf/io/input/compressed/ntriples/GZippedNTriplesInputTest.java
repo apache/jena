@@ -26,7 +26,7 @@ import org.apache.hadoop.io.compress.GzipCodec;
 /**
  * Tests for GZipped NTriples input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class GZippedNTriplesInputTest extends AbstractCompressedNTriplesInputFormatTests {

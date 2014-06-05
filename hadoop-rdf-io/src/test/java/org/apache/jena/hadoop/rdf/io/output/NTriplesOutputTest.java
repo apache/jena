@@ -28,7 +28,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Tests for NTriples output format
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NTriplesOutputTest extends AbstractTripleOutputFormatTests {

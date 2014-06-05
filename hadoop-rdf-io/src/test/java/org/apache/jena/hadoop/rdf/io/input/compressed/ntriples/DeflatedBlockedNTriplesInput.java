@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.DefaultCodec;
 /**
  * Tests for deflated blocked NTriples input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class DeflatedBlockedNTriplesInput extends AbstractCompressedBlockedNTriplesInputFormatTests {

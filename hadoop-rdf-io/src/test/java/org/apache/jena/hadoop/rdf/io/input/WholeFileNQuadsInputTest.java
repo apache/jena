@@ -28,7 +28,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Tests for NQuads input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class WholeFileNQuadsInputTest extends AbstractWholeFileQuadInputFormatTests {

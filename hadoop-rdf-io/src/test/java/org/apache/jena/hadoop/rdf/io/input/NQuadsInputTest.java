@@ -26,7 +26,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
 /**
  * Tests for the NQuads input format
- * @author rvesse
+ * 
  *
  */
 public class NQuadsInputTest extends AbstractQuadsInputFormatTests {

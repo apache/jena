@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * Abstract output format which takes pairs with Node keys and arbitrary values
  * and writes them as a simple line based text file
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue> Value type
  */

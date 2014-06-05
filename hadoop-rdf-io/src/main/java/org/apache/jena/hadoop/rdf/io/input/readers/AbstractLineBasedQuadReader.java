@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * An abstract reader for line based quad formats
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractLineBasedQuadReader extends AbstractLineBasedNodeTupleReader<Quad, QuadWritable> {

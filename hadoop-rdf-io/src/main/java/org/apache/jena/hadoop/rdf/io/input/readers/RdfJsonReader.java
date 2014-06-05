@@ -23,7 +23,7 @@ import org.apache.jena.riot.Lang;
 /**
  * A record reader for RDF/JSON files
  * 
- * @author rvesse
+ * 
  * 
  */
 public class RdfJsonReader extends AbstractWholeFileTripleReader {

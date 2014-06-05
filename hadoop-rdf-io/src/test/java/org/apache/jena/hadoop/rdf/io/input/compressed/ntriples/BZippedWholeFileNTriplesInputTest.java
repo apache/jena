@@ -24,7 +24,7 @@ import org.apache.hadoop.io.compress.BZip2Codec;
 /**
  * Tests for BZipped NTriples input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BZippedWholeFileNTriplesInputTest extends AbstractCompressedWholeFileNTriplesInputFormatTests {

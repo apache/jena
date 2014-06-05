@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Output format for TriG
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

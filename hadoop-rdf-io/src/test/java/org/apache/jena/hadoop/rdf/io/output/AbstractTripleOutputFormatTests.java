@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Abstract tests for triple output formats
- * @author rvesse
+ * 
  *
  */
 public abstract class AbstractTripleOutputFormatTests extends AbstractNodeTupleOutputFormatTests<Triple, TripleWritable> {

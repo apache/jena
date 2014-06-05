@@ -26,7 +26,7 @@ import org.apache.jena.riot.out.NodeFormatterNT;
 /**
  * A record writer for NTriples
  * 
- * @author rvesse
+ * 
  * @param <TKey>
  *            Key type
  * 

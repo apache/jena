@@ -26,7 +26,7 @@ import org.apache.jena.hadoop.rdf.io.input.util.TrackedInputStream;
 /**
  * Tests for the {@link TrackedInputStream}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TrackedInputStreamTest extends AbstractTrackableInputStreamTests {

@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.GzipCodec;
 /**
  * Tests for GZipped NQuads input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class GZippedWholeFileNQuadsInputTest extends AbstractCompressedWholeFileNQuadsInputFormatTests {

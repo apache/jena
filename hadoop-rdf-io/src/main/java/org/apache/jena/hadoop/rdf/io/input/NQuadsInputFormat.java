@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
 /**
  * NQuads input format
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NQuadsInputFormat extends AbstractNLineFileInputFormat<LongWritable, QuadWritable> {

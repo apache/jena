@@ -11,7 +11,7 @@ import org.apache.jena.riot.system.StreamRDF;
  * Abstract output format for formats that use the RIOT {@link StreamRDF} API to
  * stream the writes
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

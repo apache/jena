@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * Tests for the {@link BlockInputStream}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BlockInputStreamTest extends AbstractTrackableInputStreamTests {

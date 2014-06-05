@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  * stream immediately after which the triple was found.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  *            Value type

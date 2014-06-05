@@ -28,7 +28,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * An abstract record reader for line based triple formats
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractLineBasedTripleReader extends AbstractLineBasedNodeTupleReader<Triple, TripleWritable> {

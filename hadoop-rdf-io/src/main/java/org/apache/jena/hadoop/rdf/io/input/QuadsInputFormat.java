@@ -32,7 +32,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
  * RDF input format that can handle any RDF quads format that ARQ supports
  * selecting the format to use for each file based upon the file extension
  * 
- * @author rvesse
+ * 
  * 
  */
 public class QuadsInputFormat extends AbstractWholeFileInputFormat<LongWritable, QuadWritable> {

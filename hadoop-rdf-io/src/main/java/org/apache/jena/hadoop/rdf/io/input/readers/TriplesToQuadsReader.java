@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * A record reader that converts triples into quads by wrapping a
  * {@code RecordReader<LongWritable, TripleWritable>} implementation
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TriplesToQuadsReader extends RecordReader<LongWritable, QuadWritable> {

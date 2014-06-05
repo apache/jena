@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * RDF IO related constants
  * 
- * @author rvesse
+ * 
  * 
  */
 public class RdfIOConstants {

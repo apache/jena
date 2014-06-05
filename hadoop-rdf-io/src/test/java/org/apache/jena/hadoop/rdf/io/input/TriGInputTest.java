@@ -27,7 +27,7 @@ import org.apache.jena.riot.Lang;
 
 /**
  * Tests for TriG input
- * @author rvesse
+ * 
  *
  */
 public class TriGInputTest extends AbstractWholeFileQuadInputFormatTests {

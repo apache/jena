@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.BZip2Codec;
 /**
  * Tests for BZipped TriG input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BZippedTriGInputTest extends AbstractCompressedTriGInputFormatTests {

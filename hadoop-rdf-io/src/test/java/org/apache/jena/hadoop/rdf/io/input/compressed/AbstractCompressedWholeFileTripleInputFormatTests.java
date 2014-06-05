@@ -43,7 +43,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /**
  * Abstract tests for compressed whole file triple formats
  * 
- * @author rvesse
+ * 
  */
 public abstract class AbstractCompressedWholeFileTripleInputFormatTests extends
         AbstractNodeTupleInputFormatTests<Triple, TripleWritable> {

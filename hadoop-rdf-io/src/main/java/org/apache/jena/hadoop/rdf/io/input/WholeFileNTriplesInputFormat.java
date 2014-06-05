@@ -36,7 +36,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
  * that the input cannot be split over multiple mappers.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  */
 public class WholeFileNTriplesInputFormat extends AbstractWholeFileInputFormat<LongWritable, TripleWritable> {

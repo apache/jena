@@ -29,7 +29,7 @@ import org.apache.jena.riot.Lang;
 /**
  * Tests for the {@link NTriplesInputFormat}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class WholeFileNTriplesInputTest extends AbstractWholeFileTripleInputFormatTests {

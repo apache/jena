@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.DefaultCodec;
 /**
  * Tests for deflated NQuads input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class DeflatedNQuadsInputTest extends AbstractCompressedNQuadsInputFormatTests {

@@ -21,7 +21,7 @@ package org.apache.jena.hadoop.rdf.io.input;
 /**
  * Abstract tests for blocked triple input formats
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractBlockedTripleInputFormatTests extends AbstractWholeFileTripleInputFormatTests {

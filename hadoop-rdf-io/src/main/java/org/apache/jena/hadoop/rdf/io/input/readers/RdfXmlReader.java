@@ -23,7 +23,7 @@ import org.apache.jena.riot.Lang;
 /**
  * A record reader for RDF/XML files
  * 
- * @author rvesse
+ * 
  * 
  */
 public class RdfXmlReader extends AbstractWholeFileTripleReader {

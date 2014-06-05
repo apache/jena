@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * RDF/JSON output format
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

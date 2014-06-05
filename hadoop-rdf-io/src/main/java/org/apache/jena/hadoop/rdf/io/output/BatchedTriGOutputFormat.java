@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * produce invalid data where blank nodes span batches so it is typically better
  * to use the {@link TriGOutputFormat} instead
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

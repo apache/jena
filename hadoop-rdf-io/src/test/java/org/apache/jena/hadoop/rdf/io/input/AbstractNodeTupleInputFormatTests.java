@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract node tuple input format tests
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  * @param <T>

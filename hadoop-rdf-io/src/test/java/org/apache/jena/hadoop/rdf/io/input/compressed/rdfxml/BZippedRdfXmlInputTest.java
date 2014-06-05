@@ -23,7 +23,7 @@ import org.apache.hadoop.io.compress.BZip2Codec;
 /**
  * Tests for BZipped RDF/XML input
  * 
- * @author rvesse
+ * 
  * 
  */
 public class BZippedRdfXmlInputTest extends AbstractCompressedRdfXmlInputFormatTests {

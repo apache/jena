@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * A record reader for NTriples
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NTriplesReader extends AbstractLineBasedTripleReader {

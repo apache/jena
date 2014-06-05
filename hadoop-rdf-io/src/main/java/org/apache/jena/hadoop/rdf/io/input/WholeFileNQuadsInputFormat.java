@@ -36,7 +36,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
  * that the input cannot be split over multiple mappers.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  */
 public class WholeFileNQuadsInputFormat extends AbstractWholeFileInputFormat<LongWritable, QuadWritable> {

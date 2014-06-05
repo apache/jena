@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
 
 /**
  * A test mapper which takes in line based RDF triple input and just produces triples
- * @author rvesse
+ * 
  *
  */
 public class RdfTriplesInputTestMapper extends Mapper<LongWritable, TripleWritable, NullWritable, TripleWritable> {

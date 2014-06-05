@@ -25,7 +25,7 @@ import java.io.InputStream;
  * A tracked input stream which can is a wrapper around another input stream and
  * can report the number of bytes read
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TrackedInputStream extends TrackableInputStream {

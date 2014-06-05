@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * will be node tuples
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  * @param <T>

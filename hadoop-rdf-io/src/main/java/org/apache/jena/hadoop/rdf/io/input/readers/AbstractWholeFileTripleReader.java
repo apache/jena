@@ -29,7 +29,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * An abstract record reader for whole file triple formats
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractWholeFileTripleReader extends AbstractWholeFileNodeTupleReader<Triple, TripleWritable> {

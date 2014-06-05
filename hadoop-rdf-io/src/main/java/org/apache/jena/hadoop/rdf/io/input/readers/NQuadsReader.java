@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * A record reader for NQuads
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NQuadsReader extends AbstractLineBasedQuadReader {
