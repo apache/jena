@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
  * A abstract general purpose writable where the actual class represented is
  * composed of a number of {@link Node} instances
  * 
- * @author rvesse
+ * 
  * 
  * @param <T>
  */

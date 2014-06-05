@@ -37,7 +37,7 @@ import com.hp.hpl.jena.graph.NodeFactory;
  * Tests for {@link CharacteristicWritable} and
  * {@link CharacteristicSetWritable}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class CharacteristicTests {

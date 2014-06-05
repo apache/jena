@@ -27,7 +27,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * A writable triple
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TripleWritable extends AbstractNodeTupleWritable<Triple> {

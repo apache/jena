@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * A writable quad
  * 
- * @author rvesse
+ * 
  * 
  */
 public class QuadWritable extends AbstractNodeTupleWritable<Quad> {

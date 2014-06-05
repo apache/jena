@@ -47,7 +47,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * Tests for the various RDF types defined by the
  * {@link org.apache.jena.hadoop.rdf.types} package
  * 
- * @author rvesse
+ * 
  * 
  */
 public class RdfTypesTest {

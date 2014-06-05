@@ -47,7 +47,7 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
 /**
  * A writable for {@link Node} instances
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NodeWritable implements WritableComparable<NodeWritable> {

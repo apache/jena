@@ -27,7 +27,7 @@ import org.apache.hadoop.io.WritableUtils;
 /**
  * A comparator for nodes that provides an efficient binary comparison
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NodeComparator extends WritableComparator {

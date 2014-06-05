@@ -35,7 +35,7 @@ import com.hp.hpl.jena.graph.Node;
  * their counts
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  */
 public class CharacteristicWritable implements WritableComparable<CharacteristicWritable> {

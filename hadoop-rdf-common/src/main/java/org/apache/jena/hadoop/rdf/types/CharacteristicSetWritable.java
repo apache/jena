@@ -37,7 +37,7 @@ import com.hp.hpl.jena.graph.NodeFactory;
  * which the characteristic is applicable and a set of characteristics which
  * represents the number of usages of predicates with those nodes
  * 
- * @author rvesse
+ * 
  * 
  */
 public class CharacteristicSetWritable implements WritableComparable<CharacteristicSetWritable> {

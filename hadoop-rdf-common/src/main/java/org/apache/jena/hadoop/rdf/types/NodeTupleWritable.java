@@ -32,7 +32,7 @@ import com.hp.hpl.jena.graph.Node;
  * being of uniform size.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NodeTupleWritable extends AbstractNodeTupleWritable<Tuple<Node>> {
