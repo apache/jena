@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.NodeFactory;
 /**
  * A quad filter which selects quads which have matching subjects
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

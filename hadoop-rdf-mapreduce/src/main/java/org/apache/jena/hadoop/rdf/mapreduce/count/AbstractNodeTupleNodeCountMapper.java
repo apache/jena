@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.NodeWritable;
  * node keys with a long value of 1. Can be used in conjunction with a
  * {@link NodeCountReducer} to count the usages of each unique node.
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

@@ -28,7 +28,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 /**
  * Tests for the {@link TripleGroupByObjectMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TripleGroupByObjectMapperTest extends AbstractTripleGroupingTests {

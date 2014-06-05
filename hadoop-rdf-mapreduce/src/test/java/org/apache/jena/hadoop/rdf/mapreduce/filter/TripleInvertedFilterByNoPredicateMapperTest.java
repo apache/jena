@@ -24,7 +24,7 @@ import org.apache.jena.hadoop.rdf.mapreduce.filter.positional.TripleFilterByPred
  * Tests for the {@link TripleFilterByPredicateUriMapper} where there are no
  * predicates and thus all data must be invalid
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TripleInvertedFilterByNoPredicateMapperTest extends TripleInvertedFilterByPredicateMapperTest {

@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * Keys are left as is by this mapper.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

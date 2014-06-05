@@ -35,7 +35,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * Tests for the {@link TripleCharacteristicSetGeneratingReducer}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TripleCharacteristicSetGeneratingReducerTest extends AbstractCharacteristicSetGeneratingReducerTests<Triple, TripleWritable> {

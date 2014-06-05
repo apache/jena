@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * compression
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  *            Tuple type

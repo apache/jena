@@ -38,7 +38,7 @@ import com.hp.hpl.jena.graph.NodeFactory;
 /**
  * Abstract tests for the {@link CharacteristicSetReducer}
  * 
- * @author rvesse
+ * 
  */
 public class CharacteristicSetReducerTest
         extends

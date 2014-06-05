@@ -33,7 +33,7 @@ import org.junit.Test;
  * Abstract tests for mappers derived from
  * {@link AbstractNodeTupleNodeCountMapper}
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  *            Tuple type

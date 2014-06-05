@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.NodeWritable;
  * implementations of this may select the key based on some component of the
  * tuple or by other custom logic.
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

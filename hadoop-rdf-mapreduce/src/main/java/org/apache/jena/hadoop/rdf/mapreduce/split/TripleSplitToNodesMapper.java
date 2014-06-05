@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * A mapper which splits triples into their constituent nodes
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey> Key type
  */

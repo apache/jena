@@ -30,7 +30,7 @@ import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
  * input, derived implementations provide an implementation of the
  * {@link #accepts(TKey, T)}
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

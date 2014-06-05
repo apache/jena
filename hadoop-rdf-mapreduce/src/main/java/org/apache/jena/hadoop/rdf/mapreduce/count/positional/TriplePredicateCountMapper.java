@@ -28,7 +28,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
  * A mapper for counting predicate node usages within triples designed primarily
  * for use in conjunction with {@link NodeCountReducer}
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

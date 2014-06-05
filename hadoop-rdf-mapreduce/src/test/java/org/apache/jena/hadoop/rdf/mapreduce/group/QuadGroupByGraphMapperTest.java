@@ -28,7 +28,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
 /**
  * Tests for the {@link QuadGroupByGraphMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class QuadGroupByGraphMapperTest extends AbstractQuadGroupingTests {

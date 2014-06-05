@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * Tests for the {@link TripleNodeCountMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TripleNodeCountMapperTest extends AbstractNodeTupleNodeCountTests<Triple, TripleWritable> {

@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * implementations of this may select the key based on some component of the
  * quad or by other custom logic.
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

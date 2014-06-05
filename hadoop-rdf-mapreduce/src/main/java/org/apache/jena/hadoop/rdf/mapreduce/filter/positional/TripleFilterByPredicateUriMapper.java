@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.NodeFactory;
 /**
  * A triple filter which selects triples which have matching predicates
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

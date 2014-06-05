@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * A mapper which assists in grouping quads by subject by reassigning their keys
  * to be their subjects
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

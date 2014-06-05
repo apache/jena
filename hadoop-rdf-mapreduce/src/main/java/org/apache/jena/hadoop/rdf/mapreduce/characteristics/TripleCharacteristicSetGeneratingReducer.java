@@ -27,7 +27,7 @@ import com.hp.hpl.jena.graph.Triple;
  * A reducer which converts triples grouped by some node into characteristic
  * sets
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TripleCharacteristicSetGeneratingReducer extends AbstractCharacteristicSetGeneratingReducer<Triple, TripleWritable> {

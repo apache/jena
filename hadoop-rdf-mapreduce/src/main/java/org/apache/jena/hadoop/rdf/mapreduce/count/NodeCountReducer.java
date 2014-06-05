@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.NodeWritable;
  * as the values and sums the counts together into pairs consisting of a node
  * key and a count value.
  * 
- * @author rvesse
+ * 
  * 
  */
 public class NodeCountReducer extends Reducer<NodeWritable, LongWritable, NodeWritable, LongWritable> {

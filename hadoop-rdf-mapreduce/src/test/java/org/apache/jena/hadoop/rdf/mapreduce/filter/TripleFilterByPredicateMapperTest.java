@@ -34,7 +34,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 /**
  * Tests for the {@link TripleFilterByPredicateUriMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TripleFilterByPredicateMapperTest extends AbstractNodeTupleFilterTests<Triple, TripleWritable> {

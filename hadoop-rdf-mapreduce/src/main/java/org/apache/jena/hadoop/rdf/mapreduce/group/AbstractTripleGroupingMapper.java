@@ -29,7 +29,7 @@ import com.hp.hpl.jena.graph.Triple;
  * implementations of this may select the key based on some component of the
  * triple or by other custom logic.
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Abstract tests for triple filter mappers that check triple validity
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractQuadValidityFilterTests extends AbstractNodeTupleFilterTests<Quad, QuadWritable> {

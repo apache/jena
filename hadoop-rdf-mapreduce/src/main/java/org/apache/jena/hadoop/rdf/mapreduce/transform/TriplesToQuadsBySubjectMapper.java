@@ -25,7 +25,7 @@ import com.hp.hpl.jena.graph.Triple;
  * A mapper which converts triples into quads using the subjects of the triples
  * as the graph nodes
  * 
- * @author rvesse
+ * 
  * @param <TKey>
  *            Key type
  * 

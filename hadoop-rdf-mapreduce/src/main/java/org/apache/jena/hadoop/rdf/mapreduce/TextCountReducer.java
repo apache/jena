@@ -30,7 +30,7 @@ import org.apache.hadoop.mapreduce.Reducer;
  * as the values and sums the counts together into pairs consisting of a node
  * key and a count value.
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TextCountReducer extends Reducer<Text, LongWritable, Text, LongWritable> {

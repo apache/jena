@@ -27,7 +27,7 @@ import com.hp.hpl.jena.graph.Triple;
  * A mapper for counting node usages within triples designed primarily for use
  * in conjunction with {@link NodeCountReducer}
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey> Key type
  */

@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Abstract tests for {@link AbstractQuadGroupingMapper} implementations
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractQuadGroupingTests extends AbstractNodeTupleGroupingTests<Quad, QuadWritable> {

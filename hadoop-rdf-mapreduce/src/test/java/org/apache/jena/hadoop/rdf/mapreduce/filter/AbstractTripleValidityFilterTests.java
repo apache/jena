@@ -27,7 +27,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * Abstract tests for triple filter mappers that check triple validity
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractTripleValidityFilterTests extends AbstractNodeTupleFilterTests<Triple, TripleWritable> {

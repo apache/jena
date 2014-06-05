@@ -36,7 +36,7 @@ import com.hp.hpl.jena.graph.NodeFactory;
 /**
  * Abstract tests for the {@link AbstractCharacteristicSetGeneratingReducer}
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  * @param <T>

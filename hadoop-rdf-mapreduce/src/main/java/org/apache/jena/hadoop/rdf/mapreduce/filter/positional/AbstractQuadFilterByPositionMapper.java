@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * {@link QuadFilterByPredicateMapper} for an example implementation.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

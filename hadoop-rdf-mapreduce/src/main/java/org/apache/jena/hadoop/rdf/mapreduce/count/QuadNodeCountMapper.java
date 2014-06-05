@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * A mapper for counting node usages within quads designed primarily for use in
  * conjunction with {@link NodeCountReducer}
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

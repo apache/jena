@@ -27,7 +27,7 @@ import com.hp.hpl.jena.graph.Triple;
 
 /**
  * Abstract tests for {@link AbstractTripleGroupingMapper} implementations
- * @author rvesse
+ * 
  *
  */
 public abstract class AbstractTripleGroupingTests extends AbstractNodeTupleGroupingTests<Triple, TripleWritable> {

@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * Abstract tests for {@link AbstractNodeTupleSplitToNodesMapper}
  * implementations that work on Quads
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractQuadSplitWithNodesTests extends AbstractNodeTupleSplitWithNodesTests<Quad, QuadWritable> {

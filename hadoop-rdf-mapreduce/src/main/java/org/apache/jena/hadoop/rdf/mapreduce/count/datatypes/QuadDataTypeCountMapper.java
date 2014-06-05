@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.NodeFactory;
  * them into nodes so they can be counted
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

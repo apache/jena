@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * <li>Object is a URI, Blank Node or Literal</li>
  * </ul>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

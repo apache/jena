@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * A mapper which splits quads into their constituent nodes preserving the
  * existing keys as-is
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

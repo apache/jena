@@ -29,7 +29,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 /**
  * Tests for the {@link TripleSplitToNodesMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TripleSplitWithNodesMapperTest extends AbstractTripleSplitWithNodesTests {

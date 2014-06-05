@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Triple;
  * <li>Object is a URI, Blank Node or Literal</li>
  * </ul>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

@@ -27,7 +27,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
 /**
  * Tests for the {@link ValidTripleFilterMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class ValidTripleFilterMapperTest extends AbstractTripleValidityFilterTests {

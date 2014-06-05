@@ -29,7 +29,7 @@ import org.apache.jena.hadoop.rdf.types.NodeWritable;
  * Abstract mapper implementation which splits the tuples into their constituent
  * nodes using the tuples as the keys and the nodes as the values
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

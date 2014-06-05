@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Triple;
  * Abstract tests for {@link AbstractNodeTupleSplitToNodesMapper}
  * implementations that work on Triples
  * 
- * @author rvesse
+ * 
  * 
  */
 public abstract class AbstractTripleSplitWithNodesTests extends AbstractNodeTupleSplitWithNodesTests<Triple, TripleWritable> {

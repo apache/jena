@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * A quad filter which accepts only ground quads i.e. those with no blank nodes
  * or variables
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

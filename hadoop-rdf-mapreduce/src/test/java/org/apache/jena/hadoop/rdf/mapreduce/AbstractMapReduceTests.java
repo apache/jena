@@ -25,7 +25,7 @@ import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
 /**
  * Abstract tests for mappers
  * 
- * @author rvesse
+ * 
  * @param <TKey>
  *            Mapper input key type
  * @param <TValue>

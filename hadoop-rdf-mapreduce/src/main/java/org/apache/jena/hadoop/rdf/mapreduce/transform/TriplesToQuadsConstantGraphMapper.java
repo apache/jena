@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * A mapper which converts triples to quads where all triples are placed in the
  * same graph
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

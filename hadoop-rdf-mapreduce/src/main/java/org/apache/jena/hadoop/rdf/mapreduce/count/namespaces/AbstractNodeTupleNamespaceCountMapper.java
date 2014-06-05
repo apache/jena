@@ -35,7 +35,7 @@ import com.hp.hpl.jena.graph.Node;
  * value of 1. Can be used in conjunction with a {@link TextCountReducer} to
  * count the usages of each unique namespace.
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  * @param <TValue>

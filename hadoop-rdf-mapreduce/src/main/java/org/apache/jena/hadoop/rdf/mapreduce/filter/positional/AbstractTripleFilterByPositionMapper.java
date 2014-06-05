@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.Triple;
  * {@link TripleFilterByPredicateUriMapper} for an example implementation.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

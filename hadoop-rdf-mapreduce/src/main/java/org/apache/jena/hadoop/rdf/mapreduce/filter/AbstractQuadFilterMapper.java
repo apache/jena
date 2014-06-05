@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Abstract mapper implementation for filtering quads
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

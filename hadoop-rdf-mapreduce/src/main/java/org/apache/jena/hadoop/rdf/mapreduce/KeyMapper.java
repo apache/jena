@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A mapper which discards the value replacing it with the key
- * @author rvesse
+ * 
  *
  * @param <TKey> Key type
  * @param <TValue> Value type

@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.Triple;
  * A mapper which assists in grouping triples by predicate by reassigning their
  * keys to be their predicates
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

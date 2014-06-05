@@ -32,7 +32,7 @@ import org.junit.Test;
  * Abstract tests for {@link AbstractNodeTupleFilterMapper} implementations
  * which filter based on the validity of tuples
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  *            Tuple type

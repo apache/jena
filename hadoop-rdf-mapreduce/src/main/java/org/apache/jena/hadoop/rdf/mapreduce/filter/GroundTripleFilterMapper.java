@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.Triple;
  * A triple filter which accepts only ground triples i.e. those with no blank
  * nodes or variables
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

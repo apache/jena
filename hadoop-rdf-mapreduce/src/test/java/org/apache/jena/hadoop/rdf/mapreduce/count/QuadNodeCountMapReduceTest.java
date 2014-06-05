@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * Tests for the {@link TripleNodeCountMapper} used in conjunction with the
  * {@link NodeCountReducer}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class QuadNodeCountMapReduceTest extends AbstractNodeTupleNodeCountReducedTests<Quad, QuadWritable> {

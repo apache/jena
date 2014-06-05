@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Reducer which takes in characteristic sets and sums up all their usage counts
  * 
- * @author rvesse
+ * 
  */
 public class CharacteristicSetReducer extends
         Reducer<CharacteristicSetWritable, CharacteristicSetWritable, CharacteristicSetWritable, NullWritable> {

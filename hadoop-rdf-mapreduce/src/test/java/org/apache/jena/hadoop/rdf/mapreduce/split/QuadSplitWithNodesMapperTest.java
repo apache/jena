@@ -28,7 +28,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
 /**
  * Tests for the {@link QuadSplitWithNodesMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class QuadSplitWithNodesMapperTest extends AbstractQuadSplitWithNodesTests {

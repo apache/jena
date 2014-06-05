@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Tests for the {@link TriplesToQuadsBySubjectMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class TriplesToQuadsBySubjectMapperTest extends AbstractMapperTests<LongWritable, TripleWritable, LongWritable, QuadWritable> {

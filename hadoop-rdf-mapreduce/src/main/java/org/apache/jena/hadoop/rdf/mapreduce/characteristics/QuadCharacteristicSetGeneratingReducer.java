@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * A reducer which converts quads grouped by some node into characteristic sets
  * 
- * @author rvesse
+ * 
  * 
  */
 public class QuadCharacteristicSetGeneratingReducer extends AbstractCharacteristicSetGeneratingReducer<Quad, QuadWritable> {

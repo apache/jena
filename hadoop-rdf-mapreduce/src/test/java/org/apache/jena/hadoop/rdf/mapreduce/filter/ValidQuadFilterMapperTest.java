@@ -27,7 +27,7 @@ import org.apache.jena.hadoop.rdf.types.QuadWritable;
 /**
  * Tests for the {@link ValidQuadFilterMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class ValidQuadFilterMapperTest extends AbstractQuadValidityFilterTests {

@@ -21,7 +21,7 @@ package org.apache.jena.hadoop.rdf.mapreduce;
 /**
  * RDF Map/Reduce related constants
  * 
- * @author rvesse
+ * 
  * 
  */
 public class RdfMapReduceConstants {

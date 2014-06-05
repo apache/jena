@@ -33,7 +33,7 @@ import org.junit.Test;
  * Abstract tests for {@link AbstractNodeTupleSplitToNodesMapper}
  * implementations
  * 
- * @author rvesse
+ * 
  * 
  * @param <TValue>
  *            Tuple type

@@ -28,7 +28,7 @@ import com.hp.hpl.jena.graph.Triple;
  * A mapper for counting namespace usages within triples designed primarily for
  * use in conjunction with the {@link TextCountReducer}
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  */

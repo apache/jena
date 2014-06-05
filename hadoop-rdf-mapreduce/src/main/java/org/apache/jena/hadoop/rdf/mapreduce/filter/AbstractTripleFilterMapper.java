@@ -25,7 +25,7 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * Abstract mapper implementation for filtering triples
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

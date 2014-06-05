@@ -31,7 +31,7 @@ import org.apache.jena.hadoop.rdf.types.TripleWritable;
  * Keys are left as is by this mapper.
  * </p>
  * 
- * @author rvesse
+ * 
  * 
  * @param <TKey>
  *            Key type

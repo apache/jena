@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 /**
  * Tests for the {@link QuadNodeCountMapper}
  * 
- * @author rvesse
+ * 
  * 
  */
 public class QuadNodeCountMapperTest extends AbstractNodeTupleNodeCountTests<Quad, QuadWritable> {
