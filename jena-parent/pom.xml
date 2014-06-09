@@ -15,7 +15,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.jena</groupId>
@@ -64,7 +66,7 @@
     <ver.solr>4.6.1</ver.solr>
     <ver.spatial4j>0.4</ver.spatial4j>
 
-    <jdk.version>1.6</jdk.version>
+    <jdk.version>1.7</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -75,175 +77,172 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-	<groupId>junit</groupId>
-	<artifactId>junit</artifactId>
-	<version>${ver.junit}</version>
-	<scope>test</scope>
-      </dependency>
-      
-      <dependency>
-	<groupId>xerces</groupId>
-	<artifactId>xercesImpl</artifactId>
-	<version>${ver.xerces}</version>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${ver.junit}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>
-	<groupId>org.apache.httpcomponents</groupId>
-	<artifactId>httpclient-cache</artifactId>
-	<version>${ver.httpclient}</version>
-	<exclusions>
-	  <!-- Replace with slf4j adapter -->
-	  <exclusion>
-	    <groupId>commons-logging</groupId>
-	    <artifactId>commons-logging</artifactId>
-	  </exclusion>
-	</exclusions>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>${ver.xerces}</version>
       </dependency>
 
       <dependency>
-	<groupId>org.apache.httpcomponents</groupId>
-	<artifactId>httpclient</artifactId>
-	<version>${ver.httpclient}</version>
-	<exclusions>
-	  <!-- Replace with slf4j adapter -->
-	  <exclusion>
-	    <groupId>commons-logging</groupId>
-	    <artifactId>commons-logging</artifactId>
-	  </exclusion>
-	</exclusions>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient-cache</artifactId>
+        <version>${ver.httpclient}</version>
+        <exclusions>
+          <!-- Replace with slf4j adapter -->
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
-	<groupId>commons-fileupload</groupId>
-	<artifactId>commons-fileupload</artifactId>
-	<version>${ver.commons-fileupload}</version>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${ver.httpclient}</version>
+        <exclusions>
+          <!-- Replace with slf4j adapter -->
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
-	<groupId>com.github.jsonld-java</groupId>
-	<artifactId>jsonld-java</artifactId>
-	<version>${ver.jsonldjava}</version>
-	<exclusions>
-	  <exclusion>
-	    <groupId>commons-logging</groupId>
-	    <artifactId>commons-logging</artifactId>
-	  </exclusion>
-	  <!-- Exclude so we use out chocie of versions -->
-	  <exclusion>
-	    <groupId>org.apache.httpcomponents</groupId>
-	    <artifactId>httpclient-cache</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.apache.httpcomponents</groupId>
-	    <artifactId>httpclient</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	  </exclusion>
-	</exclusions>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>${ver.commons-fileupload}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.jsonld-java</groupId>
+        <artifactId>jsonld-java</artifactId>
+        <version>${ver.jsonldjava}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <!-- Exclude so we use out chocie of versions -->
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-cache</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!-- Lucene dependencies -->
       <dependency>
-	<groupId>org.apache.lucene</groupId>
-	<artifactId>lucene-core</artifactId>
-	<version>${ver.lucene}</version>
-	<type>jar</type>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${ver.lucene}</version>
+        <type>jar</type>
       </dependency>
 
       <dependency>
-	<groupId>org.apache.lucene</groupId>
-	<artifactId>lucene-analyzers-common</artifactId>
-	<version>${ver.lucene}</version>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers-common</artifactId>
+        <version>${ver.lucene}</version>
       </dependency>
 
       <dependency>
-	<groupId>org.apache.lucene</groupId>
-	<artifactId>lucene-queryparser</artifactId>
-	<version>${ver.lucene}</version>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queryparser</artifactId>
+        <version>${ver.lucene}</version>
       </dependency>
 
       <!-- Solr client -->
-      <!-- Exclusion of slf4j: Necessary so as to pick the version
-	   we want. solrj->zookeeper has a dependency on slf4j
-      -->
+      <!-- Exclusion of slf4j: Necessary so as to pick the version we want. 
+        solrj->zookeeper has a dependency on slf4j -->
 
       <dependency>
-	<artifactId>solr-solrj</artifactId>
-	<groupId>org.apache.solr</groupId>
-	<version>${ver.solr}</version>
-	<exclusions>
-	  <exclusion>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-jdk14</artifactId>
-	</exclusion>
-	</exclusions>
+        <artifactId>solr-solrj</artifactId>
+        <groupId>org.apache.solr</groupId>
+        <version>${ver.solr}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!-- For jena-spatial -->
       <dependency>
-	<groupId>org.apache.lucene</groupId>
-	<artifactId>lucene-spatial</artifactId>
-	<version>${ver.lucene}</version>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-spatial</artifactId>
+        <version>${ver.lucene}</version>
       </dependency>
 
       <dependency>
-	<groupId>com.spatial4j</groupId>
-	<artifactId>spatial4j</artifactId>
-	<version>${ver.spatial4j}</version>
+        <groupId>com.spatial4j</groupId>
+        <artifactId>spatial4j</artifactId>
+        <version>${ver.spatial4j}</version>
       </dependency>
 
       <!-- Logging -->
       <dependency>
-	<groupId>org.slf4j</groupId>
-	<artifactId>slf4j-api</artifactId>
-	<version>${ver.slf4j}</version>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${ver.slf4j}</version>
       </dependency>
 
       <dependency>
-	<groupId>org.slf4j</groupId>
-	<artifactId>slf4j-log4j12</artifactId>
-	<version>${ver.slf4j}</version>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${ver.slf4j}</version>
       </dependency>
 
-      <!-- 
-	And intercept any uses of Jakarta Commons Logging 
-	e.g. Apache Common HTTP client. 
-      -->
+      <!-- And intercept any uses of Jakarta Commons Logging e.g. Apache Common 
+        HTTP client. -->
       <dependency>
-	<groupId>org.slf4j</groupId>
-	<artifactId>jcl-over-slf4j</artifactId>
-	<version>${ver.slf4j}</version>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${ver.slf4j}</version>
       </dependency>
-      
+
       <dependency>
-	<groupId>log4j</groupId>
-	<artifactId>log4j</artifactId>
-	<version>${ver.log4j}</version>
-	<exclusions>
-	  <!-- Exclude things that don't resolve in some versions of log4j -->
-	  <exclusion>
-	    <groupId>javax.jms</groupId>
-	    <artifactId>jms</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>com.sun.jdmk</groupId>
-	    <artifactId>jmxtools</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>com.sun.jmx</groupId>
-	    <artifactId>jmxri</artifactId>
-	  </exclusion>
-	  <exclusion>
-	    <groupId>javax.mail</groupId>
-	    <artifactId>mail</artifactId>
-	  </exclusion>
-	</exclusions>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${ver.log4j}</version>
+        <exclusions>
+          <!-- Exclude things that don't resolve in some versions of log4j -->
+          <exclusion>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.jdmk</groupId>
+            <artifactId>jmxtools</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.jmx</groupId>
+            <artifactId>jmxri</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -279,6 +278,21 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>1.7.0</version>
+                </requireJavaVersion>
+              </rules>    
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
 
@@ -299,84 +313,79 @@
           </configuration>
         </plugin>
 
-	<!-- Avoid the warning from m2e:
-	     "maven-remote-resources-plugin (goal "process") is ignored by m2e."
-	-->
-	<plugin>
-	  <groupId>org.eclipse.m2e</groupId>
-	  <artifactId>lifecycle-mapping</artifactId>
-	  <version>1.0.0</version>
-	  <configuration>
-	    <lifecycleMappingMetadata>
-	      <pluginExecutions>
-		<pluginExecution>
-		  <!-- Warning: 
-		       "maven-remote-resources-plugin (goal "process") is ignored by m2e."
-		  -->
-		  <pluginExecutionFilter>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-enforcer-plugin</artifactId>
-		    <versionRange>[1.0.0,)</versionRange>
-		    <goals><goal>enforce</goal></goals>
-		  </pluginExecutionFilter>
-		  <action>
-		    <ignore />
-		  </action>
-		</pluginExecution>
-		<pluginExecution>
-		  <!-- Warning: 
-		       "maven-enforcer-plugin (goal "enforce") is ignored by m2e."
-		  -->
-		  <pluginExecutionFilter>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-remote-resources-plugin</artifactId>
-		    <versionRange>[1.0.0,)</versionRange>
-		    <goals><goal>process</goal></goals>
-		  </pluginExecutionFilter>
-		  <action>
-		    <ignore />
-		  </action>
-		</pluginExecution>
+        <!-- Avoid the warning from m2e: "maven-remote-resources-plugin (goal 
+          "process") is ignored by m2e." -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <!-- Warning: "maven-remote-resources-plugin (goal "process") is 
+                    ignored by m2e." -->
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>enforce</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <!-- Warning: "maven-enforcer-plugin (goal "enforce") is ignored 
+                    by m2e." -->
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-remote-resources-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>process</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
 
-	      </pluginExecutions>
-	    </lifecycleMappingMetadata>
-	  </configuration>
-	</plugin>
-	
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.15</version>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>2.4</version>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
           <version>2.2.1</version>
-          <executions> 
+          <executions>
             <execution>
               <id>attach-sources</id>
               <goals>
-            <goal>jar-no-fork</goal> 
+                <goal>jar-no-fork</goal>
               </goals>
             </execution>
-            <!-- Only needed in some jars
-            <execution>
-              <id>attach-sources-test</id>
-              <goals>
-            <goal>test-jar-no-fork</goal>
-              </goals>
-            </execution>
-            -->
+            <!-- Only needed in some jars <execution> <id>attach-sources-test</id> 
+              <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
           </executions>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
@@ -385,7 +394,7 @@
             <execution>
               <id>attach-javadocs</id>
               <goals>
-            <goal>jar</goal>
+                <goal>jar</goal>
               </goals>
             </execution>
           </executions>
@@ -399,7 +408,7 @@
             <bottom>Licenced under the Apache License, Version 2.0</bottom>
           </configuration>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
@@ -408,7 +417,7 @@
             <encoding>UTF-8</encoding>
           </configuration>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
@@ -418,7 +427,7 @@
             <overWriteIfNewer>true</overWriteIfNewer>
           </configuration>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-eclipse-plugin</artifactId>
@@ -430,7 +439,7 @@
             <downloadJavadocs>false</downloadJavadocs>
           </configuration>
         </plugin>
-        
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
@@ -459,7 +468,7 @@
             <fail>true</fail>
           </configuration>
         </plugin>
-      
+
       </plugins>
     </pluginManagement>
   </build>
@@ -476,7 +485,7 @@
         <configuration>
           <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
         </configuration>
-      </plugin> 
+      </plugin>
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -524,5 +533,5 @@
     </plugins>
 
   </reporting>
-  
+
 </project>
