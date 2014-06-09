@@ -21,6 +21,7 @@ package com.hp.hpl.jena.tdb.base.file ;
 import java.io.File ;
 import java.io.IOException ;
 
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.tdb.sys.Names ;
@@ -35,11 +36,12 @@ public class Location {
     static String    pathSeparator = File.separator ; // Or just "/"
 
     private static String memNamePath = Names.memName+pathSeparator ;
-    
+        
     private String   pathname ;
     private MetaFile metafile      = null ;
     private boolean  isMem         = false ;
     private boolean  isMemUnique   = false ;
+    private LocationLock lock ;
 
     static int       memoryCount   = 0 ;
 
@@ -71,6 +73,7 @@ public class Location {
             location.pathname = location.pathname + '/' ;
         location.isMem = true ;
         location.metafile = new MetaFile(Names.memName, Names.memName) ;
+        location.lock = new LocationLock(location);
     }
 
     public Location(String rootname) {
@@ -91,6 +94,11 @@ public class Location {
         String metafileName = getPath(Names.directoryMetafile, Names.extMeta) ;
 
         metafile = new MetaFile("Location: " + rootname, metafileName) ;
+        
+        // Set up locking
+        // Note that we don't check the lock in any way at this point, checking
+        // and obtaining the lock is carried out by StoreConnection
+        lock = new LocationLock(this);
     }
 
     // MS Windows:
@@ -127,6 +135,10 @@ public class Location {
 
     public boolean isMemUnique() {
         return isMemUnique ;
+    }
+    
+    public LocationLock getLock() {
+    	return lock;
     }
 
     public Location getSubLocation(String dirname) {
@@ -210,7 +222,7 @@ public class Location {
                 throw new FileException("Extension has an extension: " + filename) ;
         }
     }
-
+    
     @Override
     public int hashCode() {
         final int prime = 31 ;

@@ -30,6 +30,7 @@ import org.junit.runners.Suite ;
     , TestBlockAccessByteArray.class
     , TestBlockAccessDirect.class
     , TestBlockAccessMapped.class
+    , TestLocationLock.class
 })
 
 

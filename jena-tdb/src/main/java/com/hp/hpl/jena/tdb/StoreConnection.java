@@ -27,6 +27,7 @@ import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.tdb.base.file.ChannelManager ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.file.LocationLock;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.transaction.* ;
@@ -54,7 +55,7 @@ public class StoreConnection
             throw new TDBTransactionException("StoreConnection inValid (issued before a StoreConnection.release?") ;
     }
     
-    // Ensure that a dataset used non-trasnactionally has been flushed to disk
+    // Ensure that a dataset used non-transactionally has been flushed to disk
     private void checkTransactional()
     {
         // Access to booleans is atomic.
@@ -66,7 +67,7 @@ public class StoreConnection
             {
                 if ( ! haveUsedInTransaction )
                 {
-                    // Sync the underlying databse in case used
+                    // Sync the underlying database in case used
                     // non-transactionally by the application.
                     baseDSG.sync() ;
                 }
@@ -202,6 +203,9 @@ public class StoreConnection
         sConn.isValid = false ;
         cache.remove(location) ;
         ChannelManager.release(sConn.transactionManager.getJournal().getFilename()) ;
+        
+        // Release the lock
+        location.getLock().release();
     }
 
     /**
@@ -234,6 +238,22 @@ public class StoreConnection
         if (sConn == null)
         {
             sConn = new StoreConnection(dsg) ;
+            
+            // Obtain the lock ASAP
+            LocationLock lock = location.getLock();
+            if (lock.canLock()) {
+            	if (!lock.canObtain()) 
+            		throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is already locked by the process with PID " + lock.getOwner());
+            	
+            	lock.obtain();
+            	// There's an interesting race condition here that two JVMs might write out the lock file one after another without
+            	// colliding and causing an IO error in either.  The best way to check for this is simply to check we now own the lock
+            	// and if not error
+            	if (!lock.isOwned()) {
+            		throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is alread locked by the process with PID " + lock.getOwner());
+            	}
+            }
+            
             sConn.forceRecoverFromJournal() ;
 //            boolean actionTaken = JournalControl.recoverFromJournal(dsg.getConfig(), sConn.transactionManager.getJournal()) ;
 //            if ( false && actionTaken )
