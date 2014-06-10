@@ -240,19 +240,19 @@ public class StoreConnection
             sConn = new StoreConnection(dsg) ;
             
             // Obtain the lock ASAP
-            LocationLock lock = location.getLock();
-            if (lock.canLock()) {
-            	if (!lock.canObtain()) 
-            		throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is already locked by the process with PID " + lock.getOwner());
-            	
-            	lock.obtain();
-            	// There's an interesting race condition here that two JVMs might write out the lock file one after another without
-            	// colliding and causing an IO error in either.  The best way to check for this is simply to check we now own the lock
-            	// and if not error
-            	if (!lock.isOwned()) {
-            		throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is alread locked by the process with PID " + lock.getOwner());
-            	}
-            }
+//            LocationLock lock = location.getLock();
+//            if (lock.canLock()) {
+//            	if (!lock.canObtain()) 
+//            		throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is already locked by the process with PID " + lock.getOwner());
+//            	
+//            	lock.obtain();
+//            	// There's an interesting race condition here that two JVMs might write out the lock file one after another without
+//            	// colliding and causing an IO error in either.  The best way to check for this is simply to check we now own the lock
+//            	// and if not error
+//            	if (!lock.isOwned()) {
+//            		throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is alread locked by the process with PID " + lock.getOwner());
+//            	}
+//            }
             
             sConn.forceRecoverFromJournal() ;
 //            boolean actionTaken = JournalControl.recoverFromJournal(dsg.getConfig(), sConn.transactionManager.getJournal()) ;
