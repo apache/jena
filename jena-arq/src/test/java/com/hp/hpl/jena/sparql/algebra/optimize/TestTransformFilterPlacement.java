@@ -69,7 +69,38 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
                 null) ;
     }
     
+
     @Test public void place_bgp_06() {
+        test("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o) ))",
+             null) ;
+    }
+
+    @Test public void place_bgp_06a() {
+        testNoBGP("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o) ))",
+             null) ;
+    }
+    
+    @Test public void place_bgp_07() {
+        test("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) ))",
+             "(sequence  (filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) ))  (quadpattern (?g ?s ?p ?o2)) )") ;    
+    }
+
+    @Test public void place_bgp_07a() {
+        testNoBGP("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) ))",
+                  null) ;
+    }
+    
+    @Test public void place_bgp_08() {
+        test("(filter (exprlist (isURI ?g) (= ?o2 123)) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) (?g ?s ?p ?o3) ))",
+             "(sequence (filter (= ?o2 123) (sequence (filter (isURI ?g) (quadpattern (?g ?s ?p ?o1))) (quadpattern (?g ?s ?p ?o2)))) (quadpattern (?g ?s ?p ?o3)) )") ;
+    }
+
+    @Test public void place_bgp_08a() {
+        testNoBGP("(filter (exprlist (isURI ?g) (= ?o2 123)) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) (?g ?s ?p ?o3) ))",
+                  null) ;
+    }
+
+    @Test public void place_bgp_50() {
         test(StrUtils.strjoinNL("(filter (exprlist (|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>))) (! (sameTerm ?node2 <urn:foo>)))",
                                 " (quadpattern",
                                 "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:foo>)",
@@ -105,7 +136,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
                                " ))"));
     }
     
-    @Test public void place_bgp_06a() {
+    @Test public void place_bgp_50a() {
         testNoBGP(StrUtils.strjoinNL("(filter (exprlist (|| (|| (|| (&& (< \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (< ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (&& (< ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (< \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= ?startDate1 \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) (<= ?endDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>)) (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1))) (&& (&& (<= \"2012-01-01T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?startDate1) (<= \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime> ?endDate1)) (<= ?startDate1 \"2012-12-31T23:59:59\"^^<http://www.w3.org/2001/XMLSchema#dateTime>))) (! (sameTerm ?node2 <urn:foo>)))",
                                      " (quadpattern",
                                      "  (quad <urn:x-arq:DefaultGraphNode> ?inst1 ?arg1Pred1 <urn:foo>)",
