@@ -15,6 +15,7 @@ import com.hp.hpl.jena.tdb.StoreConnection;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
+@Ignore
 public class TestLocationLock {
 
     @Rule
