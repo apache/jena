@@ -1,68 +1,40 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.hp.hpl.jena.tdb.base.file;
 
-import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.jena.atlas.io.IO;
 
 import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.sys.ProcessUtils;
 
 /**
  * Represents a lock on a TDB location
- * 
- * @author rvesse
  * 
  */
 public class LocationLock {
     private static final int NO_OWNER = 0;
     private static final String LOCK_FILENAME = "tdb.lock";
-
-    private static int myPid = -1;
-
-    /**
-     * Tries to get the PID of the current process
-     * 
-     * @return PID of current process or zero if unable to determine PID
-     */
-    private static int getPid() {
-        if (myPid != -1)
-            return myPid;
-
-        String runtimeBeanName = ManagementFactory.getRuntimeMXBean().getName();
-        if (runtimeBeanName == null) {
-            return useFallbackPid();
-        }
-
-        // Bean name will have format PID@hostname so we try to parse the PID
-        // portion
-        int index = runtimeBeanName.indexOf("@");
-        if (index < 0)
-            return useFallbackPid();
-        try {
-            // Parse and cache for future reuse
-            String pidData = runtimeBeanName.substring(0, index);
-            myPid = Integer.parseInt(pidData);
-            return myPid;
-        } catch (NumberFormatException e) {
-            // Invalid PID
-            return useFallbackPid();
-        }
-    }
-
-    private static int useFallbackPid() {
-        // In the case where we can't determine our PID then treat ourselves as
-        // no owner and cache for future use
-        myPid = NO_OWNER;
-        return myPid;
-    }
 
     private Location location;
 
@@ -111,7 +83,7 @@ public class LocationLock {
         if (owner == NO_OWNER)
             return false;
 
-        return owner == getPid();
+        return owner == ProcessUtils.getPid(NO_OWNER);
     }
 
     /**
@@ -156,7 +128,7 @@ public class LocationLock {
             return false;
 
         int owner = this.getOwner();
-        int pid = getPid();
+        int pid = ProcessUtils.getPid(NO_OWNER);
 
         if (owner == NO_OWNER) {
             // Can obtain provided we have a valid PID
@@ -168,7 +140,7 @@ public class LocationLock {
         }
 
         // Owned by another process, only obtainable if other process is dead
-        if (!isAlive(owner))
+        if (!ProcessUtils.isAlive(owner))
             return true;
 
         // Otherwise not obtainable
@@ -187,7 +159,7 @@ public class LocationLock {
         int owner = this.getOwner();
         if (owner == NO_OWNER) {
             // No owner currently so try to obtain the lock
-            int pid = getPid();
+            int pid = ProcessUtils.getPid(NO_OWNER);
             if (pid == NO_OWNER) {
                 // In the case where we cannot obtain our PID then we cannot
                 // obtain a lock
@@ -195,12 +167,12 @@ public class LocationLock {
             }
 
             takeLock(pid);
-        } else if (owner == getPid()) {
+        } else if (owner == ProcessUtils.getPid(NO_OWNER)) {
             // We already own the lock so nothing to do
         } else {
             // Someone other process potentially owns the lock on this location
             // Check if the owner is alive
-            if (isAlive(owner))
+            if (ProcessUtils.isAlive(owner))
                 throw new TDBException(
                         "The location "
                                 + location.getDirectoryPath()
@@ -209,7 +181,7 @@ public class LocationLock {
                                 + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent corruption you cannot open this location from the JVM that does not own the lock for the dataset");
 
             // Otherwise the previous owner is dead so we can take the lock
-            takeLock(getPid());
+            takeLock(ProcessUtils.getPid(NO_OWNER));
         }
     }
 
@@ -241,7 +213,7 @@ public class LocationLock {
             return;
 
         // Some other process owns the lock so we can't release it
-        if (owner != getPid())
+        if (owner != ProcessUtils.getPid(NO_OWNER))
             throw new TDBException("Cannot release the lock on location " + location.getDirectoryPath()
                     + " since this process does not own the lock");
 
@@ -300,59 +272,10 @@ public class LocationLock {
             return;
 
         if (!lockFile.isFile() || !lockFile.canWrite()) {
-            // TODO What about read only file systems? Though I suspect TDB will
-            // fail elsewhere in that case
-
             // Unable to read lock owner because it isn't a file or we don't
             // have read permission
             throw new FileException(
                     "Unable to check TDB lock owner for this location since the expected lock file is not a file/not writable");
-        }
-    }
-
-    private static boolean isAlive(int pid) {
-        String pidStr = Integer.toString(pid);
-        Process p;
-        try {
-            if (SystemTDB.isWindows) {
-                // Use the Windows tasklist utility
-                ProcessBuilder builder = new ProcessBuilder("tasklist", "/FI", "PID eq " + pidStr);
-                builder.redirectErrorStream(true);
-                p = builder.start();
-            } else {
-                // Use the ps utility
-                ProcessBuilder builder = new ProcessBuilder("ps", "-p", pidStr);
-                builder.redirectErrorStream(true);
-                p = builder.start();
-            }
-
-            // Run and read data from the process
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            List<String> data = new ArrayList<String>();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                data.add(line);
-            }
-            reader.close();
-
-            // Expect a line to contain the PID to indicate the process is
-            // alive
-            for (String lineData : data) {
-                if (lineData.contains(pidStr))
-                    return true;
-            }
-
-            // Did not find any lines mentioning the PID so we can safely
-            // assume that process is dead
-            return false;
-        } catch (IOException e) {
-            // If any error running the process to check for the live process
-            // then our check failed and for safety we assume the process is
-            // alive
-
-            // TODO Issue a warning here
-            return true;
         }
     }
 }

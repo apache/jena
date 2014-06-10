@@ -4,22 +4,41 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.hp.hpl.jena.tdb.StoreConnection;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.sys.ProcessUtils;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-@Ignore
+/**
+ * Tests for {@link LocationLock}
+ * @author rvesse
+ *
+ */
 public class TestLocationLock {
 
+    private static boolean negativePidsTreatedAsAlive = false;
+    
     @Rule
     public TemporaryFolder tempDir = new TemporaryFolder();
+    
+    @BeforeClass
+    public static void setup() {
+        SystemTDB.DiskLocationMultiJvmUsagePrevention = true;
+        negativePidsTreatedAsAlive = ProcessUtils.negativePidsTreatedAsAlive();
+    }
+    
+    @AfterClass
+    public static void teardown() {
+        SystemTDB.DiskLocationMultiJvmUsagePrevention = false;
+    }
 
     @Test
     public void location_lock_mem() {
@@ -52,9 +71,8 @@ public class TestLocationLock {
     }
 
     @Test
-    @Ignore
     public void location_lock_dir_02() throws IOException {
-        Assume.assumeFalse(SystemTDB.isWindows);
+        Assume.assumeTrue(negativePidsTreatedAsAlive);
 
         Location dir = new Location(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
@@ -71,7 +89,7 @@ public class TestLocationLock {
         writer.close();
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
-        Assert.assertFalse(lock.canObtain()); // Returns true on Jenkins
+        Assert.assertFalse(lock.canObtain());
     }
 
     @Test
@@ -97,9 +115,8 @@ public class TestLocationLock {
     }
 
     @Test(expected = TDBException.class)
-    @Ignore
     public void location_lock_dir_error_01() throws IOException {
-        Assume.assumeFalse(SystemTDB.isWindows);
+        Assume.assumeTrue(negativePidsTreatedAsAlive);
 
         Location dir = new Location(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
@@ -118,14 +135,13 @@ public class TestLocationLock {
         Assert.assertFalse(lock.isOwned());
 
         // Attempting to obtain the lock should now error
-        Assert.assertFalse(lock.canObtain()); // Returns true on Jenkins
+        Assert.assertFalse(lock.canObtain());
         lock.obtain();
     }
 
     @Test(expected = TDBException.class)
-    @Ignore
     public void location_lock_dir_error_02() throws IOException {
-        Assume.assumeFalse(SystemTDB.isWindows);
+        Assume.assumeTrue(negativePidsTreatedAsAlive);
 
         Location dir = new Location(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
@@ -149,9 +165,8 @@ public class TestLocationLock {
     }
 
     @Test(expected = TDBException.class)
-    @Ignore
     public void location_lock_dir_error_03() throws IOException {
-        Assume.assumeFalse(SystemTDB.isWindows);
+        Assume.assumeTrue(negativePidsTreatedAsAlive);
         
         Location dir = new Location(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();

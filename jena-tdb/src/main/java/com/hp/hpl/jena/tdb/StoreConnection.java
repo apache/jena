@@ -30,6 +30,7 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.file.LocationLock;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.tdb.transaction.* ;
 
 /** A StoreConnection is the reference to the underlying storage.
@@ -205,7 +206,13 @@ public class StoreConnection
         ChannelManager.release(sConn.transactionManager.getJournal().getFilename()) ;
         
         // Release the lock
-        location.getLock().release();
+        if (SystemTDB.DiskLocationMultiJvmUsagePrevention) {
+            if (location.getLock().isOwned()) {
+                location.getLock().release();
+            } else if (location.getLock().canLock()) {
+                SystemTDB.errlog.warn("Location " + location.getDirectoryPath() + " was not locked, if another JVM accessed this location simultaneously data corruption may have occurred");
+            }
+        }
     }
 
     /**
@@ -239,20 +246,23 @@ public class StoreConnection
         {
             sConn = new StoreConnection(dsg) ;
             
-            // Obtain the lock ASAP
-//            LocationLock lock = location.getLock();
-//            if (lock.canLock()) {
-//            	if (!lock.canObtain()) 
-//            		throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is already locked by the process with PID " + lock.getOwner());
-//            	
-//            	lock.obtain();
-//            	// There's an interesting race condition here that two JVMs might write out the lock file one after another without
-//            	// colliding and causing an IO error in either.  The best way to check for this is simply to check we now own the lock
-//            	// and if not error
-//            	if (!lock.isOwned()) {
-//            		throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is alread locked by the process with PID " + lock.getOwner());
-//            	}
-//            }
+            if (SystemTDB.DiskLocationMultiJvmUsagePrevention)
+            {
+                // Obtain the lock ASAP
+                LocationLock lock = location.getLock();
+                if (lock.canLock()) {
+                    if (!lock.canObtain()) 
+                        throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is already locked by the process with PID " + lock.getOwner());
+
+                    lock.obtain();
+                    // There's an interesting race condition here that two JVMs might write out the lock file one after another without
+                    // colliding and causing an IO error in either.  The best way to check for this is simply to check we now own the lock
+                    // and if not error
+                    if (!lock.isOwned()) {
+                        throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is alread locked by the process with PID " + lock.getOwner());
+                    }
+                }
+            }
             
             sConn.forceRecoverFromJournal() ;
 //            boolean actionTaken = JournalControl.recoverFromJournal(dsg.getConfig(), sConn.transactionManager.getJournal()) ;
