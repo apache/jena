@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.engine.iterator;
+package com.hp.hpl.jena.sparql.engine.iterator ;
 
 import java.util.NoSuchElementException ;
 
@@ -26,68 +26,74 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** An iterator that applying a condition. */
+/**
+ * An iterator that applies a condition. The condition may return a different
+ * binding.
+ */
 
-public abstract class QueryIterProcessBinding extends QueryIter1
-{
-    abstract public Binding accept(Binding binding);
-    
-    Binding nextBinding;
+public abstract class QueryIterProcessBinding extends QueryIter1 {
+    /** Process the binding - return null for "not accept".
+     * Subclasses may return a different Binding to the argument and
+     * the result is the returned Binding.  
+     */
+    abstract public Binding accept(Binding binding) ;
 
-    public QueryIterProcessBinding(QueryIterator qIter, ExecutionContext context)
-    {
+    private Binding nextBinding ;
+
+    public QueryIterProcessBinding(QueryIterator qIter, ExecutionContext context) {
         super(qIter, context) ;
-        nextBinding = null;
+        nextBinding = null ;
     }
 
-    /** Are there any more acceptable objects.
-    * @return true if there is another acceptable object.
-    */        
+    /**
+     * Are there any more acceptable objects.
+     * 
+     * @return true if there is another acceptable object.
+     */
     @Override
-    protected boolean hasNextBinding()
-    {
+    protected boolean hasNextBinding() {
         // Needs to be idempotent.?
         if ( isFinished() )
             return false ;
-        
-        if (nextBinding != null)
-            return true;
+
+        if ( nextBinding != null )
+            return true ;
 
         // Null iterator.
         if ( getInput() == null )
-            throw new ARQInternalErrorException(Utils.className(this)+": Null iterator") ;
+            throw new ARQInternalErrorException(Utils.className(this) + ": Null iterator") ;
 
-        while ( getInput().hasNext() )
-        {
-            // Skip forward until a binding to return is found. 
-            Binding input = getInput().nextBinding();
+        while (getInput().hasNext()) {
+            // Skip forward until a binding to return is found.
+            Binding input = getInput().nextBinding() ;
             Binding output = accept(input) ;
-            if ( output != null )
-            {
+            if ( output != null ) {
                 nextBinding = output ;
                 return true ;
             }
         }
-        nextBinding = null;
-        return false;
+        nextBinding = null ;
+        return false ;
     }
-    
-    /** The next acceptable object in the iterator.
-    * @return The next acceptable object.
-    */        
+
+    /**
+     * The next acceptable object in the iterator.
+     * 
+     * @return The next acceptable object.
+     */
     @Override
     public Binding moveToNextBinding() {
-        if (hasNext()) {
-            Binding r = nextBinding;
-            nextBinding = null;
-            return r;
+        if ( hasNext() ) {
+            Binding r = nextBinding ;
+            nextBinding = null ;
+            return r ;
         }
-        throw new NoSuchElementException();
+        throw new NoSuchElementException() ;
     }
-    
+
     @Override
     protected void closeSubIterator() {}
-    
+
     @Override
     protected void requestSubCancel() {}
 }
