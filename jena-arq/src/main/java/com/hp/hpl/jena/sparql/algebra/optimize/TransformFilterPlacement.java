@@ -272,12 +272,12 @@ public class TransformFilterPlacement extends TransformCopy {
         ExprList exprs = ExprList.copy(exprsIn) ;
         Set<Var> patternVarsScope = DS.set() ;
         // Any filters that depend on no variables.
+        Op op = insertAnyFilter$(exprs, patternVarsScope, null) ;
 
         if ( Var.isVar(graphNode) ) {
             // Add in the graph node of the quad block.
             VarUtils.addVar(patternVarsScope, Var.alloc(graphNode)) ;
         }
-        Op op = insertAnyFilter$(exprs, patternVarsScope, null) ;
         
         for (Triple triple : pattern) {
             OpQuadPattern opQuad = getQuads(op) ;
