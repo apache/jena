@@ -56,9 +56,9 @@ public class LocationLock {
     }
 
     /**
-     * Gets whether the location is currently locked, use
+     * Gets whether the location is currently locked
      * 
-     * @return
+     * @return boolean
      */
     public boolean isLocked() {
         // Memory locations are never considered locked
