@@ -21,9 +21,7 @@ package com.hp.hpl.jena.tdb.base.file ;
 import java.io.File ;
 import java.io.IOException ;
 
-import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.Lib ;
-
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 /**
