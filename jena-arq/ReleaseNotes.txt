@@ -2,6 +2,11 @@ ChangeLog for ARQ
 =================
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
+==== Jena 2.12.0
+
++ JENA-710 : Bug fix for filter optimizer where the filter only 
+             mentions a variable onl yused with GRAPH.
+
 ==== Jena 2.11.2
 
 + JENA-631 : rdfs:member supported in property paths.
