@@ -247,13 +247,10 @@ public class TestMoreExamples extends TestCase implements
         SAXParserFactory fact = SAXParserFactory.newInstance();
         TestSuite result = new TestSuite();
         result.setName("More IRI Tests");
-        InputStream in = TestCreator.class.getClassLoader().getResourceAsStream("org/apache/jena/iri/test/test.xml");
-            fact.newSAXParser().parse(in,
-            new TestReader(result)
-            );
-
-       in.close();
-       return result;
+        try (InputStream in = TestCreator.class.getClassLoader().getResourceAsStream("org/apache/jena/iri/test/test.xml")) {
+            fact.newSAXParser().parse(in,new TestReader(result));
+            return result;
+        }
     }
     public static TestSuite suite() {
         try {
