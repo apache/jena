@@ -26,17 +26,14 @@ import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
-import org.apache.lucene.document.Document ;
-import org.apache.lucene.document.Field ;
-import org.apache.lucene.document.FieldType ;
-import org.apache.lucene.document.StringField ;
-import org.apache.lucene.document.TextField ;
+import org.apache.lucene.document.* ;
 import org.apache.lucene.index.DirectoryReader ;
 import org.apache.lucene.index.IndexReader ;
 import org.apache.lucene.index.IndexWriter ;
 import org.apache.lucene.index.IndexWriterConfig ;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
+import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.apache.lucene.search.IndexSearcher ;
 import org.apache.lucene.search.Query ;
 import org.apache.lucene.search.ScoreDoc ;
@@ -207,9 +204,10 @@ public class TextIndexLucene implements TextIndex {
     }
 
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
-        String escaped = QueryParser.escape(uri) ;
+        String escaped = QueryParserBase.escape(uri) ;
         String qs = docDef.getEntityField() + ":" + escaped ;
         QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
+        queryParser.setAllowLeadingWildcard(true) ;
         Query query = queryParser.parse(qs) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
@@ -245,15 +243,8 @@ public class TextIndexLucene implements TextIndex {
 
     @Override
     public List<Node> query(String qs, int limit) {
-        try {
-            // Upgrade at Java7 ...
-            IndexReader indexReader = DirectoryReader.open(directory) ;
-            try {
-                return query$(indexReader, qs, limit) ;
-            }
-            finally {
-                indexReader.close() ;
-            }
+        try(IndexReader indexReader = DirectoryReader.open(directory)) {
+            return query$(indexReader, qs, limit) ;
         }
         catch (Exception ex) {
             exception(ex) ;

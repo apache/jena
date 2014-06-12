@@ -21,7 +21,7 @@ package org.apache.jena.query.text ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.lucene.queryparser.classic.QueryParser ;
+import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -83,7 +83,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
 
     /** Search the text index on the text field associated with the predicate */
     public Iterator<Node> search(String queryString, Node predicate, int limit) {
-        queryString = QueryParser.escape(queryString) ;
+        queryString = QueryParserBase.escape(queryString) ;
         if ( predicate != null ) {
             String f = textIndex.getDocDef().getField(predicate) ;
             queryString = f + ":" + queryString ;
