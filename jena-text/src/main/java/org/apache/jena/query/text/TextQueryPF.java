@@ -23,7 +23,7 @@ import java.util.List ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.lucene.queryparser.classic.QueryParser ;
+import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -31,11 +31,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryBuildException ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.GraphView ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.Substitute ;
-import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.* ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -177,7 +173,7 @@ public class TextQueryPF extends PropertyFunctionBase {
                     activeGraph.getGraphName() != null 
                     ? TextQueryFuncs.graphNodeToString(activeGraph.getGraphName())
                     : Quad.defaultGraphNodeGenerated.getURI() ;
-                String escaped = QueryParser.escape(uri) ;
+                String escaped = QueryParserBase.escape(uri) ;
                 String qs2 = server.getDocDef().getGraphField() + ":" + escaped ;
                 queryString = "(" + queryString + ") AND " + qs2 ;
             }
