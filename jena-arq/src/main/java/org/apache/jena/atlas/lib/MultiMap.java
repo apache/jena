@@ -117,7 +117,7 @@ public abstract class MultiMap<K, V>
                 sb.append(", ") ;
             firstKey = false ;
             sb.append(key) ;
-            sb.append(" [") ;
+            sb.append(" => [") ;
             boolean firstValue = true ; 
             for ( V value : values(key) )
             {
