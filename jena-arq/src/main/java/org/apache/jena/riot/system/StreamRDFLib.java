@@ -25,7 +25,6 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
@@ -232,62 +231,6 @@ public class StreamRDFLib
             try { // Jena applies XML rules to prerfixes.  
                 prefixMapping.setNsPrefix(prefix, uri) ;
             } catch (JenaException ex) {}
-        }
-    }
-
-    private  static class StreamRDFCountingBase extends StreamRDFWrapper implements StreamRDF, StreamRDFCounting
-    {
-        private long countTriples = 0 ;
-        private long countQuads = 0 ;
-        private long countTuples = 0 ;
-        private long countBase = 0 ;
-        private long countPrefixes = 0 ;
-        
-        public StreamRDFCountingBase (StreamRDF other)     { super(other) ; }
-
-        @Override
-        public void triple(Triple triple)
-        {
-            countTriples++ ;
-            super.triple(triple) ;
-        }
-
-        @Override
-        public void quad(Quad quad)
-        {
-            countQuads++ ;
-            super.quad(quad) ;
-        }
-
-        @Override
-        public void tuple(Tuple<Node> tuple)
-        {
-            countTuples++ ;
-            super.tuple(tuple) ;
-        }
-        
-        @Override
-        public long count()
-        {
-            return countTriples + countQuads + countTuples ;
-        }
-
-        @Override
-        public long countTriples()
-        {
-            return countTriples ;
-        }
-
-        @Override
-        public long countQuads()
-        {
-            return countQuads ;
-        }
-
-        @Override
-        public long countTuples()
-        {
-            return countTuples ;
         }
     }
 }

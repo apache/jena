@@ -20,6 +20,7 @@ package org.apache.jena.riot.lang;
 
 import org.apache.jena.riot.system.StreamRDF ;
 
+/** Provide counts of triples/quads/tuples */
 public interface StreamRDFCounting extends StreamRDF
 {
     /** Count of triples, quads or tuples */

@@ -29,7 +29,7 @@ import org.junit.runners.Suite.SuiteClasses ;
 @RunWith(Suite.class)
 @SuiteClasses({ 
     TestChecker.class
-    
+    , TestStreamRDF.class
     // Prefix Map implementations
     , TestPrefixMap.class
     , TestPrefixMapWrapper.class
