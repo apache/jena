@@ -82,14 +82,11 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
         ));
         out.println("<UriTests>");
         
-        InputStream in = TestCreator.class.getClassLoader().getResourceAsStream("org/apache/jena/iri/uris.xml");
-            fact.newSAXParser().parse(in,
-            new TestCreator()
-            );
-
-       out.println("</UriTests>");
-       in.close();
-       out.close();
+        try ( InputStream in = TestCreator.class.getClassLoader().getResourceAsStream("org/apache/jena/iri/uris.xml") ) {
+            fact.newSAXParser().parse(in, new TestCreator() );
+            out.println("</UriTests>");
+            out.close();
+        }
     }
     
     static public void main(String args[]) throws IOException, ParserConfigurationException, SAXException{
