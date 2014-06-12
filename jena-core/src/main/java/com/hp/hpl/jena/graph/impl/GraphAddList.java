@@ -25,8 +25,9 @@ import com.hp.hpl.jena.graph.*;
 /**
     A List that implements the GraphAdd interface, so that it can be passed
     to things that want to add triples to Graphs. The triples are filtered.
+    @depecated This will be removed. 
 */
-
+@Deprecated
 public class GraphAddList implements GraphAdd
     {
     protected Triple match;
@@ -35,7 +36,9 @@ public class GraphAddList implements GraphAdd
     /**
          Initialise a GraphAddList with a triple [pattern] that specifies what triples
          will be accepted into the list. 
+    @depecated This will be removed. 
     */
+    @Deprecated   
     public GraphAddList( Triple match ) { this.match = match; }
     
     /**
