@@ -50,7 +50,14 @@
       <version>2.12.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
-
+    
+    <!-- Google Code Guava -->
+    <dependency>
+	  <groupId>com.googlecode.guava-osgi</groupId>
+	  <artifactId>guava-osgi</artifactId>
+	  <version>11.0.0</version>
+	</dependency>	
+	
     <!-- Testing support -->
     <dependency>
       <groupId>org.apache.jena</groupId>

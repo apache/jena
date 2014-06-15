@@ -24,39 +24,58 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorConcat;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.propertytable.Column;
 import com.hp.hpl.jena.propertytable.PropertyTable;
 import com.hp.hpl.jena.propertytable.Row;
-import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
+/**
+ * A PropertyTable Implementation using HashMap.
+ * It contains PSO and POS indexes.
+ * 
+ */
 public class PropertyTableImpl implements PropertyTable {
 
-	private Map<Node, Column> columnIndex; // Maps property Node to Column
+	private Map<Node, Column> columnIndex; // Maps property Node key to Column
 	private List<Column> columnList; // Stores the list of columns in the table
-	private Map<Object, Row> rowIndex; // Maps the row number to Row.
+	private Map<Node, Row> rowIndex; // Maps the subject Node key to Row.
 	private List<Row> rowList; // Stores the list of rows in the table
-	private Map<Node, Map<Object, Node>> valueIndex; // Maps column Node to
-														// (rowNum,value) pairs
+
+	// PSO index
+	private Map<Node, Map<Node, Node>> valueIndex; // Maps column Node to
+													// (subject Node, value)
+													// pairs
+	// POS index
+	private Map<Node, SetMultimap<Node, Node>> valueReverseIndex; // Maps column
+																	// Node to
+																	// (value,
+																	// subject
+																	// Node)
+																	// pairs
 
 	PropertyTableImpl() {
 		columnIndex = new HashMap<Node, Column>();
 		columnList = new ArrayList<Column>();
-		rowIndex = new HashMap<Object, Row>();
+		rowIndex = new HashMap<Node, Row>();
 		rowList = new ArrayList<Row>();
-		valueIndex = new HashMap<Node, Map<Object, Node>>();
+		valueIndex = new HashMap<Node, Map<Node, Node>>();
+		valueReverseIndex = new HashMap<Node, SetMultimap<Node, Node>>();
 	}
 
 	@Override
 	public ExtendedIterator<Triple> getTripleIterator() {
+		
+		// use PSO index to scan all the table (slow)
 		IteratorConcat<Triple> iter = new IteratorConcat<Triple>();
 		for (Column column : getColumns()) {
 			iter.add(getTripleIterator(column));
@@ -66,17 +85,51 @@ public class PropertyTableImpl implements PropertyTable {
 
 	@Override
 	public ExtendedIterator<Triple> getTripleIterator(Column column) {
-		ArrayList<Triple> triples = new ArrayList<Triple>();
-		Map<Object, Node> values = valueIndex.get(column.getNode());
 		
-		for(Entry<Object,Node> entry :values.entrySet()){
-			
-			Object rowNum = entry.getKey();
-			Node s  = NodeFactory.createAnon(AnonId.create( "_:"+rowNum  ));
+		// use PSO index directly (fast)
+		ArrayList<Triple> triples = new ArrayList<Triple>();
+		Map<Node, Node> values = valueIndex.get(column.getColumnKey());
+
+		for (Entry<Node, Node> entry : values.entrySet()) {
+			Node subject = entry.getKey();
 			Node value = entry.getValue();
-			triples.add( Triple.create(s, column.getNode(), value) );
+			triples.add(Triple.create(subject, column.getColumnKey(), value));
 		}
 		return WrappedIterator.create(triples.iterator());
+	}
+
+	@Override
+	public ExtendedIterator<Triple> getTripleIterator(Node value) {
+		
+		// use POS index ( O(n), n= column count )
+		IteratorConcat<Triple> iter = new IteratorConcat<Triple>();
+		for (Column column : this.getColumns()) {
+			ExtendedIterator<Triple> eIter = getTripleIterator(column);
+			iter.add(eIter);
+		}
+		return WrappedIterator.create(Iter.distinct(iter));
+	}
+
+	@Override
+	public ExtendedIterator<Triple> getTripleIterator(Column column, Node value) {
+		
+		// use POS index directly (fast)
+		Node p = column.getColumnKey();
+		final SetMultimap<Node, Node> valueToSubjectMap = valueReverseIndex
+				.get(p);
+		final Set<Node> subjects = valueToSubjectMap.get(value);
+		ArrayList<Triple> triples = new ArrayList<Triple>();
+		for (Node subject : subjects) {
+			triples.add(Triple.create(subject, p, value));
+		}
+		return WrappedIterator.create(triples.iterator());
+	}
+
+
+	@Override
+	public ExtendedIterator<Triple> getTripleIterator(Row row) {
+		// use PSO index ( O(n), n= column count )
+		return row.getTripleIterator();
 	}
 
 	@Override
@@ -100,68 +153,119 @@ public class PropertyTableImpl implements PropertyTable {
 
 		columnIndex.put(p, new ColumnImpl(this, p));
 		columnList.add(columnIndex.get(p));
-		valueIndex.put(p, new HashMap<Object, Node>());
+		valueIndex.put(p, new HashMap<Node, Node>());
+		valueReverseIndex.put(p, HashMultimap.<Node, Node> create());
 	}
 
 	@Override
-	public Row getRow(final Object rowNum) {
-		if (rowNum == null)
-			throw new NullPointerException("row number is null");
-		Row row = rowIndex.get(rowNum);
+	public Row getRow(final Node s) {
+		if (s == null)
+			throw new NullPointerException("subject node is null");
+		Row row = rowIndex.get(s);
 		if (row != null)
 			return row;
 
-		row = new InternalRow(rowNum);
-		rowIndex.put(rowNum, row);
+		row = new InternalRow(s);
+		rowIndex.put(s, row);
 		rowList.add(row);
 
 		return row;
 	}
 
-	private final void setX(final Object rowNum, final Node p, final Node value) {
+	private final void setX(final Node s, final Node p, final Node value) {
 		if (p == null)
 			throw new NullPointerException("column Node must not be null.");
 		if (value == null)
 			throw new NullPointerException("value must not be null.");
 
-		if (columnIndex.get(p) == null)
+		Map<Node, Node> subjectToValueMap = valueIndex.get(p);
+		if (!columnIndex.containsKey(p) || subjectToValueMap == null)
 			throw new IllegalArgumentException("column: '" + p
 					+ "' does not yet exist.");
 
-		Map<Object, Node> rowNumToValueMap = valueIndex.get(p);
-		
-		rowNumToValueMap.put(rowNum, value);
-		
+		Node oldValue = subjectToValueMap.get(s);
+		subjectToValueMap.put(s, value);
+		addToReverseMap(p, s, oldValue, value);
 	}
 
-	private void unSetX(final Object rowNum, final Node p) {
+	private void addToReverseMap(final Node p, final Node s,
+			final Node oldValue, final Node value) {
 
-		final Map<Object, Node> rowNumToValueMap = valueIndex.get(p);
-		if (!columnIndex.containsKey(p) || rowNumToValueMap == null)
+		final SetMultimap<Node, Node> valueToSubjectMap = valueReverseIndex
+				.get(p);
+		valueToSubjectMap.remove(oldValue, s);
+		valueToSubjectMap.put(value, s);
+	}
+
+	private void unSetX(final Node s, final Node p) {
+
+		final Map<Node, Node> subjectToValueMap = valueIndex.get(p);
+		if (!columnIndex.containsKey(p) || subjectToValueMap == null)
 			throw new IllegalArgumentException("column: '" + p
 					+ "' does not yet exist.");
 
-		final Object value = rowNumToValueMap.get(rowNum);
+		final Node value = subjectToValueMap.get(s);
 		if (value == null)
 			return;
-		
-		rowNumToValueMap.remove(rowNum);
 
+		subjectToValueMap.remove(s);
+		removeFromReverseMap(p, s, value);
+	}
+
+	private void removeFromReverseMap(final Node p, final Node s,
+			final Node value) {
+		final SetMultimap<Node, Node> valueTokeysMap = valueReverseIndex.get(p);
+		valueTokeysMap.remove(s, value);
+	}
+
+	private Node getX(final Node s, final Node p) {
+		final Map<Node, Node> subjectToValueMap = valueIndex.get(p);
+		if (!columnIndex.containsKey(p) || subjectToValueMap == null)
+			throw new IllegalArgumentException("column: '" + p
+					+ "' does not yet exist.");
+		return subjectToValueMap.get(s);
 	}
 
 	private final class InternalRow implements Row {
-		private final Object key;
+		private final Node key;
 
-		InternalRow(final Object key) {
+		InternalRow(final Node key) {
 			this.key = key;
 		}
 
 		@Override
-		public void set(Node p, Node value) {
+		public void setValue(Column column, Node value) {
 			if (value == null)
-				unSetX(key, p);
+				unSetX(key, column.getColumnKey());
 			else
-				setX(key, p, value);
+				setX(key, column.getColumnKey(), value);
 		}
+
+		@Override
+		public Node getValue(Column column) {
+			return getX(key, column.getColumnKey());
+		}
+
+		@Override
+		public PropertyTable getTable() {
+			return PropertyTableImpl.this;
+		}
+
+		@Override
+		public Node getRowKey() {
+			return key;
+		}
+
+		@Override
+		public ExtendedIterator<Triple> getTripleIterator() {
+			ArrayList<Triple> triples = new ArrayList<Triple>();
+			for (Column column : getColumns()) {
+				Node value = this.getValue(column);
+				triples.add(Triple.create(key, column.getColumnKey(), value));
+			}
+			return WrappedIterator.create(triples.iterator());
+		}
+
 	}
+
 }

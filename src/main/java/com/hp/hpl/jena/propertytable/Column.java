@@ -19,10 +19,20 @@ package com.hp.hpl.jena.propertytable;
 
 import com.hp.hpl.jena.graph.Node;
 
+/**
+ * Each Column of the PropertyTable has an unique columnKey Node of the predicate (or p for short).
+ * 
+ */
 public interface Column {
 
+	/**
+	 * @return the PropertyTable it belongs to
+	 */
 	PropertyTable getTable();
 
-	Node getNode();
+	/**
+	 * @return the columnKey Node of the predicate
+	 */
+	Node getColumnKey();
 
 }
