@@ -37,7 +37,7 @@ public class ColumnImpl implements Column {
 	}
 
 	@Override
-	public Node getNode() {
+	public Node getColumnKey() {
 		return p;
 	}
 }

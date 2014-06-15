@@ -19,9 +19,42 @@
 package com.hp.hpl.jena.propertytable;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
+/**
+ * Each Row of the PropertyTable has an unique rowKey Node of the subject (or s for short).
+ *
+ */
 public interface Row {
 
-	void set(Node p, Node value);
+	/**
+	 * @return the PropertyTable it belongs to
+	 */
+	PropertyTable getTable();
+	
+	/**
+	 * Set the value of the Column in this Row
+	 * @param column
+	 * @param value
+	 */
+	void setValue(Column column, Node value);
+	
+	/**
+	 * Get the value of the Column in this Row
+	 * @param column
+	 * @return value
+	 */
+	Node getValue(Column column);
+	
+	/**
+	 * @return the rowKey Node of the subject
+	 */
+	Node getRowKey();
+	
+	/**
+	 * @return the Triple Iterator over the values in this Row
+	 */
+	ExtendedIterator<Triple> getTripleIterator();
 
 }

@@ -29,6 +29,7 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.PrintUtil;
 
 public class GraphCSVTest extends Assert {
 	
@@ -37,10 +38,11 @@ public class GraphCSVTest extends Assert {
 		String file = "src/test/resources/test.csv";
 		
 		Model csv = ModelFactory.createModelForGraph(new GraphCSV(file));
-		assertEquals(6, csv.size());
+		assertEquals(12, csv.size());
 
 		Query query = QueryFactory
-				.create("PREFIX : <src/test/resources/test.csv#> SELECT ?townName ?pop {?x :Town ?townName ; :Population ?pop . FILTER(?pop > 500000)}");
+				.create("PREFIX : <src/test/resources/test.csv#> SELECT ?townName ?pop {?x :Town ?townName ; :Population ?pop ; :Predicate%20With%20Space 'PredicateWithSpace2' . FILTER(?pop > 500000)}");
+		
 		QueryExecution qexec = QueryExecutionFactory.create(query, csv);
 		ResultSet results = qexec.execSelect();
 		

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.jena.atlas.csv.CSVParser;
 import org.apache.jena.riot.lang.LangCSV;
+import org.apache.jena.riot.system.IRIResolver;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
@@ -32,47 +33,52 @@ import com.hp.hpl.jena.propertytable.Row;
 import com.hp.hpl.jena.util.FileUtils;
 
 public class PropertyTableBuilder {
-	
-	
+
 	public static Node CSV_ROW_NODE = NodeFactory.createURI(LangCSV.CSV_ROW);
-	
-	public static PropertyTable buildPropetyTableFromCSVFile(String csvFilePath){
+
+	public static PropertyTable buildPropetyTableFromCSVFile(String csvFilePath) {
 
 		CSVParser parser = CSVParser.create(csvFilePath);
 		PropertyTableImpl table = new PropertyTableImpl();
-		
-		List<String> rowLine = null ;
+
+		List<String> rowLine = null;
 		ArrayList<Node> predicates = new ArrayList<Node>();
 		int rowNum = 0;
-		
-		while ( (rowLine=parser.parse1())!=null) {
-			 if (rowNum==0){
-				 table.createColumn(CSV_ROW_NODE);
-				 for (String column: rowLine){
-					 Node p = NodeFactory.createURI(FileUtils.toURL(csvFilePath) + "#" + column.trim());
-					 predicates.add(p);
-					 table.createColumn(p);
-				 }
-			 }else {
-				 Row row = table.getRow(rowNum);
-				 row.set(CSV_ROW_NODE, NodeFactory.createLiteral( (rowNum+"").trim(), XSDDatatype.XSDinteger) );
-			 
-				 for (int col=0;col<rowLine.size();col++){
-					 
-					 String columnValue = rowLine.get(col).trim();
-					 Node o ;
-					 try { 
-						 // Try for a double.
-						 double d = Double.parseDouble(columnValue);
-						 o = NodeFactory.createLiteral(columnValue, XSDDatatype.XSDdouble) ;
-					 } catch(Exception e) {
-						 o = NodeFactory.createLiteral(columnValue) ;
-					 }
-					 row.set( predicates.get(col) , o);
-				 }
-			 }
-			 rowNum++;
+
+		while ((rowLine = parser.parse1()) != null) {
+			if (rowNum == 0) {
+				table.createColumn(CSV_ROW_NODE);
+				for (String column : rowLine) {
+					String uri = IRIResolver.resolveString(csvFilePath) + "#"
+							+ LangCSV.toSafeLocalname(column);
+					Node p = NodeFactory.createURI(uri);
+					predicates.add(p);
+					table.createColumn(p);
+				}
+			} else {
+				Node subject = LangCSV.caculateSubject(rowNum, csvFilePath);
+				Row row = table.getRow(subject);
+				
+				row.setValue(table.getColumn(CSV_ROW_NODE), NodeFactory.createLiteral(
+						(rowNum + ""), XSDDatatype.XSDinteger));
+
+				for (int col = 0; col < rowLine.size(); col++) {
+
+					String columnValue = rowLine.get(col).trim();
+					Node o;
+					try {
+						// Try for a double.
+						double d = Double.parseDouble(columnValue);
+						o = NodeFactory.createLiteral(columnValue,
+								XSDDatatype.XSDdouble);
+					} catch (Exception e) {
+						o = NodeFactory.createLiteral(columnValue);
+					}
+					row.setValue(table.getColumn(predicates.get(col)), o);
+				}
+			}
+			rowNum++;
 		}
 		return table;
-	}	
+	}
 }

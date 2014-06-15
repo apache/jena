@@ -23,17 +23,74 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
+/**
+ * PropertyTable is designed to be a table of RDF terms, or Nodes in Jena. 
+ * Each Column of the PropertyTable has an unique columnKey Node of the predicate (or p for short).
+ * Each Row of the PropertyTable has an unique rowKey Node of the subject (or s for short).
+ * You can use getColumn() to get the Column by its columnKey Node of the predicate, while getRow() for Row.
+ * 
+ */
 public interface PropertyTable {
 	
+	/**
+	 * Query for ?s <p> <o>
+	 * @param column, the Column with the columnKey Node of the predicate
+	 * @param value, the object (or value) Node
+	 * @return the ExtendedIterator of the matching Triples
+	 */
+	ExtendedIterator<Triple> getTripleIterator(Column column, Node value);
+
+	/**
+	 * Query for ?s <p> ?o
+	 * @param column, the Column with the columnKey Node of the predicate
+	 * @return the ExtendedIterator of the matching Triples
+	 */
+	ExtendedIterator<Triple> getTripleIterator(Column column);
+	
+	/**
+	 * Query for ?s ?p <o>
+	 * @param value, the object (or value) Node
+	 * @return the ExtendedIterator of the matching Triples
+	 */
+	ExtendedIterator<Triple> getTripleIterator(Node value);
+	
+	/**
+	 * Query for <s> ?p ?o
+	 * @param row, the Row with the rowKey Node of the subject
+	 * @return the ExtendedIterator of the matching Triples
+	 */
+	ExtendedIterator<Triple> getTripleIterator(Row row);
+	
+	/**
+	 * Query for ?s ?p ?o
+	 * @return all of the Triples of the PropertyTable
+	 */
 	ExtendedIterator<Triple> getTripleIterator();
 
-	ExtendedIterator<Triple> getTripleIterator(Column column);
-
+	/**
+	 * @return all of the Columns of the PropertyTable
+	 */
 	Collection<Column> getColumns();
 
+	/**
+	 * Get Column by its columnKey Node of the predicate
+	 * @param p, columnKey Node of the predicate
+	 * @return the Column
+	 */
 	Column getColumn(Node p);
 
+	/**
+	 * Create a Column by its columnKey Node of the predicate
+	 * @param p
+	 */
 	void createColumn(Node p);
 
-	Row getRow(Object rowNum);
+	/**
+	 * Get Row by its rowKey Node of the subject
+	 * @param s, rowKey Node of the subject
+	 * @return the Row
+	 */
+	Row getRow(Node s);
+	
+	
 }

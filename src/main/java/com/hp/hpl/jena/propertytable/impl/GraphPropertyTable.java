@@ -41,77 +41,89 @@ public class GraphPropertyTable extends GraphBase {
 
 	@Override
 	protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m) {
+		//System.out.println(m);
 
 		if (this.pt == null) {
 			return NullIterator.instance();
 		}
-		
-		ExtendedIterator<Triple> iter= null;
+
+		ExtendedIterator<Triple> iter = null;
+
+		Node s = m.getMatchSubject();
 		Node p = m.getMatchPredicate();
-		
-		
-		if (p == null || p == Node.ANY) {
-			iter = pt.getTripleIterator();
-		} else {
+		Node o = m.getMatchObject();
+
+		if (isConcrete(p) && isConcrete(o)) {
+			//System.out.println("1");
+			iter = pt.getTripleIterator(pt.getColumn(p), o);
+		} else if (isConcrete(p)) {
+			//System.out.println("2");
 			Column column = this.pt.getColumn(p);
-			if (column !=null){
-				iter = pt.getTripleIterator();
-			}else {
+			if (column != null) {
+				iter = pt.getTripleIterator(column);
+			} else {
 				return NullIterator.instance();
 			}
+		} else if (isConcrete(o)) {
+			//System.out.println("3");
+			iter = pt.getTripleIterator(o);
+		} else{
+			//System.out.println("4");
+			iter = pt.getTripleIterator();
 		}
-		
-		return iter.filterKeep ( new TripleMatchFilterEquality( m.asTriple() ) );
+
+		return iter.filterKeep(new TripleMatchFilterEquality(m.asTriple()));
 
 	}
-	
-	static class TripleMatchFilterEquality extends Filter<Triple>
-    {
-        final protected Triple tMatch;
-    
-        /** Creates new TripleMatchFilter */
-        public TripleMatchFilterEquality(Triple tMatch) 
-            { this.tMatch = tMatch; }
-        
-        @Override
-        public boolean accept(Triple t)
-        {
-            return tripleContained(tMatch, t) ;
-        }
-        
-    }
-	static boolean tripleContained(Triple patternTriple, Triple dataTriple)
-    {
-        return
-            equalNode(patternTriple.getSubject(),   dataTriple.getSubject()) &&
-            equalNode(patternTriple.getPredicate(), dataTriple.getPredicate()) &&
-            equalNode(patternTriple.getObject(),    dataTriple.getObject()) ;
-    }
-    
-    private static boolean equalNode(Node m, Node n)
-    {
-        // m should not be null unless .getMatchXXXX used to get the node.
-        // Language tag canonicalization
-        n = fixupNode(n) ;
-        m = fixupNode(m) ;
-        return (m==null) || (m == Node.ANY) || m.equals(n) ;
-    }
-    
-    private static Node fixupNode(Node node)
-    {
-        if ( node == null || node == Node.ANY )
-            return node ;
 
-        // RDF says ... language tags should be canonicalized to lower case.
-        if ( node.isLiteral() )
-        {
-            String lang = node.getLiteralLanguage() ;
-            if ( lang != null && ! lang.equals("") )
-                node = NodeFactory.createLiteral(node.getLiteralLexicalForm(),
-                                          lang.toLowerCase(Locale.ROOT),
-                                          node.getLiteralDatatype()) ;
-        }
-        return node ; 
-    }
+	static class TripleMatchFilterEquality extends Filter<Triple> {
+		final protected Triple tMatch;
+
+		/** Creates new TripleMatchFilter */
+		public TripleMatchFilterEquality(Triple tMatch) {
+			this.tMatch = tMatch;
+		}
+
+		@Override
+		public boolean accept(Triple t) {
+			return tripleContained(tMatch, t);
+		}
+
+	}
+
+	static boolean tripleContained(Triple patternTriple, Triple dataTriple) {
+		return equalNode(patternTriple.getSubject(), dataTriple.getSubject())
+				&& equalNode(patternTriple.getPredicate(),
+						dataTriple.getPredicate())
+				&& equalNode(patternTriple.getObject(), dataTriple.getObject());
+	}
+
+	private static boolean equalNode(Node m, Node n) {
+		// m should not be null unless .getMatchXXXX used to get the node.
+		// Language tag canonicalization
+		n = fixupNode(n);
+		m = fixupNode(m);
+		return (m == null) || (m == Node.ANY) || m.equals(n);
+	}
+
+	private static Node fixupNode(Node node) {
+		if (node == null || node == Node.ANY)
+			return node;
+
+		// RDF says ... language tags should be canonicalized to lower case.
+		if (node.isLiteral()) {
+			String lang = node.getLiteralLanguage();
+			if (lang != null && !lang.equals(""))
+				node = NodeFactory.createLiteral(node.getLiteralLexicalForm(),
+						lang.toLowerCase(Locale.ROOT),
+						node.getLiteralDatatype());
+		}
+		return node;
+	}
+
+	private boolean isConcrete(Node node) {
+		boolean wild = (node == null || node == Node.ANY);
+		return !wild;
+	}
 
 }
