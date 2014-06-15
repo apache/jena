@@ -24,9 +24,9 @@ import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.Syntax ;
-
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode ;
 
@@ -144,6 +144,16 @@ public class Serializer
         Log.warn(Serializer.class, "Unknown syntax: "+outSyntax) ;
     }
     
+    static public void serializeARQ(Query query, IndentedWriter writer)
+    {
+        Prologue prologue = query ;
+        
+        if ( ! query.explicitlySetBaseURI() ) {
+            prologue = new Prologue(query.getPrefixMapping(), (IRIResolver)null) ;
+        }
+        serializeARQ(query, prologue, writer);
+    }
+    
     static public void serializeARQ(Query query, Prologue p, IndentedWriter writer)
     {
         // For the query pattern
@@ -151,25 +161,12 @@ public class Serializer
         // For the construct pattern
         SerializationContext cxt2 = new SerializationContext(p, new NodeToLabelMapBNode("c", false)  ) ;
         
-        Prologue orig = null;
-        if ( query != p) {
-        	orig = query.copy();
-        	query.usePrologueFrom(p);
-        }
-        
         serializeARQ(query, writer, 
                      new FormatterElement(writer, cxt1),
                      new FmtExprSPARQL(writer, cxt1),
                      new FmtTemplate(writer, cxt2)) ;
-        
-        if (orig != null) query.usePrologueFrom(orig);
     }
      
-    static public void serializeARQ(Query query, IndentedWriter writer)
-    {
-    	serializeARQ(query, query, writer);
-    }
-    
     static void serializeARQ(Query query, 
                              IndentedWriter writer, 
                              FormatterElement eltFmt,
