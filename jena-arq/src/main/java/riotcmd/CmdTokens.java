@@ -47,7 +47,7 @@ public class CmdTokens
         }
         for ( String filename : args )
         {
-            InputStream in = IO.openFile(args[0]) ;
+            InputStream in = IO.openFile(filename) ;
             Tokenizer tokenize = TokenizerFactory.makeTokenizerUTF8(in) ;
             Timer timer = new Timer() ;
             long count = 0 ; 
