@@ -29,6 +29,7 @@ import org.apache.jena.riot.out.SinkQuadBracedOutput ;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -235,7 +236,11 @@ public class UpdateWriter implements Closeable
     
     public static void output(UpdateRequest request, IndentedWriter out)
     {
-        SerializationContext sCxt = new SerializationContext(request, new NodeToLabelMapBNode()) ;
+        Prologue prologue = request ;
+        if ( ! request.explicitlySetBaseURI() )
+            prologue = new Prologue(request.getPrefixMapping(), (IRIResolver)null) ;
+        
+        SerializationContext sCxt = new SerializationContext(prologue, new NodeToLabelMapBNode()) ;
         output(request, out, sCxt);
     }
     
