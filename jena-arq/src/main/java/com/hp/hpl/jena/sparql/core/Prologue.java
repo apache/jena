@@ -66,7 +66,11 @@ public class Prologue
     {
         PrefixMapping prefixMap = new PrefixMappingImpl() ;
         prefixMap.setNsPrefixes(this.prefixMap) ;
-        return new Prologue(prefixMap, resolver.getBaseIRI()) ;
+        String baseURI = null ;
+        if ( resolver != null)
+            baseURI = resolver.getBaseIRI() ;
+        
+        return new Prologue(prefixMap, baseURI) ;
     }
     
     // Reverse of sub()
