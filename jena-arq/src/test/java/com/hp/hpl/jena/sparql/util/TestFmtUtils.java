@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals ;
 
 import java.io.ByteArrayOutputStream ;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.junit.Test ;
 
@@ -23,6 +24,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestFmtUtils
 {
@@ -35,7 +37,7 @@ public class TestFmtUtils
     public void stringForTriple_WithPrefixMapping() {
         assertEquals("zz:abs <n2> \"l3\"", stringForTriple(getPrefixedTriple(), getPrefixMapping())) ;
     }
-
+    
     @Test
     public void stringForQuadEncoding() {
         Node n1 = NodeFactory.createURI("q1") ;
@@ -145,6 +147,22 @@ public class TestFmtUtils
     @Test
     public void stringForString() {
         assertEquals("\"a\\rbt\"", FmtUtils.stringForString("a\rbt")) ;
+    }
+
+    @Test
+    public void testFormatBGP_1() {
+        IndentedLineBuffer b = new IndentedLineBuffer() ;
+        BasicPattern bgp = SSE.parseBGP("(prefix ((zz: <"+aUri+">)) (bgp (zz:s zz:p zz:o)))") ;
+        FmtUtils.formatPattern(b, bgp, getContext()) ;
+        assertEquals("zz:s zz:p zz:o .", b.toString()) ;
+    }
+
+    @Test
+    public void testFormatBGP_2() {
+        IndentedLineBuffer b = new IndentedLineBuffer() ;
+        BasicPattern bgp = SSE.parseBGP("(prefix ((zz: <"+aUri+">)) (bgp (zz:s zz:p zz:o) (zz:s zz:p 123) ))") ;
+        FmtUtils.formatPattern(b, bgp, getContext()) ;
+        assertEquals("zz:s zz:p zz:o .\nzz:s zz:p 123 .", b.toString()) ;
     }
 
     private Triple getTriple() {

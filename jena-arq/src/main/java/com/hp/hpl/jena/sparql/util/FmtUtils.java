@@ -49,7 +49,7 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class FmtUtils
 {
-    // OLD CODE - being replaced by riot.NodeFmtLib 
+    // OLD CODE - being replaced by riot.NodeFmtLib
     
     // Consider withdrawing non-serialzation context forms of this.
     // Or a temporary SerialzationContext does not abbreviate bNodes.
@@ -70,24 +70,42 @@ public class FmtUtils
     }
 
     // Formatting various items
-    public static String stringForTriple(Triple triple)
+    public static String stringForTriple( Triple triple )
     {
-        return
-            stringForNode(triple.getSubject())+" "+
-            stringForNode(triple.getPredicate())+" "+
-            stringForNode(triple.getObject()) ;
+        StringBuilder result = new StringBuilder();
+        stringForNode( result, triple.getSubject() );
+        result.append( " " );
+        stringForNode( result, triple.getPredicate() );
+        result.append( " " );
+        stringForNode( result, triple.getObject() );
+        return result.toString();
     }
-    
     
     public static String stringForTriple(Triple triple, PrefixMapping prefixMap)
     {
-        return
-            stringForNode(triple.getSubject(), prefixMap)+" "+
-            stringForNode(triple.getPredicate(), prefixMap)+" "+
-            stringForNode(triple.getObject(), prefixMap) ;
+        return stringForTriple(triple, sCxt(prefixMap)) ;
     }
     
-    // Formatting various items
+    public static String stringForTriple(Triple triple, SerializationContext sCxt)
+    {
+        StringBuilder result = new StringBuilder();
+        stringForTriple(result, triple, sCxt) ;
+        return result.toString();
+    }
+    
+    public static void stringForTriple(StringBuilder result, Triple triple, SerializationContext sCxt)
+    {
+        stringForNode(result, triple.getSubject(), sCxt );
+        result.append( " " );
+        stringForNode(result, triple.getPredicate(), sCxt );
+        result.append( " " );
+        stringForNode(result, triple.getObject(), sCxt );
+    }
+    
+    public static String stringForQuad(Quad quad, PrefixMapping prefixMap) {
+        return stringForQuad(quad, sCxt(prefixMap)) ;
+    }
+
     public static String stringForQuad(Quad quad)
     {
         StringBuilder sb = new StringBuilder() ;
@@ -98,93 +116,50 @@ public class FmtUtils
             sb.append(" ") ;
         }
         
-        sb.append(stringForNode(quad.getSubject())) ;
+        stringForNode(sb, quad.getSubject() );
         sb.append(" ") ;
-        sb.append(stringForNode(quad.getPredicate())) ;
+        stringForNode(sb, quad.getPredicate());
         sb.append(" ") ;
-        sb.append(stringForNode(quad.getObject())) ;
+        stringForNode(sb, quad.getObject());
         return sb.toString() ;
     }
     
-    
-    public static String stringForQuad(Quad quad, PrefixMapping prefixMap)
-    {
+    public static String stringForQuad(Quad quad, SerializationContext sCxt) {
         StringBuilder sb = new StringBuilder() ;
-        
+        stringForQuad(sb, quad, sCxt) ;
+        return sb.toString() ;
+    }
+    
+    public static void stringForQuad(StringBuilder sb, Quad quad, SerializationContext sCxt)
+    {
         if ( quad.getGraph() != null )
         {
-            sb.append(stringForNode(quad.getGraph(), prefixMap)) ;
+            sb.append(stringForNode(quad.getGraph(), sCxt)) ;
             sb.append(" ") ;
         }
         
-        sb.append(stringForNode(quad.getSubject(), prefixMap)) ;
+        stringForNode(sb, quad.getSubject(), sCxt);
         sb.append(" ") ;
-        sb.append(stringForNode(quad.getPredicate(), prefixMap)) ;
+        stringForNode( sb, quad.getPredicate(), sCxt );
         sb.append(" ") ;
-        sb.append(stringForNode(quad.getObject(), prefixMap)) ;
-        return sb.toString() ;
-    }
-    
-    // To a Writer?
-    private static void formatTriple(IndentedWriter out, Triple triple, SerializationContext sCxt)
-    {
-        out.print(stringForNode(triple.getSubject(), sCxt)) ;
-        out.print(" ") ;
-        out.print(stringForNode(triple.getPredicate(), sCxt)) ;
-        out.print(" ") ;
-        out.print(stringForNode(triple.getObject(), sCxt)) ;
-        out.print(" .") ;
+        stringForNode(sb, quad.getObject(), sCxt);
     }
     
     public static void formatPattern(IndentedWriter out, BasicPattern pattern, SerializationContext sCxt)
     {
+        StringBuilder buffer = new StringBuilder() ;  
         boolean first = true ;
-        for (Triple t : pattern )
+        for (Triple triple : pattern )
         {
             if ( ! first )
-                out.println() ;
-            formatTriple(out, t, sCxt) ;
+                buffer.append("\n") ;
+            stringForTriple(buffer, triple, sCxt) ;
+            buffer.append(" ." ) ;
+            out.print(buffer.toString()) ;
+            buffer.setLength(0) ;
             first = false ;
         }
     }
-    
-//    private static String stringForQuad(Quad quad)
-//    {
-//        return stringForQuad(quad, ARQConstants.getGlobalPrefixMap()) ;
-//    }
-//    
-//    
-//    private static String stringForQuad(Quad quad, PrefixMapping prefixMap)
-//    {
-//        StringBuilder buff = new StringBuilder() ;
-//        
-//        if ( ! quad.isDefaultGraph() )
-//        {
-//            if ( quad.isUnionGraph() )
-//                buff.append("*") ;
-//            else
-//                buff.append(stringForNode(quad.getGraph(), prefixMap)) ;
-//            buff.append(" ") ;
-//        }
-//        buff.append(stringForNode(quad.getSubject(), prefixMap)) ;
-//        buff.append(" ") ;
-//        buff.append(stringForNode(quad.getPredicate(), prefixMap)) ;
-//        buff.append(" ") ;
-//        buff.append(stringForNode(quad.getObject(), prefixMap)) ;
-//        return buff.toString() ;
-//    }
-//    
-//    public void formatQuad(IndentedWriter out, Quad quad, SerializationContext sCxt)
-//    {
-//        out.print(stringForNode(quad.getGraph(), sCxt)) ;
-//        out.print(" ") ;
-//        out.print(stringForNode(quad.getSubject(), sCxt)) ;
-//        out.print(" ") ;
-//        out.print(stringForNode(quad.getPredicate(), sCxt)) ;
-//        out.print(" ") ;
-//        out.print(stringForNode(quad.getObject(), sCxt)) ;
-//        out.print(" .") ;
-//    }
     
     public static String stringForObject(Object obj)
     {
@@ -203,7 +178,7 @@ public class FmtUtils
     {
         Model m = null ;
         if ( obj instanceof Resource )
-            m = ((Resource)obj).getModel() ;
+            m = obj.getModel() ;
         return stringForRDFNode(obj, newSerializationContext(m)) ;
     }
 
@@ -214,10 +189,17 @@ public class FmtUtils
     
     public static String stringForLiteral(Node_Literal literal, SerializationContext context)
     {
+        StringBuilder result = new StringBuilder(  );
+        stringForLiteral( result, literal, context );
+        return result.toString();
+    }
+
+    public static void stringForLiteral(StringBuilder result, Node_Literal literal, SerializationContext context)
+    {
         String datatype = literal.getLiteralDatatypeURI() ;
         String lang = literal.getLiteralLanguage() ;
         String s = literal.getLiteralLexicalForm() ;
-        
+
         //For some literals we can use plain literal form unless the Serialization Context
         //explicitly says not to
         //For backwards compatibility if using a null context then we use plain literal
@@ -236,12 +218,13 @@ public class FmtUtils
                     if ( s.startsWith("+") )
                         s1 = s.substring(1) ;
                     new java.math.BigInteger(s1) ;
-                    return s ;
+                    result.append(s);
+                    return;
                 } catch (NumberFormatException nfe) {}
                 // No luck.  Continue.
                 // Continuing is always safe.
             }
-            
+
             if ( datatype.equals(XSD.decimal.getURI()) )
             {
                 if ( s.indexOf('.') > 0 )
@@ -249,12 +232,13 @@ public class FmtUtils
                     try {
                         // BigDecimal does allow a leading +
                         new java.math.BigDecimal(s) ;
-                        return s ;
+                        result.append(s);
+                        return;
                     } catch (NumberFormatException nfe) {}
                     // No luck.  Continue.
                 }
             }
-            
+
             if ( datatype.equals(XSD.xdouble.getURI()) )
             {
                 // Assumes SPARQL has decimals and doubles.
@@ -264,7 +248,8 @@ public class FmtUtils
                 {
                     try {
                         Double.parseDouble(s) ;
-                        return s ;  // returm the original lexical form. 
+                        result.append(s);
+                        return;  // returm the original lexical form.
                     } catch (NumberFormatException nfe) {}
                     // No luck.  Continue.
                 }
@@ -272,38 +257,38 @@ public class FmtUtils
 
             if ( datatype.equals(XSD.xboolean.getURI()) )
             {
-                // Pragmatics: if the data wrote "1"^^xsd:boolean, keep that form.  
-                // The lexical form must be lower case. 
+                // Pragmatics: if the data wrote "1"^^xsd:boolean, keep that form.
+                // The lexical form must be lower case.
 //                if ( s.equals("true") || s.equals("1") ) return s ;
 //                if ( s.equals("false") || s.equals("0")  ) return s ;
-                if ( s.equals("true") ) return s ;
-                if ( s.equals("false") ) return s ;
-                
+                if ( s.equals("true") || s.equals("false"))
+                {
+                    result.append(s);
+                    return;
+                }
+
             }
             // Not a recognized form.
         }
-        
-        StringBuilder sbuff = new StringBuilder() ;
-        sbuff.append("\"") ;
-        stringEsc(sbuff, s, true) ;
-        sbuff.append("\"") ;
-        
-        // Format the language tag 
+
+        result.append("\"") ;
+        stringEsc(result, s, true) ;
+        result.append("\"") ;
+
+        // Format the language tag
         if ( lang != null && lang.length()>0)
         {
-            sbuff.append("@") ;
-            sbuff.append(lang) ;
+            result.append("@") ;
+            result.append(lang) ;
         }
 
         if ( datatype != null )
         {
-            sbuff.append("^^") ;
-            sbuff.append(stringForURI(datatype, context)) ;
+            result.append("^^") ;
+            stringForURI( result, datatype, context );
         }
-        
-        return sbuff.toString() ;
     }
-    
+
     public static String stringForString(String str)
     {
         StringBuilder sbuff = new StringBuilder() ;
@@ -324,56 +309,105 @@ public class FmtUtils
     }
 
     public static String stringForNode(Node n)
-    { return stringForNode(n, ARQConstants.getGlobalPrefixMap()) ; }
+    {
+        StringBuilder sb = new StringBuilder();
+        stringForNode(sb, n, ARQConstants.getGlobalPrefixMap()) ;
+        return sb.toString();
+    }
+
+    public static void stringForNode(StringBuilder result, Node n)
+    {
+        stringForNode( result, n, ARQConstants.getGlobalPrefixMap()) ;
+    }
 
     public static String stringForNode(Node n, PrefixMapping prefixMap)
-    { return stringForNode(n, newSerializationContext(prefixMap)) ; }
-    
+    {
+        StringBuilder sb = new StringBuilder();
+        stringForNode(sb, n, newSerializationContext(prefixMap)) ;
+        return sb.toString();
+    }
+
+    public static void stringForNode(StringBuilder result, Node n, PrefixMapping prefixMap)
+    {
+        stringForNode( result, n, newSerializationContext(prefixMap)) ;
+    }
+
     public static String stringForNode(Node n, Prologue prologue)
-    { return stringForNode(n, newSerializationContext(prologue)) ; }
+    {
+        StringBuilder sb = new StringBuilder();
+        stringForNode(sb, n, newSerializationContext(prologue)) ;
+        return sb.toString();
+    }
 
     public static String stringForNode(Node n, SerializationContext context)
     {
-//        if ( context == null )
-//            context = new SerializationContext() ;
-        
-        if ( n == null )
-            return "<<null>>" ;
-        
+        StringBuilder sb = new StringBuilder(  );
+        stringForNode( sb, n, context );
+        return sb.toString();
+    }
+
+    public static void stringForNode(StringBuilder result, Node n, SerializationContext context)
+    {
+        if ( n == null )  {
+            result.append( "<<null>>");
+            return;
+        }
+
         // mappable?
         if ( context != null && context.getBNodeMap() != null )
         {
             String str = context.getBNodeMap().asString(n)  ;
             if ( str != null )
-                return str ;
+            {
+                result.append( str);
+                return;
+            }
         }
-        
+
         if ( n.isBlank() )
-            return "_:"+n.getBlankNodeLabel() ;
-        
-        if ( n.isLiteral() )
-            return stringForLiteral((Node_Literal)n, context) ;
-
-        if ( n.isURI() )
         {
-            String uri = n.getURI() ;
-            return stringForURI(uri, context) ;
+            result.append( "_:" ).append( n.getBlankNodeLabel() );
         }
-        
-        if ( n.isVariable() )
-            return "?"+n.getName() ;
-        
-        if ( n.equals(Node.ANY) )
-            return "ANY" ;
-
-        Log.warn(FmtUtils.class, "Failed to turn a node into a string: "+n) ;
-        return n.toString() ;
+        else if ( n.isLiteral() )
+        {
+            stringForLiteral( result, (Node_Literal) n, context );
+        }
+        else if ( n.isURI() )
+        {
+            String uri = n.getURI();
+            stringForURI( result, uri, context );
+        }
+        else if ( n.isVariable() )
+        {
+            result.append( "?" ).append( n.getName() );
+        }
+        else if ( n.equals( Node.ANY ) )
+        {
+            result.append( "ANY" );
+        }
+        else
+        {
+            Log.warn( FmtUtils.class, "Failed to turn a node into a string: " + n );
+            result.append( n.toString() );
+        }
     }
 
     static public String stringForURI(String uri)
-    { return "<"+stringEsc(uri)+">" ; }
+    {
+        StringBuilder sb = new StringBuilder();
+        stringForURI(sb, uri);
+        return sb.toString();
+    }
 
-    static public String stringForURI(String uri, Prologue prologue)
+	static public void stringForURI(StringBuilder target, String uri)
+	{
+		target.append("<");
+		stringEsc(target, uri);
+		target.append(">");
+	}
+
+
+	static public String stringForURI(String uri, Prologue prologue)
     {
         return stringForURI(uri, prologue.getBaseURI(), prologue.getPrefixMapping()) ;
     }
@@ -387,10 +421,15 @@ public class FmtUtils
     {
         if ( context == null )
             return stringForURI(uri, null, null) ;
-//        if ( ! context.getPrologue().explicitlySetBaseURI() )
-//            return stringForURI(uri, null, context.getPrefixMapping()) ;
-        
         return stringForURI(uri, context.getBaseIRI(), context.getPrefixMapping()) ;
+    }
+
+    static public void stringForURI(StringBuilder result, String uri, SerializationContext context)
+    {
+        if ( context == null )
+            stringForURI(result, uri, null, null) ;
+        else
+            stringForURI(result, uri, context.getBaseIRI(), context.getPrefixMapping()) ;
     }
 
     static public String stringForURI(String uri, PrefixMapping mapping)
@@ -398,22 +437,36 @@ public class FmtUtils
     
     static public String stringForURI(String uri, String base, PrefixMapping mapping)
     {
+        StringBuilder result = new StringBuilder(  );
+        stringForURI( result, uri, base, mapping );
+        return result.toString();
+    }
+
+    static public void stringForURI(StringBuilder result, String uri, String base, PrefixMapping mapping)
+    {
         if ( mapping != null )
         {
             String pname = prefixFor(uri, mapping) ;
             if ( pname != null )
-                return pname ;
+            {
+                result.append( pname);
+                return;
+            }
+
         }
         if ( base != null )
         {
             String x = abbrevByBase(uri, base) ;
-            if ( x != null ) 
-                return "<"+x+">" ;
+            if ( x != null ) {
+                result.append("<");
+                result.append(x);
+                result.append(">");
+                return;
+            }
         }
-        return stringForURI(uri) ; 
+        stringForURI( result, uri ) ;
     }
-    
-    
+
     static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
     
     static public String abbrevByBase(String uri, String base)
@@ -505,7 +558,7 @@ public class FmtUtils
     // take a string and make it safe for writing.
     public static String stringEsc(String s)
     { return stringEsc( s, true ) ; }
-    
+
     public static String stringEsc(String s, boolean singleLineString)
     {
         StringBuilder sb = new StringBuilder() ;
