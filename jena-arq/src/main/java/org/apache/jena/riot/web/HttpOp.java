@@ -39,6 +39,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.AbstractHttpClient;
@@ -1115,8 +1116,8 @@ public class HttpOp {
                 log.debug(format("[%d] %s %s", id, statusLine.getStatusCode(), statusLine.getReasonPhrase()));
                 // Error responses can have bodies so it is important to clear
                 // up.
-                EntityUtils.consume(response.getEntity());
-                throw new HttpException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+				final String contentPayload = readPayload(response.getEntity());
+				throw new HttpException(statusLine.getStatusCode(), statusLine.getReasonPhrase(), contentPayload);
             }
             // Redirects are followed by HttpClient.
             if (handler != null)
@@ -1125,6 +1126,14 @@ public class HttpOp {
             throw new HttpException(ex);
         }
     }
+
+
+	public static String readPayload(HttpEntity entity) throws IOException {
+		if (entity == null) {
+			return null;
+		}
+		return EntityUtils.toString(entity, ContentType.getOrDefault(entity).getCharset());
+	}
 
     /**
      * Ensures that a HTTP Client is non-null

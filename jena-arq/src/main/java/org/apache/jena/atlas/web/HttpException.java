@@ -26,12 +26,15 @@ public class HttpException extends RuntimeException {
     private static final long serialVersionUID = -7224224620679594095L;
     private int responseCode = -1;
     private String statusLine = null ;
+	private String response;
 
-    public HttpException(int responseCode, String statusLine) {
-        super(responseCode + " - " + statusLine);
-        this.responseCode = responseCode;
-        this.statusLine = statusLine ;
-    }
+	public HttpException(int responseCode, String statusLine, String response) {
+		super(responseCode + " - " + statusLine);
+		this.responseCode = responseCode;
+		this.statusLine = statusLine ;
+		this.response = response;
+	}
+
     
     public HttpException(String message) {
         super(message);
@@ -61,4 +64,11 @@ public class HttpException extends RuntimeException {
         return this.statusLine;
     }
 
+	/**
+	 * The response payload from the remote.
+	 * @return The payload, or null if no payload
+	 */
+	public String getResponse() {
+		return response;
+	}
 }
