@@ -31,8 +31,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.riot.web.HttpOp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,12 +132,15 @@ public class FormsAuthenticator extends AbstractScopedAuthenticator<FormLogin> {
                 post.setEntity(login.getLoginEntity());
                 HttpResponse response = client.execute(post, httpContext);
 
-                // Check for successful login
+				// Always read the payload to ensure reusable connections
+				final String payload = HttpOp.readPayload(response.getEntity());
+
+				// Check for successful login
                 if (response.getStatusLine().getStatusCode() >= 400) {
                     LOG.warn("Failed to login against " + login.getLoginFormURL() + " to obtain authentication for access to "
                             + target.toString());
                     throw new HttpException(response.getStatusLine().getStatusCode(), "Login attempt failed - "
-                            + response.getStatusLine().getReasonPhrase());
+                            + response.getStatusLine().getReasonPhrase(), payload);
                 }
 
                 // Otherwise assume a successful login
@@ -145,8 +148,6 @@ public class FormsAuthenticator extends AbstractScopedAuthenticator<FormLogin> {
                         + " and obtained authentication for access to " + target.toString());
                 login.setCookies(client.getCookieStore());
 
-                // Consume the response to free up the connection
-                EntityUtils.consumeQuietly(response.getEntity());
             } catch (UnsupportedEncodingException e) {
                 throw new HttpException("UTF-8 encoding not supported on your platform", e);
             } catch (IOException e) {
