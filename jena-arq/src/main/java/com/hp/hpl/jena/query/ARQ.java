@@ -232,7 +232,7 @@ public class ARQ
      * of bindings held in memory could be many times this value; it is necessary to keep this fact in mind when
      * choosing the value.
      * <p/>
-     * Operations currently affected by this symbol: <br/>
+     * Operations currently affected by this symbol: <br>
      * ORDER BY, SPARQL Update, CONSTRUCT (optionally)
      * <p/>
      * TODO: Give a reasonable suggested value here.  10,000?
@@ -240,8 +240,8 @@ public class ARQ
      * @see <a href="https://issues.apache.org/jira/browse/JENA-119">JENA-119</a>
      */
     // Some possible additions to the list:
-    // Sort: DISTINCT, merge joins<br/>
-    // Hash table: GROUP BY, MINUS, SERVICE, VALUES, and hash joins <br/>
+    // Sort: DISTINCT, merge joins<br>
+    // Hash table: GROUP BY, MINUS, SERVICE, VALUES, and hash joins <br>
     public static final Symbol spillToDiskThreshold = ARQConstants.allocSymbol("spillToDiskThreshold") ;
     
     // Optimizer controls.
