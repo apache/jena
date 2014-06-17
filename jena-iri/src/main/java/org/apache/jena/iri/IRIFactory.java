@@ -333,7 +333,7 @@ public class IRIFactory extends IRIFactoryImpl
      * <blockquote>
 Systems accepting IRIs MAY also deal with the 
 printable characters in US-ASCII that are not allowed 
-in URIs, namely "&lt;", ">", '"', space, "{", "}", "|", 
+in URIs, namely "&lt;", "&gt;", '"', space, "{", "}", "|", 
 "\", "^", and "`", in step 2 above. If these characters 
 are found but are not converted, then the conversion 
 SHOULD fail. Please note that the number sign ("#"), 
@@ -404,13 +404,13 @@ characters ("[", "]") are not part of the above list
      * (if possible).
      * Omitted components are passed as null.
      * 
-     * @param scheme
-     * @param userInfo
+     * @param scheme Schema
+     * @param userInfo User Info
      * @param host Will be encoded using punycode, if necessary.
      * @param port May be 0 for no port.
      * @param path  May not be null
-     * @param query
-     * @param fragment
+     * @param query Query string
+     * @param fragment Fragment
      * @return An IRI with the given components.
      @see #setEncoding(String)
      */
@@ -441,11 +441,11 @@ characters ("[", "]") are not part of the above list
      * this version uses percent escaping as opposed to punycode
      * for the authority. DNS hostnames should be
      * escaped in punycode (if necessary).
-     * @param scheme
+     * @param scheme Scheme
      * @param authority Will be percent escaped if necessary
      * @param path  May not be null
-     * @param query
-     * @param fragment
+     * @param query Query
+     * @param fragment Fragment
      * @return An IRI with the given components.
      @see #setEncoding(String)
      */
@@ -467,13 +467,13 @@ characters ("[", "]") are not part of the above list
      * to make this IRI legal for this factory
      * (if possible).
      * Omitted components are passed as null.
-     * @param scheme
-     * @param userInfo
+     * @param scheme Scheme
+     * @param userInfo user info
      * @param host Will be encoded using punycode, if necessary.
      * @param port May be 0 for no port.
      * @param path  May not be null
-     * @param query
-     * @param fragment
+     * @param query Query string
+     * @param fragment Fragment
      * @return An IRI with the given components.
      * * @throws IRIException If the resulting IRI
      *    has unfixable errors, e.g. non-ascii chars in the scheme name
@@ -511,11 +511,11 @@ characters ("[", "]") are not part of the above list
      * this version uses percent escaping as opposed to punycode
      * for the authority. DNS hostnames should be
      * escaped in punycode (if necessary).
-     * @param scheme
+     * @param scheme Scheme
      * @param authority Will be percent escaped if necessary
      * @param path  May not be null
-     * @param query
-     * @param fragment
+     * @param query Query string
+     * @param fragment Fragment
      * @return An IRI with the given components.
     
      * @throws IRIException If the resulting IRI
@@ -693,7 +693,7 @@ characters ("[", "]") are not part of the above list
      * 
      * <p>
      * From <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-3">RFC 2119</a>
-     * <q>the full implications must be understood and carefully weighed before</q>
+     * <em>the full implications must be understood and carefully weighed before</em>
      * calling this method with <code>isError=false</code>. 
      * Thus, you MUST have read and understood
      * the specifications that you are configuring the factory
@@ -794,7 +794,7 @@ characters ("[", "]") are not part of the above list
     }
     
 //    
-    /**
+    /* *
      * Adds a scheme to the list of known schemes.
      * The <code>port</code> argument either
      * associates this scheme with a default port number,
@@ -833,6 +833,7 @@ characters ("[", "]") are not part of the above list
      * one or more components of the IRI; and only
      * these checks are performed.</dd>
      * </dl>
+     * </table>
      * <p>The currently implemented schemes are:</p>
      * <table>
      * <tr><th>Scheme</th><th>Level of implementation</th></tr>
@@ -840,8 +841,6 @@ characters ("[", "]") are not part of the above list
      * </table> 
      * @param scheme The scheme name or "*" to use all implemented scheme specific rules.
      * @param asErrors If true, then violations are treated as errors; if false violations are treated as warnings.
-     
-   
      * @throws IllegalStateException If this factory has already been used to create an IRI.
      */
     @Override
@@ -855,7 +854,6 @@ characters ("[", "]") are not part of the above list
         theIRIFactory.useSchemeSpecificRules("*",true);
         theIRIFactory.create("");
         
-
         jenaFactory = new IRIFactory();
 //        jenaFactory.dnsViolation(false,false);
 //        jenaFactory.setSameSchemeRelativeReferences("file");
