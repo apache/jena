@@ -47,23 +47,23 @@ public class Log {
     }
 
     static public void debug(String caller, String msg) {
-        log(caller).info(msg) ;
+        log(caller).debug(msg) ;
     }
 
     static public void debug(Object caller, String msg) {
-        log(caller.getClass()).info(msg) ;
+        log(caller.getClass()).debug(msg) ;
     }
 
     static public void debug(Class<? > cls, String msg) {
-        log(cls).info(msg) ;
+        log(cls).debug(msg) ;
     }
 
     static public void debug(Object caller, String msg, Throwable th) {
-        log(caller.getClass()).info(msg, th) ;
+        log(caller.getClass()).debug(msg, th) ;
     }
 
     static public void debug(Class<? > cls, String msg, Throwable th) {
-        log(cls).info(msg, th) ;
+        log(cls).debug(msg, th) ;
     }
 
     static public void warn(String caller, String msg) {
