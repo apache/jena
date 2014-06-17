@@ -90,9 +90,9 @@ public class TDB {
      * A String enum Symbol that specifies the type of temporary storage for
      * transaction journal write blocks.
      * <p/>
-     * "mem" = Java heap memory (default) <br/>
-     * "direct" = Process heap memory <br/>
-     * "mapped" = Memory mapped temporary file <br/>
+     * "mem" = Java heap memory (default) <br>
+     * "direct" = Process heap memory <br>
+     * "mapped" = Memory mapped temporary file <br>
      */
     public static final Symbol  transactionJournalWriteBlockMode = SystemTDB.allocSymbol("transactionJournalWriteBlockMode") ;
 
