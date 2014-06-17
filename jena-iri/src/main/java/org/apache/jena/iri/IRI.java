@@ -410,7 +410,7 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
      * This method is an alias for
      * {@link IRIFactory#create(IRI)}.
      * @see IRIFactory#construct(IRI)
-     * @param relative 
+     * @param relative IRI to resolve
      * @return The resolution of relative against this.
      */
     final public IRI resolve(IRI relative) {
@@ -422,7 +422,7 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
      * This method is an alias for
      * {@link IRIFactory#create(String)}.
      * @see IRIFactory#construct(String)
-     * @param relative 
+     * @param relative IRI to resolve
      * @return The resolution of relative against this.
      */
     final public IRI resolve(String relative) {
@@ -438,7 +438,7 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
     
     /**
      * To be defined: use the comparison ladder.
-     * @param iri
+     * @param iri IRI
      * @param other  Specifies where on the ladder to make the comparison.
      * @return True if this IRI is equal to the given one, when normalized with rules specified by other.
      */
@@ -446,7 +446,7 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
     
     /**
      * To be defined: use the comparison ladder.
-     * @param iri
+     * @param iri IRI
      * @return A value for other to make {@link #ladderEquals(IRI, int)} true, or -1 if none. 
      */
     abstract  public int ladderEquals(IRI iri);
@@ -455,14 +455,14 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
      * Check one or more IRIs against a specification.
      * Usage:
      * <pre>
-     * java <em>&lt;classpath></em> [ -help ] [ -iri | -uri | -xml | -schema | -xlink ] [ -f <em>file</em> ] [ <em>iri</em> ... ]
+     * java <em>&lt;classpath&gt;</em> [ -help ] [ -iri | -uri | -xml | -schema | -xlink ] [ -f <em>file</em> ] [ <em>iri</em> ... ]
      * </pre>
      * If no file or iris are specified on the command line, then standard input is used.
      * In fact more than one spec can be used, in which case violations
      * of any of them are reported.
-     * @param args
+     * @param args See above.
      */
-        static public void main(String args[]){
+    static public void main(String args[]){
             new Main().main(args);
         }
     

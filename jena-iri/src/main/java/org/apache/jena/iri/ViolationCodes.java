@@ -60,17 +60,17 @@ Concepts and Abstract Syntax
       </dd>
       
       <dd>
-      The SCHEME component is required.<br />
+      The SCHEME component is required.<br>
     
-             <br/>
+             <br>
              The following are examples of ill-formed IRIs using this scheme:
              <ul>
              
-     <li>&lt;<code>foo/bar</code>></li>
+     <li>&lt;<code>foo/bar</code>&gt;</li>
     
-     <li>&lt;<code>#frag</code>></li>
+     <li>&lt;<code>#frag</code>&gt;</li>
     
-     <li>&lt;<code>//example.org/foo/bar#frag</code>></li>
+     <li>&lt;<code>//example.org/foo/bar#frag</code>&gt;</li>
     
              </ul>
              
@@ -152,7 +152,7 @@ Concepts and Abstract Syntax
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2616.html#sec-3.2.2">section 3.2.2<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2616.html#sec-3.2.2">section 3.2.2</a>
       </dt>
       <dd>
 
@@ -216,7 +216,7 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2818.html#sec-2.4">section 2.4<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2818.html#sec-2.4">section 2.4</a>
       </dt>
       <dd>
 HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifier in place of the 'http' protocol identifier. 
@@ -226,7 +226,7 @@ HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifi
       <dt>
        See <a href="#ref-http">
      [http]</a>, specifically,
-      <a href="http://www.apps.ietf.org/rfc/rfc2818.html#sec-3.2.2">section 3.2.2<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2818.html#sec-3.2.2">section 3.2.2</a>
       </dt>
       <dd>
 
@@ -292,7 +292,7 @@ http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5</a>
       </dt>
       <dd>
 
@@ -385,7 +385,7 @@ uchar = unreserved | escape
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5</a>
       </dt>
       <dd>
 
@@ -475,7 +475,7 @@ uchar = unreserved | escape
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5</a>
       </dt>
       <dd>
 
@@ -562,7 +562,7 @@ group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc1738.html#sec-5">section 5</a>
       </dt>
       <dd>
 
@@ -683,7 +683,7 @@ uchar = unreserved | escape
       
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2">section 2<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2">section 2</a>
       </dt>
       <dd>
    All URNs have the following syntax (phrases enclosed in quotes are REQUIRED):
@@ -697,7 +697,7 @@ uchar = unreserved | escape
     
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1">section 2.1<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.1">section 2.1</a>
       </dt>
       <dd>
 
@@ -714,7 +714,7 @@ uchar = unreserved | escape
     
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.2">section 2.2<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.2">section 2.2</a>
       </dt>
       <dd>
 
@@ -735,7 +735,7 @@ uchar = unreserved | escape
     
       <dt>
        See
-      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2">section 2.3.2<a>
+      <a href="http://www.apps.ietf.org/rfc/rfc2141.html#sec-2.3.2">section 2.3.2</a>
       </dt>
       <dd>
 RFC 1630 [2] reserves the characters "/", "?", and "#" for particular purposes. 
@@ -5582,7 +5582,7 @@ This class is not part of the API.
 		    The character violates the grammar rules for URIs/IRIs.
 	    
           <p>This violates the following specifications:
-          <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here<a>), <a href="#ref-IRI">[IRI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-2.2">section 2.2<a>), <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
+          <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here</a>), <a href="#ref-IRI">[IRI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-2.2">section 2.2</a>), <a href="#ref-RDF">[RDF]</a>, <a href="#ref-XML">[XML]</a>, <a href="#ref-XLink">[XLink]</a>, <a href="#ref-Schema">[Schema]</a>.
           </p>
        
          <p>This violation has <a href="http://www.apps.ietf.org/rfc/rfc2119.html#sec-1">MUST</a> force.</p>
@@ -5608,7 +5608,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1</a>
      </dt>
      <dd>
      
@@ -5659,7 +5659,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.2">section 3.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.2">section 3.2</a>
      </dt>
      <dd>
      
@@ -5703,7 +5703,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3">section 2.3<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3">section 2.3</a>
      </dt>
      <dd>
      
@@ -5757,7 +5757,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#page-13">here<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#page-13">here</a>
      </dt>
      <dd>
      
@@ -5772,7 +5772,7 @@ This class is not part of the API.
      
     
           <p>This violates the following specifications:
-          <a href="#ref-IRI">[IRI]</a>, <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here<a>).
+          <a href="#ref-IRI">[IRI]</a>, <a href="#ref-URI">[URI]</a> (see <a href="http://www.apps.ietf.org/rfc/rfc3986.html#page-49">here</a>).
           </p>
        
      <p>This violation relates to creating your own IRIs, rather than
@@ -5813,7 +5813,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref">here<a>
+     <a href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref">here</a>
      </dt>
      <dd>
      
@@ -5840,7 +5840,7 @@ This class is not part of the API.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html">here<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html">here</a>
      </dt>
      <dd>
      
@@ -5893,7 +5893,7 @@ ucschar = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
      <dt>
      
        see
-     <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#NT-Char">here<a>
+     <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#NT-Char">here</a>
      </dt>
      <dd>
       
@@ -5931,7 +5931,7 @@ Char ::=   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF
      <dt>
      
        see
-     <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#char32">here<a>
+     <a href="http://www.w3.org/TR/2004/REC-xml-20040204/#char32">here</a>
      </dt>
      <dd>
       
@@ -5979,7 +5979,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.2.3">section 6.2.2.3<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.2.3">section 6.2.2.3</a>
      </dt>
      <dd>
      
@@ -6038,7 +6038,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1</a>
      </dt>
      <dd>
       Scheme names consist of a sequence of characters 
@@ -6078,7 +6078,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1</a>
      </dt>
      <dd>
       Scheme names consist of a sequence of characters 
@@ -6118,7 +6118,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
        For the SCHEME component:
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1">section 3.1</a>
      </dt>
      <dd>
      An implementation should accept uppercase letters as equivalent to lowercase in scheme names (e.g., allow "HTTP" as well as "http") for the sake of robustness but should only produce lowercase scheme names for consistency. 
@@ -6129,7 +6129,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
        For the HOST component:
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6174,7 +6174,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6217,7 +6217,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6262,7 +6262,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-7.2">section 7.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-7.2">section 7.2</a>
      </dt>
      <dd>
      
@@ -6328,7 +6328,7 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.1">section 4.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.1">section 4.1</a>
      </dt>
      <dd>
      
@@ -6448,7 +6448,7 @@ Whitespace characters
      <dt>
      
        see
-     <a href="http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#schema">here<a>
+     <a href="http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#schema">here</a>
      </dt>
      <dd>
      
@@ -6543,7 +6543,7 @@ Whitespace characters
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6604,7 +6604,7 @@ h16         = 1*4HEXDIG
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6654,7 +6654,7 @@ h16         = 1*4HEXDIG
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6669,7 +6669,7 @@ h16         = 1*4HEXDIG
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6721,7 +6721,7 @@ dec-octet   = DIGIT                 ; 0-9
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6769,7 +6769,7 @@ dec-octet   = DIGIT                 ; 0-9
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6817,7 +6817,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.1">section 2.1</a>
      </dt>
      <dd>
      
@@ -6891,7 +6891,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6944,7 +6944,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -6962,7 +6962,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1</a>
      </dt>
      <dd>
      
@@ -7004,7 +7004,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2">section 3.2.2</a>
      </dt>
      <dd>
      
@@ -7022,7 +7022,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-3.1">section 3.1</a>
      </dt>
      <dd>
      
@@ -7064,7 +7064,7 @@ URI producers should provide these registered names in the IDNA encoding, rather
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1</a>
      </dt>
      <dd>
      
@@ -7075,7 +7075,7 @@ Use of the format "user:password" in the userinfo field is deprecated.
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1">section 3.2.1</a>
      </dt>
      <dd>
      
@@ -7123,7 +7123,7 @@ Applications may choose to ignore or reject such data when it is received as par
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-6.1">section 6.1<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-6.1">section 6.1</a>
      </dt>
      <dd>
      
@@ -7174,7 +7174,7 @@ strong visual look-alikes. Because of the likelihood of transcription errors, th
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.2">section 4.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-4.2">section 4.2</a>
      </dt>
      <dd>
      
@@ -7254,7 +7254,7 @@ A component using right-to-left characters SHOULD start and end
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-">section <a>
+     <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-">section </a>
      </dt>
      <dd>
      
@@ -7271,7 +7271,7 @@ A component using right-to-left characters SHOULD start and end
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2">section 3.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2">section 3.2</a>
      </dt>
      <dd>
      
@@ -7285,7 +7285,7 @@ A component using right-to-left characters SHOULD start and end
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3">section 3.3<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3">section 3.3</a>
      </dt>
      <dd>
      
@@ -7339,7 +7339,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-3.3">section 3.3<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc2717.html#sec-3.3">section 3.3</a>
      </dt>
      <dd>
      
@@ -7383,7 +7383,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-5.3.2.2">section 5.3.2.2<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-5.3.2.2">section 5.3.2.2</a>
      </dt>
      <dd>
      
@@ -7426,7 +7426,7 @@ For instance, the "foo" tree would allow creation of scheme names of the form: "
      <dt>
      
        see
-     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-7.5">section 7.5<a>
+     <a href="http://www.apps.ietf.org/rfc/rfc3987.html#sec-7.5">section 7.5</a>
      </dt>
      <dd>
      

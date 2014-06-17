@@ -28,12 +28,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 public class BuildViolationCodes {
-    // TODO javadoc first line issues in violation
-    /**
-     * @param args
-     * @throws TransformerFactoryConfigurationError 
-     * @throws TransformerException 
-     */
     public static void main(String[] args) throws TransformerException, TransformerFactoryConfigurationError {
         Transformer xsl =
         TransformerFactory.newInstance().newTransformer(
