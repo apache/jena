@@ -105,7 +105,8 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
      * exceptions. This materializes the input iterator.
      */
     public static <T> Iterator<T> iterator(Iterator<? extends T> iterator) {
-        return Iter.toList(iterator).iterator() ;
+        List<T> x = Iter.toList(iterator) ;
+        return x.iterator() ;
     }
 
     public interface Folder<X, Y> {
