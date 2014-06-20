@@ -147,7 +147,6 @@
     </mailingList>
   </mailingLists>
 
-
   <issueManagement>
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
