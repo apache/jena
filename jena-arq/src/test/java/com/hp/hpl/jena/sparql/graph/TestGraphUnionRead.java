@@ -115,7 +115,7 @@ public class TestGraphUnionRead extends BaseTest
         assertEquals(2, x) ;
     }
 
-    static <T> List<T> list(/* Java 7 @SuppressWarnings("unchecked")*/ T...x)
+    static <T> List<T> list(@SuppressWarnings("unchecked") T...x)
     {
         // Warning: "Potential heap pollution via varargs parameter x"
         // Presumably because x is passed into a method. 
