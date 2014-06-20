@@ -70,7 +70,7 @@ public class Tuple<T> implements Iterable<T> {
 
     protected final T[] tuple ;
 
-    protected Tuple(T... tuple) {
+    protected Tuple(@SuppressWarnings("unchecked") T... tuple) {
         this.tuple = tuple ;
     }
 
