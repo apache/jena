@@ -291,45 +291,40 @@ public class NodeId
         long v = nodeId.value ;
         int type = nodeId.type() ;
 
-        switch (type)
-        {
+        switch (type) {
             case NONE:      return null ;
             case SPECIAL:   return null ;
                 
-            case INTEGER:
-            {
+            case INTEGER : {
                 long val = IntegerNode.unpack(v) ;
                 Node n = NodeFactory.createLiteral(Long.toString(val), null, XSDDatatype.XSDinteger) ;
                 return n ;
             }
-            case DECIMAL:
-            {
+            case DECIMAL : {
                 BigDecimal d = DecimalNode.unpackAsBigDecimal(v) ;
-                String x = d.toEngineeringString() ;
+                String x = d.toPlainString() ;
                 return NodeFactory.createLiteral(x, null, XSDDatatype.XSDdecimal) ;
             }
-
-            case DATETIME:
-            {
+            case DATETIME : {
                 long val = BitsLong.clear(v, 56, 64) ;
-                String lex = DateTimeNode.unpackDateTime(val) ; 
+                String lex = DateTimeNode.unpackDateTime(val) ;
                 return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
             }
-            case DATE:
-            {
+            case DATE : {
                 long val = BitsLong.clear(v, 56, 64) ;
                 String lex = DateTimeNode.unpackDate(val) ;
                 return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate) ;
             }
-            case BOOLEAN:
-            {
+            case BOOLEAN : {
                 long val = BitsLong.clear(v, 56, 64) ;
-                if ( val == 0 ) return NodeConst.nodeFalse ; 
-                if ( val == 1 ) return NodeConst.nodeTrue ;
-                throw new TDBException("Unrecognized boolean node id : "+val) ;
+                if ( val == 0 )
+                    return NodeConst.nodeFalse ;
+                if ( val == 1 )
+                    return NodeConst.nodeTrue ;
+                throw new TDBException("Unrecognized boolean node id : " + val) ;
             }
-            default:
-                throw new TDBException("Unrecognized node id type: "+type) ;
+            default :
+                throw new TDBException("Unrecognized node id type: " + type) ;
         }
     }
     
