@@ -39,23 +39,21 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
 
 public class QueryIterTopN extends QueryIterPlainWrapper
 {
+    /* We want to keep the N least elements (overall return is an ascending sequence so limit+ascending = least).   
+     * To do that we keep a priority heap of upto N eleemnts, ordered descending.
+     * To keep another element, it must be less than the max so far.
+     * This leaves the least N in the heap.    
+     */
 	private final QueryIterator embeddedIterator;      // Keep a record of the underlying source for .cancel.
-	/* We want to keep the N least elements (overall return is an ascending sequnce so limit+ascending = least).   
-	 * To do that we keep a priority heap of upto N eleemnts, ordered descending.
-	 * To keep another element, it must be less than the max so far.
-	 * This leaves the least N in the heap.    
-	 */
     private PriorityQueue<Binding> heap ;
     private long limit ;
     private final boolean distinct ;
 	
-    public QueryIterTopN(QueryIterator qIter, List<SortCondition> conditions, long numItems, boolean distinct, ExecutionContext context)
-    {
+    public QueryIterTopN(QueryIterator qIter, List<SortCondition> conditions, long numItems, boolean distinct, ExecutionContext context) {
         this(qIter, new BindingComparator(conditions, context), numItems, distinct, context) ;
     }
 
-    public QueryIterTopN(QueryIterator qIter, Comparator<Binding> comparator, long numItems, boolean distinct, ExecutionContext context)
-    {
+    public QueryIterTopN(QueryIterator qIter, Comparator<Binding> comparator, long numItems, boolean distinct, ExecutionContext context) {
         super(null, context) ;
         this.embeddedIterator = qIter ;
         this.distinct = distinct ;
@@ -65,49 +63,39 @@ public class QueryIterTopN extends QueryIterPlainWrapper
             limit = Long.MAX_VALUE ;
 
         if ( limit < 0 )
-            throw new QueryExecException("Negative LIMIT: "+limit) ;
-        
-        if ( limit == 0 )
-        {
-            // Keep Java happy. 
-            Iterator<Binding> iter0 = Iter.nullIterator() ; 
+            throw new QueryExecException("Negative LIMIT: " + limit) ;
+
+        if ( limit == 0 ) {
+            // Keep Java happy.
+            Iterator<Binding> iter0 = Iter.nullIterator() ;
             setIterator(iter0) ;
             qIter.close() ;
             return ;
         }
-        
-        // Keep heap with maximum accessible. 
+
+        // Keep heap with maximum accessible.
         this.heap = new PriorityQueue<Binding>((int)numItems, new ReverseComparator<Binding>(comparator)) ;
-        this.setIterator(sortTopN(qIter, comparator));
+        this.setIterator(sortTopN(qIter, comparator)) ;
     }
 
     @Override
-    public void requestCancel()
-    {
-        this.embeddedIterator.cancel();
+    public void requestCancel() {
+        this.embeddedIterator.cancel() ;
         super.requestCancel() ;
     }
-    
-    private Iterator<Binding> sortTopN(final QueryIterator qIter, final Comparator<Binding> comparator)
-    {
+
+    private Iterator<Binding> sortTopN(final QueryIterator qIter, final Comparator<Binding> comparator) {
         return new IteratorDelayedInitialization<Binding>() {
             @Override
-            protected Iterator<Binding> initializeIterator()
-            {
-                for ( ; qIter.hasNext() ; )
-                {
+            protected Iterator<Binding> initializeIterator() {
+                for (; qIter.hasNext();) {
                     Binding binding = qIter.next() ;
                     if ( heap.size() < limit )
-                    	add(binding) ;
+                        add(binding) ;
                     else {
                         Binding currentMaxLeastN = heap.peek() ;
-                        
-                    	if ( comparator.compare(binding, currentMaxLeastN) < 0 ) 
-                    	{
-                    	    // If binding is less than current Nth least ...
-                    		heap.poll() ;     // Drop Nth least.
-                        	add(binding) ;
-                    	}
+                        if ( comparator.compare(binding, currentMaxLeastN) < 0 )
+                            add(binding) ;
                     }
                 }
                 qIter.close() ;
@@ -116,20 +104,16 @@ public class QueryIterTopN extends QueryIterPlainWrapper
                 Arrays.sort(y, comparator) ;
                 IteratorArray<Binding> iter = IteratorArray.create(y) ;
                 return iter ;
-        	}
-		};
+            }
+        } ;
     }
 
-    private void add (Binding binding) 
-    {
-        if ( distinct ) 
-        {
-            if ( !heap.contains(binding) ) heap.add(binding) ;
-        } 
-        else 
-        {
-            heap.add(binding) ;
-        }
+    private void add(Binding binding) {
+        if ( distinct && heap.contains(binding) )
+            return ;
+        if ( heap.size() >= limit )
+            heap.poll() ;  // Remove front element.
+        heap.add(binding) ;
     }
 
 }
