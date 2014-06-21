@@ -155,10 +155,9 @@ public class TestQueryIterSort {
         assertEquals(500, iterator.getReturnedElementCount()) ;
         assertEquals(49, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
         while (qIter.hasNext())
-        {
             qIter.next();
-        }
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db)) ;
+        qIter.close() ;
     }
     
     @Test(expected=QueryCancelledException.class)
