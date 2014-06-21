@@ -178,8 +178,7 @@ public class Service {
         // Fuseki+SERVICE <http://localhost:3030/...>
 
         ResultSet rs = ResultSetFactory.fromXML(in);
-        QueryIterator qIter = new QueryIteratorResultSet(rs);
-        qIter = QueryIter.materialize(qIter);
+        QueryIterator qIter = QueryIter.materialize(new QueryIteratorResultSet(rs));
         // And close connection now, not when qIter is closed.
         IO.close(in);
 
