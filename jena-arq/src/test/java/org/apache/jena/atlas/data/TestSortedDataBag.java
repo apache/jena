@@ -31,7 +31,7 @@ import org.apache.jena.atlas.data.SortedDataBag ;
 import org.apache.jena.atlas.data.ThresholdPolicyCount ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.junit.Test ;
-import org.openjena.riot.SerializationFactoryFinder ;
+import org.apache.jena.riot.system.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.NodeFactory ;

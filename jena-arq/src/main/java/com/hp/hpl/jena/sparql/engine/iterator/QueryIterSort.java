@@ -28,7 +28,7 @@ import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
 import org.apache.jena.atlas.lib.Closeable ;
-import org.openjena.riot.SerializationFactoryFinder ;
+import org.apache.jena.riot.system.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.SortCondition ;
