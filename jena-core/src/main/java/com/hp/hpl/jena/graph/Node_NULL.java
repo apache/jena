@@ -23,7 +23,7 @@ package com.hp.hpl.jena.graph;
     coresponds to a null in database tables for the reification code).
 
 */
-
+@Deprecated
 public class Node_NULL extends Node_Concrete
     {
     /* package */  Node_NULL() { super( "" ); }

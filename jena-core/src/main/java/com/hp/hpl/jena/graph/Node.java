@@ -326,11 +326,8 @@ public abstract class Node {
         that require the cache-and-maker system will work; the NodeMaker constants
         should be non-null at this point.
     */       
+    @Deprecated
     public static final Node NULL = new Node_NULL(); 
-    
-    /**
-        keep the distinguishing label value.
-    */
     
     /* package visibility only */ Node( Object label ) 
         { this.label = label; }
