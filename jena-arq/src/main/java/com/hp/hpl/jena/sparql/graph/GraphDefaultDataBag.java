@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.graph;
 import org.apache.jena.atlas.data.BagFactory ;
 import org.apache.jena.atlas.data.DataBag ;
 import org.apache.jena.atlas.data.ThresholdPolicy ;
-import org.openjena.riot.SerializationFactoryFinder ;
+import org.apache.jena.riot.system.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Triple ;
 

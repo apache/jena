@@ -25,7 +25,7 @@ import org.apache.jena.atlas.data.BagFactory ;
 import org.apache.jena.atlas.data.DistinctDataNet ;
 import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
-import org.openjena.riot.SerializationFactoryFinder ;
+import org.apache.jena.riot.system.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
