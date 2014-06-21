@@ -18,16 +18,15 @@
 
 package com.hp.hpl.jena.util;
 
-import java.io.*;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.Locale ;
+import java.io.* ;
+import java.net.URL ;
+import java.nio.charset.Charset ;
 
-import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.JenaRuntime;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.WrappedIOException;
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.WrappedIOException ;
 
 public class FileUtils
 {
@@ -206,33 +205,6 @@ public class FileUtils
            
          */
 		return "file://" + new File(filename).toURI().toString().substring(5);
-    }
-    
-    /**
-     * 
-     * @deprecated Broken: use toURL()
-     */
-    @Deprecated
-    public static String encodeFileName(String s)
-    {
-        int len = s.length();
-        StringBuffer sbuff = new StringBuffer(len) ;
-
-        // Convert a few charcaters that occur in filenames into a safe form.
-        for ( int i = 0 ; i < len ; i++ )
-        {
-            char c = s.charAt(i);
-            switch (c)
-            {
-                case ' ': case '~':
-                    sbuff.append('%') ;
-                    sbuff.append(Integer.toHexString(c).toUpperCase(Locale.ENGLISH)) ;
-                    break ;
-                default:
-                    sbuff.append(c);
-            }
-        }
-        return sbuff.toString();
     }
     
     /** Check whether 'name' is possibly a file reference  
