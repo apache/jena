@@ -16,85 +16,72 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out;
+package org.apache.jena.riot.out ;
 
 import java.io.OutputStream ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.AWriter ;
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.Prologue ;
-import org.apache.jena.riot.system.SyntaxLabels ;
 import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
-/** A class that print triples, N-triples style
- *  
+/**
+ * A class that print triples, N-triples style
+ * 
  * @see WriterStreamRDFTuples
  * @see RDFDataMgr#writeTriples
- */ 
+ */
 public class SinkTripleOutput implements Sink<Triple>
 {
     // WriterStreamRDFTuples
-    
-    private Prologue prologue = null ;
-    private final AWriter out ;
-    private NodeToLabel labelPolicy = null ;
-    
-    private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
-    /** @deprecated Use {@linkplain RDFDataMgr#writeTriples} */ 
-    @Deprecated
-    public SinkTripleOutput(OutputStream outs)
-    {
-        this(outs, null, SyntaxLabels.createNodeToLabel()) ;
-    }
-    
-    public SinkTripleOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
-    {
+    private Prologue      prologue    = null ;
+    private final AWriter out ;
+    private NodeToLabel   labelPolicy = null ;
+
+    private NodeFormatter nodeFmt     = new NodeFormatterNT() ;
+
+    public SinkTripleOutput(OutputStream outs, Prologue prologue, NodeToLabel labels) {
         out = IO.wrapUTF8(outs) ;
         setPrologue(prologue) ;
         setLabelPolicy(labels) ;
     }
-    
+
     // Need to do this later sometimes to sort out the plumbing.
-    public void setPrologue(Prologue prologue)
-    {
+    public void setPrologue(Prologue prologue) {
         this.prologue = prologue ;
     }
-    
-    public void setLabelPolicy(NodeToLabel labels)
-    {
+
+    public void setLabelPolicy(NodeToLabel labels) {
         this.labelPolicy = labels ;
     }
-    
-    @Override
-    public void send(Triple triple)
-    {
-            Node s = triple.getSubject() ;
-            Node p = triple.getPredicate() ;
-            Node o = triple.getObject() ;
 
-            nodeFmt.format(out, s) ;
-            out.print(" ") ;
-            nodeFmt.format(out, p) ;
-            out.print(" ") ;
-            nodeFmt.format(out, o) ;
-            out.print(" .\n") ;
+    @Override
+    public void send(Triple triple) {
+        Node s = triple.getSubject() ;
+        Node p = triple.getPredicate() ;
+        Node o = triple.getObject() ;
+
+        nodeFmt.format(out, s) ;
+        out.print(" ") ;
+        nodeFmt.format(out, p) ;
+        out.print(" ") ;
+        nodeFmt.format(out, o) ;
+        out.print(" .\n") ;
     }
 
     @Override
-    public void flush()
-    {
+    public void flush() {
         IO.flush(out) ;
     }
 
     @Override
-    public void close()
-    { 
+    public void close() {
         IO.flush(out) ;
         // Don't close the underlying OutputStream that was passed in.
     }

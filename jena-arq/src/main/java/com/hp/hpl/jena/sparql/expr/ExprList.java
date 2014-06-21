@@ -35,22 +35,21 @@ public class ExprList implements Iterable<Expr>
     
     public ExprList() { expressions = new ArrayList<Expr>() ; }
     
-    /** @deprecated Deprecated as a public constructor.  Use {@linkplain ExprList#copy(ExprList)} instead. */
-    @Deprecated
-    public ExprList(ExprList other) { this() ; expressions.addAll(other.expressions) ; }
-    public ExprList(Expr expr)
-    {
+    private ExprList(ExprList other) {
+        this() ;
+        expressions.addAll(other.expressions) ;
+    }
+
+    public ExprList(Expr expr) {
         this() ;
         expressions.add(expr) ;
     }
-    
+
     public ExprList(List<Expr> x)   { expressions = x ; }
 
-    public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
-    {
-        for (Expr expr : expressions)
-        {
-            if ( ! expr.isSatisfied(binding, execCxt) )
+    public boolean isSatisfied(Binding binding, ExecutionContext execCxt) {
+        for (Expr expr : expressions) {
+            if ( !expr.isSatisfied(binding, execCxt) )
                 return false ;
         }
         return true ;
@@ -62,38 +61,34 @@ public class ExprList implements Iterable<Expr>
     public ExprList subList(int fromIdx, int toIdx)     { return new ExprList(expressions.subList(fromIdx, toIdx)) ; }
     public ExprList tail(int fromIdx)                   { return subList(fromIdx, expressions.size()) ; }
     
-    public Set<Var> getVarsMentioned()
-    {
+    public Set<Var> getVarsMentioned() {
         Set<Var> x = new HashSet<Var>() ;
         varsMentioned(x) ;
         return x ;
     }
-    
-    public void varsMentioned(Collection<Var> acc)
-    {
+
+    public void varsMentioned(Collection<Var> acc) {
         for (Expr expr : expressions)
             expr.varsMentioned(acc) ;
     }
-    
-    public ExprList copySubstitute(Binding binding)
-    {
+
+    public ExprList copySubstitute(Binding binding) {
         ExprList x = new ExprList() ;
-        for ( Iterator<Expr> iter = expressions.iterator() ; iter.hasNext() ; )
-        {
-            Expr expr = iter.next();
+        for (Iterator<Expr> iter = expressions.iterator(); iter.hasNext();) {
+            Expr expr = iter.next() ;
             expr = expr.copySubstitute(binding) ;
             x.add(expr) ;
         }
         return x ;
     }
-    public void addAll(ExprList exprs) { expressions.addAll(exprs.getList()) ; }
-    public void add(Expr expr) { expressions.add(expr) ; }
-    public List<Expr> getList() { return expressions ; }
+
+    public void addAll(ExprList exprs)      { expressions.addAll(exprs.getList()) ; }
+    public void add(Expr expr)              { expressions.add(expr) ; }
+    public List<Expr> getList()             { return expressions ; }
     @Override
-    public Iterator<Expr> iterator() { return expressions.iterator() ; }
+    public Iterator<Expr> iterator()        { return expressions.iterator() ; }
     
-    public void prepareExprs(Context context)
-    {
+    public void prepareExprs(Context context) {
         ExprBuild build = new ExprBuild(context) ;
         // Give each expression the chance to set up (bind functions)
         for (Expr expr : expressions)
@@ -108,33 +103,29 @@ public class ExprList implements Iterable<Expr>
     public int hashCode() { return expressions.hashCode() ; }
 
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Object other) {
         if ( this == other ) return true ;
         if ( ! ( other instanceof ExprList ) ) return false ;
         ExprList exprs = (ExprList)other ;
         return expressions.equals(exprs.expressions) ;
     }
-    public static ExprList splitConjunction(ExprList exprList1)
-    {
+
+    public static ExprList splitConjunction(ExprList exprList1) {
         ExprList exprList2 = new ExprList() ;
         for (Expr expr : exprList1)
             split(exprList2, expr) ;
         return exprList2 ;
     }
-    
-    private static ExprList splitConjunction(Expr expr)
-    {
+
+    private static ExprList splitConjunction(Expr expr) {
         ExprList exprList = new ExprList() ;
         split(exprList, expr) ;
         return exprList ;
     }
-    
-    private static void split(ExprList exprList, Expr expr)
-    {
+
+    private static void split(ExprList exprList, Expr expr) {
         // Explode &&-chain to exprlist.
-        while ( expr instanceof E_LogicalAnd )
-        {
+        while (expr instanceof E_LogicalAnd) {
             E_LogicalAnd x = (E_LogicalAnd)expr ;
             Expr left = x.getArg1() ;
             Expr right = x.getArg2() ;

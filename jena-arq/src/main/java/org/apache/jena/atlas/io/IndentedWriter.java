@@ -262,10 +262,9 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         return column ;
     }
     
-    /** @deprecated Use getAbsoluteIndent() */ 
-    @Deprecated
-    public int getIndent() { return currentIndent ; }
-    public int getAbsoluteIndent() { return currentIndent ; }
+    /** Get indent from the left hand edge */ 
+    public int getAbsoluteIndent()       { return currentIndent ; }
+    /** Set indent from the left hand edge */ 
     public void setAbsoluteIndent(int x) { currentIndent = x ; }
 
     /** Position past current indent */ 

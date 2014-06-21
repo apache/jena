@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot ;
 
 import org.apache.jena.riot.adapters.AdapterFileManager ;
 import org.apache.jena.riot.system.IO_JenaReaders ;
@@ -27,41 +27,32 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class IO_Jena
 {
-    private static String riotBase = "http://jena.apache.org/riot/" ; 
-    private static String streamManagerSymbolStr = riotBase+"streammanager" ; 
-    public static Symbol streamManagerSymbol = Symbol.create(streamManagerSymbolStr) ;
-    private static FileManager coreFileManager = null ;
+    private static String      riotBase               = "http://jena.apache.org/riot/" ;
+    private static String      streamManagerSymbolStr = riotBase + "streammanager" ;
+    public static Symbol       streamManagerSymbol    = Symbol.create(streamManagerSymbolStr) ;
+    private static FileManager coreFileManager        = null ;
 
-    public static void wireIntoJena()
-    {
+    public static void wireIntoJena() {
         FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
         IO_JenaReaders.wireIntoJena() ;
         IO_JenaWriters.wireIntoJena() ;
     }
 
-    /** @deprecated Use {@linkplain #resetJena} */
-    @Deprecated
-    public static void resetJenaReaders() { resetJena() ; }
-    
-    public static void resetJena()
-    {
+    public static void resetJena() {
         // This forces reinitialization if ever used.
         FileManager.setGlobalFileManager(null) ;
         IO_JenaReaders.resetJena() ;
         IO_JenaWriters.resetJena() ;
     }
-    
-    /** Register for use with Model.read (old style compatibility) */ 
-    public static void registerForModelRead(String name, Class<?> cls)
-    {
+
+    /** Register for use with Model.read (old style compatibility) */
+    public static void registerForModelRead(String name, Class<? > cls) {
         IO_JenaReaders.registerForModelRead(name, cls) ;
     }
-    
-    /** Register for use with Model.write  (old style compatibility) */ 
-    public static void registerForModelWrite(String name, Class<?> cls)
-    {
+
+    /** Register for use with Model.write (old style compatibility) */
+    public static void registerForModelWrite(String name, Class<? > cls) {
         IO_JenaWriters.registerForModelWrite(name, cls) ;
     }
 
 }
-
