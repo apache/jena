@@ -22,14 +22,12 @@ import java.util.List ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler ;
-import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -39,33 +37,28 @@ import com.hp.hpl.jena.util.FileManager ;
 public class DatasetFactory
 {
     /** Create an in-memory, modifiable Dataset */
-    public static Dataset createMem() { return create(DatasetGraphFactory.createMem()) ; }
+    public static Dataset createMem()       { return create(DatasetGraphFactory.createMem()) ; }
     
     /** Create an in-memory, modifiable Dataset.
      * New graphs must be explicitly added using .addGraph.
      */
-    public static Dataset createMemFixed() { return create(DatasetGraphFactory.createMemFixed()) ; }
+    public static Dataset createMemFixed()  { return create(DatasetGraphFactory.createMemFixed()) ; }
 
     /** Create an in-memory, modifyable Dataset
      * @deprecated Use createMem
      */
     @Deprecated
-    public static Dataset create()
-    { 
-        // This may not be a defaultJena model - during testing, 
-        // we use a graph that is not value-aware for xsd:String vs plain literals.
-        return new DatasetImpl(ModelFactory.createModelForGraph(GraphFactory.createDefaultGraph())) ;
-    }
+    public static Dataset create()          { return createMem() ; }
 
     /** Create a dataset with the given model as the default graph
-     * @param model
+     * @param model The model for the default graph
      * @return Dataset 
      */ 
     public static Dataset create(Model model)
     { return new DatasetImpl(model) ; }
 
-    /** Create a dataset
-     * @param dataset
+    /** Create a dataset: clone the dataset structure of named graohs, and share the graphs themselves.
+     * @param dataset Dataset to clone structure from.
      * @return Dataset 
      */ 
     public static Dataset create(Dataset dataset)

@@ -168,47 +168,5 @@ public class Lang
 
         return x ;
     }
-    
-    // ----
-    /** Translate a name into a Lang
-     * Throws RiotException if the name is not recognized.
-     * @deprecated Use {@link RDFLanguages#nameToLang(String)}
-     */
-    @Deprecated 
-    public static Lang get(String name) {
-        Lang lang =  RDFLanguages.nameToLang(name) ;
-        if ( lang == null )
-            throw new RiotException("No such language: "+name) ;
-        return lang ;
-    }
-    
-    /** Translate a name into a Lang, return the default if no match found.
-     * @deprecated Use {@link RDFLanguages#nameToLang(String)}
-     */
-    @Deprecated 
-    public static Lang get(String name, Lang dftLang) {
-        Lang lang =  RDFLanguages.nameToLang(name) ;
-        if ( lang == null )
-            return dftLang ;
-        return lang ;
-    }
-
-    /** Guess the language, based on filename, or URL, extenstion.
-     * Returns default if there isn't a guess available
-     * @deprecated Use {@link RDFLanguages#filenameToLang(String,Lang)}
-     */
-    @Deprecated 
-    public static Lang guess(String resourceIRI, Lang dftLang) {
-        return RDFLanguages.filenameToLang(resourceIRI, dftLang) ;
-    }
-    
-    /** Guess the language, based on filename, or URL, extenstion.
-     * Returns null if there isn't a guess available
-     * @deprecated Use {@link RDFLanguages#filenameToLang(String)}
-     */
-    @Deprecated
-    public static Lang guess(String resourceIRI) {
-        return RDFLanguages.filenameToLang(resourceIRI) ;
-    }
 }
 
