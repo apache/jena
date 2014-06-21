@@ -109,23 +109,6 @@ public class FileManager
     /** Create an uninitialized FileManager */
     public FileManager() {}
     
-    /** Create a new file manager that is a deep copy another.
-     *  Location mapper and locators chain are copied (the locators are not cloned).
-     *  The model cache is not copied and is initially set to not cache.
-     * @param filemanager
-     * @deprecated Call filemanager.clone() to get a duplicate FileManager. 
-     */
-    @Deprecated
-    public FileManager(FileManager filemanager)
-    {
-        fmHandlers.addAll(filemanager.fmHandlers) ;
-        fmMapper = null ;
-        if ( filemanager.getLocationMapper() != null )
-            fmMapper = new LocationMapper(filemanager.getLocationMapper()) ;
-        cacheModelLoads = false ;
-        modelCache = null ;
-    }
-    
     @Override
     public FileManager clone() { return clone(this) ; } 
  
@@ -159,10 +142,6 @@ public class FileManager
     }
     /** Create with the given location mapper */
     public FileManager(LocationMapper _mapper)    { setLocationMapper(_mapper) ; }
-    
-    /** @deprecated Use setLocationMapper */
-    @Deprecated
-    public void setMapper(LocationMapper _mapper) { setLocationMapper(_mapper) ; }
     
     /** Set the location mapping */
     public void setLocationMapper(LocationMapper _mapper) { fmMapper = _mapper ; }
@@ -233,10 +212,6 @@ public class FileManager
             modelCache = new HashMap<String, Model>() ;
     }
 
-    /** @deprecated Use {@linkplain #isCachingModels} */
-    @Deprecated
-    public boolean getCachingModels() { return isCachingModels() ; }
-    
     /** return whether caching is on of off */
     public boolean isCachingModels() { return cacheModelLoads ; }
     
@@ -424,7 +399,6 @@ public class FileManager
         }
         if ( in.getMimeType() != null )
         {
-            // XXX
             //syntax
         }
         model.read(in.getInput(), baseURI, syntax) ;
@@ -481,11 +455,6 @@ public class FileManager
     }
 
 
-    /** @deprecated Use mapURI */
-    @Deprecated
-    public String remap(String filenameOrURI)
-    { return mapURI(filenameOrURI) ; }
-    
     /** Apply the mapping of a filename or URI */
     public String mapURI(String filenameOrURI)
     {
