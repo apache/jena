@@ -51,10 +51,6 @@ public class TypedInputStream extends FilterInputStream
         this.baseURI = baseURI ;
     }
     
-    /** @deprecated Use {@link #getContentType} */
-    @Deprecated 
-    public String getMimeType()                 { return getContentType()  ; }
-    
     public String getContentType()          { return mediaType == null ? null : mediaType.getContentType() ; }
     public String getCharset()              { return mediaType == null ? null : mediaType.getCharset() ; }
     public ContentType getMediaType()       { return mediaType ; }

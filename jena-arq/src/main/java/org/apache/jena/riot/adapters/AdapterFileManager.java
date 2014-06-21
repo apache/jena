@@ -206,14 +206,6 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
         streamManager.addLocator(cLoc) ;
     }
 
-    /** Add a URL locator */
-    @Override
-    @Deprecated
-    public void addLocatorURL() {
-        Locator loc = new LocatorHTTP() ;
-        streamManager.addLocator(loc) ;
-    }
-
     public void addLocatorHTTP() {
         Locator loc = new LocatorHTTP() ;
         streamManager.addLocator(loc) ;
@@ -323,12 +315,5 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     @Override
     public TypedStream openNoMapOrNull(String filenameOrURI) {
         return AdapterLib.convert(streamManager.openNoMapOrNull(filenameOrURI)) ;
-    }
-
-    /** @deprecated Use mapURI */
-    @Deprecated
-    @Override
-    public String remap(String filenameOrURI) {
-        return mapURI(filenameOrURI) ;
     }
 }

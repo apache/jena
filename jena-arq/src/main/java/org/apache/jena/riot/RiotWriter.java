@@ -21,13 +21,10 @@ package org.apache.jena.riot;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
-import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.writer.* ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Direct call to create writers for specific formats.
@@ -35,36 +32,12 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public class RiotWriter
 {
-    // Compatibility stuff
-    /** @deprecated Use RDFDataMgr.write(OutputStream, DatasetGraph, Lang.NQUADS) */
-    @Deprecated
-    public static void writeNQuads(OutputStream out, DatasetGraph dsg)
-    {
-        RDFDataMgr.write(out, dsg, Lang.NQUADS) ;
-    }
-    
-    public static void writeNQuads(OutputStream out, Iterator<Quad> it)
-    {
+    public static void writeNQuads(OutputStream out, Iterator<Quad> it) {
         NQuadsWriter.write(out, it) ;
     }
 
-    /** @deprecated Use {@linkplain RDFDataMgr#write(OutputStream, Graph, Lang)} with <tt>Lang.NTRIPLES</tt>. */
-    @Deprecated
-    public static void writeTriples(OutputStream out, Graph graph)
-    {
-        RDFDataMgr.write(out, graph, Lang.NTRIPLES) ;
-    }
-    
-    public static void writeTriples(OutputStream out, Iterator<Triple> it)
-    {
+    public static void writeTriples(OutputStream out, Iterator<Triple> it) {
         NTriplesWriter.write(out, it) ;
-    }
-
-    /** @deprecated Use {@linkplain RDFDataMgr#write(OutputStream, Graph, Lang)} with <tt>Lang.RDFJSON</tt>. */
-    @Deprecated
-    public static void writeRDFJSON(OutputStream out, Graph graph)
-    {
-        RDFDataMgr.write(out, graph, Lang.RDFJSON) ;
     }
 
     // ---- Create writers

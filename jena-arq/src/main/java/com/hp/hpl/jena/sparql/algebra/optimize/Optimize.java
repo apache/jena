@@ -103,15 +103,6 @@ public class Optimize implements Rewrite
     public static void setFactory(RewriterFactory aFactory)
     { factory = aFactory ; }
 
-    /** Get the global factory for making optimizers.
-     * Ignores it's argument. 
-     * @deprecated Use {linkplain #getFactory()}.
-     */
-    @Deprecated
-    // If you see this after jena 2.11.2 release, delete this method. 
-    public static RewriterFactory getFactory(RewriterFactory aFactory)
-    { return getFactory() ; }
-
     /** Get the global factory for making optimizers */ 
     public static RewriterFactory getFactory()
     { return factory ; }

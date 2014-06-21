@@ -20,12 +20,11 @@ package org.apache.jena.riot.out;
 
 import java.io.OutputStream ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.AWriter ;
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.system.Prologue ;
-import org.apache.jena.riot.system.SyntaxLabels ;
 import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -42,13 +41,6 @@ public class SinkQuadOutput implements Sink<Quad>
     private NodeToLabel labelPolicy = null ;
     private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
-    /** @deprecated Use {@linkplain RDFDataMgr#writeTriples} */ 
-    @Deprecated
-    public SinkQuadOutput(OutputStream outs)
-    {
-        this(outs, null, SyntaxLabels.createNodeToLabel()) ;
-    }
-    
     public SinkQuadOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
     {
         out = IO.wrapUTF8(outs) ;

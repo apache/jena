@@ -203,22 +203,4 @@ public class WebContent
     public static boolean isMultiPartForm(ContentType ct) {
         return contentTypeMultipartFormData.equalsIgnoreCase(ct.getContentType()) ;
     }
-
-    /** @deprecated Use {@linkplain RDFLanguages#contentTypeToLang(String)}*/
-    @Deprecated
-    public static Lang contentTypeToLang(String contentType)
-    {
-        return RDFLanguages.contentTypeToLang(contentType) ;
-    }
-
-    /** @deprecated Use {@linkplain Lang#getHeaderString()} */
-    @Deprecated
-    public static String mapLangToContentType(Lang lang) { return lang.getHeaderString() ; }
-    
-    /** @deprecated Use {@linkplain RDFLanguages#getCharsetForContentType(String)} */
-    @Deprecated
-    public static String getCharsetForContentType(String contentType)
-    {
-        return RDFLanguages.getCharsetForContentType(contentType) ;
-    }
 }

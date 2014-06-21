@@ -21,6 +21,8 @@ package org.openjena.riot;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
+import org.apache.jena.riot.RDFDataMgr ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -32,14 +34,11 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 @Deprecated
 public class RiotWriter
 {
-    // Work in progress
-    // A class of all the ways to write things - just jumps to right place in code. 
-    
     /** @deprecated Use {@link org.apache.jena.riot.RiotWriter} */
     @Deprecated
     public static void writeNQuads(OutputStream out, DatasetGraph dsg)
     {
-        org.apache.jena.riot.RiotWriter.writeNQuads(out, dsg) ;
+        RDFDataMgr.write(out,dsg, org.apache.jena.riot.Lang.NQUADS) ;
     }
     /** @deprecated Use {@link org.apache.jena.riot.RiotWriter} */
     @Deprecated
@@ -51,7 +50,7 @@ public class RiotWriter
     @Deprecated
     public static void writeTriples(OutputStream out, Graph graph)
     {
-        org.apache.jena.riot.RiotWriter.writeTriples(out, graph) ;
+        RDFDataMgr.write(out,graph, org.apache.jena.riot.Lang.NTRIPLES) ;
     }
     /** @deprecated Use {@link org.apache.jena.riot.RiotWriter} */
     @Deprecated
@@ -63,6 +62,6 @@ public class RiotWriter
     @Deprecated
     public static void writeRDFJSON(OutputStream out, Graph graph)
     {
-        org.apache.jena.riot.RiotWriter.writeRDFJSON(out, graph) ;
+        RDFDataMgr.write(out,graph, org.apache.jena.riot.Lang.RDFJSON) ;
     }
 }

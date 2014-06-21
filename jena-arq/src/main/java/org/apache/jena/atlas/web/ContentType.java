@@ -16,47 +16,53 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.web;
+package org.apache.jena.atlas.web ;
 
 /** A restricted view of MediaType */
 public class ContentType
 {
-    private MediaType mediaType ;
-    private static final String charsetParamName              = "charset" ;
-    
-    /**  @deprecated use {@linkplain #create(String)} */
-    @Deprecated
-    public static ContentType parse(String string)  { return create(string) ; }
-    
-    public static ContentType create(String string)
-    {
+    private MediaType           mediaType ;
+    private static final String charsetParamName = "charset" ;
+
+    public static ContentType create(String string) {
         if ( string == null )
             return null ;
         ContentType ct = new ContentType(MediaType.create(string)) ;
         return ct ;
     }
-    
-    public static ContentType create(String ctString, String charset)
-    {
+
+    public static ContentType create(String ctString, String charset) {
         MediaType.ParsedMediaType x = MediaType.parse(ctString) ;
         x.params.put(charsetParamName, charset) ;
         return new ContentType(new MediaType(x)) ;
     }
-    
-    private ContentType(MediaType m)
-    {
+
+    private ContentType(MediaType m) {
         mediaType = m ;
     }
-    
-    public String getContentType()  { return mediaType.getContentType() ; }
-    public String getCharset()      { return mediaType.getCharset() ; }
-    public String getType()         { return mediaType.getType() ; }
-    public String getSubType()      { return mediaType.getSubType() ; }
-    public String toHeaderString()  { return mediaType.toHeaderString() ; }
-    
+
+    public String getContentType() {
+        return mediaType.getContentType() ;
+    }
+
+    public String getCharset() {
+        return mediaType.getCharset() ;
+    }
+
+    public String getType() {
+        return mediaType.getType() ;
+    }
+
+    public String getSubType() {
+        return mediaType.getSubType() ;
+    }
+
+    public String toHeaderString() {
+        return mediaType.toHeaderString() ;
+    }
+
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31 ;
         int result = 1 ;
         result = prime * result + ((mediaType == null) ? 0 : mediaType.hashCode()) ;
@@ -64,24 +70,24 @@ public class ContentType
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj) return true ;
-        if (obj == null) return false ;
-        if (getClass() != obj.getClass()) return false ;
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true ;
+        if ( obj == null )
+            return false ;
+        if ( getClass() != obj.getClass() )
+            return false ;
         ContentType other = (ContentType)obj ;
-        if (mediaType == null)
-        {
-            if (other.mediaType != null) return false ;
-        } else
-            if (!mediaType.equals(other.mediaType)) return false ;
+        if ( mediaType == null ) {
+            if ( other.mediaType != null )
+                return false ;
+        } else if ( !mediaType.equals(other.mediaType) )
+            return false ;
         return true ;
     }
-    
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         return mediaType.toString() ;
     }
 }
-
