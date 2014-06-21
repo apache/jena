@@ -65,13 +65,6 @@ public interface Expr
     /** Deep copy with substitution */
     public Expr copySubstitute(Binding binding) ;
 
-    
-    /** Deep copy with substitution, possibly collapsing constant sub-expressions.
-     * @deprecated See ExprTransformConstantFold for constant folding.
-     */
-    @Deprecated  // To be removed.
-    public Expr copySubstitute(Binding binding, boolean foldConstants) ;
-
     /**
      * Rewrite, applying a node->node transformation
      */

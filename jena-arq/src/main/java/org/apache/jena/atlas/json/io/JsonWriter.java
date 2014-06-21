@@ -18,7 +18,6 @@
 
 package org.apache.jena.atlas.json.io;
 
-import java.io.OutputStream ;
 import java.util.Set ;
 import java.util.SortedSet ;
 import java.util.TreeSet ;
@@ -28,11 +27,9 @@ import org.apache.jena.atlas.json.* ;
 
 public class JsonWriter implements JsonVisitor
 {
-    IndentedWriter out ;
+    private final IndentedWriter out ;
     
     public JsonWriter() { this(IndentedWriter.stdout) ; }
-    @Deprecated
-    public JsonWriter(OutputStream ps) { this(new IndentedWriter(ps)) ; }
     public JsonWriter(IndentedWriter ps) { out = ps ; }
     
     public void startOutput()   {  }

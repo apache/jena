@@ -441,21 +441,6 @@ public class ResultSetFactory {
     }
 
     /**
-     * @deprecated This will be removed.
-     * Sort an existing result set. Experimental. The list of variables is a
-     * list of names (strings), with "x" for ascending in variable "x" and "-x"
-     * for descending in variable "x"
-     * 
-     * @param resultSet
-     * @param conditions
-     * @return ResultSet
-     */
-    @Deprecated
-    static public ResultSet makeSorted(ResultSet resultSet, List<SortCondition> conditions) {
-        return new SortedResultSet(resultSet, conditions);
-    }
-
-    /**
      * Take a copy of a result set - the result set returns is an in-memory
      * copy. It is not attached to the original query execution object which can
      * be closed.

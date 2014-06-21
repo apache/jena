@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.algebra ;
 
 import static com.hp.hpl.jena.sparql.core.Vars.addVar ;
-import static com.hp.hpl.jena.sparql.core.Vars.addVarsFromTriple ;
 
 import java.util.* ;
 
@@ -107,23 +106,8 @@ public class OpVars
         OpWalker.walk(op, visitor) ;
     }
 
-    /** @deprecated Use VarUtils.addVars */
-    @Deprecated
-    public static Collection<Var> vars(BasicPattern pattern) {
-        Set<Var> acc = collector() ;
-        vars(pattern, acc) ;
-        return acc ;
-    }
-
-    /** @deprecated Use VarUtils.addVars */
-    @Deprecated
-    public static void vars(BasicPattern pattern, Collection<Var> acc) {
-        for (Triple triple : pattern)
-            addVarsFromTriple(acc, triple) ;
-    }
-
     /** Do project and don't walk into it. MINUS vars aren't visible either */
-    private static class WalkerVisitorVisible extends WalkerVisitor
+    private static class WalkerVisitorVisible extends WalkerVisitor 
     {
         private final Collection<Var> acc ;
 
