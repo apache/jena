@@ -46,7 +46,7 @@ public class DatasetFactory
      */
     public static Dataset createMemFixed() { return create(DatasetGraphFactory.createMemFixed()) ; }
 
-    /** Create an in-memory, modifable Dataset
+    /** Create an in-memory, modifyable Dataset
      * @deprecated Use createMem
      */
     @Deprecated

@@ -36,18 +36,15 @@ import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** Utilites for formatter output */
+/** Utilites for formatter output
+ * 
+ * @see NodeFormatter
+ * @see NodeFmtLib
+ */
 public class OutputLangUtils
 {
-    
-    /* This will become the way to output RDF terms and structures.
-     *   
-     */
-    
     // "Prologue" is an input concept - whats the equivalent for output?
     //   Prefix mapping + base URI abbreviation.
-    
-    // TODO Use NodeFormatters / NodeFmtLib (objectified) in output(Writer, node,*)
     
     // Make an object so it can have per-instance flags
     // ASCII vs UTF-8
@@ -57,6 +54,8 @@ public class OutputLangUtils
     
     private static boolean asciiOnly = true ;
 
+    /** @deprecated */
+    @Deprecated
     static public void output(Writer out, Quad quad, Prologue prologue, NodeToLabel labelPolicy)
     {
         Node s = quad.getSubject() ;
@@ -67,6 +66,8 @@ public class OutputLangUtils
     }
     
     // See also SinkQuadWriter and deduplicate
+    /** @deprecated */
+    @Deprecated
     static public void output(Writer out, Node s, Node p, Node o, Node g, Prologue prologue, NodeToLabel labelPolicy)
     {
         output(out, s, prologue, labelPolicy) ;
@@ -84,6 +85,8 @@ public class OutputLangUtils
     }
     
     // See also SinkTripleWriter and deduplicate
+    /** @deprecated */
+    @Deprecated
     static public void output(Writer out, Triple triple, Node graphNode, Prologue prologue, NodeToLabel labelPolicy)
     {
         Node s = triple.getSubject() ;
@@ -92,6 +95,8 @@ public class OutputLangUtils
         output(out, s, p, o, graphNode, prologue, labelPolicy) ;
     }
     
+    /** @deprecated */
+    @Deprecated
     static public void output(Writer out, Triple triple, Prologue prologue, NodeToLabel labelPolicy)
     {
         Node s = triple.getSubject() ;
@@ -100,12 +105,15 @@ public class OutputLangUtils
         output(out, s, p, o, null, prologue, labelPolicy) ;
     }
     
-    /** Use with caution - better to pass in a Node to Label mapper */
+    /** @deprecated */
+    @Deprecated
     static public void output(Writer out, Node node, Prologue prologue)
     {
         output(out, node, prologue, SyntaxLabels.createNodeToLabel()) ;
     }
     
+    /** @deprecated */
+    @Deprecated
     static public void output(Writer out, Node node, Prologue prologue, NodeToLabel labelPolicy)
     {
         // NodeVisitor would be nice but don't want to create an object per static call. 
@@ -256,7 +264,7 @@ public class OutputLangUtils
      *    
      */
     @Deprecated
-    static public void outputEsc(Writer out, String s, boolean useSlashEscapes)
+    static private void outputEsc(Writer out, String s, boolean useSlashEscapes)
     {
         int len = s.length() ;
         for (int i = 0; i < len; i++) {

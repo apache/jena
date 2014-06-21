@@ -68,6 +68,7 @@ public class TestOutput extends BaseTest
     
     @Test public void output_13()        { test(Node.ANY, "ANY", prologue) ; } 
     
+    @SuppressWarnings("deprecation")
     private void test(Node node, String string, Prologue prologue2)
     {
         try
@@ -106,6 +107,7 @@ public class TestOutput extends BaseTest
         return stringForNode(nodeStr, null, "ASCII") ;
     }
     
+    @SuppressWarnings("deprecation")
     private static String stringForNode(String nodeStr, Prologue prologue, String encoding)
     {
         Node node = NodeFactoryExtra.parseNode(nodeStr) ;

@@ -40,12 +40,6 @@ import com.hp.hpl.jena.sparql.util.VarUtils ;
 
 public class OpVars
 {
-    /** @deprecated use {@linkplain #visibleVars} */
-    @Deprecated
-    public static Set<Var> patternVars(Op op) {
-        return visibleVars(op) ;
-    }
-
     // Choose the default collector - LinkedHashSet is predictable and
     // keeps the "found" order
     private static Set<Var> collector() {
