@@ -121,32 +121,15 @@ public class QueryExecutionFactory
     /** Create a QueryExecution : the file manager will be used to load
      *  URIs in the query decription. 
      * 
-     * @param query Query
-     * @param fm    FileManager 
-     * @return QueryExecution
-     */
-    @Deprecated
-    static public QueryExecution create(Query query, FileManager fm)
-    {
-        checkArg(query) ;
-        QueryExecution qe = make(query) ;
-        if ( fm != null )
-            qe.setFileManager(fm) ;
-        return qe ;
-    }
-
-    /** Create a QueryExecution : the file manager will be used to load
-     *  URIs in the query decription. 
-     * 
      * @param queryStr Query string
      * @param fm       FileManager 
      * @return QueryExecution
+     * @deprecated Setting the FileManger has no effect. Use {@linkplain #create(String)}
      */
-
+    @Deprecated
     static public QueryExecution create(String queryStr, FileManager fm)
     {
-        checkArg(queryStr) ;
-        return create(makeQuery(queryStr), fm) ;
+        return create(queryStr) ;
     }
 
     /** Create a QueryExecution : the file manager will be used to load
@@ -156,12 +139,13 @@ public class QueryExecutionFactory
      * @param syntax   Syntax
      * @param fm       FileManager 
      * @return QueryExecution
+     * @deprecated Setting the FileManger has no effect. Use {@linkplain #create(String, Syntax)}
      */
-
-    static public QueryExecution create(String queryStr, Syntax syntax, FileManager fm)
+    @Deprecated
+    static public QueryExecution create(String queryStr, Syntax syntax, FileManager fm) 
     {
         checkArg(queryStr) ;
-        return create(makeQuery(queryStr, syntax), fm) ;
+        return create(makeQuery(queryStr, syntax)) ;
     }
 
     // ---------------- Query + Model

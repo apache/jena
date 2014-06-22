@@ -167,7 +167,7 @@ public class DatasetFactory
     public static Dataset create(String uri, List<String> namedSourceList,
                                  FileManager fileManager, String baseURI)
     {
-        return DatasetUtils.createDataset(uri, namedSourceList, fileManager, baseURI) ;
+        return DatasetUtils.createDataset(uri, namedSourceList, baseURI) ;
     }
         
    
@@ -182,12 +182,14 @@ public class DatasetFactory
      * @param fileManager
      * @param baseURI          baseURI for relative URI expansion
      * @return Dataset
+     * @deprecated FileManager argument has no effect 
      */
     
+    @Deprecated
     public static Dataset create(List<String> uriList, List<String> namedSourceList,
                                  FileManager fileManager, String baseURI)
     {
-        return DatasetUtils.createDataset(uriList, namedSourceList, fileManager, baseURI) ;
+        return DatasetUtils.createDataset(uriList, namedSourceList, baseURI) ;
     }
     
 //    public static Dataset make(Dataset ds)

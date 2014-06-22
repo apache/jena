@@ -137,7 +137,7 @@ public class QueryTest extends EarlTestCase
     
     private static Dataset createDataset(List<String> defaultGraphURIs, List<String> namedGraphURIs)
     {
-        return DatasetUtils.createDataset(defaultGraphURIs, namedGraphURIs, null, null) ;
+        return DatasetUtils.createDataset(defaultGraphURIs, namedGraphURIs, null) ;
     }
     
     @Override

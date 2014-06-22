@@ -24,19 +24,12 @@ import java.util.concurrent.TimeUnit ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.util.FileManager ;
 
 /** A interface for a single execution of a query. */
 
 
 public interface QueryExecution
 {
-    /** Set the FileManger that might be used to load files.
-     *  May not be supported by all QueryExecution implementations.  
-     */
-    @Deprecated
-    public void setFileManager(FileManager fm) ;
-    
     /** Set the initial association of variables and values.
      * May not be supported by all QueryExecution implementations.
      * @param binding
