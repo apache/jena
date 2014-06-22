@@ -45,7 +45,6 @@ import com.hp.hpl.jena.sparql.resultset.JSONInput ;
 import com.hp.hpl.jena.sparql.resultset.TSVInput ;
 import com.hp.hpl.jena.sparql.resultset.XMLInput ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.util.FileManager ;
 
 /**
  * A query execution implementation where queries are executed against a remote
@@ -223,13 +222,6 @@ public class QueryEngineHTTP implements QueryExecution {
 
     // public void setParams(Params params)
     // { this.params = params ; }
-
-    // Meaning-less
-    @Deprecated
-    @Override
-    public void setFileManager(FileManager fm) {
-        throw new UnsupportedOperationException("FileManagers do not apply to remote query execution");
-    }
 
     @Override
     public void setInitialBinding(QuerySolution binding) {

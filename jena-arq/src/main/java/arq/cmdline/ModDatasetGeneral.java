@@ -31,8 +31,6 @@ import com.hp.hpl.jena.sparql.core.DataFormat ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.LocationMapper ;
 
 /** ModDataset: arguments to build a dataset - 
  * see also ModDatasetAssembler which extends ModDataset
@@ -46,13 +44,11 @@ public class ModDatasetGeneral extends ModDataset
     protected final ArgDecl namedGraphDecl = new ArgDecl(ArgDecl.HasValue, "named", "namedgraph", "namedGraph", "namedData", "nameddata") ;
     //protected final ArgDecl dataFmtDecl    = new ArgDecl(ArgDecl.HasValue, "fmt", "format") ;
     //protected final ArgDecl dirDecl        = new ArgDecl(ArgDecl.HasValue, "dir") ;
-    protected final ArgDecl lmapDecl       = new ArgDecl(ArgDecl.HasValue, "lmap") ;
     
     private List<String> dataURLs                = null ;
     private List<String> graphURLs               = null ;
     private List<String> namedGraphURLs          = null ;
     private DataFormat dataSyntax        = null ;
-    private FileManager fileManager     = FileManager.get() ;    
 
     protected ModDatasetGeneral() {}
     
@@ -69,11 +65,6 @@ public class ModDatasetGeneral extends ModDataset
         cl.add(namedGraphDecl,
                "--namedGraph=FILE",
                "Add a graph into the dataset as a named graph") ;
-        //cl.add(dirDecl) ;
-        //cl.add(dataFmtDecl) ;
-        cl.add(lmapDecl,
-               "--lmap",
-               "Specify a location mapping file") ;
     }
     
     @Override
@@ -82,13 +73,6 @@ public class ModDatasetGeneral extends ModDataset
         dataURLs = cmdLine.getValues(dataDecl) ;
         graphURLs = cmdLine.getValues(graphDecl) ;
         namedGraphURLs = cmdLine.getValues(namedGraphDecl) ;
-        
-        if ( cmdLine.contains(lmapDecl) )
-        {
-            String lmapFile = cmdLine.getValue(lmapDecl) ;
-            LocationMapper locMap = new LocationMapper(lmapFile) ;
-            fileManager = new FileManager(locMap) ;
-        }
     }
     
     @Override
@@ -118,7 +102,7 @@ public class ModDatasetGeneral extends ModDataset
             }
             
             if ( (graphURLs != null) || (namedGraphURLs != null) )
-                ds = DatasetUtils.addInGraphs(ds, graphURLs, namedGraphURLs, fileManager, null) ;
+                ds = DatasetUtils.addInGraphs(ds, graphURLs, namedGraphURLs, null) ;
         } 
         catch (LabelExistsException ex)
         { throw new CmdException(ex.getMessage()) ; }

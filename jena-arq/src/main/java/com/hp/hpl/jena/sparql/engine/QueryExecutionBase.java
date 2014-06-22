@@ -48,7 +48,6 @@ import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
-import com.hp.hpl.jena.util.FileManager ;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 
 
@@ -64,7 +63,6 @@ public class QueryExecutionBase implements QueryExecution
     private QueryIterator       queryIterator = null ;
     private Plan                plan = null ;
     private Context             context ;
-    private FileManager         fileManager = FileManager.get() ;
     private QuerySolution       initialBinding = null ; 
     
     // Set if QueryIterator.cancel has been called 
@@ -520,7 +518,7 @@ public class QueryExecutionBase implements QueryExecution
     {
         if ( plan == null )
         {
-            DatasetGraph dsg = prepareDataset(dataset, query, fileManager) ;
+            DatasetGraph dsg = prepareDataset(dataset, query) ;
             Binding inputBinding = null ;
             if ( initialBinding != null )
                 inputBinding = BindingUtils.asBinding(initialBinding) ;
@@ -569,8 +567,7 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public Query getQuery()     { return query ; }
 
-    // Call after setFM called.
-    private static DatasetGraph prepareDataset(Dataset dataset, Query query, FileManager fileManager)
+    private static DatasetGraph prepareDataset(Dataset dataset, Query query)
     {
         if ( dataset != null )
             return dataset.asDatasetGraph() ;
@@ -583,14 +580,9 @@ public class QueryExecutionBase implements QueryExecution
         if ( baseURI == null )
             baseURI = IRIResolver.chooseBaseURI() ;
         
-        DatasetGraph dsg = DatasetUtils.createDatasetGraph(query.getDatasetDescription(),
-                                                           fileManager, baseURI ) ;
+        DatasetGraph dsg = DatasetUtils.createDatasetGraph(query.getDatasetDescription(), baseURI ) ;
         return dsg ;
     }
-    
-    @Deprecated
-    @Override
-    public void setFileManager(FileManager fm) { fileManager = fm ; }
     
     @Override
     public void setInitialBinding(QuerySolution startSolution)
