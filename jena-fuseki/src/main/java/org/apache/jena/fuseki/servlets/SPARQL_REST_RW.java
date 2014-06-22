@@ -71,7 +71,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             action.commit() ;
         }
         finally { action.endWrite() ; }
-        SPARQL_ServletBase.successNoContent(action) ;
+        ServletBase.successNoContent(action) ;
     }
 
     @Override
@@ -102,9 +102,9 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             existedBefore = addDataIntoNonTxn(action, overwrite) ;
             
         if ( existedBefore )
-            SPARQL_ServletBase.successNoContent(action) ;
+            ServletBase.successNoContent(action) ;
         else
-            SPARQL_ServletBase.successCreated(action) ;
+            ServletBase.successCreated(action) ;
     }
 
     /** Directly add data in a transaction.
