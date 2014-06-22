@@ -29,6 +29,7 @@ import org.apache.jena.atlas.csv.CSVParser;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.IRILib;
 import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
@@ -140,21 +141,7 @@ public class LangCSV implements LangRIOT {
 	}
 	
 	public static String encodeURIComponent(String s) {
-	    String result;
-
-	    try {
-	        result = URLEncoder.encode(s, "UTF-8")
-	                .replaceAll("\\+", "%20")
-	                .replaceAll("\\%21", "!")
-	                .replaceAll("\\%27", "'")
-	                .replaceAll("\\%28", "(")
-	                .replaceAll("\\%29", ")")
-	                .replaceAll("\\%7E", "~");
-	    } catch (UnsupportedEncodingException e) {
-	        result = s;
-	    }
-
-	    return result;
+	    return IRILib.encodeUriComponent(s);
 	}
 	
 	public static Node caculateSubject(int rowNum, String filename){

@@ -50,7 +50,7 @@ public class TestLangCSV extends BaseTest {
 		String[] s1 = { "`~!@#$%^&*()-_=+[{]}|\\;:'\"<.>/?", "NonURICharacters" };
 		String[] s2 = {
 				//"<"+ LangCSV.caculateSubject(1, FILE_NAME) + "> <" + FILE_URI + "#%60%7E%21%40%23%24%25%5E%26*%28%29-_%3D%2B%5B%7B%5D%7D%7C%5C%3B%3A%27%22%3C.%3E%2F%3F> 'NonURICharacters' ; ",
-				" [] <" + FILE_URI + "#%60~!%40%23%24%25%5E%26*()-_%3D%2B%5B%7B%5D%7D%7C%5C%3B%3A'%22%3C.%3E%2F%3F> 'NonURICharacters' ; ",
+				" [] <" + FILE_URI + "#%60~%21%40%23%24%25%5E%26%2A%28%29-_%3D%2B%5B%7B%5D%7D%7C%5C%3B%3A%27%22%3C.%3E%2F%3F> 'NonURICharacters' ; ",
 				" <http://w3c/future-csv-vocab/row> 1 ." };
 		assertIsomorphicWith(s1, s2);
 	}
