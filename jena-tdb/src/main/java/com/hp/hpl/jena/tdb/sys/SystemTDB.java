@@ -23,6 +23,7 @@ import java.io.IOException ;
 import java.nio.ByteOrder ;
 import java.util.Properties ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.PropertyUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
@@ -150,10 +151,6 @@ public class SystemTDB
     /** order of an in-memory BTree or B+Tree */
     public static final int OrderMem                = 5 ; // intValue("OrderMem", 5) ;
     
-    // -- Settable parameters
-
-    public static Properties global = new Properties() ;
-    
     /** Size, in bytes, of a segment (used for memory mapped files) */
     public static final int SegmentSize             = 8*1024*1024 ; // intValue("SegmentSize", 8*1024*1024) ;
     
@@ -191,6 +188,37 @@ public class SystemTDB
     public static ReorderTransformation defaultOptimizer = ReorderLib.fixed() ;
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
+    
+    /** Unsupported (for non-standard setups) 
+     * @see #enableInlineLiterals
+     */
+    public static String propertyEnableInlineLiterals1 = "com.hp.hpl.jena.tdb.store.enableInlineLiterals" ;
+    /** Unsupported (for non-standard setups) 
+     * @see #enableInlineLiterals
+     */
+    public static String propertyEnableInlineLiterals2 = "tdb:store.enableInlineLiterals" ;
+    /** <b>Unsupported</b> (for non-standard setups).
+     * This controls whether literal values are inlined into NodeIds.
+     * This is a major efficiency boost and is the default setting.
+     * It can be set false with {@code -Dtdb:store.enableInlineLiterals=false}. 
+     * Do not mix databases created with this set to different values.
+     * Chaos and incorrect results will result.
+     * Use with care. No support. 
+     * Default setting is {@code true}   
+     */
+    public static final boolean enableInlineLiterals ;
+    static { // Set enableInlineLiterals from system properties.
+        Properties sysProperties = System.getProperties() ;
+        String key = null ; 
+        if ( sysProperties.containsKey(propertyEnableInlineLiterals1) )
+            key = propertyFileKey1 ;
+        else if ( sysProperties.containsKey(propertyEnableInlineLiterals2) )
+            key = propertyFileKey2 ;
+        if ( key == null )
+            enableInlineLiterals = true ;  // Normal value. 
+        else
+            enableInlineLiterals = Boolean.valueOf(sysProperties.getProperty(key)) ;
+    }
 
 //    public static void setNullOut(boolean nullOut)
 //    { SystemTDB.NullOut = nullOut ; }
@@ -283,10 +311,7 @@ public class SystemTDB
         { 
             log.debug("No system properties file ("+propertyFileName+")") ;
             return null ;
-        } catch (IOException ex)
-        {
-            ex.printStackTrace();
-        }
+        } catch (IOException ex) { IO.exception(ex) ; }
         return p ;
     }
 

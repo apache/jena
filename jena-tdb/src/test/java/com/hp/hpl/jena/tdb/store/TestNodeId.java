@@ -29,6 +29,11 @@ import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestNodeId extends BaseTest
 {
+//    @BeforeClass public static void beforeClass() {
+//        // If running just this test suite, then this happenes before SystemTDB initialization.    
+//        System.getProperties().setProperty("tdb:store.enableInlineLiterals", "true") ;
+//    }
+    
     @Test public void nodeId_01()
     {
         NodeId nodeId = NodeId.create(37) ;
