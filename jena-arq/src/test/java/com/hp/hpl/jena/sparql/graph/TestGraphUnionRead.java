@@ -115,17 +115,8 @@ public class TestGraphUnionRead extends BaseTest
         assertEquals(2, x) ;
     }
 
-    static <T> List<T> list(@SuppressWarnings("unchecked") T...x)
+    static <T> List<T> list(T...x)
     {
-        // Warning: "Potential heap pollution via varargs parameter x"
-        // Presumably because x is passed into a method. 
         return Arrays.asList(x) ;
-        
-        // Avoid warning - copy.
-//        List<T> array = new ArrayList<T>(x.length) ;
-//        for ( T t : x )
-//            array.add(t) ;
-//        return array ;
-        
     }
 }

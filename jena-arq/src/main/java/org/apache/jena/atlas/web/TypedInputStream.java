@@ -19,7 +19,10 @@
 package org.apache.jena.atlas.web;
 
 import java.io.FilterInputStream ;
+import java.io.IOException ;
 import java.io.InputStream ;
+
+import org.apache.jena.atlas.io.IO ;
 
 public class TypedInputStream extends FilterInputStream
 { 
@@ -55,4 +58,10 @@ public class TypedInputStream extends FilterInputStream
     public String getCharset()              { return mediaType == null ? null : mediaType.getCharset() ; }
     public ContentType getMediaType()       { return mediaType ; }
     public String getBaseURI()              { return baseURI ; }
+    
+    @Override
+    public void close() {
+        try { super.close() ; }
+        catch (IOException ex) { IO.exception(ex) ; }
+    }
 }

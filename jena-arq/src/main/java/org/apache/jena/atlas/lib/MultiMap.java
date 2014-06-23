@@ -48,7 +48,7 @@ public abstract class MultiMap<K, V>
         return c.iterator().next() ;
     }
     
-    public void putAll(K key, @SuppressWarnings("unchecked") V ... values)
+    public void putAll(K key, V ... values)
     {
         for ( V v : values)
             put(key, v) ;
