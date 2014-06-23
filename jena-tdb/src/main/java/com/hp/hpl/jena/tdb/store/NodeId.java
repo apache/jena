@@ -40,7 +40,7 @@ public class NodeId
     public static final NodeId NodeDoesNotExist = new NodeId(-8) ;
     public static final NodeId NodeIdAny = new NodeId(-9) ;
     
-    private static boolean enableInlineLiterals = true ;
+    private static final boolean enableInlineLiterals = SystemTDB.enableInlineLiterals ;
     
     public static final int SIZE = SystemTDB.SizeOfLong ;
     final long value ;
