@@ -30,7 +30,7 @@ import org.apache.jena.atlas.iterator.Transform ;
 public class Tuple<T> implements Iterable<T> {
     // Interface this?
     // Classes: TupleImpl, TupleSlice
-    public static <X> Tuple<X> createTuple(@SuppressWarnings("unchecked") X... elements) {
+    public static <X> Tuple<X> createTuple(X... elements) {
         X[] els = elements ; // ArrayUtils.copy(elements) ;
         return create(els) ;
     }
@@ -70,7 +70,7 @@ public class Tuple<T> implements Iterable<T> {
 
     protected final T[] tuple ;
 
-    protected Tuple(@SuppressWarnings("unchecked") T... tuple) {
+    protected Tuple(T... tuple) {
         this.tuple = tuple ;
     }
 

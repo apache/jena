@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot.web;
 
-import java.io.IOException ;
 import java.io.InputStream ;
 
 import org.apache.http.conn.ClientConnectionManager ;
@@ -42,7 +41,7 @@ public class TypedInputStreamHttp extends TypedInputStream
     }
     
     @Override
-    public void close() throws IOException
+    public void close()
     {
         super.close() ;
         if ( connectMgr != null )
