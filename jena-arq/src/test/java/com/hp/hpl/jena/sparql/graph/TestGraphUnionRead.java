@@ -115,7 +115,7 @@ public class TestGraphUnionRead extends BaseTest
         assertEquals(2, x) ;
     }
 
-    static <T> List<T> list(T...x)
+    static <T> List<T> list(@SuppressWarnings("unchecked") T...x)
     {
         return Arrays.asList(x) ;
     }
