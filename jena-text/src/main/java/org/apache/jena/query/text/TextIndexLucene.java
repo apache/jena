@@ -203,12 +203,17 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
+    private static Query parseQuery(String queryString, String primaryField, Analyzer analyzer) throws ParseException {
+        QueryParser queryParser = new QueryParser(VER, primaryField, analyzer) ;
+        queryParser.setAllowLeadingWildcard(true) ;
+        Query query = queryParser.parse(queryString) ;
+        return query ;
+    }
+    
     private List<Map<String, Node>> get$(IndexReader indexReader, String uri) throws ParseException, IOException {
         String escaped = QueryParserBase.escape(uri) ;
         String qs = docDef.getEntityField() + ":" + escaped ;
-        QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
-        queryParser.setAllowLeadingWildcard(true) ;
-        Query query = queryParser.parse(qs) ;
+        Query query = parseQuery(qs, docDef.getPrimaryField(), analyzer) ;
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
         ScoreDoc[] sDocs = indexSearcher.search(query, 1).scoreDocs ;
         List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
@@ -245,7 +250,7 @@ public class TextIndexLucene implements TextIndex {
     public List<Node> query(String qs, int limit) {
         try(IndexReader indexReader = DirectoryReader.open(directory)) {
             return query$(indexReader, qs, limit) ;
-        }
+        } 
         catch (Exception ex) {
             exception(ex) ;
             return null ;
@@ -254,9 +259,7 @@ public class TextIndexLucene implements TextIndex {
 
     private List<Node> query$(IndexReader indexReader, String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader) ;
-        QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer) ;
-        Query query = queryParser.parse(qs) ;
-
+        Query query = parseQuery(qs, docDef.getPrimaryField(), analyzer) ;
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
