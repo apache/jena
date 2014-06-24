@@ -33,7 +33,7 @@ public class ContNodeIteratorImpl extends NiceIterator<RDFNode> implements NodeI
     protected int size;
     protected int index = 0;
     protected int numDeleted = 0;
-    protected final List<Integer> moved = new ArrayList<Integer>();
+    protected final List<Integer> moved = new ArrayList<>();
     
     protected final Iterator<Statement> iterator;
     

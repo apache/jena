@@ -25,9 +25,9 @@ import java.util.* ;
 public class ArgDecl
 {
     boolean takesValue ;
-    Set<String> names = new HashSet<String>() ;
+    Set<String> names = new HashSet<>() ;
     boolean takesArg = false ;
-    List<ArgHandler> argHooks = new ArrayList<ArgHandler>() ;
+    List<ArgHandler> argHooks = new ArrayList<>() ;
     public static final boolean HasValue = true ;
     public static final boolean NoValue = false ;
 
@@ -209,10 +209,9 @@ public class ArgDecl
 
     protected void trigger(Arg arg)
     {
-        for ( Iterator<ArgHandler> iter = argHooks.iterator() ; iter.hasNext() ; )
+        for ( ArgHandler handler : argHooks )
         {
-            ArgHandler handler = iter.next() ;
-            handler.action(arg.getName(), arg.getValue()) ;
+            handler.action( arg.getName(), arg.getValue() );
         }
     }
 
@@ -220,11 +219,12 @@ public class ArgDecl
 
     public boolean matches(Arg a)
     {
-        for ( Iterator<String> iter = names.iterator() ; iter.hasNext() ; )
+        for ( String n : names )
         {
-            String n = iter.next() ;
-            if ( a.getName().equals(n) )
-                return true ;
+            if ( a.getName().equals( n ) )
+            {
+                return true;
+            }
         }
         return false ;
     }

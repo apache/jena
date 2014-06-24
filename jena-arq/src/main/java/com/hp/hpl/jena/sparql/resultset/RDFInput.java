@@ -54,7 +54,7 @@ public class RDFInput extends ResultSetMem
     // Convert from RDF model to in-memory result set
     private void buildFromDumpFormat(Model resultsModel)
     {
-        varNames = new ArrayList<String>() ;
+        varNames = new ArrayList<>() ;
         StmtIterator sIter = resultsModel.listStatements(null, RDF.type, ResultSetGraphVocab.ResultSet) ;
         for ( ; sIter.hasNext() ;)
         {

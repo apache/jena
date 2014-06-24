@@ -203,29 +203,40 @@ public class WebOntTestHarness {
         System.out.print("Loading manifests "); System.out.flush();
         Model testDefs = ModelFactory.createDefaultModel();
         int count = 0;
-        for (int idir = 0; idir < TEST_DIRS.length; idir++) {
-            File dir = new File(BASE_TESTDIR + TEST_DIRS[idir]);
-            String[] manifests = dir.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File df, String name) {
-                        if (name.startsWith("Manifest") && name.endsWith(".rdf")) {
-                            return includeModified || ! name.endsWith("-mod.rdf");
-                        } else {
-                            return false;
-                        }
+        for ( String TEST_DIR : TEST_DIRS )
+        {
+            File dir = new File( BASE_TESTDIR + TEST_DIR );
+            String[] manifests = dir.list( new FilenameFilter()
+            {
+                @Override
+                public boolean accept( File df, String name )
+                {
+                    if ( name.startsWith( "Manifest" ) && name.endsWith( ".rdf" ) )
+                    {
+                        return includeModified || !name.endsWith( "-mod.rdf" );
                     }
-                });
-            for (int im = 0; im < manifests.length; im++) {
-                String manifest = manifests[im];
-                File mf = new File(dir, manifest);
-                try {
-                    testDefs.read(new FileInputStream(mf), "file:" + mf);
-                    count ++;
-                    if (count % 8 == 0) {
-                        System.out.print("."); System.out.flush();
+                    else
+                    {
+                        return false;
                     }
-                } catch (FileNotFoundException e) {
-                    System.out.println("File not readable - " + e);
+                }
+            } );
+            for ( String manifest : manifests )
+            {
+                File mf = new File( dir, manifest );
+                try
+                {
+                    testDefs.read( new FileInputStream( mf ), "file:" + mf );
+                    count++;
+                    if ( count % 8 == 0 )
+                    {
+                        System.out.print( "." );
+                        System.out.flush();
+                    }
+                }
+                catch ( FileNotFoundException e )
+                {
+                    System.out.println( "File not readable - " + e );
                 }
             }
         }
@@ -299,8 +310,9 @@ public class WebOntTestHarness {
      * Run all tests in the given list.
      */
     public void runTests(List<Resource> tests) {
-        for (Iterator<Resource> i = tests.iterator(); i.hasNext(); ) {
-            runTest( i.next() );
+        for ( Resource test : tests )
+        {
+            runTest( test );
         }
     }
     
@@ -471,7 +483,7 @@ public class WebOntTestHarness {
      */
     public void comprehensionAxioms(Model premises, Model conclusions) {
         // Comprehend all restriction declarations and note them in a map
-        Map<Resource, Resource> comprehension = new HashMap<Resource, Resource>();
+        Map<Resource, Resource> comprehension = new HashMap<>();
         StmtIterator ri = conclusions.listStatements(null, RDF.type, OWL.Restriction);
         while (ri.hasNext()) {
             Resource restriction = ri.nextStatement().getSubject();
@@ -498,20 +510,22 @@ public class WebOntTestHarness {
         // Rewrite queries of the form (X intersectionOf Y) to the form
         //   (X equivalentClass ?CC) (?CC intersectionOf Y)
         StmtIterator ii = conclusions.listStatements(null, OWL.intersectionOf, (RDFNode)null);
-        List<Statement> intersections = new ArrayList<Statement>();
+        List<Statement> intersections = new ArrayList<>();
         while (ii.hasNext()) { 
             intersections.add(ii.nextStatement());
         }
-        for (Iterator<Statement> i = intersections.iterator(); i.hasNext(); ) {
-            Statement is = i.next();
+        for ( Statement is : intersections )
+        {
             // Declare in the premises that such an intersection exists
-            Resource comp = premises.createResource()
-                   .addProperty(RDF.type, OWL.Class)
-                   .addProperty(OWL.intersectionOf, mapList(premises, (Resource)is.getObject(), comprehension));
+            Resource comp =
+                premises.createResource().addProperty( RDF.type, OWL.Class ).addProperty( OWL.intersectionOf,
+                                                                                          mapList( premises,
+                                                                                                   (Resource) is.getObject(),
+                                                                                                   comprehension ) );
             // Rewrite the conclusions to be a test for equivalence between the class being
             // queried and the comprehended interesection
-            conclusions.remove(is);
-            conclusions.add(is.getSubject(), OWL.equivalentClass, comp);
+            conclusions.remove( is );
+            conclusions.add( is.getSubject(), OWL.equivalentClass, comp );
         }
         // Comprehend any oneOf lists
         StmtIterator io = conclusions.listStatements(null, OWL.oneOf, (RDFNode)null);
@@ -546,7 +560,7 @@ public class WebOntTestHarness {
     
     /** Return a list of all tests of the given type, according to the current filters */
     public List<Resource> findTestsOfType(Resource testType) {
-        ArrayList<Resource> result = new ArrayList<Resource>();
+        ArrayList<Resource> result = new ArrayList<>();
         StmtIterator si = testDefinitions.listStatements(null, RDF.type, testType);
         while (si.hasNext()) {
             Resource test = si.nextStatement().getSubject();
@@ -557,17 +571,21 @@ public class WebOntTestHarness {
                 accept = status.getString().equals(STATUS_FLAGS[0]);
             } else {
                 accept = false;
-                for (int i = 0; i < STATUS_FLAGS.length; i++) {
-                    if (status.getString().equals(STATUS_FLAGS[i])) {
+                for ( String STATUS_FLAG : STATUS_FLAGS )
+                {
+                    if ( status.getString().equals( STATUS_FLAG ) )
+                    {
                         accept = true;
                         break;
                     }
                 }
             }
             // Check for blocked tests
-            for (int i = 0; i < BLOCKED_TESTS.length; i++) {
-                if (BLOCKED_TESTS[i].equals(test.toString())) {
-                    accept = false; 
+            for ( String BLOCKED_TEST : BLOCKED_TESTS )
+            {
+                if ( BLOCKED_TEST.equals( test.toString() ) )
+                {
+                    accept = false;
                 }
             }
             // End of filter tests

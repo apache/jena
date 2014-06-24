@@ -75,14 +75,14 @@ public class TemplateLib
     {
         return Iter.mapMany(bindings, new Transform<Binding, Iterator<Triple>>()
         {
-            Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ;
+            Map<Node, Node> bNodeMap = new HashMap<>() ;
             @Override
             public Iterator<Triple> convert(final Binding b)
             {
                 // Iteration is a new mapping of bnodes. 
                 bNodeMap.clear() ;
 
-                List<Triple> tripleList = new ArrayList<Triple>(triples.size());
+                List<Triple> tripleList = new ArrayList<>(triples.size());
                 for (Triple triple : triples)
                 {
                     Triple q = subst(triple, b, bNodeMap) ;
@@ -103,14 +103,14 @@ public class TemplateLib
     {
         return Iter.mapMany(bindings, new Transform<Binding, Iterator<Quad>>()
         {
-            Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ;
+            Map<Node, Node> bNodeMap = new HashMap<>() ;
             @Override
             public Iterator<Quad> convert(final Binding b)
             {
                 // Iteration is a new mapping of bnodes. 
                 bNodeMap.clear() ;
 
-                List<Quad> quadList = new ArrayList<Quad>(quads.size());
+                List<Quad> quadList = new ArrayList<>(quads.size());
                 for (Quad quad : quads)
                 {
                     Quad q = subst(quad, b, bNodeMap) ;

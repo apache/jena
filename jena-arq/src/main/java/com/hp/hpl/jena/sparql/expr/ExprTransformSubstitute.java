@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.function.user.UserDefinedFunction;
  */
 public class ExprTransformSubstitute extends ExprTransformCopy {
     
-    private Map<String, Expr> replacements = new HashMap<String, Expr>();
+    private Map<String, Expr> replacements = new HashMap<>();
     
     /**
      * Creates a simple transform that replaces any occurrence of the given variable with the given expression

@@ -33,17 +33,17 @@ public class JsonBuilder {
     // If not an array or object.
     private JsonValue         builtValue    = null ;
     private static final String NoMarker    = "" ;
-    private Deque<String>     markers       = new ArrayDeque<String>() ;
-    private Deque<JsonArray>  arrays        = new ArrayDeque<JsonArray>() ;
-    private Deque<JsonObject> objects       = new ArrayDeque<JsonObject>() ;
+    private Deque<String>     markers       = new ArrayDeque<>() ;
+    private Deque<JsonArray>  arrays        = new ArrayDeque<>() ;
+    private Deque<JsonObject> objects       = new ArrayDeque<>() ;
 
     private static enum State {
         ARRAY, OBJECT
     }
-    private Deque<State>  stack = new ArrayDeque<State>() ;
+    private Deque<State>  stack = new ArrayDeque<>() ;
 
     // The depth of this stack is the object depth. key: { key: ... } 
-    private Deque<String> keys  = new ArrayDeque<String>() ;
+    private Deque<String> keys  = new ArrayDeque<>() ;
 
     public JsonBuilder() {
 

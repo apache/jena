@@ -81,7 +81,7 @@ public class BatchedStreamRDF implements StreamRDF
 
     private void startBatchTriple(Node subject)
     {
-        batchTriples = new ArrayList<Triple>() ;
+        batchTriples = new ArrayList<>() ;
     }
     
     private void finishBatchTriple(Node subject)
@@ -125,7 +125,7 @@ public class BatchedStreamRDF implements StreamRDF
 
     private void startBatchQuad(Node graph, Node subject)
     {
-        batchQuads = new ArrayList<Quad>() ;
+        batchQuads = new ArrayList<>() ;
     }
     
     private void finishBatchQuad(Node graph, Node subject)

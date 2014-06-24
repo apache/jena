@@ -17,33 +17,21 @@
  */
 
 package com.hp.hpl.jena.rdf.arp;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.io.* ;
+import java.util.HashSet ;
+import java.util.Set ;
 
-import org.junit.Assert;
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
+import org.apache.jena.iri.IRI ;
+import org.junit.Assert ;
+import org.xml.sax.SAXException ;
+import org.xml.sax.SAXParseException ;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import org.apache.jena.iri.IRI;
-import com.hp.hpl.jena.rdf.arp.ALiteral;
-import com.hp.hpl.jena.rdf.arp.ARPEventHandler;
-import com.hp.hpl.jena.rdf.arp.AResource;
-import com.hp.hpl.jena.rdf.arp.NTriple;
-import com.hp.hpl.jena.rdf.arp.impl.ARPResource;
-import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
-import com.hp.hpl.jena.shared.wg.TestInputStreamFactory;
+import com.hp.hpl.jena.rdf.arp.impl.ARPResource ;
+import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
+import com.hp.hpl.jena.shared.wg.TestInputStreamFactory ;
 
 /**
  * A version of the test suite which uses the
@@ -88,8 +76,8 @@ class NTripleTestSuite extends WGTestSuite {
 			xCountDown = cnt;
 		}
 		final int xCountDown;
-		Set<AResource> anon = new HashSet<AResource>();
-		Set<AResource> oldAnon = new HashSet<AResource>();
+		Set<AResource> anon = new HashSet<>();
+		Set<AResource> oldAnon = new HashSet<>();
 		int state = 1; // 1 begin, 2 in RDF, 3 after RDF, 4 at end-of-file.
 		int countDown;
 		@Override
@@ -191,13 +179,12 @@ class NTripleTestSuite extends WGTestSuite {
 		 */
 		public void atEndOfFile() {
 			if (!anon.isEmpty()) {
-				Iterator<AResource> it = anon.iterator();
-				while (it.hasNext()) {
-                    AResource a =
-                    it.next();
-					System.err.print(a.getAnonymousID() + ", ");
-                    if (ARPResource.DEBUG) {
-                        RuntimeException rte = (RuntimeException)a.getUserData();
+                for ( AResource a : anon )
+                {
+                    System.err.print( a.getAnonymousID() + ", " );
+                    if ( ARPResource.DEBUG )
+                    {
+                        RuntimeException rte = (RuntimeException) a.getUserData();
 //                        throw rte;
                         rte.printStackTrace();
                     }

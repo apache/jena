@@ -42,7 +42,7 @@ import org.apache.jena.atlas.lib.Tuple;
  */
 public class ScopedNTAuthenticator extends AbstractScopedAuthenticator<Pair<Tuple<String>, char[]>> {
 
-    private Map<URI, Pair<Tuple<String>, char[]>> credentials = new HashMap<URI, Pair<Tuple<String>, char[]>>();
+    private Map<URI, Pair<Tuple<String>, char[]>> credentials = new HashMap<>();
 
     /**
      * Creates an authenticator with credentials for the given URI

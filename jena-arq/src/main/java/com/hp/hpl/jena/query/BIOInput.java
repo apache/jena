@@ -41,8 +41,8 @@ public class BIOInput
         // Trade off of guessing first line is all the VARS and coping with
         // anything possible.  -> Cope with anything possible.
         BindingInputStream bin = new BindingInputStream(input) ;
-        List<Binding> bindings = new ArrayList<Binding>() ;
-        List<Var> vars = new ArrayList<Var>() ;
+        List<Binding> bindings = new ArrayList<>() ;
+        List<Var> vars = new ArrayList<>() ;
         while(bin.hasNext())
         {
             Binding b = bin.next();

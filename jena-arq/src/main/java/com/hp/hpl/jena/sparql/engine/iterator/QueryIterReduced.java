@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 public class QueryIterReduced extends QueryIterDistinctReduced
 {
-    List<Binding> window = new ArrayList<Binding>() ;
+    List<Binding> window = new ArrayList<>() ;
     int N = 1 ;
     
     public QueryIterReduced(QueryIterator iter, ExecutionContext context)

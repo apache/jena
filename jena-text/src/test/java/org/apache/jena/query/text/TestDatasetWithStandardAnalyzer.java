@@ -134,7 +134,7 @@ public class TestDatasetWithStandardAnalyzer extends AbstractTestDatasetWithText
 				"    ?s text:query ( rdfs:label 'the' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testOneSimpleResult")) ;
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
@@ -155,7 +155,7 @@ public class TestDatasetWithStandardAnalyzer extends AbstractTestDatasetWithText
 				"    ?s text:query ( rdfs:label 'foo' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
 }

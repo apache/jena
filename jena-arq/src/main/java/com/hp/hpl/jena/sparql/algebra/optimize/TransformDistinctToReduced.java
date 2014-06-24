@@ -77,7 +77,7 @@ public class TransformDistinctToReduced extends TransformCopy {
             OpProject opProject = (OpProject) subOp;
             if (opProject.getSubOp() instanceof OpOrder) {
                 OpOrder opOrder = (OpOrder) opProject.getSubOp();
-                Set<Var> projectVars = new HashSet<Var>(opProject.getVars()) ;
+                Set<Var> projectVars = new HashSet<>(opProject.getVars()) ;
                 if (isSafe(projectVars, opOrder)) {
                     return OpReduced.create(subOp);
                 }
@@ -103,7 +103,7 @@ public class TransformDistinctToReduced extends TransformCopy {
         } else if (subOp instanceof OpProject) {
             OpProject opProject = (OpProject) subOp;
             if (opProject.getSubOp() instanceof OpOrder) {
-                projectVars = new HashSet<Var>(opProject.getVars()) ;
+                projectVars = new HashSet<>(opProject.getVars()) ;
                 opOrder = (OpOrder) opProject.getSubOp();
             }
         } 
@@ -118,7 +118,7 @@ public class TransformDistinctToReduced extends TransformCopy {
     }
 
     protected boolean isSafe(Set<Var> projectVars, OpOrder opOrder) {
-        Set<Var> seenVars = new HashSet<Var>();
+        Set<Var> seenVars = new HashSet<>();
 
         // For the optimization to be safe all project variables must appear in
         // the ordering prior to any unprojected variables

@@ -304,8 +304,10 @@ public class TestBPTreeRecords extends BaseTest
 
     private static void insert(BPTreeRecords bpr, int ... values)
     {
-        for ( int i = 0 ; i < values.length ; i++ )
-           bpr.internalInsert(RecordLib.intToRecord(values[i])) ;
+        for ( int value : values )
+        {
+            bpr.internalInsert( RecordLib.intToRecord( value ) );
+        }
     }
     
     private static void insert(BPTreeRecords bpr, Record r)
@@ -316,8 +318,10 @@ public class TestBPTreeRecords extends BaseTest
 
     private static void delete(BPTreeRecords bpr, int ... values)
     {
-        for ( int i = 0 ; i < values.length ; i++ )
-           delete(bpr, RecordLib.intToRecord(values[i])) ;
+        for ( int value : values )
+        {
+            delete( bpr, RecordLib.intToRecord( value ) );
+        }
     }
     
     private static void delete(BPTreeRecords bpr, Record r)

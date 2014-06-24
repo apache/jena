@@ -46,7 +46,7 @@ public class Manifest
     Model manifest ;
     String manifestName ;
     String filename ;
-    List<String> includedFiles = new ArrayList<String>() ;
+    List<String> includedFiles = new ArrayList<>() ;
     Resource manifestRes = null ;
      
     public Manifest(String fn)

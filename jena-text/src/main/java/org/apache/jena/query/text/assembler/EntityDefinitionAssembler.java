@@ -94,7 +94,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         String defaultField = qsol1.contains("dftField") ? qsol1.getLiteral("dftField").getLexicalForm() : null ;
               
         MultiMap<String, Node> mapDefs = MultiMap.createMapList() ; 
-        Map<String, Analyzer> analyzerDefs = new HashMap<String, Analyzer>();
+        Map<String, Analyzer> analyzerDefs = new HashMap<>();
         
         Statement listStmt = root.getProperty(TextVocab.pMap);
         while (listStmt != null) {

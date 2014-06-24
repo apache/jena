@@ -130,7 +130,7 @@ public class Tokenizer {
             }
         case LITERAL_START:
             char delim = source.charAt(p-1);
-            StringBuffer literal = new StringBuffer();
+            StringBuilder literal = new StringBuilder();
             while (p < source.length()) {
                 char c = source.charAt(p);
                 if (c == '\\') {

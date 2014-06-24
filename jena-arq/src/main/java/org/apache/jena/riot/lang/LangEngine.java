@@ -42,7 +42,7 @@ public class LangEngine
     {
         this.tokens = tokens ;
         this.profile = profile ;
-        this.peekIter = new PeekIterator<Token>(tokens) ;
+        this.peekIter = new PeekIterator<>(tokens) ;
     }
      
     // ---- Managing tokens.

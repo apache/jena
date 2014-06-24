@@ -266,7 +266,7 @@ public class TestReasoners extends TestCase {
         for (ResIterator i = im.listSubjects(); i.hasNext();) {
             Resource base = i.nextResource();
             
-            List<RDFNode> directLinks = new ArrayList<RDFNode>();
+            List<RDFNode> directLinks = new ArrayList<>();
             for (NodeIterator j = im.listObjectsOfProperty(base, dp); j.hasNext(); ) {
                 directLinks.add(j.next());
             }

@@ -53,7 +53,7 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T>
             return x ;
         }
         
-        return new IteratorCons<X>(iter1, iter2) ;
+        return new IteratorCons<>(iter1, iter2) ;
     }
     
     private IteratorCons(Iterator<? extends T> iter1, Iterator<? extends T> iter2)

@@ -70,7 +70,7 @@ public class E_BNode extends ExprFunctionN // 0 or one
 
         if ( mapping == null )
         {
-            mapping = new IdentityHashMap<Binding, LabelToNodeMap>() ;
+            mapping = new IdentityHashMap<>() ;
             env.getContext().set(keyMap, mapping) ;
         }        
         LabelToNodeMap mapper = mapping.get(binding) ;

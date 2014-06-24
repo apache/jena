@@ -198,13 +198,14 @@ public class AlgebraGenerator
         // Compile the consolidated group elements.
         // "current" is the completed part only - there may be thing pushed into the accumulator.
         Op current = OpTable.unit() ;
-        Deque<Op> acc = new ArrayDeque<Op>() ;
-        
-        for (Iterator<Element> iter = groupElts.listIterator() ; iter.hasNext() ; )
+        Deque<Op> acc = new ArrayDeque<>() ;
+
+        for ( Element elt : groupElts )
         {
-            Element elt = iter.next() ;
             if ( elt != null )
-                current = compileOneInGroup(elt, current, acc) ;
+            {
+                current = compileOneInGroup( elt, current, acc );
+            }
         }
         
         // Deal with any remaining ops.
@@ -227,7 +228,7 @@ public class AlgebraGenerator
     
     protected Pair<List<Expr>, List<Element>> prepareGroup(ElementGroup groupElt)
     {
-        List<Element> groupElts = new ArrayList<Element>() ;
+        List<Element> groupElts = new ArrayList<>() ;
         
         PathBlock currentPathBlock = null ;
         List<Expr> filters = null ;
@@ -240,7 +241,7 @@ public class AlgebraGenerator
                 // It's also illegal SPARQL - filters operate over the whole group.
                 ElementFilter f = (ElementFilter)elt ;
                 if ( filters == null )
-                    filters = new ArrayList<Expr>() ;
+                    filters = new ArrayList<>() ;
                 filters.add(f.getExpr()) ;
                 // Collect filters but do not place them yet.
                 continue ;
@@ -541,7 +542,7 @@ public class AlgebraGenerator
         VarExprList projectVars = query.getProject() ;
         
         VarExprList exprs = new VarExprList() ;     // Assignments to be done.
-        List<Var> vars = new ArrayList<Var>() ;     // projection variables
+        List<Var> vars = new ArrayList<>() ;     // projection variables
         
         Op op = pattern ;
         
@@ -611,7 +612,7 @@ public class AlgebraGenerator
         // ---- ORDER BY
         if ( query.getOrderBy() != null )
         {
-            List<SortCondition> scList = new ArrayList<SortCondition>() ;
+            List<SortCondition> scList = new ArrayList<>() ;
 
             // Aggregates in ORDER BY
             for ( SortCondition sc : query.getOrderBy() )

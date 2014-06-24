@@ -35,7 +35,7 @@ public class PeekIterator<T> implements Iterator<T>
     { 
         if ( iter instanceof PeekIterator<?> )
             return (PeekIterator<T>)iter ;
-        return new PeekIterator<T>(iter) ;
+        return new PeekIterator<>(iter) ;
     }
 
     public PeekIterator(Iterator<T> iter)

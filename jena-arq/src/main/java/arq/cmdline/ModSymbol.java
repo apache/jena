@@ -19,8 +19,6 @@
 package arq.cmdline;
 
 import java.io.PrintStream ;
-import java.util.Iterator ;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -52,21 +50,22 @@ public class ModSymbol implements ArgModuleGeneral
         
         if ( cmdLine.getValues(setDecl) == null || cmdLine.getValues(setDecl).size() == 0 )
             return ;
-        
-        for ( Iterator<String> iter = cmdLine.getValues(setDecl).iterator() ; iter.hasNext(); )
+
+        for ( String arg : cmdLine.getValues( setDecl ) )
         {
-            String arg = iter.next();
-            String[] frags = arg.split("=", 2) ;
-            if ( frags.length != 2)
-                throw new RuntimeException("Can't split '"+arg+"' -- looking for '=' to separate name and value") ;
-            
-            String symbolName = frags[0] ;
-            String value = frags[1] ;
+            String[] frags = arg.split( "=", 2 );
+            if ( frags.length != 2 )
+            {
+                throw new RuntimeException( "Can't split '" + arg + "' -- looking for '=' to separate name and value" );
+            }
+
+            String symbolName = frags[0];
+            String value = frags[1];
 
             // Make it a long name.
-            symbolName = MappingRegistry.mapPrefixName(symbolName) ;
-            Symbol symbol = Symbol.create(symbolName) ;
-            context.set(symbol, value) ;
+            symbolName = MappingRegistry.mapPrefixName( symbolName );
+            Symbol symbol = Symbol.create( symbolName );
+            context.set( symbol, value );
         }
         
         ARQ.getContext().putAll(context) ;
@@ -83,11 +82,10 @@ public class ModSymbol implements ArgModuleGeneral
     
     public void verbose(IndentedWriter out)
     {
-        for ( Iterator<Symbol> iter = context.keys().iterator() ; iter.hasNext() ; )
+        for ( Symbol symbol : context.keys() )
         {
-            Symbol symbol = iter.next();
-            String value = context.getAsString(symbol) ;
-            out.println(symbol+" -> "+value) ;
+            String value = context.getAsString( symbol );
+            out.println( symbol + " -> " + value );
         }
     }
 }

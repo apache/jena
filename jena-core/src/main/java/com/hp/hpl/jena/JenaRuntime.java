@@ -40,7 +40,7 @@ public class JenaRuntime
     /** The JVM does not implement java.nio.charset.Charset operations (correctly) */
     public static final String featureNoCharset = "http://jena.hpl.hp.com/2004/07/feature/noCharset" ; 
         
-    static Map<String, String> features = new HashMap<String, String>() ;
+    static Map<String, String> features = new HashMap<>() ;
     static {
             // Note getSystemProperty uses featureNoSecurity but works if it
             // has not been initialized

@@ -74,9 +74,9 @@ public class TestResourceUtils
         d.addProperty( RDFS.subClassOf, c );
         d.addProperty( RDFS.subClassOf, a );
 
-        List<Resource> abcd = Arrays.asList( new Resource[] {a,b,c,d} );
-        List<Resource> bcd = Arrays.asList( new Resource[] {b,c,d} );
-        List<Resource> cd = Arrays.asList( new Resource[] {c,d} );
+        List<Resource> abcd = Arrays.asList( a,b,c,d );
+        List<Resource> bcd = Arrays.asList( b,c,d );
+        List<Resource> cd = Arrays.asList( c,d );
 
         assertEquals( "Wrong number of remaining resources", 1, ResourceUtils.maximalLowerElements( abcd, RDFS.subClassOf, true ).size() );
         assertEquals( "Result should be a", a, ResourceUtils.maximalLowerElements( abcd, RDFS.subClassOf, true ).iterator().next() );
@@ -187,13 +187,13 @@ public class TestResourceUtils
         d.addProperty( RDFS.subClassOf, d );
         e.addProperty( RDFS.subClassOf, e );
 
-        List<Resource> abcde = Arrays.asList( new Resource[] {a,b,c,d,e} );
-        List<Resource> ab = Arrays.asList( new Resource[] {a,b} );
-        List<Resource> cde = Arrays.asList( new Resource[] {c,d,e} );
-        List<Resource> abde = Arrays.asList( new Resource[] {a,b,d,e} );
-        List<Resource> de = Arrays.asList( new Resource[] {d,e} );
+        List<Resource> abcde = Arrays.asList( a,b,c,d,e );
+        List<Resource> ab = Arrays.asList( a,b );
+        List<Resource> cde = Arrays.asList( c,d,e );
+        List<Resource> abde = Arrays.asList( a,b,d,e );
+        List<Resource> de = Arrays.asList( d,e );
 
-        List<Resource> in = new ArrayList<Resource>();
+        List<Resource> in = new ArrayList<>();
         in.addAll( abcde );
         List<Resource> out = null;
         assertTrue( in.equals( abcde ) );

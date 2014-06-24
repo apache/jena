@@ -87,14 +87,16 @@ public class XSDFloat extends XSDDatatype {
      */
     @Override
     public Object parseValidated(String lex) {
-        if (lex.equals("INF")) {
-            return new Float(Float.POSITIVE_INFINITY);
-        } else if (lex.equals("-INF")) {
-            return new Float(Float.NEGATIVE_INFINITY);
-        } else if (lex.equals("NaN")) {
-            return new Float(Float.NaN);
-        } else {
-            return Float.valueOf(lex);
+        switch ( lex )
+        {
+            case "INF":
+                return Float.POSITIVE_INFINITY;
+            case "-INF":
+                return Float.NEGATIVE_INFINITY;
+            case "NaN":
+                return Float.NaN;
+            default:
+                return Float.valueOf( lex );
         }
     }
      

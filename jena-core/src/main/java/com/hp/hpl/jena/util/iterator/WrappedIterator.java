@@ -42,14 +42,14 @@ public class WrappedIterator<T> extends NiceIterator<T>
         wrap <code>it</code>.
     */
     public static <T> ExtendedIterator<T> create( Iterator<T> it )
-        { return it instanceof ExtendedIterator<?> ? (ExtendedIterator<T>) it : new WrappedIterator<T>( it, false ); }
+        { return it instanceof ExtendedIterator<?> ? (ExtendedIterator<T>) it : new WrappedIterator<>( it, false ); }
     
     /**
         Answer an ExtendedIterator wrapped round <code>it</code> which does not
         permit <code>.remove()</code> even if <code>it</code> does.
     */
     public static <T> WrappedIterator<T> createNoRemove( Iterator<T> it )
-        { return new WrappedIterator<T>( it, true ); }
+        { return new WrappedIterator<>( it, true ); }
    
     
     /** Given an Iterator that returns Iterator's, this creates an

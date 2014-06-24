@@ -31,7 +31,7 @@ public class Usage
     class Category
     {
         String desc ;
-        List<Entry> entries = new ArrayList<Entry>() ;
+        List<Entry> entries = new ArrayList<>() ;
         Category(String desc) { this.desc = desc ; }
     }
     
@@ -40,7 +40,7 @@ public class Usage
      Entry(String arg, String msg) { this.arg = arg ; this.msg = msg ; }
    }
    
-   List<Category> categories = new ArrayList<Category>() ;
+   List<Category> categories = new ArrayList<>() ;
    public Usage()
    {
        // Start with an unnamed category
@@ -70,29 +70,29 @@ public class Usage
        out.incIndent(INDENT1) ;
        //for ( Iterator<Category> iter = categories.iterator() ; iter.hasNext() ; )
        
-       List<Category> categories2 = new ArrayList<Category>(categories) ;
+       List<Category> categories2 = new ArrayList<>(categories) ;
        Collections.reverse(categories2) ;
-       
-       for ( Iterator<Category> iter = categories2.iterator() ; iter.hasNext() ; )
-       
+
+       for ( Category c : categories2 )
        {
-           Category c = iter.next() ;
            if ( c.desc != null )
-               out.println(c.desc) ;
-           out.incIndent(INDENT2) ;
-           for ( Iterator<Entry> iter2 = c.entries.iterator() ; iter2.hasNext() ; )
            {
-               Entry e = iter2.next() ;
-               out.print(e.arg) ;
+               out.println( c.desc );
+           }
+           out.incIndent( INDENT2 );
+           for ( Iterator<Entry> iter2 = c.entries.iterator(); iter2.hasNext(); )
+           {
+               Entry e = iter2.next();
+               out.print( e.arg );
                if ( e.msg != null )
                {
-                   out.pad(20) ;
-                   out.print("   ") ;
-                   out.print(e.msg) ;
+                   out.pad( 20 );
+                   out.print( "   " );
+                   out.print( e.msg );
                }
-               out.println() ;
+               out.println();
            }
-           out.decIndent(INDENT2) ;
+           out.decIndent( INDENT2 );
        }
        out.decIndent(INDENT1) ;
        out.flush() ;

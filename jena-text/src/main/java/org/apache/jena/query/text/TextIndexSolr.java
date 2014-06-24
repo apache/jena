@@ -102,7 +102,7 @@ public class TextIndexSolr implements TextIndex
         // with only the last field indexed.
         // see http://stackoverflow.com/questions/12183798/solrj-api-for-partial-document-update
         // and https://svn.apache.org/repos/asf/lucene/dev/trunk/solr/solrj/src/test/org/apache/solr/client/solrj/SolrExampleTests.java
-    	HashMap<String,Object> map = new HashMap<String,Object>();
+    	HashMap<String,Object> map = new HashMap<>();
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
         	map.put("add", e.getValue());
             doc.addField(e.getKey(), map) ;
@@ -127,11 +127,11 @@ public class TextIndexSolr implements TextIndex
     
     private List<Map<String, Node>> process(SolrDocumentList solrResults)
     {
-        List<Map<String, Node>> records = new ArrayList<Map<String, Node>>() ;
+        List<Map<String, Node>> records = new ArrayList<>() ;
         
         for ( SolrDocument sd : solrResults )
         {
-            Map<String, Node> record = new HashMap<String, Node>() ; 
+            Map<String, Node> record = new HashMap<>() ;
             String uriStr = (String)sd.getFieldValue(docDef.getEntityField()) ;
             Node entity = NodeFactory.createURI(uriStr) ;
             record.put(docDef.getEntityField(), entity) ;
@@ -170,7 +170,7 @@ public class TextIndexSolr implements TextIndex
     public List<Node> query(String qs, int limit)
     {
         SolrDocumentList solrResults = solrQuery(qs, limit) ;
-        List<Node> results = new ArrayList<Node>() ;
+        List<Node> results = new ArrayList<>() ;
 
         for ( SolrDocument sd : solrResults )
         {

@@ -22,7 +22,7 @@ package org.apache.jena.atlas.lib;
 
 public class SinkNull<T> implements Sink<T>
 {
-    public static <X> SinkNull<X> create() { return new SinkNull<X>() ; }
+    public static <X> SinkNull<X> create() { return new SinkNull<>() ; }
     
     /*@Override*/ @Override
     public void send(T thing)  {}

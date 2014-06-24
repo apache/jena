@@ -56,20 +56,21 @@ public class GraphUtils
     public static List<String> multiValueString(Resource r, Property p)
     {
         List<RDFNode> nodes = multiValue(r, p) ;
-        List<String> values = new ArrayList<String>() ;
-    
-        for ( Iterator<RDFNode> iter= nodes.iterator() ; iter.hasNext() ; )
+        List<String> values = new ArrayList<>() ;
+
+        for ( RDFNode n : nodes )
         {
-            RDFNode n = iter.next();
             if ( n.isLiteral() )
-                values.add(((Literal)n).getString()) ;
+            {
+                values.add( ( (Literal) n ).getString() );
+            }
         }
         return values ;
     }
 
     public static List<RDFNode> multiValue(Resource r, Property p)
     {
-        List<RDFNode> values = new ArrayList<RDFNode>() ;
+        List<RDFNode> values = new ArrayList<>() ;
         StmtIterator sIter = r.listProperties(p) ;
         while(sIter.hasNext())
         {
@@ -82,13 +83,14 @@ public class GraphUtils
     public static List<Resource> multiValueResource(Resource r, Property p)
     {
         List<RDFNode> nodes = multiValue(r, p) ;
-        List<Resource> values = new ArrayList<Resource>() ;
-    
-        for ( Iterator<RDFNode> iter= nodes.iterator() ; iter.hasNext() ; )
+        List<Resource> values = new ArrayList<>() ;
+
+        for ( RDFNode n : nodes )
         {
-            RDFNode n = iter.next();
             if ( n.isResource() )
-                values.add((Resource)n) ;
+            {
+                values.add( (Resource) n );
+            }
         }
         return values ;
     }
@@ -96,13 +98,14 @@ public class GraphUtils
     public static List<String> multiValueURI(Resource r, Property p)
     {
         List<RDFNode> nodes = multiValue(r, p) ;
-        List<String> values = new ArrayList<String>() ;
-    
-        for ( Iterator<RDFNode> iter= nodes.iterator() ; iter.hasNext() ; )
+        List<String> values = new ArrayList<>() ;
+
+        for ( RDFNode n : nodes )
         {
-            RDFNode n = iter.next();
             if ( n.isURIResource() )
-                values.add(((Resource)n).getURI()) ;
+            {
+                values.add( ( (Resource) n ).getURI() );
+            }
         }
         return values ;
     }
@@ -199,7 +202,7 @@ public class GraphUtils
     /** All subjects and objects, no duplicates. */
     public static Iterator<Node> allNodes(Graph graph)
     {
-        Set<Node> x = new HashSet<Node>(1000) ;
+        Set<Node> x = new HashSet<>(1000) ;
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         for ( ; iter.hasNext() ; )
         {

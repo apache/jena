@@ -284,7 +284,7 @@ public class OpExecutor
 
     // Based on code from Olaf Hartig.
     protected List<Op> flattenUnion(OpUnion opUnion) {
-        List<Op> x = new ArrayList<Op>() ;
+        List<Op> x = new ArrayList<>() ;
         flattenUnion(x, opUnion) ;
         return x ;
     }

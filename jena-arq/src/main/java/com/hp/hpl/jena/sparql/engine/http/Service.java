@@ -124,7 +124,7 @@ public class Service {
         // operator to those visible in the rewritten operator
         // There may be some cases where the re-mapping is incorrect due to
         // deeply nested SERVICE clauses
-        Map<Var, Var> varMapping = new HashMap<Var, Var>();
+        Map<Var, Var> varMapping = new HashMap<>();
         Set<Var> originalVars = OpVars.visibleVars(op);
         Set<Var> remoteVars = OpVars.visibleVars(opRemote);
 

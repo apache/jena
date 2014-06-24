@@ -76,7 +76,7 @@ public class Cache1<K, V> implements Cache<K,V>
     @Override
     public Iterator<K> keys()
     {
-        return new SingletonIterator<K>(cacheKey) ;
+        return new SingletonIterator<>(cacheKey) ;
     }
 
     @Override

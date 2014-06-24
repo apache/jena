@@ -150,7 +150,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
 		{
 			final int i = n - 1;
 			final Statement s = (Statement) statements[i][0];
-			final int bits = ((Integer) statements[i][1]).intValue();
+			final int bits = (Integer) statements[i][1];
 			testCombinations(m, R, mask, statements, i);
 			m.add(s);
 			testCombinations(m, R, mask + bits, statements, i);
@@ -387,19 +387,16 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
 				.createResource(AbstractTestReifiedStatements.anotherURI);
 		final Property PP = RR.as(Property.class);
 		final Object[][] statements = {
-				{ model.createStatement(RR, RDF.type, RDF.Statement),
-						new Integer(1) },
-				{ model.createStatement(RR, RDF.subject, SS), new Integer(2) },
-				{ model.createStatement(RR, RDF.predicate, PP), new Integer(4) },
-				{ model.createStatement(RR, RDF.object, O), new Integer(8) },
-				{ model.createStatement(SS, PP, O), new Integer(16) },
-				{ model.createStatement(RR, PP, O), new Integer(32) },
-				{ model.createStatement(SS, RDF.subject, SS), new Integer(64) },
-				{ model.createStatement(SS, RDF.predicate, PP),
-						new Integer(128) },
-				{ model.createStatement(SS, RDF.object, O), new Integer(256) },
-				{ model.createStatement(SS, RDF.type, RDF.Statement),
-						new Integer(512) } };
+				{ model.createStatement(RR, RDF.type, RDF.Statement), 1 },
+				{ model.createStatement(RR, RDF.subject, SS), 2 },
+				{ model.createStatement(RR, RDF.predicate, PP), 4 },
+				{ model.createStatement(RR, RDF.object, O), 8 },
+				{ model.createStatement(SS, PP, O), 16 },
+				{ model.createStatement(RR, PP, O), 32 },
+				{ model.createStatement(SS, RDF.subject, SS), 64 },
+				{ model.createStatement(SS, RDF.predicate, PP), 128 },
+				{ model.createStatement(SS, RDF.object, O), 256 },
+				{ model.createStatement(SS, RDF.type, RDF.Statement), 512 } };
 		testCombinations(model, RR, 0, statements, statements.length);
 	}
 

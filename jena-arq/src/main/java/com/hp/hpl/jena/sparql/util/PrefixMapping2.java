@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.Iterator ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
@@ -185,15 +184,15 @@ public class PrefixMapping2 implements PrefixMapping
     @Override
     public PrefixMapping withDefaultMappings(PrefixMapping map)
     {
-        Iterator<Map.Entry<String, String>> it = map.getNsPrefixMap().entrySet().iterator();
-        while (it.hasNext())
-            {
-            Map.Entry<String, String> e = it.next();
+        for ( Map.Entry<String, String> e : map.getNsPrefixMap().entrySet() )
+        {
             String prefix = e.getKey();
             String uri = e.getValue();
-            if (getNsPrefixURI( prefix ) == null && getNsURIPrefix( uri ) == null)
+            if ( getNsPrefixURI( prefix ) == null && getNsURIPrefix( uri ) == null )
+            {
                 setNsPrefix( prefix, uri );
             }
+        }
         return this;
     }
 

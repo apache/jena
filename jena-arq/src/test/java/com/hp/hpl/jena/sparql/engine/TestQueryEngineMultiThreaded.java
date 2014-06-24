@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 public class TestQueryEngineMultiThreaded {
     private class RunResult {
         public int numFailures;
-        public List<Exception> exceptions = new ArrayList<Exception>();
+        public List<Exception> exceptions = new ArrayList<>();
     }
     
     @Test
@@ -114,7 +114,7 @@ public class TestQueryEngineMultiThreaded {
     }
 
     private List<Thread> createSparqlConstructExecutionThreads(Model model, boolean lock, int expected, RunResult runResult) {
-        List<Thread> threads = new ArrayList<Thread>();
+        List<Thread> threads = new ArrayList<>();
 
         for (int thread = 0; thread < NUMBER_OF_THREADS; thread++) {
             threads.add(createExecuteSparqlConstructThread(model, lock, expected, runResult));
@@ -123,7 +123,7 @@ public class TestQueryEngineMultiThreaded {
     }
     
     private List<Thread> createSparqlSelectExecutionThreads(Model model, boolean lock, int expected, RunResult runResult) {
-        List<Thread> threads = new ArrayList<Thread>();
+        List<Thread> threads = new ArrayList<>();
         
         for (int thread = 0; thread < NUMBER_OF_THREADS; thread++) {
             threads.add(createExecuteSparqlSelectThread(model, lock, expected, runResult));
@@ -168,11 +168,13 @@ public class TestQueryEngineMultiThreaded {
     }
 
     private void executeThreads(List<Thread> threads) throws Exception {
-        for (int thread = 0; thread < threads.size(); ++thread) {
-            threads.get(thread).start();
+        for ( Thread thread2 : threads )
+        {
+            thread2.start();
         }
-        for (int thread = 0; thread < threads.size(); ++thread) {
-            threads.get(thread).join();
+        for ( Thread thread1 : threads )
+        {
+            thread1.join();
         }
     }
 

@@ -27,7 +27,7 @@ import org.junit.Assert ;
 
 public class BaseTest extends Assert
 {
-    private static Deque<ErrorHandler> errorHandlers = new ArrayDeque<ErrorHandler>() ;
+    private static Deque<ErrorHandler> errorHandlers = new ArrayDeque<>() ;
     
     static public void setTestLogging(ErrorHandler errorhandler)
     {
@@ -71,7 +71,7 @@ public class BaseTest extends Assert
     public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2) {
         if ( list1.size() != list2.size() )
             fail("Expected: "+list1+" : Actual: "+list2) ;
-        List<T> list2a = new ArrayList<T>(list2) ;
+        List<T> list2a = new ArrayList<>(list2) ;
         for ( T elt : list1 )
             list2a.remove(elt) ;
         if ( list2a.size() != 0 )

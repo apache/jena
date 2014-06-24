@@ -72,8 +72,8 @@ public class Query extends Prologue implements Cloneable, Printable
     // If no model is provided explicitly, the query engine will load
     // a model from the URL.  Never a list of zero items.
     
-    private List<String> graphURIs = new ArrayList<String>() ;
-    private List<String> namedGraphURIs = new ArrayList<String>() ;
+    private List<String> graphURIs = new ArrayList<>() ;
+    private List<String> namedGraphURIs = new ArrayList<>() ;
     
     // The WHERE clause
     private Element queryPattern = null ;
@@ -110,7 +110,7 @@ public class Query extends Prologue implements Cloneable, Printable
     // DESCRIBE
     // Any URIs/QNames in the DESCRIBE clause
     // Also uses resultVars
-    protected List<Node> resultNodes               = new ArrayList<Node>() ;     // Type in list: Node
+    protected List<Node> resultNodes               = new ArrayList<>() ;     // Type in list: Node
     
     /**
      * Creates a new empty query
@@ -216,7 +216,7 @@ public class Query extends Prologue implements Cloneable, Printable
     public void addOrderBy(SortCondition condition)
     {
         if ( orderBy == null )
-            orderBy = new ArrayList<SortCondition>() ;
+            orderBy = new ArrayList<>() ;
 
         orderBy.add(condition) ;
     }
@@ -281,7 +281,7 @@ public class Query extends Prologue implements Cloneable, Printable
     public void addGraphURI(String s)
     {
         if ( graphURIs == null )
-            graphURIs = new ArrayList<String>() ;
+            graphURIs = new ArrayList<>() ;
         graphURIs.add(s) ;
     }
 
@@ -292,7 +292,7 @@ public class Query extends Prologue implements Cloneable, Printable
     public void addNamedGraphURI(String uri)
     {
         if ( namedGraphURIs == null )
-            namedGraphURIs = new ArrayList<String>() ;
+            namedGraphURIs = new ArrayList<>() ;
         if ( namedGraphURIs.contains(uri) )
             throw new QueryException("URI already in named graph set: "+uri) ;
         else
@@ -382,20 +382,19 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Add a collection of projection variables to a SELECT query */
     public void addProjectVars(Collection<?> vars)
     {
-        for ( Iterator<?> iter = vars.iterator() ; iter.hasNext() ; )
+        for ( Object obj : vars )
         {
-            Object obj = iter.next();
             if ( obj instanceof String )
             {
-                this.addResultVar((String)obj) ;
-                continue ;
+                this.addResultVar( (String) obj );
+                continue;
             }
             if ( obj instanceof Var )
             {
-                this.addResultVar((Var)obj) ;
-                continue ;
+                this.addResultVar( (Var) obj );
+                continue;
             }
-            throw new QueryException("Not a variable or variable name: "+obj) ;
+            throw new QueryException( "Not a variable or variable name: " + obj );
         }
         resultVarsSet = true ;
     }
@@ -484,7 +483,7 @@ public class Query extends Prologue implements Cloneable, Printable
     }
 
     protected VarExprList groupVars = new VarExprList() ;
-    protected List<Expr> havingExprs = new ArrayList<Expr>() ;  // Expressions : Make an ExprList?
+    protected List<Expr> havingExprs = new ArrayList<>() ;  // Expressions : Make an ExprList?
     
     public boolean hasGroupBy()     { return ! groupVars.isEmpty() || getAggregators().size() > 0 ; }
     public boolean hasHaving()      { return havingExprs != null && havingExprs.size() > 0 ; }
@@ -538,11 +537,11 @@ public class Query extends Prologue implements Cloneable, Printable
     // Unlike SELECT expressions, here the expression itself (E_Aggregator) knows its variable
     // Commonality?
     
-    private List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
-    private Map<Var, ExprAggregator> aggregatorsMap = new HashMap<Var, ExprAggregator>() ;
+    private List<ExprAggregator> aggregators = new ArrayList<>() ;
+    private Map<Var, ExprAggregator> aggregatorsMap = new HashMap<>() ;
     
     // Note any E_Aggregator created for reuse.
-    private Map<String, Var> aggregatorsAllocated = new HashMap<String, Var>() ; 
+    private Map<String, Var> aggregatorsAllocated = new HashMap<>() ;
     
     public boolean hasAggregators() { return aggregators.size() != 0  ; }
     public List<ExprAggregator> getAggregators() { return aggregators ; }
@@ -688,7 +687,7 @@ public class Query extends Prologue implements Cloneable, Printable
         else
         {
             // Binding variables -- in patterns, not in filters and not in EXISTS
-            LinkedHashSet<Var> queryVars = new LinkedHashSet<Var>() ;
+            LinkedHashSet<Var> queryVars = new LinkedHashSet<>() ;
             PatternVars.vars(queryVars, this.getQueryPattern()) ;
             if ( this.hasValues() )
                 queryVars.addAll(getValuesVariables()) ;

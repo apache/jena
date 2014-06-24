@@ -41,7 +41,7 @@ public class BindingStack implements BindingEnvironment {
     protected Node[] environment;
     
     /** A stack of prior binding sets */
-    protected ArrayList<Node[]> trail = new ArrayList<Node[]>();
+    protected ArrayList<Node[]> trail = new ArrayList<>();
     
     /** Index of the current binding set */
     protected int index = 0;
@@ -126,14 +126,16 @@ public class BindingStack implements BindingEnvironment {
             Functor functor = (Functor)node.getLiteralValue();
             if (functor.isGround()) return node;
             Node[] args = functor.getArgs();
-            List<Node> boundargs = new ArrayList<Node>(args.length);
-            for (int i = 0; i < args.length; i++) {
-                Node binding = getBinding(args[i]);
-                if (binding == null) {
+            List<Node> boundargs = new ArrayList<>(args.length);
+            for ( Node arg : args )
+            {
+                Node binding = getBinding( arg );
+                if ( binding == null )
+                {
                     // Not sufficent bound to instantiate functor yet
                     return null;
                 }
-                boundargs.add(binding);
+                boundargs.add( binding );
             }
             Functor newf = new Functor(functor.getName(), boundargs);
             return Functor.makeFunctorNode( newf );

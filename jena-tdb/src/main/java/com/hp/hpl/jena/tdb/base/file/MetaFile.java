@@ -328,7 +328,7 @@ public class MetaFile implements Sync, Closeable
             return ;
         }
         // properties.list() ;
-        SortedSet<Object> x = new TreeSet<Object>() ;
+        SortedSet<Object> x = new TreeSet<>() ;
         x.addAll(properties.keySet()) ;
         
         for ( Object k : x )

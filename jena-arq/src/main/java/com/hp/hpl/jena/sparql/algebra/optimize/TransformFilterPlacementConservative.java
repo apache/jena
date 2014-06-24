@@ -74,7 +74,7 @@ public class TransformFilterPlacementConservative extends TransformCopy {
     public Op transform(OpFilter opFilter, Op x) {
         // Destructive use of exprs - copy it.
         ExprList exprs = ExprList.copy(opFilter.getExprs());
-        Set<Var> varsScope = new HashSet<Var>();
+        Set<Var> varsScope = new HashSet<>();
 
         Op op = transform(exprs, varsScope, x);
         if (op == x)
@@ -223,15 +223,15 @@ public class TransformFilterPlacementConservative extends TransformCopy {
         // Any filters that depend on no variables.
         Op op = insertAnyFilter(exprs, varScope, null);
 
-        for (Iterator<Op> iter = ops.iterator(); iter.hasNext();) {
-            Op seqElt = iter.next();
+        for ( Op seqElt : ops )
+        {
             // Process the sequence element. This may insert filters (sequence
             // or BGP)
-            seqElt = transform(exprs, varScope, seqElt);
+            seqElt = transform( exprs, varScope, seqElt );
             // Merge into sequence.
-            op = OpSequence.create(op, seqElt);
+            op = OpSequence.create( op, seqElt );
             // Place any filters now ready.
-            op = insertAnyFilter(exprs, varScope, op);
+            op = insertAnyFilter( exprs, varScope, op );
         }
         return op;
     }

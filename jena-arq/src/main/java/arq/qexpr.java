@@ -18,8 +18,6 @@
 
 package arq;
 
-import java.util.Iterator ;
-
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.riot.out.NodeFmtLib ;
@@ -140,17 +138,21 @@ public class qexpr
         boolean actionPrintPrefix = false ;
         boolean actionPrintSPARQL = false ; 
         boolean actionPrint = cl.contains(printDecl) ;
-            
-        for ( Iterator<String> iter = cl.getValues(printDecl).iterator() ; iter.hasNext(); )
+
+        for ( String v : cl.getValues( printDecl ) )
         {
-            String v = iter.next();
-            if ( v.equalsIgnoreCase("prefix") || v.equalsIgnoreCase("op") )
-                actionPrintPrefix = true ;
-            else if ( v.equalsIgnoreCase("expr") )   actionPrintSPARQL = true ;
+            if ( v.equalsIgnoreCase( "prefix" ) || v.equalsIgnoreCase( "op" ) )
+            {
+                actionPrintPrefix = true;
+            }
+            else if ( v.equalsIgnoreCase( "expr" ) )
+            {
+                actionPrintSPARQL = true;
+            }
             else
             {
-                System.err.println("Unknown print form: "+v) ;
-                throw new TerminationException(0) ;
+                System.err.println( "Unknown print form: " + v );
+                throw new TerminationException( 0 );
             }
         }
 

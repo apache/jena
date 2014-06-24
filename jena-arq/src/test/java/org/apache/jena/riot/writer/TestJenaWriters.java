@@ -39,7 +39,7 @@ public class TestJenaWriters extends AbstractWriterTest
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
         RIOT.init();
-        List<Object[]> x = new ArrayList<Object[]>() ;
+        List<Object[]> x = new ArrayList<>() ;
         for ( String wname : IO_JenaWriters.getJenaWriterNames() )
             x.add(new Object[]{wname}) ;
         return x ; 

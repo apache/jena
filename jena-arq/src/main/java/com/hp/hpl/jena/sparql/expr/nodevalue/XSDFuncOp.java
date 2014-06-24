@@ -696,7 +696,7 @@ public class XSDFuncOp
         throw new ARQInternalErrorException("Numeric op unrecognized (" + fName + "): " + nv) ;
     }
 
-    private static Set<XSDDatatype> integerSubTypes = new HashSet<XSDDatatype>() ;
+    private static Set<XSDDatatype> integerSubTypes = new HashSet<>() ;
     static { 
 //        decimalSubTypes.add(XSDDatatype.XSDfloat) ;
 //        decimalSubTypes.add(XSDDatatype.XSDdouble) ;

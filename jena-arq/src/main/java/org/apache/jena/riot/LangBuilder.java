@@ -40,9 +40,9 @@ import java.util.List ;
 public class LangBuilder {
     public String lang ;
     public String officialContentType ; 
-    public List<String> altNames = new ArrayList<String>() ;
-    public List<String> contentTypes = new ArrayList<String>() ;
-    public List<String> fileExtensions = new ArrayList<String>() ;
+    public List<String> altNames = new ArrayList<>() ;
+    public List<String> contentTypes = new ArrayList<>() ;
+    public List<String> fileExtensions = new ArrayList<>() ;
 
     /** Create a builder */
     public static LangBuilder create()

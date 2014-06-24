@@ -70,7 +70,7 @@ public class TestListSubjects extends AbstractModelTestBase
 		final List<? extends Resource> L = WrappedIterator.create(iterator)
 				.toList();
 		Assert.assertEquals(set.size(), L.size());
-		Assert.assertEquals(set, new HashSet<Resource>(L));
+		Assert.assertEquals(set, new HashSet<>(L));
 	}
 
 	protected void fillModel()
@@ -152,7 +152,7 @@ public class TestListSubjects extends AbstractModelTestBase
 
 	protected Set<Resource> subjectsTo( final String prefix, final int limit )
 	{
-		final Set<Resource> result = new HashSet<Resource>();
+		final Set<Resource> result = new HashSet<>();
 		for (int i = 0; i < limit; i += 1)
 		{
 			result.add(ModelHelper.resource(prefix + i));

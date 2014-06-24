@@ -147,7 +147,7 @@ class XMLInputStAX extends SPARQLResult {
         // ResultSet variables
         QuerySolution   current          = null ;
         XMLStreamReader parser           = null ;
-        List<String>    variables        = new ArrayList<String>() ;
+        List<String>    variables        = new ArrayList<>() ;
         Binding         binding          = null ;                                 // Current
                                                                                    // binding
         // RefBoolean inputGraphLabels = new
@@ -350,10 +350,12 @@ class XMLInputStAX extends SPARQLResult {
         }
 
         private boolean containsName(String[] elementNames, String eName) {
-            for (int i = 0; i < elementNames.length; i++) {
-                String s = elementNames[i] ;
-                if ( s.equals(eName) )
-                    return true ;
+            for ( String s : elementNames )
+            {
+                if ( s.equals( eName ) )
+                {
+                    return true;
+                }
             }
             return false ;
         }

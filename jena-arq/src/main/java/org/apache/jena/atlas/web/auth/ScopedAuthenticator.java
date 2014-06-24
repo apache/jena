@@ -39,7 +39,7 @@ import org.apache.jena.atlas.lib.Pair;
  */
 public class ScopedAuthenticator extends AbstractScopedAuthenticator<Pair<String, char[]>> {
 
-    private Map<URI, Pair<String, char[]>> credentials = new HashMap<URI, Pair<String, char[]>>();
+    private Map<URI, Pair<String, char[]>> credentials = new HashMap<>();
 
     /**
      * Creates an authenticator with credentials for the given URI

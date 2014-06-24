@@ -203,7 +203,7 @@ abstract public class AbsIRIImpl extends  IRI implements
         m &= ~foundExceptionMask;
         if ((allErrors & m) != 0) {
             if (foundExceptions == null) {
-                foundExceptions = new ArrayList<Violation>();
+                foundExceptions = new ArrayList<>();
             }
             for (int i = 0; i < Parser.fields.length; i++) {
                 int f = Parser.fields[i];
@@ -385,11 +385,11 @@ abstract public class AbsIRIImpl extends  IRI implements
                     throw new RuntimeException("Impossible - utf-8 unsupported");
                 }
                 // 2.2, 2.3
-                for (int j = 0; j < b.length; j++) {
-                    char buf[] = { '%', hex[(b[j] & (255 & ~15)) >> 4],
-                            hex[b[j] & 15] };
+                for ( byte aB : b )
+                {
+                    char buf[] = { '%', hex[( aB & ( 255 & ~15 ) ) >> 4], hex[aB & 15] };
 
-                    asciiString.append(buf);
+                    asciiString.append( buf );
                 }
             } else {
                 asciiString.append(new char[] { (char) ch });

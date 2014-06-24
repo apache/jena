@@ -57,7 +57,7 @@ public class TestObjects extends AbstractModelTestBase
 
 	protected Set<Statement> fill( final Model model )
 	{
-		final Set<Statement> statements = new HashSet<Statement>();
+		final Set<Statement> statements = new HashSet<>();
 		for (int i = 0; i < TestObjects.numberSubjects; i += 1)
 		{
 			for (int j = 0; j < TestObjects.numberPredicates; j += 1)
@@ -80,7 +80,7 @@ public class TestObjects extends AbstractModelTestBase
 
 	protected Set<Literal> literalsFor( final int predicate )
 	{
-		final Set<Literal> result = new HashSet<Literal>();
+		final Set<Literal> result = new HashSet<>();
 		for (int i = 0; i < TestObjects.numberSubjects; i += 1)
 		{
 			result.add(model
@@ -92,7 +92,7 @@ public class TestObjects extends AbstractModelTestBase
 
 	protected Set<Literal> literalsUpto( final int limit )
 	{
-		final Set<Literal> result = new HashSet<Literal>();
+		final Set<Literal> result = new HashSet<>();
 		for (int i = 0; i < limit; i += 1)
 		{
 			result.add(model.createTypedLiteral(i));
@@ -102,7 +102,7 @@ public class TestObjects extends AbstractModelTestBase
 
 	protected Set<String> predicateSet( final int limit )
 	{
-		final Set<String> result = new HashSet<String>();
+		final Set<String> result = new HashSet<>();
 		for (int i = 0; i < limit; i += 1)
 		{
 			result.add(TestObjects.predicatePrefix + i + "/");
@@ -120,7 +120,7 @@ public class TestObjects extends AbstractModelTestBase
 
 	protected Set<Resource> subjectSet( final int limit )
 	{
-		final Set<Resource> result = new HashSet<Resource>();
+		final Set<Resource> result = new HashSet<>();
 		for (int i = 0; i < limit; i += 1)
 		{
 			result.add(ModelHelper.resource(TestObjects.subjectPrefix + i));
@@ -142,7 +142,7 @@ public class TestObjects extends AbstractModelTestBase
 		final List<String> L = model.listNameSpaces().toList();
 		Assert.assertEquals(TestObjects.numberPredicates, L.size());
 		final Set<String> wanted = predicateSet(TestObjects.numberPredicates);
-		Assert.assertEquals(wanted, new HashSet<String>(L));
+		Assert.assertEquals(wanted, new HashSet<>(L));
 	}
 
 	public void testListObjects()
@@ -162,7 +162,7 @@ public class TestObjects extends AbstractModelTestBase
 						.property(TestObjects.predicatePrefix + "0/p")));
 		Assert.assertEquals(TestObjects.numberSubjects, L.size());
 		final Set<Literal> wanted = literalsFor(0);
-		Assert.assertEquals(wanted, new HashSet<RDFNode>(L));
+		Assert.assertEquals(wanted, new HashSet<>(L));
 	}
 
 	public void testListObjectsOfPropertyBySubject()
@@ -177,7 +177,7 @@ public class TestObjects extends AbstractModelTestBase
 				.listObjectsOfProperty(s, RDF.value));
 		Assert.assertEquals(size, L.size());
 		final Set<Literal> wanted = literalsUpto(size);
-		Assert.assertEquals(wanted, new HashSet<RDFNode>(L));
+		Assert.assertEquals(wanted, new HashSet<>(L));
 	}
 
 	public void testListStatements()
@@ -185,7 +185,7 @@ public class TestObjects extends AbstractModelTestBase
 		final Set<Statement> statements = fill(model);
 		final List<Statement> L = model.listStatements().toList();
 		Assert.assertEquals(statements.size(), L.size());
-		Assert.assertEquals(statements, new HashSet<Statement>(L));
+		Assert.assertEquals(statements, new HashSet<>(L));
 	}
 
 	public void testListSubjects()

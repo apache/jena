@@ -18,20 +18,22 @@
 
 package com.hp.hpl.jena.reasoner.test;
 
-import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.impl.JenaParameters;
-import com.hp.hpl.jena.vocabulary.*;
+import java.io.IOException ;
 
-import java.io.IOException;
-import java.util.Iterator;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.reasoner.ReasonerFactory ;
+import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
+import com.hp.hpl.jena.shared.impl.JenaParameters ;
+import com.hp.hpl.jena.vocabulary.OWLResults ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 
 /**
  * Test the default RDFS reasoner against the current set of working group tests
@@ -102,9 +104,9 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
     private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) throws IOException {
         JenaParameters.enableWhitespaceCheckingOfTypedLiterals = true;
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf", TEST_DIR);
-        for (Iterator<String> i = tester.listTests().iterator(); i.hasNext(); ) {
-            String test = i.next();
-            suite.addTest(new TestReasonerWG(tester, test, rf, config));
+        for ( String test : tester.listTests() )
+        {
+            suite.addTest( new TestReasonerWG( tester, test, rf, config ) );
         }
     }        
 

@@ -89,13 +89,13 @@ public abstract class TurtleShell
         private ShellGraph(Graph graph)
         {
             this.graph          = graph ;
-            this.nestedObjects  = new HashSet<Node>()  ;
-            this.freeBnodes     = new HashSet<Node>()  ;
+            this.nestedObjects  = new HashSet<>()  ;
+            this.freeBnodes     = new HashSet<>()  ;
             
-            this.lists          = new HashMap<Node, List<Node>>() ;
-            this.freeLists      = new HashMap<Node, List<Node>>() ;
-            this.nLinkedLists   = new HashMap<Node, List<Node>>() ;
-            this.listElts       = new HashSet<Node>() ;
+            this.lists          = new HashMap<>() ;
+            this.freeLists      = new HashMap<>() ;
+            this.nLinkedLists   = new HashMap<>() ;
+            this.listElts       = new HashSet<>() ;
 
             // Must be in this order.
             findLists() ;
@@ -107,7 +107,7 @@ public abstract class TurtleShell
         /* Bnodes that can written as [] */
         private void findBNodesSyntax()
         {
-            Set<Node> rejects = new HashSet<Node>() ;           // Nodes known not to meet the requirement.
+            Set<Node> rejects = new HashSet<>() ;           // Nodes known not to meet the requirement.
 
             ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
             try {
@@ -160,7 +160,7 @@ public abstract class TurtleShell
             for ( Triple t : tails )
             {
                 // Returns the elements, reversed.
-                Collection<Node> listElts2 = new HashSet<Node>() ;
+                Collection<Node> listElts2 = new HashSet<>() ;
                 Pair<Node, List<Node>> p = followTailToHead(t.getSubject(), listElts2) ;
                 if ( p != null )
                 {
@@ -184,9 +184,9 @@ public abstract class TurtleShell
         // return head elt node, list of elements.
         private Pair<Node, List<Node>> followTailToHead(Node lastListElt, Collection<Node> listElts)
         {
-            List<Node> listCells = new ArrayList<Node>() ;
-            List<Node> eltsReversed = new ArrayList<Node>() ;
-            List<Triple> acc =  new ArrayList<Triple>() ;
+            List<Node> listCells = new ArrayList<>() ;
+            List<Node> eltsReversed = new ArrayList<>() ;
+            List<Triple> acc =  new ArrayList<>() ;
             Node x = lastListElt ;
 
             for ( ; ; )
@@ -417,9 +417,9 @@ public abstract class TurtleShell
             
             for ( Node p : predicates )
             {
-                List<Node> rdfLiterals = new ArrayList<Node>() ;        // Literals in the group 
-                List<Node> rdfSimpleNodes = new ArrayList<Node>() ;     // Non-literals, printed 
-                List<Node> rdfComplexNodes = new ArrayList<Node>() ;    // Non-literals, printed () or []-embedded 
+                List<Node> rdfLiterals = new ArrayList<>() ;        // Literals in the group
+                List<Node> rdfSimpleNodes = new ArrayList<>() ;     // Non-literals, printed
+                List<Node> rdfComplexNodes = new ArrayList<>() ;    // Non-literals, printed () or []-embedded
 
                 for ( Node o : pGroups.get(p) )
                 {
@@ -504,7 +504,7 @@ public abstract class TurtleShell
             
         private Map<Node, List<Node>> groupByPredicates(Collection<Triple> cluster)
         {
-            SortedMap<Node, List<Node>> x = new TreeMap<Node, List<Node>>(compPredicates) ; 
+            SortedMap<Node, List<Node>> x = new TreeMap<>(compPredicates) ;
             for ( Triple t : cluster )
             {
                 Node p = t.getPredicate() ;
@@ -518,7 +518,7 @@ public abstract class TurtleShell
 
         private int countPredicates(Collection<Triple> cluster)
         {
-            Set<Node> x = new HashSet<Node>() ; 
+            Set<Node> x = new HashSet<>() ;
             for ( Triple t : cluster )
             {
                 Node p = t.getPredicate() ;

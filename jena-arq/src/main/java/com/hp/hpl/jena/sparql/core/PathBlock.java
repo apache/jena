@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class PathBlock implements Iterable<TriplePath>
 {
-    private List<TriplePath> triplePaths = new ArrayList<TriplePath>() ; 
+    private List<TriplePath> triplePaths = new ArrayList<>() ;
 
     public PathBlock() {}
     public PathBlock(PathBlock other) {triplePaths.addAll(other.triplePaths) ; }

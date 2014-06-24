@@ -97,14 +97,14 @@ public abstract class AbstractContainerMethods extends AbstractModelTestBase
 			c.add(i);
 		}
 		final NodeIterator it = c.iterator();
-		for (int i = 0; i < num; i += 1)
-		{
-			it.nextNode();
-			if (retain[i] == false)
-			{
-				it.remove();
-			}
-		}
+        for ( boolean aRetain : retain )
+        {
+            it.nextNode();
+            if ( aRetain == false )
+            {
+                it.remove();
+            }
+        }
 		final NodeIterator s = c.iterator();
 		while (s.hasNext())
 		{

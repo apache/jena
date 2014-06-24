@@ -39,7 +39,7 @@ public class LanguageTag implements LanguageTagCodes {
  */
     public LanguageTag(String tag) throws LanguageTagSyntaxException {
        String lc = tag.toLowerCase(Locale.ENGLISH);
-       Vector<String> v = new Vector<String>();
+       Vector<String> v = new Vector<>();
        int subT;
        while (true) {
            subT = lc.indexOf('-');

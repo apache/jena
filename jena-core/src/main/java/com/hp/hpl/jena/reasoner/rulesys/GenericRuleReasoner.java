@@ -192,7 +192,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      */
     public void addPreprocessingHook(RulePreprocessHook hook) {
         if (preprocessorHooks == null) {
-            preprocessorHooks = new HashSet<RulePreprocessHook>();
+            preprocessorHooks = new HashSet<>();
         }
         preprocessorHooks.add(hook);
     }
@@ -341,8 +341,9 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         grr.setTransitiveClosureCaching(enableTGCCaching);
         grr.setFunctorFiltering(filterFunctors);
         if (preprocessorHooks != null) {
-            for (Iterator<RulePreprocessHook> i = preprocessorHooks.iterator(); i.hasNext(); ) {
-                grr.addPreprocessingHook(i.next());
+            for ( RulePreprocessHook preprocessorHook : preprocessorHooks )
+            {
+                grr.addPreprocessingHook( preprocessorHook );
             }
         }
         return grr;
@@ -381,8 +382,9 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             fbgraph.setTraceOn(traceOn);
             fbgraph.setFunctorFiltering(filterFunctors);
             if (preprocessorHooks!= null) {
-                for (Iterator<RulePreprocessHook> i = preprocessorHooks.iterator(); i.hasNext(); ) {
-                    fbgraph.addPreprocessingHook(i.next());
+                for ( RulePreprocessHook preprocessorHook : preprocessorHooks )
+                {
+                    fbgraph.addPreprocessingHook( preprocessorHook );
                 }
             }
         }

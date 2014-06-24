@@ -47,7 +47,7 @@ public class TestIteratorCollection extends GraphTestBase
     
     public void testSingletonToSingleSet()
         {
-        assertEquals( oneSet( "single" ), iteratorToSet( new SingletonIterator<String>( "single" ) ) );
+        assertEquals( oneSet( "single" ), iteratorToSet( new SingletonIterator<>( "single" ) ) );
         }
     
     public void testLotsToSet()
@@ -77,12 +77,12 @@ public class TestIteratorCollection extends GraphTestBase
 
     public void testEmptyToEmptyList()
         {
-        assertEquals( new ArrayList<Object>(), IteratorCollection.iteratorToList( NullIterator.instance() ) );
+        assertEquals( new ArrayList<>(), IteratorCollection.iteratorToList( NullIterator.instance() ) );
         }
     
     public void testSingletonToSingletonList()
         {
-        assertEquals( oneList( "just one" ), IteratorCollection.iteratorToList( new SingletonIterator<String>( "just one" ) ) );
+        assertEquals( oneList( "just one" ), IteratorCollection.iteratorToList( new SingletonIterator<>( "just one" ) ) );
         }
     
     public void testLotsToList()
@@ -111,21 +111,24 @@ public class TestIteratorCollection extends GraphTestBase
 
     protected Set<Object> oneSet( Object x )
         {
-        Set<Object> result = new HashSet<Object>();
+        Set<Object> result = new HashSet<>();
         result.add( x );
         return result;
         }
     
     protected Set<Object> setLots( Object [] elements )
         {
-        Set<Object> result = new HashSet<Object>();
-        for (int i = 0; i < elements.length; i += 1) result.add( elements[i] );
+        Set<Object> result = new HashSet<>();
+            for ( Object element : elements )
+            {
+                result.add( element );
+            }
         return result;
         }
     
     protected List<Object> oneList( Object x )
         {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         result.add( x );
         return result;
         }

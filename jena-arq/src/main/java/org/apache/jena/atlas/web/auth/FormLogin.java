@@ -76,7 +76,7 @@ public class FormLogin {
      *             Thrown if the platform does not support UTF-8
      */
     public HttpEntity getLoginEntity() throws UnsupportedEncodingException {
-        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair(this.loginUserField, this.username));
         nvps.add(new BasicNameValuePair(this.loginPasswordField, new String(this.password)));
 

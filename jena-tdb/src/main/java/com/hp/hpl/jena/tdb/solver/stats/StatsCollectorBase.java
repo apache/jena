@@ -30,8 +30,8 @@ import org.apache.jena.atlas.lib.MapUtils ;
 abstract class StatsCollectorBase<T>
 {
     private long count = 0 ;
-    private Map<T, Integer> predicates = new HashMap<T, Integer>(10000) ;
-    private Map<T, Integer> types = new HashMap<T, Integer>(10000) ;
+    private Map<T, Integer> predicates = new HashMap<>(10000) ;
+    private Map<T, Integer> types = new HashMap<>(10000) ;
     private T typeTrigger ;
     
     protected StatsCollectorBase(T typeTrigger)

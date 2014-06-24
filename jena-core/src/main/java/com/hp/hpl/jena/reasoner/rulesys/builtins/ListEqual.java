@@ -70,19 +70,22 @@ public class ListEqual extends BaseBuiltin {
         List<Node> elts1 = Util.convertList(list1, context);
         List<Node> elts2 = Util.convertList(list2, context);
         if (elts1.size() != elts2.size()) return false;
-        for (Iterator<Node> i = elts1.iterator(); i.hasNext(); ) {
-            Node elt = i.next();
+        for ( Node elt : elts1 )
+        {
             boolean matched = false;
-            for (Iterator<Node> j = elts2.iterator(); j.hasNext(); ) {
+            for ( Iterator<Node> j = elts2.iterator(); j.hasNext(); )
+            {
                 Node elt2 = j.next();
-                if (elt.sameValueAs(elt2)) {
+                if ( elt.sameValueAs( elt2 ) )
+                {
                     // Found match, consume it
                     j.remove();
                     matched = true;
                     break;
                 }
             }
-            if (!matched) {
+            if ( !matched )
+            {
                 return false;
             }
         }

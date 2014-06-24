@@ -29,7 +29,7 @@ public class BlockMgrFreeChain extends BlockMgrWrapper
 {
     // Could keep Pair<Integer, ByteBuffer>
     //List<Block> freeBlocks = new ArrayList<Block>() ;
-    private final Deque<Block> freeBlocks = new ArrayDeque<Block>();
+    private final Deque<Block> freeBlocks = new ArrayDeque<>();
     
     public BlockMgrFreeChain(BlockMgr blockMgr)
     {

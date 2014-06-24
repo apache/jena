@@ -67,7 +67,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
     public void testSetsPolicyPath()
         {
         Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:policyPath 'somePath'" );
-        final List<String> history = new ArrayList<String>();
+        final List<String> history = new ArrayList<>();
         Assembler a = new DocumentManagerAssembler()
             {
             @Override
@@ -112,7 +112,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
         { // we set policyPath to avoid Ont default models being thrown at us
         Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:policyPath ''; x P a; a Q b; y R z" );
         final Model expected = model( "x rdf:type ja:DocumentManager; x ja:policyPath ''; x P a; a Q b" );
-        final List<String> history = new ArrayList<String>();
+        final List<String> history = new ArrayList<>();
         Assembler a = new DocumentManagerAssembler()
             {
             @Override

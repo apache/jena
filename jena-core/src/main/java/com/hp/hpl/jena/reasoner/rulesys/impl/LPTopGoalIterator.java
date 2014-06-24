@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import java.util.NoSuchElementException;
-
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.reasoner.rulesys.BackwardRuleInfGraphI;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
@@ -42,7 +40,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
     BackwardRuleInfGraphI infgraph;
     
     /** The set of choice points that the top level interpter is waiting for */
-    protected Set<ConsumerChoicePointFrame> choicePoints = new HashSet<ConsumerChoicePointFrame>();
+    protected Set<ConsumerChoicePointFrame> choicePoints = new HashSet<>();
 
     /** The choice point most recently notified as ready to run. */
     protected ConsumerChoicePointFrame nextToRun;
@@ -157,13 +155,15 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
     public boolean isReady() {
         if (checkReadyNeeded) {
             isReady = false;
-            for (Iterator<ConsumerChoicePointFrame> i = choicePoints.iterator(); i.hasNext(); ) {
-                ConsumerChoicePointFrame ccp = i.next();
-                if ( ccp.isReady() ) {
-                    if (nextToRun == null) {
+            for ( ConsumerChoicePointFrame ccp : choicePoints )
+            {
+                if ( ccp.isReady() )
+                {
+                    if ( nextToRun == null )
+                    {
                         nextToRun = ccp;
                     }
-                    isReady =  true;
+                    isReady = true;
                     break;
                 }
             }

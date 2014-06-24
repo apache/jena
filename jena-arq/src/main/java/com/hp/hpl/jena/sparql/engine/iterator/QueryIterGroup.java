@@ -131,13 +131,14 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                     
                     BindingMap binding = BindingFactory.create() ;
 
-                    for ( Iterator<ExprAggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+                    for ( ExprAggregator agg : aggregators )
                     {
-                        ExprAggregator agg = aggIter.next();
-                        Var v = agg.getVar() ;
-                        Node value = agg.getAggregator().getValueEmpty() ;
+                        Var v = agg.getVar();
+                        Node value = agg.getAggregator().getValueEmpty();
                         if ( value != null )
-                            binding.add(v, value) ;
+                        {
+                            binding.add( v, value );
+                        }
                     }
                         
                     if ( binding == null )
@@ -155,7 +156,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                     // We used placeholder so there are always the key. 
                     return accumulators.keys().iterator() ;
                 
-                List<Binding> results = new ArrayList<Binding>() ;
+                List<Binding> results = new ArrayList<>() ;
 
                 for ( Binding k : accumulators.keys() )
                 {
@@ -189,13 +190,14 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         // No group vars (implicit or explicit) => working on whole result set. 
         // Still need a BindingMap to assign to later.
         BindingMap x = BindingFactory.create() ;
-        for ( Iterator<Var> iter = vars.getVars().iterator() ; iter.hasNext() ; )
+        for ( Var var : vars.getVars() )
         {
-            Var var = iter.next() ;
-            Node node = vars.get(var, binding, execCxt) ;
+            Node node = vars.get( var, binding, execCxt );
             // Null returned for unbound and error.
             if ( node != null )
-                x.add(var, node) ;
+            {
+                x.add( var, node );
+            }
         }
         return x ;
     }

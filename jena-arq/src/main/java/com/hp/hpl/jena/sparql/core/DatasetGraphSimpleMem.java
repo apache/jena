@@ -38,8 +38,8 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
  */
 public class DatasetGraphSimpleMem extends DatasetGraphCaching
 {
-    private MiniSet<Triple> triples = new MiniSet<Triple>() ;
-    private MiniSet<Quad> quads = new MiniSet<Quad>() ;
+    private MiniSet<Triple> triples = new MiniSet<>() ;
+    private MiniSet<Quad> quads = new MiniSet<>() ;
     
     /** Simple abstraction of a Set */
     private static class MiniSet<T> implements Iterable<T>
@@ -47,7 +47,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
         final Collection<T> store ; 
         MiniSet(Collection<T> store) { this.store = store ; }
         
-        MiniSet() { this.store = new ArrayList<T>() ; }
+        MiniSet() { this.store = new ArrayList<>() ; }
         
         void add(T t)
         {
@@ -77,7 +77,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
     @Override
     public Iterator<Quad> findInDftGraph(Node s, Node p , Node o) 
     {
-        List<Quad> results = new ArrayList<Quad>() ;
+        List<Quad> results = new ArrayList<>() ;
         for ( Triple t : triples )
             if ( matches(t, s, p, o) )
                 // ?? Quad.defaultGraphNodeGenerated
@@ -89,7 +89,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
     @Override
     public Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o)
     {
-        List<Quad> results = new ArrayList<Quad>() ;
+        List<Quad> results = new ArrayList<>() ;
         for ( Quad q : quads )
             if ( matches(q, g, s, p, o) )
                 results.add(q) ;
@@ -99,7 +99,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
     @Override
     public Iterator<Quad> findInAnyNamedGraphs(Node s, Node p , Node o)
     {
-        List<Quad> results = new ArrayList<Quad>() ;
+        List<Quad> results = new ArrayList<>() ;
         for ( Quad q : quads )
             if ( matches(q, Node.ANY, s, p, o) )
                 results.add(q) ;
@@ -169,7 +169,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
         @Override
         protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
         {
-            List<Triple> results = new ArrayList<Triple>() ;
+            List<Triple> results = new ArrayList<>() ;
             for ( Triple t : triples )
                 if ( t.matches(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) )
                     results.add(t) ;
@@ -196,7 +196,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
         @Override
         protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
         {
-            List<Triple> results = new ArrayList<Triple>() ;
+            List<Triple> results = new ArrayList<>() ;
             
             Iterator<Quad> iter = findNG(graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
             for ( ; iter.hasNext() ; )
@@ -231,7 +231,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
     
     private Set<Node> graphNodes()
     {
-        Set<Node> x = new HashSet<Node>() ;
+        Set<Node> x = new HashSet<>() ;
         for ( Quad q : quads )
             x.add(q.getGraph()) ;
         return x ;

@@ -68,7 +68,7 @@ public class ExprTransformConstantFold extends ExprTransformCopy {
     @Override
     public Expr transform(ExprFunctionN func, ExprList args) {
         if (isFoldable(args)) {
-            List<NodeValue> args2 = new ArrayList<NodeValue>() ;
+            List<NodeValue> args2 = new ArrayList<>() ;
             // Need to "cast" to constants
             for ( Expr e : args )
                 args2.add(e.getConstant()) ;

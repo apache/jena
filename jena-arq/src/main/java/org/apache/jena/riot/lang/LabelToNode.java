@@ -130,7 +130,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     /** Single scope */
     private static class SingleScopePolicy implements ScopePolicy<String, Node, Node>
     { 
-        private Map<String, Node> map = new HashMap<String, Node>() ;
+        private Map<String, Node> map = new HashMap<>() ;
         @Override
         public Map<String, Node> getScope(Node scope) { return map ; }
         @Override
@@ -140,8 +140,8 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     /** One scope for labels per graph */
     private static class GraphScopePolicy implements ScopePolicy<String, Node, Node>
     { 
-        private Map<String, Node> dftMap = new HashMap<String, Node>() ;
-        private Map<Node, Map<String, Node>> map = new HashMap<Node, Map<String, Node>>() ;
+        private Map<String, Node> dftMap = new HashMap<>() ;
+        private Map<Node, Map<String, Node>> map = new HashMap<>() ;
         @Override
         public Map<String, Node> getScope(Node scope)
         {
@@ -151,7 +151,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
             Map<String, Node> x = map.get(scope) ;
             if ( x == null )
             {
-                x = new HashMap<String, Node>() ;
+                x = new HashMap<>() ;
                 map.put(scope, x) ;
             }
             return x ;
@@ -194,7 +194,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     /** Allocate a fresh blank node each time. */
     private static class AllocByGraph implements Allocator<String, Node, Node> {
         BlankNodeAllocator dft = make() ;
-        Map<Node, BlankNodeAllocator> graphs = new HashMap<Node, BlankNodeAllocator>() ;
+        Map<Node, BlankNodeAllocator> graphs = new HashMap<>() ;
         
         @Override public Node alloc(Node scope, String label)
         { 

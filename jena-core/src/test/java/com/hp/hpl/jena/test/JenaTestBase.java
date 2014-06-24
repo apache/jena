@@ -84,7 +84,7 @@ public class JenaTestBase extends TestCase
     */
     public static List<String> listOfStrings( String s )
         {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         StringTokenizer st = new StringTokenizer( s );
         while (st.hasMoreTokens()) result.add( st.nextToken() );
         return result;
@@ -96,7 +96,7 @@ public class JenaTestBase extends TestCase
     */
     public static Set<String> setOfStrings( String s )
         {
-        Set<String> result = new HashSet<String>();
+        Set<String> result = new HashSet<>();
         StringTokenizer st = new StringTokenizer( s );
         while (st.hasMoreTokens()) result.add( st.nextToken() );
         return result;
@@ -107,7 +107,7 @@ public class JenaTestBase extends TestCase
     */
     public static <T> List<T> listOfOne( T x )
         {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         result.add( x );
         return result;
         }
@@ -117,7 +117,7 @@ public class JenaTestBase extends TestCase
     */
     public static <T> Set<T> setOfOne( T x )
         {
-        Set<T> result = new HashSet<T>();
+        Set<T> result = new HashSet<>();
         result.add( x );
         return result;
         }
@@ -127,7 +127,7 @@ public class JenaTestBase extends TestCase
         <code>R</code>. Neither <code>L</code> nor <code>R</code> is updated.
     */
     public static <T> List<T> append( List<? extends T> L, List<? extends T> R )
-        { List<T> result = new ArrayList<T>( L );
+        { List<T> result = new ArrayList<>( L );
         result.addAll( R );
         return result; }
     
@@ -182,7 +182,13 @@ public class JenaTestBase extends TestCase
         {
         if (subClass == superClass || subClass.getSuperclass() == superClass) return true;
         Class<?> [] is = subClass.getInterfaces();
-        for (int i = 0; i < is.length; i += 1) if (hasAsParent( is[i], superClass )) return true;
+            for ( Class<?> i1 : is )
+            {
+                if ( hasAsParent( i1, superClass ) )
+                {
+                    return true;
+                }
+            }
         return false;
         }
     

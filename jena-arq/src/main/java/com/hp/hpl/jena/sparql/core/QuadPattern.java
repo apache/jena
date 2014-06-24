@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class QuadPattern implements Iterable<Quad>
 {
-    private List<Quad> quads = new ArrayList<Quad>() ; 
+    private List<Quad> quads = new ArrayList<>() ;
 
     public QuadPattern() {}
     public QuadPattern(QuadPattern other) {quads.addAll(other.quads) ; }

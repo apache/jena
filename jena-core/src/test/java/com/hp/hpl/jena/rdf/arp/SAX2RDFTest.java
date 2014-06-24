@@ -1123,7 +1123,7 @@ public class SAX2RDFTest extends TestCase {
 
 	static class RDFEHArray implements RDFErrorHandler {
 
-		Vector<String> v = new Vector<String>();
+		Vector<String> v = new Vector<>();
 
 		/*
 		 * (non-Javadoc)

@@ -43,7 +43,7 @@ public class CachingPF implements PropertyFunction
     public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
                               ExecutionContext execCxt)
     {
-        List<Binding> bindings = new ArrayList<Binding>() ;
+        List<Binding> bindings = new ArrayList<>() ;
         for ( ; input.hasNext() ; )
             bindings.add(input.nextBinding()) ;
         return new QueryIterPlainWrapper(bindings.iterator(), execCxt) ;

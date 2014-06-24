@@ -55,7 +55,7 @@ public class RomanNumeralDatatype extends BaseDatatype //implements RDFDatatype
             //return new RomanNumeral(lexicalForm) ;
             
             // This means it will be the same as an integer elsewhere
-            return new Integer(RomanNumeral.r2i(lexicalForm)) ; 
+            return RomanNumeral.r2i( lexicalForm );
         } catch (NumberFormatException ex)
         {
             throw new DatatypeFormatException(lexicalForm, this, ex.getMessage()) ;

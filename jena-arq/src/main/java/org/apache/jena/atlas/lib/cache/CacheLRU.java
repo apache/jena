@@ -34,7 +34,7 @@ public class CacheLRU<K,V> implements Cache<K,V>
     
     public CacheLRU(float loadFactor, int maxSize)
     {
-        this.cache = new CacheImpl<K, V>(loadFactor, maxSize) ;
+        this.cache = new CacheImpl<>(loadFactor, maxSize) ;
     }
 
     @Override

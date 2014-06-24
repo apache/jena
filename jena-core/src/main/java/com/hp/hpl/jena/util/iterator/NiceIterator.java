@@ -89,7 +89,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     
     public static <T> ExtendedIterator<T> andThen( final Iterator<T> a, final Iterator<? extends T> b )
         {
-        final List<Iterator<? extends T>> pending = new ArrayList<Iterator<? extends T>>( 2 );
+        final List<Iterator<? extends T>> pending = new ArrayList<>( 2 );
         pending.add( b );
         return new NiceIterator<T>()
             {
@@ -152,21 +152,21 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     */
     @Override
     public ExtendedIterator<T> filterKeep( Filter<T> f )
-        { return new FilterKeepIterator<T>( f, this ); }
+        { return new FilterKeepIterator<>( f, this ); }
 
     /**
         make a new iterator, which is our elements that do not pass the filter
     */        
     @Override
     public ExtendedIterator<T> filterDrop( final Filter<T> f )
-        { return new FilterDropIterator<T>( f, this ); }
+        { return new FilterDropIterator<>( f, this ); }
    
     /**
         make a new iterator which is the elementwise _map1_ of the base iterator.
     */     
     @Override
     public <U> ExtendedIterator<U> mapWith( Map1<T, U> map1 )
-        { return new Map1Iterator<T, U>( map1, this ); }
+        { return new Map1Iterator<>( map1, this ); }
 
     /**
         If <code>it</code> is a Closableiterator, close it. Abstracts away from
@@ -202,7 +202,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     */
     public static <T> Set<T> asSet( ExtendedIterator<T> it )
         {
-        Set<T> result = new HashSet<T>();
+        Set<T> result = new HashSet<>();
         while (it.hasNext()) result.add( it.next() );
         return result;
         }
@@ -213,7 +213,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     */
     public static <T> List<T> asList( ExtendedIterator<T> it )
         {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         while (it.hasNext()) result.add( it.next() );
         return result;
         }

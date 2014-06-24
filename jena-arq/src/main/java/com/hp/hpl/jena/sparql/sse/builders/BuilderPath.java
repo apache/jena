@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.sse.builders;
 
 import java.util.HashMap ;
-import java.util.Iterator ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -55,7 +54,7 @@ public class BuilderPath
         return new TriplePath(s, p, o) ; 
     }
 
-    protected Map<String, Build> dispatch = new HashMap<String, Build>() ;
+    protected Map<String, Build> dispatch = new HashMap<>() ;
     
     private BuilderPath()
     {
@@ -113,11 +112,12 @@ public class BuilderPath
     
     protected Build findBuild(String str)
     {
-        for ( Iterator<String> iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
+        for ( String key : dispatch.keySet() )
         {
-            String key = iter.next() ; 
-            if ( str.equalsIgnoreCase(key) )
-                return dispatch.get(key) ;
+            if ( str.equalsIgnoreCase( key ) )
+            {
+                return dispatch.get( key );
+            }
         }
         return null ;
     }

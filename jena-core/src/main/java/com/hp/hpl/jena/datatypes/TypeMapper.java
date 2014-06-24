@@ -94,10 +94,10 @@ public class TypeMapper {
 // Variables
 
     /** Map from uri to datatype */
-    private final HashMap<String, RDFDatatype> uriToDT = new HashMap<String, RDFDatatype>();
+    private final HashMap<String, RDFDatatype> uriToDT = new HashMap<>();
 
     /** Map from java class to datatype */
-    private final HashMap<Class<?>, RDFDatatype> classToDT = new HashMap<Class<?>, RDFDatatype>();
+    private final HashMap<Class<?>, RDFDatatype> classToDT = new HashMap<>();
 
 //=======================================================================
 // Methods

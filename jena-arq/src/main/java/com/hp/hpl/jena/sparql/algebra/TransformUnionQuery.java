@@ -41,7 +41,7 @@ public class TransformUnionQuery extends TransformCopy
     }
 
     // ** SEE AlgebraQuad : Pusher and Popper :share.
-    Deque<Node> currentGraph = new ArrayDeque<Node>() ;
+    Deque<Node> currentGraph = new ArrayDeque<>() ;
 
     public TransformUnionQuery()
     {

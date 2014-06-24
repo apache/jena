@@ -93,7 +93,7 @@ public class LeftJoinClassifier
         // Case 3
         // A variable mentioned in the assign is not introduced on the RHS
         // Cannot linearize as would change bind evaluation
-        Set<Var> unsafeAssign = new HashSet<Var>(assignVarsRight);
+        Set<Var> unsafeAssign = new HashSet<>(assignVarsRight);
         unsafeAssign.removeAll(fixedRight);
         boolean b3 = unsafeAssign.size() > 0 ;
         if (print) System.err.println("Case 3 - " + b3);

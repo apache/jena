@@ -105,7 +105,7 @@ public class ReasonerTester {
     protected Model testManifest;
     
     /** A cache of loaded source files, map from source name to Model */
-    protected Map<String, Model> sourceCache = new HashMap<String, Model>();
+    protected Map<String, Model> sourceCache = new HashMap<>();
     
     protected static Logger logger = LoggerFactory.getLogger(ReasonerTester.class);
     
@@ -195,9 +195,12 @@ public class ReasonerTester {
      * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
-        for (Iterator<String> i = listTests().iterator(); i.hasNext(); ) {
-            String test = i.next();
-            if (!runTest(test, reasonerF, testcase, configuration)) return false;
+        for ( String test : listTests() )
+        {
+            if ( !runTest( test, reasonerF, testcase, configuration ) )
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -211,9 +214,12 @@ public class ReasonerTester {
      * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTests(Reasoner reasoner, TestCase testcase) throws IOException {
-        for (Iterator<String> i = listTests().iterator(); i.hasNext(); ) {
-            String test = i.next();
-            if (!runTest(test, reasoner, testcase)) return false;
+        for ( String test : listTests() )
+        {
+            if ( !runTest( test, reasoner, testcase ) )
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -222,7 +228,7 @@ public class ReasonerTester {
      * Return a list of all test names defined in the manifest for this test harness.
      */
     public List<String> listTests() {
-        List<String> testList = new ArrayList<String>();
+        List<String> testList = new ArrayList<>();
         ResIterator tests = testManifest.listResourcesWithProperty(RDF.type, testClass);
         while (tests.hasNext()) {
             testList.add(tests.next().toString());

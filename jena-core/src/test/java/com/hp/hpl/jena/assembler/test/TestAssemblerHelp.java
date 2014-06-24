@@ -138,16 +138,18 @@ public class TestAssemblerHelp extends AssemblerTestBase
         catch (AmbiguousSpecificTypeException e)
             {
             assertEquals( resource( "x" ), e.getRoot() );
-            assertEquals( resources( e.getRoot(), "ja:Model ja:PrefixMapping" ), new HashSet<Resource>( e.getTypes() ) );
+            assertEquals( resources( e.getRoot(), "ja:Model ja:PrefixMapping" ), new HashSet<>( e.getTypes() ) );
             }
         }
 
     private Set<Resource> resources( Resource root, String items )
         {
         List<String> L = listOfStrings( items );
-        Set<Resource> result = new HashSet<Resource>();
-        for (int i = 0; i < L.size(); i += 1)
-            result.add( resource( root.getModel(), L.get(i) ) );
+        Set<Resource> result = new HashSet<>();
+            for ( String aL : L )
+            {
+                result.add( resource( root.getModel(), aL ) );
+            }
         return result;
         }
 

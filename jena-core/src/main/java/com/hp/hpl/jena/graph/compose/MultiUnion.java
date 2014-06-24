@@ -122,8 +122,13 @@ public class MultiUnion extends Polyadic
      */
     @Override  public boolean graphBaseContains( Triple t ) 
         {
-        for (Iterator<Graph> i = m_subGraphs.iterator();  i.hasNext(); ) 
-            if (i.next().contains( t )) return true;
+            for ( Graph m_subGraph : m_subGraphs )
+            {
+                if ( m_subGraph.contains( t ) )
+                {
+                    return true;
+                }
+            }
         return false;
         }
 
@@ -160,9 +165,10 @@ public class MultiUnion extends Polyadic
         ExtendedIterator<Triple> result = NullIterator.instance() ;
         boolean finished = false ;
         try {
-            for (Iterator<Graph> graphs = m_subGraphs.iterator(); graphs.hasNext();) {
-                ExtendedIterator<Triple> newTriples = recording(rejecting(graphs.next().find(t), seen), seen) ;
-                result = result.andThen(newTriples) ;
+            for ( Graph m_subGraph : m_subGraphs )
+            {
+                ExtendedIterator<Triple> newTriples = recording( rejecting( m_subGraph.find( t ), seen ), seen );
+                result = result.andThen( newTriples );
             }
             finished = true ;
             return result ;

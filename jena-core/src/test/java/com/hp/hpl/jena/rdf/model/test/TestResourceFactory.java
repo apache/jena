@@ -178,7 +178,7 @@ public class TestResourceFactory extends TestCase
 
 	public void testCreateTypedLiteralObject()
 	{
-		final Literal l = ResourceFactory.createTypedLiteral(new Integer(22));
+		final Literal l = ResourceFactory.createTypedLiteral( 22 );
 		Assert.assertEquals("22", l.getLexicalForm());
 		Assert.assertEquals("", l.getLanguage());
 		Assert.assertEquals(XSDDatatype.XSDint, l.getDatatype());

@@ -28,7 +28,7 @@ public class NodeToLabelMap
 {
     // Could abstract again as a node -> label cache + cache miss handler.
     int bNodeCounter = 0 ;
-    Map<Node, String> bNodeStrings = new HashMap<Node, String>() ;
+    Map<Node, String> bNodeStrings = new HashMap<>() ;
     boolean bNodesAsFakeURIs = false ;
     String prefixString = "b" ;
     

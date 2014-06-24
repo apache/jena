@@ -33,6 +33,7 @@ import com.spatial4j.core.context.SpatialContextFactory;
 /**
  * Definition of a "document"
  */
+@SuppressWarnings("unused")
 public class EntityDefinition {
 
 	private final String entityField;
@@ -129,15 +130,13 @@ public class EntityDefinition {
 	}
 
 	public SpatialPredicatePair getSpatialPredicatePair(Node predicate) {
-		Iterator<SpatialPredicatePair> it = this.spatialPredicatePairs
-				.iterator();
-		while (it.hasNext()) {
-			SpatialPredicatePair pair = it.next();
-			if (pair.getLatitudePredicate().equals(predicate)
-					|| pair.getLongitudePredicate().equals(predicate)) {
-				return pair;
-			}
-		}
+        for ( SpatialPredicatePair pair : this.spatialPredicatePairs )
+        {
+            if ( pair.getLatitudePredicate().equals( predicate ) || pair.getLongitudePredicate().equals( predicate ) )
+            {
+                return pair;
+            }
+        }
 		return null;
 	}
 
@@ -160,15 +159,14 @@ public class EntityDefinition {
 
 	public boolean hasSpatialPredicatePair(Node latitude_predicate,
 			Node longitude_predicate) {
-		Iterator<SpatialPredicatePair> it = this.spatialPredicatePairs
-				.iterator();
-		while (it.hasNext()) {
-			SpatialPredicatePair pair = it.next();
-			if (pair.getLatitudePredicate().equals(latitude_predicate)
-					&& pair.getLongitudePredicate().equals(longitude_predicate)) {
-				return true;
-			}
-		}
+        for ( SpatialPredicatePair pair : this.spatialPredicatePairs )
+        {
+            if ( pair.getLatitudePredicate().equals( latitude_predicate ) && pair.getLongitudePredicate().equals(
+                longitude_predicate ) )
+            {
+                return true;
+            }
+        }
 		return false;
 	}
 

@@ -37,27 +37,28 @@ import com.hp.hpl.jena.util.OneToManyMap;
 public class RuleStore {
 
     /** The set of rules indexed by head predicate */
-    protected OneToManyMap<Node, Rule> goalMap = new OneToManyMap<Node, Rule>();
+    protected OneToManyMap<Node, Rule> goalMap = new OneToManyMap<>();
     
     /** The list of all rules in the store */
     protected List<Rule> allRules;
     
     /** Index of the rules, used to block multiple entries */
-    protected Set<Rule> ruleIndex = new HashSet<Rule>();
+    protected Set<Rule> ruleIndex = new HashSet<>();
     
     /**
      * Constructor. Create an empty rule store.
      */
     public RuleStore() {
-        allRules = new ArrayList<Rule>();
+        allRules = new ArrayList<>();
     }
     
     /**
      * Constructor. Stores and indexes a list of rules.
      */
     public RuleStore(List<Rule> rules) {
-        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
-            addRule( i.next() );
+        for ( Rule rule : rules )
+        {
+            addRule( rule );
         }
         allRules = rules;
     }
@@ -66,8 +67,9 @@ public class RuleStore {
      * Add all the rules and  from an existing rulestore into this one.
      */
     public void addAll(RuleStore store) {
-        for (Iterator<Rule> i = store.getAllRules().iterator(); i.hasNext(); ) {
-            addRule( i.next() );
+        for ( Rule rule : store.getAllRules() )
+        {
+            addRule( rule );
         }
     }
     
@@ -144,7 +146,7 @@ public class RuleStore {
      * @param goal the goal being matched
      */
     public List<Rule> rulesFor(TriplePattern goal) {
-        List<Rule> rules = new ArrayList<Rule>();
+        List<Rule> rules = new ArrayList<>();
         if (goal.getPredicate().isVariable()) {
             checkAll(goalMap.values().iterator(), goal, rules);
         } else {

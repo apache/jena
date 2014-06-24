@@ -57,9 +57,9 @@ public class TestReifier extends AbstractTestReifier
         try
             {
             Constructor<?> cons = getConstructor( graphClass, new Class[] {} );
-            if (cons != null) return (Graph) cons.newInstance( new Object[] { } );
+            if (cons != null) return (Graph) cons.newInstance();
             Constructor<?> cons2 = getConstructor( graphClass, new Class [] {this.getClass()} );
-            if (cons2 != null) return (Graph) cons2.newInstance( new Object[] { this } );
+            if (cons2 != null) return (Graph) cons2.newInstance( this );
             throw new JenaException( "no suitable graph constructor found for " + graphClass );
             }
         catch (RuntimeException e)

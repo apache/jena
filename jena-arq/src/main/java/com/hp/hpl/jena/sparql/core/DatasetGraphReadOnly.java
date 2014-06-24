@@ -41,7 +41,7 @@ public class DatasetGraphReadOnly extends DatasetGraphWrapper
         return dftGraph ;
     }
 
-    private Map<Node, Graph> namedGraphs = new HashMap<Node, Graph>() ;
+    private Map<Node, Graph> namedGraphs = new HashMap<>() ;
     
     @Override
     public Graph getGraph(Node graphNode)

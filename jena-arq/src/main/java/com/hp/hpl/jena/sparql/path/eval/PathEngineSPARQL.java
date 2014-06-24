@@ -79,7 +79,7 @@ public class PathEngineSPARQL extends PathEngine
     @Override
     protected void doZeroOrOne(Path pathStep, Node node, Collection<Node> output) {
         // Force unique evaluation.
-        Collection<Node> x = new HashSet<Node>() ;
+        Collection<Node> x = new HashSet<>() ;
         eval(pathStep, node, x) ;
         x.add(node) ;
         output.addAll(x) ;
@@ -88,7 +88,7 @@ public class PathEngineSPARQL extends PathEngine
     @Override
     protected void doZeroOrMore(Path pathStep, Node node, Collection<Node> output) {
         // Reuse "output"
-        Collection<Node> visited = new LinkedList<Node>() ; // new
+        Collection<Node> visited = new LinkedList<>() ; // new
                                                             // HashSet<Node>() ;
         ALP_1(forwardMode, 0, -1, node, pathStep, visited) ;
         output.addAll(visited) ;
@@ -97,7 +97,7 @@ public class PathEngineSPARQL extends PathEngine
     @Override
     protected void doOneOrMore(Path pathStep, Node node, Collection<Node> output) {
         // Reuse "output"
-        Collection<Node> visited = new LinkedList<Node>() ; // new
+        Collection<Node> visited = new LinkedList<>() ; // new
                                                             // HashSet<Node>() ;
         // Do one step without including.
         // TODO switch to PathEngine1 for the sub-step as we only need uniques.
@@ -137,13 +137,13 @@ public class PathEngineSPARQL extends PathEngine
 
     @Override
     protected void doZeroOrMoreN(Path pathStep, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<Node>() ;
+        Set<Node> visited = new HashSet<>() ;
         ALP_N(node, pathStep, visited, output) ;
     }
 
     @Override
     protected void doOneOrMoreN(Path pathStep, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<Node>() ;
+        Set<Node> visited = new HashSet<>() ;
         // Do one step without including.
         Iterator<Node> iter1 = eval(pathStep, node) ;
         for (; iter1.hasNext();) {
@@ -266,6 +266,6 @@ public class PathEngineSPARQL extends PathEngine
 
     @Override
     protected Collection<Node> collector() {
-        return new ArrayList<Node>() ;
+        return new ArrayList<>() ;
     }
 }

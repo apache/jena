@@ -51,15 +51,14 @@ public class TransformMergeBGPs extends TransformCopy
         // Check for two BGPs.
         boolean xform = false ;
         boolean previousBGP = false ;
-        
-        for ( int i = 0 ; i < elts.size() ; i++ )
+
+        for ( Op op1 : elts )
         {
-            Op op1 = elts.get(i) ;
-            BasicPattern p1 = asBGP(op1) ;
+            BasicPattern p1 = asBGP( op1 );
             if ( previousBGP && p1 != null )
             {
-                xform = true ;
-                break ;
+                xform = true;
+                break;
             }
             previousBGP = ( p1 != null );
         }

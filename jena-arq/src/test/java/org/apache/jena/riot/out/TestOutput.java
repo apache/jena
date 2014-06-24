@@ -21,7 +21,6 @@ package org.apache.jena.riot.out;
 import java.io.ByteArrayOutputStream ;
 import java.io.IOException ;
 import java.io.OutputStreamWriter ;
-import java.io.UnsupportedEncodingException ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
@@ -80,7 +79,6 @@ public class TestOutput extends BaseTest
             String str = bytes.toString("ASCII") ;
             assertEquals(string, str) ;
         }
-        catch (UnsupportedEncodingException ex) { ex.printStackTrace(); }
         catch (IOException ex) { ex.printStackTrace(); }
     }
 
@@ -118,8 +116,7 @@ public class TestOutput extends BaseTest
             OutputLangUtils.output(w, node, prologue) ;
             w.flush();
             return bytes.toString(encoding) ;
-        } 
-        catch (UnsupportedEncodingException ex) { ex.printStackTrace(); }
+        }
         catch (IOException ex) { ex.printStackTrace(); }
         return null ;
     }

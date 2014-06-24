@@ -230,8 +230,9 @@ public class TestBackchainer extends TestCase {
      */
     public void testListData() {
         Graph data = Factory.createGraphMem();
-        for (int i = 0; i < dataElts.length; i++) {
-            data.add(dataElts[i]);
+        for ( Triple dataElt : dataElts )
+        {
+            data.add( dataElt );
         }
         Graph schema = Factory.createGraphMem();
         schema.add(new Triple(c, p, c));

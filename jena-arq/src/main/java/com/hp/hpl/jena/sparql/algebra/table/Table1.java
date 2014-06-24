@@ -62,14 +62,14 @@ public class Table1 extends TableBase {
 
     @Override
     public List<Var> getVars() {
-        List<Var> x = new ArrayList<Var>() ;
+        List<Var> x = new ArrayList<>() ;
         x.add(var) ;
         return x ;
     }
 
     @Override
     public List<String> getVarNames() {
-        List<String> x = new ArrayList<String>() ;
+        List<String> x = new ArrayList<>() ;
         x.add(var.getVarName()) ;
         return x ;
     }

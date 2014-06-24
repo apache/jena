@@ -540,7 +540,7 @@ int debugC = 0;
 		if (matcher.matches())
 			return anonymousID;
 		matcher.reset();
-		StringBuffer rslt = new StringBuffer();
+		StringBuilder rslt = new StringBuilder();
 		int lastNotMatched = 0;
 		while (matcher.find()) {
 			

@@ -196,7 +196,7 @@ public abstract class SecuredItemImpl implements SecuredItem
 		}
 		else
 		{
-			SecuredItemImpl.COUNT.set(Integer.valueOf(i - 1));
+			SecuredItemImpl.COUNT.set( i - 1 );
 		}
 	}
 
@@ -210,11 +210,11 @@ public abstract class SecuredItemImpl implements SecuredItem
 		{
 			SecuredItemImpl.CACHE.set(new LRUMap(Math.max(
 					SecuredItemImpl.MAX_CACHE, 100)));
-			SecuredItemImpl.COUNT.set(Integer.valueOf(1));
+			SecuredItemImpl.COUNT.set( 1 );
 		}
 		else
 		{
-			SecuredItemImpl.COUNT.set(Integer.valueOf(i + 1));
+			SecuredItemImpl.COUNT.set( i + 1 );
 		}
 	}
 

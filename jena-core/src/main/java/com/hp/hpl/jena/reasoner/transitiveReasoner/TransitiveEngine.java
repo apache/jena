@@ -162,11 +162,11 @@ public class TransitiveEngine {
      */
     private void prepare() {
         if (isPrepared) return;
-        subClassAliases = new HashSet<Node>();
+        subClassAliases = new HashSet<>();
         subClassAliases.add(subClassOf);
         subClassAliases.add(directSubClassOf);
         
-        subPropertyAliases = new HashSet<Node>();
+        subPropertyAliases = new HashSet<>();
         subPropertyAliases.add(subPropertyOf);
         subPropertyAliases.add(directSubPropertyOf);
         
@@ -379,7 +379,7 @@ public class TransitiveEngine {
         // declarations - hence the double iteration
         boolean foundAny = false;
         boolean foundMore = false;
-        HashSet<Node> cached = new HashSet<Node>();
+        HashSet<Node> cached = new HashSet<>();
         do {
             ExtendedIterator<Triple> subProps 
                 = spCache.find(new TriplePattern(null, TransitiveReasoner.subPropertyOf, TransitiveReasoner.subPropertyOf));

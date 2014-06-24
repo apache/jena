@@ -101,7 +101,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     abstract protected void writeBody
         ( Model mdl, PrintWriter pw, String baseUri, boolean inclXMLBase );
 
-	static private Set<String> badRDF = new HashSet<String>();
+	static private Set<String> badRDF = new HashSet<>();
     
     /**
         Counter used for allocating Jena transient namespace declarations.
@@ -143,7 +143,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
 	int width = 60;
 
-	HashMap<AnonId, String> anonMap = new HashMap<AnonId, String>();
+	HashMap<AnonId, String> anonMap = new HashMap<>();
     
 	int anonCount = 0;
     
@@ -201,7 +201,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     */
     private boolean writingAllModelPrefixNamespaces = true;
         
-    private Relation<String> nameSpaces = new Relation<String>();
+    private Relation<String> nameSpaces = new Relation<>();
     
     private Map<String, String> ns;
     
@@ -225,16 +225,17 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     private void primeNamespace( Model model )
     {
         Map<String, String> m = model.getNsPrefixMap();
-        Iterator<Map.Entry<String, String>> it  = m.entrySet().iterator();
-        while (it.hasNext())
+        for ( Entry<String, String> e : m.entrySet() )
         {
-            Map.Entry<String, String> e = it.next();
             String value = e.getValue();
             String already = this.getPrefixFor( value );
-            if (already == null) 
-            { 
-                this.setNsPrefix( model.getNsURIPrefix( value ), value ); 
-                if (writingAllModelPrefixNamespaces) this.addNameSpace( value ); 
+            if ( already == null )
+            {
+                this.setNsPrefix( model.getNsURIPrefix( value ), value );
+                if ( writingAllModelPrefixNamespaces )
+                {
+                    this.addNameSpace( value );
+                }
             }
         }
         
@@ -266,48 +267,59 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
                 
 	void workOutNamespaces() {
 		if (ns == null) {
-    		ns = new HashMap<String, String>();
-    		Set<String> prefixesUsed = new HashSet<String>();
+    		ns = new HashMap<>();
+    		Set<String> prefixesUsed = new HashSet<>();
 			setFromWriterSystemProperties( ns, prefixesUsed );
             setFromGivenNamespaces( ns, prefixesUsed );
         }
 	}
 
     private void setFromWriterSystemProperties( Map<String, String> ns, Set<String> prefixesUsed ) {
-        Iterator<String> it = namespacesNeeded.iterator();
-        while (it.hasNext()) {
-            String uri = it.next();
+        for ( String uri : namespacesNeeded )
+        {
             String val = JenaRuntime.getSystemProperty( RDFWriter.NSPREFIXPROPBASE + uri );
-            if (val != null && checkLegalPrefix( val ) && !prefixesUsed.contains( val )) {
-                ns.put(uri, val);
-                prefixesUsed.add(val);
+            if ( val != null && checkLegalPrefix( val ) && !prefixesUsed.contains( val ) )
+            {
+                ns.put( uri, val );
+                prefixesUsed.add( val );
             }
         }
     }
 
     private void setFromGivenNamespaces( Map<String, String> ns, Set<String> prefixesUsed ) {
-		Iterator<String> it = namespacesNeeded.iterator();
-		while (it.hasNext()) {
-			String uri = it.next();
-			if (ns.containsKey(uri))
-				continue;
-			String val = null;
-			Set<String> s = nameSpaces.forward(uri);
-			if (s != null) {
-				Iterator<String> it2 = s.iterator();
-				if (it2.hasNext())
-					val = it2.next();
-				if (prefixesUsed.contains(val))
-					val = null;
-			}
-			if (val == null) {
-		        // just in case the prefix has already been used, look for a free one.
-		        // (the usual source of such prefixes is reading in a model we wrote out earlier)
-				do { val = "j." + (jenaPrefixCount++); } while (prefixesUsed.contains( val ));
-			}
-			ns.put(uri, val);
-			prefixesUsed.add(val);
-		}
+        for ( String uri : namespacesNeeded )
+        {
+            if ( ns.containsKey( uri ) )
+            {
+                continue;
+            }
+            String val = null;
+            Set<String> s = nameSpaces.forward( uri );
+            if ( s != null )
+            {
+                Iterator<String> it2 = s.iterator();
+                if ( it2.hasNext() )
+                {
+                    val = it2.next();
+                }
+                if ( prefixesUsed.contains( val ) )
+                {
+                    val = null;
+                }
+            }
+            if ( val == null )
+            {
+                // just in case the prefix has already been used, look for a free one.
+                // (the usual source of such prefixes is reading in a model we wrote out earlier)
+                do
+                {
+                    val = "j." + ( jenaPrefixCount++ );
+                }
+                while ( prefixesUsed.contains( val ) );
+            }
+            ns.put( uri, val );
+            prefixesUsed.add( val );
+        }
 	}
 
 	final synchronized public void setNsPrefix(String prefix, String ns) {
@@ -328,7 +340,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
 	String xmlnsDecl() {
 		workOutNamespaces();
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		Iterator<Entry<String, String>> it = ns.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, String> ent = it.next();
@@ -471,7 +483,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     */
     private void setupNamespaces( Model model )
         {
-        this.namespacesNeeded = new HashSet<String>();
+        this.namespacesNeeded = new HashSet<>();
         this.ns = null;
         this.modelPrefixMapping = model;
         primeNamespace( model );
@@ -536,13 +548,16 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         }
         Map<String, String> prefixes = model.getNsPrefixMap();
         pw.print( "<!DOCTYPE " + rdfRDF +" [" );
-        for (Iterator<String> it = prefixes.keySet().iterator(); it.hasNext();)
-        {
-            String prefix = it.next();
-            if (isPredefinedEntityName( prefix ) )
-                continue ;
-            pw.print(  newline + "  <!ENTITY " + strForPrefix(prefix) + " '" + Util.substituteEntitiesInEntityValue(prefixes.get( prefix )) + "'>" );
-        }
+            for ( String prefix : prefixes.keySet() )
+            {
+                if ( isPredefinedEntityName( prefix ) )
+                {
+                    continue;
+                }
+                pw.print(
+                    newline + "  <!ENTITY " + strForPrefix( prefix ) + " '" + Util.substituteEntitiesInEntityValue(
+                        prefixes.get( prefix ) ) + "'>" );
+            }
         pw.print( "]>" + newline );
         }
 
@@ -763,7 +778,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			blockedRules = (Resource[]) o;
 		} else {
 			StringTokenizer tkn = new StringTokenizer((String) o, ", ");
-			Vector<Resource> v = new Vector<Resource>();
+			Vector<Resource> v = new Vector<>();
 			while (tkn.hasMoreElements()) {
 				String frag = tkn.nextToken();
 				//  System.err.println("Blocking " + frag);
@@ -773,8 +788,10 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			blockedRules = new Resource[v.size()];
 			v.copyInto(blockedRules);
 		}
-		for (int i = 0; i < blockedRules.length; i++)
-			blockRule(blockedRules[i]);
+        for ( Resource blockedRule : blockedRules )
+        {
+            blockRule( blockedRule );
+        }
 		return rslt;
 	}
 	/*

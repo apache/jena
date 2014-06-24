@@ -49,7 +49,7 @@ public class IteratorInteger implements Iterator<Long>
     @Override
     public Long next()
     {
-        Long v = Long.valueOf(current) ;
+        Long v = current;
         current++ ;
         return v ;
     }

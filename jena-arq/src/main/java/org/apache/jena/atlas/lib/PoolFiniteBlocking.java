@@ -27,7 +27,7 @@ public class PoolFiniteBlocking<T> implements Pool<T>
 {
     BlockingDeque<T> pool  ;
     
-    public PoolFiniteBlocking(int size) { pool = new LinkedBlockingDeque<T>(size) ; }
+    public PoolFiniteBlocking(int size) { pool = new LinkedBlockingDeque<>(size) ; }
     
     @Override
     public final void put(T item)

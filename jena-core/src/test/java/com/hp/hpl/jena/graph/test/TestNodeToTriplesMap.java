@@ -211,12 +211,15 @@ public class TestNodeToTriplesMap extends GraphTestBase
     protected void addTriples( NodeToTriplesMap nt, String facts )
         {
         Triple [] t = tripleArray( facts );
-        for (int i = 0; i < t.length; i += 1) nt.add( t[i] );
+            for ( Triple aT : t )
+            {
+                nt.add( aT );
+            }
         }
     
     protected static <T> Set<T> just( T x )
         {
-        Set<T> result = new HashSet<T>();
+        Set<T> result = new HashSet<>();
         result.add( x );
         return result;
         }

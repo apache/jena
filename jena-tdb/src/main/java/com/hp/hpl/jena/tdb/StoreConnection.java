@@ -163,7 +163,7 @@ public class StoreConnection
         JournalControl.print(transactionManager.getJournal()) ;
     }
     
-    private static Map<Location, StoreConnection> cache = new HashMap<Location, StoreConnection>() ;
+    private static Map<Location, StoreConnection> cache = new HashMap<>() ;
 
     // ---- statics managing the cache.
     /** Obtain a StoreConenction for a particular location */
@@ -176,7 +176,7 @@ public class StoreConnection
     public static synchronized void reset()
     {
         // Copy to avoid potential CME.
-        Set<Location> x = new HashSet<Location>(cache.keySet()) ;
+        Set<Location> x = new HashSet<>(cache.keySet()) ;
         for (Location loc : x)
             expel(loc, true) ;
         cache.clear() ;

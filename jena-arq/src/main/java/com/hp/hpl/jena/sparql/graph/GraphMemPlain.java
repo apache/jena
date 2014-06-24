@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.iterator.Filter ;
  */
 public class GraphMemPlain extends GraphBase
 {
-    private Set<Triple> triples = new HashSet<Triple>() ;
+    private Set<Triple> triples = new HashSet<>() ;
     
     public GraphMemPlain() {}
     

@@ -35,8 +35,8 @@ public class Context
 {
     public static final Context emptyContext = new Context(true) ;
     
-    protected Map<Symbol, Object> context = new HashMap<Symbol, Object>() ;
-    protected List<Callback<Symbol>> callbacks = new ArrayList<Callback<Symbol>>() ;
+    protected Map<Symbol, Object> context = new HashMap<>() ;
+    protected List<Callback<Symbol>> callbacks = new ArrayList<>() ;
     protected boolean readonly = false ;
     
     /** Create an empty context */

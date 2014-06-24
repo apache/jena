@@ -43,7 +43,7 @@ public class TestIO_JenaReaders {
     
     private final class RDFReaderFImplExposingProtected extends RDFReaderFImpl {
         public Map<String, String> defaultReaders() {
-            Map<String,String> defaults = new LinkedHashMap<String,String>();
+            Map<String,String> defaults = new LinkedHashMap<>();
             for (int i=0; i<LANGS.length; i++) {
                 defaults.put(LANGS[i], DEFAULTREADERS[i]);
             }

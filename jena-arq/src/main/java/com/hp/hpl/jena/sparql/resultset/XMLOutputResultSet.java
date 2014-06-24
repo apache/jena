@@ -48,7 +48,7 @@ public class XMLOutputResultSet
 
     IndentedWriter  out ;
     int bNodeCounter = 0 ;
-    Map<Resource, String> bNodeMap = new HashMap<Resource, String>() ;
+    Map<Resource, String> bNodeMap = new HashMap<>() ;
     
     XMLOutputResultSet(OutputStream outStream)
     {

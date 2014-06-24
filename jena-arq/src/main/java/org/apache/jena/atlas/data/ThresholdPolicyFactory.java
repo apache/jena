@@ -61,7 +61,7 @@ public class ThresholdPolicyFactory
      */
     public static <E> ThresholdPolicy<E> count(long threshold)
     {
-        return new ThresholdPolicyCount<E>(threshold) ;
+        return new ThresholdPolicyCount<>(threshold) ;
     }
 
     /**

@@ -64,9 +64,9 @@ public class ExecutionContext implements FunctionEnv
     {
         this.context = params ;
         this.dataset = dataset ;
-        this.openIterators = new ArrayList<QueryIterator>() ;
+        this.openIterators = new ArrayList<>() ;
         if ( TrackAllIterators )
-            this.allIterators  = new ArrayList<QueryIterator>() ;
+            this.allIterators  = new ArrayList<>() ;
         this.activeGraph = activeGraph ;
         this.executor = factory ;
     }

@@ -50,7 +50,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
     private boolean outputGraphBNodeLabels = false ;
     private IndentedWriter out ;
     private int bNodeCounter = 0 ;
-    private Map<Resource, String> bNodeMap = new HashMap<Resource, String>() ;
+    private Map<Resource, String> bNodeMap = new HashMap<>() ;
     
     JSONOutputResultSet(OutputStream outStream)
     { this(new IndentedWriter(outStream)) ; }

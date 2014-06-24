@@ -26,7 +26,7 @@ import com.hp.hpl.jena.update.GraphStore ;
 
 public class UpdateEngineRegistry
 {
-    List<UpdateEngineFactory> factories = new ArrayList<UpdateEngineFactory>() ;
+    List<UpdateEngineFactory> factories = new ArrayList<>() ;
     static { init() ; }
     
     // Singleton

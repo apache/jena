@@ -28,9 +28,9 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public abstract class OpN extends OpBase
 { 
-    private List<Op> elements = new ArrayList<Op>() ;
+    private List<Op> elements = new ArrayList<>() ;
     
-    protected OpN()         { elements = new ArrayList<Op>() ; }
+    protected OpN()         { elements = new ArrayList<>() ; }
     protected OpN(List<Op> x)   { elements = x ; }
     
     /** Accumulate an op in the OpN.

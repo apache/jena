@@ -48,8 +48,11 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     @Override
     @Deprecated
     public void add( Triple [] triples )
-        { 
-        for (int i = 0; i < triples.length; i += 1) graph.performAdd( triples[i] ); 
+        {
+            for ( Triple triple : triples )
+            {
+                graph.performAdd( triple );
+            }
         manager.notifyAddArray( graph, triples );
         }
         
@@ -60,7 +63,10 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         
     protected void add( List<Triple> triples, boolean notify )
         {
-        for (int i = 0; i < triples.size(); i += 1) graph.performAdd( triples.get(i) ); 
+            for ( Triple triple : triples )
+            {
+                graph.performAdd( triple );
+            }
         if (notify) manager.notifyAddList( graph, triples );
         }
 
@@ -97,8 +103,11 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     @Override
     @Deprecated
     public void delete( Triple [] triples )
-        { 
-        for (int i = 0; i < triples.length; i += 1) graph.performDelete( triples[i] ); 
+        {
+            for ( Triple triple : triples )
+            {
+                graph.performDelete( triple );
+            }
         manager.notifyDeleteArray( graph, triples );
         }
     
@@ -108,8 +117,11 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         { delete( triples, true ); }
         
     protected void delete( List<Triple> triples, boolean notify )
-        { 
-        for (int i = 0; i < triples.size(); i += 1) graph.performDelete( triples.get(i) );
+        {
+            for ( Triple triple : triples )
+            {
+                graph.performDelete( triple );
+            }
         if (notify) manager.notifyDeleteList( graph, triples );
         }
     
@@ -127,7 +139,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
          
     private List<Triple> triplesOf( Graph g )
         {
-        ArrayList<Triple> L = new ArrayList<Triple>();
+        ArrayList<Triple> L = new ArrayList<>();
         Iterator<Triple> it = g.find( Triple.ANY );
         while (it.hasNext()) L.add( it.next() );
         return L;

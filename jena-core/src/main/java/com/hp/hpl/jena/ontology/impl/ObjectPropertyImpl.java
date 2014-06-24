@@ -117,7 +117,7 @@ public class ObjectPropertyImpl
      */
     @Override
     public ExtendedIterator<? extends OntProperty> listInverseOf() {
-        List<OntProperty> objPs = new ArrayList<OntProperty>();
+        List<OntProperty> objPs = new ArrayList<>();
         for (Iterator<? extends OntProperty> i = super.listInverseOf(); i.hasNext(); ) {
             objPs.add( i.next().as( ObjectProperty.class ) );
         }

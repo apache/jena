@@ -153,8 +153,8 @@ public class OntTools
      * and whose last object is <code>end</code>, or null if no such path exists.
      */
     public static Path findShortestPath( Model m, Resource start, RDFNode end, Filter<Statement> onPath ) {
-        List<Path> bfs = new LinkedList<Path>();
-        Set<Resource> seen = new HashSet<Resource>();
+        List<Path> bfs = new LinkedList<>();
+        Set<Resource> seen = new HashSet<>();
 
         // initialise the paths
         for (Iterator<Statement> i = m.listStatements( start, null, (RDFNode) null ).filterKeep( onPath ); i.hasNext(); ) {
@@ -204,8 +204,8 @@ public class OntTools
      * class hierarchy in <code>m</code>
      */
     public static List<OntClass> namedHierarchyRoots( OntModel m ) {
-        List<OntClass> nhr = new ArrayList<OntClass>();         // named roots
-        List<OntClass> ahr = new ArrayList<OntClass>();         // anon roots
+        List<OntClass> nhr = new ArrayList<>();         // named roots
+        List<OntClass> ahr = new ArrayList<>();         // anon roots
 
         // do the initial partition of the root classes
         partitionByNamed( m.listHierarchyRootClasses(), nhr, ahr );
@@ -465,7 +465,7 @@ public class OntTools
          */
         @Override
         public String toString() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append( "DisjointSet{node=" );
             buf.append( m_node );
             buf.append( ",anc=" );
@@ -481,7 +481,7 @@ public class OntTools
         }
 
         public String toShortString() {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.append( "DisjointSet{node=" );
             buf.append( m_node );
             buf.append( ",parent=" );
@@ -498,8 +498,8 @@ public class OntTools
      */
     public static class LCAIndex
     {
-        private Map<Resource, DisjointSet> m_setIndex = new HashMap<Resource, DisjointSet>();
-        private Map<Resource, Map<Resource, Resource>> m_lcaIndex = new HashMap<Resource, Map<Resource, Resource>>();
+        private Map<Resource, DisjointSet> m_setIndex = new HashMap<>();
+        private Map<Resource, Map<Resource, Resource>> m_lcaIndex = new HashMap<>();
 
         public Resource getLCA( Resource u, Resource v ) {
             Map<Resource, Resource> map = m_lcaIndex.get( u );
@@ -516,7 +516,7 @@ public class OntTools
         public void setLCA( Resource u, Resource v, Resource lca ) {
             Map<Resource, Resource> uMap = m_lcaIndex.get( u );
             if (uMap == null) {
-                uMap = new HashMap<Resource, Resource>();
+                uMap = new HashMap<>();
                 m_lcaIndex.put( u, uMap );
             }
             uMap.put( v, lca );
@@ -596,15 +596,16 @@ public class OntTools
 
         /** Accept statements with any predicate from <code>preds</code> */
         public PredicatesFilter( Property[] preds ) {
-            m_preds = new HashSet<Property>();
-            for (int i = 0; i < preds.length; i++) {
-                m_preds.add( preds[i] );
+            m_preds = new HashSet<>();
+            for ( Property pred : preds )
+            {
+                m_preds.add( pred );
             }
         }
 
         /** Accept statements with predicate <code>pred</code> */
         public PredicatesFilter( Property pred ) {
-            m_preds = new HashSet<Property>();
+            m_preds = new HashSet<>();
             m_preds.add( pred );
         }
 

@@ -96,13 +96,13 @@ public class NodeUtils
             }} ;
         
         ExtendedIterator<Node> eIter = WrappedIterator.create(iter) ;
-        Iterator<String> conv = new MapFilterIterator<Node, String>(mapper, eIter) ;
+        Iterator<String> conv = new MapFilterIterator<>(mapper, eIter) ;
         return conv ;
     }
     
     public static Set<Node> convertToNodes(Collection<String> uris)
     {
-        Set<Node> nodes = new HashSet<Node>() ;
+        Set<Node> nodes = new HashSet<>() ;
         for ( String x : uris )
             nodes.add(NodeFactory.createURI(x)) ;
         return nodes ;

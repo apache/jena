@@ -212,12 +212,12 @@ public class RiotReader
         // Special case N-Triples, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
         {
-            return new IteratorResourceClosing<Triple>(createParserNTriples(input, null), input);
+            return new IteratorResourceClosing<>(createParserNTriples(input, null), input);
         }
         else
         {
             // Otherwise, we have to spin up a thread to deal with it
-            final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
+            final PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
             final PipedTriplesStream out = new PipedTriplesStream(it);
             
             Thread t = new Thread(new Runnable()
@@ -259,12 +259,12 @@ public class RiotReader
         // Special case N-Quads, because the RIOT reader has a pull interface
         if (  RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
         {
-            return new IteratorResourceClosing<Quad>(createParserNQuads(input, null), input);
+            return new IteratorResourceClosing<>(createParserNQuads(input, null), input);
         }
         else
         {
             // Otherwise, we have to spin up a thread to deal with it
-            final PipedRDFIterator<Quad> it = new PipedRDFIterator<Quad>();
+            final PipedRDFIterator<Quad> it = new PipedRDFIterator<>();
             final PipedQuadsStream out = new PipedQuadsStream(it);
             
             Thread t = new Thread(new Runnable()

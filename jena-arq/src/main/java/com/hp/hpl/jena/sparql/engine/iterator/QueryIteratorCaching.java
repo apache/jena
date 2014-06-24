@@ -35,7 +35,7 @@ public
 class QueryIteratorCaching extends QueryIteratorWrapper
 {
     // Not tracked.
-    List<Binding> cache = new ArrayList<Binding>() ;
+    List<Binding> cache = new ArrayList<>() ;
     
     public QueryIteratorCaching(QueryIterator qIter)
     {
@@ -60,7 +60,7 @@ class QueryIteratorCaching extends QueryIteratorWrapper
         List<Binding> elements = cache ;
         if ( super.hasNext() )
             // If the iterator isn't finished, copy what we have so far.
-            elements = new ArrayList<Binding>(cache) ;
+            elements = new ArrayList<>(cache) ;
         
         return new QueryIteratorCaching(new QueryIterPlainWrapper(elements.iterator(), null)) ;
     }

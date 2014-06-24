@@ -90,7 +90,6 @@ public class ModTDBDataset extends ModDataset
                     // Should use assembler inheritance but how do we assert the subclass relationship in a program?
                     thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), DatasetAssemblerVocab.tDataset) ;
             }
-            catch (ARQException ex)     { throw ex; }
             catch (JenaException ex)    { throw ex ; }
             catch (Exception ex)
             { throw new CmdException("Error creating", ex) ; }
@@ -115,7 +114,7 @@ public class ModTDBDataset extends ModDataset
     
     public List<String> locations()
     {
-        List<String> locations = new ArrayList<String>() ;  
+        List<String> locations = new ArrayList<>() ;
         
         if ( modAssembler.getLocation() != null )
             locations.add(modAssembler.getLocation().getDirectoryPath()) ;

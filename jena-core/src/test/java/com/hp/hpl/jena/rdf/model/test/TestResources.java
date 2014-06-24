@@ -85,7 +85,7 @@ public class TestResources extends AbstractModelTestBase
 
 	protected Set<Object> setOf( final Object x )
 	{
-		final Set<Object> result = new HashSet<Object>();
+		final Set<Object> result = new HashSet<>();
 		result.add(x);
 		return result;
 	}

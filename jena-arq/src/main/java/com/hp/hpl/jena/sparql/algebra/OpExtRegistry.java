@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.sse.builders.BuilderOp ;
 public class OpExtRegistry
 {
     // Known extensions.
-    static Map<String, OpExtBuilder> extensions = new HashMap<String, OpExtBuilder>() ;
+    static Map<String, OpExtBuilder> extensions = new HashMap<>() ;
     
     // Wire in (ext NAME ...) form
     static { BuilderOp.add(Tags.tagExt, new BuildExtExt()) ; }

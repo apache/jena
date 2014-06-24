@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.function;
 
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
@@ -57,12 +56,11 @@ public abstract class FunctionBase implements Function
             // The contract on the function interface is that this should not happen.
             throw new ARQInternalErrorException("FunctionBase: Null args list") ;
         
-        List<NodeValue> evalArgs = new ArrayList<NodeValue>() ;
-        for ( Iterator<Expr> iter = args.iterator() ; iter.hasNext() ; )
+        List<NodeValue> evalArgs = new ArrayList<>() ;
+        for ( Expr e : args )
         {
-            Expr e = iter.next() ;
-            NodeValue x = e.eval(binding, env) ;
-            evalArgs.add(x) ;
+            NodeValue x = e.eval( binding, env );
+            evalArgs.add( x );
         }
         
         NodeValue nv =  exec(evalArgs) ;

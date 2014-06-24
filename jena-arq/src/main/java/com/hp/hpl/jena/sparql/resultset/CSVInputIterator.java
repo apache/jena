@@ -116,7 +116,7 @@ public class CSVInputIterator extends QueryIteratorBase
     private BindingMap parseLine(List<Var> vars, String line)
     {
         BindingMap binding = BindingFactory.create() ;
-        List<String> terms = new ArrayList<String>() ;
+        List<String> terms = new ArrayList<>() ;
         int idx = 0 ;
         
         while(idx < line.length())

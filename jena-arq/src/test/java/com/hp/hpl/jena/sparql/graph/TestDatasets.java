@@ -73,7 +73,7 @@ public class TestDatasets {
 		QueryExecution exec = QueryExecutionFactory.create(q, ds);
 		
 		ResultSet results = exec.execSelect();
-		List<String> found = new ArrayList<String>();
+		List<String> found = new ArrayList<>();
 		int count = 0;
 		while (results.hasNext()) {
 			count++;

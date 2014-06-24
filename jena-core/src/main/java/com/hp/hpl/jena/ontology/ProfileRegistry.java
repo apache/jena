@@ -71,7 +71,7 @@ public class ProfileRegistry {
     //////////////////////////////////
 
     /** Maps from public URI's to language profiles */
-    private Map<String,Profile> m_registry = new HashMap<String, Profile>();
+    private Map<String,Profile> m_registry = new HashMap<>();
 
 
     // Constructors
@@ -83,8 +83,9 @@ public class ProfileRegistry {
      * </p>
      */
     private ProfileRegistry() {
-        for (int i = 0;  i < s_initData.length;  i++) {
-            registerProfile( (String) s_initData[i][0], (Profile) s_initData[i][1] );
+        for ( Object[] aS_initData : s_initData )
+        {
+            registerProfile( (String) aS_initData[0], (Profile) aS_initData[1] );
         }
     }
 

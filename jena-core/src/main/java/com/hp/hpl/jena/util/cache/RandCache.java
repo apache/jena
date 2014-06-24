@@ -45,7 +45,7 @@ public class RandCache implements Cache, CacheControl {
     RandCache(String name, int size) {
         this.size = size;
         try {
-            map = new HashMap<Object, Object>(size * 100 / 75);  // based on .75 loadfactor
+            map = new HashMap<>(size * 100 / 75);  // based on .75 loadfactor
         } catch (IllegalArgumentException e) {
             if ("Illegal load factor: NaN".equals(e.getMessage())) {
                 // This strange construction needs explanation.
@@ -57,7 +57,7 @@ public class RandCache implements Cache, CacheControl {
                 // which is completely mysterious but at least enables the unit tests to pass.
                 //   - der 4/5/04
                 logger.warn("Detected a NaN anomaly believed to be due to use of JDK 1.4.1");
-                map = new HashMap<Object, Object>(size*100/75, 0.75f);
+                map = new HashMap<>(size*100/75, 0.75f);
             } else {
                 throw e;
             }

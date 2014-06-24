@@ -54,9 +54,9 @@ import org.apache.jena.iri.IRI;
  */
 public class FastAbbreviatingPrefixMap extends PrefixMapBase {
 
-    private Map<String, IRI> prefixes = new HashMap<String, IRI>();
+    private Map<String, IRI> prefixes = new HashMap<>();
     private Map<String, IRI> prefixesView = Collections.unmodifiableMap(this.prefixes);
-    private Trie<String> abbrevs = new Trie<String>();
+    private Trie<String> abbrevs = new Trie<>();
 
     /**
      * Create a new fast abbreviating prefix map

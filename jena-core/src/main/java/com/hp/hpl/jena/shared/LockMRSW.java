@@ -42,7 +42,7 @@ public class LockMRSW implements Lock
     static Logger log = LoggerFactory.getLogger(LockMRSW.class) ;
     
     // Map of threads to lock state for this lock
-    Map<Thread, LockState> threadStates = new HashMap<Thread, LockState>() ;
+    Map<Thread, LockState> threadStates = new HashMap<>() ;
     // We keep this is a variable because it is tested outside of a lock.
     int threadStatesSize = threadStates.size() ;
     
@@ -180,7 +180,7 @@ public class LockMRSW implements Lock
     synchronized
     private String report(LockState state)
     {
-        StringBuffer sb = new StringBuffer() ;
+        StringBuilder sb = new StringBuilder() ;
         sb.append("Thread R/W: ") ;
         sb.append(Integer.toString(state.readLocks)) ;
         sb.append("/") ;

@@ -44,8 +44,7 @@ public class ModDatasetAssembler extends ModDataset
             if ( dataset == null )
                 throw new CmdException("No dataset description found in: "+modAssembler.getAssemblerFile()) ;
         }
-        catch (CmdException ex) { throw ex ; }
-        catch (ARQException ex) { throw ex; }
+        catch (CmdException | ARQException ex) { throw ex ; }
         catch (NotFoundException ex)
         { throw new CmdException("Not found: "+ex.getMessage()) ; }
         catch (JenaException ex)

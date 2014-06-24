@@ -46,12 +46,11 @@ public class ReorderProcIndexes implements ReorderProc
             throw new ARQException(str) ; 
         }        
         
-        BasicPattern bgp2 = new BasicPattern() ; 
-        for ( int j = 0 ; j < indexes.length ; j++ )
+        BasicPattern bgp2 = new BasicPattern() ;
+        for ( int idx : indexes )
         {
-            int idx = indexes[j] ;
-            Triple t = bgp.get(idx) ;
-            bgp2.add(t) ;
+            Triple t = bgp.get( idx );
+            bgp2.add( t );
         }
         return bgp2 ;
     }

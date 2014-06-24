@@ -34,7 +34,7 @@ import java.util.*;
 public class UniqueExtendedIterator<T> extends WrappedIterator<T> {
 
     /** The set of objects already seen */
-    protected HashSet<T> seen = new HashSet<T>();
+    protected HashSet<T> seen = new HashSet<>();
     
     /** One level lookahead */
     protected T next = null;
@@ -59,7 +59,7 @@ public class UniqueExtendedIterator<T> extends WrappedIterator<T> {
      */
     public static <T> ExtendedIterator<T> create( Iterator<T> it ) {
         return (it instanceof UniqueExtendedIterator<?>) ? 
-                    ((UniqueExtendedIterator<T>) it) : new UniqueExtendedIterator<T>( it );
+                    ((UniqueExtendedIterator<T>) it) : new UniqueExtendedIterator<>( it );
     }
     
     /**

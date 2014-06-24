@@ -24,9 +24,7 @@ import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
 
 import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
@@ -141,13 +139,8 @@ public class ModQueryIn implements ArgModuleGeneral {
             }
             intEx.printStackTrace(System.err) ;
             throw new TerminationException(99) ;
-        } catch (QueryParseException parseEx) {
-            System.err.println(parseEx.getMessage()) ;
-            throw new TerminationException(2) ;
-        } catch (QueryException qEx) {
-            System.err.println(qEx.getMessage()) ;
-            throw new TerminationException(2) ;
-        } catch (JenaException ex) {
+        }
+        catch (JenaException ex) {
             System.err.println(ex.getMessage()) ;
             throw new TerminationException(2) ;
         } catch (Exception ex) {

@@ -39,9 +39,9 @@ public class RDFWriterRegistry
     
     static { RIOT.init() ; }
 
-    private static Map<RDFFormat, WriterGraphRIOTFactory> registryGraph     = new HashMap<RDFFormat, WriterGraphRIOTFactory>() ;
-    private static Map<RDFFormat, WriterDatasetRIOTFactory> registryDataset = new HashMap<RDFFormat, WriterDatasetRIOTFactory>() ;
-    private static Map<Lang, RDFFormat> langToFormat                        = new HashMap<Lang, RDFFormat>() ;
+    private static Map<RDFFormat, WriterGraphRIOTFactory> registryGraph     = new HashMap<>() ;
+    private static Map<RDFFormat, WriterDatasetRIOTFactory> registryDataset = new HashMap<>() ;
+    private static Map<Lang, RDFFormat> langToFormat                        = new HashMap<>() ;
     
     // Writing a graph
     static WriterGraphRIOTFactory wgfactory = new WriterGraphRIOTFactory() {

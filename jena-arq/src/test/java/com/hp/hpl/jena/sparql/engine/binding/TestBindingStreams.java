@@ -147,7 +147,7 @@ public class TestBindingStreams extends BaseTest
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         BindingInputStream input = new BindingInputStream(in) ;
         
-        List<Binding> results = new ArrayList<Binding>() ;
+        List<Binding> results = new ArrayList<>() ;
         for ( ; input.hasNext() ; )
         {
             results.add(input.next()) ;

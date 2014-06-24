@@ -130,7 +130,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
                     System.err.println("PtrBuffer is not full") ;
                 
                 // The split point for the next level up.
-                slot = new Pair<Integer,Record>(bptNode.getId(), pair.cdr()) ;
+                slot = new Pair<>(bptNode.getId(), pair.cdr()) ;
 
                 if ( debug ) System.out.printf("Write(1): %d\n", bptNode.getId()) ;
                 if ( debug ) System.out.println(bptNode) ;
@@ -152,7 +152,7 @@ class BPTreeNodeBuilder implements Iterator<Pair<Integer, Record>>
         Record r = recBuff.getHigh() ;
         recBuff.removeTop() ;
         bptNode.setCount(bptNode.getCount()-1) ;
-        slot = new Pair<Integer,Record>(bptNode.getId(), r) ;
+        slot = new Pair<>(bptNode.getId(), r) ;
         
         if ( debug ) System.out.printf("Write(2): %d\n", bptNode.getId()) ;
         if ( debug ) System.out.println(bptNode) ;

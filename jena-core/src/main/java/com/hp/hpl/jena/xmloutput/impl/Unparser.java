@@ -164,7 +164,7 @@ class Unparser {
         out = w;
         model = m;
         addTypeNameSpaces();
-        objectTable = new HashMap<Resource, Integer>();
+        objectTable = new HashMap<>();
         StmtIterator ss = m.listStatements();
         try {
             while (ss.hasNext()) {
@@ -178,9 +178,9 @@ class Unparser {
             ss.close();
         }
         try {
-            res2statement = new HashMap<Resource, Statement>();
-            statement2res = new HashMap<Statement, Resource>();
-            ClosableIterator<Resource> reified = new MapFilterIterator<Resource, Resource>(new MapFilter<Resource, Resource>() {
+            res2statement = new HashMap<>();
+            statement2res = new HashMap<>();
+            ClosableIterator<Resource> reified = new MapFilterIterator<>(new MapFilter<Resource, Resource>() {
                 @Override
                 public Resource accept(Resource o) {
                     Resource r = o;
@@ -262,7 +262,7 @@ class Unparser {
      */
     void setTopLevelTypes(Resource types[]) {
         pleasingTypes = types;
-        pleasingTypeSet = new HashSet<Resource>(Arrays.asList(types));
+        pleasingTypeSet = new HashSet<>(Arrays.asList(types));
     }
 
     private String xmlBase;
@@ -290,13 +290,13 @@ class Unparser {
 
     private PrintWriter out;
 
-    private Set<Resource> doing = new HashSet<Resource>(); // Some of the resources that
+    private Set<Resource> doing = new HashSet<>(); // Some of the resources that
 
     // are currently being written.
-    private Set<Statement> doneSet = new HashSet<Statement>(); // The triples that have been
+    private Set<Statement> doneSet = new HashSet<>(); // The triples that have been
                                             // output.
 
-    private Set<Resource> haveReified = new HashSet<Resource>(); // Those local resources that
+    private Set<Resource> haveReified = new HashSet<>(); // Those local resources that
                                                 // are
 
     // the id's of a reification, used to ensure that anonymous
@@ -304,7 +304,7 @@ class Unparser {
 
     private Resource pleasingTypes[] = null;
 
-    private Set<Resource> pleasingTypeSet = new HashSet<Resource>();
+    private Set<Resource> pleasingTypeSet = new HashSet<>();
 
     final private Abbreviated prettyWriter;
 
@@ -599,9 +599,10 @@ class Unparser {
         done(s);
         // record all done's first - they may impact the
         // way we print the values.
-        for (int i = 0; i < list.length; i++) {
-            done(list[i][0]);
-            done(list[i][1]);
+        for ( Statement[] aList1 : list )
+        {
+            done( aList1[0] );
+            done( aList1[1] );
         }
         tab();
         print("<");
@@ -611,8 +612,9 @@ class Unparser {
         wParseCollection();
 
         print(">");
-        for (int i = 0; i < list.length; i++) {
-            wObj((Resource) list[i][0].getObject(), false);
+        for ( Statement[] aList : list )
+        {
+            wObj( (Resource) aList[0].getObject(), false );
         }
         indentMinus();
         tab();
@@ -633,7 +635,7 @@ class Unparser {
     private void wPropAttrSome(Resource r) {
         ClosableIterator<Statement> ss = listProperties(r);
         try {
-            Set<Property> seen = new HashSet<Property>();
+            Set<Property> seen = new HashSet<>();
             while (ss.hasNext()) {
                 Statement s = ss.next();
                 if (canBeAttribute(s, seen)) {
@@ -739,7 +741,7 @@ class Unparser {
 
     private boolean wTypedNodeOrDescription(WType wt, Resource ty, Resource r) {
         // preparation - look for the li's.
-        Vector<Statement> found = new Vector<Statement>();
+        Vector<Statement> found = new Vector<>();
         ClosableIterator<Statement> ss = listProperties(r);
         try {
             int greatest = 0;
@@ -863,7 +865,7 @@ class Unparser {
      * [6.5] idAboutAttr ::= idAttr | aboutAttr | aboutEachAttr we use [6.5a]
      * idAboutAttr ::= idAttr | aboutAttr
      */
-    private Set<Resource> idDone = new HashSet<Resource>();
+    private Set<Resource> idDone = new HashSet<>();
 
     private boolean wIdAboutAttrOpt(Resource r) {
         return wIdAttrOpt(r) || wNodeIDAttr(r) || wAboutAttr(r);
@@ -1280,7 +1282,7 @@ class Unparser {
         if (avoidExplicitReification && // ( r instanceof Statement ) &&
                 (!r.isAnon()) && isLocalReference(r)
                 && res2statement.containsKey(r)) {
-            ss = new MapFilterIterator<Statement, Statement>(new MapFilter<Statement, Statement>() {
+            ss = new MapFilterIterator<>(new MapFilter<Statement, Statement>() {
                 @Override
                 public Statement accept(Statement o) {
                     Statement s = o;
@@ -1300,7 +1302,7 @@ class Unparser {
     }
 
     private ExtendedIterator<Statement> listProperties(Resource r) {
-        return new MapFilterIterator<Statement, Statement>(new MapFilter<Statement, Statement>() {
+        return new MapFilterIterator<>(new MapFilter<Statement, Statement>() {
             @Override
             public Statement accept( Statement o ) {
                 return doneSet.contains(o) ? null : o;
@@ -1341,12 +1343,13 @@ class Unparser {
                 String str = l.getString();
                 if (str.length() < 40) {
                     char buf[] = str.toCharArray();
-                    for (int i = 0; i < buf.length; i++) {
+                    for ( char aBuf : buf )
+                    {
                         // See http://www.w3.org/TR/REC-xml#AVNormalize
-                        if (buf[i] <= ' ' 
-                        	|| buf[i] == 0xFFFF
-                        	|| buf[i] == 0xFFFE)
+                        if ( aBuf <= ' ' || aBuf == 0xFFFF || aBuf == 0xFFFE )
+                        {
                             return false;
+                        }
                     }
                     return !wantReification(s);
                 }
@@ -1357,7 +1360,7 @@ class Unparser {
 
     private boolean allPropsAreAttr(Resource r) {
         ClosableIterator<Statement> ss = listProperties(r);
-        Set<Property> seen = new HashSet<Property>();
+        Set<Property> seen = new HashSet<>();
         try {
             while (ss.hasNext()) {
                 Statement s = ss.next();
@@ -1383,8 +1386,8 @@ class Unparser {
     private Statement[][] getList(RDFNode r, Resource list, Property first,
             Property rest, Resource nil) {
        
-        Vector<Statement[]> rslt = new Vector<Statement[]>();
-        Set<RDFNode> seen = new HashSet<RDFNode>();
+        Vector<Statement[]> rslt = new Vector<>();
+        Set<RDFNode> seen = new HashSet<>();
         RDFNode next = r;
         // We walk down the list and check each member.
         try {
@@ -1435,10 +1438,14 @@ class Unparser {
                 } finally {
                     ss.close();
                 }
-                for (int i = 0; i < elt.length; i++)
-                    if (elt[i] == null)
-                        // didn't have the three required elements.
+                for ( Statement anElt : elt )
+                {
+                    if ( anElt == null )
+                    // didn't have the three required elements.
+                    {
                         return null;
+                    }
+                }
                 rslt.add(elt);
             }
             if (rslt.size() == 0)
@@ -1507,7 +1514,7 @@ class Unparser {
     private void findInfiniteCycles() {
         // find all statements that haven't been done.
         StmtIterator ss = model.listStatements();
-        Relation<Resource> relation = new Relation<Resource>();
+        Relation<Resource> relation = new Relation<>();
         try {
             while (ss.hasNext()) {
                 Statement s = ss.nextStatement();
@@ -1540,13 +1547,13 @@ class Unparser {
     private Iterator<Resource> pleasingTypeIterator() {
         if (pleasingTypes == null)
             return NullIterator.instance();
-        Map<Resource, Set<Resource>> buckets = new HashMap<Resource, Set<Resource>>();
+        Map<Resource, Set<Resource>> buckets = new HashMap<>();
         @SuppressWarnings("unchecked")
         Set<Resource> bucketArray[] = new Set[pleasingTypes.length] ;// new Set<Resource>[pleasingTypes.length];
         // Set up buckets and bucketArray. Each is a collection
         // of the same buckets, one ordered, the other hashed.
         for (int i = 0; i < pleasingTypes.length; i++) {
-            bucketArray[i] = new HashSet<Resource>();
+            bucketArray[i] = new HashSet<>();
             buckets.put(pleasingTypes[i], bucketArray[i]);
         }
 
@@ -1583,7 +1590,7 @@ class Unparser {
             }} ;
         
             return WrappedIterator.createIteratorIterator(
-            		new Map1Iterator<Set<Resource>, Iterator<Resource>>(mapper,
+            		new Map1Iterator<>(mapper,
             				Arrays.asList(bucketArray).iterator()));
     }
 
@@ -1610,7 +1617,7 @@ class Unparser {
      * allow us to manage the closing issue.
      */
     private Iterator<Resource> listSubjects() {
-        Iterator<Resource> currentFile = new SingletonIterator<Resource>( model.createResource( this.localName ) );
+        Iterator<Resource> currentFile = new SingletonIterator<>( model.createResource( this.localName ) );
         // The pleasing types
         Iterator<Resource> pleasing = pleasingTypeIterator();
 
@@ -1618,7 +1625,7 @@ class Unparser {
             {
             @Override public boolean hasNext() 
                 {
-                pleasingTypeSet = new HashSet<Resource>();
+                pleasingTypeSet = new HashSet<>();
                 return false;
                 }
             };
@@ -1647,7 +1654,7 @@ class Unparser {
         };
         // non-anonymous resources that are the object of more than one
         // triple that are in infinite cycles.
-        Iterator<Resource> firstChoiceCyclic = new FilterIterator<Resource>(new Filter<Resource>() {
+        Iterator<Resource> firstChoiceCyclic = new FilterIterator<>(new Filter<Resource>() {
             @Override
             public boolean accept(Resource r) {
                 codeCoverage[4]++;
@@ -1660,7 +1667,7 @@ class Unparser {
             }
         }, this.allInfiniteLeft());
         // any non genuinely anonymous resources that are in infinite cycles
-        Iterator<Resource> nonAnonInfinite = new FilterIterator<Resource>(new Filter<Resource>() {
+        Iterator<Resource> nonAnonInfinite = new FilterIterator<>(new Filter<Resource>() {
             @Override
             public boolean accept(Resource r) {
                 codeCoverage[5]++;
@@ -1676,7 +1683,7 @@ class Unparser {
                 return false;
             }
         };
-        Iterator<Resource> reifications = new FilterIterator<Resource>(new Filter<Resource>() {
+        Iterator<Resource> reifications = new FilterIterator<>(new Filter<Resource>() {
             @Override
             public boolean accept(Resource r) {
                 codeCoverage[6]++;
@@ -1701,7 +1708,7 @@ class Unparser {
         Iterator<Resource> allAsOne = WrappedIterator.createIteratorIterator( Arrays.asList(all).iterator() );
         		
         // Filter for those that still have something to list.
-        return new FilterIterator<Resource>(new Filter<Resource>() {
+        return new FilterIterator<>(new Filter<Resource>() {
             @Override
             public boolean accept(Resource r) {
                 return hasProperties(r);
@@ -1709,7 +1716,7 @@ class Unparser {
         }, allAsOne);
     }
 
-    private Set<ResIterator> openResIterators = new HashSet<ResIterator>();
+    private Set<ResIterator> openResIterators = new HashSet<>();
 
    
 
@@ -1718,7 +1725,7 @@ class Unparser {
         while (members.hasNext()) {
             members.next().close();
         }
-        openResIterators = new HashSet<ResIterator>();
+        openResIterators = new HashSet<>();
     }
 
     private ResIterator modelListSubjects() {

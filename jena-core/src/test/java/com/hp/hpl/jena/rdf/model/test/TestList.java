@@ -64,7 +64,7 @@ public class TestList extends AbstractModelTestBase
 			final Object[] expected )
 	{
 		final Logger logger = LoggerFactory.getLogger(TestList.class);
-		final List<Object> expList = new ArrayList<Object>();
+		final List<Object> expList = new ArrayList<>();
 		for (final Object element : expected)
 		{
 			expList.add(element);

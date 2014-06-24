@@ -125,8 +125,8 @@ public class TransformPathFlatternStd extends TransformCopy
         {
             Op opFwd = null ;
             Op opBwd = null ;
-            List<P_Path0> forwards = new ArrayList<P_Path0>() ;
-            List<P_Path0> backwards = new ArrayList<P_Path0>() ;
+            List<P_Path0> forwards = new ArrayList<>() ;
+            List<P_Path0> backwards = new ArrayList<>() ;
             
             for ( P_Path0 p :  pathNotOneOf.getNodes() )
             {

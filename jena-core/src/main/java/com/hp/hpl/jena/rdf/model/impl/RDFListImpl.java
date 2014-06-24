@@ -778,8 +778,9 @@ public class RDFListImpl
      */
     @Override
     public void removeList() {
-        for (Iterator<Statement> i = collectStatements().iterator(); i.hasNext(); ) {
-            i.next().remove();
+        for ( Statement statement : collectStatements() )
+        {
+            statement.remove();
         }
     }
     
@@ -790,7 +791,7 @@ public class RDFListImpl
      * @return A list of the statements that form the encoding of this list.
      */
     public Set<Statement> collectStatements() {
-        Set<Statement> stmts = new HashSet<Statement>();
+        Set<Statement> stmts = new HashSet<>();
         RDFList l = this;
         
         do {
@@ -833,7 +834,7 @@ public class RDFListImpl
      */
     @Override
     public List<RDFNode> asJavaList() {
-        List<RDFNode> l = new ArrayList<RDFNode>();
+        List<RDFNode> l = new ArrayList<>();
         
         for (Iterator<RDFNode> i = iterator();  i.hasNext(); ) {
             l.add( i.next() );

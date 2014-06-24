@@ -27,7 +27,7 @@ import java.util.*;
  * character encodings.
  */
 abstract public class CharEncoding {
-    static Set<String> macEncodings = new HashSet<String>() ;
+    static Set<String> macEncodings = new HashSet<>() ;
     static
     {
         macEncodings.add("MacArabic") ;

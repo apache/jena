@@ -27,7 +27,7 @@ import com.hp.hpl.jena.graph.Node ;
 
 public class NodeIsomorphismMap //extends HashMap
 {
-    private Map<Node, Node> map = new HashMap<Node, Node>() ;
+    private Map<Node, Node> map = new HashMap<>() ;
     
     public NodeIsomorphismMap() {}
     

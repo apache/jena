@@ -25,7 +25,7 @@ import java.util.List ;
 /** Tuple builder class - tuples are immutable, this is how to create them in the builder style */
 public class TupleBuilder<T> 
 {
-    private List<T> x = new ArrayList<T>() ; 
+    private List<T> x = new ArrayList<>() ;
     
     public TupleBuilder() { } 
     
@@ -45,6 +45,6 @@ public class TupleBuilder<T>
         // Copy contents, should not create a new array because elts
         // is created with the right size so elts == elts2 
         T[] elts2 = x.toArray(elts) ;
-        return new Tuple<T>(elts2) ;
+        return new Tuple<>(elts2) ;
     }
 }

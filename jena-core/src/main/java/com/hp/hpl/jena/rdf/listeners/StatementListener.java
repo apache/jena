@@ -42,10 +42,20 @@ public class StatementListener implements ModelChangedListener
 /* */
     @Override
     public void addedStatements( Statement [] statements ) 
-        { for (int i = 0; i < statements.length; i += 1) addedStatement( statements[i] ); }
+        {
+            for ( Statement statement : statements )
+            {
+                addedStatement( statement );
+            }
+        }
     @Override
     public void addedStatements( List<Statement> statements ) 
-        { for (int i = 0; i < statements.size(); i += 1) addedStatement( statements.get(i) ); }
+        {
+            for ( Statement statement : statements )
+            {
+                addedStatement( statement );
+            }
+        }
     @Override
     public void addedStatements( StmtIterator statements ) 
         { while (statements.hasNext()) addedStatement( statements.nextStatement() ); }
@@ -54,10 +64,20 @@ public class StatementListener implements ModelChangedListener
         { addedStatements( m.listStatements() ); }
     @Override
     public void removedStatements( Statement [] statements ) 
-        { for (int i = 0; i < statements.length; i += 1) removedStatement( statements[i] ); }
+        {
+            for ( Statement statement : statements )
+            {
+                removedStatement( statement );
+            }
+        }
     @Override
     public void removedStatements( List<Statement> statements ) 
-        { for (int i = 0; i < statements.size(); i += 1) removedStatement( statements.get(i) ); }
+        {
+            for ( Statement statement : statements )
+            {
+                removedStatement( statement );
+            }
+        }
     @Override
     public void removedStatements( StmtIterator statements ) 
         { while (statements.hasNext()) removedStatement( statements.nextStatement() ); }

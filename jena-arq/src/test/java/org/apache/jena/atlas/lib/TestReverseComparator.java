@@ -40,7 +40,7 @@ public class TestReverseComparator extends BaseTest
         }
     };
     
-    static Comparator<String> reverse = new ReverseComparator<String>(normal);
+    static Comparator<String> reverse = new ReverseComparator<>(normal);
     
     
     static Comparator<String> maxMin = new Comparator<String>()
@@ -58,14 +58,14 @@ public class TestReverseComparator extends BaseTest
         }
     };
     
-    static Comparator<String> reverseMaxMin = new ReverseComparator<String>(maxMin);
+    static Comparator<String> reverseMaxMin = new ReverseComparator<>(maxMin);
     
     static List<String> items = Arrays.asList("a", "b", "c", "d");
     static List<String> itemsReverse = Arrays.asList("d", "c", "b", "a");
     
     @Test public void reverse_01()
     {
-        List<String> modified = new ArrayList<String>(items);
+        List<String> modified = new ArrayList<>(items);
         Collections.sort(modified, reverse);
         
         test(itemsReverse, modified);
@@ -73,7 +73,7 @@ public class TestReverseComparator extends BaseTest
     
     @Test public void reverse_02()
     {
-        List<String> modified = new ArrayList<String>(items);
+        List<String> modified = new ArrayList<>(items);
         Collections.sort(modified, reverseMaxMin);
         
         test(itemsReverse, modified);

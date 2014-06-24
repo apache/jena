@@ -390,7 +390,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                     || str.startsWith(apacheFeaturesURL)) {
                 Boolean old;
                 try {
-                    old = new Boolean(arpf.getSAXParser().getFeature(str));
+                    old = arpf.getSAXParser().getFeature( str );
                 } catch (SAXNotSupportedException ns) {
                     old = null;
                 } catch (SAXNotRecognizedException nr) {
@@ -489,15 +489,14 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 v = Boolean.valueOf((String) v);
             }
             if ((v instanceof Boolean))
-                return new Boolean(options.setEmbedding(((Boolean) v)
-                        .booleanValue()));
+                return options.setEmbedding( ( (Boolean) v ).booleanValue() );
 
             // Illegal value.
             eh.error(new IllegalArgumentException(
                     "Property \"EMBEDDING\" requires a boolean value."));
             boolean old = options.setEmbedding(false);
             options.setEmbedding(old);
-            return new Boolean(old);
+            return old;
 
         }
         if (str.startsWith("ERR_") || str.startsWith("IGN_")
@@ -515,7 +514,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                             // error, see below.
                         } else {
                             int rslt = options.setErrorMode(cond, val);
-                            return new Integer(rslt);
+                            return rslt;
                         }
                     }
                 } else if (v instanceof Integer) {
@@ -526,7 +525,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                     case EM_ERROR:
                     case EM_FATAL:
                         int rslt = options.setErrorMode(cond, val);
-                        return new Integer(rslt);
+                        return rslt;
                     default:
                     // error, see below.
                     }
@@ -536,7 +535,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                         + "\" cannot have value: " + v.toString()));
                 int old = options.setErrorMode(cond, EM_ERROR);
                 options.setErrorMode(cond, old);
-                return new Integer(old);
+                return old;
             }
         }
         

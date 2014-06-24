@@ -25,15 +25,17 @@ class EventRecord {
     
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer(toString(startEvents));
+        StringBuilder buf = new StringBuilder(toString(startEvents));
         buf.append(" = "+ rsltState +" " );
         buf.append(toString(rsltCharacter));
         return buf.toString();
     }
     static private String toString(String[] s) {
-        StringBuffer buf = new StringBuffer();
-        for (int i=0;i<s.length;i++)
-            buf.append(s[i]+" ");
+        StringBuilder buf = new StringBuilder();
+        for ( String value : s )
+        {
+            buf.append( value + " " );
+        }
         return buf.toString();
     }
     void checkStar(String st) {
@@ -49,31 +51,35 @@ class EventRecord {
     public void initCounts() {
         if (!inited) {
             inited = true;
-            for (int i=0;i<rsltCharacter.length;i++) {
+            for ( String aRsltCharacter : rsltCharacter )
+            {
                 int n = 0;
-                try {
-                 n = Integer.parseInt(rsltCharacter[i].substring(1));
+                try
+                {
+                    n = Integer.parseInt( aRsltCharacter.substring( 1 ) );
                 }
-                catch (RuntimeException e) {
-                    System.err.println(toString());
+                catch ( RuntimeException e )
+                {
+                    System.err.println( toString() );
                     throw e;
                 }
-                switch (rsltCharacter[i].charAt(0)) {
-                case 'T':
-                    triples = n;
-                    break;
-                case 'O':
-                    objects = n;
-                    break;
-                case 'P':
-                    preds = n;
-                    break;
-                case 'E':
-                    scope = n;
-                    break;
-                case 'R':
-                    reify = n;
-                    break;
+                switch ( aRsltCharacter.charAt( 0 ) )
+                {
+                    case 'T':
+                        triples = n;
+                        break;
+                    case 'O':
+                        objects = n;
+                        break;
+                    case 'P':
+                        preds = n;
+                        break;
+                    case 'E':
+                        scope = n;
+                        break;
+                    case 'R':
+                        reify = n;
+                        break;
                 }
             }
         }

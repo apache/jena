@@ -159,8 +159,9 @@ public class URIref extends Object {
     /** For simple testing ...
      */
     static public void main(String args[]) {
-        for (int i=0; i<args.length; i++) {
-            System.out.println(args[i] + " => " + decode(args[i]) + " => " + encode(decode(args[i])));
+        for ( String arg : args )
+        {
+            System.out.println( arg + " => " + decode( arg ) + " => " + encode( decode( arg ) ) );
         }
     }
 

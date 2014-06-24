@@ -85,7 +85,7 @@ public class OpQuadBlock extends Op0
     public Op0 copy()                       { return new OpQuadBlock(quads) ; }
 
     public List<OpQuadPattern> convert()    {
-        List<OpQuadPattern> x = new ArrayList<OpQuadPattern>() ;
+        List<OpQuadPattern> x = new ArrayList<>() ;
         Node gn = null ;
         BasicPattern bgp = null ;
         

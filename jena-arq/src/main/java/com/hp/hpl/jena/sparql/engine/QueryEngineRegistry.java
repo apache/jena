@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.engine;
 
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import com.hp.hpl.jena.query.Query ;
@@ -31,7 +30,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 public class QueryEngineRegistry
 {
-    List<QueryEngineFactory> factories = new ArrayList<QueryEngineFactory>() ;
+    List<QueryEngineFactory> factories = new ArrayList<>() ;
     static { init() ; }
     
     // Singleton
@@ -93,11 +92,12 @@ public class QueryEngineRegistry
     
     public QueryEngineFactory find(Query query, DatasetGraph dataset, Context context)
     {
-        for ( Iterator<QueryEngineFactory> iter = factories.listIterator() ; iter.hasNext() ; )
+        for ( QueryEngineFactory f : factories )
         {
-            QueryEngineFactory f = iter.next() ;
-            if ( f.accept(query, dataset, context) )
-                return f ;
+            if ( f.accept( query, dataset, context ) )
+            {
+                return f;
+            }
         }
         return null ;
     }
@@ -113,11 +113,12 @@ public class QueryEngineRegistry
     
     public QueryEngineFactory find(Op op, DatasetGraph dataset, Context context)
     {
-        for ( Iterator<QueryEngineFactory> iter = factories.listIterator() ; iter.hasNext() ; )
+        for ( QueryEngineFactory f : factories )
         {
-            QueryEngineFactory f = iter.next() ;
-            if ( f.accept(op, dataset, context) )
-                return f ;
+            if ( f.accept( op, dataset, context ) )
+            {
+                return f;
+            }
         }
         return null ;
     }

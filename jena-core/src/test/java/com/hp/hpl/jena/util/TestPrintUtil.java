@@ -54,7 +54,7 @@ public class TestPrintUtil extends TestCase
          PrintUtil.removePrefix("p");
          assertEquals(uri, PrintUtil.print(r));
          
-         Map<String, String> map = new HashMap<String, String>();
+         Map<String, String> map = new HashMap<>();
          map.put("p", NS);
          PrintUtil.registerPrefixMap(map);
          assertEquals(shortform, PrintUtil.print(r));

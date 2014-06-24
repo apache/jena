@@ -224,7 +224,7 @@ public class ResultSetFormatter
      */
     static public List<QuerySolution> toList(ResultSet resultSet)
     {
-        List<QuerySolution> list = new ArrayList<QuerySolution>() ;
+        List<QuerySolution> list = new ArrayList<>() ;
         for ( ; resultSet.hasNext() ; )
         {
             QuerySolution result = 

@@ -29,13 +29,13 @@ import org.junit.Test ;
 
 public class TestIteratorPeek extends BaseTest
 {
-    List<String> data0 = new ArrayList<String>() ;
-    List<String> data1 = new ArrayList<String>() ;
+    List<String> data0 = new ArrayList<>() ;
+    List<String> data1 = new ArrayList<>() ;
     {
         data1.add("a") ;
     }
     
-    List<String> data2 = new ArrayList<String>() ;
+    List<String> data2 = new ArrayList<>() ;
     {
         data2.add("x") ;
         data2.add("y") ;
@@ -61,7 +61,7 @@ public class TestIteratorPeek extends BaseTest
     
     private static PeekIterator<String> create(String...a)
     { 
-        return new PeekIterator<String>(IteratorArray.create(a)) ;
+        return new PeekIterator<>(IteratorArray.create(a)) ;
     }
     
     @Test public void peek_1()

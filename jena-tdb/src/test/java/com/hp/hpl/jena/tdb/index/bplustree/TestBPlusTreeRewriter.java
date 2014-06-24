@@ -154,7 +154,7 @@ public class TestBPlusTreeRewriter extends BaseTest
 
     static List<Record> createData(int N, RecordFactory recordFactory)
     {
-        List<Record> originaldata = new ArrayList<Record>(N) ;
+        List<Record> originaldata = new ArrayList<>(N) ;
         for ( int i = 0; i < N ; i++ )
         {
             Record record = recordFactory.create() ;

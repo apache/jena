@@ -45,9 +45,9 @@ IRIComponents {
 		return name().equalsIgnoreCase(scheme);
 	}
 	
-    private List<String> dUris = new ArrayList<String>();
-    private List<String> dDefnText = new ArrayList<String>();
-    private List<String> dDefnHtml = new ArrayList<String>();
+    private List<String> dUris = new ArrayList<>();
+    private List<String> dDefnText = new ArrayList<>();
+    private List<String> dDefnHtml = new ArrayList<>();
     @Override
     public void addDefinition(String uri, String defn, String defnHtml) {
         dUris.add(uri);

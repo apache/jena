@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Node ;
  */
 public class DatasetGraphMap extends DatasetGraphCollection
 {
-    private Map<Node, Graph> graphs = new HashMap<Node, Graph>() ;
+    private Map<Node, Graph> graphs = new HashMap<>() ;
 
     private Graph defaultGraph ;
 

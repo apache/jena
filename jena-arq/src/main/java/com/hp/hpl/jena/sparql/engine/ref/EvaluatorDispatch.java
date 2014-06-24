@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.engine.http.Service ;
 
 public class EvaluatorDispatch implements OpVisitor
 {
-    private Deque<Table> stack = new ArrayDeque<Table>() ;
+    private Deque<Table> stack = new ArrayDeque<>() ;
     protected Evaluator evaluator ;
     
     public EvaluatorDispatch(Evaluator evaluator)

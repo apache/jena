@@ -24,7 +24,7 @@ import java.util.Iterator ;
 
 public class PushbackIterator<T> implements Iterator<T>
 {
-    private Deque<T> items = new ArrayDeque<T>() ;
+    private Deque<T> items = new ArrayDeque<>() ;
     private Iterator<T> iter ;
 
     public PushbackIterator(Iterator <T> iter)

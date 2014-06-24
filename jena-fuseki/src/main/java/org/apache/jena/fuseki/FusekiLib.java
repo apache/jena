@@ -71,7 +71,7 @@ public class FusekiLib {
     }
 
     static String fmtRequest(HttpServletRequest request) {
-        StringBuffer sbuff = new StringBuffer() ;
+        StringBuilder sbuff = new StringBuilder() ;
         sbuff.append(request.getMethod()) ;
         sbuff.append(" ") ;
         sbuff.append(Convert.decWWWForm(request.getRequestURL())) ;
@@ -95,23 +95,28 @@ public class FusekiLib {
         // as that reads form data. This code parses just the query string.
         if ( req.getQueryString() != null ) {
             String[] params = req.getQueryString().split("&") ;
-            for (int i = 0; i < params.length; i++) {
-                String p = params[i] ;
-                String[] x = p.split("=", 2) ;
-                String name = null ;
-                String value = null ;
+            for ( String p : params )
+            {
+                String[] x = p.split( "=", 2 );
+                String name = null;
+                String value = null;
 
-                if ( x.length == 0 ) { // No "="
-                    name = p ;
-                    value = "" ;
-                } else if ( x.length == 1 ) { // param=
-                    name = x[0] ;
-                    value = "" ;
-                } else { // param=value
-                    name = x[0] ;
-                    value = x[1] ;
+                if ( x.length == 0 )
+                { // No "="
+                    name = p;
+                    value = "";
                 }
-                map.put(name, value) ;
+                else if ( x.length == 1 )
+                { // param=
+                    name = x[0];
+                    value = "";
+                }
+                else
+                { // param=value
+                    name = x[0];
+                    value = x[1];
+                }
+                map.put( name, value );
             }
         }
         return map ;

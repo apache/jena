@@ -365,7 +365,7 @@ public class XSDDatatype extends BaseDatatype {
             org.apache.xerces.xs.XSModel xsm = xsg.toXSModel();
             XSNamedMap map = xsm.getComponents(XSTypeDefinition.SIMPLE_TYPE);
             int numDefs = map.getLength();
-            ArrayList<String> names = new ArrayList<String>(numDefs);
+            ArrayList<String> names = new ArrayList<>(numDefs);
             for (int i = 0; i < numDefs; i++) {
                 XSSimpleType xstype = (XSSimpleType) map.item(i);
                 // Filter built in types - only needed for 2.6.0
@@ -607,14 +607,16 @@ public class XSDDatatype extends BaseDatatype {
         int len = types.getLength();
         Object[] values = new Object[len];
         types.getValues(values, 0);
-        for (int i = 0; i < values.length; i++) {
-            if (values[i] instanceof XSSimpleTypeDecl) {
-                XSSimpleTypeDecl decl = (XSSimpleTypeDecl)values[i];
-                System.out.println("tm.registerDatatype(new XSDDatatype(\""
-                                    + decl.getName()
-                                    + "\"));");
-            } else {
-                System.out.println(" - " + values[i]);
+        for ( Object value : values )
+        {
+            if ( value instanceof XSSimpleTypeDecl )
+            {
+                XSSimpleTypeDecl decl = (XSSimpleTypeDecl) value;
+                System.out.println( "tm.registerDatatype(new XSDDatatype(\"" + decl.getName() + "\"));" );
+            }
+            else
+            {
+                System.out.println( " - " + value );
             }
         }
     }

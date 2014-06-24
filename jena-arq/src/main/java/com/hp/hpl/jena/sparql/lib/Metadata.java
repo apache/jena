@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.ARQException ;
 
 public class Metadata
 {
-    private List<String> resources = new ArrayList<String>() ;
+    private List<String> resources = new ArrayList<>() ;
     private Properties properties = new Properties() ;
     
     public Metadata() { }

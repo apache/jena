@@ -40,7 +40,7 @@ public class DataFormat extends Symbol
     public static final DataFormat langN3
                     = new DataFormat(FileUtils.langN3 ) ;
 
-    public static TranslationTable<DataFormat> dataSyntaxNames = new TranslationTable<DataFormat>(true) ;
+    public static TranslationTable<DataFormat> dataSyntaxNames = new TranslationTable<>(true) ;
     static {
         dataSyntaxNames.put("nt",           langNTriples ) ;
         dataSyntaxNames.put("n3",           langN3 ) ;

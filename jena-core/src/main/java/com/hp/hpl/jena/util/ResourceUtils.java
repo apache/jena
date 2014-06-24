@@ -85,9 +85,9 @@ public class ResourceUtils {
      * greater than another resource under the partial order.
      */
     public static <T extends Resource> List<T> maximalLowerElements( Iterator<T> resources, Property rel, boolean inverse ) {
-        List<T> in = new ArrayList<T>();
-        List<T> out = new ArrayList<T>();
-        List<T> drop = new ArrayList<T>();
+        List<T> in = new ArrayList<>();
+        List<T> out = new ArrayList<>();
+        List<T> drop = new ArrayList<>();
 
         while (resources.hasNext()) {
             in.add( resources.next() );
@@ -131,12 +131,12 @@ public class ResourceUtils {
      * @return A list of the resources removed from the parameter list l
      */
     public static <T extends Resource> List<T> removeEquiv( List<T> l, Property p, Resource ref ) {
-        List<T> equiv = new ArrayList<T>();
+        List<T> equiv = new ArrayList<>();
 
-        for (Iterator<T> i = l.iterator(); i.hasNext(); ) {
-            T r = i.next();
-
-            if (r.hasProperty( p, ref ) && ref.hasProperty( p, r )) {
+        for ( T r : l )
+        {
+            if ( r.hasProperty( p, ref ) && ref.hasProperty( p, r ) )
+            {
                 // resource r is equivalent to the reference resource
                 equiv.add( r );
             }
@@ -161,9 +161,9 @@ public class ResourceUtils {
      */
     public static <T extends Resource> List<List<T>> partition( List<T> l, Property p ) {
         // first copy the input so we can mess with it
-        List<T> source = new ArrayList<T>();
+        List<T> source = new ArrayList<>();
         source.addAll( l );
-        List<List<T>> parts = new ArrayList<List<T>>();
+        List<List<T>> parts = new ArrayList<>();
 
         while (!source.isEmpty()) {
             // each step through the loop we pick a random element, and
@@ -218,7 +218,7 @@ public class ResourceUtils {
        	
         
         boolean changeOccured = false ;
-        List<Triple> triples = new ArrayList<Triple>(WINDOW_SIZE) ;
+        List<Triple> triples = new ArrayList<>(WINDOW_SIZE) ;
         
         // An optimization to prevent concatenating the two find() operations together every time through the outer loop
         boolean onFirstIterator = true;
@@ -300,7 +300,7 @@ public class ResourceUtils {
         Set<Resource> seen = CollectionFactory.createHashedSet();
 
         // queue of resources we have not yet visited
-        List<RDFNode> queue = new LinkedList<RDFNode>();
+        List<RDFNode> queue = new LinkedList<>();
         queue.add( root );
 
         while (!queue.isEmpty()) {

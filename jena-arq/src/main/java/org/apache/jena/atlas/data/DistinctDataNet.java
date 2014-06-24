@@ -88,7 +88,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
     @Override
     protected List<File> getSpillFiles()
     {
-        List<File> toReturn = new ArrayList<File>(super.getSpillFiles());
+        List<File> toReturn = new ArrayList<>(super.getSpillFiles());
         if (null != firstSpillFile)
         {
             toReturn.add(firstSpillFile);
@@ -182,7 +182,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
          */
         public static <S> SortedDiffIterator<S> create(Iterator<S> first, Iterator<S> second, Comparator<? super S> comparator)
         {
-            return new SortedDiffIterator<S>(first, second, comparator);
+            return new SortedDiffIterator<>(first, second, comparator);
         }
         
         

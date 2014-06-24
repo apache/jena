@@ -515,7 +515,7 @@ public class TestResultSet extends BaseTest
     {
         BindingMap b = BindingFactory.create() ;
         b.add(Var.alloc(var), val) ;
-        List<String> vars = new ArrayList<String>() ;
+        List<String> vars = new ArrayList<>() ;
         vars.add(var) ;
         QueryIterator qIter = QueryIterSingleton.create(b, null) ;
         ResultSet rs = new ResultSetStream(vars, null, qIter) ;
@@ -529,10 +529,10 @@ public class TestResultSet extends BaseTest
         BindingMap b2 = BindingFactory.create() ;
         b2.add(Var.alloc(var), val) ;
         
-        List<String> vars = new ArrayList<String>() ;
+        List<String> vars = new ArrayList<>() ;
         vars.add(var) ;
 
-        List<Binding> solutions = new ArrayList<Binding>() ;
+        List<Binding> solutions = new ArrayList<>() ;
         solutions.add(b1) ;
         solutions.add(b2) ;
         
@@ -563,7 +563,7 @@ public class TestResultSet extends BaseTest
         b.add(Var.alloc(var1), val1) ;
         b.add(Var.alloc(var2), val2) ;
         
-        List<String> vars = new ArrayList<String>() ;
+        List<String> vars = new ArrayList<>() ;
         vars.add(var1) ;
         vars.add(var2) ;
         

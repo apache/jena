@@ -18,15 +18,14 @@
 
 package com.hp.hpl.jena.n3.turtle;
 
-import java.io.*;
+import java.io.InputStream ;
+import java.io.Reader ;
 
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.n3.turtle.parser.ParseException;
-import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError;
-import com.hp.hpl.jena.n3.turtle.parser.TurtleParser;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.n3.turtle.parser.ParseException ;
+import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError ;
+import com.hp.hpl.jena.n3.turtle.parser.TurtleParser ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 
 public class ParserTurtle
@@ -49,19 +48,11 @@ public class ParserTurtle
             parser.parse() ;
         }
 
-        catch (ParseException ex)
+        catch (ParseException | TokenMgrError ex)
         { throw new TurtleParseException(ex.getMessage()) ; }
 
-        catch (TokenMgrError tErr)
-        { throw new TurtleParseException(tErr.getMessage()) ; }
-
         catch (TurtleParseException ex) { throw ex ; }
-        
-        catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
-        catch (Error err)
-        {
-            throw new TurtleParseException(err.getMessage() , err) ;
-        }
+
         catch (Throwable th)
         {
             throw new TurtleParseException(th.getMessage(), th) ;

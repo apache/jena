@@ -18,7 +18,6 @@
 
 package arq;
 
-import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.riot.Lang ;
@@ -78,29 +77,37 @@ public class update extends CmdUpdate
             throw new CmdException("Nothing to do") ;
      
         Transactional transactional = (graphStore instanceof Transactional ) ? (Transactional)graphStore : new TransactionalNull() ;
-        
-        for ( Iterator<String> iter = requestFiles.iterator() ; iter.hasNext() ; )
+
+        for ( String filename : requestFiles )
         {
-            String filename = iter.next();
-            try { 
-                transactional.begin(ReadWrite.WRITE) ;
-                execOneFile(filename, graphStore) ;
-                transactional.commit() ;
-            } finally { transactional.end() ; }
+            try
+            {
+                transactional.begin( ReadWrite.WRITE );
+                execOneFile( filename, graphStore );
+                transactional.commit();
+            }
+            finally
+            {
+                transactional.end();
+            }
         }
-        
-        for ( Iterator<String> iter = super.getPositional().iterator() ; iter.hasNext() ; )
+
+        for ( String requestString : super.getPositional() )
         {
-            String requestString = iter.next();
-            requestString = indirect(requestString) ;
-            
-            try { 
-                transactional.begin(ReadWrite.WRITE) ;
-                execOne(requestString, graphStore) ;
-                transactional.commit() ;
-            } finally { transactional.end() ; }
-            
-            
+            requestString = indirect( requestString );
+
+            try
+            {
+                transactional.begin( ReadWrite.WRITE );
+                execOne( requestString, graphStore );
+                transactional.commit();
+            }
+            finally
+            {
+                transactional.end();
+            }
+
+
         }
         SystemARQ.sync(graphStore) ;
 

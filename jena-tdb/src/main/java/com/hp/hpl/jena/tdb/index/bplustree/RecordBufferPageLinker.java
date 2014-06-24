@@ -44,7 +44,7 @@ class RecordBufferPageLinker implements Iterator<RecordBufferPage>
             return ;
         }
         
-        peekIter = new PeekIterator<RecordBufferPage>(iter) ;
+        peekIter = new PeekIterator<>(iter) ;
     }
     
     @Override

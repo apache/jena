@@ -105,7 +105,7 @@ public class TestDatasetGraphWithLock extends AbstractTestDataset {
             };
 
             // Run the callable a bunch of times
-            List<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
+            List<Future<Boolean>> futures = new ArrayList<>();
             for (int i = 0; i < 100; i++) {
                 futures.add(executor.submit(callable));
             }

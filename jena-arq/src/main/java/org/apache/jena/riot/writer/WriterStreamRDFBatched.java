@@ -111,7 +111,7 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
     
     private void startBatchTriple(Node subject)
     {
-        batchTriples = new ArrayList<Triple>() ;
+        batchTriples = new ArrayList<>() ;
     }
     
     private void processTriple(Triple triple)
@@ -127,7 +127,7 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
 
     private void startBatchQuad(Node graph, Node subject)
     {
-        batchQuads = new ArrayList<Quad>() ;
+        batchQuads = new ArrayList<>() ;
     }
     
     private void processQuad(Quad Quad)

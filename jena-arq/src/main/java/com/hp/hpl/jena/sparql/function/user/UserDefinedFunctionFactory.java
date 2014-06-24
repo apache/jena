@@ -82,7 +82,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
         return factory;
     }
 
-    private Map<String, UserDefinedFunctionDefinition> definitions = new HashMap<String, UserDefinedFunctionDefinition>();
+    private Map<String, UserDefinedFunctionDefinition> definitions = new HashMap<>();
     private boolean preserveDependencies = false;
 
     /**

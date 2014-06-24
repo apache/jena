@@ -64,7 +64,7 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_01() {
         Expr e = new ExprVar("x");
-        UserDefinedFunctionFactory.getFactory().add("http://example/simple", e, new ArrayList<Var>(e.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/simple", e, new ArrayList<>(e.getVarsMentioned()));
         
         UserDefinedFunction f = (UserDefinedFunction) UserDefinedFunctionFactory.getFactory().create("http://example/simple");
         f.build("http://example/simple", new ExprList(new NodeValueBoolean(true)));
@@ -78,7 +78,7 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_02() {
         Expr e = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
-        UserDefinedFunctionFactory.getFactory().add("http://example/square", e, new ArrayList<Var>(e.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/square", e, new ArrayList<>(e.getVarsMentioned()));
         
         UserDefinedFunction f = (UserDefinedFunction) UserDefinedFunctionFactory.getFactory().create("http://example/square");
         f.build("http://example/square", new ExprList(new NodeValueInteger(3)));
@@ -92,7 +92,7 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_03() {
         Expr e = new E_Multiply(new ExprVar("x"), new ExprVar("y"));
-        List<Var> defArgs = new ArrayList<Var>();
+        List<Var> defArgs = new ArrayList<>();
         defArgs.add(Var.alloc("x"));
         defArgs.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/square", e, defArgs);
@@ -112,12 +112,12 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_04() {
         Expr square = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
-        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<>(square.getVarsMentioned()));
         
         //Test that with preserveDependencies set to false (the default) that the definition of cube is actually
         //expanded to include the definition of square
         Expr cube = new E_Multiply(new E_Function("http://example/square", new ExprList(new ExprVar("x"))), new ExprVar("x"));
-        UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<Var>(cube.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<>(cube.getVarsMentioned()));
         
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/cube");
         Expr base = def.getBaseExpr();
@@ -131,12 +131,12 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_05() {
         Expr square = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
-        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<>(square.getVarsMentioned()));
         
         //Test that with preserveDependencies set to false (the default) that the definition of cube is actually
         //expanded to include the definition of square
         Expr cube = new E_Multiply(new E_Function("http://example/square", new ExprList(new ExprVar("y"))), new ExprVar("y"));
-        UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<Var>(cube.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<>(cube.getVarsMentioned()));
         
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/cube");
         Expr base = def.getBaseExpr();
@@ -150,7 +150,7 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_06() {
         Expr takeaway = new E_Subtract(new ExprVar("x"), new ExprVar("y"));
-        List<Var> args = new ArrayList<Var>();
+        List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
@@ -173,7 +173,7 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_07() {
         Expr takeaway = new E_Subtract(new ExprVar("x"), new ExprVar("y"));
-        List<Var> args = new ArrayList<Var>();
+        List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
@@ -196,7 +196,7 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_08() {
         Expr takeaway = new E_Subtract(new ExprVar("x"), new ExprVar("y"));
-        List<Var> args = new ArrayList<Var>();
+        List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
@@ -205,7 +205,7 @@ public class TestFunctionExpansion {
         ExprList altArgs = new ExprList();
         altArgs.add(new ExprVar("a"));
         altArgs.add(new ExprVar("b"));
-        ArrayList<Var> defArgs = new ArrayList<Var>();
+        ArrayList<Var> defArgs = new ArrayList<>();
         defArgs.add(Var.alloc("a"));
         defArgs.add(Var.alloc("b"));
         Expr test = new E_Function("http://example/takeaway", altArgs);
@@ -224,7 +224,7 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_09() {
         Expr takeaway = new E_Subtract(new ExprVar("x"), new ExprVar("y"));
-        List<Var> args = new ArrayList<Var>();
+        List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
@@ -233,7 +233,7 @@ public class TestFunctionExpansion {
         ExprList altArgs = new ExprList();
         altArgs.add(new ExprVar("b"));
         altArgs.add(new ExprVar("a"));
-        ArrayList<Var> defArgs = new ArrayList<Var>();
+        ArrayList<Var> defArgs = new ArrayList<>();
         defArgs.add(Var.alloc("a"));
         defArgs.add(Var.alloc("b"));
         Expr test = new E_Function("http://example/takeaway", altArgs);
@@ -252,11 +252,11 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_10() {
         Expr single = new ExprVar("x");
-        UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<Var>(single.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<>(single.getVarsMentioned()));
         
         //Test that with preserveDependencies set to false (the default) that the definition is expanded appropriately
         //when the outer function has differing numbers of arguments
-        List<Var> args = new ArrayList<Var>();
+        List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
         args.add(Var.alloc("y"));
         Expr add = new E_Add(new E_Function("http://example/single", new ExprList(new ExprVar("x"))), new ExprVar("y"));
@@ -275,11 +275,11 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_11() {
         Expr single = new ExprVar("x");
-        UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<Var>(single.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<>(single.getVarsMentioned()));
         
         //Test that with preserveDependencies set to false (the default) that the definition is expanded appropriately
         //when the outer function has differing numbers of arguments
-        List<Var> args = new ArrayList<Var>();
+        List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
         args.add(Var.alloc("y"));
         Expr add = new E_Add(new E_Function("http://example/single", new ExprList(new ExprVar("y"))), new ExprVar("y"));
@@ -298,7 +298,7 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_12() {
         Expr takeaway = new E_Subtract(new ExprVar("x"), new ExprVar("y"));
-        List<Var> args = new ArrayList<Var>();
+        List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
@@ -307,7 +307,7 @@ public class TestFunctionExpansion {
         ExprList altArgs = new ExprList();
         altArgs.add(new ExprVar("a"));
         altArgs.add(new ExprVar("a"));
-        ArrayList<Var> defArgs = new ArrayList<Var>();
+        ArrayList<Var> defArgs = new ArrayList<>();
         defArgs.add(Var.alloc("a"));
         defArgs.add(Var.alloc("b"));
         Expr test = new E_Function("http://example/takeaway", altArgs);
@@ -326,13 +326,13 @@ public class TestFunctionExpansion {
     @Test
     public void test_function_expansion_13() {
         Expr square = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
-        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<>(square.getVarsMentioned()));
         
         //This test illustrates that if we change the definition of square and call our function again we always
         //get the same result with dependencies not preserved because even though the definition of the dependent function 
         //can change the definition of our function is fully expanded when first defined
         Expr cube = new E_Multiply(new E_Function("http://example/square", new ExprList(new ExprVar("x"))), new ExprVar("x"));
-        UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<Var>(cube.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<>(cube.getVarsMentioned()));
         
         UserDefinedFunction f = (UserDefinedFunction) UserDefinedFunctionFactory.getFactory().create("http://example/cube");
         f.build("http://example/cube", new ExprList(new NodeValueInteger(2)));
@@ -345,7 +345,7 @@ public class TestFunctionExpansion {
         //This has no effect with preserveDependencies set to false (the default) since we fully expanded the call to the dependent
         //function when our outer function was defined
         square = new ExprVar("x");
-        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<>(square.getVarsMentioned()));
         f.build("http://example/cube", new ExprList(new NodeValueInteger(2)));
         
         actual = f.getActualExpr();
@@ -355,7 +355,7 @@ public class TestFunctionExpansion {
     
     @Test(expected=ExprBuildException.class)
     public void test_function_expansion_bad_01() {
-        List<Var> args = new ArrayList<Var>();
+        List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
         args.add(Var.alloc("y"));
         Expr add = new E_Add(new ExprVar("x"), new ExprVar("y"));
@@ -367,7 +367,7 @@ public class TestFunctionExpansion {
     @Test(expected=ExprBuildException.class)
     public void test_function_expansion_bad_02() {
         Expr single = new ExprVar("x");
-        UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<Var>(single.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<>(single.getVarsMentioned()));
         
         //It's an error to use a variable which is not mentioned in the argument list, even in a call to a dependent function
         Expr test = new E_Function("http://example/single", new ExprList(new ExprVar("x")));

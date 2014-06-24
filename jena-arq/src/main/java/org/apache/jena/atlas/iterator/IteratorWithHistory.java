@@ -39,7 +39,7 @@ public class IteratorWithHistory<T> implements Iterator<T>
     public IteratorWithHistory(Iterator<T> iter, int N)
     {
         this.iter = iter ;
-        this.history = new ArrayList<T>(N) ;
+        this.history = new ArrayList<>(N) ;
         this.capacity = N ;
     }
 

@@ -44,7 +44,7 @@ public class TestModelMakerImpl extends TestCase
 {
 	static class MockGraphMaker implements GraphMaker
 	{
-		List<String> history = new ArrayList<String>();
+		List<String> history = new ArrayList<>();
 		Graph graph;
 
 		public MockGraphMaker( final Graph graph )

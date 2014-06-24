@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 public class SetIndexTable implements IndexTable {
 
     private Var var;
-    private Set<Node> values = new HashSet<Node>();
+    private Set<Node> values = new HashSet<>();
 
     /**
      * Creates a new index table

@@ -43,7 +43,7 @@ import com.hp.hpl.jena.update.Update ;
 /** Class that has all the parse event operations and other query/update specific things */  
 public class SPARQLParserBase extends ParserBase 
 {
-    private Deque<Query> stack = new ArrayDeque<Query>() ;
+    private Deque<Query> stack = new ArrayDeque<>() ;
     protected Query query ;
     
     protected SPARQLParserBase() {}
@@ -81,8 +81,8 @@ public class SPARQLParserBase extends ParserBase
     // Level 0 is top level.
     // Level -1 is not in a pattern WHERE clause.
     private int queryLevel = -1 ;
-    private Deque<Set<String>>    stackPreviousLabels = new ArrayDeque<Set<String>>() ;
-    private Deque<LabelToNodeMap> stackCurrentLabels = new ArrayDeque<LabelToNodeMap>() ;
+    private Deque<Set<String>>    stackPreviousLabels = new ArrayDeque<>() ;
+    private Deque<LabelToNodeMap> stackCurrentLabels = new ArrayDeque<>() ;
 
 //    protected UpdateSink getUpdateSink() { return sink ; }
     public void setUpdateSink(UpdateSink sink)
@@ -243,8 +243,8 @@ public class SPARQLParserBase extends ParserBase
     
     protected void startValuesClause(int line, int col)               
     { 
-        variables = new ArrayList<Var>() ;
-        values = new ArrayList<Binding>() ;
+        variables = new ArrayList<>() ;
+        values = new ArrayList<>() ;
     }
     
     protected void finishValuesClause(int line, int col)
@@ -302,7 +302,7 @@ public class SPARQLParserBase extends ParserBase
         // Hide used labels already tracked.
         stackPreviousLabels.push(previousLabels) ;
         stackCurrentLabels.push(activeLabelMap) ;
-        previousLabels = new HashSet<String>() ;
+        previousLabels = new HashSet<>() ;
         activeLabelMap.clear() ;
     }
 

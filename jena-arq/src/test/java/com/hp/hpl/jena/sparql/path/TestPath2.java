@@ -115,7 +115,7 @@ public class TestPath2 extends BaseTest
 	    
         List<Node> nodes1 = Iter.toList(PathEval.eval(graph, start, PathFactory.pathDistinct(path), ARQ.getContext() )) ;
         List<Node> nodes2 = Iter.toList(PathEval.eval(graph, start, path, ARQ.getContext() )) ;
-        List<Node> expected = new ArrayList<Node>() ;
+        List<Node> expected = new ArrayList<>() ;
         for ( String n : results )
             expected.add(parse(n)) ;
         List<Node> expected1 = Iter.iter(expected).distinct().toList() ;
@@ -143,7 +143,7 @@ public class TestPath2 extends BaseTest
 	private static void assertSameArray(List<Node> expected, List<Node> actual)
 	{
 	    assertEquals(expected.size(), actual.size()) ;
-	    List<Node> x = new ArrayList<Node>(expected) ;
+	    List<Node> x = new ArrayList<>(expected) ;
 	    for ( Node n : actual )
 	    {
 	        if ( x.contains(n) )

@@ -62,12 +62,12 @@ public class TestCapabilities extends TestCase {
                 {ReasonerRegistry.getRDFSSimpleReasoner(), Boolean.TRUE},
         };
         Model data = ModelFactory.createDefaultModel();
-        for (int i = 0; i < testSpec.length; i++) {
-            Object[] test = testSpec[i];
-            Reasoner r = (Reasoner)test[0];
-            Boolean safe = (Boolean)test[1];
-            InfGraph ig = r.bind(data.getGraph());
-            assertEquals(r.toString(), safe.booleanValue(), ig.getCapabilities().findContractSafe());
+        for ( Object[] test : testSpec )
+        {
+            Reasoner r = (Reasoner) test[0];
+            Boolean safe = (Boolean) test[1];
+            InfGraph ig = r.bind( data.getGraph() );
+            assertEquals( r.toString(), safe.booleanValue(), ig.getCapabilities().findContractSafe() );
         }
     }
 }

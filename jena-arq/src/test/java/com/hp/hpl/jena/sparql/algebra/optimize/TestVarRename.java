@@ -104,7 +104,7 @@ public class TestVarRename extends BaseTest
 
     private static void rename(String string, String string2, boolean reversable, String... varNames)
     {
-        Set<Var> s = new HashSet<Var>() ;
+        Set<Var> s = new HashSet<>() ;
         for ( String vn : varNames )
             s.add(Var.alloc(vn)) ;
         rename(string, string2, reversable, s) ;

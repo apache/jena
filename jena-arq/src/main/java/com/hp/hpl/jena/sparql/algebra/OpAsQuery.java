@@ -53,7 +53,7 @@ public class OpAsQuery
     
     private static Set<Var> allocProjectVars()
     {
-        return new LinkedHashSet<Var>() ;
+        return new LinkedHashSet<>() ;
     }
 
     private static void addProjectVar(Collection<Var> vars, Var var)
@@ -69,9 +69,9 @@ public class OpAsQuery
         private Op op ;
         private Element element = null ;
         private ElementGroup currentGroup = null ;
-        private Deque<ElementGroup> stack = new ArrayDeque<ElementGroup>() ;
+        private Deque<ElementGroup> stack = new ArrayDeque<>() ;
         private Collection<Var> projectVars = allocProjectVars();
-        private Map<Var, Expr> varExpression = new HashMap<Var, Expr>() ;
+        private Map<Var, Expr> varExpression = new HashMap<>() ;
         private int groupDepth = 0;
         private boolean inProject = false;
         private boolean hasRun = false;

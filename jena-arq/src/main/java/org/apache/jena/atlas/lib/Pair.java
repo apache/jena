@@ -23,7 +23,7 @@ import static org.apache.jena.atlas.lib.StrUtils.str ;
 
 public class Pair<A, B>
 {
-    public static <L, R> Pair<L,R> create(L x, R y) { return new Pair<L,R>(x,y) ; }
+    public static <L, R> Pair<L,R> create(L x, R y) { return new Pair<>(x,y) ; }
     
     final A a ;
     final B b ;

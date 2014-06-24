@@ -190,7 +190,7 @@ public class ResponseResultSet
                 if ( resultSet != null )
                     ResultSetFormatter.outputAsXML(out, resultSet, stylesheetURL) ;
                 if ( booleanResult != null )
-                    ResultSetFormatter.outputAsXML(out, booleanResult.booleanValue(), stylesheetURL) ;
+                    ResultSetFormatter.outputAsXML(out, booleanResult, stylesheetURL) ;
             }} ;
             output(action, contentType, null, proc) ;
         }
@@ -204,7 +204,7 @@ public class ResponseResultSet
                 if ( resultSet != null )
                     ResultSetFormatter.outputAsJSON(out, resultSet) ;
                 if (  booleanResult != null )
-                    ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue()) ;
+                    ResultSetFormatter.outputAsJSON(out, booleanResult ) ;
             }
         } ;
         
@@ -237,7 +237,7 @@ public class ResponseResultSet
                 if ( resultSet != null )
                     ResultSetFormatter.out(out, resultSet, qPrologue) ;
                 if (  booleanResult != null )
-                    ResultSetFormatter.out(out, booleanResult.booleanValue()) ;
+                    ResultSetFormatter.out(out, booleanResult ) ;
             }
         };
 
@@ -252,7 +252,7 @@ public class ResponseResultSet
                 if ( resultSet != null )
                     ResultSetFormatter.outputAsCSV(out, resultSet) ;
                 if (  booleanResult != null )
-                    ResultSetFormatter.outputAsCSV(out, booleanResult.booleanValue()) ;
+                    ResultSetFormatter.outputAsCSV(out, booleanResult ) ;
             }
         } ;
         output(action, contentType, WebContent.charsetUTF8, proc) ; 
@@ -266,7 +266,7 @@ public class ResponseResultSet
                 if ( resultSet != null )
                     ResultSetFormatter.outputAsTSV(out, resultSet) ;
                 if (  booleanResult != null )
-                    ResultSetFormatter.outputAsTSV(out, booleanResult.booleanValue()) ;
+                    ResultSetFormatter.outputAsTSV(out, booleanResult ) ;
             }
         } ;
         output(action, contentType, WebContent.charsetUTF8, proc) ; 

@@ -55,9 +55,9 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     private SystemParams params ;
 
-    private Map<FileRef, BlockMgr> blockMgrs = new HashMap<FileRef, BlockMgr>() ;
-    private Map<FileRef, BufferChannel> bufferChannels = new HashMap<FileRef, BufferChannel>() ;
-    private Map<FileRef, NodeTable> nodeTables = new HashMap<FileRef, NodeTable>() ;
+    private Map<FileRef, BlockMgr> blockMgrs = new HashMap<>() ;
+    private Map<FileRef, BufferChannel> bufferChannels = new HashMap<>() ;
+    private Map<FileRef, NodeTable> nodeTables = new HashMap<>() ;
 
     public static DatasetGraphTDB build(Location location)
     {

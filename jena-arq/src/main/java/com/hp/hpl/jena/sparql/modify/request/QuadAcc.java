@@ -41,7 +41,7 @@ public class QuadAcc extends QuadAccSink
     
     public QuadAcc(List<Quad> quads)
     {
-        super(new SinkToCollection<Quad>(quads)) ;
+        super(new SinkToCollection<>(quads)) ;
         this.quads = quads ;
         this.quadsView = Collections.unmodifiableList(quads) ;
     }

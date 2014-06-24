@@ -130,7 +130,7 @@ public class GraphTestBase extends JenaTestBase
     */
     public static Triple [] tripleArray( String facts )
         {
-        ArrayList<Triple> al = new ArrayList<Triple>();
+        ArrayList<Triple> al = new ArrayList<>();
         StringTokenizer semis = new StringTokenizer( facts, ";" );
         while (semis.hasMoreTokens()) al.add( triple( PrefixMapping.Extended, semis.nextToken() ) );   
         return al.toArray( new Triple [al.size()] );
@@ -143,7 +143,7 @@ public class GraphTestBase extends JenaTestBase
     */
     public static Set<Triple> tripleSet( String facts )
         {
-        Set<Triple> result = new HashSet<Triple>();
+        Set<Triple> result = new HashSet<>();
         StringTokenizer semis = new StringTokenizer( facts, ";" );
         while (semis.hasMoreTokens()) result.add( triple( semis.nextToken() ) );   
         return result;
@@ -156,7 +156,7 @@ public class GraphTestBase extends JenaTestBase
     */
     public static List<Node> nodeList( String items )
         {
-        ArrayList<Node> nl = new ArrayList<Node>();
+        ArrayList<Node> nl = new ArrayList<>();
         StringTokenizer nodes = new StringTokenizer( items );
         while (nodes.hasMoreTokens()) nl.add( node( nodes.nextToken() ) );   
         return nl;
@@ -343,9 +343,11 @@ public class GraphTestBase extends JenaTestBase
         Assert that <code>g</code> contains every triple in <code>triples</code>.
     */
     public void testContains( Graph g, Triple [] triples )
-        { 
-        for (int i = 0; i < triples.length; i += 1) 
-            assertTrue( "contains " + triples[i], g.contains( triples[i] ) ); 
+        {
+            for ( Triple triple : triples )
+            {
+                assertTrue( "contains " + triple, g.contains( triple ) );
+            }
         }
 
     /**
@@ -353,8 +355,10 @@ public class GraphTestBase extends JenaTestBase
     */
     public void testContains( Graph g, List<Triple> triples )
         {
-        for (int i = 0; i < triples.size(); i += 1)
-             assertTrue( g.contains( triples.get(i) ) );
+            for ( Triple triple : triples )
+            {
+                assertTrue( g.contains( triple ) );
+            }
         }
 
     /**
@@ -374,7 +378,12 @@ public class GraphTestBase extends JenaTestBase
         <code>triples</code>.
     */
     public void testOmits( Graph g, Triple [] triples )
-        { for (int i = 0; i < triples.length; i += 1) assertFalse( "", g.contains( triples[i] ) ); }
+        {
+            for ( Triple triple : triples )
+            {
+                assertFalse( "", g.contains( triple ) );
+            }
+        }
     
     /**
         Assert that <code>g</code> contains none of the triples in 
@@ -382,8 +391,10 @@ public class GraphTestBase extends JenaTestBase
     */
     public void testOmits( Graph g, List<Triple> triples )
         {
-        for (int i = 0; i < triples.size(); i += 1)
-             assertFalse( "", g.contains( triples.get(i) ) );
+            for ( Triple triple : triples )
+            {
+                assertFalse( "", g.contains( triple ) );
+            }
         }
     
     /**

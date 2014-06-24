@@ -45,9 +45,11 @@ public class AmbiguousSpecificTypeException extends AssemblerException
 
     private static String nice( List<Resource> types )
         {
-        StringBuffer result = new StringBuffer();
-        for (int i = 0; i < types.size(); i += 1)
-            result.append( " " ).append( nice( types.get(i) ) );
+        StringBuilder result = new StringBuilder();
+            for ( Resource type : types )
+            {
+                result.append( " " ).append( nice( type ) );
+            }
         return result.toString();
         }
 

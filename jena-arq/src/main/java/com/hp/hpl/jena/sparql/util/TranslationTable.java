@@ -27,7 +27,7 @@ import java.util.Map ;
 
 public class TranslationTable<X>
 {
-    Map<String, X> map = new HashMap<String, X>() ;
+    Map<String, X> map = new HashMap<>() ;
     boolean ignoreCase = false ;
     
     /** Create a translation table which respects case */
@@ -42,19 +42,22 @@ public class TranslationTable<X>
         if ( name == null )
             return null ;
 
-        for ( Iterator<Map.Entry<String, X>> iter = map.entrySet().iterator() ; iter.hasNext() ; )
+        for ( Map.Entry<String, X> entry : map.entrySet() )
         {
-            Map.Entry<String, X> entry = iter.next() ;
-            String k = entry.getKey() ;
+            String k = entry.getKey();
             if ( ignoreCase )
-            {                
-                if ( k.equalsIgnoreCase(name) )
-                    return entry.getValue() ;
+            {
+                if ( k.equalsIgnoreCase( name ) )
+                {
+                    return entry.getValue();
+                }
             }
             else
             {
-                if ( k.equals(name) )
-                    return entry.getValue() ;
+                if ( k.equals( name ) )
+                {
+                    return entry.getValue();
+                }
             }
         }
         return null ;

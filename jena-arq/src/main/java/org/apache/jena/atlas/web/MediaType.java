@@ -54,7 +54,7 @@ public class MediaType {
         this.type = other.type ;
         this.subType = other.subType ;
         // Order preserving copy.
-        this.params = new LinkedHashMap<String, String>(other.params) ;
+        this.params = new LinkedHashMap<>(other.params) ;
     }
 
     /** Create a media type from type and subType */
@@ -66,7 +66,7 @@ public class MediaType {
     public MediaType(String type, String subType, String charset) {
         this.type = type ;
         this.subType = subType ;
-        this.params = new LinkedHashMap<String, String>() ;
+        this.params = new LinkedHashMap<>() ;
         if ( charset != null )
             setParameter(strCharset, charset) ;
     }
@@ -136,7 +136,7 @@ public class MediaType {
 
     @Override
     public String toString() {
-        StringBuffer b = new StringBuffer() ;
+        StringBuilder b = new StringBuilder() ;
         b.append("[") ;
         b.append(type) ;
         if ( subType != null )
@@ -219,6 +219,6 @@ public class MediaType {
     /* package */static class ParsedMediaType {
         public String              type ;
         public String              subType ;
-        public Map<String, String> params = new LinkedHashMap<String, String>() ;
+        public Map<String, String> params = new LinkedHashMap<>() ;
     }
 }

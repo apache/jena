@@ -76,7 +76,7 @@ public class TextIndexLucene implements TextIndex {
 
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and StandardAnalyzer for all other
-        Map<String, Analyzer> analyzerPerField = new HashMap<String, Analyzer>() ;
+        Map<String, Analyzer> analyzerPerField = new HashMap<>() ;
         analyzerPerField.put(def.getEntityField(), new KeywordAnalyzer()) ;
         if ( def.getGraphField() != null )
             analyzerPerField.put(def.getGraphField(), new KeywordAnalyzer()) ;
@@ -224,7 +224,7 @@ public class TextIndexLucene implements TextIndex {
             String[] x = doc.getValues(docDef.getEntityField()) ;
             if ( x.length != 1 ) {}
             String uriStr = x[0] ;
-            Map<String, Node> record = new HashMap<String, Node>() ;
+            Map<String, Node> record = new HashMap<>() ;
             Node entity = NodeFactory.createURI(uriStr) ;
             record.put(docDef.getEntityField(), entity) ;
 
@@ -264,7 +264,7 @@ public class TextIndexLucene implements TextIndex {
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
 
-        List<Node> results = new ArrayList<Node>() ;
+        List<Node> results = new ArrayList<>() ;
 
         // Align and DRY with Solr.
         for ( ScoreDoc sd : sDocs ) {

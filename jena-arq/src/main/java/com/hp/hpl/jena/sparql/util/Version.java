@@ -29,7 +29,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 /** Manage version information for subsystems */
 public class Version
 {
-    private List<Class< ? >> classes = new ArrayList<Class< ? >>() ; 
+    private List<Class< ? >> classes = new ArrayList<>() ;
     
     /**
      * Add a class to the version information
@@ -59,12 +59,11 @@ public class Version
      * @param writer Writer to print version information to
      */
     public void print(IndentedWriter writer)
-    {    
-        for ( Iterator<Class<?>> iter = classes.iterator() ; iter.hasNext() ; )
+    {
+        for ( Class<?> c : classes )
         {
-            Class<?> c = iter.next();
-            String x = Utils.classShortName(c) ;
-            fields(writer, x, c) ;    
+            String x = Utils.classShortName( c );
+            fields( writer, x, c );
         }
     }
     
@@ -106,8 +105,10 @@ public class Version
     
     private static void fields(IndentedWriter writer, String prefix, Class< ? > cls)
     {
-        for (int i=0; i < fields.length; i++)
-            printField(writer, prefix, fields[i], cls) ;
+        for ( String field : fields )
+        {
+            printField( writer, prefix, field, cls );
+        }
     }
     
     private static String field(String fieldName, Class< ? > cls)

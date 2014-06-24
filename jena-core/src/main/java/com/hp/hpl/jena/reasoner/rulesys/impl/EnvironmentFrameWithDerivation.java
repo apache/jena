@@ -69,9 +69,10 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
      * Return a safe copy of the list of matched subgoals in this subderivation.
      */
     public List<Triple> getMatchList() {
-        ArrayList<Triple> matchList = new ArrayList<Triple>();
-        for (int i = 0; i < matches.length; i++) {
-            matchList.add( LPInterpreter.deref(matches[i]));
+        ArrayList<Triple> matchList = new ArrayList<>();
+        for ( TriplePattern matche : matches )
+        {
+            matchList.add( LPInterpreter.deref( matche ) );
         }
         return matchList;
     }

@@ -48,7 +48,7 @@ public class RDFSCMPPreprocessHook implements RulePreprocessHook {
     @Override
     public void run(FBRuleInfGraph infGraph, Finder dataFind, Graph inserts) {
         ExtendedIterator<Triple> it = dataFind.find(new TriplePattern(null, null, null));
-        HashSet<Node> properties = new HashSet<Node>();
+        HashSet<Node> properties = new HashSet<>();
         while (it.hasNext()) {
             Triple triple = it.next();
             Node prop = triple.getPredicate();

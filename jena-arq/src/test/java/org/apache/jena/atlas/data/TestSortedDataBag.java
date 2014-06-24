@@ -60,15 +60,15 @@ public class TestSortedDataBag extends TestCase
     {
         List<Binding> unsorted = randomBindings(numBindings);
         
-        List<SortCondition> conditions = new ArrayList<SortCondition>(); 
+        List<SortCondition> conditions = new ArrayList<>();
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         conditions.add(new SortCondition(new ExprVar("1"), Query.ORDER_ASCENDING));
         conditions.add(new SortCondition(new ExprVar("0"), Query.ORDER_DESCENDING));
         BindingComparator comparator = new BindingComparator(conditions);
 
-        List<Binding> sorted = new ArrayList<Binding>();
+        List<Binding> sorted = new ArrayList<>();
         
-        SortedDataBag<Binding> db = new SortedDataBag<Binding>(
+        SortedDataBag<Binding> db = new SortedDataBag<>(
                 new ThresholdPolicyCount<Binding>(threshold),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 comparator);
@@ -119,16 +119,16 @@ public class TestSortedDataBag extends TestCase
     {
         List<Binding> unsorted = randomBindings(500);
         
-        List<SortCondition> conditions = new ArrayList<SortCondition>(); 
+        List<SortCondition> conditions = new ArrayList<>();
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         BindingComparator comparator = new BindingComparator(conditions);
         
-        SortedDataBag<Binding> db = new SortedDataBag<Binding>(
+        SortedDataBag<Binding> db = new SortedDataBag<>(
                 new ThresholdPolicyCount<Binding>(10),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 comparator);
         
-        List<File> spillFiles = new ArrayList<File>();
+        List<File> spillFiles = new ArrayList<>();
         try
         {
             db.addAll(unsorted);
@@ -176,7 +176,7 @@ public class TestSortedDataBag extends TestCase
             Var.alloc("4"), Var.alloc("5"), Var.alloc("6"),
             Var.alloc("7"), Var.alloc("8"), Var.alloc("9"), Var.alloc("0")
         };
-        List<Binding> toReturn = new ArrayList<Binding>();
+        List<Binding> toReturn = new ArrayList<>();
         for(int i = 0; i < numBindings; i++){
             toReturn.add(randomBinding(vars));
         }

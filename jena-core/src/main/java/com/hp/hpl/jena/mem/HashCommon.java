@@ -202,8 +202,13 @@ public abstract class HashCommon<Key>
     
     protected static int nextSize( int atLeast )
         {
-        for (int i = 0; i < primes.length; i += 1)
-            if (primes[i] > atLeast) return primes[i];
+            for ( int prime : primes )
+            {
+                if ( prime > atLeast )
+                {
+                    return prime;
+                }
+            }
         return atLeast;
         }
     
@@ -273,7 +278,7 @@ public abstract class HashCommon<Key>
     public ExtendedIterator<Key> keyIterator( final NotifyEmpty container )
         {
         showkeys();
-        final List<Key> movedKeys = new ArrayList<Key>();
+        final List<Key> movedKeys = new ArrayList<>();
         ExtendedIterator<Key> basic = new BasicKeyIterator( changes, container, movedKeys );
         ExtendedIterator<Key> leftovers = new MovedKeysIterator( changes, container, movedKeys );
         return basic.andThen( leftovers );

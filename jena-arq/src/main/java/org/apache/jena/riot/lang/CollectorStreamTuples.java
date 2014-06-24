@@ -33,7 +33,7 @@ import com.hp.hpl.jena.graph.Node;
  * @see CollectorStreamBase
  */
 public class CollectorStreamTuples extends CollectorStreamBase<Tuple<Node>>	implements StreamRDF {
-	private List<Tuple<Node>> tuples = new ArrayList<Tuple<Node>>();
+	private List<Tuple<Node>> tuples = new ArrayList<>();
 
 	@Override
 	public void start() {

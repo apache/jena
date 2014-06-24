@@ -156,7 +156,7 @@ public class RiotLib
     /* Get all the triples for the graph.find */
     public static List<Triple> triples(Graph graph, Node s, Node p, Node o)
     {
-        List<Triple> acc =  new ArrayList<Triple>() ;
+        List<Triple> acc =  new ArrayList<>() ;
         accTriples(acc, graph, s, p, o) ;
         return acc ;
     }

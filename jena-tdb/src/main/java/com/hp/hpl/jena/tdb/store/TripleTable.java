@@ -75,7 +75,7 @@ public class TripleTable extends TableBase
     {
         Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(s, p, o) ;
         if ( iter == null )
-            return new NullIterator<Triple>() ;
+            return new NullIterator<>() ;
         Iterator<Triple> iter2 = TupleLib.convertToTriples(table.getNodeTable(), iter) ;
         return iter2 ;
     }

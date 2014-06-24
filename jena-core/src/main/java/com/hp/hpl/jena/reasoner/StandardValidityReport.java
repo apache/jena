@@ -29,7 +29,7 @@ import java.util.List;
 public class StandardValidityReport implements ValidityReport {
 
     /** The total set of error reports */
-    protected List<Report> reports = new ArrayList<Report>();
+    protected List<Report> reports = new ArrayList<>();
     
     /** Flag to indicate if there are any error reports so far */
     protected boolean isError;

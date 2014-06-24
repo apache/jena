@@ -25,12 +25,12 @@ import java.util.Set ;
 import org.apache.jena.atlas.iterator.Iter ;
 
 public class MultiMapToSet<K,V> extends MultiMap<K,V> {
-    public static <K, V> MultiMapToSet<K, V> create() { return new MultiMapToSet<K, V>() ; }
+    public static <K, V> MultiMapToSet<K, V> create() { return new MultiMapToSet<>() ; }
     
     @Override
     protected Collection<V> createCollection()
     {
-        return new HashSet<V>() ;
+        return new HashSet<>() ;
     }
     
     @Override

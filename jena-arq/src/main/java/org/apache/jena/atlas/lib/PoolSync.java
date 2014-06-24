@@ -31,7 +31,7 @@ public class PoolSync<T> implements Pool<T>
             PoolSync<T> p = (PoolSync<T>)pool ;
             return p ;
         }
-        return new PoolSync<T>(pool) ; 
+        return new PoolSync<>(pool) ;
     }
     
     public PoolSync(Pool<T> pool) { this.pool = pool ; } 

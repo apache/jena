@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Union;
 //import com.hp.hpl.jena.rdf.model.*;

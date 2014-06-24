@@ -94,10 +94,10 @@ public class VarFinder
 
         VarUsageVisitor()
         {
-            defines = new HashSet<Var>() ;   
-            optDefines = new HashSet<Var>() ;
-            filterMentions = new HashSet<Var>() ;
-            assignMentions = new HashSet<Var>() ;
+            defines = new HashSet<>() ;
+            optDefines = new HashSet<>() ;
+            filterMentions = new HashSet<>() ;
+            assignMentions = new HashSet<>() ;
         }
         
         VarUsageVisitor(Set<Var> _defines, Set<Var> _optDefines, Set<Var> _filterMentions, Set<Var> _assignMentions)

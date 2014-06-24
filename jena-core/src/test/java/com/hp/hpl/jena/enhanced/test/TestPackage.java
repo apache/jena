@@ -52,9 +52,9 @@ import junit.framework.*;
  */
 public class TestPackage extends GraphTestBase  {
     
-	static final private  Personality<RDFNode> split = new Personality<RDFNode>();
+	static final private  Personality<RDFNode> split = new Personality<>();
         
-	static final private Personality<RDFNode> combo = new Personality<RDFNode>();
+	static final private Personality<RDFNode> combo = new Personality<>();
         
         
 	static final private GraphPersonality bitOfBoth = new GraphPersonality();

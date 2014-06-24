@@ -61,15 +61,15 @@ public class CommandLine
      */
     protected ArgHandler argHook = null ;
     protected String usage = null ;
-    protected Map<String, ArgDecl> argMap = new HashMap<String, ArgDecl>() ;
-    protected Map<String, Arg> args = new HashMap<String, Arg>() ;
+    protected Map<String, ArgDecl> argMap = new HashMap<>() ;
+    protected Map<String, Arg> args = new HashMap<>() ;
     //protected boolean ignoreUnknown = false ;
 
     // Rest of the items found on the command line
     String indirectionMarker = "@" ;
     protected boolean allowItemIndirect = false ;   // Allow @ to mean contents of file
     boolean ignoreIndirectionMarker = false ;       // Allow comand line items to have leading @ but strip it.
-    protected List<String> items = new ArrayList<String>() ;
+    protected List<String> items = new ArrayList<>() ;
 
 
     /** Creates new CommandLine */
@@ -128,7 +128,7 @@ public class CommandLine
      */
     public void process(String[] argv) throws java.lang.IllegalArgumentException
     {
-        List<String> argList = new ArrayList<String>() ;
+        List<String> argList = new ArrayList<>() ;
         argList.addAll(Arrays.asList(argv)) ;
 
         int i = 0 ;
@@ -265,11 +265,12 @@ public class CommandLine
     public Arg getArg(ArgDecl argDecl)
     {
         Arg arg = null ;
-        for ( Iterator<Arg> iter = args.values().iterator() ; iter.hasNext() ; )
+        for ( Arg a : args.values() )
         {
-            Arg a = iter.next() ;
-            if ( argDecl.matches(a) )
-                arg = a ;
+            if ( argDecl.matches( a ) )
+            {
+                arg = a;
+            }
         }
         return arg ;
     }

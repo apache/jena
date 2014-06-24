@@ -57,13 +57,22 @@ public class Content
     */
     public Model fill( Model m )
         {
-        for (int i = 0; i < contents.size(); i += 1) contents.get(i).fill( m );
+            for ( Content content : contents )
+            {
+                content.fill( m );
+            }
         return m; 
         }
 
     public boolean isEmpty()
         {
-        for (int i = 0; i < contents.size(); i += 1) if (!contents.get( i ).isEmpty()) return false;
+            for ( Content content : contents )
+            {
+                if ( !content.isEmpty() )
+                {
+                    return false;
+                }
+            }
         return true;
         }
     }

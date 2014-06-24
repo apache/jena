@@ -92,10 +92,13 @@ public class sdbtuple extends CmdArgsDB
     
     private int countBool(boolean...bools)
     {
-        int count = 0 ; 
-        for ( int i = 0 ; i < bools.length ; i++ )
+        int count = 0 ;
+        for ( boolean bool : bools )
         {
-            if ( bools[i] ) count++ ;
+            if ( bool )
+            {
+                count++;
+            }
         }
         return count ;
     }

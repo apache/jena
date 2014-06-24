@@ -156,7 +156,7 @@ public class EvaluatorSimple implements Evaluator
             dump(table) ;
         }
         QueryIterator iter = table.iterator(execCxt) ;
-        List<Binding> output = new ArrayList<Binding>() ;
+        List<Binding> output = new ArrayList<>() ;
         for ( ; iter.hasNext() ; )
         {
             Binding b = iter.nextBinding() ;

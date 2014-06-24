@@ -87,14 +87,16 @@ public class BindingVector implements BindingEnvironment {
             Functor functor = (Functor)node.getLiteralValue();
             if (functor.isGround()) return node;
             Node[] args = functor.getArgs();
-            List<Node> boundargs = new ArrayList<Node>(args.length);
-            for (int i = 0; i < args.length; i++) {
-                Node binding = getBinding(args[i]);
-                if (binding == null) {
+            List<Node> boundargs = new ArrayList<>(args.length);
+            for ( Node arg : args )
+            {
+                Node binding = getBinding( arg );
+                if ( binding == null )
+                {
                     // Not sufficently bound to instantiate functor yet
                     return null;
                 }
-                boundargs.add(binding);
+                boundargs.add( binding );
             }
             Functor newf = new Functor( functor.getName(), boundargs );
             return Functor.makeFunctorNode( newf );
@@ -205,13 +207,17 @@ public class BindingVector implements BindingEnvironment {
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < environment.length; i++) {
-            if (environment[i] == null) {
-                buffer.append("-");
-            } else {
-                buffer.append(PrintUtil.print(environment[i]));
+        for ( Node anEnvironment : environment )
+        {
+            if ( anEnvironment == null )
+            {
+                buffer.append( "-" );
             }
-            buffer.append(" ");
+            else
+            {
+                buffer.append( PrintUtil.print( anEnvironment ) );
+            }
+            buffer.append( " " );
         }
         return buffer.toString();
     }
@@ -360,9 +366,9 @@ public class BindingVector implements BindingEnvironment {
     @Override
     public int hashCode() {
         int hash = 0;
-        for (int i = 0; i < environment.length; i++) {
-            Node n = environment[i];
-            hash = (hash << 1) ^ (n == null ? 0x537c: n.hashCode());
+        for ( Node n : environment )
+        {
+            hash = ( hash << 1 ) ^ ( n == null ? 0x537c : n.hashCode() );
         }
         return hash;
     }

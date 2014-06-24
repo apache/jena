@@ -152,7 +152,7 @@ public class TestEntityOutput extends ModelTestBase
         m.setNsPrefix( "eh", "eh:/" );
         String s = checkedModelToString( m );
         //assertTrue( s.toString().contains( "<!DOCTYPE rdf:RDF [" ) ); // java5-ism
-        assertTrue( s.toString().indexOf( "<!DOCTYPE rdf:RDF [" ) >= 0 );
+        assertTrue( s.toString().contains( "<!DOCTYPE rdf:RDF [" ) );
         assertMismatches( "<!ENTITY " + bad + " ", s );
         assertMismatches( "rdf:resource=\"&" + bad + ";noo\"", s );
         }

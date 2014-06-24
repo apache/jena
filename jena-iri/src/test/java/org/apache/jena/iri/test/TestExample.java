@@ -120,7 +120,7 @@ public class TestExample extends TestCase
 //    }
 
     private static String escapeAndShorten(String uri2) {
-        StringBuffer rslt = new StringBuffer();
+        StringBuilder rslt = new StringBuilder();
         int ln = uri2.length();
         if (ln > 80)
             ln = 80;
@@ -265,11 +265,15 @@ public class TestExample extends TestCase
 
     private static void addExamples(int sp, ViolationCodeInfo violationCodeInfo, IRIExamples examples, TestSuite ex) {
         String e[] = examples.getBadExamples();
-        for (int j = 0; j < e.length; j++)
-            ex.addTest(new TestExample(sp,e[j], violationCodeInfo,false));
+        for ( String anE1 : e )
+        {
+            ex.addTest( new TestExample( sp, anE1, violationCodeInfo, false ) );
+        }
         e = examples.getGoodExamples();
-        for (int j = 0; j < e.length; j++)
-            ex.addTest(new TestExample(sp,e[j], violationCodeInfo,true));
+        for ( String anE : e )
+        {
+            ex.addTest( new TestExample( sp, anE, violationCodeInfo, true ) );
+        }
     }
 
 }

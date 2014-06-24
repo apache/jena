@@ -45,8 +45,8 @@ public class ChannelManager
         return openref$(filename, mode) ;
     }
     
-    static private Map<String, FileChannel> name2channel = new HashMap<String, FileChannel>() ;
-    static private Map<FileChannel, String> channel2name = new HashMap<FileChannel, String>() ;
+    static private Map<String, FileChannel> name2channel = new HashMap<>() ;
+    static private Map<FileChannel, String> channel2name = new HashMap<>() ;
     
     private static FileChannel openref$(String filename, String mode)
     {
@@ -107,7 +107,7 @@ public class ChannelManager
     public static void releaseAll(String prefix)
     {
         // Use an iterator explicitly so we can remove from the map.
-        List<FileChannel> x = new ArrayList<FileChannel>() ;
+        List<FileChannel> x = new ArrayList<>() ;
         for ( String fn : name2channel.keySet() )
         {
             if ( prefix == null || fn.startsWith(prefix) )

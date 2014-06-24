@@ -37,8 +37,8 @@ public class ProcedureRegistry
     // Extract a Registry class and do casting and initialization here.
     // Identical to FunctionRegistry except the types.
     // And PropertyFunctionRegistry (which may disappear)
-    Map<String, ProcedureFactory> registry = new HashMap<String, ProcedureFactory>() ;
-    Set<String> attemptedLoads = new HashSet<String>() ;
+    Map<String, ProcedureFactory> registry = new HashMap<>() ;
+    Set<String> attemptedLoads = new HashSet<>() ;
     
     public synchronized static ProcedureRegistry standardRegistry()
     {

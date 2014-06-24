@@ -58,9 +58,9 @@ public class TestAndThen extends ModelTestBase
     
     public void testClosingConcatenationClosesRemainingIterators()
         {
-        LoggingClosableIterator<String> L = new LoggingClosableIterator<String>( iteratorOfStrings( "only" ) );
-        LoggingClosableIterator<String> M = new LoggingClosableIterator<String>( iteratorOfStrings( "single" ) );
-        LoggingClosableIterator<String> R = new LoggingClosableIterator<String>( iteratorOfStrings( "it" ) );
+        LoggingClosableIterator<String> L = new LoggingClosableIterator<>( iteratorOfStrings( "only" ) );
+        LoggingClosableIterator<String> M = new LoggingClosableIterator<>( iteratorOfStrings( "single" ) );
+        LoggingClosableIterator<String> R = new LoggingClosableIterator<>( iteratorOfStrings( "it" ) );
         ExtendedIterator<String> cat = L.andThen( M ).andThen( R );
         cat.next();
         cat.close();

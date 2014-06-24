@@ -72,7 +72,7 @@ public class TestCache extends TestCase
         String  k1 = "one";
         String  k2 = k1;
         String  k3 = k2;
-        Integer v1 = new Integer(-1);
+        Integer v1 = -1;
         Integer v2 = v1;
         Integer v3 = v2;
         c1.put(k1, v1);
@@ -90,7 +90,7 @@ public class TestCache extends TestCase
             assertEquals("should be the expected object", o, v2);
             
             k3 = "T" + i;
-            v3 = new Integer(i);
+            v3 = i;
             c1.put(k3,v3);
         }
     }

@@ -604,7 +604,7 @@ public class OntClassImpl
     @Override
     public ExtendedIterator<OntProperty> listDeclaredProperties( boolean direct ) {
         // first collect the candidate properties
-        Set<RDFNode> candSet = new HashSet<RDFNode>();
+        Set<RDFNode> candSet = new HashSet<>();
 
         // if the attached model does inference, it will potentially find more of these
         // than a non-inference model
@@ -613,7 +613,7 @@ public class OntClassImpl
         }
 
         // now we iterate over the candidates and check that they match all domain constraints
-        List<RDFNode> cands = new ArrayList<RDFNode>();
+        List<RDFNode> cands = new ArrayList<>();
         cands.addAll( candSet );
         for (int j = cands.size() -1; j >= 0; j--) {
             Property cand = (Property) cands.get( j );
@@ -624,7 +624,7 @@ public class OntClassImpl
 
         // return the results, using the ont property facet
         return WrappedIterator.create( cands.iterator() )
-                              .mapWith( new AsMapper<OntProperty>( OntProperty.class ) );
+                              .mapWith( new AsMapper<>( OntProperty.class ) );
     }
 
 
@@ -669,7 +669,7 @@ public class OntClassImpl
     public ExtendedIterator<Individual> listInstances( final boolean direct ) {
         return getModel()
                 .listStatements( null, RDF.type, this )
-                .mapWith( new SubjectAsMapper<Individual>( Individual.class ) )
+                .mapWith( new SubjectAsMapper<>( Individual.class ) )
                 .filterKeep( new Filter<Individual>() {
                     @Override
                     public boolean accept( Individual o ) {
@@ -971,8 +971,10 @@ public class OntClassImpl
     protected boolean testDomain( Property p, boolean direct ) {
         // we ignore any property in the OWL, etc namespace
         String namespace = p.getNameSpace();
-        for (int i = 0; i < IGNORE_NAMESPACES.length; i++) {
-            if (namespace.equals( IGNORE_NAMESPACES[i] )) {
+        for ( String IGNORE_NAMESPACE : IGNORE_NAMESPACES )
+        {
+            if ( namespace.equals( IGNORE_NAMESPACE ) )
+            {
                 return false;
             }
         }
@@ -1083,8 +1085,8 @@ public class OntClassImpl
         }
 
         // otherwise, we have to search upwards through the class hierarchy
-        Set<OntClass> seen = new HashSet<OntClass>();
-        List<OntClass> queue = new ArrayList<OntClass>();
+        Set<OntClass> seen = new HashSet<>();
+        List<OntClass> queue = new ArrayList<>();
         queue.add( this );
 
         while (!queue.isEmpty()) {

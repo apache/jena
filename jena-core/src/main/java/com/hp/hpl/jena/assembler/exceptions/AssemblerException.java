@@ -33,7 +33,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 public class AssemblerException extends JenaException
     {
     protected final Resource root;
-    protected List<Frame> doing = new ArrayList<Frame>();
+    protected List<Frame> doing = new ArrayList<>();
     
     public AssemblerException( Resource root, String string, Throwable t )
         { 
@@ -111,9 +111,11 @@ public class AssemblerException extends JenaException
     
     protected String frameStrings()
         {
-        StringBuffer result = new StringBuffer();
-        for (Iterator<Frame> it = doing.iterator(); it.hasNext();)
-            result.append( "    " ).append( it.next().toString() ).append( "\n" );
+        StringBuilder result = new StringBuilder();
+            for ( Frame aDoing : doing )
+            {
+                result.append( "    " ).append( aDoing.toString() ).append( "\n" );
+            }
         return result.toString();
         }
     }

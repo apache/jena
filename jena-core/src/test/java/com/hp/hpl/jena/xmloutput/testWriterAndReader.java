@@ -135,8 +135,13 @@ public class testWriterAndReader
 			if ((i & 1) == 1) bitCount += 1;
 			i >>= 1;
             }
-		for (int j = 0; j < ok.length; j += 1)
-			if (bitCount == ok[j]) return true;
+            for ( int anOk : ok )
+            {
+                if ( bitCount == anOk )
+                {
+                    return true;
+                }
+            }
 		return false;
         }
     
@@ -188,7 +193,7 @@ public class testWriterAndReader
     
 	public void testOptions() throws IOException 
         {
-		Vector<Resource> v = new Vector<Resource>();
+		Vector<Resource> v = new Vector<>();
 		for (int i = 0; i < blockRules.length; i += 1) 
             {
 			if ((options & (1 << i)) != 0) v.add( blockRules[i] );

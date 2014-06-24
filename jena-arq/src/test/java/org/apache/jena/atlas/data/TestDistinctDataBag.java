@@ -61,7 +61,7 @@ public class TestDistinctDataBag extends TestCase
     
     @Test public void testDistinct()
     {
-        List<Binding> undistinct = new ArrayList<Binding>();
+        List<Binding> undistinct = new ArrayList<>();
         undistinct.add(b12);
         undistinct.add(b19);
         undistinct.add(b02);
@@ -72,10 +72,10 @@ public class TestDistinctDataBag extends TestCase
         undistinct.add(x10);
         
         List<Binding> control = Iter.toList(Iter.distinct(undistinct.iterator()));
-        List<Binding> distinct = new ArrayList<Binding>();
+        List<Binding> distinct = new ArrayList<>();
         
         
-        DistinctDataBag<Binding> db = new DistinctDataBag<Binding>(
+        DistinctDataBag<Binding> db = new DistinctDataBag<>(
                 new ThresholdPolicyCount<Binding>(2),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 new BindingComparator(new ArrayList<SortCondition>())); 
@@ -101,7 +101,7 @@ public class TestDistinctDataBag extends TestCase
     
     @Test public void testTemporaryFilesAreCleanedUpAfterCompletion()
     {
-        List<Binding> undistinct = new ArrayList<Binding>();
+        List<Binding> undistinct = new ArrayList<>();
         random = new Random();
         Var[] vars = new Var[]{
             Var.alloc("1"), Var.alloc("2"), Var.alloc("3"),
@@ -112,12 +112,12 @@ public class TestDistinctDataBag extends TestCase
             undistinct.add(randomBinding(vars));
         }
         
-        DistinctDataBag<Binding> db = new DistinctDataBag<Binding>(
+        DistinctDataBag<Binding> db = new DistinctDataBag<>(
                 new ThresholdPolicyCount<Binding>(10),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 new BindingComparator(new ArrayList<SortCondition>()));
         
-        List<File> spillFiles = new ArrayList<File>();
+        List<File> spillFiles = new ArrayList<>();
         try
         {
             db.addAll(undistinct);

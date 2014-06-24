@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.core.assembler ;
 
-import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.logging.Log ;
@@ -73,24 +72,31 @@ public class DatasetAssembler extends AssemblerBase implements Assembler {
         // -------- Named graphs
         List<RDFNode> nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ;
 
-        for (Iterator<RDFNode> iter = nodes.iterator(); iter.hasNext();) {
-            RDFNode n = iter.next() ;
-            if ( !(n instanceof Resource) )
-                throw new DatasetAssemblerException(root, "Not a resource: " + FmtUtils.stringForRDFNode(n)) ;
-            Resource r = (Resource)n ;
+        for ( RDFNode n : nodes )
+        {
+            if ( !( n instanceof Resource ) )
+            {
+                throw new DatasetAssemblerException( root, "Not a resource: " + FmtUtils.stringForRDFNode( n ) );
+            }
+            Resource r = (Resource) n;
 
-            String gName = GraphUtils.getAsStringValue(r, DatasetAssemblerVocab.pGraphName) ;
-            Resource g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraph) ;
-            if ( g == null ) {
-                g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt) ;
+            String gName = GraphUtils.getAsStringValue( r, DatasetAssemblerVocab.pGraphName );
+            Resource g = GraphUtils.getResourceValue( r, DatasetAssemblerVocab.pGraph );
+            if ( g == null )
+            {
+                g = GraphUtils.getResourceValue( r, DatasetAssemblerVocab.pGraphAlt );
                 if ( g != null )
-                    Log.warn(this, "Use of old vocabulary: use :graph not :graphData") ;
+                {
+                    Log.warn( this, "Use of old vocabulary: use :graph not :graphData" );
+                }
                 else
-                    throw new DatasetAssemblerException(root, "no graph for: " + gName) ;
+                {
+                    throw new DatasetAssemblerException( root, "no graph for: " + gName );
+                }
             }
 
-            Model m = a.openModel(g) ;
-            ds.addNamedModel(gName, m) ;
+            Model m = a.openModel( g );
+            ds.addNamedModel( gName, m );
         }
 
         AssemblerUtils.setContext(root, ds.getContext()) ;

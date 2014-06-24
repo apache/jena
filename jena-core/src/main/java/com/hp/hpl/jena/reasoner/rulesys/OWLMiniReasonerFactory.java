@@ -66,7 +66,7 @@ public class OWLMiniReasonerFactory implements ReasonerFactory {
             }
             Boolean doTrace = Util.checkBinaryPredicate(ReasonerVocabulary.PROPtraceOn, configuration);
             if (doTrace != null) {
-                reasoner.setTraceOn(doTrace.booleanValue());
+                reasoner.setTraceOn( doTrace );
             }
         }
         return reasoner;

@@ -43,7 +43,7 @@ public class BuilderResultSet
         // skip tag, skip vars.
         int start = 2 ;
 
-        List<Binding> bindings = new ArrayList<Binding>() ;
+        List<Binding> bindings = new ArrayList<>() ;
         for ( int i = start ; i < list.size() ; i++ )
         {
             Item itemRow = list.get(i) ;

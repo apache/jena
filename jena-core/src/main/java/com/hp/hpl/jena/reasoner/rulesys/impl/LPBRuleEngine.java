@@ -52,14 +52,14 @@ public class LPBRuleEngine {
     protected boolean recordDerivations;
         
     /** List of engine instances which are still processing queries */
-    protected List<LPInterpreter> activeInterpreters = new ArrayList<LPInterpreter>();
+    protected List<LPInterpreter> activeInterpreters = new ArrayList<>();
     
     /** Table mapping tabled goals to generators for those goals.
      *  This is here so that partial goal state can be shared across multiple queries. */
-    protected HashMap<TriplePattern, Generator> tabledGoals = new HashMap<TriplePattern, Generator>();
+    protected HashMap<TriplePattern, Generator> tabledGoals = new HashMap<>();
     
     /** Set of generators waiting to be run */
-    protected LinkedList<LPAgendaEntry> agenda = new LinkedList<LPAgendaEntry>();
+    protected LinkedList<LPAgendaEntry> agenda = new LinkedList<>();
 //    protected List agenda = new ArrayList();
 //    protected Collection agenda = new HashSet();
     
@@ -113,7 +113,7 @@ public class LPBRuleEngine {
      */
     public synchronized void reset() {
         checkSafeToUpdate();
-        tabledGoals = new HashMap<TriplePattern, Generator>();
+        tabledGoals = new HashMap<>();
         agenda.clear();
     }
     
@@ -160,10 +160,11 @@ public class LPBRuleEngine {
      * Stop the current work. Forcibly stop all current query instances over this engine.
      */
     public synchronized void halt() {
-        ArrayList<LPInterpreter> copy = new ArrayList<LPInterpreter>(activeInterpreters);  
+        ArrayList<LPInterpreter> copy = new ArrayList<>(activeInterpreters);
         // Copy because closing the LPInterpreter will detach it from this engine which affects activeInterpreters
-        for (Iterator<LPInterpreter> i = copy.iterator(); i.hasNext(); ) {
-            i.next().close();
+        for ( LPInterpreter aCopy : copy )
+        {
+            aCopy.close();
         }
     }
        
@@ -221,15 +222,17 @@ public class LPBRuleEngine {
      */
     public void checkSafeToUpdate() {
         if (!activeInterpreters.isEmpty()) {
-            ArrayList<LPInterpreterContext> toClose = new ArrayList<LPInterpreterContext>();
-            for (Iterator<LPInterpreter> i = activeInterpreters.iterator(); i.hasNext(); ) {
-                LPInterpreter interpreter = i.next();
-                if (interpreter.getContext() instanceof LPTopGoalIterator) {
-                    toClose.add(interpreter.getContext());
+            ArrayList<LPInterpreterContext> toClose = new ArrayList<>();
+            for ( LPInterpreter interpreter : activeInterpreters )
+            {
+                if ( interpreter.getContext() instanceof LPTopGoalIterator )
+                {
+                    toClose.add( interpreter.getContext() );
                 }
             }
-            for (Iterator<LPInterpreterContext> i = toClose.iterator(); i.hasNext(); ) {
-                ((LPTopGoalIterator)i.next()).close();
+            for ( LPInterpreterContext aToClose : toClose )
+            {
+                ( (LPTopGoalIterator) aToClose ).close();
             }
         }
     }
@@ -295,7 +298,7 @@ public class LPBRuleEngine {
     public void pump(LPInterpreterContext gen) {
         Collection<Generator> batch = null;
         if (CYCLES_BETWEEN_COMPLETION_CHECK > 0) {
-            batch = new ArrayList<Generator>(CYCLES_BETWEEN_COMPLETION_CHECK);
+            batch = new ArrayList<>(CYCLES_BETWEEN_COMPLETION_CHECK);
         }
         int count = 0; 
         while(!gen.isReady()) {
@@ -340,11 +343,13 @@ public class LPBRuleEngine {
     public void checkForCompletions() {
         List<Generator> contexts = null;
         synchronized (activeInterpreters) {
-            contexts = new ArrayList<Generator>(activeInterpreters.size());
-            for (Iterator<LPInterpreter> i = activeInterpreters.iterator(); i.hasNext(); ) {
-                LPInterpreterContext context = i.next().getContext();
-                if (context instanceof Generator) {
-                    contexts.add( (Generator) context);     
+            contexts = new ArrayList<>(activeInterpreters.size());
+            for ( LPInterpreter activeInterpreter : activeInterpreters )
+            {
+                LPInterpreterContext context = activeInterpreter.getContext();
+                if ( context instanceof Generator )
+                {
+                    contexts.add( (Generator) context );
                 }
             }
 
@@ -386,12 +391,13 @@ public class LPBRuleEngine {
         if (profile == null) {
             System.out.println("No profile collected");
         } else {
-            ArrayList<Count> counts = new ArrayList<Count>();
+            ArrayList<Count> counts = new ArrayList<>();
             counts.addAll(profile.values());
             Collections.sort(counts);
             System.out.println("LP engine rule profile");
-            for (Iterator<Count> i = counts.iterator(); i.hasNext(); ) {
-                System.out.println(i.next());
+            for ( Count count : counts )
+            {
+                System.out.println( count );
             }
         }
     }

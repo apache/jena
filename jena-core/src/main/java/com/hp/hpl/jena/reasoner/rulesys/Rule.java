@@ -149,14 +149,22 @@ public class Rule implements ClauseEntry {
     // Compute the monotonicity flag
     // Future support for negation would affect this
     private boolean allMonotonic(ClauseEntry[] elts) {
-        for (int i = 0; i < elts.length; i++) {
-            ClauseEntry elt = elts[i];
-            if (elt instanceof Functor) {
-                Builtin b = ((Functor)elt).getImplementor();
-                if (b != null) {
-                    if (! b.isMonotonic() ) return false;
-                } else {
-                    throw new ReasonerException("Undefined Functor " + ((Functor)elt).getName() +" in " + toShortString());
+        for ( ClauseEntry elt : elts )
+        {
+            if ( elt instanceof Functor )
+            {
+                Builtin b = ( (Functor) elt ).getImplementor();
+                if ( b != null )
+                {
+                    if ( !b.isMonotonic() )
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    throw new ReasonerException(
+                        "Undefined Functor " + ( (Functor) elt ).getName() + " in " + toShortString() );
                 }
             }
         }
@@ -259,12 +267,15 @@ public class Rule implements ClauseEntry {
      */
     private int findVars(Object[] nodes, int maxIn) {
         int max = maxIn;
-        for (int i = 0; i < nodes.length; i++) {
-            Object node = nodes[i];
-            if (node instanceof TriplePattern) {
-                max = findVars((TriplePattern)node, max);
-            } else {
-                max = findVars((Functor)node, max); 
+        for ( Object node : nodes )
+        {
+            if ( node instanceof TriplePattern )
+            {
+                max = findVars( (TriplePattern) node, max );
+            }
+            else
+            {
+                max = findVars( (Functor) node, max );
             }
         }
         return max;
@@ -292,8 +303,12 @@ public class Rule implements ClauseEntry {
     private int findVars(Functor f, int maxIn) {
         int max = maxIn;
         Node[] args = f.getArgs();
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].isVariable()) max = maxVarIndex(args[i], max);
+        for ( Node arg : args )
+        {
+            if ( arg.isVariable() )
+            {
+                max = maxVarIndex( arg, max );
+            }
         }
         return max;
     }
@@ -315,7 +330,7 @@ public class Rule implements ClauseEntry {
      * for trail implementations.
      */
     public Rule instantiate(BindingEnvironment env) {
-        HashMap<Node_RuleVariable, Node> vmap = new HashMap<Node_RuleVariable, Node>();
+        HashMap<Node_RuleVariable, Node> vmap = new HashMap<>();
         return new Rule(name, cloneClauseArray(head, vmap, env), cloneClauseArray(body, vmap, env));
     }
     
@@ -324,7 +339,7 @@ public class Rule implements ClauseEntry {
      */
     public Rule cloneRule() {
         if (getNumVars() > 0) {
-            HashMap<Node_RuleVariable, Node> vmap = new HashMap<Node_RuleVariable, Node>();
+            HashMap<Node_RuleVariable, Node> vmap = new HashMap<>();
             return new Rule(name, cloneClauseArray(head, vmap, null), cloneClauseArray(body, vmap, null));
         } else {
             return this;
@@ -407,8 +422,10 @@ public class Rule implements ClauseEntry {
      */
     public boolean isAxiom() {
         if (isBackward() && body.length > 0) return false;
-        for (int i = 0; i < body.length; i++) {
-            if (body[i] instanceof TriplePattern) {
+        for ( ClauseEntry aBody : body )
+        {
+            if ( aBody instanceof TriplePattern )
+            {
                 return false;
             }
         }
@@ -420,31 +437,35 @@ public class Rule implements ClauseEntry {
      */
     @Override
     public String toString() {
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         buff.append("[ ");
         if (name != null) {
             buff.append(name);
             buff.append(": ");
         }
-        if (isBackward) { 
-            for (int i = 0; i < head.length; i++) {
-                buff.append(PrintUtil.print(head[i]));
-                buff.append(" ");
+        if (isBackward) {
+            for ( ClauseEntry aHead : head )
+            {
+                buff.append( PrintUtil.print( aHead ) );
+                buff.append( " " );
             }
             buff.append("<- ");
-            for (int i = 0; i < body.length; i++) {
-                buff.append(PrintUtil.print(body[i]));
-                buff.append(" ");
+            for ( ClauseEntry aBody : body )
+            {
+                buff.append( PrintUtil.print( aBody ) );
+                buff.append( " " );
             }
         } else {
-            for (int i = 0; i < body.length; i++) {
-                buff.append(PrintUtil.print(body[i]));
-                buff.append(" ");
+            for ( ClauseEntry aBody : body )
+            {
+                buff.append( PrintUtil.print( aBody ) );
+                buff.append( " " );
             }
             buff.append("-> ");
-            for (int i = 0; i < head.length; i++) {
-                buff.append(PrintUtil.print(head[i]));
-                buff.append(" ");
+            for ( ClauseEntry aHead : head )
+            {
+                buff.append( PrintUtil.print( aHead ) );
+                buff.append( " " );
             }
         }
         buff.append("]");
@@ -499,10 +520,10 @@ public class Rule implements ClauseEntry {
     */
     public static Parser rulesParserFromReader( BufferedReader src ) {
        try {
-           StringBuffer result = new StringBuffer();
+           StringBuilder result = new StringBuilder();
            String line;
-           Map<String, String> prefixes = new HashMap<String, String>();
-           List<Rule> preloadedRules = new ArrayList<Rule>();
+           Map<String, String> prefixes = new HashMap<>();
+           List<Rule> preloadedRules = new ArrayList<>();
            while ((line = src.readLine()) != null) {
                if (line.startsWith("#")) continue;     // Skip comment lines
                line = line.trim();
@@ -609,7 +630,7 @@ public class Rule implements ClauseEntry {
      */
     public static List<Rule> parseRules(Parser parser) throws ParserException {
         boolean finished = false;
-        List<Rule> ruleset = new ArrayList<Rule>();
+        List<Rule> ruleset = new ArrayList<>();
         ruleset.addAll(parser.getRulesPreload());
         while (!finished) {
             try {
@@ -658,7 +679,7 @@ public class Rule implements ClauseEntry {
         private int literalState = NORMAL;
         
         /** Trace back of recent tokens for error reporting */
-        protected List<String> priorTokens = new ArrayList<String>();
+        protected List<String> priorTokens = new ArrayList<>();
         
         /** Maximum number of recent tokens to remember */
         private static final int maxPriors = 20;
@@ -670,7 +691,7 @@ public class Rule implements ClauseEntry {
         private PrefixMapping prefixMapping = PrefixMapping.Factory.create();
         
         /** Pre-included rules */
-        private List<Rule> preloadedRules = new ArrayList<Rule>();
+        private List<Rule> preloadedRules = new ArrayList<>();
         
         /**
          * Constructor
@@ -752,7 +773,7 @@ public class Rule implements ClauseEntry {
          * in error reporting
          */
         public String recentTokens() {
-            StringBuffer trace = new StringBuffer();
+            StringBuilder trace = new StringBuilder();
             for (int i = priorTokens.size()-1; i >= 0; i--) {
                 trace.append(priorTokens.get(i));
                 trace.append(" ");
@@ -894,7 +915,7 @@ public class Rule implements ClauseEntry {
         Node parseNumber(String lit) {
             if ( Character.isDigit(lit.charAt(0)) || 
                 (lit.charAt(0) == '-' && lit.length() > 1 && Character.isDigit(lit.charAt(1))) ) {
-                if (lit.indexOf(".") != -1) {
+                if ( lit.contains( "." ) ) {
                     // Float?
                     if (XSDDatatype.XSDfloat.isValid(lit)) {
                         return NodeFactory.createLiteral(lit, "", XSDDatatype.XSDfloat);
@@ -919,7 +940,7 @@ public class Rule implements ClauseEntry {
                 throw new ParserException("Expected '(' at start of clause, found " + token, this);
             }
             token = nextToken();
-            List<Node> nodeList = new ArrayList<Node>();
+            List<Node> nodeList = new ArrayList<>();
             while (!isSyntax(token)) {
                 nodeList.add(parseNode(token));
                 token = nextToken();
@@ -990,16 +1011,16 @@ public class Rule implements ClauseEntry {
                     nextToken();
                 }
                 // Start rule parsing with empty variable table
-                if (!retainVarMap) varMap = new HashMap<String, Node_RuleVariable>();
+                if (!retainVarMap) varMap = new HashMap<>();
                 // Body
-                List<ClauseEntry> body = new ArrayList<ClauseEntry>();
+                List<ClauseEntry> body = new ArrayList<>();
                 token = peekToken();
                 while ( !(token.equals("->") || token.equals("<-")) ) {
                     body.add(parseClause());
                     token = peekToken();
                 }
                 boolean backwardRule = token.equals("<-");
-                List<ClauseEntry> head = new ArrayList<ClauseEntry>();
+                List<ClauseEntry> head = new ArrayList<>();
                 token = nextToken();   // skip -> token
                 token = peekToken();
                 while ( !(token.equals(".") || token.equals("]")) ) {
@@ -1051,11 +1072,13 @@ public class Rule implements ClauseEntry {
     @Override
     public int hashCode() {
         int hash = 0;
-        for (int i = 0; i < body.length; i++) {
-            hash = (hash << 1) ^ body[i].hashCode();
+        for ( ClauseEntry aBody : body )
+        {
+            hash = ( hash << 1 ) ^ aBody.hashCode();
         }
-        for (int i = 0; i < head.length; i++) {
-            hash = (hash << 1) ^ head[i].hashCode();
+        for ( ClauseEntry aHead : head )
+        {
+            hash = ( hash << 1 ) ^ aHead.hashCode();
         }
         return hash;
     }
@@ -1087,7 +1110,7 @@ public class Rule implements ClauseEntry {
          * Extract context trace from prior tokens stack
          */
         private static String constructMessage(String baseMessage, Parser parser) {
-            StringBuffer message = new StringBuffer();
+            StringBuilder message = new StringBuilder();
             message.append(baseMessage);
             message.append("\nAt '");
             message.append(parser.recentTokens());

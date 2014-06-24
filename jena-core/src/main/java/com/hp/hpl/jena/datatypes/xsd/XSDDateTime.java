@@ -257,7 +257,7 @@ public class XSDDateTime extends AbstractDateTime {
      */
     @Override
     public String toString() {
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         if ((mask & YEAR_MASK) != 0) {
             int cy = data[CY] ;
             int absCY = Math.abs(cy) ;

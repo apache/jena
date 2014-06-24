@@ -69,7 +69,7 @@ public class HttpContentType
     @Override
     public String toString()
     {
-        StringBuffer sbuff = new StringBuffer() ;
+        StringBuilder sbuff = new StringBuilder() ;
         if ( mediaType != null )
             sbuff.append(mediaType) ;
         if ( charset != null )

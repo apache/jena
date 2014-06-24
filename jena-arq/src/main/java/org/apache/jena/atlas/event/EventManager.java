@@ -49,8 +49,8 @@ public class EventManager
     
     // There are 2 event sets: one for specific objects and one for general event types (no object)  
     // MultipMap.MultiMapToList
-    private Map<Object, Map<EventType, List<EventListener>>> listenersByObject = new HashMap<Object, Map<EventType, List<EventListener>>>() ;
-    private Map<EventType, List<EventListener>> listenersAllObjects = new HashMap<EventType, List<EventListener>>() ;
+    private Map<Object, Map<EventType, List<EventListener>>> listenersByObject = new HashMap<>() ;
+    private Map<EventType, List<EventListener>> listenersAllObjects = new HashMap<>() ;
 
     // Singleton above.
     private EventManager () {}
@@ -61,14 +61,14 @@ public class EventManager
         if ( x == null )
         {
             // Because listeners2 is never null.
-            x = new HashMap<EventType, List<EventListener>> () ;
+            x = new HashMap<>() ;
             listenersByObject.put(object, x) ;
         }
         List<EventListener> z = x.get(type) ;
         if ( z == null )
         {
             //?? new CopyOnWriteArrayList<EventListener>() ;
-            z = new ArrayList<EventListener>() ;
+            z = new ArrayList<>() ;
             x.put(type, z) ;
         }
         z.add(listener) ;

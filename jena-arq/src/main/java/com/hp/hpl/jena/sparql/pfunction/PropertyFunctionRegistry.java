@@ -38,8 +38,8 @@ public class PropertyFunctionRegistry
 {
     static PropertyFunctionRegistry globalRegistry = null ;
     
-    Map<String, PropertyFunctionFactory> registry = new HashMap<String, PropertyFunctionFactory>() ;
-    Set<String> attemptedLoads = new HashSet<String>() ;
+    Map<String, PropertyFunctionFactory> registry = new HashMap<>() ;
+    Set<String> attemptedLoads = new HashSet<>() ;
     
     public synchronized static PropertyFunctionRegistry standardRegistry()
     {

@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class ElementGroup extends Element
 {
-    List<Element> elements = new ArrayList<Element>() ;
+    List<Element> elements = new ArrayList<>() ;
 
     public ElementGroup()
     {  }

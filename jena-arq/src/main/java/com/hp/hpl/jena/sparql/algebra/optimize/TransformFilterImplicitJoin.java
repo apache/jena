@@ -170,7 +170,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
 
     // --- find and extract
     private static Pair<List<Pair<Var, Var>>, ExprList> preprocessFilterImplicitJoin(Op subOp, ExprList exprs) {
-        List<Pair<Var, Var>> exprsJoins = new ArrayList<Pair<Var, Var>>();
+        List<Pair<Var, Var>> exprsJoins = new ArrayList<>();
         ExprList exprsOther = new ExprList();
         for (Expr e : exprs.getList()) {
             Pair<Var, Var> p = preprocess(subOp, e);
@@ -224,11 +224,11 @@ public class TransformFilterImplicitJoin extends TransformCopy {
         // If anything is used in the object/unknown position then we
         // potentially have an issue unless it is also used in a safe
         // position
-        Set<Var> safeVars = new HashSet<Var>();
+        Set<Var> safeVars = new HashSet<>();
         safeVars.addAll(varsByPosition.get(0));
         safeVars.addAll(varsByPosition.get(1));
         safeVars.addAll(varsByPosition.get(2));
-        Set<Var> unsafeVars = new HashSet<Var>();
+        Set<Var> unsafeVars = new HashSet<>();
         unsafeVars.addAll(varsByPosition.get(3));
         unsafeVars.addAll(varsByPosition.get(4));
         boolean lhsSafe = true, rhsSafe = true;
@@ -255,7 +255,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
     }
 
     private static Collection<Var> varsMentionedInImplictJoins(List<Pair<Var, Var>> joins) {
-        Set<Var> vars = new HashSet<Var>();
+        Set<Var> vars = new HashSet<>();
         for (Pair<Var, Var> p : joins) {
             vars.add(p.getLeft());
             vars.add(p.getRight());
@@ -412,7 +412,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
     }
 
     private static List<Op> extractOptionals(Op op) {
-        List<Op> chain = new ArrayList<Op>();
+        List<Op> chain = new ArrayList<>();
         while (op instanceof OpConditional || op instanceof OpLeftJoin) {
             Op2 opleftjoin2 = (Op2) op;
             chain.add(opleftjoin2.getRight());
@@ -422,7 +422,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
     }
 
     private static List<Op> processSpecialCaseOptional(List<Op> ops, List<Pair<Var, Var>> joins) {
-        List<Op> ops2 = new ArrayList<Op>();
+        List<Op> ops2 = new ArrayList<>();
         Collection<Var> vars = varsMentionedInImplictJoins(joins);
 
         for (Op op : ops) {

@@ -51,7 +51,7 @@ public class TableDump
     
         try {
         	dbMetaData = dbConn.getMetaData();
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             String catalog = null;
             String schema = null;
             String tables = null;

@@ -82,7 +82,7 @@ public class DatasetControlMRSW implements DatasetControl
     }
     
     @Override
-    public <T> Iterator<T> iteratorControl(Iterator<T> iter) { return new IteratorCheckNotConcurrent<T>(iter, epoch) ; }
+    public <T> Iterator<T> iteratorControl(Iterator<T> iter) { return new IteratorCheckNotConcurrent<>(iter, epoch) ; }
     
     private static class IteratorCheckNotConcurrent<T> implements Iterator<T>, Closeable
     {

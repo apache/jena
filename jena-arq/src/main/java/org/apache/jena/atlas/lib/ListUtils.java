@@ -43,7 +43,7 @@ public class ListUtils
     public static
     List<Integer> asList(int... values)
     {
-        List<Integer> x = new ArrayList<Integer>() ;
+        List<Integer> x = new ArrayList<>() ;
         for ( int v : values )
             x.add(v) ;
         return x ;
@@ -54,11 +54,11 @@ public class ListUtils
         StringBuilder buff = new StringBuilder() ;
         String sep = "[" ;
 
-        for ( int i = 0 ; i < array.length ; i++ )
+        for ( T anArray : array )
         {
-            buff.append(sep) ;
-            sep = ", " ; 
-            buff.append(array[i]) ;
+            buff.append( sep );
+            sep = ", ";
+            buff.append( anArray );
         }
         buff.append("]") ;
         return buff.toString() ;
@@ -69,11 +69,11 @@ public class ListUtils
         StringBuilder buff = new StringBuilder() ;
         String sep = "[" ;
 
-        for ( int i = 0 ; i < array.length ; i++ )
+        for ( int anArray : array )
         {
-            buff.append(sep) ;
-            sep = ", " ; 
-            buff.append(array[i]) ;
+            buff.append( sep );
+            sep = ", ";
+            buff.append( anArray );
         }
         buff.append("]") ;
         return buff.toString() ;
@@ -84,11 +84,11 @@ public class ListUtils
         StringBuilder buff = new StringBuilder() ;
         String sep = "[" ;
 
-        for ( int i = 0 ; i < array.length ; i++ )
+        for ( long anArray : array )
         {
-            buff.append(sep) ;
-            sep = ", " ; 
-            buff.append(array[i]) ;
+            buff.append( sep );
+            sep = ", ";
+            buff.append( anArray );
         }
         buff.append("]") ;
         return buff.toString() ;
@@ -125,7 +125,7 @@ public class ListUtils
             return null ;
         }
         
-        List<List<T>> x = new ArrayList<List<T>>() ;
+        List<List<T>> x = new ArrayList<>() ;
         if ( c.size() == 1 )
         {
             x.add(c) ;
@@ -134,7 +134,7 @@ public class ListUtils
 
         for ( T obj : c )
         {
-            List<T> c2 = new ArrayList<T>(c) ;
+            List<T> c2 = new ArrayList<>(c) ;
             c2.remove(obj) ;
             List<List<T>> x2 = permute(c2) ;
             // For each list returned

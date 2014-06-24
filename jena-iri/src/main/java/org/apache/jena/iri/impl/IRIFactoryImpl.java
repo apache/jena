@@ -135,7 +135,7 @@ public static final int UNKNOWN_SYNTAX = -4;
     protected long errors;
     protected long warnings;
     
-    protected Set<Specification> specs = new HashSet<Specification>();
+    protected Set<Specification> specs = new HashSet<>();
 
     public IRIFactoryImpl() {
     }
@@ -144,7 +144,7 @@ public static final int UNKNOWN_SYNTAX = -4;
         if (backwardCompatibleRelativeRefs.size()==Integer.MAX_VALUE)
     	   backwardCompatibleRelativeRefs = template.backwardCompatibleRelativeRefs;
         else 
-        	backwardCompatibleRelativeRefs = new HashSet<String>(backwardCompatibleRelativeRefs);
+        	backwardCompatibleRelativeRefs = new HashSet<>(backwardCompatibleRelativeRefs);
         encoding = template.encoding;
         errors = template.errors;
         prohibited = template.prohibited;
@@ -152,14 +152,16 @@ public static final int UNKNOWN_SYNTAX = -4;
         warnings = template.warnings;
         System.arraycopy(template.asErrors,0,asErrors,0,asErrors.length);
         System.arraycopy(template.asWarnings,0,asWarnings,0,asWarnings.length);
-        Iterator<Entry<String, SchemeSpecificPart>> it = template.schemes.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, SchemeSpecificPart> entry = it.next();
+        for ( Entry<String, SchemeSpecificPart> entry : template.schemes.entrySet() )
+        {
             SchemeSpecificPart p = entry.getValue();
-            if (p.withScheme()) {
-                schemes.put(entry.getKey(),new WithScheme((WithScheme)p));
-            } else if (p.port()!=IRI.NO_PORT) {
-                schemes.put(entry.getKey(),new NoScheme(p.port()));
+            if ( p.withScheme() )
+            {
+                schemes.put( entry.getKey(), new WithScheme( (WithScheme) p ) );
+            }
+            else if ( p.port() != IRI.NO_PORT )
+            {
+                schemes.put( entry.getKey(), new NoScheme( p.port() ) );
             }
         }
     }
@@ -249,7 +251,7 @@ public static final int UNKNOWN_SYNTAX = -4;
 //    }
 
     private boolean initializing = true;
-private Set<String> backwardCompatibleRelativeRefs = new HashSet<String>();
+private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
     protected void initializing() {
         if (!initializing)
             throw new IllegalStateException("Cannot reinitialize IRIFactory after first use.");
@@ -466,17 +468,19 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<String>();
         return prohibited ;
     }
 
-    final private Map<String, SchemeSpecificPart> schemes = new HashMap<String, SchemeSpecificPart>();
+    final private Map<String, SchemeSpecificPart> schemes = new HashMap<>();
     
     public void useSchemeSpecificRules(String scheme, boolean asErr)
     {
         if (scheme.equals("*"))
         {
-            Iterator<String> it = Specification.schemes.keySet().iterator() ;
-            while (it.hasNext())
+            for ( String s : Specification.schemes.keySet() )
             {
-                scheme = it.next() ;
-                if (!schemes.containsKey(scheme)) useSchemeSpecificRules(scheme, asErr) ;
+                scheme = s;
+                if ( !schemes.containsKey( scheme ) )
+                {
+                    useSchemeSpecificRules( scheme, asErr );
+                }
             }
             return ;
         }

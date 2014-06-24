@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.ArrayList ;
 import java.util.HashMap ;
-import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
@@ -61,7 +60,7 @@ public class PropertyFunctionGenerator
         // 3/ For remaining triples, put into basic graph patterns,
         //    and string together the procedure calls and BGPs.
         
-        List<Triple> propertyFunctionTriples = new ArrayList<Triple>() ;    // Property functions seen
+        List<Triple> propertyFunctionTriples = new ArrayList<>() ;    // Property functions seen
         BasicPattern triples = new BasicPattern(pattern) ;  // A copy of all triples (later, it is mutated)
         
         // Find the triples invoking property functions, and those not.
@@ -71,7 +70,7 @@ public class PropertyFunctionGenerator
             //No property functions.
             return new OpBGP(pattern) ;
         
-        Map<Triple, PropertyFunctionInstance> pfInvocations = new HashMap<Triple, PropertyFunctionInstance>() ;  // Map triple => property function instance 
+        Map<Triple, PropertyFunctionInstance> pfInvocations = new HashMap<>() ;  // Map triple => property function instance
         // Removes triples of list arguments.  This mutates 'triples'
         findPropertyFunctionArgs(context, triples, propertyFunctionTriples, pfInvocations) ;
         
@@ -103,11 +102,10 @@ public class PropertyFunctionGenerator
         // Step 2 : for each property function, remove associated triples in list arguments; 
         // Leave the propertyFunction triple itself.
 
-        for ( Iterator<Triple> iter = propertyFunctionTriples.iterator() ; iter.hasNext(); )
+        for ( Triple pf : propertyFunctionTriples )
         {
-            Triple pf = iter.next();
-            PropertyFunctionInstance pfi = magicProperty(context, pf, triples) ;
-            pfInvocations.put(pf, pfi) ;
+            PropertyFunctionInstance pfi = magicProperty( context, pf, triples );
+            pfInvocations.put( pf, pfi );
         }
     }
     
@@ -211,7 +209,7 @@ public class PropertyFunctionGenerator
                                                          Triple pfTriple,
                                                          BasicPattern triples)
     {
-        List<Triple> listTriples = new ArrayList<Triple>() ;
+        List<Triple> listTriples = new ArrayList<>() ;
 
         GNode sGNode = new GNode(triples, pfTriple.getSubject()) ;
         GNode oGNode = new GNode(triples, pfTriple.getObject()) ;

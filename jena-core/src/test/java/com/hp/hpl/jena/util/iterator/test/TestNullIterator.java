@@ -43,7 +43,7 @@ public class TestNullIterator extends ModelTestBase
     
     public void testAndThenReturnsArgument()
         {
-        ExtendedIterator<Object> it = new NiceIterator<Object>();
+        ExtendedIterator<Object> it = new NiceIterator<>();
         assertSame( it, NullIterator.instance().andThen( it ) );
         }
     }

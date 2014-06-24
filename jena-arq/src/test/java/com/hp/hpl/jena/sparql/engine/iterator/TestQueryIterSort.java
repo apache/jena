@@ -71,12 +71,12 @@ public class TestQueryIterSort {
             Var.alloc("4"), Var.alloc("5"), Var.alloc("6"),
             Var.alloc("7"), Var.alloc("8"), Var.alloc("9"), Var.alloc("0")
         };
-        unsorted = new ArrayList<Binding>();
+        unsorted = new ArrayList<>();
         for(int i = 0; i < 500; i++){
             unsorted.add(randomBinding(vars));
         }
         
-        List<SortCondition> conditions = new ArrayList<SortCondition>(); 
+        List<SortCondition> conditions = new ArrayList<>();
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         comparator = new BindingComparator(conditions);
         

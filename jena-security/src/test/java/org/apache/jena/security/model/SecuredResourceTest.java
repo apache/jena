@@ -279,8 +279,7 @@ public class SecuredResourceTest extends SecuredRDFNodeTest
 			}
 		}
 
-		final Literal l = ResourceFactory.createTypedLiteral(Float
-				.valueOf(3.14F));
+		final Literal l = ResourceFactory.createTypedLiteral( 3.14F );
 		try
 		{
 			getSecuredResource().addProperty(SecuredRDFNodeTest.p,
@@ -605,7 +604,7 @@ public class SecuredResourceTest extends SecuredRDFNodeTest
 			}
 		}
 
-		final Object o = Integer.valueOf(6);
+		final Object o = 6;
 		try
 		{
 			getSecuredResource().hasLiteral(SecuredRDFNodeTest.p, o);

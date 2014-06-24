@@ -68,15 +68,17 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     public void testCheckNames()
         {
         PrefixMapping ns = getMapping();
-        for (int i = 0; i < badNames.length; i += 1)
+            for ( String bad : badNames )
             {
-            String bad = badNames[i];
-            try 
-                { 
-                ns.setNsPrefix( bad, crispURI ); 
-                fail( "'" + bad + "' is an illegal prefix and should be trapped" ); 
+                try
+                {
+                    ns.setNsPrefix( bad, crispURI );
+                    fail( "'" + bad + "' is an illegal prefix and should be trapped" );
                 }
-            catch (PrefixMapping.IllegalPrefixException e) { pass(); }
+                catch ( PrefixMapping.IllegalPrefixException e )
+                {
+                    pass();
+                }
             }
         }
     
@@ -200,21 +202,15 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
        ns.setNsPrefix( "crisp", crispURI );
        ns.setNsPrefix( "rope", ropeURI );
    /* */
-       for (int i = 0; i < dontChange.length; i += 1)
-           assertEquals
-               ( 
-               "should be unchanged", 
-               dontChange[i], 
-               ns.expandPrefix( dontChange[i] ) 
-               );    
+           for ( String aDontChange : dontChange )
+           {
+               assertEquals( "should be unchanged", aDontChange, ns.expandPrefix( aDontChange ) );
+           }
    /* */
-       for (int i = 0; i < expansions.length; i += 1)
-           assertEquals
-               ( 
-               "should expand correctly", 
-               expansions[i][1], 
-               ns.expandPrefix( expansions[i][0] ) 
-               );
+           for ( String[] expansion : expansions )
+           {
+               assertEquals( "should expand correctly", expansion[1], ns.expandPrefix( expansion[0] ) );
+           }
        }
     
     public void testUseEasyPrefix()
@@ -308,7 +304,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     public void testAddMap()
         {
         PrefixMapping b = getMapping();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put( "crisp", crispURI );
         map.put( "rope", ropeURI );
         b.setNsPrefix( "butter", butterURI );
@@ -440,11 +436,10 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     protected void fill( PrefixMapping pm, String settings )
         {
         List<String> L = listOfStrings( settings );
-        for (int i = 0; i < L.size(); i += 1)
+            for ( String setting : L )
             {
-            String setting = L.get(i);
-            int eq = setting.indexOf( '=' );
-            pm.setNsPrefix( setting.substring( 0, eq ), setting.substring( eq + 1 ) );
+                int eq = setting.indexOf( '=' );
+                pm.setNsPrefix( setting.substring( 0, eq ), setting.substring( eq + 1 ) );
             }
         }
     

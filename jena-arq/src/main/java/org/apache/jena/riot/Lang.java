@@ -119,7 +119,7 @@ public class Lang
     }
     
     static <T> List<T> copy(List<T> original) {
-        List<T> x = new ArrayList<T>() ;
+        List<T> x = new ArrayList<>() ;
         x.addAll(original) ;
         return x ;
     }

@@ -84,7 +84,7 @@ public class ParserBase
     //    BGP causes the map to be cleared at the start of the BGP
     
     LabelToNodeMap activeLabelMap = anonVarLabels ;
-    Set<String> previousLabels = new HashSet<String>() ; 
+    Set<String> previousLabels = new HashSet<>() ;
     
     //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L")) ;
     // ----
@@ -450,7 +450,7 @@ public class ParserBase
             return s ;
         
         // Dump the initial part straight into the string buffer
-        StringBuffer sb = new StringBuffer(s.substring(0,i)) ;
+        StringBuilder sb = new StringBuilder(s.substring(0,i)) ;
         
         for ( ; i < s.length() ; i++ )
         {

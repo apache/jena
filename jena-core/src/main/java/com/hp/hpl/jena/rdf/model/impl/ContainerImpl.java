@@ -219,7 +219,7 @@ public class ContainerImpl extends ResourceImpl
    public NodeIterator listContainerMembers( NodeIteratorFactory f )
         {
         StmtIterator iter = listProperties(); 
-        Vector<Statement> result = new Vector<Statement>();
+        Vector<Statement> result = new Vector<>();
         int maxOrdinal = 0;
         while (iter.hasNext()) {
             Statement stmt = iter.nextStatement();

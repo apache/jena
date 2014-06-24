@@ -87,7 +87,7 @@ public class XMLOutputTestBase extends ModelTestBase
             return new Change()
                 { @Override
                 public void modify( RDFWriter writer )
-                    { writer.setProperty( property, Boolean.valueOf( value ) ); }
+                    { writer.setProperty( property, value ); }
                 };
             }
         

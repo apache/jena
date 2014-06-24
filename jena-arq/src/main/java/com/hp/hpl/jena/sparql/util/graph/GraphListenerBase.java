@@ -41,8 +41,10 @@ public abstract class GraphListenerBase implements GraphListener
     @Override
     public void notifyAddArray(Graph g, Triple[] triples)
     {
-        for ( int i = 0 ; i < triples.length ; i++ )
-            addEvent(triples[i]) ;
+        for ( Triple triple : triples )
+        {
+            addEvent( triple );
+        }
 //        for ( Triple t : triples )
 //            addEvent(t) ;
     }
@@ -77,8 +79,10 @@ public abstract class GraphListenerBase implements GraphListener
     @Override
     public void notifyDeleteArray(Graph g, Triple[] triples)
     {
-        for ( int i = 0 ; i < triples.length ; i++ )
-            deleteEvent(triples[i]) ;
+        for ( Triple triple : triples )
+        {
+            deleteEvent( triple );
+        }
 //        for ( Triple t : triples )
 //            deleteEvent(t) ;
     }

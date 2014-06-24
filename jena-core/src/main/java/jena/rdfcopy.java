@@ -66,7 +66,7 @@ public class rdfcopy extends java.lang.Object {
 		String in = args[0];
 		String inlang = "RDF/XML";
 		int j;
-		for (j = 1; j < args.length && args[j].indexOf("=") != -1; j++)
+		for (j = 1; j < args.length && args[j].contains( "=" ); j++)
         {}
 		int lastInProp = j;
 		if (j < args.length) {
@@ -75,7 +75,7 @@ public class rdfcopy extends java.lang.Object {
 		j++;
 		String outlang = "N-TRIPLE";
 		
-		for (; j < args.length && args[j].indexOf("=") != -1; j++)
+		for (; j < args.length && args[j].contains( "=" ); j++)
 		{}
 		
 		int lastOutProp = j;

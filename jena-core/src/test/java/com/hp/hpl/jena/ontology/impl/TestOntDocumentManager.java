@@ -62,7 +62,7 @@ public class TestOntDocumentManager
     /** Logger for this class */
     private static Logger log = LoggerFactory.getLogger( TestOntDocumentManager.class );
 
-    public static final Integer cnt( int x ) {return new Integer(x);}
+    public static final Integer cnt( int x ) {return x;}
 
     /* Data for various combinations of test import conditions */
     public static Object[][] s_testData = new Object[][] {
@@ -94,11 +94,11 @@ public class TestOntDocumentManager
         suite.addTestSuite( TestOntDocumentManager.class );
 
         // add the data-driven test cases
-        for (int i = 0;  i < s_testData.length;  i++) {
-            suite.addTest( new DocManagerImportTest( (String) s_testData[i][0],
-                                                     ((Integer) s_testData[i][1]).intValue(),
-                                                     ((Boolean) s_testData[i][2]).booleanValue(),
-                                                     (String) s_testData[i][3]) );
+        for ( Object[] aS_testData : s_testData )
+        {
+            suite.addTest( new DocManagerImportTest( (String) aS_testData[0], ( (Integer) aS_testData[1] ).intValue(),
+                                                     ( (Boolean) aS_testData[2] ).booleanValue(),
+                                                     (String) aS_testData[3] ) );
         }
         return suite;
     }
@@ -114,14 +114,14 @@ public class TestOntDocumentManager
 
         // forget any cached models in the model spec
         // TODO remove this once we rationalise modelmakers in the OntModel code
-        Set<String> modelNames = new HashSet<String>();
+        Set<String> modelNames = new HashSet<>();
         ModelMaker memMaker = OntModelSpec.OWL_MEM.getImportModelMaker();
         for (Iterator<String> i = memMaker.listModels(); i.hasNext(); ) {
             modelNames.add( i.next() );
         }
 
-        for (Iterator<String> i = modelNames.iterator(); i.hasNext(); ) {
-            String mn = i.next();
+        for ( String mn : modelNames )
+        {
             memMaker.removeModel( mn );
         }
     }
@@ -315,7 +315,7 @@ public class TestOntDocumentManager
 
         // TODO this workaround to be removed
         SimpleGraphMaker sgm = (SimpleGraphMaker) ((ModelMakerImpl) spec.getImportModelMaker()).getGraphMaker();
-        List<String> toGo = new ArrayList<String>();
+        List<String> toGo = new ArrayList<>();
         for (Iterator<String> i = sgm.listGraphs(); i.hasNext(); toGo.add( i.next() )) {/**/}
         for (Iterator<String> i = toGo.iterator(); i.hasNext(); sgm.removeGraph( i.next() )) {/**/}
         spec.getDocumentManager().clearCache();

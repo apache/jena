@@ -80,7 +80,7 @@ public class PrefixMapExtended extends PrefixMapBase {
 
     @Override
     public Map<String, IRI> getMapping() {
-        Map<String, IRI> mapping = new HashMap<String, IRI>();
+        Map<String, IRI> mapping = new HashMap<>();
         mapping.putAll(parent.getMapping());
         mapping.putAll(local.getMapping());
         return Collections.unmodifiableMap(mapping);

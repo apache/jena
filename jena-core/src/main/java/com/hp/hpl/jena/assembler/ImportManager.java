@@ -40,7 +40,7 @@ public class ImportManager
     /**
         The cache of models already read by this manager.
     */
-    protected Map<String, Graph> cache = new HashMap<String, Graph>();
+    protected Map<String, Graph> cache = new HashMap<>();
     
     /**
         Clear this ImportManager's cache.

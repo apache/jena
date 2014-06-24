@@ -106,7 +106,7 @@ public class TestUtil {
      * @return normalized version of src
      */
     public static String normalizeWhiteSpace(String src) {
-        StringBuffer result = new StringBuffer(src.length());
+        StringBuilder result = new StringBuilder(src.length());
         boolean inWhitespaceBlock = false;
         for (int i = 0; i < src.length(); i++) {
             char c = src.charAt(i);

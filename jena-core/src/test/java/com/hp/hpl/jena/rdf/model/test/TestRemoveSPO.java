@@ -48,7 +48,7 @@ public class TestRemoveSPO extends AbstractModelTestBase
 
 	public void testRemoveSPOCallsGraphDeleteTriple()
 	{
-		final List<Triple> deleted = new ArrayList<Triple>();
+		final List<Triple> deleted = new ArrayList<>();
 		final Graph base = new WrappedGraph(model.getGraph()) {
 			@Override
 			public void delete( final Triple t )

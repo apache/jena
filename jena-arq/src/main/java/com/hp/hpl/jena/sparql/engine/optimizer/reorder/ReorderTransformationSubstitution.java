@@ -158,7 +158,7 @@ public abstract class ReorderTransformationSubstitution implements ReorderTransf
     /** Return all the indexes of pattern triples of the least weight. */
     protected List<Integer> chooseAll(List<PatternTriple> pTriples)
     {
-        List<Integer> results = new ArrayList<Integer>(pTriples.size()) ;
+        List<Integer> results = new ArrayList<>(pTriples.size()) ;
         processPTriples(pTriples, results) ;
         return results ;
     }

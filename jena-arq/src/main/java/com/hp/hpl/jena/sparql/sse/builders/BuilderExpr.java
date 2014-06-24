@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.sse.builders;
 
 import java.util.HashMap ;
-import java.util.Iterator ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -156,7 +155,7 @@ public class BuilderExpr
         varExprList.add(var, expr) ;  
     }
     
-    protected Map<String, Build> dispatch = new HashMap<String, Build>() ;
+    protected Map<String, Build> dispatch = new HashMap<>() ;
     public Expr buildItem(Item item)
     {
         Expr expr = null ;
@@ -332,11 +331,12 @@ public class BuilderExpr
     
     protected Build findBuild(String str)
     {
-        for ( Iterator<String> iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
+        for ( String key : dispatch.keySet() )
         {
-            String key = iter.next() ; 
-            if ( str.equalsIgnoreCase(key) )    // ???
-                return dispatch.get(key) ;
+            if ( str.equalsIgnoreCase( key ) )    // ???
+            {
+                return dispatch.get( key );
+            }
         }
         return null ;
     }

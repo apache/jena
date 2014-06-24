@@ -57,24 +57,27 @@ public class TestMultiUnionReifier extends ModelTestBase
         {
         Graph result = Factory.createDefaultGraph( );
         String [] factArray = facts.split( ";" );
-        for (int i = 0; i < factArray.length; i += 1)
+            for ( String aFactArray : factArray )
             {
-            String fact = factArray[i].trim();
-            if (fact.equals(  ""  ))
-                {}
-            else if (fact.charAt( 0 ) == '!')
+                String fact = aFactArray.trim();
+                if ( fact.equals( "" ) )
                 {
-                Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
-                result.add( t );
-                ReifierStd.reifyAs(result, NodeCreateUtils.create( "_r" + ++count ), t );
                 }
-            else if (fact.charAt( 0 ) == '~')
+                else if ( fact.charAt( 0 ) == '!' )
                 {
-                Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
-                ReifierStd.reifyAs( result, NodeCreateUtils.create( "_r" + ++count ), t );
+                    Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
+                    result.add( t );
+                    ReifierStd.reifyAs( result, NodeCreateUtils.create( "_r" + ++count ), t );
                 }
-            else
-                result.add( NodeCreateUtils.createTriple( fact ) );
+                else if ( fact.charAt( 0 ) == '~' )
+                {
+                    Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
+                    ReifierStd.reifyAs( result, NodeCreateUtils.create( "_r" + ++count ), t );
+                }
+                else
+                {
+                    result.add( NodeCreateUtils.createTriple( fact ) );
+                }
             }
         return result;
         }

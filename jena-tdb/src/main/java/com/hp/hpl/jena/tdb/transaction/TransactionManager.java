@@ -49,7 +49,7 @@ public class TransactionManager
     private static boolean checking = true ;
     
     private static Logger log = LoggerFactory.getLogger(TransactionManager.class) ;
-    private Set<Transaction> activeTransactions = new HashSet<Transaction>() ;
+    private Set<Transaction> activeTransactions = new HashSet<>() ;
     synchronized public boolean activeTransactions() { return !activeTransactions.isEmpty() ; }
     
     // Setting this true cause the TransactionManager to keep lists of transactions
@@ -83,13 +83,13 @@ public class TransactionManager
     {
         if ( ! recordHistory ) return ;
         initRecordingState() ;
-        transactionStateTransition.add(new Pair<Transaction, TxnPoint>(txn, state)) ;
+        transactionStateTransition.add(new Pair<>(txn, state)) ;
     }
     
     // Statistic variables to record the maximum length of the flush queue.
     
     int maxQueue = 0 ;
-    List<Transaction> commitedAwaitingFlush = new ArrayList<Transaction>() ;    
+    List<Transaction> commitedAwaitingFlush = new ArrayList<>() ;
     
     static AtomicLong transactionId = new AtomicLong(1) ;
     
@@ -110,12 +110,12 @@ public class TransactionManager
     // seeing the same view.
     // A write transaction clears this when it commits; the first reader of a 
     // particular state creates the view datasetgraph and sets the  lastreader.
-    private AtomicReference<DatasetGraphTDB> currentReaderView = new AtomicReference<DatasetGraphTDB>(null) ;
+    private AtomicReference<DatasetGraphTDB> currentReaderView = new AtomicReference<>(null) ;
     
     // Ensure single writer.
     private Semaphore writersWaiting = new Semaphore(1, true) ;
     // Delayes enacting transactions.
-    private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<Transaction>() ;
+    private BlockingQueue<Transaction> queue = new LinkedBlockingDeque<>() ;
 
     private Thread committerThread ;    // Later
 
@@ -658,7 +658,7 @@ public class TransactionManager
     private void initRecordingState()
     {
         if ( transactionStateTransition == null )
-            transactionStateTransition = new ArrayList<Pair<Transaction, TxnPoint>>() ;
+            transactionStateTransition = new ArrayList<>() ;
     }
 
     public Journal getJournal()

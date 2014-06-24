@@ -65,7 +65,7 @@ public class SortedResultSet implements ResultSet
     {
         model = rs.getResourceModel() ;
         // Put straight into a sorted structure 
-        SortedSet<Binding> sorted = new TreeSet<Binding>(comparator) ;
+        SortedSet<Binding> sorted = new TreeSet<>(comparator) ;
         
         for ( ; rs.hasNext() ; )
         {

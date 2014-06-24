@@ -204,7 +204,7 @@ class NodeTransformOp extends TransformCopy
         // Rename the vars in the expression as well.
         // .e.g max(?y) ==> max(?/y)  
         // These need renaming as well.
-        List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
+        List<ExprAggregator> aggregators = new ArrayList<>() ;
         for ( ExprAggregator agg : opGroup.getAggregators() )
             aggregators.add(agg.applyNodeTransform(transform)) ;
         

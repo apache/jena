@@ -203,7 +203,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable {
             throw new IllegalArgumentException("Poll Timeout must be > 0");
         if (maxPolls <= 0)
             throw new IllegalArgumentException("Max Poll attempts must be > 0");
-        this.queue = new ArrayBlockingQueue<T>(bufferSize, fair);
+        this.queue = new ArrayBlockingQueue<>(bufferSize, fair);
         this.pollTimeout = pollTimeout;
         this.maxPolls = maxPolls;
     }

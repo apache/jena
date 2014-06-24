@@ -37,7 +37,7 @@ public class ParseHandlerLink extends ParseHandlerResolver
     public ParseHandlerLink(Prologue prologue)                  { super(prologue) ; }
     
     String currentName = null ;
-    Map<String, Item> namedItems = new HashMap<String, Item>() ;    // Item => Item
+    Map<String, Item> namedItems = new HashMap<>() ;    // Item => Item
     
     // ----
     

@@ -304,18 +304,18 @@ public class TestMultiUnion extends AbstractTestGraph
     }
     
     protected <T> Iterator<T> iterateOver( T x0 ) {
-        List<T> l = new ArrayList<T>();
+        List<T> l = new ArrayList<>();
         l.add( x0 );
         return l.iterator();
     }
     protected <T> Iterator<T> iterateOver( T x0, T x1 ) {
-        List<T> l = new ArrayList<T>();
+        List<T> l = new ArrayList<>();
         l.add( x0 );
         l.add( x1 );
         return l.iterator();
     }
     protected <T> Iterator<T> iterateOver( T x0, T x1, T x2 ) {
-        List<T> l = new ArrayList<T>();
+        List<T> l = new ArrayList<>();
         l.add( x0 );
         l.add( x1 );
         l.add( x2 );

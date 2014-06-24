@@ -125,7 +125,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     class IteratorTuples extends IteratorSlotted<Binding>
     {
         private Binding lastLine ;
-        List<Var> vars = new ArrayList<Var>() ;
+        List<Var> vars = new ArrayList<>() ;
 
         // Process any directive immediately.
         public IteratorTuples()

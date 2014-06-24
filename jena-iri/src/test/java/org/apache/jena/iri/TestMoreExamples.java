@@ -46,7 +46,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class TestMoreExamples extends TestCase implements
         ViolationCodes {
     static class TestReader extends DefaultHandler {
-        private Stack<Test> stack = new Stack<Test>();
+        private Stack<Test> stack = new Stack<>();
 
         TestReader(TestSuite s) {
             stack.push(s);
@@ -98,14 +98,14 @@ public class TestMoreExamples extends TestCase implements
     }
 
     static Map<String, String> attr2map(Attributes a) {
-        Map<String, String> rslt = new HashMap<String, String>();
+        Map<String, String> rslt = new HashMap<>();
         for (int i = a.getLength()-1;i>=0;i--)
             rslt.put(a.getQName(i),a.getValue(i));
         return rslt;
     }
     Map<String, String> att;
     TestSuite parent;
-    private Map<String, Map<String, String>> methods = new HashMap<String, Map<String, String>>();
+    private Map<String, Map<String, String>> methods = new HashMap<>();
     private long violations = 0l;
     private IRI iri;
 
@@ -135,7 +135,7 @@ public class TestMoreExamples extends TestCase implements
     }
 
     private static String escape(String nm) {
-        StringBuffer rslt = new StringBuffer();
+        StringBuilder rslt = new StringBuilder();
         for (int i=0; i<nm.length();i++) {
             char ch = nm.charAt(i);
             if (ch>=32 && ch<=126)
@@ -218,21 +218,16 @@ public class TestMoreExamples extends TestCase implements
                else
                    assertEquals(attrs.get("value"),r.toString());
                
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException | NoSuchMethodException | IllegalAccessException | SecurityException e) {
                 e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            }
+           catch (InvocationTargetException e) {
                 Throwable t = e;
                 if (t.getCause()!=null)
                     t= t.getCause();
                 String s = t.getMessage()!=null?t.getMessage():t.toString();
                 
                 assertEquals(attrs.get("exception"),s);
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
             }
        }
     }
@@ -257,11 +252,7 @@ public class TestMoreExamples extends TestCase implements
             return 
              suitex();
             
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
+        } catch (SAXException | ParserConfigurationException | IOException e) {
             e.printStackTrace();
         }
 //        System.err.println("Yes chris we know");

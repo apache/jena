@@ -59,7 +59,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     @Override
     public Iterator<Node> listGraphNodes()
     {
-        return new NullIterator<Node>() ;
+        return new NullIterator<>() ;
     }
 
     @Override
@@ -158,7 +158,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
         if ( isWildcard(g) || isDefaultGraph(g) )
             return triples2quadsDftGraph(graph.find(s, p, o)) ;
         else
-            return new NullIterator<Quad>() ;
+            return new NullIterator<>() ;
     }
     
     

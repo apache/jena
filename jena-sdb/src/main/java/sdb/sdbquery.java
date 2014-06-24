@@ -162,7 +162,7 @@ public class sdbquery extends CmdArgsDB
         finally {
             if ( getModTime().timingEnabled() )
             {
-                System.out.println("Execute time:    "+String.format("%.4f", new Double(totalTime/(1000.0*repeatCount)) )) ;
+                System.out.println("Execute time:    "+String.format("%.4f", totalTime / ( 1000.0 * repeatCount ) )) ;
             }
         }
     }

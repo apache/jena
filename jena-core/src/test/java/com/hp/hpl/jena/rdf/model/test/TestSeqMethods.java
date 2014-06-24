@@ -159,21 +159,21 @@ public class TestSeqMethods extends AbstractContainerMethods
 			seq.add(i);
 		}
 		//
-		final List<RDFNode> retained = new ArrayList<RDFNode>();
+		final List<RDFNode> retained = new ArrayList<>();
 		//
 		final NodeIterator nIter = seq.iterator();
-		for (int i = 0; i < num; i += 1)
-		{
-			final RDFNode x = nIter.nextNode();
-			if (retain[i])
-			{
-				retained.add(x);
-			}
-			else
-			{
-				nIter.remove();
-			}
-		}
+        for ( boolean aRetain : retain )
+        {
+            final RDFNode x = nIter.nextNode();
+            if ( aRetain )
+            {
+                retained.add( x );
+            }
+            else
+            {
+                nIter.remove();
+            }
+        }
 		//
 		Assert.assertFalse(nIter.hasNext());
 		Assert.assertEquals(retained, seq.iterator().toList());

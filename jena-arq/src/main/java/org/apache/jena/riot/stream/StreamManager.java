@@ -40,7 +40,7 @@ public class StreamManager {
 
     public static boolean        logAllLookups = true ;
 
-    private List<Locator>        handlers      = new ArrayList<Locator>() ;
+    private List<Locator>        handlers      = new ArrayList<>() ;
     private LocationMapper       mapper        = null ;
 
     private static StreamManager globalStreamManager ;

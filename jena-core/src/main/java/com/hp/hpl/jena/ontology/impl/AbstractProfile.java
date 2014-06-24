@@ -136,12 +136,13 @@ public abstract class AbstractProfile
         if (m_aliasesMap == null) {
             // aliases map not prepared yet, so initialise using the data from
             // the concrete profile class
-            m_aliasesMap = new OneToManyMap<Resource, Resource>();
-            Resource[][] aliases = aliasTable();  
-            for (int i = 0;  i < aliases.length;  i++) {
+            m_aliasesMap = new OneToManyMap<>();
+            Resource[][] aliases = aliasTable();
+            for ( Resource[] aliase : aliases )
+            {
                 // since alias relationship is symmetric, we record both directions
-                m_aliasesMap.put( aliases[i][0], aliases[i][1] );
-                m_aliasesMap.put( aliases[i][1], aliases[i][0] );
+                m_aliasesMap.put( aliase[0], aliase[1] );
+                m_aliasesMap.put( aliase[1], aliase[0] );
             }
         }     
         return m_aliasesMap;

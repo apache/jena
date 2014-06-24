@@ -261,20 +261,19 @@ public class FormatterElement extends FormatterBase
         out.incIndent(INDENT) ;
         
         boolean first = true ;
-        for ( Iterator<Element> iter = el.getElements().listIterator() ; iter.hasNext() ;)
+        for ( Element subElement : el.getElements() )
         {
-           
-            Element subElement = iter.next() ;
-            if ( ! first )
+
+            if ( !first )
             {
-                out.decIndent(INDENT) ;
-                out.newline() ;
-                out.print("UNION") ;
-                out.newline() ;
-                out.incIndent(INDENT) ;
+                out.decIndent( INDENT );
+                out.newline();
+                out.print( "UNION" );
+                out.newline();
+                out.incIndent( INDENT );
             }
-            visitAsGroup(subElement) ;
-            first = false ;
+            visitAsGroup( subElement );
+            first = false;
         }
         
         out.decIndent(INDENT) ;
@@ -507,7 +506,7 @@ public class FormatterElement extends FormatterBase
             predicateWidth = TRIPLES_PROPERTY_COLUMN ;
         
         // Loops:
-        List<Triple> subjAcc = new ArrayList<Triple>() ;    // Accumulate all triples with the same subject.  
+        List<Triple> subjAcc = new ArrayList<>() ;    // Accumulate all triples with the same subject.
         Node subj = null ;                  // Subject being accumulated
         
         boolean first = true ;             // Print newlines between blocks.

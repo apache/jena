@@ -37,8 +37,6 @@ import org.apache.jena.riot.stream.LocatorZip;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;
 
-import org.junit.runner.RunWith;
-
 /**
  * Test package to test Model implementation.
  */

@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.pfunction;
 
-import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
@@ -102,12 +101,11 @@ public class PropFuncArg extends PrintSerializableBase
             exprList.add(expr) ;
             return exprList ;
         }
-        
-        for ( Iterator<Node> iter = pfArg.getArgList().iterator() ; iter.hasNext() ; )
+
+        for ( Node n : pfArg.getArgList() )
         {
-            Node n = iter.next() ;
-            Expr expr = ExprUtils.nodeToExpr(n) ;
-            exprList.add(expr) ;
+            Expr expr = ExprUtils.nodeToExpr( n );
+            exprList.add( expr );
         }
         return exprList ;
     }

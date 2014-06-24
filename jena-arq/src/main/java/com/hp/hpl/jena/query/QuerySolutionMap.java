@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class QuerySolutionMap extends QuerySolutionBase
 {
-    private Map<String, RDFNode> map = new HashMap<String, RDFNode>() ;
+    private Map<String, RDFNode> map = new HashMap<>() ;
     
     public QuerySolutionMap() { } 
 

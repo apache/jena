@@ -163,7 +163,7 @@ public class TestHashCommon extends ModelTestBase
     
     protected Set<Item> itemSet( String items )
         {
-        Set<Item> result = new HashSet<Item>();
+        Set<Item> result = new HashSet<>();
         StringTokenizer st = new StringTokenizer( items );
         while (st.hasMoreTokens()) addItem( result, st.nextToken() );
         return result;

@@ -29,21 +29,21 @@ public class TestThresholdPolicyCount extends BaseTest
     @Test
     public void count_01()
     {
-        ThresholdPolicyCount<String> policy = new ThresholdPolicyCount<String>(0);
+        ThresholdPolicyCount<String> policy = new ThresholdPolicyCount<>(0);
         assertTrue(policy.isThresholdExceeded());
     }
     
     @Test
     public void count_02()
     {
-        ThresholdPolicyCount<String> policy = new ThresholdPolicyCount<String>(1);
+        ThresholdPolicyCount<String> policy = new ThresholdPolicyCount<>(1);
         assertFalse(policy.isThresholdExceeded());
     }
     
     @Test
     public void count_03()
     {
-        ThresholdPolicyCount<String> policy = new ThresholdPolicyCount<String>(1);
+        ThresholdPolicyCount<String> policy = new ThresholdPolicyCount<>(1);
         assertFalse(policy.isThresholdExceeded());
         policy.increment("a");
         assertTrue(policy.isThresholdExceeded());

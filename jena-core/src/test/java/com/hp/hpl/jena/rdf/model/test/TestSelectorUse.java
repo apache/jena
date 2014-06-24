@@ -99,10 +99,10 @@ public class TestSelectorUse extends AbstractModelTestBase
 		final StmtIterator it6 = model.listStatements(new SimpleSelector(null,
 				null, tvStrings[1], langs[1]));
 		final List<Statement> L6 = GraphTestBase.iteratorToList(it6);
-		for (int i = 0; i < L6.size(); i += 1)
-		{
-			Assert.assertEquals(langs[1], L6.get(i).getLanguage());
-		}
+        for ( Statement aL6 : L6 )
+        {
+            Assert.assertEquals( langs[1], aL6.getLanguage() );
+        }
 		Assert.assertEquals(2, L6.size());
 	}
 
@@ -121,10 +121,10 @@ public class TestSelectorUse extends AbstractModelTestBase
 		final StmtIterator it3 = model.listStatements(new SimpleSelector(null,
 				predicate[1], (RDFNode) null));
 		final List<Statement> L3 = GraphTestBase.iteratorToList(it3);
-		for (int i = 0; i < L3.size(); i += 1)
-		{
-			Assert.assertEquals(predicate[1], L3.get(i).getPredicate());
-		}
+        for ( Statement aL3 : L3 )
+        {
+            Assert.assertEquals( predicate[1], aL3.getPredicate() );
+        }
 		Assert.assertEquals(num * 7, L3.size());
 	}
 
@@ -141,10 +141,10 @@ public class TestSelectorUse extends AbstractModelTestBase
 		final StmtIterator it5 = model.listStatements(new SimpleSelector(null,
 				null, model.createTypedLiteral(false)));
 		final List<Statement> L5 = GraphTestBase.iteratorToList(it5);
-		for (int i = 0; i < L5.size(); i += 1)
-		{
-			Assert.assertEquals(false, L5.get(i).getBoolean());
-		}
+        for ( Statement aL5 : L5 )
+        {
+            Assert.assertEquals( false, aL5.getBoolean() );
+        }
 		Assert.assertEquals(2, L5.size());
 	}
 
@@ -153,10 +153,10 @@ public class TestSelectorUse extends AbstractModelTestBase
 		final StmtIterator it2 = model.listStatements(new SimpleSelector(
 				subject[0], null, (RDFNode) null));
 		final List<Statement> L2 = GraphTestBase.iteratorToList(it2);
-		for (int i = 0; i < L2.size(); i += 1)
-		{
-			Assert.assertEquals(subject[0], L2.get(i).getSubject());
-		}
+        for ( Statement aL2 : L2 )
+        {
+            Assert.assertEquals( subject[0], aL2.getSubject() );
+        }
 		Assert.assertEquals(num * 7, L2.size());
 	}
 

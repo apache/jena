@@ -62,7 +62,7 @@ public class StrConcat extends BaseBuiltin {
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         if (length < 1) 
             throw new BuiltinException(this, context, "Must have at least 1 argument to " + getName());
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         for (int i = 0; i < length-1; i++) {
             buff.append( lex(getArg(i, args, context), context) );
         }

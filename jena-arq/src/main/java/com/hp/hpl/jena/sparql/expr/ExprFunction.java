@@ -57,7 +57,7 @@ public abstract class ExprFunction extends ExprNode
     {
         if ( argList != null )
             return argList ; 
-        argList = new ArrayList<Expr>() ;
+        argList = new ArrayList<>() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
             argList.add(this.getArg(i)) ;
         return argList ;        

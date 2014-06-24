@@ -201,7 +201,7 @@ public class ModelTestBase extends GraphTestBase
 	 */
 	public static Resource[] resources( final Model m, final String items )
 	{
-		final ArrayList<Resource> rl = new ArrayList<Resource>();
+		final ArrayList<Resource> rl = new ArrayList<>();
 		final StringTokenizer st = new StringTokenizer(items);
 		while (st.hasMoreTokens())
 		{
@@ -217,7 +217,7 @@ public class ModelTestBase extends GraphTestBase
 	 */
 	public static Set<Resource> resourceSet( final String items )
 	{
-		final Set<Resource> result = new HashSet<Resource>();
+		final Set<Resource> result = new HashSet<>();
 		final StringTokenizer st = new StringTokenizer(items);
 		while (st.hasMoreTokens())
 		{
@@ -261,7 +261,7 @@ public class ModelTestBase extends GraphTestBase
 	 */
 	public static Statement[] statements( final Model m, final String facts )
 	{
-		final ArrayList<Statement> sl = new ArrayList<Statement>();
+		final ArrayList<Statement> sl = new ArrayList<>();
 		final StringTokenizer st = new StringTokenizer(facts, ";");
 		while (st.hasMoreTokens())
 		{

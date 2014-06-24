@@ -69,7 +69,7 @@ public class JSWriter {
 
     // Remember whether we are in the first element of a compound 
     // (object or array).
-    Deque<Ref<Boolean>> stack = new ArrayDeque<Ref<Boolean>>() ;
+    Deque<Ref<Boolean>> stack = new ArrayDeque<>() ;
 
     public void startObject() {
         startCompound() ;
@@ -277,7 +277,7 @@ public class JSWriter {
     }
 
     private void startCompound() {
-        stack.push(new Ref<Boolean>(true)) ;
+        stack.push(new Ref<>(true)) ;
     }
 
     private void finishCompound() {

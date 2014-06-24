@@ -245,7 +245,7 @@ public class QueryExecutionBase implements QueryExecution
         if ( query.getQueryPattern() == null )
             query.setQueryPattern(new ElementGroup()) ;
         
-        Set<RDFNode> set = new HashSet<RDFNode>() ;
+        Set<RDFNode> set = new HashSet<>() ;
 
         //May return null (no query pattern) 
         ResultSet qRes = execResultSet() ;
@@ -285,18 +285,20 @@ public class QueryExecutionBase implements QueryExecution
             dh.start(model, getContext()) ;
 
         // Do describe for each resource found.
-        for (Iterator<RDFNode> iter = set.iterator() ; iter.hasNext() ;)
+        for ( RDFNode n : set )
         {
-            RDFNode n = iter.next() ;
-
             if ( n instanceof Resource )
             {
-                for (DescribeHandler dh : dhList)
-                    dh.describe((Resource)n) ;
+                for ( DescribeHandler dh : dhList )
+                {
+                    dh.describe( (Resource) n );
+                }
             }
             else
-                // Can't describe literals
-                continue ;
+            // Can't describe literals
+            {
+                continue;
+            }
         }
 
         for (DescribeHandler dh : dhList)

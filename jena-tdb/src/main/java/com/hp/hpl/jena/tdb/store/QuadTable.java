@@ -86,7 +86,7 @@ public class QuadTable extends TableBase
     {
         Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(g, s, p, o) ;
         if ( iter == null )
-            return new NullIterator<Quad>() ;
+            return new NullIterator<>() ;
         Iterator<Quad> iter2 = TupleLib.convertToQuads(table.getNodeTable(), iter) ;
         return iter2 ;
     }

@@ -36,7 +36,7 @@ public class TestBlankNodeAllocator extends BaseTest
     
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<Object[]>() ;
+        List<Object[]> x = new ArrayList<>() ;
         Factory fSeededHashAlloc = new Factory() {
             @Override public BlankNodeAllocator create() { return new BlankNodeAllocatorHash() ; }
             @Override public String toString() { return "SeededHash" ; }

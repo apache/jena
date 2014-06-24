@@ -158,7 +158,7 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
 //        rdfnames.add("li");
 //    }
 
-    static final Set<String> knownRDFProperties = new HashSet<String>();
+    static final Set<String> knownRDFProperties = new HashSet<>();
 
     static final Set<String> knownRDFTypes = knownRDFProperties;
     static {

@@ -64,7 +64,7 @@ public class GraphUnionRead extends GraphBase
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
-        IteratorConcat<Triple> iter = new IteratorConcat<Triple>() ;
+        IteratorConcat<Triple> iter = new IteratorConcat<>() ;
         for ( Node gn : graphs )
         {
             if ( ! GraphOps.containsGraph(dataset, gn) )

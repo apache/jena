@@ -68,7 +68,7 @@ public class ExprTransformer
     class ApplyExprTransformVisitor implements ExprVisitor
     {
         private ExprTransform transform ;
-        private final Deque<Expr> stack = new ArrayDeque<Expr>() ;
+        private final Deque<Expr> stack = new ArrayDeque<>() ;
         
         final Expr result()
         { 
@@ -131,12 +131,12 @@ public class ExprTransformer
         private ExprList process(List<Expr> exprList)
         {
             int N = exprList.size() ;
-            List<Expr> x = new ArrayList<Expr>(N) ;
-            for ( int i = 0 ; i < N ; i++ )
+            List<Expr> x = new ArrayList<>(N) ;
+            for ( Expr anExprList : exprList )
             {
-                Expr e2 = pop(stack) ;
+                Expr e2 = pop( stack );
                 // Add in reverse.
-                x.add(0, e2) ;
+                x.add( 0, e2 );
             }
             return new ExprList(x) ;
         }

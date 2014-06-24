@@ -134,7 +134,7 @@ public class OntDocumentManager
     protected boolean m_processImports = true;
 
     /** List of URI's that will be ignored when doing imports processing */
-    protected Set<String> m_ignoreImports = new HashSet<String>();
+    protected Set<String> m_ignoreImports = new HashSet<>();
 
     /** Default prefix mapping to use to seed all models */
     protected PrefixMapping m_prefixMap = new PrefixMappingImpl();
@@ -700,7 +700,7 @@ public class OntDocumentManager
      */
     public void loadImports( OntModel model ) {
         if (m_processImports) {
-            List<String> readQueue = new ArrayList<String>();
+            List<String> readQueue = new ArrayList<>();
 
             // add the imported statements from the given model to the processing queue
             queueImports( model, readQueue, model.getProfile() );
@@ -718,7 +718,7 @@ public class OntDocumentManager
      */
     public void loadImport( OntModel model, String uri ) {
         if (m_processImports) {
-            List<String> readQueue = new ArrayList<String>();
+            List<String> readQueue = new ArrayList<>();
             readQueue.add( uri );
             loadImports( model, readQueue );
         }
@@ -733,7 +733,7 @@ public class OntDocumentManager
      */
     public void unloadImport( OntModel model, String uri ) {
         if (m_processImports) {
-            List<String> unloadQueue = new ArrayList<String>();
+            List<String> unloadQueue = new ArrayList<>();
             unloadQueue.add( uri );
             unloadImports( model, unloadQueue );
         }
@@ -791,7 +791,7 @@ public class OntDocumentManager
                 // look up the cached model - if we can't find it, we can't unload the import
                 Model importModel = getModel( importURI );
                 if (importModel != null) {
-                    List<String> imports = new ArrayList<String>();
+                    List<String> imports = new ArrayList<>();
 
                     // collect a list of the imports from the model that is scheduled for removal
                     for (StmtIterator i = importModel.listStatements( null, model.getProfile().IMPORTS(), (RDFNode) null ); i.hasNext(); ) {

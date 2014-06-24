@@ -91,7 +91,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
         if ( n2 == null )
             // Do all submodels.
             return data.listGraphNodes() ;
-        return new SingletonIterator<Node>(n2) ;
+        return new SingletonIterator<>(n2) ;
     }
     
 

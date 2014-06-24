@@ -60,7 +60,7 @@ public class TestErrorMessages extends TestCase
 
 
     private static String escapeAndShorten(String uri2) {
-        StringBuffer rslt = new StringBuffer();
+        StringBuilder rslt = new StringBuilder();
         int ln = uri2.length();
         if (ln > 80)
             ln = 80;
@@ -111,8 +111,10 @@ public class TestErrorMessages extends TestCase
         for (int i = 0; i < ViolationCodeInfo.all.length; i++) {
             addTestsFromExamples(spec,  ViolationCodeInfo.all[i]);
         }
-        for (int i = 0; i< specs.length; i++)
-        	addExamples(null,specs[i],spec);
+        for ( Specification spec1 : specs )
+        {
+            addExamples( null, spec1, spec );
+        }
     }
 
     private static void addTestsFromExamples(TestSuite rslt,  ViolationCodeInfo violationCodeInfo) {
@@ -128,11 +130,15 @@ public class TestErrorMessages extends TestCase
 
     private static void addExamples(ViolationCodeInfo violationCodeInfo, IRIExamples examples, TestSuite ex) {
         String e[] = examples.getBadExamples();
-        for (int j = 0; j < e.length; j++)
-            ex.addTest(new TestErrorMessages(e[j], violationCodeInfo,false));
+        for ( String anE1 : e )
+        {
+            ex.addTest( new TestErrorMessages( anE1, violationCodeInfo, false ) );
+        }
         e = examples.getGoodExamples();
-        for (int j = 0; j < e.length; j++)
-            ex.addTest(new TestErrorMessages(e[j], violationCodeInfo,true));
+        for ( String anE : e )
+        {
+            ex.addTest( new TestErrorMessages( anE, violationCodeInfo, true ) );
+        }
     }
 
 }

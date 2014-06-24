@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.*;
 public class GraphAddList implements GraphAdd
     {
     protected Triple match;
-    protected final ArrayList<Triple> triples = new ArrayList<Triple>();
+    protected final ArrayList<Triple> triples = new ArrayList<>();
     
     /**
          Initialise a GraphAddList with a triple [pattern] that specifies what triples

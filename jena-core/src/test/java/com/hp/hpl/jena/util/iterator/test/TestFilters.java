@@ -40,7 +40,7 @@ public class TestFilters extends ModelTestBase
     public void testFilterAnyAcceptsThings()
         {
         assertTrue( Filter.any().accept( "hello" ) );
-        assertTrue( Filter.any().accept( new Integer( 17 ) ) );
+        assertTrue( Filter.any().accept( 17 ) );
         assertTrue( Filter.any().accept( node( "frodo" ) ) );
         assertTrue( Filter.any().accept( node( "_cheshire" ) ) );
         assertTrue( Filter.any().accept( node( "17" ) ) );
@@ -105,14 +105,14 @@ public class TestFilters extends ModelTestBase
     public void testFilterDropIterator()
         {
         Iterator<String> i = iteratorOfStrings( "there's an a in some animals" );
-        Iterator<String> it = new FilterDropIterator<String>( containsA, i );
+        Iterator<String> it = new FilterDropIterator<>( containsA, i );
         assertEquals( listOfStrings( "there's in some" ), iteratorToList( it ) );
         }
     
     public void testFilterKeepIterator()
         {
         Iterator<String> i = iteratorOfStrings( "there's an a in some animals" );
-        Iterator<String> it = new FilterKeepIterator<String>( containsA, i );
+        Iterator<String> it = new FilterKeepIterator<>( containsA, i );
         assertEquals( listOfStrings( "an a animals" ), iteratorToList( it ) );
         }
     

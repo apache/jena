@@ -60,7 +60,7 @@ public abstract class Polyadic extends CompositionBase
     //////////////////////////////////
 
     /** A list of the sub-graphs that this composition contains */
-    protected List<Graph> m_subGraphs = new ArrayList<Graph>();
+    protected List<Graph> m_subGraphs = new ArrayList<>();
 
     /** The distinguished graph for adding to. If null, use the 0'th graph in the list. */
     protected Graph m_baseGraph = null;
@@ -86,8 +86,9 @@ public abstract class Polyadic extends CompositionBase
      * @param graphs An array of the sub-graphs of this composition
      */
     public Polyadic( Graph[] graphs) {
-        for (int i = 0;  i < graphs.length;  i++) {
-            m_subGraphs.add( graphs[i] );
+        for ( Graph graph : graphs )
+        {
+            m_subGraphs.add( graph );
         }
     }
 
@@ -128,8 +129,9 @@ public abstract class Polyadic extends CompositionBase
      */
     @Override
     public void close() {
-        for (Iterator<Graph> i = m_subGraphs.iterator();  i.hasNext();  ) {
-            i.next().close();
+        for ( Graph m_subGraph : m_subGraphs )
+        {
+            m_subGraph.close();
         }
         super.close();
     }
@@ -251,7 +253,7 @@ public abstract class Polyadic extends CompositionBase
      * @return A list of all of the sub-graphs, excluding the base graph.
      */
     public List<Graph> getSubGraphs() {
-        List<Graph> sg = new ArrayList<Graph>( m_subGraphs );
+        List<Graph> sg = new ArrayList<>( m_subGraphs );
 
         if (getBaseGraph() != null) {
             sg.remove( getBaseGraph() );

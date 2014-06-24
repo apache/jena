@@ -213,7 +213,7 @@ public class Util {
      * Construct a new integer valued node
      */
     public static Node makeIntNode(int value) {
-        return NodeFactory.createLiteral(LiteralLabelFactory.create(new Integer(value)));
+        return NodeFactory.createLiteral(LiteralLabelFactory.create( value ));
     }
 
     /**
@@ -221,9 +221,9 @@ public class Util {
      */
     public static Node makeLongNode(long value) {
         if (value > Integer.MAX_VALUE) {
-            return NodeFactory.createLiteral(LiteralLabelFactory.create(new Long(value)));
+            return NodeFactory.createLiteral(LiteralLabelFactory.create( value ));
         } else {
-            return NodeFactory.createLiteral(LiteralLabelFactory.create(new Integer((int)value)));
+            return NodeFactory.createLiteral(LiteralLabelFactory.create( (int) value ));
         }
     }
 
@@ -231,7 +231,7 @@ public class Util {
      * Construct a new double valued node
      */
     public static Node makeDoubleNode(double value) {
-        return NodeFactory.createLiteral(LiteralLabelFactory.create(new Double(value)));
+        return NodeFactory.createLiteral(LiteralLabelFactory.create( value ));
     }
 
     /**
@@ -293,7 +293,7 @@ public class Util {
     public static Boolean checkBinaryPredicate(Property predicate, Resource configuration) {
         StmtIterator i = configuration.listProperties(predicate);
         if (i.hasNext()) {
-            return new Boolean(i.nextStatement().getObject().toString().equalsIgnoreCase("true"));
+            return i.nextStatement().getObject().toString().equalsIgnoreCase( "true" );
         } else {
             return null;
         }
@@ -311,7 +311,7 @@ public class Util {
         if (i.hasNext()) {
             RDFNode lit = i.nextStatement().getObject();
             if (lit instanceof Literal) {
-                return new Integer(((Literal)lit).getInt());
+                return ( (Literal) lit ).getInt();
             }
         }
         return null;

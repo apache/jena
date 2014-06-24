@@ -35,7 +35,7 @@ public class TestGraphBaseToString extends GraphTestBase
     {
     private static final class LittleGraphBase extends GraphBase
         {
-        Set<Triple> triples = new HashSet<Triple>();
+        Set<Triple> triples = new HashSet<>();
         
         @Override public void performAdd( Triple t )
             { triples.add( t ); }

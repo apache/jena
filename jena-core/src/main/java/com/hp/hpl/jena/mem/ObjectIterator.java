@@ -43,7 +43,7 @@ public abstract class ObjectIterator extends NiceIterator<Node>
     
     final Set<Node> seen = CollectionFactory.createHashedSet();
     
-    final List<Node> pending = new ArrayList<Node>();
+    final List<Node> pending = new ArrayList<>();
     
     @Override public boolean hasNext()
         {

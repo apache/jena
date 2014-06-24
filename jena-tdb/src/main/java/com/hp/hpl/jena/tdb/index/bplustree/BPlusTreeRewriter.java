@@ -102,7 +102,7 @@ public class BPlusTreeRewriter
         {
             iter = genTreeLevel(iter, bpt2, leafLayer) ;
             // Advances iter.
-            IteratorWithBuffer<Pair<Integer, Record>> iter2 = new IteratorWithBuffer<Pair<Integer, Record>>(iter, 2) ;
+            IteratorWithBuffer<Pair<Integer, Record>> iter2 = new IteratorWithBuffer<>(iter, 2) ;
             boolean singleBlock = ( iter2.peek(1) == null ) ;
             // Having peeked ahead, use the real stream.
             iter = iter2 ;
@@ -150,7 +150,7 @@ public class BPlusTreeRewriter
                 mgr.put(rbp) ;
                 Record r = rbp.getRecordBuffer().getHigh() ;
                 r = bpt.getRecordFactory().createKeyOnly(r) ;
-                return new Pair<Integer, Record>(rbp.getId(), r) ;
+                return new Pair<>(rbp.getId(), r) ;
             }
         } ;
         // Write and convert to split pairs.
@@ -296,7 +296,7 @@ public class BPlusTreeRewriter
             if ( newSplitPoint != null )
             {
                 if ( debug ) System.out.println("Reset split point: "+pair1.cdr()+" => "+newSplitPoint) ;
-                pair1 = new Pair<Integer, Record>(pair1.car(), newSplitPoint) ;
+                pair1 = new Pair<>(pair1.car(), newSplitPoint) ;
                 if ( debug ) System.out.printf("   %s %s\n", pair1, pair2) ;
                 set(0, pair1) ;
             }

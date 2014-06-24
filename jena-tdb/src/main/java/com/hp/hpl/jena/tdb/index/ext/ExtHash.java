@@ -179,8 +179,9 @@ public final class ExtHash implements Index
         public final int hashCode(byte[] key)
         {
             long hash = FNV_BASIS;
-            for(int i = 0; i < key.length; i++) {
-                hash ^= 0xFF & key[i];
+            for ( byte aKey : key )
+            {
+                hash ^= 0xFF & aKey;
                 hash *= FNV_PRIME;
             }
             return (int) hash;
@@ -354,7 +355,7 @@ public final class ExtHash implements Index
     /** Explicitly count the items in the hash table */
     public long count()
     {
-        Set<Integer> seen = new HashSet<Integer>() ;
+        Set<Integer> seen = new HashSet<>() ;
         long count = 0 ;
         for ( int i = 0 ; i < dictionary.capacity() ; i++ )
         {
@@ -656,7 +657,7 @@ public final class ExtHash implements Index
         if ( len != d )
             error("Dictionary size = %d : expected = %d", d, len) ;
 
-        Set<Integer> seen = new HashSet<Integer>() ;
+        Set<Integer> seen = new HashSet<>() ;
         for ( int i = 0 ; i < d ; i++ )
         {
             int id = dictionary.get(i) ;

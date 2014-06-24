@@ -166,7 +166,7 @@ public class FileUtils
         if ( s.indexOf('%') < 0 ) 
             return s ;
         int len = s.length();
-        StringBuffer sbuff = new StringBuffer(len) ;
+        StringBuilder sbuff = new StringBuilder(len) ;
 
         for ( int i =0 ; i < len ; i++ )
         {

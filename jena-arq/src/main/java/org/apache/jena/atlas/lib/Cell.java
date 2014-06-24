@@ -40,7 +40,7 @@ public class Cell<K,V>
 
     public Cell<K,V> extend(K key, V value)
     {
-        return new Cell<K,V>(key, value, this) ;
+        return new Cell<>(key, value, this) ;
     }
     
     public final V find(K k)

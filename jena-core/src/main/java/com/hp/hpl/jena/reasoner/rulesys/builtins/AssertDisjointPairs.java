@@ -58,12 +58,13 @@ public class AssertDisjointPairs extends BaseBuiltin {
     public void headAction(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         List<Node> l = Util.convertList(args[0], context);
-        for (Iterator<Node> i = l.iterator(); i.hasNext(); ) {
-            Node x = i.next();
-            for (Iterator<Node> j = l.iterator(); j.hasNext(); ) {
-                Node y = j.next();
-                if (!x.sameValueAs(y)) {
-                    context.add( new Triple(x, OWL.differentFrom.asNode(), y) );
+        for ( Node x : l )
+        {
+            for ( Node y : l )
+            {
+                if ( !x.sameValueAs( y ) )
+                {
+                    context.add( new Triple( x, OWL.differentFrom.asNode(), y ) );
                 }
             }
         }

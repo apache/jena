@@ -79,7 +79,7 @@ public class FileManager
     static FileManager fmInstance = null ;
 
     static boolean logAllLookups = true ; 
-    protected List<Locator> fmHandlers = new ArrayList<Locator>() ;
+    protected List<Locator> fmHandlers = new ArrayList<>() ;
     protected LocationMapper fmMapper = null ;
     
     // This forces Jena to initialize and wire in RIOT if available.

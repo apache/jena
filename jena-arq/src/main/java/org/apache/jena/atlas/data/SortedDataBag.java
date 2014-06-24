@@ -171,7 +171,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
     {
         InputStream in = getInputStream(spillFile);
         Iterator<E> deserializer = serializationFactory.createDeserializer(in) ;
-        return new IteratorResourceClosing<E>(deserializer, in);
+        return new IteratorResourceClosing<>(deserializer, in);
     }
 
     /**
@@ -209,7 +209,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         
         if (spilled)
         {
-            List<Iterator<E>> inputs = new ArrayList<Iterator<E>>(size + (memSize > 0 ? 1 : 0));
+            List<Iterator<E>> inputs = new ArrayList<>(size + (memSize > 0 ? 1 : 0));
                         
             if (memSize > 0)
             {
@@ -236,7 +236,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
                 }
             }
             
-            SpillSortIterator<E> ssi = new SpillSortIterator<E>(inputs, comparator);
+            SpillSortIterator<E> ssi = new SpillSortIterator<>(inputs, comparator);
             registerCloseableIterator(ssi);
             
             return ssi;
@@ -280,7 +280,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
                     sink.close() ;
                 }
 
-                List<File> toRemove = new ArrayList<File>(MAX_SPILL_FILES) ;
+                List<File> toRemove = new ArrayList<>(MAX_SPILL_FILES) ;
                 for (int i = 0; i < MAX_SPILL_FILES; i++)
                 {
                     File file = getSpillFiles().get(i) ;
@@ -290,7 +290,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
 
                 getSpillFiles().removeAll(toRemove) ;
 
-                memory = new ArrayList<E>() ;
+                memory = new ArrayList<>() ;
             }
         }
         catch (IOException e)
@@ -325,7 +325,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         {
             this.inputs = inputs;
             this.comp = comp;
-            this.minHeap = new PriorityQueue<Item<T>>(inputs.size());
+            this.minHeap = new PriorityQueue<>(inputs.size());
             
             // Prime the heap
             for (int i=0; i<inputs.size(); i++)
@@ -340,7 +340,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
             if (it.hasNext())
             {
                 T tuple = it.next();
-                minHeap.add(new Item<T>(index, tuple, comp));
+                minHeap.add(new Item<>(index, tuple, comp));
             }
         }
 

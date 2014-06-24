@@ -93,7 +93,7 @@ public class ComponentPatternParser implements ViolationCodes {
         //return splitter.split(p); 
         
         Matcher m = keyword.matcher(p);
-        List<String> rslt = new ArrayList<String>();
+        List<String> rslt = new ArrayList<>();
         int pos = 0;
 //        rslt.add("");
         while (m.find()) {

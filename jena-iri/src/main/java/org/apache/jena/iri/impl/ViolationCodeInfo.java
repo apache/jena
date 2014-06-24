@@ -168,8 +168,9 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
         if (all[code]!=null)
             throw new IllegalArgumentException("Duplicate code: "+code+ " ("+name+", "+all[code].name+")");
         all[code] = this;
-        for (int i=0;i<specifications.length;i++) {
-            specifications[i].add(this);
+        for ( InSpec specification : specifications )
+        {
+            specification.add( this );
         }
     }
 
@@ -186,9 +187,13 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
     }
 
     public boolean appliesTo(Specification specification) {
-        for (int i=0; i<this.specifications.length; i++)
-            if (specifications[i].spec == specification)
+        for ( InSpec specification1 : this.specifications )
+        {
+            if ( specification1.spec == specification )
+            {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -208,31 +213,39 @@ public class ViolationCodeInfo extends IRIExamples implements  ViolationCodes {
 	public String specs(int slot, IRIFactoryImpl factory, String scheme) {
 		String result = "";
         boolean iriSpecApplies = false;
-		for (int i=0; i<specifications.length;i++) {
-			InSpec inSpec = specifications[i];
-			if (inSpec.isIRISpec() &&
-					inSpec.applies(factory)) 
-				iriSpecApplies = true;
-				
-			
-		}
-		for (int i=0; i<specifications.length;i++) {
-			InSpec inSpec = specifications[i];
-			if (inSpec.isSeeAlso())
-				continue;
-			if (inSpec.isIRISpec() && !iriSpecApplies)
-				continue;
-			if (!inSpec.applies(slot, scheme) )
-				continue;
-			Specification spec = inSpec.spec;
-			String uri = inSpec.uri;
-			if (uri == null)
-				uri = spec.getUri();
-			result = result + spec.name()
-			   + " <" + uri + "> " + inSpec.definition();
-			
-			
-		}
+        for ( InSpec inSpec : specifications )
+        {
+            if ( inSpec.isIRISpec() && inSpec.applies( factory ) )
+            {
+                iriSpecApplies = true;
+            }
+
+
+        }
+        for ( InSpec inSpec : specifications )
+        {
+            if ( inSpec.isSeeAlso() )
+            {
+                continue;
+            }
+            if ( inSpec.isIRISpec() && !iriSpecApplies )
+            {
+                continue;
+            }
+            if ( !inSpec.applies( slot, scheme ) )
+            {
+                continue;
+            }
+            Specification spec = inSpec.spec;
+            String uri = inSpec.uri;
+            if ( uri == null )
+            {
+                uri = spec.getUri();
+            }
+            result = result + spec.name() + " <" + uri + "> " + inSpec.definition();
+
+
+        }
 		return result;
 	}
 

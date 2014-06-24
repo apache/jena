@@ -30,7 +30,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
     // Often with both Iterator<? extends T> and Iterable<? extends T>
 
     public static <T> Iterator<T> singleton(T item) {
-        return new SingletonIterator<T>(item) ;
+        return new SingletonIterator<>(item) ;
     }
 
     @SuppressWarnings("rawtypes")
@@ -62,7 +62,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 
             @Override
             public void start() {
-                acc = new HashSet<T>() ;
+                acc = new HashSet<>() ;
             }
 
             @Override
@@ -91,7 +91,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 
             @Override
             public void start() {
-                acc = new ArrayList<T>() ;
+                acc = new ArrayList<>() ;
             }
 
             @Override
@@ -232,7 +232,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 
     private static class InvertedFilter<T> implements Filter<T> {
         public static <T> Filter<T> invert(Filter<T> filter) {
-            return new InvertedFilter<T>(filter) ;
+            return new InvertedFilter<>(filter) ;
         }
         private Filter<T> baseFilter ;
 
@@ -484,8 +484,8 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 
     /** Take the first N elements of an iterator - stop early if too few */
     public static <T> List<T> take(Iterator<T> iter, int N) {
-        iter = new IteratorN<T>(iter, N) ;
-        List<T> x = new ArrayList<T>(N) ;
+        iter = new IteratorN<>(iter, N) ;
+        List<T> x = new ArrayList<>(N) ;
         for (; iter.hasNext();)
             x.add(iter.next()) ;
         return x ;
@@ -694,21 +694,21 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
     public static <T> Iter<T> iter(Iterator<T> iterator) {
         if ( iterator instanceof Iter<? > )
             return (Iter<T>)iterator ;
-        return new Iter<T>(iterator) ;
+        return new Iter<>(iterator) ;
     }
 
     public static <T> Iter<T> iter(Iterable<T> iterable) {
         if ( iterable instanceof Iter<? > )
             return (Iter<T>)iterable ;
-        return new Iter<T>(iterable.iterator()) ;
+        return new Iter<>(iterable.iterator()) ;
     }
 
     public static <T> Iter<T> singletonIter(T item) {
-        return new Iter<T>(new SingletonIterator<T>(item)) ;
+        return new Iter<>(new SingletonIterator<>(item)) ;
     }
 
     public static <T> Iter<T> nullIter() {
-        return new Iter<T>(new NullIterator<T>()) ;
+        return new Iter<>(new NullIterator<T>()) ;
     }
 
     /**
@@ -864,7 +864,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
     }
 
     public Iter<T> append(Iterator<T> iter) {
-        return new Iter<T>(IteratorCons.create(iterator, iter)) ;
+        return new Iter<>(IteratorCons.create(iterator, iter)) ;
     }
 
     /** Return an Iter that yields at most the first N items */
@@ -874,7 +874,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
 
     /** Count the iterator (this is destructive on the iterator) */
     public long count() {
-        ActionCount<T> action = new ActionCount<T>() ;
+        ActionCount<T> action = new ActionCount<>() ;
         apply(action) ;
         return action.getCount() ;
     }
@@ -888,11 +888,11 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
     }
 
     public Iter<T> distinct() {
-        return new Iter<T>(distinct(iterator())) ;
+        return new Iter<>(distinct(iterator())) ;
     }
 
     public Iter<T> distinctAdjacent() {
-        return new Iter<T>(distinctAdjacent(iterator())) ;
+        return new Iter<>(distinctAdjacent(iterator())) ;
     }
 
     // ---- Iterable

@@ -382,7 +382,7 @@ public class TestOntReasoning
 
         OntModel m = ModelFactory.createOntologyModel(spec, aBox);
 
-        List<Individual> inds = new ArrayList<Individual>();
+        List<Individual> inds = new ArrayList<>();
         for (Iterator<Individual> i = m.listIndividuals(); i.hasNext();) {
             inds.add(i.next());
         }
@@ -482,9 +482,10 @@ public class TestOntReasoning
     /** Test that an iterator delivers the expected values */
     protected void iteratorTest( Iterator<?> i, Object[] expected ) {
         Logger logger = LoggerFactory.getLogger( getClass() );
-        List<Object> expList = new ArrayList<Object>();
-        for (int j = 0; j < expected.length; j++) {
-            expList.add( expected[j] );
+        List<Object> expList = new ArrayList<>();
+        for ( Object anExpected : expected )
+        {
+            expList.add( anExpected );
         }
 
         while (i.hasNext()) {
@@ -501,8 +502,9 @@ public class TestOntReasoning
 
         if (!(expList.size() == 0)) {
             logger.debug( getName() + " Expected iterator results not found" );
-            for (Iterator<?> j = expList.iterator(); j.hasNext(); ) {
-                logger.debug( getName() + " - missing: " + j.next() );
+            for ( Object anExpList : expList )
+            {
+                logger.debug( getName() + " - missing: " + anExpList );
             }
         }
         assertEquals( "There were expected elements from the iterator that were not found", 0, expList.size() );

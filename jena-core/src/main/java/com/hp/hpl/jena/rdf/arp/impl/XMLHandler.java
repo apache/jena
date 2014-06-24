@@ -23,31 +23,22 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
-import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.net.MalformedURLException ;
+import java.util.HashMap ;
+import java.util.Map ;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
+import org.xml.sax.Attributes ;
+import org.xml.sax.Locator ;
+import org.xml.sax.SAXException ;
+import org.xml.sax.SAXParseException ;
 
-import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIFactory;
-import com.hp.hpl.jena.rdf.arp.ALiteral;
-import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.ARPHandlers;
-import com.hp.hpl.jena.rdf.arp.ARPOptions;
-import com.hp.hpl.jena.rdf.arp.AResource;
-import com.hp.hpl.jena.rdf.arp.ExtendedHandler;
-import com.hp.hpl.jena.rdf.arp.FatalParsingErrorException;
-import com.hp.hpl.jena.rdf.arp.ParseException;
-import com.hp.hpl.jena.rdf.arp.StatementHandler;
-import com.hp.hpl.jena.rdf.arp.states.Frame;
-import com.hp.hpl.jena.rdf.arp.states.FrameI;
-import com.hp.hpl.jena.rdf.arp.states.LookingForRDF;
-import com.hp.hpl.jena.rdf.arp.states.StartStateRDForDescription;
+import com.hp.hpl.jena.rdf.arp.* ;
+import com.hp.hpl.jena.rdf.arp.states.Frame ;
+import com.hp.hpl.jena.rdf.arp.states.FrameI ;
+import com.hp.hpl.jena.rdf.arp.states.LookingForRDF ;
+import com.hp.hpl.jena.rdf.arp.states.StartStateRDForDescription ;
 
 /**
  * This class converts SAX events into a stream of encapsulated events suitable
@@ -59,7 +50,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     boolean encodingProblems = false;
 
-    protected Map<IRI, Map<String,ARPLocation>> idsUsed = new HashMap<IRI, Map<String,ARPLocation>>();
+    protected Map<IRI, Map<String,ARPLocation>> idsUsed = new HashMap<>();
     protected int idsUsedCount = 0;
 
     public XMLHandler() {}
@@ -380,7 +371,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     private Map<String, Object> nodeIdUserData;
 
     public void initParse(String base, String lang) throws SAXParseException {
-        nodeIdUserData = new HashMap<String, Object>();
+        nodeIdUserData = new HashMap<>();
         idsUsed = 
         	ignoring(WARN_REDEFINITION_OF_ID)?
         			null:
@@ -411,11 +402,10 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     void endBnodeScope() {
         if (handlers.getExtendedHandler() != nullScopeHandler) {
-            Iterator<String> it = nodeIdUserData.keySet().iterator();
-            while (it.hasNext()) {
-                String nodeId = it.next();
-                ARPResource bn = new ARPResource(this, nodeId);
-                handlers.getExtendedHandler().endBNodeScope(bn);
+            for ( String nodeId : nodeIdUserData.keySet() )
+            {
+                ARPResource bn = new ARPResource( this, nodeId );
+                handlers.getExtendedHandler().endBNodeScope( bn );
             }
         }
     }

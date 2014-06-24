@@ -161,7 +161,7 @@ public class Util extends Object {
         else
             {
             int start = 0;
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             do
                 {
                 result.append( s.substring( start, m.start() ) );

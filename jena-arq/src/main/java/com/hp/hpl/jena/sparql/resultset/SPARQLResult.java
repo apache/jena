@@ -86,7 +86,7 @@ public class SPARQLResult
             throw new ResultSetException("Not set") ;
         if ( ! isBoolean() )
             throw new ResultSetException("Not a boolean result") ;
-        return booleanResult.booleanValue() ;
+        return booleanResult;
     }
 
     public Model getModel() { 

@@ -358,16 +358,18 @@ public class TransformFilterPlacement extends TransformCopy {
         List<Op> ops = opSequence.getElements() ;
 
         Op op = null ;
-        for (int i = 0 ; i < ops.size() ; i++ ) {
-            op = insertAnyFilter$(exprs, varScope, op) ;
-            Op seqElt = ops.get(i) ;
-            Placement p = transform(exprs, seqElt) ;
-            if ( p != null ) {
-                exprs = p.unplaced ;
-                seqElt = p.op ;
+        for ( Op op1 : ops )
+        {
+            op = insertAnyFilter$( exprs, varScope, op );
+            Op seqElt = op1;
+            Placement p = transform( exprs, seqElt );
+            if ( p != null )
+            {
+                exprs = p.unplaced;
+                seqElt = p.op;
             }
-            varScope.addAll(fixedVars(seqElt)) ;
-            op = OpSequence.create(op, seqElt) ;
+            varScope.addAll( fixedVars( seqElt ) );
+            op = OpSequence.create( op, seqElt );
         }
         return result(op, exprs) ;
     }
@@ -648,11 +650,13 @@ public class TransformFilterPlacement extends TransformCopy {
         if ( exprs == null || exprs.isEmpty() )
             return op ;
 
-        for (Iterator<Expr> iter = exprs.iterator(); iter.hasNext();) {
-            Expr expr = iter.next() ;
+        for ( Expr expr : exprs )
+        {
             if ( op == null )
-                op = OpTable.unit() ;
-            op = OpFilter.filter(expr, op) ;
+            {
+                op = OpTable.unit();
+            }
+            op = OpFilter.filter( expr, op );
         }
         return op ;
     }

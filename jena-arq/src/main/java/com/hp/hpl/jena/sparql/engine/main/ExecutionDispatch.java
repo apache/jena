@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 
 class ExecutionDispatch implements OpVisitor
 {
-    private Deque<QueryIterator> stack = new ArrayDeque<QueryIterator>() ;
+    private Deque<QueryIterator> stack = new ArrayDeque<>() ;
     private OpExecutor opExecutor ;
     
     ExecutionDispatch(OpExecutor exec)

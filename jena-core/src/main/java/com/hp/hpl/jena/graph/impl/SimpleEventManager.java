@@ -47,7 +47,7 @@ public class SimpleEventManager implements GraphEventManager
     public SimpleEventManager( Graph graph ) 
         { 
         this.graph = graph;
-        this.listeners = new CopyOnWriteArrayList<GraphListener>(); 
+        this.listeners = new CopyOnWriteArrayList<>();
 /* Implementation note: Jeremy Carroll
  * 
  * Use of CopyOnWriteArray is unnecessarily inefficient, in that

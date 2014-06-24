@@ -38,17 +38,17 @@ public class TestCollectionFactory extends ModelTestBase
 
     public void testHashMapExists()
         {
-        assertInstanceOf( Map.class, CollectionFactory.<Object, Object>createHashedMap() );
+        assertInstanceOf( Map.class, CollectionFactory.createHashedMap() );
         }
     
     public void testHashMapSized()
         {
-        assertInstanceOf( Map.class, CollectionFactory.<Object, Object>createHashedMap( 42 ) );
+        assertInstanceOf( Map.class, CollectionFactory.createHashedMap( 42 ) );
         }
     
     public void testHashMapCopy()
         {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put( "here", "Bristol" );
         map.put( "there", "Oxford" );
         Map<String, String> copy = CollectionFactory.createHashedMap( map );
@@ -62,7 +62,7 @@ public class TestCollectionFactory extends ModelTestBase
     
     public void testHashSetCopy()
         {
-        Set<String> s = new HashSet<String>();
+        Set<String> s = new HashSet<>();
         s.add( "jelly" );
         s.add( "concrete" );
         Set<String> copy = CollectionFactory.createHashedSet( s );

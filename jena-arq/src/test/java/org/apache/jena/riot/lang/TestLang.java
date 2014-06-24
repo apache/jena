@@ -110,7 +110,7 @@ public class TestLang extends BaseTest
     @Test
     public void testFileExtensionUnique()
     {
-        Map<String, Lang> exts = new HashMap<String, Lang>();
+        Map<String, Lang> exts = new HashMap<>();
         
         for (Lang lang1 : RDFLanguages.getRegisteredLanguages() )
         {

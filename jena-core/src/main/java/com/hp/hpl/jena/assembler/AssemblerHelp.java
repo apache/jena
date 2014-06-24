@@ -128,7 +128,7 @@ public class AssemblerHelp
         try 
             { 
             Method m = loaded.getDeclaredMethod( "whenRequiredByAssembler", new Class[] {AssemblerGroup.class} );
-            m.invoke( null, new Object[] {ag} );
+            m.invoke( null, ag );
             }
         catch (NoSuchMethodException e)
             { /* that's OK */ }
@@ -152,7 +152,7 @@ public class AssemblerHelp
             if (con == null)
                 establish( group, type, c.newInstance() );
             else
-                establish( group, type, con.newInstance( new Object[] { s.getSubject() } ) );
+                establish( group, type, con.newInstance( s.getSubject() ) );
             }
         catch (Exception e)
             { throw new JenaException( e ); }
@@ -194,7 +194,7 @@ public class AssemblerHelp
             return types.iterator().next();
         if (types.size() == 0)
             return baseType;
-        throw new AmbiguousSpecificTypeException( root, new ArrayList<Resource>( types ) );
+        throw new AmbiguousSpecificTypeException( root, new ArrayList<>( types ) );
         }
 
     /**
@@ -205,7 +205,7 @@ public class AssemblerHelp
     public static Set<Resource> findSpecificTypes( Resource root, Resource baseType )
         {
         List<RDFNode> types = root.listProperties( RDF.type ).mapWith( Statement.Util.getObject ).toList();
-        Set<Resource> results = new HashSet<Resource>();
+        Set<Resource> results = new HashSet<>();
         for (int i = 0; i < types.size(); i += 1)
             {
             Resource candidate = (Resource) types.get( i );
@@ -218,10 +218,13 @@ public class AssemblerHelp
 
     private static boolean hasNoCompetingSubclass( List<RDFNode> types, Resource candidate )
         {
-        for (int j = 0; j < types.size(); j += 1)
+            for ( RDFNode type : types )
             {
-            Resource other = (Resource) types.get( j );
-            if (other.hasProperty( RDFS.subClassOf, candidate ) && !candidate.equals( other )) return false;
+                Resource other = (Resource) type;
+                if ( other.hasProperty( RDFS.subClassOf, candidate ) && !candidate.equals( other ) )
+                {
+                    return false;
+                }
             }
         return true;
         }

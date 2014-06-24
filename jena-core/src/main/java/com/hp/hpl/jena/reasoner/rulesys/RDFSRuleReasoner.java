@@ -53,7 +53,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     protected static final String SIMPLE_RULE_FILE = "etc/rdfs-fb-tgc-simple.rules";
     
     /** The cached rule sets, indexed by processing level */
-    protected static Map<String, List<Rule>> ruleSets = new HashMap<String, List<Rule>>();
+    protected static Map<String, List<Rule>> ruleSets = new HashMap<>();
     
     /** The rule file names, indexed by processing level */
     protected static Map<String, String> ruleFiles;
@@ -62,7 +62,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
     protected static RulePreprocessHook cmpProcessor = new RDFSCMPPreprocessHook();
     
     static {
-        ruleFiles = new HashMap<String, String>();
+        ruleFiles = new HashMap<>();
         ruleFiles.put(DEFAULT_RULES, RULE_FILE);
         ruleFiles.put(FULL_RULES, FULL_RULE_FILE);
         ruleFiles.put(SIMPLE_RULES, SIMPLE_RULE_FILE);

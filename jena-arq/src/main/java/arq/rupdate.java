@@ -18,7 +18,6 @@
 
 package arq;
 
-import java.util.Iterator ;
 import java.util.List ;
 
 import arq.cmd.CmdException ;
@@ -74,20 +73,17 @@ public class rupdate extends CmdARQ
         }
         String endpoint = modRemote.getServiceURL() ;
 
-        
-        for ( Iterator<String> iter = requestFiles.iterator() ; iter.hasNext() ; )
+        for ( String filename : requestFiles )
         {
-            String filename = iter.next();
-            UpdateRequest req = UpdateFactory.read(filename) ;
-            exec(endpoint, req) ;
+            UpdateRequest req = UpdateFactory.read( filename );
+            exec( endpoint, req );
         }
-        
-        for ( Iterator<String> iter = super.getPositional().iterator() ; iter.hasNext() ; )
+
+        for ( String requestString : super.getPositional() )
         {
-            String requestString = iter.next();
-            requestString = indirect(requestString) ;
-            UpdateRequest req = UpdateFactory.create(requestString) ;
-            exec(endpoint, req) ;
+            requestString = indirect( requestString );
+            UpdateRequest req = UpdateFactory.create( requestString );
+            exec( endpoint, req );
         }
     }
 

@@ -102,7 +102,7 @@ public class HttpResponseLib
     } ;
     
     public static ResultsFormat contentTypeToResultSet(String contentType) { return mapContentTypeToResultSet.get(contentType) ; }
-    private static final Map<String, ResultsFormat> mapContentTypeToResultSet = new HashMap<String, ResultsFormat>() ;
+    private static final Map<String, ResultsFormat> mapContentTypeToResultSet = new HashMap<>() ;
     static
     {
         mapContentTypeToResultSet.put(WebContent.contentTypeResultsXML, ResultsFormat.FMT_RS_XML) ;

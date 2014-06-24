@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 public class BindingHashMap extends BindingBase implements BindingMap
 {
     // Bindings are often small.  Is this overkill? 
-    Map<Var, Node> map = new HashMap<Var, Node>() ;
+    Map<Var, Node> map = new HashMap<>() ;
     
     /** Using BindingFactory.create is better */
     public BindingHashMap(Binding parent) { super(parent) ; }

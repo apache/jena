@@ -64,8 +64,8 @@ public class QueryEngineHTTP implements QueryExecution {
     private Params params = null;
 
     // Protocol
-    private List<String> defaultGraphURIs = new ArrayList<String>();
-    private List<String> namedGraphURIs = new ArrayList<String>();
+    private List<String> defaultGraphURIs = new ArrayList<>();
+    private List<String> namedGraphURIs = new ArrayList<>();
     private HttpAuthenticator authenticator;
 
     private boolean finished = false;
@@ -276,7 +276,7 @@ public class QueryEngineHTTP implements QueryExecution {
      */
     public void addDefaultGraph(String defaultGraph) {
         if (defaultGraphURIs == null)
-            defaultGraphURIs = new ArrayList<String>();
+            defaultGraphURIs = new ArrayList<>();
         defaultGraphURIs.add(defaultGraph);
     }
 
@@ -286,7 +286,7 @@ public class QueryEngineHTTP implements QueryExecution {
      */
     public void addNamedGraph(String name) {
         if (namedGraphURIs == null)
-            namedGraphURIs = new ArrayList<String>();
+            namedGraphURIs = new ArrayList<>();
         namedGraphURIs.add(name);
     }
 
@@ -577,13 +577,13 @@ public class QueryEngineHTTP implements QueryExecution {
         httpQuery.merge(getServiceParams(service, context));
         httpQuery.addParam(HttpParams.pQuery, queryString);
 
-        for (Iterator<String> iter = defaultGraphURIs.iterator(); iter.hasNext();) {
-            String dft = iter.next();
-            httpQuery.addParam(HttpParams.pDefaultGraph, dft);
+        for ( String dft : defaultGraphURIs )
+        {
+            httpQuery.addParam( HttpParams.pDefaultGraph, dft );
         }
-        for (Iterator<String> iter = namedGraphURIs.iterator(); iter.hasNext();) {
-            String name = iter.next();
-            httpQuery.addParam(HttpParams.pNamedGraph, name);
+        for ( String name : namedGraphURIs )
+        {
+            httpQuery.addParam( HttpParams.pNamedGraph, name );
         }
 
         if (params != null)

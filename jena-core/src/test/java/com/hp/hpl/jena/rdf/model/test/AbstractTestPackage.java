@@ -164,7 +164,7 @@ public abstract class AbstractTestPackage extends TestSuite
 	{
 		final Object[] args = new Object[constructorArgs.length + 1];
 		System.arraycopy(constructorArgs, 0, args, 0, constructorArgs.length);
-		final List<Class<?>> parameterTypes = new ArrayList<Class<?>>();
+		final List<Class<?>> parameterTypes = new ArrayList<>();
 		for (final Object o : constructorArgs)
 		{
 			if (o instanceof TestingModelFactory)
@@ -185,18 +185,13 @@ public abstract class AbstractTestPackage extends TestSuite
 					.toArray(new Class[parameterTypes.size()]));
 		    c = cc ;
 		}
-		catch (final SecurityException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage(), e);
-		}
-		catch (final NoSuchMethodException e)
+		catch (final SecurityException | NoSuchMethodException e)
 		{
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage(), e);
 		}
 
-		for (final Method m : testClass.getMethods())
+        for (final Method m : testClass.getMethods())
 		{
 			if (m.getParameterTypes().length == 0)
 			{
@@ -207,27 +202,12 @@ public abstract class AbstractTestPackage extends TestSuite
 					{
 						addTest(c.newInstance(args));
 					}
-					catch (final IllegalArgumentException e)
+					catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException | InstantiationException e)
 					{
 						e.printStackTrace();
 						throw new RuntimeException(e.getMessage(), e);
 					}
-					catch (final InstantiationException e)
-					{
-						e.printStackTrace();
-						throw new RuntimeException(e.getMessage(), e);
-					}
-					catch (final IllegalAccessException e)
-					{
-						e.printStackTrace();
-						throw new RuntimeException(e.getMessage(), e);
-					}
-					catch (final InvocationTargetException e)
-					{
-						e.printStackTrace();
-						throw new RuntimeException(e.getMessage(), e);
-					}
-				}
+                }
 			}
 		}
 	}

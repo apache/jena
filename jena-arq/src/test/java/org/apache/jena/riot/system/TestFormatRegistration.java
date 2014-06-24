@@ -36,7 +36,7 @@ public class TestFormatRegistration extends BaseTest
 {
     @Parameters(name = "{0} -- {1} {2} {3}")
     public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<Object[]>() ;
+        List<Object[]> x = new ArrayList<>() ;
         add("NULL",     x, RDFFormat.RDFNULL,           false, false)  ;
         add("RDFXML",   x, RDFFormat.RDFXML,            true, false) ;
         add("RDFXML",   x, RDFFormat.RDFXML_ABBREV,     true, false) ;

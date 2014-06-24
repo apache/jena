@@ -68,7 +68,7 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
 		int len = matchIndexList.size();
 		matchIndices = new byte[len];
 		for (int i = 0; i < len; i++) {
-			matchIndices[i] = matchIndexList.get(i).byteValue();
+			matchIndices[i] = matchIndexList.get( i );
 		}
 		this.queue = new BindingVectorMultiSet(matchIndices);
 	}

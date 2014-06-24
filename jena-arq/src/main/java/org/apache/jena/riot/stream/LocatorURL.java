@@ -51,11 +51,13 @@ public abstract class LocatorURL implements Locator
         String uriSchemeName = FileUtils.getScheme(filenameOrURI) ;
         if ( uriSchemeName == null )
             return false ;
-        uriSchemeName = uriSchemeName.toLowerCase(Locale.ROOT) ; 
-        for ( int i = 0 ; i < schemeNames.length ; i++ )
+        uriSchemeName = uriSchemeName.toLowerCase(Locale.ROOT) ;
+        for ( String schemeName : schemeNames )
         {
-            if ( uriSchemeName.equals(schemeNames[i]) )
-                return true ;
+            if ( uriSchemeName.equals( schemeName ) )
+            {
+                return true;
+            }
         }
         return false ;
     }

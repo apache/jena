@@ -19,12 +19,11 @@
 package arq.cmdline;
 
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
 public abstract class CmdArgModule extends CmdMain
 {
-    List<ArgModuleGeneral> modules = new ArrayList<ArgModuleGeneral>() ;
+    List<ArgModuleGeneral> modules = new ArrayList<>() ;
     
     protected CmdArgModule(String[] argv)
     {
@@ -56,10 +55,9 @@ public abstract class CmdArgModule extends CmdMain
     
     private void forEach(Action action)
     {
-        for ( Iterator<ArgModuleGeneral> iter = modules.iterator() ; iter.hasNext(); )
+        for ( ArgModuleGeneral am : modules )
         {
-            ArgModuleGeneral am = iter.next() ;
-            action.action(this, am) ;
+            action.action( this, am );
         }
     }
                     
