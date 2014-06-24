@@ -164,6 +164,7 @@ public class GraphEventManagerTest
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void notifyAddTest()
 	{
 		final Set<Action> ADD = SecurityEvaluator.Util.asSet(new Action[] {
@@ -230,7 +231,8 @@ public class GraphEventManagerTest
 		listener.reset();
 	}
 
-	@Test
+	@SuppressWarnings("deprecation")
+    @Test
 	public void notifyDeleteTest()
 	{
 		final Set<Action> DELETE = SecurityEvaluator.Util.asSet(new Action[] {

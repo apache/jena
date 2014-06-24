@@ -17,32 +17,23 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.LiteralRequiredException;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.RDFVisitor;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.security.AccessDeniedException ;
+import org.apache.jena.security.SecurityEvaluator.Action ;
+import org.apache.jena.security.impl.ItemHolder ;
+import org.apache.jena.security.impl.SecuredItemImpl ;
+import org.apache.jena.security.impl.SecuredItemInvoker ;
+import org.apache.jena.security.model.SecuredModel ;
+import org.apache.jena.security.model.SecuredResource ;
+import org.apache.jena.security.model.SecuredStatement ;
+import org.apache.jena.security.utils.PermStatementFilter ;
 
-import org.apache.jena.security.AccessDeniedException;
-import org.apache.jena.security.SecurityEvaluator.Action;
-import org.apache.jena.security.impl.ItemHolder;
-import org.apache.jena.security.impl.SecuredItemImpl;
-import org.apache.jena.security.impl.SecuredItemInvoker;
-import org.apache.jena.security.model.SecuredModel;
-import org.apache.jena.security.model.SecuredResource;
-import org.apache.jena.security.model.SecuredStatement;
-import org.apache.jena.security.utils.PermStatementFilter;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.PropertyNotFoundException ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
  * Implementation of SecuredResource to be used by a SecuredItemInvoker proxy.
@@ -328,7 +319,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements
 	{
 		checkUpdate();
 		checkCreate(new Triple(holder.getBaseItem().asNode(), p.asNode(),
-				Node.createLiteral(o, l, false)));
+		                       NodeFactory.createLiteral(o, l, false)));
 		holder.getBaseItem().addProperty(p, o, l);
 		return holder.getSecuredItem();
 	}

@@ -54,7 +54,6 @@ public class PermTripleFilter extends Filter<Triple>
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(new Action[] { action });
 		this.evaluator = securedItem.getSecurityEvaluator();
-		;
 	}
 
 	/**
@@ -127,7 +126,6 @@ public class PermTripleFilter extends Filter<Triple>
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = securedItem.getSecurityEvaluator();
-		;
 	}
 
 	/**

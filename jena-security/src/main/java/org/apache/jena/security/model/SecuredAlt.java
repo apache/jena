@@ -28,6 +28,7 @@ import org.apache.jena.security.AccessDeniedException;
  * 
  * Use the SecuredAlt.Factory to create instances
  */
+@SuppressWarnings("deprecation")
 public interface SecuredAlt extends Alt, SecuredContainer
 {
 	/**

@@ -17,39 +17,27 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelChangedListener;
-import com.hp.hpl.jena.rdf.model.NsIterator;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.ReifiedStatement;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceF;
-import com.hp.hpl.jena.rdf.model.Selector;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
+import java.io.InputStream ;
+import java.io.OutputStream ;
+import java.io.Reader ;
+import java.io.Writer ;
+import java.util.Calendar ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
+import org.apache.jena.security.AccessDeniedException ;
+import org.apache.jena.security.graph.SecuredGraph ;
+import org.apache.jena.security.graph.SecuredPrefixMapping ;
+import org.apache.jena.security.model.impl.SecuredNodeIterator ;
+import org.apache.jena.security.model.impl.SecuredRSIterator ;
+import org.apache.jena.security.model.impl.SecuredResIterator ;
+import org.apache.jena.security.model.impl.SecuredStatementIterator ;
 
-import org.apache.jena.security.AccessDeniedException;
-import org.apache.jena.security.graph.SecuredGraph;
-import org.apache.jena.security.graph.SecuredPrefixMapping;
-import org.apache.jena.security.model.impl.SecuredNodeIterator;
-import org.apache.jena.security.model.impl.SecuredRSIterator;
-import org.apache.jena.security.model.impl.SecuredResIterator;
-import org.apache.jena.security.model.impl.SecuredStatementIterator;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.PropertyNotFoundException ;
 
 /**
  * The interface for secured Model instances.
@@ -78,16 +66,6 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 */
 	@Override
 	public SecuredModel add( final Model m ) throws AccessDeniedException;
-
-	/**
-	 * @sec.graph Update
-	 * @sec.triple Create for each statement in the securedModel as a triple.
-	 * @sec.triple Create for each reified statement if not supressReifications.
-	 * @throws AccessDeniedException
-	 */
-	@Override
-	public SecuredModel add( final Model m, final boolean suppressReifications )
-			throws AccessDeniedException;
 
 	/**
 	 * @sec.graph Update
@@ -802,7 +780,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 *            reification did not exist
 	 * @sec.triple Create SecTriple( result, RDF.object, s.getObject() ) if
 	 *            reification did not exist
-	 * @throws AccessDeniedException.
+	 * @throws AccessDeniedException
 	 */
 	@Override
 	public SecuredResource getAnyReifiedStatement( final Statement s )
@@ -1018,7 +996,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws AccessDeniedException
 	 */
 	@Override
-	public SecuredNodeIterator listObjects() throws AccessDeniedException;
+	public SecuredNodeIterator<RDFNode> listObjects() throws AccessDeniedException;
 
 	/**
 	 * 
@@ -1027,7 +1005,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws AccessDeniedException
 	 */
 	@Override
-	public SecuredNodeIterator listObjectsOfProperty( final Property p )
+	public SecuredNodeIterator<RDFNode> listObjectsOfProperty( final Property p )
 			throws AccessDeniedException;
 
 	/**
@@ -1037,7 +1015,7 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	 * @throws AccessDeniedException
 	 */
 	@Override
-	public SecuredNodeIterator listObjectsOfProperty( final Resource s,
+	public SecuredNodeIterator<RDFNode> listObjectsOfProperty( final Resource s,
 			final Property p ) throws AccessDeniedException;
 
 	/**
@@ -1391,24 +1369,11 @@ public interface SecuredModel extends Model, SecuredPrefixMapping
 	/**
 	 * 
 	 * @sec.graph Update
-	 * @sec.triple Delete on every statement in baseModel.
-	 * @sec.triple Delete on every statement in reified statements if
-	 *            suppressReifications is false.
-	 * @throws AccessDeniedException
-	 */
-	@Override
-	public SecuredModel remove( final Model m,
-			final boolean suppressReifications ) throws AccessDeniedException;
-
-	/**
-	 * 
-	 * @sec.graph Update
 	 * @sec.triple Delete on SecTriple( s, p, o )
 	 * @throws AccessDeniedException
 	 */
 	@Override
-	public SecuredModel remove( final Resource s, final Property p,
-			final RDFNode o ) throws AccessDeniedException;
+	public SecuredModel remove( final Resource s, final Property p, final RDFNode o ) throws AccessDeniedException;
 
 	/**
 	 * 

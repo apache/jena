@@ -36,7 +36,7 @@ import org.apache.jena.security.model.SecuredRDFNode;
  */
 public class SecuredNodeIterator<T extends RDFNode> implements NodeIterator
 {
-	private class PermNodeMap<T extends RDFNode> implements Map1<T, RDFNode>
+	private class PermNodeMap<N extends RDFNode> implements Map1<N, RDFNode>
 	{
 		private final SecuredModel securedModel;
 

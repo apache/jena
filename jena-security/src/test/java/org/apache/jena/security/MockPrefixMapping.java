@@ -101,5 +101,5 @@ public class MockPrefixMapping implements PrefixMapping
 	public PrefixMapping withDefaultMappings( final PrefixMapping map )
 	{
 		throw new UnsupportedOperationException();
-	};
+	}
 }
