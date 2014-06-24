@@ -35,14 +35,6 @@ public abstract class BaseGraphMaker implements GraphMaker
     private int counter = 0;
     
     /**
-        Answer our reification style.
-    */
-    @Override
-    @Deprecated
-    public ReificationStyle getReificationStyle()
-        { return ReificationStyle.Standard ; }
-        
-    /**
         Answer the default graph for this maker. If we haven't already made it, make it
         now.
      */

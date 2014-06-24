@@ -74,7 +74,6 @@ public class FileGraph extends GraphMem
      	@param f the File naming the associated file-system file
      	@param create true to create a new one, false to read an existing one
         @param strict true to throw exceptions for create: existing, open: not found
-        @param style the reification style for the graph
     */
     public FileGraph( NotifyOnClose notify, File f, boolean create, boolean strict )
         { this( notify, f, FileUtils.guessLang( f.toString() ), create, strict ); }
@@ -89,7 +88,6 @@ public class FileGraph extends GraphMem
         @param lang the language string for the file
         @param create true to create a new one, false to read an existing one
         @param strict true to throw exceptions for create: existing, open: not found
-        @param style the reification style for the graph
     */
     public FileGraph( NotifyOnClose notify, File f, String lang, boolean create, boolean strict )
         {

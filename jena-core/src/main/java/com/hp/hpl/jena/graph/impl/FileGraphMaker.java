@@ -50,25 +50,12 @@ public class FileGraphMaker
      */
     public FileGraphMaker( String root )
     { this ( root, false ) ; }
-//        { this( root, ReificationStyle.Minimal ); }
-//        
-//    /**
-//        Construct a file graph factory whose files will appear in root. The files 
-//        will be retained when the maker is closed.
-//    
-//        @param root the directory to keep the files in.
-//        @param style the reification style of the resulting graph
-//     */
-//    public FileGraphMaker( String root, ReificationStyle style )
-//        { this( root, style, false ); }
- 
     /**
         Construct a file graph factory whose files will appear in root.
         If deleteOnClose is true, the files created by this factory will be deleted
         when the factory is closed.
         
      	@param root the directory to keep the files in
-        @param style the reification style of the graph
      	@param deleteOnClose iff true, delete created files on close
      */
     public FileGraphMaker( String root, boolean deleteOnClose )
