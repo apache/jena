@@ -37,6 +37,7 @@ import org.apache.jena.security.impl.SecuredItemImpl;
  * Implementation of SecuredBulkUpdateHandler to be used by a SecuredItemInvoker
  * proxy.
  */
+@SuppressWarnings("deprecation")
 public class SecuredBulkUpdateHandlerImpl extends SecuredItemImpl implements
 		SecuredBulkUpdateHandler
 {
@@ -214,7 +215,7 @@ public class SecuredBulkUpdateHandlerImpl extends SecuredItemImpl implements
 		holder.getBaseItem().delete(triples);
 	}
 
-	@Override
+    @Override
 	public void remove( final Node s, final Node p, final Node o )
 	{
 		checkUpdate();

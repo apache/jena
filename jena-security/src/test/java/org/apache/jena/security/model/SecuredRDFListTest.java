@@ -61,7 +61,7 @@ public class SecuredRDFListTest extends SecuredResourceTest
 		final Iterator<RDFList> iter = new RDFListIterator(
 				(RDFList) getBaseRDFNode());
 		return WrappedIterator.create(iter)
-				.filterKeep(new RDFListSecFilter(getSecuredRDFList(), action))
+				.filterKeep(new RDFListSecFilter<RDFList>(getSecuredRDFList(), action))
 				.toList().size();
 	}
 
@@ -70,7 +70,7 @@ public class SecuredRDFListTest extends SecuredResourceTest
 		final Iterator<RDFList> iter = new RDFListIterator(
 				(RDFList) getBaseRDFNode());
 		return WrappedIterator.create(iter)
-				.filterKeep(new RDFListSecFilter(getSecuredRDFList(), action))
+				.filterKeep(new RDFListSecFilter<RDFList>(getSecuredRDFList(), action))
 				.toList().size();
 	}
 
@@ -687,7 +687,8 @@ public class SecuredRDFListTest extends SecuredResourceTest
 		}
 	}
 
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	@Test
 	public void testRemoveAll()
 	{

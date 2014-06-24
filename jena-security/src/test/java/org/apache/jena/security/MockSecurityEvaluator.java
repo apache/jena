@@ -78,7 +78,7 @@ public class MockSecurityEvaluator implements SecurityEvaluator
 	 * 
 	 * @param action
 	 * @param object
-	 * @return
+	 * @return boolean
 	 */
 	public boolean evaluate( final Action action, final Resource object )
 	{

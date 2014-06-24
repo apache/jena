@@ -17,30 +17,15 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.RSIterator;
-import com.hp.hpl.jena.rdf.model.ReifiedStatement;
-import com.hp.hpl.jena.rdf.model.ResourceF;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
+import org.apache.jena.security.impl.ItemHolder ;
+import org.apache.jena.security.impl.SecuredItemImpl ;
+import org.apache.jena.security.impl.SecuredItemInvoker ;
+import org.apache.jena.security.model.* ;
 
-import org.apache.jena.security.impl.ItemHolder;
-import org.apache.jena.security.impl.SecuredItemImpl;
-import org.apache.jena.security.impl.SecuredItemInvoker;
-import org.apache.jena.security.model.SecuredAlt;
-import org.apache.jena.security.model.SecuredBag;
-import org.apache.jena.security.model.SecuredLiteral;
-import org.apache.jena.security.model.SecuredModel;
-import org.apache.jena.security.model.SecuredProperty;
-import org.apache.jena.security.model.SecuredRDFNode;
-import org.apache.jena.security.model.SecuredReifiedStatement;
-import org.apache.jena.security.model.SecuredResource;
-import org.apache.jena.security.model.SecuredSeq;
-import org.apache.jena.security.model.SecuredStatement;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.PropertyNotFoundException ;
 
 /**
  * Implementation of SecuredStatement to be used by a SecuredItemInvoker proxy.
@@ -234,7 +219,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = new Triple(base.getSubject(),
-				base.getPredicate(), Node.createLiteral(o, "", wellFormed));
+				base.getPredicate(), NodeFactory.createLiteral(o, "", wellFormed));
 		checkUpdate(base, newBase);
 		return SecuredStatementImpl.getInstance(getModel(), holder
 				.getBaseItem().changeObject(o));
@@ -246,7 +231,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = new Triple(base.getSubject(),
-				base.getPredicate(), Node.createLiteral(o, l, false));
+				base.getPredicate(), NodeFactory.createLiteral(o, l, false));
 		checkUpdate(base, newBase);
 		return SecuredStatementImpl.getInstance(getModel(), holder
 				.getBaseItem().changeObject(o, l));
@@ -259,7 +244,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 		checkUpdate();
 		final Triple base = holder.getBaseItem().asTriple();
 		final Triple newBase = new Triple(base.getSubject(),
-				base.getPredicate(), Node.createLiteral(o, l, wellFormed));
+				base.getPredicate(), NodeFactory.createLiteral(o, l, wellFormed));
 		checkUpdate(base, newBase);
 		return SecuredStatementImpl.getInstance(getModel(), holder
 				.getBaseItem().changeObject(o, l, wellFormed));
@@ -379,8 +364,8 @@ public class SecuredStatementImpl extends SecuredItemImpl implements
 
 	private Triple getNewTriple( final Triple t, final Object o )
 	{
-		return new Triple(t.getSubject(), t.getPredicate(), Node.createLiteral(
-				String.valueOf(o), "", false));
+		return new Triple(t.getSubject(), t.getPredicate(), 
+		                  NodeFactory.createLiteral(String.valueOf(o), "", false));
 	}
 
 	@Override

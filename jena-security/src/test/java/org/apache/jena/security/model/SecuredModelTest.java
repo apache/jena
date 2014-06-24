@@ -17,48 +17,26 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Selector;
-import com.hp.hpl.jena.rdf.model.SimpleSelector;
-import com.hp.hpl.jena.rdf.model.Statement;
+import java.io.* ;
+import java.net.URL ;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Set ;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.CharArrayWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import org.apache.jena.security.* ;
+import org.apache.jena.security.SecurityEvaluator.Action ;
+import org.apache.jena.security.graph.SecuredGraph ;
+import org.apache.jena.security.graph.SecuredPrefixMappingTest ;
+import org.junit.Assert ;
+import org.junit.Before ;
+import org.junit.Test ;
+import org.junit.runner.RunWith ;
 
-import org.apache.jena.security.AccessDeniedException;
-import org.apache.jena.security.EqualityTester;
-import org.apache.jena.security.Factory;
-import org.apache.jena.security.MockSecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluatorParameters;
-import org.apache.jena.security.SecurityEvaluator.Action;
-import org.apache.jena.security.graph.SecuredGraph;
-import org.apache.jena.security.graph.SecuredPrefixMappingTest;
-import org.apache.jena.security.model.SecuredModel;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.* ;
 
 @RunWith( value = SecurityEvaluatorParameters.class )
 public class SecuredModelTest
@@ -192,7 +170,7 @@ public class SecuredModelTest
 		}
 		try
 		{
-			securedModel.add(baseModel, false);
+			securedModel.add(baseModel);
 			if (!securityEvaluator.evaluate(createAndUpdate))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -1112,12 +1090,6 @@ public class SecuredModelTest
 	}
 
 	@Test
-	public void testGetReificationStyle()
-	{
-		securedModel.getReificationStyle();
-	}
-
-	@Test
 	public void testGetResource()
 	{
 		securedModel.getResource("foo");
@@ -1722,7 +1694,7 @@ public class SecuredModelTest
 
 		try
 		{
-			securedModel.remove(baseModel, true);
+			securedModel.remove(baseModel);
 			if (!securityEvaluator.evaluate(DU))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -1947,8 +1919,7 @@ public class SecuredModelTest
 	@Test
 	public void testWrapAsResource() throws Exception
 	{
-		securedModel.wrapAsResource(Node
-				.createURI("http://example.com/rdfNode"));
+		securedModel.wrapAsResource(NodeFactory.createURI("http://example.com/rdfNode"));
 	}
 
 	@Test

@@ -127,7 +127,6 @@ public class PermStatementFilter extends Filter<Statement>
 		this.modelNode = securedItem.getModelNode();
 		this.actions = SecurityEvaluator.Util.asSet(actions);
 		this.evaluator = securedItem.getSecurityEvaluator();
-		;
 	}
 
 	/**

@@ -181,7 +181,8 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph
 		return retval;
 	}
 
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public SecuredBulkUpdateHandler getBulkUpdateHandler()
 	{
 		return org.apache.jena.security.graph.impl.Factory.getInstance(this,

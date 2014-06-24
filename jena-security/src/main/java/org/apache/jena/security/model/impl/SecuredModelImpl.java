@@ -17,76 +17,33 @@
  */
 package org.apache.jena.security.model.impl;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.CollectionGraph;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelChangedListener;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.NsIterator;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.rdf.model.RDFReaderF;
-import com.hp.hpl.jena.rdf.model.RDFWriter;
-import com.hp.hpl.jena.rdf.model.RSIterator;
-import com.hp.hpl.jena.rdf.model.ReifiedStatement;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceF;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Selector;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl;
-import com.hp.hpl.jena.shared.Command;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.shared.WrappedIOException;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
+import java.io.* ;
+import java.net.URL ;
+import java.util.* ;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.apache.jena.security.AccessDeniedException ;
+import org.apache.jena.security.SecurityEvaluator ;
+import org.apache.jena.security.SecurityEvaluator.SecTriple ;
+import org.apache.jena.security.graph.SecuredGraph ;
+import org.apache.jena.security.graph.SecuredPrefixMapping ;
+import org.apache.jena.security.impl.ItemHolder ;
+import org.apache.jena.security.impl.SecuredItem ;
+import org.apache.jena.security.impl.SecuredItemImpl ;
+import org.apache.jena.security.impl.SecuredItemInvoker ;
+import org.apache.jena.security.model.* ;
 
-import org.apache.jena.security.AccessDeniedException;
-import org.apache.jena.security.SecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluator.SecTriple;
-import org.apache.jena.security.graph.SecuredGraph;
-import org.apache.jena.security.graph.SecuredPrefixMapping;
-import org.apache.jena.security.impl.ItemHolder;
-import org.apache.jena.security.impl.SecuredItem;
-import org.apache.jena.security.impl.SecuredItemImpl;
-import org.apache.jena.security.impl.SecuredItemInvoker;
-import org.apache.jena.security.model.SecuredAlt;
-import org.apache.jena.security.model.SecuredBag;
-import org.apache.jena.security.model.SecuredLiteral;
-import org.apache.jena.security.model.SecuredModel;
-import org.apache.jena.security.model.SecuredProperty;
-import org.apache.jena.security.model.SecuredRDFList;
-import org.apache.jena.security.model.SecuredRDFNode;
-import org.apache.jena.security.model.SecuredResource;
-import org.apache.jena.security.model.SecuredSeq;
-import org.apache.jena.security.model.SecuredStatement;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.CollectionGraph ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
+import com.hp.hpl.jena.shared.* ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.Filter ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /**
  * Implementation of SecuredModel to be used by a SecuredItemInvoker proxy.
@@ -427,12 +384,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 		}
 		holder.getBaseItem().add(m);
 		return holder.getSecuredItem();
-	}
-
-	@Override
-	public SecuredModel add( final Model m, final boolean suppressReifications )
-	{
-		return add( m );
 	}
 
 	@Override
@@ -1599,12 +1550,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 	}
 	
 	@Override
-	public ReificationStyle getReificationStyle()
-	{
-		return holder.getBaseItem().getReificationStyle();
-	}
-
-	@Override
 	public SecuredStatement getRequiredProperty( final Resource s,
 			final Property p )
 	{
@@ -2307,13 +2252,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 	@Override
 	public SecuredModel remove( final Model m )
 	{
-		return remove(m, false);
-	}
-
-	@Override
-	public SecuredModel remove( final Model m,
-			final boolean suppressReifications )
-	{
 		checkUpdate();
 		if (!canDelete(Triple.ANY))
 		{
@@ -2324,51 +2262,6 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 				{
 					final Statement stmt = iter.next();
 					checkDelete(stmt);
-
-					if (suppressReifications)
-					{
-						final RSIterator rIter = holder.getBaseItem()
-								.listReifiedStatements(stmt);
-						try
-						{
-							while (rIter.hasNext())
-							{
-								final ReifiedStatement rs = rIter.next();
-								final ExtendedIterator<Statement> tIter = holder
-										.getBaseItem()
-										.listStatements(rs, RDF.subject,
-												stmt.getSubject())
-										.andThen(
-												holder.getBaseItem()
-														.listStatements(
-																rs,
-																RDF.predicate,
-																stmt.getPredicate()))
-										.andThen(
-												holder.getBaseItem()
-														.listStatements(
-																rs,
-																RDF.object,
-																stmt.getObject()));
-
-								try
-								{
-									while (tIter.hasNext())
-									{
-										checkDelete(tIter.next().asTriple());
-									}
-								}
-								finally
-								{
-									tIter.close();
-								}
-							}
-						}
-						finally
-						{
-							rIter.close();
-						}
-					}
 				}
 			}
 			finally
@@ -2376,14 +2269,13 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 				iter.close();
 			}
 		}
-		holder.getBaseItem().remove(m, suppressReifications);
+		holder.getBaseItem().remove(m);
 
 		return holder.getSecuredItem();
 	}
 
 	@Override
-	public SecuredModel remove( final Resource s, final Property p,
-			final RDFNode o )
+	public SecuredModel remove( final Resource s, final Property p, final RDFNode o )
 	{
 		checkUpdate();
 		checkDelete(new Triple(s.asNode(), p.asNode(), o.asNode()));

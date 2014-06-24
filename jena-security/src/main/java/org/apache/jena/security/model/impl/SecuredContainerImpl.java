@@ -395,6 +395,7 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements
 	 * indexes.clear();
 	 * }
 	 */
+	/*
 	/**
 	 * find the position of i in the array
 	 * 
