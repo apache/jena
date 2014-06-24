@@ -46,10 +46,10 @@ public class ResultSetCheckCondition implements ResultSet
     }
 
     // Feel free to replace with a lambda expression for Java8!
-    private static Condition checkQExec(QueryExecution qExec) {
+    private static Condition checkQExec(final QueryExecution qExec) {
         return new Condition() {
             @Override
-            public boolean check() { return true ; } // ! qExec.isClosed()  
+            public boolean check() { return ! qExec.isClosed() ; }  
         } ;
     }
 
@@ -103,7 +103,7 @@ public class ResultSetCheckCondition implements ResultSet
     
     private final void check() {
         if ( ! condition.check()  ) {
-            throw new ARQException("ResultSet no longer valid") ;    
+            throw new ARQException("ResultSet no longer valid (QueryExecution has been closed)") ;    
         }
     }
 

@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 /** A interface for a single execution of a query. */
 
 
-public interface QueryExecution
+public interface QueryExecution extends AutoCloseable 
 {
     /** Set the initial association of variables and values.
      * May not be supported by all QueryExecution implementations.
@@ -143,23 +143,31 @@ public interface QueryExecution
 	public void abort();
 	
     /** Close the query execution and stop query evaluation as soon as convenient.
+     *  QueryExecution objects, and a {@linkplain ResultSet} from {@linkplain #execSelect},
+     *  can not be used once the QueryExecution is closed.  
+     *  Model results from {@linkplain #execConstruct} and {@linkplain #execDescribe}
+     *  are stil valid.
      *  It is important to close query execution objects in order to release
      *  resources such as working memory and to stop the query execution.
      *  Some storage subsystems require explicit ends of operations and this
      *  operation will cause those to be called where necessary.
      *  No operations on the query execution or any associated
      *  result set are permitted after this call.
-     *  This method should not be called in parallel with other methods on the
-     *  QueryExecution object.
      */
-	public void close();
+    @Override
+    public void close();
 	
-	/** Set a timeout on the query execution.
+    /**
+     * Answer whether this QueryExecution object has been closed or not.
+     * @return boolean 
+     */
+    public boolean isClosed();
+
+    /** Set a timeout on the query execution.
 	 * Processing will be aborted after the timeout (which starts when the approprate exec call is made).
 	 * Not all query execution systems support timeouts.
 	 * A timeout of less than zero means no timeout.
 	 */
-	
 	public void setTimeout(long timeout, TimeUnit timeoutUnits) ;
 	
 	/** Set time, in milliseconds 
