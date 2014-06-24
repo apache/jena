@@ -189,9 +189,7 @@ public class QueryTestSDB extends EarlTestCase
 
         QueryEngineFactory f2 = QueryEngineSDB.getFactory() ;
         ds = DatasetStore.create(store) ;
-        QueryExecution qExec2 = new QueryExecutionBase(query, ds, null, f2) ;
-        
-        try {
+        try (QueryExecution qExec2 = new QueryExecutionBase(query, ds, null, f2) ) {
             SDBConnection.logSQLExceptions = true ;
             rs = qExec2.execSelect() ;
             

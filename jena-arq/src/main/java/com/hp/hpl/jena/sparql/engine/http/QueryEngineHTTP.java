@@ -39,6 +39,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.engine.ResultSetCheckCondition ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.resultset.CSVInput ;
 import com.hp.hpl.jena.sparql.resultset.JSONInput ;
@@ -68,7 +69,7 @@ public class QueryEngineHTTP implements QueryExecution {
     private List<String> namedGraphURIs = new ArrayList<>();
     private HttpAuthenticator authenticator;
 
-    private boolean finished = false;
+    private boolean closed = false;
 
     // Timeouts
     private long connectTimeout = -1;
@@ -333,6 +334,13 @@ public class QueryEngineHTTP implements QueryExecution {
 
     @Override
     public ResultSet execSelect() {
+        checkNotClosed() ;
+        ResultSet rs = execResultSetInner() ;
+        return new ResultSetCheckCondition(rs, this) ;
+    }
+    
+   private ResultSet execResultSetInner() {
+        
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(selectContentType);
         InputStream in = httpQuery.exec();
@@ -400,6 +408,7 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     private Model execModel(Model model) {
+        checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(modelContentType);
         InputStream in = httpQuery.exec();
@@ -426,6 +435,7 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     private Iterator<Triple> execTriples() {
+        checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(modelContentType);
         InputStream in = httpQuery.exec();
@@ -452,6 +462,7 @@ public class QueryEngineHTTP implements QueryExecution {
 
     @Override
     public boolean execAsk() {
+        checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(askContentType);
         InputStream in = httpQuery.exec();
@@ -487,6 +498,11 @@ public class QueryEngineHTTP implements QueryExecution {
                 log.warn("Failed to close connection", e);
             }
         }
+    }
+
+    private void checkNotClosed() {
+        if ( closed )
+            throw new QueryExecException("HTTP QueryExecution has been closed") ;
     }
 
     @Override
@@ -570,7 +586,7 @@ public class QueryEngineHTTP implements QueryExecution {
     }
 
     private HttpQuery makeHttpQuery() {
-        if (finished)
+        if (closed)
             throw new ARQException("HTTP execution already closed");
 
         HttpQuery httpQuery = new HttpQuery(service);
@@ -635,7 +651,7 @@ public class QueryEngineHTTP implements QueryExecution {
      * Cancel query evaluation
      */
     public void cancel() {
-        finished = true;
+        closed = true;
     }
 
     @Override
@@ -649,7 +665,7 @@ public class QueryEngineHTTP implements QueryExecution {
 
     @Override
     public void close() {
-        finished = true;
+        closed = true ;
         if (retainedConnection != null) {
             try {
                 retainedConnection.close();
@@ -670,7 +686,8 @@ public class QueryEngineHTTP implements QueryExecution {
         }
     }
 
-    // public boolean isActive() { return false ; }
+    @Override
+    public boolean isClosed() { return closed ; }
 
     @Override
     public String toString() {

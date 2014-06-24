@@ -67,6 +67,7 @@ public class QueryExecutionBase implements QueryExecution
     
     // Set if QueryIterator.cancel has been called 
     private volatile boolean    isCancelled = false ;
+    private boolean closed ;
     private volatile TimeoutCallback expectedCallback = null ;    
     private TimeoutCallback timeout1Callback = null ;
     private TimeoutCallback timeout2Callback = null ;
@@ -76,8 +77,7 @@ public class QueryExecutionBase implements QueryExecution
     private static final long   TIMEOUT_INF = -2 ;
     private long                timeout1 = TIMEOUT_UNSET ;
     private long                timeout2 = TIMEOUT_UNSET ;
-    private final AlarmClock    alarmClock = AlarmClock.get() ;  
-
+    private final AlarmClock    alarmClock = AlarmClock.get() ;
     public QueryExecutionBase(Query query, 
                               Dataset dataset,
                               Context context,
@@ -137,6 +137,7 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public void close()
     {
+        closed = true ;
         if ( queryIterator != null )
             queryIterator.close() ;
         if ( plan != null )
@@ -145,6 +146,16 @@ public class QueryExecutionBase implements QueryExecution
             alarmClock.cancel(timeout1Callback) ;
         if ( timeout2Callback != null )
             alarmClock.cancel(timeout2Callback) ;
+    }
+
+    @Override
+    public boolean isClosed() {
+        return closed ;
+    }
+
+    private void checkNotClosed() {
+        if ( closed )
+            throw new QueryExecException("HTTP QueryExecution has been closed") ;
     }
 
     @Override
@@ -166,12 +177,14 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public ResultSet execSelect()
     {
+        checkNotClosed() ;
         if ( ! query.isSelectType() )
             throw new QueryExecException("Attempt to have ResultSet from a "+labelForQuery(query)+" query") ; 
-        return execResultSet() ;
+        ResultSet rs = execResultSet() ;
+        return new ResultSetCheckCondition(rs, this) ;
     }
 
-    // Construct
+     // Construct
     @Override
     public Model execConstruct()
     {
@@ -192,6 +205,7 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public Model execConstruct(Model model)
     {
+        checkNotClosed() ;
         try
         {
             Iterator<Triple> it = execConstructTriples();
@@ -217,6 +231,7 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public Iterator<Triple> execConstructTriples()
     {
+        checkNotClosed() ;
         if ( ! query.isConstructType() )
             throw new QueryExecException("Attempt to get a CONSTRUCT model from a "+labelForQuery(query)+" query") ;
         // This causes there to be no PROJECT around the pattern.
@@ -237,6 +252,7 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public Model execDescribe(Model model)
     {
+        checkNotClosed() ;
         if ( ! query.isDescribeType() )
             throw new QueryExecException("Attempt to get a DESCRIBE result from a "+labelForQuery(query)+" query") ; 
         //Was: query.setQueryResultStar(true) ; but why?
@@ -318,6 +334,7 @@ public class QueryExecutionBase implements QueryExecution
     @Override
     public boolean execAsk()
     {
+        checkNotClosed() ;
         if ( ! query.isAskType() )
             throw new QueryExecException("Attempt to have boolean from a "+labelForQuery(query)+" query") ; 
 
