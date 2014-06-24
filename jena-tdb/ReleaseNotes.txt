@@ -1,6 +1,16 @@
 ChangeLog for TDB
 =================
 
+==== TDB 1.1.0
+
+Jena now requires Java7 as of this version.
+At the same time some classes and methods previous deprecated and marked
+for removal have now been removed.
+
+QueryExecution is now AutoCloeable and can be used with try-resource.
+
++ JENA-720 : NodeId did not handle BigDecimal correctly 
+
 ==== TDB 1.0.1
 
 + JENA-550 : tdbloader2 now checks that the target location either 

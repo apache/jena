@@ -4,8 +4,25 @@ ChangeLog for ARQ
 
 ==== Jena 2.12.0
 
+Jena now requires Java7 as of this version.
+At the same time some classes and methods previous deprecated and marked
+for removal have now been removed.
+
+QueryExecution is now AutoCloeable and can be used with try-resource.
+
++ JENA-694 : Require Java 7
++ JENA-714 : Source language upgrades 
++ JENA-726 : remove deprecated classes and methods.
++ JENA-727 : Checks on ResultSet from execSelect that it is still valid/
+
 + JENA-710 : Bug fix for filter optimizer where the filter only 
              mentions a variable onl yused with GRAPH.
++ JENA-723 : Bug fix in TopN optimization revealed in Java8 
++ JENA-715 : Read payload for errors in HttpOp 
++ JENA-713 : Reduce costly string operations in utility class 
++ JENA-712 : ARQ outputs BASE if expclitily set in a query else
+             does not produce relative URIs. This is now consistent 
+             with behaviour of RIOT writers.
 
 ==== Jena 2.11.2
 
