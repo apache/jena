@@ -198,15 +198,9 @@ implements Model, PrefixMapping, Lock
     }
 
     @Override
-    public Model add( Model m )  
-    { return add( m, false ); }
-
-    @Deprecated
-    @Override
-    public Model add( Model m, boolean suppressReifications ) {
-        // suppressReifications is a no-op.
-        GraphUtil.addInto( getGraph(), m.getGraph() );
-        return this;
+    public Model add(Model m) {
+        GraphUtil.addInto(getGraph(), m.getGraph()) ;
+        return this ;
     }
 
     @Override
@@ -384,11 +378,6 @@ implements Model, PrefixMapping, Lock
 
     @Override
     public Model remove( Model m )
-    { return remove( m, false ); }
-
-    @Override
-    @Deprecated
-    public Model remove( Model m, boolean suppressReifications ) 
     {
         GraphUtil.deleteFrom( getGraph(), m.getGraph());
         return this;
@@ -1163,11 +1152,6 @@ implements Model, PrefixMapping, Lock
         return this;
     }
 
-    @Override
-    @Deprecated
-    public ReificationStyle getReificationStyle()
-    { return modelReifier.getReificationStyle(); }
-
     /**
         @return an iterator which delivers all the ReifiedStatements in this model
      */
@@ -1525,7 +1509,7 @@ implements Model, PrefixMapping, Lock
           { return "<ModelCom  " + getGraph() + " | " + reifiedToString() + ">"; }
 
           public String reifiedToString()
-          { return statementsToString( getHiddenStatements().listStatements() ); }
+          { return statementsToString( listStatements() ); }
 
           protected String statementsToString( StmtIterator it )
           {
@@ -1533,19 +1517,9 @@ implements Model, PrefixMapping, Lock
               while (it.hasNext()) b.append( " " ).append( it.nextStatement() );
               return b.toString();
           }
-          /**
-		A Model with all the statements of this Model and any
-		statements "hidden" by reification. That model is dynamic, ie
-		any changes this model will be reflected that one.
-		@deprecated Reifiying triples are already visible.
-           */    
-        @Deprecated
-          public Model getHiddenStatements()
-          { return this ; }
 
           /**
-        Answer whether or not these two graphs are isomorphic, taking the
-        hidden (reification) statements into account.
+            Answer whether or not these two graphs are isomorphic.
            */
           @Override
           public boolean isIsomorphicWith( Model m )

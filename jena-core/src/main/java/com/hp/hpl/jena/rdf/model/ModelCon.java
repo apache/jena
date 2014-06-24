@@ -608,17 +608,6 @@ public interface ModelCon {
  */ 
     Model remove(Model m) ;
     
-    /**
-        Remove from this model all the statements found in the given model.
-        If suppressreifications is true, remove the reified statements of m as well.
-        @param m the model containing the statements to remove
-        @param suppressReifications true to remove reified statements too
-        @return this model for cascading
-        @deprecated suppressReifications now longer has any meaning or effect
-    */
-    @Deprecated
-    Model remove( Model m, boolean suppressReifications );
-
     /** 
         Answer a statement iterator that will iterate over all the statements
         (S, P, O) in this model where S matches <code>subject</code>, P

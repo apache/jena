@@ -23,7 +23,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.AlreadyReifiedException ;
-import com.hp.hpl.jena.shared.ReificationStyle ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.Map1 ;
 
@@ -31,7 +30,6 @@ import com.hp.hpl.jena.util.iterator.Map1 ;
     This class impedance-matches the reification requests of Model[Com] to the operations
     supplied by it's Graph's Reifier.
 */
-@SuppressWarnings("deprecation")
 public class ModelReifier
     {
     private ModelCom model;
@@ -51,34 +49,7 @@ public class ModelReifier
         {
         this.model = model; 
         }
-        
-    @Deprecated
-    public ReificationStyle getReificationStyle()
-        { return ReificationStyle.Standard ; }
-        
-    /**
-        Answer a version of the model, but with all its reifiying statements
-        added.
-        @param m a model that may have reified statements
-        @return a new model, the union of m and the reification statements of m
-        @deprecated Reifiying triples are already visible.
-    */
-    @Deprecated
-    public static Model withHiddenStatements( Model m )
-    {
-        // With Reification standard, reifiying triples are already visible.
-        return m ;
-    }
 
-    /**
-        Answer a model that consists of the hidden reification statements of this model.
-        @return a new model containing the hidden statements of this model
-        @deprecated Reifiying triples are already visible.
-    */    
-    @Deprecated
-    public Model getHiddenStatements()
-    { return model ; } 
-        
     /**
         Answer a fresh reification of a statement associated with a fresh bnode.
         @param s a Statement to reifiy

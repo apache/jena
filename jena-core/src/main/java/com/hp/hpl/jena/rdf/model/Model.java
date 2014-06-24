@@ -355,17 +355,6 @@ public interface Model
 	 */
 	Model add(Model m) ;
 
-    /**
-        Add all the statements of the given model m to this model.
-        Optionally supress the addition of reified statements.
-        @param m the model containing the statements to add
-        @param suppressReifications true to suppress adding reified statements
-        @return this model for cascading
-        @deprecated suppressReifications no longer has any effect.
-    */
-	@Deprecated
-    Model add( Model m, boolean suppressReifications );
-
 	/** Add the RDF statements from a document.
 	 *  Uses content negotiation to request appropriate mime types.
 	 *  If the content type is not found, it may guess from the URL.
@@ -824,14 +813,6 @@ public interface Model
         that match the statement _st_.
     */
     RSIterator listReifiedStatements( Statement st );
-
-    /**
-        Answer the reification style of the model.
-     	@return the reification style
-     	createMemModelMaker()
-    */
-    @Deprecated
-    ReificationStyle getReificationStyle();
 
 	/** Create a new model containing the statements matching a query.
 	 *

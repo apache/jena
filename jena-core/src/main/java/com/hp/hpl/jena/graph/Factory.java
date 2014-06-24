@@ -31,7 +31,7 @@ public class Factory
         { super(); }
     
     /**
-        Answer a memory-based Graph with the Standard reification style.
+        Answer a memory-based Graph.
     */
     public static Graph createDefaultGraph()
         { return Factory.createGraphMem( ); }

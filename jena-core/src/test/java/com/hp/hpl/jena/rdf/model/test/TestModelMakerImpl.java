@@ -18,28 +18,26 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphMaker;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.test.GraphTestBase;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelMaker;
-import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.test.JenaTestBase;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NullIterator;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import java.util.ArrayList;
-import java.util.List;
+import junit.framework.TestCase ;
+import org.junit.Assert ;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphMaker ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.test.GraphTestBase ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelMaker ;
+import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl ;
+import com.hp.hpl.jena.test.JenaTestBase ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NullIterator ;
 
 /**
  * Test ModelMakerImpl using a mock GraphMaker.
  */
-@SuppressWarnings("deprecation")
 public class TestModelMakerImpl extends TestCase
 {
 	static class MockGraphMaker implements GraphMaker
@@ -102,14 +100,6 @@ public class TestModelMakerImpl extends TestCase
 		{
 			history.add("get()");
 			return graph;
-		}
-
-		@Override
-		@Deprecated
-		public ReificationStyle getReificationStyle()
-		{
-			history.add("getReificationStyle()");
-			return null;
 		}
 
 		@Override
