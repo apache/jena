@@ -1,6 +1,15 @@
 Release Notes 
 =============
 
+==== Jena 2.12.0
+
+Jena now requires Java7 as of this version.
+At the same time some classes and methods previous deprecated and marked
+for removal have now been removed.
++ JENA-694 : Require Java 7
++ JENA-714 : Source language upgrades 
++ JENA-726 : remove deprecated classes and methods.
+
 ==== Jena 2.11.2
 + Addition of Datatypes to SchemaGen
 
