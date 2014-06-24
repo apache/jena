@@ -32,7 +32,6 @@ import arq.cmdline.ModDataset ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.JenaException ;
-import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
