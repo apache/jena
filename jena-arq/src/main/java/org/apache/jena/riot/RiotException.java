@@ -18,10 +18,9 @@
 
 package org.apache.jena.riot;
 
+import com.hp.hpl.jena.shared.JenaException ;
 
-// Compatibility
-@SuppressWarnings("deprecation")
-public class RiotException extends org.openjena.riot.RiotException //extends JenaException
+public class RiotException extends JenaException
 {
     public RiotException()                          { super() ; }
     public RiotException(String msg)                { super(msg) ; }
