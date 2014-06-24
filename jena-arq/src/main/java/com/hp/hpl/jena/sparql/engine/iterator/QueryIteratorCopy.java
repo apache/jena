@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 class QueryIteratorCopy extends QueryIteratorBase
 {
     // Not tracked.
-    List<Binding> elements = new ArrayList<Binding>() ;
+    List<Binding> elements = new ArrayList<>() ;
     QueryIterator iterator ;
     
     QueryIterator original ;        // Keep for debugging - This is closed as it is copied.

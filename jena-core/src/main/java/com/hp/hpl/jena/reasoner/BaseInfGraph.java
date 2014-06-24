@@ -318,7 +318,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         if (resultNode.isLiteral()) {
             Object result = resultNode.getLiteralValue();
             if (result instanceof Boolean) {
-                return ((Boolean)result).booleanValue();
+                return (Boolean) result;
             }
         }
         throw new ReasonerException("Global property test returned non-boolean value" +

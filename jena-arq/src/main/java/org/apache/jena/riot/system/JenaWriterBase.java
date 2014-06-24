@@ -33,7 +33,7 @@ import com.hp.hpl.jena.rdf.model.RDFWriter ;
 
 public abstract class JenaWriterBase implements RDFWriter
 {
-    protected Map<String, String> writerPropertyMap = new HashMap<String, String>() ;
+    protected Map<String, String> writerPropertyMap = new HashMap<>() ;
     private RDFErrorHandler errorHandler = null ;
     
     @Override
@@ -56,7 +56,7 @@ public abstract class JenaWriterBase implements RDFWriter
         // Store absolute name of property 
         propName = absolutePropName(propName) ;
         if ( writerPropertyMap == null )
-            writerPropertyMap = new HashMap<String, String>() ;
+            writerPropertyMap = new HashMap<>() ;
         String oldValue = writerPropertyMap.get(propName);
         writerPropertyMap.put(propName,(String)propValue);
         return oldValue;

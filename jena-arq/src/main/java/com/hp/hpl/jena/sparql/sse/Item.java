@@ -19,8 +19,6 @@
 package com.hp.hpl.jena.sparql.sse;
 
 
-import java.util.Iterator ;
-
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -123,11 +121,12 @@ public class Item extends ItemLocation
     
     public static Item find(ItemList list, String key)
     {
-        for ( Iterator<Item> iter = list.iterator() ; iter.hasNext() ; )
+        for ( Item x : list )
         {
-            Item x = iter.next() ;
-            if ( x.isTagged(key))
-                return x ;
+            if ( x.isTagged( key ) )
+            {
+                return x;
+            }
         }
         return null ;
     }

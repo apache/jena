@@ -100,9 +100,9 @@ public class TestItem
     private TestItem(String _name, String _queryFile, String _dataFile, String _resultFile) {
         name = _name ;
         queryFile = _queryFile ;
-        defaultGraphURIs = new ArrayList<String>() ;
+        defaultGraphURIs = new ArrayList<>() ;
         defaultGraphURIs.add(_dataFile) ;
-        namedGraphURIs = new ArrayList<String>() ;
+        namedGraphURIs = new ArrayList<>() ;
         resultFile = _resultFile ;
         comment = "" ;
         queryFileSyntax = Syntax.guessFileSyntax(_queryFile) ;
@@ -221,7 +221,7 @@ public class TestItem
             // Action is a URI - data had better be in the query itself.
             return null ;
 
-        List<String> l = new ArrayList<String>() ;
+        List<String> l = new ArrayList<>() ;
         ClosableIterator<Statement> cIter = _getAction().listProperties(VocabTestQuery.data) ;
         for (; cIter.hasNext();) {
             Statement stmt = cIter.next() ;
@@ -244,7 +244,7 @@ public class TestItem
             // Action is a URI - data had better be in the query itself.
             return null ;
 
-        List<String> l = new ArrayList<String>() ;
+        List<String> l = new ArrayList<>() ;
         ClosableIterator<Statement> cIter = _getAction().listProperties(VocabTestQuery.graphData) ;
         for (; cIter.hasNext();) {
             Statement obj = cIter.next() ;
@@ -304,7 +304,7 @@ public class TestItem
 
     @Override
     public String toString() {
-        StringBuffer sbuff = new StringBuffer() ;
+        StringBuilder sbuff = new StringBuilder() ;
         String name = getName() ;
         // String actionStr = FmtUtils.stringForRDFNode(_getAction()) ;
 

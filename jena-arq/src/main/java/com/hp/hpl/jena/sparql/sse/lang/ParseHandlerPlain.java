@@ -114,14 +114,24 @@ public class ParseHandlerPlain implements ParseHandler
     public void emitVar(int line, int column, String varName)
     {
         Var var = null ;
-        if ( varName.equals("") )                                   // "?"
-            var = varAlloc.allocVar()  ;
-        else if ( varName.equals(ARQConstants.allocVarAnonMarker))  // "??" -- Allocate a non-distinguished variable
-            var = varAllocND.allocVar()  ;
-        else if ( varName.equals(ARQConstants.allocVarMarker))      // "?." -- Allocate a named variable
-            var = varAllocIntern.allocVar()  ;
-        else
-            var = Var.alloc(varName) ;
+        switch ( varName )
+        {
+            case "":
+// "?"
+                var = varAlloc.allocVar();
+                break;
+            case ARQConstants.allocVarAnonMarker:
+// "??" -- Allocate a non-distinguished variable
+                var = varAllocND.allocVar();
+                break;
+            case ARQConstants.allocVarMarker:
+// "?." -- Allocate a named variable
+                var = varAllocIntern.allocVar();
+                break;
+            default:
+                var = Var.alloc( varName );
+                break;
+        }
         Item item = Item.createNode(var, line, column) ;
         listAdd(item) ;
     }
@@ -186,7 +196,7 @@ public class ParseHandlerPlain implements ParseHandler
     
     protected static class ListStack
     {
-        private Deque<ItemList> stack    = new ArrayDeque<ItemList>() ;
+        private Deque<ItemList> stack    = new ArrayDeque<>() ;
         
         boolean isEmpty() { return stack.size() == 0 ; }
         

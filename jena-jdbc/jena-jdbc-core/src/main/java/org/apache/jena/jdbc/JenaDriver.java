@@ -578,77 +578,105 @@ public abstract class JenaDriver implements Driver {
         // Parse out the key value pairs from the connection URL
         url = url.substring(DRIVER_PREFIX.length() + this.implPrefix.length());
         String[] kvps = url.split("&|;");
-        for (int i = 0; i < kvps.length; i++) {
-            String kvp = kvps[i];
-            if (kvp.length() == 0)
+        for ( String kvp : kvps )
+        {
+            if ( kvp.length() == 0 )
+            {
                 continue;
+            }
 
             // Try to split into key and value
             String key, value;
-            if (kvp.contains("=")) {
-                String[] temp = kvp.split("=", 2);
+            if ( kvp.contains( "=" ) )
+            {
+                String[] temp = kvp.split( "=", 2 );
                 key = temp[0];
                 value = temp[1];
-            } else {
+            }
+            else
+            {
                 key = kvp;
                 value = null;
             }
 
             // All keys are normalized to lower case using the English Locale
-            key = key.toLowerCase(Locale.ENGLISH);
+            key = key.toLowerCase( Locale.ENGLISH );
 
             // Put into properties appropriately
-            if (!ps.containsKey(key)) {
+            if ( !ps.containsKey( key ) )
+            {
                 // Doesn't yet exist, add a string/list as appropriate
-                if (this.allowsMultipleValues(key)) {
+                if ( this.allowsMultipleValues( key ) )
+                {
                     List<String> values = new ArrayList<String>();
-                    if (value.contains(",")) {
+                    if ( value.contains( "," ) )
+                    {
                         // Comma separated lists are usable for multiple value
                         // properties
-                        String[] vs = value.split(",");
-                        for (String v : vs) {
-                            values.add(v);
+                        String[] vs = value.split( "," );
+                        for ( String v : vs )
+                        {
+                            values.add( v );
                         }
-                    } else {
-                        values.add(value);
                     }
-                    ps.put(key, values);
-                } else {
-                    ps.put(key, value);
+                    else
+                    {
+                        values.add( value );
+                    }
+                    ps.put( key, values );
                 }
-            } else if (this.allowsMultipleValues(key)) {
+                else
+                {
+                    ps.put( key, value );
+                }
+            }
+            else if ( this.allowsMultipleValues( key ) )
+            {
                 // If it allows multiple values append to those existing
-                Object currValue = ps.get(key);
-                if (currValue instanceof List<?>) {
+                Object currValue = ps.get( key );
+                if ( currValue instanceof List<?> )
+                {
                     // Can just append to existing list
-                    if (value.contains(",")) {
+                    if ( value.contains( "," ) )
+                    {
                         // Comma separated lists are usable for multiple value
                         // properties
-                        String[] vs = value.split(",");
-                        for (String v : vs) {
-                            ((List<Object>) currValue).add(v);
+                        String[] vs = value.split( "," );
+                        for ( String v : vs )
+                        {
+                            ( (List<Object>) currValue ).add( v );
                         }
-                    } else {
-                        ((List<Object>) currValue).add(value);
                     }
-                } else {
+                    else
+                    {
+                        ( (List<Object>) currValue ).add( value );
+                    }
+                }
+                else
+                {
                     // Convert to list
                     List<String> values = new ArrayList<String>();
-                    values.add(currValue.toString());
-                    if (value.contains(",")) {
-                        String[] vs = value.split(",");
-                        for (String v : vs) {
-                            values.add(v);
+                    values.add( currValue.toString() );
+                    if ( value.contains( "," ) )
+                    {
+                        String[] vs = value.split( "," );
+                        for ( String v : vs )
+                        {
+                            values.add( v );
                         }
-                    } else {
-                        values.add(value);
                     }
-                    ps.put(key, values);
+                    else
+                    {
+                        values.add( value );
+                    }
+                    ps.put( key, values );
                 }
-            } else {
-                LOGGER.warn("Cannot specify parameter " + key + " multiple times in the connection URL");
-                throw new SQLException("Invalid connection URL parameter " + kvp + " encountered, the parameter " + key
-                        + " may only be specified once");
+            }
+            else
+            {
+                LOGGER.warn( "Cannot specify parameter " + key + " multiple times in the connection URL" );
+                throw new SQLException( "Invalid connection URL parameter " + kvp + " encountered, the parameter " + key
+                                            + " may only be specified once" );
             }
         }
 

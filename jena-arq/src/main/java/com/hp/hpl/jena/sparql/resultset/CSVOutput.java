@@ -64,7 +64,7 @@ public class CSVOutput extends OutputBase
             
             String sep = null ;
             List<String> varNames = resultSet.getResultVars() ;
-            List<Var> vars = new ArrayList<Var>(varNames.size()) ;
+            List<Var> vars = new ArrayList<>(varNames.size()) ;
             
             // Convert to Vars and output the header line.
             for( String v : varNames )

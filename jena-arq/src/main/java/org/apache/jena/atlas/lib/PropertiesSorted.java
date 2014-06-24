@@ -46,7 +46,7 @@ public class PropertiesSorted extends Properties
     {
         // Old world - enumeration, untyped. But we know they are strings (Propetries hides non-strings in get) 
         Enumeration<Object> keys = super.keys() ;
-        List<String> keys2 = new ArrayList<String>(super.size()) ;
+        List<String> keys2 = new ArrayList<>(super.size()) ;
         
         for( ; keys.hasMoreElements() ; )
         {

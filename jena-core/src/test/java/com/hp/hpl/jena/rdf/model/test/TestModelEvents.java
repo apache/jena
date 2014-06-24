@@ -95,7 +95,7 @@ public class TestModelEvents extends AbstractModelTestBase
 	 */
 	public static class WatchStatementListener extends StatementListener
 	{
-		List<Statement> statements = new ArrayList<Statement>();
+		List<Statement> statements = new ArrayList<>();
 		String addOrRem = "<unset>";
 
 		@Override
@@ -113,7 +113,7 @@ public class TestModelEvents extends AbstractModelTestBase
 			}
 			finally
 			{
-				statements = new ArrayList<Statement>();
+				statements = new ArrayList<>();
 			}
 		}
 
@@ -150,11 +150,11 @@ public class TestModelEvents extends AbstractModelTestBase
 
 	public Map<Object, Integer> asBag( final List<Statement> l )
 	{
-		final Map<Object, Integer> result = new HashMap<Object, Integer>();
-		for (int i = 0; i < l.size(); i += 1)
-		{
-			another(result, l.get(i).asTriple());
-		}
+		final Map<Object, Integer> result = new HashMap<>();
+        for ( Statement aL : l )
+        {
+            another( result, aL.asTriple() );
+        }
 		return result;
 	}
 

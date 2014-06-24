@@ -349,14 +349,17 @@ static VarPattern unreservedDNSLabel[] = {
 		String[] names;
 		names = new String[cnt];
 		Field f[] = cl.getDeclaredFields();
-		for (int i = 0; i < f.length; i++)
-		    try {
-		        names[f[i].getInt(null)] = f[i].getName();
-		    } catch (IllegalArgumentException e) {
-		        e.printStackTrace();
-		    } catch (IllegalAccessException e) {
-		        e.printStackTrace();
-		    }
+        for ( Field aF : f )
+        {
+            try
+            {
+                names[aF.getInt( null )] = aF.getName();
+            }
+            catch ( IllegalArgumentException | IllegalAccessException e )
+            {
+                e.printStackTrace();
+            }
+        }
 		return names;
 	}
     
@@ -365,17 +368,11 @@ static VarPattern unreservedDNSLabel[] = {
         try {
             f = ViolationCodes.class.getDeclaredField(s);
             return f.getInt(null);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (SecurityException | IllegalAccessException | IllegalArgumentException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        
+
     }
     /*
      * 

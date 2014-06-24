@@ -91,22 +91,51 @@ public class qparse extends CmdARQ
             printOpt = true ;
         }
 
-        for ( Iterator<String> iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
+        for ( String arg : getValues( argDeclPrint ) )
         {
-            String arg = iter.next() ;
-            if ( arg.equalsIgnoreCase("query"))         { printQuery = true ; }
-            else if ( arg.equalsIgnoreCase("op") ||
-                      arg.equalsIgnoreCase("alg") || 
-                      arg.equalsIgnoreCase("algebra") ) { printOp = true ; }
-            else if ( arg.equalsIgnoreCase("quad"))     { printQuad = true ; }
-            else if ( arg.equalsIgnoreCase("quads"))    { printQuad = true ; }
-            else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true ; }
-            else if ( arg.equalsIgnoreCase("opt"))      { printOpt = true ; }
-            else if ( arg.equalsIgnoreCase("optquad"))  { printQuadOpt = true ; }
-            else if ( arg.equalsIgnoreCase("quadopt"))  { printQuadOpt = true ; }
-            else if ( arg.equalsIgnoreCase("none"))     { printNone = true ; }
+            if ( arg.equalsIgnoreCase( "query" ) )
+            {
+                printQuery = true;
+            }
+            else if ( arg.equalsIgnoreCase( "op" ) ||
+                arg.equalsIgnoreCase( "alg" ) ||
+                arg.equalsIgnoreCase( "algebra" ) )
+            {
+                printOp = true;
+            }
+            else if ( arg.equalsIgnoreCase( "quad" ) )
+            {
+                printQuad = true;
+            }
+            else if ( arg.equalsIgnoreCase( "quads" ) )
+            {
+                printQuad = true;
+            }
+            else if ( arg.equalsIgnoreCase( "plan" ) )
+            {
+                printPlan = true;
+            }
+            else if ( arg.equalsIgnoreCase( "opt" ) )
+            {
+                printOpt = true;
+            }
+            else if ( arg.equalsIgnoreCase( "optquad" ) )
+            {
+                printQuadOpt = true;
+            }
+            else if ( arg.equalsIgnoreCase( "quadopt" ) )
+            {
+                printQuadOpt = true;
+            }
+            else if ( arg.equalsIgnoreCase( "none" ) )
+            {
+                printNone = true;
+            }
             else
-                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad, opt, optquad") ;
+            {
+                throw new CmdException(
+                    "Not a recognized print form: " + arg + " : Choices are: query, op, quad, opt, optquad" );
+            }
         }
         
         if ( ! printQuery && ! printOp && ! printQuad && ! printPlan && ! printOpt && ! printQuadOpt && ! printNone )
@@ -231,7 +260,7 @@ public class qparse extends CmdARQ
     // printf ... java 1.5 .. mutter,mutter
     static String padOut(String x, int len)
     {
-        StringBuffer r = new StringBuffer(x) ;
+        StringBuilder r = new StringBuilder(x) ;
         for ( int i = x.length() ; i <= len ; i++ )
             r.append(" ") ;
         return r.toString() ; 

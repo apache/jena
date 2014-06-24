@@ -34,7 +34,7 @@ public class DatasetChangesCapture implements DatasetChanges
     // with little guidance as to likely size, can lead to undesirable GC
     // and copy-time issues.
     // Using a LinkedList avoids this although it adds overhead for list entries.  
-    final private List<Pair<QuadAction, Quad>> actions = new LinkedList<Pair<QuadAction,Quad>>() ;  
+    final private List<Pair<QuadAction, Quad>> actions = new LinkedList<>() ;
         //new ArrayList<Pair<QuadAction, Quad>>() ;
         
     final private boolean captureAdd ;

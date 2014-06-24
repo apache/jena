@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.NodeFactory ;
 
 public class BlankNodeAllocatorTraditional implements BlankNodeAllocator
 {
-    Map<String, Node> map = new HashMap<String, Node>() ;
+    Map<String, Node> map = new HashMap<>() ;
     
     public BlankNodeAllocatorTraditional()  {}
 

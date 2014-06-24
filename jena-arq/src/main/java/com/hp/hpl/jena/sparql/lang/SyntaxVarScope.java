@@ -131,15 +131,14 @@ public class SyntaxVarScope
     
     private static void checkExprListAssignment(Collection<Var> vars, VarExprList exprList)
     {
-        Set<Var> vars2 = new LinkedHashSet<Var>(vars) ;
-        
-        for ( Iterator<Var> iter = exprList.getVars().iterator() ; iter.hasNext() ; )
+        Set<Var> vars2 = new LinkedHashSet<>(vars) ;
+
+        for ( Var v : exprList.getVars() )
         {
             // In scope?
-            Var v = iter.next();
-            Expr e = exprList.getExpr(v) ;
-            checkAssignment(vars2, e, v) ;
-            vars2.add(v) ;
+            Expr e = exprList.getExpr( v );
+            checkAssignment( vars2, e, v );
+            vars2.add( v );
         }
     }
     
@@ -151,29 +150,33 @@ public class SyntaxVarScope
             
             // Copy - we need to add variables
             // SELECT (count(*) AS ?C)  (?C+1 as ?D) 
-            List<Var> inScopeVars = new ArrayList<Var>(groupKey.getVars()) ;
+            List<Var> inScopeVars = new ArrayList<>(groupKey.getVars()) ;
             VarExprList exprList = query.getProject() ;
-            
-            for ( Iterator<Var> iter = exprList.getVars().iterator() ; iter.hasNext() ; )
+
+            for ( Var v : exprList.getVars() )
             {
                 // In scope?
-                Var v = iter.next();
-                Expr e = exprList.getExpr(v) ;
+                Expr e = exprList.getExpr( v );
                 if ( e == null )
                 {
-                    if ( ! inScopeVars.contains(v) )
-                        throw new QueryParseException("Non-group key variable in SELECT: "+v, -1 , -1) ;
+                    if ( !inScopeVars.contains( v ) )
+                    {
+                        throw new QueryParseException( "Non-group key variable in SELECT: " + v, -1, -1 );
+                    }
                 }
                 else
                 {
-                    Set<Var> eVars = e.getVarsMentioned() ;
+                    Set<Var> eVars = e.getVarsMentioned();
                     for ( Var v2 : eVars )
                     {
-                        if ( ! inScopeVars.contains(v2) )
-                            throw new QueryParseException("Non-group key variable in SELECT: "+v2+" in expression "+e , -1 , -1) ;
+                        if ( !inScopeVars.contains( v2 ) )
+                        {
+                            throw new QueryParseException(
+                                "Non-group key variable in SELECT: " + v2 + " in expression " + e, -1, -1 );
+                        }
                     }
                 }
-                inScopeVars.add(v) ;
+                inScopeVars.add( v );
             }
         }
     }
@@ -204,14 +207,15 @@ public class SyntaxVarScope
     {
         StringBuilder sb = new StringBuilder() ;
         boolean first = true ;
-        for ( Iterator<Var> iter = exprList.getVars().iterator() ; iter.hasNext() ; )
+        for ( Var v : exprList.getVars() )
         {
-            Var v = iter.next();
-            Expr e = exprList.getExpr(v) ;
-            if ( ! first )
-                sb.append(" ") ;
-            first = false ;
-            sb.append("(").append(e).append(" AS ").append(v).append(")") ;
+            Expr e = exprList.getExpr( v );
+            if ( !first )
+            {
+                sb.append( " " );
+            }
+            first = false;
+            sb.append( "(" ).append( e ).append( " AS " ).append( v ).append( ")" );
         }
         return sb.toString() ;
     }
@@ -275,7 +279,7 @@ public class SyntaxVarScope
         /** Calculate scope, working forwards */
         private static Collection<Var> calcScope(List<Element> elements, int start, int finish)
         {
-            Collection<Var> accScope = new HashSet<Var>() ;
+            Collection<Var> accScope = new HashSet<>() ;
             for ( int i = start ; i < finish ; i++ )
             {
                 Element e = elements.get(i) ;

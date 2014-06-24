@@ -57,7 +57,7 @@ public class TransTestLib
         Var v = Var.alloc(var) ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
-        List<Node> nodes = new ArrayList<Node>() ;
+        List<Node> nodes = new ArrayList<>() ;
         try {
             ResultSet rs = qExec.execSelect() ;
             for (; rs.hasNext() ; )

@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 abstract class AccumulatorDistinctAll implements Accumulator
 {
     // COUNT(DISTINCT *)
-    private final Set<Binding> rows = new HashSet<Binding>() ;
+    private final Set<Binding> rows = new HashSet<>() ;
     
     @Override
     final public void accumulate(Binding binding, FunctionEnv functionEnv)

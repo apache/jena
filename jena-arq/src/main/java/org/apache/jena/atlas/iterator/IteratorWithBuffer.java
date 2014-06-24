@@ -43,7 +43,7 @@ public class IteratorWithBuffer<T> implements Iterator<T>
         if ( N < 0 )
             throw new IllegalArgumentException("Buffering size < 0") ;
         this.iter = iter ;
-        this.lookahead = new ArrayList<T>(N) ;
+        this.lookahead = new ArrayList<>(N) ;
         this.capacity = N ;
         // Fill the lookahead.
         for ( int i = 0 ; i < N ; i++ )

@@ -32,14 +32,14 @@ public class ExprVars
 
     public static Set<Var> getVarsMentioned(Expr expr)
     {
-        Set<Var> acc = new HashSet<Var>() ;
+        Set<Var> acc = new HashSet<>() ;
         varsMentioned(acc, expr) ;
         return acc ;
     }
 
     public static Set<Var> getVarsMentioned(ExprList exprs)
     {
-        Set<Var> acc = new HashSet<Var>() ;
+        Set<Var> acc = new HashSet<>() ;
         for ( Expr expr : exprs )
             varsMentioned(acc, expr) ;    
         return acc ;
@@ -55,13 +55,13 @@ public class ExprVars
                     acc.add(var) ;
                 }
             } ;
-        ExprVarsWorker<Var> vv = new ExprVarsWorker<Var>(acc, action) ;
+        ExprVarsWorker<Var> vv = new ExprVarsWorker<>(acc, action) ;
         ExprWalker.walk(vv, expr) ;
     }
     
     public static Set<String> getVarNamesMentioned(Expr expr)
     {
-        Set<String> acc = new HashSet<String>() ;
+        Set<String> acc = new HashSet<>() ;
         varNamesMentioned(acc, expr) ;
         return acc ;
     }
@@ -76,19 +76,19 @@ public class ExprVars
                     acc.add(var.getVarName()) ;
                 }
             } ;
-        ExprVarsWorker<String> vv = new ExprVarsWorker<String>(acc, action) ;
+        ExprVarsWorker<String> vv = new ExprVarsWorker<>(acc, action) ;
         ExprWalker.walk(vv, expr) ;
     }
     
     
     public static Set<Var> getVarsMentioned(SortCondition sortCondition) {
-        Set<Var> acc = new HashSet<Var>() ;
+        Set<Var> acc = new HashSet<>() ;
         varsMentioned(acc, sortCondition) ;
         return acc ;
     }
     
     public static Set<Var> getVarsMentioned(Collection<SortCondition> sortConditions) {
-        Set<Var> acc = new HashSet<Var>() ;
+        Set<Var> acc = new HashSet<>() ;
         varsMentioned(acc, sortConditions) ;
         return acc ;
     }

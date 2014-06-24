@@ -45,7 +45,7 @@ public class LPRuleStore extends RuleStore {
     protected Map<Node, Map<Node, List<RuleClauseCode>>> indexPredicateToCodeMap;
         
     /** Set of predicates which should be tabled */
-    protected HashSet<Node> tabledPredicates = new HashSet<Node>();
+    protected HashSet<Node> tabledPredicates = new HashSet<>();
         
     /** Threshold for number of rule entries in a predicate bucket before second level indexing kicks in */
     private static final int INDEX_THRESHOLD = 20;
@@ -164,27 +164,31 @@ public class LPRuleStore extends RuleStore {
     protected void compileAll() {
         isCompiled = true;
         
-        predicateToCodeMap = new HashMap<Node, List<RuleClauseCode>>();
-        allRuleClauseCodes = new ArrayList<RuleClauseCode>();
-        indexPredicateToCodeMap = new HashMap<Node, Map<Node, List<RuleClauseCode>>>();
-        for (Iterator<Rule> ri = getAllRules().iterator(); ri.hasNext(); ) {
-            Rule r = ri.next();
-            ClauseEntry term = r.getHeadElement(0);
-            if (term instanceof TriplePattern) {
-                RuleClauseCode code = new RuleClauseCode(r);
-                allRuleClauseCodes.add(code);
-                Node predicate = ((TriplePattern)term).getPredicate();
-                if (predicate.isVariable()) {
+        predicateToCodeMap = new HashMap<>();
+        allRuleClauseCodes = new ArrayList<>();
+        indexPredicateToCodeMap = new HashMap<>();
+        for ( Rule r : getAllRules() )
+        {
+            ClauseEntry term = r.getHeadElement( 0 );
+            if ( term instanceof TriplePattern )
+            {
+                RuleClauseCode code = new RuleClauseCode( r );
+                allRuleClauseCodes.add( code );
+                Node predicate = ( (TriplePattern) term ).getPredicate();
+                if ( predicate.isVariable() )
+                {
                     predicate = Node_RuleVariable.WILD;
                 }
-                List<RuleClauseCode> predicateCode = predicateToCodeMap.get(predicate);
-                if (predicateCode == null) {
-                    predicateCode = new ArrayList<RuleClauseCode>();
-                    predicateToCodeMap.put(predicate, predicateCode);
+                List<RuleClauseCode> predicateCode = predicateToCodeMap.get( predicate );
+                if ( predicateCode == null )
+                {
+                    predicateCode = new ArrayList<>();
+                    predicateToCodeMap.put( predicate, predicateCode );
                 }
-                predicateCode.add(code);
-                if (predicateCode.size() > INDEX_THRESHOLD) {
-                    indexPredicateToCodeMap.put(predicate, new HashMap<Node, List<RuleClauseCode>>());
+                predicateCode.add( code );
+                if ( predicateCode.size() > INDEX_THRESHOLD )
+                {
+                    indexPredicateToCodeMap.put( predicate, new HashMap<Node, List<RuleClauseCode>>() );
                 }
             }
         }
@@ -192,58 +196,66 @@ public class LPRuleStore extends RuleStore {
         // Now add the wild card rules into the list for each non-wild predicate)
         List<RuleClauseCode> wildRules = predicateToCodeMap.get(Node_RuleVariable.WILD);
         if (wildRules != null) {
-            for (Iterator<Map.Entry<Node, List<RuleClauseCode>>> i = predicateToCodeMap.entrySet().iterator(); i.hasNext(); ) {
-                Map.Entry<Node, List<RuleClauseCode>> entry = i.next();
+            for ( Map.Entry<Node, List<RuleClauseCode>> entry : predicateToCodeMap.entrySet() )
+            {
                 Node predicate = entry.getKey();
                 List<RuleClauseCode> predicateCode = entry.getValue();
-                if (predicate != Node_RuleVariable.WILD) {
-                    predicateCode.addAll(wildRules);
+                if ( predicate != Node_RuleVariable.WILD )
+                {
+                    predicateCode.addAll( wildRules );
                 }
             }
         }
         indexPredicateToCodeMap.put(Node_RuleVariable.WILD, new HashMap<Node, List<RuleClauseCode>>());
                 
         // Now built any required two level indices
-        for (Iterator<Map.Entry<Node, Map<Node, List<RuleClauseCode>>>> i = indexPredicateToCodeMap.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<Node, Map<Node, List<RuleClauseCode>>> entry = i.next();
+        for ( Map.Entry<Node, Map<Node, List<RuleClauseCode>>> entry : indexPredicateToCodeMap.entrySet() )
+        {
             Node predicate = entry.getKey();
             Map<Node, List<RuleClauseCode>> predicateMap = entry.getValue();
-            List<RuleClauseCode> wildRulesForPredicate = new ArrayList<RuleClauseCode>();
-            List<RuleClauseCode> allRulesForPredicate =  predicate.isVariable() ? allRuleClauseCodes : predicateToCodeMap.get(predicate);
-            for (Iterator<RuleClauseCode> j = allRulesForPredicate.iterator(); j.hasNext(); ) {
+            List<RuleClauseCode> wildRulesForPredicate = new ArrayList<>();
+            List<RuleClauseCode> allRulesForPredicate =
+                predicate.isVariable() ? allRuleClauseCodes : predicateToCodeMap.get( predicate );
+            for ( Iterator<RuleClauseCode> j = allRulesForPredicate.iterator(); j.hasNext(); )
+            {
                 RuleClauseCode code = j.next();
-                ClauseEntry head = code.getRule().getHeadElement(0);
+                ClauseEntry head = code.getRule().getHeadElement( 0 );
                 boolean indexed = false;
-                if (head instanceof TriplePattern) {
-                    Node objectPattern = ((TriplePattern)head).getObject();
-                    if (!objectPattern.isVariable() && !Functor.isFunctor(objectPattern)) {
+                if ( head instanceof TriplePattern )
+                {
+                    Node objectPattern = ( (TriplePattern) head ).getObject();
+                    if ( !objectPattern.isVariable() && !Functor.isFunctor( objectPattern ) )
+                    {
                         // Index against object
-                        List<RuleClauseCode> indexedCode = predicateMap.get(objectPattern);
-                        if (indexedCode == null) {
-                            indexedCode = new ArrayList<RuleClauseCode>();
-                            predicateMap.put(objectPattern, indexedCode);
+                        List<RuleClauseCode> indexedCode = predicateMap.get( objectPattern );
+                        if ( indexedCode == null )
+                        {
+                            indexedCode = new ArrayList<>();
+                            predicateMap.put( objectPattern, indexedCode );
                         }
-                        indexedCode.add(code);
+                        indexedCode.add( code );
                         indexed = true;
                     }
                 }
-                if (!indexed) {
-                    wildRulesForPredicate.add(code);
+                if ( !indexed )
+                {
+                    wildRulesForPredicate.add( code );
                 }
             }
             // Now fold the rules that apply to any index entry into all the indexed entries
-            for (Iterator<Map.Entry<Node, List<RuleClauseCode>>> k = predicateMap.entrySet().iterator(); k.hasNext(); ) {
+            for ( Iterator<Map.Entry<Node, List<RuleClauseCode>>> k = predicateMap.entrySet().iterator(); k.hasNext(); )
+            {
                 Map.Entry<Node, List<RuleClauseCode>> ent = k.next();
                 Node pred = ent.getKey();
                 List<RuleClauseCode> predicateCode = ent.getValue();
-                predicateCode.addAll(wildRulesForPredicate);
+                predicateCode.addAll( wildRulesForPredicate );
             }
         }
         
         // Now compile all the clauses
-        for (Iterator<RuleClauseCode> i = allRuleClauseCodes.iterator(); i.hasNext(); ) {
-            RuleClauseCode code = i.next();
-            code.compile(this);
+        for ( RuleClauseCode code : allRuleClauseCodes )
+        {
+            code.compile( this );
         }
     }
     

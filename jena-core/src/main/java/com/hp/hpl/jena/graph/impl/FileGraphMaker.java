@@ -230,7 +230,9 @@ public class FileGraphMaker
     public ExtendedIterator<String> listGraphs()
         { String [] fileNames = new File( fileBase ).list( graphName() );
         Set<String> allNames = CollectionFactory.createHashedSet( Arrays.asList( fileNames ) );
-        Iterator<File> it = created.keySet().iterator();
-        while (it.hasNext()) allNames.add( it.next().getName() ); 
+            for ( File file : created.keySet() )
+            {
+                allNames.add( file.getName() );
+            }
 		return WrappedIterator.create( allNames.iterator() ) .mapWith( unconvert ); }
     }

@@ -87,7 +87,7 @@ public abstract class DatasetChangesBatched implements DatasetChanges
     private void startBatch()
     {
         if ( batchQuads == null )
-            batchQuads = new ArrayList<Quad>() ;
+            batchQuads = new ArrayList<>() ;
     }
 
     protected void finishBatch()

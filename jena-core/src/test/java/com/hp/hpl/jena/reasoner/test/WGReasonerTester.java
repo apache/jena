@@ -24,11 +24,10 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.net.URL ;
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
-import org.junit.Assert ;
 import junit.framework.TestCase ;
+import org.junit.Assert ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -211,9 +210,12 @@ public class WGReasonerTester {
      * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
-        for (Iterator<String> i = listTests().iterator(); i.hasNext(); ) {
-            String test = i.next();
-            if (!runTest(test, reasonerF, testcase, configuration)) return false;
+        for ( String test : listTests() )
+        {
+            if ( !runTest( test, reasonerF, testcase, configuration ) )
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -222,7 +224,7 @@ public class WGReasonerTester {
      * Return a list of all test names defined in the manifest for this test harness.
      */
     public List<String> listTests() {
-        List<String> testList = new ArrayList<String>();
+        List<String> testList = new ArrayList<>();
         ResIterator tests = testManifest.listResourcesWithProperty(RDF.type, PositiveEntailmentTest);
         while (tests.hasNext()) {
             testList.add(tests.next().toString());
@@ -291,9 +293,13 @@ public class WGReasonerTester {
         }
         
         // Skip the test designed for only non-datatype aware processors
-        for (int i = 0; i < blockedTests.length; i++) {
-            if (test.getURI().equals(blockedTests[i])) return NOT_APPLICABLE;
-        }
+           for ( String blockedTest : blockedTests )
+           {
+               if ( test.getURI().equals( blockedTest ) )
+               {
+                   return NOT_APPLICABLE;
+               }
+           }
                 
         // Load up the premise documents
         Model premises = ModelFactory.createDefaultModel();

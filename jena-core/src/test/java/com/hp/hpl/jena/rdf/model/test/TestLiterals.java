@@ -142,11 +142,7 @@ public class TestLiterals extends AbstractModelTestBase
 			Assert.assertEquals(tv, l.getByte());
 			assertInRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
 		}
-		catch (final NumberFormatException e)
-		{
-			assertOutsideRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
-		}
-		catch (final IllegalArgumentException e)
+        catch (final IllegalArgumentException e)
 		{
 			assertOutsideRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
 		}
@@ -155,11 +151,7 @@ public class TestLiterals extends AbstractModelTestBase
 			Assert.assertEquals(tv, l.getShort());
 			assertInRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
 		}
-		catch (final NumberFormatException e)
-		{
-			assertOutsideRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
-		}
-		catch (final IllegalArgumentException e)
+        catch (final IllegalArgumentException e)
 		{
 			assertOutsideRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
 		}
@@ -198,11 +190,7 @@ public class TestLiterals extends AbstractModelTestBase
 			Assert.assertEquals(tv, l.getByte());
 			assertInRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
 		}
-		catch (final NumberFormatException e)
-		{
-			assertOutsideRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
-		}
-		catch (final IllegalArgumentException e)
+        catch (final IllegalArgumentException e)
 		{
 			assertOutsideRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
 		}
@@ -211,11 +199,7 @@ public class TestLiterals extends AbstractModelTestBase
 			Assert.assertEquals(tv, l.getShort());
 			assertInRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
 		}
-		catch (final NumberFormatException e)
-		{
-			assertOutsideRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
-		}
-		catch (final IllegalArgumentException e)
+        catch (final IllegalArgumentException e)
 		{
 			assertOutsideRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
 		}
@@ -224,11 +208,7 @@ public class TestLiterals extends AbstractModelTestBase
 			Assert.assertEquals(tv, l.getInt());
 			assertInRange(Integer.MIN_VALUE, tv, Integer.MAX_VALUE);
 		}
-		catch (final NumberFormatException e)
-		{
-			assertOutsideRange(Integer.MIN_VALUE, tv, Integer.MAX_VALUE);
-		}
-		catch (final IllegalArgumentException e)
+        catch (final IllegalArgumentException e)
 		{
 			assertOutsideRange(Integer.MIN_VALUE, tv, Integer.MAX_VALUE);
 		}
@@ -266,11 +246,7 @@ public class TestLiterals extends AbstractModelTestBase
 			Assert.assertEquals(tv, l.getByte());
 			assertInRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
 		}
-		catch (final NumberFormatException e)
-		{
-			assertOutsideRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
-		}
-		catch (final IllegalArgumentException e)
+        catch (final IllegalArgumentException e)
 		{
 			assertOutsideRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
 		}

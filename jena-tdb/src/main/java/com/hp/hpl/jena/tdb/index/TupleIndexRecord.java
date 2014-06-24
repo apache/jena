@@ -139,9 +139,9 @@ public class TupleIndexRecord extends TupleIndexBase
         if ( numSlots == pattern.size() )
         {
             if ( index.contains(minRec) )
-                return new SingletonIterator<Tuple<NodeId>>(pattern) ;  
+                return new SingletonIterator<>(pattern) ;
             else
-                return new NullIterator<Tuple<NodeId>>() ;
+                return new NullIterator<>() ;
         }
         
         Iterator<Record> iter = null ;

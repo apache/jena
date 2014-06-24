@@ -80,7 +80,7 @@ public abstract class CmdLangParse extends CmdGeneral
         public String getRateName()         { return "TPS" ; }
     } ;
     
-    protected static Map<Lang, LangHandler> dispatch = new HashMap<Lang, LangHandler>() ; 
+    protected static Map<Lang, LangHandler> dispatch = new HashMap<>() ;
     static {
         for ( Lang lang : RDFLanguages.getRegisteredLanguages() )
         {

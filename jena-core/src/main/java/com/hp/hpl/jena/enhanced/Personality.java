@@ -63,7 +63,7 @@ public class Personality<T> {
         copied, not shared.
     */
     public Personality<T> copy() 
-        { return new Personality<T>( this ); }
+        { return new Personality<>( this ); }
     
     /** 
         get the implemementation for the specified type, returning null if there

@@ -42,7 +42,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
     /**
         The mapping from the names of graphs to the Graphs themselves.
      */    
-    private Map<String, Graph> graphs = new HashMap<String, Graph>();
+    private Map<String, Graph> graphs = new HashMap<>();
 
     public Graph create()
     { return Factory.createGraphMem(); }

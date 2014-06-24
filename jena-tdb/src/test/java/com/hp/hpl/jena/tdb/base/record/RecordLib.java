@@ -72,7 +72,7 @@ public class RecordLib
     
     static List<Record> intToRecord(int[] v, RecordFactory factory)
     {
-        List<Record> x = new ArrayList<Record>() ;
+        List<Record> x = new ArrayList<>() ;
         for ( int i : v )
             x.add(intToRecord(i, factory)) ;
         return x ;
@@ -106,7 +106,7 @@ public class RecordLib
 
     public static List<Integer> toIntList(int... vals)
     {
-        List<Integer> x = new ArrayList<Integer>() ;
+        List<Integer> x = new ArrayList<>() ;
         for ( int i : vals )
             x.add(i) ;
         return x ;

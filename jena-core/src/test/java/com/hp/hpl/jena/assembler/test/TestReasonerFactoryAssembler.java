@@ -181,7 +181,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
             };
         ReasonerFactory r = (ReasonerFactory) ASSEMBLER.open( mock, root );
         GenericRuleReasoner grr = (GenericRuleReasoner) r.create( null );
-        assertEquals( new HashSet<Rule>( rules.getRules() ), new HashSet<Rule>( grr.getRules() ) );
+        assertEquals( new HashSet<>( rules.getRules() ), new HashSet<>( grr.getRules() ) );
         }
 
     public void testMultipleRules()
@@ -203,10 +203,10 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
             };
         ReasonerFactory r = (ReasonerFactory) ASSEMBLER.open( mock, root );
         GenericRuleReasoner grr = (GenericRuleReasoner) r.create( null );
-        HashSet<Rule> wanted = new HashSet<Rule>();
+        HashSet<Rule> wanted = new HashSet<>();
         wanted.addAll( rulesA.getRules() );
         wanted.addAll( rulesB.getRules() );
-        assertEquals( wanted, new HashSet<Rule>( grr.getRules() ) );
+        assertEquals( wanted, new HashSet<>( grr.getRules() ) );
         }
 
     protected void testReasonerURL( Class<?> wanted, String string )

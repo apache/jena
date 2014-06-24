@@ -59,7 +59,7 @@ public class FormsAuthenticator extends AbstractScopedAuthenticator<FormLogin> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FormsAuthenticator.class);
 
-    private Map<URI, FormLogin> logins = new HashMap<URI, FormLogin>();
+    private Map<URI, FormLogin> logins = new HashMap<>();
 
     /**
      * Creates a new authenticator with the given login

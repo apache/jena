@@ -37,7 +37,7 @@ public class CacheSetLRU<T> implements CacheSet<T>
     
     public CacheSetLRU(float loadFactor, int maxSize)
     {
-        cacheMap = new CacheImpl<T, Object>(loadFactor, maxSize) ;
+        cacheMap = new CacheImpl<>(loadFactor, maxSize) ;
     }
 
 //    /** Callback for entries when dropped from the cache */

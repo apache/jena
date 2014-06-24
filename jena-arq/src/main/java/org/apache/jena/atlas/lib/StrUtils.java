@@ -68,7 +68,7 @@ public class StrUtils //extends StringUtils
         if ( a.length == 1)
             return a[0] ;
 
-        StringBuffer sbuff = new StringBuffer() ;
+        StringBuilder sbuff = new StringBuilder() ;
         sbuff.append(a[0]) ;
 
         for ( int i = 1 ; i < a.length ; i++ )
@@ -185,7 +185,7 @@ public class StrUtils //extends StringUtils
     
     public static List<Character> toCharList(String str)
     {
-        List<Character> characters = new ArrayList<Character>(str.length()) ;
+        List<Character> characters = new ArrayList<>(str.length()) ;
         for ( Character ch : str.toCharArray() )
             characters.add(ch) ;
         return characters ;

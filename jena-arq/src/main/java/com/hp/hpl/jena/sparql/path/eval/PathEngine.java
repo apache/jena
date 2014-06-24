@@ -240,7 +240,7 @@ abstract public class PathEngine
         QueryIterator qIter = pf.exec(r, sv, p, ov, new ExecutionContext(ARQ.getContext(), graph, null, null)) ;
         if ( ! qIter.hasNext() )
             return Iter.nullIterator() ;
-        List<Triple> array = new ArrayList<Triple>() ;
+        List<Triple> array = new ArrayList<>() ;
         for ( ; qIter.hasNext() ; ) {
             Binding b = qIter.next() ;
             Node st = value(sv, b) ;

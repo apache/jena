@@ -508,9 +508,9 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		try {
 			a.load(in);
 			fail("Thread was not interrupted.");
-		} catch (InterruptedIOException e) {
-		} catch (SAXParseException e) {
-		} finally {
+		} catch (InterruptedIOException | SAXParseException e) {
+		}
+        finally {
 			in.close();
 		}
 		// System.err.println("Finished "+Thread.interrupted());
@@ -595,11 +595,13 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     }
 	
 	private void checkExpected() {
-		for (int i = 0; i < expected.length; i++)
-			if (expected[i] != 0) {
-				fail("Expected error: " + ParseException.errorCodeName(expected[i])
-						+ " but it did not occur.");
-			}
+        for ( int anExpected : expected )
+        {
+            if ( anExpected != 0 )
+            {
+                fail( "Expected error: " + ParseException.errorCodeName( anExpected ) + " but it did not occur." );
+            }
+        }
 	}
 
 	@Override

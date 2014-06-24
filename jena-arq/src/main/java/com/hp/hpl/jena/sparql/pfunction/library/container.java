@@ -89,17 +89,18 @@ public class container extends PFuncSimple
         
         QueryIterConcat cIter = new QueryIterConcat(execCxt) ;
         Var cVar = Var.alloc(containerNode) ;
-        for ( Iterator<Node> iter = c.iterator() ; iter.hasNext() ; )
+        for ( Node cn : c )
         {
-            Node cn = iter.next() ;
             //Binding the container node. 
-            Binding b = BindingFactory.binding(binding, cVar, cn) ;
-            Node m = member ;
+            Binding b = BindingFactory.binding( binding, cVar, cn );
+            Node m = member;
             // Special case of ?x rdfs:member ?x
-            if ( Var.isVar(member) && member.equals(cVar) )
-                m = cn ;
-            
-            cIter.add(oneContainer(b, cn, m, execCxt)) ;
+            if ( Var.isVar( member ) && member.equals( cVar ) )
+            {
+                m = cn;
+            }
+
+            cIter.add( oneContainer( b, cn, m, execCxt ) );
         }
         return cIter ;
         //throw new QueryFatalException(Utils.className(this)+": Arg 1 is too hard : "+containerNode) ;
@@ -122,12 +123,11 @@ public class container extends PFuncSimple
             // Wrong type.
             return IterLib.noResults(execCxt) ;
 
-        List<Binding> bindings = new ArrayList<Binding>() ;
-        for ( Iterator<Node> iter = x.iterator() ; iter.hasNext() ; )
+        List<Binding> bindings = new ArrayList<>() ;
+        for ( Node n : x )
         {
-            Node n = iter.next() ;
-            Binding b = BindingFactory.binding(binding, memberVar, n) ;
-            bindings.add(b) ;
+            Binding b = BindingFactory.binding( binding, memberVar, n );
+            bindings.add( b );
         }
         
         // Turn into a QueryIterator of extra bindings.
@@ -142,7 +142,7 @@ public class container extends PFuncSimple
     
     static private Collection<Node> findContainers(Graph graph, Node typeNode)
     {
-        Set<Node> acc = new HashSet<Node>() ;
+        Set<Node> acc = new HashSet<>() ;
         if ( typeNode != null )
         {
             findContainers(acc, graph, typeNode) ;
@@ -167,7 +167,7 @@ public class container extends PFuncSimple
     
     static private Collection<Node> findContainingContainers(Graph graph, Node typeNode, Node member)
     {
-        Collection<Node> acc = new HashSet<Node>() ; 
+        Collection<Node> acc = new HashSet<>() ;
         // Index off the object
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, Node.ANY, member) ;
         while(iter.hasNext())

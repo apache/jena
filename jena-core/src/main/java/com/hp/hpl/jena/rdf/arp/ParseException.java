@@ -22,6 +22,8 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.ARPLocation;
 
+import java.lang.reflect.Field;
+
 /**
  * An exception during the RDF processing of ARP. Note: it is distinguished from
  * an XML related exception from Xerces because while both are
@@ -169,11 +171,17 @@ public class ParseException extends SAXParseException implements
     static public String errorCodeName(int errNo) {
         Class<?> c = ARPErrorNumbers.class;
         java.lang.reflect.Field flds[] = c.getDeclaredFields();
-        for (int i = 0; i < flds.length; i++) {
-            try {
-                if (flds[i].getInt(null) == errNo)
-                    return flds[i].getName();
-            } catch (Exception e) {
+        for ( Field fld : flds )
+        {
+            try
+            {
+                if ( fld.getInt( null ) == errNo )
+                {
+                    return fld.getName();
+                }
+            }
+            catch ( Exception e )
+            {
                 // ignore exceptions
             }
         }

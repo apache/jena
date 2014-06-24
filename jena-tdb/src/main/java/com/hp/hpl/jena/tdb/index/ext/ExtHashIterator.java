@@ -33,7 +33,7 @@ public class ExtHashIterator implements Iterator<Record>
     private ExtHash extHash ;
     private int dictionaryIdx ;
     private Iterator<Record> rBuffIterator ;
-    private Set<Integer> blockIds = new HashSet<Integer>() ; 
+    private Set<Integer> blockIds = new HashSet<>() ;
     
     public ExtHashIterator(ExtHash extHash)
     {

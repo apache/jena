@@ -91,8 +91,10 @@ public abstract class FmtLayout2
     protected void dropIndexesTableTriples()
     {
         try {
-            for ( int i = 0 ; i < triplesIndexNames.length ; i++)
-                connection().exec(syntaxDropIndex(triplesIndexNames[i], TableDescTriples.name())) ;
+            for ( String triplesIndexName : triplesIndexNames )
+            {
+                connection().exec( syntaxDropIndex( triplesIndexName, TableDescTriples.name() ) );
+            }
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableDescTriples.name()+"'",ex) ; }
     }
@@ -115,8 +117,10 @@ public abstract class FmtLayout2
     protected void dropIndexesTableQuads()
     {
         try {
-            for ( int i = 0 ; i < quadIndexNames.length ; i++)
-                connection().exec(syntaxDropIndex(quadIndexNames[i],  TableDescQuads.name())) ;
+            for ( String quadIndexName : quadIndexNames )
+            {
+                connection().exec( syntaxDropIndex( quadIndexName, TableDescQuads.name() ) );
+            }
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableDescQuads.name()+"'",ex) ; }
     }

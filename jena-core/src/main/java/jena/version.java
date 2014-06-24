@@ -39,9 +39,10 @@ public class version implements Jena {
 	 */
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
 		Field f[] = Jena.class.getDeclaredFields();
-		for (int i=0; i<f.length; i++) {
-			System.out.println(f[i].getName()+": " + f[i].get(null));
-		}
+        for ( Field aF : f )
+        {
+            System.out.println( aF.getName() + ": " + aF.get( null ) );
+        }
 	}
 
 }

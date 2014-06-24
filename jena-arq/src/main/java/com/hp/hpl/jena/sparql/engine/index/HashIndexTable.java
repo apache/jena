@@ -50,7 +50,7 @@ public class HashIndexTable implements IndexTable {
     		return ;
     	}
 
-    	table = new HashSet<Key>() ;
+    	table = new HashSet<>() ;
     	missingValue = false ;
 
     	while ( data.hasNext() )
@@ -91,7 +91,7 @@ public class HashIndexTable implements IndexTable {
 
     private void initColumnMappings(Set<Var> commonVars)
     {
-    	varColumns = new HashMap<Var,Integer>() ;
+    	varColumns = new HashMap<>() ;
     	int c = 0 ;
     	for ( Var var: commonVars )
     		varColumns.put(var, c++) ;

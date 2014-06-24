@@ -211,7 +211,7 @@ public class Test_rdfcat extends TestCase
 
         rdfcatFixture rc = new rdfcatFixture( so );
 
-        List<String> l = new ArrayList<String>();
+        List<String> l = new ArrayList<>();
         if (outFormArg != null) {
             l.add(  "-out" );
             l.add(  outFormArg );

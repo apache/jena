@@ -48,7 +48,7 @@ public class ReasonerRegistry {
     protected static ReasonerRegistry theRegistry;
 
     /** Map from reasoner URI to the associated factory */
-    protected Map<String, ReasonerFactory> reasonerFactories = new HashMap<String, ReasonerFactory>();
+    protected Map<String, ReasonerFactory> reasonerFactories = new HashMap<>();
 
     /** Union of the all reasoner capability descriptions */
     protected Model allDescriptions;

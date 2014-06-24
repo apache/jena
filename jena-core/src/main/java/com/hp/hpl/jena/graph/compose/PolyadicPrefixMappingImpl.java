@@ -91,10 +91,13 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         if (s == null && prefix.length() > 0)
             {
             List<Graph> graphs = poly.getSubGraphs();
-            for (int i = 0; i < graphs.size(); i += 1)
+                for ( Graph graph : graphs )
                 {
-                String ss = graphs.get(i).getPrefixMapping().getNsPrefixURI( prefix );
-                if (ss != null) return ss;
+                    String ss = graph.getPrefixMapping().getNsPrefixURI( prefix );
+                    if ( ss != null )
+                    {
+                        return ss;
+                    }
                 }
             }
         return s;
@@ -117,10 +120,13 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         if (s == null)
             {
             List<Graph> graphs = poly.getSubGraphs();
-            for (int i = 0; i < graphs.size(); i += 1)
+                for ( Graph graph : graphs )
                 {
-                String ss = graphs.get(i).getPrefixMapping().getNsURIPrefix( uri );
-                if (ss != null && ss.length() > 0) return ss;
+                    String ss = graph.getPrefixMapping().getNsURIPrefix( uri );
+                    if ( ss != null && ss.length() > 0 )
+                    {
+                        return ss;
+                    }
                 }
             }
         return s;
@@ -137,10 +143,13 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         if (s.equals( prefixed ))
             {
             List<Graph> graphs = poly.getSubGraphs();
-            for (int i = 0; i < graphs.size(); i += 1)
+                for ( Graph graph : graphs )
                 {
-                String ss = graphs.get(i).getPrefixMapping().expandPrefix( prefixed );
-                if (!ss.equals( prefixed )) return ss;
+                    String ss = graph.getPrefixMapping().expandPrefix( prefixed );
+                    if ( !ss.equals( prefixed ) )
+                    {
+                        return ss;
+                    }
                 }
             }
         return s;
@@ -165,10 +174,13 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         if (s.equals( uri ))
             {
             List<Graph> graphs = poly.getSubGraphs();
-            for (int i = 0; i < graphs.size(); i += 1)
+                for ( Graph graph : graphs )
                 {
-                String ss = graphs.get(i).getPrefixMapping().shortForm( uri );
-                if (!ss.equals( uri )) return ss;
+                    String ss = graph.getPrefixMapping().shortForm( uri );
+                    if ( !ss.equals( uri ) )
+                    {
+                        return ss;
+                    }
                 }
             }
         return s;
@@ -180,10 +192,13 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
         if (result == null)
             {
             List<Graph> graphs = poly.getSubGraphs();
-            for (int i = 0; i < graphs.size(); i += 1)
+                for ( Graph graph : graphs )
                 {
-                String ss = graphs.get(i).getPrefixMapping().qnameFor( uri );
-                if (ss != null) return ss;
+                    String ss = graph.getPrefixMapping().qnameFor( uri );
+                    if ( ss != null )
+                    {
+                        return ss;
+                    }
                 }
             }
         return result;

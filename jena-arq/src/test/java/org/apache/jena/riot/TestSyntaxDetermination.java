@@ -37,7 +37,7 @@ public class TestSyntaxDetermination extends BaseTest {
     
     @Parameters(name = "{0} -- {1} {2} {3} {4}")
     public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<Object[]>() ;
+        List<Object[]> x = new ArrayList<>() ;
         add(x, "Test-ext-ttl-1", "http://sparql.org/D.ttl",   "text/turtle",  Lang.TTL,     Lang.TTL) ;
         add(x, "Test-ext-ttl-2", "http://sparql.org/D.ttl",   "text/turtle",  Lang.RDFXML,  Lang.TTL) ;
         add(x, "Test-ext-ttl-3", "http://sparql.org/D.ttl",   "text/plain",   null,         Lang.TTL) ;

@@ -159,9 +159,9 @@ public class Record //implements Comparable<Record>
     static public String str(byte[] b)
     {
         StringBuilder str = new StringBuilder() ;
-        for ( int i = 0 ; i < b.length ; i++ )
+        for ( byte aB : b )
         {
-            str.append(format("%02x", b[i])) ;
+            str.append( format( "%02x", aB ) );
         }
         return str.toString() ;
     }

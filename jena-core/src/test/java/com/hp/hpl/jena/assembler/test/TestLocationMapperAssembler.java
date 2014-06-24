@@ -68,15 +68,14 @@ public class TestLocationMapperAssembler extends AssemblerTestBase
         Set<String> gAltPrefixKeys = IteratorCollection.iteratorToSet( got.listAltPrefixes() );
         assertEquals( "altEntry keys dhould be equal", eAltEntryKeys, gAltEntryKeys );
         assertEquals( "prefixEntry keys should be equal", eAltPrefixKeys, gAltPrefixKeys );
-        for (Iterator<String> altKeys = eAltEntryKeys.iterator(); altKeys.hasNext();)
+            for ( String key : eAltEntryKeys )
             {
-            String key = altKeys.next();
-            assertEquals( "alt entrys should be equal", expected.getAltEntry( key ), got.getAltEntry( key ) );
-            }        
-        for (Iterator<String> preKeys = eAltPrefixKeys.iterator(); preKeys.hasNext();)
-                {
-                String key = preKeys.next();
-                assertEquals( "prefix entiries should be equal", expected.getAltPrefix( key ), got.getAltPrefix( key ) );
-                }
+                assertEquals( "alt entrys should be equal", expected.getAltEntry( key ), got.getAltEntry( key ) );
+            }
+            for ( String key : eAltPrefixKeys )
+            {
+                assertEquals( "prefix entiries should be equal", expected.getAltPrefix( key ),
+                              got.getAltPrefix( key ) );
+            }
         }
     }

@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public final class Trie<T> {
 
-    private TrieNode<T> root = new TrieNode<T>(null);
+    private TrieNode<T> root = new TrieNode<>(null);
 
     /**
      * Adds a value to the trie overwriting any existing value
@@ -198,7 +198,7 @@ public final class Trie<T> {
     public List<T> prefixSearch(String prefix) {
         TrieNode<T> n = this.find(prefix);
         if (n == null)
-            return new ArrayList<T>();
+            return new ArrayList<>();
         return Collections.unmodifiableList(n.getValues());
     }
 
@@ -211,7 +211,7 @@ public final class Trie<T> {
      * @return List of values associated with any partial prefix of the key
      */
     public List<T> partialSearch(String key) {
-        List<T> values = new ArrayList<T>();
+        List<T> values = new ArrayList<>();
         TrieNode<T> current = this.root;
         if (key == null) {
             if (current.hasValue())
@@ -366,13 +366,13 @@ public final class Trie<T> {
         public TrieNode<T> moveToChild(Character c) {
             TrieNode<T> n = this.getChild(c);
             if (n == null) {
-                n = new TrieNode<T>(null);
+                n = new TrieNode<>(null);
                 if (this.children != null) {
                     // Add to existing map
                     this.children.put(c, n);
                 } else if (this.singletonChildChar != null) {
                     // Need to lazily create map
-                    this.children = new HashMap<Character, Trie.TrieNode<T>>();
+                    this.children = new HashMap<>();
                     this.children.put(this.singletonChildChar, this.singletonChild);
                     this.children.put(c, n);
                 } else {
@@ -390,7 +390,7 @@ public final class Trie<T> {
          * @return Values
          */
         public List<T> getValues() {
-            List<T> values = new ArrayList<T>();
+            List<T> values = new ArrayList<>();
             if (this.hasValue()) {
                 values.add(this.value);
             }

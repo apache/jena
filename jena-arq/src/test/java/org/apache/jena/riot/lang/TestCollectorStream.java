@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
 public class TestCollectorStream  {
 	
 	private List<Triple> writeTriples(StreamRDF out, int size) {
-		List<Triple> results = new ArrayList<Triple>();
+		List<Triple> results = new ArrayList<>();
 		out.start();
         for (int i = 1; i <= size; i++) {
             Triple t = new Triple(NodeFactory.createAnon(),
@@ -38,7 +38,7 @@ public class TestCollectorStream  {
 	}
 	
 	private List<Quad> writeQuads(StreamRDF out, int size) {
-		List<Quad> results = new ArrayList<Quad>();
+		List<Quad> results = new ArrayList<>();
 		out.start();
         for (int i = 1; i <= size; i++) {
         	Quad q = new Quad(NodeFactory.createURI("http://graph"),
@@ -60,7 +60,7 @@ public class TestCollectorStream  {
 	}
 	
 	private List<Tuple<Node>> writeTuples(StreamRDF out, int size) {
-		List<Tuple<Node>> results = new ArrayList<Tuple<Node>>();
+		List<Tuple<Node>> results = new ArrayList<>();
 		out.start();
         for (int i = 1; i <= size; i++) {
             Tuple<Node> t = Tuple.createTuple(NodeFactory.createURI("http://graph"),

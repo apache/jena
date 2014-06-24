@@ -73,7 +73,7 @@ public class ExprUtils
         if ( args.size() == 0 )
             return "<<Empty list>>" ;
         
-        StringBuffer s = new StringBuffer() ;
+        StringBuilder s = new StringBuilder() ;
         
         boolean first = true ;
 

@@ -88,7 +88,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     protected OntModelSpec m_spec;
 
     /** List of URI strings of documents that have been imported into this one */
-    protected Set<String> m_imported = new HashSet<String>();
+    protected Set<String> m_imported = new HashSet<>();
 
     /** Mode switch for strict checking mode */
     protected boolean m_strictMode = true;
@@ -157,8 +157,8 @@ public class OntModelImpl extends ModelCom implements OntModel
                 // Protect in case the graph is read-only.
                 // Prefixes are hints
                 String[][] p = spec.getKnownPrefixes();
-                for (int i = 0; i < p.length; i++) {
-                    String[] pair = p[i];
+                for ( String[] pair : p )
+                {
                     setNsPrefix( pair[0], pair[1] );
                 }
             } catch (Exception ex) {}
@@ -457,7 +457,7 @@ public class OntModelImpl extends ModelCom implements OntModel
             // it's tricky to make this efficient and cover all possible cases. I've changed the code to
             // make use of the isIndividual() test on OntResource, at the expense of some redundant queries
             // to the model, which could become expensive in the case of a DB model - ijd Apr-23-09
-            Set<Individual> results = new HashSet<Individual>();
+            Set<Individual> results = new HashSet<>();
             for (Iterator<Statement> i = listStatements( null, RDF.type, (RDFNode) null); i.hasNext(); ) {
                 OntResource r = i.next().getSubject().as( OntResource.class );
                 if (r.isIndividual()) {
@@ -531,7 +531,7 @@ public class OntModelImpl extends ModelCom implements OntModel
             {
                 // we have have both direct sub-class of and a :Thing class to test against
                 return listStatements( null, ReasonerVocabulary.directSubClassOf, getProfile().THING() )
-                       .mapWith( new OntResourceImpl.SubjectAsMapper<OntClass>( OntClass.class ));
+                       .mapWith( new OntResourceImpl.SubjectAsMapper<>( OntClass.class ));
             }
         }
 
@@ -747,11 +747,11 @@ public class OntModelImpl extends ModelCom implements OntModel
         Resource r = getProfile().ANNOTATION_PROPERTY();
 
         if (r == null) {
-            return new NullIterator<AnnotationProperty>();
+            return new NullIterator<>();
         }
         else {
             return findByType( r )
-            		.mapWith( new SubjectNodeAs<AnnotationProperty>( AnnotationProperty.class ) )
+            		.mapWith( new SubjectNodeAs<>( AnnotationProperty.class ) )
             		.filterKeep( new UniqueFilter<AnnotationProperty>());
         }
     }
@@ -2058,8 +2058,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public Set<String> listImportedOntologyURIs( boolean closure ) {
-        Set<String> results = new HashSet<String>();
-        List<Model> queue = new ArrayList<Model>();
+        Set<String> results = new HashSet<>();
+        List<Model> queue = new ArrayList<>();
         queue.add( getBaseModel() );
 
         while (!queue.isEmpty()) {
@@ -2356,9 +2356,9 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public int countSubModels() {
         int count = 0;
-        for (Iterator<Graph> i = getSubGraphs().iterator(); i.hasNext(); ) {
+        for ( Graph graph1 : getSubGraphs() )
+        {
             count++;
-            i.next();
         }
         return count;
     }
@@ -2935,7 +2935,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over all triples <code>_x rdf:type type</code>
      */
     protected <T extends RDFNode> ExtendedIterator<T> findByTypeAs( Resource type, Iterator<Resource> types, Class<T> asKey ) {
-        return findByType( type, types ).mapWith( new SubjectNodeAs<T>( asKey ) );
+        return findByType( type, types ).mapWith( new SubjectNodeAs<>( asKey ) );
     }
 
     /**
@@ -2968,7 +2968,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * the given polymorphic class.
      */
     protected <T extends RDFNode> ExtendedIterator<T> findByTypeAs( Resource type, Class<T> asKey ) {
-        return findByType( type ).mapWith( new SubjectNodeAs<T>( asKey ) );
+        return findByType( type ).mapWith( new SubjectNodeAs<>( asKey ) );
     }
 
     /**
@@ -2995,7 +2995,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return ExtendedIterator over subjects of p, presented as the facet.
      */
     protected <T extends RDFNode> ExtendedIterator<T> findByDefiningPropertyAs( Property p, Class<T> asKey ) {
-        return findByDefiningProperty( p ).mapWith( new SubjectNodeAs<T>( asKey ) );
+        return findByDefiningProperty( p ).mapWith( new SubjectNodeAs<>( asKey ) );
     }
 
 

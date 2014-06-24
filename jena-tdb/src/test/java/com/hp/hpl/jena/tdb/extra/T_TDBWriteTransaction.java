@@ -103,7 +103,7 @@ public class T_TDBWriteTransaction {
 		    dataset1.begin(ReadWrite.READ) ;
 		
 		for (int i = 0; i < TOTAL; i++) {
-			List<String> lastProcessedUris = new ArrayList<String>();
+			List<String> lastProcessedUris = new ArrayList<>();
 			for (int j = 0; j < 10*i; j++) {
 				String lastProcessedUri = "http://test.net/xmlns/test/1.0/someUri" + j;
 				lastProcessedUris.add(lastProcessedUri);

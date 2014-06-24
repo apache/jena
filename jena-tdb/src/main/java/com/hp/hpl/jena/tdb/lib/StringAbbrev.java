@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class StringAbbrev
 {
-    Map<String, String> prefix2string = new HashMap<String, String>() ; 
+    Map<String, String> prefix2string = new HashMap<>() ;
 
     public StringAbbrev()
     { 

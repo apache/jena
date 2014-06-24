@@ -31,7 +31,7 @@ public class SetUtils
     
     public static <T> Set<T> intersection(Set<? extends T> setLeft, Set<? extends T> setRight)
     {
-        Set<T> results = new HashSet<T>(setLeft) ;
+        Set<T> results = new HashSet<>(setLeft) ;
         results.retainAll(setRight) ;
         return results ;
     }
@@ -48,7 +48,7 @@ public class SetUtils
 
     public static <T> Set<T> union(Set<? extends T> s1, Set<? extends T> s2)
     {
-        Set<T> s3 = new HashSet<T>(s1) ;
+        Set<T> s3 = new HashSet<>(s1) ;
         s3.addAll(s2) ;
         return s3 ;
     }
@@ -57,7 +57,7 @@ public class SetUtils
 
     public static <T> Set<T> difference(Set<? extends T> s1, Set<? extends T> s2)
     {
-        Set<T> s3 = new HashSet<T>(s1) ;
+        Set<T> s3 = new HashSet<>(s1) ;
         s3.removeAll(s2) ;
         return s3 ;
     }

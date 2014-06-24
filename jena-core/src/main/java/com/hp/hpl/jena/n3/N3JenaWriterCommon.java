@@ -64,8 +64,8 @@ public class N3JenaWriterCommon implements RDFWriter
     // Common variables
     protected RDFErrorHandler errorHandler = null;
 
-    protected Map<String, String> prefixMap 	   	= new HashMap<String, String>() ;	// Prefixes to actually use
-    protected Map<String, String> reversePrefixMap  = new HashMap<String, String>() ;   // URI->prefix
+    protected Map<String, String> prefixMap 	   	= new HashMap<>() ;	// Prefixes to actually use
+    protected Map<String, String> reversePrefixMap  = new HashMap<>() ;   // URI->prefix
 	protected Map<Resource, String>	bNodesMap       = null ;		    // BNodes seen.
 	protected int bNodeCounter    = 0 ;
 
@@ -73,14 +73,14 @@ public class N3JenaWriterCommon implements RDFWriter
 	// Not Turtle.
     protected static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
     
-	protected static Map<String, String> wellKnownPropsMapN3 = new HashMap<String, String>() ;
+	protected static Map<String, String> wellKnownPropsMapN3 = new HashMap<>() ;
 	static {
 	    wellKnownPropsMapN3.put(NS_W3_log+"implies",		"=>" ) ;
 	    wellKnownPropsMapN3.put(OWL.sameAs.getURI(),	    "="  ) ;
 	    wellKnownPropsMapN3.put(RDF.type.getURI(),		"a"  ) ;
 	}
 
-    protected static Map<String, String> wellKnownPropsMapTurtle = new HashMap<String, String>() ;
+    protected static Map<String, String> wellKnownPropsMapTurtle = new HashMap<>() ;
     static {
         //wellKnownPropsMapTurtle.put(OWL.sameAs.getURI(),      "="  ) ;
         wellKnownPropsMapTurtle.put(RDF.type.getURI(),        "a"  ) ;
@@ -146,7 +146,7 @@ public class N3JenaWriterCommon implements RDFWriter
         // Store absolute name of property 
         propName = absolutePropName(propName) ;
         if ( writerPropertyMap == null )
-            writerPropertyMap = new HashMap<String, Object>() ;
+            writerPropertyMap = new HashMap<>() ;
         Object oldValue = writerPropertyMap.get(propName);
         writerPropertyMap.put(propName, propValue);
         return oldValue;
@@ -235,7 +235,7 @@ public class N3JenaWriterCommon implements RDFWriter
     protected void processModel(Model model)
     {
         prefixMap = model.getNsPrefixMap() ;
-        bNodesMap = new HashMap<Resource, String>() ;
+        bNodesMap = new HashMap<>() ;
 
         // PrefixMapping (to Jena 2.5.7 at least)
         // is specialized to XML-isms and Turle prefixed names aren't quite qnames. 
@@ -384,10 +384,9 @@ public class N3JenaWriterCommon implements RDFWriter
     
     protected void writePrefixes(Model model)
     {
-        for (Iterator<String> pIter = prefixMap.keySet().iterator(); pIter.hasNext();)
+        for ( String p : prefixMap.keySet() )
         {
-            String p = pIter.next();
-            String u = prefixMap.get(p);
+            String u = prefixMap.get( p );
 
 // BaseURI - <#>            
 //            // Special cases: N3 handling of base names.
@@ -400,10 +399,10 @@ public class N3JenaWriterCommon implements RDFWriter
 //            }
 
             String tmp = "@prefix " + p + ": ";
-            out.print(tmp);
-            out.print(pad(16 - tmp.length()));
+            out.print( tmp );
+            out.print( pad( 16 - tmp.length() ) );
             // NB Starts with a space to ensure a gap.
-            out.println(" <" + u + "> .");
+            out.println( " <" + u + "> ." );
         }
 
     }
@@ -489,7 +488,7 @@ public class N3JenaWriterCommon implements RDFWriter
     protected ClosableIterator<Property> preparePropertiesForSubject(Resource r)
     {
         // Properties to do.
-        Set<Property> properties = new HashSet<Property>() ;
+        Set<Property> properties = new HashSet<>() ;
 
         StmtIterator sIter = r.listProperties();
         for ( ; sIter.hasNext() ; )
@@ -890,7 +889,7 @@ public class N3JenaWriterCommon implements RDFWriter
 
     protected Iterator<RDFNode> rdfListIterator(Resource r)
 	{
-		List<RDFNode> list = new ArrayList<RDFNode>() ;
+		List<RDFNode> list = new ArrayList<>() ;
 
 		for ( ; ! r.equals(RDF.nil); )
 		{

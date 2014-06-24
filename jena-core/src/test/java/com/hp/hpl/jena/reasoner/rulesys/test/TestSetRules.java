@@ -54,7 +54,7 @@ public class TestSetRules extends ModelTestBase
     
     private static class MockFactory implements ReasonerFactory
         {
-        List<String> done = new ArrayList<String>();
+        List<String> done = new ArrayList<>();
         static final Model capabilities = modelWithStatements( "this isA Capability" );
         static final String uri = "eg:mockURI";
         static final Reasoner reasoner = new GenericRuleReasoner( rules );

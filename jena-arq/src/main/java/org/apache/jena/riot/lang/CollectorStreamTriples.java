@@ -32,7 +32,7 @@ import com.hp.hpl.jena.graph.Triple;
  * @see CollectorStreamBase
  */
 public class CollectorStreamTriples extends CollectorStreamBase<Triple> implements StreamRDF {
-	private List<Triple> triples = new ArrayList<Triple>();
+	private List<Triple> triples = new ArrayList<>();
 
 	@Override
 	public void start() {

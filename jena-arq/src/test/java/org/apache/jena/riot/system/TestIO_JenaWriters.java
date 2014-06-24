@@ -51,7 +51,7 @@ public class TestIO_JenaWriters {
     
     private final class RDFWriterFImplExposingProtected extends RDFWriterFImpl {
         public Map<String, String> defaultWriters() {
-            Map<String,String> defaults = new LinkedHashMap<String,String>();
+            Map<String,String> defaults = new LinkedHashMap<>();
             for (int i=0; i<LANGS.length; i++) {
                 defaults.put(LANGS[i], DEFAULTWRITERS[i]);
             }

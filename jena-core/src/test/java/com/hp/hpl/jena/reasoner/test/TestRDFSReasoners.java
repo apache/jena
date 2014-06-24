@@ -110,9 +110,9 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     private static void constructQuerytests(TestSuite suite, String manifest, ReasonerFactory rf, Resource config) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
         Reasoner r = rf.create(config);
-        for (Iterator<String> i = tester.listTests().iterator(); i.hasNext(); ) {
-            String test = i.next();
-            suite.addTest(new TestReasonerFromManifest(tester, test, r));
+        for ( String test : tester.listTests() )
+        {
+            suite.addTest( new TestReasonerFromManifest( tester, test, r ) );
         }
     }
     
@@ -121,9 +121,9 @@ public class TestRDFSReasoners extends ReasonerTestBase {
      */
     private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) throws IOException {
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf");
-        for (Iterator<String> i = tester.listTests().iterator(); i.hasNext(); ) {
-            String test = i.next();
-            suite.addTest(new TestReasonerWG(tester, test, rf, config));
+        for ( String test : tester.listTests() )
+        {
+            suite.addTest( new TestReasonerWG( tester, test, rf, config ) );
         }
     }
         
@@ -133,9 +133,9 @@ public class TestRDFSReasoners extends ReasonerTestBase {
      */
     public static void constructQuerytests(TestSuite suite, String manifest, Reasoner reasoner) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
-        for (Iterator<String> i = tester.listTests().iterator(); i.hasNext(); ) {
-            String test = i.next();
-            suite.addTest(new TestReasonerFromManifest(tester, test, reasoner));
+        for ( String test : tester.listTests() )
+        {
+            suite.addTest( new TestReasonerFromManifest( tester, test, reasoner ) );
         }
     }
     

@@ -42,10 +42,10 @@ import org.apache.jena.atlas.lib.FileOps ;
  */
 public abstract class AbstractDataBag<E> implements DataBag<E>
 {
-    private final List<File> spillFiles = new ArrayList<File>();
-    protected Collection<E> memory = new ArrayList<E>();
+    private final List<File> spillFiles = new ArrayList<>();
+    protected Collection<E> memory = new ArrayList<>();
     
-    private final List<WeakReference<Closeable>> closeableIterators = new ArrayList<WeakReference<Closeable>>();
+    private final List<WeakReference<Closeable>> closeableIterators = new ArrayList<>();
     
     // Total size, including tuples on disk.
     protected long size = 0;
@@ -135,7 +135,7 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
      */
     protected void registerCloseableIterator(Closeable c)
     {
-        closeableIterators.add(new WeakReference<Closeable>(c)) ;
+        closeableIterators.add(new WeakReference<>(c)) ;
     }
     
     /**

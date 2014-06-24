@@ -30,7 +30,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 
 public class IndexMap implements Index
 {
-    private final Map<ByteArray, ByteArray> index = new HashMap<ByteArray, ByteArray>() ;
+    private final Map<ByteArray, ByteArray> index = new HashMap<>() ;
     private final RecordFactory recordFactory ;
     
     public IndexMap(RecordFactory recordFactory)

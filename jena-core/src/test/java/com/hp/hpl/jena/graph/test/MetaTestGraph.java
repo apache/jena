@@ -69,9 +69,13 @@ public class MetaTestGraph extends AbstractTestGraph
     public static void addTestMethods
         ( TestSuite result, Class<? extends Test> testClass, Method [] methods, Class<? extends Graph> graphClass)
         {
-        for (int i = 0; i < methods.length; i += 1)
-            if (isPublicTestMethod( methods[i] )) 
-                result.addTest( makeTest( testClass, graphClass, methods[i].getName()) );  
+            for ( Method method : methods )
+            {
+                if ( isPublicTestMethod( method ) )
+                {
+                    result.addTest( makeTest( testClass, graphClass, method.getName() ) );
+                }
+            }
         }
         
     public static TestCase makeTest( Class<? extends Test> testClass, Class<? extends Graph> graphClass, String name)

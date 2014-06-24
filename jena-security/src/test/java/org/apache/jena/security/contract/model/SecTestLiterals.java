@@ -19,7 +19,6 @@ package org.apache.jena.security.contract.model;
 
 import com.hp.hpl.jena.rdf.model.test.TestLiterals;
 import com.hp.hpl.jena.rdf.model.test.TestPackage;
-import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
 public class SecTestLiterals extends TestLiterals {
 

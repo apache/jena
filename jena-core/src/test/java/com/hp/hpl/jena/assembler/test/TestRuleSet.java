@@ -58,7 +58,7 @@ public class TestRuleSet extends AssemblerTestBase
         {
         Rule A = Rule.parseRule( "[(?a P b) -> (?a rdf:type T)]" );
         Rule B = Rule.parseRule( "[(?a Q b) -> (?a rdf:type U)]" );
-        List<Rule> rules = Arrays.asList( new Rule[] {A, B } );
+        List<Rule> rules = Arrays.asList( A, B );
         RuleSet s = RuleSet.create( rules );
         assertEquals( rules, s.getRules() );
         assertNotSame( rules, s.getRules() );

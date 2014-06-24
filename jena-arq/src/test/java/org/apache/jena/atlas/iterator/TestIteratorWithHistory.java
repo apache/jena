@@ -80,7 +80,7 @@ public class TestIteratorWithHistory extends BaseTest
     private IteratorWithHistory<String> createHistory(int N, String... strings)
     {
         List<String> data = Arrays.asList(strings) ;
-        IteratorWithHistory<String> iter = new IteratorWithHistory<String>(data.iterator(), N) ;
+        IteratorWithHistory<String> iter = new IteratorWithHistory<>(data.iterator(), N) ;
         return iter ;
     }
 

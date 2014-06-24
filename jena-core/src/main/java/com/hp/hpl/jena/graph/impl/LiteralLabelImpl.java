@@ -266,7 +266,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	*/
 	@Override
     public String toString(boolean quoting) {
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		if (quoting) b.append('"');
 		b.append(getLexicalForm());
 		if (quoting) b.append('"');

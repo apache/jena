@@ -19,7 +19,6 @@
 package arq;
 
 import java.io.IOException ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
@@ -64,14 +63,22 @@ public class uparse extends CmdARQ
         super.processModulesAndArgs() ;
         if ( super.cmdStrictMode )
             updateSyntax = Syntax.syntaxSPARQL_11 ;
-        
-        for ( Iterator<String> iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
+
+        for ( String arg : getValues( argDeclPrint ) )
         {
-            String arg = iter.next() ;
-            if ( arg.equalsIgnoreCase("query"))         { printUpdate = true ; }
-            else if ( arg.equalsIgnoreCase("none"))     { printNone = true ; }
+            if ( arg.equalsIgnoreCase( "query" ) )
+            {
+                printUpdate = true;
+            }
+            else if ( arg.equalsIgnoreCase( "none" ) )
+            {
+                printNone = true;
+            }
             else
-                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad, opt, optquad") ;
+            {
+                throw new CmdException(
+                    "Not a recognized print form: " + arg + " : Choices are: query, op, quad, opt, optquad" );
+            }
         }
         
         if ( !printUpdate && ! printNone )
@@ -88,19 +95,19 @@ public class uparse extends CmdARQ
     @Override
     protected void exec()
     {
-        for ( Iterator<String> iter = requestFiles.listIterator() ; iter.hasNext() ; )
+        for ( String filename : requestFiles )
         {
-            String filename = iter.next();
-            String x = oneFile(filename) ;
+            String x = oneFile( filename );
             if ( x != null )
-                execOne(x) ; 
+            {
+                execOne( x );
+            }
         }
-        
-        for ( Iterator<String> iter = super.positionals.listIterator() ; iter.hasNext() ; )
+
+        for ( String x : super.positionals )
         {
-            String x = iter.next();
-            x =  indirect(x) ;
-            execOne(x) ; 
+            x = indirect( x );
+            execOne( x );
         }
 
     }

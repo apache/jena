@@ -35,10 +35,10 @@ public class BuiltinRegistry {
     public static BuiltinRegistry theRegistry;
     
     /** Mapping from functor name to Builtin implementing it */
-    protected Map<String,Builtin> builtins = new HashMap<String,Builtin>();
+    protected Map<String,Builtin> builtins = new HashMap<>();
     
     /** Mapping from URI of builtin to implementation */
-    protected Map<String,Builtin> builtinsByURI = new HashMap<String,Builtin>();
+    protected Map<String,Builtin> builtinsByURI = new HashMap<>();
     
     // Static initilizer for the singleton instance
     static {

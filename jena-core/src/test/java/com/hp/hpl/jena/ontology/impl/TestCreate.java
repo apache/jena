@@ -382,8 +382,9 @@ public class TestCreate
     public static TestSuite suite() {
         TestSuite s = new TestSuite( "TestCreate" );
 
-        for (int i = 0;  i < testCases.length;  i++) {
-            s.addTest( testCases[i] );
+        for ( CreateTestCase testCase : testCases )
+        {
+            s.addTest( testCase );
         }
 
         return s;

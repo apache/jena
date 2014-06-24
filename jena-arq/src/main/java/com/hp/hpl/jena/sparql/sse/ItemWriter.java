@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.sse;
 
 import java.io.OutputStream ;
-import java.util.Iterator ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
@@ -189,22 +188,24 @@ public class ItemWriter
             out.incIndent(2) ;
             
             boolean first = true ;
-            
-            for ( Iterator<String> iter = map.keySet().iterator() ; iter.hasNext() ; )
+
+            for ( String s : map.keySet() )
             {
-                if ( ! first )
+                if ( !first )
+                {
                     out.println();
-                first = false ;
-                String k = iter.next() ;
-                String v = map.get(k) ;
-                
-                out.print("(") ;
-                out.print(k) ;
-                out.print(':') ;
+                }
+                first = false;
+                String k = s;
+                String v = map.get( k );
+
+                out.print( "(" );
+                out.print( k );
+                out.print( ':' );
                 // Include at least one space 
-                out.print(' ', 6-k.length()) ;
-                out.print(FmtUtils.stringForURI(v)) ;
-                out.print(")") ;
+                out.print( ' ', 6 - k.length() );
+                out.print( FmtUtils.stringForURI( v ) );
+                out.print( ")" );
             }
             out.decIndent(2) ;
             out.print(")") ;

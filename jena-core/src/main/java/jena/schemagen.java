@@ -122,7 +122,7 @@ public class schemagen {
 
     /** Option definitions */
     /** Stack of replacements to apply */
-    protected List<Replacement> m_replacements = new ArrayList<Replacement>();
+    protected List<Replacement> m_replacements = new ArrayList<>();
 
     /** Output file newline char - default is Unix, override with --dos */
     protected String m_nl = "\n";
@@ -131,13 +131,13 @@ public class schemagen {
     protected int m_indentStep = 4;
 
     /** Set of names used so far */
-    protected Set<String> m_usedNames = new HashSet<String>();
+    protected Set<String> m_usedNames = new HashSet<>();
 
     /** Map from resources to java names */
-    protected Map<Resource,String> m_resourcesToNames = new HashMap<Resource, String>();
+    protected Map<Resource,String> m_resourcesToNames = new HashMap<>();
 
     /** List of allowed namespace URI strings for admissible values */
-    protected List<String> m_includeURI = new ArrayList<String>();
+    protected List<String> m_includeURI = new ArrayList<>();
 
 
     // Constructors
@@ -418,9 +418,8 @@ public class schemagen {
     protected String substitute( String sIn ) {
         String s = sIn;
 
-        for (Iterator<Replacement> i = m_replacements.iterator(); i.hasNext(); ) {
-            Replacement r = i.next();
-
+        for ( Replacement r : m_replacements )
+        {
             s = r.pattern.matcher( s ).replaceAll( r.sub );
         }
 
@@ -798,7 +797,7 @@ public class schemagen {
 
     /** Guess the URI from the most prevalent URI */
     protected String guessNamespace() {
-        Map<String,Integer> nsCount = new HashMap<String, Integer>();
+        Map<String,Integer> nsCount = new HashMap<>();
 
         // count all of the namespaces used in the model
         for (StmtIterator i = m_source.listStatements(); i.hasNext(); ) {
@@ -813,18 +812,19 @@ public class schemagen {
         // now find the maximal element
         String ns = null;
         int max = 0;
-        for (Iterator<String> i = nsCount.keySet().iterator(); i.hasNext(); ) {
-            String nsKey = i.next();
-
+        for ( String nsKey : nsCount.keySet() )
+        {
             // we ignore the usual suspects
-            if (! (OWL.getURI().equals( nsKey ) ||
-                   RDF.getURI().equals( nsKey ) ||
-                   RDFS.getURI().equals( nsKey ) ||
-                   XSD.getURI().equals( nsKey ))) {
+            if ( !( OWL.getURI().equals( nsKey ) ||
+                RDF.getURI().equals( nsKey ) ||
+                RDFS.getURI().equals( nsKey ) ||
+                XSD.getURI().equals( nsKey ) ) )
+            {
                 // not an ignorable namespace
                 int count = nsCount.get( nsKey ).intValue();
 
-                if (count > max) {
+                if ( count > max )
+                {
                     // highest count seen so far
                     max = count;
                     ns = nsKey;
@@ -920,9 +920,11 @@ public class schemagen {
         }
 
         // collect the properties to be written
-        List<Resource> propertyResources = new ArrayList<Resource>();
-        for (int j = 0;  j < props.length; j++) {
-            for (StmtIterator i = m_source.listStatements( null, RDF.type, props[j] ); i.hasNext(); ) {
+        List<Resource> propertyResources = new ArrayList<>();
+        for ( Resource prop : props )
+        {
+            for ( StmtIterator i = m_source.listStatements( null, RDF.type, prop ); i.hasNext(); )
+            {
                 propertyResources.add( i.nextStatement().getSubject() );
             }
         }
@@ -1034,7 +1036,7 @@ public class schemagen {
 
     /** Answer an iterator over the individuals selected for output */
     protected ExtendedIterator<? extends RDFNode> selectIndividuals() {
-        List<Resource> candidates = new ArrayList<Resource>();
+        List<Resource> candidates = new ArrayList<>();
         for (StmtIterator i = m_source.listStatements( null, RDF.type, (RDFNode) null ); i.hasNext(); ) {
             Statement candidate = i.nextStatement();
 
@@ -1102,7 +1104,7 @@ public class schemagen {
     
     /** Answer an iterator over the datatypes selected for output */
     protected ExtendedIterator<? extends RDFNode> selectDatatypes() {
-        List<Resource> candidates = new ArrayList<Resource>();
+        List<Resource> candidates = new ArrayList<>();
         for (StmtIterator i = m_source.listStatements( null, RDF.type, RDFS.Datatype ); i.hasNext(); ) {
             Statement candidate = i.nextStatement();
 
@@ -1265,9 +1267,10 @@ public class schemagen {
         }
 
         // search the allowed URI's
-        for (Iterator<String> i = m_includeURI.iterator(); i.hasNext(); ) {
-            String uri = i.next();
-            if (r.getURI().startsWith( uri )) {
+        for ( String uri : m_includeURI )
+        {
+            if ( r.getURI().startsWith( uri ) )
+            {
                 // in
                 return false;
             }
@@ -1283,9 +1286,10 @@ public class schemagen {
                     String typeURI = typeRes.getURI();
 
                     // for any type that is in a permitted NS
-                    for (Iterator<String> i = m_includeURI.iterator(); i.hasNext(); ) {
-                        String uri = i.next();
-                        if (typeURI.startsWith( uri )) {
+                    for ( String uri : m_includeURI )
+                    {
+                        if ( typeURI.startsWith( uri ) )
+                        {
                             // in
                             return false;
                         }
@@ -1633,7 +1637,7 @@ public class schemagen {
     {
         // Instance variables
         /** The list of command line arguments */
-        private List<String> m_cmdLineArgs = new ArrayList<String>();
+        private List<String> m_cmdLineArgs = new ArrayList<>();
 
         /** The root of the options in the config file */
         private Resource m_root;
@@ -1739,7 +1743,7 @@ public class schemagen {
 
         /** Answer all values for the given options as Strings */
         protected List<String> getAllValues( OPT option ) {
-            List<String> values = new ArrayList<String>();
+            List<String> values = new ArrayList<>();
             OptionDefinition opt = getOpt( option );
 
             // look in the command line arguments
@@ -1768,9 +1772,11 @@ public class schemagen {
 
         /** Answer the option object for the given option */
         protected OptionDefinition getOpt( OPT option ) {
-            for (int i = 0;  i < m_optionDefinitions.length;  i++) {
-                if (m_optionDefinitions[i][0] == option) {
-                    return (OptionDefinition) m_optionDefinitions[i][1];
+            for ( Object[] m_optionDefinition : m_optionDefinitions )
+            {
+                if ( m_optionDefinition[0] == option )
+                {
+                    return (OptionDefinition) m_optionDefinition[1];
                 }
             }
 

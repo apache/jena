@@ -240,7 +240,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     public void setDerivationLogging(boolean recordDerivations) {
         engine.setDerivationLogging(recordDerivations);
         if (recordDerivations) {
-            derivations = new OneToManyMap<Triple, Derivation>();
+            derivations = new OneToManyMap<>();
         } else {
             derivations = null;
         }
@@ -253,7 +253,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     @Override
     public Iterator<Derivation> getDerivation(Triple t) {
         if (derivations == null) {
-            return new NullIterator<Derivation>();
+            return new NullIterator<>();
         } else {
             return derivations.getAll(t);
         }
@@ -336,27 +336,34 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     protected void extractAxioms() {
         Graph axioms = fdeductions.getGraph();
         BBRuleContext contextForBuiltins = null;
-        for (Iterator<Rule> i = engine.getRuleStore().getAllRules().iterator(); i.hasNext(); ) {
-            Rule rule = i.next();
-            if (rule.bodyLength() == 0) {
+        for ( Rule rule : engine.getRuleStore().getAllRules() )
+        {
+            if ( rule.bodyLength() == 0 )
+            {
                 // An axiom
-                for (int j = 0; j < rule.headLength(); j++) {
-                    ClauseEntry axiom = rule.getHeadElement(j);
-                    if (axiom instanceof TriplePattern) {
-                        axioms.add(((TriplePattern)axiom).asTriple());
-                    } else if (axiom instanceof Functor) {
-                        if (contextForBuiltins == null) {
-                            contextForBuiltins = new BBRuleContext(this);
+                for ( int j = 0; j < rule.headLength(); j++ )
+                {
+                    ClauseEntry axiom = rule.getHeadElement( j );
+                    if ( axiom instanceof TriplePattern )
+                    {
+                        axioms.add( ( (TriplePattern) axiom ).asTriple() );
+                    }
+                    else if ( axiom instanceof Functor )
+                    {
+                        if ( contextForBuiltins == null )
+                        {
+                            contextForBuiltins = new BBRuleContext( this );
                         }
-                        Functor f = (Functor)axiom;
+                        Functor f = (Functor) axiom;
                         Builtin implementation = f.getImplementor();
-                        if (implementation == null) {
-                            throw new ReasonerException("Attempted to invoke undefined functor: " + f);
+                        if ( implementation == null )
+                        {
+                            throw new ReasonerException( "Attempted to invoke undefined functor: " + f );
                         }
                         Node[] args = f.getArgs();
-                        contextForBuiltins.setEnv(new BindingVector(args));
-                        contextForBuiltins.setRule(rule);
-                        implementation.headAction(args, args.length, contextForBuiltins);
+                        contextForBuiltins.setEnv( new BindingVector( args ) );
+                        contextForBuiltins.setRule( rule );
+                        implementation.headAction( args, args.length, contextForBuiltins );
                     }
                 }
             }

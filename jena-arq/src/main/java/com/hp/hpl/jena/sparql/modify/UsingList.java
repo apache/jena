@@ -29,8 +29,8 @@ public class UsingList
 {
     public UsingList() { }
     
-    private List<Node> using = new ArrayList<Node>() ;
-    private List<Node> usingNamed = new ArrayList<Node>() ;
+    private List<Node> using = new ArrayList<>() ;
+    private List<Node> usingNamed = new ArrayList<>() ;
     
     public void addUsing(Node node)                      { using.add(node) ; }
     public void addAllUsing(Collection<Node> nodes)      { using.addAll(nodes); }

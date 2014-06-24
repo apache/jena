@@ -661,8 +661,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			{ "grandparent", null, null, null, null, null, null, null, }, };
 
 	private void relative(int i, String base, String d[][]) throws IOException {
-		Set<String> in = new HashSet<String>();
-		Set<String> out = new HashSet<String>();
+		Set<String> in = new HashSet<>();
+		Set<String> out = new HashSet<>();
 		for (int j = 1; j < d[i].length; j++) {
 
 			in.add(d[i][j] == null ? d[0][j] : d[i][j]);
@@ -696,20 +696,22 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 				"http://www.example.org/A/B#", };
 		String n[] = { "", "same-document", "absolute", "relative", "parent",
 				"network", "grandparent" };
-		for (int k = 0; k < b.length; k++) {
-			System.out.println("// " + b[k]);
-			IRI bb = factory.create(b[k]);
+        for ( String aB : b )
+        {
+            System.out.println( "// " + aB );
+            IRI bb = factory.create( aB );
 
-			for (int i = 0; i < n.length; i++) {
-				System.out.print(" { \"" + n[i] + "\", ");
-				int f = BaseXMLWriter.str2flags(n[i]);
-				for (int j = 0; j < uris.length; j++) {
-					String r = bb.relativize(uris[j], f).toString();
-					System.out.print((i != 0 && r.equals(uris[j])) ? "null, "
-							: "\"" + r + "\"" + ", ");
-				}
-				System.out.println("},");
-			}
-		}
+            for ( int i = 0; i < n.length; i++ )
+            {
+                System.out.print( " { \"" + n[i] + "\", " );
+                int f = BaseXMLWriter.str2flags( n[i] );
+                for ( int j = 0; j < uris.length; j++ )
+                {
+                    String r = bb.relativize( uris[j], f ).toString();
+                    System.out.print( ( i != 0 && r.equals( uris[j] ) ) ? "null, " : "\"" + r + "\"" + ", " );
+                }
+                System.out.println( "}," );
+            }
+        }
 	}
 }

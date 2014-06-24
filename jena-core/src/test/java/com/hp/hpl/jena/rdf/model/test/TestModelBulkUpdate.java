@@ -99,11 +99,10 @@ public class TestModelBulkUpdate extends AbstractModelTestBase
 
 	public void testContains( final Model m, final List<Statement> statements )
 	{
-		for (int i = 0; i < statements.size(); i += 1)
-		{
-			Assert.assertTrue("it should be here",
-					m.contains(statements.get(i)));
-		}
+        for ( Statement statement : statements )
+        {
+            Assert.assertTrue( "it should be here", m.contains( statement ) );
+        }
 	}
 
 	public void testContains( final Model m, final Statement[] statements )
@@ -136,11 +135,10 @@ public class TestModelBulkUpdate extends AbstractModelTestBase
 
 	public void testOmits( final Model m, final List<Statement> statements )
 	{
-		for (int i = 0; i < statements.size(); i += 1)
-		{
-			Assert.assertFalse("it should not be here",
-					m.contains(statements.get(i)));
-		}
+        for ( Statement statement : statements )
+        {
+            Assert.assertFalse( "it should not be here", m.contains( statement ) );
+        }
 	}
 
 	public void testOmits( final Model m, final Statement[] statements )

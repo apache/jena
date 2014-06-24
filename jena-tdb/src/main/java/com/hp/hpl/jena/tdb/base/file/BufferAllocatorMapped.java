@@ -56,7 +56,7 @@ final public class BufferAllocatorMapped implements BufferAllocator
         
         this.blockSize = blockSize;
         blocksPerSegment = segmentSize/blockSize ;
-        segments = new ArrayList<MappedByteBuffer>();
+        segments = new ArrayList<>();
         
         tmpFile = getNewTemporaryFile();
         tmpFile.deleteOnExit();

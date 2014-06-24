@@ -209,8 +209,12 @@ public class TriplePattern implements ClauseEntry {
         if (Functor.isFunctor(subject)) return false;
         if (Functor.isFunctor(object)) {
             Node[] args = ((Functor)object.getLiteralValue()).getArgs();
-            for (int i = 0; i < args.length; i++) {
-                if (Functor.isFunctor(args[i])) return false;  
+            for ( Node arg : args )
+            {
+                if ( Functor.isFunctor( arg ) )
+                {
+                    return false;
+                }
             }
         }
         return true;

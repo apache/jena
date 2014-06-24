@@ -36,7 +36,7 @@ public class Iso639  implements LanguageTagCodes  {
      * http://lcweb.loc.gov/standards/iso639-2/englangn.html</a>
      * on the 24th July 2001, and dated 12th October 2000.
      */
-    static final Map<String, Iso639> all = new HashMap<String, Iso639>();
+    static final Map<String, Iso639> all = new HashMap<>();
 
     /** Creates new Iso639 */
     private Iso639(String engName,String two,String term,String bib, int classify) {

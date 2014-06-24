@@ -25,11 +25,11 @@ import java.util.List ;
 import org.apache.jena.atlas.iterator.Iter ;
 
 public class MultiMapToList<K,V> extends MultiMap<K,V> {
-    public static <K, V> MultiMapToList<K, V> create() { return new MultiMapToList<K, V>() ; }
+    public static <K, V> MultiMapToList<K, V> create() { return new MultiMapToList<>() ; }
     
     @Override
     protected Collection<V> createCollection() {
-        return new ArrayList<V>() ;
+        return new ArrayList<>() ;
     }
     
     @Override

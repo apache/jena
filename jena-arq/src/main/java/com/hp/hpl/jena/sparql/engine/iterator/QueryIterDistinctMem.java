@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 /** Memory limited QueryIterDistinct */
 public class QueryIterDistinctMem extends QueryIterDistinctReduced
 {
-    private Set<Binding> seen = new HashSet<Binding>() ;
+    private Set<Binding> seen = new HashSet<>() ;
     
     public QueryIterDistinctMem(QueryIterator iter, ExecutionContext context)
     {

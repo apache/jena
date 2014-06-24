@@ -58,7 +58,7 @@ public class TestWriterInterface extends ModelTestBase {
         m.setNsPrefix( "eh", "http://eh/" );
         StringWriter sos = new StringWriter();
         m.write( sos );
-        assertTrue( sos.toString().indexOf( newline_XMLNS ) > -1 );
+        assertTrue( sos.toString().contains( newline_XMLNS ) );
     }
     
     public void testInterface() {

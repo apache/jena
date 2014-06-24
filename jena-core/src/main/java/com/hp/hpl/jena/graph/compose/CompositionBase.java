@@ -68,7 +68,7 @@ public abstract class CompositionBase extends GraphBase
      */
     public static <T> ClosableIterator<T> butNot( final ClosableIterator<T> a, final ClosableIterator<? extends T> b )
         {
-        return new FilterIterator<T>( reject( b ), a );
+        return new FilterIterator<>( reject( b ), a );
         }
         
     /**

@@ -174,7 +174,7 @@ public class Var extends Node_Variable
     /** Convert a collection of variable names to variables */ 
     public static List<Var> varList(Collection<String> varNames)
     {
-        List<Var> x = new ArrayList<Var>() ;
+        List<Var> x = new ArrayList<>() ;
         for (String obj : varNames)
             x.add(Var.alloc(obj)) ;
         return x ;
@@ -188,7 +188,7 @@ public class Var extends Node_Variable
     /** Return a list of String names from a collection of variables */ 
     public static List<String> varNames(Collection<Var> vars)
     {
-        List<String> x = new ArrayList<String>() ;
+        List<String> x = new ArrayList<>() ;
         for (Var var : vars)
             x.add(var.getVarName()) ;
         return x ;

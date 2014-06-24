@@ -124,11 +124,13 @@ public class LocatorURL implements Locator
         String uriSchemeName = getScheme(filenameOrURI) ;
         if ( uriSchemeName == null )
             return false ;
-        uriSchemeName = uriSchemeName.toLowerCase(Locale.ENGLISH) ; 
-        for ( int i = 0 ; i < schemeNames.length ; i++ )
+        uriSchemeName = uriSchemeName.toLowerCase(Locale.ENGLISH) ;
+        for ( String schemeName : schemeNames )
         {
-            if ( uriSchemeName.equals(schemeNames[i]) )
-                return true ;
+            if ( uriSchemeName.equals( schemeName ) )
+            {
+                return true;
+            }
         }
         return false ;
     }

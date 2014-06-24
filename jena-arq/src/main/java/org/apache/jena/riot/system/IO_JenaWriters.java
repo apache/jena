@@ -32,7 +32,7 @@ import static org.apache.jena.riot.adapters.JenaReadersWriters.* ;
 
 public class IO_JenaWriters
 {
-    private static Map<String, RDFFormat> mapJenaNameToFormat               = new HashMap<String, RDFFormat>() ;
+    private static Map<String, RDFFormat> mapJenaNameToFormat               = new HashMap<>() ;
 
     /** return the RDFFormat for the existing Jena writer name, or null */ 
     public static RDFFormat getFormatForJenaWriter(String jenaName) { return mapJenaNameToFormat.get(jenaName) ; }

@@ -37,7 +37,7 @@ public class CacheFactory
      */
     public static <Key, Value> Cache<Key, Value> createCache(float loadFactor, int maxSize)
     {
-        return new CacheLRU<Key, Value>(loadFactor, maxSize) ;
+        return new CacheLRU<>(loadFactor, maxSize) ;
     }
     
     /** Create a cache which has space for upto a certain number of objects. 
@@ -52,32 +52,32 @@ public class CacheFactory
     /** Create a null cache */
     public static <Key, Value> Cache<Key, Value> createNullCache()
     {
-        return new Cache0<Key, Value>() ;
+        return new Cache0<>() ;
     }
 
     /** Create a cache which has unbounded space */
     public static <Key, Value> Cache<Key, Value> createCacheUnbounded()
     {
-        return new CacheUnbounded<Key, Value>() ;
+        return new CacheUnbounded<>() ;
     }
     
 
     /* Add a getter wrapper to an existing cache */
     public static <Key, Value> Cache<Key, Value> createCacheWithGetter(Cache<Key, Value> cache, Getter<Key, Value> getter)
     {
-        return new CacheWithGetter<Key, Value>(cache, getter) ;
+        return new CacheWithGetter<>(cache, getter) ;
     }
 
     /** Create a lightweight cache (e.g. slot replacement) */  
     public static <Key, Value> Cache<Key, Value> createSimpleCache(int size)
     {
-        return new CacheSimple<Key, Value>(size) ; 
+        return new CacheSimple<>(size) ;
     }
     
     /** One slot cache */
     public static <Key, Value> Cache<Key, Value> createOneSlotCache()
     {
-        return new Cache1<Key, Value>() ;
+        return new Cache1<>() ;
     }
 
     /** Add a statistics wrapper to an existing cache */
@@ -85,7 +85,7 @@ public class CacheFactory
     {
         if ( cache instanceof CacheStats<?,?>)
             return (CacheStats<Key, Value>) cache ;
-        return new CacheStatsAtomic<Key, Value>(cache) ;
+        return new CacheStatsAtomic<>(cache) ;
     }
 
     /** Create set-cache, rather than a map-cache.
@@ -93,7 +93,7 @@ public class CacheFactory
      */
     public static <Obj> CacheSet<Obj> createCacheSet(int size)
     {
-        return new CacheSetLRU<Obj>(size) ;
+        return new CacheSetLRU<>(size) ;
     }
 
     /** Add a synchronization wrapper to an existing set-cache */
@@ -101,7 +101,7 @@ public class CacheFactory
     {
         if ( cache instanceof CacheSetSync<?>)
             return cache ;
-        return new CacheSetSync<Obj>(cache) ;
+        return new CacheSetSync<>(cache) ;
     }
 
 }

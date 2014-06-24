@@ -141,7 +141,7 @@ public class listIndex extends ListBaseList
     {
         // Iterate over list
         List<Node> members = GraphList.members(new GNode(graph, listNode)) ;
-        List<Binding> bindings = new ArrayList<Binding>() ;
+        List<Binding> bindings = new ArrayList<>() ;
         for ( int i = 0 ; i < members.size() ; i++ )
         {
             Node idx = NodeFactoryExtra.intToNode(i) ;

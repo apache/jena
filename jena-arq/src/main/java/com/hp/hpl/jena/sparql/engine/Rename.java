@@ -118,7 +118,7 @@ public class Rename
     
     static class RenameAnyVars implements NodeTransform
     {
-        private final Map<Var, Var> aliases = new HashMap<Var, Var>() ;
+        private final Map<Var, Var> aliases = new HashMap<>() ;
         private final Collection<Var> constants ;
         private final String varPrefix ;
         

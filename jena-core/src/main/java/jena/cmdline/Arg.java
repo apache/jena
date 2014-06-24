@@ -26,7 +26,7 @@ public class Arg
 {
     String name ;
     String value ;
-    List<String> values = new ArrayList<String>() ; 
+    List<String> values = new ArrayList<>() ;
     
     Arg() { name = null ; value = null ; }
     

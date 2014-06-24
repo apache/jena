@@ -122,14 +122,18 @@ public class TestBasics extends TestCase  {
                 "(foo(?A) eg:p ?B) <- (?a, eg:p, ?B)." ,
                 "(foo(?A) eg:p ?B) -> (?a, eg:p, ?B)." 
         };
-        for (int i = 0; i < testBadRules.length; i++) {
+        for ( String testBadRule : testBadRules )
+        {
             boolean foundError = false;
-            try {
-                Rule r = Rule.parseRule(testBadRules[i]);
-            } catch (Rule.ParserException e) {
+            try
+            {
+                Rule r = Rule.parseRule( testBadRule );
+            }
+            catch ( Rule.ParserException e )
+            {
                 foundError = true;
             }
-            assertTrue("Failed to find illegal rule", foundError);
+            assertTrue( "Failed to find illegal rule", foundError );
         }
     }
 
@@ -200,7 +204,7 @@ public class TestBasics extends TestCase  {
     public void testClauseMaching() {
         BindingStack env = new BindingStack();
         env.reset(MAX_VARS);
-        List<Rule> rules = new ArrayList<Rule>();
+        List<Rule> rules = new ArrayList<>();
         BasicForwardRuleInfGraph inf = new BasicForwardRuleInfGraph(
                                             new BasicForwardRuleReasoner(rules), rules, null);
         TriplePattern p1 = new TriplePattern(

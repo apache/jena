@@ -63,7 +63,7 @@ public class LPInterpreter {
     protected FrameObject cpFrame;
     
     /** The trail of variable bindings that have to be unwound on backtrack */
-    protected ArrayList<Node> trail = new ArrayList<Node>();
+    protected ArrayList<Node> trail = new ArrayList<>();
 
     /** The execution context description to be passed to builtins */
     protected RuleContext context;
@@ -119,7 +119,7 @@ public class LPInterpreter {
             envFrame = new EnvironmentFrame(RuleClauseCode.returnCodeBlock);
         }
         envFrame.allocate(RuleClauseCode.MAX_PERMANENT_VARS);
-        HashMap<Node, Node> mappedVars = new HashMap<Node, Node>();
+        HashMap<Node, Node> mappedVars = new HashMap<>();
         envFrame.pVars[0] = argVars[0] = standardize(goal.getSubject(), mappedVars);
         envFrame.pVars[1] = argVars[1] = standardize(goal.getPredicate(), mappedVars);
         envFrame.pVars[2] = argVars[2] = standardize(goal.getObject(), mappedVars);
@@ -641,7 +641,7 @@ public class LPInterpreter {
      * Tracing support - return a format set of triple queries/results.
      */
     private String getArgTrace() {
-        StringBuffer temp = new StringBuffer();
+        StringBuilder temp = new StringBuilder();
         temp.append(PrintUtil.print(deref(argVars[0])));
         temp.append(" ");
         temp.append(PrintUtil.print(deref(argVars[1])));
@@ -784,8 +784,10 @@ public class LPInterpreter {
                 Functor f = (Functor) dnode.getLiteralValue();
                 Node[] fargs = f.getArgs();
                 boolean needCopy = false;
-                for (int i = 0; i < fargs.length; i++) {
-                    if (fargs[i].isVariable()) {
+                for ( Node farg : fargs )
+                {
+                    if ( farg.isVariable() )
+                    {
                         needCopy = true;
                         break;
                     }

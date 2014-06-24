@@ -553,11 +553,10 @@ public class HttpOp {
             e = new StringEntity(content, "UTF-8");
             e.setContentType(contentType);
             execHttpPost(url, e, acceptType, handler, httpClient, httpContext, authenticator);
-        } catch (UnsupportedCharsetException e1) {
+        } catch (UnsupportedCharsetException | UnsupportedEncodingException e1) {
             throw new InternalErrorException("Platform does not support required UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            throw new InternalErrorException("Platform does not support required UTF-8");
-        } finally {
+        }
+        finally {
             closeEntity(e);
         }
     }
@@ -903,11 +902,10 @@ public class HttpOp {
             e = new StringEntity(content, "UTF-8");
             e.setContentType(contentType);
             execHttpPut(url, e, httpClient, httpContext, authenticator);
-        } catch (UnsupportedCharsetException e1) {
+        } catch (UnsupportedCharsetException | UnsupportedEncodingException e1) {
             throw new InternalErrorException("Platform does not support required UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            throw new InternalErrorException("Platform does not support required UTF-8");
-        } finally {
+        }
+        finally {
             closeEntity(e);
         }
     }
@@ -1242,7 +1240,7 @@ public class HttpOp {
 
     private static HttpEntity convertFormParams(Params params) {
         try {
-            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+            List<NameValuePair> nvps = new ArrayList<>();
             for (Pair p : params.pairs())
                 nvps.add(new BasicNameValuePair(p.getName(), p.getValue()));
             HttpEntity e = new UrlEncodedFormEntity(nvps, "UTF-8");

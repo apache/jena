@@ -42,11 +42,13 @@ class ConditionCompiler2 implements ConditionCompiler
     @Override
     public SDBConstraint recognize(Expr expr)
     {
-        for ( int i = 0 ; i < reg.length ; i++ )
+        for ( ConditionCompiler aReg : reg )
         {
-            SDBConstraint c = reg[i].recognize(expr) ; 
-            if (  c != null )
-                return c ;
+            SDBConstraint c = aReg.recognize( expr );
+            if ( c != null )
+            {
+                return c;
+            }
         }
         return null ;
     }

@@ -26,7 +26,7 @@ import java.util.Map.Entry ;
 
 public class JsonObject extends JsonValue //implements Map<String, JsonValue>
 {
-    private final Map<String, JsonValue> map = new HashMap<String, JsonValue>() ;
+    private final Map<String, JsonValue> map = new HashMap<>() ;
     
     @Override
     public boolean isObject()       { return true ; }

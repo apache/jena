@@ -67,23 +67,23 @@ public class TestOneToManyMap
     
     public void testConstruct0() {
         // the types of these maps
-        OneToManyMap<String, Integer> map0 = new OneToManyMap<String, Integer>();
+        OneToManyMap<String, Integer> map0 = new OneToManyMap<>();
         assertNotNull( map0 );
         
         assertTrue( map0.isEmpty() );
         
-        OneToManyMap<String, Integer> map1 = new OneToManyMap<String, Integer>( map0 );
+        OneToManyMap<String, Integer> map1 = new OneToManyMap<>( map0 );
         assertNotNull( map1 );
         assertTrue( map1.isEmpty() );
     }
     
     public void testConstruct1() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         
         map0.put( s0, s1 );
         assertTrue( map0.contains( s0, s1 ) );
         
-        OneToManyMap<String, String> map1 = new OneToManyMap<String, String>( map0 );
+        OneToManyMap<String, String> map1 = new OneToManyMap<>( map0 );
         assertTrue( map0.contains( s0, s1 ) );
         
         map0.put( s0, s2 );
@@ -93,7 +93,7 @@ public class TestOneToManyMap
     }
     
     public void testClear() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         
         map0.put( s0, s1 );
         assertTrue( map0.contains( s0, s1 ) );
@@ -105,7 +105,7 @@ public class TestOneToManyMap
     }
 
     public void testContainsKey() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         assertFalse( map0.containsKey( s0 ) );
         assertFalse( map0.containsKey( s1 ) );
         map0.put( s0, s1 );
@@ -114,7 +114,7 @@ public class TestOneToManyMap
     }
     
     public void testContainsValue() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         assertFalse( map0.containsValue( s0 ) );
         assertFalse( map0.containsValue( s1 ) );
         assertFalse( map0.containsValue( s2 ) );
@@ -129,7 +129,7 @@ public class TestOneToManyMap
     }
     
     public void testContains() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         assertFalse( map0.contains( s0, s1 ) );
         assertFalse( map0.contains( s0, s2 ) );
         assertFalse( map0.contains( s1, s2 ) );
@@ -144,7 +144,7 @@ public class TestOneToManyMap
     }
     
     public void testEntrySet() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         map0.put( s0, s1 );
         map0.put( s0, s2 );
         map0.put( s3, s4 );
@@ -152,19 +152,23 @@ public class TestOneToManyMap
         boolean s0s1 = false;
         boolean s0s2 = false;
         boolean s3s4 = false;
-        
-        for (Iterator<Map.Entry<String, String>> i = map0.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<String, String> e = i.next();
-            if (e.getKey().equals( s0 ) && e.getValue().equals( s1 )) {
+
+        for ( Map.Entry<String, String> e : map0.entrySet() )
+        {
+            if ( e.getKey().equals( s0 ) && e.getValue().equals( s1 ) )
+            {
                 s0s1 = true;
             }
-            else if (e.getKey().equals( s0 ) && e.getValue().equals( s2 )) {
+            else if ( e.getKey().equals( s0 ) && e.getValue().equals( s2 ) )
+            {
                 s0s2 = true;
             }
-            else if (e.getKey().equals( s3 ) && e.getValue().equals( s4 )) {
+            else if ( e.getKey().equals( s3 ) && e.getValue().equals( s4 ) )
+            {
                 s3s4 = true;
             }
-            else {
+            else
+            {
                 throw new IllegalArgumentException( "unexpected: " + e );
             }
         }
@@ -175,15 +179,15 @@ public class TestOneToManyMap
     }
     
     public void testEquals() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         map0.put( s0, s1 );
         map0.put( s0, s2 );
         map0.put( s3, s4 );
-        OneToManyMap<String, String> map1 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map1 = new OneToManyMap<>();
         map1.put( s3, s4 );
         map1.put( s0, s1 );
         map1.put( s0, s2 );
-        OneToManyMap<String, String> map2 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map2 = new OneToManyMap<>();
         map2.put( s0, s2 );
         map2.put( s3, s4 );
         
@@ -196,7 +200,7 @@ public class TestOneToManyMap
     }
     
     public void testGet() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         assertNull( map0.get( s0 ));
         map0.put( s0, s1 );
         assertEquals( s1, map0.get( s0 ));
@@ -206,7 +210,7 @@ public class TestOneToManyMap
     }
     
     public void testGetAll() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         Iterator<String> i = map0.getAll(s0);
         assertNotNull( i );
         assertFalse( i.hasNext() );
@@ -239,8 +243,8 @@ public class TestOneToManyMap
     }
     
     public void testKeySet() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
-        Set<String> keys = new HashSet<String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
+        Set<String> keys = new HashSet<>();
         assertEquals( keys, map0.keySet() );
         
         map0.put( s0, s1 );
@@ -253,37 +257,37 @@ public class TestOneToManyMap
     }
     
     public void testPutAll0() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         map0.put( s0, s1 );
         map0.put( s0, s2 );
         map0.put( s3, s4 );
         
-        OneToManyMap<String, String> map1 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map1 = new OneToManyMap<>();
         map1.put( s0, s2 );
         map1.put( s3, s4 );
         map1.put( s0, s1 );
 
-        OneToManyMap<String, String> map2 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map2 = new OneToManyMap<>();
         map2.putAll( map1 );
         assertEquals( map0, map2 );
     }
     
     public void testPutAll1() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         map0.put( s0, s1 );
         map0.put( s3, s4 );
         
-        Map<String, String> map1 = new HashMap<String, String>();
+        Map<String, String> map1 = new HashMap<>();
         map1.put( s3, s4 );
         map1.put( s0, s1 );
 
-        OneToManyMap<String, String> map2 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map2 = new OneToManyMap<>();
         map2.putAll( map1 );
         assertEquals( map0, map2 );
     }
     
     public void testRemove0() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         map0.put( s0, s1 );
         map0.put( s3, s4 );
         
@@ -294,7 +298,7 @@ public class TestOneToManyMap
     }
     
     public void testRemove1() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         map0.put( s0, s1 );
         map0.put( s0, s2 );
         map0.put( s3, s4 );
@@ -309,7 +313,7 @@ public class TestOneToManyMap
     }
     
     public void testSize() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
         assertEquals( 0, map0.size() );
         map0.put( s0, s1 );
         assertEquals( 1, map0.size() );
@@ -326,8 +330,8 @@ public class TestOneToManyMap
     }
 
     public void testValues() {
-        OneToManyMap<String, String> map0 = new OneToManyMap<String, String>();
-        Set<String> vals = new HashSet<String>();
+        OneToManyMap<String, String> map0 = new OneToManyMap<>();
+        Set<String> vals = new HashSet<>();
         assertEquals( vals, map0.values() );
         
         map0.put( s0, s1 );

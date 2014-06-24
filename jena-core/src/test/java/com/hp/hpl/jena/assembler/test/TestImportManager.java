@@ -32,7 +32,7 @@ public class TestImportManager extends AssemblerTestBase
     
     static class FixedFileManager extends FileManager
         {
-        Map<String, Model> map = new HashMap<String, Model>();
+        Map<String, Model> map = new HashMap<>();
         
         @Override public Model loadModel( String URL )
             {

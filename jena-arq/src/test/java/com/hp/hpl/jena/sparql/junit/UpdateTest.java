@@ -206,7 +206,7 @@ public class UpdateTest extends EarlTestCase
 
     static List<String> getAll(Resource r, Property p)
     {
-        List<String> l = new ArrayList<String>() ;
+        List<String> l = new ArrayList<>() ;
         ClosableIterator<Statement> cIter =  r.listProperties(p) ;
         for ( ; cIter.hasNext() ; )
         {

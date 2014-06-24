@@ -21,7 +21,6 @@
 package com.hp.hpl.jena.sparql.util;
 import java.util.ArrayList ;
 import java.util.Collection ;
-import java.util.Iterator ;
 import java.util.List ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -82,7 +81,7 @@ public class Closure
     public static Model closure(Statement statement, ClosureTest test, Model model)
     {
         //Set visited = new HashSet() ;
-        List<Resource> visited = new ArrayList<Resource>() ;
+        List<Resource> visited = new ArrayList<>() ;
 
         closure(statement, model, visited, test) ;
         return model ;
@@ -142,7 +141,7 @@ public class Closure
     {
         //Set s = new HashSet() ;
         //Set visited = new HashSet() ;
-        List<Resource> visited = new ArrayList<Resource>() ;
+        List<Resource> visited = new ArrayList<>() ;
         
         if ( ! testThisNode )
             closureNoTest(resource, results, visited, test) ;
@@ -203,9 +202,9 @@ public class Closure
     private static String dbg_string(Collection<?> s)
     {
         String tmp = "" ;
-        for ( Iterator<?> iter = s.iterator() ; iter.hasNext() ; )
+        for ( Object value : s )
         {
-            tmp = tmp+" "+iter.next().toString() ;
+            tmp = tmp + " " + value.toString();
         }
         return tmp ;
     }

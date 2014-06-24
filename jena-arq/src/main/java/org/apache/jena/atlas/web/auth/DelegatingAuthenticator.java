@@ -33,7 +33,7 @@ import org.apache.http.protocol.HttpContext;
  */
 public class DelegatingAuthenticator extends AbstractScopedAuthenticator<HttpAuthenticator> {
 
-    private Map<URI, HttpAuthenticator> authenticators = new HashMap<URI, HttpAuthenticator>();
+    private Map<URI, HttpAuthenticator> authenticators = new HashMap<>();
 
     /**
      * Creates a new delegating authenticator

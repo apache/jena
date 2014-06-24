@@ -146,7 +146,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         } else {
             // typed literal
             if (value instanceof Boolean) {
-                return ((Boolean)value).booleanValue();
+                return (Boolean) value;
             } else {
                 throw new DatatypeFormatException(this.toString() + " is not a Boolean");
             }
@@ -201,7 +201,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         } else {
             Object value = getValue();
             if (value instanceof Character) {
-                return ((Character) value).charValue();
+                return (Character) value;
             } else {
                 throw new DatatypeFormatException(value.toString() + " is not a Character");
             }

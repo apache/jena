@@ -471,7 +471,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         this.recordDerivations = recordDerivations;
         engine.setDerivationLogging(recordDerivations);
         if (recordDerivations) {
-            derivations = new OneToManyMap<Triple, Derivation>();
+            derivations = new OneToManyMap<>();
         } else {
             derivations = null;
         }
@@ -492,7 +492,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     @Override
     public Iterator<Derivation> getDerivation(Triple t) {
         if (derivations == null) {
-            return new NullIterator<Derivation>();
+            return new NullIterator<>();
         } else {
             return derivations.getAll(t);
         }

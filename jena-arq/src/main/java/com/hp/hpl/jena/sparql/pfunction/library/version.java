@@ -47,7 +47,7 @@ public class version extends PropertyFunctionEval
     public QueryIterator execEvaluated(Binding binding, PropFuncArg subject, Node predicate, PropFuncArg object, ExecutionContext execCxt)
     {
         
-        List<Binding> results = new ArrayList<Binding>() ;
+        List<Binding> results = new ArrayList<>() ;
         Node subj = subject.getArg() ;
         Node obj = object.getArg() ;
         

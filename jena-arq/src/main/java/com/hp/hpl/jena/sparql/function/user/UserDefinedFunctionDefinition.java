@@ -56,7 +56,7 @@ public class UserDefinedFunctionDefinition {
     public UserDefinedFunctionDefinition(String uri, Expr e, List<Var> argList) {
         this.uri = uri;
         this.expr = e;
-        this.argList = new ArrayList<Var>(argList);
+        this.argList = new ArrayList<>(argList);
         
         //Verify that all mentioned variables are in the arguments list
         Set<Var> mentioned = this.expr.getVarsMentioned();

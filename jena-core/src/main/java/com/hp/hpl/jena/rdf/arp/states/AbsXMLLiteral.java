@@ -31,7 +31,7 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 public abstract class AbsXMLLiteral extends Frame {
     boolean checkComposingChar = true;
 
-    static Map<String, String> xmlNameSpace = new TreeMap<String, String>();
+    static Map<String, String> xmlNameSpace = new TreeMap<>();
     static {
         xmlNameSpace.put("xml", xmlns);
         xmlNameSpace.put("", "");
@@ -196,8 +196,8 @@ public abstract class AbsXMLLiteral extends Frame {
 
         checkComposingChar = true;
         
-        Map<String, String> attrMap = new TreeMap<String, String>();
-        Map<String, String> childNameSpaces = new TreeMap<String, String>();
+        Map<String, String> attrMap = new TreeMap<>();
+        Map<String, String> childNameSpaces = new TreeMap<>();
         startLitElement( uri,  rawName, childNameSpaces);
         for (int i = atts.getLength()-1;i>=0;i--) {
             String ns = atts.getURI(i);

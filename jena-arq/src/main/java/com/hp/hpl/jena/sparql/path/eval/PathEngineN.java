@@ -46,7 +46,7 @@ final class PathEngineN extends PathEngine
 
     @Override
     protected Collection<Node> collector() {
-        return new ArrayList<Node>() ;
+        return new ArrayList<>() ;
     }
 
     @Override
@@ -187,13 +187,13 @@ final class PathEngineN extends PathEngine
 
     @Override
     protected void doZeroOrMore(Path path, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<Node>() ;
+        Set<Node> visited = new HashSet<>() ;
         ALP(node, path, visited, output) ;
     }
 
     @Override
     protected void doOneOrMore(Path path, Node node, Collection<Node> output) {
-        Set<Node> visited = new HashSet<Node>() ;
+        Set<Node> visited = new HashSet<>() ;
         // Do one step without including.
         Iterator<Node> iter1 = eval(path, node) ;
         for (; iter1.hasNext();) {

@@ -318,7 +318,7 @@ public class ParserBase
             return s ;
         
         // Dump the initial part straight into the string buffer
-        StringBuffer sb = new StringBuffer(s.substring(0,i)) ;
+        StringBuilder sb = new StringBuilder(s.substring(0,i)) ;
         int len = s.length() ;
         for ( ; i < len ; i++ )
         {

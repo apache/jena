@@ -33,8 +33,8 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class ElementData extends Element
 {
-    private List<Var> vars = new ArrayList<Var>() ;
-    private List<Binding> rows = new ArrayList<Binding>() ;
+    private List<Var> vars = new ArrayList<>() ;
+    private List<Binding> rows = new ArrayList<>() ;
     
     public ElementData()
     {

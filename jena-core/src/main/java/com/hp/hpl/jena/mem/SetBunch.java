@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 public class SetBunch implements TripleBunch
     {
-    protected Set<Triple> elements = new HashSet<Triple>(20);
+    protected Set<Triple> elements = new HashSet<>(20);
     
     public SetBunch( TripleBunch b )
         { 
@@ -52,10 +52,14 @@ public class SetBunch implements TripleBunch
         { return equalsObjectOK( t ) ? elements.contains( t ) : slowContains( t ); }
     
     protected boolean slowContains( Triple t )
-        { 
-        Iterator<Triple> it = elements.iterator();
-        while (it.hasNext())
-            if (t.matches( it.next() )) return true;
+        {
+            for ( Triple element : elements )
+            {
+                if ( t.matches( element ) )
+                {
+                    return true;
+                }
+            }
         return false;
         }
 

@@ -172,7 +172,7 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
     
     private static class FrameStack
     {
-        private Deque<Frame> frames    = new ArrayDeque<Frame>() ;
+        private Deque<Frame> frames    = new ArrayDeque<>() ;
     
         boolean isCurrent(ItemList list)
         {

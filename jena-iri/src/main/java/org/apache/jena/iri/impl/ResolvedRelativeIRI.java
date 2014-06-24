@@ -114,7 +114,7 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
     }
 
     private String createIRIString() {
-        StringBuffer iriBuf = new StringBuffer();
+        StringBuilder iriBuf = new StringBuilder();
         
         if (has(SCHEME)){
             iriBuf.append(getScheme());

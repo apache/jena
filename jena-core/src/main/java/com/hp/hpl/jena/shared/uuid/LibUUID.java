@@ -56,7 +56,7 @@ class LibUUID
         // of this OS process (so two identical programs, starting at
         // exactly the same time, might get the same seed).
         
-        StringBuffer seedInput = new StringBuffer(200) ;
+        StringBuilder seedInput = new StringBuilder(200) ;
         
         try { seedInput.append(InetAddress.getLocalHost().getHostAddress()) ; }
         // Not every machine has an IP address.

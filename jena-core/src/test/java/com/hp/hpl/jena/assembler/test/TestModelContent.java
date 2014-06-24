@@ -59,7 +59,7 @@ public class TestModelContent extends AssemblerTestBase
 
     public void testContentTransactionsNone()
         {
-        final List<String> history = new ArrayList<String>();
+        final List<String> history = new ArrayList<>();
         final Model expected = model( "_x rdf:value '17'xsd:integer" );
         Assembler a = new MockTransactionModel( history, expected, false, true );
         Resource root = resourceInModel
@@ -70,7 +70,7 @@ public class TestModelContent extends AssemblerTestBase
     
     public void testContentTransactionsCommit()
         {
-        final List<String> history = new ArrayList<String>();
+        final List<String> history = new ArrayList<>();
         final Model expected = model( "_x rdf:value '17'xsd:integer" );
         Assembler a = new MockTransactionModel( history, expected, true, false );
         Resource root = resourceInModel
@@ -82,7 +82,7 @@ public class TestModelContent extends AssemblerTestBase
 
     public void testContentTransactionsAbort()
         {
-        final List<String> history = new ArrayList<String>();
+        final List<String> history = new ArrayList<>();
         final Model expected = model( "_x rdf:value '17'xsd:integer" );
         final Model toDeliver = model( "" ).add( expected );
         Assembler a = new MockTransactionModel( history, toDeliver, true, true );

@@ -32,14 +32,14 @@ public class TestMultiSet extends BaseTest
 {
     @Test public void multiSet_01()
     {
-        MultiSet<String> x = new MultiSet<String>() ;
+        MultiSet<String> x = new MultiSet<>() ;
         assertTrue(x.isEmpty()) ;
         assertEquals(0, x.count("A")) ;
     }
 
     @Test public void multiSet_02()
     {
-        MultiSet<String> x = new MultiSet<String>() ;
+        MultiSet<String> x = new MultiSet<>() ;
         x.add("A") ;
         assertFalse(x.isEmpty()) ;
         assertEquals(1, x.count("A") ) ;
@@ -49,7 +49,7 @@ public class TestMultiSet extends BaseTest
 
     @Test public void multiSet_03()
     {
-        MultiSet<String> x = new MultiSet<String>() ;
+        MultiSet<String> x = new MultiSet<>() ;
         x.add("A") ;
         x.add("A") ;
         x.remove("A") ;
@@ -122,7 +122,7 @@ public class TestMultiSet extends BaseTest
     
     private static MultiSet<String> add(String[] data)
     {
-        MultiSet<String> x = new MultiSet<String>() ;
+        MultiSet<String> x = new MultiSet<>() ;
         for ( String str : data )
             x.add(str) ;
         return x ;
@@ -131,7 +131,7 @@ public class TestMultiSet extends BaseTest
     private static void iterTest(String[] data)
     {
         List<String> expected = Arrays.asList(data) ;
-        MultiSet<String> x = new MultiSet<String>() ;
+        MultiSet<String> x = new MultiSet<>() ;
         for ( String str : data )
             x.add(str) ;
         List<String> actual = Iter.toList(x.iterator()) ;

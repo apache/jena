@@ -73,16 +73,16 @@ public abstract class N3ExternalTestsCom extends TestSuite
 	
 	protected String findFile(String fname)
 	{
-		for ( int i = 0 ; i < dirbases.length ; i++ )
-		{
-			String maybeFile = dirbases[i]+"/"+fname ;
-			File f = new File(maybeFile) ;
-			if ( f.exists() )
-			{
-				basedir = dirbases[i] ;
-				return f.getAbsolutePath() ;
-			}
-		}
+        for ( String dirbase : dirbases )
+        {
+            String maybeFile = dirbase + "/" + fname;
+            File f = new File( maybeFile );
+            if ( f.exists() )
+            {
+                basedir = dirbase;
+                return f.getAbsolutePath();
+            }
+        }
 		return null ;
 	}
 

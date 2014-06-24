@@ -26,12 +26,12 @@ import org.apache.jena.atlas.iterator.IteratorConcat ;
 
 public abstract class MultiMap<K, V>
 {
-    private Map<K, Collection<V>> map = new HashMap<K, Collection<V>>() ;
+    private Map<K, Collection<V>> map = new HashMap<>() ;
 
     protected abstract Collection<V> createCollection() ;
     
-    public static <K, V> MultiMapToList<K, V> createMapList() { return new MultiMapToList<K, V>() ; }
-    public static <K, V> MultiMapToSet<K, V> createMapSet() { return new MultiMapToSet<K, V>() ; }
+    public static <K, V> MultiMapToList<K, V> createMapList() { return new MultiMapToList<>() ; }
+    public static <K, V> MultiMapToSet<K, V> createMapSet() { return new MultiMapToSet<>() ; }
     
     protected MultiMap() { }
     
@@ -83,7 +83,7 @@ public abstract class MultiMap<K, V>
     /** Does not materialise the contents */
     public Iterator<V> flatten()
     {
-        IteratorConcat<V> all = new IteratorConcat<V>() ;
+        IteratorConcat<V> all = new IteratorConcat<>() ;
         for ( K k : map.keySet() )        
         {
             Collection<V> x =  map.get(k) ;

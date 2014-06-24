@@ -134,7 +134,7 @@ public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextI
 				"    ?s text:query ( rdfs:label 'EC1V' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
 	
@@ -154,7 +154,7 @@ public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextI
 				"    ?s text:query ( rdfs:label '\"EC2V 9BE\"' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + testName)) ;
 		doTestSearch(turtle, queryString, expectedURIs);
 	}

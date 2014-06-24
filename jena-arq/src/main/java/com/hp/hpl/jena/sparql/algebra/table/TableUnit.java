@@ -62,10 +62,10 @@ public class TableUnit extends TableBase
     public boolean isEmpty()    { return false ; }
 
     @Override
-    public List<String> getVarNames()   { return new ArrayList<String>() ; }
+    public List<String> getVarNames()   { return new ArrayList<>() ; }
 
     @Override
-    public List<Var> getVars()       { return new ArrayList<Var>() ; }
+    public List<Var> getVars()       { return new ArrayList<>() ; }
     
     @Override
     public String toString()    { return "TableUnit" ; }

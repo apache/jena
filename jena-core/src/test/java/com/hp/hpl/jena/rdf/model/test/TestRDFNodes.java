@@ -134,7 +134,7 @@ public class TestRDFNodes extends AbstractModelTestBase
 
 	public void testRDFVisitor()
 	{
-		final List<String> history = new ArrayList<String>();
+		final List<String> history = new ArrayList<>();
 		final Model m = ModelFactory.createDefaultModel();
 		final RDFNode S = m.createResource();
 		final RDFNode P = m.createProperty("eh:PP");

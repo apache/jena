@@ -126,7 +126,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     public Set<String> graphNames()
     {
         Iterator<Tuple<Node>> iter = nodeTupleTable.find((Node)null, null, null) ;
-        Set <String> x = new HashSet<String>() ;
+        Set <String> x = new HashSet<>() ;
         for ( ; iter.hasNext() ; )
             x.add(iter.next().get(0).getURI()) ;
         Iter.close(iter) ;
@@ -167,7 +167,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     {
         Node g = NodeFactory.createURI(graphName) ;
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
-        Map<String, String> map = new HashMap<String, String>() ;
+        Map<String, String> map = new HashMap<>() ;
         for ( ; iter.hasNext() ; )
         {
             Tuple<Node> t = iter.next();

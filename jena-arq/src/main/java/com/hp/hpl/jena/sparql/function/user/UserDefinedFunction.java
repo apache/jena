@@ -68,7 +68,7 @@ public class UserDefinedFunction extends UserDefinedFunctionDefinition implement
         if (uri == null || !uri.equals(this.getUri())) throw new ExprBuildException("Incorrect URI passed to build() call, expected <" + this.getUri() + "> but got <" + uri + ">");
         if (this.getArgList().size() != args.size()) throw new ExprBuildException("Incorrect number of arguments for user defined <" + this.getUri() + "> function");
         
-        Map<String, Expr> substitutions = new HashMap<String, Expr>();
+        Map<String, Expr> substitutions = new HashMap<>();
         for (int i = 0; i < this.getArgList().size(); i++) {
             substitutions.put(this.getArgList().get(i).getVarName(), args.get(i));
         }

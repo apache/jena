@@ -32,9 +32,9 @@ public class P_NegPropSet extends PathBase
     
     public P_NegPropSet()
     {
-        nodes = new ArrayList<P_Path0>() ;
-        forwardNodes = new ArrayList<Node>() ;
-        backwardNodes = new ArrayList<Node>() ;
+        nodes = new ArrayList<>() ;
+        forwardNodes = new ArrayList<>() ;
+        backwardNodes = new ArrayList<>() ;
     }
     
     // addFwd, addBkwd?

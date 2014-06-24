@@ -43,7 +43,7 @@ public class Tuple<T> implements Iterable<T> {
      * copy, in case that style is preferrable for creating tuples.
      */
     public static <X> Tuple<X> create(X[] elements) {
-        return new Tuple<X>(elements) ;
+        return new Tuple<>(elements) ;
     }
 
     // TupleLib??

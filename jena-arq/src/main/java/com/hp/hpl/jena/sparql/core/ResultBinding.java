@@ -69,7 +69,7 @@ public class ResultBinding extends QuerySolutionBase
     @Override
     public Iterator<String> varNames()
     { 
-        List<String> x = new ArrayList<String>() ;
+        List<String> x = new ArrayList<>() ;
         for ( Iterator<Var> iter = binding.vars() ; iter.hasNext(); )
         {
             Var v = iter.next();

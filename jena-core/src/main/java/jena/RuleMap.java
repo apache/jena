@@ -170,7 +170,7 @@ public class RuleMap {
             
             // Fetch the rule set and create the reasoner
             BuiltinRegistry.theRegistry.register(new Deduce());
-            Map<String, String> prefixes = new HashMap<String, String>();
+            Map<String, String> prefixes = new HashMap<>();
             List<Rule> rules = loadRules(cl.getItem(0), prefixes);
             Reasoner reasoner = new GenericRuleReasoner(rules);
             

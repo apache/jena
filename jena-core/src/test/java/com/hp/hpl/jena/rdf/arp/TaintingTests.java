@@ -140,8 +140,10 @@ public class TaintingTests extends TestCase implements ErrorHandler,
 
 	static public Test suite() {
 		TestSuite suite = new TestSuite("ARP Tainting");
-        for (int i=0;i<files.length;i++)
-            suite.addTest(new TaintingTests(files[i]));
+        for ( String file : files )
+        {
+            suite.addTest( new TaintingTests( file ) );
+        }
         suite.addTest(new TaintingTests("testing/arp/tainting/base.rdf",
                 badBase,
                 "testing/arp/tainting/base-with-bad-base-good.nt",

@@ -149,15 +149,13 @@ public class TestNode extends GraphTestBase
     public void testNodeEquals() 
         {
         Object [][] tests = eqTestCases();
-        for (int i = 0; i < tests.length; i += 1)
+            for ( Object[] I : tests )
             {
-            Object [] I = tests[i];
-            assertFalse( I[0] + " should not equal null", I[0].equals( null ) );
-            assertFalse( I[0] + "should not equal 'String'", I[0].equals( "String" ) );
-            for (int j = 0; j < tests.length; j += 1)
+                assertFalse( I[0] + " should not equal null", I[0].equals( null ) );
+                assertFalse( I[0] + "should not equal 'String'", I[0].equals( "String" ) );
+                for ( Object[] J : tests )
                 {
-                Object [] J = tests[j];
-                testEquality( I[1].equals( J[1] ), I[0], J[0] );
+                    testEquality( I[1].equals( J[1] ), I[0], J[0] );
                 }
             }
         }
@@ -669,13 +667,12 @@ public class TestNode extends GraphTestBase
     */
     public void testNamespace()
         {
-        for (int i = 0; i < someURIs.length; i += 1)
+            for ( String uri : someURIs )
             {
-            String uri = someURIs[i];
-            int split = Util.splitNamespace( uri );
-        	Node n = NodeCreateUtils.create( uri );
-        	assertEquals( "check namespace", uri.substring( 0, split ), n.getNameSpace() );
-            assertEquals( "check localname", uri.substring( split ), n.getLocalName() );
+                int split = Util.splitNamespace( uri );
+                Node n = NodeCreateUtils.create( uri );
+                assertEquals( "check namespace", uri.substring( 0, split ), n.getNameSpace() );
+                assertEquals( "check localname", uri.substring( split ), n.getLocalName() );
             }
         }
     
@@ -690,8 +687,14 @@ public class TestNode extends GraphTestBase
     
     public void testHasURI()
         {
-        for (int i = 0; i < someURIs.length; i += 1) testHasURI( someURIs[i] );
-        for (int i = 0; i < someNodes.length; i += 1) testHasURI( someNodes[i] );
+            for ( String someURI : someURIs )
+            {
+                testHasURI( someURI );
+            }
+            for ( String someNode : someNodes )
+            {
+                testHasURI( someNode );
+            }
         }
 
 	protected void testHasURI( String uri ) 

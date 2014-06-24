@@ -39,7 +39,7 @@ import java.util.Map;
 public class Iso3166  {
 
    
-    static final Map<String, Iso3166> all = new HashMap<String, Iso3166>();
+    static final Map<String, Iso3166> all = new HashMap<>();
 
     /** Creates new Iso639 */
     private Iso3166(String code,String engName) {

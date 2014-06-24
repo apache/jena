@@ -37,7 +37,7 @@ public class FBRuleReasoner implements RuleReasoner {
     protected ReasonerFactory factory;
 
     /** The rules to be used by this instance of the forward engine */
-    protected List<Rule> rules = new ArrayList<Rule>();
+    protected List<Rule> rules = new ArrayList<>();
     
     /** A precomputed set of schema deductions */
     protected Graph schemaGraph;
@@ -128,7 +128,7 @@ public class FBRuleReasoner implements RuleReasoner {
          TODO review & revise
     */
     public FBRuleReasoner addRules(List<Rule> rules) {
-        List<Rule> combined = new ArrayList<Rule>( this.rules );
+        List<Rule> combined = new ArrayList<>( this.rules );
         combined.addAll( rules );
         setRules( combined );
         return this;

@@ -54,7 +54,7 @@ public class DistinctDataBag<E> extends SortedDataBag<E>
     public DistinctDataBag(ThresholdPolicy<E> policy, SerializationFactory<E> serializerFactory, Comparator<E> comparator)
     {
         super(policy, serializerFactory, comparator);
-        this.memory = new HashSet<E>();
+        this.memory = new HashSet<>();
     }
     
     @Override
@@ -91,7 +91,7 @@ public class DistinctDataBag<E> extends SortedDataBag<E>
         }
         else
         {
-            return new DistinctReducedIterator<E>(super.iterator());
+            return new DistinctReducedIterator<>(super.iterator());
         }
     }
     

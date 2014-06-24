@@ -57,14 +57,14 @@ public class Matcher
     
     /*package*/ static List<Triple> bnodes2vars(Graph graph)
     {
-        Map<Node, Node> bnodeMapping = new HashMap<Node, Node>();
+        Map<Node, Node> bnodeMapping = new HashMap<>();
         Allocator allocator = new AllocatorBlankVar() ;
         List<Triple> pattern = remap(bnodeMapping, graph, allocator) ;
         return pattern ;
     }
 
     private static Iterator<Map<Node, Node>> match(List<Triple> pattern, Graph graph, boolean bindAny) {
-        List<Map<Node, Node>> solutions = new ArrayList<Map<Node, Node>>() ;
+        List<Map<Node, Node>> solutions = new ArrayList<>() ;
         solutions.add(new HashMap<Node, Node>()) ;  // Root binding.
         return solve(solutions, pattern, graph, bindAny) ; 
     }
@@ -80,7 +80,7 @@ public class Matcher
         }
         
         Triple step  = pattern.get(0) ;
-        List<Map<Node, Node>> solutions2 = new ArrayList<Map<Node, Node>>() ;
+        List<Map<Node, Node>> solutions2 = new ArrayList<>() ;
         
         for ( Map<Node, Node> binding : solutions )
         {
@@ -106,7 +106,7 @@ public class Matcher
     private static Map<Node, Node> bind(Triple step, Triple t, Map<Node, Node> bindings, boolean bindAny)
     {
         log("Bind: %s :: %s",step,t) ;
-        HashMap<Node, Node> newBinding = new HashMap<Node, Node>() ;
+        HashMap<Node, Node> newBinding = new HashMap<>() ;
         newBinding.putAll(bindings) ;
         if ( ! process(newBinding, t.getSubject(), step.getSubject(), bindAny ))
             return null ;
@@ -148,7 +148,7 @@ public class Matcher
 
     private static List<Triple> remap(Map<Node, Node> bnodeMapping, List<Triple>triples, Allocator alloc)
     {
-        List<Triple> pattern = new ArrayList<Triple>() ;
+        List<Triple> pattern = new ArrayList<>() ;
         for ( Triple t : triples )
         {
             Triple t2 = remap(bnodeMapping, t, alloc) ;

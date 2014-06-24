@@ -79,10 +79,9 @@ public class DebugTDB
     {
         Location location = new Location(dir) ;
         Index nodeToId = SetupTDB.makeIndex(location,  Names.indexNode2Id, SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId, -1 ,-1) ;
-        Iterator<Record> iter = nodeToId.iterator() ;
-        while(iter.hasNext())
+        for ( Record aNodeToId : nodeToId )
         {
-            System.out.println(iter.next()) ;
+            System.out.println( aNodeToId );
         }
     }
     
@@ -122,9 +121,10 @@ public class DebugTDB
             // Dump raw
             TupleIndexRecord tir = (TupleIndexRecord)idx ;
             RangeIndex rIdx = tir.getRangeIndex() ;
-            Iterator<Record> rIter = rIdx.iterator() ;
-            while(rIter.hasNext())
-                System.out.println(rIter.next()) ;
+            for ( Record aRIdx : rIdx )
+            {
+                System.out.println( aRIdx );
+            }
         }
     }
 

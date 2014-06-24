@@ -563,7 +563,7 @@ public class SecuredAltTest extends SecuredContainerTest
 				Action.Update, Action.Create });
 		try
 		{
-			final Object o = Integer.valueOf(2);
+			final Object o = 2;
 			getSecuredAlt().setDefault(o);
 			if (!securityEvaluator.evaluate(Action.Update) || (!securityEvaluator.evaluate(Action.Create) && !getSecuredAlt().iterator().hasNext() ))
 			{

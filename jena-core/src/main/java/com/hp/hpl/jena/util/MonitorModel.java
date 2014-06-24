@@ -54,13 +54,15 @@ public class MonitorModel extends ModelCom {
         List<Triple> deletionsTemp = (deletions != null) ? new ArrayList<Triple>() : null;
         ((MonitorGraph)getGraph()).snapshot(additionsTemp, deletionsTemp);
         if (additions != null) {
-            for (Iterator<Triple> i = additionsTemp.iterator(); i.hasNext(); ) {
-                additions.add( this.asStatement(i.next()));
+            for ( Triple anAdditionsTemp : additionsTemp )
+            {
+                additions.add( this.asStatement( anAdditionsTemp ) );
             }
         }
         if (deletions != null) {
-            for (Iterator<Triple> i = deletionsTemp.iterator(); i.hasNext(); ) {
-                deletions.add( this.asStatement(i.next()));
+            for ( Triple aDeletionsTemp : deletionsTemp )
+            {
+                deletions.add( this.asStatement( aDeletionsTemp ) );
             }
         }
     }

@@ -78,7 +78,7 @@ public class TestPipedRDFIterators {
     private void test_streamed_triples(int bufferSize, final int generateSize, boolean fair) throws InterruptedException,
             ExecutionException, TimeoutException {
 
-        final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>(bufferSize, fair);
+        final PipedRDFIterator<Triple> it = new PipedRDFIterator<>(bufferSize, fair);
         final PipedTriplesStream out = new PipedTriplesStream(it);
 
         // Create a runnable that will generate triples
@@ -222,7 +222,7 @@ public class TestPipedRDFIterators {
     private void test_streamed_quads(int bufferSize, final int generateSize, boolean fair) throws InterruptedException,
             ExecutionException, TimeoutException {
 
-        final PipedRDFIterator<Quad> it = new PipedRDFIterator<Quad>(bufferSize, fair);
+        final PipedRDFIterator<Quad> it = new PipedRDFIterator<>(bufferSize, fair);
         final PipedQuadsStream out = new PipedQuadsStream(it);
 
         // Create a runnable that will generate quads
@@ -367,7 +367,7 @@ public class TestPipedRDFIterators {
     private void test_streamed_tuples(int bufferSize, final int generateSize, boolean fair) throws InterruptedException,
             ExecutionException, TimeoutException {
 
-        final PipedRDFIterator<Tuple<Node>> it = new PipedRDFIterator<Tuple<Node>>();
+        final PipedRDFIterator<Tuple<Node>> it = new PipedRDFIterator<>();
         final PipedTuplesStream out = new PipedTuplesStream(it);
 
         // Create a runnable that will generate tuples
@@ -539,7 +539,7 @@ public class TestPipedRDFIterators {
      */
     private void test_streamed_triples_bad(final String data, int expected) throws TimeoutException, InterruptedException {
 
-        final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
+        final PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
         final PipedTriplesStream out = new PipedTriplesStream(it);
 
         // Create a runnable that will try to parse the bad data
@@ -627,7 +627,7 @@ public class TestPipedRDFIterators {
      */
     @Test(expected = IllegalStateException.class)
     public void streamed_state_bad_01() {
-        PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
+        PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
         it.hasNext();
     }
 
@@ -637,7 +637,7 @@ public class TestPipedRDFIterators {
     @Test(expected = RiotException.class)
     public void streamed_state_bad_02() {
 
-        final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
+        final PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
         final PipedTriplesStream out = new PipedTriplesStream(it);
 
         Thread t = new Thread(new Runnable() {
@@ -677,7 +677,7 @@ public class TestPipedRDFIterators {
     @Test
     public void streamed_state_bad_03() {
 
-        final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
+        final PipedRDFIterator<Triple> it = new PipedRDFIterator<>();
         final PipedTriplesStream out = new PipedTriplesStream(it);
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -726,7 +726,7 @@ public class TestPipedRDFIterators {
      */
     @Test
     public void streamed_state_bad_04() {
-        final PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
+        final PipedRDFIterator<Triple> iter = new PipedRDFIterator<>();
         final PipedTriplesStream stream = new PipedTriplesStream(iter);
 
         Runnable producer = new Runnable() {
@@ -784,7 +784,7 @@ public class TestPipedRDFIterators {
      */
     @Test
     public void streamed_state_bad_05() {
-        final PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>(1, false, PipedRDFIterator.DEFAULT_POLL_TIMEOUT, 3);
+        final PipedRDFIterator<Triple> iter = new PipedRDFIterator<>(1, false, PipedRDFIterator.DEFAULT_POLL_TIMEOUT, 3);
         final PipedTriplesStream stream = new PipedTriplesStream(iter);
 
         Runnable producer = new Runnable() {
@@ -843,7 +843,7 @@ public class TestPipedRDFIterators {
      */
     @Test
     public void streamed_iterator_usage_01() {
-        PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
+        PipedRDFIterator<Triple> iter = new PipedRDFIterator<>();
         PipedTriplesStream stream = new PipedTriplesStream(iter);
         stream.start();
         stream.finish();
@@ -856,7 +856,7 @@ public class TestPipedRDFIterators {
      */
     @Test(expected = RiotException.class)
     public void streamed_iterator_usage_02() {
-        PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
+        PipedRDFIterator<Triple> iter = new PipedRDFIterator<>();
         PipedTriplesStream stream = new PipedTriplesStream(iter);
         stream.start();
         stream.finish();

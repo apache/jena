@@ -76,30 +76,47 @@ public class BindingComparator implements java.util.Comparator<Binding>
     @Override
     public int compare(Binding bind1, Binding bind2)
     {
-        for ( Iterator<SortCondition> iter = conditions.iterator() ; iter.hasNext() ; )
+        for ( SortCondition sc : conditions )
         {
-            SortCondition sc = iter.next() ;
             if ( sc.expression == null )
-                throw new QueryExecException("Broken sort condition") ;
+            {
+                throw new QueryExecException( "Broken sort condition" );
+            }
 
-            NodeValue nv1 = null ;
-            NodeValue nv2 = null ;
-            
-            try { nv1 = sc.expression.eval(bind1, env) ; }
-            catch (VariableNotBoundException ex) {}
-            catch (ExprEvalException ex)
-            { Log.warn(this, ex.getMessage()) ; }
-            
-            try { nv2 = sc.expression.eval(bind2, env) ; }
-            catch (VariableNotBoundException ex) {}
-            catch (ExprEvalException ex)
-            { Log.warn(this, ex.getMessage()) ; }
-            
-            Node n1 = NodeValue.toNode(nv1) ;
-            Node n2 = NodeValue.toNode(nv2) ;
-            int x = compareNodes(nv1, nv2, sc.direction) ;
+            NodeValue nv1 = null;
+            NodeValue nv2 = null;
+
+            try
+            {
+                nv1 = sc.expression.eval( bind1, env );
+            }
+            catch ( VariableNotBoundException ex )
+            {
+            }
+            catch ( ExprEvalException ex )
+            {
+                Log.warn( this, ex.getMessage() );
+            }
+
+            try
+            {
+                nv2 = sc.expression.eval( bind2, env );
+            }
+            catch ( VariableNotBoundException ex )
+            {
+            }
+            catch ( ExprEvalException ex )
+            {
+                Log.warn( this, ex.getMessage() );
+            }
+
+            Node n1 = NodeValue.toNode( nv1 );
+            Node n2 = NodeValue.toNode( nv2 );
+            int x = compareNodes( nv1, nv2, sc.direction );
             if ( x != Expr.CMP_EQUAL )
-                return x ;
+            {
+                return x;
+            }
         }
         // Same by the SortConditions - now do any extra tests to make sure they are unique.
         return compareBindingsSyntactic(bind1, bind2) ;
@@ -134,7 +151,7 @@ public class BindingComparator implements java.util.Comparator<Binding>
         
         // The variables in bindings are unordered.  If we want a good comparison, we need an order.
         // We'll choose lexicographically by name.  Unfortunately this means a sort on every comparison.
-        List<Var> varList = new ArrayList<Var>();
+        List<Var> varList = new ArrayList<>();
         for (Iterator<Var> iter = bind1.vars(); iter.hasNext(); )
         {
             varList.add(iter.next());

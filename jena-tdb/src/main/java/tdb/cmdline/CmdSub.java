@@ -28,7 +28,7 @@ import arq.cmd.CmdException;
 public class CmdSub
 {
     public interface Exec { public void exec(String[] argv) ; }
-    Map<String, Exec> dispatch = new HashMap<String, Exec>() ;
+    Map<String, Exec> dispatch = new HashMap<>() ;
     
     String subCmd ;
     String args[] ;

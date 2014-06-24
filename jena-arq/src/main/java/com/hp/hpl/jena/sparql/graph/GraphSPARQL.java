@@ -140,7 +140,7 @@ public class GraphSPARQL extends GraphBase implements Graph
         
         QueryIterator qIter = plan.iterator() ;
         //List<Triple> triples = new ArrayList<Triple>() ;
-        List<Triple> triples = new ArrayList<Triple>() ;
+        List<Triple> triples = new ArrayList<>() ;
         
         for (; qIter.hasNext() ; )
         {

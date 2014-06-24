@@ -252,7 +252,7 @@ public class QueryTest extends EarlTestCase
 
     private ResultSetRewindable convertToStrings(ResultSetRewindable resultsActual)
     {
-        List<Binding> bindings = new ArrayList<Binding>()  ;
+        List<Binding> bindings = new ArrayList<>()  ;
         while(resultsActual.hasNext())
         {
             Binding b = resultsActual.nextBinding() ;
@@ -280,8 +280,8 @@ public class QueryTest extends EarlTestCase
     private static ResultSetRewindable unique(ResultSetRewindable results)
     {
         // VERY crude.  Utilises the fact that bindings have value equality.
-        List<Binding> x = new ArrayList<Binding>() ;
-        Set<Binding> seen = new HashSet<Binding>() ;
+        List<Binding> x = new ArrayList<>() ;
+        Set<Binding> seen = new HashSet<>() ;
         
         for ( ; results.hasNext() ; )
         {
@@ -475,13 +475,17 @@ public class QueryTest extends EarlTestCase
         String tmp = "" ;
         if ( testItem.getDefaultGraphURIs() != null )
         {
-            for ( Iterator<String> iter = testItem.getDefaultGraphURIs().iterator() ; iter.hasNext() ; )
-                tmp = tmp+iter.next() ;
+            for ( String s : testItem.getDefaultGraphURIs() )
+            {
+                tmp = tmp + s;
+            }
         }
         if ( testItem.getNamedGraphURIs() != null )
         {
-            for ( Iterator<String> iter = testItem.getNamedGraphURIs().iterator() ; iter.hasNext() ; )
-                tmp = tmp+iter.next() ;
+            for ( String s : testItem.getNamedGraphURIs() )
+            {
+                tmp = tmp + s;
+            }
         }
         
         String d = "Test "+testNumber+" :: "+testItem.getName() ;

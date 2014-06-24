@@ -452,19 +452,20 @@ public class WriterOp
                 start() ;
                 out.incIndent() ;
                 boolean first = true ;
-                for ( Iterator<ExprAggregator> iter = opGroup.getAggregators().iterator() ; iter.hasNext() ; )
+                for ( ExprAggregator agg : opGroup.getAggregators() )
                 {
-                    ExprAggregator agg = iter.next();
-                    if ( ! first )
-                        out.print(" ") ;
-                    first = false ;
-                    Var v = agg.getVar() ;
-                    String str = agg.getAggregator().toPrefixString() ;
-                    start() ;
-                    out.print(v.toString()) ;
-                    out.print(" ") ;
-                    out.print(str) ;
-                    finish() ;
+                    if ( !first )
+                    {
+                        out.print( " " );
+                    }
+                    first = false;
+                    Var v = agg.getVar();
+                    String str = agg.getAggregator().toPrefixString();
+                    start();
+                    out.print( v.toString() );
+                    out.print( " " );
+                    out.print( str );
+                    finish();
                 }
                 finish() ;
                 out.decIndent() ;

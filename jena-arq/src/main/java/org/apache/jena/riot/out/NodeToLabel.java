@@ -65,7 +65,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     /** Single scope */
     private static class SingleScopePolicy implements ScopePolicy<Node, String, Node>
     { 
-        private Map<Node, String> map = new HashMap<Node, String>() ;
+        private Map<Node, String> map = new HashMap<>() ;
         @Override
         public Map<Node, String> getScope(Node scope) { return map ; }
         @Override
@@ -75,8 +75,8 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     /** One scope for labels per graph */
     private static class GraphScopePolicy implements ScopePolicy<Node, String, Node>
     { 
-        private Map<Node, String> dftMap = new HashMap<Node, String>() ;
-        private Map<Node, Map<Node, String>> map = new HashMap<Node, Map<Node, String>>() ;
+        private Map<Node, String> dftMap = new HashMap<>() ;
+        private Map<Node, Map<Node, String>> map = new HashMap<>() ;
         @Override
         public Map<Node, String> getScope(Node scope)
         {
@@ -86,7 +86,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
             Map<Node, String> x = map.get(scope) ;
             if ( x == null )
             {
-                x = new HashMap<Node, String>() ;
+                x = new HashMap<>() ;
                 map.put(scope, x) ;
             }
             return x ;

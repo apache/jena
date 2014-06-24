@@ -29,7 +29,6 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemException ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 public class TestSSE_Basic extends TestCase
@@ -374,8 +373,7 @@ public class TestSSE_Basic extends TestCase
             Item item = SSE.parse(str) ;
             //System.out.println(str+" => "+item) ;
             fail("Did not get a parse failure") ;
-        } 
-        catch (SSEParseException ex) {}
+        }
         catch (ARQException ex) {}
     }
     
@@ -388,7 +386,6 @@ public class TestSSE_Basic extends TestCase
             fail("Did not get a parse failure") ;
         } 
         //catch (RiotException ex) {}
-        catch (SSEParseException ex) {}
         catch (ARQException ex) {}
     }
 

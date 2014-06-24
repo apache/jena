@@ -343,7 +343,7 @@ public class TestPath extends BaseTest
     static boolean sameUnorder(List<Node> expected, List<Node> results)
     {
         // Copy - this is modified.
-        List<Node> x = new ArrayList<Node>(results) ;
+        List<Node> x = new ArrayList<>(results) ;
         for ( Node n : expected )
         {
             if ( ! x.contains(n) )

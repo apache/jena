@@ -35,7 +35,7 @@ public class TestCacheStats extends BaseTest
     @Test public void stats_01()
     {
         cache.clear() ;
-        cache = new CacheStatsAtomic<Integer, Integer>(cache) ;
+        cache = new CacheStatsAtomic<>(cache) ;
         CacheStats<Integer, Integer> cs = (CacheStats<Integer, Integer>)cache ;
         assertEquals(0,cs.getCacheEntries()) ;
         assertEquals(0,cs.getCacheMisses()) ;
@@ -46,7 +46,7 @@ public class TestCacheStats extends BaseTest
     @Test public void stats_02()
     {
         cache.clear() ;
-        cache = new CacheStatsAtomic<Integer, Integer>(cache) ;
+        cache = new CacheStatsAtomic<>(cache) ;
         CacheStats<Integer, Integer> cs = (CacheStats<Integer, Integer>)cache ;
         cache.put(7,77) ;
         assertEquals(1,cs.getCacheEntries()) ;
@@ -59,7 +59,7 @@ public class TestCacheStats extends BaseTest
     @Test public void stats_03()
     {
         cache.clear() ;
-        cache = new CacheStatsAtomic<Integer, Integer>(cache) ;
+        cache = new CacheStatsAtomic<>(cache) ;
         CacheStats<Integer, Integer> cs = (CacheStats<Integer, Integer>)cache ;
         cache.put(7,77) ;
         cache.put(8,88) ;
@@ -73,7 +73,7 @@ public class TestCacheStats extends BaseTest
     @Test public void stats_04()
     {
         cache.clear() ;
-        cache = new CacheStatsAtomic<Integer, Integer>(cache) ;
+        cache = new CacheStatsAtomic<>(cache) ;
         CacheStats<Integer, Integer> cs = (CacheStats<Integer, Integer>)cache ;
         cache.put(7,77) ;
         cache.get(7) ;

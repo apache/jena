@@ -136,7 +136,7 @@ public abstract class TestTripleBunch extends GraphTestBase
         
     protected List<Triple> listOf( Triple x )
         {
-        List<Triple> result = new ArrayList<Triple>();
+        List<Triple> result = new ArrayList<>();
         result.add( x );
         return result;
         }
@@ -150,7 +150,7 @@ public abstract class TestTripleBunch extends GraphTestBase
     
     protected Set<Triple> setOf( Triple x )
         {
-        Set<Triple> result = new HashSet<Triple>();
+        Set<Triple> result = new HashSet<>();
         result.add( x );
         return result;
         }

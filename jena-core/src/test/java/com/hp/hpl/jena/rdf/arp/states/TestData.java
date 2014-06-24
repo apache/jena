@@ -135,22 +135,25 @@ public class TestData implements ARPErrorNumbers{
                 }
             }, };
 
-    static Map<String, Event> short2Event = new HashMap<String, Event>();
+    static Map<String, Event> short2Event = new HashMap<>();
     static {
-        for (int i=0;i<allEvents.length;i++) {
-            String key = allEvents[i].oneChar;
-            if (short2Event.get(key)!=null)
-                System.err.println("Duplicate event code: "+key);
-            short2Event.put(key,allEvents[i]);
+        for ( Event allEvent : allEvents )
+        {
+            String key = allEvent.oneChar;
+            if ( short2Event.get( key ) != null )
+            {
+                System.err.println( "Duplicate event code: " + key );
+            }
+            short2Event.put( key, allEvent );
         }
     }
-    static Map<Class< ? extends FrameI>, String> state2Name = new HashMap<Class< ? extends FrameI>, String>();
+    static Map<Class< ? extends FrameI>, String> state2Name = new HashMap<>();
 
-    static Map<Class<? extends FrameI>, String> state2ShortName = new HashMap<Class<? extends FrameI>, String>();
+    static Map<Class<? extends FrameI>, String> state2ShortName = new HashMap<>();
 
-    static Map<String, Class<? extends FrameI>> shortName2State = new HashMap<String, Class<? extends FrameI>>();
+    static Map<String, Class<? extends FrameI>> shortName2State = new HashMap<>();
 
-    static Map<Class<? extends FrameI>, Object[]> state2Args = new HashMap<Class<? extends FrameI>, Object[]>();
+    static Map<Class<? extends FrameI>, Object[]> state2Args = new HashMap<>();
 
     static void add(String sh, String nm, Class< ? extends FrameI> f, Object args[]) {
         state2Name.put(f, nm);
@@ -231,21 +234,25 @@ public class TestData implements ARPErrorNumbers{
         rslt.append(eventListName(f,null));
         rslt.append(" $ " + testInfo(f) + " {");
         if ( eventList.testResult.getClass() != LookingForRDF.class)
-            
-        for (int i=0;i<characters.length;i++) {
-            if (skip != null && characters[i].startsWith(skip))
-                continue;
-            skip = null;
-            addEvents(characters[i]);
-            rslt.append( " " + characters[i]+ " $ ");
-            boolean testV = eventList.test(f);
-            rslt.append( testInfo(f) + " ;");
-            eventList.size = sz;
-            if ( !testV ) {
-                skip = characters[i];
-                continue;
+
+            for ( String character : characters )
+            {
+                if ( skip != null && character.startsWith( skip ) )
+                {
+                    continue;
+                }
+                skip = null;
+                addEvents( character );
+                rslt.append( " " + character + " $ " );
+                boolean testV = eventList.test( f );
+                rslt.append( testInfo( f ) + " ;" );
+                eventList.size = sz;
+                if ( !testV )
+                {
+                    skip = character;
+                    continue;
+                }
             }
-        }
         rslt.append(" }");
         data.add(rslt.toString());
         inCharacterize = false;
@@ -267,8 +274,9 @@ public class TestData implements ARPErrorNumbers{
 
     private void addEvents(String string) {
         String all[] = string.split(" ");
-        for (int i=0;i<all.length;i++){
-           eventList.add(short2Event.get(all[i]));   
+        for ( String anAll : all )
+        {
+            eventList.add( short2Event.get( anAll ) );
         }
     }
 
@@ -294,13 +302,17 @@ public class TestData implements ARPErrorNumbers{
         }
         if (cl == InnerXMLLiteral.class)
             types[2] = Map.class;
-        for (int j = 0; j < tryClasses.length; j++) {
-            types[0] = tryClasses[j];
+        for ( Class<?> tryClass : tryClasses )
+        {
+            types[0] = tryClass;
 
-            try {
-                frame = cl.getConstructor(types).newInstance(args);
+            try
+            {
+                frame = cl.getConstructor( types ).newInstance( args );
                 break;
-            } catch (NoSuchMethodException e) {
+            }
+            catch ( NoSuchMethodException e )
+            {
                 continue;
             }
         }
@@ -326,17 +338,22 @@ public class TestData implements ARPErrorNumbers{
             eventList.testResult instanceof LookingForRDF ? 2
                 : 8))
             return;
-        for (int i = 0; i < allEvents.length; i++) {
-            if (allEvents[i].isAttribute()) {
+        for ( Event allEvent : allEvents )
+        {
+            if ( allEvent.isAttribute() )
+            {
                 Event e = eventList.last();
-                if (!(e.isElement() || (e.isAttribute() && e.hashCode() < allEvents[i]
-                        .hashCode())))
+                if ( !( e.isElement() || ( e.isAttribute() && e.hashCode() < allEvent.hashCode() ) ) )
+                {
                     continue;
-            } else if (true) {
+                }
+            }
+            else if ( true )
+            {
                 continue;
             }
-            eventList.add(allEvents[i]);
-            expand(f);
+            eventList.add( allEvent );
+            expand( f );
             eventList.pop();
         }
     }
@@ -371,7 +388,7 @@ public class TestData implements ARPErrorNumbers{
           return false;
     }
 
-    Set<String> data = new TreeSet<String>(new Comparator<String>(){
+    Set<String> data = new TreeSet<>(new Comparator<String>(){
         @Override
         public int compare(String arg1, String arg2) {
             StringBuffer b1 = new StringBuffer(arg1).reverse();
@@ -395,11 +412,13 @@ public class TestData implements ARPErrorNumbers{
 //            System.out.println(state2ShortName.get(f) + ":" + state2Name.get(f)
 //                    + ":" + f.getSimpleName());
             localCount = 0;
-            for (int i = 0; i < allEvents.length; i++) {
-                if (allEvents[i].isElement()) {
+            for ( Event allEvent : allEvents )
+            {
+                if ( allEvent.isElement() )
+                {
                     eventList.clear();
-                    eventList.add(allEvents[i]);
-                    expand(f);
+                    eventList.add( allEvent );
+                    expand( f );
                 }
             }
             stats(f);

@@ -39,7 +39,7 @@ public class TestNodeToLabel extends BaseTest
     
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<Object[]>() ;
+        List<Object[]> x = new ArrayList<>() ;
         
         NodeToLabelFactory f0 = new NodeToLabelFactory() {
             @Override public NodeToLabel create() { return SyntaxLabels.createNodeToLabel() ; }

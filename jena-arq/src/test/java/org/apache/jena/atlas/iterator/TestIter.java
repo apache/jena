@@ -31,7 +31,7 @@ import org.junit.Test ;
 
 public class TestIter
 {
-    List<String> data0 = new ArrayList<String>() ;
+    List<String> data0 = new ArrayList<>() ;
     List<String> data1 = Arrays.asList("a") ;
     List<String> data2 = Arrays.asList("x","y","z") ;
     List<String> data3 = Arrays.asList(null, "x", null, null, null, "y", "z", null);
@@ -61,11 +61,11 @@ public class TestIter
     @Test
     public void append_4()
     {
-        List<String> L = new ArrayList<String>(3);
+        List<String> L = new ArrayList<>(3);
         L.add("a");
         L.add("b");
         L.add("c");
-        List<String> R = new ArrayList<String>(3);
+        List<String> R = new ArrayList<>(3);
         R.add("d");
         R.add("e");
         R.add("f");
@@ -91,11 +91,11 @@ public class TestIter
     @Test
     public void append_5()
     {
-        List<String> L = new ArrayList<String>(3);
+        List<String> L = new ArrayList<>(3);
         L.add("a");
         L.add("b");
         L.add("c");
-        List<String> R = new ArrayList<String>(3);
+        List<String> R = new ArrayList<>(3);
         R.add("d");
         R.add("e");
         R.add("f");
@@ -121,11 +121,11 @@ public class TestIter
     @Test
     public void append_6()
     {
-        List<String> L = new ArrayList<String>(3);
+        List<String> L = new ArrayList<>(3);
         L.add("a");
         L.add("b");
         L.add("c");
-        List<String> R = new ArrayList<String>(3);
+        List<String> R = new ArrayList<>(3);
         R.add("d");
         R.add("e");
         R.add("f");
@@ -244,7 +244,7 @@ public class TestIter
             @Override
             public Iterator<String> convert(String item)
             {
-                List<String> l = new ArrayList<String>(2);
+                List<String> l = new ArrayList<>(2);
                 l.add(item);
                 l.add(item + item);
                 return l.iterator();

@@ -117,9 +117,10 @@ public class Functor implements ClauseEntry {
      * Returns true if the functor is fully ground, no variables
      */
     public boolean isGround() {
-        for (int i = 0; i < args.length; i++) {
-            Node n = args[i];
-            if (n instanceof Node_RuleVariable || n instanceof Node_ANY) {
+        for ( Node n : args )
+        {
+            if ( n instanceof Node_RuleVariable || n instanceof Node_ANY )
+            {
                 return false;
             }
         }
@@ -130,9 +131,12 @@ public class Functor implements ClauseEntry {
      * Returns true if the functor is fully ground in the given environment
      */
     public boolean isGround(BindingEnvironment env) {
-        for (int i = 0; i < args.length; i++) {
-            Node n = args[i];
-            if (env.getGroundVersion(args[i]).isVariable()) return false;
+        for ( Node n : args )
+        {
+            if ( env.getGroundVersion( n ).isVariable() )
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -201,7 +205,7 @@ public class Functor implements ClauseEntry {
      */
     @Override
     public String toString() {
-        StringBuffer buff = new StringBuffer(name);
+        StringBuilder buff = new StringBuilder(name);
         buff.append("(");
         for (int i = 0; i < args.length; i++) {
             buff.append(PrintUtil.print(args[i]));

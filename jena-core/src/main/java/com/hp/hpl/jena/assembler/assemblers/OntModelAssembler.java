@@ -39,13 +39,15 @@ public class OntModelAssembler extends InfModelAssembler implements Assembler
     private void addSubModels( Assembler a, Resource root, Mode mode, OntModel om )
         {
         List<Model> subModels = getSubModels( a, root, mode );
-        for (Iterator<Model> it = subModels.iterator(); it.hasNext();)
-            om.addSubModel( it.next() );
+            for ( Model subModel : subModels )
+            {
+                om.addSubModel( subModel );
+            }
         }
 
     private List<Model> getSubModels( Assembler a, Resource root, Mode mode )
         {
-        List<Model> result = new ArrayList<Model>();
+        List<Model> result = new ArrayList<>();
         for (StmtIterator it = root.listProperties( JA.subModel ); it.hasNext();)
             result.add( a.openModel( it.nextStatement().getResource(), mode ) );
         return result;

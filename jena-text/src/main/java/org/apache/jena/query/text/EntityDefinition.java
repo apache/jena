@@ -33,8 +33,8 @@ import com.hp.hpl.jena.rdf.model.Resource ;
  * Definition of a "document"
  */
 public class EntityDefinition {
-    private final Map<Node, String>      predicateToField = new HashMap<Node, String>() ;
-    private final Map<String, Analyzer>    fieldToAnalyzer  = new HashMap<String, Analyzer>();
+    private final Map<Node, String>      predicateToField = new HashMap<>() ;
+    private final Map<String, Analyzer>    fieldToAnalyzer  = new HashMap<>();
     private final MultiMap<String, Node> fieldToPredicate = MultiMap.createMapList() ;
     private final Collection<String>     fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
     // private final Collection<String> fields =

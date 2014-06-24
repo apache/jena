@@ -34,7 +34,7 @@ import org.apache.jena.iri.IRIFactory ;
  */
 public class PrefixMapStd extends PrefixMapBase {
     // Expansion map
-    final Map<String, IRI> prefixes = new HashMap<String, IRI>();
+    final Map<String, IRI> prefixes = new HashMap<>();
 
     // Immutable view of prefixes 
     private final Map<String, IRI> prefixes2 = Collections.unmodifiableMap(prefixes);
@@ -42,7 +42,7 @@ public class PrefixMapStd extends PrefixMapBase {
     // Abbreviation map used for common cases.
     // This keeps the URI->prefix mappings for a computed guess at the anser, before
     // resorting to a full search. See abbrev(String) below.s 
-    final Map<String, String> uriToPrefix = new HashMap<String, String>();
+    final Map<String, String> uriToPrefix = new HashMap<>();
 
     /**
      * Creates a new empty prefix mapping

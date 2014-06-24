@@ -134,7 +134,7 @@ public class NodeTransformLib
         // Non-streaming rewrite 
         List<Var> vars = transformVars(transform, table.getVars()) ;
         Iterator<Binding> iter = table.rows() ; 
-        List<Binding> newRows = new ArrayList<Binding>() ;
+        List<Binding> newRows = new ArrayList<>() ;
         for ( ; iter.hasNext() ; ) { 
             Binding b = iter.next() ;
             Binding b2 = transform(b, transform) ;
@@ -158,7 +158,7 @@ public class NodeTransformLib
     /** Do a node->node conversion of a List&lt;Quad&gt; - return original List&lt;Quad&gt; for "no change" */
     public static List<Quad> transformQuads(NodeTransform nodeTransform, List<Quad> quads)
     {
-        List<Quad> x = new ArrayList<Quad>() ;
+        List<Quad> x = new ArrayList<>() ;
         boolean changed = false ; 
         for ( Quad q : quads )
         {
@@ -194,7 +194,7 @@ public class NodeTransformLib
 
     public static List<Var> transformVars(NodeTransform nodeTransform, List<Var> varList)
     {
-        List<Var> varList2 = new ArrayList<Var>(varList.size()) ; 
+        List<Var> varList2 = new ArrayList<>(varList.size()) ;
         boolean changed = false ;
         for ( Var v : varList )
         {
@@ -230,7 +230,7 @@ public class NodeTransformLib
 
     public static List<SortCondition> transform(NodeTransform nodeTransform, List<SortCondition> conditions)
     {
-        List<SortCondition> conditions2 = new ArrayList<SortCondition>() ;
+        List<SortCondition> conditions2 = new ArrayList<>() ;
         boolean same = true ;
         for ( SortCondition sc : conditions )
         {

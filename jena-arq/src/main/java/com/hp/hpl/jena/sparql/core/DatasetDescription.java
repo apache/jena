@@ -37,8 +37,8 @@ import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 
 public class DatasetDescription
 {
-    private List<String> defaultGraphURIs = new ArrayList<String>() ;
-    private List<String> namedGraphURIs = new ArrayList<String>() ;
+    private List<String> defaultGraphURIs = new ArrayList<>() ;
+    private List<String> namedGraphURIs = new ArrayList<>() ;
  
     public static DatasetDescription create(List<String> defaultGraphURIs ,  List<String> namedGraphURIs) 
     {

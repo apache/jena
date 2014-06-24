@@ -87,15 +87,17 @@ public class XSDDouble extends XSDDatatype {
      */
     @Override
     public Object parseValidated(String lex) {
-       if (lex.equals("INF")) {
-           return new Double(Double.POSITIVE_INFINITY);
-       } else if (lex.equals("-INF")) {
-           return new Double(Double.NEGATIVE_INFINITY);
-       } else if (lex.equals("NaN")) {
-           return new Double(Double.NaN);
-       } else {
-           return Double.valueOf(lex);
-       }
+        switch ( lex )
+        {
+            case "INF":
+                return Double.POSITIVE_INFINITY;
+            case "-INF":
+                return Double.NEGATIVE_INFINITY;
+            case "NaN":
+                return Double.NaN;
+            default:
+                return Double.valueOf( lex );
+        }
     }
      
     /**

@@ -357,19 +357,19 @@ public class RuleClauseCode {
         private List<Node>[] termVarTable;
         
         /** Map from variables to the list of term positions in which it occurs */
-        private Map<Node_RuleVariable, List<TermIndex>> varOccurrence = new HashMap<Node_RuleVariable, List<TermIndex>>();
+        private Map<Node_RuleVariable, List<TermIndex>> varOccurrence = new HashMap<>();
         
         /** List of all permanent variables */
-        private List<Node_RuleVariable> permanentVars = new ArrayList<Node_RuleVariable>();
+        private List<Node_RuleVariable> permanentVars = new ArrayList<>();
         
         /** List of all temporary variables */
-        private List<Node_RuleVariable> tempVars = new ArrayList<Node_RuleVariable>();
+        private List<Node_RuleVariable> tempVars = new ArrayList<>();
         
         /** The total number of var occurrences */
         int totalOccurrences = 0;
         
         /** the set of variables processed so far during the compile phase */
-        Set<Node_RuleVariable> seen = new HashSet<Node_RuleVariable>();
+        Set<Node_RuleVariable> seen = new HashSet<>();
          
         /** The rule being parsed */
         Rule rule;
@@ -383,7 +383,7 @@ public class RuleClauseCode {
             this.rule = rule;
             // Create a scratch area for assembling the code, use a worst-case size estimate
             code = new byte[10 + totalOccurrences + rule.bodyLength()*10];
-            args = new ArrayList<Object>();
+            args = new ArrayList<>();
         }
         
         /**
@@ -660,7 +660,7 @@ public class RuleClauseCode {
                         Node_RuleVariable var = (Node_RuleVariable)n; 
                         List<TermIndex> occurrences = varOccurrence.get(var);
                         if (occurrences == null) {
-                            occurrences = new ArrayList<TermIndex>();
+                            occurrences = new ArrayList<>();
                             varOccurrence.put(var, occurrences);
                         }
                         occurrences.add(new TermIndex(var, i, j));
@@ -670,22 +670,27 @@ public class RuleClauseCode {
             
             // Classify vars as permanent unless they are just dummies (only used once at all)
             // or only used head+first body goal (but not if used in a builtin)
-            for (Iterator<List<TermIndex>> enti = varOccurrence.values().iterator(); enti.hasNext(); ) {
-                List<TermIndex> occurrences = enti.next();
+            for ( List<TermIndex> occurrences : varOccurrence.values() )
+            {
                 Node_RuleVariable var = null;
                 boolean inFirst = false;
                 boolean inLaterBody = false;
                 boolean inBuiltin = false;
-                for (Iterator<TermIndex> oi = occurrences.iterator(); oi.hasNext(); ) {
+                for ( Iterator<TermIndex> oi = occurrences.iterator(); oi.hasNext(); )
+                {
                     TermIndex occurence = oi.next();
                     var = occurence.var;
                     int termNumber = occurence.termNumber;
-                    if (termNumber == 0) {
+                    if ( termNumber == 0 )
+                    {
                         inFirst = true;
-                    } else if (termNumber > 1) {
+                    }
+                    else if ( termNumber > 1 )
+                    {
                         inLaterBody = true;
                     }
-                    if (termNumber > 0 && rule.getBodyElement(termNumber-1) instanceof Functor) {
+                    if ( termNumber > 0 && rule.getBodyElement( termNumber - 1 ) instanceof Functor )
+                    {
                         inBuiltin = true;
                     }
                 }
@@ -693,15 +698,19 @@ public class RuleClauseCode {
 //                if (inBuiltin) {
 //                    permanentVars.add(var);
 //                } else {
-                    if (!isDummy(var)) {
-                        if (inLaterBody || !inFirst) {
-                            permanentVars.add(var);
-                        } else {
-                            tempVars.add(var);
-                        }
+                if ( !isDummy( var ) )
+                {
+                    if ( inLaterBody || !inFirst )
+                    {
+                        permanentVars.add( var );
                     }
+                    else
+                    {
+                        tempVars.add( var );
+                    }
+                }
 //                }
-                 
+
             }
             
             if (permanentVars.size() > MAX_PERMANENT_VARS) {
@@ -746,7 +755,7 @@ public class RuleClauseCode {
                 
         /** Return an list of variables or nodes in a ClauseEntry, in flattened order */
         private List<Node> termVars(ClauseEntry term) {
-            List<Node> result = new ArrayList<Node>();
+            List<Node> result = new ArrayList<>();
             if (term instanceof TriplePattern) {
                 TriplePattern goal = (TriplePattern)term;
                 result.add(goal.getSubject());
@@ -760,8 +769,9 @@ public class RuleClauseCode {
                 }
             } else if (term instanceof Functor) {
                 Node[] args = ((Functor)term).getArgs();
-                for (int i = 0; i < args.length; i++) {
-                    result.add(args[i]);
+                for ( Node arg : args )
+                {
+                    result.add( arg );
                 }
             }
             return result;

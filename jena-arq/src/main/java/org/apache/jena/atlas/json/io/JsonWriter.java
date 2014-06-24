@@ -87,7 +87,7 @@ public class JsonWriter implements JsonVisitor
         return true ;
     }
     private void writeObjectCompact(JsonObject jsonObject, Set<String> x) {
-        SortedSet<String> y = new TreeSet<String>(x) ;
+        SortedSet<String> y = new TreeSet<>(x) ;
         boolean first = true ;
         for ( String k : y ) {
             if ( ! first )
@@ -105,7 +105,7 @@ public class JsonWriter implements JsonVisitor
     
     private void writeObjectLong(JsonObject jsonObject, Set<String> x) {
         // Just after the opening { 
-        SortedSet<String> y = new TreeSet<String>(x) ;
+        SortedSet<String> y = new TreeSet<>(x) ;
         boolean first = true ;
         out.println() ;
         for ( String k : y ) {
@@ -163,9 +163,12 @@ public class JsonWriter implements JsonVisitor
 
     private boolean isJsonArrayCompact(JsonArray jsonArray) {
         if ( jsonArray.size() > maxCompactArray ) return false ;
-        for ( int i = 0 ; i < jsonArray.size() ; i++ ) {
-            if ( ! jsonArray.get(i).isPrimitive() ) 
-                return false ;  
+        for ( JsonValue aJsonArray : jsonArray )
+        {
+            if ( !aJsonArray.isPrimitive() )
+            {
+                return false;
+            }
         }
         return true ;
     }

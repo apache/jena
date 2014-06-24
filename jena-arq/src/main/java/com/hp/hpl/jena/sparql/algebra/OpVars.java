@@ -42,7 +42,7 @@ public class OpVars
     // Choose the default collector - LinkedHashSet is predictable and
     // keeps the "found" order
     private static Set<Var> collector() {
-        return new LinkedHashSet<Var>() ;
+        return new LinkedHashSet<>() ;
     }
 
     public static Set<Var> visibleVars(Op op) {
@@ -395,7 +395,7 @@ public class OpVars
         }
         
         private void clear(Set<Var> acc, List<Var> visible) {
-            List<Var> toRemove = new ArrayList<Var>();
+            List<Var> toRemove = new ArrayList<>();
             for (Var found : acc)
             {
                 if (!visible.contains(found)) {

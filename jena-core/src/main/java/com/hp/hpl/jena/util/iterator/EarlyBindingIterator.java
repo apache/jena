@@ -25,7 +25,7 @@ import java.util.*;
 public class EarlyBindingIterator<T> extends WrappedIterator<T> {
 
 static private <X> Iterator<X> early(Iterator<X> it) {
-		List<X> v = new ArrayList<X>();
+		List<X> v = new ArrayList<>();
 		while (it.hasNext()) v.add(it.next());
 		close(it);
 		return v.iterator();

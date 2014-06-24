@@ -36,7 +36,7 @@ public class NTripleReader extends Object implements RDFReader {
     static final Logger log = LoggerFactory.getLogger(NTripleReader.class);
 
     private Model model = null;
-    private Hashtable<String, Resource> anons = new Hashtable<String, Resource>();
+    private Hashtable<String, Resource> anons = new Hashtable<>();
 
     private IStream in = null;
     private boolean inErr = false;

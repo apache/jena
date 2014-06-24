@@ -42,7 +42,7 @@ public class TestRDFWriterMap extends JenaTestBase
 {
 	public static class RDFWriterMap implements RDFWriterF
 	{
-		protected final Map<String, Class<RDFWriter>> map = new HashMap<String, Class<RDFWriter>>();
+		protected final Map<String, Class<RDFWriter>> map = new HashMap<>();
 
 		public RDFWriterMap( final boolean preloadDefaults )
 		{

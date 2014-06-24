@@ -51,7 +51,7 @@ public class strjoin extends FunctionBase
         Iterator<NodeValue> iter = args.iterator() ;
         String sep = iter.next().asString() ;
 
-        List<String> x = new ArrayList<String>() ;
+        List<String> x = new ArrayList<>() ;
         for ( ; iter.hasNext() ; )
         {
             NodeValue arg = iter.next();

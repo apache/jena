@@ -87,10 +87,10 @@ public class TestCSVParser extends BaseTest
     
     private void csv(String input, String[][] strings)
     {
-        List<List<String>> x = new ArrayList<List<String>>() ;
+        List<List<String>> x = new ArrayList<>() ;
         for ( String[] a : strings )
         {
-            List<String> y = new ArrayList<String>() ;
+            List<String> y = new ArrayList<>() ;
             for ( String b : a )
                 y.add(b) ;
             x.add(y) ;
@@ -100,7 +100,7 @@ public class TestCSVParser extends BaseTest
     
     private static void csv(String input, List<List<String>> answers)
     {
-        List<List<String>> x = new ArrayList<List<String>>() ;
+        List<List<String>> x = new ArrayList<>() ;
         try {
             InputStream in = new ByteArrayInputStream(input.getBytes("UTF-8")) ;
             CSVTokenIterator iter = new CSVTokenIterator(in) ;

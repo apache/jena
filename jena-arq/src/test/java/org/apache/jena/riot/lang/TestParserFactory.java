@@ -41,11 +41,11 @@ public class TestParserFactory extends BaseTest
 {
     static class CatchParserOutput implements StreamRDF
     {
-        List<Triple>      triples     = new ArrayList<Triple>() ;
-        List<Quad>        quads       = new ArrayList<Quad>() ;
-        List<Tuple<Node>> tuples      = new ArrayList<Tuple<Node>>() ;
-        List<Pair<String,String>>     prefixes     = new ArrayList<Pair<String,String>>() ;
-        List<String>     bases       = new ArrayList<String>() ;
+        List<Triple>      triples     = new ArrayList<>() ;
+        List<Quad>        quads       = new ArrayList<>() ;
+        List<Tuple<Node>> tuples      = new ArrayList<>() ;
+        List<Pair<String,String>>     prefixes     = new ArrayList<>() ;
+        List<String>     bases       = new ArrayList<>() ;
         
         int startCalled = 0 ;
         

@@ -59,8 +59,8 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
     private HttpAuthenticator authenticator;
     private Params params;
 
-    protected List<String> defaultGraphURIs = new ArrayList<String>();
-    protected List<String> namedGraphURIs = new ArrayList<String>();
+    protected List<String> defaultGraphURIs = new ArrayList<>();
+    protected List<String> namedGraphURIs = new ArrayList<>();
 
     /**
      * Creates a new remote update processor
@@ -187,7 +187,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      */
     public void addDefaultGraph(String defaultGraph) {
         if (this.defaultGraphURIs == null) {
-            this.defaultGraphURIs = new ArrayList<String>();
+            this.defaultGraphURIs = new ArrayList<>();
         }
         this.defaultGraphURIs.add(defaultGraph);
     }
@@ -200,7 +200,7 @@ public abstract class UpdateProcessRemoteBase implements UpdateProcessor {
      */
     public void addNamedGraph(String namedGraph) {
         if (this.namedGraphURIs == null) {
-            this.namedGraphURIs = new ArrayList<String>();
+            this.namedGraphURIs = new ArrayList<>();
         }
         this.namedGraphURIs.add(namedGraph);
     }

@@ -73,7 +73,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 
 	protected void prepareLists(Model model)
 	{
-		Set<Resource> thisListAll = new HashSet<Resource>();
+		Set<Resource> thisListAll = new HashSet<>();
 
 		StmtIterator listTailsIter = model.listStatements(null, RDF.rest, RDF.nil);
 
@@ -235,10 +235,10 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     @Override
     protected ClosableIterator<Property> preparePropertiesForSubject(Resource r)
     {
-        Set<Property> seen = new HashSet<Property>() ;
+        Set<Property> seen = new HashSet<>() ;
         boolean hasTypes = false ;
-        SortedMap<String, Property> tmp1 = new TreeMap<String, Property>() ;
-        SortedMap<String, Property> tmp2 = new TreeMap<String, Property>() ;
+        SortedMap<String, Property> tmp1 = new TreeMap<>() ;
+        SortedMap<String, Property> tmp2 = new TreeMap<>() ;
         
         StmtIterator sIter = r.listProperties();
         for ( ; sIter.hasNext() ; )
@@ -268,7 +268,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         ExtendedIterator<Property> eIter = null ;
         
         if ( hasTypes )
-            eIter = new SingletonIterator<Property>(RDF.type) ;
+            eIter = new SingletonIterator<>(RDF.type) ;
 
         ExtendedIterator<Property> eIter2 = WrappedIterator.create(tmp1.values().iterator()) ;
             
@@ -314,14 +314,17 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         // Are there any unattached RDF lists?
         // e..g ([] [] []) . in the data.
         // We missed these earlier.
-        for (Iterator<Resource> leftOverIter = rdfLists.iterator(); leftOverIter.hasNext();)
+        for ( Resource r : rdfLists )
         {
-            Resource r = leftOverIter.next();
-            if (rdfListsDone.contains(r))
+            if ( rdfListsDone.contains( r ) )
+            {
                 continue;
+            }
             out.println();
-            if (N3JenaWriter.DEBUG)
-                out.println("# RDF List");
+            if ( N3JenaWriter.DEBUG )
+            {
+                out.println( "# RDF List" );
+            }
 
             // Includes the case of shared lists-as-objects. 
 //            if (!r.isAnon() || countArcsTo(r) > 0 )
@@ -333,20 +336,22 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 //            writeList(r);
 //            out.println(" .");
             // Turtle does not have :-
-            writeListUnpretty(r) ;
+            writeListUnpretty( r );
         }
 
         // Finally, panic.
         // Dump anything that has not been output yet. 
         oneRefObjects.removeAll(oneRefDone);
-        for (Iterator<RDFNode> leftOverIter = oneRefObjects.iterator(); leftOverIter.hasNext();)
+        for ( RDFNode oneRefObject : oneRefObjects )
         {
             out.println();
-            if (N3JenaWriter.DEBUG)
-                out.println("# One ref");
-            // Don't allow further one ref objects to be inlined. 
+            if ( N3JenaWriter.DEBUG )
+            {
+                out.println( "# One ref" );
+            }
+            // Don't allow further one ref objects to be inlined.
             allowDeep = false;
-            writeOneGraphNode((Resource) leftOverIter.next());
+            writeOneGraphNode( (Resource) oneRefObject );
             allowDeep = true;
         }
 
@@ -375,8 +380,8 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         // Find which objects are simple (i.e. not nested structures)             
 
         StmtIterator sIter = subject.listProperties(property);
-        Set<RDFNode> simple = new HashSet<RDFNode>() ;
-        Set<RDFNode> complex = new HashSet<RDFNode>() ;
+        Set<RDFNode> simple = new HashSet<>() ;
+        Set<RDFNode> complex = new HashSet<>() ;
 
         for (; sIter.hasNext();)
         {
@@ -615,11 +620,11 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
     // Called before each writing run.
 	protected void allocateDatastructures()
 	{
-		rdfLists 		= new HashSet<Resource>() ;
-		rdfListsAll 	= new HashSet<Resource>() ;
-		rdfListsDone 	= new HashSet<Resource>() ;
-		oneRefObjects 	= new HashSet<RDFNode>() ;
-		oneRefDone 		= new HashSet<Resource>() ;
+		rdfLists 		= new HashSet<>() ;
+		rdfListsAll 	= new HashSet<>() ;
+		rdfListsDone 	= new HashSet<>() ;
+		oneRefObjects 	= new HashSet<>() ;
+		oneRefDone 		= new HashSet<>() ;
 	}
 
 	// Especially release large intermediate memory objects

@@ -665,8 +665,9 @@ public class TestListSyntaxCategories
     public static TestSuite suite() {
         TestSuite s = new TestSuite( "TestListSyntaxCategories" );
 
-        for (int i = 0;  i < testCases.length;  i++) {
-            s.addTest( testCases[i] );
+        for ( DoListTest testCase : testCases )
+        {
+            s.addTest( testCase );
         }
 
         return s;
@@ -735,7 +736,7 @@ public class TestListSyntaxCategories
 
             if (!exOccurred) {
                 List<Resource> expected = expected( m );
-                List<Resource> actual = new ArrayList<Resource>();
+                List<Resource> actual = new ArrayList<>();
                 int extraneous = 0;
 
                 // now we walk the iterator
@@ -761,13 +762,15 @@ public class TestListSyntaxCategories
                 // debugging
                 if (m_count != actual.size()) {
                     logger.debug( getName() + " - expected " + m_count + " results, actual = " + actual.size() );
-                    for (Iterator<Resource> j = actual.iterator(); j.hasNext(); ) {
-                        logger.debug( getName() + " - saw actual: " + j.next() );
+                    for ( Resource anActual : actual )
+                    {
+                        logger.debug( getName() + " - saw actual: " + anActual );
                     }
                 }
                 if (expected != null && !expected.isEmpty()) {
-                    for (Iterator<Resource> j = expected.iterator(); j.hasNext(); ) {
-                        logger.debug( getName() + " - expected but did not find: " + j.next() );
+                    for ( Resource anExpected : expected )
+                    {
+                        logger.debug( getName() + " - expected but did not find: " + anExpected );
                     }
                 }
 
@@ -792,10 +795,11 @@ public class TestListSyntaxCategories
 
         protected List<Resource> expected( OntModel m ) {
             if (m_expected != null) {
-                List<Resource> expected = new ArrayList<Resource>();
+                List<Resource> expected = new ArrayList<>();
 
-                for (int i = 0;  i < m_expected.length; i++) {
-                    expected.add( m.getResource( m_expected[i] ) );
+                for ( String aM_expected : m_expected )
+                {
+                    expected.add( m.getResource( aM_expected ) );
                 }
 
                 return expected;

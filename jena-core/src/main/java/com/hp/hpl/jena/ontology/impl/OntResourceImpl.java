@@ -154,8 +154,10 @@ public class OntResourceImpl
     @Override
     public boolean isOntLanguageTerm() {
         if (!isAnon()) {
-            for (int i = 0; i < KNOWN_LANGUAGES.length; i++) {
-                if (getURI().startsWith( KNOWN_LANGUAGES[i] )) {
+            for ( String KNOWN_LANGUAGE : KNOWN_LANGUAGES )
+            {
+                if ( getURI().startsWith( KNOWN_LANGUAGE ) )
+                {
                     return true;
                 }
             }
@@ -1034,9 +1036,9 @@ public class OntResourceImpl
     */
     @Override
     public void remove() {
-        Set<Statement> stmts = new HashSet<Statement>();
-        List<Resource> lists = new ArrayList<Resource>();
-        List<Statement> skip = new ArrayList<Statement>();
+        Set<Statement> stmts = new HashSet<>();
+        List<Resource> lists = new ArrayList<>();
+        List<Statement> skip = new ArrayList<>();
         Property first = getProfile().FIRST();
 
         // collect statements mentioning this object
@@ -1048,19 +1050,21 @@ public class OntResourceImpl
         }
 
         // check for lists
-        for (Iterator<Statement> i = stmts.iterator(); i.hasNext(); ) {
-            Statement s = i.next();
-            if (s.getPredicate().equals( first ) &&
-                s.getObject().equals( this )) {
+        for ( Statement s : stmts )
+        {
+            if ( s.getPredicate().equals( first ) && s.getObject().equals( this ) )
+            {
                 // _this_ is referenced from inside a list
                 // we don't delete this reference, since it would make the list ill-formed
-                log.debug( toString() + " is referened from an RDFList, so will not be fully removed");
+                log.debug( toString() + " is referened from an RDFList, so will not be fully removed" );
                 skip.add( s );
             }
-            else if (s.getObject() instanceof Resource){
+            else if ( s.getObject() instanceof Resource )
+            {
                 // check for list-valued properties
                 Resource obj = s.getResource();
-                if (obj.canAs( RDFList.class )) {
+                if ( obj.canAs( RDFList.class ) )
+                {
                     // this value is a list, so we will want to remove all of the elements
                     lists.add( obj );
                 }
@@ -1068,17 +1072,18 @@ public class OntResourceImpl
         }
 
         // add in the contents of the lists to the statements to be removed
-        for (Iterator<Resource> i = lists.iterator(); i.hasNext(); ) {
-            Resource r = i.next();
-            stmts.addAll( ((RDFListImpl) r.as( RDFList.class )).collectStatements() );
+        for ( Resource r : lists )
+        {
+            stmts.addAll( ( (RDFListImpl) r.as( RDFList.class ) ).collectStatements() );
         }
 
         // skip the contents of the skip list
         stmts.removeAll( skip );
 
         // and then remove the remainder
-        for (Iterator<Statement> i = stmts.iterator();  i.hasNext(); ) {
-            i.next().remove();
+        for ( Statement stmt : stmts )
+        {
+            stmt.remove();
         }
     }
 
@@ -1438,7 +1443,7 @@ public class OntResourceImpl
     /** Answer an iterator for the given property, whose values are .as() some class */
     protected <T extends RDFNode> ExtendedIterator<T> listAs( Property p, String name, Class<T> cls ) {
         checkProfile( p, name );
-        return WrappedIterator.create( listProperties( p ) ).mapWith( new ObjectAsMapper<T>( cls ) );
+        return WrappedIterator.create( listProperties( p ) ).mapWith( new ObjectAsMapper<>( cls ) );
     }
 
 
@@ -1531,7 +1536,7 @@ public class OntResourceImpl
         // determine the subject and object pairs for the list statements calls
         Resource subject = inverse ? null : this;
         Resource object  = inverse ? this : null;
-        Map1<Statement, T> mapper      = inverse ? new SubjectAsMapper<T>( cls ) : new ObjectAsMapper<T>( cls );
+        Map1<Statement, T> mapper      = inverse ? new SubjectAsMapper<>( cls ) : new ObjectAsMapper<>( cls );
 
         // are we working on an inference graph?
         OntModel m = (OntModel) getGraph();
@@ -1573,7 +1578,7 @@ public class OntResourceImpl
                                        .mapWith( mapper );
 
         // collect a list of the candidates
-        List<T> s = new ArrayList<T>();
+        List<T> s = new ArrayList<>();
         for( ; j.hasNext(); ) {
             s.add( j.next() );
         }
@@ -1588,17 +1593,19 @@ public class OntResourceImpl
 
         // first partition the list by equivalence under orderRel
         List<List<T>> partition = ResourceUtils.partition( s, orderRel );
-        Map<Resource, List<T>> equivSets = new HashMap<Resource, List<T>>();
+        Map<Resource, List<T>> equivSets = new HashMap<>();
 
         // then reduce each part of the partition to a singleton, but remember the others
         s.clear();
-        for (Iterator<List<T>> i = partition.iterator(); i.hasNext(); ) {
-            List<T> part = i.next();
+        for ( List<T> part : partition )
+        {
             // if this is a singleton we just add it to the compressed candidates
-            if (part.size() == 1) {
-                s.add( part.get(0) );
+            if ( part.size() == 1 )
+            {
+                s.add( part.get( 0 ) );
             }
-            else {
+            else
+            {
                 // we select a single representative
                 T r = part.remove( 0 );
                 // remember the other equivalent values
@@ -1614,11 +1621,12 @@ public class OntResourceImpl
         s = ResourceUtils.maximalLowerElements( s, orderRel, inverse );
 
         // create a list of these values lower elements, plus their equivalents (if any)
-        List<T> s2 = new ArrayList<T>();
-        for (Iterator<T> i = s.iterator(); i.hasNext(); ) {
-            T r = i.next();
+        List<T> s2 = new ArrayList<>();
+        for ( T r : s )
+        {
             s2.add( r );
-            if (equivSets.containsKey( r )) {
+            if ( equivSets.containsKey( r ) )
+            {
                 s2.addAll( equivSets.get( r ) );
             }
         }

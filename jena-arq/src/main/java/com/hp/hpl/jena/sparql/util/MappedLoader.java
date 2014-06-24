@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.util;
 
 import java.util.HashMap ;
-import java.util.Iterator ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
@@ -31,7 +30,7 @@ public class MappedLoader
     // Map string => string of prefixes 
     //   e.g. http://jena.hpl.hp.com/ARQ/property# => java:com.hp.hpl.jena.sparql.pfunction.
     
-    static Map<String, String> uriMap = new HashMap<String, String>() ;
+    static Map<String, String> uriMap = new HashMap<>() ;
     
     static {
         // ARQ library
@@ -85,12 +84,13 @@ public class MappedLoader
     
     private static Map.Entry<String,String> find(String uri)
     {
-        for ( Iterator<Map.Entry<String,String>> iter = uriMap.entrySet().iterator() ; iter.hasNext() ; )
+        for ( Map.Entry<String, String> e : uriMap.entrySet() )
         {
-            Map.Entry<String, String> e = iter.next() ;
-            String k = e.getKey() ;
-            if ( uri.startsWith(k) )
-                return e ;
+            String k = e.getKey();
+            if ( uri.startsWith( k ) )
+            {
+                return e;
+            }
         }
         return null ;
     }

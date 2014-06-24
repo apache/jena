@@ -49,12 +49,12 @@ public abstract class PrefixMapBase implements PrefixMap {
     
     @Override
     public Map<String, IRI> getMappingCopy() {
-        return new HashMap<String, IRI>(this.getMapping());
+        return new HashMap<>(this.getMapping());
     }
     
     @Override
     public Map<String, String> getMappingCopyStr() {
-        final Map<String, String> smap = new HashMap<String, String>();
+        final Map<String, String> smap = new HashMap<>();
         ActionKeyValue<String, IRI> action = new ActionKeyValue<String, IRI>() {
             @Override
             public void apply(String key, IRI value) {

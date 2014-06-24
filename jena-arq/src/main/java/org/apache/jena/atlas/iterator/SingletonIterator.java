@@ -26,7 +26,7 @@ public class SingletonIterator<T> implements Iterator<T>
     private T thing = null ;
     private boolean yielded = false ;
     
-    public static <T> SingletonIterator<T> create(T thing) { return new SingletonIterator<T>(thing) ; }
+    public static <T> SingletonIterator<T> create(T thing) { return new SingletonIterator<>(thing) ; }
     
     public SingletonIterator(T thing) { this.thing = thing ; }
     

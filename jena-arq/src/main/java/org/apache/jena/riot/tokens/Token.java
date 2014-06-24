@@ -123,7 +123,7 @@ public final class Token
     {
         PeekReader pr = PeekReader.readString(s) ;
         TokenizerText tt = new TokenizerText(pr) ;
-        List<Token> x = new ArrayList<Token>() ;
+        List<Token> x = new ArrayList<>() ;
         while(tt.hasNext())
             x.add(tt.next()) ;
         return Iter.iter(x) ;

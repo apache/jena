@@ -40,7 +40,7 @@ public class BlockAccessMem implements BlockAccess
     public static boolean SafeMode = true ;
     static final boolean Checking = true ;
     boolean fileClosed = false ;
-    private List<Block> blocks = new ArrayList<Block>() ;
+    private List<Block> blocks = new ArrayList<>() ;
     private final boolean safeModeThisMgr ;
     protected final int blockSize ;
     private final String label ;

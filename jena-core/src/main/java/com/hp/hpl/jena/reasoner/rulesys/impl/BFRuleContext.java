@@ -50,7 +50,7 @@ public class BFRuleContext implements RuleContext {
     protected List<Triple> pending;
 
     /** A temporary list of Triples which will be removed from the graph at the end of a rule scan */
-    protected List<Triple> deletesPending = new ArrayList<Triple>();
+    protected List<Triple> deletesPending = new ArrayList<>();
 
     /** A searchable index into the pending triples */
     protected Graph pendingCache;
@@ -64,8 +64,8 @@ public class BFRuleContext implements RuleContext {
     public BFRuleContext(ForwardRuleInfGraphI graph) {
         this.graph = graph;
         env = new BindingStack();
-        stack = new ArrayList<Triple>();
-        pending = new ArrayList<Triple>();
+        stack = new ArrayList<>();
+        pending = new ArrayList<>();
         pendingCache = Factory.createGraphMem();
     }
     
@@ -162,9 +162,9 @@ public class BFRuleContext implements RuleContext {
         }
         pending.clear();
         // Flush out pending removes as well
-        for (Iterator<Triple> i = deletesPending.iterator(); i.hasNext(); ) {
-            Triple t = i.next();
-            graph.delete(t);
+        for ( Triple t : deletesPending )
+        {
+            graph.delete( t );
         }
         deletesPending.clear();
     }

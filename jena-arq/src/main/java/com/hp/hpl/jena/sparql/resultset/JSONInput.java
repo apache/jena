@@ -132,7 +132,7 @@ public class JSONInput extends SPARQLResult
             return ;
         }
         
-        rows = new ArrayList<Binding>(1000) ;
+        rows = new ArrayList<>(1000) ;
         
         checkContains(obj, true, true, kHead, kResults) ;
         
@@ -145,7 +145,7 @@ public class JSONInput extends SPARQLResult
         // -- Link - array.
         if ( head.hasKey(kLink) )
         {
-            List<String> links = new ArrayList<String>() ; 
+            List<String> links = new ArrayList<>() ;
 
             if ( head.get(kLink).isString() )
             {
@@ -202,7 +202,7 @@ public class JSONInput extends SPARQLResult
             throw new ResultSetException("Key 'vars' must be a JSON array") ;
         JsonArray a = obj.get(kVars).getAsArray() ;
         Iterator<JsonValue> iter = a.iterator() ;
-        List<Var> vars = new ArrayList<Var>() ;
+        List<Var> vars = new ArrayList<>() ;
         for ( ; iter.hasNext() ; )
         {
             JsonValue v = iter.next() ;
@@ -259,7 +259,7 @@ public class JSONInput extends SPARQLResult
     private static void checkContains(JsonObject term, boolean allowUndefinedKeys, boolean requireAllExpectedKeys, String...keys)
     {
         List<String> expectedKeys = Arrays.asList(keys) ;
-        Set<String> declared = new HashSet<String>();
+        Set<String> declared = new HashSet<>();
         for ( String k : term.keys() )
         {
             if ( !expectedKeys.contains(k) && !allowUndefinedKeys )

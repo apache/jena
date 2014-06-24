@@ -410,7 +410,7 @@ public abstract class GraphBase implements GraphWithPerform
     public static String toString( String prefix, Graph that )
         {
         PrefixMapping pm = that.getPrefixMapping();
-		StringBuffer b = new StringBuffer( prefix + " {" );
+		StringBuilder b = new StringBuilder( prefix + " {" );
 		int count = 0;
 		String gap = "";
 		ClosableIterator<Triple> it = GraphUtil.findAll( that );

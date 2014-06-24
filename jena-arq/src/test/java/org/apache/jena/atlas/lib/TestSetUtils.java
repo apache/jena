@@ -130,15 +130,17 @@ public class TestSetUtils extends BaseTest
     
     private static Set<Integer> set(int... values)
     {
-        return new HashSet<Integer>(asList(values)) ;
+        return new HashSet<>(asList(values)) ;
     }
 
     private void test(Set<Integer> x, int...values)
     {
         List<Integer> y = asList(values) ;
         assertEquals(y.size(), x.size()) ;
-        
-        for ( int i = 0; i < y.size() ; i++ )
-            assertTrue(x.contains(y.get(i))) ; 
+
+        for ( Integer aY : y )
+        {
+            assertTrue( x.contains( aY ) );
+        }
     }
 }

@@ -34,8 +34,8 @@ import com.hp.hpl.jena.sparql.util.MappedLoader ;
 public class FunctionRegistry //extends HashMap<String, Function>
 {
     // Extract a Registry class and do casting and initialization here.
-    Map<String, FunctionFactory> registry = new HashMap<String, FunctionFactory>() ;
-    Set<String> attemptedLoads = new HashSet<String>() ;
+    Map<String, FunctionFactory> registry = new HashMap<>() ;
+    Set<String> attemptedLoads = new HashSet<>() ;
     
     public synchronized static FunctionRegistry standardRegistry()
     {

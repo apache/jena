@@ -63,8 +63,10 @@ public class JSON
     {
         try
         {
-            InputStream in = IO.openFileEx(filename) ;
-            try { return JSON.parse(in) ; } finally { in.close() ; }
+            try (InputStream in = IO.openFileEx( filename ))
+            {
+                return JSON.parse( in );
+            }
         }
         catch (FileNotFoundException ex)
         {
@@ -82,8 +84,10 @@ public class JSON
     {
         try
         {
-            InputStream in = IO.openFileEx(filename) ;
-            try { return JSON.parseAny(in) ; } finally { in.close() ; }
+            try (InputStream in = IO.openFileEx( filename ))
+            {
+                return JSON.parseAny( in );
+            }
         }
         catch (FileNotFoundException ex)
         {

@@ -29,7 +29,7 @@ import org.junit.Test ;
 public class TestIteratorPushback extends BaseTest
 {
 
-    static List<String> data = new ArrayList<String>() ;
+    static List<String> data = new ArrayList<>() ;
     static {
         data.add("a") ;
         data.add("b") ;
@@ -41,7 +41,7 @@ public class TestIteratorPushback extends BaseTest
     
     @Test public void pushback02()
     { 
-        PushbackIterator<String> iter = new PushbackIterator<String>(data.iterator()) ;
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
         assertEquals("a", iter.next()) ;
         assertEquals("b", iter.next()) ;
         assertEquals("c", iter.next()) ;
@@ -50,7 +50,7 @@ public class TestIteratorPushback extends BaseTest
     
     @Test public void pushback03()
     { 
-        PushbackIterator<String> iter = new PushbackIterator<String>(data.iterator()) ;
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
         iter.pushback("x") ;
         assertEquals("x", iter.next()) ;
         assertEquals("a", iter.next()) ;
@@ -59,7 +59,7 @@ public class TestIteratorPushback extends BaseTest
     
     @Test public void pushback04()
     { 
-        PushbackIterator<String> iter = new PushbackIterator<String>(data.iterator()) ;
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
         assertEquals("a", iter.next()) ;
         iter.pushback("x") ;
         assertEquals("x", iter.next()) ;
@@ -69,7 +69,7 @@ public class TestIteratorPushback extends BaseTest
     
     @Test public void pushback05()
     { 
-        PushbackIterator<String> iter = new PushbackIterator<String>(data.iterator()) ;
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
         assertEquals("a", iter.next()) ;
         iter.pushback("x") ;
         iter.pushback("y") ;
@@ -81,7 +81,7 @@ public class TestIteratorPushback extends BaseTest
     
     @Test public void pushback06()
     { 
-        PushbackIterator<String> iter = new PushbackIterator<String>(data.iterator()) ;
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
         assertEquals(3, Iter.count(iter)) ;
         iter.pushback("x") ;
         iter.pushback("y") ;

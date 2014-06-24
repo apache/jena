@@ -104,7 +104,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
     
     static class PlainAssemblerGroup extends AssemblerGroup
         {
-        Map<Resource, Assembler> mappings = new HashMap<Resource, Assembler>();
+        Map<Resource, Assembler> mappings = new HashMap<>();
 
         @Override public Object open( Assembler a, Resource root, Mode mode )
             {
@@ -112,7 +112,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
             if (types.size() == 0)
                 throw new NoSpecificTypeException( root );
             else if (types.size() > 1)
-                throw new AmbiguousSpecificTypeException( root, new ArrayList<Resource>( types ) );
+                throw new AmbiguousSpecificTypeException( root, new ArrayList<>( types ) );
             else
                 return openBySpecificType( a, root, mode, types.iterator().next() );
             }

@@ -45,7 +45,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
     //////////////////////////////////
 
     /** Encapsulated hash table stores the values */
-    private Map<From, List<To>> m_table = new HashMap<From, List<To>>();
+    private Map<From, List<To>> m_table = new HashMap<>();
 
 
     // Constructors
@@ -68,9 +68,10 @@ public class OneToManyMap<From, To> implements Map<From, To>
         // copy the contents of the existing map
         // note we can't just use the copying constructor for hashmap
         // as we don't want to share the arraylists that are the key values
-        for (Iterator<From> i = map.keySet().iterator();  i.hasNext(); ) {
-            From key = i.next();
-            for (Iterator<To> j = map.getAll( key );  j.hasNext();  ) {
+        for ( From key : map.keySet() )
+        {
+            for ( Iterator<To> j = map.getAll( key ); j.hasNext(); )
+            {
                 put( key, j.next() );
             }
         }
@@ -110,9 +111,12 @@ public class OneToManyMap<From, To> implements Map<From, To>
      */
     @Override
     public boolean containsValue( Object value ) {
-        for (Iterator<List<To>> values = m_table.values().iterator();  values.hasNext(); ) {
-            List<To> x = values.next();
-            if (x.contains( value )) return true;
+        for ( List<To> x : m_table.values() )
+        {
+            if ( x.contains( value ) )
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -144,13 +148,14 @@ public class OneToManyMap<From, To> implements Map<From, To>
     public Set<Map.Entry<From, To>> entrySet() {
         Set<Map.Entry<From, To>> s = CollectionFactory.createHashedSet();
 
-        for (Iterator<From> e0 = m_table.keySet().iterator();  e0.hasNext(); ) {
-            From key = e0.next();
+        for ( From key : m_table.keySet() )
+        {
             List<To> values = m_table.get( key );
 
             // add each key-value pair to the result set
-            for (ListIterator<To> e1 = values.listIterator();  e1.hasNext(); ) {
-                s.add( new Entry<From, To>( key, e1.next() ) );
+            for ( ListIterator<To> e1 = values.listIterator(); e1.hasNext(); )
+            {
+                s.add( new Entry<>( key, e1.next() ) );
             }
         }
 
@@ -223,8 +228,9 @@ public class OneToManyMap<From, To> implements Map<From, To>
     @Override public int hashCode() {
         int hc = 0;
 
-        for (Iterator<Map.Entry<From, To>> i = entrySet().iterator();  i.hasNext(); ) {
-            hc ^= i.next().hashCode();
+        for ( Map.Entry<From, To> fromToEntry : entrySet() )
+        {
+            hc ^= fromToEntry.hashCode();
         }
 
         return hc;
@@ -266,7 +272,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
     @Override
     public To put( From key, To value ) {
         List<To> entries = m_table.get( key );
-        if (entries == null) entries = new ArrayList<To>();
+        if (entries == null) entries = new ArrayList<>();
         // add the new value to the list of values held against this key
         entries.add( value );
         m_table.put( key, entries );
@@ -282,21 +288,24 @@ public class OneToManyMap<From, To> implements Map<From, To>
     @Override
     public void putAll( Map<? extends From, ? extends To> m ) {
         boolean many = (m instanceof OneToManyMap<?,?>);
-        
-        for (Iterator<? extends From> i = m.keySet().iterator(); i.hasNext(); ) {
-            From key = i.next();
-            if (many) {
+
+        for ( From key : m.keySet() )
+        {
+            if ( many )
+            {
                 // Bizare way to write it but this way makes all compilers happy.
-                OneToManyMap<?,?> Z =  (OneToManyMap<?,?>)m ;
-                @SuppressWarnings("unchecked")
-                OneToManyMap<? extends From, ? extends To> X = (OneToManyMap<? extends From, ? extends To>) Z ;
-                Iterator<? extends To> j = X.getAll( key ) ;
-                
-                for (; j.hasNext(); ) {
+                OneToManyMap<?, ?> Z = (OneToManyMap<?, ?>) m;
+                @SuppressWarnings( "unchecked" ) OneToManyMap<? extends From, ? extends To> X =
+                    (OneToManyMap<? extends From, ? extends To>) Z;
+                Iterator<? extends To> j = X.getAll( key );
+
+                for (; j.hasNext(); )
+                {
                     put( key, j.next() );
                 }
             }
-            else {
+            else
+            {
                 put( key, m.get( key ) );
             }
         }
@@ -354,8 +363,9 @@ public class OneToManyMap<From, To> implements Map<From, To>
     @Override
     public int size() {
         int size = 0;
-        for (Iterator<From> i = m_table.keySet().iterator();  i.hasNext();  ) {
-            size += m_table.get( i.next() ).size();
+        for ( From from : m_table.keySet() )
+        {
+            size += m_table.get( from ).size();
         }
         return size;
     }
@@ -370,8 +380,9 @@ public class OneToManyMap<From, To> implements Map<From, To>
     @Override
     public Collection<To> values() {
         Set<To> s = CollectionFactory.createHashedSet();
-        for (Iterator<From> e = m_table.keySet().iterator();  e.hasNext();  ) {
-            s.addAll( m_table.get(e.next()) );
+        for ( From from : m_table.keySet() )
+        {
+            s.addAll( m_table.get( from ) );
         }
         return s;
     }
@@ -383,21 +394,22 @@ public class OneToManyMap<From, To> implements Map<From, To>
     @Override public String toString() {
         StringBuffer buf = new StringBuffer( "OneToManyMap{" );
         String sep = "";
-        
-        for (Iterator<From> i = keySet().iterator(); i.hasNext(); ) {
-            Object key = i.next();
+
+        for ( From key : keySet() )
+        {
             buf.append( sep );
             buf.append( key );
             buf.append( "={" );
-            
+
             String sep1 = "";
-            for (Iterator<To> j = getAll(key); j.hasNext(); ) {
+            for ( Iterator<To> j = getAll( key ); j.hasNext(); )
+            {
                 buf.append( sep1 );
                 buf.append( j.next() );
-                sep1=",";
+                sep1 = ",";
             }
-            buf.append("}");
-            sep=",";
+            buf.append( "}" );
+            sep = ",";
         }
         buf.append("}");
         return buf.toString();

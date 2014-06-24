@@ -60,7 +60,7 @@ public class IO_Ctl
         Method m = null ;
         try
         {
-            m = cls.getMethod(staticMethod, new Class<?>[0]) ;
+            m = cls.getMethod(staticMethod ) ;
             m.invoke(null, (Object[])null) ;
         } catch (Exception e) 
         {

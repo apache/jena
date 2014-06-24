@@ -90,7 +90,7 @@ class TupleSet implements Iterator<List<TupleItem>>
         }
 
         //System.out.println("Line: "+line) ;
-        List<TupleItem> tuple = new ArrayList<TupleItem>() ;
+        List<TupleItem> tuple = new ArrayList<>() ;
         int i = 0 ;
         int j = 0 ;
         boolean errorFound = false ;

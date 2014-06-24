@@ -196,22 +196,24 @@ public abstract class AbstractTestModel extends ModelTestBase
 	public void testRemoveSPO()
 	    {
 	    ModelCom mc = (ModelCom) ModelFactory.createDefaultModel();
-	    for (int i = 0; i < cases.length; i += 1)
-	        for (int j = 0; j < 3; j += 1)
-	            {
-	            Model content = getModel();
-	            Model baseContent = copy( content );
-	            modelAdd( content, cases[i][0] );
-	            Triple remove = triple( cases[i][1] );
-	            Node s = remove.getSubject(), p = remove.getPredicate(), o = remove.getObject();
-	            Resource S = (Resource) (s.equals( Node.ANY ) ? null : mc.getRDFNode( s ));
-	            Property P = ((p.equals( Node.ANY ) ? null : mc.getRDFNode( p ).as( Property.class )));
-	            RDFNode O = o.equals( Node.ANY ) ? null : mc.getRDFNode( o );
-	            Model expected = modelWithStatements( cases[i][2] );
-	            content.removeAll( S, P, O );
-	            Model finalContent = copy( content ).remove( baseContent );
-	            assertIsoModels( cases[i][1], expected, finalContent );
-	            }
+            for ( String[] aCase : cases )
+            {
+                for ( int j = 0; j < 3; j += 1 )
+                {
+                    Model content = getModel();
+                    Model baseContent = copy( content );
+                    modelAdd( content, aCase[0] );
+                    Triple remove = triple( aCase[1] );
+                    Node s = remove.getSubject(), p = remove.getPredicate(), o = remove.getObject();
+                    Resource S = (Resource) ( s.equals( Node.ANY ) ? null : mc.getRDFNode( s ) );
+                    Property P = ( ( p.equals( Node.ANY ) ? null : mc.getRDFNode( p ).as( Property.class ) ) );
+                    RDFNode O = o.equals( Node.ANY ) ? null : mc.getRDFNode( o );
+                    Model expected = modelWithStatements( aCase[2] );
+                    content.removeAll( S, P, O );
+                    Model finalContent = copy( content ).remove( baseContent );
+                    assertIsoModels( aCase[1], expected, finalContent );
+                }
+            }
 	    }
 	
     public void testIsClosedDelegatedToGraph()

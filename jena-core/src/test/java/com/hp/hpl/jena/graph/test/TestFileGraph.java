@@ -137,7 +137,7 @@ public class TestFileGraph extends GraphTestBase
 
     public void testClosingNotifys()
         {
-        final List<File> history = new ArrayList<File>();
+        final List<File> history = new ArrayList<>();
         FileGraph.NotifyOnClose n = new FileGraph.NotifyOnClose() 
             {
             @Override
@@ -153,7 +153,7 @@ public class TestFileGraph extends GraphTestBase
     
     protected List<Object> oneElementList( Object x )
         {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         result.add( x );
         return result;
         }

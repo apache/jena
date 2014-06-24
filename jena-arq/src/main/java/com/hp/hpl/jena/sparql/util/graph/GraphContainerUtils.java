@@ -56,7 +56,7 @@ public class GraphContainerUtils
 
         ExtendedIterator<Triple> iter = graph.find(container, Node.ANY, Node.ANY) ;
 
-        SortedMap<Integer, Node> triples = new TreeMap<Integer, Node>(order) ;
+        SortedMap<Integer, Node> triples = new TreeMap<>(order) ;
         try {
             for ( ; iter.hasNext() ; )
             {

@@ -67,8 +67,10 @@ class EventList implements Attributes, Cloneable {
     public EventList() {
     }
     public EventList(String[] ev) {
-        for (int i=0;i<ev.length;i++)
-            add(TestData.short2Event.get(ev[i]));
+        for ( String anEv : ev )
+        {
+            add( TestData.short2Event.get( anEv ) );
+        }
     }
     public EventList copy() {
         try {

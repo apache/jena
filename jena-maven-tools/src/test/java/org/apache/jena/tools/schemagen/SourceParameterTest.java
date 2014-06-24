@@ -50,7 +50,7 @@ public class SourceParameterTest
      **/
     @Parameters
     public static Collection<Object[]> testParameters() {
-        Collection<Object[]> params = new ArrayList<Object[]>();
+        Collection<Object[]> params = new ArrayList<>();
 
         for (OPT opt: OPT.values()) {
             Object[] par = new Object[2];

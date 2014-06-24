@@ -71,7 +71,7 @@ public class Syntax extends Symbol
 //    /** The update syntax currently that is standardized, published, SPARQL - the "default SPARQL Update" */ 
 //    private static final Syntax syntaxSPARQL_Update = syntaxSPARQL_11_Update ;
 
-    public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<Syntax>(true) ;
+    public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<>(true) ;
     static {
         querySyntaxNames.put("sparql",      syntaxSPARQL) ;
         querySyntaxNames.put("sparql10",   syntaxSPARQL_10) ;
@@ -83,7 +83,7 @@ public class Syntax extends Symbol
         querySyntaxNames.put("op",          syntaxAlgebra) ;
     }
 
-    public static TranslationTable<Syntax> updateSyntaxNames = new TranslationTable<Syntax>(true) ;
+    public static TranslationTable<Syntax> updateSyntaxNames = new TranslationTable<>(true) ;
     static {
         querySyntaxNames.put("sparql",      syntaxSPARQL) ;
         querySyntaxNames.put("sparql_11",   syntaxSPARQL_11) ;

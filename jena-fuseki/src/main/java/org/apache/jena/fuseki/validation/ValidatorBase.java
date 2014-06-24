@@ -71,7 +71,7 @@ public abstract class ValidatorBase extends HttpServlet
     
     protected static String htmlQuote(String str)
     {
-        StringBuffer sBuff = new StringBuffer() ;
+        StringBuilder sBuff = new StringBuilder() ;
         for ( int i = 0 ; i < str.length() ; i++ )
         {
             char ch = str.charAt(i) ;

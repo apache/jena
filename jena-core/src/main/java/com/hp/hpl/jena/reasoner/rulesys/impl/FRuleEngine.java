@@ -131,10 +131,11 @@ public class FRuleEngine implements FRuleEngineI {
                 context.addTriple(i.next());
             }
         } else {
-            for (Iterator<Node> p = predicatesUsed.iterator(); p.hasNext(); ) {
-                Node predicate = p.next();
-                for (Iterator<Triple> i = inserts.find(new TriplePattern(null, predicate, null)); i.hasNext(); ) {
-                    context.addTriple(i.next());
+            for ( Node predicate : predicatesUsed )
+            {
+                for ( Iterator<Triple> i = inserts.find( new TriplePattern( null, predicate, null ) ); i.hasNext(); )
+                {
+                    context.addTriple( i.next() );
                 }
             }
         }
@@ -229,7 +230,7 @@ public class FRuleEngine implements FRuleEngineI {
                 logger.info("Processing: " + PrintUtil.print(t));
             }
             // Check for rule triggers
-            HashSet<Rule> firedRules = new HashSet<Rule>();
+            HashSet<Rule> firedRules = new HashSet<>();
             Iterator<ClausePointer> i1 = clauseIndex.getAll(t.getPredicate());
             Iterator<ClausePointer> i2 = clauseIndex.getAll(Node.ANY);
             Iterator<ClausePointer> i = WrappedIterator.create(i1).andThen(i2);
@@ -258,25 +259,34 @@ public class FRuleEngine implements FRuleEngineI {
      * @return an object that can be installed into the engine using setRuleStore.
      */
     public void compile(List<Rule> rules, boolean ignoreBrules) {
-        clauseIndex = new OneToManyMap<Node, ClausePointer>();
-        predicatesUsed = new HashSet<Node>();
+        clauseIndex = new OneToManyMap<>();
+        predicatesUsed = new HashSet<>();
         wildcardRule = false;
-            
-        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
-            Rule r = i.next();
-            if (ignoreBrules && r.isBackward()) continue;
+
+        for ( Rule r : rules )
+        {
+            if ( ignoreBrules && r.isBackward() )
+            {
+                continue;
+            }
             Object[] body = r.getBody();
-            for (int j = 0; j < body.length; j++) {
-                if (body[j] instanceof TriplePattern) {
-                    Node predicate = ((TriplePattern) body[j]).getPredicate();
-                    ClausePointer cp = new ClausePointer(r, j);
-                    if (predicate.isVariable()) {
-                        clauseIndex.put(Node.ANY, cp);
+            for ( int j = 0; j < body.length; j++ )
+            {
+                if ( body[j] instanceof TriplePattern )
+                {
+                    Node predicate = ( (TriplePattern) body[j] ).getPredicate();
+                    ClausePointer cp = new ClausePointer( r, j );
+                    if ( predicate.isVariable() )
+                    {
+                        clauseIndex.put( Node.ANY, cp );
                         wildcardRule = true;
-                    } else {
-                        clauseIndex.put(predicate, cp);
-                        if (! wildcardRule) {
-                            predicatesUsed.add(predicate);
+                    }
+                    else
+                    {
+                        clauseIndex.put( predicate, cp );
+                        if ( !wildcardRule )
+                        {
+                            predicatesUsed.add( predicate );
                         }
                     }
                 }
@@ -291,17 +301,20 @@ public class FRuleEngine implements FRuleEngineI {
      */
     protected void findAndProcessAxioms() {
         BFRuleContext context = new BFRuleContext(infGraph);
-        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
-            Rule r = i.next();
-            if (r.bodyLength() == 0) {
+        for ( Rule r : rules )
+        {
+            if ( r.bodyLength() == 0 )
+            {
                 // An axiom
-                for (int j = 0; j < r.headLength(); j++) {
-                    Object head = r.getHeadElement(j);
-                    if (head instanceof TriplePattern) {
+                for ( int j = 0; j < r.headLength(); j++ )
+                {
+                    Object head = r.getHeadElement( j );
+                    if ( head instanceof TriplePattern )
+                    {
                         TriplePattern h = (TriplePattern) head;
-                        Triple t = new Triple(h.getSubject(), h.getPredicate(), h.getObject());
-                        context.addTriple(t);
-                        infGraph.getDeductionsGraph().add(t);
+                        Triple t = new Triple( h.getSubject(), h.getPredicate(), h.getObject() );
+                        context.addTriple( t );
+                        infGraph.getDeductionsGraph().add( t );
                     }
                 }
             }
@@ -315,20 +328,27 @@ public class FRuleEngine implements FRuleEngineI {
      */
     protected void findAndProcessActions() {
         BFRuleContext context = new BFRuleContext(infGraph);
-        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
-            Rule r = i.next();
-            if (r.bodyLength() == 0) {
+        for ( Rule r : rules )
+        {
+            if ( r.bodyLength() == 0 )
+            {
                 // An axiom
-                for (int j = 0; j < r.headLength(); j++) {
-                    Object head = r.getHeadElement(j);
-                    if (head instanceof Functor) {
-                        Functor f = (Functor)head;
+                for ( int j = 0; j < r.headLength(); j++ )
+                {
+                    Object head = r.getHeadElement( j );
+                    if ( head instanceof Functor )
+                    {
+                        Functor f = (Functor) head;
                         Builtin imp = f.getImplementor();
-                        if (imp != null) {
-                            context.setRule(r);
-                            imp.headAction(f.getArgs(), f.getArgLength(), context);
-                        } else {
-                            throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + r.toShortString());
+                        if ( imp != null )
+                        {
+                            context.setRule( r );
+                            imp.headAction( f.getArgs(), f.getArgLength(), context );
+                        }
+                        else
+                        {
+                            throw new ReasonerException(
+                                "Invoking undefined Functor " + f.getName() + " in " + r.toShortString() );
                         }
                     }
                 }
@@ -348,7 +368,7 @@ public class FRuleEngine implements FRuleEngineI {
         // Create an ordered list of body clauses to process, best at the end
         ClauseEntry[] body = rule.getBody();
         int len = body.length;
-        List<ClauseEntry> clauses = new ArrayList<ClauseEntry>(len-1);
+        List<ClauseEntry> clauses = new ArrayList<>(len-1);
         
         if (len <= 1) {
             // No clauses to add, just fall through to clause matcher
@@ -425,7 +445,7 @@ public class FRuleEngine implements FRuleEngineI {
             List<Triple> matchList = null;
             if (recordDerivations) {
                 // Create derivation record
-                matchList = new ArrayList<Triple>(rule.bodyLength());
+                matchList = new ArrayList<>(rule.bodyLength());
                 for (int i = 0; i < rule.bodyLength(); i++) {
                     Object clause = rule.getBodyElement(i);
                     if (clause instanceof TriplePattern) {
@@ -468,7 +488,7 @@ public class FRuleEngine implements FRuleEngineI {
             return true;
         }
         // More clauses left to match ...
-        List<ClauseEntry> clausesCopy = new ArrayList<ClauseEntry>(clauses);
+        List<ClauseEntry> clausesCopy = new ArrayList<>(clauses);
         TriplePattern clause = (TriplePattern) clausesCopy.remove(index);
         Node objPattern = env.getBinding(clause.getObject());
         if (Functor.isFunctor(objPattern)) {

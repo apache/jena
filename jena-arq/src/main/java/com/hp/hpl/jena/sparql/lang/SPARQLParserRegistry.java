@@ -26,7 +26,7 @@ import com.hp.hpl.jena.query.Syntax ;
 public class SPARQLParserRegistry
 {
     // the map contains the registered factories hashed by the syntaxes
-    Map<Syntax, SPARQLParserFactory> factories = new HashMap<Syntax, SPARQLParserFactory>() ;
+    Map<Syntax, SPARQLParserFactory> factories = new HashMap<>() ;
     
     // Singleton
     static SPARQLParserRegistry registry = null ;

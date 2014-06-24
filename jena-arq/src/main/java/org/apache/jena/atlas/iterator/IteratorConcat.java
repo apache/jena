@@ -42,7 +42,7 @@ public class IteratorConcat<T> implements Iterator<T>
     {
         if (iter2 == null) return iter1 ;
         if (iter1 == null) return iter2 ;
-        IteratorConcat<T> c = new IteratorConcat<T>() ;
+        IteratorConcat<T> c = new IteratorConcat<>() ;
         c.add(iter1) ;
         c.add(iter2) ;
         return c ;

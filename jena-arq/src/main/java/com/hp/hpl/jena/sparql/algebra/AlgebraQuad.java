@@ -45,7 +45,7 @@ public class AlgebraQuad extends TransformCopy
 
     public static Op quadize(Op op)
     {
-        final Deque<QuadSlot> stack = new ArrayDeque<QuadSlot>() ;
+        final Deque<QuadSlot> stack = new ArrayDeque<>() ;
         QuadSlot qSlot = new QuadSlot(Quad.defaultGraphNodeGenerated, Quad.defaultGraphNodeGenerated) ;  
         stack.push(qSlot) ;             // Starting condition
         

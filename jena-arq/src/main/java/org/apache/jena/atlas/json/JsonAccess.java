@@ -25,32 +25,36 @@ public class JsonAccess
 {
     public static JsonValue accessPath(JsonValue obj, String ... path)
     {
-        for ( int i = 0 ; i < path.length ; i++ )
+        for ( String p : path )
         {
-            String p = path[i] ;
-            if ( ! obj.isObject() )
-                throw new JsonException("Path traverses non-object") ;
-            obj = obj.getAsObject().get(p) ;
+            if ( !obj.isObject() )
+            {
+                throw new JsonException( "Path traverses non-object" );
+            }
+            obj = obj.getAsObject().get( p );
         }
         return obj ;
     }
     
     public static JsonValue access(JsonValue obj, Object ... path)
     {
-        for ( int i = 0 ; i < path.length ; i++ )
+        for ( Object p : path )
         {
-            Object p = path[i] ;
             if ( p instanceof String )
             {
-                if ( ! obj.isObject() )
-                    throw new JsonException("Path traverses non-object") ;
-                obj = obj.getAsObject().get((String)p) ;
+                if ( !obj.isObject() )
+                {
+                    throw new JsonException( "Path traverses non-object" );
+                }
+                obj = obj.getAsObject().get( (String) p );
             }
             if ( p instanceof Integer )
             {
-                if ( ! obj.isArray() )
-                    throw new JsonException("Path traverses non-array") ;
-                obj = obj.getAsArray().get((Integer)p) ;
+                if ( !obj.isArray() )
+                {
+                    throw new JsonException( "Path traverses non-array" );
+                }
+                obj = obj.getAsArray().get( (Integer) p );
             }
         }
         return obj ;

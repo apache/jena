@@ -173,7 +173,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
                 throw new AtlasException(ex) ;
             }
             Iterator<E> deserializer = serializationFactory.createDeserializer(in) ;
-            IteratorResourceClosing<E> irc = new IteratorResourceClosing<E>(deserializer, in) ;
+            IteratorResourceClosing<E> irc = new IteratorResourceClosing<>(deserializer, in) ;
             registerCloseableIterator(irc);
             toReturn = irc;
         }

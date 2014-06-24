@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 public class E_Call extends ExprFunctionN
 {
     private static final String symbol = Tags.tagCall ;
-    private Map<String,Expr> functionCache = new HashMap<String, Expr>();
+    private Map<String,Expr> functionCache = new HashMap<>();
     private Expr identExpr;
     private List<Expr> argExprs;
 

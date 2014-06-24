@@ -52,7 +52,7 @@ public class BuilderNode
     
     public static List<Node> buildNodeList(ItemList list)
     {
-        List<Node> nodes = new ArrayList<Node>() ;
+        List<Node> nodes = new ArrayList<>() ;
         for (Item item : list)
         {
             Node v = buildNode(item) ;
@@ -82,7 +82,7 @@ public class BuilderNode
         if ( list.size() > 0 && list.getFirst().isSymbol(Tags.tagVars) )
             list = list.cdr() ;
         
-        List<Var> vars = new ArrayList<Var>() ;
+        List<Var> vars = new ArrayList<>() ;
         for (Item x : list)
         {
             Var v = buildVar(x) ;
@@ -103,7 +103,7 @@ public class BuilderNode
     {
         list = BuilderLib.skipTag(list, Tags.tagVars) ;
         
-        List<Var> x = new ArrayList<Var>() ;
+        List<Var> x = new ArrayList<>() ;
         for ( int i = 0 ; i < list.size() ; i++ )
         {
             Item item = list.get(i) ;

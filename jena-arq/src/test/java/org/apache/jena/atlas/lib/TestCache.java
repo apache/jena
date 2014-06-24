@@ -67,7 +67,7 @@ public class TestCache extends BaseTest
         public Cache<Integer, Integer> make(int size)
         { 
             Cache<Integer, Integer> c = CacheFactory.createCache(size) ;
-            return new CacheStatsSimple<Integer, Integer>(c) ;
+            return new CacheStatsSimple<>(c) ;
         }
         @Override
         public String name() { return "Stats" ; }
@@ -81,7 +81,7 @@ public class TestCache extends BaseTest
         public Cache<Integer, Integer> make(int size)
         { 
             Cache<Integer, Integer> c = CacheFactory.createCache(size) ;
-            return new CacheStatsAtomic<Integer, Integer>(c) ;
+            return new CacheStatsAtomic<>(c) ;
         }
         @Override
         public String name() { return "StatsAtomic" ; }

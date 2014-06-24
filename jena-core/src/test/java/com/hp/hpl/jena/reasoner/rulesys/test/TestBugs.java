@@ -402,8 +402,8 @@ public class TestBugs extends TestCase {
 //        System.out.println( prompt );
         OntClass r = m.getOntClass( NS + "Reiseliv" );
 
-        List<OntClass> q = new ArrayList<OntClass>();
-        Set<OntClass> seen = new HashSet<OntClass>();
+        List<OntClass> q = new ArrayList<>();
+        Set<OntClass> seen = new HashSet<>();
         q.add( r );
 
         while (!q.isEmpty()) {
@@ -432,13 +432,15 @@ public class TestBugs extends TestCase {
             }
         }
 
-        for (Iterator<OntClass> k = seen.iterator();  k.hasNext(); ) {
-            Resource res = k.next();
+        for ( OntClass res : seen )
+        {
             boolean isExpected = false;
-            for (int j = 0;  !isExpected && j < expected.length; j++) {
+            for ( int j = 0; !isExpected && j < expected.length; j++ )
+            {
                 isExpected = expected[j].equals( res );
             }
-            if (!isExpected) {
+            if ( !isExpected )
+            {
 //                System.out.println( "Got unexpected result " + res );
             }
         }

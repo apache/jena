@@ -31,7 +31,7 @@ public class TestCache2 extends BaseTest
     // Cache1
     @Test public void cache_10()
     {
-        Cache<Integer, String> cache = new Cache1<Integer, String>() ;
+        Cache<Integer, String> cache = new Cache1<>() ;
         String str = cache.get(1) ;
         assertNull(str) ;
 

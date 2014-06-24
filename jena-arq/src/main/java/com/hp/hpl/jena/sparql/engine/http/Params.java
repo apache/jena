@@ -31,10 +31,10 @@ import com.hp.hpl.jena.sparql.util.Convert ;
 public class Params
 {
     // As seen.
-    private List<Pair> paramList = new ArrayList<Pair>() ;
+    private List<Pair> paramList = new ArrayList<>() ;
     
     // string -> list -> string
-    private Map<String, List<String>> params = new HashMap<String, List<String>>() ;
+    private Map<String, List<String>> params = new HashMap<>() ;
     
     
     /** Create a Params object */
@@ -71,7 +71,7 @@ public class Params
         List<String> x = params.get(name) ;
         if ( x == null )
         {
-            x = new ArrayList<String>() ;
+            x = new ArrayList<>() ;
             params.put(name, x) ;
         }
         x.add(value) ;
@@ -121,7 +121,7 @@ public class Params
     /** Get the names of parameters - one ocurrence */ 
     public List<String> names()
     {
-        List<String> names = new ArrayList<String>() ;
+        List<String> names = new ArrayList<>() ;
         for (Pair pair : paramList)
         {
             String s = pair.getName() ;
@@ -134,7 +134,7 @@ public class Params
     
     public String httpString()
     {
-        StringBuffer sbuff = new StringBuffer() ; 
+        StringBuilder sbuff = new StringBuilder() ;
         boolean first = true ;
         for (Pair p : pairs())
         {

@@ -1061,21 +1061,22 @@ implements Model, PrefixMapping, Lock
     public static void addNamespaces( Model m, Map<String, Set<String>> ns )
     { 
         PrefixMapping pm = m;
-        Iterator<Map.Entry<String, Set<String>>> it  = ns.entrySet().iterator();
-        while (it.hasNext())
+        for ( Map.Entry<String, Set<String>> e : ns.entrySet() )
         {
-            Map.Entry<String, Set<String>> e = it.next();
             String key = e.getKey();
-            Set<String>  values = e.getValue();
+            Set<String> values = e.getValue();
             Set<String> niceValues = CollectionFactory.createHashedSet();
-            Iterator<String> them = values.iterator();
-            while (them.hasNext())
+            for ( String uri : values )
             {
-                String uri = them.next();
-                if (PrefixMappingImpl.isNiceURI( uri )) niceValues.add( uri );
+                if ( PrefixMappingImpl.isNiceURI( uri ) )
+                {
+                    niceValues.add( uri );
+                }
             }
-            if (niceValues.size() == 1)
+            if ( niceValues.size() == 1 )
+            {
                 pm.setNsPrefix( key, niceValues.iterator().next() );
+            }
         }            
     }
 
@@ -1117,9 +1118,11 @@ implements Model, PrefixMapping, Lock
 
     private List<Triple> asTriples( List<Statement> statements )
     {
-        List<Triple> L = new ArrayList<Triple>( statements.size() );
-        for (int i = 0; i < statements.size(); i += 1) 
-            L.add( statements.get(i).asTriple() );
+        List<Triple> L = new ArrayList<>( statements.size() );
+        for ( Statement statement : statements )
+        {
+            L.add( statement.asTriple() );
+        }
         return L;
     }
 
@@ -1410,8 +1413,11 @@ implements Model, PrefixMapping, Lock
 
       public List<Statement> asStatements( List<Triple> triples )
       {
-          List<Statement> L = new ArrayList<Statement>( triples.size() );
-          for (int i = 0; i < triples.size(); i += 1) L.add( asStatement( triples.get(i) ) );
+          List<Statement> L = new ArrayList<>( triples.size() );
+          for ( Triple triple : triples )
+          {
+              L.add( asStatement( triple ) );
+          }
           return L;
       }
 
@@ -1419,7 +1425,7 @@ implements Model, PrefixMapping, Lock
       { return new ModelCom( g ); }
 
       public StmtIterator asStatements( final Iterator<Triple> it ) 
-      { return new StmtIteratorImpl( new Map1Iterator<Triple, Statement>( mapAsStatement, it ) ); }
+      { return new StmtIteratorImpl( new Map1Iterator<>( mapAsStatement, it ) ); }
 
       protected Map1<Triple, Statement> mapAsStatement = new Map1<Triple, Statement>()
           { @Override
@@ -1523,7 +1529,7 @@ implements Model, PrefixMapping, Lock
 
           protected String statementsToString( StmtIterator it )
           {
-              StringBuffer b = new StringBuffer();
+              StringBuilder b = new StringBuilder();
               while (it.hasNext()) b.append( " " ).append( it.nextStatement() );
               return b.toString();
           }

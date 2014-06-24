@@ -59,7 +59,7 @@ public class IteratorCollection
      */
     public static <T> List<T> iteratorToList( Iterator<? extends T> it )
         {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         try { while (it.hasNext()) result.add( it.next() ); }
         finally { NiceIterator.close( it ); }
         return result;

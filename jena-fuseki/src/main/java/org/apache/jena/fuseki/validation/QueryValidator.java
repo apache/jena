@@ -95,20 +95,32 @@ public class QueryValidator extends ValidatorBase
             
             if ( a != null )
             {
-                for ( int i = 0 ; i < a.length ; i++ )
+                for ( String anA : a )
                 {
-                    if ( a[i].equals("sparql") ) 
-                        outputSPARQL = true ;
-                    if ( a[i].equals("prefix") ) 
-                        outputPrefix = true ;
-                    if ( a[i].equals("algebra") ) 
-                        outputAlgebra = true ;
-                    if ( a[i].equals("quads") ) 
-                        outputQuads = true ;
-                    if ( a[i].equals("opt") ) 
-                        outputOptimized = true ;
-                    if ( a[i].equals("optquads") ) 
-                        outputOptimizedQuads = true ;
+                    if ( anA.equals( "sparql" ) )
+                    {
+                        outputSPARQL = true;
+                    }
+                    if ( anA.equals( "prefix" ) )
+                    {
+                        outputPrefix = true;
+                    }
+                    if ( anA.equals( "algebra" ) )
+                    {
+                        outputAlgebra = true;
+                    }
+                    if ( anA.equals( "quads" ) )
+                    {
+                        outputQuads = true;
+                    }
+                    if ( anA.equals( "opt" ) )
+                    {
+                        outputOptimized = true;
+                    }
+                    if ( anA.equals( "optquads" ) )
+                    {
+                        outputOptimizedQuads = true;
+                    }
                 }
             }
             

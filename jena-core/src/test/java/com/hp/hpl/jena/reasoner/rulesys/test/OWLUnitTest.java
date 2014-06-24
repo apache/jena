@@ -205,14 +205,18 @@ public class OWLUnitTest extends TestCase {
         for (int i = 0; i < reasonerFactories.length; i++) {
             String rName = reasonerNames[i];
             ReasonerFactory rf = reasonerFactories[i];
-            for (int j = 0; j < testDefs.length; j++) {
-                TestDef test = testDefs[j];
-                if (test.applicableTo(rf)) {
-                    if (test.spec instanceof String) {
-                        suite.addTest(new OWLUnitTest((String)test.spec, rName, rf));
-                    } else if (test.spec instanceof OWLConsistencyTest) {
-                        OWLConsistencyTest oct = (OWLConsistencyTest)test.spec;
-                        suite.addTest(new OWLConsistencyTest(oct, rName, rf));
+            for ( TestDef test : testDefs )
+            {
+                if ( test.applicableTo( rf ) )
+                {
+                    if ( test.spec instanceof String )
+                    {
+                        suite.addTest( new OWLUnitTest( (String) test.spec, rName, rf ) );
+                    }
+                    else if ( test.spec instanceof OWLConsistencyTest )
+                    {
+                        OWLConsistencyTest oct = (OWLConsistencyTest) test.spec;
+                        suite.addTest( new OWLConsistencyTest( oct, rName, rf ) );
                     }
                 }
             }

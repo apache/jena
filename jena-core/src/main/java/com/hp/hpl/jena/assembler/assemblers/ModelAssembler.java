@@ -123,8 +123,10 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
     private void transferContentProperties( Model partial, Resource someInitial, Resource combined )
         {
         Map1<Statement, Statement> replace = replaceSubjectMap( partial, combined );
-        for (Iterator<Property> it = ContentAssembler.contentProperties.iterator(); it.hasNext();)
-            partial.add( copyProperties( someInitial, replace, it.next() ) );
+            for ( Property contentProperty : ContentAssembler.contentProperties )
+            {
+                partial.add( copyProperties( someInitial, replace, contentProperty ) );
+            }
         }
     
     private List<Statement> copyProperties( Resource root, Map1<Statement, Statement> replace, Property property )

@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.Triple ;
 */    
 public class RecordingListener implements GraphListener
     {
-    public List<Object> history = new ArrayList<Object>();
+    public List<Object> history = new ArrayList<>();
     
     @Override
     public void notifyAddTriple( Graph g, Triple t )

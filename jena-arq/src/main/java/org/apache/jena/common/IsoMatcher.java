@@ -145,15 +145,15 @@ public class IsoMatcher
     }
 
     public static boolean isomorphic(List<Tuple<Node>> x1, List<Tuple<Node>> x2) {
-        x1 = new ArrayList<Tuple<Node>>(x1) ;
-        x2 = new ArrayList<Tuple<Node>>(x2) ;
+        x1 = new ArrayList<>(x1) ;
+        x2 = new ArrayList<>(x2) ;
         IsoMatcher matcher = new IsoMatcher(x1, x2, NodeUtils.sameTerm) ;
         return matcher.match() ;
     }
 
 
     private static List<Tuple<Node>> tuplesTriples(Iterator<Triple> iter) {
-        List<Tuple<Node>> tuples = new ArrayList<Tuple<Node>>() ;
+        List<Tuple<Node>> tuples = new ArrayList<>() ;
         for ( ; iter.hasNext() ; ) {
             Triple t = iter.next() ;
             Tuple<Node> tuple = createTuple(t.getSubject(), t.getPredicate(), t.getObject()) ;
@@ -163,7 +163,7 @@ public class IsoMatcher
     }
 
     private static List<Tuple<Node>> tuplesQuads(Iterator<Quad> iter) {
-        List<Tuple<Node>> tuples = new ArrayList<Tuple<Node>>() ;
+        List<Tuple<Node>> tuples = new ArrayList<>() ;
         for ( ; iter.hasNext() ; ) {
             Quad q = iter.next() ;
             Tuple<Node> tuple = createTuple(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
@@ -196,7 +196,7 @@ public class IsoMatcher
         if ( tuples1.size() != tuples2.size() )
             return false;
         
-        List<Tuple<Node>> tuples = new ArrayList<Tuple<Node>>(tuples1) ;  // Copy, mutate
+        List<Tuple<Node>> tuples = new ArrayList<>(tuples1) ;  // Copy, mutate
         for ( Tuple<Node> t1 : tuples1 ) {
             if ( DEBUG )
                 System.out.println("  t1 = "+t1) ;
@@ -227,7 +227,7 @@ public class IsoMatcher
 
     private List<Cause> match(Tuple<Node> t1, Collection<Tuple<Node>> g2, Mapping mapping)
     {
-        List<Cause> matches = new ArrayList<Cause>() ;
+        List<Cause> matches = new ArrayList<>() ;
         for (Tuple<Node> t2 : g2)
         {
             // No - multiple bNodes.

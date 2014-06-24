@@ -46,8 +46,8 @@ public class FileRef
     // --------
     // May to/from names to a short id.
     // THIS MUST BE PERSISTENT
-    static Map<String, Integer> name2id = new HashMap<String, Integer>() ;
-    static Map<Integer, FileRef> id2name = new TreeMap<Integer, FileRef>() ;// new HashMap<Integer, FileRef>() ;
+    static Map<String, Integer> name2id = new HashMap<>() ;
+    static Map<Integer, FileRef> id2name = new TreeMap<>() ;// new HashMap<Integer, FileRef>() ;
     
     static private void printTable()
     {

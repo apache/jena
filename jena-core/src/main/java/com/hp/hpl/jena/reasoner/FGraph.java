@@ -45,7 +45,7 @@ public class FGraph implements Finder {
      */
     @Override
     public ExtendedIterator<Triple> find(TriplePattern pattern) {
-        if (graph == null) return new NullIterator<Triple>();
+        if (graph == null) return new NullIterator<>();
         return graph.find(pattern.asTripleMatch());
     }
     
@@ -62,7 +62,7 @@ public class FGraph implements Finder {
      */
     @Override
     public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
-        if (graph == null) return new NullIterator<Triple>();
+        if (graph == null) return new NullIterator<>();
         if (continuation == null) {
             return graph.find(pattern.asTripleMatch());
         } else {

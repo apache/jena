@@ -218,7 +218,7 @@ public class NodeTableNative implements NodeTable
             {
                 NodeId id = NodeId.create(item.getValue(), 0) ;
                 Node n = NodeLib.fetchDecode(id.getId(), getObjects()) ;
-                return new Pair<NodeId, Node>(id, n) ;
+                return new Pair<>(id, n) ;
             }};
         return Iter.map(iter, transform) ;
     }
@@ -234,7 +234,7 @@ public class NodeTableNative implements NodeTable
                 NodeId id = NodeId.create(item.car().longValue()) ;
                 ByteBuffer bb = item.cdr();
                 Node n = NodeLib.decode(bb) ;
-                return new Pair<NodeId, Node>(id, n) ;
+                return new Pair<>(id, n) ;
             }
         };
         return Iter.map(objs, transform) ;

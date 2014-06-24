@@ -296,7 +296,7 @@ public class TDBLoader
 
     private static List<String> asList(String string)
     {
-        List<String> list = new ArrayList<String>() ;
+        List<String> list = new ArrayList<>() ;
         list.add(string) ;
         return list ;
     }

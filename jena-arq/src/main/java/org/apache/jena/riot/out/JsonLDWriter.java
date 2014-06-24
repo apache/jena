@@ -79,7 +79,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
     }
 
     private void serialize(Writer writer, DatasetGraph dataset, PrefixMap prefixMap, String baseURI) {
-        final Map<String, Object> ctx = new LinkedHashMap<String, Object>() ;
+        final Map<String, Object> ctx = new LinkedHashMap<>() ;
         addProperties(ctx, dataset.getDefaultGraph()) ;
         addPrefixes(ctx, prefixMap) ;
 
@@ -91,7 +91,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
             opts.setCompactArrays(true);
             Object obj = JsonLdProcessor.fromRDF(dataset, opts, new JenaRDF2JSONLD()) ;
             
-            Map<String, Object> localCtx = new HashMap<String, Object>() ;
+            Map<String, Object> localCtx = new HashMap<>() ;
             localCtx.put("@context", ctx) ;
 
             // Unclear as to the way to set better printing.
@@ -102,13 +102,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
             else
                 JsonUtils.write(writer, obj) ;
         }
-        catch (JsonLdError e) {
-            throw new RiotException(e) ;
-        }
-        catch (JsonGenerationException e) {
-            throw new RiotException(e) ;
-        }
-        catch (JsonMappingException e) {
+        catch (JsonLdError | JsonMappingException | JsonGenerationException e) {
             throw new RiotException(e) ;
         }
         catch (IOException e) {
@@ -136,7 +130,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
 
     private static void addProperties(final Map<String, Object> ctx, Graph graph) {
         // Add some properties directly so it becomes "localname": ....
-        final Set<String> dups = new HashSet<String>() ;
+        final Set<String> dups = new HashSet<>() ;
         Action<Triple> x = new Action<Triple>() {
             @Override
             public void apply(Triple item) {
@@ -154,7 +148,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                     // dups.add(x) ;
                 } else if ( o.isBlank() || o.isURI() ) {
                     // add property as a property (the object is an IRI)
-                    Map<String, Object> x2 = new LinkedHashMap<String, Object>() ;
+                    Map<String, Object> x2 = new LinkedHashMap<>() ;
                     x2.put("@id", p.getURI()) ;
                     x2.put("@type", "@id") ;
                     ctx.put(x, x2) ;
@@ -163,7 +157,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                     if ( literalDatatypeURI != null ) {
                         // add property as a typed attribute (the object is a
                         // typed literal)
-                        Map<String, Object> x2 = new LinkedHashMap<String, Object>() ;
+                        Map<String, Object> x2 = new LinkedHashMap<>() ;
                         x2.put("@id", p.getURI()) ;
                         x2.put("@type", literalDatatypeURI) ;
                         ctx.put(x, x2) ;

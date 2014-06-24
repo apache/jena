@@ -129,7 +129,7 @@ public class ModelUtils
     
     public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it)
     {
-        return new IteratorResourceClosing<Triple>(Iter.map(it, new Transform<Statement,Triple>()
+        return new IteratorResourceClosing<>(Iter.map(it, new Transform<Statement,Triple>()
         {
             @Override
             public Triple convert(Statement item)

@@ -46,7 +46,7 @@ final class PathEngine1 extends PathEngine
     // Choose the underlying impl - different choice for debugging.
     @Override
     protected Collection<Node> collector() {
-        return new ArrayList<Node>() ;
+        return new ArrayList<>() ;
         // { return new HashSet<Node>() ; }
     }
 
@@ -64,7 +64,7 @@ final class PathEngine1 extends PathEngine
     @Override
     protected void doAlt(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output) {
         // Must be duplicate supressing.
-        Collection<Node> nodes = new HashSet<Node>() ;
+        Collection<Node> nodes = new HashSet<>() ;
         // Insert directly.
         eval(pathStepLeft, node, nodes) ;
         // Need to reduce/check other side.
@@ -79,7 +79,7 @@ final class PathEngine1 extends PathEngine
 
         Collection<Node> nodes = collector() ;
         eval(part1, node, nodes) ;
-        Collection<Node> nodes2 = new HashSet<Node>() ;
+        Collection<Node> nodes2 = new HashSet<>() ;
         for (Node n : nodes)
             eval(part2, n, nodes2) ;
         output.addAll(nodes2) ;
@@ -177,7 +177,7 @@ final class PathEngine1 extends PathEngine
     @Override
     protected void doZeroOrMore(Path path, Node node, Collection<Node> output) {
         // Reuse "output"
-        Collection<Node> visited = new LinkedList<Node>() ; // new
+        Collection<Node> visited = new LinkedList<>() ; // new
                                                             // HashSet<Node>() ;
         ALP1(forwardMode, 0, -1, node, path, visited) ;
         output.addAll(visited) ;
@@ -186,7 +186,7 @@ final class PathEngine1 extends PathEngine
     @Override
     protected void doOneOrMore(Path path, Node node, Collection<Node> output) {
         // Reuse "output"
-        Collection<Node> visited = new LinkedList<Node>() ; // new
+        Collection<Node> visited = new LinkedList<>() ; // new
                                                             // HashSet<Node>() ;
         // Do one step without including.
         Iter<Node> iter1 = eval(path, node) ;

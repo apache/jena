@@ -68,7 +68,7 @@ public class T_TransSystemMultiDatasets
     static boolean USE_TRANSACTIONS = false ;
     
     static final int NUM_DATASETS = 3 ;
-    static final ArrayList<Location> LOCATIONS = new ArrayList<Location>() ; 
+    static final ArrayList<Location> LOCATIONS = new ArrayList<>() ;
     
     static {
     	for ( int i = 0; i < NUM_DATASETS; i++ ) 

@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 public class QueryIterConcat extends QueryIter
 {
     boolean initialized = false ;
-    List<QueryIterator> iteratorList = new ArrayList<QueryIterator>() ; 
+    List<QueryIterator> iteratorList = new ArrayList<>() ;
     Iterator<QueryIterator> iterator ;
     QueryIterator currentQIter = null ;
 
@@ -114,20 +114,18 @@ public class QueryIterConcat extends QueryIter
     @Override
     protected void closeIterator()
     {
-        for ( Iterator<QueryIterator> iter = iteratorList.iterator() ; iter.hasNext() ; )
+        for ( QueryIterator qIter : iteratorList )
         {
-            QueryIterator qIter = iter.next() ;
-            performClose(qIter) ;
+            performClose( qIter );
         }
     }
     
     @Override
     protected void requestCancel()
     {
-        for ( Iterator<QueryIterator> iter = iteratorList.iterator() ; iter.hasNext() ; )
+        for ( QueryIterator qIter : iteratorList )
         {
-            QueryIterator qIter = iter.next() ;
-            performRequestCancel(qIter) ;
+            performRequestCancel( qIter );
         }
     }
     
@@ -136,10 +134,9 @@ public class QueryIterConcat extends QueryIter
     { 
         out.println(Utils.className(this)) ;
         out.incIndent() ;
-        for ( Iterator<QueryIterator> iter = iteratorList.iterator() ; iter.hasNext() ; )
+        for ( QueryIterator qIter : iteratorList )
         {
-            QueryIterator qIter = iter.next() ;
-            qIter.output(out, sCxt) ;
+            qIter.output( out, sCxt );
         }
         out.decIndent() ;
         out.ensureStartOfLine() ;

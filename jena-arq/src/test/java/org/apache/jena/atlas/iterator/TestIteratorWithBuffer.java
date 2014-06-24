@@ -90,7 +90,7 @@ public class TestIteratorWithBuffer extends BaseTest
     private IteratorWithBuffer<String> createBuffered(int N, String... strings)
     {
         List<String> data = Arrays.asList(strings) ;
-        IteratorWithBuffer<String> iter = new IteratorWithBuffer<String>(data.iterator(), N) ;
+        IteratorWithBuffer<String> iter = new IteratorWithBuffer<>(data.iterator(), N) ;
         return iter ;
     }
 

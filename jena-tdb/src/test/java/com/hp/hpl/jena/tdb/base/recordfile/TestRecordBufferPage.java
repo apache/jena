@@ -94,10 +94,10 @@ public class TestRecordBufferPage extends BaseTest
     
     private static void fill(RecordBuffer rb, int ... nums)
     {
-        for ( int i = 0 ; i < nums.length ; i++ )
+        for ( int num : nums )
         {
-            Record rec = record(nums[i]) ; 
-            rb.add(rec) ;
+            Record rec = record( num );
+            rb.add( rec );
         }
     }
     

@@ -47,7 +47,7 @@ public class TestListUtils extends BaseTest
 
     @Test public void list03() 
     {
-        List<Integer> x = new ArrayList<Integer>() ;
+        List<Integer> x = new ArrayList<>() ;
         x = unique(x) ;
         assertEquals(0, x.size()) ;
         test(x) ;

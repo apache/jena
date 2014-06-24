@@ -76,8 +76,9 @@ public class TestLPDerivation extends TestCase {
     public static InfGraph makeInfGraph(List<Rule> rules, Graph data, Node[] tabled) {
         FBRuleReasoner reasoner = new FBRuleReasoner(rules);
         FBRuleInfGraph infgraph = (FBRuleInfGraph) reasoner.bind(data);
-        for (int i = 0; i < tabled.length; i++) {
-            infgraph.setTabled(tabled[i]);
+        for ( Node aTabled : tabled )
+        {
+            infgraph.setTabled( aTabled );
         }
 //        infgraph.setTraceOn(true);
         infgraph.setDerivationLogging(true);
@@ -96,8 +97,9 @@ public class TestLPDerivation extends TestCase {
     private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, TripleMatch query, Triple[] matches, int rulenumber) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
         Graph data = Factory.createGraphMem();
-        for (int i = 0; i < triples.length; i++) {
-            data.add(triples[i]);
+        for ( Triple triple : triples )
+        {
+            data.add( triple );
         }
         InfGraph infgraph =  makeInfGraph(rules, data, tabled);
         ExtendedIterator<Triple> results = infgraph.find(query);

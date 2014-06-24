@@ -21,8 +21,6 @@ package com.hp.hpl.jena.sparql.resultset;
 import java.io.OutputStream ;
 import java.io.PrintWriter ;
 import java.io.Writer ;
-import java.util.Iterator ;
-
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
@@ -90,13 +88,15 @@ public class TextOutput extends OutputBase
             numRows++ ;
             QuerySolution rBind = rs.nextSolution() ;
             int col = -1 ;
-            for ( Iterator<String> iter = rs.getResultVars().iterator() ; iter.hasNext() ; )
+            for ( String s1 : rs.getResultVars() )
             {
-                col++ ;
-                String rVar = iter.next() ;
-                String s = getVarValueAsString(rBind, rVar) ;
+                col++;
+                String rVar = s1;
+                String s = getVarValueAsString( rBind, rVar );
                 if ( colWidths[col] < s.length() )
-                    colWidths[col] = s.length() ;
+                {
+                    colWidths[col] = s.length();
+                }
             }
         }
         rs.reset() ;

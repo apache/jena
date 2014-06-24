@@ -48,23 +48,22 @@ public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
         while (it.hasNext()) {
             Triple decl = it.next();
             Node className = decl.getSubject();
-            List<Node> elements = new ArrayList<Node>();
+            List<Node> elements = new ArrayList<>();
             translateIntersectionList(decl.getObject(), dataFind, elements);
             // Generate the corresponding ruleset
-            List<ClauseEntry> recognitionBody = new ArrayList<ClauseEntry>();
+            List<ClauseEntry> recognitionBody = new ArrayList<>();
             Node var = new Node_RuleVariable("?x", 0);
-            for (Iterator<Node> i = elements.iterator(); i.hasNext(); ) {
-                Node description = i.next();
+            for ( Node description : elements )
+            {
                 // Implication rule
-                Rule ir = new Rule("intersectionImplication", new ClauseEntry[] {
-                                    new TriplePattern(className, RDFS.subClassOf.asNode(), description)
-                                    }, new ClauseEntry[0]);
-                ir.setBackward(false);
-                infGraph.addRuleDuringPrepare(ir);
-               // Recognition rule elements
-               recognitionBody.add(new TriplePattern(var, RDF.type.asNode(), description));
+                Rule ir = new Rule( "intersectionImplication", new ClauseEntry[]{
+                    new TriplePattern( className, RDFS.subClassOf.asNode(), description ) }, new ClauseEntry[0] );
+                ir.setBackward( false );
+                infGraph.addRuleDuringPrepare( ir );
+                // Recognition rule elements
+                recognitionBody.add( new TriplePattern( var, RDF.type.asNode(), description ) );
             }
-            List<ClauseEntry> recognitionHead = new ArrayList<ClauseEntry>(1);
+            List<ClauseEntry> recognitionHead = new ArrayList<>(1);
             recognitionHead.add(new TriplePattern(var, RDF.type.asNode(), className));
             Rule rr = new Rule("intersectionRecognition", recognitionHead, recognitionBody);
             rr.setBackward(true);

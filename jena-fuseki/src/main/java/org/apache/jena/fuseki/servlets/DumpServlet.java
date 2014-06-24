@@ -138,16 +138,16 @@ public class DumpServlet extends HttpServlet
                     pw.println("getCookies:            <none>");
                 else
                 {
-                    for ( int i = 0 ; i < c.length ; i++ )            
+                    for ( Cookie aC : c )
                     {
-                        pw.println("Cookie:        "+c[i].getName());
-                        pw.println("    value:     "+c[i].getValue());
-                        pw.println("    version:   "+c[i].getVersion());
-                        pw.println("    comment:   "+c[i].getComment());
-                        pw.println("    domain:    "+c[i].getDomain());
-                        pw.println("    maxAge:    "+c[i].getMaxAge());
-                        pw.println("    path:      "+c[i].getPath());
-                        pw.println("    secure:    "+c[i].getSecure());
+                        pw.println( "Cookie:        " + aC.getName() );
+                        pw.println( "    value:     " + aC.getValue() );
+                        pw.println( "    version:   " + aC.getVersion() );
+                        pw.println( "    comment:   " + aC.getComment() );
+                        pw.println( "    domain:    " + aC.getDomain() );
+                        pw.println( "    maxAge:    " + aC.getMaxAge() );
+                        pw.println( "    path:      " + aC.getPath() );
+                        pw.println( "    secure:    " + aC.getSecure() );
                         pw.println();
                     }
                 }

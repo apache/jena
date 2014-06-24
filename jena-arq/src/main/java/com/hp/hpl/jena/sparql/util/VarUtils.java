@@ -32,7 +32,7 @@ public class VarUtils
 {
     public static Set<Var> getVars(Triple triple)
     {
-        Set<Var> x = new HashSet<Var>() ;
+        Set<Var> x = new HashSet<>() ;
         addVarsFromTriple(x, triple) ;
         return x ;
     }

@@ -58,7 +58,7 @@ public class DumpOps
 
         NodeTable nodeTable = nodeTupleTableTriples.getNodeTable() ;
         // V special.
-        Set<NodeTable> dumpedNodeTables = new HashSet<NodeTable> () ;
+        Set<NodeTable> dumpedNodeTables = new HashSet<>() ;
 
 
 

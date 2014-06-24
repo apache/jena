@@ -61,7 +61,7 @@ public class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWi
 				"  GRAPH ?g { ?s text:query ( rdfs:label 'testOneSimpleResult' 10 ) . }",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testOneSimpleResult")) ;
 		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
 	}
@@ -89,7 +89,7 @@ public class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWi
 				"  GRAPH <http://example.org/modelA> { ?s text:query ( rdfs:label 'testOneResult' 10 ) . }",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultInModelA")) ;
 		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
 	}
@@ -123,7 +123,7 @@ public class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWi
 				"  GRAPH <http://example.org/modelA> { ?s text:query ( rdfs:label 'testResultOne OR testResultTwo' 10 ) . }",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultOneInModelA", RESOURCE_BASE + "testResultTwoInModelA")) ;
 		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
 	}
@@ -151,7 +151,7 @@ public class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWi
 				"    ?s text:query ( rdfs:label 'testOneResult' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultInModelA")) ;
 		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
 	}
@@ -177,7 +177,7 @@ public class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWi
 				"  GRAPH ?g { ?s text:query ( rdfs:label 'testResult' 10 ) . }",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList(RESOURCE_BASE + "testResultInGraphA")) ;
 		doTestQuery(dataset, "", queryString, expectedURIs, expectedURIs.size()) ;
 	}

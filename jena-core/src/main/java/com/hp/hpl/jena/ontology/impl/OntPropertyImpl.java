@@ -762,7 +762,7 @@ public class OntPropertyImpl
      */
     @Override
     public ExtendedIterator<OntProperty> listInverse() {
-        return getModel().listStatements( null, getProfile().INVERSE_OF(), this ).mapWith( new SubjectAsMapper<OntProperty>( OntProperty.class ) );
+        return getModel().listStatements( null, getProfile().INVERSE_OF(), this ).mapWith( new SubjectAsMapper<>( OntProperty.class ) );
     }
 
     /**
@@ -810,10 +810,10 @@ public class OntPropertyImpl
     public ExtendedIterator<OntClass> listDeclaringClasses( boolean direct ) {
         // first list the candidate classes, which will also help us
         // work out whether this is a "global" property or not
-        Set<OntClass> cands = new HashSet<OntClass>();
+        Set<OntClass> cands = new HashSet<>();
         for (Iterator<OntClass> i = listDomain(); i.hasNext(); ) {
             // the candidates include this class and it sub-classes
-            List<OntClass> q = new ArrayList<OntClass>();
+            List<OntClass> q = new ArrayList<>();
             q.add( i.next() );
 
             while (!q.isEmpty()) {
@@ -874,7 +874,7 @@ public class OntPropertyImpl
     @Override
     public ExtendedIterator<Restriction> listReferringRestrictions() {
         return getModel().listStatements( null, getProfile().ON_PROPERTY(), this )
-                         .mapWith( new SubjectAsMapper<Restriction>( Restriction.class ) );
+                         .mapWith( new SubjectAsMapper<>( Restriction.class ) );
     }
 
 

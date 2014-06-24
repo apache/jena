@@ -49,8 +49,8 @@ public class TSVInput {
     public static ResultSet fromTSV(InputStream in)
     {
     	BufferedReader reader = IO.asBufferedUTF8(in);
-        List<Var> vars = new ArrayList<Var>();
-        List<String> varNames = new ArrayList<String>();
+        List<Var> vars = new ArrayList<>();
+        List<String> varNames = new ArrayList<>();
 
     	String str = null;
         try 

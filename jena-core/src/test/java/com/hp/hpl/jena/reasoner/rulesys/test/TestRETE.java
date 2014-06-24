@@ -235,8 +235,9 @@ public class TestRETE  extends TestCase {
         RETEEngine engine = new RETEEngine(infgraph, ruleList);
         infgraph.prepare();
         engine.init(true, new FGraph(Factory.createGraphMem()));
-        for (int i = 0; i < adds.length; i++) {
-            engine.addTriple(adds[i], true);
+        for ( Triple add : adds )
+        {
+            engine.addTriple( add, true );
         }
         engine.runAll();
         TestUtil.assertIteratorValues(this, infgraph.find(null, null, null), expected);

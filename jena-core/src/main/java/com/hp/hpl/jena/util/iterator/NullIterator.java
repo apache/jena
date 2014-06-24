@@ -27,7 +27,7 @@ import java.util.Iterator;
 public class NullIterator<T> extends NiceIterator<T> 
     {
     public static <T> NullIterator<T>  instance() 
-        { return new NullIterator<T>(); }
+        { return new NullIterator<>(); }
     
     @SuppressWarnings("unchecked")
     @Override public <X extends T> ExtendedIterator<T> andThen( Iterator<X> it )

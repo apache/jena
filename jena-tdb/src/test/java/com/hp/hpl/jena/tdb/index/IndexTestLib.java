@@ -65,7 +65,7 @@ public class IndexTestLib
     public static void testIteration(RangeIndex index, int[] keys, int numIterations)
     {
         // Shared across test-lets
-        SortedSet<Integer> x = new TreeSet<Integer>() ;
+        SortedSet<Integer> x = new TreeSet<>() ;
         for ( int v : keys )
             x.add(v) ;
         
@@ -87,7 +87,7 @@ public class IndexTestLib
                 hi++ ;
             
             List<Integer> slice = r(index.iterator(r(lo), r(hi))) ;
-            List<Integer> expected = new ArrayList<Integer>(keys.length) ;  
+            List<Integer> expected = new ArrayList<>(keys.length) ;
             for ( Integer ii : x.subSet(lo, hi) )
                 expected.add(ii) ;
             assertEquals(format("(%d,%d)",lo, hi), expected, slice) ;

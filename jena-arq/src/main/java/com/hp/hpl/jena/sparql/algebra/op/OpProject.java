@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class OpProject extends OpModifier
 {
-    private List<Var> vars = new ArrayList<Var>() ;
+    private List<Var> vars = new ArrayList<>() ;
 
     public OpProject(Op subOp, List<Var> vars)
     {

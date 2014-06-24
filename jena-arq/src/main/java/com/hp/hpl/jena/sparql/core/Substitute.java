@@ -135,7 +135,7 @@ public class Substitute
             return new PropFuncArg(substitute(propFuncArg.getArg(), binding)) ;
         }
         
-        List<Node> newArgList = new ArrayList<Node>() ;
+        List<Node> newArgList = new ArrayList<>() ;
         for ( Node n : propFuncArg.getArgList() )
             newArgList.add(substitute(n, binding)) ;
         return new PropFuncArg(newArgList) ;

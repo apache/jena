@@ -171,7 +171,7 @@ public class PathLib
                                                  Node endNode,
                                                  ExecutionContext execCxt)
     {
-        List<Binding> results = new ArrayList<Binding>() ;
+        List<Binding> results = new ArrayList<>() ;
         
         if (! Var.isVar(endNode))
             throw new ARQInternalErrorException("Non-variable endnode in _execTriplePath") ;

@@ -33,7 +33,7 @@ public abstract class Filter<T>
 	public abstract boolean accept( T o );
     
     public ExtendedIterator<T> filterKeep( Iterator<T> it )
-        { return new FilterKeepIterator<T>( this, it ); }
+        { return new FilterKeepIterator<>( this, it ); }
     
     public Filter<T> and( final Filter<T> other )
         { return other.isAny() ? this : new Filter<T>()

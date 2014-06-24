@@ -55,7 +55,7 @@ public class CSVParser implements Iterable<List<String>>
 
     public CSVParser(CSVTokenIterator iter) {
         this.iter = iter ;
-        this.pIter = new PeekIterator<CSVToken>(iter) ;
+        this.pIter = new PeekIterator<>(iter) ;
     }
     
     @Override
@@ -74,7 +74,7 @@ public class CSVParser implements Iterable<List<String>>
 
     public List<String> parse1() {
         // Get rid of switches. break problems.
-        List<String> line = new ArrayList<String>(100) ;
+        List<String> line = new ArrayList<>(100) ;
         
         loop: while (pIter.hasNext()) {
             CSVToken t = pIter.next() ;

@@ -430,7 +430,7 @@ public class ObjectFileStorage implements ObjectFile
             buffer.get(bb.array()) ;
             buffer.position(p);
             posn += x ;
-            return new Pair<Long, ByteBuffer>((long)x, bb) ;
+            return new Pair<>((long)x, bb) ;
         }
 
         @Override
@@ -469,7 +469,7 @@ public class ObjectFileStorage implements ObjectFile
             ByteBuffer bb = read(current) ;
             file.position(filePosn) ;
             current = current + bb.limit() + 4 ; 
-            return new Pair<Long, ByteBuffer>(x, bb) ;
+            return new Pair<>(x, bb) ;
         }
 
         @Override

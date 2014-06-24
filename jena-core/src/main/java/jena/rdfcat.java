@@ -241,13 +241,13 @@ public class rdfcat
     protected boolean m_include = false;
 
     /** List of URL's that have been loaded already, occurs check */
-    protected Set<String> m_seen = new HashSet<String>();
+    protected Set<String> m_seen = new HashSet<>();
 
     /** Flag to control whether import/include statements are filtered from merged models */
     protected boolean m_removeIncludeStatements = true;
 
     /** Action queue */
-    protected List<RCAction> m_actionQ = new ArrayList<RCAction>();
+    protected List<RCAction> m_actionQ = new ArrayList<>();
 
 
     // Constructors
@@ -274,8 +274,9 @@ public class rdfcat
         for (int i = 0; i < m_cmdLine.numItems(); i++) {
             m_actionQ.add(  new ReadAction( m_cmdLine.getItem( i ), getExpectedInput() ) );
         }
-        for (Iterator<RCAction> j = m_actionQ.iterator(); j.hasNext(); ) {
-            j.next().run( this );
+        for ( RCAction aM_actionQ : m_actionQ )
+        {
+            aM_actionQ.run( this );
         }
 
         // generate the output
@@ -324,7 +325,7 @@ public class rdfcat
     */
     protected static Map<String,String> makeUnabbreviateMap()
         {
-        Map<String,String> result = new HashMap<String,String>();
+        Map<String,String> result = new HashMap<>();
         result.put( "x", "RDF/XML" );
         result.put( "rdf", "RDF/XML" );
         result.put( "rdfxml", "RDF/XML" );
@@ -354,7 +355,7 @@ public class rdfcat
      * try to read using the current default input syntax.
      */
     protected void readInput( String inputName ) {
-        List<IncludeQueueEntry> queue = new ArrayList<IncludeQueueEntry>();
+        List<IncludeQueueEntry> queue = new ArrayList<>();
         queue.add( new IncludeQueueEntry( inputName, null ) );
 
         while (!queue.isEmpty()) {

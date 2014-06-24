@@ -134,8 +134,9 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
     @Override
     public int hashCode() {
         int hash = 0;
-        for (int i = 0; i < data.length; i++) {
-            hash = (hash << 1) ^ data[i];
+        for ( int aData : data )
+        {
+            hash = ( hash << 1 ) ^ aData;
         }
         return hash;
     }

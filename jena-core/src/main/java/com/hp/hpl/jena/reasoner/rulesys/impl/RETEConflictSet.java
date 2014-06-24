@@ -55,7 +55,7 @@ public class RETEConflictSet {
     protected boolean isMonotonic;
     
     /** the list of rule activations left to fire */
-    protected ArrayList<CSEntry> conflictSet = new ArrayList<CSEntry>();
+    protected ArrayList<CSEntry> conflictSet = new ArrayList<>();
 
     /** count the number of positive entries - optimization hack */
     protected int nPos = 0;
@@ -145,7 +145,7 @@ public class RETEConflictSet {
         List<Triple> matchList = null;
         if (infGraph.shouldLogDerivations() && isAdd) {
             // Create derivation record
-            matchList = new ArrayList<Triple>(rule.bodyLength());
+            matchList = new ArrayList<>(rule.bodyLength());
             for (int i = 0; i < rule.bodyLength(); i++) {
                 Object clause = rule.getBodyElement(i);
                 if (clause instanceof TriplePattern) {

@@ -143,7 +143,7 @@ public class BlockMgrCache extends BlockMgrSync
     synchronized
     public Block getWrite(long _id)
     {
-        Long id = Long.valueOf(_id) ;
+        Long id = _id;
         Block blk = null ;
         if ( writeCache != null )
             blk = writeCache.get(id) ;

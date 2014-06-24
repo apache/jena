@@ -28,6 +28,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.impl.OWLProfile.SupportsCheck ;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.reasoner.rulesys.test.TestBugs;
@@ -493,16 +494,6 @@ public class TestOntModel
         List<Graph> subs = m.getSubGraphs();
 
         assertEquals( "n subgraphs should be ", 3, subs.size() );
-
-        boolean isGraph = true;
-        for (Iterator<Graph> i = subs.iterator(); i.hasNext(); ) {
-            Object x = i.next();
-            if (!(x instanceof Graph)) {
-                isGraph = false;
-            }
-        }
-        assertTrue( "All sub-graphs should be graphs", isGraph );
-
     }
 
 
@@ -660,29 +651,20 @@ public class TestOntModel
         m.read( "file:testing/ontology/testImport6/a.owl" );
         assertEquals( "Marker count not correct", 4, TestOntDocumentManager.countMarkers( m ) );
 
-        List<OntModel> importModels = new ArrayList<OntModel>();
+        List<OntModel> importModels = new ArrayList<>();
         for (Iterator<OntModel> j = m.listSubModels(); j.hasNext(); ) {
             importModels.add( j.next() );
         }
 
         assertEquals( "n import models should be ", 3, importModels.size() );
 
-        boolean isOntModel = true;
         int nImports = 0;
 
-        for (Iterator<OntModel> i = importModels.iterator(); i.hasNext(); ) {
-            Object x = i.next();
-            if (!(x instanceof OntModel)) {
-                isOntModel = false;
-            }
-            else {
-                // count the number of imports of each sub-model
-                nImports += ((OntModel) x).countSubModels();
-            }
+        for ( OntModel x : importModels )
+        {
+            // count the number of imports of each sub-model
+            nImports += x.countSubModels();
         }
-
-        assertTrue( "All import models should be OntModels", isOntModel );
-
         // listSubModels' default behaviour is *not* to include imports of sub-models
         assertEquals( "Wrong number of sub-model imports", 0, nImports );
     }
@@ -692,28 +674,20 @@ public class TestOntModel
         m.read( "file:testing/ontology/testImport6/a.owl" );
         assertEquals( "Marker count not correct", 4, TestOntDocumentManager.countMarkers( m ) );
 
-        List<OntModel> importModels = new ArrayList<OntModel>();
+        List<OntModel> importModels = new ArrayList<>();
         for (Iterator<OntModel> j = m.listSubModels( true ); j.hasNext(); ) {
             importModels.add( j.next() );
         }
 
         assertEquals( "n import models should be ", 3, importModels.size() );
 
-        boolean isOntModel = true;
         int nImports = 0;
 
-        for (Iterator<OntModel> i = importModels.iterator(); i.hasNext(); ) {
-            Object x = i.next();
-            if (!(x instanceof OntModel)) {
-                isOntModel = false;
-            }
-            else {
-                // count the number of imports of each sub-model
-                nImports += ((OntModel) x).countSubModels();
-            }
+        for ( OntModel x : importModels )
+        {
+            // count the number of imports of each sub-model
+            nImports += x.countSubModels();
         }
-
-        assertTrue( "All import models should be OntModels", isOntModel );
         assertEquals( "Wrong number of sub-model imports", 2, nImports );
     }
 
@@ -743,15 +717,17 @@ public class TestOntModel
         List<Class<?>> notInDL = Arrays.asList( new Class<?>[] {} );
         List<Class<?>> notInLite = Arrays.asList( new Class<?>[] {DataRange.class, HasValueRestriction.class} );
 
-        Map<?,?> fullProfileMap = new OWLProfileExt().getSupportsMap();
-        Map<?,?> dlProfileMap = new OWLDLProfileExt().getSupportsMap();
-        Map<?,?> liteProfileMap = new OWLLiteProfileExt().getSupportsMap();
+        Map<Class<?>, SupportsCheck> fullProfileMap = new OWLProfileExt().getSupportsMap();
+        Map<Class<?>, SupportsCheck> dlProfileMap = new OWLDLProfileExt().getSupportsMap();
+        Map<Class<?>, SupportsCheck> liteProfileMap = new OWLLiteProfileExt().getSupportsMap();
 
-        for (Iterator<?> i = fullProfileMap.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<?,?> kv = (Map.Entry<?,?>) i.next();
-            Class<?> c = (Class<?>) kv.getKey();
-            assertTrue( "Key in OWL DL profile: " + c.getName(), dlProfileMap.containsKey( c ) || notInDL.contains( c ));
-            assertTrue( "Key in OWL lite profile: " + c.getName(), liteProfileMap.containsKey( c ) || notInLite.contains( c ));
+        for ( Map.Entry<Class<?>, SupportsCheck> entry : fullProfileMap.entrySet() )
+        {
+            Class<?> c = entry.getKey();
+            assertTrue( "Key in OWL DL profile: " + c.getName(),
+                        dlProfileMap.containsKey( c ) || notInDL.contains( c ) );
+            assertTrue( "Key in OWL lite profile: " + c.getName(),
+                        liteProfileMap.containsKey( c ) || notInLite.contains( c ) );
         }
     }
 
@@ -1303,21 +1279,21 @@ public class TestOntModel
 
     protected class OWLProfileExt extends OWLProfile
     {
-        public Map<?,?> getSupportsMap() {
+        public Map<Class<?>, SupportsCheck> getSupportsMap() {
             return getCheckTable();
         }
     }
 
     protected class OWLDLProfileExt extends OWLDLProfile
     {
-        public Map<?,?> getSupportsMap() {
+        public Map<Class<?>, SupportsCheck> getSupportsMap() {
             return getCheckTable();
         }
     }
 
     protected class OWLLiteProfileExt extends OWLLiteProfile
     {
-        public Map<?,?> getSupportsMap() {
+        public Map<Class<?>, SupportsCheck> getSupportsMap() {
             return getCheckTable();
         }
     }

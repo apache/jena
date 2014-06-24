@@ -61,7 +61,7 @@ public class ParserSupport
 			IRI uri = ctxt.uri;
             Map<String,ARPLocation> idsUsedForBase = idsUsed().get(uri);
 			if (idsUsedForBase == null) {
-				idsUsedForBase = new HashMap<String, ARPLocation>();
+				idsUsedForBase = new HashMap<>();
 				idsUsed().put(uri, idsUsedForBase);
 			}
 			ARPLocation prev = idsUsedForBase.get(str);

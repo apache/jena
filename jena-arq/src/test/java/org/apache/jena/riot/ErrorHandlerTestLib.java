@@ -49,7 +49,7 @@ public class ErrorHandlerTestLib
     // Error handler that records messages
     public static class ErrorHandlerMsg implements ErrorHandler
     {
-        public List<String> msgs = new ArrayList<String>() ;
+        public List<String> msgs = new ArrayList<>() ;
     
         @Override
         public void warning(String message, long line, long col)

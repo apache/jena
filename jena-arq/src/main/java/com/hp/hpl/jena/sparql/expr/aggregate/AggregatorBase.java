@@ -45,7 +45,7 @@ public abstract class AggregatorBase implements Aggregator
     
     protected AggregatorBase() {}
     
-    private Map<Binding, Accumulator> buckets = new HashMap<Binding, Accumulator>() ;   // Bindingkey => Accumulator
+    private Map<Binding, Accumulator> buckets = new HashMap<>() ;   // Bindingkey => Accumulator
 
     @Override
     public abstract Accumulator createAccumulator() ;

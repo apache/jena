@@ -187,7 +187,7 @@ public class TestIsoMatcher extends BaseTest
     private static Node[] T = new Node[0] ;
     private List<Tuple<Node>> tuples(String[] strings)
     {
-        List<Tuple<Node>> tuples = new ArrayList<Tuple<Node>>() ;
+        List<Tuple<Node>> tuples = new ArrayList<>() ;
         for ( String s : strings)
         {
             Item item = SSE.parse(s) ;

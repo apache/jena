@@ -52,7 +52,7 @@ public class TestUserFunctionsInSparql {
         
         //Define a square function
         Expr square = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
-        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
+        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<>(square.getVarsMentioned()));
     }
     
     @AfterClass

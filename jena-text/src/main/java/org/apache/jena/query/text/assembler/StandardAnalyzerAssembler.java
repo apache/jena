@@ -75,7 +75,7 @@ public class StandardAnalyzerAssembler extends AssemblerBase {
     }
     
     private List<String> toList(Resource list) {
-    	List<String> result = new ArrayList<String>();
+    	List<String> result = new ArrayList<>();
     	Resource current = list;
     	while (current != null && ! current.equals(RDF.nil)){
     		Statement stmt = current.getProperty(RDF.first);

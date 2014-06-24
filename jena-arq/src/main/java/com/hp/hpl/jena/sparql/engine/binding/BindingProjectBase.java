@@ -59,7 +59,7 @@ public abstract class BindingProjectBase extends BindingBase {
 
     private List<Var> actualVars() {
         if ( actualVars == null ) {
-            actualVars = new ArrayList<Var>() ;
+            actualVars = new ArrayList<>() ;
             Iterator<Var> iter = binding.vars() ;
             for ( ; iter.hasNext() ; ) {
                 Var v = iter.next() ;

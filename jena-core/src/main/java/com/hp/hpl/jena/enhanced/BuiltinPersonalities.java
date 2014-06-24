@@ -17,14 +17,13 @@
  */
 
 package com.hp.hpl.jena.enhanced;
-import java.io.PrintWriter;
-import java.util.Iterator;
-import java.util.Map;
+import java.io.PrintWriter ;
+import java.util.Map ;
 
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.impl.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.ontology.* ;
+import com.hp.hpl.jena.ontology.impl.* ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.impl.* ;
 
 /**
     The personalities that are provided for the existing Jena classes. It is likely that this
@@ -32,7 +31,7 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 */
 public class BuiltinPersonalities {
 
-    static final private Personality<RDFNode> graph = new Personality<RDFNode>();
+    static final private Personality<RDFNode> graph = new Personality<>();
 
     static final public Personality<RDFNode> model = graph.copy()
         .add( Resource.class, ResourceImpl.factory )
@@ -90,11 +89,10 @@ public class BuiltinPersonalities {
      * @param writer A printwriter to list the personalities mapping to
      */
     static public void listPersonalities( PrintWriter writer ) {
-        for (Iterator<Map.Entry<Class<? extends RDFNode>, Implementation>> i = model.getMap().entrySet().iterator();  i.hasNext(); ) 
-            {
-            Map.Entry<Class<? extends RDFNode>, Implementation> e = i.next();
+        for ( Map.Entry<Class<? extends RDFNode>, Implementation> e : model.getMap().entrySet() )
+        {
             writer.println( "personality key " + e.getKey().getName() + " -> value " + e.getValue() );
-            }
+        }
         writer.flush();
     }
 }

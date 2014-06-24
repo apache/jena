@@ -61,8 +61,9 @@ public abstract class OntTestBase
         super( name );
         TestCase[] tc = getTests();
 
-        for (int i = 0;  i < tc.length;  i++) {
-            addTest( tc[i] );
+        for ( TestCase aTc : tc )
+        {
+            addTest( aTc );
         }
     }
 

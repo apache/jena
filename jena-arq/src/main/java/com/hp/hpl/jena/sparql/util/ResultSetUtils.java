@@ -41,7 +41,7 @@ public class ResultSetUtils
     public static List<RDFNode> resultSetToList(ResultSet rs, String selectElement)
     {
         // feature suggested by James Howison
-        List<RDFNode> items = new ArrayList<RDFNode>() ;
+        List<RDFNode> items = new ArrayList<>() ;
         while (rs.hasNext())
         {
             QuerySolution qs = rs.nextSolution() ;
@@ -62,7 +62,7 @@ public class ResultSetUtils
                                              String literalOrResource)
     {
         // feature suggested by James Howison
-        List<String> items = new ArrayList<String>() ;
+        List<String> items = new ArrayList<>() ;
         while (rs.hasNext())
         {
             QuerySolution qs = rs.nextSolution() ;

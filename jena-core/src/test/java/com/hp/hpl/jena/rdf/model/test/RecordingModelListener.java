@@ -33,7 +33,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class RecordingModelListener implements ModelChangedListener
     {
-    List<Object> history = new ArrayList<Object>();
+    List<Object> history = new ArrayList<>();
     
     @Override
     public void addedStatement( Statement s )

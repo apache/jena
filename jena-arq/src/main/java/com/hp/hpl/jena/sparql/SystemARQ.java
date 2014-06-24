@@ -149,7 +149,7 @@ public class SystemARQ
     }
     
     
-    private static List<SystemInfo> versions = new ArrayList<SystemInfo>() ;
+    private static List<SystemInfo> versions = new ArrayList<>() ;
     public static void registerSubSystem(SystemInfo systemInfo)
     {
         ARQMgt.register(systemInfo.getJmxPath()+".system:type=SystemInfo", systemInfo) ;

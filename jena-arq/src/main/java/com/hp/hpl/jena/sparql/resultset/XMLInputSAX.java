@@ -102,9 +102,9 @@ class XMLInputSAX extends SPARQLResult {
 
         boolean             accumulate      = false ;
         StringBuffer        buff            = new StringBuffer() ;
-        List<String>        variables       = new ArrayList<String>() ;
+        List<String>        variables       = new ArrayList<>() ;
 
-        List<Binding>       results         = new ArrayList<Binding>() ;
+        List<Binding>       results         = new ArrayList<>() ;
         // The current solution
         BindingMap          binding         = null ;
 

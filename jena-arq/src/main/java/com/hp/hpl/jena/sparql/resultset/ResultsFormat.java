@@ -59,7 +59,7 @@ public class ResultsFormat extends Symbol
     // ---- Compatibility
     
     // Common names to symbol (used by arq.rset)
-    private static TranslationTable<ResultsFormat> names = new TranslationTable<ResultsFormat>(true) ;
+    private static TranslationTable<ResultsFormat> names = new TranslationTable<>(true) ;
     static {
         names.put("srx",         FMT_RS_XML) ;
         names.put("xml",         FMT_RS_XML) ;

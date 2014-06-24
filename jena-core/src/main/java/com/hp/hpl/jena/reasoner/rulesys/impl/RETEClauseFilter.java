@@ -92,7 +92,7 @@ public class RETEClauseFilter implements RETESourceNode {
     public static RETEClauseFilter compile(TriplePattern clause, int envLength, List<Node> varList) { 
         byte[] instructions = new byte[300];
         byte[] bindInstructions = new byte[100];
-        ArrayList<Object> args = new ArrayList<Object>();
+        ArrayList<Object> args = new ArrayList<>();
         int pc = 0;   
         int bpc = 0;
         

@@ -128,7 +128,7 @@ public class ModelHelper extends GraphTestBase
 	 */
 	public static Statement [] statements( Model m, String facts )
 	{
-		ArrayList<Statement> sl = new ArrayList<Statement>();
+		ArrayList<Statement> sl = new ArrayList<>();
 		StringTokenizer st = new StringTokenizer( facts, ";" );
 		while (st.hasMoreTokens()) sl.add( statement( m, st.nextToken() ) );
 		return sl.toArray( new Statement[sl.size()] );
@@ -143,7 +143,7 @@ public class ModelHelper extends GraphTestBase
 	 */
 	public static Resource [] resources( Model m, String items )
 	{
-		ArrayList<Resource> rl = new ArrayList<Resource>();
+		ArrayList<Resource> rl = new ArrayList<>();
 		StringTokenizer st = new StringTokenizer( items );
 		while (st.hasMoreTokens()) rl.add( resource( m, st.nextToken() ) );
 		return rl.toArray( new Resource[rl.size()] );
@@ -156,7 +156,7 @@ public class ModelHelper extends GraphTestBase
 	 */
 	public static Set<Resource> resourceSet( String items )
 	{
-		Set<Resource> result = new HashSet<Resource>();
+		Set<Resource> result = new HashSet<>();
 		StringTokenizer st = new StringTokenizer( items );
 		while (st.hasMoreTokens()) result.add( resource(  st.nextToken() ) );
 		return result;

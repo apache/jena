@@ -31,7 +31,7 @@ public class AcceptList
      */
     
     private AcceptList()
-    { ranges = new ArrayList<MediaRange>() ; }
+    { ranges = new ArrayList<>() ; }
 
     /**
      * Create a list of accept items from the give strings.
@@ -39,7 +39,7 @@ public class AcceptList
      */
     
     public AcceptList(List<MediaRange> mediaRanges)
-    { ranges = new ArrayList<MediaRange>(mediaRanges) ; }
+    { ranges = new ArrayList<>(mediaRanges) ; }
     
     /**
      * Create a list of accept items from the give MediaTypes.
@@ -70,8 +70,10 @@ public class AcceptList
     public static AcceptList create(String... acceptStrings)
     {
         AcceptList accepList = new AcceptList() ;
-        for ( int i = 0 ; i < acceptStrings.length ; i++ )
-            accepList.ranges.add(new MediaRange(acceptStrings[i])) ;
+        for ( String acceptString : acceptStrings )
+        {
+            accepList.ranges.add( new MediaRange( acceptString ) );
+        }
         return accepList ;
     }
     
@@ -88,7 +90,7 @@ public class AcceptList
         {
             ex.printStackTrace(System.err) ;
             Log.warn(this, "Unrecognized accept string (ignored): "+headerString) ;
-            ranges = new ArrayList<MediaRange>() ;
+            ranges = new ArrayList<>() ;
         }
     }
     
@@ -206,17 +208,19 @@ public class AcceptList
     
     private static List<MediaRange> stringToAcceptList(String s)
     {
-        List<MediaRange> ranges = new ArrayList<MediaRange>() ;
+        List<MediaRange> ranges = new ArrayList<>() ;
         if ( s == null )
             return ranges ;
 
         String[] x = s.split(",") ;
-        for ( int i = 0 ; i < x.length ; i++ )
+        for ( String aX : x )
         {
-            if ( x[i].equals(""))
-                continue ;
-            MediaRange mType = new MediaRange(x[i]) ;
-            ranges.add(mType) ;
+            if ( aX.equals( "" ) )
+            {
+                continue;
+            }
+            MediaRange mType = new MediaRange( aX );
+            ranges.add( mType );
         }
         return ranges ;
     }

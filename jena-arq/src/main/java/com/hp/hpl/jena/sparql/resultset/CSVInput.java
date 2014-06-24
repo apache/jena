@@ -96,7 +96,7 @@ public class CSVInput
     }
     
     private static List<Var> vars(CSVParser parser) {
-        final List<Var> vars = new ArrayList<Var>();
+        final List<Var> vars = new ArrayList<>();
         List<String> varNames = parser.parse1() ;
         if ( varNames == null )
             throw new ARQException("SPARQL CSV Results malformed, input is empty");

@@ -39,8 +39,8 @@ public class Transaction
     private final Journal journal ;
     private final ReadWrite mode ;
     
-    private final List<NodeTableTrans> nodeTableTrans = new ArrayList<NodeTableTrans>() ;
-    private final List<BlockMgrJournal> blkMgrs = new ArrayList<BlockMgrJournal>() ;
+    private final List<NodeTableTrans> nodeTableTrans = new ArrayList<>() ;
+    private final List<BlockMgrJournal> blkMgrs = new ArrayList<>() ;
     // The dataset this is a transaction over - may be a commited, pending dataset.
     private final DatasetGraphTDB   basedsg ;
 
@@ -72,7 +72,7 @@ public class Transaction
         this.mode = mode ;
         this.journal = ( txnMgr == null ) ? null : txnMgr.getJournal() ;
         activedsg = null ;      // Don't know yet.
-        this.iterators = new ArrayList<Iterator<?>>() ;
+        this.iterators = new ArrayList<>() ;
         state = TxnState.ACTIVE ;
         outcome = TxnOutcome.UNFINISHED ;
         changesPending = (mode == ReadWrite.WRITE) ;
@@ -341,7 +341,7 @@ public class Transaction
     /** Return the list of items registered for the transaction lifecycle */ 
     public List<TransactionLifecycle> lifecycleComponents()
     {
-        List<TransactionLifecycle> x = new ArrayList<TransactionLifecycle>() ;
+        List<TransactionLifecycle> x = new ArrayList<>() ;
         x.addAll(nodeTableTrans) ;
         x.addAll(blkMgrs) ;
         return x ;

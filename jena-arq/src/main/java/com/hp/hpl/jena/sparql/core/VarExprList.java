@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.core;
 
 import java.util.ArrayList ;
 import java.util.HashMap ;
-import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
@@ -42,19 +41,19 @@ public class VarExprList
     public VarExprList(List<Var> vars)
     {
         this.vars = vars ;
-        this.exprs = new HashMap<Var, Expr>() ;
+        this.exprs = new HashMap<>() ;
     }
     
     public VarExprList(VarExprList other)
     {
-        this.vars = new ArrayList<Var>(other.vars) ; 
-        this.exprs = new HashMap<Var, Expr>(other.exprs) ;
+        this.vars = new ArrayList<>(other.vars) ;
+        this.exprs = new HashMap<>(other.exprs) ;
     }
 
     public VarExprList()
     {
-        this.vars = new ArrayList<Var>() ;
-        this.exprs = new HashMap<Var, Expr>() ;
+        this.vars = new ArrayList<>() ;
+        this.exprs = new HashMap<>() ;
     }
     
     public VarExprList(Var var, Expr expr)
@@ -119,11 +118,10 @@ public class VarExprList
     
     public void addAll(VarExprList other)
     {
-        for ( Iterator<Var> iter = other.vars.iterator() ; iter.hasNext() ; )
+        for ( Var v : other.vars )
         {
-            Var v = iter.next () ;
-            Expr e = other.getExpr(v) ;
-            add(v, e) ;
+            Expr e = other.getExpr( v );
+            add( v, e );
         }
     }
 

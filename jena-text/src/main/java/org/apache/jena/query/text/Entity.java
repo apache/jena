@@ -25,7 +25,7 @@ public class Entity
 {
     private final String id ;
     private final String graph ;
-    private final Map<String, Object> map = new HashMap<String, Object>() ;
+    private final Map<String, Object> map = new HashMap<>() ;
 
     public Entity(String entityId, String entityGraph) {
         this.id = entityId ;

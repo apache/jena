@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * @see CollectorStreamBase
  */
 public class CollectorStreamQuads extends CollectorStreamBase<Quad>	implements StreamRDF {
-	private List<Quad> quads = new ArrayList<Quad>();
+	private List<Quad> quads = new ArrayList<>();
 
 	@Override
 	public void start() {

@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.util.Iterator ;
-
 import com.hp.hpl.jena.graph.Node ;
 
 public class ItemWalker
@@ -38,10 +36,9 @@ public class ItemWalker
         @Override
         public void visit(Item item, ItemList list)
         {
-            for ( Iterator<Item> iter = list.iterator() ; iter.hasNext() ; )
+            for ( Item subItem : list )
             {
-                Item subItem = iter.next() ;
-                subItem.visit(this) ;
+                subItem.visit( this );
             }
             visitor.visit(item, list) ;
         }

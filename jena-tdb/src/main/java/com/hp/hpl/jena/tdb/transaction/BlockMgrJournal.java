@@ -51,10 +51,10 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     
     private final BufferAllocator writeBlockBufferAllocator ;
     
-    private final Set<Long> readBlocks = new HashSet<Long>() ;
-    private final Set<Long> iteratorBlocks = new HashSet<Long>() ;
-    private final Map<Long, Block> writeBlocks = new HashMap<Long, Block>() ;
-    private final Map<Long, Block> freedBlocks = new HashMap<Long, Block>() ;
+    private final Set<Long> readBlocks = new HashSet<>() ;
+    private final Set<Long> iteratorBlocks = new HashSet<>() ;
+    private final Map<Long, Block> writeBlocks = new HashMap<>() ;
+    private final Map<Long, Block> freedBlocks = new HashMap<>() ;
     private boolean closed  = false ;
     private boolean active  = false ;   // In a transaction, or preparing.
     

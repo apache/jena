@@ -51,7 +51,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingHashMap;
 public class LinearIndex implements IndexTable {
 
 	final Set<Var> commonVars ;
-	List<Binding> table = new ArrayList<Binding>() ;
+	List<Binding> table = new ArrayList<>() ;
 
 	public LinearIndex(Set<Var> commonVars, QueryIterator data)
 	{

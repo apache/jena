@@ -105,8 +105,9 @@ public class TestBasicLP  extends TestCase {
     public InfGraph makeInfGraph(List<Rule> rules, Graph data, Node[] tabled) {
         FBRuleReasoner reasoner = new FBRuleReasoner(rules);
         FBRuleInfGraph infgraph = (FBRuleInfGraph) reasoner.bind(data);
-        for (int i = 0; i < tabled.length; i++) {
-            infgraph.setTabled(tabled[i]);
+        for ( Node aTabled : tabled )
+        {
+            infgraph.setTabled( aTabled );
         }
         return infgraph;
     }
@@ -1062,8 +1063,9 @@ public class TestBasicLP  extends TestCase {
                     new Triple(a, ty, C1)
                 };
         Graph data = Factory.createGraphMem();
-        for (int i = 0; i < triples.length; i++) {
-            data.add(triples[i]);
+        for ( Triple triple : triples )
+        {
+            data.add( triple );
         }
         InfGraph infgraph =  makeInfGraph(rules, data, tabled);
         ExtendedIterator<Triple> it = infgraph.find(a, ty, null);
@@ -1319,8 +1321,9 @@ public class TestBasicLP  extends TestCase {
     private void doTest(String ruleSrc, Triple[] triples, TripleMatch query, Object[] results) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
         Graph data = Factory.createGraphMem();
-        for (int i = 0; i < triples.length; i++) {
-            data.add(triples[i]);
+        for ( Triple triple : triples )
+        {
+            data.add( triple );
         }
         InfGraph infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(query), results); 
@@ -1337,8 +1340,9 @@ public class TestBasicLP  extends TestCase {
     private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, TripleMatch query, Object[] results) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
         Graph data = Factory.createGraphMem();
-        for (int i = 0; i < triples.length; i++) {
-            data.add(triples[i]);
+        for ( Triple triple : triples )
+        {
+            data.add( triple );
         }
         InfGraph infgraph =  makeInfGraph(rules, data, tabled);
         TestUtil.assertIteratorValues(this, infgraph.find(query), results); 

@@ -19,14 +19,13 @@
 package arq.cmdline;
 
 import java.util.ArrayList ;
-import java.util.Iterator ;
 import java.util.List ;
 
 public class Arg
 {
     String name ;
     String value ;                                      // Last seen
-    List<String> values = new ArrayList<String>() ;     // All seen
+    List<String> values = new ArrayList<>() ;     // All seen
     
     Arg() { name = null ; value = null ; }
     
@@ -59,12 +58,11 @@ public class Arg
 
         String str = "" ;
         String sep = "" ;
-        
-        for ( Iterator<String> iter = getValues().iterator() ; iter.hasNext() ; )
+
+        for ( String v : getValues() )
         {
-            String v = iter.next() ;
-            str = str + sep + base + "=" + v ;
-            sep = " " ;
+            str = str + sep + base + "=" + v;
+            sep = " ";
         }
         return str ;
     }

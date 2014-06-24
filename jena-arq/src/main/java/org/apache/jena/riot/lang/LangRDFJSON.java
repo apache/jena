@@ -313,54 +313,61 @@ public class LangRDFJSON extends LangBase
 					checkColon();
 
 					//Is this one of our valid properties
-					if (name.equals("value"))
-					{
-						if (value == null)
-						{
-							value = checkValidForObjectProperty();
-						}
-						else
-						{
-							exception(t, "Encountered the value property on an Object when the value property has already been specified") ;
-						}
-					}
-					else if (name.equals("type"))
-					{
-						if (type == null)
-						{
-							type = checkValidForObjectProperty();
-						}
-						else
-						{
-							exception(t, "Encountered the type property on an Object when the type property has already been specified") ;
-						}
-					}
-					else if (name.equals("lang") || name.equals("xml:lang"))
-					{
-						if (lang == null && datatype == null)
-						{
-							lang = checkValidForObjectProperty();
-						}
-						else
-						{
-							exception(t, "Encountered the %s property on an Object when lang/datatype has already been specified", name) ;
-						}
-					}
-					else if (name.equals("datatype"))
-					{
-						if (lang == null && datatype == null)
-						{
-							datatype = checkValidForObjectProperty();
-						}
-						else
-						{
-							exception(t, "Encountered the %s property on an Object when lang/datatype has already been specified", name) ;
-						}
-					}
-					else
-					{
-						exception(t, "Unexpected Property Name %s encountered, expected one of value, type, lang or datatype", t.getImage()) ;
-					}
+                    switch ( name )
+                    {
+                        case "value":
+                            if ( value == null )
+                            {
+                                value = checkValidForObjectProperty();
+                            }
+                            else
+                            {
+                                exception( t,
+                                           "Encountered the value property on an Object when the value property has already been specified" );
+                            }
+                            break;
+                        case "type":
+                            if ( type == null )
+                            {
+                                type = checkValidForObjectProperty();
+                            }
+                            else
+                            {
+                                exception( t,
+                                           "Encountered the type property on an Object when the type property has already been specified" );
+                            }
+                            break;
+                        case "lang":
+                        case "xml:lang":
+                            if ( lang == null && datatype == null )
+                            {
+                                lang = checkValidForObjectProperty();
+                            }
+                            else
+                            {
+                                exception( t,
+                                           "Encountered the %s property on an Object when lang/datatype has already been specified",
+                                           name );
+                            }
+                            break;
+                        case "datatype":
+                            if ( lang == null && datatype == null )
+                            {
+                                datatype = checkValidForObjectProperty();
+                            }
+                            else
+                            {
+                                exception( t,
+                                           "Encountered the %s property on an Object when lang/datatype has already been specified",
+                                           name );
+                            }
+                            break;
+                        default:
+                            exception( t,
+                                       "Unexpected Property Name %s encountered, expected one of value, type, lang or datatype",
+                                       t.getImage() );
+                            break;
+                    }
 
 					//After each Property Value pair we may optionally
 					//see a comma to indicate further pairs are present
@@ -392,33 +399,37 @@ public class LangRDFJSON extends LangBase
 
 			//Use these to create the Object
 			String typeStr = type.getImage();
-			if (typeStr.equals("uri"))
-			{
-				obj = profile.createURI(value.getImage(), value.getLine(), value.getColumn()) ;
-			}
-			else if (typeStr.equals("bnode"))
-			{
-				obj = profile.createBlankNode(null, value.getImage().substring(2), value.getLine(), value.getColumn()) ;
-			}
-			else if (typeStr.equals("literal"))
-			{
-				if (lang != null)
-				{
-					obj = profile.createLangLiteral(value.getImage(), lang.getImage(), value.getLine(), value.getColumn()) ;
-				}
-				else if (datatype != null)
-				{
-					obj = profile.createTypedLiteral(value.getImage(), TypeMapper.getInstance().getSafeTypeByName(datatype.getImage()), value.getLine(), value.getColumn()) ;
-				}
-				else
-				{
-					obj = profile.createStringLiteral(value.getImage(), value.getLine(), value.getColumn()) ;
-				}
-			}
-			else
-			{
-				exception(type, "Unable to parse the Object for a Triple from a JSON Object as the value %s given for the 'type' property is not one of uri, bnode or literal", typeStr) ;
-			}
+            switch ( typeStr )
+            {
+                case "uri":
+                    obj = profile.createURI( value.getImage(), value.getLine(), value.getColumn() );
+                    break;
+                case "bnode":
+                    obj = profile.createBlankNode( null, value.getImage().substring( 2 ), value.getLine(),
+                                                   value.getColumn() );
+                    break;
+                case "literal":
+                    if ( lang != null )
+                    {
+                        obj = profile.createLangLiteral( value.getImage(), lang.getImage(), value.getLine(),
+                                                         value.getColumn() );
+                    }
+                    else if ( datatype != null )
+                    {
+                        obj = profile.createTypedLiteral( value.getImage(), TypeMapper.getInstance().getSafeTypeByName(
+                            datatype.getImage() ), value.getLine(), value.getColumn() );
+                    }
+                    else
+                    {
+                        obj = profile.createStringLiteral( value.getImage(), value.getLine(), value.getColumn() );
+                    }
+                    break;
+                default:
+                    exception( type,
+                               "Unable to parse the Object for a Triple from a JSON Object as the value %s given for the 'type' property is not one of uri, bnode or literal",
+                               typeStr );
+                    break;
+            }
 		}
 		else
 		{

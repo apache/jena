@@ -41,7 +41,7 @@ class ARQMgt_X {
     static private Logger                  log         = LoggerFactory.getLogger(ARQMgt_X.class) ;
     private static boolean                 initialized = false ;
     private static boolean                 noJMX       = false ;
-    private static Map<ObjectName, Object> mgtObjects  = new HashMap<ObjectName, Object>() ;
+    private static Map<ObjectName, Object> mgtObjects  = new HashMap<>() ;
     private static MBeanServer             mbs         = null ;
 
     public static synchronized void init() {

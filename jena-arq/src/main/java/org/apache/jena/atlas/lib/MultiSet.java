@@ -30,7 +30,7 @@ import java.util.NoSuchElementException ;
 
 public class MultiSet<T> implements Iterable<T>
 {
-    private Map<T,RefLong> map   = new HashMap<T,RefLong>() ;
+    private Map<T,RefLong> map   = new HashMap<>() ;
     private int multiSetSize = 0 ;
     
     private RefLong _get(T obj)
@@ -131,7 +131,7 @@ public class MultiSet<T> implements Iterable<T>
     private Iterator<T> iterator1()
     {
         // CRUDE
-        List<T> expanded = new ArrayList<T>() ;
+        List<T> expanded = new ArrayList<>() ;
         for ( Map.Entry<T, RefLong> e : map.entrySet() )
         {
             for ( int i = 0 ; i < e.getValue().value() ; i++ )

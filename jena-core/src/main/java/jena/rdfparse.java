@@ -95,7 +95,7 @@ public class rdfparse {
     protected static void runTests( boolean internetTest ) throws Exception { 
         Class<?> rdfparse = Class.forName( "jena.test.rdfparse" );
         Constructor<?> constructor = rdfparse.getConstructor( new Class[] {boolean.class} );
-        Command c = (Command) constructor.newInstance( new Object[] {new Boolean( internetTest ) } );
+        Command c = (Command) constructor.newInstance( new Object[] { internetTest } );
         c.execute();
 //        ARPTests.internet = internetTest;
 //        TestRunner.main( new String[] { "-noloading", ARPTests.class.getName()});

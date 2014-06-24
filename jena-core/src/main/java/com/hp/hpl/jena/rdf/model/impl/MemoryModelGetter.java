@@ -27,7 +27,7 @@ import com.hp.hpl.jena.rdf.model.ModelReader;
 
 public class MemoryModelGetter implements ModelGetter
 	{
-	protected HashMap<String, Model> models = new HashMap<String, Model>();
+	protected HashMap<String, Model> models = new HashMap<>();
 	
 	@Override
     public Model getModel(String URL) 

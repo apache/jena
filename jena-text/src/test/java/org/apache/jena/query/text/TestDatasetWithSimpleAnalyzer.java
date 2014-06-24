@@ -134,7 +134,7 @@ public class TestDatasetWithSimpleAnalyzer extends AbstractTestDatasetWithTextIn
 				"    ?s text:query ( rdfs:label 'the' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testSimpleAnalyzer")) ;
 		doTestSearch(turtle, queryString, expectedURIs);
 	}

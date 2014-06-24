@@ -23,15 +23,20 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.util.Iterator;
-import java.util.List;
+import java.util.List ;
 
-import junit.framework.TestCase;
+import junit.framework.TestCase ;
 
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.iterator.Filter;
-import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.ontology.OntClass ;
+import com.hp.hpl.jena.ontology.OntModel ;
+import com.hp.hpl.jena.ontology.OntModelSpec ;
+import com.hp.hpl.jena.ontology.OntTools ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.util.iterator.Filter ;
+import com.hp.hpl.jena.vocabulary.OWL ;
 
 
 /**
@@ -450,9 +455,9 @@ public class TestOntTools
         assertEquals( expected.length, path.size() );
 
         int i = 0;
-        Iterator<Statement> j = path.iterator();
-        while (j.hasNext()) {
-            assertEquals( "path position: " + i, expected[i], j.next().getPredicate() );
+        for ( Statement aPath : path )
+        {
+            assertEquals( "path position: " + i, expected[i], aPath.getPredicate() );
             i++;
         }
     }

@@ -89,8 +89,10 @@ public class ModelExpansion
     public static void addSubClassClosure( Model m )
         {
         Set<Resource> roots = selectRootClasses( m, findClassesBySubClassOf( m ) );
-        for (Iterator<Resource> it = roots.iterator(); it.hasNext();)
-            addSuperClasses( m, it.next() );
+            for ( Resource root : roots )
+            {
+                addSuperClasses( m, root );
+            }
         }
     
     /**
@@ -136,11 +138,14 @@ public class ModelExpansion
     */
     private static Set<Resource> selectRootClasses( Model m, Set<RDFNode> classes )
         {
-        Set<Resource> roots = new HashSet<Resource>();
-        for (Iterator<RDFNode> it = classes.iterator(); it.hasNext();)
+        Set<Resource> roots = new HashSet<>();
+            for ( RDFNode aClass : classes )
             {
-            Resource type = (Resource) it.next();
-            if (!m.contains( type, RDFS.subClassOf, (RDFNode) null ) ) roots.add( type ); 
+                Resource type = (Resource) aClass;
+                if ( !m.contains( type, RDFS.subClassOf, (RDFNode) null ) )
+                {
+                    roots.add( type );
+                }
             }
         return roots;
         }
@@ -151,7 +156,7 @@ public class ModelExpansion
     */
     private static Set<RDFNode> findClassesBySubClassOf( Model m )
         {
-        Set<RDFNode> classes = new HashSet<RDFNode>();
+        Set<RDFNode> classes = new HashSet<>();
         StmtIterator it = m.listStatements( null, RDFS.subClassOf, (RDFNode) null );
         while (it.hasNext()) addClasses( classes, it.nextStatement() );
         return classes;
@@ -238,14 +243,16 @@ public class ModelExpansion
         for (Resource element : candidates)
             {
             Resource resource = element;
-            for (int i = 0; i < types.size(); i += 1)
-                resource.addProperty( RDF.type, types.get(i) );
+                for ( Resource type1 : types )
+                {
+                    resource.addProperty( RDF.type, type1 );
+                }
             }
         }
 
     private static List<Resource> equivalentTypes( Resource type )
         {
-        List<Resource> types = new ArrayList<Resource>();
+        List<Resource> types = new ArrayList<>();
         types.add( type );
         for (StmtIterator it = type.getModel().listStatements( ANY, OWL.equivalentClass, type ); it.hasNext();)
             types.add( it.nextStatement().getSubject() );

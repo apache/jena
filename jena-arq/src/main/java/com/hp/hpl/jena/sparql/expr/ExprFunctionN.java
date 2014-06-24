@@ -103,7 +103,7 @@ public abstract class ExprFunctionN extends ExprFunction
         if ( s != null )
             return s ;
         
-        List<NodeValue> argsEval = new ArrayList<NodeValue>() ; 
+        List<NodeValue> argsEval = new ArrayList<>() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
         {
             NodeValue x = eval(binding, env, getArg(i)) ;

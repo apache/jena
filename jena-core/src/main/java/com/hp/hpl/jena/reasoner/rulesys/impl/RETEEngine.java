@@ -47,14 +47,14 @@ public class RETEEngine implements FRuleEngineI {
     protected OneToManyMap<Node, RETENode> clauseIndex;
     
     /** Queue of newly added triples waiting to be processed */
-    protected List<Triple> addsPending = new ArrayList<Triple>();
+    protected List<Triple> addsPending = new ArrayList<>();
     
     /** A HashSet of pending triples for faster lookup */
-    protected HashSet<Triple> addsHash = new HashSet<Triple>();
+    protected HashSet<Triple> addsHash = new HashSet<>();
     
     
     /** Queue of newly deleted triples waiting to be processed */
-    protected List<Triple> deletesPending = new ArrayList<Triple>();
+    protected List<Triple> deletesPending = new ArrayList<>();
     
     
     /** The conflict set of rules waiting to fire */
@@ -95,9 +95,10 @@ public class RETEEngine implements FRuleEngineI {
         this.rules = rules;
         // Check if this is a monotonic rule set
         isMonotonic = true;
-        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
-            Rule r = i.next();
-            if ( ! r.isMonotonic() ) {
+        for ( Rule r : rules )
+        {
+            if ( !r.isMonotonic() )
+            {
                 isMonotonic = false;
                 break;
             }
@@ -234,10 +235,10 @@ public class RETEEngine implements FRuleEngineI {
         
         // Clone the RETE network to this engine
         RETERuleContext context = new RETERuleContext(infGraph, this);
-        Map<RETENode, RETENode> netCopy = new HashMap<RETENode, RETENode>();
-        clauseIndex = new OneToManyMap<Node, RETENode>();
-        for (Iterator<Map.Entry<Node, RETENode>> i = rs.clauseIndex.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<Node, RETENode> entry = i.next();
+        Map<RETENode, RETENode> netCopy = new HashMap<>();
+        clauseIndex = new OneToManyMap<>();
+        for ( Map.Entry<Node, RETENode> entry : rs.clauseIndex.entrySet() )
+        {
             clauseIndex.put( entry.getKey(), entry.getValue().clone( netCopy, context ) );
         }
     }
@@ -258,68 +259,92 @@ public class RETEEngine implements FRuleEngineI {
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
      */
     public void compile(List<Rule> rules, boolean ignoreBrules) {
-        clauseIndex = new OneToManyMap<Node, RETENode>();
-        predicatePatterns = new OneToManyMap<Node, Node>();
+        clauseIndex = new OneToManyMap<>();
+        predicatePatterns = new OneToManyMap<>();
         wildcardRule = false;
-            
-        for (Iterator<Rule> it = rules.iterator(); it.hasNext(); ) {
-            Rule rule = it.next();
-            if (ignoreBrules && rule.isBackward()) continue;
-            
+
+        for ( Rule rule : rules )
+        {
+            if ( ignoreBrules && rule.isBackward() )
+            {
+                continue;
+            }
+
             int numVars = rule.getNumVars();
             boolean[] seenVar = new boolean[numVars];
             RETESourceNode prior = null;
-        
-            for (int i = 0; i < rule.bodyLength(); i++) {
-                Object clause = rule.getBodyElement(i);
-                if (clause instanceof TriplePattern) {
+
+            for ( int i = 0; i < rule.bodyLength(); i++ )
+            {
+                Object clause = rule.getBodyElement( i );
+                if ( clause instanceof TriplePattern )
+                {
                     // Create the filter node for this pattern
-                    ArrayList<Node> clauseVars = new ArrayList<Node>(numVars);
-                    RETEClauseFilter clauseNode = RETEClauseFilter.compile((TriplePattern)clause, numVars, clauseVars);
-                    Node predicate = ((TriplePattern)clause).getPredicate();
-                    Node object = ((TriplePattern)clause).getObject();
-                    if (predicate.isVariable()) {
-                        clauseIndex.put(Node.ANY, clauseNode);
+                    ArrayList<Node> clauseVars = new ArrayList<>( numVars );
+                    RETEClauseFilter clauseNode =
+                        RETEClauseFilter.compile( (TriplePattern) clause, numVars, clauseVars );
+                    Node predicate = ( (TriplePattern) clause ).getPredicate();
+                    Node object = ( (TriplePattern) clause ).getObject();
+                    if ( predicate.isVariable() )
+                    {
+                        clauseIndex.put( Node.ANY, clauseNode );
                         wildcardRule = true;
-                    } else {
-                        clauseIndex.put(predicate, clauseNode);
-                        if (! wildcardRule) {
-                            if (object.isVariable()) object = Node.ANY;
-                            if (Functor.isFunctor(object)) object = Node.ANY;
-                            recordPredicatePattern(predicate, object);
+                    }
+                    else
+                    {
+                        clauseIndex.put( predicate, clauseNode );
+                        if ( !wildcardRule )
+                        {
+                            if ( object.isVariable() )
+                            {
+                                object = Node.ANY;
+                            }
+                            if ( Functor.isFunctor( object ) )
+                            {
+                                object = Node.ANY;
+                            }
+                            recordPredicatePattern( predicate, object );
                         }
                     }
-                
+
                     // Create list of variables which should be cross matched between the earlier clauses and this one
-                    ArrayList<Byte> matchIndices = new ArrayList<Byte>(numVars);
-                    for (Iterator<Node> iv = clauseVars.iterator(); iv.hasNext(); ) {
-                        int varIndex = ((Node_RuleVariable)iv.next()).getIndex();
-                        if (seenVar[varIndex]) matchIndices.add(new Byte((byte)varIndex));
+                    ArrayList<Byte> matchIndices = new ArrayList<>( numVars );
+                    for ( Iterator<Node> iv = clauseVars.iterator(); iv.hasNext(); )
+                    {
+                        int varIndex = ( (Node_RuleVariable) iv.next() ).getIndex();
+                        if ( seenVar[varIndex] )
+                        {
+                            matchIndices.add( new Byte( (byte) varIndex ) );
+                        }
                         seenVar[varIndex] = true;
                     }
-                
+
                     // Build the join node
-                    if (prior == null) {
+                    if ( prior == null )
+                    {
                         // First clause, no joins yet
                         prior = clauseNode;
-                    } else {
-                        RETEQueue leftQ = new RETEQueue(matchIndices);
-                        RETEQueue rightQ = new RETEQueue(matchIndices);
-                        leftQ.setSibling(rightQ);
-                        rightQ.setSibling(leftQ);
-                        clauseNode.setContinuation(rightQ);
-                        prior.setContinuation(leftQ);
+                    }
+                    else
+                    {
+                        RETEQueue leftQ = new RETEQueue( matchIndices );
+                        RETEQueue rightQ = new RETEQueue( matchIndices );
+                        leftQ.setSibling( rightQ );
+                        rightQ.setSibling( leftQ );
+                        clauseNode.setContinuation( rightQ );
+                        prior.setContinuation( leftQ );
                         prior = leftQ;
                     }
                 }
             }
-            
+
             // Finished compiling a rule - add terminal 
-            if (prior != null) {
-                RETETerminal term = createTerminal(rule);
-                prior.setContinuation(term);
+            if ( prior != null )
+            {
+                RETETerminal term = createTerminal( rule );
+                prior.setContinuation( term );
             }
-                    
+
         }
             
         if (wildcardRule) predicatePatterns = null;
@@ -489,15 +514,17 @@ public class RETEEngine implements FRuleEngineI {
      * Scan the rules for any axioms and insert those
      */
     protected void findAndProcessAxioms() {
-        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
-            Rule r = i.next();
-            if (r.isAxiom()) {
+        for ( Rule r : rules )
+        {
+            if ( r.isAxiom() )
+            {
                 // An axiom
-                RETERuleContext context = new RETERuleContext(infGraph, this);
-                context.setEnv(new BindingVector(new Node[r.getNumVars()]));
-                context.setRule(r);
-                if (context.shouldFire(true)) {
-                    RETEConflictSet.execute(context, true);
+                RETERuleContext context = new RETERuleContext( infGraph, this );
+                context.setEnv( new BindingVector( new Node[r.getNumVars()] ) );
+                context.setRule( r );
+                if ( context.shouldFire( true ) )
+                {
+                    RETEConflictSet.execute( context, true );
                 }
                 /*   // Old version, left during debug and final checks
                 for (int j = 0; j < r.headLength(); j++) {
@@ -519,20 +546,27 @@ public class RETEEngine implements FRuleEngineI {
      */
     protected void findAndProcessActions() {
         RETERuleContext tempContext = new RETERuleContext(infGraph, this);
-        for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
-            Rule r = i.next();
-            if (r.bodyLength() == 0) {
-                for (int j = 0; j < r.headLength(); j++) {
-                    Object head = r.getHeadElement(j);
-                    if (head instanceof Functor) {
-                        Functor f = (Functor)head;
+        for ( Rule r : rules )
+        {
+            if ( r.bodyLength() == 0 )
+            {
+                for ( int j = 0; j < r.headLength(); j++ )
+                {
+                    Object head = r.getHeadElement( j );
+                    if ( head instanceof Functor )
+                    {
+                        Functor f = (Functor) head;
                         Builtin imp = f.getImplementor();
-                        if (imp != null) {
-                            tempContext.setRule(r);
-                            tempContext.setEnv(new BindingVector( r.getNumVars() ));
-                            imp.headAction(f.getArgs(), f.getArgLength(), tempContext);
-                        } else {
-                            throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + r.toShortString());
+                        if ( imp != null )
+                        {
+                            tempContext.setRule( r );
+                            tempContext.setEnv( new BindingVector( r.getNumVars() ) );
+                            imp.headAction( f.getArgs(), f.getArgLength(), tempContext );
+                        }
+                        else
+                        {
+                            throw new ReasonerException(
+                                "Invoking undefined Functor " + f.getName() + " in " + r.toShortString() );
                         }
                     }
                 }

@@ -158,7 +158,7 @@ public class TestSolverTDB extends BaseTest
     private static ResultSet exec(String pattern, Graph graph)
     {
         Op op = SSE.parseOp(pattern, pmap) ;
-        List<Var> vars =  new ArrayList<Var>() ;
+        List<Var> vars =  new ArrayList<>() ;
         vars.addAll(OpVars.visibleVars(op)) ;
         QueryIterator qIter = Algebra.exec(op, graph) ;
         return ResultSetFactory.create(qIter, Var.varNames(vars)) ;
@@ -166,7 +166,7 @@ public class TestSolverTDB extends BaseTest
     
     private static List<Binding> toList(QueryIterator qIter)
     {
-        List<Binding> x = new ArrayList<Binding>() ;
+        List<Binding> x = new ArrayList<>() ;
         for ( ; qIter.hasNext() ; )
             x.add(qIter.nextBinding()) ;
         return x ;

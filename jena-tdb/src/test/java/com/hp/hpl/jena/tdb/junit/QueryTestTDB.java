@@ -33,7 +33,6 @@ import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
 import com.hp.hpl.jena.sparql.junit.TestItem ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.query.ResultSetRewindable ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.util.FileManager ;

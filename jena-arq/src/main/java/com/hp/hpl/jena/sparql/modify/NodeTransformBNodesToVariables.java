@@ -34,7 +34,7 @@ public class NodeTransformBNodesToVariables implements NodeTransform
 
     public NodeTransformBNodesToVariables()
     {
-        this.mapping = new HashMap<Node, Var>();
+        this.mapping = new HashMap<>();
     }
 
     @Override

@@ -153,7 +153,7 @@ public class TransformFilterEquality extends TransformCopy {
 
     // --- find and extract
     private static Pair<List<Pair<Var, NodeValue>>, ExprList> preprocessFilterEquality(ExprList exprs) {
-        List<Pair<Var, NodeValue>> exprsFilterEquality = new ArrayList<Pair<Var, NodeValue>>();
+        List<Pair<Var, NodeValue>> exprsFilterEquality = new ArrayList<>();
         ExprList exprsOther = new ExprList();
         for (Expr e : exprs.getList()) {
             Pair<Var, NodeValue> p = preprocess(e);
@@ -208,7 +208,7 @@ public class TransformFilterEquality extends TransformCopy {
     }
 
     private static Collection<Var> varsMentionedInEqualityFilters(List<Pair<Var, NodeValue>> equalities) {
-        Set<Var> vars = new HashSet<Var>();
+        Set<Var> vars = new HashSet<>();
         for (Pair<Var, NodeValue> p : equalities)
             vars.add(p.getLeft());
         return vars;
@@ -337,7 +337,7 @@ public class TransformFilterEquality extends TransformCopy {
     }
 
     private static List<Op> extractOptionals(Op op) {
-        List<Op> chain = new ArrayList<Op>();
+        List<Op> chain = new ArrayList<>();
         while (op instanceof OpConditional || op instanceof OpLeftJoin) {
             Op2 opleftjoin2 = (Op2) op;
             chain.add(opleftjoin2.getRight());
@@ -347,7 +347,7 @@ public class TransformFilterEquality extends TransformCopy {
     }
 
     private static List<Op> processSpecialCase1(List<Op> ops, List<Pair<Var, NodeValue>> equalities) {
-        List<Op> ops2 = new ArrayList<Op>();
+        List<Op> ops2 = new ArrayList<>();
         Collection<Var> vars = varsMentionedInEqualityFilters(equalities);
 
         for (Op op : ops) {

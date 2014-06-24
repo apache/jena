@@ -139,13 +139,18 @@ public class TupleTable implements Sync, Closeable
             throw new TDBException(format("Mismatch: deleting tuple of length %d from a table of tuples of length %d", t.size(), tupleLen)) ;
 
         boolean rc = false ;
-        for ( int i = 0 ; i < indexes.length ; i++ )
+        for ( TupleIndex indexe : indexes )
         {
-            if ( indexes[i] == null ) continue ;
+            if ( indexe == null )
+            {
+                continue;
+            }
             // Use return boolean
-            rc = indexes[i].delete(t) ;
-            if ( rc ) 
-                syncNeeded = true ;
+            rc = indexe.delete( t );
+            if ( rc )
+            {
+                syncNeeded = true;
+            }
         }
         return rc ;
 
@@ -177,16 +182,15 @@ public class TupleTable implements Sync, Closeable
         
         int indexNumSlots = 0 ;
         TupleIndex index = null ;
-        for ( int i = 0 ; i < indexes.length ; i++ )
+        for ( TupleIndex idx : indexes )
         {
-            TupleIndex idx = indexes[i] ;
             if ( idx != null )
             {
-                int w = idx.weight(pattern) ;
+                int w = idx.weight( pattern );
                 if ( w > indexNumSlots )
                 {
-                    indexNumSlots = w ;
-                    index = idx ; 
+                    indexNumSlots = w;
+                    index = idx;
                 }
             }
         }

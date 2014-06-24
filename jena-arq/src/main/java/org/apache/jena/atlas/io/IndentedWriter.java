@@ -119,8 +119,10 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     @Override
     public void print(char[] cbuf)
     {
-        for ( int i = 0 ; i < cbuf.length ; i++ )
-            printOneChar(cbuf[i]) ;
+        for ( char aCbuf : cbuf )
+        {
+            printOneChar( aCbuf );
+        }
     }
 
     /** Print a string N times */

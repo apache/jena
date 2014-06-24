@@ -247,7 +247,7 @@ public class NodeId
         if ( XSDDatatype.XSDboolean.isValidLiteral(lit) )
         {
             long v = 0 ;
-            boolean b = ((Boolean)lit.getValue()).booleanValue() ;
+            boolean b = (Boolean) lit.getValue();
             //return new NodeValueBoolean(b, node) ;
             v = setType(v, BOOLEAN) ;
             if ( b )

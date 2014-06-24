@@ -34,7 +34,7 @@ public class TestTrie {
      */
     @Test
     public void trie_add_01() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         Assert.assertTrue(trie.contains("test"));
         Assert.assertEquals((Integer) 123, trie.get("test"));
@@ -45,7 +45,7 @@ public class TestTrie {
      */
     @Test
     public void trie_add_02() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("other", 456);
         Assert.assertTrue(trie.contains("test"));
@@ -59,7 +59,7 @@ public class TestTrie {
      */
     @Test
     public void trie_add_03() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("test", 456);
         Assert.assertTrue(trie.contains("test"));
@@ -71,7 +71,7 @@ public class TestTrie {
      */
     @Test
     public void trie_add_04() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", null);
         Assert.assertFalse(trie.contains("test"));
     }
@@ -81,7 +81,7 @@ public class TestTrie {
      */
     @Test
     public void trie_add_05() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add(null, 123);
         Assert.assertTrue(trie.contains(null));
         Assert.assertEquals((Integer)123, trie.get(null));
@@ -92,7 +92,7 @@ public class TestTrie {
      */
     @Test
     public void trie_add_06() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("", 123);
         Assert.assertTrue(trie.contains(""));
         Assert.assertEquals((Integer)123, trie.get(""));
@@ -103,7 +103,7 @@ public class TestTrie {
      */
     @Test
     public void trie_contains_01() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         Assert.assertFalse(trie.contains("test"));
     }
 
@@ -112,7 +112,7 @@ public class TestTrie {
      */
     @Test
     public void trie_contains_02() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         Assert.assertTrue(trie.contains("test"));
         Assert.assertTrue(trie.contains("test", true));
@@ -129,7 +129,7 @@ public class TestTrie {
      */
     @Test
     public void trie_contains_03() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         Assert.assertFalse(trie.contains(null));
         Assert.assertTrue(trie.contains(null, false));
     }
@@ -139,7 +139,7 @@ public class TestTrie {
      */
     @Test
     public void trie_contains_04() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         Assert.assertFalse(trie.contains(""));
         Assert.assertTrue(trie.contains("", false));
     }
@@ -149,7 +149,7 @@ public class TestTrie {
      */
     @Test
     public void trie_remove_01() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         Assert.assertTrue(trie.contains("test"));
         Assert.assertEquals((Integer) 123, trie.get("test"));
@@ -167,7 +167,7 @@ public class TestTrie {
      */
     @Test
     public void trie_remove_02() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("testing", 456);
         Assert.assertTrue(trie.contains("test"));
@@ -191,7 +191,7 @@ public class TestTrie {
      */
     @Test
     public void trie_remove_03() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add(null, 123);
         Assert.assertTrue(trie.contains(null));
         Assert.assertEquals((Integer)123, trie.get(null));
@@ -205,7 +205,7 @@ public class TestTrie {
      */
     @Test
     public void trie_remove_04() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("", 123);
         Assert.assertTrue(trie.contains(""));
         Assert.assertEquals((Integer)123, trie.get(""));
@@ -219,7 +219,7 @@ public class TestTrie {
      */
     @Test
     public void trie_prefix_search_01() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("testing", 456);
         
@@ -245,7 +245,7 @@ public class TestTrie {
      */
     @Test
     public void trie_partial_search_01() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("testing", 456);
         
@@ -271,7 +271,7 @@ public class TestTrie {
      */
     @Test
     public void trie_longest_match_01() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("testing", 456);
         Assert.assertTrue(trie.contains("test"));
@@ -285,7 +285,7 @@ public class TestTrie {
      */
     @Test
     public void trie_longest_match_02() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("testing", 456);
         
@@ -297,7 +297,7 @@ public class TestTrie {
      */
     @Test
     public void trie_longest_match_03() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("testing", 456);
         trie.remove("testing");
@@ -310,7 +310,7 @@ public class TestTrie {
      */
     @Test
     public void trie_shortest_match_01() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("testing", 456);
         Assert.assertTrue(trie.contains("test"));
@@ -324,7 +324,7 @@ public class TestTrie {
      */
     @Test
     public void trie_shortest_match_02() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("testing", 456);
         
@@ -336,7 +336,7 @@ public class TestTrie {
      */
     @Test
     public void trie_shortest_match_03() {
-        Trie<Integer> trie = new Trie<Integer>();
+        Trie<Integer> trie = new Trie<>();
         trie.add("test", 123);
         trie.add("testing", 456);
         trie.remove("test");

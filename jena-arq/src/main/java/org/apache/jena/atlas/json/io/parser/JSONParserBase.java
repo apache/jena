@@ -37,7 +37,7 @@ class JSONParserBase
     protected JSONParserBase(Tokenizer tokens)
     {
         this.tokens = tokens ;
-        peekTokens = new PeekIterator<Token>(tokens) ;
+        peekTokens = new PeekIterator<>(tokens) ;
     }
     
     private Token tokenEOF = null ;

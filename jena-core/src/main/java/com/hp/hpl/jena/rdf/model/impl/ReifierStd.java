@@ -160,7 +160,7 @@ public class ReifierStd
     private static ExtendedIterator<Node> findNodesForTriple(Graph graph, Triple t, boolean oneWillDo)
     {
         ExtendedIterator<Triple> iter = graph.find(Node.ANY, rdfType, statement) ;
-        List<Node> nodes = new ArrayList<Node>() ;
+        List<Node> nodes = new ArrayList<>() ;
         try
         {
             while (iter.hasNext())
@@ -258,7 +258,7 @@ public class ReifierStd
      */
     public static void remove(Graph graph, Node node, Triple triple)
     {
-        Set<Triple> triples = new HashSet<Triple>();
+        Set<Triple> triples = new HashSet<>();
         triplesToZap(graph, triples, node, rdfType, statement) ;
         triplesToZap(graph, triples, node, subject, triple.getSubject()) ;
         triplesToZap(graph, triples, node, predicate, triple.getPredicate()) ;

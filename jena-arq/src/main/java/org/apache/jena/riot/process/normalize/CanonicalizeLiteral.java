@@ -80,7 +80,7 @@ public class CanonicalizeLiteral implements NodeTransform
     
     private static final RDFDatatype dtPlainLiteral = NodeFactory.getType(RDF.getURI()+"PlainLiteral") ;
     
-    private final static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<RDFDatatype, DatatypeHandler>() ;
+    private final static Map<RDFDatatype, DatatypeHandler> dispatch = new HashMap<>() ;
 
     // MUST be after the handler definitions as these assign to statics, so it's code lexcial order.
     // or use static class to force touching that, initializing and then getting the values. 

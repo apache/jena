@@ -29,7 +29,7 @@ public class PoolBase<T> implements Pool<T>
     // For convenience we operate a LIFO policy.
     // This not part of the extenal contract of a "pool"
     
-    ArrayDeque<T> pool = new ArrayDeque<T>();
+    ArrayDeque<T> pool = new ArrayDeque<>();
     int maxSize = -1 ;  // Unbounded
     
     public PoolBase() {} 

@@ -93,7 +93,7 @@ public class TestTableLib extends BaseTest
         
             // Order issues
             
-        Set<String> vars1 = new HashSet<String>() ;
+        Set<String> vars1 = new HashSet<>() ;
         vars1.addAll(left.getVarNames()) ;
         vars1.addAll(right.getVarNames()) ;
         

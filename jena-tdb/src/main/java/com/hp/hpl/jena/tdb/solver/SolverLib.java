@@ -113,7 +113,7 @@ public class SolverLib
         NodeTable nodeTable = nodeTupleTable.getNodeTable() ;
         
         Iterator<BindingNodeId> chain = Iter.map(input, SolverLib.convFromBinding(nodeTable)) ;
-        List<Abortable> killList = new ArrayList<Abortable>() ;
+        List<Abortable> killList = new ArrayList<>() ;
         
         for ( Triple triple : triples )
         {
@@ -159,7 +159,7 @@ public class SolverLib
     {
         if ( killList == null )
             return iter ;
-        IterAbortable<T> k = new IterAbortable<T>(iter) ;
+        IterAbortable<T> k = new IterAbortable<>(iter) ;
         killList.add(k) ;
         return k ;
     }
@@ -299,7 +299,7 @@ public class SolverLib
     /** Find all the graph names in the quads table. */
     public static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
                                            Filter<Tuple<NodeId>> filter, ExecutionContext execCxt) {
-        List<Abortable> killList = new ArrayList<Abortable>() ;
+        List<Abortable> killList = new ArrayList<>() ;
         Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny,
                                                                                    NodeId.NodeIdAny, NodeId.NodeIdAny) ;
         if ( filter != null )
@@ -337,7 +337,7 @@ public class SolverLib
 
     public static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)
     {
-        Set<NodeId> graphIds = new HashSet<NodeId>() ;
+        Set<NodeId> graphIds = new HashSet<>() ;
         NodeTable nt = dataset.getQuadTable().getNodeTupleTable().getNodeTable() ;
         for ( Node n : nodes )
             graphIds.add(nt.getNodeIdForNode(n)) ;

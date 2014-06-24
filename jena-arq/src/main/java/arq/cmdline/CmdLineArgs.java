@@ -42,9 +42,9 @@ public class CmdLineArgs extends CommandLineBase {
     }
 
     private boolean processedArgs = false ;
-    protected Map<String, ArgDecl> argMap = new HashMap<String, ArgDecl>() ;          // Map from string name to ArgDecl 
-    protected Map<String, Arg> args = new HashMap<String, Arg>() ;            // Name to Arg  
-    protected List<String> positionals = new ArrayList<String>() ;  // Positional arguments as strings.
+    protected Map<String, ArgDecl> argMap = new HashMap<>() ;          // Map from string name to ArgDecl
+    protected Map<String, Arg> args = new HashMap<>() ;            // Name to Arg
+    protected List<String> positionals = new ArrayList<>() ;  // Positional arguments as strings.
     
     public void process() throws IllegalArgumentException
     {
@@ -198,10 +198,12 @@ public class CmdLineArgs extends CommandLineBase {
     
     public Arg getArg(ArgDecl argDecl) {
         Arg arg = null ;
-        for (Iterator<Arg> iter = args.values().iterator(); iter.hasNext();) {
-            Arg a = iter.next() ;
-            if ( argDecl.matches(a) )
-                arg = a ;
+        for ( Arg a : args.values() )
+        {
+            if ( argDecl.matches( a ) )
+            {
+                arg = a;
+            }
         }
         return arg ;
     }
@@ -274,7 +276,7 @@ public class CmdLineArgs extends CommandLineBase {
     public List<String> getValues(ArgDecl argDecl) {
         Arg arg = getArg(argDecl) ;
         if ( arg == null )
-            return new ArrayList<String>() ;
+            return new ArrayList<>() ;
         return arg.getValues() ;
     }
 
@@ -286,7 +288,7 @@ public class CmdLineArgs extends CommandLineBase {
     public List<String> getValues(String argName) {
         Arg arg = getArg(argName) ;
         if ( arg == null )
-            return new ArrayList<String>() ;
+            return new ArrayList<>() ;
         return arg.getValues() ;
     }
     
@@ -338,17 +340,17 @@ public class CmdLineArgs extends CommandLineBase {
             return super.toString() ;
         String str = "" ;
         String sep = "" ;
-        for (Iterator<String> iter = args.keySet().iterator(); iter.hasNext();) {
-            String k = iter.next() ;
-            Arg a = args.get(k) ;
-            str = str + sep + a ;
-            sep = " " ;
+        for ( String k : args.keySet() )
+        {
+            Arg a = args.get( k );
+            str = str + sep + a;
+            sep = " ";
         }
         sep = " -- " ;
-        for (Iterator<String> iter = positionals.iterator(); iter.hasNext();) {
-            String v = iter.next() ;
-            str = str + sep + v ;
-            sep = " " ;
+        for ( String v : positionals )
+        {
+            str = str + sep + v;
+            sep = " ";
         }
         return str ;
     }

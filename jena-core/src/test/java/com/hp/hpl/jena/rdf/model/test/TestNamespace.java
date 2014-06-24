@@ -49,7 +49,7 @@ public class TestNamespace extends AbstractModelTestBase
 	 */
 	private Map<String, Set<String>> makePrefixes( final String prefixes )
 	{
-		final Map<String, Set<String>> result = new HashMap<String, Set<String>>();
+		final Map<String, Set<String>> result = new HashMap<>();
 		final StringTokenizer st = new StringTokenizer(prefixes, ";");
 		while (st.hasMoreTokens())
 		{

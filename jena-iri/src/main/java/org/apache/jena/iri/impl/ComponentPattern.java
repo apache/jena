@@ -31,7 +31,7 @@ public class ComponentPattern implements ViolationCodes {
 
     final GroupAction actions[];
 
-    static final List<Pattern> allPatterns = new ArrayList<Pattern>();
+    static final List<Pattern> allPatterns = new ArrayList<>();
 
     ComponentPattern(String p) {
         ComponentPatternParser parser = new ComponentPatternParser(p);

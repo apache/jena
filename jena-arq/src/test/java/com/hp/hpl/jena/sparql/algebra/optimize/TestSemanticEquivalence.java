@@ -227,7 +227,7 @@ public class TestSemanticEquivalence {
      */
     public static void testAsAlgebra(String algStr, Dataset ds, Symbol opt, int expected) {
         Op op = SSE.parseOp(algStr);
-        List<String> vars = new ArrayList<String>();
+        List<String> vars = new ArrayList<>();
         for (Var v : OpVars.visibleVars(op)) {
             vars.add(v.getName());
         }

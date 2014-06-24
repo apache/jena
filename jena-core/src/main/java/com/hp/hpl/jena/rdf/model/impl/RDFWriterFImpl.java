@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Properties;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.n3.N3JenaWriter;
-import com.hp.hpl.jena.JenaRuntime ;
 
 
 /**

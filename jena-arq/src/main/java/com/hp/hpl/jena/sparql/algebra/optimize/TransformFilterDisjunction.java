@@ -64,7 +64,7 @@ public class TransformFilterDisjunction extends TransformCopy
         ExprList exprList2 = new ExprList() ;
         Op newOp = subOp ;
         // remember what's been seen so that FILTER(?x = <x> || ?x = <x> ) does not result in two transforms. 
-        Set<Expr> doneSoFar = new HashSet<Expr>() ;
+        Set<Expr> doneSoFar = new HashSet<>() ;
         
         for ( Expr expr : exprList )
         {
@@ -142,7 +142,7 @@ public class TransformFilterDisjunction extends TransformCopy
             {
                 // Not done.
                 if ( exprList2 == null )
-                    exprList2 = new ArrayList<Expr>() ;
+                    exprList2 = new ArrayList<>() ;
                 exprList2.add(e) ;
                 //continue ;
                 // Can't do one so don't do any as the original pattern is still executed. 

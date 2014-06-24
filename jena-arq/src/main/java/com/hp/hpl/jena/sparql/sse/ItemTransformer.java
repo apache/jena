@@ -37,7 +37,7 @@ public class ItemTransformer
     // Why not directly dispatch - and make the "visit" operation return a result
     static class TransformerApply implements ItemVisitor
     {
-        Deque<Item> stack = new ArrayDeque<Item>() ;
+        Deque<Item> stack = new ArrayDeque<>() ;
         private void push(Item item) { stack.push(item) ; }
         private Item pop() { return stack.pop() ; }
        

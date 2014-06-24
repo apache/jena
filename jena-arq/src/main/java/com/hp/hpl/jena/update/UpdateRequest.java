@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
  */
 public class UpdateRequest extends Prologue implements Printable, Iterable<Update>
 {
-    private List<Update> operations = new ArrayList<Update>() ;
+    private List<Update> operations = new ArrayList<>() ;
     private List<Update> operationsView = Collections.unmodifiableList(operations) ;
 
     public UpdateRequest() { super() ; }

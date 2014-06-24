@@ -45,8 +45,8 @@ import com.hp.hpl.jena.vocabulary.LocationMappingVocab ;
 public class LocationMapper
 {
     static Logger log = LoggerFactory.getLogger(LocationMapper.class)  ;
-    Map<String, String> altLocations = new HashMap<String, String>() ;
-    Map<String, String> altPrefixes = new HashMap<String, String>() ;
+    Map<String, String> altLocations = new HashMap<>() ;
+    Map<String, String> altPrefixes = new HashMap<>() ;
     
     /** Create a LocationMapper with no mapping yet */
     public LocationMapper() { }
@@ -87,13 +87,15 @@ public class LocationMapper
             return altLocations.get(uri) ;
         String newStart = null ;
         String oldStart = null ;
-        for (Iterator<String> iter = altPrefixes.keySet().iterator(); iter.hasNext();) {
-            String prefix = iter.next() ;
-            if ( uri.startsWith(prefix) ) {
-                String s = altPrefixes.get(prefix) ;
-                if ( newStart == null || newStart.length() < s.length() ) {
-                    oldStart = prefix ;
-                    newStart = s ;
+        for ( String prefix : altPrefixes.keySet() )
+        {
+            if ( uri.startsWith( prefix ) )
+            {
+                String s = altPrefixes.get( prefix );
+                if ( newStart == null || newStart.length() < s.length() )
+                {
+                    oldStart = prefix;
+                    newStart = s;
                 }
             }
         }
@@ -163,16 +165,16 @@ public class LocationMapper
     @Override
     public String toString() {
         String s = "" ;
-        for (Iterator<String> iter = altLocations.keySet().iterator(); iter.hasNext();) {
-            String k = iter.next() ;
-            String v = altLocations.get(k) ;
-            s = s + "(Loc:" + k + "=>" + v + ") " ;
+        for ( String k : altLocations.keySet() )
+        {
+            String v = altLocations.get( k );
+            s = s + "(Loc:" + k + "=>" + v + ") ";
         }
 
-        for (Iterator<String> iter = altPrefixes.keySet().iterator(); iter.hasNext();) {
-            String k = iter.next() ;
-            String v = altPrefixes.get(k) ;
-            s = s + "(Prefix:" + k + "=>" + v + ") " ;
+        for ( String k : altPrefixes.keySet() )
+        {
+            String v = altPrefixes.get( k );
+            s = s + "(Prefix:" + k + "=>" + v + ") ";
         }
         return s ;
     }
@@ -185,25 +187,27 @@ public class LocationMapper
     }
 
     public void toModel(Model model) {
-        for (Iterator<String> iter = altLocations.keySet().iterator(); iter.hasNext();) {
-            Resource r = model.createResource() ;
-            Resource e = model.createResource() ;
-            model.add(r, LocationMappingVocab.mapping, e) ;
+        for ( String s1 : altLocations.keySet() )
+        {
+            Resource r = model.createResource();
+            Resource e = model.createResource();
+            model.add( r, LocationMappingVocab.mapping, e );
 
-            String k = iter.next() ;
-            String v = altLocations.get(k) ;
-            model.add(e, LocationMappingVocab.name, k) ;
-            model.add(e, LocationMappingVocab.altName, v) ;
+            String k = s1;
+            String v = altLocations.get( k );
+            model.add( e, LocationMappingVocab.name, k );
+            model.add( e, LocationMappingVocab.altName, v );
         }
 
-        for (Iterator<String> iter = altPrefixes.keySet().iterator(); iter.hasNext();) {
-            Resource r = model.createResource() ;
-            Resource e = model.createResource() ;
-            model.add(r, LocationMappingVocab.mapping, e) ;
-            String k = iter.next() ;
-            String v = altPrefixes.get(k) ;
-            model.add(e, LocationMappingVocab.prefix, k) ;
-            model.add(e, LocationMappingVocab.altPrefix, v) ;
+        for ( String s : altPrefixes.keySet() )
+        {
+            Resource r = model.createResource();
+            Resource e = model.createResource();
+            model.add( r, LocationMappingVocab.mapping, e );
+            String k = s;
+            String v = altPrefixes.get( k );
+            model.add( e, LocationMappingVocab.prefix, k );
+            model.add( e, LocationMappingVocab.altPrefix, v );
         }
     }
 }

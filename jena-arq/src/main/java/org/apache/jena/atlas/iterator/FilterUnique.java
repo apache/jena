@@ -23,7 +23,7 @@ import java.util.Set ;
 
 public class FilterUnique<T> implements Filter<T>
 {
-    private Set<T> seen = new HashSet<T>() ;
+    private Set<T> seen = new HashSet<>() ;
     
     public FilterUnique() { }
     

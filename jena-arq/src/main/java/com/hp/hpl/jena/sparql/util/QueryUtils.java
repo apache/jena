@@ -63,16 +63,12 @@ public class QueryUtils
                 dump(op, op2) ;
                 throw new QueryCheckException("reparsed algebra expression does not equal query algebra") ;
             }
-        } catch (SSEParseException ex)
+        } catch (SSEParseException | BuildException ex)
         { 
             System.err.println(str);
             throw ex ; 
         }      // Breakpoint
-        catch (BuildException ex)
-        {
-            System.err.println(str);
-            throw ex ; 
-        }
+
     }
     
     private static void dump(Op op, Op op2)

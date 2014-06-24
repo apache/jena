@@ -41,7 +41,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable, 
     // ??? Convert to use a ResultSetProcessor
     // The result set in memory
     // .hasPrevious() and .previous()
-    protected List<Binding> rows = new ArrayList<Binding>();
+    protected List<Binding> rows = new ArrayList<>();
     protected List<String> varNames = null ;
 
     private int rowNumber = 0 ;
@@ -128,7 +128,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable, 
 
     public ResultSetMem()
     {
-        this.varNames = new ArrayList<String>() ;
+        this.varNames = new ArrayList<>() ;
         reset() ;
     }
     
@@ -170,7 +170,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable, 
     public void rewind( ) { reset() ; }
 
     @Override
-    public void reset() { iterator = new PeekIterator<Binding>(rows.iterator()) ; rowNumber = 0 ; }
+    public void reset() { iterator = new PeekIterator<>(rows.iterator()) ; rowNumber = 0 ; }
 
     /** Return the "row" number for the current iterator item
      */

@@ -65,7 +65,7 @@ public class BindingTDB extends BindingBase
 
     private List<Var> calcVars()
     {
-        List<Var> vars = new ArrayList<Var>(4) ;
+        List<Var> vars = new ArrayList<>(4) ;
         // Only if not in parent.
         // A (var/value) binding may have been copied down to record it's NodeId.  
         

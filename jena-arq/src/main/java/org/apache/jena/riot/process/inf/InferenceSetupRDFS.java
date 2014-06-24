@@ -37,10 +37,10 @@ import com.hp.hpl.jena.rdf.model.Model ;
 
 public class InferenceSetupRDFS
 {
-    /*package*/ final Map<Node, List<Node>> transClasses        = new HashMap<Node, List<Node>>() ;
-    /*package*/ final Map<Node, List<Node>> transProperties     = new HashMap<Node, List<Node>>() ;
-    /*package*/ final Map<Node, List<Node>> domainList          = new HashMap<Node, List<Node>>() ;
-    /*package*/ final Map<Node, List<Node>> rangeList           = new HashMap<Node, List<Node>>() ;  
+    /*package*/ final Map<Node, List<Node>> transClasses        = new HashMap<>() ;
+    /*package*/ final Map<Node, List<Node>> transProperties     = new HashMap<>() ;
+    /*package*/ final Map<Node, List<Node>> domainList          = new HashMap<>() ;
+    /*package*/ final Map<Node, List<Node>> rangeList           = new HashMap<>() ;
     
     public InferenceSetupRDFS(Model vocab)
     {

@@ -121,8 +121,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             jr.setErrorHandler(eh);
         jr.setProperty("error-mode", "strict");
         
-        if ( base.indexOf("/xmlns/") != -1 
-          || base.indexOf("/comments/") != -1 )
+        if ( base.contains( "/xmlns/" )
+          || base.contains( "/comments/" ) )
               jr.setProperty("embedding","true");
         InputStream inx = in.open();
         jr.read(model, inx, base);
@@ -202,7 +202,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         Arrays.asList(
             new String[] { "http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-uri-substructure/error001" });
             
-    private Map<ResourceImpl, Act> behaviours = new HashMap<ResourceImpl, Act>();
+    private Map<ResourceImpl, Act> behaviours = new HashMap<>();
     
     {
         behaviours
@@ -359,7 +359,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             true);
     }
 
-    private Map<String, TestSuite> parts = new HashMap<String, TestSuite>();
+    private Map<String, TestSuite> parts = new HashMap<>();
     
     private void addTest(Resource key, TestCase test)  {
         String keyName =
@@ -502,8 +502,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 int eCode = ((ParseException) e).getErrorNumber();
                 if (eCode == ERR_SYNTAX_ERROR) {
                     String msg = e.getMessage();
-                    if (msg.indexOf("Unusual") != -1
-                        || msg.indexOf("Internal") != -1) {
+                    if ( msg.contains( "Unusual" )
+                        || msg.contains( "Internal" ) ) {
                         System.err.println(testID.getURI());
                         System.err.println(msg);
                         fail(msg);
@@ -565,7 +565,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         @Override
         void initExpected()  {
-            expected = new HashSet<Integer>();
+            expected = new HashSet<>();
         }
     }
     
@@ -594,7 +594,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         Model m1;
         Set<Integer> expected;
         int expectedLevel = 1;
-        private Set<Integer> found = new HashSet<Integer>();
+        private Set<Integer> found = new HashSet<>();
         private int errorCnt[] = new int[] { 0, 0, 0 };
         String createExpected() {
             String rslt = "new int[]{";
@@ -631,7 +631,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         void initExpectedFromModel()  {
             StmtIterator si = testID.listProperties(errorCodes);
             if (si.hasNext()) {
-                expected = new HashSet<Integer>();
+                expected = new HashSet<>();
                 while (si.hasNext()) {
                     String uri = si.nextStatement().getResource().getURI();
                     String fieldName = uri.substring(uri.lastIndexOf('#') + 1);
@@ -662,7 +662,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 fail(ioe.getMessage());
             }
             if (expected != null && !expected.equals(found)) {
-                Set<Integer> dup = new HashSet<Integer>();
+                Set<Integer> dup = new HashSet<>();
                 dup.addAll(found);
                 dup.removeAll(expected);
                 expected.removeAll(found);
@@ -783,8 +783,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 int eCode = ((ParseException) e).getErrorNumber();
                 if (eCode == ERR_SYNTAX_ERROR) {
                     String msg = e.getMessage();
-                    if (msg.indexOf("Unusual") != -1
-                        || msg.indexOf("Internal") != -1) {
+                    if ( msg.contains( "Unusual" )
+                        || msg.contains( "Internal" ) ) {
                         System.err.println(getName());
                         System.err.println(msg);
                         fail(msg);
@@ -867,7 +867,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             }
         }
         void initExpected()  {
-            expected = new HashSet<Integer>();
+            expected = new HashSet<>();
         }
     }
     
@@ -890,7 +890,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         int expectedLevel = 1;
         String in;
         boolean intype;
-        private Set<Integer> found = new HashSet<Integer>();
+        private Set<Integer> found = new HashSet<>();
         private int errorCnt[] = new int[] { 0, 0, 0 };
         NegativeTest2(String uri, String in, boolean intype, int errs[]) {
             super(uri);
@@ -920,10 +920,11 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             if ( errs == null )
                return;
             if (errs.length != 0)
-                expected = new HashSet<Integer>();
-            for (int i = 0; i < errs.length; i++) {
+                expected = new HashSet<>();
+            for ( int err : errs )
+            {
 
-                expected.add(new Integer(errs[i]));
+                expected.add( new Integer( err ) );
             }
         }
         @Override
@@ -948,15 +949,15 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 fail(ioe.getMessage());
             }
             // Tidy up this code a bit, I don't understand it.
-            HashSet<Integer> ex2 = expected==null?null:new HashSet<Integer>(expected);
+            HashSet<Integer> ex2 = expected==null?null:new HashSet<>(expected);
             if (expected==null)
             for (int j = 2; j >= 0; j--)
                 if (j != expectedLevel)  {
                     if (errorCnt[j] != 0)
-                        ex2 = new HashSet<Integer>();
+                        ex2 = new HashSet<>();
                 }
             if (ex2 != null && !ex2.equals(found)) {
-                Set<Integer> dup = new HashSet<Integer>();
+                Set<Integer> dup = new HashSet<>();
                 dup.addAll(found);
                 dup.removeAll(ex2);
                 ex2.removeAll(found);

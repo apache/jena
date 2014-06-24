@@ -74,7 +74,7 @@ public class TestOpVars extends BaseTest
         }
         
         List<Var> varList = Arrays.asList(vars) ;
-        HashSet<Var> varSet = new HashSet<Var>() ;
+        HashSet<Var> varSet = new HashSet<>() ;
         varSet.addAll(varList) ;
         assertEquals(varSet, varsFound) ;
     }

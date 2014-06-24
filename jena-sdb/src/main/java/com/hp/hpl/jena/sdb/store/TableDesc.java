@@ -34,9 +34,13 @@ public class TableDesc
         this.tableName = tableName ;
         if ( colNames != null )
             // Filter nulls.
-            for ( int i = 0 ; i < colNames.length ; i++ )
-                if ( colNames[i] != null )
-                    columnNames.add(colNames[i]) ;
+            for ( String colName : colNames )
+            {
+                if ( colName != null )
+                {
+                    columnNames.add( colName );
+                }
+            }
     }
 
     public TableDesc(String tableName, List<String> colNames)

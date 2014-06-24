@@ -325,12 +325,13 @@ public class RDFSProfile
     //////////////////////////////////
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
-    protected static HashMap<Object, Object> s_supportsChecks = new HashMap<Object, Object>();
+    protected static HashMap<Object, Object> s_supportsChecks = new HashMap<>();
 
     static {
         // initialise the map of supports checks from a table of static data
-        for (int i = 0;  i < s_supportsCheckTable.length;  i++) {
-            s_supportsChecks.put( s_supportsCheckTable[i][0], s_supportsCheckTable[i][1] );
+        for ( Object[] aS_supportsCheckTable : s_supportsCheckTable )
+        {
+            s_supportsChecks.put( aS_supportsCheckTable[0], aS_supportsCheckTable[1] );
         }
     }
 

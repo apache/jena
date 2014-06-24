@@ -27,7 +27,6 @@ package com.hp.hpl.jena.ontology;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 

@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.impl.*;
 public class MonitorGraph extends WrappedGraph {
     
     /** The last known snapshot, a set of triples */
-    protected Set<Triple> snapshot = new HashSet<Triple>();
+    protected Set<Triple> snapshot = new HashSet<>();
 
     /** Constructor, wrap the given graph with a state monitor */
     public MonitorGraph(Graph g) {

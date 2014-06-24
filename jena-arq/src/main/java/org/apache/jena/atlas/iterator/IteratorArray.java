@@ -26,11 +26,11 @@ public final class IteratorArray<T> implements Iterator<T>
 {
     /** Iterator over all the array elements */ 
     public static <T> IteratorArray<T> create(T[] array)
-    { return new IteratorArray<T>(array, 0, array.length) ; }
+    { return new IteratorArray<>(array, 0, array.length) ; }
     
     /** Iterator over array elements from start (inclusive) to finish (exclusive) */ 
     public static <T> IteratorArray<T> create(T[] array, int start, int finish)
-    { return new IteratorArray<T>(array, start, finish) ; }
+    { return new IteratorArray<>(array, start, finish) ; }
     
     private int idx ;
     private int finishIdx ;

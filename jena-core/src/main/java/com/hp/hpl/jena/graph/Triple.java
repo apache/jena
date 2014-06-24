@@ -46,7 +46,7 @@ public class Triple implements TripleMatch
 	/**
 	    A triple-iterator with no elements.
 	*/
-	public static final ExtendedIterator<Triple> None = new NiceIterator<Triple>();
+	public static final ExtendedIterator<Triple> None = new NiceIterator<>();
 	
     /**
         return a human-readable string "subject @predicate object" describing the triple

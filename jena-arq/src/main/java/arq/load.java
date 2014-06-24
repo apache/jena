@@ -80,11 +80,10 @@ public class load extends CmdUpdate
             throw new CmdException("Nothing to do") ;
         
         UpdateRequest req = new UpdateRequest() ;
-        for ( Iterator<String> iter = loadFiles.iterator() ; iter.hasNext() ; )
+        for ( String filename : loadFiles )
         {
-            String filename = iter.next();
-            UpdateLoad loadReq = new UpdateLoad(filename, graphName) ;
-            req.add(loadReq) ;
+            UpdateLoad loadReq = new UpdateLoad( filename, graphName );
+            req.add( loadReq );
         }
         
         if ( true )

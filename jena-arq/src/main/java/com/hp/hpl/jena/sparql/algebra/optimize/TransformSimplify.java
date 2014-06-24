@@ -32,7 +32,7 @@ public class TransformSimplify extends TransformCopy
     @Override
     public Op transform(OpSequence opSequence, List<Op> elts)
     {
-        List<Op> x = new ArrayList<Op>(elts) ;
+        List<Op> x = new ArrayList<>(elts) ;
         for ( Iterator<Op> iter = x.iterator() ; iter.hasNext() ; )
         {
             Op sub = iter.next() ;

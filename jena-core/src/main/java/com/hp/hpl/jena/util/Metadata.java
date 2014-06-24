@@ -37,7 +37,7 @@ import com.hp.hpl.jena.shared.JenaException;
 public class Metadata 
 {
     private static Logger log =  LoggerFactory.getLogger(Metadata.class) ;
-    List<String> resources = new ArrayList<String>() ;
+    List<String> resources = new ArrayList<>() ;
     Properties properties = new Properties() ;
     
     public Metadata() { }

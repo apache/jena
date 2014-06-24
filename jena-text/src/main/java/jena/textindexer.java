@@ -116,15 +116,17 @@ public class textindexer extends CmdARQ {
         // that way only process triples that will be indexed
         // but each entity may be updated several times
 
-        for (Iterator<Node> propIter = properties.iterator(); propIter.hasNext();) {
-            Node property = propIter.next() ;
-            Iterator<Quad> quadIter = dataset.find(Node.ANY, Node.ANY, property, Node.ANY) ;
-            for (; quadIter.hasNext();) {
-                Quad quad = quadIter.next() ;
-                Entity entity = TextQueryFuncs.entityFromQuad(entityDefinition, quad) ;
-                if (entity != null) {
-                    textIndex.addEntity(entity) ;
-                    progressMonitor.progressByOne() ;
+        for ( Node property : properties )
+        {
+            Iterator<Quad> quadIter = dataset.find( Node.ANY, Node.ANY, property, Node.ANY );
+            for (; quadIter.hasNext(); )
+            {
+                Quad quad = quadIter.next();
+                Entity entity = TextQueryFuncs.entityFromQuad( entityDefinition, quad );
+                if ( entity != null )
+                {
+                    textIndex.addEntity( entity );
+                    progressMonitor.progressByOne();
                 }
             }
         }
@@ -133,7 +135,7 @@ public class textindexer extends CmdARQ {
     }
 
     private Set<Node> getIndexedProperties() {
-        Set<Node> result = new HashSet<Node>() ;
+        Set<Node> result = new HashSet<>() ;
         for (String f : entityDefinition.fields()) {
             for ( Node p : entityDefinition.getPredicates(f) )
                 result.add(p) ;

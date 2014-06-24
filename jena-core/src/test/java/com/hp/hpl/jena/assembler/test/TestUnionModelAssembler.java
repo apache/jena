@@ -64,7 +64,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase
     
     static class SmudgeAssembler extends AssemblerBase 
         {
-        Map<Resource, Model> map = new HashMap<Resource, Model>();
+        Map<Resource, Model> map = new HashMap<>();
         
         public SmudgeAssembler add( String name, Model m )
             {
@@ -86,13 +86,13 @@ public class TestUnionModelAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:UnionModel; x ja:subModel A; x ja:subModel B" );
         Assembler a = new UnionModelAssembler();
         Model modelA = model( "" ), modelB = model( "" );
-        Set<Graph> expected = new HashSet<Graph>(); expected.add( modelA.getGraph() ); expected.add( modelB.getGraph() );
+        Set<Graph> expected = new HashSet<>(); expected.add( modelA.getGraph() ); expected.add( modelB.getGraph() );
         Assembler mock = new SmudgeAssembler().add( "A", modelA ).add( "B", modelB );
         Model m = (Model) a.open( mock, root );
         assertInstanceOf( MultiUnion.class, m.getGraph() );
         MultiUnion mu = (MultiUnion) m.getGraph();
         List<Graph> L = mu.getSubGraphs();
-        assertEquals( expected, new HashSet<Graph>( L ) );
+        assertEquals( expected, new HashSet<>( L ) );
         checkImmutable( m );
         }
     
@@ -117,7 +117,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:UnionModel; x ja:subModel A; x ja:rootModel B" );
         Assembler a = new UnionModelAssembler();
         Model modelA = model( "" ), modelB = model( "" );
-        Set<Graph> expected = new HashSet<Graph>(); expected.add( modelA.getGraph() ); 
+        Set<Graph> expected = new HashSet<>(); expected.add( modelA.getGraph() );
         Assembler mock = new SmudgeAssembler().add( "A", modelA ).add( "B", modelB );
         Model m = (Model) a.open( mock, root );
         assertInstanceOf( MultiUnion.class, m.getGraph() );

@@ -38,7 +38,7 @@ import java.util.Map;
  * 7th July 2002.
  */
 public class IanaLanguageTag extends LanguageTag {
-    static final Map<String, IanaLanguageTag[]> all = new HashMap<String, IanaLanguageTag[]>();
+    static final Map<String, IanaLanguageTag[]> all = new HashMap<>();
     static {
         try {
         all.put("lojban",new IanaLanguageTag[]{new IanaLanguageTag("art-lojban")});
@@ -125,13 +125,18 @@ public class IanaLanguageTag extends LanguageTag {
         if ( matches == null )
             return null;
         nextMatch:
-        for (int i=0;i<matches.length;i++) {
-            if ( t.tags.length >= matches[i].tags.length ) {
-                for ( int j = 0; j<matches[i].tags.length; j++) {
-                    if (!t.tags[j].equals(matches[i].tags[j]))
+        for ( IanaLanguageTag matche : matches )
+        {
+            if ( t.tags.length >= matche.tags.length )
+            {
+                for ( int j = 0; j < matche.tags.length; j++ )
+                {
+                    if ( !t.tags[j].equals( matche.tags[j] ) )
+                    {
                         continue nextMatch;
+                    }
                 }
-                return matches[i];
+                return matche;
             }
         }
         return null;

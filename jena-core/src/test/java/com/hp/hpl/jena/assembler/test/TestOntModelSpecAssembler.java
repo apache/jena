@@ -53,16 +53,20 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
     protected static void addParameterisedTests( TestSuite result ) 
         {
         Field [] fields = OntModelSpec.class.getFields();
-        for (int i = 0; i < fields.length; i += 1)
+            for ( Field f : fields )
             {
-            Field f = fields[i];
-            String name = f.getName();
-            if (f.getType() == OntModelSpec.class) 
-                try { result.addTest( createTest( (OntModelSpec) f.get(null), name ) ); }
-                catch (Exception e) 
+                String name = f.getName();
+                if ( f.getType() == OntModelSpec.class )
+                {
+                    try
                     {
-                    System.err.println( "WARNING: failed to create test for OntModelSpec " + name );
+                        result.addTest( createTest( (OntModelSpec) f.get( null ), name ) );
                     }
+                    catch ( Exception e )
+                    {
+                        System.err.println( "WARNING: failed to create test for OntModelSpec " + name );
+                    }
+                }
             }
         }    
     

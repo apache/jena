@@ -42,14 +42,22 @@ class FindableBasicPattern implements Findable
         if ( p == Node.ANY ) p = null ;
         if ( o == Node.ANY ) o = null ;
         
-        List<Triple> r = new ArrayList<Triple>() ;
-        for ( Iterator<Triple> iter = triples.iterator() ; iter.hasNext(); )
+        List<Triple> r = new ArrayList<>() ;
+        for ( Triple t : triples )
         {
-            Triple t = iter.next();
-            if ( s != null && ! t.getSubject().equals(s) ) continue ;
-            if ( p != null && ! t.getPredicate().equals(p) ) continue ;
-            if ( o != null && ! t.getObject().equals(o) ) continue ;
-            r.add(t) ;
+            if ( s != null && !t.getSubject().equals( s ) )
+            {
+                continue;
+            }
+            if ( p != null && !t.getPredicate().equals( p ) )
+            {
+                continue;
+            }
+            if ( o != null && !t.getObject().equals( o ) )
+            {
+                continue;
+            }
+            r.add( t );
         }
         return r.iterator() ;
     }
@@ -60,13 +68,21 @@ class FindableBasicPattern implements Findable
         if ( s == Node.ANY ) s = null ;
         if ( p == Node.ANY ) p = null ;
         if ( o == Node.ANY ) o = null ;
-        for ( Iterator<Triple> iter = triples.iterator() ; iter.hasNext(); )
+        for ( Triple t : triples )
         {
-            Triple t = iter.next();
-            if ( s != null && ! t.getSubject().equals(s) ) continue ;
-            if ( p != null && ! t.getPredicate().equals(p) ) continue ;
-            if ( o != null && ! t.getObject().equals(o) ) continue ;
-            return true ;
+            if ( s != null && !t.getSubject().equals( s ) )
+            {
+                continue;
+            }
+            if ( p != null && !t.getPredicate().equals( p ) )
+            {
+                continue;
+            }
+            if ( o != null && !t.getObject().equals( o ) )
+            {
+                continue;
+            }
+            return true;
         }
         return false ;
     }

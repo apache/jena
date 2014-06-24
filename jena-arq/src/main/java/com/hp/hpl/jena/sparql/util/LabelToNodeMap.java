@@ -33,7 +33,7 @@ import com.hp.hpl.jena.sparql.core.VarAlloc ;
 public class LabelToNodeMap
 {
     // Wil be replaced by LabelToNode in RIOT
-    Map<String, Node> bNodeLabels = new HashMap<String, Node>() ;
+    Map<String, Node> bNodeLabels = new HashMap<>() ;
     
     // Variables or bNodes?
     // True means variables (query pattern)

@@ -65,7 +65,7 @@ public class BindingVectorMultiSet {
 	}
 
 	/** Inner representation */
-	protected Map<BindingVector, Map<BindingVector, Count>> data = new HashMap<BindingVector, Map<BindingVector, Count>>();
+	protected Map<BindingVector, Map<BindingVector, Count>> data = new HashMap<>();
 
 	/** An array of indices which mark the primary key */
 	protected byte[] matchIndices;
@@ -156,7 +156,7 @@ public class BindingVectorMultiSet {
 	protected void put(BindingVector env, Count c) {
 		Map<BindingVector, Count> set = getRawSubSet(env);
 		if (set == null) {
-			set = new HashMap<BindingVector, Count>();
+			set = new HashMap<>();
 			data.put(getPartialEnv(env), set);
 		}
 		set.put(env, c);
@@ -170,16 +170,16 @@ public class BindingVectorMultiSet {
 	 * @param queue
 	 */
 	public void putAll(BindingVectorMultiSet queue) {
-		for (Iterator<BindingVector> it = queue.data.keySet().iterator(); it
-				.hasNext();) {
-			BindingVector env = it.next();
-			Map<BindingVector, Count> set = getRawSubSet(env);
-			if (set == null) {
-				set = new HashMap<BindingVector, Count>();
-				data.put(env, set);
-			}
-			set.putAll(queue.data.get(env));
-		}
+        for ( BindingVector env : queue.data.keySet() )
+        {
+            Map<BindingVector, Count> set = getRawSubSet( env );
+            if ( set == null )
+            {
+                set = new HashMap<>();
+                data.put( env, set );
+            }
+            set.putAll( queue.data.get( env ) );
+        }
 	}
 
 	/**

@@ -1142,7 +1142,7 @@ public abstract class NodeValue extends ExprNode
             
             if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) )
             {
-                boolean b = ((Boolean)lit.getValue()).booleanValue() ;
+                boolean b = (Boolean) lit.getValue();
                 return new NodeValueBoolean(b, node) ;
             }
             

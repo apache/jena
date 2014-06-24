@@ -631,9 +631,10 @@ public class Test_schemagen
             }
 
             // try each negative pattern
-            for (int i = 0; i < negPatterns.length; i++) {
-                Pattern pat = Pattern.compile( negPatterns[i] );
-                assertFalse( "negative match pattern ||" + negPatterns[i] + "|| matched on line: " + line,
+            for ( String negPattern : negPatterns )
+            {
+                Pattern pat = Pattern.compile( negPattern );
+                assertFalse( "negative match pattern ||" + negPattern + "|| matched on line: " + line,
                              pat.matcher( line ).matches() );
             }
         }
@@ -709,7 +710,7 @@ public class Test_schemagen
         }
 
         // clean up
-        List<File> toClean = new ArrayList<File>();
+        List<File> toClean = new ArrayList<>();
         toClean.add( tmpDir );
 
         while (!toClean.isEmpty()) {

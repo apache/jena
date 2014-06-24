@@ -63,8 +63,8 @@ public class JSONInputIterator extends QueryIteratorBase {
 	private TokenizerJSON tokens;
 	private PeekIterator<Token> peekIter;
 	
-	private Queue<Binding> cache = new LinkedList<Binding>();
-	private Set<String> vars = new HashSet<String>();
+	private Queue<Binding> cache = new LinkedList<>();
+	private Set<String> vars = new HashSet<>();
 	
 	/**
 	 * Creates a SPARQL JSON Iterator
@@ -76,7 +76,7 @@ public class JSONInputIterator extends QueryIteratorBase {
 	{
 		this.input = input;
 		this.tokens = new TokenizerJSON(PeekReader.makeUTF8(input));
-		this.peekIter = new PeekIterator<Token>(this.tokens);
+		this.peekIter = new PeekIterator<>(this.tokens);
 		
 		//We should always parse the first little bit to see the head stuff or to cache a chunk of results and infer the headers
 		//Primarily we are trying to find out what the variables are

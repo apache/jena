@@ -27,7 +27,7 @@ import java.util.Set;
 public class UniqueFilter<T> extends Filter<T> {
 
     /** The set of objects already seen */
-    protected Set<T> seen = new HashSet<T>();
+    protected Set<T> seen = new HashSet<>();
 
 	@Override
 	public boolean accept(T o) {

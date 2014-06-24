@@ -59,7 +59,7 @@ public class BuilderOp
         return builderOp.build(item.getList()) ;
     }
 
-    protected Map<String, Build> dispatch = new HashMap<String, Build>() ;
+    protected Map<String, Build> dispatch = new HashMap<>() ;
 
     public BuilderOp()
     {
@@ -182,11 +182,12 @@ public class BuilderOp
 
     protected Build findBuild(String str)
     {
-        for ( Iterator<String> iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
+        for ( String key : dispatch.keySet() )
         {
-            String key = iter.next() ; 
-            if ( str.equalsIgnoreCase(key) )
-                return dispatch.get(key) ;
+            if ( str.equalsIgnoreCase( key ) )
+            {
+                return dispatch.get( key );
+            }
         }
         return null ;
     }
@@ -553,7 +554,7 @@ public class BuilderOp
             BuilderLib.checkLength(3, 4, list,  "Group") ;
             // GroupBy
             VarExprList vars = BuilderExpr.buildNamedExprList(list.get(1).getList()) ;
-            List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
+            List<ExprAggregator> aggregators = new ArrayList<>() ;
             
             if ( list.size() == 4 )
             {
@@ -592,7 +593,7 @@ public class BuilderOp
             ItemList conditions = list.get(1).getList() ;
             
             // Maybe tagged (asc, desc or a raw expression)
-            List<SortCondition> x = new ArrayList<SortCondition>() ;
+            List<SortCondition> x = new ArrayList<>() ;
             
             for ( int i = 0 ; i < conditions.size() ; i++ )
             {
@@ -637,7 +638,7 @@ public class BuilderOp
             ItemList conditions = list.get(1).getList().cdr() ;
             
             // Maybe tagged (asc, desc or a raw expression)
-            List<SortCondition> x = new ArrayList<SortCondition>() ;
+            List<SortCondition> x = new ArrayList<>() ;
             
             for ( int i = 0 ; i < conditions.size() ; i++ )
             {

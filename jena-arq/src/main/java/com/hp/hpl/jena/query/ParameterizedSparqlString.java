@@ -140,8 +140,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     private StringBuilder cmd = new StringBuilder();
     private String baseUri;
-    private Map<String, Node> params = new HashMap<String, Node>();
-    private Map<Integer, Node> positionalParams = new HashMap<Integer, Node>();
+    private Map<String, Node> params = new HashMap<>();
+    private Map<Integer, Node> positionalParams = new HashMap<>();
     private PrefixMapping prefixes;
 
     /**
@@ -1139,7 +1139,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      */
     public Iterator<Integer> getEligiblePositionalParameters() {
         Pattern p = Pattern.compile("(\\?)[\\s;,.]");
-        List<Integer> positions = new ArrayList<Integer>();
+        List<Integer> positions = new ArrayList<>();
         int index = 0;
         Matcher matcher = p.matcher(this.cmd.toString());
         while (matcher.find()) {
@@ -1311,16 +1311,18 @@ public class ParameterizedSparqlString implements PrefixMapping {
         // Go ahead and inject Variable Parameters
         SerializationContext context = new SerializationContext(this.prefixes);
         context.setBaseIRI(this.baseUri);
-        Iterator<String> vars = this.params.keySet().iterator();
-        while (vars.hasNext()) {
-            String var = vars.next();
-            Node n = this.params.get(var);
-            if (n == null)
+        for ( String var : this.params.keySet() )
+        {
+            Node n = this.params.get( var );
+            if ( n == null )
+            {
                 continue;
-            this.validateSafeToInject(command, var, n);
+            }
+            this.validateSafeToInject( command, var, n );
 
-            p = Pattern.compile("([?$]" + var + ")([^\\w]|$)");
-            command = p.matcher(command).replaceAll(Matcher.quoteReplacement(this.stringForNode(n, context)) + "$2");
+            p = Pattern.compile( "([?$]" + var + ")([^\\w]|$)" );
+            command =
+                p.matcher( command ).replaceAll( Matcher.quoteReplacement( this.stringForNode( n, context ) ) + "$2" );
         }
 
         // Then inject Positional Parameters
@@ -1357,15 +1359,14 @@ public class ParameterizedSparqlString implements PrefixMapping {
         }
 
         // Then pre-pend prefixes
-        Iterator<String> pre = this.prefixes.getNsPrefixMap().keySet().iterator();
 
-        while (pre.hasNext()) {
-            String prefix = pre.next();
-            finalCmd.append("PREFIX ");
-            finalCmd.append(prefix);
-            finalCmd.append(": ");
-            finalCmd.append(FmtUtils.stringForURI(this.prefixes.getNsPrefixURI(prefix), null, null));
-            finalCmd.append('\n');
+        for ( String prefix : this.prefixes.getNsPrefixMap().keySet() )
+        {
+            finalCmd.append( "PREFIX " );
+            finalCmd.append( prefix );
+            finalCmd.append( ": " );
+            finalCmd.append( FmtUtils.stringForURI( this.prefixes.getNsPrefixURI( prefix ), null, null ) );
+            finalCmd.append( '\n' );
         }
 
         finalCmd.append(command);
@@ -1513,8 +1514,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * 
      */
     private class DelimiterInfo {
-        private List<Pair<Integer, String>> starts = new ArrayList<Pair<Integer, String>>();
-        private Map<Integer, Integer> stops = new HashMap<Integer, Integer>();
+        private List<Pair<Integer, String>> starts = new ArrayList<>();
+        private Map<Integer, Integer> stops = new HashMap<>();
 
         /**
          * Parse delimiters from a string, discards any previously parsed
@@ -1628,7 +1629,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
         }
 
         public void addStart(int index, String delim) {
-            this.starts.add(new Pair<Integer, String>(index, delim));
+            this.starts.add(new Pair<>(index, delim));
         }
 
         public void addStop(int start, int stop) {

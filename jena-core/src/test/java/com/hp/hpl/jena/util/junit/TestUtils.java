@@ -44,7 +44,7 @@ public class TestUtils
     {
         if ( r == null )
             return null ;
-        List<Resource> x = new ArrayList<Resource>() ;
+        List<Resource> x = new ArrayList<>() ;
         StmtIterator sIter = r.listProperties(p) ;
         for ( ; sIter.hasNext() ; ) {
             RDFNode n = sIter.next().getObject() ;

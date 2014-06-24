@@ -113,7 +113,7 @@ public class SchemagenMojo
     private SchemagenOptions defaultOptions;
 
     /** Map of source options, indexed by name */
-    private Map<String, SchemagenOptions> optIndex = new HashMap<String, SchemagenOptions>();
+    private Map<String, SchemagenOptions> optIndex = new HashMap<>();
 
     /***********************************/
     /* Constructors                    */
@@ -170,7 +170,7 @@ public class SchemagenMojo
         ds.setBasedir( getBaseDir() );
         ds.scan();
 
-        List<String> files = new ArrayList<String>( Arrays.asList( ds.getIncludedFiles() ) );
+        List<String> files = new ArrayList<>( Arrays.asList( ds.getIncludedFiles() ) );
         Collections.sort( files );
 
         //add http includes

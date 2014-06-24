@@ -84,8 +84,9 @@ public class PrintUtil {
      * Remove a set of prefix mappings from the table of known short forms
      */
     public static void removePrefixMap(Map<String, String> map) {
-        for(Iterator<String> i = map.keySet().iterator(); i.hasNext(); ) {
-            prefixMapping.removeNsPrefix( i.next() );
+        for ( String s : map.keySet() )
+        {
+            prefixMapping.removeNsPrefix( s );
         }
     }
     
@@ -176,7 +177,7 @@ public class PrintUtil {
      * Print an n-space indent to the given output stream
      */
     public static void printIndent(PrintWriter out, int indent) {
-        StringBuffer spaces = new StringBuffer();
+        StringBuilder spaces = new StringBuilder();
         for (int i = 0; i < indent; i++) spaces.append(" ");
         out.print(spaces.toString());
     }

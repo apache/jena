@@ -166,10 +166,9 @@ public class GraphMatcher extends java.lang.Object {
                 impossible();
             Node rslt[][] = new Node[boundAnonResources.size()][];
             int ix = 0;
-            Iterator<AnonResource> it = boundAnonResources.iterator();
-            while ( it.hasNext() ) {
-                AnonResource r = it.next();
-                rslt[ix++] = new Node[]{r.r,r.bound.r};
+            for ( AnonResource r : boundAnonResources )
+            {
+                rslt[ix++] = new Node[]{ r.r, r.bound.r };
             }
             return rslt;
         }
@@ -257,7 +256,7 @@ public class GraphMatcher extends java.lang.Object {
         // Otherwise if some member of the bucket has friends
         // we can refine the hash, and we set refinableHash.
         check(HASH_OK);
-        return new FilterIterator<Bucket>(
+        return new FilterIterator<>(
         new Filter<Bucket>() {
             @Override public boolean accept(Bucket o) {
                 Bucket b = o;
@@ -278,9 +277,10 @@ public class GraphMatcher extends java.lang.Object {
         
     }
     private void unbindAll(Set<AnonResource> s)  {
-        Iterator<AnonResource> rs = s.iterator();
-        while (rs.hasNext())
-            rs.next().unbind();
+        for ( AnonResource value : s )
+        {
+            value.unbind();
+        }
         in(HASH_BAD);
     }
     private int prepare(Graph otherm)  {
@@ -365,28 +365,27 @@ public class GraphMatcher extends java.lang.Object {
         
         // Now compute all hashes and stick things in the
         // right buckets.
-        Iterator<AnonResource> anons = unboundAnonResources.iterator();
-        while ( anons.hasNext() ) {
-            AnonResource a = anons.next();
+        for ( AnonResource a : unboundAnonResources )
+        {
             Integer hash = new Integer( a.myHashCode() );
-            Bucket bkt = table.get(hash);
-            if ( bkt == null ) {
+            Bucket bkt = table.get( hash );
+            if ( bkt == null )
+            {
                 bkt = new Bucket();
-                table.put(hash,bkt);
+                table.put( hash, bkt );
             }
-            bkt.add(a);
+            bkt.add( a );
         }
         
         // Produce a checksum for the table.
         int rslt = 0;
-        Iterator<Map.Entry<Integer, Bucket>> tit = table.entrySet().iterator();
-        
-        while ( tit.hasNext() ) {
-            Map.Entry<Integer, Bucket> pair = tit.next();
+
+        for ( Map.Entry<Integer, Bucket> pair : table.entrySet() )
+        {
             int hash = pair.getKey().intValue();
             Bucket bkt = pair.getValue();
             int sz = bkt.size();
-            rslt += sz*0x10001 ^ hash;
+            rslt += sz * 0x10001 ^ hash;
         }
         
         in(HASH_OK);
@@ -619,19 +618,26 @@ public class GraphMatcher extends java.lang.Object {
             add(subj);
             add(pred);
             add(obj);
-            Iterator<int[]> it = bag.values().iterator();
-            while ( it.hasNext() ) {
-                int v[] = it.next();
+            for ( int[] v : bag.values() )
+            {
                 int last = 2;
                 int p;
-                while ( v[last]== -1)
+                while ( v[last] == -1 )
+                {
                     last--;
+                }
                 if ( last == 0 )
+                {
                     p = SX;
+                }
                 else
+                {
                     p = SD;
-                for (int i=0;i<=last;i++)
-                    pattern |= p<<v[i];
+                }
+                for ( int i = 0; i <= last; i++ )
+                {
+                    pattern |= p << v[i];
+                }
             }
             if (!legalPattern(pattern)) {
                 System.out.println("s: " + subj + " p: " + pred + " o: " + obj + " pattern: " + pattern);
@@ -761,10 +767,9 @@ public class GraphMatcher extends java.lang.Object {
             if ( bound!=null )
                 impossible();
             myHash = 0;
-            Iterator<AnonStatement> ss = occursIn.iterator();
-            while (ss.hasNext()) {
-                AnonStatement ass = ss.next();
-                myHash += ass.myHashCode(this);
+            for ( AnonStatement ass : occursIn )
+            {
+                myHash += ass.myHashCode( this );
             }
             hash[myHashLevel] = myHash;
             return myHash;
@@ -832,9 +837,10 @@ public class GraphMatcher extends java.lang.Object {
             }
             Set<StatementWrapper> statements = CollectionFactory.createHashedSet();
             // Add all our statements to the set.
-            Iterator<AnonStatement> it = occursIn.iterator();
-            while ( it.hasNext() )
-                statements.add(wrapStatement(it.next()));
+            for ( AnonStatement anOccursIn : occursIn )
+            {
+                statements.add( wrapStatement( anOccursIn ) );
+            }
             return statements;
         }
         @Override

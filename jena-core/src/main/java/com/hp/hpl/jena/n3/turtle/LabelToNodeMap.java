@@ -29,7 +29,7 @@ import com.hp.hpl.jena.graph.NodeFactory ;
 
 public class LabelToNodeMap
 {
-    Map<String, Node> bNodeLabels = new HashMap<String, Node>() ;
+    Map<String, Node> bNodeLabels = new HashMap<>() ;
     
     public LabelToNodeMap()
     {}

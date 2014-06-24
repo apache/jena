@@ -41,9 +41,9 @@ class Relation<T> {
     /** The empty Relation.
      */
     public Relation() {
-        rows = new HashMap<T, Set<T>>();
-        cols = new HashMap<T, Set<T>>();
-        index = new HashSet<T>();
+        rows = new HashMap<>();
+        cols = new HashMap<>();
+        index = new HashSet<>();
     }
     /** <code>a</code> is now related to <code>b</code>
      *
@@ -97,21 +97,23 @@ class Relation<T> {
     private void clearX(Set<T> s, T b) {
         if (s == null)
             return;
-        Iterator<T> it = s.iterator();
-        while (it.hasNext())
-            clear(it.next(), b);
+        for ( T value : s )
+        {
+            clear( value, b );
+        }
     }
     private void clearX(T a, Set<T> s) {
         if (s == null)
             return;
-        Iterator<T> it = s.iterator();
-        while (it.hasNext())
-            clear(a, it.next());
+        for ( T value : s )
+        {
+            clear( a, value );
+        }
     }
     static private <T> void innerAdd(Map<T, Set<T>> s, T a, T b) {
         Set<T> vals = s.get(a);
         if (vals == null) {
-            vals = new HashSet<T>();
+            vals = new HashSet<>();
             s.put(a, vals);
         }
         vals.add(b);
@@ -138,21 +140,26 @@ class Relation<T> {
     
      */
     synchronized public void transitiveClosure() {
-        Iterator<T> j = index.iterator();
-        while (j.hasNext()) {
-            Object oj = j.next();
-            Set<T> si = cols.get(oj);
-            Set<T> sk = rows.get(oj);
-            if (si != null && sk != null) {
+        for ( T oj : index )
+        {
+            Set<T> si = cols.get( oj );
+            Set<T> sk = rows.get( oj );
+            if ( si != null && sk != null )
+            {
                 Iterator<T> i = si.iterator();
-                while (i.hasNext()) {
+                while ( i.hasNext() )
+                {
                     T oi = i.next();
-                    if (oi != oj) {
+                    if ( oi != oj )
+                    {
                         Iterator<T> k = sk.iterator();
-                        while (k.hasNext()) {
+                        while ( k.hasNext() )
+                        {
                             T ok = k.next();
-                            if (ok != oj)
-                                set(oi, ok);
+                            if ( ok != oj )
+                            {
+                                set( oi, ok );
+                            }
                         }
                     }
                 }
@@ -164,18 +171,19 @@ class Relation<T> {
      *
      */
     synchronized public Set<T> getDiagonal() {
-        Set<T> rslt = new HashSet<T>();
-        Iterator<T> it = index.iterator();
-        while (it.hasNext()) {
-            T o = it.next();
-            if (get(o, o))
-                rslt.add(o);
+        Set<T> rslt = new HashSet<>();
+        for ( T o : index )
+        {
+            if ( get( o, o ) )
+            {
+                rslt.add( o );
+            }
         }
         return rslt;
     }
 
     synchronized public Relation<T> copy() {
-        Relation<T> rslt = new Relation<T>();
+        Relation<T> rslt = new Relation<>();
         Iterator<PairEntry<T, T>> it = iterator();
         while ( it.hasNext() ) {
             Map.Entry<T, T> e = it.next();
@@ -206,7 +214,7 @@ class Relation<T> {
             @Override
             public PairEntry<X, X> map1(X b)
             {
-                return new PairEntry<X, X>(a, b) ;
+                return new PairEntry<>(a, b) ;
             }
         } ;
     }
@@ -215,7 +223,7 @@ class Relation<T> {
     {
         final T a = pair.getKey() ;
         Set<T> bs = pair.getValue() ;
-        return new Map1Iterator<T, PairEntry<T, T>>(inner(a), bs.iterator()) ;
+        return new Map1Iterator<>(inner(a), bs.iterator()) ;
     }
 
     /**
@@ -236,7 +244,7 @@ class Relation<T> {
             }} ;
         
         Map1Iterator<Map.Entry<T, Set<T>>,Iterator<PairEntry<T, T>>> iter1 =
-            new Map1Iterator<Map.Entry<T, Set<T>>,Iterator<PairEntry<T, T>>>(m1 , rows.entrySet().iterator()) ;
+            new Map1Iterator<>(m1 , rows.entrySet().iterator()) ;
         // And now flatten it.
         Iterator<PairEntry<T, T>> iter2 = WrappedIterator.createIteratorIterator(iter1) ;
         return iter2 ;

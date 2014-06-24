@@ -66,16 +66,16 @@ public class TestIndexTable {
 	public void setup()
 	{
 		vars = new Var[] { Var.alloc("a"), Var.alloc("b"), Var.alloc("c") } ;
-		order1 = new LinkedHashSet<Var>() ;
-		order2 = new LinkedHashSet<Var>() ;
+		order1 = new LinkedHashSet<>() ;
+		order2 = new LinkedHashSet<>() ;
 		for ( int i = 0 ; i < vars.length ; i++ )
 		{
 			order1.add(vars[i]) ;
 			order2.add(vars[vars.length - i - 1]) ;
 		}
 		
-		fData = new ArrayList<Binding>() ;
-		pData = new ArrayList<Binding>() ;
+		fData = new ArrayList<>() ;
+		pData = new ArrayList<>() ;
 		for ( int i = 10 ; i <= 100 ; i += 10 )
 		{
 			BindingHashMap bindingFull = new BindingHashMap() ;

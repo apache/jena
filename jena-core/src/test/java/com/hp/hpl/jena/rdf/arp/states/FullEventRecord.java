@@ -41,10 +41,12 @@ class FullEventRecord extends EventRecord {
     }
     @Override
     public String toString() {
-        StringBuffer rslt = new StringBuffer( "|"+state+"| " +  super.toString());
+        StringBuilder rslt = new StringBuilder( "|"+state+"| " +  super.toString());
         rslt.append("{ ");
-        for (int i=0;i<moreCharacter.length;i++)
-            rslt.append(moreCharacter[i].toString() + " ; ");
+        for ( EventRecord aMoreCharacter : moreCharacter )
+        {
+            rslt.append( aMoreCharacter.toString() + " ; " );
+        }
         rslt.append(" }");
         return rslt.toString();
           

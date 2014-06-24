@@ -30,8 +30,8 @@ import com.hp.hpl.jena.update.Update ;
 public abstract class UpdateWithUsing extends Update
 {
     private Node withIRI = null ;
-    private List<Node> using = new ArrayList<Node>() ;
-    private List<Node> usingNamed = new ArrayList<Node>() ;
+    private List<Node> using = new ArrayList<>() ;
+    private List<Node> usingNamed = new ArrayList<>() ;
 
     private List<Node> usingView = Collections.unmodifiableList(using) ;
     private List<Node> usingNamedView = Collections.unmodifiableList(usingNamed) ;

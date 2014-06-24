@@ -29,8 +29,8 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 
 public class TableN extends TableBase {
-    protected List<Binding> rows = new ArrayList<Binding>() ;
-    protected List<Var>     vars = new ArrayList<Var>() ;
+    protected List<Binding> rows = new ArrayList<>() ;
+    protected List<Var>     vars = new ArrayList<>() ;
 
     public TableN() {}
 

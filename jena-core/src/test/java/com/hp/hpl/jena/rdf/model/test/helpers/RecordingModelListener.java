@@ -35,7 +35,7 @@ import org.junit.Assert;
  */
 public class RecordingModelListener implements ModelChangedListener
 {
-	List<Object> history = new ArrayList<Object>();
+	List<Object> history = new ArrayList<>();
 
 	@Override
 	public void addedStatement( final Statement s )

@@ -189,7 +189,7 @@ public class IndividualImpl
     public <T extends OntClass> ExtendedIterator<T> listOntClasses( boolean direct ) {
         @SuppressWarnings("unchecked")
         ExtendedIterator<T> iter = 
-            (ExtendedIterator<T>)listRDFTypes( direct ).mapWith( new ResourceAsMapper<OntClass>( OntClass.class ) );
+            (ExtendedIterator<T>)listRDFTypes( direct ).mapWith( new ResourceAsMapper<>( OntClass.class ) );
         return iter ;
     }
 

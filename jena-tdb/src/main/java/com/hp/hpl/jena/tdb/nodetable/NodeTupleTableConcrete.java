@@ -120,7 +120,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         try {
             startRead() ;
             Iterator<Tuple<NodeId>> iter1 = findAsNodeIds(nodes) ; // **public call
-            if (iter1 == null) return new NullIterator<Tuple<Node>>() ;
+            if (iter1 == null) return new NullIterator<>() ;
             Iterator<Tuple<Node>> iter2 = TupleLib.convertToNodes(nodeTable, iter1) ;
             return iteratorControl(iter2) ;
         } finally { finishRead() ; }

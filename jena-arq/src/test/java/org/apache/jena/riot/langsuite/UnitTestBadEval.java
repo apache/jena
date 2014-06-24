@@ -22,7 +22,6 @@ package org.apache.jena.riot.langsuite;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.junit.After ;
@@ -81,8 +80,7 @@ public class UnitTestBadEval extends LangTestCase
         try {
             RDFDataMgr.read(model, input) ;
             fail("Managed to read a bad evaluation test without error") ;
-        } 
-        catch (RiotException ex) {}
+        }
         catch (JenaException ex) {}
         catch (RuntimeException ex) 
         { 
@@ -96,8 +94,7 @@ public class UnitTestBadEval extends LangTestCase
         try {
             RDFDataMgr.read(ds, input) ;
             fail("Managed to read a bad evaluation test without error") ;
-        } 
-        catch (RiotException ex) {}
+        }
         catch (JenaException ex) {}
         catch (RuntimeException ex) 
         { 

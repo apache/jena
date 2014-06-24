@@ -110,16 +110,8 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
     ) {
         try {
             this.getClass().getDeclaredMethod(name,attSign)
-            .invoke(this,new Object[]{att});
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+            .invoke(this, att );
+        } catch (IllegalArgumentException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | SecurityException e) {
             e.printStackTrace();
         }
     }
@@ -193,43 +185,42 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
     private void doIt(IRI iri) {
         if (iri==null)
             return;
-        for (int i=0;i<methods.length;i++) {
-            String m = methods[i];
-            try {
-               Object r = IRI.class.getDeclaredMethod(m,nullSign)
-                .invoke(iri,new Object[]{});
-               if (r==null)
-                       out.println("<"+m+
-                               " nullValue='true'/>"
-                               );
-               else
-               out.println("<"+m+
-                       " value='" +
-                       substituteStandardEntities(r.toString())
-                       + "'/>"
-                       );
-               
-               
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                Throwable t = e;
-                if (t.getCause()!=null)
-                    t= t.getCause();
-                String s = t.getMessage()!=null?t.getMessage():t.toString();
-                out.println("<"+m+
-                        " exception='" +
-                        substituteStandardEntities(s)
-                        + "'/>"
-                        );
-            } catch (NoSuchMethodException e) {
+        for ( String m : methods )
+        {
+            try
+            {
+                Object r = IRI.class.getDeclaredMethod( m, nullSign ).invoke( iri, new Object[]{ } );
+                if ( r == null )
+                {
+                    out.println( "<" + m +
+                                     " nullValue='true'/>" );
+                }
+                else
+                {
+                    out.println( "<" + m +
+                                     " value='" +
+                                     substituteStandardEntities( r.toString() ) + "'/>" );
+                }
+
+
+            }
+            catch ( IllegalArgumentException | NoSuchMethodException | IllegalAccessException | SecurityException e )
+            {
                 e.printStackTrace();
             }
-            
+            catch ( InvocationTargetException e )
+            {
+                Throwable t = e;
+                if ( t.getCause() != null )
+                {
+                    t = t.getCause();
+                }
+                String s = t.getMessage() != null ? t.getMessage() : t.toString();
+                out.println( "<" + m +
+                                 " exception='" +
+                                 substituteStandardEntities( s ) + "'/>" );
+            }
+
         }
 
         Iterator<Violation> it = ((AbsIRIImpl)iri).allViolations();

@@ -40,10 +40,10 @@ import com.hp.hpl.jena.util.OneToManyMap;
 public class TempNodeCache {
 
     /** Map from instance+property to value */
-    protected OneToManyMap<NodePair, Node> ipMap = new OneToManyMap<NodePair, Node>();
+    protected OneToManyMap<NodePair, Node> ipMap = new OneToManyMap<>();
     
     /** Map from temp to RDF class, if any */
-    protected Map<Node, Node> classMap = new HashMap<Node, Node>(); 
+    protected Map<Node, Node> classMap = new HashMap<>();
     
     /**
      * Cosntructor.

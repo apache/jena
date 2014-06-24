@@ -51,7 +51,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
     private String              topBase         = null ;
     private Prologue            prologue        = null ; 
     private ItemList            declList        = null ;
-    private Deque<Prologue>     state           = new ArrayDeque<Prologue>() ; // Previous prologues (not the current one)
+    private Deque<Prologue>     state           = new ArrayDeque<>() ; // Previous prologues (not the current one)
     
     public ParseHandlerResolver(Prologue p)
     {

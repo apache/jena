@@ -278,12 +278,13 @@ public class OWLDLProfile
     }
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
-    private static HashMap<Class<?>,SupportsCheck> s_supportsChecks = new HashMap<Class<?>, SupportsCheck>();
+    private static HashMap<Class<?>,SupportsCheck> s_supportsChecks = new HashMap<>();
 
     static {
         // initialise the map of supports checks from a table of static data
-        for (int i = 0;  i < s_supportsCheckData.length;  i++) {
-            s_supportsChecks.put( (Class<?>) s_supportsCheckData[i][0], (SupportsCheck) s_supportsCheckData[i][1] );
+        for ( Object[] aS_supportsCheckData : s_supportsCheckData )
+        {
+            s_supportsChecks.put( (Class<?>) aS_supportsCheckData[0], (SupportsCheck) aS_supportsCheckData[1] );
         }
     }
 

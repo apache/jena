@@ -33,7 +33,7 @@ public class CacheUnbounded<K,V> implements Cache<K,V>
     
     public CacheUnbounded()
     {
-        cache = new HashMap<K, V>() ;
+        cache = new HashMap<>() ;
     }
     
     @Override

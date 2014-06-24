@@ -227,21 +227,20 @@ public class IRILib
         
         byte[] bytes = StrUtils.asUTF8bytes(string) ;
         StringBuilder sw = new StringBuilder() ;
-        for ( int i = 0 ; i < bytes.length ; i++ )
+        for ( byte b : bytes )
         {
-            byte b = bytes[i] ;
             // Signed bytes ...
             if ( b > 0 )
             {
-                sw.append((char)b) ;
-                continue ;
+                sw.append( (char) b );
+                continue;
             }
-            
-            int hi = (b & 0xF0) >> 4 ;
-            int lo = b & 0xF ;
-            sw.append('%') ;
-            sw.append(Chars.hexDigitsUC[hi]) ;
-            sw.append(Chars.hexDigitsUC[lo]) ;
+
+            int hi = ( b & 0xF0 ) >> 4;
+            int lo = b & 0xF;
+            sw.append( '%' );
+            sw.append( Chars.hexDigitsUC[hi] );
+            sw.append( Chars.hexDigitsUC[lo] );
         }
         return sw.toString() ;
     }

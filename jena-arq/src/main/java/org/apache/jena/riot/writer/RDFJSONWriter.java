@@ -58,7 +58,7 @@ public class RDFJSONWriter extends WriterGraphRIOTBase
 	private static void output(Sink<Pair<Node, Map<Node, Set<Node>>>> sink, Graph graph) {
 		ExtendedIterator<Node> subjects = GraphUtil.listSubjects(graph, Node.ANY, Node.ANY) ;
 		try {
-			Map<Node, Set<Node>> predicates = new HashMap<Node, Set<Node>>() ;
+			Map<Node, Set<Node>> predicates = new HashMap<>() ;
 			while ( subjects.hasNext() ) {
 				Node subject = subjects.next() ;
 				ExtendedIterator<Triple> triples = graph.find(subject, Node.ANY, Node.ANY) ;
@@ -69,7 +69,7 @@ public class RDFJSONWriter extends WriterGraphRIOTBase
 						if ( predicates.containsKey(p) ) {
 							predicates.get(p).add(triple.getObject()) ; 
 						} else {
-							Set<Node> objects = new HashSet<Node>() ;
+							Set<Node> objects = new HashSet<>() ;
 							objects.add(triple.getObject()) ;
 							predicates.put(p, objects) ;
 						}
@@ -77,7 +77,7 @@ public class RDFJSONWriter extends WriterGraphRIOTBase
 				} finally {
 					if ( triples != null ) triples.close() ;
 				}
-				sink.send(new Pair<Node, Map<Node, Set<Node>>>(subject, predicates)) ;
+				sink.send(new Pair<>(subject, predicates)) ;
 				predicates.clear() ;
 			}			
 		} finally {

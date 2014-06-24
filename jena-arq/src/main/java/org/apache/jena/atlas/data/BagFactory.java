@@ -31,7 +31,7 @@ public class BagFactory
      */
     public static <T> DefaultDataBag<T> newDefaultBag(ThresholdPolicy<T> policy, SerializationFactory<T> serializerFactory)
     {
-        return new DefaultDataBag<T>(policy, serializerFactory);
+        return new DefaultDataBag<>(policy, serializerFactory);
     }
 
     /**
@@ -47,7 +47,7 @@ public class BagFactory
      */
     public static <T> SortedDataBag<T> newSortedBag(ThresholdPolicy<T> policy, SerializationFactory<T> serializerFactory, Comparator<T> comparator)
     {
-        return new SortedDataBag<T>(policy, serializerFactory, comparator);
+        return new SortedDataBag<>(policy, serializerFactory, comparator);
     }
     
     /**
@@ -63,7 +63,7 @@ public class BagFactory
      */
     public static <T> DistinctDataBag<T> newDistinctBag(ThresholdPolicy<T> policy, SerializationFactory<T> serializerFactory, Comparator<T> comparator)
     {
-        return new DistinctDataBag<T>(policy, serializerFactory, comparator);
+        return new DistinctDataBag<>(policy, serializerFactory, comparator);
     }
     
     /**
@@ -79,6 +79,6 @@ public class BagFactory
      */
     public static <T> DistinctDataNet<T> newDistinctNet(ThresholdPolicy<T> policy, SerializationFactory<T> serializerFactory, Comparator<T> comparator)
     {
-        return new DistinctDataNet<T>(policy, serializerFactory, comparator);
+        return new DistinctDataNet<>(policy, serializerFactory, comparator);
     }
 }

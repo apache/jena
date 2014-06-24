@@ -48,7 +48,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
 				"    ?s text:query ( rdfs:label 'testOneSimpleResult' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testOneSimpleResult")) ;
 		doTestSearch(turtle, queryString, expectedURIs);
 	}
@@ -71,7 +71,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query (rdfs:label  'text') .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
@@ -87,7 +87,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query ('text') .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
@@ -103,7 +103,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s rdfs:label 'text' .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
@@ -119,7 +119,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s rdfs:label 'text' .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
@@ -135,7 +135,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query ( rdfs:label 'text') .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
@@ -151,7 +151,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query ('text') .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
@@ -167,7 +167,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query ( rdfs:label 'fuzz') .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         doTestSearch(turtle, queryString, expectedURIs);
     }
 
@@ -182,7 +182,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query ( rdfs:label ?t) .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
@@ -198,7 +198,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query ( ?P 'text') .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
@@ -215,7 +215,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query ( rdfs:label 'text' ?C) .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>();
+        Set<String> expectedURIs = new HashSet<>();
         expectedURIs.addAll( Arrays.asList( R_S1 ) ) ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
@@ -240,7 +240,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
 				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList(
 			    "http://example.org/data/resource/" + label + "1",
 			    "http://example.org/data/resource/" + label + "2"
@@ -267,7 +267,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query ('" + label + "?' 10 ) .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>() ;
+        Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(
                 "http://example.org/data/resource/" + label + "1",
                 "http://example.org/data/resource/" + label + "2"
@@ -304,11 +304,11 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
 				"    ?s text:query ( rdfs:comment '" + label + "?' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIsLabel = new HashSet<String>() ;
+		Set<String> expectedURIsLabel = new HashSet<>() ;
 		expectedURIsLabel.addAll( Arrays.asList(
 			    "http://example.org/data/resource/" + label + "1"
 		    ));
-		Set<String> expectedURIsComment = new HashSet<String>() ;
+		Set<String> expectedURIsComment = new HashSet<>() ;
 		expectedURIsComment.addAll( Arrays.asList(
 			    "http://example.org/data/resource/" + label + "2"
 		    ));
@@ -338,7 +338,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
 				"    ?s text:query ( rdfs:label '" + label + "?' 10 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList(
 			    "http://example.org/data/resource/" + label + "1"
 		    ));
@@ -367,7 +367,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
                 "    ?s text:query ('" + label + "?' 10 ) .",
                 "}"
                 );
-        Set<String> expectedURIs = new HashSet<String>() ;
+        Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList(
                 "http://example.org/data/resource/" + label + "1"
             ));
@@ -399,7 +399,7 @@ public abstract class AbstractTestDatasetWithTextIndex extends AbstractTestDatas
 				"    ?s text:query ( '" + label + "' 3 ) .",
 				"}"
 				);
-		Set<String> expectedURIs = new HashSet<String>() ;
+		Set<String> expectedURIs = new HashSet<>() ;
 		expectedURIs.addAll( Arrays.asList(
 					    "http://example.org/data/resource/" + label + "1",
 					    "http://example.org/data/resource/" + label + "2",

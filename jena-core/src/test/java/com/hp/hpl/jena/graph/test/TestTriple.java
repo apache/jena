@@ -238,7 +238,7 @@ public class TestTriple extends GraphTestBase
     public void testTripleToStringOrdering()
         {
         Triple t1 = NodeCreateUtils.createTriple( "subject predicate object" );
-        assertTrue( "subject must be present",  t1.toString().indexOf( "subject" ) >= 0 );    
+        assertTrue( "subject must be present", t1.toString().contains( "subject" ) );
         assertTrue( "subject must preceed predicate", t1.toString().indexOf( "subject" ) < t1.toString().indexOf( "predicate" ) );
         assertTrue( "predicate must preceed object", t1.toString().indexOf( "predicate" ) < t1.toString().indexOf( "object" ) );
         }

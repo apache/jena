@@ -320,7 +320,7 @@ public class TestPropEltErrorMsg extends TestCase {
     }
         
     static private class Atts implements Attributes {
-        ArrayList<Att> atts = new ArrayList<Att>();
+        ArrayList<Att> atts = new ArrayList<>();
         @Override
         public int getLength() {
             return atts.size();
@@ -402,7 +402,7 @@ public class TestPropEltErrorMsg extends TestCase {
 		s.setName("ARP Property Element Error Messages");
         for (int i=1;i<128;i++) {
             Atts atts = new Atts();
-            StringBuffer name = new StringBuffer();
+            StringBuilder name = new StringBuilder();
             switch(i&3) {
             case 0:
                 break;

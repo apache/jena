@@ -166,7 +166,7 @@ public class TransformFilterInequality extends TransformCopy {
 
     // --- find and extract
     private static Pair<List<Pair<Var, NodeValue>>, ExprList> preprocessFilterInequality(ExprList exprs) {
-        List<Pair<Var, NodeValue>> exprsFilterInequality = new ArrayList<Pair<Var, NodeValue>>();
+        List<Pair<Var, NodeValue>> exprsFilterInequality = new ArrayList<>();
         ExprList exprsOther = new ExprList();
         for (Expr e : exprs.getList()) {
             Pair<Var, NodeValue> p = preprocess(e);
@@ -212,7 +212,7 @@ public class TransformFilterInequality extends TransformCopy {
     }
 
     private static Collection<Var> varsMentionedInInequalityFilters(List<Pair<Var, NodeValue>> inequalities) {
-        Set<Var> vars = new HashSet<Var>();
+        Set<Var> vars = new HashSet<>();
         for (Pair<Var, NodeValue> p : inequalities)
             vars.add(p.getLeft());
         return vars;
@@ -344,7 +344,7 @@ public class TransformFilterInequality extends TransformCopy {
     }
 
     private static List<Op> extractOptionals(Op op) {
-        List<Op> chain = new ArrayList<Op>();
+        List<Op> chain = new ArrayList<>();
         while (op instanceof OpConditional || op instanceof OpLeftJoin) {
             Op2 opleftjoin2 = (Op2) op;
             chain.add(opleftjoin2.getRight());
@@ -354,7 +354,7 @@ public class TransformFilterInequality extends TransformCopy {
     }
 
     private static List<Op> processSpecialCase1(List<Op> ops, List<Pair<Var, NodeValue>> inequalities) {
-        List<Op> ops2 = new ArrayList<Op>();
+        List<Op> ops2 = new ArrayList<>();
         Collection<Var> vars = varsMentionedInInequalityFilters(inequalities);
 
         for (Op op : ops) {
@@ -385,7 +385,7 @@ public class TransformFilterInequality extends TransformCopy {
 
     private static Op processFilterWorker(Op op, List<Pair<Var, NodeValue>> inequalities) {
         // Firstly find all the possible values for each variable
-        Map<Var, Set<NodeValue>> possibleValues = new HashMap<Var, Set<NodeValue>>();
+        Map<Var, Set<NodeValue>> possibleValues = new HashMap<>();
         for (Pair<Var, NodeValue> inequalityTest : inequalities) {
             if (!possibleValues.containsKey(inequalityTest.getLeft())) {
                 possibleValues.put(inequalityTest.getLeft(), new HashSet<NodeValue>());

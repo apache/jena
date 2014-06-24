@@ -33,11 +33,11 @@ public class JSONMaker implements JSONHandler
     
     private JsonValue value = null ;
     
-    private Deque<JsonArray> arrays = new ArrayDeque<JsonArray>(); 
-    private Deque<JsonObject> objects = new ArrayDeque<JsonObject>();
+    private Deque<JsonArray> arrays = new ArrayDeque<>();
+    private Deque<JsonObject> objects = new ArrayDeque<>();
 
     // The depth of this stack is the object depth.
-    private Deque<String> keys = new ArrayDeque<String>();
+    private Deque<String> keys = new ArrayDeque<>();
 
     public JsonValue jsonValue()
     {

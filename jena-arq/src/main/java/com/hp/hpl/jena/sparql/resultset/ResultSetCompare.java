@@ -118,8 +118,8 @@ public class ResultSetCompare
     
     public static boolean equalsByTest(Collection<Binding> b1, Collection<Binding> b2, EqualityTest match)
     {
-        List<Binding> rows1 = new ArrayList<Binding>(b1);
-        List<Binding> rows2 = new ArrayList<Binding>(b2);
+        List<Binding> rows1 = new ArrayList<>(b1);
+        List<Binding> rows2 = new ArrayList<>(b2);
         return equivalent(rows1, rows2, match);
     }
 
@@ -217,8 +217,8 @@ public class ResultSetCompare
         if ( rs1 == null && rs2 == null ) return true ;
         if ( rs1 == null ) return false ;
         if ( rs2 == null ) return false ;
-        Set<String> names1 = new HashSet<String>(rs1.getResultVars()) ;
-        Set<String> names2 = new HashSet<String>(rs2.getResultVars()) ;
+        Set<String> names1 = new HashSet<>(rs1.getResultVars()) ;
+        Set<String> names2 = new HashSet<>(rs2.getResultVars()) ;
         return names1.equals(names2) ;
     }
 

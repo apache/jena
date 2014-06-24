@@ -34,13 +34,13 @@ class GraphNode {
     protected Node rdfNode;
     
 	/** The list of direct successor nodes to this node */
-	protected Set<GraphNode> succ = new HashSet<GraphNode>();
+	protected Set<GraphNode> succ = new HashSet<>();
 	
 	/** The list of direct predecessors nodes */
-	protected Set<GraphNode> pred = new HashSet<GraphNode>();
+	protected Set<GraphNode> pred = new HashSet<>();
 	
 	/** The set of all transitive successor nodes to this node */
-	protected Set<GraphNode> succClosed = new HashSet<GraphNode>();
+	protected Set<GraphNode> succClosed = new HashSet<>();
 	
 	/** An optional cache of the triples that represent succClosed */
 	protected List<Triple> succClosedTriples;
@@ -90,9 +90,9 @@ class GraphNode {
         
         @Override void addSuccessors( Node base, TransitiveGraphCache tgc, ArrayList<Triple> result )
             {
-            for (Iterator<GraphNode> j = components.iterator(); j.hasNext(); ) 
+                for ( GraphNode component : components )
                 {
-                result.add( new Triple(base, tgc.closedPredicate, j.next().rdfNode) );
+                    result.add( new Triple( base, tgc.closedPredicate, component.rdfNode ) );
                 }
             }
         
@@ -268,7 +268,7 @@ class GraphNode {
 	 * node to the target node.
 	 */
 	public void propagateAdd(GraphNode target) {
-        Set<GraphNode> sc = new HashSet<GraphNode>(target.succClosed);
+        Set<GraphNode> sc = new HashSet<>(target.succClosed);
         sc.add(target); 
 		visitPredecessors(new Visitor<Set<GraphNode>, GraphNode>() {
 			@Override
@@ -283,7 +283,7 @@ class GraphNode {
 						i.remove();
                         if (s == processing) {
                             // Can't remove immediately w/o beaking the visitor loop
-                            if (kill == null) kill = new ArrayList<GraphNode>();
+                            if (kill == null) kill = new ArrayList<>();
                             kill.add(node);
                         } else {
                             s.pred.remove(node);
@@ -300,7 +300,7 @@ class GraphNode {
 	 * node as lead.
 	 */
 	public void propagateSCC() {
-		Set<GraphNode> visited = new HashSet<GraphNode>();
+		Set<GraphNode> visited = new HashSet<>();
 		visited.add(this);
 		// Scan predecessors not including ourselves
 		doVisitPredecessors(new Visitor<Set<GraphNode>, Object>() {
@@ -317,7 +317,7 @@ class GraphNode {
 //                            s.pred.remove(node);
                         if (s == processing) {
                             // Can't remove immediately w/o beaking the visitor loop
-                            if (kill == null) kill = new ArrayList<GraphNode>();
+                            if (kill == null) kill = new ArrayList<>();
                             kill.add(node);
                         } else {
                             s.pred.remove(node);
@@ -337,12 +337,12 @@ class GraphNode {
      */
     public void makeLeadNodeFor(Set<GraphNode> members) {
         // Accumulate all successors
-        Set<GraphNode> newSucc = new HashSet<GraphNode>();
-        Set<GraphNode> newSuccClosed = new HashSet<GraphNode>();
-        for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
-            GraphNode n = i.next();
-            newSucc.addAll(n.succ);
-            newSuccClosed.addAll(n.succClosed);
+        Set<GraphNode> newSucc = new HashSet<>();
+        Set<GraphNode> newSuccClosed = new HashSet<>();
+        for ( GraphNode n : members )
+        {
+            newSucc.addAll( n.succ );
+            newSuccClosed.addAll( n.succClosed );
         }
         newSucc.removeAll(members);
         newSuccClosed.removeAll(members);
@@ -350,24 +350,26 @@ class GraphNode {
         succClosed = newSuccClosed;
         
         // Rewrite all direct successors to have us as predecessor
-        for (Iterator<GraphNode> i = succ.iterator(); i.hasNext();) {
-            GraphNode n = i.next();
-            n.pred.removeAll(members);
-            n.pred.add(this);
+        for ( GraphNode n : succ )
+        {
+            n.pred.removeAll( members );
+            n.pred.add( this );
         }
         
         // Find all predecessor nodes and relink link them to point to us
-        Set<GraphNode> done = new HashSet<GraphNode>();
-        Set<GraphNode> newAliases = new HashSet<GraphNode>();
-        for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
-        	addSiblings( newAliases, i.next() );
+        Set<GraphNode> done = new HashSet<>();
+        Set<GraphNode> newAliases = new HashSet<>();
+        for ( GraphNode member : members )
+        {
+            addSiblings( newAliases, member );
         }
         becomeLeaderOf( newAliases );
-        for (Iterator<GraphNode> i = members.iterator(); i.hasNext(); ) {
-            GraphNode n = i.next();
-            if (n != this) {
-                pred.addAll(n.pred);
-                n.relocateAllRefTo(this, done);
+        for ( GraphNode n : members )
+        {
+            if ( n != this )
+            {
+                pred.addAll( n.pred );
+                n.relocateAllRefTo( this, done );
                 n.becomeSubordinateOf( this );
             }
         }
@@ -419,11 +421,11 @@ class GraphNode {
      */
     private List<Triple> triplesForSuccessors(Node base, boolean closed, TransitiveGraphCache tgc) {
         Set<GraphNode> successors = closed ? succClosed : succ;
-        ArrayList<Triple> result = new ArrayList<Triple>(successors.size() + 10);
+        ArrayList<Triple> result = new ArrayList<>(successors.size() + 10);
         result.add(new Triple(base, tgc.closedPredicate, base));    // implicit reflexive case 
-        for (Iterator<GraphNode> i = successors.iterator(); i.hasNext(); ) {
-            GraphNode s = i.next();
-            result.add(new Triple(base, tgc.closedPredicate, s.rdfNode));
+        for ( GraphNode s : successors )
+        {
+            result.add( new Triple( base, tgc.closedPredicate, s.rdfNode ) );
             s.siblings.addSuccessors( base, tgc, result );
         }
         siblings.addSuccessors( base, tgc, result );
@@ -453,14 +455,18 @@ class GraphNode {
     	StringBuffer sb = new StringBuffer();
     	sb.append("{");
     	boolean started = false;
-    	for (Iterator<GraphNode> i = s.iterator(); i.hasNext(); ) {
-    		if (started) {
-    			sb.append(", ");
-    		} else {
-    			started = true;
-    		}
-    		sb.append(i.next().toString());
-    	}
+        for ( GraphNode value : s )
+        {
+            if ( started )
+            {
+                sb.append( ", " );
+            }
+            else
+            {
+                started = true;
+            }
+            sb.append( value.toString() );
+        }
     	sb.append("}");
     	return sb.toString();
     }

@@ -28,7 +28,6 @@ import org.apache.log4j.LogManager ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.apache.log4j.helpers.Loader ;
 import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 
 /**
  * Tests for the {@link MemDriver}

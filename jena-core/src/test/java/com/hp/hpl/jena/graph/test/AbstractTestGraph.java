@@ -526,7 +526,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
      */
     private <T> Set<T> remove( Set<T> A, Set<T> B )
     {
-        Set<T> result = new HashSet<T>( A );
+        Set<T> result = new HashSet<>( A );
         result.removeAll(  B  );        
         return result;
     }
@@ -735,15 +735,15 @@ public abstract class AbstractTestGraph extends GraphTestBase
     // Same - except for order
     private void assertSameUnordered(List<Node> x1, Collection<Node>exclude, Node[] expected)
     {
-        List<Node> x = new ArrayList<Node>() ;
+        List<Node> x = new ArrayList<>() ;
         x.addAll(x1) ;
         x.removeAll(exclude) ;
         
         assertEquals(expected.length, x.size()) ;
-        Set<Node> X = new HashSet<Node>() ;
+        Set<Node> X = new HashSet<>() ;
         X.addAll(x) ;
 
-        Set<Node> R = new HashSet<Node>() ;
+        Set<Node> R = new HashSet<>() ;
         R.addAll(Arrays.asList(expected)) ;
 
         assertEquals( R, X);
@@ -890,18 +890,20 @@ public abstract class AbstractTestGraph extends GraphTestBase
      */
     public void testRemoveSPO()
     {
-        for (int i = 0; i < cases.length; i += 1)
-            for (int j = 0; j < 3; j += 1)
+        for ( String[] aCase : cases )
+        {
+            for ( int j = 0; j < 3; j += 1 )
             {
                 Graph content = getGraph();
                 Graph baseContent = copy( content );
-                graphAdd( content, cases[i][0] );
-                Triple remove = triple( cases[i][1] );
-                Graph expected = graphWith( cases[i][2] );
+                graphAdd( content, aCase[0] );
+                Triple remove = triple( aCase[1] );
+                Graph expected = graphWith( aCase[2] );
                 content.remove( remove.getSubject(), remove.getPredicate(), remove.getObject() );
                 Graph finalContent = remove( copy( content ), baseContent );
-                assertIsomorphic( cases[i][1], expected, finalContent );
+                assertIsomorphic( aCase[1], expected, finalContent );
             }
+        }
     }
 
     /** testIsomorphism from file data 

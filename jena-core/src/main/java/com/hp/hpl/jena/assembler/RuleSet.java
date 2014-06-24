@@ -40,7 +40,7 @@ public class RuleSet
     private final List<Rule> rules;
     
     protected RuleSet( List<Rule> rules )
-        { this.rules = new ArrayList<Rule>( rules ); }
+        { this.rules = new ArrayList<>( rules ); }
 
     public List<Rule> getRules()
         { return rules; }

@@ -158,7 +158,7 @@ public class Transformer
         protected final Transform transform ;
         private final ExprTransform exprTransform ;
 
-        private final Deque<Op> stack = new ArrayDeque<Op>() ;
+        private final Deque<Op> stack = new ArrayDeque<>() ;
         protected final Op pop() 
         { return stack.pop(); }
         
@@ -202,7 +202,7 @@ public class Transformer
         public void visit(OpOrder opOrder)
         {
             List<SortCondition> conditions = opOrder.getConditions() ;
-            List<SortCondition> conditions2 = new ArrayList<SortCondition>() ;
+            List<SortCondition> conditions2 = new ArrayList<>() ;
             boolean changed = false ;
 
             for ( SortCondition sc : conditions )
@@ -308,7 +308,7 @@ public class Transformer
             List<ExprAggregator> aggs2 = aggs ;
             
             //And the aggregators...
-            aggs2 = new ArrayList<ExprAggregator>() ;
+            aggs2 = new ArrayList<>() ;
             for ( ExprAggregator agg : aggs )
             {
                 Aggregator aggregator = agg.getAggregator() ;
@@ -372,7 +372,7 @@ public class Transformer
         @Override
         protected void visitN(OpN op)
         {
-            List<Op> x = new ArrayList<Op>(op.size()) ;
+            List<Op> x = new ArrayList<>(op.size()) ;
             
             for ( Iterator<Op> iter = op.iterator() ; iter.hasNext() ; )
             {

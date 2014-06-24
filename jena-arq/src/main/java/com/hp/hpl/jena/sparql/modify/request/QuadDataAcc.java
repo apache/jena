@@ -42,7 +42,7 @@ public class QuadDataAcc extends QuadDataAccSink implements TripleCollectorMark
     
     public QuadDataAcc(List<Quad> quads)
     {
-        super(new SinkToCollection<Quad>(quads));
+        super(new SinkToCollection<>(quads));
         this.quads = quads;
         this.quadsView = Collections.unmodifiableList(quads) ;
     }

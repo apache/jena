@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.Iterator ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -96,17 +95,16 @@ public class OpPrefixesUsed
             
             if ( usedPMap.shortForm(uri) != uri )
                 return ;
-            
-            for ( Iterator<Map.Entry<String, String>> iter = pmap.entrySet().iterator() ; iter.hasNext() ; )
+
+            for ( Map.Entry<String, String> e : pmap.entrySet() )
             {
-                Map.Entry<String, String> e = iter.next();
-                String k = e.getKey() ;
-                String v = e.getValue() ;
-                
-                if ( uri.startsWith(v) )
+                String k = e.getKey();
+                String v = e.getValue();
+
+                if ( uri.startsWith( v ) )
                 {
-                    usedPMap.setNsPrefix(k, v) ;
-                    return ;
+                    usedPMap.setNsPrefix( k, v );
+                    return;
                 }
             }
         }

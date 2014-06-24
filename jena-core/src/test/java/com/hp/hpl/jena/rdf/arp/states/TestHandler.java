@@ -19,17 +19,13 @@
 package com.hp.hpl.jena.rdf.arp.states;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashMap ;
 
-import org.junit.Assert;
+import org.junit.Assert ;
 
-import com.hp.hpl.jena.rdf.arp.impl.ANode;
-import com.hp.hpl.jena.rdf.arp.impl.ARPLocation;
-import com.hp.hpl.jena.rdf.arp.impl.Taint;
-import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
-
-import org.apache.jena.iri.IRI;
+import com.hp.hpl.jena.rdf.arp.impl.ANode ;
+import com.hp.hpl.jena.rdf.arp.impl.Taint ;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler ;
 
 class TestHandler extends XMLHandler {
     public void wrong(String msg) {
@@ -63,7 +59,7 @@ class TestHandler extends XMLHandler {
         triples = 0;
         scope = 0;
         this.failOnWarning = failOnWarning_;
-        idsUsed = new HashMap<IRI, Map<String,ARPLocation>>();
+        idsUsed = new HashMap<>();
         idsUsedCount = 0;
     }
 

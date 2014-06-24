@@ -18,7 +18,6 @@
 
 package arq.cmdline;
 
-import java.util.Iterator ;
 import java.util.List ;
 
 import arq.cmd.CmdException ;
@@ -64,38 +63,34 @@ public class ModEngine extends ModBase
         
 //        if ( x.size() > 0 )
 //            QueryEngineRegistry.get().factories().clear() ;
-        
-        for ( Iterator<String> iter = x.iterator() ; iter.hasNext() ; )
+
+        for ( String engineName : x )
         {
-            String engineName = iter.next() ;
-            if ( engineName.equalsIgnoreCase("ref") ||
-                 engineName.equalsIgnoreCase("reference") )
+            if ( engineName.equalsIgnoreCase( "ref" ) || engineName.equalsIgnoreCase( "reference" ) )
             {
-                QueryEngineRef.register() ;
-                continue ;
-            }
-            
-            if ( engineName.equalsIgnoreCase("refQuad") )
-            {
-                QueryEngineRefQuad.register() ;
-                continue ;
-            }
-            
-            
-            if ( engineName.equalsIgnoreCase("main") )
-            {
-                QueryEngineMain.register() ;
-                continue ;
-            }
-            
-            if ( engineName.equalsIgnoreCase("quad") )
-            {
-                QueryEngineMainQuad.register() ;
-                continue ;
+                QueryEngineRef.register();
+                continue;
             }
 
-            
-            throw new CmdException("Engine name not recognized: "+engineName) ;
+            if ( engineName.equalsIgnoreCase( "refQuad" ) )
+            {
+                QueryEngineRefQuad.register();
+                continue;
+            }
+
+            if ( engineName.equalsIgnoreCase( "main" ) )
+            {
+                QueryEngineMain.register();
+                continue;
+            }
+
+            if ( engineName.equalsIgnoreCase( "quad" ) )
+            {
+                QueryEngineMainQuad.register();
+                continue;
+            }
+
+            throw new CmdException( "Engine name not recognized: " + engineName );
         }
 
         List<String> y = cmdLine.getValues(unEngineDecl) ;
