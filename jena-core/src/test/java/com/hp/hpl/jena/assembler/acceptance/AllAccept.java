@@ -58,9 +58,9 @@ public class AllAccept extends AssemblerTestBase
         {
         File f = FileUtils.tempFileName( "assembler-acceptance-", ".n3" );
         Model data = model( "a P b; b Q c" );
-        FileOutputStream fs = new FileOutputStream( f );
-        data.write( fs, "N3" );
-        fs.close();
+        try ( FileOutputStream fs = new FileOutputStream( f ) ) {
+            data.write( fs, "N3" );
+        }
         Resource root = resourceInModel( "x rdf:type ja:MemoryModel; x ja:content y; y ja:externalContent file:" + f.getAbsolutePath() );
         Model m = Assembler.general.openModel( root );
         assertIsoModels( data, m );

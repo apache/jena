@@ -1231,23 +1231,21 @@ public class SAX2RDFTest extends TestCase {
 		//System.err.println(base+" + "+this.file);
 		Model m = ModelFactory.createDefaultModel();
 		Model m2 = ModelFactory.createDefaultModel();
-		InputStream in = new FileInputStream(file);
-		RDFEHArray eh = new RDFEHArray();
-		RDFReader w = m.getReader();
-		w.setErrorHandler(eh);
-		w.read(m, in, base);
-		in.close();
-		in = new FileInputStream(file);
+        RDFEHArray eh = new RDFEHArray();
+        try ( InputStream in = new FileInputStream(file) ) {
+            RDFReader w = m.getReader();
+            w.setErrorHandler(eh);
+            w.read(m, in, base);
+        }
 
-		RDFEHArray eh2 = new RDFEHArray();
-
-		/*
-		 * w = m.getReader(); w.setErrorHandler(eh2); w.read(m2,in,base);
-		 * in.close();
-		 */
-		loadXMLModel(m2, in, eh2);
-
-		in.close();
+        RDFEHArray eh2 = new RDFEHArray();
+        try ( InputStream in = new FileInputStream(file) ) {
+            /*
+             * w = m.getReader(); w.setErrorHandler(eh2); w.read(m2,in,base);
+             * in.close();
+             */
+            loadXMLModel(m2, in, eh2);
+        }
 
 		/*
 		 * System.out.println("Normal:"); m.write(System.out,"N-TRIPLE");

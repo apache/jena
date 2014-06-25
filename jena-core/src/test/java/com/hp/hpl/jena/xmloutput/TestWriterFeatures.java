@@ -43,17 +43,21 @@ public class TestWriterFeatures extends ModelTestBase
             Model model = createMemModel();
             FileManager.get().readModel(model, filename );
             
-            StringWriter sw = new StringWriter();
-            RDFWriter w =  model.getWriter(writerName) ;
-            if ( propertyName != null )
-                w.setProperty(propertyName, propertyValue) ;
-            w.write(model, sw, null) ;
+            String contents = null ;
             
-            try { sw.close(); } catch (IOException ex) {}
+            try ( StringWriter sw = new StringWriter() ) {
+                RDFWriter w =  model.getWriter(writerName) ;
+                if ( propertyName != null )
+                    w.setProperty(propertyName, propertyValue) ;
+                w.write(model, sw, null) ;
+                contents = sw.toString() ;
+            } catch (IOException ex) { /* ignore : StringWriter */ }
 
-            Model model2 = createMemModel();
-            model2.read( new StringReader( sw.toString() ), filename );
-            assertTrue( model.isIsomorphicWith( model2 ) );
+            try ( StringReader sr = new StringReader( contents ) ) {
+                Model model2 = createMemModel();
+                model2.read( new StringReader( contents ), filename );
+                assertTrue( model.isIsomorphicWith( model2 ) );
+            }
     }
     
     private void checkReadWriteRead(String filename, String propertyName, String propertyValue)

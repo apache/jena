@@ -105,21 +105,15 @@ public class FileGraph extends GraphMem
         { readModelFrom( m, strict, name ); }
     
     protected void readModelFrom( Model m, boolean strict, File name )
-        {
-        FileInputStream in = null;
-        try
-            {
-            in = new FileInputStream( name );
+    {
+        try(FileInputStream in = new FileInputStream( name ) ) {
             model.read( in, "", this.lang );
-            }
-        catch (FileNotFoundException f)
-            { if (strict) throw new DoesNotExistException( name.toString() ); }
-        finally 
-            {
-            if (in != null) try {in.close();} catch (IOException ignore) {}
-            }
         }
-        
+        catch (FileNotFoundException f)
+        { if (strict) throw new DoesNotExistException( name.toString() ); }
+        catch (IOException ignore) {}
+    }
+
     /**
         As for FileGraph(File,boolean), except the name is given as a String.
      */
@@ -165,18 +159,18 @@ public class FileGraph extends GraphMem
         that the output is either done completely or not at all.
     */
     protected void saveContents( File targetName ) 
-        {
+    {
         try
-            {
+        {
             File intermediate = new File( targetName.getPath() + ".new" );
-            FileOutputStream out = new FileOutputStream( intermediate );
-            model.write( out, lang );
-            out.close();
-            updateFrom( targetName, intermediate );
+            try( FileOutputStream out = new FileOutputStream( intermediate ) ) {
+                model.write( out, lang );   
             }
-        catch (Exception e)
-            { throw new JenaException( e ); }
+            updateFrom( targetName, intermediate );
         }
+        catch (Exception e)
+        { throw new JenaException( e ); }
+    }
         
     /**
         The file intermediate has the new file contents. We want to move

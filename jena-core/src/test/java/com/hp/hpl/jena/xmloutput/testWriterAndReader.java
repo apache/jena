@@ -281,9 +281,9 @@ public class testWriterAndReader
         	baseUriRead = baseUris[fileNumber];
         else
         	baseUriRead = "http://foo.com/Hello";
-        InputStream rdr = new FileInputStream( filebase + fileName );
-        m1.read(rdr, baseUriRead);
-        rdr.close();
+        try ( InputStream rdr = new FileInputStream( filebase + fileName ) ) {
+            m1.read(rdr, baseUriRead);
+        }
         for (int j = 0; j < repetitionsJ; j++) {
 
             String baseUriWrite =
@@ -301,9 +301,9 @@ public class testWriterAndReader
         	m2 = createMemModel();
         	//empty(m2);
             
-            InputStream in = new ByteArrayInputStream( tmpOut.toByteArray() ) ;
-        	rdfRdr.read(m2, in, baseUriWrite);
-        	in.close();
+            try ( InputStream in = new ByteArrayInputStream( tmpOut.toByteArray() ) ) {
+                rdfRdr.read(m2, in, baseUriWrite);
+            }
         	Model s1 = m1;
         	Model s2 = m2;
         	/*

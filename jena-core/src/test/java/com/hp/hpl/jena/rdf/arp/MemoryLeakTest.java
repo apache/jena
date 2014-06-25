@@ -62,22 +62,14 @@ public class MemoryLeakTest extends TestCase {
 
     static void loadFile(String fileName)
         throws IOException {
-        PrintStream 
-            out = new PrintStream(new OutputStream() {
-
+        PrintStream oldOut = System.out;
+        try ( PrintStream out = new PrintStream(new OutputStream() {
                 @Override
                 public void write(int b) throws IOException {
                 }
-            });
-        PrintStream oldOut = System.out;
-        try {
-            System.setOut(out);
-               NTriple.mainEh(new String[] { "-b", "http://eg.org/", "-t", fileName }, null, null);
-            out.close();        
-        } finally {
-            System.setOut(oldOut);
-        
-        }
+            });) {
+            NTriple.mainEh(new String[] { "-b", "http://eg.org/", "-t", fileName }, null, null);
+        } finally { System.setOut(oldOut); }
     }
 
 }

@@ -190,18 +190,11 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         ByteArrayOutputStream badBytes = new ByteArrayOutputStream();
         PrintStream oldOut = System.out;
         PrintStream oldErr = System.err;
-//        Model m = createMemModel();
-        try {
-        PrintStream out = new PrintStream(goodBytes);
-        PrintStream err = new PrintStream(badBytes);
-//        PrintStream out = new PrintStream(new FileOutputStream(goodTriples));
-//        PrintStream err = new PrintStream(new FileOutputStream(badTriples));
-        System.setOut(out);
-        System.setErr(err);
-        NTriple.mainEh(new String[]{"-e","102,136,105,103,108,107,116,106,004,131",
-        "-E","-b",base,fileName},this,null);
-        out.close();
-        err.close();
+        try (PrintStream out = new PrintStream(goodBytes); PrintStream err = new PrintStream(badBytes); ) {
+            System.setOut(out);
+            System.setErr(err);
+            NTriple.mainEh(new String[]{"-e","102,136,105,103,108,107,116,106,004,131",
+                "-E","-b",base,fileName},this,null);
         }
         finally {
             System.setErr(oldErr);

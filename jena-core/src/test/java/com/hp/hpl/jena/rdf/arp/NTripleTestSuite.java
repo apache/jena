@@ -247,7 +247,9 @@ class NTripleTestSuite extends WGTestSuite {
 		throws IOException {
 		return loadRDFx(in, eh, base, true, 0);
 	}
-	static Model loadRDFx(
+	
+	@SuppressWarnings("resource")
+    static Model loadRDFx(
 		InFactoryX in,
 		RDFErrorHandler eh,
 		String base,

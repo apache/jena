@@ -399,8 +399,9 @@ public class FileUtils
      */
     public static String readWholeFileAsUTF8(InputStream in) throws IOException
     {
-        Reader r = new BufferedReader(asUTF8(in),1024) ;
-        return readWholeFileAsUTF8(r) ;
+        try ( Reader r = new BufferedReader(asUTF8(in),1024) ) {
+            return readWholeFileAsUTF8(r) ;
+        }
     }
     
     /** Read a whole file as UTF-8
@@ -413,17 +414,16 @@ public class FileUtils
     // Private worker as we are trying to force UTF-8. 
     private static String readWholeFileAsUTF8(Reader r) throws IOException
     {
-        StringWriter sw = new StringWriter(1024);
-        char buff[] = new char[1024];
-        int l ; 
-        while ((l = r.read(buff))!=-1) {         // .ready does not work with HttpClient streams.
-            if (l <= 0)
-                break;
-            sw.write(buff, 0, l);
+        try ( StringWriter sw = new StringWriter(1024) ) {
+            char buff[] = new char[1024];
+            int l ; 
+            while ((l = r.read(buff))!=-1) {         // .ready does not work with HttpClient streams.
+                if (l <= 0)
+                    break;
+                sw.write(buff, 0, l);
+            }
+            return sw.toString();
         }
-        r.close();
-        sw.close();
-        return sw.toString();  
     }
 
 }

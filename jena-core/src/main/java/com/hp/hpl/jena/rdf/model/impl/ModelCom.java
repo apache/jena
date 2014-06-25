@@ -257,11 +257,8 @@ implements Model, PrefixMapping, Lock
     @Override
     public Model read( String url, String base, String lang )
     {
-        try 
-        { 
-            InputStream is = new URL( url ) .openStream();
-            try { read( is, base, lang ); }
-            finally { if (null != is) { is.close(); } }
+        try ( InputStream is = new URL( url ) .openStream() ) {
+            read( is, base, lang );
         }
         catch (IOException e) { throw new WrappedIOException( e ); }
         return this;

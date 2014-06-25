@@ -86,15 +86,10 @@ public class TestErrorMsg extends TestCase {
 			}
 
 		});
-		InputStream in = new FileInputStream("testing/arp/error-msgs/"+filename+".rdf");
-		try {
-		arp.load(in, "file:///" + filename);
+		try ( InputStream in = new FileInputStream("testing/arp/error-msgs/"+filename+".rdf") ){
+		    arp.load(in, "file:///" + filename);
 		}
-		catch (SAXException e){
-			
-		}
-
-		in.close();
+		catch (SAXException e){ }
 		String contents = buf.toString();
 
 		if (regexPresent != null)

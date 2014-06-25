@@ -423,13 +423,13 @@ public class TestData implements ARPErrorNumbers{
             }
             stats(f);
         }
-        FileWriter fw = new FileWriter(dataFile);
-        Iterator<String> it2 = data.iterator();
-        while (it.hasNext()) {
-            fw.write(it2.next());
-            fw.write('\n');
+        try ( FileWriter fw = new FileWriter(dataFile) ) {
+            Iterator<String> it2 = data.iterator();
+            while (it.hasNext()) {
+                fw.write(it2.next());
+                fw.write('\n');
+            }
         }
-        fw.close();
     }
 
     static public void main(String args[]) throws IOException {

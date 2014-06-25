@@ -674,9 +674,9 @@ public class Test_schemagen
         // first write the source file to a temp dir
         File tmpDir = FileUtils.getScratchDirectory( "schemagen" );
         File srcFile = new File( tmpDir, className + ".java" );
-        FileWriter out = new FileWriter( srcFile );
-        out.write(  source );
-        out.close();
+        try ( FileWriter out = new FileWriter( srcFile ) ) {
+            out.write( source );
+        }
 
         // now get ready to invoke javac using the new javax.tools package
         try {

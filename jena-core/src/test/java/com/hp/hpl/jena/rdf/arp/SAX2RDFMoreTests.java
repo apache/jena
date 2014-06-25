@@ -42,38 +42,36 @@ public class SAX2RDFMoreTests extends TestCase {
 	}
 
 	public void testLang() throws Exception {
-		Model m = ModelFactory.createDefaultModel();
-		Model m2 = ModelFactory.createDefaultModel();
-		InputStream in = new FileInputStream(
-				"testing/wg/rdfms-xmllang/test004.rdf");
-		RDFEHArray eh = new RDFEHArray();
-		RDFReader w = m.getReader();
-		w.setErrorHandler(eh);
-		w.read(m, in, "http://example.org/");
-		in.close();
-		in = new FileInputStream("testing/wg/rdfms-xmllang/test003.rdf");
+	    Model m = ModelFactory.createDefaultModel();
+	    Model m2 = ModelFactory.createDefaultModel();
+	    RDFEHArray eh = new RDFEHArray();
+	    try ( InputStream in = new FileInputStream("testing/wg/rdfms-xmllang/test004.rdf") ) {
+	        RDFReader w = m.getReader();
+	        w.setErrorHandler(eh);
+	        w.read(m, in, "http://example.org/");
+	    }
 
-		RDFEHArray eh2 = new RDFEHArray();
+	    RDFEHArray eh2 = new RDFEHArray();
 
-		XMLReader saxParser = new SAXParser();
-		SAX2Model handler = SAX2Model.create("http://example.org/", m2,
-				"fr");
-		SAX2RDF.installHandlers(saxParser, handler);
-		handler.setErrorHandler(eh2);
+	    try ( InputStream in = new FileInputStream("testing/wg/rdfms-xmllang/test003.rdf") ) {
+	        XMLReader saxParser = new SAXParser();
+	        SAX2Model handler = SAX2Model.create("http://example.org/", m2,
+	            "fr");
+	        SAX2RDF.installHandlers(saxParser, handler);
+	        handler.setErrorHandler(eh2);
 
-		InputSource ins = new InputSource(in);
-		ins.setSystemId("http://example.org/");
-		try {
-			try {
-				saxParser.parse(ins);
-			} finally {
-				handler.close();
-			}
-		} catch (SAXParseException e) {
-			// already reported, leave it be.
-		}
-
-		in.close();
+	        InputSource ins = new InputSource(in);
+	        ins.setSystemId("http://example.org/");
+	        try {
+	            try {
+	                saxParser.parse(ins);
+	            } finally {
+	                handler.close();
+	            }
+	        } catch (SAXParseException e) {
+	            // already reported, leave it be.
+	        }
+	    }
 		/*
 		 * System.out.println("Normal:"); m.write(System.out,"N-TRIPLE");
 		 * 

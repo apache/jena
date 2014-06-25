@@ -180,17 +180,16 @@ public class RuleMap {
             infModel.setNsPrefixes(prefixes);
             
             // Output
-            PrintWriter writer = new PrintWriter(System.out);
-            if (deductionsOnly) {
-                Model deductions = infModel.getDeductionsModel();
-                deductions.setNsPrefixes(prefixes);
-                deductions.setNsPrefixes(inModel);
-                deductions.write(writer, outLang);
-            } else {
-                infModel.write(writer, outLang);
+            try ( PrintWriter writer = new PrintWriter(System.out) ) {
+                if (deductionsOnly) {
+                    Model deductions = infModel.getDeductionsModel();
+                    deductions.setNsPrefixes(prefixes);
+                    deductions.setNsPrefixes(inModel);
+                    deductions.write(writer, outLang);
+                } else {
+                    infModel.write(writer, outLang);
+                }
             }
-            writer.close();
-            
         } catch (Throwable t) {
             System.err.println("An error occured: \n" + t);
             t.printStackTrace();
