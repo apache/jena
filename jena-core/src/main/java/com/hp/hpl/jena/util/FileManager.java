@@ -480,23 +480,17 @@ public class FileManager
     /** Slurp up a whole file */
     public String readWholeFileAsUTF8(InputStream in)
     {
-        try {
-            Reader r = FileUtils.asBufferedUTF8(in) ;
-            StringWriter sw = new StringWriter(1024);
-            char buff[] = new char[1024];
+        try (Reader r = FileUtils.asBufferedUTF8(in); StringWriter sw = new StringWriter(1024)) {
+            char buff[] = new char[1024] ;
             while (true) {
-                int l = r.read(buff);
-                if (l <= 0)
-                    break;
-                sw.write(buff, 0, l);
+                int l = r.read(buff) ;
+                if ( l <= 0 )
+                    break ;
+                sw.write(buff, 0, l) ;
             }
-            r.close();
-            sw.close();
-            return sw.toString();
+            return sw.toString() ;
         } catch (IOException ex)
-        {
-            throw new WrappedIOException(ex) ;
-        }
+        { throw new WrappedIOException(ex) ; }
     }
     
     /** Slurp up a whole file: map filename as necessary */

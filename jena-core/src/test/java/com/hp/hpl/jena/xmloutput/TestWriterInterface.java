@@ -18,17 +18,16 @@
 
 package com.hp.hpl.jena.xmloutput;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
+import java.io.ByteArrayOutputStream ;
+import java.io.StringWriter ;
 
-import com.hp.hpl.jena.Jena;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.impl.NTripleWriter;
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.shared.NoWriterForLangException;
-import com.hp.hpl.jena.xmloutput.impl.Abbreviated;
-import com.hp.hpl.jena.xmloutput.impl.Basic;
+import com.hp.hpl.jena.Jena ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.impl.NTripleWriter ;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase ;
+import com.hp.hpl.jena.shared.NoWriterForLangException ;
+import com.hp.hpl.jena.xmloutput.impl.Abbreviated ;
+import com.hp.hpl.jena.xmloutput.impl.Basic ;
 
 public class TestWriterInterface extends ModelTestBase {
     private String lang;
@@ -93,25 +92,12 @@ public class TestWriterInterface extends ModelTestBase {
     }
 
     public void testWriting() {
-        // Changed to use "in-memory files" (ByteArrayOutputStream)
-        // Used to use temporary file. 
-        //System.err.println(lang);
-        OutputStream output = null;
         Model m1 = createMemModel();
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-            output = out ;
-            m1.write(output, lang);
+        try ( ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
+            m1.write(out, lang);
             out.reset() ;
-            output.close() ;
         } catch (Exception e) {
             fail(e.getMessage());
-        } finally {
-            if (output != null)
-                try {
-                    output.close();
-                } catch (Exception e) { }
         }
     }
-
 }

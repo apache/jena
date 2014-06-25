@@ -405,70 +405,69 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 	static final int BadURI = 3;
 
-	public void checkPropURI(String s, String p, Object val, int behaviour)
-			throws IOException {
-		// create triple and graph.
-		// BaseXMLWriter.dbg = true;
-		// SystemOutAndErr.block();
-		// TestLogger tl = new TestLogger(BaseXMLWriter.class);
-		blockLogger();
-		Node blank = NodeFactory.createAnon();
-		Node prop = NodeFactory.createURI(s);
-		Graph g = Factory.createGraphMem();
-		g.add(Triple.create(blank, prop, blank));
-		// create Model
-		Model m = ModelFactory.createModelForGraph(g);
-		// serialize
-		StringWriter w = new StringWriter();
-		RDFWriter rw = m.getWriter(lang);
-		if (p != null)
-			rw.setProperty(p, val);
-		try {
-			rw.write(m, w, "http://example.org/");
-			w.close();
-			String f = w.toString();
+    public void checkPropURI(String s, String p, Object val, int behaviour) throws IOException {
+        // create triple and graph.
+        // BaseXMLWriter.dbg = true;
+        // SystemOutAndErr.block();
+        // TestLogger tl = new TestLogger(BaseXMLWriter.class);
+        blockLogger() ;
+        Node blank = NodeFactory.createAnon() ;
+        Node prop = NodeFactory.createURI(s) ;
+        Graph g = Factory.createGraphMem() ;
+        g.add(Triple.create(blank, prop, blank)) ;
+        // create Model
+        Model m = ModelFactory.createModelForGraph(g) ;
+        // serialize
 
-			switch (behaviour) {
-			case BadPropURI:
-				fail("Bad property URI <" + s + "> was not detected."); return ;
-			case BadURI:
-				fail("Bad URI <" + s + "> was not detected."); return ;
-			}
-			// read back in
-			Model m2 = createMemModel();
-			RDFReader rdr = m2.getReader("RDF/XML");
-			rdr.setProperty("error-mode", "lax");
-			rdr.read(m2, new StringReader(f), "http://example.org/");
-			// m2.read(, lang);
+        RDFWriter rw = m.getWriter(lang) ;
+        if ( p != null )
+            rw.setProperty(p, val) ;
+        try (StringWriter w = new StringWriter()) {
+            rw.write(m, w, "http://example.org/") ;
+            String f = w.toString() ;
 
-			// check
-			switch (behaviour) {
-			case ExtraTriples:
-				assertTrue("Expecting Brickley behaviour.", m2.size() == 3);
-				break;
-			case NoError:
-				assertTrue("Comparing Model written out and read in.", m
-						.isIsomorphicWith(m2));
-				break;
+            switch (behaviour) {
+                case BadPropURI :
+                    fail("Bad property URI <" + s + "> was not detected.") ;
+                    return ;
+                case BadURI :
+                    fail("Bad URI <" + s + "> was not detected.") ;
+                    return ;
+            }
+            // read back in
+            Model m2 = createMemModel() ;
+            RDFReader rdr = m2.getReader("RDF/XML") ;
+            rdr.setProperty("error-mode", "lax") ;
+            try (StringReader sr = new StringReader(f)) {
+                rdr.read(m2, sr, "http://example.org/") ;
+            }
 
-			}
-		} catch (BadURIException e) {
-			if (behaviour == BadURI)
-				return;
-			throw e;
-		} catch (InvalidPropertyURIException je) {
-			if (behaviour == BadPropURI)
-				return;
-			throw je;
-		} catch (JenaException e) {
-			throw e;
-		} finally {
-			// BaseXMLWriter.dbg = false;
-			// tl.end();
-			unblockLogger();
-			// SystemOutAndErr.unblock();
-		}
-	}
+            // check
+            switch (behaviour) {
+                case ExtraTriples :
+                    assertTrue("Expecting Brickley behaviour.", m2.size() == 3) ;
+                    break ;
+                case NoError :
+                    assertTrue("Comparing Model written out and read in.", m.isIsomorphicWith(m2)) ;
+                    break ;
+            }
+        } catch (BadURIException e) {
+            if ( behaviour == BadURI )
+                return ;
+            throw e ;
+        } catch (InvalidPropertyURIException je) {
+            if ( behaviour == BadPropURI )
+                return ;
+            throw je ;
+        } catch (JenaException e) {
+            throw e ;
+        } finally {
+            // BaseXMLWriter.dbg = false;
+            // tl.end();
+            unblockLogger() ;
+            // SystemOutAndErr.unblock();
+        }
+    }
 
 	public void testBadURIAsProperty1() throws IOException {
 		try {
@@ -529,13 +528,14 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		Model m = createMemModel();
 		m.read("file:testing/abbreviated/relative-uris.rdf");
 
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		RDFWriter writer = m.getWriter(lang);
-		writer.setProperty("relativeURIs", relativeParam);
-		writer.write(m, bos, base);
-		bos.close();
+		String contents ;
+		try ( ByteArrayOutputStream bos = new ByteArrayOutputStream() ) {
+		    RDFWriter writer = m.getWriter(lang);
+		    writer.setProperty("relativeURIs", relativeParam);
+		    writer.write(m, bos, base);
+	        contents = bos.toString("UTF8");
+		}
 
-		String contents = bos.toString("UTF8");
 		try {
 			Model m2 = createMemModel();
 			m2.read(new StringReader(contents), base);
@@ -558,12 +558,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 				String regexAbsent = it.next();
 				assertTrue(
 						"Looking for (not) /" + regexAbsent + "/",
-						!Pattern
-								.compile(
-										"[\"']"
-												+ Util
-														.substituteStandardEntities(regexAbsent)
-												+ "[\"']", Pattern.DOTALL)
+						!Pattern.compile("[\"']"+ Util.substituteStandardEntities(regexAbsent)+ "[\"']", Pattern.DOTALL)
 								.matcher(contents).find()
 
 				// matcher.contains(

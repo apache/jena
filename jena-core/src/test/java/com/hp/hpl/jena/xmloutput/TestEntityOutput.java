@@ -117,18 +117,17 @@ public class TestEntityOutput extends ModelTestBase
      */
     public void testDifficultChars() throws IOException 
     {
-    	Model m = createMemModel();
-    	m.read("file:testing/abbreviated/entities.rdf");
-    	StringWriter w = new StringWriter();
-    	RDFWriter wr = m.getWriter();
-    	wr.setProperty("showDoctypeDeclaration", "true");
-    	wr.write(m, w, "http://example.org/");
-    	w.close();
-//    	System.err.println(w.toString());
-    	Reader r = new StringReader(w.toString());
-    	Model m2 = createMemModel();
-    	m2.read(r,"http://example.org/");
-    	assertIsoModels("showDoctypeDeclaration problem", m, m2);
+        Model m = createMemModel();
+        m.read("file:testing/abbreviated/entities.rdf");
+        try ( StringWriter w = new StringWriter() ) {
+            RDFWriter wr = m.getWriter();
+            wr.setProperty("showDoctypeDeclaration", "true");
+            wr.write(m, w, "http://example.org/");
+            Reader r = new StringReader(w.toString());
+            Model m2 = createMemModel();
+            m2.read(r,"http://example.org/");
+            assertIsoModels("showDoctypeDeclaration problem", m, m2);
+        }
     }
     
     public void testCRinLiterals() throws IOException 

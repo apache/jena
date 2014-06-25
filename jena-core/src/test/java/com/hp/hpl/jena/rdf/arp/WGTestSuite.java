@@ -124,9 +124,9 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         if ( base.contains( "/xmlns/" )
           || base.contains( "/comments/" ) )
               jr.setProperty("embedding","true");
-        InputStream inx = in.open();
-        jr.read(model, inx, base);
-        inx.close();
+        try ( InputStream inx = in.open() ) {
+            jr.read(model, inx, base);
+        }
         return model;
     }
     
@@ -144,12 +144,11 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 		@Override
         public void runTest()  throws IOException {
 			if (logging) {	    
-				RDFWriter w = testResults.getWriter("RDF/XML-ABBREV");
-				w.setProperty("xmlbase",BASE_RESULTS_URI );
-				OutputStream out = System.out ;
-				out = new FileOutputStream("/tmp/rdf-results.rdf");
-				w.write(testResults,out,BASE_RESULTS_URI);
-				out.close();
+			    RDFWriter w = testResults.getWriter("RDF/XML-ABBREV");
+			    w.setProperty("xmlbase",BASE_RESULTS_URI );
+			    try ( OutputStream out = new FileOutputStream("/tmp/rdf-results.rdf") ) {
+			        w.write(testResults,out,BASE_RESULTS_URI);
+			    }
 			}
 		}
 	}
@@ -254,16 +253,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         if (!base.endsWith("/"))
             base = base + "/";
 
-        try {
-            InputStream in = fact.fullyOpen(file);
+        try ( InputStream in = fact.fullyOpen(file) ) {
             if (in == null )
                 return null;
-            in.close();
             m = loadRDF(new InFactoryX(){
-            	@Override
+                @Override
                 public InputStream open() throws IOException {
-            		return fact.fullyOpen(file);
-            } }, null, base + file);
+                    return fact.fullyOpen(file);
+                } }, null, base + file);
         } catch (JenaException e) {
             //	System.out.println(e.getMessage());
             throw e;
@@ -276,7 +273,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         return m;
     }
-    
+
     /** Creates new WGTestSuite
         This is a private snapshot of the RDF Test Cases Working Draft's
         data.
@@ -619,10 +616,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 int suffix = uri.lastIndexOf('.');
                 String saveUri = uri.substring(0, suffix) + ".ntx";
                 //   System.out.println("Saving to " + saveUri);
-                try {
-                    OutputStream w = factory.openOutput(saveUri);
+                try ( OutputStream w = factory.openOutput(saveUri) ) {
                     m1.write(w, "N-TRIPLE");
-                    w.close();
                 } catch (IOException e) {
                     throw new JenaException( e );
                 }

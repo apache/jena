@@ -269,18 +269,17 @@ public class Util {
      * If the URL fails it will try a plain file name as well.
      */
     public static String loadURLFile(String urlStr) throws IOException {
-        BufferedReader dataReader = FileUtils.readerFromURL( urlStr );
-        StringWriter sw = new StringWriter(1024);
-        char buff[] = new char[1024];
-        while (dataReader.ready()) {
-            int l = dataReader.read(buff);
-            if (l <= 0)
-                break;
-            sw.write(buff, 0, l);
+        try ( BufferedReader dataReader = FileUtils.readerFromURL( urlStr );
+              StringWriter sw = new StringWriter(1024); ) {
+            char buff[] = new char[1024];
+            while (dataReader.ready()) {
+                int l = dataReader.read(buff);
+                if (l <= 0)
+                    break;
+                sw.write(buff, 0, l);
+            }
+            return sw.toString();
         }
-        dataReader.close();
-        sw.close();
-        return sw.toString();
     }
 
     /**

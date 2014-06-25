@@ -595,10 +595,8 @@ class Performance  {
 			if (f.length() == 0)
 				continue;
 			rslt[i] = new byte[(int) f.length()];
-			try {
-				InputStream in = new FileInputStream(f);
+			try ( InputStream in = new FileInputStream(f) ) {
 				in.read(rslt[i]);
-				in.close();
 			} catch (IOException e) {
 				System.err.println(files[i][1] + " " + e.getMessage());
 			}

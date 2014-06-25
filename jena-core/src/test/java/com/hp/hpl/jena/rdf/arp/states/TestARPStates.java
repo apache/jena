@@ -36,29 +36,25 @@ public class TestARPStates extends TestCase {
         TestSuite rslt = new TestSuite();
         rslt.setName("ARP state machine");
         Map<String, TestSuite> tests = new HashMap<>();
-        try {
-          LineNumberReader r = new LineNumberReader(new FileReader(TestData.dataFile));
-          while (true) {
-              String line = r.readLine();
-              if (line == null)
-              {
-                  r.close() ;
-                  return rslt;
-              }
-               int hash = line.indexOf('%');
-              line = (hash==-1?line:line.substring(0,hash)).trim();
-              String fields[] = line.split("  *");
-              if (fields.length==0)
-                  continue;
-              TestSuite child = tests.get(fields[0]);
-              if (child==null) {
-                  child = new TestSuite();
-                  child.setName(TestData.stateLongName(fields[0]));
-                  rslt.addTest(child);
-                  tests.put(fields[0],child);
-              }
-              child.addTest(TestEventList.create(line,fields));
-          }
+        try ( LineNumberReader r = new LineNumberReader(new FileReader(TestData.dataFile)) ) {
+            while (true) {
+                String line = r.readLine();
+                if (line == null)
+                    return rslt;
+                int hash = line.indexOf('%');
+                line = (hash==-1?line:line.substring(0,hash)).trim();
+                String fields[] = line.split("  *");
+                if (fields.length==0)
+                    continue;
+                TestSuite child = tests.get(fields[0]);
+                if (child==null) {
+                    child = new TestSuite();
+                    child.setName(TestData.stateLongName(fields[0]));
+                    rslt.addTest(child);
+                    tests.put(fields[0],child);
+                }
+                child.addTest(TestEventList.create(line,fields));
+            }
         }
         catch (IOException e) {
             e.printStackTrace();

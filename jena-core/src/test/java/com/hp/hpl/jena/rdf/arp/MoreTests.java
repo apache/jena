@@ -114,14 +114,13 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		testWineNS(ModelFactory.createOntologyModel());
 	}
 
-	private void testWineNS(Model m) throws FileNotFoundException, IOException {
-		InputStream in = new FileInputStream("testing/arp/xmlns/wine.rdf");
-		m.read(in, "");
-		in.close();
-		assertEquals("http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#", m
-				.getNsPrefixURI(""));
-	}
-	
+    private void testWineNS(Model m) throws FileNotFoundException, IOException {
+        try (InputStream in = new FileInputStream("testing/arp/xmlns/wine.rdf")) {
+            m.read(in, "") ;
+            assertEquals("http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#", m.getNsPrefixURI("")) ;
+        }
+    }
+
 	public void testLatin1() throws IOException {
 		Model m = createMemModel();
 		RDFReader rdr = m.getReader();
@@ -165,19 +164,18 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	public void testEncodingMismatch1() throws IOException {
 		Model m = createMemModel();
 		RDFReader rdr = m.getReader();
-		FileReader r = new FileReader(
-				"testing/wg/rdfms-syntax-incomplete/test001.rdf");
-		if (r.getEncoding().startsWith("UTF")) {
-			logger.warn("Encoding mismatch tests not executed on platform with default UTF encoding.");
-	        r.close() ;
-			return;
+		try ( FileReader r = new FileReader("testing/wg/rdfms-syntax-incomplete/test001.rdf") ) {
+		    if (r.getEncoding().startsWith("UTF")) {
+		        logger.warn("Encoding mismatch tests not executed on platform with default UTF encoding.");
+		        r.close() ;
+		        return;
+		    }
+		    rdr.setErrorHandler(this);
+		    expected = new int[] { WARN_ENCODING_MISMATCH };
+		    rdr.read(m, r, "http://example.org/");
+		    //System.err.println(m.size() + " triples read.");
+		    checkExpected();
 		}
-		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_ENCODING_MISMATCH };
-		rdr.read(m, r, "http://example.org/");
-		//System.err.println(m.size() + " triples read.");
-		checkExpected();
-        r.close() ;
 	}
 
 	public void testIcu() throws IOException {
@@ -186,34 +184,31 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 //	            "\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
 //	            ,Normalizer.NFC,0);
 	    
-		Model m = createMemModel();
-		RDFReader rdr = m.getReader();
-		FileInputStream r = new FileInputStream(
-				"testing/arp/i18n/icubug.rdf");
-	    rdr.setErrorHandler(this);
-		expected = new int[] { WARN_STRING_COMPOSING_CHAR  };
-		rdr.read(m, r, "http://example.org/");
-		r.close();
-		checkExpected();
-	
+	    Model m = createMemModel();
+	    RDFReader rdr = m.getReader();
+	    try(FileInputStream r = new FileInputStream("testing/arp/i18n/icubug.rdf")){
+	        rdr.setErrorHandler(this);
+	        expected = new int[] { WARN_STRING_COMPOSING_CHAR  };
+	        rdr.read(m, r, "http://example.org/");
+	    }
+	    checkExpected();
 	}
 	public void testIcu2() throws IOException {
 //		  "\u0b87\u0ba8\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
 //		    Normalizer.  isNormalized(
 //		            "\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
 //		            ,Normalizer.NFC,0);
-		    
-			Model m = createMemModel();
-			RDFReader rdr = m.getReader();
-			FileInputStream r = new FileInputStream(
-					"testing/arp/i18n/icubugtwo.rdf");
-			rdr.setErrorHandler(this);
-			expected = new int[] { WARN_STRING_NOT_NORMAL_FORM_C };
-			rdr.read(m, r, "http://example.org/");
-			r.close();
-			checkExpected();
-		
-		}
+
+	    Model m = createMemModel();
+	    RDFReader rdr = m.getReader();
+	    try(FileInputStream r = new FileInputStream("testing/arp/i18n/icubugtwo.rdf")) {
+	        rdr.setErrorHandler(this);
+	        expected = new int[] { WARN_STRING_NOT_NORMAL_FORM_C };
+	        rdr.read(m, r, "http://example.org/");
+	    }
+	    checkExpected();
+	}
+	
 	static class ToStringStatementHandler implements StatementHandler {
 		String obj;
 
@@ -259,27 +254,15 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		subTestEncodingMismatch2(r);
 	}
 
-
 	public void testEncodingMismatch3() throws IOException {
-		FileInputStream fin = new FileInputStream(
-				"testing/wg/rdf-charmod-literals/test001.rdf"
-				);
-		InputStreamReader r = null;
-		try {
-		   r = new InputStreamReader(
-				fin,
-				"MS950"
-				);
-		}
-		catch (java.io.UnsupportedEncodingException e) {
-			System.err
-			.println("WARNING: Encoding mismatch3 test not executed on platform without MS950 encoding.");
-			if ( fin != null ) fin.close() ;
-			return;
-		}
-		
-		
-		subTestEncodingMismatch2(r);
+	    try ( FileInputStream fin = new FileInputStream("testing/wg/rdf-charmod-literals/test001.rdf") ;
+	          InputStreamReader r = new InputStreamReader(fin,"MS950")) {
+	        subTestEncodingMismatch2(r);
+	    }catch (java.io.UnsupportedEncodingException e) {
+	        System.err
+	        .println("WARNING: Encoding mismatch3 test not executed on platform without MS950 encoding.");
+	        return;
+	    }
 	}
 
 	private void subTestEncodingMismatch2(InputStreamReader r) {
@@ -301,77 +284,65 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		Model m = createMemModel();
 		Model m1 = createMemModel();
 		RDFReader rdr = m.getReader();
-		FileInputStream fin = new FileInputStream(
-				"testing/wg/rdfms-identity-anon-resources/test001.rdf");
-
-		rdr.setErrorHandler(this);
-		expected = new int[] {};
-		rdr.read(m, fin, "http://example.org/");
-		fin.close();
-		fin = new FileInputStream(
-				"testing/wg/rdfms-identity-anon-resources/test001.rdf");
-		rdr.read(m1, fin, null);
-		fin.close();
+		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf") ) {
+		    rdr.setErrorHandler(this);
+		    expected = new int[] {};
+		    rdr.read(m, fin, "http://example.org/");
+		}
+		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
+		    rdr.read(m1, fin, null);
+		}
 		assertTrue("Base URI should have no effect.", m.isIsomorphicWith(m1));
 		checkExpected();
 	}
     public void testDanBriXMLBase() throws IOException {
         Model m = createMemModel();
         Model m1 = createMemModel();
-        FileInputStream fin = new FileInputStream(
-        "testing/arp/xmlbase/danbri.rdf");
-
-        m.read(fin,"http://wrong.example.org/");
-        fin.close();
-        fin = new FileInputStream(
-        "testing/arp/xmlbase/danbri.nt");
-
-        m1.read(fin,"http://wrong.example.org/","N-TRIPLE");
-        fin.close();
+        try (FileInputStream fin = new FileInputStream("testing/arp/xmlbase/danbri.rdf")) {
+            m.read(fin,"http://wrong.example.org/");
+        }
+        try (FileInputStream fin = new FileInputStream("testing/arp/xmlbase/danbri.nt")) {
+            m1.read(fin,"http://wrong.example.org/","N-TRIPLE");
+        }
         assertTrue("Dan Bri nested XML Base.", m.isIsomorphicWith(m1));
     }
 
 	public void testNullBaseParamError() throws IOException {
 		Model m = createMemModel();
 		RDFReader rdr = m.getReader();
-		FileInputStream fin = new FileInputStream(
-				"testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
-		rdr.setErrorHandler(this);
-		expected = new int[] { ERR_RESOLVING_URI_AGAINST_NULL_BASE, WARN_RELATIVE_URI};
-		rdr.read(m, fin, null);
-		fin.close();
+		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
+			rdr.setErrorHandler(this);
+			expected = new int[] { ERR_RESOLVING_URI_AGAINST_NULL_BASE, WARN_RELATIVE_URI};
+			rdr.read(m, fin, null);
+		}
 		checkExpected();
 	}
 
 	public void testEmptyBaseParamOK() throws IOException {
-		Model m = createMemModel();
-		Model m1 = createMemModel();
-		RDFReader rdr = m.getReader();
-		FileInputStream fin = new FileInputStream(
-				"testing/wg/rdfms-identity-anon-resources/test001.rdf");
-
-		rdr.setErrorHandler(this);
-		expected = new int[] {};
-		rdr.read(m, fin, "http://example.org/");
-		fin.close();
-		fin = new FileInputStream(
-				"testing/wg/rdfms-identity-anon-resources/test001.rdf");
-		rdr.read(m1, fin, "");
-		fin.close();
-		assertTrue("Empty base URI should have no effect.[" + m1.toString()
-				+ "]", m.isIsomorphicWith(m1));
-		checkExpected();
+	    Model m = createMemModel();
+	    Model m1 = createMemModel();
+	    RDFReader rdr = m.getReader();
+	    try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")){
+	        rdr.setErrorHandler(this);
+	        expected = new int[] {};
+	        rdr.read(m, fin, "http://example.org/");
+	    }
+	    try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
+	        rdr.read(m1, fin, "");
+	    }
+	    assertTrue("Empty base URI should have no effect.[" + m1.toString()
+	               + "]", m.isIsomorphicWith(m1));
+	    checkExpected();
 	}
 
 	public void testEmptyBaseParamError() throws IOException {
 		Model m = createMemModel();
 		RDFReader rdr = m.getReader();
-		FileInputStream fin = new FileInputStream(
-				"testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
-		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_RESOLVING_URI_AGAINST_EMPTY_BASE};
-		rdr.read(m, fin, "");
-		fin.close();
+		try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
+		    rdr.setErrorHandler(this);
+		    expected = new int[] { WARN_RESOLVING_URI_AGAINST_EMPTY_BASE};
+		    rdr.read(m, fin, "");
+		}
 		Model m1 = createMemModel();
 		m1.createResource("#foo").addProperty(RDF.value, "abc");
 		assertTrue("Empty base URI should produce relative URI.["
@@ -382,15 +353,14 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
     public void testBadBaseParamError() throws IOException {
         Model m = createMemModel();
         RDFReader rdr = m.getReader();
-        FileInputStream fin = new FileInputStream(
-                "testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
-        rdr.setErrorHandler(this);
-        expected = new int[] { WARN_MALFORMED_URI, 
+        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
+            rdr.setErrorHandler(this);
+            expected = new int[] { WARN_MALFORMED_URI, 
                 WARN_MALFORMED_URI, 
-//        WARN_RELATIVE_URI, ERR_RESOLVING_AGAINST_MALFORMED_BASE};
-               ERR_RESOLVING_AGAINST_MALFORMED_BASE};
-        rdr.read(m, fin, "http://jjc^3.org/demo.mp3");
-        fin.close();
+                //        WARN_RELATIVE_URI, ERR_RESOLVING_AGAINST_MALFORMED_BASE};
+                ERR_RESOLVING_AGAINST_MALFORMED_BASE};
+            rdr.read(m, fin, "http://jjc^3.org/demo.mp3");
+        }
         Model m1 = createMemModel();
         assertTrue("Bad base URI should produce no URIs in model.["
                 + m.toString() + "]", m.isIsomorphicWith(m1));
@@ -401,31 +371,28 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
         Model m = createMemModel();
         Model m1 = createMemModel();
         RDFReader rdr = m.getReader();
-        FileInputStream fin = new FileInputStream(
-                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
+        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
 
-        rdr.setErrorHandler(this);
-        expected = new int[] { WARN_MALFORMED_URI };
-        rdr.read(m, fin, "http://jjc^3.org/demo.mp3");
-        fin.close();
-        fin = new FileInputStream(
-                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
-        rdr.read(m1, fin, "");
-        fin.close();
+            rdr.setErrorHandler(this);
+            expected = new int[] { WARN_MALFORMED_URI };
+            rdr.read(m, fin, "http://jjc^3.org/demo.mp3");
+        }
+        try(FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
+            rdr.read(m1, fin, "");
+        }
         assertTrue("Bad base URI should have no effect on model.[" + m1.toString()
-                + "]", m.isIsomorphicWith(m1));
+                   + "]", m.isIsomorphicWith(m1));
         checkExpected();
     }
     public void testRelativeBaseParamError() throws IOException {
         Model m = createMemModel();
         RDFReader rdr = m.getReader();
-        FileInputStream fin = new FileInputStream(
-                "testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
-        rdr.setErrorHandler(this);
-        expected = new int[] { WARN_RELATIVE_URI, WARN_RELATIVE_URI,  ERR_RESOLVING_AGAINST_RELATIVE_BASE, };
-        rdr.setProperty("ERR_RESOLVING_AGAINST_RELATIVE_BASE","EM_WARNING");
-        rdr.read(m, fin, "foo/");
-        fin.close();
+        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
+            rdr.setErrorHandler(this);
+            expected = new int[] { WARN_RELATIVE_URI, WARN_RELATIVE_URI,  ERR_RESOLVING_AGAINST_RELATIVE_BASE, };
+            rdr.setProperty("ERR_RESOLVING_AGAINST_RELATIVE_BASE","EM_WARNING");
+            rdr.read(m, fin, "foo/");
+        }
         Model m1 = createMemModel();
         m1.createResource("foo/#foo").addProperty(RDF.value, "abc");
         assertTrue("Relative base URI should produce relative URIs in model (when error suppressed).["
@@ -437,19 +404,17 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
         Model m = createMemModel();
         Model m1 = createMemModel();
         RDFReader rdr = m.getReader();
-        FileInputStream fin = new FileInputStream(
-                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
+        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
+            rdr.setErrorHandler(this);
+            expected = new int[] { WARN_RELATIVE_URI };
+            rdr.read(m, fin, "foo/");
+        }
 
-        rdr.setErrorHandler(this);
-        expected = new int[] { WARN_RELATIVE_URI };
-        rdr.read(m, fin, "foo/");
-        fin.close();
-        fin = new FileInputStream(
-                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
-        rdr.read(m1, fin, "");
-        fin.close();
+        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
+            rdr.read(m1, fin, "");
+        }
         assertTrue("Bad base URI should have no effect on model.[" + m1.toString()
-                + "]", m.isIsomorphicWith(m1));
+                   + "]", m.isIsomorphicWith(m1));
         checkExpected();
     }
 
@@ -457,63 +422,56 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
         Model m = createMemModel();
         Model m1 = createMemModel();
         RDFReader rdr = m.getReader();
-        FileInputStream fin = new FileInputStream(
-                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
-
-        rdr.setErrorHandler(this);
-        expected = new int[] { WARN_MALFORMED_URI, WARN_RELATIVE_URI };
-        rdr.read(m, fin, "ht#tp://jjc3.org/demo.mp3#frag");
-        fin.close();
-        fin = new FileInputStream(
-                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
-        rdr.read(m1, fin, "");
-        fin.close();
-        assertTrue("Bad base URI should have no effect.[" + m1.toString()
-                + "]", m.isIsomorphicWith(m1));
+        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
+            rdr.setErrorHandler(this);
+            expected = new int[] { WARN_MALFORMED_URI, WARN_RELATIVE_URI };
+            rdr.read(m, fin, "ht#tp://jjc3.org/demo.mp3#frag");
+        }
+        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf")) {
+            rdr.read(m1, fin, "");
+        }
+        assertTrue("Bad base URI should have no effect.[" + m1.toString()+ "]",
+                   m.isIsomorphicWith(m1));
         checkExpected();
     }
 	public void testInterrupt() throws SAXException, IOException {
-		ARP a = new ARP();
-		InputStream in;
-//		long start = System.currentTimeMillis();
-		in = new FileInputStream("testing/wg/miscellaneous/consistent001.rdf");
-		a.getHandlers().setStatementHandler(new StatementHandler() {
-			int countDown = 10;
+	    ARP a = new ARP();
+	    try ( InputStream in = new FileInputStream("testing/wg/miscellaneous/consistent001.rdf") ) {
+	        a.getHandlers().setStatementHandler(new StatementHandler() {
+	            int countDown = 10;
 
-			@Override
-            public void statement(AResource subj, AResource pred, AResource obj) {
-				if (countDown-- == 0)
-					Thread.currentThread().interrupt();
+	            @Override
+	            public void statement(AResource subj, AResource pred, AResource obj) {
+	                if (countDown-- == 0)
+	                    Thread.currentThread().interrupt();
 
-			}
+	            }
 
-			@Override
-            public void statement(AResource subj, AResource pred, ALiteral lit) {
+	            @Override
+	            public void statement(AResource subj, AResource pred, ALiteral lit) {
 
-			}
-		});
-        a.getHandlers().setErrorHandler(new ErrorHandler(){
-            @Override
-            public void error(SAXParseException exception) throws SAXException {
-                throw new RuntimeException("Unexpected error", exception);
-            }
-            @Override
-            public void fatalError(SAXParseException exception) throws SAXException {
-              throw exception;  
-            }
-            @Override
-            public void warning(SAXParseException exception) throws SAXException {
-                throw new RuntimeException("Unexpected warning", exception);
-            }});
-		try {
-			a.load(in);
-			fail("Thread was not interrupted.");
-		} catch (InterruptedIOException | SAXParseException e) {
-		}
-        finally {
-			in.close();
-		}
-		// System.err.println("Finished "+Thread.interrupted());
+	            }
+	        });
+	        a.getHandlers().setErrorHandler(new ErrorHandler(){
+	            @Override
+	            public void error(SAXParseException exception) throws SAXException {
+	                throw new RuntimeException("Unexpected error", exception);
+	            }
+	            @Override
+	            public void fatalError(SAXParseException exception) throws SAXException {
+	                throw exception;  
+	            }
+	            @Override
+	            public void warning(SAXParseException exception) throws SAXException {
+	                throw new RuntimeException("Unexpected warning", exception);
+	            }});
+	        try {
+	            a.load(in);
+	            fail("Thread was not interrupted.");
+	        } catch (InterruptedIOException | SAXParseException e) {
+	        }
+	    }
+	    // System.err.println("Finished "+Thread.interrupted());
 
 	}
 

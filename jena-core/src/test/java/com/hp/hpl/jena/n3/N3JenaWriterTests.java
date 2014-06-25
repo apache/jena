@@ -99,17 +99,16 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 			Model model_1 = ModelFactory.createDefaultModel() ;
 			model_1.read(data, uriBase, "N3") ;
             
-			StringWriter w = new StringWriter() ;
-            model_1.write(w, writerName, uriBase) ;
-            // Check we really are writing different things!
-            //model_1.write(System.out, writerName, uriBase) ;
-			w.close() ;
-			
-			StringReader r = new StringReader(w.toString()) ;
+			String tmpStr ;
+			try ( StringWriter w = new StringWriter() ){
+			    model_1.write(w, writerName, uriBase) ;
+			    tmpStr = w.toString() ;
+			}
 			Model model_2 = ModelFactory.createDefaultModel() ;
-			model_2.read(r, uriBase, "N3") ;
-			
-            if ( ! model_1.isIsomorphicWith(model_2) )
+			try ( StringReader r = new StringReader(tmpStr) ) {
+			    model_2.read(r, uriBase, "N3") ;
+			}
+			if ( ! model_1.isIsomorphicWith(model_2) )
 			{
 				System.out.println("#### ---- "+testName+" ------------------------------") ;
                 System.out.println("#### Model 1 ---- "+testName+" ------------------------------") ;

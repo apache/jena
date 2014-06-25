@@ -70,10 +70,10 @@ public class PrettyWriterTest extends ModelTestBase {
 		try {
 			Model m = createMemModel();
 			m.read( filename );
-			StringWriter sw = new StringWriter();
-			m.write( sw, "RDF/XML-ABBREV", filename );
-			sw.close();
-			contents = sw.toString();
+			try ( StringWriter sw = new StringWriter() ) {
+			    m.write( sw, "RDF/XML-ABBREV", filename );
+			    contents = sw.toString();
+			}
 			Model m2 = createMemModel();
 			m2.read( new StringReader( contents ), filename );
 			assertTrue( m.isIsomorphicWith( m2 ) );
