@@ -187,9 +187,13 @@ public class IRIResolver {
 	    To allow Eyeball to bypass IRI checking (because it's doing its own)
 	*/
 	public static void suppressExceptions()
-	    { showExceptions = false; }
-	
-	/**
+	{ setShowExceptions(false) ; }
+
+	/** To allow Eyeball to bypass IRI checking (because it's doing its own) */
+	public static void setShowExceptions(boolean state)
+	{ showExceptions = state ; }
+
+/**
 	 * Resolve the relative URI str against the current
 	 * working directory.
 	 * @param str
