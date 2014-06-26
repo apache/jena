@@ -20,21 +20,20 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.jena</groupId>
   <artifactId>jena-iri</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - IRI</name>
   <version>1.1.0-SNAPSHOT</version>
-  <description>
-    The IRI module provides an implementation of the IRI and URI specifications (RFC 3987 and 3986) which are used across Jena in order to comply with relevant W3C specifications for RDF and SPARQL which require conformance to these specifications.
-  </description>
-
-  <parent>
+    <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
     <version>10-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
+  
+  <description>
+    The IRI module provides an implementation of the IRI and URI specifications (RFC 3987 and 3986) which are used across Jena in order to comply with relevant W3C specifications for RDF and SPARQL which require conformance to these specifications.
+  </description>
 
   <scm>
     <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-iri</connection>
