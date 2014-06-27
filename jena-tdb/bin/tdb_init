@@ -1,5 +1,4 @@
-#!/bin/sh 
-#  -- hint to emacs
+# -*- mode:sh -*-
 
 ## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
