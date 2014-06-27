@@ -39,9 +39,11 @@ import jena.schemagen.SchemagenOptions.OPT;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -61,9 +63,6 @@ public class SchemagenMojo
     /* Constants                       */
     /***********************************/
 
-    /** Default output location */
-    public static final String GENERATED_SOURCES = File.separator + "generated-sources";
-
     /** Default pattern for includes */
 
     /** Name of default options element */
@@ -77,13 +76,8 @@ public class SchemagenMojo
     /* Instance variables              */
     /***********************************/
 
-    /**
-     * @parameter property="project.build.directory"
-     */
-
-    @Parameter(property="project.build.directory")
-    private String projectBuildDir;
-
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/jena")
+    private String outputDirectory;
 
     /**
      * Array of file patterns to include in processing
@@ -109,11 +103,17 @@ public class SchemagenMojo
     @Parameter(property="basedir")
     private File baseDir;
 
+    @Component
+    private MavenProject project;
+
     /** The default options object, if any */
     private SchemagenOptions defaultOptions;
 
     /** Map of source options, indexed by name */
     private Map<String, SchemagenOptions> optIndex = new HashMap<>();
+
+    public SchemagenMojo() {
+    }
 
     /***********************************/
     /* Constructors                    */
@@ -150,6 +150,7 @@ public class SchemagenMojo
             for (String fileName: matchFileNames()) {
                 processFile( fileName );
             }
+            project.addCompileSourceRoot( new File( outputDirectory ).getAbsolutePath() );
         } catch (SchemagenOptionsConfigurationException e) {
             throw new MojoExecutionException(
                     "Error during default schemagen options creation", e);
@@ -191,12 +192,7 @@ public class SchemagenMojo
         return defaultOptions;
     }
 
-    /** Return the value of <code>${project.build.directory}</code> */
-    public String getProjectBuildDir() {
-        return projectBuildDir;
-    }
-
-    /**
+      /**
      * Handle the default options by creating a default options object and assigning
      * the options values from the given source object.
      * @param defOptionsSource The source object containing the default options
@@ -350,7 +346,7 @@ public class SchemagenMojo
     }
 
     protected String getDefaultOutputDir(){
-        return projectBuildDir + GENERATED_SOURCES;
+        return outputDirectory;
     }
 
     /***********************************/
