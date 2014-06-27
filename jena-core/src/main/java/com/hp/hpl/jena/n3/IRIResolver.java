@@ -145,7 +145,7 @@ public class IRIResolver {
 
 	/**
 	 * The base of this IRIResolver.
-	 * @return
+	 * @return String
 	 */
 	public String getBaseIRI() {
 		return base.toString();
@@ -197,7 +197,7 @@ public class IRIResolver {
 	 * Resolve the relative URI str against the current
 	 * working directory.
 	 * @param str
-	 * @return
+	 * @return String
 	 */
 	public static String resolveGlobal(String str) {
 		return exceptions(cwd.resolve(str)).toString();

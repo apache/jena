@@ -47,14 +47,14 @@ public interface CardinalityQRestriction
      * cardinality. Any existing statements for <code>cardinalityQ</code>
      * will be removed.</p>
      * @param cardinality The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.   
      */ 
     public void setCardinalityQ( int cardinality );
 
     /**
      * <p>Answer the cardinality of the restricted property.</p>
      * @return The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.   
      */ 
     public int getCardinalityQ();
 
@@ -62,7 +62,7 @@ public interface CardinalityQRestriction
      * <p>Answer true if this property restriction has the given cardinality.</p>
      * @param cardinality The cardinality to test against 
      * @return True if the given cardinality is the cardinality of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.   
      */
     public boolean hasCardinalityQ( int cardinality );
     
@@ -71,7 +71,7 @@ public interface CardinalityQRestriction
      * for the restricted property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cardinality A cardinality value to be removed from this restriction
-     * @exception OntProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.   
      */
     public void removeCardinalityQ( int cardinality );
     

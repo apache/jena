@@ -243,14 +243,12 @@ public class CommandLine
     /** Test whether the command line had a particular argument
      *
      * @param argName
-     * @return
      */
     public boolean hasArg(String argName) { return getArg(argName) != null ; }
 
     /** Test whether the command line had a particular argument
      *
      * @param argDecl
-     * @return
      */
 
     public boolean hasArg(ArgDecl argDecl) { return getArg(argDecl) != null ; }
@@ -277,14 +275,14 @@ public class CommandLine
 
     /** Get the argument associated with the arguement name.
      *  Actually returns the LAST one seen
-     *  @param argDecl Argument declaration to find
-     *  @return Last argument that matched.
+     *  @param arg Argument declaration to find
+     *  @return Arg - Last argument that matched.
      */
 
-    public Arg getArg(String s)
+    public Arg getArg(String arg)
     {
-        s = ArgDecl.canonicalForm(s) ;
-        return args.get(s) ;
+        arg = ArgDecl.canonicalForm(arg) ;
+        return args.get(arg) ;
     }
 
     /**
@@ -306,7 +304,7 @@ public class CommandLine
     /**
      * Returns the value (a string) for an argument with a value -
      * returns null for no argument and no value.
-     * @param argDecl
+     * @param argName
      * @return String
      */
     public String getValue(String argName)
@@ -332,7 +330,7 @@ public class CommandLine
 
     /**
      * Returns all the values (0 or more strings) for an argument.
-     * @param argDecl
+     * @param argName
      * @return List
      */
     public List<String> getValues(String argName)

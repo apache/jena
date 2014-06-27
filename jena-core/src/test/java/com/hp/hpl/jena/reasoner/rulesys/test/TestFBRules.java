@@ -18,27 +18,33 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.test.TestUtil;
-import com.hp.hpl.jena.datatypes.xsd.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.ClosedException;
-import com.hp.hpl.jena.shared.impl.JenaParameters;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.PrintUtil;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.*;
+import java.util.Iterator ;
+import java.util.List ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import java.io.IOException;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.reasoner.Derivation ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry ;
+import com.hp.hpl.jena.reasoner.rulesys.* ;
+import com.hp.hpl.jena.reasoner.test.TestUtil ;
+import com.hp.hpl.jena.shared.ClosedException ;
+import com.hp.hpl.jena.shared.impl.JenaParameters ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.PrintUtil ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 
 /**
  * Test suite for the hybrid forward/backward rule system.
@@ -980,7 +986,7 @@ public class TestFBRules extends TestCase {
      * Investigate a suspicious case in the OWL ruleset, is the backchainer 
      * returning duplicate values?
      */
-    public void testDuplicatesEC4() throws IOException {
+    public void testDuplicatesEC4() {
         boolean prior = JenaParameters.enableFilteringOfHiddenInfNodes;
         try {
             JenaParameters.enableFilteringOfHiddenInfNodes = false;

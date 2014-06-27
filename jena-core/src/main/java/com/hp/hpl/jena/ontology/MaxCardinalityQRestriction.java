@@ -47,14 +47,14 @@ public interface MaxCardinalityQRestriction
      * maximum cardinality. Any existing statements for <code>maxCardinalityQ</code>
      * will be removed.</p>
      * @param maxCardinality The maximum cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
      */ 
     public void setMaxCardinalityQ( int maxCardinality );
 
     /**
      * <p>Answer the max qualified cardinality of the restricted property.</p>
      * @return The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
      */ 
     public int getMaxCardinalityQ();
 
@@ -62,7 +62,7 @@ public interface MaxCardinalityQRestriction
      * <p>Answer true if this property restriction has the given maximum qualifed cardinality.</p>
      * @param maxCardinality The cardinality to test against 
      * @return True if the given cardinality is the maximum qualified cardinality of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
      */
     public boolean hasMaxCardinalityQ( int maxCardinality );
     
@@ -71,7 +71,7 @@ public interface MaxCardinalityQRestriction
      * for the restricted property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param maxCardinality A cardinality value to be removed from this restriction
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.   
      */
     public void removeMaxCardinalityQ( int maxCardinality );
     

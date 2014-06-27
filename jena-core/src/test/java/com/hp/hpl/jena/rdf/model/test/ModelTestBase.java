@@ -69,8 +69,7 @@ public class ModelTestBase extends GraphTestBase
 	 *            the model value that is expected
 	 * @param got
 	 *            the model value to check
-	 * @exception if
-	 *                the models are not isomorphic
+	 * @exception junit.framework.AssertionFailedError if the models are not isomorphic
 	 */
 	public static void assertIsoModels( final String title, final Model wanted,
 			final Model got )
@@ -232,7 +231,7 @@ public class ModelTestBase extends GraphTestBase
 	 * 
 	 * @param m
 	 *            the model the statement is attached to
-	 * @param an
+	 * @param fact
 	 *            "S P O" string.
 	 * @return m.createStatement(S, P, O)
 	 */

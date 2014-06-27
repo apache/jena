@@ -83,7 +83,7 @@ public class RETETerminal implements RETESinkNode {
     /**
      * Clone this node in the network.
      * @param netCopy a map from RETENode to cloned instance
-     * @param context the new context to which the network is being ported
+     * @param contextIn the new context to which the network is being ported
      */
     
     @Override

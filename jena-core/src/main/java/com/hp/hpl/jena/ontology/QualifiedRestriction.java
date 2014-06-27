@@ -46,14 +46,14 @@ public interface QualifiedRestriction
      * Any existing statements for <code>hasClassQ</code>
      * will be removed.</p>
      * @param cls The class to which all of the value of the restricted property must belong
-     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */
     public void setHasClassQ( OntClass cls );
 
     /**
      * <p>Answer the class or datarange to which all values of the restricted property belong.</p>
      * @return The ontology class of the restricted property values
-     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */
     public OntResource getHasClassQ();
 
@@ -62,7 +62,7 @@ public interface QualifiedRestriction
      * the class to which all of the property values must belong.</p>
      * @param cls The class to test against
      * @return True if the given class is the class to which all members of this restriction must belong
-     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */
     public boolean hasHasClassQ( OntClass cls );
 
@@ -71,7 +71,7 @@ public interface QualifiedRestriction
      * the class to which all of the property values must belong.</p>
      * @param dr The datarange to test against
      * @return True if the given class is the class to which all members of this restriction must belong
-     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */
     public boolean hasHasClassQ( DataRange dr );
 

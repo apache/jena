@@ -111,9 +111,6 @@ public class OWLConsistencyTest extends TestCase {
 
     /**
      * Run the consistency check, returning a ValidityReport.
-     * 
-     * @param rf
-     *            The factory for the reasoner to test
      */
     public ValidityReport testResults() {
         Model t = FileManager.get().loadModel(BASE_DIR + tbox);
@@ -126,12 +123,6 @@ public class OWLConsistencyTest extends TestCase {
         return im.validate();
     }
 
-    /**
-     * Run the consistency check and validate the result against expectations.
-     * 
-     * @param rf
-     *            The factory for the reasoner to test
-     */
     @Override
     public void runTest() {
         ValidityReport report = testResults();

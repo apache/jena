@@ -207,7 +207,7 @@ public class WGReasonerTester {
      * @param configuration optional configuration information
      * @return true if all the tests pass
      * @throws IOException if one of the test files can't be found
-     * @throws RDFException if the test can't be found or fails internally
+     * @throws JenaException if the test can't be found or fails internally
      */
     public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
         for ( String test : listTests() )
@@ -252,7 +252,7 @@ public class WGReasonerTester {
      * @param configuration optional configuration information
      * @return true if the test passes
      * @throws IOException if one of the test files can't be found
-     * @throws RDFException if the test can't be found or fails internally
+     * @throws JenaException if the test can't be found or fails internally
      */
     public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
         return runTestDetailedResponse(uri,reasonerF,testcase,configuration) != FAIL;
@@ -270,7 +270,7 @@ public class WGReasonerTester {
 		 * @param configuration optional configuration information
 		 * @return true if the test passes
 		 * @throws IOException if one of the test files can't be found
-		 * @throws RDFException if the test can't be found or fails internally
+		 * @throws JenaException if the test can't be found or fails internally
 		 */
     
 	

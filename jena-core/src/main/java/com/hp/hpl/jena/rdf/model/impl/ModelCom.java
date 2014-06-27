@@ -1041,7 +1041,7 @@ implements Model, PrefixMapping, Lock
 
         If the prefix maps to multiple URIs, then we discard it completely.
 
-        @param the Model who's namespace is to be updated
+        @param m Model who's namespace is to be updated
         @param ns the namespace map to add to the Model      
      */
     public static void addNamespaces( Model m, Map<String, Set<String>> ns )
@@ -1556,7 +1556,7 @@ implements Model, PrefixMapping, Lock
         Register the listener with this model by registering its GraphListener
         adaption with the underlying Graph.
 
-        @param a ModelChangedListener to register for model events
+        @param listener A ModelChangedListener to register for model events
         @return this model, for cascading 
            */
           @Override
@@ -1569,7 +1569,7 @@ implements Model, PrefixMapping, Lock
           /**
         Unregister the listener from this model by unregistering its GraphListener
         adaption from the underlying Graph.
-        @param  a ModelChangedListener to unregister from model events
+        @param  listener A ModelChangedListener to unregister from model events
         @return this model, for cascading 
            */
           @Override

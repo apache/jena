@@ -98,7 +98,7 @@ public class GenericTripleMatchFrame extends GenericChoiceFrame {
     /**
      * Initialize the triple match to preserve the current context of the given
      * LPInterpreter and search for the match defined by the current argument registers
-     * @param intepreter the interpreter instance whose env, trail and arg values are to be preserved
+     * @param interpreter the interpreter instance whose env, trail and arg values are to be preserved
      */
     @Override
     public void init(LPInterpreter interpreter) {

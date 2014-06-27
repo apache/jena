@@ -50,7 +50,7 @@ public class TestUtil {
      * @param testCase The JUnit test case that is invoking this helper
      * @param it The iterator to test
      * @param vals The expected values of the iterator
-     * @param anonCount If non zero, count the number of anonymous resources returned by <code>it</code>,
+     * @param countAnon If non zero, count the number of anonymous resources returned by <code>it</code>,
      * and don't check these resources against the expected <code>vals</code>.
      */
     public static void assertIteratorValues(TestCase testCase, Iterator<?> it, Object[] vals, int countAnon ) {

@@ -228,7 +228,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 				.setPrefix("", RDF.getURI()));
 	}
 
-	public void testBadPrefixNamespace() throws IOException {
+	public void testBadPrefixNamespace() {
 		// Trying to set the prefix should generate a warning.
 		// check(file1, null, null, "xmlns:3", true, new Change() {
 		// public void code( RDFWriter w ) {

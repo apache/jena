@@ -462,10 +462,9 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		 { write( model, FileUtils.asUTF8(out), base ); }
 
 	/** Serialize Model <code>model</code> to Writer <code>out</out>.
+     * @param model The model to be written.
 	 * @param out The Writer to which the serialization should be sent.
-	 * @param baseModel The model to be written.
-	 * @param base the base URI for relative URI calculations.  <code>
-	 * null</code> means use only absolute URI's.
+	 * @param base the base URI for relative URI calculations.  <code>null</code> means use only absolute URI's.
 	 */
 	@Override
     synchronized public void write(Model model, Writer out, String base)

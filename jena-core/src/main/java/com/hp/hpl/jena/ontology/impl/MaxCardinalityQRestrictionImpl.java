@@ -104,7 +104,7 @@ public class MaxCardinalityQRestrictionImpl
      * max cardinality. Any existing statements for <code>cardinalityQ</code>
      * will be removed.</p>
      * @param cardinality The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
     @Override
     public void setMaxCardinalityQ( int cardinality ) {
@@ -114,7 +114,7 @@ public class MaxCardinalityQRestrictionImpl
     /**
      * <p>Answer the cardinality of the restricted property.</p>
      * @return The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
     @Override
     public int getMaxCardinalityQ() {
@@ -125,7 +125,7 @@ public class MaxCardinalityQRestrictionImpl
      * <p>Answer true if this property restriction has the given cardinality.</p>
      * @param cardinality The cardinality to test against
      * @return True if the given cardinality is the cardinality of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasMaxCardinalityQ( int cardinality ) {
@@ -137,7 +137,7 @@ public class MaxCardinalityQRestrictionImpl
      * for the restricted property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cardinality A cardinality value to be removed from this restriction
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
     @Override
     public void removeMaxCardinalityQ( int cardinality ) {

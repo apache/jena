@@ -107,8 +107,7 @@ public class ComplementClassImpl
      * in the given list. Any existing
      * statements for the operator will be removed.</p>
      * @param operands The list of operands to this expression.
-     * @exception Always throws UnsupportedOperationException since a complement expression takes only
-     * a single argument.
+     * @exception UnsupportedOperationException since a complement expression takes only a single argument.
      */
     @Override
     public void setOperands( RDFList operands ) {
@@ -130,7 +129,7 @@ public class ComplementClassImpl
     /**
      * <p>Add a class the operands of this boolean expression.</p>
      * @param cls A class that will be added to the operands of this Boolean expression
-     * @exception Always throws UnsupportedOperationException since a complement expression takes only
+     * @exception UnsupportedOperationException since a complement expression takes only
      * a single argument.
      */
     @Override
@@ -141,7 +140,7 @@ public class ComplementClassImpl
     /**
      * <p>Add all of the classes from the given iterator to the operands of this boolean expression.</p>
      * @param classes A iterator over classes that will be added to the operands of this Boolean expression
-     * @exception Always throws UnsupportedOperationException since a complement expression takes only
+     * @exception UnsupportedOperationException since a complement expression takes only
      * a single argument.
      */
     @Override
@@ -152,7 +151,7 @@ public class ComplementClassImpl
     /**
      * <p>Answer the list of operands for this Boolean class expression.</p>
      * @return A list of the operands of this expression.
-     * @exception OntProfileException If the operand property is not supported in the current language profile.
+     * @exception ProfileException If the operand property is not supported in the current language profile.
      */
     @Override
     public RDFList getOperands() {
@@ -163,7 +162,7 @@ public class ComplementClassImpl
      * <p>Answer an iterator over all of the classes that are the operands of this
      * Boolean class expression. Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the operands of the expression.
-     * @exception OntProfileException If the operand property is not supported in the current language profile.
+     * @exception ProfileException If the operand property is not supported in the current language profile.
      */
     @Override
     public ExtendedIterator<? extends OntClass> listOperands() {
@@ -174,7 +173,7 @@ public class ComplementClassImpl
      * <p>Answer true if this Boolean class expression has the given class as an operand.</p>
      * @param cls A class to test
      * @return True if the given class is an operand to this expression.
-     * @exception OntProfileException If the operand property is not supported in the current language profile.
+     * @exception ProfileException If the operand property is not supported in the current language profile.
      */
     @Override
     public boolean hasOperand( Resource cls ) {

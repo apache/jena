@@ -28,7 +28,6 @@ public interface TripleIterator extends ExtendedIterator<Triple>
     /**
         Answer the next() element cast to Triple.
         @return (Triple) next()
-        @throws NoSuchElementException, ClassCastException
     */
     Triple nextTriple();
     }

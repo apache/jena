@@ -122,7 +122,7 @@ public class OntClassImpl
      * <p>Assert that this class is sub-class of the given class. Any existing
      * statements for <code>subClassOf</code> will be removed.</p>
      * @param cls The class that this class is a sub-class of
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public void setSuperClass( Resource cls ) {
@@ -132,7 +132,7 @@ public class OntClassImpl
     /**
      * <p>Add a super-class of this class.</p>
      * @param cls A class that is a super-class of this class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public void addSuperClass( Resource cls ) {
@@ -143,7 +143,7 @@ public class OntClassImpl
      * <p>Answer a class that is the super-class of this class. If there is
      * more than one such class, an arbitrary selection is made.</p>
      * @return A super-class of this class
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public OntClass getSuperClass() {
@@ -154,7 +154,7 @@ public class OntClassImpl
      * <p>Answer an iterator over all of the classes that are declared to be super-classes of
      * this class. Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the super-classes of this class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public ExtendedIterator<OntClass> listSuperClasses() {
@@ -172,7 +172,7 @@ public class OntClassImpl
      * super-class relation: i&#046;e&#046; eliminate any class for which there is a longer route
      * to reach that child under the super-class relation.
      * @return an iterator over the resources representing this class's sub-classes.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public ExtendedIterator<OntClass> listSuperClasses( boolean direct ) {
@@ -184,7 +184,7 @@ public class OntClassImpl
      * <p>Answer true if the given class is a super-class of this class.</p>
      * @param cls A class to test.
      * @return True if the given class is a super-class of this class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasSuperClass( Resource cls ) {
@@ -195,7 +195,7 @@ public class OntClassImpl
      * <p>Answer true if this class has any super-class in the model. Note that
      * when using a reasoner, all OWL classes have owl:Thing as a super-class.</p>
      * @return True if this class has any known super-class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasSuperClass() {
@@ -211,7 +211,7 @@ public class OntClassImpl
      * @param direct If true, only search the classes that are directly adjacent to this
      * class in the class hierarchy.
      * @return True if the given class is a super-class of this class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasSuperClass( Resource cls, boolean direct ) {
@@ -248,7 +248,7 @@ public class OntClassImpl
      * <p>Remove the given class from the super-classes of this class.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cls A class to be removed from the super-classes of this class
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.
      */
     @Override
     public void removeSuperClass( Resource cls ) {
@@ -259,7 +259,7 @@ public class OntClassImpl
      * <p>Assert that this class is super-class of the given class. Any existing
      * statements for <code>subClassOf</code> on <code>prop</code> will be removed.</p>
      * @param cls The class that is a sub-class of this class
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public void setSubClass( Resource cls ) {
@@ -275,7 +275,7 @@ public class OntClassImpl
     /**
      * <p>Add a sub-class of this class.</p>
      * @param cls A class that is a sub-class of this class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public void addSubClass( Resource cls ) {
@@ -287,7 +287,7 @@ public class OntClassImpl
      * more than one such class, an arbitrary selection is made. If
      * there is no such class, return null.</p>
      * @return A sub-class of this class or null
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()}
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()}
      * property is not supported in the current language profile.
      */
     @Override
@@ -313,7 +313,7 @@ public class OntClassImpl
      * <p>Answer an iterator over all of the classes that are declared to be sub-classes of
      * this class. Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the sub-classes of this class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public ExtendedIterator<OntClass> listSubClasses() {
@@ -362,7 +362,7 @@ public class OntClassImpl
      * sub-class relation: i&#046;e&#046; eliminate any class for which there is a longer route
      * to reach that child under the sub-class relation.
      * @return an iterator over the resources representing this class's sub-classes
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public ExtendedIterator<OntClass> listSubClasses( boolean direct ) {
@@ -375,7 +375,7 @@ public class OntClassImpl
      * <p>Answer true if the given class is a sub-class of this class.</p>
      * @param cls A class to test.
      * @return True if the given class is a sub-class of this class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasSubClass( Resource cls ) {
@@ -386,7 +386,7 @@ public class OntClassImpl
      * <p>Answer true if this class has any sub-class in the model. Note that
      * when using a reasoner, all OWL classes have owl:Nothing as a sub-class.</p>
      * @return True if this class has any known sub-class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasSubClass() {
@@ -402,7 +402,7 @@ public class OntClassImpl
      * @param direct If true, only search the classes that are directly adjacent to this
      * class in the class hierarchy.
      * @return True if the given class is a sub-class of this class.
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasSubClass( Resource cls, boolean direct ) {
@@ -419,7 +419,7 @@ public class OntClassImpl
      * <p>Remove the given class from the sub-classes of this class.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cls A class to be removed from the sub-classes of this class
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.
      */
     @Override
     public void removeSubClass( Resource cls ) {
@@ -433,7 +433,7 @@ public class OntClassImpl
      * <p>Assert that the given class is equivalent to this class. Any existing
      * statements for <code>equivalentClass</code> will be removed.</p>
      * @param cls The class that this class is a equivalent to.
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
     @Override
     public void setEquivalentClass( Resource cls ) {
@@ -443,7 +443,7 @@ public class OntClassImpl
     /**
      * <p>Add a class that is equivalent to this class.</p>
      * @param cls A class that is equivalent to this class.
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
     @Override
     public void addEquivalentClass( Resource cls ) {
@@ -454,7 +454,7 @@ public class OntClassImpl
      * <p>Answer a class that is equivalent to this class. If there is
      * more than one such class, an arbitrary selection is made.</p>
      * @return A class equivalent to this class
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
     @Override
     public OntClass getEquivalentClass() {
@@ -465,7 +465,7 @@ public class OntClassImpl
      * <p>Answer an iterator over all of the classes that are declared to be equivalent classes to
      * this class. Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the classes equivalent to this class.
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
     @Override
     public ExtendedIterator<OntClass> listEquivalentClasses() {
@@ -476,7 +476,7 @@ public class OntClassImpl
      * <p>Answer true if the given class is equivalent to this class.</p>
      * @param cls A class to test for
      * @return True if the given property is equivalent to this class.
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasEquivalentClass( Resource cls ) {
@@ -488,7 +488,7 @@ public class OntClassImpl
      * equivalent.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cls A class that may be declared to be equivalent to this class, and which is no longer equivalent
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
     @Override
     public void removeEquivalentClass( Resource cls ) {
@@ -501,7 +501,7 @@ public class OntClassImpl
      * <p>Assert that this class is disjoint with the given class. Any existing
      * statements for <code>disjointWith</code> will be removed.</p>
      * @param cls The property that this class is disjoint with.
-     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
     @Override
     public void setDisjointWith( Resource cls ) {
@@ -511,7 +511,7 @@ public class OntClassImpl
     /**
      * <p>Add a class that this class is disjoint with.</p>
      * @param cls A class that has no instances in common with this class.
-     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
     @Override
     public void addDisjointWith( Resource cls ) {
@@ -522,7 +522,7 @@ public class OntClassImpl
      * <p>Answer a class with which this class is disjoint. If there is
      * more than one such class, an arbitrary selection is made.</p>
      * @return A class disjoint with this class
-     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
     @Override
     public OntClass getDisjointWith() {
@@ -533,7 +533,7 @@ public class OntClassImpl
      * <p>Answer an iterator over all of the classes that this class is declared to be disjoint with.
      * Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the classes disjoint with this class.
-     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
     @Override
     public ExtendedIterator<OntClass> listDisjointWith() {
@@ -544,7 +544,7 @@ public class OntClassImpl
      * <p>Answer true if this class is disjoint with the given class.</p>
      * @param cls A class to test
      * @return True if the this class is disjoint with the the given class.
-     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
     @Override
     public boolean isDisjointWith( Resource cls ) {
@@ -556,7 +556,7 @@ public class OntClassImpl
      * disjoint.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cls A class that may be declared to be disjoint with this class, and which is no longer disjoint
-     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()()()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
     @Override
     public void removeDisjointWith( Resource cls ) {

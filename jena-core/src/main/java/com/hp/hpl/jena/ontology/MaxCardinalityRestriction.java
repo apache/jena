@@ -48,14 +48,14 @@ public interface MaxCardinalityRestriction
      * maximum cardinality. Any existing statements for <code>maxCardinality</code>
      * will be removed.</p>
      * @param cardinality The maximum cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.   
      */ 
     public void setMaxCardinality( int cardinality );
 
     /**
      * <p>Answer the maximum cardinality of the restricted property.</p>
      * @return The maximum cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.   
      */ 
     public int getMaxCardinality();
 
@@ -63,7 +63,7 @@ public interface MaxCardinalityRestriction
      * <p>Answer true if this property restriction has the given maximum cardinality.</p>
      * @param cardinality The cardinality to test against 
      * @return True if the given cardinality is the max cardinality of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MAX_CARDINALITY()} property is not supported in the current language profile.   
      */
     public boolean hasMaxCardinality( int cardinality );
     

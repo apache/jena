@@ -53,14 +53,14 @@ public interface OntProperty
      * <p>Assert that this property is sub-property of the given property. Any existing
      * statements for <code>subPropertyOf</code> will be removed.</p>
      * @param prop The property that this property is a sub-property of
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public void setSuperProperty( Property prop );
 
     /**
      * <p>Add a super-property of this property.</p>
      * @param prop A property that is a super-property of this property.
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public void addSuperProperty( Property prop );
 
@@ -68,7 +68,7 @@ public interface OntProperty
      * <p>Answer a property that is the super-property of this property. If there is
      * more than one such property, an arbitrary selection is made.</p>
      * @return A super-property of this property
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public OntProperty getSuperProperty();
 
@@ -76,7 +76,7 @@ public interface OntProperty
      * <p>Answer an iterator over all of the properties that are declared to be super-properties of
      * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the super-properties of this property.
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends OntProperty> listSuperProperties();
 
@@ -87,7 +87,7 @@ public interface OntProperty
      * property hierarchy: i&#046;e&#046; eliminate any property for which there is a longer route
      * to reach that child under the super-property relation.
      * @return An iterator over the super-properties of this property.
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends OntProperty> listSuperProperties( boolean direct );
 
@@ -97,7 +97,7 @@ public interface OntProperty
      * @param direct If true, only consider the directly adjacent properties in the
      * property hierarchy
      * @return True if the given property is a super-property of this property.
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public boolean hasSuperProperty( Property prop, boolean direct );
 
@@ -105,7 +105,7 @@ public interface OntProperty
      * <p>Remove the given property from the super-properties of this property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param prop A property to be removed from the super-properties of this property
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public void removeSuperProperty( Property prop );
 
@@ -113,14 +113,14 @@ public interface OntProperty
      * <p>Assert that this property is super-property of the given property. Any existing
      * statements for <code>subPropertyOf</code> on <code>prop</code> will be removed.</p>
      * @param prop The property that is a sub-property of this property
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public void setSubProperty( Property prop );
 
     /**
      * <p>Add a sub-property of this property.</p>
      * @param prop A property that is a sub-property of this property.
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public void addSubProperty( Property prop );
 
@@ -128,7 +128,7 @@ public interface OntProperty
      * <p>Answer a property that is the sub-property of this property. If there is
      * more than one such property, an arbitrary selection is made.</p>
      * @return A sub-property of this property
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public OntProperty getSubProperty();
 
@@ -136,7 +136,7 @@ public interface OntProperty
      * <p>Answer an iterator over all of the properties that are declared to be sub-properties of
      * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the sub-properties of this property.
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends OntProperty> listSubProperties();
 
@@ -147,7 +147,7 @@ public interface OntProperty
      * property hierarchy: i&#046;e&#046; eliminate any property for which there is a longer route
      * to reach that child under the sub-property relation.
      * @return An iterator over the sub-properties of this property.
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends OntProperty> listSubProperties( boolean direct );
 
@@ -157,7 +157,7 @@ public interface OntProperty
      * @param direct If true, only consider the directly adjacent properties in the
      * property hierarchy
      * @return True if the given property is a sub-property of this property.
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public boolean hasSubProperty( Property prop, boolean direct );
 
@@ -165,7 +165,7 @@ public interface OntProperty
      * <p>Remove the given property from the sub-properties of this property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param prop A property to be removed from the sub-properties of this property
-     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.
      */
     public void removeSubProperty( Property prop );
 
@@ -175,14 +175,14 @@ public interface OntProperty
      * <p>Assert that the given resource represents the class of individuals that form the
      * domain of this property. Any existing <code>domain</code> statements for this property are removed.</p>
      * @param res The resource that represents the domain class for this property.
-     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
      */
     public void setDomain( Resource res );
 
     /**
      * <p>Add a resource representing the domain of this property.</p>
      * @param res A resource that represents a domain class for this property.
-     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
      */
     public void addDomain( Resource res );
 
@@ -190,7 +190,7 @@ public interface OntProperty
      * <p>Answer a resource that represents the domain class of this property. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return An resource representing the class that forms the domain of this property
-     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
      */
     public OntResource getDomain();
 
@@ -198,7 +198,7 @@ public interface OntProperty
      * <p>Answer an iterator over all of the declared domain classes of this property.
      * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the classes that form the domain of this property.
-     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends OntResource> listDomain();
 
@@ -206,7 +206,7 @@ public interface OntProperty
      * <p>Answer true if the given resource a class specifying the domain of this property.</p>
      * @param res A resource representing a class
      * @return True if the given resource is one of the domain classes of this property.
-     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
      */
     public boolean hasDomain( Resource res );
 
@@ -214,7 +214,7 @@ public interface OntProperty
      * <p>Remove the given class from the stated domain(s) of this property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cls A class to be removed from the declared domain(s) of this property
-     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.
      */
     public void removeDomain( Resource cls );
 
@@ -228,7 +228,7 @@ public interface OntProperty
      * is more efficient to use {@link #addRange} since no removal step is necessary.
      * See {@link #addRange} for additional usage notes on the value of <code>res</code>.</p>
      * @param res The resource that represents the range class for this property.
-     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
     public void setRange( Resource res );
 
@@ -240,7 +240,7 @@ public interface OntProperty
      * the resource should be represent the range class. Note that {@link OntClass} is
      * a Java sub-class of {@link Resource}, so OntClass objects can be passed directly.</p>
      * @param res A resource that represents a range class for this property.
-     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
     public void addRange( Resource res );
 
@@ -248,7 +248,7 @@ public interface OntProperty
      * <p>Answer a resource that represents the range class of this property. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return An resource representing the class that forms the range of this property
-     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
     public OntResource getRange();
 
@@ -256,7 +256,7 @@ public interface OntProperty
      * <p>Answer an iterator over all of the declared range classes of this property.
      * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the classes that form the range of this property.
-     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends OntResource> listRange();
 
@@ -264,7 +264,7 @@ public interface OntProperty
      * <p>Answer true if the given resource a class specifying the range of this property.</p>
      * @param res A resource representing a class
      * @return True if the given resource is one of the range classes of this property.
-     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
     public boolean hasRange( Resource res );
 
@@ -272,7 +272,7 @@ public interface OntProperty
      * <p>Remove the given class from the stated range(s) of this property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param cls A class to be removed from the declared range(s) of this property
-     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
     public void removeRange( Resource cls );
 
@@ -285,14 +285,14 @@ public interface OntProperty
      * <p>Assert that the given property is equivalent to this property. Any existing
      * statements for <code>equivalentProperty</code> will be removed.</p>
      * @param prop The property that this property is a equivalent to.
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
      */
     public void setEquivalentProperty( Property prop );
 
     /**
      * <p>Add a property that is equivalent to this property.</p>
      * @param prop A property that is equivalent to this property.
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
      */
     public void addEquivalentProperty( Property prop );
 
@@ -300,7 +300,7 @@ public interface OntProperty
      * <p>Answer a property that is equivalent to this property. If there is
      * more than one such property, an arbitrary selection is made.</p>
      * @return A property equivalent to this property
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
      */
     public OntProperty getEquivalentProperty();
 
@@ -308,7 +308,7 @@ public interface OntProperty
      * <p>Answer an iterator over all of the properties that are declared to be equivalent properties to
      * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the properties equivalent to this property.
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends OntProperty> listEquivalentProperties();
 
@@ -316,7 +316,7 @@ public interface OntProperty
      * <p>Answer true if the given property is equivalent to this property.</p>
      * @param prop A property to test for
      * @return True if the given property is equivalent to this property.
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
      */
     public boolean hasEquivalentProperty( Property prop );
 
@@ -325,7 +325,7 @@ public interface OntProperty
      * equivalent.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param prop A property that may be declared to be equivalent to this property
-     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.
      */
     public void removeEquivalentProperty( Property prop );
 
@@ -336,14 +336,14 @@ public interface OntProperty
      * <p>Assert that this property is the inverse of the given property. Any existing
      * statements for <code>inverseOf</code> will be removed.</p>
      * @param prop The property that this property is a inverse to.
-     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
     public void setInverseOf( Property prop );
 
     /**
      * <p>Add a property that this property is the inverse of.</p>
      * @param prop A property that is the inverse of this property.
-     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
     public void addInverseOf( Property prop );
 
@@ -354,7 +354,7 @@ public interface OntProperty
      * <p>Note that this method is slightly different to {@link #getInverse}. See
      * the Javadoc on {@link #getInverse} for a detailed explanation.</p>
      * @return A property which this property is the inverse of, or null.
-     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
     public OntProperty getInverseOf();
 
@@ -362,7 +362,7 @@ public interface OntProperty
      * <p>Answer an iterator over all of the properties that this property is declared to be the inverse of.
      * Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the properties inverse to this property.
-     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends OntProperty> listInverseOf();
 
@@ -370,7 +370,7 @@ public interface OntProperty
      * <p>Answer true if this property is the inverse of the given property.</p>
      * @param prop A property to test for
      * @return True if the this property is the inverse of the the given property.
-     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
     public boolean isInverseOf( Property prop );
 
@@ -378,7 +378,7 @@ public interface OntProperty
      * <p>Remove the statement that this property is the inverse of the given property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param prop A property that may be declared to be inverse to this property
-     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
     public void removeInverseProperty( Property prop );
 

@@ -130,7 +130,7 @@ public class TestEntityOutput extends ModelTestBase
         }
     }
     
-    public void testCRinLiterals() throws IOException 
+    public void testCRinLiterals() 
     {
         Model m = createMemModel();
         Resource r = m.createResource("http://example/r") ;

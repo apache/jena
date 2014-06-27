@@ -52,14 +52,14 @@ public interface DataRange
      * <p>Assert that this data range is exactly the enumeration of the given individuals. Any existing 
      * statements for <code>oneOf</code> will be removed.</p>
      * @param en A list of literals that defines the permissible values for this datarange
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
     public void setOneOf( RDFList en );
 
     /**
      * <p>Add a literal to the enumeration that defines the permissible values of this class.</p>
      * @param lit A literal to add to the enumeration
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
     public void addOneOf( Literal lit );
 
@@ -67,14 +67,14 @@ public interface DataRange
      * <p>Add each literal from the given iteratation to the 
      * enumeration that defines the permissible values of this datarange.</p>
      * @param literals An iterator over literals
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
     public void addOneOf( Iterator<Literal> literals );
 
     /**
      * <p>Answer a list of literals that defines the extension of this datarange.</p>
      * @return A list of literals that is the permissible values
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
     public RDFList getOneOf();
 
@@ -82,7 +82,7 @@ public interface DataRange
      * <p>Answer an iterator over all of the literals that are declared to be the permissible values for
      * this class. Each element of the iterator will be an {@link Literal}.</p>
      * @return An iterator over the literals that are the permissible values
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
     public ExtendedIterator<Literal> listOneOf();
 
@@ -91,7 +91,7 @@ public interface DataRange
      * of this datarange.</p>
      * @param lit A literal to test
      * @return True if the given literal is in the permissible values for this class.
-     * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */
     public boolean hasOneOf( Literal lit );
     

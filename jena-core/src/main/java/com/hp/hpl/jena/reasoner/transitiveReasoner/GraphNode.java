@@ -405,7 +405,7 @@ class GraphNode {
      * from this node.  
      * @param closed if set to true it returns triples in the transitive closure,
      * if set to false it returns triples in the transitive reduction
-     * @param cache the enclosing TransitiveGraphCache
+     * @param tgc the enclosing TransitiveGraphCache
      */
     public ExtendedIterator<Triple> listTriples(boolean closed, TransitiveGraphCache tgc) {
         if (tgc.cacheTriples) {

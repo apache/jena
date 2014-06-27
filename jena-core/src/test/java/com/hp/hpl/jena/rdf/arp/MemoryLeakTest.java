@@ -42,7 +42,7 @@ public class MemoryLeakTest extends TestCase {
         super(arg0);
     }
     
-    public void testWineMemoryLeak() throws IOException {
+    public void testWineMemoryLeak() {
         // warmup
         Runtime rt = Runtime.getRuntime();
         loadFile("testing/wg/miscellaneous/consistent001.rdf");
@@ -60,8 +60,7 @@ public class MemoryLeakTest extends TestCase {
         
     }
 
-    static void loadFile(String fileName)
-        throws IOException {
+    static void loadFile(String fileName) {
         PrintStream oldOut = System.out;
         try ( PrintStream out = new PrintStream(new OutputStream() {
                 @Override

@@ -172,7 +172,6 @@ public class XMLOutputTestBase extends ModelTestBase
         check(filename, encoding, regexPresent, regexAbsent, errs, code, "file:"+filename);
     }
     
-    @SuppressWarnings("resource")
     protected void check(
         String filename,
         String encoding,
