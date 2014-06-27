@@ -19,8 +19,6 @@
 package com.hp.hpl.jena.graph.test;
 
 import java.io.InputStream ;
-import java.net.MalformedURLException ;
-import java.net.URISyntaxException ;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -906,9 +904,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
         }
     }
 
-    /** testIsomorphism from file data 
-     * @throws FileNotFoundException */
-    public void testIsomorphismFile() throws URISyntaxException, MalformedURLException {
+    /** testIsomorphism from file data */
+    public void testIsomorphismFile() {
         testIsomorphismXMLFile(1,true);
         testIsomorphismXMLFile(2,true);
         testIsomorphismXMLFile(3,true);
@@ -919,22 +916,22 @@ public abstract class AbstractTestGraph extends GraphTestBase
         testIsomorphismNTripleFile(8,false);
 
     }
-    private void testIsomorphismNTripleFile(int i, boolean result) throws URISyntaxException, MalformedURLException {
+    private void testIsomorphismNTripleFile(int i, boolean result) {
         testIsomorphismFile(i,"N-TRIPLE","nt",result);
     }
 
-    private void testIsomorphismXMLFile(int i, boolean result) throws URISyntaxException, MalformedURLException {
+    private void testIsomorphismXMLFile(int i, boolean result) {
         testIsomorphismFile(i,"RDF/XML","rdf",result);
 
     }
 
-    private InputStream getInputStream( int n, int n2, String suffix) throws URISyntaxException, MalformedURLException
+    private InputStream getInputStream( int n, int n2, String suffix)
     {
     	String urlStr = String.format( "regression/testModelEquals/%s-%s.%s", n, n2, suffix);
     	return AbstractTestGraph.class.getClassLoader().getResourceAsStream(  urlStr );
     }
     
-    private void testIsomorphismFile(int n, String lang, String suffix, boolean result) throws URISyntaxException, MalformedURLException {
+    private void testIsomorphismFile(int n, String lang, String suffix, boolean result) {
 
         Graph g1 = getGraph();
         Graph g2 = getGraph();

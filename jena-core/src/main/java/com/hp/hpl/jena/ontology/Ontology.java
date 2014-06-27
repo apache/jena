@@ -52,7 +52,7 @@ public interface Ontology
      * <p>Assert that this ontology imports only the given ontology. Any existing
      * statements for <code>sameAs</code> will be removed.</p>
      * @param res Represents a resource that this ontology imports.
-     * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#IMPORTS()} property is not supported in the current language profile.
      */
     public void setImport( Resource res );
 
@@ -60,7 +60,7 @@ public interface Ontology
      * <p>Add a resource representing an ontology that this ontology
      * (strictly, the ontology represented by this node) imports.</p>
      * @param res Represents a resource that this ontology imports.
-     * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#IMPORTS()} property is not supported in the current language profile.
      */
     public void addImport( Resource res );
 
@@ -68,7 +68,7 @@ public interface Ontology
      * <p>Answer a resource that represents an ontology imported by this ontology. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return An {@link OntResource} representing a resource that this ontology imports
-     * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#IMPORTS()} property is not supported in the current language profile.
      */
     public OntResource getImport();
 
@@ -76,7 +76,7 @@ public interface Ontology
      * <p>Answer an iterator over all of the resources representing ontologies imported by this ontology.
      * </p>
      * @return An iterator over the ontology import resources
-     * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#IMPORTS()} property is not supported in the current language profile.
      */
     public ExtendedIterator<OntResource> listImports();
 
@@ -102,7 +102,7 @@ public interface Ontology
      * <p>Assert that this ontology is backward compatible with the given ontology. Any existing
      * statements for <code>sameAs</code> will be removed.</p>
      * @param res Represents a resource that this ontology is compatible with.
-     * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
      */
     public void setBackwardCompatibleWith( Resource res );
 
@@ -110,7 +110,7 @@ public interface Ontology
      * <p>Add a resource representing an ontology that this ontology
      * (strictly, the ontology represented by this node) is backwards compatible with.</p>
      * @param res Represents a resource that this ontology is compatible with.
-     * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
      */
     public void addBackwardCompatibleWith( Resource res );
 
@@ -118,7 +118,7 @@ public interface Ontology
      * <p>Answer a resource that represents an ontology that is backwards compatible with this ontology. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return An {@link OntResource} representing an ontology that this ontology is compatible with
-     * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
      */
     public OntResource getBackwardCompatibleWith();
 
@@ -126,7 +126,7 @@ public interface Ontology
      * <p>Answer an iterator over all of the resources representing
      * ontologies that this ontology is backwards compatible with.</p>
      * @return An iterator over the ontology resources compatible with this ontology
-     * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
      */
     public ExtendedIterator<OntResource> listBackwardCompatibleWith();
 
@@ -153,7 +153,7 @@ public interface Ontology
      * <p>Assert that this ontology is a new version of the given ontology. Any existing
      * statements for <code>priorVersion</code> will be removed.</p>
      * @param res Represents a resource that this ontology supercedes.
-     * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
      */
     public void setPriorVersion( Resource res );
 
@@ -161,7 +161,7 @@ public interface Ontology
      * <p>Add a resource representing an ontology that this ontology
      * (strictly, the ontology represented by this node) supercedes.</p>
      * @param res Represents a resource that this ontology supercedes.
-     * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
      */
     public void addPriorVersion( Resource res );
 
@@ -169,7 +169,7 @@ public interface Ontology
      * <p>Answer a resource that represents an ontology that is superceded by this ontology. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return An {@link OntResource} representing an ontology that this ontology supercedes
-     * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
      */
     public OntResource getPriorVersion();
 
@@ -177,7 +177,7 @@ public interface Ontology
      * <p>Answer an iterator over all of the resources representing
      * ontologies that this ontology supercedes.</p>
      * @return An iterator over the ontology resources superceded by this ontology
-     * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
      */
     public ExtendedIterator<OntResource> listPriorVersion();
 
@@ -202,7 +202,7 @@ public interface Ontology
      * <p>Assert that this ontology is incompatible with the given ontology. Any existing
      * statements for <code>incompatibleWith</code> will be removed.</p>
      * @param res Represents a resource that this ontology is incompatible with.
-     * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
      */
     public void setIncompatibleWith( Resource res );
 
@@ -210,7 +210,7 @@ public interface Ontology
      * <p>Add a resource representing an ontology that this ontology
      * (strictly, the ontology represented by this node) is incompatible with.</p>
      * @param res Represents a resource that this ontology is incompatible with.
-     * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
      */
     public void addIncompatibleWith( Resource res );
 
@@ -218,7 +218,7 @@ public interface Ontology
      * <p>Answer a resource that represents an ontology that is is incompatible with this ontology. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return An {@link OntResource} representing an ontology that this ontology is incompatible with
-     * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
      */
     public OntResource getIncompatibleWith();
 
@@ -226,7 +226,7 @@ public interface Ontology
      * <p>Answer an iterator over all of the resources representing
      * ontologies that this ontology is incompatible with.</p>
      * @return An iterator over the ontology resources that this ontology is incompatible with
-     * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
      */
     public ExtendedIterator<OntResource> listIncompatibleWith();
 

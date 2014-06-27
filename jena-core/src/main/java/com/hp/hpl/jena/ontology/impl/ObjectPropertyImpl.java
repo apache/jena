@@ -101,7 +101,7 @@ public class ObjectPropertyImpl
      * <p>Answer a property that is an inverse of this property, ensuring that it
      * presents the ObjectProperty facet.</p>
      * @return A property inverse to this property
-     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
     @Override
     public OntProperty getInverseOf() {
@@ -113,7 +113,7 @@ public class ObjectPropertyImpl
      * <p>Answer an iterator over all of the properties that are declared to be inverse properties of
      * this property, ensuring that each presents the objectProperty facet.</p>
      * @return An iterator over the properties inverse to this property.
-     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.
      */
     @Override
     public ExtendedIterator<? extends OntProperty> listInverseOf() {

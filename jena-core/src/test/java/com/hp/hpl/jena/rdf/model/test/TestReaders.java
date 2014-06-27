@@ -82,7 +82,7 @@ public class TestReaders extends AbstractModelTestBase
 
 	}
 
-	public void testReadLocalNTriple() throws IOException
+	public void testReadLocalNTriple()
 	{
 		model.read(getInputStream("TestReaders.nt"), "", "N-TRIPLE");
 		Assert.assertEquals("Wrong size model", 5, model.size());
@@ -92,7 +92,7 @@ public class TestReaders extends AbstractModelTestBase
 
 	}
 
-	public void testReadLocalRDF() throws IOException
+	public void testReadLocalRDF()
 	{
 		model.read(getInputStream("TestReaders.rdf"), "http://example.org/");
 	}

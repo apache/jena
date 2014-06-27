@@ -33,9 +33,6 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     public NodeToTriplesMap( Field indexField, Field f2, Field f3 )
         { super( indexField, f2, f3 ); }
 
-    /** 
-     	@see com.hp.hpl.jena.mem.Temp#add(com.hp.hpl.jena.graph.Triple)
-    */
     @Override public boolean add( Triple t ) 
         {
         Object o = getIndexField( t );
@@ -58,9 +55,6 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     private OpenSetBunch createSetBunch()
         { return new OpenSetBunch(); }
     
-    /** 
-     	@see com.hp.hpl.jena.mem.Temp#remove(com.hp.hpl.jena.graph.Triple)
-    */
     @Override public boolean remove( Triple t )
         { 
         Object o = getIndexField( t );
@@ -83,9 +77,6 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         return b == null ? NullIterator.<Triple>instance() : b.iterator();
         }
     
-    /** 
-     	@see com.hp.hpl.jena.mem.Temp#contains(com.hp.hpl.jena.graph.Triple)
-    */
     @Override public boolean contains( Triple t )
         { 
         TripleBunch s = bunchMap.get( getIndexField( t ) );
@@ -115,9 +106,6 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             }
         }
     
-    /** 
-     	@see com.hp.hpl.jena.mem.Temp#iterateAll(com.hp.hpl.jena.graph.Triple)
-    */
     public ExtendedIterator<Triple> iterateAll( Triple pattern )
         {
         return

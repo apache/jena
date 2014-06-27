@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.io.FileNotFoundException ;
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.net.URISyntaxException ;
 import java.net.URL ;
@@ -53,7 +52,7 @@ public abstract class AbstractModelTestBase extends TestCase
    		}
    	}
 	
-	protected InputStream getInputStream( final String fn ) throws IOException
+	protected InputStream getInputStream( final String fn )
 	{
 		ClassLoader loader = AbstractModelTestBase.class.getClassLoader();
 		if (loader == null)

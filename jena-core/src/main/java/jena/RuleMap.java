@@ -57,7 +57,7 @@ public class RuleMap {
      * comment lines and any initial prefix definition lines.
      * Also notes the prefix definitions for adding to a later inf model.
      */
-    public static List<Rule> loadRules(String filename, Map<String, String> prefixes) throws IOException {
+    public static List<Rule> loadRules(String filename, Map<String, String> prefixes) {
         String fname = filename;
         if (fname.startsWith("file:///")) {
             fname = File.separator + fname.substring(8);
@@ -76,7 +76,7 @@ public class RuleMap {
      * comment lines and any initial prefix definition lines.
      * Also notes the prefix definitions for adding to a later inf model.
      */
-    public static List<Rule> loadRules(BufferedReader src, Map<String, String> prefixes) throws IOException {
+    public static List<Rule> loadRules(BufferedReader src, Map<String, String> prefixes) {
         Rule.Parser parser = Rule.rulesParserFromReader(src);
         List<Rule> rules = Rule.parseRules(parser);
         prefixes.putAll(parser.getPrefixMap());

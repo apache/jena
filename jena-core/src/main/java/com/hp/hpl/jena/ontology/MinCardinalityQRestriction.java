@@ -47,14 +47,14 @@ public interface MinCardinalityQRestriction
      * minimum cardinality. Any existing statements for <code>minCardinalityQ</code>
      * will be removed.</p>
      * @param minCardinality The minimum cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.   
      */ 
     public void setMinCardinalityQ( int minCardinality );
 
     /**
      * <p>Answer the min qualified cardinality of the restricted property.</p>
      * @return The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.   
      */ 
     public int getMinCardinalityQ();
 
@@ -62,7 +62,7 @@ public interface MinCardinalityQRestriction
      * <p>Answer true if this property restriction has the given minimum qualifed cardinality.</p>
      * @param minCardinality The cardinality to test against 
      * @return True if the given cardinality is the minimum qualified cardinality of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.   
      */
     public boolean hasMinCardinalityQ( int minCardinality );
     
@@ -71,7 +71,7 @@ public interface MinCardinalityQRestriction
      * for the restricted property.  If this statement
      * is not true of the current model, nothing happens.</p>
      * @param minCardinality A cardinality value to be removed from this restriction
-     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.   
      */
     public void removeMinCardinalityQ( int minCardinality );
     

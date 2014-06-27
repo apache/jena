@@ -181,9 +181,6 @@ public class LPInterpreter {
     /**
      * Return the next result from this engine, no further initialization.
      * Should be called from within an appropriately synchronized block.
-     * @param context the generator choice point or top level iterator which 
-     * is requesting this result and might have preserved state to restore
-     * @return either a StateFlag or  a result Triple
      */
     public Object next() {
         boolean traceOn = engine.isTraceOn();

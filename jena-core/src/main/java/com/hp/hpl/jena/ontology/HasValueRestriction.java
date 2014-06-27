@@ -50,14 +50,14 @@ public interface HasValueRestriction
      * @param value The RDF value (an individual or a literal) 
      * that is the value that the restricted property must have to be a member of the
      * class defined by this restriction.
-     * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
      */ 
     public void setHasValue( RDFNode value );
 
     /**
      * <p>Answer the RDF value that all values of the restricted property must be equal to.</p>
      * @return An RDFNode that is the value of the restricted property
-     * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
      */ 
     public RDFNode getHasValue();
 
@@ -66,7 +66,7 @@ public interface HasValueRestriction
      * values of the restricted property must equal.</p>
      * @param value An RDF value to test 
      * @return True if the given value is the value of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
      */
     public boolean hasValue( RDFNode value );
     

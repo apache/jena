@@ -19,6 +19,8 @@
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.AlreadyExistsException ;
+import com.hp.hpl.jena.shared.DoesNotExistException ;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**

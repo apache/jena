@@ -50,7 +50,7 @@ public interface AllValuesFromRestriction
      * be members of the given class. Any existing statements for <code>allValuesFrom</code>
      * will be removed.</p>
      * @param cls The class that all values of the property must belong to
-     * @exception OntProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.   
      */ 
     public void setAllValuesFrom( Resource cls );
 
@@ -59,7 +59,7 @@ public interface AllValuesFromRestriction
      * a class, the URI of a concrete datatype, a DataRange object or the URI rdfs:Literal.</p>
      * @return A resource, which will have been pre-converted to the appropriate Java value type
      *        ({@link OntClass} or {@link DataRange}) if appropriate.
-     * @exception OntProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.   
      */ 
     public Resource getAllValuesFrom();
 
@@ -68,7 +68,7 @@ public interface AllValuesFromRestriction
      * values of the restricted property must belong.</p>
      * @param cls A class to test 
      * @return True if the given class is the class to which all values must belong
-     * @exception OntProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.   
+     * @exception ProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.   
      */
     public boolean hasAllValuesFrom( Resource cls );
     

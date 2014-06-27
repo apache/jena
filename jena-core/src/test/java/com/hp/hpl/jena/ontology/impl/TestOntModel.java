@@ -1155,8 +1155,6 @@ public class TestOntModel
 
     /**
      * OntModel read should do content negotiation if no base URI is given
-     * @param ontModel
-     * @return
      */
     public void testReadConneg0() {
         final boolean[] acceptHeaderSet = new boolean[] {false};

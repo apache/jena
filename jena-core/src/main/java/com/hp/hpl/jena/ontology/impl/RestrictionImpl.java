@@ -99,7 +99,7 @@ public class RestrictionImpl
      * <p>Assert that the property that this restriction applies to is the given property. Any existing
      * statements for <code>onProperty</code> will be removed.</p>
      * @param prop The property that this restriction applies to
-     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
      */
     @Override
     public void setOnProperty( Property prop ) {
@@ -111,7 +111,7 @@ public class RestrictionImpl
      * more than one such resource, an arbitrary selection is made (though well-defined property restrictions
      * should not have more than one <code>onProperty</code> statement.</p>
      * @return The property that this property restriction applies to
-     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
      */
     @Override
     public OntProperty getOnProperty() {
@@ -122,7 +122,7 @@ public class RestrictionImpl
      * <p>Answer true if this restriction is a property restriction on the given property.</p>
      * @param prop A property to test against
      * @return True if this restriction is a restriction on <code>prop</code>
-     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
      */
     @Override
     public boolean onProperty( Property prop ) {

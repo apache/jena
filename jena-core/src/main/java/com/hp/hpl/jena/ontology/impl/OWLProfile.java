@@ -308,7 +308,7 @@ public class OWLProfile
          * and the nodes of the resources in <code>ref</code>.
          * @param nodes
          * @param ref
-         * @return
+         * @return boolean
          */
         public boolean intersect( Set<Node> nodes, Resource[] ref ) {
             for (Resource r: ref) {

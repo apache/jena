@@ -79,8 +79,8 @@ public class ModelHelper extends GraphTestBase
 	/**
         create a Statement in a given Model with (S, P, O) extracted by parsing a string.
 
-        @param lockModel the model the statement is attached to
-        @param an "S P O" string.
+        @param m the model the statement is attached to
+        @param fact an "S P O" string.
         @return model.createStatement(S, P, O)
 	 */
 	public static Statement statement( Model m, String fact )
@@ -122,7 +122,7 @@ public class ModelHelper extends GraphTestBase
 	/**
         Create an array of Statements parsed from a semi-separated string.
 
-        @param lockModel a model to serve as a statement factory
+        @param m a model to serve as a statement factory
         @param facts a sequence of semicolon-separated "S P O" facts
         @return a Statement[] of the (S P O) statements from the string
 	 */
@@ -137,7 +137,7 @@ public class ModelHelper extends GraphTestBase
 	/**
         Create an array of Resources from a whitespace-separated string
 
-        @param lockModel a model to serve as a resource factory
+        @param m a model to serve as a resource factory
         @param items a whitespace-separated sequence to feed to resource
         @return a RDFNode[] of the parsed resources
 	 */
@@ -165,7 +165,7 @@ public class ModelHelper extends GraphTestBase
 	/**
         add to a model all the statements expressed by a string.
 
-        @param lockModel the model to be updated
+        @param m the model to be updated
         @param facts a sequence of semicolon-separated "S P O" facts
         @return the updated model
 	 */
@@ -211,7 +211,7 @@ public class ModelHelper extends GraphTestBase
         @param title a String appearing at the beginning of the failure message
         @param wanted the model value that is expected
         @param got the model value to check
-        @exception if the models are not isomorphic
+        @exception junit.framework.AssertionFailedError the models are not isomorphic
 	 */
 	public static void assertIsoModels( String title, Model wanted, Model got )
 	{

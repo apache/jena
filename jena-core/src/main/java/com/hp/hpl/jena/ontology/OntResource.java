@@ -83,14 +83,14 @@ public interface OntResource
      * <p>Assert equivalence between the given resource and this resource. Any existing
      * statements for <code>sameAs</code> will be removed.</p>
      * @param res The resource that is declared to be the same as this resource
-     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
     public void setSameAs( Resource res );
 
     /**
      * <p>Add a resource that is declared to be equivalent to this resource.</p>
      * @param res A resource that declared to be the same as this resource
-     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
     public void addSameAs( Resource res );
 
@@ -98,7 +98,7 @@ public interface OntResource
      * <p>Answer a resource that is declared to be the same as this resource. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return An ont resource that declared to be the same as this resource
-     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
     public OntResource getSameAs();
 
@@ -106,7 +106,7 @@ public interface OntResource
      * <p>Answer an iterator over all of the resources that are declared to be the same as
      * this resource. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the resources equivalent to this resource.
-     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends Resource> listSameAs();
 
@@ -114,7 +114,7 @@ public interface OntResource
      * <p>Answer true if this resource is the same as the given resource.</p>
      * @param res A resource to test against
      * @return True if the resources are declared the same via a <code>sameAs</code> statement.
-     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
     public boolean isSameAs( Resource res );
 
@@ -131,14 +131,14 @@ public interface OntResource
      * <p>Assert that the given resource and this resource are distinct. Any existing
      * statements for <code>differentFrom</code> will be removed.</p>
      * @param res The resource that is declared to be distinct from this resource
-     * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
     public void setDifferentFrom( Resource res );
 
     /**
      * <p>Add a statement declaring that this resource is distinct from the given resource.</p>
      * @param res A resource that declared to be distinct from this resource
-     * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
     public void addDifferentFrom( Resource res );
 
@@ -146,7 +146,7 @@ public interface OntResource
      * <p>Answer a resource that is declared to be distinct from this resource. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return res An ont resource that declared to be different from this resource
-     * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
     public OntResource getDifferentFrom();
 
@@ -154,7 +154,7 @@ public interface OntResource
      * <p>Answer an iterator over all of the resources that are declared to be different from
      * this resource. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the resources different from this resource.
-     * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
     public ExtendedIterator<? extends Resource> listDifferentFrom();
 
@@ -177,14 +177,14 @@ public interface OntResource
     /**
      * <p>Assert that the given resource provides additional information about the definition of this resource</p>
      * @param res A resource that can provide additional information about this resource
-     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
     public void setSeeAlso( Resource res );
 
     /**
      * <p>Add a resource that is declared to provided additional information about the definition of this resource</p>
      * @param res A resource that provides extra information on this resource
-     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
     public void addSeeAlso( Resource res );
 
@@ -192,7 +192,7 @@ public interface OntResource
      * <p>Answer a resource that provides additional information about this resource. If more than one such resource
      * is defined, make an arbitrary choice.</p>
      * @return res A resource that provides additional information about this resource
-     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
     public Resource getSeeAlso();
 
@@ -200,7 +200,7 @@ public interface OntResource
      * <p>Answer an iterator over all of the resources that are declared to provide additional
      * information about this resource.</p>
      * @return An iterator over the resources providing additional information on this resource.
-     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
     public ExtendedIterator<RDFNode> listSeeAlso();
 
@@ -225,14 +225,14 @@ public interface OntResource
      * <p>Assert that the given resource provides a source of definitions about this resource. Any existing
      * statements for <code>isDefinedBy</code> will be removed.</p>
      * @param res The resource that is declared to be a definition of this resource.
-     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
      */
     public void setIsDefinedBy( Resource res );
 
     /**
      * <p>Add a resource that is declared to provide a definition of this resource.</p>
      * @param res A defining resource
-     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
      */
     public void addIsDefinedBy( Resource res );
 
@@ -240,7 +240,7 @@ public interface OntResource
      * <p>Answer a resource that is declared to provide a definition of this resource. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return res An ont resource that is declared to provide a definition of this resource
-     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
      */
     public Resource getIsDefinedBy();
 
@@ -248,7 +248,7 @@ public interface OntResource
      * <p>Answer an iterator over all of the resources that are declared to define
      * this resource. </p>
      * @return An iterator over the resources defining this resource.
-     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
      */
     public ExtendedIterator<RDFNode> listIsDefinedBy();
 
@@ -272,14 +272,14 @@ public interface OntResource
      * <p>Assert that the given string is the value of the version info for this resource. Any existing
      * statements for <code>versionInfo</code> will be removed.</p>
      * @param info The version information for this resource
-     * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
      */
     public void setVersionInfo( String info );
 
     /**
      * <p>Add the given version information to this resource.</p>
      * @param info A version information string for this resource
-     * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
      */
     public void addVersionInfo( String info );
 
@@ -287,14 +287,14 @@ public interface OntResource
      * <p>Answer the version information string for this object. If there is
      * more than one such resource, an arbitrary selection is made.</p>
      * @return A version info string
-     * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
      */
     public String getVersionInfo();
 
     /**
      * <p>Answer an iterator over all of the version info strings for this resource.</p>
      * @return An iterator over the version info strings for this resource.
-     * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
      */
     public ExtendedIterator<String> listVersionInfo();
 
@@ -320,7 +320,7 @@ public interface OntResource
      * statements for <code>label</code> will be removed.</p>
      * @param label The label for this resource
      * @param lang The language attribute for this label (EN, FR, etc) or null if not specified.
-     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
     public void setLabel( String label, String lang );
 
@@ -328,14 +328,14 @@ public interface OntResource
      * <p>Add the given label to this resource.</p>
      * @param label A label string for this resource
      * @param lang The language attribute for this label (EN, FR, etc) or null if not specified.
-     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
     public void addLabel( String label, String lang );
 
     /**
      * <p>Add the given label to this resource.</p>
      * @param label The literal label
-     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
     public void addLabel( Literal label );
 
@@ -345,7 +345,7 @@ public interface OntResource
      * @param lang The language attribute for the desired label (EN, FR, etc) or null for don't care. Will
      * attempt to retrieve the most specific label matching the given language</p>
      * @return A label string matching the given language, or null if there is no matching label.
-     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
     public String getLabel( String lang );
 
@@ -353,7 +353,7 @@ public interface OntResource
      * <p>Answer an iterator over all of the label literals for this resource.</p>
      * @param lang The language tag to restrict the listed labels to, or null to select all labels
      * @return An iterator over RDF {@link Literal}'s.
-     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
     public ExtendedIterator<RDFNode> listLabels( String lang );
 
@@ -396,7 +396,7 @@ public interface OntResource
      * statements for <code>comment</code> will be removed.</p>
      * @param comment The comment for this resource
      * @param lang The language attribute for this comment (EN, FR, etc) or null if not specified.
-     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
     public void setComment( String comment, String lang );
 
@@ -404,14 +404,14 @@ public interface OntResource
      * <p>Add the given comment to this resource.</p>
      * @param comment A comment string for this resource
      * @param lang The language attribute for this comment (EN, FR, etc) or null if not specified.
-     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
     public void addComment( String comment, String lang );
 
     /**
      * <p>Add the given comment to this resource.</p>
      * @param comment The literal comment
-     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
     public void addComment( Literal comment );
 
@@ -421,7 +421,7 @@ public interface OntResource
      * @param lang The language attribute for the desired comment (EN, FR, etc) or null for don't care. Will
      * attempt to retrieve the most specific comment matching the given language</p>
      * @return A comment string matching the given language, or null if there is no matching comment.
-     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
     public String getComment( String lang );
 
@@ -429,7 +429,7 @@ public interface OntResource
      * <p>Answer an iterator over all of the comment literals for this resource.</p>
      * @param lang The language tag to restrict the listed comments to, or null to select all comments
      * @return An iterator over RDF {@link Literal}'s.
-     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
     public ExtendedIterator<RDFNode> listComments( String lang );
 

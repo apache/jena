@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.rdf.model.test ;
 
-import java.io.FileNotFoundException ;
-
 import org.apache.jena.iri.IRIException ;
 import org.junit.Assert ;
 import org.slf4j.Logger ;
@@ -47,7 +45,7 @@ public class TestModelRead extends AbstractModelTestBase
         this(new TestPackage.PlainModelFactory(), "TestModelRead") ;
     }
 
-    public void testDefaultLangXML() throws FileNotFoundException {
+    public void testDefaultLangXML() {
         final Model model = ModelFactory.createDefaultModel() ;
         model.read(getFileName("modelReading/plain.rdf"), null, null) ;
     }
@@ -61,27 +59,27 @@ public class TestModelRead extends AbstractModelTestBase
         }
     }
 
-    public void testLoadsSimpleModel() throws FileNotFoundException {
+    public void testLoadsSimpleModel() {
         final Model expected = createModel() ;
         expected.read(getFileName("modelReading/simple.n3"), "N3") ;
         Assert.assertSame(model, model.read(getFileName("modelReading/simple.n3"), "base", "N3")) ;
         ModelHelper.assertIsoModels(expected, model) ;
     }
 
-    public void testReturnsSelf() throws FileNotFoundException {
+    public void testReturnsSelf() {
 
         Assert.assertSame(model, model.read(getFileName("modelReading/empty.n3"), "base", "N3")) ;
         Assert.assertTrue(model.isEmpty()) ;
     }
 
-    public void testSimpleLoadExplicitBase() throws FileNotFoundException {
+    public void testSimpleLoadExplicitBase() {
         final Model mBasedExplicit = createModel() ;
         mBasedExplicit.read(getFileName("modelReading/based.n3"), "http://example/", "N3") ;
         ModelHelper.assertIsoModels(ModelHelper.modelWithStatements(this, "http://example/ ja:predicate ja:object"),
                                     mBasedExplicit) ;
     }
 
-    public void testSimpleLoadImplictBase() throws IRIException, FileNotFoundException {
+    public void testSimpleLoadImplictBase() throws IRIException {
         final Model mBasedImplicit = createModel() ;
         final String fn = IRIResolver.resolveFileURL(getFileName("modelReading/based.n3")) ;
         final Model wanted = createModel().add(ModelHelper.resource(fn), ModelHelper.property("ja:predicate"),

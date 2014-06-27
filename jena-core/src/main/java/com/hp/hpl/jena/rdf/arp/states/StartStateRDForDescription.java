@@ -28,8 +28,7 @@ public class StartStateRDForDescription extends WantTopLevelDescription {
 
     boolean sawRdfRDF;
     
-    public StartStateRDForDescription(XMLHandler handler, AbsXMLContext x)
-            throws SAXParseException {
+    public StartStateRDForDescription(XMLHandler handler, AbsXMLContext x) {
         super(handler, x);
     }
     

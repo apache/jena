@@ -18,13 +18,16 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.PrintUtil;
+import java.util.Iterator ;
+import java.util.List ;
 
-import java.util.*;
-import java.io.*;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleReasoner ;
+import com.hp.hpl.jena.reasoner.rulesys.Rule ;
+import com.hp.hpl.jena.reasoner.rulesys.Util ;
+import com.hp.hpl.jena.util.PrintUtil ;
 
 /** * Using during debuging of the rule systems.
  * Runs a named set of rules (can contain axioms and rules) and
@@ -39,7 +42,7 @@ public class DebugRules {
     public List<Rule> ruleset;
     
     /** Constructor - loads the rules */
-    public DebugRules(String rulefileName) throws IOException {
+    public DebugRules(String rulefileName) {
         ruleset = Rule.parseRules(Util.loadRuleParserFromResourceFile(rulefileName));
     }
     

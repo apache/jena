@@ -64,12 +64,8 @@ public class TestInputStreamFactory {
 		property = null;
 	}
 
-	/** @param baseDir A prefix of all URLs accessed through this factory.
-	 *  @param zip To open a URL remove the baseDir from the URL and get the named file from the zip.
-	 */
 	public TestInputStreamFactory(IRI baseDir, String propDir) {
-        createMe = "new TestInputStreamFactory(URI.create(\""
-        +baseDir.toString()
+        createMe = "new TestInputStreamFactory(URI.create(\""+baseDir.toString()
         +"\"),\""+propDir+"\")";
 		base = baseDir;
 		mapBase = null;

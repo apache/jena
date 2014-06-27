@@ -18,21 +18,23 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.*;
-import com.hp.hpl.jena.reasoner.test.TestUtil;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.RDF;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import java.io.IOException;
-import java.util.*;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.TriplePattern ;
+import com.hp.hpl.jena.reasoner.rulesys.* ;
+import com.hp.hpl.jena.reasoner.rulesys.impl.BindingVector ;
+import com.hp.hpl.jena.reasoner.test.TestUtil ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 /**
  * Test harness for the backward chainer. 
@@ -894,7 +896,7 @@ public class TestBackchainer extends TestCase {
     /**
      * Test problematic rdfs case
      */
-    public void testBug1() throws IOException {
+    public void testBug1() {
         Graph data = Factory.createGraphMem();
         Node p = NodeFactory.createURI("http://www.hpl.hp.com/semweb/2003/eg#p");
         Node r = NodeFactory.createURI("http://www.hpl.hp.com/semweb/2003/eg#r");

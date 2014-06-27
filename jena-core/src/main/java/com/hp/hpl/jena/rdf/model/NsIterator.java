@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.rdf.model;
 
+import java.util.NoSuchElementException ;
+
 import com.hp.hpl.jena.util.iterator.*;
 
 /** An iterator which returns namespace URI's.

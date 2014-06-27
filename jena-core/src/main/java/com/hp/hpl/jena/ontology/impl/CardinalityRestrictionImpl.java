@@ -99,7 +99,7 @@ public class CardinalityRestrictionImpl
      * cardinality. Any existing statements for <code>cardinality</code>
      * will be removed.</p>
      * @param cardinality The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.
      */
     @Override
     public void setCardinality( int cardinality ) {
@@ -109,7 +109,7 @@ public class CardinalityRestrictionImpl
     /**
      * <p>Answer the cardinality of the restricted property.</p>
      * @return The cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.
      */
     @Override
     public int getCardinality() {
@@ -120,7 +120,7 @@ public class CardinalityRestrictionImpl
      * <p>Answer true if this property restriction has the given cardinality.</p>
      * @param cardinality The cardinality to test against
      * @return True if the given cardinality is the cardinality of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasCardinality( int cardinality ) {

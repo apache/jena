@@ -38,7 +38,7 @@ public class TripleMatchFrame extends GenericTripleMatchFrame {
      * Constructor.
      * Initialize the triple match to preserve the current context of the given
      * LPInterpreter and search for the match defined by the current argument registers
-     * @param intepreter the interpreter instance whose env, trail and arg values are to be preserved
+     * @param interpreter the interpreter instance whose env, trail and arg values are to be preserved
      */
     public TripleMatchFrame(LPInterpreter interpreter) {
         init(interpreter);
@@ -61,7 +61,7 @@ public class TripleMatchFrame extends GenericTripleMatchFrame {
     /**
      * Initialize the triple match to preserve the current context of the given
      * LPInterpreter and search for the match defined by the current argument registers
-     * @param intepreter the interpreter instance whose env, trail and arg values are to be preserved
+     * @param interpreter the interpreter instance whose env, trail and arg values are to be preserved
      */
     @Override public void init(LPInterpreter interpreter) {
         super.init(interpreter);

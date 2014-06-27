@@ -106,7 +106,7 @@ public class PrettyWriterTest extends ModelTestBase {
 			"rdf:parseType=[\"']Collection[\"']");
 	}
 
-	public void testOWLPrefix() throws IOException{
+	public void testOWLPrefix() {
 		//		check(
 		//			"file:testing/abbreviated/collection.rdf",
 		//			"xmlns:owl=[\"']http://www.w3.org/2002/07/owl#[\"']");

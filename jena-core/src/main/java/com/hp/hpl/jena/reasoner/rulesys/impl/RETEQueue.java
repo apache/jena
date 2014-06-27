@@ -47,7 +47,7 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
 	 * Constructor. The queue is not usable until it has been bound to a sibling
 	 * and a continuation node.
 	 * 
-	 * @param A
+	 * @param matchIndices
 	 *            set of variable indices which should match between the two
 	 *            inputs
 	 */
@@ -60,7 +60,7 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
 	 * Constructor. The queue is not usable until it has been bound to a sibling
 	 * and a continuation node.
 	 * 
-	 * @param A
+	 * @param matchIndexList
 	 *            List of variable indices which should match between the two
 	 *            inputs
 	 */

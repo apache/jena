@@ -622,15 +622,12 @@ class Performance  {
 			for (int k = 0; k < 50; k++)
 				s += sum(data[i]);
 		long startTest = System.currentTimeMillis();
-		for (int i = 0; i < files.length; i++)
-			try {
-				if (data[i] == null)
-					continue;
-				realData = true;
-				parseRDF(new ByteArrayInputStream(data[i]), files[i][1]);
-			} catch (IOException e) {
-				System.err.println("byteArray " + e.getMessage());
-			}
+		for (int i = 0; i < files.length; i++) {
+		    if (data[i] == null)
+		        continue;
+		    realData = true;
+		    parseRDF(new ByteArrayInputStream(data[i]), files[i][1]);
+		}
 		long endTime = System.currentTimeMillis();
         totalTime += (int)(endTime-startTest);
 		if (!realData)
@@ -638,7 +635,7 @@ class Performance  {
 		return (double) (endTime - startTest)
 			/ (double) (startTest - startRead);
 	}
-	static void parseRDF(InputStream in, String base) throws IOException {
+	static void parseRDF(InputStream in, String base) {
 		ErrorHandler eh = new ErrorHandler() {
 			@Override
             public void warning(SAXParseException e) {

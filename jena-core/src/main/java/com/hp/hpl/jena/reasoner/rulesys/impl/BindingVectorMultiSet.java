@@ -138,7 +138,6 @@ public class BindingVectorMultiSet {
 	 * with env
 	 * 
 	 * @param env
-	 * @return
 	 */
 	public Iterator<BindingVector> getSubSet(BindingVector env) {
 		Map<BindingVector, Count> rawSubSet = getRawSubSet(env);

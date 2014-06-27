@@ -20,6 +20,7 @@ package com.hp.hpl.jena.rdf.model;
 
 import java.util.Calendar;
 
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.graph.Node;
 

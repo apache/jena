@@ -99,7 +99,7 @@ public class MinCardinalityRestrictionImpl
      * minimum cardinality. Any existing statements for <code>minCardinality</code>
      * will be removed.</p>
      * @param cardinality The minimum cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#MIN_CARDINALITY()} property is not supported in the current language profile.
      */
     @Override
     public void setMinCardinality( int cardinality ) {
@@ -109,7 +109,7 @@ public class MinCardinalityRestrictionImpl
     /**
      * <p>Answer the minimum cardinality of the restricted property.</p>
      * @return The minimum cardinality of the restricted property
-     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#MIN_CARDINALITY()} property is not supported in the current language profile.
      */
     @Override
     public int getMinCardinality() {
@@ -120,7 +120,7 @@ public class MinCardinalityRestrictionImpl
      * <p>Answer true if this property restriction has the given minimum cardinality.</p>
      * @param cardinality The cardinality to test against
      * @return True if the given cardinality is the min cardinality of the restricted property in this restriction
-     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY()} property is not supported in the current language profile.
+     * @exception ProfileException If the {@link Profile#MIN_CARDINALITY()} property is not supported in the current language profile.
      */
     @Override
     public boolean hasMinCardinality( int cardinality ) {
