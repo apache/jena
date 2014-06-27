@@ -15,37 +15,16 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-# This is the distribution
-if [ -e "$TDBROOT/lib" ]
-then
-    CP="$TDBROOT/lib/"'*'
-    echo "$CP"
-    exit
+if [ "$TDBROOT" = "" ]; then
+    echo "TDBROOT not set" 1>&2
+    exit 1
 fi
 
-M2_REPO="${M2_REPO:-$HOME/.m2/repository}" ;
-# Looking in the POM would be better but it is very slow.
-X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/s ; print "$1","\n"' $TDBROOT/.classpath)
-
-SEP=':'
-CP="${CP:-}"
-
-if [ -e "$TDBROOT/classes" ]
-then
-    [ -z "$CP" ] || CP="${CP}${SEP}"
-    CP="${CP}$TDBROOT/classes"
-    CP="${CP}${SEP}$TDBROOT/../jena-arq/classes"
-    CP="${CP}${SEP}$TDBROOT/../jena-core/classes"
-elif [ -e "$TDBROOT/target/classes" ]
-then
-    [ -z "$CP" ] || CP="${CP}${SEP}"
-    CP="${CP}$TDBROOT/target/classes"
+if [ -e "$TDBROOT/tdb.classpath" ]; then
+	cat "$TDBROOT/tdb.classpath"
+elif [ -e "$TDBROOT/.classpath" ]; then
+    # Development area
+    exec "$TDBROOT/bin/make_classpath_mvn" "$TDBROOT" | tee "$TDBROOT/tdb.classpath"
+else
+    exec "$TDBROOT/bin/make_classpath" "$TDBROOT" | tee "$TDBROOT/tdb.classpth"
 fi
-
-for x in $X
-do
-    [ -z "$CP" ] || CP="${CP}${SEP}"
-    CP="$CP$M2_REPO$x"
-done
-
-echo "$CP"
