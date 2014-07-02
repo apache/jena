@@ -187,6 +187,9 @@ public class WebContent
 
     /** Match content type (ignores charsets and other parameters) */ 
     public static boolean matchContentType(ContentType ct1, ContentType ct2)  {
+        if ( ct1 == null || ct2 == null )
+            return false ;
+        
         return matchContentType(ct1.getContentType(), ct2.getContentType()) ;
     }
     
