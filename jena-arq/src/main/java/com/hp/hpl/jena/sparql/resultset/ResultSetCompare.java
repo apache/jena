@@ -22,12 +22,11 @@ import java.util.* ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.query.ResultSetRewindable ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -35,7 +34,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
-import com.hp.hpl.jena.query.ResultSetRewindable ;
 
 public class ResultSetCompare
 {
@@ -97,8 +95,7 @@ public class ResultSetCompare
      * @return true if they are equivalent
      */
     
-    public static boolean equalsByValue(ResultSet rs1, ResultSet rs2)
-    {
+    public static boolean equalsByValue(ResultSet rs1, ResultSet rs2) {
         if ( ! compareHeader(rs1, rs2) ) return false ;
         
         //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
@@ -137,8 +134,7 @@ public class ResultSetCompare
      * @return true if they are equivalent
      */
 
-    public static boolean equalsByTerm(ResultSet rs1, ResultSet rs2)
-    {
+    public static boolean equalsByTerm(ResultSet rs1, ResultSet rs2) {
         if ( ! compareHeader(rs1, rs2) ) return false ;
 
         //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
@@ -165,10 +161,9 @@ public class ResultSetCompare
      * @return true if they are equivalent
      */
 
-    public static boolean equalsByValueAndOrder(ResultSet rs1, ResultSet rs2)
-    {
-        if ( ! compareHeader(rs1, rs2) ) return false ;
-
+    public static boolean equalsByValueAndOrder(ResultSet rs1, ResultSet rs2) {
+        if ( ! compareHeader(rs1, rs2) ) 
+            return false ;
         return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
     }
 
@@ -183,28 +178,44 @@ public class ResultSetCompare
      * @param rs2
      * @return true if they are equivalent
      */
-    public static boolean equalsByTermAndOrder(ResultSet rs1, ResultSet rs2)
+    public static boolean equalsByTermAndOrder(ResultSet rs1, ResultSet rs2) {
+        if ( ! compareHeader(rs1, rs2) ) return false ;
+        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
+    }
+    
+    private static EqualityTest nodeExactTest = new EqualityTestExact() ;
+    
+    /** compare two result sets for exact equality equivalence.
+     * Exact equalitymeans:
+     * Each row in rs1 matches the same index row in rs2.
+     * Rows match if they have the same variables with the same values, 
+     * bNodes must have same labels  
+     * 
+     * Destructive - rs1 and rs2 are both read, possibly to exhaustion. 
+     * @param rs1 
+     * @param rs2
+     * @return true if they are equivalent
+     */
+    public static boolean equalsExact(ResultSet rs1, ResultSet rs2)
     {
         if ( ! compareHeader(rs1, rs2) ) return false ;
 
-        return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
+        return equivalentByOrder(convert(rs1) , convert(rs2), nodeExactTest) ;
     }
 
     /** Compare two result sets for bNode isomorphism equivalence.
      * Only does RDF term comparison.
      */ 
-    public static boolean isomorphic(ResultSet rs1, ResultSet rs2)
-    {
+    public static boolean isomorphic(ResultSet rs1, ResultSet rs2) {
         Model m1 = ResultSetFormatter.toModel(rs1) ;
         Model m2 = ResultSetFormatter.toModel(rs2) ;
         return m1.isIsomorphicWith(m2) ;
     }
     
     /** Compare two bindings, use the node equality test provided */
-    static public boolean equal(Binding bind1, Binding bind2, NodeUtils.EqualityTest test)
-    {
-        if ( bind1 == bind2 ) return true ;
-
+    static public boolean equal(Binding bind1, Binding bind2, NodeUtils.EqualityTest test) {
+        if ( bind1 == bind2 ) 
+            return true ;
         if ( bind1.size() != bind2.size() )
             return false ;
         // They are the same size so containment is enough.
@@ -212,18 +223,19 @@ public class ResultSetCompare
         return true ;
     }
     
-    static private boolean compareHeader(ResultSet rs1, ResultSet rs2)
-    {
-        if ( rs1 == null && rs2 == null ) return true ;
-        if ( rs1 == null ) return false ;
-        if ( rs2 == null ) return false ;
+    static private boolean compareHeader(ResultSet rs1, ResultSet rs2) {
+        if ( rs1 == null && rs2 == null ) 
+            return true ;
+        if ( rs1 == null ) 
+            return false ;
+        if ( rs2 == null ) 
+            return false ;
         Set<String> names1 = new HashSet<>(rs1.getResultVars()) ;
         Set<String> names2 = new HashSet<>(rs2.getResultVars()) ;
         return names1.equals(names2) ;
     }
 
-    static private List<Binding> convert(ResultSet rs)
-    {
+    static private List<Binding> convert(ResultSet rs) {
         return Iter.iter(rs).map(qs2b).toList() ;
     }
     
@@ -233,34 +245,30 @@ public class ResultSetCompare
 //        return equivalent(convert(rs1), convert(rs2), sameTerm) ;
 //    }
     
-    static private boolean equivalent(Collection<Binding> rows1, Collection<Binding> rows2, EqualityTest match)
-    {
+    static private boolean equivalent(Collection<Binding> rows1, Collection<Binding> rows2, EqualityTest match) {
         if ( rows1.size() != rows2.size() )
             return false ;
-        for ( Binding row1 : rows1 )
-        {
+        for ( Binding row1 : rows1 ) {
             // find in rows2.
             Binding matched = null ;
-            for ( Binding row2 : rows2 )
-            {
+            for ( Binding row2 : rows2 ) {
                 // NEED BACKTRACKING
-                
-                if ( equal(row1, row2, match))
-                {
+
+                if ( equal(row1, row2, match) ) {
                     matched = row2 ;
                     break ;
                 }
             }
 
-            if ( matched == null ) return false ;
+            if ( matched == null )
+                return false ;
             // Remove matching.
             rows2.remove(matched) ;
         }
         return true ;
     }
     
-    static private boolean equivalentByOrder(List<Binding> rows1, List<Binding> rows2, EqualityTest match)
-    {
+    static private boolean equivalentByOrder(List<Binding> rows1, List<Binding> rows2, EqualityTest match) {
         if ( rows1.size() != rows2.size() )
              return false ;
         
@@ -281,8 +289,7 @@ public class ResultSetCompare
     
     // Is bind1 contained in bind22?  For every (var,value) in bind1, is it in bind2?
     // Maybe more in bind2.
-    private static boolean containedIn(Binding bind1, Binding bind2, EqualityTest test)
-    {
+    private static boolean containedIn(Binding bind1, Binding bind2, EqualityTest test) {
         // There are about 100 ways to do this! 
         Iterator<Var> iter1 =  bind1.vars() ;
         
@@ -300,7 +307,6 @@ public class ResultSetCompare
     }
 
     private static Transform<QuerySolution, Binding> qs2b = new Transform<QuerySolution, Binding> () {
-
         @Override
         public Binding convert(QuerySolution item)
         {
@@ -313,19 +319,20 @@ public class ResultSetCompare
         private NodeIsomorphismMap mapping ;
         private EqualityTest literalTest ;
     
-        public BNodeIso(EqualityTest literalTest)
-        { 
+        public BNodeIso(EqualityTest literalTest) { 
             this.mapping = new NodeIsomorphismMap() ;
             this.literalTest = literalTest ;
         }
     
         @Override
-        public boolean equal(Node n1, Node n2)
-        {
-            if ( n1 == null && n2 == null ) return true ;
-            if ( n1 == null ) return false ;
-            if ( n2 == null ) return false ;
-            
+        public boolean equal(Node n1, Node n2) {
+            if ( n1 == null && n2 == null )
+                return true ;
+            if ( n1 == null )
+                return false ;
+            if ( n2 == null )
+                return false ;
+
             if ( n1.isURI() && n2.isURI() )
                 return n1.equals(n2) ;
             
@@ -333,10 +340,16 @@ public class ResultSetCompare
                 return literalTest.equal(n1, n2) ;
             
             if ( n1.isBlank() && n2.isBlank() )
-                return  mapping.makeIsomorphic(n1, n2) ;
+                return mapping.makeIsomorphic(n1, n2) ;
             
             return false ;
         }
     }
 
+    private static class EqualityTestExact implements EqualityTest {
+        @Override
+        public boolean equal(Node n1, Node n2) {
+            return Lib.equal(n1, n2) ;
+        }
+    }
 }
