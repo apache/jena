@@ -111,7 +111,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
     
     /** Convert null to some default Node */
     public static Node nullAsDft(Node x, Node dft) { return x==null ? dft : x ; }
-    
+
     private boolean matches(Triple t, Node s, Node p, Node o)
     {
         s = nullAsAny(s) ;

@@ -257,4 +257,20 @@ public abstract class AbstractDatasetGraphTests
         quads = Iter.toList(dsg.find(graph, null, null, null)) ;
         assertEquals(0, quads.size()) ;
     }
+    
+    @Test public void clear_01() {
+        DatasetGraph dsg = emptyDataset() ;
+        Quad quad = SSE.parseQuad("(quad <g> <s> <p> <o>)") ;
+        Node gn = SSE.parseNode("<g>") ;
+        assertTrue(dsg.isEmpty()) ;
+        dsg.add(quad) ;
+        assertFalse(dsg.isEmpty()) ;
+        assertTrue(dsg.containsGraph(gn)) ;
+        
+        dsg.clear() ;
+        
+        assertTrue(dsg.isEmpty()) ;
+        assertFalse(dsg.containsGraph(gn)) ;
+        
+    }
 }

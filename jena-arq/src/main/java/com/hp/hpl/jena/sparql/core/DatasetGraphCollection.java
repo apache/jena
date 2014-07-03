@@ -86,6 +86,18 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     @Override
     public abstract Iterator<Node> listGraphNodes() ;
 
+    @Override
+    public void clear() {
+        // Delete all triples in the default graph 
+        getDefaultGraph().clear() ;
+        // Now remove the named graphs (but don't clear them - they may be shared).
+        Iterator<Node> gnIter = listGraphNodes() ;
+        for ( ; gnIter.hasNext(); ) {
+            Node gn = gnIter.next() ; 
+            removeGraph(gn) ;
+        }
+    }
+    
     protected Graph fetchGraph(Node gn)
     {
         if ( Quad.isDefaultGraph(gn) || Lib.equal(gn,Quad.tripleInQuad)) // Not preferred style
