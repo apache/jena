@@ -120,6 +120,14 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
             namedGraphs.remove(graphName) ;
         }
     }
+    
+    @Override
+    public void clear() {
+        synchronized(this) { 
+            super.clear() ;
+            namedGraphs.clear() ;
+        }
+    }
 
     @Override
     public void close()
