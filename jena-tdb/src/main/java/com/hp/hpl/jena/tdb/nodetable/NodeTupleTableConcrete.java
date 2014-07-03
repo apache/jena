@@ -215,12 +215,10 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     @Override
     public void clear()
     {
-        try
-        {
+        try {
             startWrite() ;
             tupleTable.clear() ;
-        } finally
-        {
+        } finally {
             finishWrite() ;
         }
     }
