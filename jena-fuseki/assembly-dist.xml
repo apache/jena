@@ -61,7 +61,6 @@ Assumes jar made and onejar has been assembled.
       <outputDirectory></outputDirectory>
       <includes>
         <include>README*</include>
-        <include>DEPENDENCIES*</include>
         <include>ReleaseNotes.txt</include>
       </includes>
     </fileSet>
