@@ -197,6 +197,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     public boolean isEmpty()            { return getTripleTable().isEmpty() && getQuadTable().isEmpty() ; }
 
+    @Override
     public void clear()
     {
         // Leave the node table alone.
