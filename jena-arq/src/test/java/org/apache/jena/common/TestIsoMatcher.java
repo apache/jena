@@ -23,7 +23,6 @@ import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.common.IsoMatcher ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -32,6 +31,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderNode ;
+import com.hp.hpl.jena.sparql.util.IsoMatcher ;
 
 public class TestIsoMatcher extends BaseTest
 {

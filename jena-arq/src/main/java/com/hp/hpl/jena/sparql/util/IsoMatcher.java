@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.common ;
+package com.hp.hpl.jena.sparql.util ;
 
 import java.util.ArrayList ;
 import java.util.Collection ;
@@ -31,7 +31,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
 // Needs to be back tracking?

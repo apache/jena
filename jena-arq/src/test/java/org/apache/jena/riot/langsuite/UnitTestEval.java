@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot.langsuite;
 
-import org.apache.jena.common.IsoMatcher ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -29,6 +28,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
+import com.hp.hpl.jena.sparql.util.IsoMatcher ;
 
 public class UnitTestEval extends LangTestCase
 {
