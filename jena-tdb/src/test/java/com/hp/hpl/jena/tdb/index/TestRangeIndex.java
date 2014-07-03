@@ -18,26 +18,24 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import static com.hp.hpl.jena.tdb.base.record.RecordLib.r;
-import static com.hp.hpl.jena.tdb.base.record.RecordLib.toIntList;
-import static com.hp.hpl.jena.tdb.index.IndexTestLib.add;
-import static com.hp.hpl.jena.tdb.index.IndexTestLib.randTest;
-import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert;
-import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsertDelete;
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.r ;
+import static com.hp.hpl.jena.tdb.base.record.RecordLib.toIntList ;
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.add ;
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.randTest ;
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsert ;
+import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsertDelete ;
 
-import java.util.List;
-
+import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.After ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.tdb.base.record.RecordLib;
+import com.hp.hpl.jena.tdb.base.record.RecordLib ;
 
 public abstract class TestRangeIndex extends BaseTest 
 {
- 
-    RangeIndex rIndex = null ;
+    private RangeIndex rIndex = null ;
     
     @After public void afterTest()
     { 
@@ -407,5 +405,25 @@ public abstract class TestRangeIndex extends BaseTest
     {
         for ( int i = 0 ; i < 10 ; i++ )
             randTest(makeRangeIndex(3), 9999, 100) ;
+    }
+    
+    @Test public void tree_clear_00() { testClear(0) ; }
+    @Test public void tree_clear_01() { testClear(5) ; }
+    @Test public void tree_clear_02() { testClear(998) ; }
+    @Test public void tree_clear_03() { testClear(999) ; }
+    @Test public void tree_clear_04() { testClear(1000) ; }
+    @Test public void tree_clear_05() { testClear(1001) ; }
+    @Test public void tree_clear_06() { testClear(5500) ; }
+
+    void testClear(int N) {
+        int[] keys = new int[N] ; // Slice is 1000.
+        for ( int i = 0 ; i < keys.length ; i++ )
+            keys[i] = i ;
+        rIndex  = makeRangeIndex(3) ;
+        add(rIndex, keys) ;
+        if ( N > 0 ) 
+            assertFalse(rIndex.isEmpty()) ;
+        rIndex.clear() ;
+        assertTrue(rIndex.isEmpty()) ;
     }
 }
