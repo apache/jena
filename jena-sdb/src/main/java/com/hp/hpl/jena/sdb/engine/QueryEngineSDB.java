@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.SDBCompile;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.sdb.store.DatasetGraphSDB;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -61,16 +61,16 @@ public class QueryEngineSDB extends QueryEngineBase
 
     public QueryEngineSDB(Store store, Query q)
     {
-        this(new DatasetStoreGraph(store, SDB.getContext().copy()), q, BindingRoot.create(), SDB.getContext().copy()) ;
+        this(new DatasetGraphSDB(store, SDB.getContext().copy()), q, BindingRoot.create(), SDB.getContext().copy()) ;
     }
     
-    public QueryEngineSDB(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
+    public QueryEngineSDB(DatasetGraphSDB dsg, Query query, Binding initialBinding, Context context)
     {
         super(query, dsg, initialBinding, context) ;
         init(dsg, query, initialBinding, context) ;
     }
 
-    public QueryEngineSDB(DatasetStoreGraph dsg, Op op, Binding initialBinding, Context context)
+    public QueryEngineSDB(DatasetGraphSDB dsg, Op op, Binding initialBinding, Context context)
     {
         super(op, dsg, initialBinding, context) ;
         init(dsg, null, initialBinding, context) ;
@@ -82,7 +82,7 @@ public class QueryEngineSDB extends QueryEngineBase
 //        return op ;
 //    }
     
-    private void init(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
+    private void init(DatasetGraphSDB dsg, Query query, Binding initialBinding, Context context)
     {
         if ( context == null )
             context = ARQ.getContext().copy() ;
@@ -169,7 +169,7 @@ public class QueryEngineSDB extends QueryEngineBase
         @Override
         public boolean accept(Query query, DatasetGraph dataset, Context context)
         {
-            if ( dataset instanceof DatasetStoreGraph )
+            if ( dataset instanceof DatasetGraphSDB )
                 return true ;
             return false ;
         }
@@ -177,14 +177,14 @@ public class QueryEngineSDB extends QueryEngineBase
         @Override
         public Plan create(Query query, DatasetGraph dataset, Binding inputBinding, Context context)
         {
-            QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset , query, inputBinding, context) ;
+            QueryEngineSDB qe = new QueryEngineSDB((DatasetGraphSDB)dataset , query, inputBinding, context) ;
             return qe.getPlan() ;
         }
 
         @Override
         public boolean accept(Op op, DatasetGraph dataset, Context context)
         {
-            if ( dataset instanceof DatasetStoreGraph )
+            if ( dataset instanceof DatasetGraphSDB )
                 return true ;
             return false ;
         }
@@ -194,7 +194,7 @@ public class QueryEngineSDB extends QueryEngineBase
         {
             if ( inputBinding == null )
                 inputBinding = BindingRoot.create();
-            QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset, op, inputBinding, context) ;
+            QueryEngineSDB qe = new QueryEngineSDB((DatasetGraphSDB)dataset, op, inputBinding, context) ;
             return qe.getPlan() ;
         }
 

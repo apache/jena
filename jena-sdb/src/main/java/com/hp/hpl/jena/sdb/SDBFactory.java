@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.sdb.store.DatasetGraphSDB;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.update.GraphStore;
 
@@ -191,7 +191,7 @@ public class SDBFactory
      */
     public static GraphStore connectGraphStore(Store store)
     {
-        return new DatasetStoreGraph(store, SDB.getContext().copy()) ; 
+        return new DatasetGraphSDB(store, SDB.getContext().copy()) ; 
     }
 
     /**

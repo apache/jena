@@ -39,8 +39,8 @@ public class DatasetStore
         return createDatasetStoreGraph(store) ;
     }
     
-    public static DatasetStoreGraph createDatasetStoreGraph(Store store)
+    public static DatasetGraphSDB createDatasetStoreGraph(Store store)
     { 
-        return new DatasetStoreGraph(store, SDB.getContext().copy()) ;
+        return new DatasetGraphSDB(store, SDB.getContext().copy()) ;
     }
 }
