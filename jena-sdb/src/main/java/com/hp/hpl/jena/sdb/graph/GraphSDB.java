@@ -33,7 +33,7 @@ import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sdb.core.SDBRequest ;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB ;
 import com.hp.hpl.jena.sdb.sql.SDBConnection ;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
+import com.hp.hpl.jena.sdb.store.DatasetGraphSDB ;
 import com.hp.hpl.jena.sdb.store.StoreLoader ;
 import com.hp.hpl.jena.sdb.store.StoreLoaderPlus ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
@@ -60,7 +60,7 @@ public class GraphSDB extends GraphBase implements Graph
     protected int inBulkUpdate = 0 ;
     
     protected Node graphNode = Quad.defaultGraphNodeGenerated ;
-    protected DatasetStoreGraph datasetStore = null ;
+    protected DatasetGraphSDB datasetStore = null ;
     
     public GraphSDB(Store store, String uri)
     { 
@@ -82,7 +82,7 @@ public class GraphSDB extends GraphBase implements Graph
         this.graphNode = graphNode ;
         
         // Avoid looping here : DatasetStoreGraph can make GraphSDB's
-        datasetStore = new DatasetStoreGraph(store, this, SDB.getContext().copy()) ;
+        datasetStore = new DatasetGraphSDB(store, this, SDB.getContext().copy()) ;
         
         //readPrefixMapping() ;
     }

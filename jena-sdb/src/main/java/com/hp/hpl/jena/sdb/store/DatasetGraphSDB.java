@@ -37,19 +37,19 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 
-public class DatasetStoreGraph extends DatasetGraphCaching
+public class DatasetGraphSDB extends DatasetGraphCaching
     implements DatasetGraph, Closeable, GraphStore 
 {
     private final Store store ;
     private Lock lock = new LockMRSW() ;
     private final Context context ;
     
-    public DatasetStoreGraph(Store store, Context context)
+    public DatasetGraphSDB(Store store, Context context)
     {
         this(store, null, context) ;
     }
     
-    public DatasetStoreGraph(Store store, GraphSDB graph, Context context)
+    public DatasetGraphSDB(Store store, GraphSDB graph, Context context)
     {
         this.store = store ;
         // Force the "default" graph

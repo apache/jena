@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sdb.SDBFactory ;
 import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sdb.StoreDesc ;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
+import com.hp.hpl.jena.sdb.store.DatasetGraphSDB ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -51,7 +51,7 @@ public class TestAssembler
         assertNotNull(ds) ;
         // Check it will be dispatched to SDB
         DatasetGraph dsg = ds.asDatasetGraph() ;
-        assertTrue( dsg instanceof DatasetStoreGraph ) ;
+        assertTrue( dsg instanceof DatasetGraphSDB ) ;
     }
     
     @Test public void connection_1()
@@ -88,7 +88,7 @@ public class TestAssembler
     {
         // Create a store and format
         Dataset ds = DatasetFactory.assemble(assem) ;
-        Store store = ((DatasetStoreGraph)ds.asDatasetGraph()).getStore() ;
+        Store store = ((DatasetGraphSDB)ds.asDatasetGraph()).getStore() ;
         store.getTableFormatter().create() ;
         return store ;
     }
