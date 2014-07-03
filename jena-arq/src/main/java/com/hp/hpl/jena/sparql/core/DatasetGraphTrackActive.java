@@ -135,6 +135,10 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     { get().deleteAny(g, s, p, o) ; }
 
     @Override
+    public void clear()
+    { get().clear() ; }
+    
+    @Override
     public boolean isEmpty()
     { return get().isEmpty() ; }
     

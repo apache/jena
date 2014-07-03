@@ -113,6 +113,9 @@ public interface DatasetGraph extends Closeable
     /** Test whether the dataset contains a quad  (including default graph)- may include wildcards, Node.ANY or null */
     public boolean contains(Quad quad) ;
 
+    /** Remove everything - remove all named graphs, clear the default graph */
+    public void clear() ;
+
     /** Test whether the dataset is empty */
     public boolean isEmpty() ;
     

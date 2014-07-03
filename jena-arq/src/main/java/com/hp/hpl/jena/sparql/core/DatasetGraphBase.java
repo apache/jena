@@ -140,6 +140,12 @@ abstract public class DatasetGraphBase implements DatasetGraph
     }
     
     @Override
+    public void clear()
+    {
+        deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
+    }
+
+    @Override
     public boolean isEmpty()
     {
         return ! contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
