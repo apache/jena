@@ -35,8 +35,16 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
+/** Comparison of ResultSets.
+ *  Note that reading ResultSets is destructive so consiuder using {@linkplain ResultSetRewindable}
+ *  from {@linkplain ResultSetFactory#makeRewindable} 
+ */
+
 public class ResultSetCompare
 {
+    // Need to extend then use Iso/IsoMatcher to do result sets.
+    // That needs backtracking. 
+    
     /* This is from the DAWG test suite.
      * Result set 1: 
      *   ---------------
@@ -69,15 +77,6 @@ public class ResultSetCompare
 //        "   (row (?x _:c2) (?y _:c3))",
 //        ")"} ;
 //   
-    // Nasty result set to test.
-    // These are the same but the first row of rs2$ throws in a wrong mapping of b0/c1
-
-    // Right mapping is:
-    // b0->c3, b1->c2, b2->c1, b3->c0
-    // Currently we get, working simply top to bottom, no backtracking:
-    // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails as _:b1 is mapped to c0, b0 to c1 not (c2, c3) 
-    
-    // ----
     
     // Limitations:
     // This code does not do compare/isomorphism combined with value testing.
@@ -149,8 +148,8 @@ public class ResultSetCompare
     }
 
     
-    /** compare two result sets for equivalence.  Equivalance means:
-     * Each row in rs1 matchs the same index row in rs2.
+    /** Compare two result sets for equivalence.  Equivalance means:
+     * Each row in rs1 matches the same index row in rs2.
      * Rows match if they have the same variables with the same values, 
      * bNodes must map to a consistent other bNodes.  
      * Value comparisons of nodes.   
