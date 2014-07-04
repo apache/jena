@@ -126,7 +126,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
             if ( lang == null )
                 // Does not happen due to default above.
                 cmdError("File suffix not recognized: " +filename) ;
-            if ( ! FileOps.exists(filename) )
+            if ( ! filename.equals("-") && ! FileOps.exists(filename) )
                 cmdError("File does not exist: "+filename) ;
         }
     }
