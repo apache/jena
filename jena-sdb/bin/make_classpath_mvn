@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,34 +17,52 @@
 
 DIRROOT="$1"
 
-if [ "$DIRROOT" = "" ]
-then
+if [ "$DIRROOT" = "" ]; then
     echo "No directory given" 1>&2
     exit 1
+fi
+
+SEP=':'
+CP=${CP:-}
+
+which mvn > /dev/null
+HAS_MAVEN=$?
+if [ -e "$DIRROOT/pom.xml" ] && [ $HAS_MAVEN -eq 0 ]; then
+    # Take advantage of maven dependency plugin
+    
+    # We want to filter out maven's INFO, WARNING and dependency download messages
+    # We leave ERROR messages alone even though they'll break the classpath we don't want
+    # to suppress them
+    MVN_OUTPUT_PATTERN="(^\[?(INFO|WARNING)|Download)"
+    
+    # Switch up to the root directory and run maven
+    CURR_DIR=$PWD
+    cd $DIRROOT
+    MVN_CP=`mvn dependency:build-classpath -U | egrep -v ${MVN_OUTPUT_PATTERN}`
+    cd $CURR_DIR
+    
+    # Append the result to any user defined classpath
+    [ "$CP" != "" ] && CP="${CP}${SEP}"
+    CP="${CP}${MVN_CP}"
+else
+    # Use the crude method
+    M2_REPO="${M2_REPO:-$HOME/.m2/repository/}" ;
+    X=$(perl -ne 'next unless /\spath="$M2_REPO([^"]*)"/s ; print "$1","\n"' $DIRROOT/.classpath)
+
+    for x in $X
+    do
+      [ "$CP" != "" ] && CP="${CP}${SEP}"
+      CP="$CP$M2_REPO$x"
+    done
+fi
+
+for D in "$DIRROOT/../jena-core"  "$DIRROOT/../jena-arq"  "$DIRROOT" 
+do
+    if [ -e "$D/classes" ]; then 
+	CP="$D/classes${SEP}$CP"
+    elif [ -e "$D/target/classes" ]; then
+	CP="$DIRROOT/target/classes${SEP}$CP"
     fi
-
-M2_REPO="${M2_REPO:-$HOME/.m2/repository}" ;
-X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/s ; print "$1","\n"' $DIRROOT/.classpath)
-
-CP=
-for x in $X
-do
-   [ -n "$CP" ] && CP="$CP:"
-   CP="${CP}$M2_REPO$x"
 done
-
-# Add development systems
-
-[ -e "$DIRROOT/classes" ] && CP="$DIRROOT/classes:$CP"
-[ -e "$DIRROOT/target/classes" ] && CP="$DIRROOT/target/classes:$CP"
-
-for P in jena-core jena-arq
-do
-    [ -e "$DIRROOT/../$P/classes" ] && CP="$DIRROOT/../$P/classes:$CP"
-    [ -e "$DIRROOT/../$P/target/classes" ] && CP="$DIRROOT/../$P/target/classes:$CP"
-done
-
-
-
 
 echo "$CP"

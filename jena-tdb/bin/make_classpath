@@ -81,7 +81,7 @@ done
 for dir in "$CPDIR3" "$CPDIR2" "$CPDIR1"
 do
   if [ -e "$dir" ]
-      then
+  then
       [ "$CP" != "" ] && CP="${SEP}${CP}"
       CP="${dir}$CP"
   fi
