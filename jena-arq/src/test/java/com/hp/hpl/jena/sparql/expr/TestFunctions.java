@@ -157,14 +157,24 @@ public class TestFunctions
     @Test public void exprContains17() { testEvalException("Contains(123, 'ab'@fr)") ; }
     @Test public void exprContains18() { testEvalException("STRENDS('123'^^xsd:string, 12.3)") ; }
 
-    @Test public void exprReplace1()   { test("REPLACE('abc', 'b', 'Z')", NodeValue.makeString("aZc")) ; }
-    @Test public void exprReplace2()   { test("REPLACE('abc', 'b.', 'Z')", NodeValue.makeString("aZ")) ; }
-    @Test public void exprReplace3()   { test("REPLACE('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")) ; }
+    @Test public void exprReplace01()  { test("REPLACE('abc', 'b', 'Z')", NodeValue.makeString("aZc")) ; }
+    @Test public void exprReplace02()  { test("REPLACE('abc', 'b.', 'Z')", NodeValue.makeString("aZ")) ; }
+    @Test public void exprReplace03()  { test("REPLACE('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")) ; }
     
-    @Test public void exprReplace4()   { test("REPLACE('abcbd'^^xsd:string, 'b.', 'Z')", NodeValue.makeNode("aZZ", XSDDatatype.XSDstring)) ; }
-    @Test public void exprReplace5()   { test("REPLACE('abcbd'@en, 'b.', 'Z')", NodeValue.makeNode("aZZ", "en", (String)null)) ; }
-    @Test public void exprReplace6()   { test("REPLACE('abcbd', 'B.', 'Z', 'i')", NodeValue.makeString("aZZ")) ; }
+    @Test public void exprReplace04()  { test("REPLACE('abcbd'^^xsd:string, 'b.', 'Z')", NodeValue.makeNode("aZZ", XSDDatatype.XSDstring)) ; }
+    @Test public void exprReplace05()  { test("REPLACE('abcbd'@en, 'b.', 'Z')", NodeValue.makeNode("aZZ", "en", (String)null)) ; }
+    @Test public void exprReplace06()  { test("REPLACE('abcbd', 'B.', 'Z', 'i')", NodeValue.makeString("aZZ")) ; }
     
+    // See JENA-740
+    // ARQ provides replacement of the potentially empty string.
+    @Test public void exprReplace07()  { test("REPLACE('abc', '.*', 'Z')", NodeValue.makeString("Z")) ; }
+    @Test public void exprReplace08()  { test("REPLACE('', '.*', 'Z')",    NodeValue.makeString("Z")) ; }
+    @Test public void exprReplace09()  { test("REPLACE('abc', '.?', 'Z')", NodeValue.makeString("ZZZ")) ; }
+    
+    @Test public void exprReplace10()  { test("REPLACE('abc', 'XXX', 'Z')", NodeValue.makeString("abc")) ; }
+    @Test public void exprReplace11()  { test("REPLACE('', '.', 'Z')",      NodeValue.makeString("")) ; }
+    @Test public void exprReplace12()  { test("REPLACE('', '(a|b)?', 'Z')", NodeValue.makeString("Z")) ; }
+
     @Test public void exprBoolean1()    { test("fn:boolean('')", FALSE) ; }
     @Test public void exprBoolean2()    { test("fn:boolean(0)", FALSE) ; }
     @Test public void exprBoolean3()    { test("fn:boolean(''^^xsd:string)", FALSE) ; }

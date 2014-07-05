@@ -36,6 +36,7 @@ import java.math.BigInteger ;
 import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
+import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
 import javax.xml.datatype.DatatypeConstants ;
@@ -375,15 +376,43 @@ public class XSDFuncOp
             String flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm() ;
             flags = RegexJava.makeMask(flagsStr) ;
         }
-
         return strReplace(nvStr, Pattern.compile(pat, flags), nvReplacement) ;
     }
 
     public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement) {
         String n = checkAndGetStringLiteral("replace", nvStr).getLiteralLexicalForm() ;
         String rep = checkAndGetStringLiteral("replace", nvReplacement).getLiteralLexicalForm() ;
-        String x = pattern.matcher(n).replaceAll(rep) ;
+        String x = replaceAll(pattern.matcher(n), rep) ;
+        if ( x == null )
+            // No replacement.
+            return nvStr ; 
         return calcReturn(x, nvStr.asNode()) ;
+    }
+
+    // Jena's replaceAll and xsd:func-replace differ in the handling of matching
+    // an empty string.
+    // Java:  ("", ".*", "x") --> "x" and ("notEmpty", ".*", "x") --> "xx"
+    // F&O: [err:FORX0003] (in F&O, a global error; SPARQL does not have global execution errors)
+    // http://www.w3.org/TR/xpath-functions/#func-replace
+    // ARQ 
+    
+    private static String replaceAll(Matcher matcher, String rep) {
+        // Follow Java -- return matcher.replaceAll(rep) ;
+        StringBuffer sb = null ;   // Delay until needed
+        while(matcher.find()) {
+            if ( sb == null )
+                sb = new StringBuffer() ;
+            else {
+                // Do one match of zerolength string otherwise filter out.
+                if (matcher.start() == matcher.end() )
+                    continue ;
+            }
+            matcher.appendReplacement(sb, rep);
+        }
+        if ( sb == null )
+            return null ;
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 
     public static NodeValue strReplace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement) {
