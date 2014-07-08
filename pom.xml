@@ -18,12 +18,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.apache.jena</groupId>
-	<artifactId>hadoop-rdf</artifactId>
+	<artifactId>jena-hadoop-rdf</artifactId>
 	<version>0.9.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
-	<name>Apache Jena - Hadoop RDF</name>
-	<description>A collection of libraries for working with RDF on the Hadoop platform</description>
+
+<!-- 	<parent>
+		<groupId>org.apache.jena</groupId>
+		<artifactId>jena-parent</artifactId>
+		<version>10-SNAPSHOT</version>
+		<relativePath />
+	</parent> -->
+
+	<name>Apache Jena - RDF Tools for Hadoop</name>
+	<description>A collection of tools for working with RDF on the Hadoop platform</description>
 
 	<modules>
 		<module>hadoop-rdf-io</module>
@@ -35,7 +42,7 @@
 	<!-- Properties common across all profiles -->
 	<properties>
 		<plugin.compiler.version>2.5.1</plugin.compiler.version>
-		<arq.version>2.11.1</arq.version>
+		<arq.version>2.12.0-SNAPSHOT</arq.version>
 		<junit.version>4.11</junit.version>
 		<mrunit.version>1.0.0</mrunit.version>
 	</properties>
@@ -52,7 +59,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<hadoop.version>2.2.0</hadoop.version>
+				<hadoop.version>2.4.1</hadoop.version>
 			</properties>
 		</profile>
 
@@ -108,18 +115,29 @@
 
 	<build>
 		<plugins>
-			<!-- Compiler Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${plugin.compiler.version}</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<!-- Explicitly set UTF-8 encoding though should be set by property 
-						anyway -->
-					<encoding>UTF-8</encoding>
-				</configuration>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-java</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>1.7.0</version>
+								</requireJavaVersion>
+							</rules>
+							<!-- Hadoop dependencies introduce a huge range of dependency convergence 
+								issues. Therefore we don't fail the builds for these modules which is less 
+								than ideal but far easier than trying to fix the mess that is Hadoops transitive 
+								dependencies -->
+							<fail>false</fail>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

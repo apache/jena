@@ -20,23 +20,23 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.jena</groupId>
-		<artifactId>hadoop-rdf</artifactId>
+		<artifactId>jena-hadoop-rdf</artifactId>
 		<version>0.9.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>hadoop-rdf-stats</artifactId>
-	<name>Apache Jena - Hadoop RDF - Statistics Demo App</name>
+	<artifactId>jena-hadoop-rdf-stats</artifactId>
+	<name>Apache Jena - RDF Tools for Hadoop - Statistics Demo App</name>
 	<description>A demo application that can be run on Hadoop to produce a statistical analysis on arbitrary RDF inputs</description>
 
 	<dependencies>
 		<!-- Internal Project Dependencies -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
-			<artifactId>hadoop-rdf-io</artifactId>
+			<artifactId>jena-hadoop-rdf-io</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
-			<artifactId>hadoop-rdf-mapreduce</artifactId>
+			<artifactId>jena-hadoop-rdf-mapreduce</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -64,7 +64,7 @@
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
-			<artifactId>hadoop-rdf-mapreduce</artifactId>
+			<artifactId>jena-hadoop-rdf-mapreduce</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
@@ -83,7 +83,6 @@
 				dependencies contained therein -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
 				<configuration>
 					<descriptors>
 						<descriptor>hadoop-job.xml</descriptor>
