@@ -18,9 +18,10 @@ package com.hp.hpl.jena.propertytable.impl;
  */
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import com.hp.hpl.jena.propertytable.impl.GraphCSV;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -29,10 +30,14 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 
 public class GraphCSVTest extends Assert {
 	
+	@Ignore
 	@Test
 	public void testGraphCSV() throws Exception {
 		String file = "src/test/resources/test.csv";
@@ -53,4 +58,16 @@ public class GraphCSVTest extends Assert {
 		
 		assertFalse(results.hasNext());
 	}
+	
+	@Test 
+	public void stageGeneratorTest() throws Exception{
+		wireIntoExecution();
+		testGraphCSV();
+	}
+	
+    private static void wireIntoExecution() {
+        StageGenerator orig = (StageGenerator)ARQ.getContext().get(ARQ.stageGenerator) ;
+        StageGenerator stageGenerator = new StageGeneratorPropertyTable(orig) ;
+        StageBuilder.setGenerator(ARQ.getContext(), stageGenerator) ;
+    }
 }
