@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.propertytable;
 
+import java.util.Collection;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -47,6 +49,14 @@ public interface Row {
 	 */
 	Node getValue(Column column);
 	
+	
+	/**
+	 * Get the value of the Column in this Row
+	 * @param ColumnKey
+	 * @return value
+	 */
+	Node getValue(Node ColumnKey);
+	
 	/**
 	 * @return the rowKey Node of the subject
 	 */
@@ -56,5 +66,10 @@ public interface Row {
 	 * @return the Triple Iterator over the values in this Row
 	 */
 	ExtendedIterator<Triple> getTripleIterator();
+	
+	/**
+	 * @return all of the Columns of the PropertyTable
+	 */
+	Collection<Column> getColumns();
 
 }

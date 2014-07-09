@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.propertytable.impl;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import com.hp.hpl.jena.graph.Node;
@@ -27,9 +28,12 @@ import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.propertytable.Column;
 import com.hp.hpl.jena.propertytable.PropertyTable;
+import com.hp.hpl.jena.propertytable.Row;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.Filter;
 import com.hp.hpl.jena.util.iterator.NullIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 public class GraphPropertyTable extends GraphBase {
 
@@ -37,6 +41,10 @@ public class GraphPropertyTable extends GraphBase {
 
 	public GraphPropertyTable(PropertyTable pt) {
 		this.pt = pt;
+	}
+
+	public PropertyTable getPropertyTable() {
+		return pt;
 	}
 
 	@Override
@@ -75,6 +83,63 @@ public class GraphPropertyTable extends GraphBase {
 		return iter.filterKeep(new TripleMatchFilterEquality(m.asTriple()));
 
 	}
+	
+	protected ExtendedIterator<Row> propertyTableBaseFind(RowMatch m) {
+		
+		if (this.pt == null) {
+			return NullIterator.instance();
+		}
+		
+		ExtendedIterator<Row> iter = null;
+
+		Node s = m.getMatchSubject();
+
+		if ( isConcrete(s) ){
+			Row row= pt.getRow(s);
+			if (row == null){
+				return NullIterator.instance();
+			} else {
+				ArrayList<Row> rows = new ArrayList<Row>();
+				rows.add(row);
+				return WrappedIterator.create(rows.iterator());
+			}
+		} else {
+			iter = pt.getRowIterator();
+		}
+		
+		return iter.filterKeep(new RowMatchFilterEquality( m ));
+		
+	}
+	
+	static class RowMatchFilterEquality extends Filter<Row> {
+		final protected RowMatch rMatch;
+
+		public RowMatchFilterEquality(RowMatch rMatch) {
+			this.rMatch = rMatch;
+		}
+
+		@Override
+		public boolean accept(Row r) {
+			return rowContained(rMatch, r);
+		}
+
+	}
+	
+	static boolean rowContained(RowMatch rMatch, Row row) {
+			
+		boolean contained = equalNode(rMatch.getSubject(), row.getRowKey());
+		if(contained){
+			BasicPattern pattern =rMatch.getBasicPattern();
+			for(Triple triple: pattern ){
+				contained = equalNode(triple.getObject(), row.getValue( triple.getPredicate()) );
+				if (! contained){
+					break;
+				}
+			}
+		} 
+		return contained;
+	}
+	
 
 	static class TripleMatchFilterEquality extends Filter<Triple> {
 		final protected Triple tMatch;

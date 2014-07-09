@@ -93,4 +93,17 @@ public interface PropertyTable {
 	Row getRow(Node s);
 	
 	
+	/**
+	 * Create Row by its rowKey Node of the subject
+	 * @param s, rowKey Node of the subject
+	 * @return the Row created
+	 */
+	Row createRow(Node s);
+	
+	
+	/**
+	 * Get all of the rows as an iterator
+	 */
+	ExtendedIterator<Row> getRowIterator();
+	
 }

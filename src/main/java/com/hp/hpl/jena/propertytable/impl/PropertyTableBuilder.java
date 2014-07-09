@@ -57,7 +57,7 @@ public class PropertyTableBuilder {
 				}
 			} else {
 				Node subject = LangCSV.caculateSubject(rowNum, csvFilePath);
-				Row row = table.getRow(subject);
+				Row row = table.createRow(subject);
 				
 				row.setValue(table.getColumn(CSV_ROW_NODE), NodeFactory.createLiteral(
 						(rowNum + ""), XSDDatatype.XSDinteger));

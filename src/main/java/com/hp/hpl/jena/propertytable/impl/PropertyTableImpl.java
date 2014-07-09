@@ -129,7 +129,12 @@ public class PropertyTableImpl implements PropertyTable {
 	@Override
 	public ExtendedIterator<Triple> getTripleIterator(Row row) {
 		// use PSO index ( O(n), n= column count )
-		return row.getTripleIterator();
+		ArrayList<Triple> triples = new ArrayList<Triple>();
+		for (Column column : getColumns()) {
+			Node value = row.getValue(column);
+			triples.add(Triple.create(row.getRowKey(), column.getColumnKey(), value));
+		}
+		return WrappedIterator.create(triples.iterator());
 	}
 
 	@Override
@@ -162,6 +167,13 @@ public class PropertyTableImpl implements PropertyTable {
 		if (s == null)
 			throw new NullPointerException("subject node is null");
 		Row row = rowIndex.get(s);
+		return row;
+
+	}
+	
+	@Override
+	public Row createRow(final Node s){
+		Row row = this.getRow(s);
 		if (row != null)
 			return row;
 
@@ -170,6 +182,11 @@ public class PropertyTableImpl implements PropertyTable {
 		rowList.add(row);
 
 		return row;
+	}
+	
+	@Override
+	public ExtendedIterator<Row> getRowIterator() {
+		return WrappedIterator.create(rowList.iterator());
 	}
 
 	private final void setX(final Node s, final Node p, final Node value) {
@@ -245,6 +262,11 @@ public class PropertyTableImpl implements PropertyTable {
 		public Node getValue(Column column) {
 			return getX(key, column.getColumnKey());
 		}
+		
+		@Override
+		public Node getValue(Node columnKey) {
+			return getX(key, columnKey);
+		}
 
 		@Override
 		public PropertyTable getTable() {
@@ -254,6 +276,12 @@ public class PropertyTableImpl implements PropertyTable {
 		@Override
 		public Node getRowKey() {
 			return key;
+		}
+
+		@Override
+		public Collection<Column> getColumns() {
+			// TODO Auto-generated method stub
+			return PropertyTableImpl.this.getColumns();
 		}
 
 		@Override
@@ -267,5 +295,7 @@ public class PropertyTableImpl implements PropertyTable {
 		}
 
 	}
+
+
 
 }
