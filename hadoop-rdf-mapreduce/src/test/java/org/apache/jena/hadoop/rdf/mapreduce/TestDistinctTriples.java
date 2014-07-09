@@ -79,9 +79,6 @@ public class TestDistinctTriples
         driver.addInput(new LongWritable(2), tw2);
         driver.addOutput(NullWritable.get(), tw);
         driver.addOutput(NullWritable.get(), tw2);
-
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.TRACE);
         
         driver.runTest(false);
     }

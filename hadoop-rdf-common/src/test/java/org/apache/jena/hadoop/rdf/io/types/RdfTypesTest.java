@@ -51,7 +51,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * 
  */
 public class RdfTypesTest {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(RdfTypesTest.class);
 
     private ByteArrayOutputStream outputStream;
@@ -91,8 +91,8 @@ public class RdfTypesTest {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <T extends WritableComparable> void testWriteRead(T writable, T expected) throws IOException, InstantiationException,
-            IllegalAccessException, ClassNotFoundException {
+    private <T extends WritableComparable> void testWriteRead(T writable, T expected) throws IOException, InstantiationException, IllegalAccessException,
+            ClassNotFoundException {
         // Write out data
         DataOutput output = this.prepareOutput();
         writable.write(output);
@@ -101,7 +101,7 @@ public class RdfTypesTest {
         DataInput input = this.prepareInput();
         T actual = (T) Class.forName(writable.getClass().getName()).newInstance();
         actual.readFields(input);
-        
+
         LOG.info("Original = " + writable.toString());
         LOG.info("Round Tripped = " + actual.toString());
 
@@ -138,7 +138,7 @@ public class RdfTypesTest {
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
-    
+
     /**
      * Basic node writable round tripping test
      * 
@@ -153,7 +153,7 @@ public class RdfTypesTest {
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
-    
+
     /**
      * Basic node writable round tripping test
      * 
@@ -168,7 +168,7 @@ public class RdfTypesTest {
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
-    
+
     /**
      * Basic node writable round tripping test
      * 
@@ -183,7 +183,7 @@ public class RdfTypesTest {
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
-    
+
     /**
      * Basic node writable round tripping test
      * 
@@ -198,8 +198,7 @@ public class RdfTypesTest {
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
-    
-    
+
     /**
      * Basic node writable round tripping test
      * 
@@ -214,8 +213,7 @@ public class RdfTypesTest {
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
-    
-    
+
     /**
      * Basic node writable round tripping test
      * 
@@ -230,8 +228,7 @@ public class RdfTypesTest {
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
-    
-    
+
     /**
      * Basic node writable round tripping test
      * 
@@ -246,8 +243,7 @@ public class RdfTypesTest {
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
-    
-    
+
     /**
      * Basic node writable round tripping test
      * 
@@ -262,7 +258,7 @@ public class RdfTypesTest {
         NodeWritable nw = new NodeWritable(n);
         testWriteRead(nw, nw);
     }
-    
+
     /**
      * Basic node writable round tripping test
      * 
@@ -278,10 +274,10 @@ public class RdfTypesTest {
         testWriteRead(nw, nw);
         NodeWritable nw2 = new NodeWritable(n);
         testWriteRead(nw2, nw2);
-        
+
         Assert.assertEquals(0, nw.compareTo(nw2));
     }
-    
+
     /**
      * Basic triple writable round tripping test
      * 
@@ -292,28 +288,11 @@ public class RdfTypesTest {
      */
     @Test
     public void triple_writable_01() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Triple t = new Triple(NodeFactory.createURI("http://example"), NodeFactory.createURI("http://predicate"),
-                NodeFactory.createLiteral("value"));
+        Triple t = new Triple(NodeFactory.createURI("http://example"), NodeFactory.createURI("http://predicate"), NodeFactory.createLiteral("value"));
         TripleWritable tw = new TripleWritable(t);
         testWriteRead(tw, tw);
     }
-    
-    /**
-     * Basic triple writable round tripping test
-     * 
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws ClassNotFoundException
-     */
-    @Test
-    public void triple_writable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Triple t = new Triple(NodeFactory.createAnon(), NodeFactory.createURI("http://predicate"),
-                NodeFactory.createLiteral("value"));
-        TripleWritable tw = new TripleWritable(t);
-        testWriteRead(tw, tw);
-    }
-    
+
     /**
      * Basic quad writable round tripping test
      * 
@@ -329,23 +308,7 @@ public class RdfTypesTest {
         QuadWritable qw = new QuadWritable(q);
         testWriteRead(qw, qw);
     }
-    
-    /**
-     * Basic quad writable round tripping test
-     * 
-     * @throws IOException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws ClassNotFoundException
-     */
-    @Test
-    public void quad_writable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Quad q = new Quad(Quad.defaultGraphNodeGenerated, NodeFactory.createAnon(), NodeFactory.createURI("http://predicate"),
-                NodeFactory.createLiteral("value"));
-        QuadWritable qw = new QuadWritable(q);
-        testWriteRead(qw, qw);
-    }
-    
+
     /**
      * Basic tuple writable round tripping test
      * 
@@ -356,8 +319,8 @@ public class RdfTypesTest {
      */
     @Test
     public void tuple_writable_01() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-        Tuple<Node> t = Tuple.createTuple(NodeFactory.createURI("http://one"), NodeFactory.createURI("http://two"),
-                NodeFactory.createLiteral("value"), NodeFactory.createLiteral("foo"), NodeFactory.createURI("http://three"));
+        Tuple<Node> t = Tuple.createTuple(NodeFactory.createURI("http://one"), NodeFactory.createURI("http://two"), NodeFactory.createLiteral("value"),
+                NodeFactory.createLiteral("foo"), NodeFactory.createURI("http://three"));
         NodeTupleWritable tw = new NodeTupleWritable(t);
         testWriteRead(tw, tw);
     }
