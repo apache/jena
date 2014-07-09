@@ -74,7 +74,6 @@ public class TripleWritable extends AbstractNodeTupleWritable<Triple> {
 
     @Override
     protected Node[] createNodes(Triple tuple) {
-        Triple t = this.get();
-        return new Node[] { t.getSubject(), t.getPredicate(), t.getObject() };
+        return new Node[] { tuple.getSubject(), tuple.getPredicate(), tuple.getObject() };
     }
 }

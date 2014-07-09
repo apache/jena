@@ -23,22 +23,41 @@ import java.util.Iterator;
 
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * A reducer that outputs a pair for each value consisting of a null key and the value
+ * A reducer that outputs a pair for each value consisting of a null key and the
+ * value
+ * 
  * @author rvesse
- *
- * @param <TKey> Key
- * @param <TValue> Value
+ * 
+ * @param <TKey>
+ *            Key
+ * @param <TValue>
+ *            Value
  */
 public class NullPlusValueReducer<TKey, TValue> extends Reducer<TKey, TValue, NullWritable, TValue> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NullPlusValueReducer.class);
+    private boolean tracing = false;
 
     @Override
-    protected void reduce(TKey key, Iterable<TValue> values, Context context)
-            throws IOException, InterruptedException {
+    protected void setup(Context context) throws IOException, InterruptedException {
+        super.setup(context);
+        this.tracing = LOGGER.isTraceEnabled();
+    }
+
+    @Override
+    protected void reduce(TKey key, Iterable<TValue> values, Context context) throws IOException, InterruptedException {
+        if (this.tracing) {
+            LOGGER.trace("Input Key = {}", key);
+        }
         Iterator<TValue> iter = values.iterator();
         while (iter.hasNext()) {
             TValue value = iter.next();
+            if (tracing) {
+                LOGGER.trace("Input Value = {}", value);
+            }
             context.write(NullWritable.get(), value);
         }
     }

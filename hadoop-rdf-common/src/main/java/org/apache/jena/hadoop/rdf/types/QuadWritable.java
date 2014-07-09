@@ -73,8 +73,7 @@ public class QuadWritable extends AbstractNodeTupleWritable<Quad> {
 
     @Override
     protected Node[] createNodes(Quad tuple) {
-        Quad q = this.get();
-        return new Node[] { q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject() };
+        return new Node[] { tuple.getGraph(), tuple.getSubject(), tuple.getPredicate(), tuple.getObject() };
     }
 
 }
