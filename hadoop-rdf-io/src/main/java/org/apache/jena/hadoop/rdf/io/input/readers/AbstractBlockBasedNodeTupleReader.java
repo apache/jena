@@ -289,8 +289,10 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
         } catch (Throwable e) {
             // Failed to read the tuple on this line
             LOG.error("Error parsing block, aborting further parsing", e);
-            if (!this.ignoreBadTuples)
+            if (!this.ignoreBadTuples) {
+                this.iter.close();
                 throw new IOException("Error parsing block at position " + (this.start + this.input.getBytesRead()) + ", aborting further parsing", e);
+            }
             this.key = null;
             this.tuple = null;
             this.finished = true;

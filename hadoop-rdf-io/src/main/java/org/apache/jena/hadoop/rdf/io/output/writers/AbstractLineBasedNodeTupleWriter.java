@@ -59,7 +59,7 @@ public abstract class AbstractLineBasedNodeTupleWriter<TKey, TValue, T extends A
     /**
      * Default terminator written at the end of each line
      */
-    public static final String DEFAULT_TERMINATOR = " .";
+    public static final String DEFAULT_TERMINATOR = ".";
 
     private static final Logger log = LoggerFactory.getLogger(AbstractLineBasedNodeTupleWriter.class);
 

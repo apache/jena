@@ -258,6 +258,7 @@ public abstract class AbstractWholeFileNodeTupleReader<TValue, T extends Abstrac
                     if (!this.ignoreBadTuples)
                         throw new IOException("Error parsing whole file at position " + this.input.getBytesRead() + ", aborting further parsing",
                                 this.parserError);
+
                 }
 
                 this.key = null;
@@ -273,8 +274,10 @@ public abstract class AbstractWholeFileNodeTupleReader<TValue, T extends Abstrac
         } catch (Throwable e) {
             // Failed to read the tuple on this line
             LOG.error("Error parsing whole file, aborting further parsing", e);
-            if (!this.ignoreBadTuples)
+            if (!this.ignoreBadTuples) {
+                this.iter.close();
                 throw new IOException("Error parsing whole file at position " + this.input.getBytesRead() + ", aborting further parsing", e);
+            }
             this.key = null;
             this.tuple = null;
             this.finished = true;
