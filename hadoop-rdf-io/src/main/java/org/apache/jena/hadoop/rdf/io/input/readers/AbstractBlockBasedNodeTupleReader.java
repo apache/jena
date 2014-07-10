@@ -45,7 +45,6 @@ import org.apache.jena.riot.lang.PipedRDFStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * An abstract implementation for a record reader that reads records from blocks
  * of files, this is a hybrid between {@link AbstractLineBasedNodeTupleReader}
@@ -67,10 +66,9 @@ import org.slf4j.LoggerFactory;
  * @param <T>
  *            Tuple type
  */
-public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends AbstractNodeTupleWritable<TValue>> extends
-        RecordReader<LongWritable, T> {
+public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends AbstractNodeTupleWritable<TValue>> extends RecordReader<LongWritable, T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractLineBasedNodeTupleReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractBlockBasedNodeTupleReader.class);
     private CompressionCodec compressionCodecs;
     private TrackableInputStream input;
     private LongWritable key;
@@ -96,6 +94,10 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
         // Configuration
         Configuration config = context.getConfiguration();
         this.ignoreBadTuples = config.getBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, true);
+        if (this.ignoreBadTuples)
+            LOG.warn(
+                    "Configured to ignore bad tuples, parsing errors will be logged and further parsing aborted but no user visible errors will be thrown.  Consider setting {} to false to disable this behaviour",
+                    RdfIOConstants.INPUT_IGNORE_BAD_TUPLES);
 
         // Figure out what portion of the file to read
         start = split.getStart();
@@ -106,8 +108,7 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
         CompressionCodecFactory factory = new CompressionCodecFactory(config);
         this.compressionCodecs = factory.getCodec(file);
 
-        LOG.info(String.format("Got split with start %d and length %d for file with total length of %d", new Object[] { start,
-                split.getLength(), totalLength }));
+        LOG.info(String.format("Got split with start %d and length %d for file with total length of %d", new Object[] { start, split.getLength(), totalLength }));
 
         // Open the file and prepare the input stream
         FileSystem fs = file.getFileSystem(config);
@@ -181,8 +182,8 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
      *            Language to use for parsing
      * @return Parser runnable
      */
-    private Runnable createRunnable(@SuppressWarnings("rawtypes") final AbstractBlockBasedNodeTupleReader reader,
-            final InputStream input, final PipedRDFStream<TValue> stream, final Lang lang) {
+    private Runnable createRunnable(@SuppressWarnings("rawtypes") final AbstractBlockBasedNodeTupleReader reader, final InputStream input,
+            final PipedRDFStream<TValue> stream, final Lang lang) {
         return new Runnable() {
             @Override
             public void run() {
@@ -269,8 +270,8 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
                 if (this.parserError != null) {
                     LOG.error("Error parsing block, aborting further parsing", this.parserError);
                     if (!this.ignoreBadTuples)
-                        throw new IOException("Error parsing block at position " + (this.start + this.input.getBytesRead())
-                                + ", aborting further parsing", this.parserError);
+                        throw new IOException("Error parsing block at position " + (this.start + this.input.getBytesRead()) + ", aborting further parsing",
+                                this.parserError);
                 }
 
                 this.key = null;
@@ -289,8 +290,7 @@ public abstract class AbstractBlockBasedNodeTupleReader<TValue, T extends Abstra
             // Failed to read the tuple on this line
             LOG.error("Error parsing block, aborting further parsing", e);
             if (!this.ignoreBadTuples)
-                throw new IOException("Error parsing block at position " + (this.start + this.input.getBytesRead())
-                        + ", aborting further parsing", e);
+                throw new IOException("Error parsing block at position " + (this.start + this.input.getBytesRead()) + ", aborting further parsing", e);
             this.key = null;
             this.tuple = null;
             this.finished = true;

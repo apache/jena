@@ -41,7 +41,6 @@ import org.apache.jena.riot.system.ParserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * An abstract implementation of a record reader that reads records from line
  * based tuple formats. This only supports reading from file splits currently.
@@ -56,9 +55,8 @@ import org.slf4j.LoggerFactory;
  * @param <T>
  *            Writable tuple type
  */
-public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends AbstractNodeTupleWritable<TValue>> extends
-        RecordReader<LongWritable, T> {
-    
+public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends AbstractNodeTupleWritable<TValue>> extends RecordReader<LongWritable, T> {
+
     private static final Logger LOG = LoggerFactory.getLogger(AbstractLineBasedNodeTupleReader.class);
     private CompressionCodecFactory compressionCodecs = null;
     private long start, pos, end, estLength;
@@ -83,6 +81,10 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
         profile = RdfIOUtils.createParserProfile(context, split.getPath());
         Configuration config = context.getConfiguration();
         this.ignoreBadTuples = config.getBoolean(RdfIOConstants.INPUT_IGNORE_BAD_TUPLES, true);
+        if (this.ignoreBadTuples)
+            LOG.warn(
+                    "Configured to ignore bad tuples, parsing errors will be logged and the bad line skipped but no errors will be thrownConsider setting {} to false to disable this behaviour",
+                    RdfIOConstants.INPUT_IGNORE_BAD_TUPLES);
 
         // Figure out what portion of the file to read
         this.maxLineLength = config.getInt(HadoopIOConstants.MAX_LINE_LENGTH, Integer.MAX_VALUE);
@@ -92,9 +94,8 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
         long totalLength = file.getFileSystem(context.getConfiguration()).getFileStatus(file).getLen();
         compressionCodecs = new CompressionCodecFactory(config);
         final CompressionCodec codec = compressionCodecs.getCodec(file);
-        
-        LOG.info(String.format("Got split with start %d and length %d for file with total length of %d", new Object[] { start,
-                split.getLength(), totalLength }));
+
+        LOG.info(String.format("Got split with start %d and length %d for file with total length of %d", new Object[] { start, split.getLength(), totalLength }));
 
         // Open the file and seek to the start of the split
         FileSystem fs = file.getFileSystem(config);
@@ -106,8 +107,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
             // any line breaks and will give us a split from 0 -> (length - 1)
             // Add 1 and verify we got complete split
             if (totalLength > split.getLength() + 1)
-                throw new IOException(
-                        "This record reader can only be used with compressed input where the split covers the whole file");
+                throw new IOException("This record reader can only be used with compressed input where the split covers the whole file");
             in = new LineReader(codec.createInputStream(fileIn), config);
             estLength = end;
             end = Long.MAX_VALUE;
