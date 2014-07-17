@@ -44,7 +44,7 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
  * It contains PSO and POS indexes.
  * 
  */
-public class PropertyTableImpl implements PropertyTable {
+public class PropertyTableHashMapImpl implements PropertyTable {
 
 	private Map<Node, Column> columnIndex; // Maps property Node key to Column
 	private List<Column> columnList; // Stores the list of columns in the table
@@ -63,7 +63,7 @@ public class PropertyTableImpl implements PropertyTable {
 																	// Node)
 																	// pairs
 
-	PropertyTableImpl() {
+	PropertyTableHashMapImpl() {
 		columnIndex = new HashMap<Node, Column>();
 		columnList = new ArrayList<Column>();
 		rowIndex = new HashMap<Node, Row>();
@@ -87,6 +87,10 @@ public class PropertyTableImpl implements PropertyTable {
 	public ExtendedIterator<Triple> getTripleIterator(Column column) {
 		
 		// use PSO index directly (fast)
+		
+		if (column == null || column.getColumnKey() == null)
+			throw new NullPointerException("column is null");
+		
 		ArrayList<Triple> triples = new ArrayList<Triple>();
 		Map<Node, Node> values = valueIndex.get(column.getColumnKey());
 
@@ -102,9 +106,13 @@ public class PropertyTableImpl implements PropertyTable {
 	public ExtendedIterator<Triple> getTripleIterator(Node value) {
 		
 		// use POS index ( O(n), n= column count )
+		
+		if (value == null)
+			throw new NullPointerException("value is null");
+		
 		IteratorConcat<Triple> iter = new IteratorConcat<Triple>();
 		for (Column column : this.getColumns()) {
-			ExtendedIterator<Triple> eIter = getTripleIterator(column);
+			ExtendedIterator<Triple> eIter = getTripleIterator(column,value);
 			iter.add(eIter);
 		}
 		return WrappedIterator.create(Iter.distinct(iter));
@@ -114,6 +122,14 @@ public class PropertyTableImpl implements PropertyTable {
 	public ExtendedIterator<Triple> getTripleIterator(Column column, Node value) {
 		
 		// use POS index directly (fast)
+		
+		if (column == null || column.getColumnKey() == null)
+			throw new NullPointerException("column is null");
+		
+		if (value == null)
+			throw new NullPointerException("value is null");
+		
+		
 		Node p = column.getColumnKey();
 		final SetMultimap<Node, Node> valueToSubjectMap = valueReverseIndex
 				.get(p);
@@ -129,6 +145,10 @@ public class PropertyTableImpl implements PropertyTable {
 	@Override
 	public ExtendedIterator<Triple> getTripleIterator(Row row) {
 		// use PSO index ( O(n), n= column count )
+		
+		if (row == null || row.getRowKey() == null)
+			throw new NullPointerException("row is null");
+		
 		ArrayList<Triple> triples = new ArrayList<Triple>();
 		for (Column column : getColumns()) {
 			Node value = row.getValue(column);
@@ -144,13 +164,15 @@ public class PropertyTableImpl implements PropertyTable {
 
 	@Override
 	public Column getColumn(Node p) {
+		if (p == null)
+			throw new NullPointerException("column node is null");
 		return columnIndex.get(p);
 	}
 
 	@Override
 	public void createColumn(Node p) {
 		if (p == null)
-			throw new NullPointerException("column name is null");
+			throw new NullPointerException("column node is null");
 
 		if (columnIndex.containsKey(p))
 			throw new IllegalArgumentException("column already exists: '"
@@ -270,7 +292,7 @@ public class PropertyTableImpl implements PropertyTable {
 
 		@Override
 		public PropertyTable getTable() {
-			return PropertyTableImpl.this;
+			return PropertyTableHashMapImpl.this;
 		}
 
 		@Override
@@ -281,7 +303,7 @@ public class PropertyTableImpl implements PropertyTable {
 		@Override
 		public Collection<Column> getColumns() {
 			// TODO Auto-generated method stub
-			return PropertyTableImpl.this.getColumns();
+			return PropertyTableHashMapImpl.this.getColumns();
 		}
 
 		@Override

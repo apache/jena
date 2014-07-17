@@ -30,17 +30,46 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.propertytable.PropertyTable;
 import com.hp.hpl.jena.propertytable.Row;
-import com.hp.hpl.jena.util.FileUtils;
 
 public class PropertyTableBuilder {
 
 	public static Node CSV_ROW_NODE = NodeFactory.createURI(LangCSV.CSV_ROW);
-
-	public static PropertyTable buildPropetyTableFromCSVFile(String csvFilePath) {
-
+	
+	public static PropertyTable buildPropetyTableHashMapImplFromCsv(String csvFilePath) {		
+		PropertyTable table = new PropertyTableHashMapImpl();
+		return fillPropertyTable(table, csvFilePath);
+	}
+	
+	public static PropertyTable buildPropetyTableArrayImplFromCsv(String csvFilePath) {
+		PropertyTable table = createEmptyPropertyTableArrayImpl(csvFilePath);
+		return fillPropertyTable(table, csvFilePath);
+	}
+	
+	private static PropertyTable createEmptyPropertyTableArrayImpl (String csvFilePath) {
 		CSVParser parser = CSVParser.create(csvFilePath);
-		PropertyTableImpl table = new PropertyTableImpl();
+		List<String> rowLine = null;
+		int rowNum = 0;
+		int columnNum = 0;
+		
+		while ((rowLine = parser.parse1()) != null) {
+			if (rowNum == 0) {
+				columnNum = rowLine.size();
+			}
+			rowNum++;
+		}
+		if (rowNum!=0 && columnNum!=0){
+			return new PropertyTableArrayImpl(rowNum, columnNum+1);
+		} else {
+			return null;
+		}
+	}
 
+	
+	private static PropertyTable fillPropertyTable(PropertyTable table, String csvFilePath ){
+		if (table == null){
+			return null;
+		}
+		CSVParser parser = CSVParser.create(csvFilePath);
 		List<String> rowLine = null;
 		ArrayList<Node> predicates = new ArrayList<Node>();
 		int rowNum = 0;

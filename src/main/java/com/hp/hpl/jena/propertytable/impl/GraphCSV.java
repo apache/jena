@@ -18,9 +18,36 @@
 
 package com.hp.hpl.jena.propertytable.impl;
 
+import com.hp.hpl.jena.propertytable.PropertyTable;
+
 public class GraphCSV extends GraphPropertyTable {
 	
-	public GraphCSV(String csvFilePath){
-		super(PropertyTableBuilder.buildPropetyTableFromCSVFile(csvFilePath));
+	public static GraphCSV createHashMapImpl( String csvFilePath ){
+		return new GraphCSVHashMapImpl(csvFilePath);
+	}
+	
+	public static GraphCSV createArrayImpl( String csvFilePath ){
+		return new GraphCSVArrayImpl(csvFilePath);
+	}
+	
+	protected GraphCSV (PropertyTable table) {
+		super(table);
+	}
+	
+	public GraphCSV ( String csvFilePath ){
+		super(PropertyTableBuilder.buildPropetyTableArrayImplFromCsv(csvFilePath));
+	}
+}
+
+
+class GraphCSVHashMapImpl extends GraphCSV{
+	protected GraphCSVHashMapImpl(String csvFilePath){
+		super(PropertyTableBuilder.buildPropetyTableHashMapImplFromCsv(csvFilePath));
+	}
+}
+
+class GraphCSVArrayImpl extends GraphCSV{
+	protected GraphCSVArrayImpl(String csvFilePath){
+		super(PropertyTableBuilder.buildPropetyTableArrayImplFromCsv(csvFilePath));
 	}
 }
