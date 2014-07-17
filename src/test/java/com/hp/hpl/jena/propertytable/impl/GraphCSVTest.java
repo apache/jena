@@ -34,10 +34,10 @@ import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.util.PrintUtil;
 
 public class GraphCSVTest extends Assert {
 	
-	@Ignore
 	@Test
 	public void testGraphCSV() throws Exception {
 		String file = "src/test/resources/test.csv";
