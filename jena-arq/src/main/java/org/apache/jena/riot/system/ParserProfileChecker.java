@@ -16,8 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
-
+package org.apache.jena.riot.system ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -32,133 +31,118 @@ import org.apache.jena.riot.lang.LabelToNode ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-public class ParserProfileChecker extends ParserProfileBase //implements ParserProfile 
+/**
+ * ParserProfile that performs checks:
+ * <ul>
+ * <li>IRI violations</li>
+ * <li>Valid lexical forms for literals</li>
+ * <li>Valid triples (e.g. literals as subjects)</li>
+ * <li>Valid quads</li>
+ * </ul>
+ */
+
+public class ParserProfileChecker extends ParserProfileBase // implements
+                                                            // ParserProfile
 {
     private boolean checkLiterals = true ;
-    
-    public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler)
-    {
+
+    public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler) {
         super(prologue, errorHandler) ;
     }
 
-    public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler, LabelToNode labelMapping)
-    {
+    public ParserProfileChecker(Prologue prologue, ErrorHandler errorHandler, LabelToNode labelMapping) {
         super(prologue, errorHandler, labelMapping) ;
     }
 
     @Override
-    public String resolveIRI(String uriStr, long line, long col)
-    {
+    public String resolveIRI(String uriStr, long line, long col) {
         // Go via code that checks.
         return makeIRI(uriStr, line, col).toString() ;
     }
-    
+
     @Override
-    public IRI makeIRI(String uriStr, long line, long col)
-    {
+    public IRI makeIRI(String uriStr, long line, long col) {
         // resolves, but we handle the errors and warnings.
         IRI iri = prologue.getResolver().resolveSilent(uriStr) ;
         CheckerIRI.iriViolations(iri, errorHandler, line, col) ;
         return iri ;
     }
-    
+
     @Override
-    public Triple createTriple(Node subject, Node predicate, Node object, long line, long col)
-    {
-        checkTriple(subject,predicate,object,line,col) ;
+    public Triple createTriple(Node subject, Node predicate, Node object, long line, long col) {
+        checkTriple(subject, predicate, object, line, col) ;
         return super.createTriple(subject, predicate, object, line, col) ;
     }
-    
-    private void checkTriple(Node subject, Node predicate, Node object, long line, long col)
-    {
-        if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
-        {
+
+    private void checkTriple(Node subject, Node predicate, Node object, long line, long col) {
+        if ( subject == null || (!subject.isURI() && !subject.isBlank()) ) {
             errorHandler.error("Subject is not a URI or blank node", line, col) ;
-            throw new RiotException("Bad subject: "+subject) ;
+            throw new RiotException("Bad subject: " + subject) ;
         }
-        if ( predicate == null || ( ! predicate.isURI() ) )
-        {
+        if ( predicate == null || (!predicate.isURI()) ) {
             errorHandler.error("Predicate not a URI", line, col) ;
-            throw new RiotException("Bad predicate: "+predicate) ;
+            throw new RiotException("Bad predicate: " + predicate) ;
         }
-        if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
-        {
+        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral()) ) {
             errorHandler.error("Object is not a URI, blank node or literal", line, col) ;
-            throw new RiotException("Bad object: "+object) ;
+            throw new RiotException("Bad object: " + object) ;
         }
     }
 
     @Override
-    public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col)
-    {
-        checkQuad(graph,subject,predicate,object,line,col) ;
-        return super.createQuad(graph,subject,predicate,object,line,col) ;
+    public Quad createQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
+        checkQuad(graph, subject, predicate, object, line, col) ;
+        return super.createQuad(graph, subject, predicate, object, line, col) ;
     }
-    
-    private void checkQuad(Node graph, Node subject, Node predicate, Node object, long line, long col)
-    {
-        if ( graph != null && ! graph.isURI() && ! graph.isBlank() )    // Allow blank nodes - syntax may restrict more. 
-        {
-            errorHandler.error("Graph name is not a URI or blank node: "+FmtUtils.stringForNode(graph), line, col) ;
-            throw new RiotException("Bad graph name: "+graph) ;
-        }        
-        checkTriple(subject,predicate,object,line,col) ;
+
+    private void checkQuad(Node graph, Node subject, Node predicate, Node object, long line, long col) {
+        // Allow blank nodes - syntax may restrict more.
+        if ( graph != null && !graph.isURI() && !graph.isBlank() ) {
+            errorHandler.error("Graph name is not a URI or blank node: " + FmtUtils.stringForNode(graph), line, col) ;
+            throw new RiotException("Bad graph name: " + graph) ;
+        }
+        checkTriple(subject, predicate, object, line, col) ;
     }
-    
+
     @Override
-    public Node createURI(String x, long line, long col)
-    { 
+    public Node createURI(String x, long line, long col) {
         try {
             if ( RiotLib.isBNodeIRI(x) )
                 return RiotLib.createIRIorBNode(x) ;
-            else
-            {
+            else {
                 String resolvedIRI = resolveIRI(x, line, col) ;
                 return NodeFactory.createURI(resolvedIRI) ;
             }
-        } catch (RiotException ex)
-        {
+        }
+        catch (RiotException ex) {
             // Error was handled.
-            //errorHandler.error(ex.getMessage(), line, col) ;
+            // errorHandler.error(ex.getMessage(), line, col) ;
             throw ex ;
         }
     }
 
-//    @Override
-//    public Node createTypedLiteral(String lexical, String datatype, long line, long col)
-//    {
-//        // Resolve datatype.
-//        datatype = resolveIRI(datatype, line, col) ;
-//        RDFDatatype dt = Node.getType(datatype) ;
-//        return createTypedLiteral(lexical, dt, line, col) ;
-//    }
-    
     @Override
-    public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col)
-    {
-        Node n = NodeFactory.createLiteral(lexical, null, datatype)  ;
+    public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) {
+        Node n = NodeFactory.createLiteral(lexical, null, datatype) ;
         CheckerLiterals.checkLiteral(lexical, datatype, errorHandler, line, col) ;
         return n ;
     }
 
     @Override
-    public Node createLangLiteral(String lexical, String langTag, long line, long col)
-    {
-        Node n = NodeFactory.createLiteral(lexical, langTag, null)  ;
+    public Node createLangLiteral(String lexical, String langTag, long line, long col) {
+        Node n = NodeFactory.createLiteral(lexical, langTag, null) ;
         CheckerLiterals.checkLiteral(lexical, langTag, errorHandler, line, col) ;
         return n ;
     }
-    
+
     @Override
-    public Node createStringLiteral(String lexical, long line, long col)
-    {
+    public Node createStringLiteral(String lexical, long line, long col) {
         return NodeFactory.createLiteral(lexical) ;
     }
 
     @Override
-    public Node createBlankNode(Node scope, String label, long line, long col)
-    {
+    public Node createBlankNode(Node scope, String label, long line, long col) {
         return labelMapping.get(scope, label) ;
     }
-    
+
 }
