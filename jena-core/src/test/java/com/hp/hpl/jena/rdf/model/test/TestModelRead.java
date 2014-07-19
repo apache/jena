@@ -23,7 +23,6 @@ import org.junit.Assert ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.test.helpers.ModelHelper ;
@@ -78,10 +77,10 @@ public class TestModelRead extends AbstractModelTestBase
         ModelHelper.assertIsoModels(ModelHelper.modelWithStatements(this, "http://example/ ja:predicate ja:object"),
                                     mBasedExplicit) ;
     }
-
+    @SuppressWarnings("deprecation")
     public void testSimpleLoadImplictBase() throws IRIException {
         final Model mBasedImplicit = createModel() ;
-        final String fn = IRIResolver.resolveFileURL(getFileName("modelReading/based.n3")) ;
+        final String fn = com.hp.hpl.jena.n3.IRIResolver.resolveFileURL(getFileName("modelReading/based.n3")) ;
         final Model wanted = createModel().add(ModelHelper.resource(fn), ModelHelper.property("ja:predicate"),
                                                ModelHelper.resource("ja:object")) ;
         mBasedImplicit.read(fn, "N3") ;

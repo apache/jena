@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.n3.JenaURIException;
-
+@SuppressWarnings("deprecation")
 public class TestResolver extends TestCase
 {
     public static TestSuite suite()

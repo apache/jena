@@ -20,6 +20,7 @@ package com.hp.hpl.jena.n3;
 
 import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.rdf.model.*;
+
 import java.net.* ;
 import java.io.* ;
 
@@ -31,7 +32,7 @@ import com.hp.hpl.jena.util.FileUtils;
 /** Abstract class that sorts out input streams, readers and base URIs, to call a
  * single worker function with model, UTF8 reader and visated base  
  */
-
+@SuppressWarnings("deprecation")
 public abstract class JenaReaderBase implements RDFReader
 {
 	protected RDFErrorHandler errorHandler = null ;
