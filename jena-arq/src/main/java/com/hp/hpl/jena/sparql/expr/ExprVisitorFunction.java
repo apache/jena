@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-/** Convert all visit calls on the expressions in a call to a generic visit operation for expession functions */
+/** Convert all visit calls on the expressions in a call to a generic visit operation for expression functions */
 public abstract class ExprVisitorFunction implements ExprVisitor 
 {
     @Override
