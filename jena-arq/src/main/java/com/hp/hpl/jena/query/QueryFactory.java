@@ -129,15 +129,21 @@ public class QueryFactory
         
         if ( query.getResolver() == null )
         {
-            IRIResolver resolver = null ; 
-            if ( baseURI != null ) { 
-                // Sort out the baseURI - if that fails, dump in a dummy one and continue.
-                try { resolver = IRIResolver.create(baseURI) ; }
-                catch (Exception ex) {}
-                if ( resolver == null )   
-                    resolver = IRIResolver.create("http://localhost/query/defaultBase#") ;
-                query.setResolver(resolver) ;
+            IRIResolver resolver = null ;
+            try { 
+                if ( baseURI != null ) { 
+                    // Sort out the baseURI - if that fails, dump in a dummy one and continue.
+                    resolver = IRIResolver.create(baseURI) ; 
+                }
+                else { 
+                    resolver = IRIResolver.create() ;
+                }
             }
+            catch (Exception ex) {}
+            if ( resolver == null )   
+                resolver = IRIResolver.create("http://localhost/query/defaultBase#") ;
+            query.setResolver(resolver) ;
+            
         }
         return parser.parse(query, queryString) ;
     }

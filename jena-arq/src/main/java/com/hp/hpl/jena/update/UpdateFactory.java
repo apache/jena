@@ -127,15 +127,18 @@ public class UpdateFactory
         
         if ( prologue.getResolver() == null )
         {
-            IRIResolver resolver = null ; 
-            if ( baseURI != null ) { 
-                // Sort out the baseURI - if that fails, dump in a dummy one and continue.
-                try { resolver = IRIResolver.create(baseURI) ; }
-                catch (Exception ex) {}
-                if ( resolver == null )   
-                    resolver = IRIResolver.create("http://localhost/update/defaultBase#") ;
-                prologue.setResolver(resolver) ;
+            IRIResolver resolver = null ;
+            try {
+                if ( baseURI != null ) 
+                    // Sort out the baseURI - if that fails, dump in a dummy one and continue.
+                    resolver = IRIResolver.create(baseURI) ;
+                else
+                    resolver = IRIResolver.create() ;
             }
+            catch (Exception ex) {}
+            if ( resolver == null )   
+                resolver = IRIResolver.create("http://localhost/update/defaultBase#") ;
+            prologue.setResolver(resolver) ;
         }
         return parser ;
     }
