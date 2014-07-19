@@ -17,6 +17,8 @@ package com.hp.hpl.jena.propertytable.impl;
  * limitations under the License.
  */
 
+import org.apache.jena.propertytable.impl.GraphCSV;
+import org.apache.jena.propertytable.impl.StageGeneratorPropertyTable;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
