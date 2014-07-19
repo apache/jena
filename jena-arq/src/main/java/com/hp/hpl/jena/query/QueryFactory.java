@@ -18,7 +18,8 @@
 
 package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.n3.IRIResolver ;
+import org.apache.jena.riot.system.IRIResolver ;
+
 import com.hp.hpl.jena.sparql.lang.SPARQLParser ;
 import com.hp.hpl.jena.sparql.lang.ParserARQ ;
 import com.hp.hpl.jena.sparql.lang.SPARQLParserRegistry ;
@@ -128,13 +129,15 @@ public class QueryFactory
         
         if ( query.getResolver() == null )
         {
-            
-            // Sort out the baseURI - if that fails, dump in a dummy one and continue.
-            try { baseURI = IRIResolver.chooseBaseURI(baseURI) ; }
-            catch (Exception ex)
-            { baseURI = "http://localhost/defaultBase#" ; }
-    
-            query.setResolver(new IRIResolver(baseURI)) ;
+            IRIResolver resolver = null ; 
+            if ( baseURI != null ) { 
+                // Sort out the baseURI - if that fails, dump in a dummy one and continue.
+                try { resolver = IRIResolver.create(baseURI) ; }
+                catch (Exception ex) {}
+                if ( resolver == null )   
+                    resolver = IRIResolver.create("http://localhost/query/defaultBase#") ;
+                query.setResolver(resolver) ;
+            }
         }
         return parser.parse(query, queryString) ;
     }

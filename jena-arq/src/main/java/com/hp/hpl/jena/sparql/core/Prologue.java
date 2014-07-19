@@ -18,12 +18,12 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.sparql.util.PrefixMapping2 ;
 
@@ -68,7 +68,7 @@ public class Prologue
         prefixMap.setNsPrefixes(this.prefixMap) ;
         String baseURI = null ;
         if ( resolver != null)
-            baseURI = resolver.getBaseIRI() ;
+            baseURI = resolver.getBaseIRIasString() ;
         
         return new Prologue(prefixMap, baseURI) ;
     }
@@ -79,7 +79,7 @@ public class Prologue
         prefixMap = new PrefixMapping2(other.prefixMap) ;
         seenBaseURI = false ;
         if ( other.resolver != null )
-            resolver = new IRIResolver(other.resolver.getBaseIRI()) ;
+            resolver = IRIResolver.create(getBaseURI()) ;
     }
     
     public Prologue sub(PrefixMapping newMappings) { return sub(newMappings, null) ; }
@@ -94,7 +94,7 @@ public class Prologue
         // New base.
         IRIResolver r = resolver ;
         if ( base != null )
-            r = new IRIResolver(base) ;
+            r = IRIResolver.create(base) ;
         return new Prologue(ext, r) ;
     }
     
@@ -110,10 +110,7 @@ public class Prologue
     {
         if ( resolver == null )
             return null ;
-        
-//        if ( baseURI == null )
-//            setDefaultBaseIRI() ;
-        return resolver.getBaseIRI();
+        return resolver.getBaseIRIasString();
     }
     /**
      * @param baseURI The baseURI to set.
@@ -121,7 +118,7 @@ public class Prologue
     public void setBaseURI(String baseURI)
     {
         this.seenBaseURI = true ;
-        this.resolver = new IRIResolver(baseURI) ; 
+        this.resolver = IRIResolver.create(baseURI) ; 
     }
     
     /**
@@ -132,16 +129,6 @@ public class Prologue
         this.seenBaseURI = true ;
         this.resolver = resolver ; 
     }
-    
-//    protected void setDefaultBaseIRI() { setDefaultBaseIRI(null) ; }
-//    
-//    protected void setDefaultBaseIRI(String base)
-//    {
-//        if ( baseURI != null )
-//            return ;
-//        
-//        baseURI = IRIResolver.chooseBaseURI(base) ;
-//    }
     
     // ---- Query prefixes
     

@@ -127,7 +127,7 @@ public abstract class IRIResolver
     }
 
     /**
-     * Create resolve a URI against a base. If baseStr is a relative file IRI
+     * Resolve a URI against a base. If baseStr is a relative file IRI
      * then it is first resolved against the current working directory.
      * 
      * @param relStr
@@ -142,7 +142,7 @@ public abstract class IRIResolver
     }
 
     /**
-     * Create resolve a URI against a base. If baseStr is a relative file IRI
+     * Resolve a URI against a base. If baseStr is a relative file IRI
      * then it is first resolved against the current working directory.
      * 
      * @param relStr
@@ -157,7 +157,7 @@ public abstract class IRIResolver
     }
 
     /**
-     * Create resolve a URI against a base. If baseStr is a relative file IRI
+     * Resolve a URI against a base. If baseStr is a relative file IRI
      * then it is first resolved against the current working directory.
      * 
      * @param relStr
@@ -167,6 +167,17 @@ public abstract class IRIResolver
      */
     static public String resolveString(String relStr) throws RiotException {
         return exceptions(resolveIRI(relStr)).toString() ;
+    }
+
+    /**
+     * Resolve a URI against a base. If baseStr is a relative file IRI
+     * then it is first resolved against the current working directory.
+     * 
+     * @param relStr
+     * @return String An absolute URI
+     */
+    static public String resolveStringSilent(String relStr) throws RiotException {
+        return resolveIRI(relStr).toString() ;
     }
 
     /**

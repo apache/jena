@@ -250,7 +250,7 @@ public class ParserBase
         {
             if ( getPrologue().getResolver() != null )
                 try {
-                    iriStr = getPrologue().getResolver().resolve(iriStr) ;
+                    iriStr = getPrologue().getResolver().resolveSilent(iriStr).toString() ;
                 } catch (JenaURIException ex)
                 { throwParseException(ex.getMessage(), line, column) ; }
         }

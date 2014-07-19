@@ -25,8 +25,8 @@ import static com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11 ;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.riot.system.IRIResolver ;
 
-import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.lang.UpdateParser ;
@@ -127,13 +127,16 @@ public class UpdateFactory
         
         if ( prologue.getResolver() == null )
         {
-            // Sort out the baseURI - if that fails, dump in a dummy one and continue.
-            try { baseURI = IRIResolver.chooseBaseURI(baseURI) ; }
-            catch (Exception ex)
-            { baseURI = "http://localhost/defaultBase#" ; }
-            prologue.setResolver(new IRIResolver(baseURI)) ;
+            IRIResolver resolver = null ; 
+            if ( baseURI != null ) { 
+                // Sort out the baseURI - if that fails, dump in a dummy one and continue.
+                try { resolver = IRIResolver.create(baseURI) ; }
+                catch (Exception ex) {}
+                if ( resolver == null )   
+                    resolver = IRIResolver.create("http://localhost/update/defaultBase#") ;
+                prologue.setResolver(resolver) ;
+            }
         }
-        
         return parser ;
     }
     
