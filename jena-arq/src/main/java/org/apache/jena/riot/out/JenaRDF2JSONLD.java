@@ -21,7 +21,7 @@ package org.apache.jena.riot.out;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.riot.out.NodeToLabel ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.github.jsonldjava.core.JsonLdError ;
@@ -51,8 +51,14 @@ class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
                 Node o = q.getObject() ;
                 Node g = q.getGraph() ;
                 
-                String gq = (g == null || Quad.isDefaultGraph(g) ) ? null : g.getURI() ;
-                String sq = resourceString(s) ;
+                String gq = blankNodeOrIRIString(g) ;
+                if ( gq == null )
+                    throw new RiotException("Graph node is not a URI or a blank node") ; 
+                
+                String sq = blankNodeOrIRIString(s) ;
+                if ( sq == null )
+                    throw new RiotException("Subject node is not a URI or a blank node") ;
+                
                 String pq = p.getURI() ;
                 if ( o.isLiteral() )
                 {
@@ -71,7 +77,7 @@ class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
                 }
                 else
                 {
-                    String oq = resourceString(o) ;
+                    String oq = blankNodeOrIRIString(o) ;
                     result.addQuad(sq, pq, oq, gq) ;
                 }
             }
@@ -81,11 +87,16 @@ class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
         return result ;
     }
 
-    private String resourceString(Node x)
+    private String blankNodeOrIRIString(Node x)
+    
     {
         if ( x.isURI() ) return x.getURI() ;
         if ( x.isBlank() )
             return labels.get(null,  x) ;
+        if ( x.isLiteral() ) {
+            
+        }
+            
         return null ;
     }
 }    
