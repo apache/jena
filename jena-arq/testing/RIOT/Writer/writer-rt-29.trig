@@ -1,0 +1,9 @@
+# Bnode across graphs blocking use of []
+
+PREFIX :        <http://www.example.com/>
+
+:G1 { 
+    _:x1 :p :o1 . 
+    [ :q 23 ] 
+}
+:G2 { :z :p _:x1  }

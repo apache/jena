@@ -28,10 +28,7 @@ import static org.apache.jena.riot.writer.WriterConst.rdfNS ;
 
 import java.io.OutputStream ;
 import java.io.Writer ;
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.* ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
@@ -55,6 +52,7 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
@@ -130,6 +128,14 @@ public class RiotLib
         return profile(baseIRI, true, true, handler) ;
     }
 
+    /** Create a parser profile for the given setup
+     * @param baseIRI       Base IRI
+     * @param resolveIRIs   Whether to resolve IRIs
+     * @param checking      Whether to check 
+     * @param handler       Error handler
+     * @return ParserProfile
+     * @see #profile for per-language setup
+     */
     public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)
     {
         LabelToNode labelToNode = true
@@ -148,55 +154,72 @@ public class RiotLib
             return new ParserProfileBase(prologue, handler, labelToNode) ;
     }
 
-    public static Collection<Triple> triplesOfSubject(Graph graph, Node subj)
-    {
+    /** Get triples with the same subject */
+    public static Collection<Triple> triplesOfSubject(Graph graph, Node subj) {
         return triples(graph, subj, Node.ANY, Node.ANY) ;
     }
 
-    /* Get all the triples for the graph.find */
-    public static List<Triple> triples(Graph graph, Node s, Node p, Node o)
-    {
-        List<Triple> acc =  new ArrayList<>() ;
+    /** Get all the triples for the graph.find */
+    public static List<Triple> triples(Graph graph, Node s, Node p, Node o) {
+        List<Triple> acc = new ArrayList<>() ;
         accTriples(acc, graph, s, p, o) ;
         return acc ;
     }
 
-    /* Get all the triples for the graph.find */
-    public static long countTriples(Graph graph, Node s, Node p, Node o)
-    {
+    /* Count the triples for the graph.find */
+    public static long countTriples(Graph graph, Node s, Node p, Node o) {
         ExtendedIterator<Triple> iter = graph.find(s, p, o) ;
         try { return Iter.count(iter) ; }
         finally { iter.close() ; }
     }
 
-    public static void accTriples(Collection<Triple> acc, Graph graph, Node s, Node p, Node o)
-    {
+    /* Count the matches to a pattern across the dataset  */
+    public static long countTriples(DatasetGraph dsg, Node s, Node p, Node o) {
+        Iterator<Quad> iter = dsg.find(Node.ANY, s, p, o) ;
+        return Iter.count(iter) ;
+    }
+
+    /** Collect all the matching triples */
+    public static void accTriples(Collection<Triple> acc, Graph graph, Node s, Node p, Node o) {
         ExtendedIterator<Triple> iter = graph.find(s, p, o) ;
         for ( ; iter.hasNext() ; )
             acc.add(iter.next()) ;
         iter.close() ;
     }
 
-    /* Get a triple or null. */
-    public static Triple triple1(Graph graph, Node s, Node p, Node o)
-    {
+    /** Get exactly one triple or null for none or more than one. */
+    public static Triple triple1(Graph graph, Node s, Node p, Node o) {
         ExtendedIterator<Triple> iter = graph.find(s, p, o) ;
         try {
-            if ( ! iter.hasNext() )
+            if ( !iter.hasNext() )
                 return null ;
             Triple t = iter.next() ;
-            if (  iter.hasNext() )
+            if ( iter.hasNext() )
                 return null ;
             return t ;
-        } finally { iter.close() ; }
+        }
+        finally {
+            iter.close() ;
+        }
     }
 
-    public static boolean strSafeFor(String str, char ch) { return str.indexOf(ch) == -1 ; }
+    /** Get exactly one triple, or null for none or more than one. */
+    public static Triple triple1(DatasetGraph dsg, Node s, Node p, Node o) {
+        Iterator<Quad> iter = dsg.find(Node.ANY, s, p, o) ;
+            if ( !iter.hasNext() )
+                return null ;
+            Quad q = iter.next() ;
+            if ( iter.hasNext() )
+                return null ;
+            return q.asTriple() ;
+    }
 
-    public static void writeBase(IndentedWriter out, String base)
-    {
-        if ( base != null )
-        {
+    public static boolean strSafeFor(String str, char ch) {
+        return str.indexOf(ch) == -1 ;
+    }
+
+    public static void writeBase(IndentedWriter out, String base) {
+        if ( base != null ) {
             out.print("@base ") ;
             out.pad(PREFIX_IRI) ;
             out.print("<") ;
@@ -207,12 +230,9 @@ public class RiotLib
         }
     }
 
-    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap)
-    {        
-        if ( prefixMap != null && ! prefixMap.isEmpty() )
-        {
-            for ( Map.Entry <String, String> e : prefixMap.getMappingCopyStr().entrySet() )
-            {
+    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap) {
+        if ( prefixMap != null && !prefixMap.isEmpty() ) {
+            for ( Map.Entry<String, String> e : prefixMap.getMappingCopyStr().entrySet() ) {
                 out.print("@prefix ") ;
                 out.print(e.getKey()) ;
                 out.print(": ") ;
@@ -287,6 +307,7 @@ public class RiotLib
         return nodeMaxWidth ;
     }
 
+    /** IndentedWriter over a jaav.io.Writer (better to use an IndentedWriter over an OutputStream) */
     public static IndentedWriter create(Writer writer)  { return new IndentedWriterWriter(writer) ; }
 
     public static PrefixMap prefixMap(Graph graph)      { return PrefixMapFactory.create(graph.getPrefixMapping()) ; }
@@ -294,6 +315,7 @@ public class RiotLib
     public static WriterGraphRIOTBase adapter(WriterDatasetRIOT writer)
     { return new WriterAdapter(writer) ; }
 
+    /** Hidden to direct program to using OutputStreams (for RDF, that gets the charset right) */ 
     private static class IndentedWriterWriter extends IndentedWriter
     {
         IndentedWriterWriter(Writer w) { super(w) ; }
