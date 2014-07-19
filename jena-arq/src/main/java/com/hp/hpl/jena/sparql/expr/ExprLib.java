@@ -124,5 +124,39 @@ public class ExprLib
         throw new ARQInternalErrorException() ;
     }
     
+    /** Some "functions" are non-deterministic (unstable) - 
+     * calling them with the same arguments 
+     * does not yields the same answer each time.
+     * Therefore how and when they are called
+     * matters.
+     * 
+     * Functions: RAND, UUID, StrUUID, BNode
+     * 
+     * NOW() is safe.
+     */
+    public static boolean isStable(Expr expr) {
+        try {
+            ExprWalker.walk(exprVisitorCheckForNonFunctions, expr) ;
+            return true ;
+        } catch ( ExprUnstable ex ) {
+            return false ;
+        }
+    }
+
+    private static ExprVisitor exprVisitorCheckForNonFunctions = new ExprVisitorBase() { 
+        @Override
+        public void visit(ExprFunction0 func) {
+            if ( func instanceof E_Random ||
+                func instanceof E_UUID ||
+                func instanceof E_StrUUID)
+                throw new ExprUnstable() ; 
+        }
+        @Override
+        public void visit(ExprFunctionN func) {
+            if (func instanceof E_BNode )
+                throw new ExprUnstable() ;
+        }
+    } ;
     
+    private static class ExprUnstable extends ExprException {}
 }

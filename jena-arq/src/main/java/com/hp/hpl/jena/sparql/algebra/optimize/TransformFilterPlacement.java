@@ -31,8 +31,7 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.util.VarUtils ;
 
 /**
@@ -100,11 +99,41 @@ public class TransformFilterPlacement extends TransformCopy {
     @Override
     public Op transform(OpFilter opFilter, Op x) {
         ExprList exprs = opFilter.getExprs() ;
+        
+        // Extract any expressions with "nasty" cases (RAND, UUID, STRUUID and BNODE)
+        // which are not true functions (they return a different value every call so
+        // number of calls matters.  NOW is safe (returns a fixed time point for the whole
+        // query.
+        
+        // Phase one - check to see if work needed. 
+        ExprList exprs2 = null ;
+        for ( Expr expr : exprs ) {
+            if ( ! ExprLib.isStable(expr) ) {
+                if ( exprs2 == null )
+                    exprs2 = new ExprList() ;
+                exprs2.add(expr) ;
+            }
+        }
+        
+        // Phase 2 - if needed, split.
+        if ( exprs2 != null ) {
+            ExprList exprs1 = new ExprList() ;
+            for ( Expr expr : exprs ) {
+                // We are assuming fixup is rare. 
+                if ( ExprLib.isStable(expr) )
+                    exprs1.add(expr) ;
+            }
+            exprs = exprs1 ;
+        }
+        
         Placement placement = transform(exprs, x) ;
         if ( placement == null )  
             // Didn't do anything.
             return super.transform(opFilter, x) ;
         Op op = buildFilter(placement) ;
+        if ( exprs2 != null )
+            // Add back the non-deterministic expressions
+            op = OpFilter.filter(exprs2, op );
         return op ;
     }
 

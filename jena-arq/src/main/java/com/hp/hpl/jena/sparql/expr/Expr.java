@@ -46,16 +46,11 @@ public interface Expr
      */ 
     public boolean isSatisfied(Binding binding, FunctionEnv execCxt) ;
   
-    /** Variables used by this expression - excludes variables scoped to (NOT)EXISTS*/
+    /** Variables used by this expression - excludes variables scoped to (NOT)EXISTS */
     public Set<Var>  getVarsMentioned() ;
-    /** Variables used by this expression - excludes variables scoped to (NOT)EXISTS*/
+    /** Variables used by this expression - excludes variables scoped to (NOT)EXISTS */
     public void varsMentioned(Collection<Var> acc) ;
     
-    /** Return true iff this constraint is implemened by something in the expr package
-     * and hence is fully integrated or compatible with the visitors.
-     * @return boolean
-     */
-
     /** Evaluate this expression against the binding
      * @param binding 
      * @param env

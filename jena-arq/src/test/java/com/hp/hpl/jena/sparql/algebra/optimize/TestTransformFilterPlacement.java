@@ -71,8 +71,8 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     
 
     @Test public void place_bgp_06() {
-        test("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o) ))",
-             null) ;
+        testNoChange("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o) ))") ;
+
     }
 
     @Test public void place_bgp_06a() {
@@ -154,15 +154,15 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
 
     @Test public void place_no_match_01() {
         // Unbound
-        test("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))", null) ;
+        testNoChange("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))") ;
     }
 
     @Test public void place_no_match_02() {
-        test("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s ?p ?x)))", null) ;
+        testNoChange("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s ?p ?x)))") ;
     }
 
     @Test public void place_no_match_03() {
-        test("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s1 ?p1 ?XX)))", null) ;
+        testNoChange("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s1 ?p1 ?XX)))") ;
     }
 
     @Test public void place_sequence_01() {
@@ -210,13 +210,11 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     }
 
     @Test public void place_sequence_07() {
-        test("(filter (= ?A 123) (sequence (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
-             null) ;
+        testNoChange("(filter (= ?A 123) (sequence (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))") ;
     }
 
     @Test public void place_sequence_08() {
-        test("(sequence (bgp (?s ?p ?x)) (filter (= ?z 123) (bgp (?s ?p ?z))) )",
-             null) ;
+        testNoChange("(sequence (bgp (?s ?p ?x)) (filter (= ?z 123) (bgp (?s ?p ?z))) )") ;
     }
     
     @Test public void place_sequence_09() {
@@ -314,8 +312,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     }
 
     @Test public void place_project_02() {
-        test("(filter (= ?x 123) (project (?s) (bgp (?s ?p ?x)) ))",
-             null) ;
+        testNoChange("(filter (= ?x 123) (project (?s) (bgp (?s ?p ?x)) ))") ;
     }
     
     @Test public void place_project_03() {
@@ -597,12 +594,69 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              ) ; 
         test( in, out ) ;
     }
+    
+    @Test public void nondeterministic_functions_01() {
+        testNoChange("(filter (= ?x (rand)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
+    }
         
+    @Test public void nondeterministic_functions_02() {
+        testNoChange("(filter (= ?x (bnode)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
+    }
+
+    @Test public void nondeterministic_functions_03() {
+        testNoChange("(filter (= ?x (struuid)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
+    }
+
+    @Test public void nondeterministic_functions_04() {
+        testNoChange("(filter (= ?x (uuid)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
+    }
+
+    // NOW() is safe.
+    @Test public void nondeterministic_functions_05() {
+        test("(filter (= ?x (now)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))",
+             "(sequence  (filter (= ?x (now)) (bgp (?s ?p ?x) ))  (bgp (?s1 ?p1 ?x)) )") ;
+    }
+
+    @Test public void nondeterministic_functions_06() {
+        String in = StrUtils.strjoinNL
+            ("(filter ( (!= ?x ?s) (= ?x (rand)) )"
+            ,"   (bgp (?s ?p ?x) (?s1 ?p1 ?x))"
+            ,")") ;
+        String out = StrUtils.strjoinNL
+            ("(filter (= ?x (rand)) "
+            ,"  (sequence"
+            ,"     (filter (!= ?x ?s) (bgp (?s ?p ?x)))"
+            ,"     (bgp (?s1 ?p1 ?x))"
+            ,"))"
+            ) ;
+        test(in,out) ;
+    }
+
+    @Test public void nondeterministic_functions_07() {
+        String in = StrUtils.strjoinNL
+            ("(filter ( (!= ?x ?s) (|| ?x (rand)) )"
+            ,"   (bgp (?s ?p ?x) (?s1 ?p1 ?x))"
+            ,")") ;
+        String out = StrUtils.strjoinNL
+            ("(filter (|| ?x (rand)) "
+            ,"  (sequence"
+            ,"     (filter (!= ?x ?s) (bgp (?s ?p ?x)))"
+            ,"     (bgp (?s1 ?p1 ?x))"
+            ,"))"
+            ) ;
+        test(in,out) ;
+    }
+
+    
+    public static void testNoChange(String input) {
+        test(input, null) ;
+    }
+
     public static void test(String input, String output) {
         test$(input, output, true) ;
     }
 
-    public static void testNoBGP(String input , String output ) {
+    public static void testNoBGP(String input , String output) {
         test$(input, output, false) ;
     }
         
