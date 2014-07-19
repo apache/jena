@@ -1,0 +1,5 @@
+prefix : <http://www.example.com/>
+
+_:b { _:b :p :o1 }
+_:z { _:b :p :o2 }
+

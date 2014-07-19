@@ -18,14 +18,18 @@
 
 package org.apache.jena.riot.writer;
 
-import static org.apache.jena.riot.writer.WriterConst.* ;
+import static org.apache.jena.riot.writer.WriterConst.INDENT_GDFT ;
+import static org.apache.jena.riot.writer.WriterConst.INDENT_GNMD ;
+import static org.apache.jena.riot.writer.WriterConst.NL_GDFT_END ;
+import static org.apache.jena.riot.writer.WriterConst.NL_GDFT_START ;
+import static org.apache.jena.riot.writer.WriterConst.NL_GNMD_END ;
+import static org.apache.jena.riot.writer.WriterConst.NL_GNMD_START ;
 
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.system.PrefixMap ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -56,17 +60,17 @@ public class TriGWriter extends TriGWriterBase
 
             Iterator<Node> graphNames = dsg.listGraphNodes() ;
 
-            writeGraph(null, dsg.getDefaultGraph()) ;
+            writeGraphTriG(dsg, null) ;
 
             for ( ; graphNames.hasNext() ; )
             {
                 out.println() ;
                 Node gn = graphNames.next() ;
-                writeGraph(gn, dsg.getGraph(gn)) ;
+                writeGraphTriG(dsg, gn) ;
             }
         }
 
-        private void writeGraph(Node name, Graph graph)
+        private void writeGraphTriG(DatasetGraph dsg, Node name)
         {
             boolean dftGraph =  ( name == null || name == Quad.defaultGraphNodeGenerated  ) ;
             boolean NL_START =  ( dftGraph ? NL_GDFT_START : NL_GNMD_START ) ; 
@@ -85,8 +89,7 @@ public class TriGWriter extends TriGWriterBase
                 out.print(" ") ;
             
             out.incIndent(INDENT_GRAPH) ;
-            // Pretty Turtle Writer. 
-            writeGraphTTL(graph) ;
+            writeGraphTTL(dsg, name) ;
             out.decIndent(INDENT_GRAPH) ;
             
             if ( NL_END )

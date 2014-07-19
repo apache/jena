@@ -31,6 +31,7 @@ import org.junit.runners.Parameterized.Parameters ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.sparql.util.IsoMatcher ;
 
 @RunWith(Parameterized.class)
 public class TestRiotWriterDataset extends AbstractWriterTest
@@ -65,6 +66,18 @@ public class TestRiotWriterDataset extends AbstractWriterTest
     @Test public void writer03() { test("writer-rt-23.trig") ; }
     @Test public void writer04() { test("writer-rt-24.trig") ; }
     
+    @Test public void writer05() { test("writer-rt-25.trig") ; }
+    @Test public void writer06() { test("writer-rt-26.trig") ; }
+    @Test public void writer07() { test("writer-rt-27.trig") ; }
+    @Test public void writer08() {
+        if ( format.getLang().equals(Lang.JSONLD) )
+            // Broken for JSON-LD (json-ld-java 0.5.0)
+            return ;
+        test("writer-rt-28.trig") ;
+    }    
+    @Test public void writer09() { test("writer-rt-29.trig") ; }
+    @Test public void writer10() { test("writer-rt-30.trig") ; }
+    
     private void test(String filename)
     {
         String displayname = filename.substring(0, filename.lastIndexOf('.')) ;
@@ -96,6 +109,23 @@ public class TestRiotWriterDataset extends AbstractWriterTest
             System.out.println(s) ;
             throw ex ;
         }
+        
+        boolean b = IsoMatcher.isomorphic(ds.asDatasetGraph(), ds2.asDatasetGraph()) ;
+        if ( ! b ) {
+            System.out.println("Test: "+format.toString()) ;
+            System.out.println("-- Input") ;
+            RDFDataMgr.write(System.out, ds.asDatasetGraph(), Lang.NQUADS ) ;
+            System.out.println("-- Written") ;
+            System.out.println(s);
+            System.out.println();
+            System.out.println("-- Seen as") ;
+            RDFDataMgr.write(System.out, ds2.asDatasetGraph(), Lang.NQUADS ) ;
+            System.out.println("-------------") ;
+        }
+        
+        assertTrue("Datasets are not isomorphic", b) ;
+        //**** Test ds2 iso ds
+        
     }
 }
 

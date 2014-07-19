@@ -1,0 +1,14 @@
+# BNode as graph name blocking use of []
+
+PREFIX :        <http://www.example.com/>
+
+_:x1 :p :o1 . 
+_:x1 { :z :p 1 }
+
+_:x2 { :s :p :o }
+
+:G3 { :z :p _:x2 . 
+     _:x2 :q 123 .
+    }
+
+
