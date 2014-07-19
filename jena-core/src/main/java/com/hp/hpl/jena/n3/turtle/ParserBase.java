@@ -31,6 +31,7 @@ import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
+@SuppressWarnings("deprecation")
 public class ParserBase
 {
     // Should be the same as ARQ ParserBase and Prologues.

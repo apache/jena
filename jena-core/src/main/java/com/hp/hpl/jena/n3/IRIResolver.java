@@ -24,8 +24,11 @@ import org.apache.jena.iri.IRIException;
 import org.apache.jena.iri.IRIFactory;
 import com.hp.hpl.jena.util.FileUtils;
 
-/** A simple class to access IRI resolution */
+/** A simple class to access IRI resolution.
+ * Replaced by {@code org.apache.jena.riot.system.IRIResolver}
+ */
 
+@Deprecated
 public class IRIResolver {
 	/**
 	 * The current working directory, as a string.

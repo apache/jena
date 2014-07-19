@@ -25,7 +25,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.n3.IRIResolver; 
 import com.hp.hpl.jena.rdf.model.*;
 //import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
 //import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
@@ -48,11 +47,13 @@ public class Manifest
     String filename ;
     List<String> includedFiles = new ArrayList<>() ;
     Resource manifestRes = null ;
-     
+
+    
+    @SuppressWarnings("deprecation")
     public Manifest(String fn)
     {
         log.debug("Manifest = "+fn ) ;
-        filename = IRIResolver.resolveGlobal(fn) ;
+        filename = com.hp.hpl.jena.n3.IRIResolver.resolveGlobal(fn) ;
         log.debug("         = "+filename ) ;
         manifest = FileManager.get().loadModel(filename) ;
         parseIncludes() ;
