@@ -398,21 +398,25 @@ public class XSDFuncOp
     
     private static String replaceAll(Matcher matcher, String rep) {
         // Follow Java -- return matcher.replaceAll(rep) ;
-        StringBuffer sb = null ;   // Delay until needed
-        while(matcher.find()) {
-            if ( sb == null )
-                sb = new StringBuffer() ;
-            else {
-                // Do one match of zerolength string otherwise filter out.
-                if (matcher.start() == matcher.end() )
-                    continue ;
+        try {
+            StringBuffer sb = null ;   // Delay until needed
+            while(matcher.find()) {
+                if ( sb == null )
+                    sb = new StringBuffer() ;
+                else {
+                    // Do one match of zerolength string otherwise filter out.
+                    if (matcher.start() == matcher.end() )
+                        continue ;
+                }
+                matcher.appendReplacement(sb, rep);
             }
-            matcher.appendReplacement(sb, rep);
+            if ( sb == null )
+                return null ;
+            matcher.appendTail(sb);
+            return sb.toString();
+        } catch (IndexOutOfBoundsException ex) {
+            throw new ExprEvalException("IndexOutOfBounds", ex) ; 
         }
-        if ( sb == null )
-            return null ;
-        matcher.appendTail(sb);
-        return sb.toString();
     }
 
     public static NodeValue strReplace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement) {
