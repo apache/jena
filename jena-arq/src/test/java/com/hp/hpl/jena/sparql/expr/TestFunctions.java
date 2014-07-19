@@ -175,6 +175,9 @@ public class TestFunctions
     @Test public void exprReplace11()  { test("REPLACE('', '.', 'Z')",      NodeValue.makeString("")) ; }
     @Test public void exprReplace12()  { test("REPLACE('', '(a|b)?', 'Z')", NodeValue.makeString("Z")) ; }
 
+    // Bad group
+    @Test public void exprReplace13()  { testEvalException("REPLACE('abc', '.*', '$1')") ; }
+
     @Test public void exprBoolean1()    { test("fn:boolean('')", FALSE) ; }
     @Test public void exprBoolean2()    { test("fn:boolean(0)", FALSE) ; }
     @Test public void exprBoolean3()    { test("fn:boolean(''^^xsd:string)", FALSE) ; }
