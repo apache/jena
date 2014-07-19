@@ -187,7 +187,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
     private String resolveIRI(String iriStr, int line, int column) 
     {
         if ( prologue.getResolver() != null )
-            return prologue.getResolver().resolve(iriStr) ;
+            return prologue.getResolver().resolveToStringSilent(iriStr) ;
         return iriStr ;
     }
  

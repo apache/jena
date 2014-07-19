@@ -23,13 +23,12 @@ import java.io.OutputStream ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.system.IRIResolver ;
 
-import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode ;
-
 
 public class Serializer
 {

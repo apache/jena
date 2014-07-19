@@ -18,30 +18,30 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.out.SinkQuadBracedOutput ;
+import org.apache.jena.riot.system.IRIResolver ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.n3.IRIResolver ;
-import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDataWriter.UpdateMode;
-import com.hp.hpl.jena.sparql.serializer.FormatterElement;
-import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataWriter.UpdateMode ;
+import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode ;
-import com.hp.hpl.jena.update.Update;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.update.Update ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateWriter implements Closeable
 {

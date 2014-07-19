@@ -26,10 +26,10 @@ import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.lib.AlarmClock ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
@@ -597,7 +597,7 @@ public class QueryExecutionBase implements QueryExecution
         
         String baseURI = query.getBaseURI() ;
         if ( baseURI == null )
-            baseURI = IRIResolver.chooseBaseURI() ;
+            baseURI = IRIResolver.chooseBaseURI().toString() ;
         
         DatasetGraph dsg = DatasetUtils.createDatasetGraph(query.getDatasetDescription(), baseURI ) ;
         return dsg ;

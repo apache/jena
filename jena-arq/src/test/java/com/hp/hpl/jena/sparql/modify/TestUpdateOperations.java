@@ -41,7 +41,6 @@ public class TestUpdateOperations extends BaseTest
     private GraphStore graphStore() { return GraphStoreFactory.create() ; }
     private Node gName = SSE.parseNode("<http://example/g>") ;
     
-    
     @Test public void load1() {
         GraphStore gs = graphStore() ;
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt>") ;
