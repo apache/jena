@@ -21,6 +21,7 @@ package arq;
 import java.io.PrintStream ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.logging.LogCtl ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
@@ -37,6 +38,7 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.QueryCheckException ;
+import com.hp.hpl.jena.sparql.lang.ParserBase ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
 import com.hp.hpl.jena.sparql.util.QueryOutputUtils ;
 import com.hp.hpl.jena.sparql.util.QueryUtils ;
@@ -165,6 +167,7 @@ public class qparse extends CmdARQ
         try{
             Query query = modQuery.getQuery() ;
             try {
+                LogCtl.disable(ParserBase.ParserLoggerName) ;
                 QueryUtils.checkQuery(query, true) ;
             } catch (QueryCheckException ex)
             {
@@ -173,6 +176,8 @@ public class qparse extends CmdARQ
                 if ( ex.getCause() != null )
                     ex.getCause().printStackTrace(System.err) ;
             }
+            finally { LogCtl.set(ParserBase.ParserLoggerName, "INFO") ; }
+
             
             // Print the query out in some syntax
             if ( printQuery )
