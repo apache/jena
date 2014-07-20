@@ -23,7 +23,13 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.checker.CheckerIRI ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.RiotLib ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
@@ -234,14 +240,17 @@ public class ParserBase
     // See RiotLib re bNode IRIs.
     // Merge sometime.
     
-    protected String resolveQuotedIRI(String iriStr ,int line, int column)
+    protected String resolveQuotedIRI(String iriStr, int line, int column)
     {
         iriStr = stripQuotes(iriStr) ;
         return resolveIRI(iriStr, line, column) ;
     }
 
-    
-    protected String resolveIRI(String iriStr ,int line, int column)
+    public static final String ParserLoggerName = "SPARQL" ;
+    private static Logger parserLog = LoggerFactory.getLogger(ParserLoggerName) ;
+    private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(parserLog) ;
+
+    protected String resolveIRI(String iriStr, int line, int column)
     {
         if ( isBNodeIRI(iriStr) )
             return iriStr ;
@@ -250,7 +259,12 @@ public class ParserBase
         {
             if ( getPrologue().getResolver() != null )
                 try {
-                    iriStr = getPrologue().getResolver().resolveSilent(iriStr).toString() ;
+                    // Used to be errors (pre Jena 2.12.0)
+                    // .resolve(iriStr)
+                    IRI iri = getPrologue().getResolver().resolveSilent(iriStr) ;
+                    if ( true ) 
+                        CheckerIRI.iriViolations(iri, errorHandler, line, column) ;
+                    iriStr = iri.toString() ;
                 } catch (JenaURIException ex)
                 { throwParseException(ex.getMessage(), line, column) ; }
         }
