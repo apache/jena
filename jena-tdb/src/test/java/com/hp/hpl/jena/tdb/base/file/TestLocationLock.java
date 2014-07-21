@@ -19,8 +19,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /**
  * Tests for {@link LocationLock}
- * @author rvesse
- *
  */
 public class TestLocationLock {
 

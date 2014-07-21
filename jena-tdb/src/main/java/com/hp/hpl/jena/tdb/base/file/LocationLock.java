@@ -188,9 +188,8 @@ public class LocationLock {
     private void takeLock(int pid) {
         File lockFile = getLockFile();
         checkLockFileForWrite(lockFile);
-        try {
-            // Write our PID to the lock file
-            BufferedWriter writer = new BufferedWriter(new FileWriter(lockFile));
+        // Write our PID to the lock file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(lockFile))) {
             writer.write(Integer.toString(pid));
             writer.close();
         } catch (IOException e) {
