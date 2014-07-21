@@ -262,8 +262,9 @@ public class IO
      */
     
     public static String readWholeFileAsUTF8(String filename) throws IOException {
-        InputStream in = new FileInputStream(filename) ;
-        return readWholeFileAsUTF8(in) ;
+        try ( InputStream in = new FileInputStream(filename) ) {
+            return readWholeFileAsUTF8(in) ;
+        }
     }
 
     /** Read a whole stream as UTF-8
@@ -275,8 +276,9 @@ public class IO
     public static String readWholeFileAsUTF8(InputStream in) throws IOException
     {
         // Don't buffer - we're going to read in large chunks anyway
-        Reader r = asUTF8(in) ;
-        return readWholeFileAsUTF8(r) ;
+        try ( Reader r = asUTF8(in) ) {
+            return readWholeFileAsUTF8(r) ;
+        }
     }
     
     /** Read a whole file as UTF-8
