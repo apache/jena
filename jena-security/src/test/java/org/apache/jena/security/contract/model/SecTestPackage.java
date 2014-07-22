@@ -31,9 +31,9 @@ import java.lang.reflect.InvocationTargetException;
 import junit.framework.TestSuite;
 
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.riot.stream.Locator;
-import org.apache.jena.riot.stream.StreamManager;
-import org.apache.jena.riot.stream.LocatorZip;
+import org.apache.jena.riot.system.stream.Locator;
+import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.stream.LocatorZip;
 import org.apache.jena.security.MockSecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator;
 
