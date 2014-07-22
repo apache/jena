@@ -18,10 +18,8 @@
 
 package org.apache.jena.riot.system ;
 
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -29,7 +27,6 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class StreamRDFCountingBase extends StreamRDFWrapper implements StreamRDF, StreamRDFCounting {
     private long countTriples  = 0 ;
     private long countQuads    = 0 ;
-    private long countTuples   = 0 ;
     private long countBase     = 0 ;
     private long countPrefixes = 0 ;
 
@@ -50,14 +47,8 @@ public class StreamRDFCountingBase extends StreamRDFWrapper implements StreamRDF
     }
 
     @Override
-    public void tuple(Tuple<Node> tuple) {
-        countTuples++ ;
-        super.tuple(tuple) ;
-    }
-
-    @Override
     public long count() {
-        return countTriples + countQuads + countTuples ;
+        return countTriples + countQuads ;
     }
 
     @Override
@@ -68,10 +59,5 @@ public class StreamRDFCountingBase extends StreamRDFWrapper implements StreamRDF
     @Override
     public long countQuads() {
         return countQuads ;
-    }
-
-    @Override
-    public long countTuples() {
-        return countTuples ;
     }
 }

@@ -53,10 +53,4 @@ public class PipedTuplesStream extends PipedRDFStream<Tuple<Node>> implements St
     {
         // Quads are discarded
     }
-
-    @Override
-    public void tuple(Tuple<Node> tuple)
-    {
-        receive(tuple) ;
-    }
 }

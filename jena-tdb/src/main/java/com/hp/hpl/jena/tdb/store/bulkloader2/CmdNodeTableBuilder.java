@@ -30,7 +30,6 @@ import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.atlas.logging.ProgressLogger ;
 import org.apache.jena.riot.Lang ;
@@ -47,7 +46,6 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
@@ -274,10 +272,6 @@ public class CmdNodeTableBuilder extends CmdGeneral
         }
 
         public StatsCollectorNodeId getCollector() { return stats ; }
-
-        @Override
-        public void tuple(Tuple<Node> tuple)
-        { throw new TDBException("Unexpected: tuple in bulk load (expected quads or triples)") ; }
 
         @Override
         public void base(String base)

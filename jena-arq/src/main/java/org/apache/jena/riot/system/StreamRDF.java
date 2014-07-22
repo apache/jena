@@ -18,9 +18,6 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.lib.Tuple ;
-
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -41,9 +38,9 @@ public interface StreamRDF
     /** Quad emitted */
     public void quad(Quad quad) ;
 
-    /** Generalized emitted */
-    public void tuple(Tuple<Node> tuple) ;
-
+//    /** Generalized emitted */
+//    public void tuple(Tuple<Node> tuple) ;
+//
     /** base declaration seen */
     public void base(String base) ;
 

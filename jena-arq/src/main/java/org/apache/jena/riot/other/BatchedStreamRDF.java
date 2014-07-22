@@ -22,7 +22,6 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -152,9 +151,6 @@ public class BatchedStreamRDF implements StreamRDF
         batchProc.finish() ;
 
     }
-
-    @Override
-    public void tuple(Tuple<Node> tuple)            { throw new UnsupportedOperationException("Tuples not supported") ; }
 
     @Override
     public void base(String base)                   { batchProc.base(base) ; }
