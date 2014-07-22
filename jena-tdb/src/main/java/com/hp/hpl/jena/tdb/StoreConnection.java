@@ -252,14 +252,14 @@ public class StoreConnection
                 LocationLock lock = location.getLock();
                 if (lock.canLock()) {
                     if (!lock.canObtain()) 
-                        throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is already locked by the process with PID " + lock.getOwner());
+                        throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is already locked by the process with PID " + lock.getOwner() + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent possible data corruption you cannot open this location from the JVM that does not own the lock for the dataset");
 
                     lock.obtain();
                     // There's an interesting race condition here that two JVMs might write out the lock file one after another without
                     // colliding and causing an IO error in either.  The best way to check for this is simply to check we now own the lock
                     // and if not error
                     if (!lock.isOwned()) {
-                        throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is alread locked by the process with PID " + lock.getOwner());
+                        throw new TDBException("Can't open database at location " + location.getDirectoryPath() + " as it is alread locked by the process with PID " + lock.getOwner() + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent possible data corruption you cannot open this location from the JVM that does not own the lock for the dataset");
                     }
                 }
             }

@@ -174,11 +174,11 @@ public class LocationLock {
             // Check if the owner is alive
             if (ProcessUtils.isAlive(owner))
                 throw new TDBException(
-                        "The location "
+                        "Location "
                                 + location.getDirectoryPath()
                                 + " is currently locked by PID "
                                 + owner
-                                + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent corruption you cannot open this location from the JVM that does not own the lock for the dataset");
+                                + ".  TDB databases do not permit concurrent usage across JVMs so in order to prevent possible data corruption you cannot open this location from the JVM that does not own the lock for the dataset");
 
             // Otherwise the previous owner is dead so we can take the lock
             takeLock(ProcessUtils.getPid(NO_OWNER));
