@@ -27,6 +27,7 @@ import org.apache.jena.atlas.io.IO;
 
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.sys.ProcessUtils;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /**
  * Represents a lock on a TDB location
@@ -163,6 +164,7 @@ public class LocationLock {
             if (pid == NO_OWNER) {
                 // In the case where we cannot obtain our PID then we cannot
                 // obtain a lock
+                SystemTDB.errlog.warn("Location " + location.getDirectoryPath() + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
                 return;
             }
 
