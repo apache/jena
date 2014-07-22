@@ -19,7 +19,7 @@
 package org.apache.jena.riot.adapters;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.stream.Locator ;
+import org.apache.jena.riot.system.stream.Locator ;
 
 public class AdapterLocator implements com.hp.hpl.jena.util.Locator
 {

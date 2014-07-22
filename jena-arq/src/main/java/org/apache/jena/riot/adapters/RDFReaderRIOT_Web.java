@@ -27,7 +27,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.stream.StreamManager ;
+import org.apache.jena.riot.system.stream.StreamManager ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.NotFoundException ;

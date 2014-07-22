@@ -24,7 +24,7 @@ import java.util.Iterator ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.stream.* ;
+import org.apache.jena.riot.system.stream.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

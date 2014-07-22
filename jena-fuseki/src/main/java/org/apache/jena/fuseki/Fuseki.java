@@ -20,9 +20,9 @@ package org.apache.jena.fuseki;
 
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.riot.RIOT ;
-import org.apache.jena.riot.stream.LocatorFTP ;
-import org.apache.jena.riot.stream.LocatorHTTP ;
-import org.apache.jena.riot.stream.StreamManager ;
+import org.apache.jena.riot.system.stream.LocatorFTP ;
+import org.apache.jena.riot.system.stream.LocatorHTTP ;
+import org.apache.jena.riot.system.stream.StreamManager ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

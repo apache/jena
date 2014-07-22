@@ -20,7 +20,7 @@ package org.apache.jena.riot.adapters;
 
 import java.util.Iterator ;
 
-import org.apache.jena.riot.stream.LocationMapper ;
+import org.apache.jena.riot.system.stream.LocationMapper ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 
