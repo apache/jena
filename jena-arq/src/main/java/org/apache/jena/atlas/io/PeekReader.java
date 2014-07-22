@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 public final class PeekReader extends Reader {
     // Remember to apply fixes to PeekInputStream as well.
 
-    // Buffering is done by a CharStream - does i t make adifference?
+    // Buffering is done by a CharStream - does it make adifference?
     // Yes. A lot (Java6).
 
     // Using a Reader here seems to have zero cost or benefit but CharStream
@@ -51,14 +51,12 @@ public final class PeekReader extends Reader {
     static final byte        CHAR0         = (char)0 ;
 
     private char[]           pushbackChars ;
-    private int              idxPushback ;            // Index into
-                                                       // pushbackChars: points
-                                                       // to next pushBack. -1
-                                                       // => none.
+    // Index into pushbackChars: points to next pushBack.
+    // -1 => none.
+    private int              idxPushback ;            
 
-    private int              currChar      = UNSET ;  // Next character to
-                                                       // return when reading
-                                                       // forwards.
+    // Next character to return when reading forwards.
+    private int              currChar      = UNSET ;  
     private long             posn ;
 
     public static final int  INIT_LINE     = 1 ;
