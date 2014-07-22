@@ -236,16 +236,13 @@ public class SystemTDB
     public static boolean Checking = false ;       // This isn't used enough!
     
     /**
-     * New feature introduced by JENA-648 to help prevent one common cause of JVM corruption.
+     * New feature introduced by JENA-648 to help prevent one common cause of TDB corruption.
      * <p>
      * When enabled lock files are written to disk locations with the current owner process PID,
      * other processes will refuse to access that location while another live process owns the PID.
      * </p>
-     * <p>
-     * Currently off by default as the new code stabilises and is debugged
-     * </p>
      */
-    public static boolean DiskLocationMultiJvmUsagePrevention = false;
+    public static boolean DiskLocationMultiJvmUsagePrevention = true;
 
     // BDB related.
     //public static final int BDB_cacheSizePercent    = intValue("BDB_cacheSizePercent", 75) ;

@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
@@ -15,7 +14,6 @@ import org.junit.rules.TemporaryFolder;
 import com.hp.hpl.jena.tdb.StoreConnection;
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.sys.ProcessUtils;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /**
  * Tests for {@link LocationLock}
@@ -29,13 +27,7 @@ public class TestLocationLock {
     
     @BeforeClass
     public static void setup() {
-        SystemTDB.DiskLocationMultiJvmUsagePrevention = true;
         negativePidsTreatedAsAlive = ProcessUtils.negativePidsTreatedAsAlive();
-    }
-    
-    @AfterClass
-    public static void teardown() {
-        SystemTDB.DiskLocationMultiJvmUsagePrevention = false;
     }
 
     @Test
@@ -158,7 +150,7 @@ public class TestLocationLock {
         Assert.assertFalse(lock.isOwned());
 
         // Attempting to release a lock we don't own should error
-        Assert.assertFalse(lock.canObtain()); // Returns true on Jenkins
+        Assert.assertFalse(lock.canObtain());
         lock.release();
     }
 
@@ -183,6 +175,6 @@ public class TestLocationLock {
         Assert.assertFalse(lock.isOwned());
 
         // Attempting to create a connection on this location should error
-        StoreConnection.make(dir); // Doesn't error on Jenkins
+        StoreConnection.make(dir);
     }
 }
