@@ -44,7 +44,6 @@ public class TestStreamRDF extends BaseTest {
         assertEquals(2, stream.count()) ;
         assertEquals(2, stream.countTriples()) ;
         assertEquals(0, stream.countQuads()) ;
-        assertEquals(0, stream.countTuples()) ;
     }
     
     @Test public void stream_count_02() {
@@ -56,7 +55,6 @@ public class TestStreamRDF extends BaseTest {
         assertEquals(2, stream.count()) ;
         assertEquals(1, stream.countTriples()) ;
         assertEquals(1, stream.countQuads()) ;
-        assertEquals(0, stream.countTuples()) ;
         
         stream.finish();
     }

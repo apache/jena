@@ -27,5 +27,4 @@ public interface StreamRDFCounting extends StreamRDF
     public long count() ;
     public long countTriples() ;
     public long countQuads() ;
-    public long countTuples() ;
 }

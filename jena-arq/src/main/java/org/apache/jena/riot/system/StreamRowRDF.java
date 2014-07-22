@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,37 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.system;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.apache.jena.riot.system.StreamRDF ;
 
-import org.apache.jena.atlas.lib.Tuple;
-import org.apache.jena.riot.system.StreamRDF;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
-import com.hp.hpl.jena.graph.Node;
-
-/**
- * Collector stream for quads.
- * 
- * @see CollectorStreamBase
+/** An item in a stream of RDF data.
+ *  This is the row item for pull-processing an RDF stream.
+ *  @see StreamRDF for push processing. 
  */
-public class CollectorStreamTuples extends CollectorStreamBase<Tuple<Node>>	implements StreamRDF {
-	private List<Tuple<Node>> tuples = new ArrayList<>();
 
-	@Override
-	public void start() {
-		tuples.clear();
-	}
-
-	@Override
-	public void tuple(Tuple<Node> tuple) {
-		tuples.add(tuple);
-	}
-
-	@Override
-	public Collection<Tuple<Node>> getCollected() {
-		return tuples;
-	}
+public interface StreamRowRDF {
+    public boolean isTriple() ;
+    public Triple getTriple() ;
+    
+    public boolean isQuad() ;
+    public Quad getQuad() ;
 }

@@ -18,11 +18,9 @@
 
 package org.apache.jena.fuseki.migrate;
 
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFWrapper ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -51,14 +49,6 @@ public class SinkRDFLimited extends StreamRDFWrapper
         super.quad(quad) ;
     }
 
-    @Override
-    public void tuple(Tuple<Node> tuple)
-    { 
-        count++ ;
-        super.tuple(tuple) ;
-    }
-
-    
     public long getCount() { return count ; } 
     public long getLimit() { return limit ; }
 }

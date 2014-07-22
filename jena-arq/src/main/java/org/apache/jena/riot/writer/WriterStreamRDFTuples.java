@@ -16,11 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.writer;
+package org.apache.jena.riot.writer ;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterNT ;
@@ -31,46 +30,44 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** An output of triples / quads that is streaming.
- *  It writes N-triples/N-quads.
+/**
+ * An output of triples / quads that is streaming. It writes N-triples/N-quads.
  */
 
-public class WriterStreamRDFTuples implements StreamRDF
-{
+public class WriterStreamRDFTuples implements StreamRDF {
     // This class is the overall structure - the NodeFormatter controls the
     // appearance of the Nodes themselves.
 
-    protected final AWriter out ;
-    protected final NodeFormatter nodeFmt ; 
+    protected final AWriter       out ;
+    protected final NodeFormatter nodeFmt ;
 
-    /** Output tuples, using UTF8 output 
-     * See {@linkplain StreamRDFLib#writer} for ways to create a AWriter object.
+    /**
+     * Output tuples, using UTF8 output See {@linkplain StreamRDFLib#writer} for
+     * ways to create a AWriter object.
      */
-    public WriterStreamRDFTuples(AWriter w)
-    {
+    public WriterStreamRDFTuples(AWriter w) {
         this(w, CharSpace.UTF8) ;
     }
-    
-    /** Output tuples, choosing ASCII or UTF8
-     * See {@linkplain StreamRDFLib#writer} for ways to create a AWriter object.
+
+    /**
+     * Output tuples, choosing ASCII or UTF8 See
+     * {@linkplain StreamRDFLib#writer} for ways to create a AWriter object.
      */
-    public WriterStreamRDFTuples(AWriter w, CharSpace charSpace)
-    {
+    public WriterStreamRDFTuples(AWriter w, CharSpace charSpace) {
         out = w ;
         nodeFmt = new NodeFormatterNT(charSpace) ;
     }
 
     @Override
-    public void start()
-    {}
+    public void start() {}
 
     @Override
-    public void finish()
-    { IO.flush(out) ; }
+    public void finish() {
+        IO.flush(out) ;
+    }
 
     @Override
-    public void triple(Triple triple)
-    {
+    public void triple(Triple triple) {
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
@@ -84,8 +81,7 @@ public class WriterStreamRDFTuples implements StreamRDF
     }
 
     @Override
-    public void quad(Quad quad)
-    {
+    public void quad(Quad quad) {
         Node s = quad.getSubject() ;
         Node p = quad.getPredicate() ;
         Node o = quad.getObject() ;
@@ -97,43 +93,24 @@ public class WriterStreamRDFTuples implements StreamRDF
         out.print(" ") ;
         format(o) ;
 
-        if ( outputGraphSlot(g) ) 
-        {
+        if ( outputGraphSlot(g) ) {
             out.print(" ") ;
             format(g) ;
         }
         out.print(" .\n") ;
     }
 
-    @Override
-    public void tuple(Tuple<Node> tuple)
-    {
-        boolean first = true ;
-        for ( Node n : tuple )
-        {
-            if ( ! first )
-                out.print(" ") ;
-            first = false ;
-            format(n) ;
-        }
-        out.print(" .\n") ;
-    }
-
-    private void format(Node n)
-    {
+    private void format(Node n) {
         nodeFmt.format(out, n) ;
     }
 
     @Override
-    public void base(String base)
-    {}
+    public void base(String base) {}
 
     @Override
-    public void prefix(String prefix, String iri)
-    {}
+    public void prefix(String prefix, String iri) {}
 
-    private static boolean outputGraphSlot(Node g)
-    {
-        return ( g != null && g != Quad.tripleInQuad && ! Quad.isDefaultGraph(g) ) ;
+    private static boolean outputGraphSlot(Node g) {
+        return (g != null && g != Quad.tripleInQuad && !Quad.isDefaultGraph(g)) ;
     }
 }

@@ -3,12 +3,10 @@ package org.apache.jena.riot.lang;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.atlas.lib.Tuple;
 import org.apache.jena.riot.system.StreamRDF;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -55,28 +53,6 @@ public class TestCollectorStream  {
 	public void test_streamed_quads() {
 		CollectorStreamQuads out = new CollectorStreamQuads();
 		List<Quad> expected = writeQuads(out, 10);
-		
-		Assert.assertEquals(expected, out.getCollected());
-	}
-	
-	private List<Tuple<Node>> writeTuples(StreamRDF out, int size) {
-		List<Tuple<Node>> results = new ArrayList<>();
-		out.start();
-        for (int i = 1; i <= size; i++) {
-            Tuple<Node> t = Tuple.createTuple(NodeFactory.createURI("http://graph"),
-                    NodeFactory.createAnon(),
-                    NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
-            out.tuple(t);
-            results.add(t);
-        }
-        out.finish();
-        return results;
-	}
-	
-	@Test
-	public void test_streamed_tuples() {
-		CollectorStreamTuples out = new CollectorStreamTuples();
-		List<Tuple<Node>> expected = writeTuples(out, 10);
 		
 		Assert.assertEquals(expected, out.getCollected());
 	}

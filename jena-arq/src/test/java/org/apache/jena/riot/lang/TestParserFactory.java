@@ -23,15 +23,12 @@ import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -43,7 +40,6 @@ public class TestParserFactory extends BaseTest
     {
         List<Triple>      triples     = new ArrayList<>() ;
         List<Quad>        quads       = new ArrayList<>() ;
-        List<Tuple<Node>> tuples      = new ArrayList<>() ;
         List<Pair<String,String>>     prefixes     = new ArrayList<>() ;
         List<String>     bases       = new ArrayList<>() ;
         
@@ -56,8 +52,6 @@ public class TestParserFactory extends BaseTest
         @Override public void triple(Triple triple)     { triples.add(triple) ; }
         
         @Override public void quad(Quad quad)           { quads.add(quad) ; }
-        
-        @Override public void tuple(Tuple<Node> tuple)  { tuples.add(tuple) ; }
         
         @Override public void base(String base)         { bases.add(base) ; }
         
@@ -78,7 +72,6 @@ public class TestParserFactory extends BaseTest
         assertEquals(1, sink.finishCalled) ;
         assertEquals(1, sink.triples.size()) ;
         assertEquals(0, sink.quads.size()) ;
-        assertEquals(0, sink.tuples.size()) ;
         assertEquals(SSE.parseTriple("(<x> <p> <q>)"), last(sink.triples)) ;
     }
     
@@ -93,7 +86,6 @@ public class TestParserFactory extends BaseTest
         assertEquals(1, sink.finishCalled) ;
         assertEquals(1, sink.triples.size()) ;
         assertEquals(0, sink.quads.size()) ;
-        assertEquals(0, sink.tuples.size()) ;
         assertEquals(SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)"), last(sink.triples)) ;
     }
     
@@ -108,8 +100,6 @@ public class TestParserFactory extends BaseTest
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
         assertEquals(1, sink.quads.size()) ;
-        assertEquals(0, sink.tuples.size()) ;
-        
         Quad q = SSE.parseQuad("(<g> <x> <p> <q>)") ;
         assertEquals(q, last(sink.quads)) ;
     }
@@ -125,7 +115,6 @@ public class TestParserFactory extends BaseTest
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
         assertEquals(1, sink.quads.size()) ;
-        assertEquals(0, sink.tuples.size()) ;
         
         Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)") ;
         Quad q = new Quad(Quad.tripleInQuad, t) ;
@@ -143,7 +132,6 @@ public class TestParserFactory extends BaseTest
         assertEquals(1, sink.finishCalled) ;
         assertEquals(0, sink.triples.size()) ;
         assertEquals(1, sink.quads.size()) ;
-        assertEquals(0, sink.tuples.size()) ;
         
         Quad q = SSE.parseQuad("(<http://base/g> <http://base/x> <http://base/p> <http://base/q>)") ;
         assertEquals(q, last(sink.quads)) ;

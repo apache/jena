@@ -22,7 +22,6 @@ import java.io.InputStream ;
 import java.util.List ;
 
 import org.apache.jena.atlas.event.EventType ;
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
@@ -266,11 +265,6 @@ public class BulkLoader {
         public void start() {}
 
         @Override
-        public void tuple(Tuple<Node> tuple) {
-            throw new TDBException("Tuple encountered while loading a dataset") ;
-        }
-
-        @Override
         public void base(String base) {}
 
         @Override
@@ -349,11 +343,6 @@ public class BulkLoader {
         @Override
         public void quad(Quad quad) {
             throw new TDBException("Quad encountered while loading a single graph") ;
-        }
-
-        @Override
-        public void tuple(Tuple<Node> tuple) {
-            throw new TDBException("Tuple encountered while loading a single graph") ;
         }
 
         @Override

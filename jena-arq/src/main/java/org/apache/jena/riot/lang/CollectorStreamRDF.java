@@ -18,43 +18,50 @@
 
 package org.apache.jena.riot.lang;
 
-import java.util.Collection;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapFactory ;
+import org.apache.jena.riot.system.StreamRDF ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
 /**
- * Base class for StreamRDF implementations which store received <T>
- * objects in a {@link java.util.Collection}. 
+ * StreamRDF implementations which store received triples and quads 
+ * in a {@link java.util.Collection}. 
  * 
- * The resulting collection can be retrieved via the {@link #getCollected()}
- * method.
+ * The resulting collection can be retrieved via the
+ * {@link #getTriples()} and {@link #getQuads()} 
+ * methods.
  * 
- * Implementations are suitable for single-threaded parsing, for use with small
+ * The implementations are suitable for single-threaded parsing, for use with small
  * data or distributed computing frameworks (e.g. Hadoop) where the overhead
- * of creating many threads is significant.
- *
- * @param <T> Type of the value stored in the collection
+ * of creating many threads for a push-pull parser setup is significant.
  */
-public abstract class CollectorStreamBase<T> implements StreamRDF {
-	private final PrefixMap prefixes = PrefixMapFactory.createForInput();
+public class CollectorStreamRDF implements StreamRDF {
+	private PrefixMap prefixes = PrefixMapFactory.createForInput();
 	private String baseIri;
 	
+	private List<Triple> triples = new ArrayList<>();
+	private List<Quad> quads = new ArrayList<>();
+    
+    @Override
+    public void start() {
+        triples.clear() ;
+        quads.clear() ;
+        prefixes = PrefixMapFactory.createForInput();
+    }
+
 	@Override
 	public void finish() {}
 	
 	@Override
-	public void triple(Triple triple) {}
-
+	public void triple(Triple triple) { triples.add(triple) ; }
+	
 	@Override
-	public void quad(Quad quad) {}
-
-	@Override
-	public void start() {}
+	public void quad(Quad quad) { quads.add(quad) ; }
 	
 	@Override
 	public void base(String base) {
@@ -74,8 +81,6 @@ public abstract class CollectorStreamBase<T> implements StreamRDF {
 		return baseIri;
 	}
 
-	/**
-	 * @return The collection received by this instance. 
-	 */
-	public abstract Collection<T> getCollected();
+	public List<Triple> getTriples()        { return triples ; } 
+    public List<Quad> getQuads()            { return quads ; } 
 }

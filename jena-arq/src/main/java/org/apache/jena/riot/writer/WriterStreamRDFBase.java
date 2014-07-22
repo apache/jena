@@ -23,7 +23,6 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.system.PrefixMap ;
@@ -118,10 +117,6 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         print(quad) ;
         activeQuadData = true ;
     }
-
-    @Override
-    public final void tuple(Tuple<Node> tuple)
-    { throw new UnsupportedOperationException("Tuple<Node>") ; } 
 
     @Override
     public final void base(String base)

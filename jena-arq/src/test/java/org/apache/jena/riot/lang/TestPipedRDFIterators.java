@@ -18,32 +18,23 @@
 
 package org.apache.jena.riot.lang;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.Charset;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.io.ByteArrayInputStream ;
+import java.nio.charset.Charset ;
+import java.util.concurrent.* ;
 
-import org.junit.Assert;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
+import org.junit.AfterClass ;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import org.apache.jena.atlas.lib.Tuple;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.RiotException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Tests for the {@link PipedRDFIterator} implementation
@@ -362,151 +353,6 @@ public class TestPipedRDFIterators {
     public void streamed_quads_iterator_07() throws InterruptedException, ExecutionException, TimeoutException {
         // Buffer size is small relative to generated quads
         this.test_streamed_quads(10000, 100000, false);
-    }
-
-    private void test_streamed_tuples(int bufferSize, final int generateSize, boolean fair) throws InterruptedException,
-            ExecutionException, TimeoutException {
-
-        final PipedRDFIterator<Tuple<Node>> it = new PipedRDFIterator<>();
-        final PipedTuplesStream out = new PipedTuplesStream(it);
-
-        // Create a runnable that will generate tuples
-        Runnable genQuads = new Runnable() {
-
-            @Override
-            public void run() {
-                out.start();
-                // Generate tuples
-                for (int i = 1; i <= generateSize; i++) {
-                    Tuple<Node> t = Tuple.createTuple(com.hp.hpl.jena.graph.NodeFactory.createURI("http://graph"),
-                            com.hp.hpl.jena.graph.NodeFactory.createAnon(),
-                            com.hp.hpl.jena.graph.NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
-                    out.tuple(t);
-                }
-                out.finish();
-                return;
-            }
-        };
-
-        // Create a runnable that will consume tuples
-        Callable<Integer> consumeQuads = new Callable<Integer>() {
-
-            @Override
-            public Integer call() throws Exception {
-                int count = 0;
-                while (it.hasNext()) {
-                    it.next();
-                    count++;
-                }
-                return count;
-            }
-        };
-
-        // Run the threads
-        Future<?> genResult = executor.submit(genQuads);
-        Future<Integer> result = executor.submit(consumeQuads);
-        Integer count = 0;
-        try {
-            count = result.get(5, TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            // Check that it wasn't the producer thread erroring that caused us
-            // to time out
-            genResult.get();
-            // It wasn't so throw the original error
-            throw e;
-        }
-        Assert.assertEquals(generateSize, (int) count);
-    }
-
-    /**
-     * Test that blocking and waiting work nicely
-     * 
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws TimeoutException
-     */
-    @Test
-    public void streamed_tuples_iterator_01() throws InterruptedException, ExecutionException, TimeoutException {
-        // Buffer size is tiny
-        this.test_streamed_tuples(1, 100, true);
-    }
-
-    /**
-     * Test that blocking and waiting work nicely
-     * 
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws TimeoutException
-     */
-    @Test
-    public void streamed_tuples_iterator_02() throws InterruptedException, ExecutionException, TimeoutException {
-        // Buffer size is much smaller than generated tuples
-        this.test_streamed_tuples(10, 1000, false);
-    }
-
-    /**
-     * Test that blocking and waiting work nicely
-     * 
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws TimeoutException
-     */
-    @Test
-    public void streamed_tuples_iterator_03() throws InterruptedException, ExecutionException, TimeoutException {
-        // Buffer size is smaller than generated tuples
-        this.test_streamed_tuples(100, 1000, false);
-    }
-
-    /**
-     * Test where blocking should rarely occur
-     * 
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws TimeoutException
-     */
-    @Test
-    public void streamed_tuples_iterator_04() throws InterruptedException, ExecutionException, TimeoutException {
-        // Buffer size is same as generated tuples
-        this.test_streamed_tuples(1000, 1000, false);
-    }
-
-    /**
-     * Test where blocking should rarely occur
-     * 
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws TimeoutException
-     */
-    @Test
-    public void streamed_tuples_iterator_05() throws InterruptedException, ExecutionException, TimeoutException {
-        // Buffer size is much larger than generated tuples
-        this.test_streamed_tuples(10000, 1000, false);
-    }
-
-    /**
-     * Test where blocking may occur
-     * 
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws TimeoutException
-     */
-    @Test
-    public void streamed_tuples_iterator_06() throws InterruptedException, ExecutionException, TimeoutException {
-        // Buffer size is small relative to generated tuples
-        this.test_streamed_tuples(1000, 100000, false);
-    }
-
-    /**
-     * Test where blocking may occur
-     * 
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws TimeoutException
-     */
-    @Test
-    public void streamed_tuples_iterator_07() throws InterruptedException, ExecutionException, TimeoutException {
-        // Buffer size is small relative to generated tuples
-        this.test_streamed_tuples(10000, 100000, false);
     }
 
     /**

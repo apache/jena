@@ -18,9 +18,6 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.lib.Tuple ;
-
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -36,10 +33,6 @@ public class StreamRDFBase implements StreamRDF
 
     @Override
     public void quad(Quad quad)
-    {}
-
-    @Override
-    public void tuple(Tuple<Node> tuple)
     {}
 
     @Override
