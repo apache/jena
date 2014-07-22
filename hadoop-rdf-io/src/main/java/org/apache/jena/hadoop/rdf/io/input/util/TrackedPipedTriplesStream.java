@@ -18,10 +18,8 @@
 
 package org.apache.jena.hadoop.rdf.io.input.util;
 
-import org.apache.jena.atlas.lib.Tuple;
 import org.apache.jena.riot.lang.PipedRDFIterator;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Quad;
 
@@ -53,11 +51,6 @@ public class TrackedPipedTriplesStream extends TrackedPipedRDFStream<Triple> {
     @Override
     public void quad(Quad quad) {
         // Quads are discarded
-    }
-
-    @Override
-    public void tuple(Tuple<Node> tuple) {
-        // Tuples are discarded
     }
 
 }
