@@ -16,26 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.stream ;
+package org.apache.jena.riot.system.stream ;
 
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.net.MalformedURLException ;
-import java.net.URL ;
-
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.web.HttpOp ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-public class LocatorFTP extends LocatorURL {
-    private static Logger         log         = LoggerFactory.getLogger(LocatorFTP.class) ;
-    private static final String[] schemeNames = { "ftp" } ;
+public class LocatorHTTP extends LocatorURL {
+    private static Logger         log         = LoggerFactory.getLogger(LocatorHTTP.class) ;
+    private static final String[] schemeNames = {"http", "https"} ;
 
-    public LocatorFTP() {
+    public LocatorHTTP() {
         super(schemeNames) ;
     }
 
@@ -44,27 +37,14 @@ public class LocatorFTP extends LocatorURL {
 
     @Override
     public TypedInputStream performOpen(String uri) {
-        if ( uri.startsWith("ftp://") ) {
-            try {
-                URL url = new URL(uri) ;
-                InputStream in = url.openStream() ;
-                ContentType ct = RDFLanguages.guessContentType(uri) ;
-                return new TypedInputStream(in, ct) ;
-            } 
-            catch (MalformedURLException ex) {
-                throw new RiotException("Bad FTP URL: "+uri, ex) ;
-            }
-            catch (IOException ex) {
-                // This includes variations on "not found"
-                IO.exception(ex) ;
-            }
-        }
+        if ( uri.startsWith("http://") || uri.startsWith("https://") )
+            return HttpOp.execHttpGet(uri, WebContent.defaultGraphAcceptHeader) ;
         return null ;
     }
 
     @Override
     public String getName() {
-        return "LocatorFTP" ;
+        return "LocatorHTTP" ;
     }
 
     @Override

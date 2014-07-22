@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.stream;
+package org.apache.jena.riot.system.stream;
 
 import java.io.File ;
 import java.io.IOException ;

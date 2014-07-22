@@ -22,7 +22,7 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.stream.* ;
+import org.apache.jena.riot.system.stream.* ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 
