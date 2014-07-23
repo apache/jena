@@ -27,8 +27,10 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.out.JsonLDWriter ;
 import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.writer.* ;
 
 public class RDFWriterRegistry
 {
@@ -45,57 +47,55 @@ public class RDFWriterRegistry
     
     // Writing a graph
     static WriterGraphRIOTFactory wgfactory = new WriterGraphRIOTFactory() {
-        @SuppressWarnings("deprecation")
         @Override
         public WriterGraphRIOT create(RDFFormat serialization)
         {
             // Built-ins
+            
             if ( Lib.equal(RDFFormat.TURTLE_PRETTY, serialization) )
-                return RiotWriter.createTurtle() ;
+                return new TurtleWriter() ;
             if ( Lib.equal(RDFFormat.TURTLE_BLOCKS, serialization) )
-                return RiotWriter.createTurtleStreaming() ;
+                return new TurtleWriterBlocks() ;
             if ( Lib.equal(RDFFormat.TURTLE_FLAT, serialization) )
-                return RiotWriter.createTurtleFlat() ;
+                return new TurtleWriterFlat() ;
+            
             if ( Lib.equal(RDFFormat.NTRIPLES_UTF8, serialization) )
-                return RiotWriter.createNTriples() ;
+                return new NTriplesWriter() ;
             if ( Lib.equal(RDFFormat.NTRIPLES_ASCII, serialization) )
-                return RiotWriter.createNTriplesASCII() ;
+                return new NTriplesWriter(CharSpace.ASCII) ;
+            
             if ( Lib.equal(RDFFormat.RDFJSON, serialization) )
-                return RiotWriter.createRDFJSON() ;
+                return new RDFJSONWriter() ;
             if ( Lib.equal(RDFFormat.RDFXML_PRETTY, serialization) )
-                return RiotWriter.createRDFXMLAbbrev() ;
+                return new RDFXMLAbbrevWriter() ;
             if ( Lib.equal(RDFFormat.RDFXML_PLAIN, serialization) )
-                return RiotWriter.createRDFXMLPlain() ;
+                return new RDFXMLPlainWriter() ;
             
             WriterDatasetRIOT dsw = wdsfactory.create(serialization) ;
             if ( dsw != null )
                 return RiotLib.adapter(dsw) ;
             return null ;
     }} ;
-        
     
     // Writing a dataset
     static WriterDatasetRIOTFactory wdsfactory = new WriterDatasetRIOTFactory() {
-        @SuppressWarnings("deprecation")
         @Override
         public WriterDatasetRIOT create(RDFFormat serialization)
         {
             if ( Lib.equal(RDFFormat.TRIG_PRETTY, serialization) )
-                return RiotWriter.createTrig() ;
+                return new TriGWriter() ;
             if ( Lib.equal(RDFFormat.TRIG_BLOCKS, serialization) )
-                return RiotWriter.createTrigStreaming() ;
+                return new TriGWriterBlocks() ;
             if ( Lib.equal(RDFFormat.TRIG_FLAT, serialization) )
-                return RiotWriter.createTrigFlat() ;
+                return new TriGWriterFlat() ;
             if ( Lib.equal(RDFFormat.NQUADS_UTF8, serialization) )
-                return RiotWriter.createNQuads() ;
+                return new NQuadsWriter() ;
             if ( Lib.equal(RDFFormat.NQUADS_ASCII, serialization) )
-                return RiotWriter.createNQuadsASCII() ;
+                return new NQuadsWriter(CharSpace.ASCII) ;
             if ( Lib.equal(RDFFormat.RDFNULL, serialization) )
-                return RiotWriter.createRDFNULL() ;
+                return NullWriter.factory.create(RDFFormat.RDFNULL) ;
             return null ;
     }} ;
-    
-    
     
     static WriterDatasetRIOTFactory wdsJsonldfactory = new WriterDatasetRIOTFactory() {
     //private static class WriterDatasetJSONLDFactory implements WriterDatasetRIOTFactory {
