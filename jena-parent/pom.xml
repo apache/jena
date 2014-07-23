@@ -422,7 +422,18 @@
             <encoding>UTF-8</encoding>
             <windowtitle>${project.name} ${project.version}</windowtitle>
             <doctitle>${project.name} ${project.version}</doctitle>
-            <bottom>Licenced under the Apache License, Version 2.0</bottom>
+            <bottom>Licensed under the Apache License, Version 2.0</bottom>
+            <links>
+              <link>http://jena.apache.org/documentation/javadoc/jena/</link>
+              <link>http://jena.apache.org/documentation/javadoc/arq/</link>
+              <link>http://jena.apache.org/documentation/javadoc/tdb/</link>
+              <link>http://jena.apache.org/documentation/javadoc/text/</link>
+              <link>http://jena.apache.org/documentation/javadoc/spatial/</link>
+              <link>http://jena.apache.org/documentation/javadoc/fuseki/</link>
+              <link>http://jena.apache.org/documentation/javadoc/security/</link>
+              <link>http://jena.apache.org/documentation/javadoc/jdbc/</link>
+              <link>http://jena.apache.org/documentation/javadoc/sdb/</link>
+            </links>
           </configuration>
         </plugin>
 
