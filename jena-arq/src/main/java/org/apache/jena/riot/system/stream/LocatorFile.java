@@ -140,6 +140,8 @@ public class LocatorFile implements Locator
     
     private boolean exists$(String fn)
     {
+        if ( fn.equals("-") )
+            return true ;
         return new File(fn).exists() ;
     }
 
