@@ -182,7 +182,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
                 String uri = t.get(2).getURI() ;
                 map.put(prefix, uri) ;
             } catch (Exception ex) { 
-                Log.warn(this, "Manged prefix map: graph name="+graphName, ex) ;
+                Log.warn(this, "Mangled prefix map: graph name="+graphName, ex) ;
             }
         }
         Iter.close(iter) ;
