@@ -28,6 +28,7 @@ import java.util.Set ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.ColumnMap ;
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
@@ -165,15 +166,24 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized Map<String, String> readPrefixMap(String graphName)
     {
+        Map<String, String> map = new HashMap<>() ;
+        // One class of problem from mangled databases
+        // (non-trasnactional, not shutdown cleanly)
+        // ends up with NPE access the node table from
+        // prefix index. As prefixes are "nice extras"
+        
         Node g = NodeFactory.createURI(graphName) ;
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, null, null) ;
-        Map<String, String> map = new HashMap<>() ;
         for ( ; iter.hasNext() ; )
         {
-            Tuple<Node> t = iter.next();
-            String prefix = t.get(1).getLiteralLexicalForm() ;
-            String uri = t.get(2).getURI() ;
-            map.put(prefix, uri) ;
+            try {
+                Tuple<Node> t = iter.next();
+                String prefix = t.get(1).getLiteralLexicalForm() ;
+                String uri = t.get(2).getURI() ;
+                map.put(prefix, uri) ;
+            } catch (Exception ex) { 
+                Log.warn(this, "Manged prefix map: graph name="+graphName, ex) ;
+            }
         }
         Iter.close(iter) ;
         return map ;
