@@ -21,10 +21,13 @@ if [ "$TDBROOT" = "" ]; then
 fi
 
 if [ -e "$TDBROOT/tdb.classpath" ]; then
-	cat "$TDBROOT/tdb.classpath"
-elif [ -e "$TDBROOT/.classpath" ]; then
-    # Development area
-    exec "$TDBROOT/bin/make_classpath_mvn" "$TDBROOT" | tee "$TDBROOT/tdb.classpath"
+    cat "$TDBROOT/tdb.classpath"
 else
-    exec "$TDBROOT/bin/make_classpath" "$TDBROOT" | tee "$TDBROOT/tdb.classpth"
+    echo "Building tdb.classpth"
+    if [ -e "$TDBROOT/.classpath" ]; then
+    # Development area
+	exec "$TDBROOT/bin/make_classpath_mvn" "$TDBROOT" | tee "$TDBROOT/tdb.classpath"
+    else
+	exec "$TDBROOT/bin/make_classpath" "$TDBROOT" | tee "$TDBROOT/tdb.classpth"
+    fi
 fi
