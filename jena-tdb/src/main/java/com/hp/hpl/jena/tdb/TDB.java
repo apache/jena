@@ -29,9 +29,12 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.ontology.OntModel ;
+import com.hp.hpl.jena.ontology.impl.OntModelImpl ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
@@ -127,11 +130,28 @@ public class TDB {
 
     /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */
     public static void sync(Model model) {
+        if ( model instanceof OntModelImpl ) {
+            OntModelImpl ontModel = (OntModelImpl)model ;
+            sync(ontModel.getBaseGraph()) ;
+            return ;
+        }
+        // This never happens (there is only one OntModel implementation)
+        if ( model instanceof OntModel ) {
+            OntModel ontModel = (OntModel)model ;
+            sync(ontModel.getBaseModel()) ;
+            return ;
+        }
+
         sync(model.getGraph()) ;
     }
 
     /** Sync a TDB-backed Graph. Do nothing if not TDB-backed. */
     public static void sync(Graph graph) {
+        if ( graph instanceof InfGraph ) {
+            InfGraph infGraph = (InfGraph)graph ;
+            sync(infGraph.getRawGraph()) ;
+            return ;
+        }
         syncObject(graph) ;
     }
 
