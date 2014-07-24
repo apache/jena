@@ -36,7 +36,7 @@ public interface ObjectFile extends Sync, Closeable
 {
     public static final String type = "object" ;
     
-    /** A label to identify this ObjectFile - like toString, except it must be implemented */ 
+    /** A label to identify this ObjectFile */ 
     public String getLabel() ;
     
     /** Allocate space for a write - pass this buffer to completeWrite */ 
@@ -72,7 +72,4 @@ public interface ObjectFile extends Sync, Closeable
 
     /** All the bytebuffers - debugging aid */
     public Iterator<Pair<Long, ByteBuffer>> all() ;
-    
-//    /** return a useful short display string */ 
-//    public String getLabel() ;
 }
