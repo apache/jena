@@ -49,6 +49,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     private static Logger log           = LoggerFactory.getLogger(TextQueryPF.class) ;
     /*
      * ?uri :queryPF (property? "string" limit? score?) score? not implemented
+     * Look for "//** score" in TextIndexLucene and TextIndexSolr
      */
 
     private TextIndex     server        = null ;
@@ -59,7 +60,8 @@ public class TextQueryPF extends PropertyFunctionBase {
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt) ;
-
+        //** score
+        // Subject possibilities become ?foo or (?foo ?score) 
         DatasetGraph dsg = execCxt.getDataset() ;
         server = chooseTextIndex(dsg) ;
 

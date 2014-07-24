@@ -38,6 +38,9 @@ public interface TextIndex extends Closeable //, Transactional
     /** Get all entries for uri */
     public abstract Map<String, Node> get(String uri) ;
 
+    //** score
+    // Need to have more complex results.
+    
     /** Access the index - limit if -1 for as many as possible */ 
     public abstract List<Node> query(String qs, int limit) ;
     
