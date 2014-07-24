@@ -174,6 +174,8 @@ public class TextIndexSolr implements TextIndex
 
         for ( SolrDocument sd : solrResults )
         {
+            //** score
+            // 'score' field.
             String str = (String)sd.getFieldValue(docDef.getEntityField()) ;
             //log.info("Entity: "+uriStr) ;
             Node n = TextQueryFuncs.stringToNode(str) ;
@@ -189,6 +191,8 @@ public class TextIndexSolr implements TextIndex
     private SolrDocumentList solrQuery(String qs, int limit)
     {
         SolrQuery sq = new SolrQuery(qs) ;
+        //** score
+        //sq.setIncludeScore(true) ;
         if ( limit > 0 )
             sq.setRows(limit) ;
         else 
