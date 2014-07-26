@@ -23,11 +23,11 @@
   <artifactId>jena-iri</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - IRI</name>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.1.0</version>
     <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>10-SNAPSHOT</version>
+    <version>10</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
   
@@ -36,9 +36,9 @@
   </description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-iri</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-iri</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-iri</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.0/jena-iri</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.12.0/jena-iri</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.12.0/jena-iri</url>
   </scm>
   
   <dependencies>
