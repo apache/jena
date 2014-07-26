@@ -23,7 +23,7 @@
   <artifactId>jena-parent</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>10</version>
+  <version>11-SNAPSHOT</version>
   <name>Apache Jena - Parent</name>
 
   <parent>
@@ -46,9 +46,9 @@
   </organization>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.0/jena-parent</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.0/jena-parent</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.12.0/jena-parent</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-parent</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-parent</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-parent</url>
   </scm>
 
   <properties>
