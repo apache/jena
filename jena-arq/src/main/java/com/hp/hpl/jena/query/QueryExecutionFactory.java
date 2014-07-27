@@ -20,7 +20,7 @@ package com.hp.hpl.jena.query;
 import java.util.List ;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.atlas.web.auth.HttpAuthenticator;
+import org.apache.jena.atlas.web.auth.HttpAuthenticator ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -33,7 +33,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.util.FileManager ;
 
 /** Place to make QueryExecution objects from Query objects or a string. */
  
@@ -116,36 +115,6 @@ public class QueryExecutionFactory
         checkArg(queryStr) ;
         //checkArg(dataset) ; // Allow null
         return make(makeQuery(queryStr, syntax), dataset) ;
-    }
-
-    /** Create a QueryExecution : the file manager will be used to load
-     *  URIs in the query decription. 
-     * 
-     * @param queryStr Query string
-     * @param fm       FileManager 
-     * @return QueryExecution
-     * @deprecated Setting the FileManger has no effect. Use {@linkplain #create(String)}
-     */
-    @Deprecated
-    static public QueryExecution create(String queryStr, FileManager fm)
-    {
-        return create(queryStr) ;
-    }
-
-    /** Create a QueryExecution : the file manager will be used to load
-     *  URIs in the query decription. 
-     * 
-     * @param queryStr Query string
-     * @param syntax   Syntax
-     * @param fm       FileManager 
-     * @return QueryExecution
-     * @deprecated Setting the FileManger has no effect. Use {@linkplain #create(String, Syntax)}
-     */
-    @Deprecated
-    static public QueryExecution create(String queryStr, Syntax syntax, FileManager fm) 
-    {
-        checkArg(queryStr) ;
-        return create(makeQuery(queryStr, syntax)) ;
     }
 
     // ---------------- Query + Model
