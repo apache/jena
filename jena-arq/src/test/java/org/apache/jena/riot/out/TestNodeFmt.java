@@ -64,14 +64,28 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_nt_03()  { test(nodeFormatterNTutf8, Var.alloc(""), "?") ; }
     @Test public void nodefmt_nt_04()  { test(nodeFormatterNTutf8, Var.alloc("?"), "??") ; }
 
-    @Test public void nodefmt_nt_05()  { test(nodeFormatterNTutf8, "\"abc\"") ; }
+    @Test public void nodefmt_nt_05()  { test(nodeFormatterNTutf8, "'abc'", "\"abc\"") ; }
+    @Test public void nodefmt_nt_05a() { test(nodeFormatterNTutf8, "\"abc\"") ; }
     @Test public void nodefmt_nt_06()  { test(nodeFormatterNTutf8, "\"\"") ; }
-    @Test public void nodefmt_nt_07()  { test(nodeFormatterNTutf8, "\"abc\"@en") ; }
+    @Test public void nodefmt_nt_06a() { test(nodeFormatterNTutf8, "''", "\"\"") ; }
+    @Test public void nodefmt_nt_07()  { test(nodeFormatterNTutf8, "'abc'@en", "\"abc\"@en") ; }
+    @Test public void nodefmt_nt_07a() { test(nodeFormatterNTutf8, "\"abc\"@en") ; }
     @Test public void nodefmt_nt_08()  { test(nodeFormatterNTutf8, "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>" ) ; }
     @Test public void nodefmt_nt_09()  { test(nodeFormatterNTutf8, Node.ANY, "ANY") ; }
     
     @Test public void nodefmt_nt_10()  { test(nodeFormatterNTutf8, "'Ω'", "\"Ω\"") ; }
     @Test public void nodefmt_nt_11()  { test(nodeFormatterNTascii, "'Ω'", "\"\\u03A9\"") ; }
+    
+    @Test public void nodefmt_nt_12()        { test(nodeFormatterNTascii,"<http://example/>") ; }
+    @Test public void nodefmt_nt_13()        { test(nodeFormatterNTascii, "\"abc\"^^<http://example/dt>") ; }
+    
+    @Test public void nodefmt_nt_14()        { test(nodeFormatterNTascii, "'é'", "\"\\u00E9\"") ; }
+
+    @Test public void nodefmt_nt_15()        { test(nodeFormatterNTascii, "'\\n\\t\\f'", "\"\\n\\t\\f\"") ; }
+    
+    
+
+    
     
     @Test public void nodefmt_ttl_01()  { test(nodeFormatterTTL, "?x") ; }
     @Test public void nodefmt_ttl_02()  { test(nodeFormatterTTL, "?xyz") ; }

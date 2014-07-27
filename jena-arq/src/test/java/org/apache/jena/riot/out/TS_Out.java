@@ -26,7 +26,6 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
       TestNodeFmt.class
     , TestNodeFmtLib.class
-    , TestOutput.class
 })
 
 public class TS_Out
