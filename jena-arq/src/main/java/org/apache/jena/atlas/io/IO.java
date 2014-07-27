@@ -24,6 +24,7 @@ import java.util.zip.GZIPInputStream ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.system.IRILib ;
 
 import com.hp.hpl.jena.util.FileUtils ;
@@ -38,23 +39,19 @@ public class IO
     public static final String encodingAscii    = "ascii" ;
     
     private static Charset utf8 = null ;
-    private static Charset ascii = null ;
+    private static Charset     ascii         = null ;
     static {
         try {
             utf8 = Charset.forName(encodingUTF8) ;
             ascii = Charset.forName(encodingAscii) ;
-        } catch (Throwable ex)
-        {
-            Log.fatal(FileUtils.class, "Failed to get charset", ex) ;
-        }
+        } catch (Throwable ex) { Log.fatal(FileUtils.class, "Failed to get charset", ex) ; }
     }
     
     /** Open an input stream to a file. 
      * If the filename is null or "-", return System.in
      * If the filename ends in .gz, wrap in  GZIPInputStream  
      */
-    static public InputStream openFile(String filename)
-    {
+    static public InputStream openFile(String filename) {
         try {
            return openFileEx(filename) ;
         }
@@ -67,8 +64,7 @@ public class IO
      * @param filename
      * @throws FileNotFoundException 
      */
-    static public InputStream openFileEx(String filename) throws IOException
-    {
+    static public InputStream openFileEx(String filename) throws IOException {
         if ( filename == null || filename.equals("-") )
             return System.in ;
         if ( filename.startsWith("file:") )
@@ -139,117 +135,111 @@ public class IO
     }
     
     /** Wrap in a general writer interface */ 
-    static public AWriter wrapUTF8(OutputStream out)        { return wrap(asUTF8(out)); } 
+    static public AWriter wrapUTF8(OutputStream out)        { return wrap(out, CharSpace.UTF8); } 
     
     /** Wrap in a general writer interface */ 
-    static public AWriter wrapASCII(OutputStream out)       { return wrap(asASCII(out)); } 
+    static public AWriter wrapASCII(OutputStream out)       { return wrap(out, CharSpace.ASCII) ; } 
 
+    /** Wrap in a general writer interface */ 
+    static public AWriter wrap(OutputStream out, CharSpace charSpace) {
+        switch (charSpace) {
+            case UTF8: return wrap(asUTF8(out)) ;
+            case ASCII: return wrap(asASCII(out)) ;
+        }
+        return null ;
+    }
+    
     /** Create a print writer that uses UTF-8 encoding */ 
     static public PrintWriter asPrintWriterUTF8(OutputStream out) {
         return new PrintWriter(asUTF8(out)); 
     }
 
-    public static void close(org.apache.jena.atlas.lib.Closeable resource)
-    {
+    public static void close(org.apache.jena.atlas.lib.Closeable resource) {
         resource.close() ;
     }
 
-    public static void closeSilent(org.apache.jena.atlas.lib.Closeable resource)
-    {
+    public static void closeSilent(org.apache.jena.atlas.lib.Closeable resource) {
         try { resource.close(); } catch (Exception ex) { }
     }
     
-    public static void close(java.io.Closeable resource)
-    {
+    public static void close(java.io.Closeable resource) {
         if ( resource == null )
             return ;
         try { resource.close(); } catch (IOException ex) { exception(ex) ; }
     }
     
-    public static void closeSilent(java.io.Closeable resource)
-    {
+    public static void closeSilent(java.io.Closeable resource) {
         if ( resource == null )
             return ;
         try { resource.close(); } catch (IOException ex) { }
     }
     
-    public static void close(AWriter resource)
-    {
+    public static void close(AWriter resource) {
         if ( resource == null )
             return ;
         resource.close();
     }
     
-    public static void closeSilent(AWriter resource)
-    {
+    public static void closeSilent(AWriter resource) {
         if ( resource == null )
             return ;
         try { resource.close();  } catch (Exception ex) { }
     }
 
-    public static void close(IndentedWriter resource)
-    {
+    public static void close(IndentedWriter resource) {
         if ( resource == null )
             return ;
         resource.close();
     }
     
-    public static void closeSilent(IndentedWriter resource)
-    {
+    public static void closeSilent(IndentedWriter resource) {
         if ( resource == null )
             return ;
         try { resource.close();  } catch (Exception ex) { }
     }
 
-    public static void exception(IOException ex)
-    {
+    public static void exception(IOException ex) {
         throw new AtlasException(ex) ;
     }
 
-    public static void exception(String msg, IOException ex)
-    {
+    public static void exception(String msg, IOException ex) {
         throw new AtlasException(msg, ex) ;
     }
     
-    public static void flush(OutputStream out)
-    { 
+    public static void flush(OutputStream out) { 
         if ( out == null )
             return ;
         try { out.flush(); } catch (IOException ex) { exception(ex) ; }
     }
     
-    public static void flush(Writer out)
-    {
+    public static void flush(Writer out) {
         if ( out == null )
             return ;
         try { out.flush(); } catch (IOException ex) { exception(ex) ; } 
     }
 
-    public static void flush(AWriter out)
-    {
+    public static void flush(AWriter out) {
         if ( out == null )
             return ;
         out.flush(); 
     }
 
-    private static final int BUFFER_SIZE = 8*1024 ; 
+    private static final int BUFFER_SIZE = 32*1024 ; 
     
-    public static byte[] readWholeFile(InputStream in) 
-    {
+    public static byte[] readWholeFile(InputStream in) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream(BUFFER_SIZE) ;
-            byte buff[] = new byte[BUFFER_SIZE];
-            while (true)
-            {
-                int l = in.read(buff);
-                if (l <= 0)
-                    break;
-                out.write(buff, 0, l);
+            byte buff[] = new byte[BUFFER_SIZE] ;
+            while (true) {
+                int l = in.read(buff) ;
+                if ( l <= 0 )
+                    break ;
+                out.write(buff, 0, l) ;
             }
-            out.close();
+            out.close() ;
             return out.toByteArray() ;
-        } catch (IOException  ex)
-        {
+        }
+        catch (IOException ex) {
             exception(ex) ;
             return null ;
         }
@@ -273,8 +263,7 @@ public class IO
      * @return      String
      * @throws IOException
      */
-    public static String readWholeFileAsUTF8(InputStream in) throws IOException
-    {
+    public static String readWholeFileAsUTF8(InputStream in) throws IOException {
         // Don't buffer - we're going to read in large chunks anyway
         try ( Reader r = asUTF8(in) ) {
             return readWholeFileAsUTF8(r) ;
@@ -289,8 +278,7 @@ public class IO
      */
     
     // Private worker as we are trying to force UTF-8. 
-    private static String readWholeFileAsUTF8(Reader r) throws IOException
-    {
+    private static String readWholeFileAsUTF8(Reader r) throws IOException {
         StringWriter sw = new StringWriter(BUFFER_SIZE);
         char buff[] = new char[BUFFER_SIZE];
         for (;;)
@@ -324,7 +312,6 @@ public class IO
             IO.exception(e) ;
             return null ;
         }
-
     }
 
 }
