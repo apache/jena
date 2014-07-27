@@ -46,7 +46,6 @@ public class TestNodeFmtLib extends BaseTest
     @Test public void rt_05() {  testencdec("-000") ; }
     @Test public void rt_06() {  testencdec("X-") ; }
     @Test public void rt_07() {  testencdec("-123:456:xyz") ; }
-
     
     private void testenc(String input, String expected)
     {

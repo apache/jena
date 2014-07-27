@@ -113,12 +113,4 @@ public class Log {
     static private Logger log(String loggerName) {
         return LoggerFactory.getLogger(loggerName) ;
     }
-    
-    /** @deprecated Use {@linkplain LogCtl#setLog4j} */
-    @Deprecated
-    static public void setLog4j() { LogCtl.setLog4j() ; }
-
-    /** @deprecated Use {@linkplain LogCtl#setCmdLogging} */
-    @Deprecated
-    static public void setCmdLogging() { LogCtl.setCmdLogging(); }
 }
