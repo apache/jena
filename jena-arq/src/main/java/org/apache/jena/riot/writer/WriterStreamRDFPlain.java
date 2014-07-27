@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  * An output of triples / quads that is streaming. It writes N-triples/N-quads.
  */
 
-public class WriterStreamRDFTuples implements StreamRDF {
+public class WriterStreamRDFPlain implements StreamRDF {
     // This class is the overall structure - the NodeFormatter controls the
     // appearance of the Nodes themselves.
 
@@ -45,7 +45,7 @@ public class WriterStreamRDFTuples implements StreamRDF {
      * Output tuples, using UTF8 output See {@linkplain StreamRDFLib#writer} for
      * ways to create a AWriter object.
      */
-    public WriterStreamRDFTuples(AWriter w) {
+    public WriterStreamRDFPlain(AWriter w) {
         this(w, CharSpace.UTF8) ;
     }
 
@@ -53,7 +53,7 @@ public class WriterStreamRDFTuples implements StreamRDF {
      * Output tuples, choosing ASCII or UTF8 See
      * {@linkplain StreamRDFLib#writer} for ways to create a AWriter object.
      */
-    public WriterStreamRDFTuples(AWriter w, CharSpace charSpace) {
+    public WriterStreamRDFPlain(AWriter w, CharSpace charSpace) {
         out = w ;
         nodeFmt = new NodeFormatterNT(charSpace) ;
     }
