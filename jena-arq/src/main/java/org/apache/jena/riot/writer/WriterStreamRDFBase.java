@@ -35,9 +35,10 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Core engine for output of triples / quads that is streaming.
- *  Handles prefixes and base, toegtehr with the environment for processing. 
- *  If fed only quads, the output is valid TriG. 
- *  If fed only triples, the output is valid Turtle. 
+ *  Handles prefixes and base, toegther with the environment for processing. 
+ *  If fed quads, the output is valid TriG. 
+ *  If fed only triples, the output is valid Turtle.
+ *  Not for N-Quads and N-triples. 
  */
 
 public abstract class WriterStreamRDFBase implements StreamRDF

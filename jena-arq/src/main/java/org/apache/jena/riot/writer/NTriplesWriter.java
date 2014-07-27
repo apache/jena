@@ -91,7 +91,7 @@ public class NTriplesWriter extends WriterGraphRIOTBase
             write(out, iter) ;
         else
         {
-            StreamRDF s = new WriterStreamRDFTuples(IO.wrap(out), ASCII) ;
+            StreamRDF s = new WriterStreamRDFPlain(IO.wrap(out), ASCII) ;
             write$(s, iter) ;
         }
     }
@@ -104,7 +104,7 @@ public class NTriplesWriter extends WriterGraphRIOTBase
             write(out, iter) ;
         else
         {
-            StreamRDF s = new WriterStreamRDFTuples(IO.wrapASCII(out), ASCII) ;
+            StreamRDF s = new WriterStreamRDFPlain(IO.wrapASCII(out), ASCII) ;
             write$(s, iter) ;
         }
      

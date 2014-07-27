@@ -22,10 +22,10 @@ import java.io.OutputStream ;
 
 import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.riot.writer.WriterStreamRDFTuples ;
+import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
 
 /** Primarily for debugging */
-public class PrintingStreamRDF extends WriterStreamRDFTuples //implements StreamRDF
+public class PrintingStreamRDF extends WriterStreamRDFPlain //implements StreamRDF
 {
     public PrintingStreamRDF(OutputStream out) { 
         super(init(out)) ;
