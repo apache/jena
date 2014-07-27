@@ -20,10 +20,7 @@ package org.apache.jena.propertytable;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.jena.riot.lang.LangCSV;
-
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -38,29 +35,29 @@ public interface PropertyTable {
 	
 	/**
 	 * Query for ?s <p> <o>
-	 * @param column, the Column with the columnKey Node of the predicate
-	 * @param value, the object (or value) Node
+	 * @param column the Column with the columnKey Node of the predicate
+	 * @param value the object (or value) Node
 	 * @return the ExtendedIterator of the matching Triples
 	 */
 	ExtendedIterator<Triple> getTripleIterator(Column column, Node value);
 
 	/**
 	 * Query for ?s <p> ?o
-	 * @param column, the Column with the columnKey Node of the predicate
+	 * @param column the Column with the columnKey Node of the predicate
 	 * @return the ExtendedIterator of the matching Triples
 	 */
 	ExtendedIterator<Triple> getTripleIterator(Column column);
 	
 	/**
 	 * Query for ?s ?p <o>
-	 * @param value, the object (or value) Node
+	 * @param value the object (or value) Node
 	 * @return the ExtendedIterator of the matching Triples
 	 */
 	ExtendedIterator<Triple> getTripleIterator(Node value);
 	
 	/**
 	 * Query for <s> ?p ?o
-	 * @param row, the Row with the rowKey Node of the subject
+	 * @param row the Row with the rowKey Node of the subject
 	 * @return the ExtendedIterator of the matching Triples
 	 */
 	ExtendedIterator<Triple> getTripleIterator(Row row);
@@ -78,7 +75,7 @@ public interface PropertyTable {
 
 	/**
 	 * Get Column by its columnKey Node of the predicate
-	 * @param p, columnKey Node of the predicate
+	 * @param p columnKey Node of the predicate
 	 * @return the Column
 	 */
 	Column getColumn(Node p);
@@ -91,7 +88,7 @@ public interface PropertyTable {
 
 	/**
 	 * Get Row by its rowKey Node of the subject
-	 * @param s, rowKey Node of the subject
+	 * @param s rowKey Node of the subject
 	 * @return the Row
 	 */
 	Row getRow(Node s);
@@ -99,7 +96,7 @@ public interface PropertyTable {
 	
 	/**
 	 * Create Row by its rowKey Node of the subject
-	 * @param s, rowKey Node of the subject
+	 * @param s rowKey Node of the subject
 	 * @return the Row created
 	 */
 	Row createRow(Node s);
@@ -120,8 +117,8 @@ public interface PropertyTable {
 	
 	/**
 	 * Get the Rows matching the value of a Column
-	 * @param column, the Column with the columnKey Node of the predicate
-	 * @param value, the object (or value) Node
+	 * @param column the Column with the columnKey Node of the predicate
+	 * @param value the object (or value) Node
 	 * @return the matching Rows
 	 */
 	Collection<Row> getMatchingRows(Column column, Node value);

@@ -44,10 +44,10 @@ public class StageGeneratorPropertyTable implements StageGenerator {
             // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt) ;
         if (pattern.size() <= 1){
-        	System.out.println( "<=1 "+ pattern);
+//        	System.out.println( "<=1 "+ pattern);
         	return above.execute(pattern, input, execCxt) ;
         }
-        System.out.println( ">1" + pattern);
+//        System.out.println( ">1" + pattern);
         return QueryIterPropertyTable.create(input, pattern, execCxt);
     }
     
