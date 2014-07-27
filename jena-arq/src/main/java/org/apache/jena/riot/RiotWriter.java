@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 /** Direct call to create writers for specific formats.
  *  The normal way to write is {@linkplain RDFDataMgr} 
  */
+@Deprecated
 public class RiotWriter
 {
     public static void writeNQuads(OutputStream out, Iterator<Quad> it) {
