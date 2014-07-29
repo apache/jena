@@ -296,8 +296,10 @@ public class OpExecutorTDB1 extends OpExecutor
         return pattern ;
     }
     
-    // Null ==> Triples table
-    /** Handle special graph node names.  Retunrs null for default graph in storage. */
+    /** Handle special graph node names.  
+     * Returns null for default graph in storage (use the triple table).
+     * Returns Node.ANY for the union graph
+     */
     public static Node decideGraphNode(Node gn, ExecutionContext execCxt)
     {
      // ---- Graph names with special meaning. 
