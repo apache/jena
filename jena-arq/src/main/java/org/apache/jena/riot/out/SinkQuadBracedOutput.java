@@ -110,7 +110,8 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
     }
 
     private void output(Triple triple) {
-        out.print(FmtUtils.stringForTriple(triple)) ;
+        String ts = FmtUtils.stringForTriple(triple, sCxt) ;
+        out.print(ts) ;
     }
 
     @Override
