@@ -26,31 +26,33 @@ public class TestIndentedWriter extends BaseTest
 {
     @Test public void write01()
     {
-        IndentedLineBuffer b = new IndentedLineBuffer() ;
-        b.print("hell") ;
-        b.print("o") ;
-        assertEquals("hello", b.asString()) ;
+        try(IndentedLineBuffer b = new IndentedLineBuffer()) {
+            b.print("hell") ;
+            b.print("o") ;
+            assertEquals("hello", b.asString()) ;
+        }
     }
     
     @Test public void write02()
     {
-        IndentedLineBuffer b = new IndentedLineBuffer() ;
-        b.incIndent() ;
-        b.print("hell") ;
-        b.print("o") ;
-        b.decIndent() ;
-        assertEquals("  hello", b.asString()) ;
+        try(IndentedLineBuffer b = new IndentedLineBuffer()) {
+            b.incIndent() ;
+            b.print("hell") ;
+            b.print("o") ;
+            b.decIndent() ;
+            assertEquals("  hello", b.asString()) ;
+        }
     }
     
     @Test public void write03()
     {
-        IndentedLineBuffer b = new IndentedLineBuffer() ;
-        b.incIndent() ;
-        b.printf("0x%04X", 1) ;
-        b.println() ;
-        b.print("XX") ;
-        b.decIndent() ;
-        assertEquals("  0x0001\n  XX", b.asString()) ;
+        try(IndentedLineBuffer b = new IndentedLineBuffer()) {
+            b.incIndent() ;
+            b.printf("0x%04X", 1) ;
+            b.println() ;
+            b.print("XX") ;
+            b.decIndent() ;
+            assertEquals("  0x0001\n  XX", b.asString()) ;
+        }
     }
-    
 }

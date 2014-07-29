@@ -73,26 +73,26 @@ public class Version
      * @return Version information
      */
     public String toString(boolean singleLine) {
-        IndentedLineBuffer buffer = new IndentedLineBuffer(false);
-        
-        Iterator<Class<?>> iter = classes.iterator();
-        while (iter.hasNext())
-        {
-            Class<?> c = iter.next();
-            String component = Utils.classShortName(c) ;
-            String version = field(FIELD_VERSION, c);
-            String timestamp = field(FIELD_BUILD_DATE, c);
-            buffer.append("%s Version %s (Built %s)", component, version, timestamp);
-            if (iter.hasNext()) {
-                if (!singleLine) {
-                    buffer.println();
-                } else {
-                    buffer.print(", ");
+        try ( IndentedLineBuffer buffer = new IndentedLineBuffer(false) ) {
+            Iterator<Class<?>> iter = classes.iterator();
+            while (iter.hasNext())
+            {
+                Class<?> c = iter.next();
+                String component = Utils.classShortName(c) ;
+                String version = field(FIELD_VERSION, c);
+                String timestamp = field(FIELD_BUILD_DATE, c);
+                buffer.append("%s Version %s (Built %s)", component, version, timestamp);
+                if (iter.hasNext()) {
+                    if (!singleLine) {
+                        buffer.println();
+                    } else {
+                        buffer.print(", ");
+                    }
                 }
             }
+
+            return buffer.asString();
         }
-        
-        return buffer.asString();
     }
     
     /**
