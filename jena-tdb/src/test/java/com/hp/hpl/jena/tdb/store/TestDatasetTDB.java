@@ -202,16 +202,18 @@ public class TestDatasetTDB extends BaseTest
         String qs = "PREFIX : <"+baseNS+"> SELECT (COUNT(?x) as ?c) WHERE { ?x (:p1|:p2) 'x1' }" ;
         Query q = QueryFactory.create(qs) ;
         
+        long c_m ;
         // Model
-        QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
-        long c_m = qExec.execSelect().next().getLiteral("c").getLong() ;
+        try (QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
+            c_m = qExec.execSelect().next().getLiteral("c").getLong() ;
+        }
 
         // dataset
-        qExec = QueryExecutionFactory.create(q, ds) ;
-        qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;        
-
-        long c_ds = qExec.execSelect().next().getLiteral("c").getLong() ;
-        qExec.close() ;
+        long c_ds ;
+        try (QueryExecution qExec = QueryExecutionFactory.create(q, ds)) {
+            qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;        
+            c_ds = qExec.execSelect().next().getLiteral("c").getLong() ;
+        }
         
 //        String qs2 = "PREFIX : <"+baseNS+"> SELECT * WHERE { ?x (:p1|:p2) 'x1' }" ;
 //        Query q2 = QueryFactory.create(qs2) ;
@@ -224,7 +226,6 @@ public class TestDatasetTDB extends BaseTest
         // --------
         
         assertEquals(c_m, c_ds) ; 
-        qExec.close() ;
     }
     
     @Test public void special5()

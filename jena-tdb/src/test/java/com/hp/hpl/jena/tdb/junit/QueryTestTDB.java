@@ -144,9 +144,9 @@ public class QueryTestTDB extends EarlTestCase
         else
         {
             QueryEngineFactory f = QueryEngineRef.getFactory() ;
-            QueryExecution qExec1 = new QueryExecutionBase(query, ds, null, f) ;
-            rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;
-            qExec1.close() ;
+            try(QueryExecution qExec1 = new QueryExecutionBase(query, ds, null, f)) {
+                rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;
+            }
             expectedLabel = "Standard engine" ;
         }
         

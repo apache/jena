@@ -72,11 +72,9 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        BufferedWriter writer = new BufferedWriter(new FileWriter(
-                dir.getPath("tdb.lock")));
-        writer.write(Integer.toString(-1234)); // Fake PID that would never be
-                                               // valid
-        writer.close();
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+            writer.write(Integer.toString(-1234)); // Fake PID that would never be valid
+        }
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
         Assert.assertFalse(lock.canObtain());
@@ -116,11 +114,10 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        BufferedWriter writer = new BufferedWriter(new FileWriter(
-                dir.getPath("tdb.lock")));
-        writer.write(Integer.toString(-1234)); // Fake PID that would never be
-                                               // valid
-        writer.close();
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+            // Fake PID that would never be valid
+            writer.write(Integer.toString(-1234)); 
+        }
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
 
@@ -141,11 +138,11 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        BufferedWriter writer = new BufferedWriter(new FileWriter(
-                dir.getPath("tdb.lock")));
-        writer.write(Integer.toString(-1234)); // Fake PID that would never be
-                                               // valid
-        writer.close();
+        try(BufferedWriter writer = 
+            new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+            // Fake PID that would never be valid
+            writer.write(Integer.toString(-1234)); 
+        }
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
 
@@ -166,11 +163,11 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        BufferedWriter writer = new BufferedWriter(new FileWriter(
-                dir.getPath("tdb.lock")));
-        writer.write(Integer.toString(-1234)); // Fake PID that would never be
-                                               // valid
-        writer.close();
+        try(BufferedWriter writer = 
+            new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+            // Fake PID that would never be valid
+            writer.write(Integer.toString(-1234)); 
+        }
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
 

@@ -145,15 +145,13 @@ public class ProcessUtils {
         }
 
         // Run and read data from the process
-        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-        List<String> data = new ArrayList<>();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            data.add(line);
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            List<String> data = new ArrayList<>();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                data.add(line);
+            }
+            return data;
         }
-        reader.close();
-
-        return data;
     }
 }

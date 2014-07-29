@@ -112,20 +112,19 @@ public class TestQuadFilter extends BaseTest
 //            } ;
         Query query = QueryFactory.create(qs) ;
         
-        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-        // Install filter for this query only.
-        qExec.getContext().set(SystemTDB.symTupleFilter, filter) ;
-        qExec.getContext().setTrue(TDB.symUnionDefaultGraph) ;
-        long x1 = ResultSetFormatter.consume(qExec.execSelect()) ;
-        qExec.close() ;
-        assertEquals(withFilter, x1) ;
-
+        try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
+            // Install filter for this query only.
+            qExec.getContext().set(SystemTDB.symTupleFilter, filter) ;
+            qExec.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+            long x1 = ResultSetFormatter.consume(qExec.execSelect()) ;
+            assertEquals(withFilter, x1) ;
+        }
         // No filter.
-        qExec = QueryExecutionFactory.create(query, ds) ;
-        qExec.getContext().setTrue(TDB.symUnionDefaultGraph) ;
-        long x2 = ResultSetFormatter.consume(qExec.execSelect()) ;
-        qExec.close() ;
-        assertEquals(withoutFilter, x2) ;
+        try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
+            qExec.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+            long x2 = ResultSetFormatter.consume(qExec.execSelect()) ;
+            assertEquals(withoutFilter, x2) ;
+        }
 
     }
         

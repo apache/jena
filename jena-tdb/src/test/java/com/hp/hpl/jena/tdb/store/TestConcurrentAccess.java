@@ -177,11 +177,11 @@ public class TestConcurrentAccess extends BaseTest
     {
         Dataset ds = create(); 
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o}") ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-        ResultSet rs = qExec.execSelect() ;
-        while(rs.hasNext()) 
-            rs.next();
-        qExec.close() ;
+        try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
+            ResultSet rs = qExec.execSelect() ;
+            while(rs.hasNext()) 
+                rs.next();
+        }
         
         DatasetGraph dsg = ds.asDatasetGraph() ;
         Quad quad = SSE.parseQuad("(<g> <y> <p> 99)") ;

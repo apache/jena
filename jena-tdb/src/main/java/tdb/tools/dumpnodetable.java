@@ -101,23 +101,24 @@ public class dumpnodetable extends CmdGeneral
         // Better to hack the indexes?
         Iterator<Pair<NodeId, Node>> iter = nodeTable.all() ;
         long count = 0 ;
-        IndentedWriter iw = new IndentedWriter(w) ;
-        for ( ; iter.hasNext() ; )
-        {
-            Pair<NodeId, Node> pair = iter.next() ;
-            iw.print(pair.car().toString()) ;
-            iw.print(" : ") ;
-            //iw.print(pair.cdr()) ;
-            Node n = pair.cdr() ;
-            String $ = stringForNode(n) ;
-            iw.print($) ;
+        try(IndentedWriter iw = new IndentedWriter(w)) {
+            for ( ; iter.hasNext() ; )
+            {
+                Pair<NodeId, Node> pair = iter.next() ;
+                iw.print(pair.car().toString()) ;
+                iw.print(" : ") ;
+                //iw.print(pair.cdr()) ;
+                Node n = pair.cdr() ;
+                String $ = stringForNode(n) ;
+                iw.print($) ;
+                iw.println() ;
+                count++ ;
+            }
             iw.println() ;
-            count++ ;
+            iw.printf("Total: "+count) ;
+            iw.println() ;
+            iw.flush() ;
         }
-        iw.println() ;
-        iw.printf("Total: "+count) ;
-        iw.println() ;
-        iw.flush() ;
     }
     
     private static String stringForNode(Node n)

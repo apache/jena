@@ -54,12 +54,9 @@ public class T_TimeoutTDBPattern
         Query query = QueryFactory.create(sparql);
 
         ds.begin(ReadWrite.READ);
-        QueryExecution qexec = null;
-        try {
-            System.out.println(MessageFormat.format(
-                                                    "{0,date} {0,time} Executing query [timeout1={1}s timeout2={2}s]: {3}",
-                                                    new Date(System.currentTimeMillis()), timeout1_sec, timeout2_sec, sparql));
-            qexec = QueryExecutionFactory.create(query, ds);
+        System.out.println(MessageFormat.format("{0,date} {0,time} Executing query [timeout1={1}s timeout2={2}s]: {3}",
+                                                new Date(System.currentTimeMillis()), timeout1_sec, timeout2_sec, sparql));
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, ds)) {
             if ( true )
                 qexec.setTimeout(timeout1_sec, TimeUnit.SECONDS, timeout2_sec, TimeUnit.SECONDS);
             long start = System.nanoTime() ;
@@ -79,8 +76,6 @@ public class T_TimeoutTDBPattern
         } catch (Throwable t) {
             t.printStackTrace(); // OOME
         } finally {
-            if (qexec != null)
-                qexec.close();
             ds.end();
             ds.close();
             System.out.println(MessageFormat.format("{0,date} {0,time} Finished",

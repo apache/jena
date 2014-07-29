@@ -38,12 +38,8 @@ public class TDBBackup
 {
     public static void backup(Location location, String backupfile)
     {
-        try
-        {
-            OutputStream out = new FileOutputStream(backupfile) ;
-            out = new BufferedOutputStream(out) ;
+        try(OutputStream out = new BufferedOutputStream(new FileOutputStream(backupfile))) {
             backup(location, out) ;
-            out.close() ;
         } 
         catch (FileNotFoundException e)
         {
