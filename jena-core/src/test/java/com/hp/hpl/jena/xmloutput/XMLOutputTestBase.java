@@ -172,23 +172,21 @@ public class XMLOutputTestBase extends ModelTestBase
         check(filename, encoding, regexPresent, regexAbsent, errs, code, "file:"+filename);
     }
     
-    protected void check(
-        String filename,
-        String encoding,
-        String regexPresent,
-        String regexAbsent,
-        boolean errorExpected,
-        Change code,
-        String base)
-        throws IOException {
-        //TestLogger tl = new TestLogger(BaseXMLWriter.class);
+    protected void check(String filename,
+                         String encoding,
+                         String regexPresent,
+                         String regexAbsent,
+                         boolean errorExpected,
+                         Change code,
+                         String base)
+                             throws IOException {
         blockLogger();
         boolean errorsFound;
         Model m = createMemModel();
-        InputStream in = new FileInputStream(filename);
-        m.read(in,base);
-        in.close();
-        //m.read(filename);
+        try(InputStream in = new FileInputStream(filename)) {
+            m.read(in,base);
+        }
+        @SuppressWarnings("resource")
         Writer sw;
         ByteArrayOutputStream bos = null;
         if (encoding == null)
