@@ -21,6 +21,7 @@ package com.hp.hpl.jena.tdb.solver.stats;
 import static com.hp.hpl.jena.sparql.sse.Item.addPair ;
 import static com.hp.hpl.jena.sparql.sse.Item.createTagged ;
 
+import java.io.BufferedOutputStream ;
 import java.io.FileOutputStream ;
 import java.io.IOException ;
 import java.io.OutputStream ;
@@ -60,10 +61,8 @@ public class Stats
     static private void write(String filename, Map<Node, Integer> predicateStats, Map<Node, Integer> typeStats, long statsTotal)
     {
         // Write out the stats
-        try {
-            OutputStream statsOut = new FileOutputStream(filename) ;
+        try (OutputStream statsOut = new BufferedOutputStream(new FileOutputStream(filename))) {
             write(statsOut, predicateStats, typeStats, statsTotal) ;
-            statsOut.close() ;
         } catch (IOException ex)
         { Log.warn(Stats.class, "Problem when writing stats file", ex) ; }
     }

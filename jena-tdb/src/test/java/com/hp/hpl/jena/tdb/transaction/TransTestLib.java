@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.transaction;
+package com.hp.hpl.jena.tdb.transaction ;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -32,41 +32,33 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public class TransTestLib
-{
+public class TransTestLib {
 
-    public static int count(String queryStr, DatasetGraph dsg)
-    {
+    public static int count(String queryStr, DatasetGraph dsg) {
         int counter = 0 ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
-        try {
+        try (QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg))) {
             ResultSet rs = qExec.execSelect() ;
-            for (; rs.hasNext() ; )
-            {
+            for ( ; rs.hasNext() ; ) {
                 rs.nextBinding() ;
                 counter++ ;
             }
             return counter ;
-        } finally { qExec.close() ; }
+        }
     }
 
     // To QueryExecUtils?
-    public static List<Node> query(String queryStr, String var, DatasetGraphTxn dsg)
-    {
+    public static List<Node> query(String queryStr, String var, DatasetGraphTxn dsg) {
         Var v = Var.alloc(var) ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
-        List<Node> nodes = new ArrayList<>() ;
-        try {
+        try (QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg))) {
+            List<Node> nodes = new ArrayList<>() ;
             ResultSet rs = qExec.execSelect() ;
-            for (; rs.hasNext() ; )
-            {
+            for ( ; rs.hasNext() ; ) {
                 Node n = rs.nextBinding().get(v) ;
                 nodes.add(n) ;
             }
             return nodes ;
-        } finally { qExec.close() ; }
+        }
     }
-
 }

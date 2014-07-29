@@ -264,8 +264,7 @@ public class T_TransSystem
     {
         int counter = 0 ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
-        try {
+        try(QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg))) {
             qExec.setTimeout(abortTime);
             ResultSet rs = qExec.execSelect() ;
             for (; rs.hasNext() ; )
@@ -274,15 +273,14 @@ public class T_TransSystem
                 counter++ ;
             }
             return counter ;
-        } finally { qExec.close() ; }
+        }
     }
 
     public static int describeWithAbort(String queryStr, DatasetGraph dsg, long abortTime)
     {
         int counter = 0 ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
-        try {
+        try(QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg))) {
             qExec.setTimeout(abortTime);
             Model model = qExec.execDescribe();
             //ResultSet rs = qExec.execSelect() ;
@@ -291,7 +289,7 @@ public class T_TransSystem
                 counter++;
             }
             return counter ;
-        } finally { qExec.close() ; }
+        }
     }
 
 

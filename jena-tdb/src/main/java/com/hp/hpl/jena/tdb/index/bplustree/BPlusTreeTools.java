@@ -39,9 +39,7 @@ class BPlusTreeTools
     
     /*public*/private static void binDump(String filename)
     {
-        try
-        {
-            RandomAccessFile fh = new RandomAccessFile(filename, "r") ;
+        try(RandomAccessFile fh = new RandomAccessFile(filename, "r")) {
             ByteBuffer bb = ByteBuffer.allocate(8*1024) ;
             FileChannel ch = fh.getChannel() ;
             int idx = 0 ;
@@ -53,8 +51,6 @@ class BPlusTreeTools
                 ByteBufferLib.print(bb) ;
                 bb.clear() ;
             }
-            fh.close() ;
-            
         } catch (IOException ex)
         {
             ex.printStackTrace();
