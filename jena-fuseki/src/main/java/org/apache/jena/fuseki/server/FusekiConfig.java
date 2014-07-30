@@ -306,10 +306,10 @@ public class FusekiConfig
         QuerySolutionMap initValues = null ;
         if ( varName != null )
             initValues = querySolution(varName, value) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, m, initValues) ;
-        ResultSet rs = ResultSetFactory.copyResults(qExec.execSelect()) ;
-        qExec.close() ;
-        return rs ;
+        try(QueryExecution qExec = QueryExecutionFactory.create(query, m, initValues)) {
+            ResultSet rs = ResultSetFactory.copyResults(qExec.execSelect()) ;
+            return rs ;
+        }
     }
     
     private static QuerySolutionMap querySolution(String varName, RDFNode value)

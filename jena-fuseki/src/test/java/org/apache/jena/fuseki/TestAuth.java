@@ -72,10 +72,10 @@ public class TestAuth extends ServerTest {
     public static void setup() throws IOException {
         realmFile = File.createTempFile("realm", ".properties");
 
-        FileWriter writer = new FileWriter(realmFile);
-        writer.write("allowed: password, fuseki\n");
-        writer.write("forbidden: password, other");
-        writer.close();
+        try(FileWriter writer = new FileWriter(realmFile)) {
+            writer.write("allowed: password, fuseki\n");
+            writer.write("forbidden: password, other");
+        }
 
         LogCtl.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
         LogCtl.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING);
