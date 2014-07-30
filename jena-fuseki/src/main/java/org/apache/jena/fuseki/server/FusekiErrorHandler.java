@@ -51,21 +51,21 @@ public class FusekiErrorHandler extends ErrorHandler
         
         ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024) ;
         //String writer = IO.UTF8(null) ;
-        Writer writer = new OutputStreamWriter(bytes, "UTF-8") ;
-        
-        handleErrorPage(request, writer, connection.getResponse().getStatus(), connection.getResponse().getReason());
-        
-        if ( ! Fuseki.VERSION.equalsIgnoreCase("development") )
-        {
-            writer.write("\n") ;
-            writer.write("\n") ;
-            writer.write(format("Fuseki - version %s (Build date: %s)\n", Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
+        try(Writer writer = new OutputStreamWriter(bytes, "UTF-8")) {
+
+            handleErrorPage(request, writer, connection.getResponse().getStatus(), connection.getResponse().getReason());
+
+            if ( ! Fuseki.VERSION.equalsIgnoreCase("development") )
+            {
+                writer.write("\n") ;
+                writer.write("\n") ;
+                writer.write(format("Fuseki - version %s (Build date: %s)\n", Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
+            }
+            writer.flush();
         }
-        writer.flush();
         response.setContentLength(bytes.size()) ;
-        // Copy :-(
+        // Copy
         response.getOutputStream().write(bytes.toByteArray()) ;
-        writer.close() ;
     }
     
     @Override

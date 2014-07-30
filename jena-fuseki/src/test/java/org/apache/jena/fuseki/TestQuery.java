@@ -71,25 +71,24 @@ public class TestQuery extends BaseTest
     @Test public void query_recursive_01()
     {
         String query = "SELECT * WHERE { SERVICE <" + serviceQuery + "> { ?s ?p ?o . BIND(?o AS ?x) } }";
-        QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query);
-        ResultSet rs = qExec.execSelect();
-        
-        Var x = Var.alloc("x");
-        while (rs.hasNext()) {
-            Binding b = rs.nextBinding();
-            Assert.assertNotNull(b.get(x));
+        try(QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery, query)) {
+            ResultSet rs = qExec.execSelect();
+            
+            Var x = Var.alloc("x");
+            while (rs.hasNext()) {
+                Binding b = rs.nextBinding();
+                Assert.assertNotNull(b.get(x));
+            }
         }
-        qExec.close();
     }
     
     @Test public void query_with_params_01()
     {
         String query = "ASK { }";
-        QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query);
-        
-        boolean result = qExec.execAsk();
-        Assert.assertTrue(result);
-        qExec.close();
+        try(QueryExecution qExec = QueryExecutionFactory.sparqlService(serviceQuery + "?output=json", query)) {
+            boolean result = qExec.execAsk();
+            Assert.assertTrue(result);
+        }
     }
     
     @Test public void request_id_header_01() throws IOException

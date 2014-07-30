@@ -93,16 +93,17 @@ public class TestBuildTextDataset extends BaseTest
                                        " }") ;
 
         dataset.begin(ReadWrite.READ) ;
+        int x ;
         try {
             Query q = QueryFactory.create(pre + "\n" + qs) ;
-            QueryExecution qexec = QueryExecutionFactory.create(q, dataset) ;
-            int x = ResultSetFormatter.consume(qexec.execSelect()) ;
-            qexec.close() ;
-            assertEquals("Unexpected result count", 2, x) ;
+            try(QueryExecution qexec = QueryExecutionFactory.create(q, dataset)) {
+                x = ResultSetFormatter.consume(qexec.execSelect()) ;
+            }
         }
         finally {
             dataset.end() ;
         }
+        assertEquals("Unexpected result count", 2, x) ;
     }
 
     public static Dataset createCode() {

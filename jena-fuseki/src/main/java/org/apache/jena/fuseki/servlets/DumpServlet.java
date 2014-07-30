@@ -108,11 +108,9 @@ public class DumpServlet extends HttpServlet
     // This resets the input stream
 
     static public String dumpRequest(HttpServletRequest req)
-    {
-        try {
-            StringWriter sw = new StringWriter() ;
-            PrintWriter pw = new PrintWriter(sw) ;
-
+    { 
+         StringWriter sw = new StringWriter() ;
+         try( PrintWriter pw = new PrintWriter(sw) ) {
             // Standard environment
             pw.println("Method:                 "+req.getMethod());
             pw.println("getContentLength:       "+Integer.toString(req.getContentLength()));
@@ -204,14 +202,11 @@ public class DumpServlet extends HttpServlet
             }
 
             pw.println() ;
+            pw.flush();
             //printBody(pw, req) ;
-
-            pw.close() ;
-            sw.close() ;
             return sw.toString() ;
-        } catch (IOException e)
-        { }
-        return null ;
+        }
+         
     }
 
     static void printBody(PrintWriter pw, HttpServletRequest req) throws IOException
@@ -246,65 +241,58 @@ public class DumpServlet extends HttpServlet
     static public String dumpEnvironment()
     {
         Properties properties = System.getProperties();
+
         StringWriter sw = new StringWriter() ;
-        PrintWriter pw = new PrintWriter(sw) ;
-        Enumeration<Object> en = properties.keys();
-        while(en.hasMoreElements())
-        {
-            String key = en.nextElement().toString();
-            pw.println(key+": '"+properties.getProperty(key)+"'");
+        try(PrintWriter pw = new PrintWriter(sw) ) {
+            Enumeration<Object> en = properties.keys();
+            while(en.hasMoreElements())
+            {
+                String key = en.nextElement().toString();
+                pw.println(key+": '"+properties.getProperty(key)+"'");
+            }
+            pw.println() ;
+            pw.flush() ;
+            return sw.toString() ; 
         }
-        pw.println() ;
-        pw.close() ;
-        try {
-            sw.close() ;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return sw.toString() ;      
     }
 
     public String dumpServletContext()
     {
         StringWriter sw = new StringWriter() ;
-        PrintWriter pw = new PrintWriter(sw) ;
+        try(PrintWriter pw = new PrintWriter(sw)) {
 
-        ServletContext sc =  getServletContext();
-        pw.println("majorVersion: '"+sc.getMajorVersion()+"'");
-        pw.println("minorVersion: '"+sc.getMinorVersion()+"'");
-        pw.println("contextName:  '"+sc.getServletContextName()+"'");
-        pw.println("servletInfo:  '"+getServletInfo()+"'");
-        pw.println("serverInfo:  '"+sc.getServerInfo()+"'");
+            ServletContext sc =  getServletContext();
+            pw.println("majorVersion: '"+sc.getMajorVersion()+"'");
+            pw.println("minorVersion: '"+sc.getMinorVersion()+"'");
+            pw.println("contextName:  '"+sc.getServletContextName()+"'");
+            pw.println("servletInfo:  '"+getServletInfo()+"'");
+            pw.println("serverInfo:  '"+sc.getServerInfo()+"'");
 
-        {
-            Enumeration<String> en = sc.getInitParameterNames();
-            if (en != null) {
-                pw.println("initParameters: ");
-                while(en.hasMoreElements())
-                {
-                    String key = en.nextElement();
-                    pw.println(key+": '"+sc.getInitParameter(key)+"'");
+            {
+                Enumeration<String> en = sc.getInitParameterNames();
+                if (en != null) {
+                    pw.println("initParameters: ");
+                    while(en.hasMoreElements())
+                    {
+                        String key = en.nextElement();
+                        pw.println(key+": '"+sc.getInitParameter(key)+"'");
+                    }
                 }
             }
-        }
-        
-        {
-            Enumeration<String> en = sc.getAttributeNames();
-            if (en != null) {
-                pw.println("attributes: ");
-                while(en.hasMoreElements())
-                {
-                    String key = en.nextElement();
-                    pw.println(key+": '"+sc.getAttribute(key)+"'");
+
+            {
+                Enumeration<String> en = sc.getAttributeNames();
+                if (en != null) {
+                    pw.println("attributes: ");
+                    while(en.hasMoreElements())
+                    {
+                        String key = en.nextElement();
+                        pw.println(key+": '"+sc.getAttribute(key)+"'");
+                    }
                 }
             }
-        }
-        pw.println() ;
-        pw.close() ;
-        try {
-            sw.close() ;
-        } catch (IOException e) {
-            e.printStackTrace();
+            pw.println() ;
+            pw.close() ;
         }
         return sw.toString() ;      
     }

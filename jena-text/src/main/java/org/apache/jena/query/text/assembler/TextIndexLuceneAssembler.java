@@ -50,6 +50,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         .
     */
 
+    @SuppressWarnings("resource")
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {
         try {
@@ -57,6 +58,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 throw new TextIndexException("No 'text:directory' property on " + root) ;
 
             Directory directory ;
+            
             RDFNode n = root.getProperty(pDirectory).getObject() ;
             if ( n.isLiteral() ) {
                 if ( !"mem".equals(n.asLiteral().getLexicalForm()) )

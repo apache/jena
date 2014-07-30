@@ -76,8 +76,7 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
 	
 	public static void doTestQuery(Dataset dataset, String label, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
 		Query query = QueryFactory.create(queryString) ;
-		QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ;
-		try {
+		try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
 			dataset.begin(ReadWrite.READ);
 		    ResultSet results = qexec.execSelect() ;
 		    
@@ -88,6 +87,6 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
 		        assertTrue(label + ": unexpected result: " + entityURI, expectedEntityURIs.contains(entityURI));
 		    }
 		    assertEquals(label, expectedNumResults, count);
-		} finally { qexec.close() ; dataset.end() ; }		
+		} finally { dataset.end() ; }		
 	}
 }

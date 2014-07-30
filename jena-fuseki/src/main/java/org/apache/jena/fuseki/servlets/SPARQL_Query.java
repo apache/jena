@@ -234,14 +234,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         
         // Assumes finished whole thing by end of sendResult. 
         action.beginRead() ;
-        QueryExecution qExec = null ;
         try {
             Dataset dataset = decideDataset(action, query, queryStringLog) ; 
-            qExec = createQueryExecution(query, dataset) ;
-            SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
-            
-            // Deals with exceptions itself.
-            sendResults(action, result, query.getPrologue()) ;
+            try(QueryExecution qExec = createQueryExecution(query, dataset)) {
+                SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
+                // Deals with exceptions itself.
+                sendResults(action, result, query.getPrologue()) ;
+            }
         } catch (QueryCancelledException ex) {
             // Additional counter information.
             incCounter(action.srvRef, QueryTimeouts) ; 
@@ -251,8 +250,6 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             incCounter(action.srvRef, QueryExecErrors) ; 
             throw ex ; 
         } finally { 
-            if ( qExec != null )
-                qExec.close() ;
             action.endRead() ;
         }
     }
