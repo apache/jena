@@ -82,7 +82,6 @@ public class GraphView extends GraphBase implements Sync
         return dsg ;
     }
     
-    
     protected final boolean isDefaultGraph() { return isDefaultGraph(gn) ; }
     protected final boolean isUnionGraph()   { return isUnionGraph(gn) ; }
 

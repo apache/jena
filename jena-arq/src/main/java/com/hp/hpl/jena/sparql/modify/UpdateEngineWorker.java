@@ -33,9 +33,9 @@ import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.system.SerializationFactoryFinder ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.riot.system.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphUtil ;
@@ -381,18 +381,37 @@ public class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateModify update)
     {
         Node withGraph = update.getWithIRI() ;
-        Query query = elementToQuery(update.getWherePattern()) ;
+        Element elt = update.getWherePattern() ;
         
+        // null or a dataset for USING clause. 
         // USING/USING NAMED
         DatasetGraph dsg = processUsing(update) ;
         
+        // -------------------
+        // WITH
         // USING overrides WITH
-        if ( dsg == null && withGraph != null )
-            dsg = processWith(update) ;    
-            
+        if ( dsg == null && withGraph != null ) {
+            if ( false ) 
+                // Ye Olde way - create a special dataset
+                dsg = processWith(update) ;
+            else
+                // Better, 
+                // Wrap WHERE clause in GRAPH <with_uri>
+                // and can remove DatasetGraphAltDefaultGraph, 
+                // or at least comment its implications.
+                elt = new ElementNamedGraph(withGraph, elt) ;
+        }
+
+        // WITH :
+        // The quads from deletion/insertion are altered when streamed
+        // into the templates later on. 
+        
+        // -------------------
+        
         if ( dsg == null )
             dsg = graphStore ;
         
+        Query query = elementToQuery(elt) ;
         ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(graphStore.getContext());
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
         try
