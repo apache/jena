@@ -59,11 +59,6 @@ public class StageGeneratorGeneric implements StageGenerator {
                                     QueryIterator input, ExecutionContext execCxt)
     {
         Explain.explain(pattern, execCxt.getContext()) ;
-        // Old code.
-//      if ( reorder != null ) {
-//          pattern = reorder.reorder(pattern) ;
-//          Explain.explain("Reorder", pattern, execCxt.getContext()) ;
-//      }
 
         if ( ! input.hasNext() )
             return input ;
@@ -85,7 +80,7 @@ public class StageGeneratorGeneric implements StageGenerator {
 
             }
         }
-        Explain.explain("Reorder", pattern, execCxt.getContext()) ;
+        Explain.explain("Reorder/generic", pattern, execCxt.getContext()) ;
         return QueryIterBlockTriples.create(input, pattern, execCxt) ;
     }
 }
