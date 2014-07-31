@@ -23,9 +23,12 @@ import java.util.Iterator ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 
-/** DatasetGraph that switch teh default graph to another graph.
+/** DatasetGraph that switches the default graph to another graph.
  *  This different graph can be one of the underlying dataset or a completely
  *  unconnected graph.   
+ *  This wrapper should used with care at scale because it masks the
+ *  query execution from storage, so generic query execution happens,
+ *  not, for example, TDB quad execution.     
  */
 
 public class DatasetGraphAltDefaultGraph extends DatasetGraphCollection {
