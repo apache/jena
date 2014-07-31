@@ -254,17 +254,16 @@ public class TestParameterizedSparqlString {
         pq.setCommandText("SELECT * WHERE { ?s ?p ?o }");
         pq.setIri("s", "_:" + bnode.getId());
         Query q = pq.asQuery();
-        QueryExecution qe = QueryExecutionFactory.create(q, ds);
-        ResultSet rset = qe.execSelect();
-        Assert.assertEquals(1, ResultSetFormatter.consume(rset));
-        qe.close();
+        try(QueryExecution qe = QueryExecutionFactory.create(q, ds)) {
+            ResultSet rset = qe.execSelect();
+            Assert.assertEquals(1, ResultSetFormatter.consume(rset));
+        }
 
         // Use a parameterized update to modify the data
         ParameterizedSparqlString s = new ParameterizedSparqlString();
         s.setCommandText("INSERT { ?o ?p ?s } WHERE { ?s ?p ?o }");
         s.setIri("s", "_:" + bnode.getId());
         UpdateRequest query = s.asUpdate();
-
         UpdateProcessor proc = UpdateExecutionFactory.create(query, GraphStoreFactory.create(ds));
         proc.execute();
 

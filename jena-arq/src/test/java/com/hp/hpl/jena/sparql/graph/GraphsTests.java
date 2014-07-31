@@ -215,11 +215,10 @@ public abstract class GraphsTests extends BaseTest
     private int query(String str, Model model)
     {
         Query q = QueryFactory.create(str, Syntax.syntaxARQ) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, model) ;
-        ResultSet rs = qexec.execSelect() ;
-        int x = ResultSetFormatter.consume(rs) ;
-        qexec.close() ;
-        return x ;
+        try(QueryExecution qexec = QueryExecutionFactory.create(q, model)) {
+            ResultSet rs = qexec.execSelect() ;
+            return  ResultSetFormatter.consume(rs) ;
+        }
     }
     
     private int api(Model model)

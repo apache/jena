@@ -47,52 +47,47 @@ public class TestAPI extends BaseTest
     
     @Test public void testInitialBindingsConstruct1()
     {
-        QueryExecution qExec = makeQExec("CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}") ;
-        QuerySolutionMap init = new QuerySolutionMap() ;
-        init.add("z", m.createLiteral("zzz"));
+        try(QueryExecution qExec = makeQExec("CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}")) {
+            QuerySolutionMap init = new QuerySolutionMap() ;
+            init.add("z", m.createLiteral("zzz"));
+            
+            qExec.setInitialBinding(init) ;
+            Model r = qExec.execConstruct() ;
         
-        qExec.setInitialBinding(init) ;
-        Model r = qExec.execConstruct() ;
-    
-        assertTrue("Empty model", r.size() > 0 ) ;
-    
-        Property p1 = m.createProperty(ns+"p1") ;
-    
-        assertTrue("Empty model", r.contains(null,p1, init.get("z"))) ; 
+            assertTrue("Empty model", r.size() > 0 ) ;
         
-        qExec.close() ;
+            Property p1 = m.createProperty(ns+"p1") ;
+        
+            assertTrue("Empty model", r.contains(null,p1, init.get("z"))) ; 
+        }
     }
-    
     
     @Test public void testInitialBindingsConstruct2()
     {
-        QueryExecution qExec = makeQExec("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }") ;
-        QuerySolutionMap init = new QuerySolutionMap() ;
-        init.add("o", m.createLiteral("x1"));
+        try(QueryExecution qExec = makeQExec("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }")) {
+            QuerySolutionMap init = new QuerySolutionMap() ;
+            init.add("o", m.createLiteral("x1"));
+            
+            qExec.setInitialBinding(init) ;
+            Model r = qExec.execConstruct() ;
         
-        qExec.setInitialBinding(init) ;
-        Model r = qExec.execConstruct() ;
-    
-        assertTrue("Empty model", r.size() > 0 ) ;
-    
-        Property p1 = m.createProperty(ns+"p1") ;
-    
-        assertTrue("Empty model", r.contains(null, p1, init.get("x1"))) ; 
+            assertTrue("Empty model", r.size() > 0 ) ;
         
-        qExec.close() ;
+            Property p1 = m.createProperty(ns+"p1") ;
+        
+            assertTrue("Empty model", r.contains(null, p1, init.get("x1"))) ; 
+        }
     }
 
     @Test public void test_API1()
     {
-        QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
-        try {
+        try(QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}")) {
             ResultSet rs = qExec.execSelect() ;
             assertTrue("No results", rs.hasNext()) ;
             QuerySolution qs = rs.nextSolution() ;
             Resource qr = qs.getResource("s") ;
             assertSame("Not the same model as queried", qr.getModel(), m) ;
-        } finally { qExec.close() ; }
-        
+        }
     }
     
 //    @Test public void test_OptRegex1()
@@ -143,14 +138,14 @@ public class TestAPI extends BaseTest
 
     @Test public void testInitialBindings3()
     {
-        QueryExecution qExec = makeQExec("SELECT * {?s ?p 'x1'}") ;
-        QuerySolutionMap init = new QuerySolutionMap() ;
-        init.add("z", m.createLiteral("zzz"));
-        qExec.setInitialBinding(init) ;
-        ResultSet rs = qExec.execSelect() ;
-        QuerySolution qs = rs.nextSolution() ;
-        assertTrue("Initial setting not set correctly now", qs.getLiteral("z").getLexicalForm().equals("zzz")) ;
-        qExec.close() ;
+        try(QueryExecution qExec = makeQExec("SELECT * {?s ?p 'x1'}")) {
+            QuerySolutionMap init = new QuerySolutionMap() ;
+            init.add("z", m.createLiteral("zzz"));
+            qExec.setInitialBinding(init) ;
+            ResultSet rs = qExec.execSelect() ;
+            QuerySolution qs = rs.nextSolution() ;
+            assertTrue("Initial setting not set correctly now", qs.getLiteral("z").getLexicalForm().equals("zzz")) ;
+        }
     }
     
     @Test public void testInitialBindings4()
@@ -168,18 +163,17 @@ public class TestAPI extends BaseTest
             "}";
         
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
-        QueryExecution qexec = QueryExecutionFactory.create(query, m);
-
-        QuerySolutionMap map = new QuerySolutionMap();
-        map.add("this", OWL.Thing);
-        qexec.setInitialBinding(map);
-        
-        ResultSet rs = qexec.execSelect();
-        while(rs.hasNext()) {
-            QuerySolution qs = rs.nextSolution();
-            //System.out.println("Result: " + qs);
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, m)) {
+            QuerySolutionMap map = new QuerySolutionMap();
+            map.add("this", OWL.Thing);
+            qexec.setInitialBinding(map);
+            
+            ResultSet rs = qexec.execSelect();
+            while(rs.hasNext()) {
+                QuerySolution qs = rs.nextSolution();
+                //System.out.println("Result: " + qs);
+            }
         }
-        qexec.close() ;
     }
     
     /**
@@ -245,18 +239,18 @@ public class TestAPI extends BaseTest
         String queryString = "SELECT (count(?s) AS ?c) {?s ?p ?o} GROUP BY ?s";
         Query q = QueryFactory.create(queryString) ;
         
-        QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
-        
-        ResultSet rs = qExec.execSelect() ;
-        QuerySolution qs = rs.nextSolution() ;
-        assertEquals(3, qs.getLiteral("c").getInt()) ;
-        qExec.close() ;
-        
-        qExec = QueryExecutionFactory.create(q, m) ;
-        rs = qExec.execSelect() ;
-        qs = rs.nextSolution() ;
-        assertEquals(3, qs.getLiteral("c").getInt()) ;
-        qExec.close() ;
+        try(QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
+            
+            ResultSet rs = qExec.execSelect() ;
+            QuerySolution qs = rs.nextSolution() ;
+            assertEquals(3, qs.getLiteral("c").getInt()) ;
+        }
+            
+        try(QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
+            ResultSet rs = qExec.execSelect() ;
+            QuerySolution qs = rs.nextSolution() ;
+            assertEquals(3, qs.getLiteral("c").getInt()) ;
+        }
     }
     
     @Test public void testConstructRejectsBadTriples1()

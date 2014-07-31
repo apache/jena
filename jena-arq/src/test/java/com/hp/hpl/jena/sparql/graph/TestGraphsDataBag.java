@@ -144,11 +144,10 @@ public class TestGraphsDataBag extends BaseTest
     {
         Model model = ModelFactory.createModelForGraph(g);
         Query q = QueryFactory.create(str, Syntax.syntaxARQ) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, model) ;
+        try(QueryExecution qexec = QueryExecutionFactory.create(q, model)) {
         ResultSet rs = qexec.execSelect() ;
-        int x = ResultSetFormatter.consume(rs) ;
-        qexec.close() ;
-        return x ;
+        return ResultSetFormatter.consume(rs) ;
+        }
     }
     
     private int count(Graph g)

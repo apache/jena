@@ -59,9 +59,9 @@ public class HttpResponseLib
                 String ct = contentType(response) ;
                 Lang lang = RDFLanguages.contentTypeToLang(ct) ;
                 StreamRDF dest = StreamRDFLib.graph(g) ; 
-                InputStream in = entity.getContent() ;
-                RDFDataMgr.parse(dest, in, baseIRI, lang) ;
-                in.close() ;
+                try(InputStream in = entity.getContent()) {
+                    RDFDataMgr.parse(dest, in, baseIRI, lang) ;
+                }
                 this.graph = g ; 
             } catch (IOException ex) { IO.exception(ex) ; }
         }
@@ -80,13 +80,13 @@ public class HttpResponseLib
                 org.apache.http.entity.ContentType ct = org.apache.http.entity.ContentType.get(entity) ;
                 System.out.println("Content-type: "+ct) ;
                 System.out.println() ;
-                InputStream in = entity.getContent() ;
-                int l ;
-                byte buffer[] = new byte[1024] ;
-                while( (l=in.read(buffer)) != -1 ) {
-                    System.out.print(new String(buffer, 0, l, "UTF-8")) ;
+                try (InputStream in = entity.getContent()) {
+                    int l ;
+                    byte buffer[] = new byte[1024] ;
+                    while ((l = in.read(buffer)) != -1) {
+                        System.out.print(new String(buffer, 0, l, "UTF-8")) ;
+                    }
                 }
-                in.close() ;
             } catch (IOException ex)
             {
                 ex.printStackTrace(System.err) ;

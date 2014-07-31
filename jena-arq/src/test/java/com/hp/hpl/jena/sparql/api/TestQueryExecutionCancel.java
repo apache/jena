@@ -57,53 +57,49 @@ public class TestQueryExecutionCancel extends BaseTest {
     @Test(expected=QueryCancelledException.class)
     public void test_Cancel_API_1()
     {
-        QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}") ;
-        try {
+        try(QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}")) {
             ResultSet rs = qExec.execSelect() ;
             assertTrue(rs.hasNext()) ;
             qExec.abort();
-            
             assertTrue(rs.hasNext()) ;
             rs.nextSolution();
             assertFalse("Results not expected after cancel.", rs.hasNext()) ;
-        } finally { qExec.close() ; }
+        }
     }
     
     @Test(expected=QueryCancelledException.class)
     public void test_Cancel_API_2()
     {
-        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
-        "SELECT * {?s ?p ?o . FILTER ex:wait(100) }") ;
-        try {
+        try(QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * {?s ?p ?o . FILTER ex:wait(100) }")) {
             ResultSet rs = qExec.execSelect() ;
             assertTrue(rs.hasNext()) ;
             qExec.abort();
             assertTrue(rs.hasNext()) ;
             rs.nextSolution();
             assertFalse("Results not expected after cancel.", rs.hasNext()) ;
-        } finally { qExec.close() ; }
+        }
     }    
     
     @Test public void test_Cancel_API_3() throws InterruptedException
     {
-        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
-        "SELECT * {?s ?p ?o . FILTER ex:wait(100) }") ;
+        // Don't qExec.close on this thread.
+        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * { ?s ?p ?o . FILTER ex:wait(100) }") ;
         CancelThreadRunner thread = new CancelThreadRunner(qExec);
         thread.start();
         synchronized (qExec) { qExec.wait() ; }
-        qExec.abort();
+        synchronized (qExec) { qExec.abort() ;}
         synchronized (qExec) { qExec.notify() ; }
         assertEquals (1, thread.getCount()) ;
     }
     
     @Test public void test_Cancel_API_4() throws InterruptedException
-    {
-        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> " +
-        "SELECT * {?s ?p ?o } ORDER BY ex:wait(100)") ;
+    { 
+        // Don't qExec.close on this thread.
+        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * { ?s ?p ?o } ORDER BY ex:wait(100)") ;
         CancelThreadRunner thread = new CancelThreadRunner(qExec);
         thread.start();
         synchronized (qExec) { qExec.wait() ; }
-        qExec.abort();
+        synchronized (qExec) { qExec.abort(); }
         synchronized (qExec) { qExec.notify() ; }
         assertEquals (1, thread.getCount()) ;
     }
