@@ -49,11 +49,11 @@ public class PropertyUtils
         String str = comment ;
         if ( str == null )
             str = filename ;
-        FileOutputStream fos = new FileOutputStream(filename) ;
-        Writer w = FileUtils.asUTF8(fos) ;
-        w = new BufferedWriter(w) ;
-        properties.store(w, "Metadata: "+str) ;   // Java6.
-        fos.close() ;
+        try(FileOutputStream fos = new FileOutputStream(filename)) {
+            Writer w = FileUtils.asUTF8(fos) ;
+            w = new BufferedWriter(w) ;
+            properties.store(w, "Metadata: "+str) ;
+        }
     }
     
     public static int getPropertyAsInteger(Properties properties, String key)

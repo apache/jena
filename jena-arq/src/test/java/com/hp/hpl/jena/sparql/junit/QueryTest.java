@@ -158,14 +158,9 @@ public class QueryTest extends EarlTestCase
             if ( dataset == null && ! doesQueryHaveDataset(query) ) 
                 fail("No dataset for query") ;
 
-            QueryExecution qe = null ;
-            
-            if ( dataset == null )
-                qe = QueryExecutionFactory.create(query) ;
-            else
-                qe = QueryExecutionFactory.create(query, dataset) ;
-            
-            try {
+            try(QueryExecution qe = ( dataset == null ) 
+                                    ? QueryExecutionFactory.create(query) 
+                                    : QueryExecutionFactory.create(query, dataset) ) {
                 if ( query.isSelectType() )
                     runTestSelect(query, qe) ;
                 else if ( query.isConstructType() )
@@ -174,7 +169,7 @@ public class QueryTest extends EarlTestCase
                     runTestDescribe(query, qe) ;
                 else if ( query.isAskType() )
                     runTestAsk(query, qe) ;
-            } finally { qe.close() ; }
+            }
         }
         catch (IOException ioEx)
         {

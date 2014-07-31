@@ -67,15 +67,14 @@ public class TestUserFunctionsInSparql {
         String query = "SELECT (<http://example/square>(2) AS ?square) { }";
         Query q = QueryFactory.create(query);
         
-        QueryExecution qe = QueryExecutionFactory.create(q, ModelFactory.createDefaultModel());
-        ResultSet rset = qe.execSelect();
-        Assert.assertTrue(rset.hasNext());
-        Binding b = rset.nextBinding();
-        Assert.assertFalse(rset.hasNext());
-        qe.close();
-        
-        //Validate returned value
-        Node actual = b.get(Var.alloc("square"));
-        Assert.assertEquals(NodeFactoryExtra.intToNode(4), actual);
+        try(QueryExecution qe = QueryExecutionFactory.create(q, ModelFactory.createDefaultModel())) {
+            ResultSet rset = qe.execSelect();
+            Assert.assertTrue(rset.hasNext());
+            Binding b = rset.nextBinding();
+            Assert.assertFalse(rset.hasNext());
+            //Validate returned value
+            Node actual = b.get(Var.alloc("square"));
+            Assert.assertEquals(NodeFactoryExtra.intToNode(4), actual);
+        }
     }
 }

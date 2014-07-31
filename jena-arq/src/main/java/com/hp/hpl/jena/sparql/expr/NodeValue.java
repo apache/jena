@@ -18,13 +18,47 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.* ;
-import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.* ;
-import static javax.xml.datatype.DatatypeConstants.* ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSD ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDboolean ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDdate ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDdateTime ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDdecimal ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDdouble ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDduration ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDfloat ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgDay ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgMonth ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgMonthDay ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYear ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYearMonth ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDinteger ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDstring ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDtime ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_BOOLEAN ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DATE ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DATETIME ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DIFFERENT ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DURATION ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_DAY ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_MONTH ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_MONTHDAY ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_YEAR ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_YEARMONTH ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_LANG ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_NODE ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_NUM ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_STRING ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_TIME ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_UNKNOWN ;
+import static javax.xml.datatype.DatatypeConstants.DAYS ;
+import static javax.xml.datatype.DatatypeConstants.HOURS ;
+import static javax.xml.datatype.DatatypeConstants.MINUTES ;
+import static javax.xml.datatype.DatatypeConstants.MONTHS ;
+import static javax.xml.datatype.DatatypeConstants.SECONDS ;
+import static javax.xml.datatype.DatatypeConstants.YEARS ;
 
 import java.io.File ;
 import java.io.FileInputStream ;
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
@@ -170,21 +204,11 @@ public abstract class NodeValue extends ExprNode
             // Step 2. Otherwise, try property in jaxp.properties
             if (dtfClass == null && jaxpPropFile.exists() && jaxpPropFile.canRead()) {
                 Properties jaxp = new Properties();
-                InputStream in = null;
-                try {
-                    in = new FileInputStream(jaxpPropFile);
+                try(InputStream in = new FileInputStream(jaxpPropFile)) {
                     jaxp.load(in);
                     dtfClass = jaxp.getProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY);
                 } catch (Exception e) {
                     log.warn("Issue loading jaxp.properties", e);
-                } finally {
-                    if (in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException ex) {
-                            log.warn("Issue closing jaxp.properties ", ex);
-                        }
-                    }
                 }
             }
         }

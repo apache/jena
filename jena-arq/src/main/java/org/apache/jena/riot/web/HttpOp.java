@@ -146,9 +146,9 @@ public class HttpOp {
         @Override
         public void handle(String baseIRI, HttpResponse response) throws IOException {
             HttpEntity entity = response.getEntity();
-            InputStream instream = entity.getContent();
-            result = IO.readWholeFileAsUTF8(instream);
-            instream.close();
+            try(InputStream instream = entity.getContent()) {
+                result = IO.readWholeFileAsUTF8(instream);
+            }
         }
 
         @Override

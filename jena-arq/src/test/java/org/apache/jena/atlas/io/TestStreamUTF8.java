@@ -82,15 +82,12 @@ public class TestStreamUTF8 extends BaseTest
 
                 ByteArrayInputStream bin = new ByteArrayInputStream(bytes) ;
                 // Create string from bytes
-                InStreamUTF8 r = new InStreamUTF8(bin) ;
-                //Get tests working.
-                //Reader r = new InputStreamReader(bin, utf8) ;
-
-                char[] cbuff = new char[x.length()*10] ;    // Way too big
-                int len = r.read(cbuff) ;
-                String str = new String(cbuff, 0 , len) ;
-                assertEquals(x, str) ;
-                r.close();
+                try(InStreamUTF8 r = new InStreamUTF8(bin)) {
+                    char[] cbuff = new char[x.length()*10] ;    // Way too big
+                    int len = r.read(cbuff) ;
+                    String str = new String(cbuff, 0 , len) ;
+                    assertEquals(x, str) ;
+                }
             } catch (IOException ex) { throw new RuntimeException(ex) ; } 
         }
 
@@ -99,9 +96,9 @@ public class TestStreamUTF8 extends BaseTest
             try {
                 byte[] bytes = stringAsBytes(x) ;
                 ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
-                Writer out = new OutStreamUTF8(bout) ;
-                out.write(x) ;
-                out.close() ;
+                try(Writer out = new OutStreamUTF8(bout)) {
+                    out.write(x) ;
+                }
                 byte[] bytes2 = bout.toByteArray() ;
                 assertArrayEquals(bytes, bytes2) ;
             } catch (IOException ex) { throw new RuntimeException(ex) ; } 
@@ -111,9 +108,9 @@ public class TestStreamUTF8 extends BaseTest
         {
             try {
                 ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
-                Writer out = new OutputStreamWriter(bout, utf8) ;
-                out.write(x) ;
-                out.close() ;
+                try(Writer out = new OutputStreamWriter(bout, utf8)) {
+                    out.write(x) ;
+                }
                 byte[] bytes = bout.toByteArray() ;
                 return bytes ;
             } catch (IOException ex) { throw new RuntimeException(ex) ; } 

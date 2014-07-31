@@ -116,12 +116,9 @@ public class TestGraphDeltas {
     }
 
     private void testQuery(Dataset ds, String query, String queryName, int differences) {
-        QueryExecution qe = QueryExecutionFactory.create(query, ds);
-        try {
+        try(QueryExecution qe = QueryExecutionFactory.create(query, ds)) {
             ResultSetRewindable results = ResultSetFactory.makeRewindable(qe.execSelect());
             Assert.assertEquals(queryName + " gave incorrect results", differences, results.size());
-        } finally {
-            qe.close();
         }
     }
 

@@ -175,30 +175,31 @@ public class TestSemanticEquivalence {
         try {
             // Run first without optimization
             ARQ.set(opt, false);
-            QueryExecution qe = QueryExecutionFactory.create(q, ds);
-            ResultSetRewindable rs = ResultSetFactory.makeRewindable(qe.execSelect());
-            if (expected != rs.size()) {
-                System.err.println("Non-optimized results not as expected");
-                TextOutput output = new TextOutput((SerializationContext)null);
-                output.format(System.out, rs);
-                rs.reset();
+            ResultSetRewindable rs ;
+            try(QueryExecution qe = QueryExecutionFactory.create(q, ds)) {
+                rs = ResultSetFactory.makeRewindable(qe.execSelect());
+                if (expected != rs.size()) {
+                    System.err.println("Non-optimized results not as expected");
+                    TextOutput output = new TextOutput((SerializationContext)null);
+                    output.format(System.out, rs);
+                    rs.reset();
+                }
+                Assert.assertEquals(expected, rs.size());
             }
-            Assert.assertEquals(expected, rs.size());
-            qe.close();
 
             // Run with optimization
             ARQ.set(opt, true);
-            QueryExecution qeOpt = QueryExecutionFactory.create(q, ds);
-            ResultSetRewindable rsOpt = ResultSetFactory.makeRewindable(qeOpt.execSelect());
-            if (expected != rsOpt.size()) {
-                System.err.println("Optimized results not as expected");
-                TextOutput output = new TextOutput((SerializationContext)null);
-                output.format(System.out, rsOpt);
-                rsOpt.reset();
+            ResultSetRewindable rsOpt ;
+            try(QueryExecution qeOpt = QueryExecutionFactory.create(q, ds)) {
+                    rsOpt = ResultSetFactory.makeRewindable(qeOpt.execSelect());
+                if (expected != rsOpt.size()) {
+                    System.err.println("Optimized results not as expected");
+                    TextOutput output = new TextOutput((SerializationContext)null);
+                    output.format(System.out, rsOpt);
+                    rsOpt.reset();
+                }
+                Assert.assertEquals(expected, rsOpt.size());
             }
-            Assert.assertEquals(expected, rsOpt.size());
-            qeOpt.close();
-
             Assert.assertTrue(ResultSetCompare.isomorphic(rs, rsOpt));
         } finally {
             // Restore previous state

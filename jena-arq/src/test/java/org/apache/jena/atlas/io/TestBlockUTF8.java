@@ -244,9 +244,9 @@ public class TestBlockUTF8 extends BaseTest
     {
         try {
             ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
-            Writer out = new OutputStreamWriter(bout, utf8) ;
-            out.write(x) ;
-            out.close() ;
+            try(Writer out = new OutputStreamWriter(bout, utf8)) {
+                out.write(x) ;
+            }
             byte[] bytes = bout.toByteArray() ;
             return bytes ;
         } catch (IOException ex) { throw new RuntimeException(ex) ; } 

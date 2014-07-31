@@ -154,15 +154,15 @@ public class TestReadData extends BaseTest
         
         // Read with a base
         Dataset ds0 = DatasetFactory.createMem() ;
-        FileInputStream in0 = new FileInputStream(filename) ;
-        RDFDataMgr.read(ds0, in0, "http://example/base2", lang) ;
-        in0.close() ;
-
+        try(FileInputStream in0 = new FileInputStream(filename)) {
+            RDFDataMgr.read(ds0, in0, "http://example/base2", lang) ;
+        }
+        
         // Read again, but without base
         Dataset ds1 = DatasetFactory.createMem() ;
-        FileInputStream in1 = new FileInputStream(filename) ;
-        RDFDataMgr.read(ds1, in1, null, lang) ;
-        in1.close() ;
+        try(FileInputStream in1 = new FileInputStream(filename)) {
+            RDFDataMgr.read(ds1, in1, null, lang) ;
+        }
     }
     
     private static Model loadModel(String uri)

@@ -227,8 +227,7 @@ public class IO
     private static final int BUFFER_SIZE = 32*1024 ; 
     
     public static byte[] readWholeFile(InputStream in) {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream(BUFFER_SIZE) ;
+        try(ByteArrayOutputStream out = new ByteArrayOutputStream(BUFFER_SIZE)) {
             byte buff[] = new byte[BUFFER_SIZE] ;
             while (true) {
                 int l = in.read(buff) ;
@@ -236,7 +235,6 @@ public class IO
                     break ;
                 out.write(buff, 0, l) ;
             }
-            out.close() ;
             return out.toByteArray() ;
         }
         catch (IOException ex) {
@@ -279,17 +277,17 @@ public class IO
     
     // Private worker as we are trying to force UTF-8. 
     private static String readWholeFileAsUTF8(Reader r) throws IOException {
-        StringWriter sw = new StringWriter(BUFFER_SIZE);
-        char buff[] = new char[BUFFER_SIZE];
-        for (;;)
-        {
-            int l = r.read(buff);
-            if (l < 0)
-                break;
-            sw.write(buff, 0, l);
+        try(StringWriter sw = new StringWriter(BUFFER_SIZE)) {
+            char buff[] = new char[BUFFER_SIZE];
+            for (;;)
+            {
+                int l = r.read(buff);
+                if (l < 0)
+                    break;
+                sw.write(buff, 0, l);
+            }
+            return sw.toString();
         }
-        sw.close();
-        return sw.toString();  
     }
 
     public static String uniqueFilename(String directory, String base, String ext) {

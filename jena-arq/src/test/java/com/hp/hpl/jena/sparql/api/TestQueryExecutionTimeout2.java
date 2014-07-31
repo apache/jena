@@ -83,8 +83,7 @@ public class TestQueryExecutionTimeout2
     private static void test2(long timeout1, long timeout2, int delay, boolean exceptionExpected)
     {
         // Enough rows to keep the iterator pipeline full.
-        QueryExecution qExec = QueryExecutionFactory.create(prefix+"SELECT * { ?s ?p ?o }", ds) ;
-        try {
+        try(QueryExecution qExec = QueryExecutionFactory.create(prefix+"SELECT * { ?s ?p ?o }", ds)) {
             qExec.setTimeout(timeout1, timeout2) ;
             // No rewrite optimizations.
             // qExec.getContext().set(ARQConstants.sysOptimizerFactory, Optimize.noOptimizationFactory) ;
@@ -98,8 +97,6 @@ public class TestQueryExecutionTimeout2
                 exceptionExpected(rs) ;
             else
                 noException(rs) ;
-        } finally {
-            qExec.close() ;
         }
     }
 }

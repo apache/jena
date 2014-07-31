@@ -180,25 +180,22 @@ public class TestQueryEngineMultiThreaded {
 
     private Model executeSparqlConstruct(Model model, String sparql, boolean lock) {
         Query query = QueryFactory.create(sparql);
-        QueryExecution queryExec = QueryExecutionFactory.create(query, model);
-        model.enterCriticalSection(lock);
-        try {
-            return queryExec.execConstruct();
-        } finally {
-            queryExec.close();
-            model.leaveCriticalSection();
+        try(QueryExecution queryExec = QueryExecutionFactory.create(query, model)) {
+            model.enterCriticalSection(lock);
+            try { return queryExec.execConstruct() ; }
+            finally { model.leaveCriticalSection() ; }
         }
     }
     
     private ResultSetRewindable executeSparqlSelect(Model model, String sparql, boolean lock) {
         Query query = QueryFactory.create(sparql);
-        QueryExecution queryExec = QueryExecutionFactory.create(query, model);
-        model.enterCriticalSection(lock);
-        try {
-            return ResultSetFactory.makeRewindable(queryExec.execSelect());
-        } finally {
-            queryExec.close();
-            model.leaveCriticalSection();
+        try(QueryExecution queryExec = QueryExecutionFactory.create(query, model)) {
+            model.enterCriticalSection(lock);
+            try {
+                return ResultSetFactory.makeRewindable(queryExec.execSelect());
+            } finally {
+                model.leaveCriticalSection();
+            }
         }
     }
     

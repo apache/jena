@@ -145,16 +145,16 @@ public class TestJenaReaderRIOT extends BaseTest
         filename = filename(filename) ;
         
         // Read with a base
-        FileInputStream in0 = new FileInputStream(filename) ;
-        Model m0 = ModelFactory.createDefaultModel() ;
-        RDFDataMgr.read(m0, in0, "http://example/base2", RDFLanguages.nameToLang(lang)) ;
-        in0.close() ;
+        try(FileInputStream in0 = new FileInputStream(filename)) {
+            Model m0 = ModelFactory.createDefaultModel() ;
+            RDFDataMgr.read(m0, in0, "http://example/base2", RDFLanguages.nameToLang(lang)) ;
+        }
 
         // Read again, but without base
-        FileInputStream in1 = new FileInputStream(filename) ;
-        Model m1 = ModelFactory.createDefaultModel() ;
-        RDFDataMgr.read(m1, in1, RDFLanguages.nameToLang(lang)) ;
-        in1.close() ;
+        try(FileInputStream in1 = new FileInputStream(filename)) {
+            Model m1 = ModelFactory.createDefaultModel() ;
+            RDFDataMgr.read(m1, in1, RDFLanguages.nameToLang(lang)) ;
+        }
         
         // Fail because Jena core does a look up of lang with ModelCom builtin in RDFReaderF, then calls RIOReader().
         // 1/ Fix Jena - remove RDFReaderF
@@ -162,9 +162,9 @@ public class TestJenaReaderRIOT extends BaseTest
         
         // Read via Jena API.
         Model m2 = ModelFactory.createDefaultModel() ;
-        FileInputStream in2 = new FileInputStream(filename) ;
-        m2.read(in2, "http://example/base3", lang) ;
-        in2.close() ;
+        try(FileInputStream in2 = new FileInputStream(filename)) {
+            m2.read(in2, "http://example/base3", lang) ;
+        }
         
         String x = FileUtils.readWholeFileAsUTF8(filename) ;
         Model m3 = ModelFactory.createDefaultModel() ;

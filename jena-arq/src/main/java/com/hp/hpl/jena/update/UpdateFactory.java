@@ -177,15 +177,20 @@ public class UpdateFactory
     public static UpdateRequest read(UsingList usingList, String fileName, String baseURI, Syntax syntax)
     { 
         InputStream in = null ;
-        if ( fileName.equals("-") )
-            in = System.in ;
-        else
-        {
-            in = IO.openFile(fileName) ;
-            if ( in == null )
-                throw new UpdateException("File could not be opened: "+fileName) ;
+        try {
+            if ( fileName.equals("-") )
+                in = System.in ;
+            else
+            {
+                in = IO.openFile(fileName) ;
+                if ( in == null )
+                    throw new UpdateException("File could not be opened: "+fileName) ;
+            }
+            return read(usingList, in, baseURI, syntax) ;
+        } finally {
+            if ( in != null && ! fileName.equals("-") )
+                IO.close(in) ;
         }
-        return read(usingList, in, baseURI, syntax) ;
     }
     
     /**  Create an UpdateRequest by parsing from an InputStream.

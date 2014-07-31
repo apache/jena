@@ -334,18 +334,20 @@ public class UpdateAction
     }
     
     /** Parse update operations into a GraphStore by reading it from a file */
+    @SuppressWarnings("resource")
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, Binding inputBinding, String baseURI, Syntax syntax)
     { 
         InputStream in = null ;
         if ( fileName.equals("-") )
             in = System.in ;
-        else
-        {
+        else {
             in = IO.openFile(fileName) ;
             if ( in == null )
                 throw new UpdateException("File could not be opened: "+fileName) ;
         }
         parseExecute(usingList, dataset, in, inputBinding, baseURI, syntax) ;
+        if ( in != System.in )
+            IO.close(in) ;
     }
     
     /** 

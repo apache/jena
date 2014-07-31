@@ -465,9 +465,7 @@ public class QueryEngineHTTP implements QueryExecution {
         checkNotClosed() ;
         HttpQuery httpQuery = makeHttpQuery();
         httpQuery.setAccept(askContentType);
-        InputStream in = httpQuery.exec();
-
-        try {
+        try(InputStream in = httpQuery.exec()) {
             // Don't assume the endpoint actually gives back the content type we
             // asked for
             String actualContentType = httpQuery.getContentType();
@@ -490,13 +488,9 @@ public class QueryEngineHTTP implements QueryExecution {
                 return CSVInput.booleanFromCSV(in);
             throw new QueryException("Endpoint returned Content-Type: " + actualContentType
                     + " which is not currently supported for ASK queries");
-        } finally {
-            // Ensure connection is released
-            try {
-                in.close();
-            } catch (java.io.IOException e) {
-                log.warn("Failed to close connection", e);
-            }
+        } catch (java.io.IOException e) {
+            log.warn("Failed to close connection", e);
+            return false ;
         }
     }
 

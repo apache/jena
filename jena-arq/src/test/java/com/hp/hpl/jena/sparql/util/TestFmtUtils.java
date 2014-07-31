@@ -61,10 +61,10 @@ public class TestFmtUtils
         basicPattern.add(getTriple()) ;
         basicPattern.add(getTriple2()) ;
         ByteArrayOutputStream os = new ByteArrayOutputStream() ;
-        IndentedWriter iw = new IndentedWriter(os) ;
-        SerializationContext sc = new SerializationContext() ;
-        FmtUtils.formatPattern(iw, basicPattern, sc) ;
-        iw.close() ;
+        try(IndentedWriter iw = new IndentedWriter(os)) {
+            SerializationContext sc = new SerializationContext() ;
+            FmtUtils.formatPattern(iw, basicPattern, sc) ;
+        }
         assertEquals("<n1> <n2> \"l3\" .\n" + "<nb1> <nb2> \"lb3\" .", new String(os.toByteArray())) ;
     }
 
