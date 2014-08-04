@@ -24,7 +24,6 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
-import tdb.cmdline.ModModel ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -32,19 +31,12 @@ import com.hp.hpl.jena.tdb.TDBLoader ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 
 public class tdbloader extends CmdTDBGraph {
-    // private static final ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue,
-    // "parallel") ;
-    // private static final ArgDecl argIncremental = new
-    // ArgDecl(ArgDecl.NoValue, "incr", "incremental") ;
+    // private static final ArgDecl argParallel = new ArgDecl(ArgDecl.NoValue, "parallel") ;
+    // private static final ArgDecl argIncremental = new ArgDecl(ArgDecl.NoValue, "incr", "incremental") ;
 
-    private static final ModModel modRDFS       = new ModModel("rdfs") ;
-
-    // private String rdfsVocabFilename = null ;
-    // private Model rdfsVocab = null ;
-
-    private boolean               showProgress  = true ;
+    private boolean showProgress  = true ;
     // private boolean doInParallel = false ;
-    private boolean               doIncremental = false ;
+    // private boolean doIncremental = false ;
 
     static public void main(String... argv) {
         CmdTDB.init() ;
@@ -54,7 +46,6 @@ public class tdbloader extends CmdTDBGraph {
 
     protected tdbloader(String[] argv) {
         super(argv) ;
-
         // super.add(argParallel, "--parallel",
         // "Do rebuilding of secondary indexes in a parallel") ;
         // super.add(argIncremental, "--incremental",
@@ -91,53 +82,31 @@ public class tdbloader extends CmdTDBGraph {
         if ( urls.size() == 0 )
             urls.add("-") ;
 
-        if ( modRDFS.getModel() != null ) {
-            // TODO
-        }
-
-        boolean allTriples = true ;
-        for ( String url : urls ) {
-            Lang lang = RDFLanguages.filenameToLang(url, RDFLanguages.NQUADS) ;
-            if ( lang != null && RDFLanguages.isQuads(lang) ) {
-                allTriples = false ;
-                break ;
-            }
-        }
-
-        if ( allTriples && graphName == null ) {
-            loadDefaultGraph(urls) ;
-            return ;
-        }
-
         if ( graphName == null ) {
             loadQuads(urls) ;
             return ;
         }
-
-        // graphName != null
-        if ( !allTriples ) {
-            for ( String url : urls ) {
-                Lang lang = RDFLanguages.filenameToLang(url, RDFLanguages.NQUADS) ;
-                if ( lang == null )
-                    // Does not happen due to default above.
-                    cmdError("File suffix not recognized: " + url) ;
-                if ( lang != null && !RDFLanguages.isTriples(lang) )
-                    cmdError("Can only load triples into a named model: " + url) ;
+        
+        // There's a --graph.
+        // Check/warn that there are no quads formats mentioned
+        // (RIOT will take the default graph from quads).  
+        
+        for ( String url : urls ) {
+            Lang lang = RDFLanguages.filenameToLang(url) ;
+            if ( lang != null && RDFLanguages.isQuads(lang) ) {
+                System.err.println("Warning: Quads format given - only the default graph is loaded into the graph for --graph") ;
+                break ;
             }
-            cmdError("Internal error: deteched quad input but can't find it again") ;
-            return ;
         }
-
+        
         loadNamedGraph(urls) ;
     }
 
-    // RDFS
-
-    void loadDefaultGraph(List<String> urls) {
-        GraphTDB graph = getGraph() ;
-        TDBLoader.load(graph, urls, showProgress) ;
-        return ;
-    }
+//    void loadDefaultGraph(List<String> urls) {
+//        GraphTDB graph = getGraph() ;
+//        TDBLoader.load(graph, urls, showProgress) ;
+//        return ;
+//    }
 
     void loadNamedGraph(List<String> urls) {
         GraphTDB graph = getGraph() ;

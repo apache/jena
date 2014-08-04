@@ -22,8 +22,6 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -227,18 +225,7 @@ public class TDBLoader
 //    public final void setLogger(Logger log)
 //    { this.loaderLog = log ; }
     
-    private static void loadGraph$(GraphTDB graph, List<String> urls, boolean showProgress)
-    {
-        if ( false )
-        {
-            for ( String url : urls )
-            {
-                Lang lang = RDFLanguages.filenameToLang(url) ;
-                if ( lang != null && RDFLanguages.isQuads(lang) )
-                    throw new TDBException("Not a triples language") ;
-            }
-        }
-
+    private static void loadGraph$(GraphTDB graph, List<String> urls, boolean showProgress) {
         if ( graph.getGraphName() == null )
             loadDefaultGraph$(graph.getDSG(), urls, showProgress) ;
         else
@@ -247,50 +234,39 @@ public class TDBLoader
 
     // These are the basic operations for TDBLoader.
 
-    private static void loadGraph$(GraphTDB graph, InputStream input, boolean showProgress)
-    {
+    private static void loadGraph$(GraphTDB graph, InputStream input, boolean showProgress) {
         if ( graph.getGraphName() == null )
             loadDefaultGraph$(graph.getDSG(), input, showProgress) ;
         else
             loadNamedGraph$(graph.getDSG(), graph.getGraphName(), input, showProgress) ;
     }
 
-    private static void loadDefaultGraph$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
-    {
+    private static void loadDefaultGraph$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress) {
         BulkLoader.loadDefaultGraph(dataset, urls, showProgress) ;
     }
 
-    private static void loadDefaultGraph$(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
-    {
+    private static void loadDefaultGraph$(DatasetGraphTDB dataset, InputStream input, boolean showProgress) {
         BulkLoader.loadDefaultGraph(dataset, input, showProgress) ;
     }
 
-    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, List<String> urls, boolean showProgress)
-    {
+    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, List<String> urls, boolean showProgress) {
         BulkLoader.loadNamedGraph(dataset, graphName, urls, showProgress) ;
     }
 
-    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, InputStream input, boolean showProgress)
-    {
-        //N-Triples
+    private static void loadNamedGraph$(DatasetGraphTDB dataset, Node graphName, InputStream input, boolean showProgress) {
         BulkLoader.loadNamedGraph(dataset, graphName, input, showProgress) ;
     }
 
-    private static void loadDataset$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
-    {
-        //N-Quads
+    private static void loadDataset$(DatasetGraphTDB dataset, List<String> urls, boolean showProgress) {
         BulkLoader.loadDataset(dataset, urls, showProgress) ;
     }
 
-    private static void loadDataset$(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
-    {
-        //N-Quads
+    private static void loadDataset$(DatasetGraphTDB dataset, InputStream input, boolean showProgress) {
         BulkLoader.loadDataset(dataset, input, showProgress) ;
     }
-    
-    /** Load any model, not necessarily efficiently. */ 
-    private static void loadAnything(Model model, String url, boolean showProgress)
-    {
+
+    /** Load any model, not necessarily efficiently. */
+    private static void loadAnything(Model model, String url, boolean showProgress) {
         model.read(url) ;
     }
 
