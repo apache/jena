@@ -59,6 +59,10 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
      * @param qresults   result set
      */
     public static void out(ResultSet qresults)
@@ -67,6 +71,10 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
      * @param out        OutputStream
      * @param qresults   result set
      */
@@ -76,6 +84,10 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
      * @param qresults   result set
      * @param query     May be used to abbreviate URIs 
      */
@@ -85,6 +97,10 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
      * @param qresults   result set
      * @param prologue   May be used to abbreviate URIs 
      */
@@ -103,6 +119,10 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
      * @param qresults  result set
      * @param pmap      Prefix mapping for abbreviating URIs.
      */
@@ -112,6 +132,10 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
      * @param out       OutputStream
      * @param qresults  result set
      * @param pmap      Prefix mapping for abbreviating URIs.
@@ -125,6 +149,10 @@ public class ResultSetFormatter
     /**
      * Output a result set in a text format.  The result set is consumed.
      * Use @see{ResultSetFactory.makeRewindable(ResultSet)} for a rewindable one.
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
      * @param out       OutputStream
      * @param qresults  result set
      * @param prologue  Prologue, used to abbreviate IRIs
@@ -154,7 +182,11 @@ public class ResultSetFormatter
         tFmt.format(out, answer) ;
     }
     
-    /** Return a string that has the result set serilized as a text table
+    /** Return a string that has the result set serialized as a text table
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
      * 
      * @param qresults  result set
      * @return  string
@@ -172,7 +204,11 @@ public class ResultSetFormatter
         }
     }
 
-    /** Return a string that has the result set serilized as a text table
+    /** Return a string that has the result set serialized as a text table
+     * <p>
+     *  This caches the entire results in memory in order to determine the appropriate
+     *  column widths and therefore may exhaust memory for large results
+     *  </p>
      * 
      * @param qresults  result set
      * @param prologue  Prologue, used to abbreviate IRIs
@@ -524,7 +560,12 @@ public class ResultSetFormatter
         fmt.exec(booleanResult) ;
     }
 
-    /** Return a string that has the result set serilized as XML (not RDF)
+    /** Return a string that has the result set serialized as XML (not RDF)
+     * <p>
+     *  This builds the string in memory which can lead to memory exhaustion
+     *  for large results.  It is generally better to use the 
+     *  {@link #outputAsXML(OutputStream, ResultSet))} overload instead
+     *  </p>
      * 
      * @param qresults  result set
      * @return  string
@@ -535,8 +576,13 @@ public class ResultSetFormatter
         return asXMLString(qresults, null) ;
     }
     
-    /** Return a string that has the result set serilized as XML (not RDF)
+    /** Return a string that has the result set serialized as XML (not RDF)
      *  with a style sheet directive inserted into the XML.
+     *  <p>
+     *  This builds the string in memory which can lead to memory exhaustion
+     *  for large results.  It is generally better to use the 
+     *  {@link #outputAsXML(OutputStream, ResultSet, String)} overload instead
+     *  </p>
      * @param qresults  result set
      * @param stylesheet
      * @return  string
@@ -549,6 +595,11 @@ public class ResultSetFormatter
     }
     
     /** Return a string that has the result set serilized as XML (not RDF)
+     * <p>
+     *  This builds the string in memory which can lead to memory exhaustion
+     *  for large results.  It is generally better to use the 
+     *  {@link #outputAsXML(OutputStream, boolean))} overload instead
+     *  </p>
      * 
      * @param booleanResult The boolean result to encode
      * @return  string
@@ -560,6 +611,11 @@ public class ResultSetFormatter
     }
 
     /** Return a string that has the result set serilized as XML (not RDF)
+     * <p>
+     *  This builds the string in memory which can lead to memory exhaustion
+     *  for large results.  It is generally better to use the 
+     *  {@link #outputAsXML(OutputStream, boolean, String)} overload instead
+     *  </p>
      * 
      * @param booleanResult The boolean result to encode
      * @param stylesheet
