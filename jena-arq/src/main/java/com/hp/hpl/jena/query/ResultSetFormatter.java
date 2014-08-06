@@ -564,7 +564,7 @@ public class ResultSetFormatter
      * <p>
      *  This builds the string in memory which can lead to memory exhaustion
      *  for large results.  It is generally better to use the 
-     *  {@link #outputAsXML(OutputStream, ResultSet))} overload instead
+     *  {@link #outputAsXML(OutputStream, ResultSet)} overload instead
      *  </p>
      * 
      * @param qresults  result set
@@ -598,7 +598,7 @@ public class ResultSetFormatter
      * <p>
      *  This builds the string in memory which can lead to memory exhaustion
      *  for large results.  It is generally better to use the 
-     *  {@link #outputAsXML(OutputStream, boolean))} overload instead
+     *  {@link #outputAsXML(OutputStream, boolean)} overload instead
      *  </p>
      * 
      * @param booleanResult The boolean result to encode
