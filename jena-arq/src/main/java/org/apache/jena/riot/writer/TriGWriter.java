@@ -38,63 +38,64 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class TriGWriter extends TriGWriterBase
 {
     @Override
-    protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI)
-    {
+    protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI) {
         TriGWriter$ w = new TriGWriter$(iOut, prefixMap, baseURI) ;
         w.write(dsg) ;
     }
 
     private static class TriGWriter$ extends TurtleShell
     {
-        TriGWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI)
-        {   
+        TriGWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI) {
             super(out, prefixMap, baseURI) ;
         }
 
-        private void write(DatasetGraph dsg)
-        {
+        private void write(DatasetGraph dsg) {
             writeBase(baseURI) ;
             writePrefixes(prefixMap) ;
-            if ( ! prefixMap.isEmpty() && !dsg.isEmpty() )
+            if ( !prefixMap.isEmpty() && !dsg.isEmpty() )
                 out.println() ;
 
             Iterator<Node> graphNames = dsg.listGraphNodes() ;
 
-            writeGraphTriG(dsg, null) ;
+            boolean anyGraphOutput = writeGraphTriG(dsg, null) ;
 
-            for ( ; graphNames.hasNext() ; )
-            {
-                out.println() ;
+            for ( ; graphNames.hasNext() ; ) {
+                if ( anyGraphOutput )
+                    out.println() ;
                 Node gn = graphNames.next() ;
-                writeGraphTriG(dsg, gn) ;
+                anyGraphOutput |= writeGraphTriG(dsg, gn) ;
             }
         }
 
-        private void writeGraphTriG(DatasetGraph dsg, Node name)
-        {
+        /** Return true if anything written */
+        private boolean writeGraphTriG(DatasetGraph dsg, Node name) {
             boolean dftGraph =  ( name == null || name == Quad.defaultGraphNodeGenerated  ) ;
             boolean NL_START =  ( dftGraph ? NL_GDFT_START : NL_GNMD_START ) ; 
             boolean NL_END =    ( dftGraph ? NL_GDFT_END : NL_GNMD_END ) ; 
             int INDENT_GRAPH =  ( dftGraph ? INDENT_GDFT : INDENT_GNMD ) ; 
-            
-            if ( ! dftGraph )
-            {
+
+            if ( !dftGraph ) {
                 writeNode(name) ;
                 out.print(" ") ;
+            } else {
+                if ( dsg.getDefaultGraph().isEmpty() )
+                    return false ;
             }
+
             out.print("{") ;
             if ( NL_START )
                 out.println() ;
-            else 
+            else
                 out.print(" ") ;
-            
+
             out.incIndent(INDENT_GRAPH) ;
             writeGraphTTL(dsg, name) ;
             out.decIndent(INDENT_GRAPH) ;
-            
+
             if ( NL_END )
                 out.ensureStartOfLine() ;
             out.println("}") ;
+            return true ;
         }
     }
 }
