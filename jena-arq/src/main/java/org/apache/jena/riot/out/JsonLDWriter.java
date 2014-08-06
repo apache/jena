@@ -101,6 +101,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
                 JsonUtils.writePrettyPrint(writer, obj) ;
             else
                 JsonUtils.write(writer, obj) ;
+            writer.write("\n") ;
         }
         catch (JsonLdError | JsonMappingException | JsonGenerationException e) {
             throw new RiotException(e) ;
@@ -108,6 +109,7 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         catch (IOException e) {
             IO.exception(e) ;
         }
+        
     }
 
     private static void addPrefixes(Map<String, Object> ctx, PrefixMap prefixMap) {
