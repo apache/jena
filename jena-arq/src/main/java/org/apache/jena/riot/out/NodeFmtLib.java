@@ -39,7 +39,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Presentation utilitiles for Nodes, Triples, Quads and more.
  * <p>
@@ -54,7 +53,9 @@ public class NodeFmtLib
     // See OutputLangUtils.
     // See and use EscapeStr
     
-    static PrefixMap dftPrefixMap = PrefixMapFactory.create() ;
+    private static final NodeFormatter plainFormatter = new NodeFormatterNT() ;
+    
+    private static PrefixMap dftPrefixMap = PrefixMapFactory.create() ;
     static {
         PrefixMapping pm = ARQConstants.getGlobalPrefixMap() ;
         Map<String, String> map = pm.getNsPrefixMap() ;
@@ -82,11 +83,13 @@ public class NodeFmtLib
     /** A displayable string for an RDFNode. Includes common abbreviations */
     public static String displayStr(RDFNode obj)
     {
-        //XXX Move code over
-        return FmtUtils.stringForRDFNode(obj) ;
+        return displayStr(obj.asNode()) ;
     }
     
-    public static String displayStr(Node n) { return FmtUtils.stringForNode(n) ; }
+    public static String displayStr(Node n)
+    { 
+        return str(n, null, dftPrefixMap) ;
+    }
 
     
     // Worker
@@ -126,9 +129,11 @@ public class NodeFmtLib
     
     public static void serialize(IndentedWriter w, Node n, String base, PrefixMap prefixMap)
     {
-        if ( prefixMap == null )
-            prefixMap = dftPrefixMap ;
-        NodeFormatter formatter = new NodeFormatterTTL(base, prefixMap) ;
+        NodeFormatter formatter ;
+        if ( base == null && prefixMap == null )
+            formatter = plainFormatter ;
+        else 
+            formatter = new NodeFormatterTTL(base, prefixMap) ;
         formatter.format(w, n) ;
     }
     
