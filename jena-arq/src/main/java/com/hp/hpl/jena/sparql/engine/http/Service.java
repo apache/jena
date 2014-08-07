@@ -82,6 +82,14 @@ public class Service {
     public static final Symbol serviceContext = ARQConstants.allocSymbol(base, "serviceContext");
 
     /**
+     * Control whether SERVICE processing is allowed.
+     * If the context contains this, and it is set to "false",
+     * then SERVICE is not allowed.
+     */
+    
+    public static final Symbol serviceAllowed = ARQConstants.allocSymbol(base, "serviceAllowed");
+    
+    /**
      * Set timeout. The value of this symbol gives the value of the timeout in
      * milliseconds
      * <ul>
@@ -105,6 +113,9 @@ public class Service {
      * @return Query iterator of service results
      */
     public static QueryIterator exec(OpService op, Context context) {
+        if ( context != null && context.isFalse(serviceAllowed) )
+            throw new QueryExecException("SERVICE execution disabled") ;
+        
         if (!op.getService().isURI())
             throw new QueryExecException("Service URI not bound: " + op.getService());
 

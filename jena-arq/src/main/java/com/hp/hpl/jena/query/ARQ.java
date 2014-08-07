@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformOrderByDistinctApplication ;
+import com.hp.hpl.jena.sparql.engine.http.Service ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
@@ -219,6 +220,14 @@ public class ARQ
      * @see com.hp.hpl.jena.sparql.engine.http.Service
      */
     public static final Symbol serviceParams = ARQConstants.allocSymbol("serviceParams") ;
+    
+    /**
+     * Control whether SERVICE processing is allowed.
+     * If the context of the query exexcution contains this, 
+     * and it's set to "false", then SERVICE is not allowed.
+     */
+    
+    public static final Symbol serviceAllowed = Service.serviceAllowed ;
     
     /**
      * A Long value that specifies the number of bindings (or triples for CONSTRUCT queries) to be stored in memory by sort

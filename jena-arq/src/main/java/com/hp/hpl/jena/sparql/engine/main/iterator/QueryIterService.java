@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.engine.main.iterator;
 
 import org.apache.jena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -40,6 +41,8 @@ public class QueryIterService extends QueryIterRepeatApply
     public QueryIterService(QueryIterator input, OpService opService, ExecutionContext context)
     {
         super(input, context) ;
+        if ( context.getContext().isFalse(Service.serviceAllowed) )
+            throw new QueryExecException("SERVICE not allowed") ; 
         this.opService = opService ;
     }
     
