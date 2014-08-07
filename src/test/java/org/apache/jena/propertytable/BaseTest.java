@@ -18,6 +18,8 @@
 
 package org.apache.jena.propertytable;
 
+import java.util.Collection;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 
@@ -27,9 +29,19 @@ public abstract class BaseTest {
 	protected Row row;
 	private static final String ns = "eh:foo/bar#";
 	protected static final Node rowSubject = URI("rowSubject");
+	protected static final String csvFilePath = "src/test/resources/test.csv";
 	
 	
 	protected static Node URI(String localName) {
 		return NodeFactory.createURI(ns + localName);
+	}
+	
+	protected static boolean collectionContains(
+			final Collection<Column> columns, final Node columnkey) {
+		for (final Column column : columns) {
+			if (column.getColumnKey().equals(columnkey))
+				return true;
+		}
+		return false;
 	}
 }

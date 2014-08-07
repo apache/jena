@@ -18,7 +18,6 @@
 
 package org.apache.jena.propertytable;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Assert;
@@ -68,19 +67,10 @@ public abstract class AbstractColumnTest extends BaseTest{
 		Assert.assertNull(table.getColumn( URI("nonExistentColumnName")));
 	}
 
-	
 	@Test
 	public void testGetTable() {
 		Column something = table.createColumn(URI("something"));
 		Assert.assertEquals(table, something.getTable());
-	}
-	protected static boolean collectionContains(
-			final Collection<Column> columns, final Node columnkey) {
-		for (final Column column : columns) {
-			if (column.getColumnKey().equals(columnkey))
-				return true;
-		}
-		return false;
 	}
 
 }

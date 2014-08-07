@@ -20,6 +20,8 @@ package org.apache.jena.propertytable;
 
 import org.apache.jena.propertytable.impl.GraphCSVTest;
 import org.apache.jena.propertytable.impl.PropertyTableArrayImplTest;
+import org.apache.jena.propertytable.impl.PropertyTableBuilderForArrayImplTest;
+import org.apache.jena.propertytable.impl.PropertyTableBuilderForHashMapImplTest;
 import org.apache.jena.propertytable.impl.PropertyTableHashMapImplTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -29,7 +31,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {
 	PropertyTableArrayImplTest.class,
 	PropertyTableHashMapImplTest.class,
-	GraphCSVTest.class
+	GraphCSVTest.class,
+	PropertyTableBuilderForArrayImplTest.class,
+	PropertyTableBuilderForHashMapImplTest.class,
 })
 public class TS_PropertyTable {
 
