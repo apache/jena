@@ -18,13 +18,11 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.GraphView ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Directly call the view mechanism */
@@ -63,4 +61,21 @@ public class TestDatasetGraphViewGraphs extends AbstractTestGraphOverDataset
         assertEquals(baseDSG, gv.getDataset()) ; 
         assertEquals(gn1, gv.getGraphName()) ;
     }
+    
+    @Test public void graphDSG_view_union_2()
+    {
+        Graph g = GraphView.createUnionGraph(baseDSG) ;
+        assertTrue(g instanceof GraphView) ;
+        long x = Iter.count(g.find(null,null,null)) ;
+        assertEquals(2, x) ;
+    }
+    
+    @Test public void graphDSG_view_union_3()
+    {
+        Graph g = GraphView.createUnionGraph(baseDSG) ;
+        assertEquals(2, g.size()) ;
+    }
+
+
+
 }

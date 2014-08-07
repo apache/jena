@@ -50,7 +50,6 @@ public abstract class AbstractTestGraphOverDataset extends BaseTest
     private static Node gn2 = SSE.parseNode("<g2>") ;
     private static Node gn3 = SSE.parseNode("<g3>") ;
     private static Node gnNotSuchGraph = SSE.parseNode("<NoSuchGraph>") ;
-
     
     protected abstract Graph makeNamedGraph(DatasetGraph dsg, Node gn) ;
     protected abstract Graph makeDefaultGraph(DatasetGraph dsg) ;
