@@ -18,10 +18,13 @@
 
 package org.apache.jena.propertytable.impl;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.atlas.csv.CSVParser;
+import org.apache.jena.atlas.csv.CSVTokenIterator;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.propertytable.PropertyTable;
 import org.apache.jena.propertytable.Row;
 import org.apache.jena.riot.lang.LangCSV;
@@ -65,12 +68,17 @@ public class PropertyTableBuilder {
 		}
 	}
 
+	protected static PropertyTable fillPropertyTable(PropertyTable table, String csvFilePath ){
+		InputStream input = IO.openFile(csvFilePath) ;
+		CSVTokenIterator iterator = new CSVTokenIterator(input) ;
+		return fillPropertyTable(table, iterator, csvFilePath);
+	}
 	
-	private static PropertyTable fillPropertyTable(PropertyTable table, String csvFilePath ){
+	protected static PropertyTable fillPropertyTable(PropertyTable table, CSVTokenIterator iterator, String csvFilePath){
 		if (table == null){
 			return null;
 		}
-		CSVParser parser = CSVParser.create(csvFilePath);
+		CSVParser parser = new CSVParser (iterator);
 		List<String> rowLine = null;
 		ArrayList<Node> predicates = new ArrayList<Node>();
 		int rowNum = 0;
@@ -79,8 +87,7 @@ public class PropertyTableBuilder {
 			if (rowNum == 0) {
 				table.createColumn(CSV_ROW_NODE);
 				for (String column : rowLine) {
-					String uri = IRIResolver.resolveString(csvFilePath) + "#"
-							+ LangCSV.toSafeLocalname(column);
+					String uri = createColumnKeyURI(csvFilePath, column);
 					Node p = NodeFactory.createURI(uri);
 					predicates.add(p);
 					table.createColumn(p);
@@ -92,9 +99,12 @@ public class PropertyTableBuilder {
 				row.setValue(table.getColumn(CSV_ROW_NODE), NodeFactory.createLiteral(
 						(rowNum + ""), XSDDatatype.XSDinteger));
 
-				for (int col = 0; col < rowLine.size(); col++) {
+				for (int col = 0; col < rowLine.size() && col<predicates.size(); col++) {
 
 					String columnValue = rowLine.get(col).trim();
+					if("".equals(columnValue)){
+						continue;
+					}
 					Node o;
 					try {
 						// Try for a double.
@@ -110,5 +120,10 @@ public class PropertyTableBuilder {
 			rowNum++;
 		}
 		return table;
+	}
+	
+	protected static String createColumnKeyURI(String csvFilePath, String column){
+		String uri = IRIResolver.resolveString(csvFilePath) + "#" + LangCSV.toSafeLocalname(column);
+		return uri;
 	}
 }

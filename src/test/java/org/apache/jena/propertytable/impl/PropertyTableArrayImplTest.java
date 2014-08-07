@@ -20,7 +20,9 @@ package org.apache.jena.propertytable.impl;
 
 import org.apache.jena.propertytable.AbstractPropertyTableTest;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 public class PropertyTableArrayImplTest extends AbstractPropertyTableTest{
 	
@@ -40,5 +42,39 @@ public class PropertyTableArrayImplTest extends AbstractPropertyTableTest{
 		table = null;
 		table2 = null;
 		row = null;
+	}
+	
+	@Test
+	public void testColumnOutofBounds1() {
+		for (int i=0;i<columnNum;i++){
+			table.createColumn(URI("something_"+i));
+		}
+		Assert.assertEquals(columnNum, table.getColumns().size());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testColumnOutofBounds2() {
+		for (int i=0;i<columnNum+1;i++){
+			table.createColumn(URI("something_"+i));
+		}
+	}
+	
+	@Test
+	public void testRowOutofBounds1() {
+		
+		// we've already created a new Row in @Before
+		for (int i=0;i<rowNum-1;i++){
+			table.createRow(URI("something_"+i));
+		}
+		Assert.assertEquals(rowNum, table.getAllRows().size());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testRowOutofBounds2() {
+		
+		// we've already created a new Row in @Before
+		for (int i=0;i<rowNum;i++){
+			table.createRow(URI("something_"+i));
+		}
 	}
 }
