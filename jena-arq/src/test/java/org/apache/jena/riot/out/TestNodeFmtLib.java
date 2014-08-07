@@ -61,9 +61,14 @@ public class TestNodeFmtLib extends BaseTest
     }
 
     @Test public void fmtNode_01() { test ("<a>", "<a>") ; }
-    @Test public void fmtNode_02() { test ("<"+RDF.getURI()+"type>", "rdf:type") ; }
-    @Test public void fmtNode_03() { test ("'123'^^xsd:integer", "123") ; }
-    @Test public void fmtNode_04() { test ("'abc'^^xsd:integer", "\"abc\"^^xsd:integer") ; }
+    
+    @Test public void fmtNode_02() { test ("<"+RDF.getURI()+"type>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") ; }
+    @Test public void fmtNode_03() { test ("'123'^^xsd:integer", "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
+    @Test public void fmtNode_04() { test ("'abc'^^xsd:integer", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
+
+    @Test public void fmtNode_05() { testDisplay ("<"+RDF.getURI()+"type>", "rdf:type") ; }
+    @Test public void fmtNode_06() { testDisplay ("'123'^^xsd:integer", "123") ; }
+    @Test public void fmtNode_07() { testDisplay ("'abc'^^xsd:integer", "\"abc\"^^xsd:integer") ; }
     
     private static void test(String node, String output)
     { test(NodeFactoryExtra.parseNode(node) , output) ; }
@@ -73,4 +78,14 @@ public class TestNodeFmtLib extends BaseTest
         String x = NodeFmtLib.str(node) ;
         assertEquals(output, x) ;
     }
+    
+    private static void testDisplay(String node, String output)
+    { testDisplay(NodeFactoryExtra.parseNode(node) , output) ; }
+    
+    private static void testDisplay(Node node, String output)
+    {
+        String x = NodeFmtLib.displayStr(node) ;
+        assertEquals(output, x) ;
+    }
+
 }

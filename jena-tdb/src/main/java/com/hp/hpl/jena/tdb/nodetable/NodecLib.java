@@ -36,15 +36,18 @@ import com.hp.hpl.jena.tdb.lib.NodeLib ;
 
 public class NodecLib
 {
+    // STATUS UNCLEAR.
+    // privateize the operations until checked.
+    
     // Better sharing with NodecSSE
     
     // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.
     final private static char MarkerChar = '_' ;
     final private static char[] invalidIRIChars = { MarkerChar , ' ' } ; 
     
-    public static String encode(Node node) { return encode(node, null) ; }
+    private /*public*/ static String encode(Node node) { return encode(node, null) ; }
 
-    public static String encode(Node node, PrefixMapping pmap)
+    private /*public*/ static String encode(Node node, PrefixMapping pmap)
     {
         if ( node.isBlank() )
             // Raw label.
@@ -61,9 +64,9 @@ public class NodecLib
         return NodeFmtLib.str(node) ;
     }
 
-    public static Node decode(String s)     { return decode(s, null) ; }
+    private /*public*/ static Node decode(String s)     { return decode(s, null) ; }
     
-    public static Node decode(String s, PrefixMapping pmap)
+    private /*public*/ static Node decode(String s, PrefixMapping pmap)
     {
         if ( s.startsWith("_:") )   
         {

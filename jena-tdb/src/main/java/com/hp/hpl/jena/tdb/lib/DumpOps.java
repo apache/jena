@@ -111,7 +111,7 @@ public class DumpOps
             Pair<NodeId, Node> pair = iter.next() ;
             NodeId nid = pair.car() ;
             Node n = pair.cdr();
-            String x = NodeFmtLib.str(n) ;
+            String x = NodeFmtLib.displayStr(n) ;
             System.out.printf("%016X %s\n", nid.getId(), x) ; 
         }
         dumpedNodeTables.add(nodeTable) ;
