@@ -30,7 +30,6 @@ import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
@@ -63,6 +62,9 @@ public class GraphView extends GraphBase implements Sync
     public static GraphView createNamedGraph(DatasetGraph dsg, Node graphIRI)
     { return new GraphView(dsg, graphIRI) ; }
     
+    public static GraphView createUnionGraph(DatasetGraph dsg)
+    { return new GraphView(dsg, Quad.unionGraph) ; }
+
     // If inherited.
     protected GraphView(DatasetGraph dsg, Node gn) {
         this.dsg = dsg ;
@@ -91,7 +93,7 @@ public class GraphView extends GraphBase implements Sync
     @Override
     protected PrefixMapping createPrefixMapping() {
         // TODO Unsatisfactory - need PrefixMap support by DSGs then PrefixMap -> PrefixMapping
-        return new PrefixMappingImpl() ; 
+        return dsg.getDefaultGraph().getPrefixMapping() ;
     }
 
     @Override
@@ -105,10 +107,10 @@ public class GraphView extends GraphBase implements Sync
     
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Node s, Node p, Node o) {
-        Node g = graphNode(gn) ;
-        Iterator<Triple> iter = GLib.quads2triples(dsg.find(g, s, p, o)) ;
         if ( Quad.isUnionGraph(gn) )
             return graphUnionFind(s, p, o) ;
+        Node g = graphNode(gn) ;
+        Iterator<Triple> iter = GLib.quads2triples(dsg.find(g, s, p, o)) ;
         return WrappedIterator.createNoRemove(iter) ;
     }
 
