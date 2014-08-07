@@ -30,6 +30,7 @@ import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
@@ -93,7 +94,7 @@ public class GraphView extends GraphBase implements Sync
     @Override
     protected PrefixMapping createPrefixMapping() {
         // TODO Unsatisfactory - need PrefixMap support by DSGs then PrefixMap -> PrefixMapping
-        return dsg.getDefaultGraph().getPrefixMapping() ;
+        return new PrefixMappingImpl() ;
     }
 
     @Override
