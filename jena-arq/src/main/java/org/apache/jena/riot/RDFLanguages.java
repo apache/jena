@@ -124,6 +124,12 @@ public class RDFLanguages
                                                 .addFileExtensions("csv")
                                                 .build() ;
 
+    /** Text */
+    public static final Lang TEXT   = LangBuilder.create("text", contentTypeTextPlain)
+                                                 .addAltNames("TEXT")   
+                                                 .addFileExtensions("txt")
+                                                 .build() ;
+
     /** The "null" language */
     public static final Lang RDFNULL  = LangBuilder.create("rdf/null", "null/rdf")
                                                 .addAltNames("NULL", "null")  
