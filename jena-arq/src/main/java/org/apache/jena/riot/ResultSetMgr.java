@@ -18,13 +18,13 @@
 
 package org.apache.jena.riot;
 
-import java.io.* ;
+import java.io.InputStream ;
+import java.io.OutputStream ;
 
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.resultset.* ;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
@@ -66,49 +66,49 @@ public class ResultSetMgr {
         return parse(uri, lang, null) ;
     }
 
-    /**
-     * Read from an {@code Reader} and produce a {@linkplain ResultSet};
-     * the stream is expect to use syntax {@code lang}.  
-     * Using InputStreams is better to ensure the character set
-     * of the input matches that of the syntax.  
-     * Note that returned
-     * result set may stream and so the input stream be read while the ResultSet is used.
-     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
-     * for a ResultSet that is detached from the {@code InputStream}.
-     * 
-     * @param in
-     * @param lang
-     * @return ResultSet
-     */
-    @Deprecated
-    public static ResultSet read(Reader in, Lang lang) {
-        ResultSetReaderFactory f = ResultSetReaderRegistry.getFactory(lang) ;
-        if ( f == null )
-            throw new RiotException("No result set reader for "+lang) ;
-        ResultSetReader rsr = f.create(lang) ;
-        return rsr.read(in, ARQ.getContext()) ;
-    }
-    
-    
-    /**
-     * Read from an {@code StringReader} and produce a {@linkplain ResultSet};
-     * the stream is expect to use syntax {@code lang}.  
-     * Note that returned
-     * result set may stream and so the input stream be read while the ResultSet is used.
-     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
-     * for a ResultSet that is detached from the {@code InputStream}.
-     * 
-     * @param in
-     * @param lang
-     * @return ResultSet
-     */
-    public static ResultSet read(StringReader in, Lang lang) {
-        ResultSetReaderFactory f = ResultSetReaderRegistry.getFactory(lang) ;
-        if ( f == null )
-            throw new RiotException("No result set reader for "+lang) ;
-        ResultSetReader rsr = f.create(lang) ;
-        return rsr.read(in, ARQ.getContext()) ;
-    }
+//    /**
+//     * Read from an {@code Reader} and produce a {@linkplain ResultSet};
+//     * the stream is expect to use syntax {@code lang}.  
+//     * Using InputStreams is better to ensure the character set
+//     * of the input matches that of the syntax.  
+//     * Note that returned
+//     * result set may stream and so the input stream be read while the ResultSet is used.
+//     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
+//     * for a ResultSet that is detached from the {@code InputStream}.
+//     * 
+//     * @param in
+//     * @param lang
+//     * @return ResultSet
+//     */
+//    @Deprecated
+//    public static ResultSet read(Reader in, Lang lang) {
+//        ResultSetReaderFactory f = ResultSetReaderRegistry.getFactory(lang) ;
+//        if ( f == null )
+//            throw new RiotException("No result set reader for "+lang) ;
+//        ResultSetReader rsr = f.create(lang) ;
+//        return rsr.read(in, ARQ.getContext()) ;
+//    }
+//    
+//    
+//    /**
+//     * Read from an {@code StringReader} and produce a {@linkplain ResultSet};
+//     * the stream is expect to use syntax {@code lang}.  
+//     * Note that returned
+//     * result set may stream and so the input stream be read while the ResultSet is used.
+//     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
+//     * for a ResultSet that is detached from the {@code InputStream}.
+//     * 
+//     * @param in
+//     * @param lang
+//     * @return ResultSet
+//     */
+//    public static ResultSet read(StringReader in, Lang lang) {
+//        ResultSetReaderFactory f = ResultSetReaderRegistry.getFactory(lang) ;
+//        if ( f == null )
+//            throw new RiotException("No result set reader for "+lang) ;
+//        ResultSetReader rsr = f.create(lang) ;
+//        return rsr.read(in, ARQ.getContext()) ;
+//    }
     
     /** Read ResultSet.
      * @param uri       URI to read from (includes file: and a plain file name).
@@ -163,32 +163,32 @@ public class ResultSetMgr {
         f.create(lang).write(out, resultSet, null) ;
     }
     
-    /** Write a SPARQL result set to the {@link java.io.Writer} in the speciifcied language/syntax.
-     * Using {@link OutputStream}s is better because the charcater encoding will match the
-     * requirements of the language.   
-     * @param out
-     * @param resultSet
-     * @param lang
-     */
-    @Deprecated
-    public static void write(Writer out, ResultSet resultSet, Lang lang) { 
-        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
-        if ( f == null )
-            throw new RiotException("No resultSet writer for "+lang) ;
-        f.create(lang).write(out, resultSet, null) ;
-    }
-
-    /** Write a SPARQL result set to the {@link java.io.Writer} in the speciifcied language/syntax.
-     * @param out
-     * @param resultSet
-     * @param lang
-     */
-    public static void write(StringWriter out, ResultSet resultSet, Lang lang) { 
-        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
-        if ( f == null )
-            throw new RiotException("No resultSet writer for "+lang) ;
-        f.create(lang).write(out, resultSet, null) ;
-    }
+//    /** Write a SPARQL result set to the {@link java.io.Writer} in the speciifcied language/syntax.
+//     * Using {@link OutputStream}s is better because the charcater encoding will match the
+//     * requirements of the language.   
+//     * @param out
+//     * @param resultSet
+//     * @param lang
+//     */
+//    @Deprecated
+//    public static void write(Writer out, ResultSet resultSet, Lang lang) { 
+//        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
+//        if ( f == null )
+//            throw new RiotException("No resultSet writer for "+lang) ;
+//        f.create(lang).write(out, resultSet, null) ;
+//    }
+//
+//    /** Write a SPARQL result set to the {@link java.io.Writer} in the speciifcied language/syntax.
+//     * @param out
+//     * @param resultSet
+//     * @param lang
+//     */
+//    public static void write(StringWriter out, ResultSet resultSet, Lang lang) { 
+//        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
+//        if ( f == null )
+//            throw new RiotException("No resultSet writer for "+lang) ;
+//        f.create(lang).write(out, resultSet, null) ;
+//    }
 
 }
 
