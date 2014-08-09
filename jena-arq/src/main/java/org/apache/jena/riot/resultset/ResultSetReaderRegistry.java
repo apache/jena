@@ -30,20 +30,21 @@ import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Objects ;
 
+import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 
 import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.sparql.resultset.CSVInput ;
 import com.hp.hpl.jena.sparql.resultset.JSONInput ;
+import com.hp.hpl.jena.sparql.resultset.TSVInput ;
 import com.hp.hpl.jena.sparql.resultset.XMLInput ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 public class ResultSetReaderRegistry {
     
     /** Lookup a {@linkplain Lang} to get the registered {@linkplain ResultSetReaderFactory} (or null) */
-    public static ResultSetReaderFactory lookup(Lang lang) {
+    public static ResultSetReaderFactory getFactory(Lang lang) {
         Objects.requireNonNull(lang) ;
         return registry.get(lang) ;
     }
@@ -56,9 +57,13 @@ public class ResultSetReaderRegistry {
     }
 
     private static Map<Lang, ResultSetReaderFactory> registry = new HashMap<>() ;
-    static { init(); }
     
-    /*package*/ static void init() {
+    private static boolean initialized = false ;
+    public static void init() {
+        if ( initialized )
+            return ;
+        initialized = true ;
+
         ResultSetReaderFactory factory = new ResultSetReaderFactoryStd() ;
         register(SPARQLResultSetXML, factory) ;
         register(SPARQLResultSetJSON, factory) ;
@@ -67,7 +72,7 @@ public class ResultSetReaderRegistry {
         register(SPARQLResultSetThrift, factory) ;
     }
     
-    static { init(); }
+    static { ResultSetLang.init(); }
 
     private static class ResultSetReaderFactoryStd implements ResultSetReaderFactory {
         @Override
@@ -83,22 +88,22 @@ public class ResultSetReaderRegistry {
     
     private static ResultSetReader readerXML = new ResultSetReader() {
         @Override public ResultSet read(InputStream in, Context context)    { return XMLInput.fromXML(in); }
-        @Override public ResultSet read(Reader in, Context context)         { return null ; } 
+        @Override public ResultSet read(Reader in, Context context)         { return XMLInput.fromXML(in); }
     } ;
 
     private static ResultSetReader readerJSON = new ResultSetReader() {
         @Override public ResultSet read(InputStream in, Context context)    { return JSONInput.fromJSON(in) ; }
-        @Override public ResultSet read(Reader in, Context context)         { return null ; }
+        @Override public ResultSet read(Reader in, Context context)         { throw new NotImplemented("Reader") ; } 
     } ;
 
     private static ResultSetReader readerCSV = new ResultSetReader() {
         @Override public ResultSet read(InputStream in, Context context)    { return CSVInput.fromCSV(in) ; }
-        @Override public ResultSet read(Reader in, Context context)         { return null ; }
+        @Override public ResultSet read(Reader in, Context context)         { throw new NotImplemented("Reader") ; } 
     } ;
     
     private static ResultSetReader readerTSV = new ResultSetReader() {
-        @Override public ResultSet read(InputStream in, Context context)    { return ResultSetFactory.fromTSV(in) ; }
-        @Override public ResultSet read(Reader in, Context context)         { return null ; }
+        @Override public ResultSet read(InputStream in, Context context)    { return TSVInput.fromTSV(in); }
+        @Override public ResultSet read(Reader in, Context context)         { throw new NotImplemented("Reader") ; } 
     } ;
 
     private static ResultSetReader readerNo = new ResultSetReader() {

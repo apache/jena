@@ -31,6 +31,7 @@ import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Objects ;
 
+import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
 
@@ -57,9 +58,12 @@ public class ResultSetWriterRegistry {
         registry.put(lang, factory) ;
     }
     
-    static { init(); }
-    
-    /*package*/ static void init() {
+    private static boolean initialized = false ;
+    public static void init() {
+        if ( initialized )
+            return ;
+        initialized = true ;
+
 //        RDFLanguages.register(SPARQLResultSetXML) ;
 //        RDFLanguages.register(SPARQLResultSetJSON) ;
 //        RDFLanguages.register(SPARQLResultSetCSV) ;
@@ -75,13 +79,14 @@ public class ResultSetWriterRegistry {
         register(SPARQLResultSetText, factory) ;
     }
  
+    static { ResultSetLang.init(); }
     
     private static ResultSetWriter writerXML = new ResultSetWriter() {
         @Override public void write(OutputStream out, ResultSet resultSet, Context context) { 
             XMLOutput xOut = new XMLOutput(null) ;
             xOut.format(out, resultSet) ;
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context)       {}
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
     } ;
 
     private static ResultSetWriter writerJSON = new ResultSetWriter() {
@@ -89,7 +94,7 @@ public class ResultSetWriterRegistry {
             JSONOutput jOut = new JSONOutput() ;
             jOut.format(out, resultSet) ; 
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context)       {}
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
     } ;
     
     private static ResultSetWriter writerCSV = new ResultSetWriter() {
@@ -97,7 +102,7 @@ public class ResultSetWriterRegistry {
             CSVOutput fmt = new CSVOutput() ;
             fmt.format(out, resultSet) ;
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context)       {}
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
     } ;
 
     private static ResultSetWriter writerTSV = new ResultSetWriter() {
@@ -105,7 +110,7 @@ public class ResultSetWriterRegistry {
             TSVOutput fmt = new TSVOutput() ;
             fmt.format(out, resultSet) ;
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context)       {}
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
     } ;
 
     private static ResultSetWriter writerNo = new ResultSetWriter() {
@@ -119,7 +124,7 @@ public class ResultSetWriterRegistry {
             TextOutput tFmt = new TextOutput(new SerializationContext((Prologue)null)) ;
             tFmt.format(out, resultSet) ; 
         }
-        @Override public void write(Writer out, ResultSet resultSet, Context context)       {}
+        @Override public void write(Writer out, ResultSet resultSet, Context context) {throw new NotImplemented("Writer") ; } 
     } ;
     
     private static class ResultSetWriterFactoryStd implements ResultSetWriterFactory {
@@ -133,7 +138,6 @@ public class ResultSetWriterRegistry {
             if ( lang.equals(SPARQLResultSetText) )     return writerText ;
             throw new RiotException("Lang not registered (ResultSet writer)") ;
         }
-        
     }
 }
 

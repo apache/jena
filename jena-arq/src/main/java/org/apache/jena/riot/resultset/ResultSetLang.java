@@ -57,11 +57,17 @@ public class ResultSetLang {
                      .addFileExtensions("txt")
                      .build() ;
 
+    private static boolean initialized = false ;
     public static void init() {
+        if ( initialized )
+            return ;
+        initialized = true ;
         RDFLanguages.register(SPARQLResultSetXML) ;
         RDFLanguages.register(SPARQLResultSetJSON) ;
         RDFLanguages.register(SPARQLResultSetCSV) ;
         RDFLanguages.register(SPARQLResultSetTSV) ;
         RDFLanguages.register(SPARQLResultSetThrift) ;
+        ResultSetReaderRegistry.init();
+        ResultSetWriterRegistry.init();
     }    
 }
