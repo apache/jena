@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.resultset;
 
 import java.io.InputStream ;
+import java.io.Reader ;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -38,6 +39,17 @@ public class XMLInput
         return make(in, model).getResultSet() ;
     }
     
+    public static ResultSet fromXML(Reader in) 
+    {
+        return fromXML(in, null) ;
+    }
+    
+    public static ResultSet fromXML(Reader in, Model model) 
+    {
+        return make(in, model).getResultSet() ;
+    }
+    
+
     public static ResultSet fromXML(String str) 
     {
         return fromXML(str, null) ;
@@ -68,6 +80,16 @@ public class XMLInput
             return new XMLInputSAX(in, model) ;
         return new XMLInputStAX(in, model) ;
     }
+    
+    public static SPARQLResult make(Reader in) { return make(in, null) ; }
+    
+    public static SPARQLResult make(Reader in, Model model)
+    {
+        if ( SystemARQ.UseSAX )
+            return new XMLInputSAX(in, model) ;
+        return new XMLInputStAX(in, model) ;
+    }
+
 
     public static SPARQLResult make(String str) { return make(str, null) ; }
     

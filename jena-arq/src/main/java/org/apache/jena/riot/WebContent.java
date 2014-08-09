@@ -206,4 +206,35 @@ public class WebContent
     public static boolean isMultiPartForm(ContentType ct) {
         return contentTypeMultipartFormData.equalsIgnoreCase(ct.getContentType()) ;
     }
+
+    /** Determine the content type to be used, given the target URL, the content-type from
+     *  Content Negotiation and a hint language.  This is a pragmatic balance.
+     *  A content-type of "text/plain" is ignored - it is too often wrong.  
+     */
+    public static ContentType determineCT(String target, String ctStr, Lang hintLang) {
+        boolean isTextPlain = contentTypeTextPlain.equals(ctStr) ;
+    
+        if ( ctStr != null  )
+            ctStr = contentTypeCanonical(ctStr) ;
+    
+        // The decision is:
+        // Content type (but not text/plain) > hint > file extension.
+    
+        // If it's text plain, we ignore it because a lot of naive
+        // server setups return text/plain for any file type.
+        // (It was never registered as being N-triples; 
+        // that was only for RDF 2004 testing.)
+        ContentType ct = null ;
+        if ( ! isTextPlain )
+            // Not guaranteed to be registered as a language here.
+            ct = (ctStr==null) ? null : ContentType.create(ctStr) ;
+        
+        if ( ct == null && hintLang != null ) 
+            ct = hintLang.getContentType() ;
+        
+        if ( ct == null )
+            ct = RDFLanguages.guessContentType(target) ;
+        
+        return ct ;
+    }
 }

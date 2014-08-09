@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.resultset ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.io.Reader ;
 import java.util.ArrayList ;
 import java.util.List ;
 
@@ -53,6 +54,10 @@ class XMLInputSAX extends SPARQLResult {
     // would need to be inside the code path of the SAX handler).
 
     public XMLInputSAX(InputStream in, Model model) {
+        worker(new InputSource(in), model) ;
+    }
+
+    public XMLInputSAX(Reader in, Model model) {
         worker(new InputSource(in), model) ;
     }
 

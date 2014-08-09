@@ -18,14 +18,21 @@
 
 package org.apache.jena.riot.resultset;
 
+import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetCSV ;
+import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetJSON ;
+import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetTSV ;
+import static org.apache.jena.riot.resultset.ResultSetLang.SPARQLResultSetXML ;
+
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.List ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.ResultSetMgr ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
@@ -40,13 +47,13 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 
 @RunWith(Parameterized.class)
-public class TestResultSetIO {
-    @Parameters(name = "{index}: {0}") public static Collection<Object[]> data()
-    { 
-        Lang[] langs = { ResultSetLang.SPARQLResultSetXML
-                       , ResultSetLang.SPARQLResultSetJSON
-                       , ResultSetLang.SPARQLResultSetCSV
-                       , ResultSetLang.SPARQLResultSetTSV
+public class TestResultSetIO extends BaseTest {
+    @Parameters(name = "{index}: {0}") 
+    public static Collection<Object[]> data() { 
+        Lang[] langs = { SPARQLResultSetXML
+                       , SPARQLResultSetJSON
+                       , SPARQLResultSetCSV
+                       , SPARQLResultSetTSV
         } ;
         
         List<Object[]> x = new ArrayList<>() ;
@@ -61,8 +68,8 @@ public class TestResultSetIO {
         ,"   (row (?x _:b0) (?y _:b1))"
         ,"   (row (?x _:b2) (?y _:b3))"
         ,"   (row (?x _:b1) (?y _:b0))"
-        ,"   (row (?x 1) )"
-        ,"   (row (?y 2) )"
+        ,"   (row (?x 1)           )"
+        ,"   (row           (?y 2) )"
         ,"   (row )"
         ,")"
         ) ;
@@ -77,19 +84,54 @@ public class TestResultSetIO {
     }
     
     @Test public void test_resultset_01() {
+        // write(data)-read-compare
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         ResultSetMgr.write(out, test_rs, lang) ;
         test_rs.reset(); 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        ResultSet rs = ResultSetMgr.read(in, lang) ;
-        ResultSetCompare.equalsByTerm(test_rs, rs) ;
         
-        out.reset();  
-        ResultSetMgr.write(out, rs, lang) ;
+        ResultSet rs = ResultSetMgr.read(in, lang) ;
+        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
+        if ( ! lang.equals(SPARQLResultSetCSV) )
+            // CSV is not faithful
+            assertTrue(ResultSetCompare.equalsByTerm(test_rs, rsw)) ;
+
+        rsw.reset();
         test_rs.reset(); 
+        
+        out = new ByteArrayOutputStream() ;
+
+        // Round trip the output from above - write(rsw)-read-compare
+        ResultSetMgr.write(out, rsw, lang) ;
         in = new ByteArrayInputStream(out.toByteArray()) ;
         ResultSet rs2 = ResultSetMgr.read(in, lang) ;
-        ResultSetCompare.equalsByTerm(test_rs, rs2) ;
+        // Not test_rs -- CSV round-trips to itself.
+        assertTrue(ResultSetCompare.equalsByTerm(rsw, rs2)) ;
     }
+    
+//    @Test public void test_resultset_02() {
+//        StringWriter out = new StringWriter() ;
+//        ResultSetMgr.write(out, test_rs, lang) ;
+//        test_rs.reset(); 
+//        StringReader in = new StringReader(out.toString()) ;
+//        
+//        ResultSet rs = ResultSetMgr.read(in, lang) ;
+//        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
+//        if ( ! lang.equals(SPARQLResultSetCSV) )
+//            // CSV is not faithful
+//            assertTrue(ResultSetCompare.equalsByTerm(test_rs, rsw)) ;
+//
+//        rsw.reset();
+//        test_rs.reset(); 
+//        
+//        out = new StringWriter() ;
+//
+//        // Round trip the output from above.
+//        ResultSetMgr.write(out, rsw, lang) ;
+//        in = new StringReader(out.toString()) ;
+//        ResultSet rs2 = ResultSetMgr.read(in, lang) ;
+//        // Not test_rs -- CSV is not faithful
+//        assertTrue(ResultSetCompare.equalsByTerm(rsw, rs2)) ;
+//    }
 }
 

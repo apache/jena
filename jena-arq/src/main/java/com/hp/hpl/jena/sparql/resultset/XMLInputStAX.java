@@ -111,6 +111,18 @@ class XMLInputStAX extends SPARQLResult {
         }
     }
 
+    public XMLInputStAX(Reader in, Model model) {
+        XMLInputFactory xf = XMLInputFactory.newInstance() ;
+        try {
+            XMLStreamReader xReader = xf.createXMLStreamReader(in) ;
+            worker(xReader, model) ;
+        } catch (XMLStreamException e) {
+            throw new ResultSetException("Can't initialize StAX parsing engine", e) ;
+        } catch (Exception ex) {
+            throw new ResultSetException("Failed when initializing the StAX parsing engine", ex) ;
+        }
+    }
+
     public XMLInputStAX(String str) {
         this(str, null) ;
     }

@@ -849,7 +849,7 @@ public class RDFDataMgr
     
     private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang hintLang, Context context)
     {
-        ContentType ct = determineCT(baseUri, in.getContentType(), hintLang) ;
+        ContentType ct = WebContent.determineCT(baseUri, in.getContentType(), hintLang) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
 
@@ -863,7 +863,7 @@ public class RDFDataMgr
     private static void process(StreamRDF destination, Reader in, String baseUri, Lang lang, Context context )
     {
         // Not as good as from an InputStream 
-        ContentType ct = determineCT(baseUri, null, lang) ;
+        ContentType ct = WebContent.determineCT(baseUri, null, lang) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : hint="+lang+")") ;
         ReaderRIOT reader = getReader(ct) ;
@@ -899,7 +899,7 @@ public class RDFDataMgr
 
     /** Determine the Lang, given the URI target, any content type header string and a hint */ 
     public static Lang determineLang(String target, String ctStr, Lang hintLang) {
-        ContentType ct = determineCT(target, ctStr, hintLang) ;
+        ContentType ct = WebContent.determineCT(target, ctStr, hintLang) ;
         if ( ct == null )
             return hintLang ;
         Lang lang = RDFLanguages.contentTypeToLang(ct) ;
@@ -908,38 +908,6 @@ public class RDFDataMgr
         return lang ;
     }
     
-    /** Determine the content type to be used, given the target URL, the content-type from
-     *  Content Negotiation and a hint language.  This is a pragmatic balance.
-     *  A content-type of "text/plain" is ignored - it is too often wrong.  
-     */
-    /*package*/ static ContentType determineCT(String target, String ctStr, Lang hintLang)
-    {
-        boolean isTextPlain = WebContent.contentTypeTextPlain.equals(ctStr) ;
-
-        if ( ctStr != null  )
-            ctStr = WebContent.contentTypeCanonical(ctStr) ;
-
-        // The decision is:
-        // Content type (but not text/plain) > hint > file extension.
-
-        // If it's text plain, we ignore it because a lot of naive
-        // server setups return text/plain for any file type.
-        // (It was never registered as being N-triples; 
-        // that was only for RDF 2004 testing.)
-        ContentType ct = null ;
-        if ( ! isTextPlain )
-            // Not guaranteed to be registered as a language here.
-            ct = (ctStr==null) ? null : ContentType.create(ctStr) ;
-        
-        if ( ct == null && hintLang != null ) 
-            ct = hintLang.getContentType() ;
-        
-        if ( ct == null )
-            ct = RDFLanguages.guessContentType(target) ;
-        
-        return ct ;
-    }
-
     // -------- WRITERS
     
     /** Write the model to the output stream in the default serialization for the language.
