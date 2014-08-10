@@ -18,18 +18,19 @@
 
 package org.apache.jena.riot.lang;
 
-import java.io.StringReader ;
+import java.io.StringReader;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.junit.Test ;
+import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.system.IRIResolver;
+import org.junit.Test;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.PrintUtil;
 
 public class TestLangCSV extends BaseTest {
 	private static final String FILE_NAME = "src/test/resources/test.csv";
@@ -65,6 +66,16 @@ public class TestLangCSV extends BaseTest {
 		assertIsomorphicWith(s1, s2);
 	}
 
+	@Test
+	public void testMoney() {
+		String[] s1 = { "£", "£" };
+		String[] s2 = {
+				//"<"+ LangCSV.caculateSubject(1, FILE_NAME) + "> <" + FILE_URI + "#1234> 'DigitalLocalName' ; ",
+				" [] <" + FILE_URI + "#%A3> '£' ; ",
+				" <http://w3c/future-csv-vocab/row> 1 ." };
+		assertIsomorphicWith(s1, s2);
+	}
+	
 	@Test
 	public void RDFDataMgrReadTest() {
 		Model m1 = RDFDataMgr.loadModel(FILE_NAME, RDFLanguages.CSV);
