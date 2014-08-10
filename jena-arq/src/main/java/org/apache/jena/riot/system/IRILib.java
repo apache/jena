@@ -46,7 +46,7 @@ public class IRILib
       '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'} ;
 
     // No allowed in URIs
-    private static char uri_non_chars[] = { '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t' } ;
+    private static char uri_non_chars[] = { '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t', '£' } ;
     
     // RFC 2396
     //private static char uri_unwise[]    = { '{' , '}', '|', '\\', '^', '[', ']', '`' } ;
@@ -57,7 +57,7 @@ public class IRILib
     { '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
       '=', '+', '$', ',', '/', '?', '%', '#', '[', ']',
       '{', '}', '|', '\\', '`', '^',
-      ' ', '<', '>', '\n', '\r', '\t' } ;
+      ' ', '<', '>', '\n', '\r', '\t', '£' } ;
     
     private static char[] charsFilename =
         // reserved, + non-chars + nasties.
