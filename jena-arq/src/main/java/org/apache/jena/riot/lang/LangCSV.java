@@ -104,9 +104,12 @@ public class LangCSV implements LangRIOT {
 								XSDDatatype.XSDinteger, rowNum, 0);
 				sink.triple(this.profile.createTriple(subject, predicateRow,
 						objectRow, rowNum, 0));
-				for (int col = 0; col < row.size(); col++) {
+				for (int col = 0; col < row.size() && col<predicates.size(); col++) {
 					Node predicate = predicates.get(col);
 					String columnValue = row.get(col).trim();
+					if("".equals(columnValue)){
+						continue;
+					}					
 					Node o;
 					try {
 						// Try for a double.
