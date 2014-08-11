@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.PrintUtil;
 
 public class TestLangCSV extends BaseTest {
 	private static final String FILE_NAME = "src/test/resources/test.csv";
