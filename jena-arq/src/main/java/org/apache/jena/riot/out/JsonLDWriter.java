@@ -109,7 +109,6 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         catch (IOException e) {
             IO.exception(e) ;
         }
-        
     }
 
     private static void addPrefixes(Map<String, Object> ctx, PrefixMap prefixMap) {
@@ -117,17 +116,8 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         for ( Entry<String, IRI> e : pmap.entrySet() ) {
             String key = e.getKey() ;
             IRI iri = e.getValue() ;
-            if ( key.trim().length() == 0 ) {
-                if ( iri != null ) {
-                    // set default URI prefix
-                    ctx.put("@base", e.getValue().toString()) ;
-                    ctx.put("", e.getValue().toString());
-                } // ignore if the value is empty
-            } else {
-                ctx.put(e.getKey(), e.getValue().toString()) ;
-            }
+            ctx.put(e.getKey(), e.getValue().toString()) ;
         }
-
     }
 
     private static void addProperties(final Map<String, Object> ctx, Graph graph) {
@@ -173,6 +163,5 @@ public class JsonLDWriter extends WriterDatasetRIOTBase
         } ;
 
         Iter.iter(graph.find(null, null, null)).apply(x) ;
-
     }
 }
