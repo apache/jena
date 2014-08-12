@@ -28,10 +28,11 @@ import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarAlloc ;
-import com.hp.hpl.jena.sparql.expr.* ;
 
-/** Convert an algebra expression into a quad form */
-public class AlgebraQuad extends TransformCopy
+/** 
+ * Helper class for converting an algebra expression into a quad form 
+ * */
+public class AlgebraQuad
 {
     // Transform to a quad form:
     //   + BGPs go to quad patterns
@@ -63,7 +64,7 @@ public class AlgebraQuad extends TransformCopy
      *  If they are different (and that means they are variables)
      *  an assign is done after the execution of the graph pattern block. 
      */
-    private static class QuadSlot
+    static class QuadSlot
     {   // Oh scala, where art thou!
         final Node actualGraphName ;
         final Node rewriteGraphName ;
@@ -110,100 +111,5 @@ public class AlgebraQuad extends TransformCopy
             // rewritten.
             stack.pop() ;
         }
-    }
-
-    private static class TransformQuadGraph extends TransformCopy
-    {
-        private Deque<QuadSlot> tracker ;
-
-        public TransformQuadGraph(Deque<QuadSlot> tracker) { this.tracker = tracker ; }
-        
-        private Node getNode() { return tracker.peek().rewriteGraphName ; }
-
-        @Override
-        public Op transform(OpGraph opGraph, Op op)
-        {
-            // ?? Could just leave the (graph) in place always - just rewrite BGPs. 
-            boolean noPattern = false ;
-            
-            /* One case to consider is when the pattern for the GRAPH
-             * statement includes uses the variable inside the GRAPH clause. 
-             * In this case, we must rename away the inner variable
-             * to allow stream execution via index joins, 
-             * and then put back the value via an assign.
-             * (This is what QueryIterGraph does using a streaming join
-             * for triples)
-             */
-
-            // Note: op is already quads by this point.
-            // Must test scoping by the subOp of GRAPH
-            
-            QuadSlot qSlot = tracker.peek() ;
-            Node actualName= qSlot.actualGraphName ;
-            Node rewriteName= qSlot.rewriteGraphName ; 
-            
-            if ( OpBGP.isBGP(op) )
-            {
-                // Empty BGP
-                if ( ((OpBGP)op).getPattern().isEmpty() )
-                    noPattern = true ;
-            }
-            else if ( op instanceof OpTable )
-            {
-                // Empty BGP compiled to a unit table
-                if ( ((OpTable)op).isJoinIdentity() )
-                    noPattern = true ;
-            }
-            
-            if ( noPattern )
-            {
-                // The case of something like:
-                // GRAPH ?g {} or GRAPH <v> {}
-                // which are ways of accessing the names in the dataset.
-                return new OpDatasetNames(opGraph.getNode()) ;
-            }
-            
-            if ( actualName != rewriteName )
-                op = OpAssign.assign(op, Var.alloc(actualName), new ExprVar(rewriteName)) ;
-
-            // Drop (graph...) because inside nodes
-            // have been converted to quads.
-            return op ;
-        }
-        
-        @Override
-        public Op transform(OpPropFunc opPropFunc, Op subOp)
-        {
-            if ( opPropFunc.getSubOp() != subOp )
-                opPropFunc = new OpPropFunc(opPropFunc.getProperty(), opPropFunc.getSubjectArgs(), opPropFunc.getObjectArgs(), subOp) ;
-            // Put the (graph) back round it so the property function works on the named graph.
-            return new OpGraph(getNode() , opPropFunc) ;
-        }
-        
-        @Override
-        public Op transform(OpPath opPath)
-        {
-            // Put the (graph) back round it
-            // ?? inc default graph node.
-            return new OpGraph(getNode() , opPath) ;
-            // Does not get removed by transform above because this is
-            // not the OpGraph that gets walked by the transform.  
-        }
-        
-        @Override
-        public Op transform(OpBGP opBGP)
-        {
-            return new OpQuadPattern(getNode(), opBGP.getPattern()) ;
-        }
-        
-//        static class X extends ExprTransformBase
-//        {
-//            @Override public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)
-//            { 
-//                System.out.println("****") ;
-//                
-//                return funcOp ; }
-//        }
-
     }    
 }
