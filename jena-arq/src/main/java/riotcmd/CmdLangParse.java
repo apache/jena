@@ -240,9 +240,7 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( labelsAsGiven )
             labels = NodeToLabel.createBNodeByLabelEncoded() ;
         
-        StreamRDF s = StreamRDFLib.sinkNull() ;
-        if ( ! modLangParse.toBitBucket() )
-            s = StreamRDFLib.writer(output) ;
+        StreamRDF s = createSink() ;
         if ( setup != null )
             s = InfFactory.inf(s, setup) ;
         StreamRDFCounting sink = StreamRDFLib.count(s) ;
@@ -281,6 +279,13 @@ public abstract class CmdLangParse extends CmdGeneral
         
         totalMillis += x ;
         totalTuples += n ;
+    }
+    
+    protected StreamRDF createSink() {
+        StreamRDF s = StreamRDFLib.sinkNull() ;
+        if ( ! modLangParse.toBitBucket() )
+            s = StreamRDFLib.writer(output) ;
+        return s ;
     }
     
     protected Tokenizer makeTokenizer(InputStream in)
