@@ -3,7 +3,12 @@ Release Notes
 
 ==== Apache Jena - CSV PropertyTable 1.0.0
 
-+ PropertyTable and 2 implementations:
-    
-+ 
++ PropertyTable and its 2 implementations:
+    PropertyTableArrayImpl
+    PropertyTableHashMapImpl
++ GraphPropertyTable and StageGenerator Optimization
++ RIOT Reader for CSV Files
++ CSV2RDF tool
+
+
 
