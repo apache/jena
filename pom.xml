@@ -22,7 +22,7 @@
   <artifactId>jena-csv</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Data Tables for SPARQL</name>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
