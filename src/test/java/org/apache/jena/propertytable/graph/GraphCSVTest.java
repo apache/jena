@@ -16,9 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.propertytable.impl;
+package org.apache.jena.propertytable.graph;
 
+import org.apache.jena.propertytable.graph.GraphCSV;
+import org.apache.jena.propertytable.lang.LangCSV;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.hp.hpl.jena.query.ARQ;
@@ -32,9 +35,13 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.util.PrintUtil;
 
 public class GraphCSVTest extends Assert {
+	
+	@BeforeClass
+	public static void init(){
+		LangCSV.register();
+	}
 	
 	@Test
 	public void testGraphCSV() throws Exception {

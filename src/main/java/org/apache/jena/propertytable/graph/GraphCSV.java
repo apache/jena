@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.propertytable.impl;
+package org.apache.jena.propertytable.graph;
 
 import org.apache.jena.propertytable.PropertyTable;
+import org.apache.jena.propertytable.impl.PropertyTableBuilder;
 
 
 public class GraphCSV extends GraphPropertyTable {
