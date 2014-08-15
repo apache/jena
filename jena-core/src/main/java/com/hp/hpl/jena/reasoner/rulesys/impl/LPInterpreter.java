@@ -538,6 +538,21 @@ public class LPInterpreter {
                         
                         case RuleClauseCode.LAST_CALL_PREDICATE:
                             // TODO: improved implementation of last call case
+                          List<RuleClauseCode> clauses1 = ((RuleClauseCodeList) args[ac++]).getList();
+                            // Check if this call is now grounded
+                            boolean groundCall1 = isGrounded(argVars[0]) && isGrounded(argVars[1]) && isGrounded(argVars[2]);
+                            setupClauseCall(pc, ac, clauses1, groundCall1);
+                            setupTripleMatchCall(pc, ac);
+                            continue main;
+                        case RuleClauseCode.CALL_SPARQL:
+                            //System.out.println(" ac -> " + ac);
+                            SparqlQuery sparqlQuery = (SparqlQuery) args[ac++];
+                            TriplePattern head = (TriplePattern) args[ac++];
+                            //System.out.println("goal 1 -> " + goal.toString());
+                            ArrayList<Triple> tripleResults = ExecSparqlCommand.executeSparqlQuery(sparqlQuery, head, goal, engine.getInfGraph());
+                            setupSparqlMatchCall(pc, ac, tripleResults);
+                            continue main;
+                            
                         case RuleClauseCode.CALL_PREDICATE:
                             List<RuleClauseCode> clauses = ((RuleClauseCodeList) args[ac++]).getList();
                             // Check if this call is now grounded
@@ -652,6 +667,13 @@ public class LPInterpreter {
      */
     private void setupTripleMatchCall(int pc, int ac) {
         TripleMatchFrame tmFrame = new TripleMatchFrame(this);
+        tmFrame.setContinuation(pc, ac);
+        tmFrame.linkTo(cpFrame);
+        cpFrame = tmFrame;
+    }
+    
+    private void setupSparqlMatchCall(int pc, int ac, ArrayList<Triple> tripleResults) {
+        TripleMatchFrame tmFrame = new TripleMatchFrame(this, tripleResults);
         tmFrame.setContinuation(pc, ac);
         tmFrame.linkTo(cpFrame);
         cpFrame = tmFrame;

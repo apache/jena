@@ -19,7 +19,11 @@
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Frame on the choice point stack used to represent the state of a direct
@@ -42,6 +46,11 @@ public class TripleMatchFrame extends GenericTripleMatchFrame {
      */
     public TripleMatchFrame(LPInterpreter interpreter) {
         init(interpreter);
+    }
+    
+    public TripleMatchFrame(LPInterpreter interpreter, ArrayList<Triple> ptripleResults) {
+        //tripleResults = ptripleResults;
+        init(interpreter, ptripleResults);  
     }
 
     /**
@@ -66,6 +75,25 @@ public class TripleMatchFrame extends GenericTripleMatchFrame {
     @Override public void init(LPInterpreter interpreter) {
         super.init(interpreter);
         this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(goal);
+    }
+    
+    public void init(LPInterpreter interpreter, ArrayList<Triple> tripleResults) {
+        super.init(interpreter);
+    
+        ArrayList<Triple> tripleResults_filter = 
+                new ArrayList<Triple>();
+        
+       
+        for(Triple t : tripleResults) {
+            TriplePattern t_tp = new TriplePattern(t);
+            if(goal.compatibleWith(t_tp)){
+                tripleResults_filter.add(t);
+            }    
+        }
+        
+        Iterator<Triple> it = tripleResults_filter.iterator();
+
+        this.matchIterator = WrappedIterator.create(it);
     }
     
     /**
