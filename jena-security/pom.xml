@@ -42,9 +42,9 @@
     	<url>http://www.apache.org/</url>
 	</organization>
 	<scm>
-		<url>https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-security</url>
-		<connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-security</connection>
-		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.11.2-SNAPSHOT/jena-security</developerConnection>
+		<url>https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-security</url>
+		<connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-security</connection>
+		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-security</developerConnection>
 	</scm>
 	<issueManagement>
 		<url>http://issues.apache.org/jira/browse/JENA</url>
