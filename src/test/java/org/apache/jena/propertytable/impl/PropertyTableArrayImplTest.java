@@ -24,6 +24,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Tests for PropertyTableArrayImpl
+ *
+ */
 public class PropertyTableArrayImplTest extends AbstractPropertyTableTest{
 	
 	private static int rowNum = 10;

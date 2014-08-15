@@ -37,6 +37,13 @@ import com.hp.hpl.jena.util.iterator.Filter;
 import com.hp.hpl.jena.util.iterator.NullIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
+/**
+ * GraphPropertyTable implements the Graph interface (read-only) over a PropertyTable.
+ * This is subclass from GraphBase and implements find().
+ * The graphBaseFind()(for matching a Triple) and propertyTableBaseFind()(for matching a whole Row) methods can choose the access route based on the find arguments.
+ * GraphPropertyTable holds/wraps an reference of the PropertyTable instance, so that such a Graph can be treated in a more table-like fashion.
+ *
+ */
 public class GraphPropertyTable extends GraphBase {
 
 	private PropertyTable pt;

@@ -26,7 +26,13 @@ import org.apache.jena.propertytable.PropertyTable;
 
 import com.hp.hpl.jena.graph.Node;
 
+/**
+ * The simple implementation of Column
+ *
+ */
 public class ColumnImpl implements Column {
+	
+	
 	private final PropertyTable table;
 	private Node p;
 

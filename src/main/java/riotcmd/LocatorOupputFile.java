@@ -31,7 +31,7 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.LocatorFile;
 
-public class LocatorOupputFile {
+class LocatorOupputFile {
     static Logger log = LoggerFactory.getLogger(LocatorOupputFile.class) ;
     private String thisDir = null ;
     private String thisDirLogStr = "" ;

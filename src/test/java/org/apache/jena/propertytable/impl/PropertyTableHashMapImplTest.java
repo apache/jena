@@ -22,7 +22,10 @@ import org.apache.jena.propertytable.AbstractPropertyTableTest;
 import org.junit.After;
 import org.junit.Before;
 
-
+/**
+ * Tests for PropertyTableHashMapImpl
+ *
+ */
 public class PropertyTableHashMapImplTest extends AbstractPropertyTableTest{
 	
 	@Before

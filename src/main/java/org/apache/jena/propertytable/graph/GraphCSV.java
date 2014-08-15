@@ -22,6 +22,12 @@ import org.apache.jena.propertytable.PropertyTable;
 import org.apache.jena.propertytable.impl.PropertyTableBuilder;
 
 
+/**
+ * GraphCSV is a sub class of GraphPropertyTable aiming at CSV data.
+ * Its constructor takes a CSV file path as the parameter, parse the file using a CSV Parser,
+ * and makes a PropertyTable through PropertyTableBuilder.
+ *
+ */
 public class GraphCSV extends GraphPropertyTable {
 	
 	public static GraphCSV createHashMapImpl( String csvFilePath ){
@@ -36,6 +42,7 @@ public class GraphCSV extends GraphPropertyTable {
 		super(table);
 	}
 	
+	// use the Java array implementation of PropertyTable for default
 	public GraphCSV ( String csvFilePath ){
 		super(PropertyTableBuilder.buildPropetyTableArrayImplFromCsv(csvFilePath));
 	}

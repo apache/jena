@@ -35,6 +35,11 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 
 
+/**
+ * A tool for constructing PropertyTable from a file (e.g., a CSV file).
+ * 
+ *
+ */
 public class PropertyTableBuilder {
 	
 	public static Node CSV_ROW_NODE = NodeFactory.createURI(LangCSV.CSV_ROW);

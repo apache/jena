@@ -24,7 +24,7 @@ import arq.cmdline.ArgModuleGeneral;
 import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 
-public class ModDest implements ArgModuleGeneral{
+class ModDest implements ArgModuleGeneral{
 	
 	private ArgDecl argDest     = new ArgDecl(ArgDecl.HasValue, "dest") ;
 	private String dest         = null ;

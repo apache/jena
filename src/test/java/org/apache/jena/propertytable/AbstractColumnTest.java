@@ -26,6 +26,10 @@ import org.junit.Test;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 
+/**
+ * Tests related to Column.
+ *
+ */
 public abstract class AbstractColumnTest extends BaseTest{
 
 

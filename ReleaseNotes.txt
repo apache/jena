@@ -1,0 +1,9 @@
+Release Notes 
+=============
+
+==== Apache Jena - CSV PropertyTable 1.0.0
+
++ PropertyTable and 2 implementations:
+    
++ 
+

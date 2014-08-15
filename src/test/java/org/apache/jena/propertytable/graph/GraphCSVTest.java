@@ -36,6 +36,10 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 
+/**
+ * Tests related to GraphCSV with some real world data.
+ *
+ */
 public class GraphCSVTest extends Assert {
 	
 	@BeforeClass
