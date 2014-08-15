@@ -22,7 +22,7 @@
   <artifactId>jena-csv</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Data Tables for SPARQL</name>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -47,9 +47,9 @@
   <description>jena-csv is for getting CSVs into a form that is amenable to Jena SPARQL processing, and doing so in a way that is not specific to CSV files. It includes getting the right architecture in place for regular table shaped data, using the core abstraction of PropertyTable.</description> 
   
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-csv-1.0.0</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-csv-1.0.0</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-csv-1.0.0</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/Experimental/jena-csv</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/Experimental/jena-csv</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/Experimental/jena-csv</url>
   </scm>
   
   <properties>
