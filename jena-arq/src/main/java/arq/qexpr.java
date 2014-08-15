@@ -22,7 +22,6 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.riot.out.NodeFmtLib ;
 import arq.cmd.CmdException ;
-import arq.cmd.CmdUtils ;
 import arq.cmd.TerminationException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdLineArgs ;
@@ -49,7 +48,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 public class qexpr
 {
     // TODO Convert to extends CmdArgModule 
-    static { LogCtl.setLog4j() ; CmdUtils.setN3Params() ; }
+    static { LogCtl.setCmdLogging(); }
 
     public static void main (String... argv)
     {
