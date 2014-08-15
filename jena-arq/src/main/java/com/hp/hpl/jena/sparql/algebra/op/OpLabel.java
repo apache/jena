@@ -40,29 +40,26 @@ public class OpLabel extends Op1
     
     private Object object ;
 
-    private OpLabel(Object thing) { this(thing, null) ; }
+    protected OpLabel(Object thing) { this(thing, null) ; }
     
-    private OpLabel(Object thing, Op op)
-    {
+    protected OpLabel(Object thing, Op op) {
         super(op) ;
         this.object = thing ;
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! ( other instanceof OpLabel) )
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpLabel) )
             return false ;
         OpLabel opLabel = (OpLabel)other ;
-        if ( ! Lib.equal(object, opLabel.object) )
+        if ( !Lib.equal(object, opLabel.object) )
             return false ;
-        
+
         return Lib.equal(getSubOp(), opLabel.getSubOp()) ;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int x = HashLabel ;
         x ^= Lib.hashCodeObject(object, 0) ;
         x ^= Lib.hashCodeObject(getSubOp(), 0) ;
@@ -78,8 +75,7 @@ public class OpLabel extends Op1
     public boolean hasSubOp() { return getSubOp() != null ; } 
     
     @Override
-    public String getName()
-    {
+    public String getName() {
         return Tags.tagLabel ;
     }
 
@@ -88,8 +84,7 @@ public class OpLabel extends Op1
     { return transform.transform(this, subOp) ; }
 
     @Override
-    public Op1 copy(Op subOp)
-    {
-        return new OpLabel(object, subOp) ; 
+    public Op1 copy(Op subOp) {
+        return new OpLabel(object, subOp) ;
     }
 }
