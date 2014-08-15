@@ -25,6 +25,10 @@ import org.junit.Test;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 
+/**
+ * Tests related to PropertyTable.
+ *
+ */
 public abstract class AbstractPropertyTableTest extends AbstractRowTest{
 
 	@Test

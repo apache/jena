@@ -42,7 +42,13 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
+/**
+ * If the triple size within a BasicePattern is greater than 1 (i.e. at least 2 triples), it's turned into a row querying.
+ *
+ */
 public class QueryIterPropertyTableRow  extends QueryIterRepeatApply{
+	
+	
     private final BasicPattern pattern ;
     
     public QueryIterPropertyTableRow( QueryIterator input,

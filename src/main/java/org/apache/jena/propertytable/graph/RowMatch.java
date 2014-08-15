@@ -21,6 +21,10 @@ package org.apache.jena.propertytable.graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 
+/**
+ * The data structure for matching a Row
+ *
+ */
 public class RowMatch {
 	
 	private BasicPattern pattern;

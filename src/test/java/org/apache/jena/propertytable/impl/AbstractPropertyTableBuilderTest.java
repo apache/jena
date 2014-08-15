@@ -31,6 +31,11 @@ import org.junit.Test;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 
+
+/**
+ * Tests related to PropertyTableBuilder, or more explicitly for the CSV parser in the current release.
+ *
+ */
 public abstract class AbstractPropertyTableBuilderTest extends BaseTest {
 
 	@Test

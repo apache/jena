@@ -32,7 +32,13 @@ import org.junit.Test;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+
+/**
+ * Tests for the registered LangCSV in RIOT.
+ *
+ */
 public class TestLangCSV extends BaseTest {
+		
 	private static final String FILE_NAME = "src/test/resources/test.csv";
 	private static final String FILE_URI = IRIResolver.resolveString(FILE_NAME);
 

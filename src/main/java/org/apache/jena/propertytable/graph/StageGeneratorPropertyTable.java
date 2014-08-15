@@ -25,6 +25,10 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 
+/**
+ *  The extension of StageGenerator for querying a Row.
+ *
+ */
 public class StageGeneratorPropertyTable implements StageGenerator {
 
     // Using OpExecutor is preferred.
@@ -42,13 +46,10 @@ public class StageGeneratorPropertyTable implements StageGenerator {
         Graph g = execCxt.getActiveGraph() ;
         
         if ( ! ( g instanceof GraphPropertyTable ) )
-            // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt) ;
         if (pattern.size() <= 1){
-//        	System.out.println( "<=1 "+ pattern);
         	return above.execute(pattern, input, execCxt) ;
         }
-//        System.out.println( ">1" + pattern);
         return QueryIterPropertyTable.create(input, pattern, execCxt);
     }
     

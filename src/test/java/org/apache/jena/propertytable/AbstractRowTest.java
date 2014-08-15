@@ -24,7 +24,10 @@ import org.junit.Test;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 
-
+/**
+ * Tests related to Row.
+ *
+ */
 public abstract class AbstractRowTest extends AbstractColumnTest{
 
 	@Test

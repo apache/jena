@@ -46,6 +46,10 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.sparql.util.Context;
 
+/**
+ * The LangRIOT implementation for CSV
+ *
+ */
 public class LangCSV implements LangRIOT {
 
 	public static final String CSV_PREFIX = "http://w3c/future-csv-vocab/";

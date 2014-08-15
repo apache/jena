@@ -35,6 +35,11 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
+/**
+ * A PropertyTable Implementation using a two dimension array.
+ * It contains SPO and PSO indexes.
+ * 
+ */
 public class PropertyTableArrayImpl implements PropertyTable {
 	
 	private final List<Node> rowList;

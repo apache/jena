@@ -27,8 +27,10 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.SysRIOT ;
 
 /** 
- * Operations related to IRIs 
- * Add '£', based on org.apache.jena.riot.system.IRILib
+ * Operations related to IRIs.
+ * Add support for '£', based on {@link org.apache.jena.riot.system.IRILib}
+ * 
+ * This class should be merged into riot IRILib in future.
  */
 public class IRILib
 {
