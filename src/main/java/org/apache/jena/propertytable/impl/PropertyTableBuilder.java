@@ -27,7 +27,7 @@ import org.apache.jena.atlas.csv.CSVTokenIterator;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.propertytable.PropertyTable;
 import org.apache.jena.propertytable.Row;
-import org.apache.jena.riot.lang.LangCSV;
+import org.apache.jena.propertytable.lang.LangCSV;
 import org.apache.jena.riot.system.IRIResolver;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;

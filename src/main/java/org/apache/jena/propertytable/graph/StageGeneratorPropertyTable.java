@@ -16,7 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.propertytable.impl;
+package org.apache.jena.propertytable.graph;
+
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.core.BasicPattern;

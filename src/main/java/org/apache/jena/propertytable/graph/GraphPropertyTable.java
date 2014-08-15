@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.propertytable.impl;
+package org.apache.jena.propertytable.graph;
 
 import java.util.ArrayList;
 import java.util.Locale;
