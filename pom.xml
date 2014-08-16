@@ -21,7 +21,7 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-csv</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Jena - Data Tables for SPARQL</name>
+  <name>Apache Jena - Data Tables for RDF and SPARQL</name>
   <version>1.0.1-SNAPSHOT</version>
 
   <parent>
