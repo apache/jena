@@ -453,7 +453,7 @@ public class FusekiCmd extends CmdARQ
         {
             serverConfig = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate, listenLocal) ;
             if ( ! allowUpdate )
-                Fuseki.configLog.warn("Running in read only mode, update functionality is disabled.  Please restart with the --update option if you wish to run in read write mode");
+                Fuseki.serverLog.info("Running in read-only mode.");
         }
         
         // TODO Get from parsing config file.
