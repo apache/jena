@@ -449,8 +449,12 @@ public class FusekiCmd extends CmdARQ
             Fuseki.configLog.info("Configuration file: "+fusekiConfigFile) ;
             serverConfig = FusekiConfig.configure(fusekiConfigFile) ;
         }
-        else
+        else 
+        {
             serverConfig = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate, listenLocal) ;
+            if ( ! allowUpdate )
+                Fuseki.configLog.warn("Running in read only mode, update functionality is disabled.  Please restart with the --update option if you wish to run in read write mode");
+        }
         
         // TODO Get from parsing config file.
         serverConfig.port = port ;
