@@ -16,45 +16,57 @@
 
 package com.hp.hpl.jena.reasoner.sparqlinrules.test;
 
+import com.hp.hpl.jena.reasoner.test.TestInfModel;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.junit.Test;
 
-/**
- *
- * @author mba
- */
-public class SparqlinRulesTest1 {
+
+public class SparqlinRulesTest1 extends TestCase {
     
     SparqlinRulesTest2 SparqlinRulesTest2_backward;
     SparqlinRulesTest2 SparqlinRulesTest2_forwardRETE;
     SparqlinRulesTest2 SparqlinRulesTest2_hybrid;
     SparqlinRulesTest2 SparqlinRulesTest2_forward;
     
+    public SparqlinRulesTest1( String name ) {
+        super( name ); 
+        inic_data();
+    }
+    
+    public SparqlinRulesTest1(  ) {
+        inic_data();
+    }
             
-    public SparqlinRulesTest1() {
+    private void inic_data() {
         SparqlinRulesTest2_backward = new SparqlinRulesTest2("backward");
         SparqlinRulesTest2_forwardRETE = new SparqlinRulesTest2("forwardRETE");
         SparqlinRulesTest2_hybrid = new SparqlinRulesTest2("hybrid");
         SparqlinRulesTest2_forward = new SparqlinRulesTest2("forward");
     }
     
-    @Test
+    public static TestSuite suite() {
+        return new TestSuite(SparqlinRulesTest1.class);
+    }  
+
+    
+    //@Test
     public void test_backward() {
         SparqlinRulesTest2_backward.run();
+  
     }
     
-    @Test
+    //@Test
     public void test_forwardRETE() {
         SparqlinRulesTest2_forwardRETE.run();
     }
     
-    @Test
+    //@Test
     public void test_hybrid() {
         SparqlinRulesTest2_hybrid.run();
     }
     
-    @Test
+    //@Test
     public void test_forward() {
         SparqlinRulesTest2_forward.run();
     }
