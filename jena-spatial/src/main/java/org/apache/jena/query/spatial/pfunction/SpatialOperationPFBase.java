@@ -88,7 +88,7 @@ public abstract class SpatialOperationPFBase extends PropertyFunctionBase {
 			Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
 		if (server == null) {
 			if (!warningIssued) {
-				Log.warn(getClass(), "No text index - no text search performed");
+				Log.warn(getClass(), "No spatial index - no spatial search performed");
 				warningIssued = true;
 			}
 			// Not a text dataset - no-op
