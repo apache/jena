@@ -96,7 +96,7 @@ public class spatialindexer extends CmdARQ {
 		dataset = (DatasetGraphSpatial) (ds.asDatasetGraph());
 		spatialIndex = dataset.getSpatialIndex();
 		if (spatialIndex == null)
-			throw new CmdException("Dataset has no text index");
+			throw new CmdException("Dataset has no spatial index");
 		
 		context= new SpatialIndexContext(spatialIndex);
 	}
