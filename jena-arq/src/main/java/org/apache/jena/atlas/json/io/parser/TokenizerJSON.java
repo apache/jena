@@ -677,6 +677,7 @@ public class TokenizerJSON implements Tokenizer
             case 'n':   return NL ; 
             case 'r':   return CR ;
             case 't':   return '\t' ;
+            case 'b':   return '\b' ;
             case '"':   return '"' ;
             case '/':   return '/' ;    // JSON requires / escapes.
             case '\'':  return '\'' ;

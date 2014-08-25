@@ -98,4 +98,9 @@ public class TestJson extends BaseTest
     {
         JSON.parse("{}") ;
     }
+    
+    @Test
+    public void js_value_13() {
+        read("\"abc\\bd\"", new JsonString("abc\bd")) ;
+    }
 }
