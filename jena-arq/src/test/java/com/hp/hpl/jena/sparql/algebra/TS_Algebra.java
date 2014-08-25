@@ -31,7 +31,7 @@ import org.junit.runners.Suite ;
     , TestOpAsQuery.class
     , TestOpVars.class
     , TestPattern2Join.class
-    , TestTransformQuads.class
+    , TestTransformOpExt.class
     , TestVarFinder.class
 })
 

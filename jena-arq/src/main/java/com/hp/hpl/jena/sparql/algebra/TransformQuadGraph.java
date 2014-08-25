@@ -18,20 +18,13 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.Deque;
+import java.util.Deque ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.algebra.AlgebraQuad.QuadSlot;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath;
-import com.hp.hpl.jena.sparql.algebra.op.OpPropFunc;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.algebra.AlgebraQuad.QuadSlot ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
 
 /**
  * Transform that rewrites an algebra into quad form
@@ -40,14 +33,19 @@ import com.hp.hpl.jena.sparql.expr.ExprVar;
 public class TransformQuadGraph extends TransformCopy
 {
     private Deque<QuadSlot> tracker ;
+    private OpVisitor beforeVisitor ;
+    private OpVisitor afterVisitor ;
 
-    public TransformQuadGraph(Deque<QuadSlot> tracker) { this.tracker = tracker ; }
+    public TransformQuadGraph(Deque<QuadSlot> tracker, OpVisitor before, OpVisitor after) {
+        this.tracker = tracker ;
+        this.beforeVisitor = before ;
+        this.afterVisitor = after ;
+    }
     
     private Node getNode() { return tracker.peek().rewriteGraphName ; }
 
     @Override
-    public Op transform(OpGraph opGraph, Op op)
-    {
+    public Op transform(OpGraph opGraph, Op op) {
         // ?? Could just leave the (graph) in place always - just rewrite BGPs. 
         boolean noPattern = false ;
         
@@ -97,8 +95,7 @@ public class TransformQuadGraph extends TransformCopy
     }
     
     @Override
-    public Op transform(OpPropFunc opPropFunc, Op subOp)
-    {
+    public Op transform(OpPropFunc opPropFunc, Op subOp) {
         if ( opPropFunc.getSubOp() != subOp )
             opPropFunc = new OpPropFunc(opPropFunc.getProperty(), opPropFunc.getSubjectArgs(), opPropFunc.getObjectArgs(), subOp) ;
         // Put the (graph) back round it so the property function works on the named graph.
@@ -106,8 +103,7 @@ public class TransformQuadGraph extends TransformCopy
     }
     
     @Override
-    public Op transform(OpPath opPath)
-    {
+    public Op transform(OpPath opPath) {
         // Put the (graph) back round it
         // ?? inc default graph node.
         return new OpGraph(getNode() , opPath) ;
@@ -116,8 +112,13 @@ public class TransformQuadGraph extends TransformCopy
     }
     
     @Override
-    public Op transform(OpBGP opBGP)
-    {
+    public Op transform(OpBGP opBGP) { 
         return new OpQuadPattern(getNode(), opBGP.getPattern()) ;
     }
+    
+    @Override
+    public Op transform(OpExt opExt) {
+        return opExt.apply(this, beforeVisitor, afterVisitor) ;
+    }
+
 }
