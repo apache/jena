@@ -20,8 +20,6 @@ package riotcmd;
 
 import java.io.InputStream ;
 import java.io.OutputStream ;
-import java.util.HashMap ;
-import java.util.Map ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -79,17 +77,6 @@ public abstract class CmdLangParse extends CmdGeneral
         @Override
         public String getRateName()         { return "TPS" ; }
     } ;
-    
-    protected static Map<Lang, LangHandler> dispatch = new HashMap<>() ;
-    static {
-        for ( Lang lang : RDFLanguages.getRegisteredLanguages() )
-        {
-            if ( RDFLanguages.isQuads(lang) )
-                dispatch.put(lang, langHandlerQuads) ;
-            else
-                dispatch.put(lang, langHandlerTriples) ;
-        }
-    }
     
     protected LangHandler langHandlerOverall = null ;
 
@@ -213,8 +200,12 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         
         Lang lang = selectLang(filename, ct, RDFLanguages.NQUADS) ;  
-        LangHandler handler = dispatch.get(lang) ;
-        if ( handler == null )
+        LangHandler handler = null ;
+        if ( RDFLanguages.isQuads(lang) )
+            handler = langHandlerQuads ;
+        else if ( RDFLanguages.isTriples(lang) )
+            handler = langHandlerTriples ;
+        else 
             throw new CmdException("Undefined language: "+lang) ; 
         
         // If multiple files, choose the overall labels. 
