@@ -83,7 +83,12 @@ public abstract class OpExt extends OpBase
             out.ensureStartOfLine() ;
     }
     
-    public Op apply(Transform transform) { throw new ARQNotImplemented("OpExt.appy(Transform)") ; } 
+    public Op apply(Transform transform, OpVisitor before, OpVisitor after) {
+        // Default behaviour is just to pass to apply(transform)
+        return apply(transform) ;
+    } 
+    
+    public Op apply(Transform transform) { throw new ARQNotImplemented("OpExt.apply(Transform)") ; }
     
 //    /** Return the sub tag - must match the builder */ 
 //    public abstract String getSubTag() ;

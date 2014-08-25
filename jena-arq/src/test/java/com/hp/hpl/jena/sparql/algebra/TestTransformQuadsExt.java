@@ -27,7 +27,7 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 //Tests for conversion of algebra forms to quad form. 
-public class TestTransformQuads extends BaseTest
+public class TestTransformQuadsExt extends BaseTest
 {
     // Simple
     @Test public void quads01() { test ("{ GRAPH ?g { ?s ?p ?o } }", 

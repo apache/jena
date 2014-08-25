@@ -53,7 +53,7 @@ public class AlgebraQuad
         OpVisitor before = new Pusher(stack) ;
         OpVisitor after = new Popper(stack) ;
         
-        TransformQuadGraph qg = new TransformQuadGraph(stack) ;
+        TransformQuadGraph qg = new TransformQuadGraph(stack, before, after) ;
         return Transformer.transformSkipService(qg, op, before, after) ;
     }
     
