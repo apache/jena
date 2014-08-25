@@ -31,8 +31,9 @@ import org.junit.runners.Suite ;
     , TestOpAsQuery.class
     , TestOpVars.class
     , TestPattern2Join.class
-    , TestTransformOpExt.class
+    , TestTransformQuads.class
     , TestVarFinder.class
+    , TestTransformOpExt.class
 })
 
 public class TS_Algebra extends TestSuite
