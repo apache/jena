@@ -25,6 +25,7 @@ import java.util.Iterator ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 
@@ -59,7 +60,7 @@ public class NQuadsWriter extends WriterDatasetRIOTBase
     private static void write$(StreamRDF s, Iterator<Quad> iter)
     {
         s.start() ;
-        StreamRDFLib.quadsToStream(s, iter) ;
+        StreamOps.sendQuadsToStream(iter, s) ;
         s.finish();
     }
     
