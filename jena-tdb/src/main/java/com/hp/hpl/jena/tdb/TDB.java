@@ -147,6 +147,9 @@ public class TDB {
 
     /** Sync a TDB-backed Graph. Do nothing if not TDB-backed. */
     public static void sync(Graph graph) {
+        if ( graph == null )
+            return ;
+
         if ( graph instanceof InfGraph ) {
             InfGraph infGraph = (InfGraph)graph ;
             sync(infGraph.getRawGraph()) ;
@@ -157,12 +160,17 @@ public class TDB {
 
     /** Sync a TDB-backed Dataset. Do nothing if not TDB-backed. */
     public static void sync(Dataset dataset) {
+        if ( dataset == null )
+            return ;
         DatasetGraph ds = dataset.asDatasetGraph() ;
         sync(ds) ;
     }
 
     /** Sync a TDB-backed DatasetGraph. Do nothing if not TDB-backed. */
     public static void sync(DatasetGraph dataset) {
+        if ( dataset == null )
+            return ;
+        
         // Should be: SystemARQ.sync(dataset) ;
         if ( dataset instanceof DatasetGraphTDB ) {
             syncObject(dataset) ;
@@ -195,6 +203,8 @@ public class TDB {
      * Do nothing otherwise
      */
     private static void syncObject(Object object) {
+        if ( object == null )
+            return ;
         if ( object instanceof Sync )
             ((Sync)object).sync() ;
     }
