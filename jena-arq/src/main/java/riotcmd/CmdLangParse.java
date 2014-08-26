@@ -258,8 +258,7 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( modLangParse.stopOnBadTerm() )
                 return ;
         } finally {
-            // Not close - we may write again to the underlying output stream in another call to parse a file.  
-            sink.finish() ;
+            // Not close the output - we may write again to the underlying output stream in another call to parse a file.  
             IO.close(in) ;
         }
         long x = modTime.endTimer() ;
