@@ -22,8 +22,8 @@ import java.util.Iterator ;
 import java.util.Map.Entry ;
 
 import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -59,7 +59,7 @@ public class WriterStream
         dest.base(baseURI) ;
         writePrefixes(dest, prefixes) ;
         Iterator<Quad> iter = datasetGraph.find(null, null, null, null) ;
-        StreamRDFLib.quadsToStream(dest, iter) ;
+        StreamOps.sendQuadsToStream(iter, dest) ;
         finish(dest) ;
     }
 
@@ -69,7 +69,7 @@ public class WriterStream
         dest.base(baseURI) ;
         writePrefixes(dest, prefixes) ;
         Iterator<Triple> iter = graph.find(null, null, null) ;
-        StreamRDFLib.triplesToStream(dest, iter) ;
+        StreamOps.sendTriplesToStream(iter, dest) ;
         finish(dest) ;
     }
 }

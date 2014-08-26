@@ -78,10 +78,19 @@ public class RDFDataMgr
      */
     
     static Logger log = LoggerFactory.getLogger(RDFDataMgr.class) ;
-    private static String riotBase = "http://jena.apache.org/riot/" ; 
-    private static String streamManagerSymbolStr = riotBase+"streamManager" ; 
-    public static Symbol streamManagerSymbol = Symbol.create(streamManagerSymbolStr) ; 
+    private static String riotBase = "http://jena.apache.org/riot/" ;
     
+//    private static String dataStreamManagerSymbolStr = riotBase+"dataStreamManager" ; 
+//    public static Symbol dataStreamManagerSymbol = Symbol.create(dataStreamManagerSymbolStr) ;
+//    
+//    private static String StreamManagerSymbolStr = riotBase+"streamManager" ;
+//    /** @deprecated Use  {@linkplain #dataStreamManagerSymbol} */
+//    @Deprecated
+//    public static Symbol streamManagerSymbolOld = Symbol.create(riotBase+"streamManager") ;
+    
+      private static String StreamManagerSymbolStr = riotBase+"streamManager" ;
+      public static Symbol streamManagerSymbol = Symbol.create(riotBase+"streamManager") ;
+
     /** Read triples into a Model from the given location. 
      *  The syntax is detemined from input source URI (content negotiation or extension). 
      * @param model Destination for the RDF read.

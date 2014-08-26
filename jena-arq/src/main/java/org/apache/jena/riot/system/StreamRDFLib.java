@@ -26,7 +26,7 @@ import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.riot.out.CharSpace;
+import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -72,25 +72,19 @@ public class StreamRDFLib
     
     public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
     
-    /** Set triples to a StreamRDF - does not call .start/.finish */ 
+    /** Set triples to a StreamRDF - does not call .start/.finish 
+     * @deprecated Use {@link StreamOps#triplesToStream(Iterator&lt;Triple&gt;, StreamRDF,)} instead*/ 
+    @SuppressWarnings("javadoc")
+    @Deprecated
     public static void triplesToStream(StreamRDF dest, Iterator<Triple> iter)
-    {
-        for ( ; iter.hasNext() ; )
-        {
-            Triple t = iter.next() ;
-            dest.triple(t) ;
-        }
-    }
+    { StreamOps.sendTriplesToStream(iter, dest) ; }
 
-    /** Set quads to a StreamRDF - does not call .start/.finish */ 
+    /** Set quads to a StreamRDF - does not call .start/.finish 
+     * @deprecated Use {@link StreamOps#quadsToStream(Iterator&lt;Quad&gt;, StreamRDF)} instead*/
+    @SuppressWarnings("javadoc")
+    @Deprecated
     public static void quadsToStream(StreamRDF dest, Iterator<Quad> iter)
-    {
-        for ( ; iter.hasNext() ; )
-        {
-            Quad q = iter.next() ;
-            dest.quad(q) ;
-        }
-    }
+    { StreamOps.sendQuadsToStream(iter, dest) ; }
     
     /** 
      * Output to a sink; prefix and base handled only within the parser.
