@@ -42,13 +42,10 @@ import com.hp.hpl.jena.query.ARQ ;
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdGeneral
 {
-    // We are not a TDB command but still set the logging.
-    //static { CmdTDB.setLogging() ; }
-    // Module.
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;
+    protected ModLangOutput modLangOutput       = new ModLangOutput() ;
     protected ModSymbol modSymbol               = new ModSymbol() ;
-    protected ArgDecl argStrict                 = new ArgDecl(ArgDecl.NoValue, "strict") ;    
     protected InferenceSetupRDFS setup          = null ; 
     
     interface LangHandler {
@@ -86,11 +83,14 @@ public abstract class CmdLangParse extends CmdGeneral
         
         super.addModule(modTime) ;
         super.addModule(modLangParse) ;
+        super.addModule(modLangOutput) ;
         super.addModule(modSymbol) ;
         
         super.modVersion.addClass(Jena.class) ;
         super.modVersion.addClass(ARQ.class) ;
         super.modVersion.addClass(RIOT.class) ;
+        
+        
     }
 
     @Override
@@ -100,17 +100,15 @@ public abstract class CmdLangParse extends CmdGeneral
         return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] file ..." ;
     }
 
-    @Override
-    protected void processModulesAndArgs()
-    { 
-        if ( this.contains(argStrict) )
-            RIOT.setStrictMode(true) ;
-    }
-
     protected long totalMillis = 0 ; 
     protected long totalTuples = 0 ; 
     
     OutputStream output = System.out ;
+    StreamRDF outputStream = null ;
+    
+
+    @Override
+    protected void processModulesAndArgs() {}
     
     @Override
     protected void exec()
@@ -121,6 +119,8 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( modLangParse.getRDFSVocab() != null )
             setup = new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
      
+        outputStream = createSink() ;
+        
         try {
             if ( super.getPositional().isEmpty() )
                 parseFile("-") ;
@@ -172,10 +172,6 @@ public abstract class CmdLangParse extends CmdGeneral
 
     protected void parseRIOT(String baseURI, String filename, TypedInputStream in)
     {
-        // I ti s shame we effectively duplicate deciding thelnaguage but we want to control the
-        // pasrer at a deep level (in validation, we want line numbers get into error message)
-        // This code predates RDFDataMgr.
-        
         ContentType ct = in.getMediaType() ;
         
         baseURI = SysRIOT.chooseBaseIRI(baseURI, filename) ;
@@ -231,7 +227,7 @@ public abstract class CmdLangParse extends CmdGeneral
         if ( labelsAsGiven )
             labels = NodeToLabel.createBNodeByLabelEncoded() ;
         
-        StreamRDF s = createSink() ;
+        StreamRDF s = outputStream ; 
         if ( setup != null )
             s = InfFactory.inf(s, setup) ;
         StreamRDFCounting sink = StreamRDFLib.count(s) ;
@@ -275,6 +271,11 @@ public abstract class CmdLangParse extends CmdGeneral
         StreamRDF s = StreamRDFLib.sinkNull() ;
         if ( ! modLangParse.toBitBucket() )
             s = StreamRDFLib.writer(output) ;
+        else {
+            RDFFormat fmt = modLangOutput.getOutputFormat() ;
+            // Framework : Ignore for now.
+        }
+        
         return s ;
     }
     
