@@ -21,6 +21,7 @@ package org.apache.jena.atlas.io;
 import java.io.* ;
 import java.nio.charset.Charset ;
 import java.util.zip.GZIPInputStream ;
+import java.util.zip.GZIPOutputStream ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.logging.Log ;
@@ -129,6 +130,36 @@ public class IO
         return new BufferingWriter(w) ;
     }
 
+    /** Open a file for output - may include adding gzip processing. */
+    static public OutputStream openOutputFile(String filename)
+    {
+        try {
+           return openOutputFileEx(filename) ;
+        }
+        catch (Exception ex) { IO.exception(null) ; return null ; }
+    }
+    
+    /** Open an input stream to a file; do not mask IOExceptions. 
+     * If the filename ends in .gz, wrap in GZIPOutputStream  
+     * @param filename
+     * @throws FileNotFoundException If the output can't be opened.
+     * @throws IOException for bad gzip encoded data
+     */
+    static public OutputStream openOutputFileEx(String filename) throws FileNotFoundException,IOException
+    {
+        if ( filename == null || filename.equals("-") )
+            return System.out ;
+        if ( filename.startsWith("file:") )
+        {
+            filename = filename.substring("file:".length()) ;
+            filename = IRILib.decode(filename) ;
+        }
+        OutputStream out = new FileOutputStream(filename) ;
+        if ( filename.endsWith(".gz") )
+            out = new GZIPOutputStream(out) ;
+        return out ;
+    }
+    
     /** Wrap in a general writer interface */ 
     static public AWriter wrap(Writer w) { 
         return Writer2.wrap(w) ;
