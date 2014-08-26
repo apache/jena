@@ -81,10 +81,10 @@ public abstract class CmdLangParse extends CmdGeneral
     {
         super(argv) ;
         
-        super.addModule(modTime) ;
-        super.addModule(modLangParse) ;
-        super.addModule(modLangOutput) ;
         super.addModule(modSymbol) ;
+        super.addModule(modTime) ;
+        super.addModule(modLangOutput) ;
+        super.addModule(modLangParse) ;
         
         super.modVersion.addClass(Jena.class) ;
         super.modVersion.addClass(ARQ.class) ;
@@ -97,7 +97,7 @@ public abstract class CmdLangParse extends CmdGeneral
     protected String getSummary()
     {
         //return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--skip | --stopOnError] file ..." ;
-        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] file ..." ;
+        return getCommandName()+" [--time] [--check|--noCheck] [--sink] [--base=IRI] [--out=FORMAT] file ..." ;
     }
 
     protected long totalMillis = 0 ; 
@@ -268,15 +268,10 @@ public abstract class CmdLangParse extends CmdGeneral
     }
     
     protected StreamRDF createSink() {
-        StreamRDF s = StreamRDFLib.sinkNull() ;
-        if ( ! modLangParse.toBitBucket() )
-            s = StreamRDFLib.writer(output) ;
-        else {
-            RDFFormat fmt = modLangOutput.getOutputFormat() ;
-            // Framework : Ignore for now.
-        }
-        
-        return s ;
+        if ( modLangParse.toBitBucket() )
+            return StreamRDFLib.sinkNull() ;
+        RDFFormat fmt = modLangOutput.getOutputFormat() ;
+        return StreamRDFWriter.getWriterStream(System.out, fmt) ;
     }
     
     protected Tokenizer makeTokenizer(InputStream in)
