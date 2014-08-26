@@ -18,7 +18,14 @@
 
 package arq.cmdline;
 
+import java.util.HashSet ;
+import java.util.Set ;
+
+import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFFormat ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.system.StreamRDFWriter ;
+import arq.cmd.CmdException ;
 
 public class ModLangOutput implements ArgModuleGeneral
 {
@@ -35,26 +42,27 @@ public class ModLangOutput implements ArgModuleGeneral
     public void processArgs(CmdArgModule cmdLine) {
         if ( cmdLine.contains(argOutput) ) {
             String langName = cmdLine.getValue(argOutput) ;
-//            Lang output = RDFLanguages.nameToLang(langName) ;
-//            if ( output == null )
-//                throw new CmdException("Not recognized as an RDF language : '"+langName+"'") ;
-//            if ( ! StreamRDFWriter.registered(output) ) {
-//                // ** Java8
-////                StreamRDFWriter.registered().stream()
-////                    .map(fmt -> fmt.getLang()) 
-////                    .distinct()
-////                    .forEach(x -> System.err.println("   "+x.getLabel())) ;
-//                
-//                Set<Lang> seen = new HashSet<>() ;
-//                for ( RDFFormat fmt : StreamRDFWriter.registered()) {
-//                    if ( seen.contains(fmt.getLang()) )
-//                        continue ;
-//                    seen.add(fmt.getLang()) ;
-//                    System.err.println("   "+fmt.getLang().getLabel()) ;
-//                }
-//                
-//                throw new CmdException("Not recognized as an streaming RDF language : '"+langName+"'") ;
-//            }
+            Lang output = RDFLanguages.nameToLang(langName) ;
+            if ( output == null )
+                throw new CmdException("Not recognized as an RDF language : '"+langName+"'") ;
+            if ( ! StreamRDFWriter.registered(output) ) {
+                // ** Java8
+//                StreamRDFWriter.registered().stream()
+//                    .map(fmt -> fmt.getLang()) 
+//                    .distinct()
+//                    .forEach(x -> System.err.println("   "+x.getLabel())) ;
+                
+                Set<Lang> seen = new HashSet<>() ;
+                for ( RDFFormat fmt : StreamRDFWriter.registered()) {
+                    if ( seen.contains(fmt.getLang()) )
+                        continue ;
+                    seen.add(fmt.getLang()) ;
+                    System.err.println("   "+fmt.getLang().getLabel()) ;
+                }
+                
+                throw new CmdException("Not recognized as an streaming RDF language : '"+langName+"'") ;
+            }
+            format = StreamRDFWriter.defaultSerialization(output) ;
         }
     }
 
