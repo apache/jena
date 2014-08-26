@@ -121,8 +121,10 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
 
     private void finishBatchTriple(Node subject)
     {
-        if ( batchTriples != null && batchTriples.size() > 0 )
+        if ( batchTriples != null && batchTriples.size() > 0 ) {
             printBatchTriples(currentSubject, batchTriples) ;
+            batchTriples.clear() ;
+        }
     }
 
     private void startBatchQuad(Node graph, Node subject)
@@ -137,8 +139,10 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
 
     private void finishBatchQuad(Node graph, Node subject)
     {
-        if ( batchQuads != null && batchQuads.size() > 0 )
+        if ( batchQuads != null && batchQuads.size() > 0 ) {
             printBatchQuads(currentGraph, currentSubject, batchQuads) ;
+            batchQuads.clear();
+        }
     }
 
     protected abstract void printBatchQuads(Node g, Node s, List<Quad> batch) ;
