@@ -2,6 +2,16 @@ ChangeLog for ARQ
 =================
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
+==== Jena 2.12.1
+
++ JENA-768 : Add "--out" to the "riot" command to choose a 
+             different output format.
++ JENA-769 : StreamWriter, a place to get an output class that streams.
+             This supplements RDFDataMgr.
++ JENA-767 : Fix the JSON parser to handle \b escapes.
++ JENA-762 : Provide a registry for result set readers and writers. 
++ JENA-761 : Provide a means to disable SERVICE 
+
 ==== Jena 2.12.0
 
 Jena now requires Java7 as of this version.
