@@ -308,7 +308,10 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Appends some text to the existing command text
+     * Appends some text as-is to the existing command text, to ensure correct
+     * formatting when used as a constant consider using the
+     * {@link #appendLiteral(String)} or {@link #appendIri(String)} method as
+     * appropriate
      * 
      * @param text
      *            Text to append
@@ -318,7 +321,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Appends a character to the existing command text
+     * Appends a character as-is to the existing command text, to ensure correct
+     * formatting when used as a constant consider using one of the
+     * {@code appendLiteral()} methods
      * 
      * @param c
      *            Character to append
@@ -388,7 +393,10 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Appends an object to the existing command text
+     * Appends an object as-is to the existing command text, to ensure correct
+     * formatting when used as a constant consider converting into a more
+     * specific type and using the appropriate {@code appendLiteral()},
+     * {@code appendIri()} or {@code appendNode} methods
      * 
      * @param obj
      *            Object to append
@@ -1311,18 +1319,15 @@ public class ParameterizedSparqlString implements PrefixMapping {
         // Go ahead and inject Variable Parameters
         SerializationContext context = new SerializationContext(this.prefixes);
         context.setBaseIRI(this.baseUri);
-        for ( String var : this.params.keySet() )
-        {
-            Node n = this.params.get( var );
-            if ( n == null )
-            {
+        for (String var : this.params.keySet()) {
+            Node n = this.params.get(var);
+            if (n == null) {
                 continue;
             }
-            this.validateSafeToInject( command, var, n );
+            this.validateSafeToInject(command, var, n);
 
-            p = Pattern.compile( "([?$]" + var + ")([^\\w]|$)" );
-            command =
-                p.matcher( command ).replaceAll( Matcher.quoteReplacement( this.stringForNode( n, context ) ) + "$2" );
+            p = Pattern.compile("([?$]" + var + ")([^\\w]|$)");
+            command = p.matcher(command).replaceAll(Matcher.quoteReplacement(this.stringForNode(n, context)) + "$2");
         }
 
         // Then inject Positional Parameters
@@ -1341,7 +1346,8 @@ public class ParameterizedSparqlString implements PrefixMapping {
             this.validateSafeToInject(command, index, posMatch.start(1) + adj, n);
 
             String nodeStr = this.stringForNode(n, context);
-            command = command.substring(0, posMatch.start() + adj) + nodeStr + command.substring(posMatch.start() + adj + 1);
+            command = command.substring(0, posMatch.start() + adj) + nodeStr
+                    + command.substring(posMatch.start() + adj + 1);
             // Because we are using a matcher over the string state prior to
             // starting replacements we need to
             // track the offset adjustments to make
@@ -1360,13 +1366,12 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
         // Then pre-pend prefixes
 
-        for ( String prefix : this.prefixes.getNsPrefixMap().keySet() )
-        {
-            finalCmd.append( "PREFIX " );
-            finalCmd.append( prefix );
-            finalCmd.append( ": " );
-            finalCmd.append( FmtUtils.stringForURI( this.prefixes.getNsPrefixURI( prefix ), null, null ) );
-            finalCmd.append( '\n' );
+        for (String prefix : this.prefixes.getNsPrefixMap().keySet()) {
+            finalCmd.append("PREFIX ");
+            finalCmd.append(prefix);
+            finalCmd.append(": ");
+            finalCmd.append(FmtUtils.stringForURI(this.prefixes.getNsPrefixURI(prefix), null, null));
+            finalCmd.append('\n');
         }
 
         finalCmd.append(command);
