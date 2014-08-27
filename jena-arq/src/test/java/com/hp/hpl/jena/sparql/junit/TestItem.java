@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
 import com.hp.hpl.jena.sparql.vocabulary.VocabTestQuery ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
+import com.hp.hpl.jena.util.junit.TestException ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
@@ -196,7 +197,11 @@ public class TestItem
     }
 
     private String _getResultFile() {
-        return TestUtils.getLiteralOrURI(testResource, TestManifest.result) ;
+        try {
+            // It's bnode in some update tests.
+            // The Update test code managed building the result.
+            return TestUtils.getLiteralOrURI(testResource, TestManifest.result) ;
+        } catch (TestException ex) { return null ; }
     }
 
     private String _getComment() {
