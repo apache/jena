@@ -153,6 +153,57 @@ public class Tokenizer {
         return null;
     }
     
+   /* 
+     * returns the next token but without change the index, p variable    
+     */
+    
+    
+    public String getNextTokenStatic() {
+        int oldp = p;
+        String token = getNextToken();
+        p = oldp; 
+        
+        return token;
+    }
+    
+    public String getEnclosedString(String openToken, String closeToken, String [] enclosedToIgnore) {
+        String retEnclosedString = "";
+        int nOpens = 1;
+        
+        String TokenToIgnoreBegin = (enclosedToIgnore[0] == null ? null : enclosedToIgnore[0].toLowerCase());
+        String TokenToIgnoreEnd = (enclosedToIgnore[1] == null ? null : enclosedToIgnore[1].toLowerCase());
+        
+        if(source.substring(p, p+openToken.length()).toLowerCase().equals(openToken.toLowerCase())) {
+            p+=openToken.length();
+            
+            while(p < source.length() && source.length()-p>=closeToken.length() && !source.substring(p, p+closeToken.length()).toLowerCase().equals(closeToken.toLowerCase()) && nOpens >0){
+                retEnclosedString += source.charAt(p);
+                if(TokenToIgnoreBegin != null && source.substring(p, p+TokenToIgnoreBegin.length()).toLowerCase().equals(TokenToIgnoreBegin)){
+                    nOpens++;
+                }
+                else if(TokenToIgnoreEnd != null && source.substring(p, p+TokenToIgnoreEnd.length()).toLowerCase().equals(TokenToIgnoreEnd)){
+                    nOpens--;
+                }
+                p++;
+            }
+            p+=closeToken.length();
+        }
+         
+        if(p >= source.length()) {
+            retEnclosedString = null;
+        }
+        
+        return retEnclosedString;
+    }
+    
+    public boolean hasThisToken(String Token) {
+        boolean retV = false;
+        if(source.length()-p>=Token.length()){
+            retV = source.substring(p, p+Token.length()).toLowerCase().equals(Token.toLowerCase());
+        }
+        return retV;
+    }
+
     
     /**
      * Returns true if the current character is contained in the given classification.

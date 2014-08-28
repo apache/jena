@@ -18,16 +18,19 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
-import java.util.*;
 
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.*;
+import static com.hp.hpl.jena.reasoner.rulesys.impl.SparqlInRulesGenericFunctions.anyVariableInQueryPattern;
+import static com.hp.hpl.jena.reasoner.rulesys.impl.SparqlInRulesGenericFunctions.getPredicatesQueryPattern;
+
+import static com.hp.hpl.jena.reasoner.rulesys.impl.SparqlInRulesGenericFunctions.getQueryPattern;
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
-
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +39,6 @@ import org.slf4j.LoggerFactory;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  */
 public class RETEEngine implements FRuleEngineI {
-    
     /** The parent InfGraph which is employing this engine instance */
     protected ForwardRuleInfGraphI infGraph;
     
@@ -80,6 +82,8 @@ public class RETEEngine implements FRuleEngineI {
     boolean isMonotonic = true;
     
     protected static Logger logger = LoggerFactory.getLogger(FRuleEngine.class);
+    
+    ArrayList<Triple> injectTriples = new ArrayList<> (); 
     
 //  =======================================================================
 //  Constructors
@@ -153,7 +157,7 @@ public class RETEEngine implements FRuleEngineI {
                 }
             } else {
                 for (Map.Entry<Node, Node> ent : predicatePatterns.entrySet()) {
-//                    System.out.println("FastInit: " + ent.getKey() + " = " + ent.getValue());
+//                    printmsg("FastInit: " + ent.getKey() + " = " + ent.getValue());
                     for (Iterator<Triple> i = inserts.find(new TriplePattern(null, ent.getKey(), ent.getValue())); i.hasNext(); ) {
                         Triple t = i.next();
                         addTriple(t, false);
@@ -277,7 +281,40 @@ public class RETEEngine implements FRuleEngineI {
             for ( int i = 0; i < rule.bodyLength(); i++ )
             {
                 Object clause = rule.getBodyElement( i );
-                if ( clause instanceof TriplePattern )
+                if (clause instanceof SparqlQuery) {
+                    SparqlQuery sparqlQuery = (SparqlQuery) clause;
+                    TriplePattern [] head_tp = new TriplePattern[rule.headLength()];
+                    for(int x=0; x<rule.headLength(); x++) {
+                        head_tp[x] = (TriplePattern) rule.getHeadElement(x);
+                    }
+                    sparqlQuery.setHead(head_tp);
+                    RETEClauseSparql clauseNode = new RETEClauseSparql(sparqlQuery);
+                    if(anyVariableInQueryPattern(sparqlQuery.getQuery())) {
+                        clauseIndex.put(Node.ANY, clauseNode);
+                        wildcardRule = true;
+                    }
+                    else {
+                        List<Triple> lstPredQP =  getQueryPattern(sparqlQuery.getQuery());
+                        for(Triple t : lstPredQP) {
+                            Node predicate = t.getPredicate();
+                            Node object = t.getObject();
+                            clauseIndex.put(predicate, clauseNode);
+                            if ( !wildcardRule )
+                            {
+                                if ( object.isVariable() )
+                                {
+                                    object = Node.ANY;
+                                }
+                                if ( Functor.isFunctor( object ) )
+                                {
+                                    object = Node.ANY;
+                                }
+                                recordPredicatePattern( predicate, object );
+                            }
+                        }
+                    }
+                }
+                else if ( clause instanceof TriplePattern )
                 {
                     // Create the filter node for this pattern
                     ArrayList<Node> clauseVars = new ArrayList<>( numVars );
@@ -455,7 +492,17 @@ public class RETEEngine implements FRuleEngineI {
         }
         return null;
     }
-        
+    
+    private void runSparqlCommand(SparqlQuery sq) {
+        ArrayList<Triple> result = ExecSparqlCommand.executeSparqlQuery(sq, infGraph);
+        for(Triple t : result) {
+            if(!injectTriples.contains(t)) {
+                injectTriples.add(t);
+                    addTriple(t, true);
+            }
+        }
+    } 
+    
     /**
      * Process the queue of pending insert/deletes until the queues are empty.
      * Public to simplify unit tests - not normally called directly.
@@ -489,9 +536,15 @@ public class RETEEngine implements FRuleEngineI {
         Iterator<RETENode> i2 = clauseIndex.getAll(Node.ANY);
         Iterator<RETENode> i = WrappedIterator.create(i1).andThen( i2 );
         while (i.hasNext()) {
-            RETEClauseFilter cf = (RETEClauseFilter) i.next();
-            // firedRules guard in here?
-            cf.fire(t, isAdd);
+            RETENode rn = i.next();
+            if(rn instanceof RETEClauseFilter){
+                RETEClauseFilter cf = (RETEClauseFilter) rn;
+                // firedRules guard in here?
+                cf.fire(t, isAdd);
+            }
+            else if (rn instanceof RETEClauseSparql) {
+                runSparqlCommand( ((RETEClauseSparql) rn).getSparqlQuery());
+            }
         }
     }
     

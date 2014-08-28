@@ -99,6 +99,8 @@ public class RuleClauseCode {
     /** call a table code object () */
     public static final byte CALL_TABLED = 0x18;
     
+     public static final byte CALL_SPARQL = 0x15;
+     
     /** call a table code object from a wildcard () */
     public static final byte CALL_WILD_TABLED = 0x19;
     
@@ -208,7 +210,11 @@ public class RuleClauseCode {
                 state.emitBody((TriplePattern)entry, ruleStore);
             } else if (entry instanceof Functor) {
                 state.emitBody((Functor)entry);
-            } else {
+            } else if (entry instanceof SparqlQuery) {
+                //state.emitBody((SparqlQuery)entry);   
+                state.emitBody((SparqlQuery)entry, (TriplePattern) head);                   
+              } 
+            else {
                 throw new LPRuleSyntaxException("can't create new bRules in an bRule", rule);
             }
         }
@@ -588,7 +594,13 @@ public class RuleClauseCode {
                 args.add(node);
             }
         }
-        
+
+        void emitBody(SparqlQuery sparqlQuery, TriplePattern head) {
+            code[p++] = CALL_SPARQL;
+            args.add(sparqlQuery);
+            args.add(head);           
+        }        
+ 
         /**
          * Emit code for a call to a built-in predicate (functor).
          * @param functor the built-in to be invoked.

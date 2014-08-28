@@ -46,7 +46,11 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.Tokenizer;
-
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.sparql.lang.SPARQLParser;
+import java.util.Iterator;
+import java.util.Set;
 /**Representation of a generic inference rule. 
  * <p>
  * This represents the rule specification but most engines will 
@@ -953,10 +957,31 @@ public class Rule implements ClauseEntry {
         
         /**
          * Parse a clause, could be a triple pattern, a rule or a functor
+         * After introducing SPARQL commands in a rule, a clause also can be
+         * a SPARQL command
          */
+
         ClauseEntry parseClause() {
             String token = peekToken();
-            if (token.equals("(")) {
+            if(token.equals("(") && isSparqlCommand()){
+                String SparqlCmd = getSparqlCommand();
+
+                SPARQLParser parser2 = SPARQLParser.createParser(Syntax.defaultQuerySyntax) ;
+                Query q = new Query();
+                
+                Map<String, String> prefixes = this.getPrefixMap();
+                
+                Set keys = prefixes.keySet();
+
+                for (Iterator i = keys.iterator(); i.hasNext();){ 
+                    String key = (String) i.next();
+                    String value = (String) prefixes.get(key);
+                    q.setPrefix(key, value);
+                }
+                parser2.parse(q, SparqlCmd);
+
+                return new SparqlQuery(SparqlCmd, q, this);
+            } else if (token.equals("(")) {
                 List<Node> nodes = parseNodeList();
                 if (nodes.size() != 3) {
                     throw new ParserException("Triple with " + nodes.size() + " nodes!", this);
@@ -984,6 +1009,65 @@ public class Rule implements ClauseEntry {
             }
         }
         
+       /*
+        * enclosed SPARQL command. It is an bi-dimensional array
+        * because in future can happen different combinations. Example:
+        * private final String [][] sparqlEnclosed = 
+        *   {{"\\\\\\sparql", "\\\\\\sparql)", null, null}, 
+        *   {"select", ")", "(", ")"}, 
+        *   {"ask", ")", "(", ")"},
+        *   {"prefix", ")", "(", ")"}};
+        *
+        * The first element is the begin token of a Sparql declaration
+        * The second element is the finish token of a Sparql declaration 
+        * The third and the fourth elements are tokens that must be 
+        * counted in the parse process.
+        */
+        
+        private final String [][] sparqlEnclosed = 
+            {{"\\\\\\sparql", "\\\\\\sparql)", null, null}};
+        
+        
+        /*
+        * isSparqlCommand returns if next comes a Sparql command
+        */
+        
+        private boolean isSparqlCommand() {
+            while(stream.getNextTokenStatic().compareTo(" ") == 0){
+                nextToken();
+            }
+            
+            return (getSparqlEnclosedPos()>-1);
+        }
+        
+        private int getSparqlEnclosedPos() {
+            int pos = sparqlEnclosed.length-1;
+            
+            while(pos>=0 && !stream.hasThisToken(sparqlEnclosed[pos][0])) {
+                pos--;
+            }
+            
+            return pos;
+        }
+        
+        /*
+         * getSparqlCommand returns the Sparql command. It locates for the 
+         * close brackets.    
+         */
+        
+        private String getSparqlCommand() {
+            int pos = getSparqlEnclosedPos();
+            
+            String enclosedToIgnore [] = 
+            {sparqlEnclosed[pos][2], sparqlEnclosed[pos][3] };
+            
+            String sparqlCmd = 
+                    stream.getEnclosedString(sparqlEnclosed[pos][0], sparqlEnclosed[pos][1], enclosedToIgnore);
+     
+            lookahead = null;
+            
+            return sparqlCmd;
+        }
         
         /**
          * Parse a rule, terminated by a "]" or "." character.
@@ -1030,18 +1114,47 @@ public class Rule implements ClauseEntry {
                 nextToken();        // consume the terminating token
                 Rule r = null;
                 if (backwardRule) {
+                    validateSparqlInHead(body);
+                    validateOnlyOneSparqlIntheBody(head);
                     r =  new Rule(name, body, head);
                 } else {
+                    validateSparqlInHead(head);
+                    validateOnlyOneSparqlIntheBody(body);
                     r = new Rule(name, head, body);
                 }
-                r.numVars = varMap.keySet().size();
+                   r.numVars = varMap.keySet().size();
                 r.isBackward = backwardRule;
                 return r;
             } catch (NoSuchElementException e) {
                 throw new ParserException("Malformed rule", this);
             }
         }
-
+       /** 
+         * 
+         * @param headList
+         * 
+         * A rule only can have Sparql commands in the body. validateSparqlInHead fire an error
+         * if a Sparql command appears in the head. 
+         */
+        
+        private void validateSparqlInHead(List<ClauseEntry> headList) {
+            for(ClauseEntry vClauseEntry : headList) {
+                if (vClauseEntry instanceof SparqlQuery) {
+                    throw new SparqlRuleParserException("Sparql query cannot appear in the head of a rule", this);
+                }
+        
+            }
+        }
+        
+        private void validateOnlyOneSparqlIntheBody(List<ClauseEntry> bodyList) {
+            if(bodyList.size()>1) {
+                for(ClauseEntry vClauseEntry : bodyList) {
+                    if (vClauseEntry instanceof SparqlQuery) {
+                        throw new SparqlRuleParserException("Sparql commands cannot be combined in the rules", this);
+                    }
+                }
+            }    
+        }
     }
    
     /** Equality override */
@@ -1119,5 +1232,10 @@ public class Rule implements ClauseEntry {
         }
         
     }
-    
+    public static class SparqlRuleParserException extends ParserException {
+        public SparqlRuleParserException(String message, Parser parser) {
+            super(message, parser);
+        }
+    }
+     
 }

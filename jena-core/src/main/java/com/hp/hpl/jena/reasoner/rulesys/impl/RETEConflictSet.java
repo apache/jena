@@ -18,13 +18,6 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.reasoner.ReasonerException;
 import com.hp.hpl.jena.reasoner.TriplePattern;
@@ -34,6 +27,12 @@ import com.hp.hpl.jena.reasoner.rulesys.ForwardRuleInfGraphI;
 import com.hp.hpl.jena.reasoner.rulesys.Functor;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
+import com.hp.hpl.jena.reasoner.rulesys.SparqlQuery;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manages a set of ready-to-fire rules. For monotonic rule sets
@@ -135,6 +134,9 @@ public class RETEConflictSet {
      */
     public static void execute(RETERuleContext context, boolean isAdd) {
         Rule rule = context.getRule();
+        if(rule.getBody().length>0 && (rule.getBodyElement(0) instanceof SparqlQuery)){
+            return;
+ 	} 
         BindingEnvironment env = context.getEnv();
         ForwardRuleInfGraphI infGraph = (ForwardRuleInfGraphI)context.getGraph();
         if (infGraph.shouldTrace()) {
