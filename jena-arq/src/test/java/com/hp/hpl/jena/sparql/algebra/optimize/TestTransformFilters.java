@@ -33,7 +33,7 @@ public class TestTransformFilters extends AbstractTestTransform
     private Transform t_implicitJoin = new TransformFilterImplicitJoin() ;
     private Transform t_implicitLeftJoin = new TransformImplicitLeftJoin() ;
     
-    @Test public void equality01()
+    @Test public void equality01() 
     {
         testOp("(filter (= ?x <x>) (bgp ( ?s ?p ?x)) )",
              t_equality,
@@ -476,6 +476,22 @@ public class TestTransformFilters extends AbstractTestTransform
              "(filter (exprlist (!= ?x <x>) (!= ?x 2) (!= ?x 3)) (bgp (?s ?p ?x)))") ;
     }
     
+    @Test
+    public void oneOf4() {
+        // JENA-771
+        testOp("(filter true (distinct (filter (in ?x 1 2) (bgp (?s ?p ?x)) )))",
+               t_expandOneOf,
+               "(filter true (distinct (filter (|| (= ?x 1) (= ?x 2) ) (bgp (triple ?s ?p ?x)) )))") ;
+    }
+
+    @Test
+    public void oneOf5() {
+        // JENA-771
+        testOp("(filter true (distinct (filter (notin ?x 1 2) (bgp (?s ?p ?x)) )))",
+               t_expandOneOf,
+               "(filter true (distinct (filter (exprlist (!= ?x 1) (!= ?x 2)) (bgp (triple ?s ?p ?x)) )))") ;
+    }
+
     @Test public void implicitJoin01()
     {
         testOp(

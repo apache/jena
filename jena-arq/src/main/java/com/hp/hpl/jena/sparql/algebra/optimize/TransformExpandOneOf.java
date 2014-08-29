@@ -45,7 +45,7 @@ public class TransformExpandOneOf extends TransformCopy
         ExprList exprList = opFilter.getExprs() ;
         ExprList exprList2 = process(exprList) ;
         if ( exprList2 == null )
-            return opFilter ;
+            return super.transform(opFilter, subOp) ;
         Op opFilter2 = OpFilter.filter(exprList2, subOp) ;
         return opFilter2 ;
     }
