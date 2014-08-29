@@ -46,7 +46,7 @@ public class TestPackage extends TestCase{
         addTest(ts,  "Model", com.hp.hpl.jena.rdf.model.test.TestPackage.suite());
         addTest(ts,  "N3", com.hp.hpl.jena.n3.N3TestSuite.suite());
         addTest(ts,  "Turtle", com.hp.hpl.jena.n3.turtle.TurtleTestSuite.suite()) ;
-        addTest(ts,  "XML Output", com.hp.hpl.jena.xmloutput.TestPackage.suite());
+        addTest(ts,  "XML Output", com.hp.hpl.jena.rdfxml.xmloutput.TestPackage.suite());
         addTest(ts,  "Util", com.hp.hpl.jena.util.TestPackage.suite());
         addTest(ts,  "Jena iterator", com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );
         addTest(ts,  "Assembler", TestAssemblerPackage.suite() );

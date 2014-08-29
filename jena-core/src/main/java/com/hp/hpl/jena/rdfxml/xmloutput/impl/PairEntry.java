@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.xmloutput.impl;
+package com.hp.hpl.jena.rdfxml.xmloutput.impl;
 
 class PairEntry<K,V>  implements java.util.Map.Entry<K,V>  {
     K a;

@@ -73,14 +73,14 @@ public class StreamRDFLib
     public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
     
     /** Set triples to a StreamRDF - does not call .start/.finish 
-     * @deprecated Use {@link StreamOps#triplesToStream(Iterator&lt;Triple&gt;, StreamRDF,)} instead*/ 
+     * @deprecated Use {@link StreamOps#triplesToStream} instead*/ 
     @SuppressWarnings("javadoc")
     @Deprecated
     public static void triplesToStream(StreamRDF dest, Iterator<Triple> iter)
     { StreamOps.sendTriplesToStream(iter, dest) ; }
 
     /** Set quads to a StreamRDF - does not call .start/.finish 
-     * @deprecated Use {@link StreamOps#quadsToStream(Iterator&lt;Quad&gt;, StreamRDF)} instead*/
+     * @deprecated Use {@link StreamOps#quadsToStream} instead*/
     @SuppressWarnings("javadoc")
     @Deprecated
     public static void quadsToStream(StreamRDF dest, Iterator<Quad> iter)

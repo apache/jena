@@ -27,11 +27,11 @@ import com.hp.hpl.jena.n3.N3TurtleJenaWriter;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.rdf.model.RDFWriterF;
 import com.hp.hpl.jena.rdf.model.impl.NTripleWriter;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.Abbreviated ;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.Basic ;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.NoWriterForLangException;
 import com.hp.hpl.jena.test.JenaTestBase;
-import com.hp.hpl.jena.xmloutput.impl.Abbreviated;
-import com.hp.hpl.jena.xmloutput.impl.Basic;
 
 import java.util.HashMap;
 import java.util.Map;

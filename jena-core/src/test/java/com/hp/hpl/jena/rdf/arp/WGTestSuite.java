@@ -32,14 +32,10 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.xml.sax.SAXException;
-
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
-import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.JenaReader;
-import com.hp.hpl.jena.rdf.arp.ParseException;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -51,6 +47,9 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers ;
+import com.hp.hpl.jena.rdf.arp.JenaReader ;
+import com.hp.hpl.jena.rdf.arp.ParseException ;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
 import com.hp.hpl.jena.shared.BrokenException;

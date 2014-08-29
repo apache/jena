@@ -20,7 +20,7 @@ package com.hp.hpl.jena.rdf.arp.states;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.states.FrameI;
+import com.hp.hpl.jena.rdf.arp.states.FrameI ;
 
 abstract class Event {
     // TODO: not for 2.3. get rid of short names all together, not good idea.

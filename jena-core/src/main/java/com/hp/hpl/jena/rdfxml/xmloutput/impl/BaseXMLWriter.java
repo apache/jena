@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.xmloutput.impl;
+package com.hp.hpl.jena.rdfxml.xmloutput.impl;
 
 import java.io.OutputStream ;
 import java.io.OutputStreamWriter ;
@@ -37,12 +37,11 @@ import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl ;
 import com.hp.hpl.jena.rdf.model.impl.Util ;
+import com.hp.hpl.jena.rdfxml.xmloutput.RDFXMLWriterI ;
 import com.hp.hpl.jena.shared.* ;
 import com.hp.hpl.jena.util.CharEncoding ;
 import com.hp.hpl.jena.util.FileUtils ;
 import com.hp.hpl.jena.vocabulary.* ;
-import com.hp.hpl.jena.xmloutput.RDFXMLWriterI ;
-//import com.hp.hpl.jena.vocabulary.DAML_OIL;
 
 /** 
  * This is not part of the public API.

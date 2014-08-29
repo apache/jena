@@ -16,18 +16,17 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.xmloutput;
+package com.hp.hpl.jena.rdfxml.xmloutput;
 
 import java.io.ByteArrayOutputStream ;
 import java.io.StringWriter ;
 
-import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.impl.NTripleWriter ;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase ;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.Abbreviated ;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.Basic ;
 import com.hp.hpl.jena.shared.NoWriterForLangException ;
-import com.hp.hpl.jena.xmloutput.impl.Abbreviated ;
-import com.hp.hpl.jena.xmloutput.impl.Basic ;
 
 public class TestWriterInterface extends ModelTestBase {
     private String lang;
@@ -85,7 +84,7 @@ public class TestWriterInterface extends ModelTestBase {
 
     public void testAnotherWriter() {
         Model m1 = createMemModel();
-        m1.setWriterClassName("foobar", Jena.PATH + ".xmloutput.impl.Basic");
+        m1.setWriterClassName("foobar", com.hp.hpl.jena.rdfxml.xmloutput.impl.Basic.class.getName());
         assertTrue(
             "Failed to access set writer",
             (m1.getWriter("foobar") instanceof Basic));

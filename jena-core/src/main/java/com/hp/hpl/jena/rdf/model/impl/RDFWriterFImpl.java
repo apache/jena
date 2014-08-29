@@ -38,14 +38,17 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     protected static final String LANGS[] =
         { "RDF/XML",
           "RDF/XML-ABBREV",
+          
           "N-TRIPLE",
           "N-TRIPLES",
           "N-Triples",
+          
           "N3",
           N3JenaWriter.n3WriterPrettyPrinter,
           N3JenaWriter.n3WriterPlain,
           N3JenaWriter.n3WriterTriples,
           N3JenaWriter.n3WriterTriplesAlt,
+          
           N3JenaWriter.turtleWriter,
           N3JenaWriter.turtleWriterAlt1, 
           N3JenaWriter.turtleWriterAlt2 
@@ -54,24 +57,39 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
 
     protected static final String DEFAULTWRITERS[] =
         {
-            Jena.PATH + ".xmloutput.impl.Basic",
-            Jena.PATH + ".xmloutput.impl.Abbreviated",
-            Jena.PATH + ".rdf.model.impl.NTripleWriter",
-            Jena.PATH + ".rdf.model.impl.NTripleWriter",
-            Jena.PATH + ".rdf.model.impl.NTripleWriter",
-            Jena.PATH + ".n3.N3JenaWriter",
-            Jena.PATH + ".n3.N3JenaWriterPP",
-
-            Jena.PATH + ".n3.N3TurtleJenaWriter",   // Write Turtle to ensure safe round tripping.
-            Jena.PATH + ".n3.N3TurtleJenaWriter",   // Ditto.
-
-//            Jena.PATH + ".n3.N3JenaWriterPlain",      // Keep as N3 for now - a test fails.
-//            Jena.PATH + ".n3.N3JenaWriterTriples",
+        
+        
+            com.hp.hpl.jena.rdfxml.xmloutput.impl.Basic.class.getName(),
+            com.hp.hpl.jena.rdfxml.xmloutput.impl.Abbreviated.class.getName(),
             
-            Jena.PATH + ".n3.N3JenaWriterTriples",  // Same writer, different writer name
-            Jena.PATH + ".n3.N3TurtleJenaWriter",   // Alternative names for Turtle
-            Jena.PATH + ".n3.N3TurtleJenaWriter",
-            Jena.PATH + ".n3.N3TurtleJenaWriter",
+            com.hp.hpl.jena.rdf.model.impl.NTripleWriter.class.getName(),
+            com.hp.hpl.jena.rdf.model.impl.NTripleWriter.class.getName(),
+            com.hp.hpl.jena.rdf.model.impl.NTripleWriter.class.getName(),
+            
+//            /*
+//            Jena.PATH + ".n3.N3JenaWriter",
+//            Jena.PATH + ".n3.N3JenaWriterPP",
+//
+//            Jena.PATH + ".n3.N3TurtleJenaWriter",   // Write Turtle to ensure safe round tripping.
+//            Jena.PATH + ".n3.N3TurtleJenaWriter",   // Ditto.
+//
+////            Jena.PATH + ".n3.N3JenaWriterPlain",      // Keep as N3 for now - a test fails.
+////            Jena.PATH + ".n3.N3JenaWriterTriples",
+//            
+//            Jena.PATH + ".n3.N3JenaWriterTriples",  // Same writer, different writer name
+//            Jena.PATH + ".n3.N3TurtleJenaWriter",   // Alternative names for Turtle
+//            Jena.PATH + ".n3.N3TurtleJenaWriter",
+//            Jena.PATH + ".n3.N3TurtleJenaWriter",             */
+//            
+            com.hp.hpl.jena.n3.N3JenaWriter.class.getName(),
+            com.hp.hpl.jena.n3.N3JenaWriterPP.class.getName(),
+            com.hp.hpl.jena.n3.N3TurtleJenaWriter.class.getName(),   // Write Turtle to ensure safe round tripping.
+            com.hp.hpl.jena.n3.N3TurtleJenaWriter.class.getName(),   // Ditto.
+            com.hp.hpl.jena.n3.N3JenaWriterTriples.class.getName(),     
+
+            com.hp.hpl.jena.n3.N3TurtleJenaWriter.class.getName(),      // Alternative names for Turtle
+            com.hp.hpl.jena.n3.N3TurtleJenaWriter.class.getName(),
+            com.hp.hpl.jena.n3.N3TurtleJenaWriter.class.getName()
              };
 
     protected static final String DEFAULTLANG = LANGS[0];

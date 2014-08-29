@@ -18,14 +18,22 @@
 
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
-import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.rdf.arp.*;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXException;
-import com.hp.hpl.jena.shared.BrokenException;
-import java.io.*;
+import java.io.IOException ;
+import java.io.StringReader ;
+
+import org.xml.sax.ErrorHandler ;
+import org.xml.sax.SAXException ;
+import org.xml.sax.SAXParseException ;
+
+import com.hp.hpl.jena.datatypes.BaseDatatype ;
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.rdf.arp.ALiteral ;
+import com.hp.hpl.jena.rdf.arp.ARP ;
+import com.hp.hpl.jena.rdf.arp.AResource ;
+import com.hp.hpl.jena.rdf.arp.StatementHandler ;
+import com.hp.hpl.jena.shared.BrokenException ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /**
  * Builtin data type to represent XMLLiteral (i.e. items created

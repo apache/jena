@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-import com.hp.hpl.jena.rdf.arp.states.FrameI;
+import com.hp.hpl.jena.rdf.arp.states.FrameI ;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

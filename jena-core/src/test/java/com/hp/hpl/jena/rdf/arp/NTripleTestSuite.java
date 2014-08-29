@@ -27,10 +27,14 @@ import org.junit.Assert ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
-import com.hp.hpl.jena.rdf.arp.impl.ARPResource ;
-import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
+import com.hp.hpl.jena.rdf.arp.ALiteral ;
+import com.hp.hpl.jena.rdf.arp.ARPEventHandler ;
+import com.hp.hpl.jena.rdf.arp.AResource ;
+import com.hp.hpl.jena.rdf.arp.NTriple ;
+import com.hp.hpl.jena.rdf.arp.impl.ARPResource ;
+import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler ;
 import com.hp.hpl.jena.shared.wg.TestInputStreamFactory ;
 
 /**

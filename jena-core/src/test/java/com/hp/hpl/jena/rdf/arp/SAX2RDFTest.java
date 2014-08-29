@@ -26,7 +26,6 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.xerces.parsers.SAXParser;
@@ -35,12 +34,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
-import com.hp.hpl.jena.rdf.arp.SAX2Model;
-import com.hp.hpl.jena.rdf.arp.SAX2RDF;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.RDFReader;
+import com.hp.hpl.jena.rdf.arp.SAX2Model ;
+import com.hp.hpl.jena.rdf.arp.SAX2RDF ;
 
 public class SAX2RDFTest extends TestCase {
 

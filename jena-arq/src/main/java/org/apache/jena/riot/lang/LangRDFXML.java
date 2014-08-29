@@ -18,9 +18,6 @@
 
 package org.apache.jena.riot.lang;
 
-import static com.hp.hpl.jena.rdf.arp.ARPErrorNumbers.EM_FATAL ;
-import static com.hp.hpl.jena.rdf.arp.ARPErrorNumbers.WARN_MALFORMED_XMLLANG ;
-
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -112,8 +109,8 @@ public class LangRDFXML implements LangRIOT
     // non-XML-based languages.  e.g. language tags should be
     // syntactically valid.
     private static int[] additionalErrors = new int[] {
-        WARN_MALFORMED_XMLLANG
-        //, WARN_STRING_NOT_NORMAL_FORM_C
+        ARPErrorNumbers.WARN_MALFORMED_XMLLANG
+        //, ARPErrorNumbers.WARN_STRING_NOT_NORMAL_FORM_C
     } ;
     
     @Override
@@ -131,7 +128,7 @@ public class LangRDFXML implements LangRIOT
             ARPOptions options = arp.getOptions() ;
             // Convert some warnings to errors for compatible behaviour for all parsers. 
             for ( int code : additionalErrors )
-                options.setErrorMode(code, EM_FATAL) ;
+                options.setErrorMode(code, ARPErrorNumbers.EM_FATAL) ;
             arp.setOptionsWith(options) ;
         }
         

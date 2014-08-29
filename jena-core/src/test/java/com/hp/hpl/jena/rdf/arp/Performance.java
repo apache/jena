@@ -26,7 +26,7 @@ import java.io.InputStream;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.NTriple;
+import com.hp.hpl.jena.rdf.arp.NTriple ;
 
 class Performance  {
 	static String allFiles[][] =

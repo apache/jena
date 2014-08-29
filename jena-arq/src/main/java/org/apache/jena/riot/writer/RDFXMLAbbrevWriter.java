@@ -22,7 +22,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.adapters.AdapterRDFWriter ;
 
 import com.hp.hpl.jena.rdf.model.RDFWriter ;
-import com.hp.hpl.jena.xmloutput.impl.Abbreviated ;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.Abbreviated ;
 
 /** Wrapper to the RDF/XML writer (preRIOT). */
 

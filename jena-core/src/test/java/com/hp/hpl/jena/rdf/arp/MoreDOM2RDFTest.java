@@ -27,14 +27,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
-
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.hp.hpl.jena.rdf.arp.ALiteral;
-import com.hp.hpl.jena.rdf.arp.AResource;
-import com.hp.hpl.jena.rdf.arp.DOM2Model;
-import com.hp.hpl.jena.rdf.arp.StatementHandler;
+import com.hp.hpl.jena.rdf.arp.ALiteral ;
+import com.hp.hpl.jena.rdf.arp.AResource ;
+import com.hp.hpl.jena.rdf.arp.DOM2Model ;
+import com.hp.hpl.jena.rdf.arp.StatementHandler ;
 
 public class MoreDOM2RDFTest extends TestCase implements StatementHandler {
 

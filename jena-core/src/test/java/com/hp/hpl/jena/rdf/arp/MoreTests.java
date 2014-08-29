@@ -18,26 +18,26 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.* ;
+import java.nio.charset.Charset ;
 
-import org.junit.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import junit.framework.Test ;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
+import org.apache.jena.iri.IRIFactory ;
+import org.junit.Assert ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import org.xml.sax.ErrorHandler ;
+import org.xml.sax.SAXException ;
+import org.xml.sax.SAXParseException ;
 
-import org.apache.jena.iri.IRIFactory;
-import com.hp.hpl.jena.ontology.OntDocumentManager;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.ontology.OntDocumentManager ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class MoreTests extends TestCase implements RDFErrorHandler,
 		ARPErrorNumbers {

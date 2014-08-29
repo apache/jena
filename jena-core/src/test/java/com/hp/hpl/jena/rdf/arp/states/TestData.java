@@ -18,28 +18,16 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import java.io.FileWriter ;
+import java.io.IOException ;
+import java.lang.reflect.InvocationTargetException ;
+import java.util.* ;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.Attributes ;
+import org.xml.sax.SAXParseException ;
 
-import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
-import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
-import com.hp.hpl.jena.rdf.arp.impl.Names;
-import com.hp.hpl.jena.rdf.arp.impl.URIReference;
-import com.hp.hpl.jena.rdf.arp.impl.XMLBaselessContext;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
-import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers ;
+import com.hp.hpl.jena.rdf.arp.impl.* ;
 
 /**
  * For each state s, for each element-attribute event e1, - test s, e1 - if s,
@@ -48,9 +36,6 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
  * an error
  */
 public class TestData implements ARPErrorNumbers{
-
-    // TODO: not for 2.3. get rid of short names all together, not good idea.
-    
     
     private static final URIReference foo = URIReference.createNoChecks("http://foo/");
     private static final URIReference bar = URIReference.createNoChecks("http://bar/");

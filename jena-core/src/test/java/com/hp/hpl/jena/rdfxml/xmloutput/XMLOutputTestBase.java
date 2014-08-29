@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.xmloutput;
+package com.hp.hpl.jena.rdfxml.xmloutput;
 
 import java.io.*;
 import java.util.Properties;
@@ -25,8 +25,8 @@ import java.util.regex.Pattern;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
-import com.hp.hpl.jena.xmloutput.impl.SimpleLogger;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.SimpleLogger ;
 
 public class XMLOutputTestBase extends ModelTestBase
     {

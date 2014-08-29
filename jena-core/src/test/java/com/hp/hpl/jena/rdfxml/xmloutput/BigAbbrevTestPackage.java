@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.xmloutput;
+package com.hp.hpl.jena.rdfxml.xmloutput;
 
 import junit.framework.*;
 
