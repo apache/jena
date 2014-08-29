@@ -24,10 +24,10 @@ import java.io.Reader ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.system.IRILib ;
 
-import com.hp.hpl.jena.rdf.arp.JenaReader ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.rdfxml.xmlinput.JenaReader ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.util.FileUtils ;
 

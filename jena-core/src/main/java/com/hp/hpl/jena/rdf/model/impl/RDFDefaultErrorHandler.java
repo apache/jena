@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.rdf.model.impl;
 
-import com.hp.hpl.jena.rdf.arp.ParseException;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdfxml.xmlinput.ParseException ;
 import com.hp.hpl.jena.shared.*;
 
 import org.slf4j.Logger;

@@ -28,10 +28,10 @@ import org.xml.sax.SAXParseException ;
 import com.hp.hpl.jena.datatypes.BaseDatatype ;
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.rdf.arp.ALiteral ;
-import com.hp.hpl.jena.rdf.arp.ARP ;
-import com.hp.hpl.jena.rdf.arp.AResource ;
-import com.hp.hpl.jena.rdf.arp.StatementHandler ;
+import com.hp.hpl.jena.rdfxml.xmlinput.ALiteral ;
+import com.hp.hpl.jena.rdfxml.xmlinput.ARP ;
+import com.hp.hpl.jena.rdfxml.xmlinput.AResource ;
+import com.hp.hpl.jena.rdfxml.xmlinput.StatementHandler ;
 import com.hp.hpl.jena.shared.BrokenException ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 

@@ -27,13 +27,12 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import junit.framework.TestSuite;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.rdf.arp.MoreTests;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.rdfxml.xmlinput.MoreTests ;
 
 public class TestMacEncodings  extends ModelTestBase
 {

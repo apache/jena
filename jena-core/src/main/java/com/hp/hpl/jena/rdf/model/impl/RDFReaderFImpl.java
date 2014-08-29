@@ -51,9 +51,9 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     // default readers for each language
 
     protected static final String DEFAULTREADERS[] = {
-        com.hp.hpl.jena.rdf.arp.JenaReader.class.getName(),
-        com.hp.hpl.jena.rdf.arp.JenaReader.class.getName(),
-        com.hp.hpl.jena.rdf.arp.JenaReader.class.getName(),
+        com.hp.hpl.jena.rdfxml.xmlinput.JenaReader.class.getName(),
+        com.hp.hpl.jena.rdfxml.xmlinput.JenaReader.class.getName(),
+        com.hp.hpl.jena.rdfxml.xmlinput.JenaReader.class.getName(),
         com.hp.hpl.jena.rdf.model.impl.NTripleReader.class.getName(),
         com.hp.hpl.jena.rdf.model.impl.NTripleReader.class.getName(),
         com.hp.hpl.jena.rdf.model.impl.NTripleReader.class.getName(),

@@ -39,9 +39,9 @@ import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.arp.* ;
-import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler ;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
+import com.hp.hpl.jena.rdfxml.xmlinput.* ;
+import com.hp.hpl.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 
 public class LangRDFXML implements LangRIOT
 {

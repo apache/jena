@@ -20,7 +20,7 @@ package jena.test;
 
 //import junit.swingui.TestRunner;
 
-import com.hp.hpl.jena.rdf.arp.ARPTests;
+import com.hp.hpl.jena.rdfxml.xmlinput.ARPTests ;
 import com.hp.hpl.jena.shared.Command;
 
 public class rdfparse implements Command

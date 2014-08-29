@@ -77,7 +77,7 @@ public interface RDFReader {
  * <dt>N3</dt><dt>N-TRIPLE</dt>
  * <dd>No properties.</dd>
  * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
- * <dd>See {@link com.hp.hpl.jena.rdf.arp.JenaReader#setProperty(String,Object)}
+ * <dd>See {@link com.hp.hpl.jena.rdfxml.xmlinput.JenaReader#setProperty(String,Object)}
  * </dl>
 	 * @param propName the name of the property
 	 * @param propValue the value of the property

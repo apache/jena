@@ -61,9 +61,9 @@ public class TestReaders extends AbstractModelTestBase
         }
 
         try {
-            model.setReaderClassName("foobar", com.hp.hpl.jena.rdf.arp.JenaReader.class.getName()) ;
+            model.setReaderClassName("foobar", com.hp.hpl.jena.rdfxml.xmlinput.JenaReader.class.getName()) ;
             final RDFReader reader = model.getReader("foobar") ;
-            Assert.assertTrue("Wrong reader type", reader instanceof com.hp.hpl.jena.rdf.arp.JenaReader) ;
+            Assert.assertTrue("Wrong reader type", reader instanceof com.hp.hpl.jena.rdfxml.xmlinput.JenaReader) ;
         }
         finally {
             // unset the reader
