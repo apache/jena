@@ -18,10 +18,9 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-import org.xml.sax.Attributes;
+import org.xml.sax.Attributes ;
 
-import com.hp.hpl.jena.rdf.arp.impl.Names;
-import com.hp.hpl.jena.rdf.arp.states.FrameI;
+import com.hp.hpl.jena.rdf.arp.impl.Names ;
 
 class AttrEvent extends Event {
     final QName q;

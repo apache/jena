@@ -26,7 +26,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.rdf.arp.NTriple;
+import com.hp.hpl.jena.rdf.arp.NTriple ;
 
 public class MemoryLeakTest extends TestCase {
 

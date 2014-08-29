@@ -23,13 +23,12 @@ import java.util.ArrayList;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler ;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class TestPropEltErrorMsg extends TestCase {

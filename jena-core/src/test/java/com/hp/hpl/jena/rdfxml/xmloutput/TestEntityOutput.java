@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.xmloutput;
+package com.hp.hpl.jena.rdfxml.xmloutput;
 
 import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
 
 /**
     Tests for entities being created corresponding to prefixes.

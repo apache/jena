@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.xmloutput.impl;
+package com.hp.hpl.jena.rdfxml.xmloutput.impl;
 
 /*
  * Want todo List - easy efficiency gains in listSubjects() and

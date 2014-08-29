@@ -22,15 +22,17 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 import javax.xml.stream.XMLEventReader;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
+import com.hp.hpl.jena.rdf.arp.StAX2Model ;
+
 import javax.xml.stream.XMLInputFactory;
 
 /**

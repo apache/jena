@@ -18,12 +18,12 @@
 
 package jena;
 
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration ;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Constructor ;
 
-import com.hp.hpl.jena.rdf.arp.NTriple;
-import com.hp.hpl.jena.shared.Command;
+import com.hp.hpl.jena.rdf.arp.NTriple ;
+import com.hp.hpl.jena.shared.Command ;
 
 /** A command line interface into ARP.
  * Creates NTriple's or just error messages.

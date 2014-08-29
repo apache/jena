@@ -17,7 +17,7 @@
  */
 
 package com.hp.hpl.jena.rdf.arp.states;
-import com.hp.hpl.jena.rdf.arp.impl.Names;
+import com.hp.hpl.jena.rdf.arp.impl.Names ;
 
 class QName implements Names {
     final String uri;

@@ -18,7 +18,7 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.xmloutput;
+package com.hp.hpl.jena.rdfxml.xmloutput;
 
 // Imports
 ///////////////

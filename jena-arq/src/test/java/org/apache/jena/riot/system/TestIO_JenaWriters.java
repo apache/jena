@@ -41,8 +41,8 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.n3.N3JenaWriter ;
 import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
-import com.hp.hpl.jena.xmloutput.impl.Abbreviated ;
-import com.hp.hpl.jena.xmloutput.impl.Basic ;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.Abbreviated ;
+import com.hp.hpl.jena.rdfxml.xmloutput.impl.Basic ;
 
 public class TestIO_JenaWriters {
     
@@ -97,7 +97,6 @@ public class TestIO_JenaWriters {
         assertFalse(defaults.isEmpty());
         for (String lang : defaults.keySet()) {
             assertEquals(defaults.get(lang), writerF.getLangToClassName().get(lang));
-            // Disabled as it does not handle GRDLL reader
             assertEquals(defaults.get(lang), writerF.getWriter(lang).getClass().getName());
         }
         

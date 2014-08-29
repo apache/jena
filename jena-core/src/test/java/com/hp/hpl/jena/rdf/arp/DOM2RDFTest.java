@@ -28,8 +28,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.hp.hpl.jena.rdf.arp.DOM2Model;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.arp.DOM2Model ;
 import com.hp.hpl.jena.shared.JenaException;
 
 class DOM2RDFTest extends SAX2RDFTest {

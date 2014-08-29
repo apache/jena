@@ -23,18 +23,17 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
-
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
-import com.hp.hpl.jena.rdf.arp.SAX2Model;
-import com.hp.hpl.jena.rdf.arp.SAX2RDF;
 import com.hp.hpl.jena.rdf.arp.SAX2RDFTest.RDFEHArray;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFReader;
+import com.hp.hpl.jena.rdf.arp.SAX2Model ;
+import com.hp.hpl.jena.rdf.arp.SAX2RDF ;
 
 public class SAX2RDFMoreTests extends TestCase {
 	public SAX2RDFMoreTests(String nm) {

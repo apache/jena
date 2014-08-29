@@ -30,7 +30,7 @@ import java.util.Properties;
 public class RDFReaderFImpl extends Object implements RDFReaderF {
     // ** The setting in this class are overrided by RIOT **
     private static final String GRDDLREADER = "com.hp.hpl.jena.grddl.GRDDLReader";
-    private static final String TURTLEREADER = "com.hp.hpl.jena.n3.turtle.TurtleReader" ;
+    private static final String TURTLEREADER = com.hp.hpl.jena.n3.turtle.TurtleReader.class.getName() ;
     
 	protected static Properties langToClassName = null;
 
@@ -51,12 +51,12 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     // default readers for each language
 
     protected static final String DEFAULTREADERS[] = {
-        "com.hp.hpl.jena.rdf.arp.JenaReader",
-        "com.hp.hpl.jena.rdf.arp.JenaReader",
-        "com.hp.hpl.jena.rdf.arp.JenaReader",
-        Jena.PATH + ".rdf.model.impl.NTripleReader",
-        Jena.PATH + ".rdf.model.impl.NTripleReader",
-        Jena.PATH + ".rdf.model.impl.NTripleReader",
+        com.hp.hpl.jena.rdf.arp.JenaReader.class.getName(),
+        com.hp.hpl.jena.rdf.arp.JenaReader.class.getName(),
+        com.hp.hpl.jena.rdf.arp.JenaReader.class.getName(),
+        com.hp.hpl.jena.rdf.model.impl.NTripleReader.class.getName(),
+        com.hp.hpl.jena.rdf.model.impl.NTripleReader.class.getName(),
+        com.hp.hpl.jena.rdf.model.impl.NTripleReader.class.getName(),
         TURTLEREADER,  // N3 replaced by a Turtle-based parser 
         TURTLEREADER,
         TURTLEREADER,

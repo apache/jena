@@ -19,14 +19,11 @@
 package com.hp.hpl.jena.rdf.arp.states;
 
 
-import org.junit.Assert;
+import org.junit.Assert ;
 
-import com.hp.hpl.jena.rdf.arp.impl.ANode;
-import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
-import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
-import com.hp.hpl.jena.rdf.arp.states.AbsXMLLiteral;
-import com.hp.hpl.jena.rdf.arp.states.HasSubjectFrameI;
-import com.hp.hpl.jena.rdf.arp.states.WantsObjectFrameI;
+import com.hp.hpl.jena.rdf.arp.impl.ANode ;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext ;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler ;
 
 class TestFrame extends AbsXMLLiteral implements WantsObjectFrameI,
         HasSubjectFrameI {

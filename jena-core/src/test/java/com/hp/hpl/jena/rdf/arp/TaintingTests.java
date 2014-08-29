@@ -28,16 +28,15 @@ import java.io.PrintStream;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.ontology.OntDocumentManager;
-import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.NTriple;
-import com.hp.hpl.jena.rdf.arp.ParseException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers ;
+import com.hp.hpl.jena.rdf.arp.NTriple ;
+import com.hp.hpl.jena.rdf.arp.ParseException ;
 
 public class TaintingTests extends TestCase implements ErrorHandler,
 		ARPErrorNumbers {

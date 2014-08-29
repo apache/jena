@@ -20,11 +20,10 @@ package com.hp.hpl.jena.rdf.arp.states;
 
 
 import org.junit.Assert;
-
 import org.xml.sax.Attributes;
 
-import com.hp.hpl.jena.rdf.arp.impl.TaintImpl;
-import com.hp.hpl.jena.rdf.arp.states.FrameI;
+import com.hp.hpl.jena.rdf.arp.impl.TaintImpl ;
+import com.hp.hpl.jena.rdf.arp.states.FrameI ;
 
 
 class EventList implements Attributes, Cloneable {
