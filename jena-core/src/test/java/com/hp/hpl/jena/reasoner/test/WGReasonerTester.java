@@ -33,10 +33,10 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.rdf.arp.ARPTests ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl ;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl ;
+import com.hp.hpl.jena.rdfxml.xmlinput.ARPTests ;
 import com.hp.hpl.jena.reasoner.InfGraph ;
 import com.hp.hpl.jena.reasoner.Reasoner ;
 import com.hp.hpl.jena.reasoner.ReasonerFactory ;

@@ -50,7 +50,7 @@ public class TestPackage extends TestCase{
         addTest(ts,  "Util", com.hp.hpl.jena.util.TestPackage.suite());
         addTest(ts,  "Jena iterator", com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );
         addTest(ts,  "Assembler", TestAssemblerPackage.suite() );
-        addTest(ts,  "ARP", com.hp.hpl.jena.rdf.arp.TestPackage.suite());
+        addTest(ts,  "ARP", com.hp.hpl.jena.rdfxml.xmlinput.TestPackage.suite());
         addTest(ts,  "Vocabularies", com.hp.hpl.jena.vocabulary.test.TestVocabularies.suite() );
         addTest(ts,  "Shared", com.hp.hpl.jena.shared.TestSharedPackage.suite() );
         addTest(ts,  "Reasoners", com.hp.hpl.jena.reasoner.test.TestPackage.suite());

@@ -47,10 +47,10 @@ public class IO_JenaReaders
         registerForModelRead("RDF/JSON",        JenaReadersWriters.RDFReaderRIOT_RDFJSON.class) ;
     }
     
-    static String jenaNTriplesReader = "com.hp.hpl.jena.rdf.model.impl.NTripleReader" ; 
-    static String jenaTurtleReader = "com.hp.hpl.jena.n3.turtle.TurtleReader" ; 
+    static String jenaNTriplesReader = com.hp.hpl.jena.rdf.model.impl.NTripleReader.class.getName(); 
+    static String jenaTurtleReader = com.hp.hpl.jena.n3.turtle.TurtleReader.class.getName();
     static String jenaN3Reader = jenaTurtleReader ;
-    static String jenaRDFReader = "com.hp.hpl.jena.rdf.arp.JenaReader"; 
+    static String jenaRDFReader = com.hp.hpl.jena.rdfxml.xmlinput.JenaReader.class.getName(); 
     
     public static void resetJena() {
         RDFReaderFImpl.setBaseReaderClassName("RDF", jenaRDFReader) ;
