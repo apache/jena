@@ -70,14 +70,15 @@ public class ResultSetWriterRegistry {
 //        RDFLanguages.register(SPARQLResultSetCSV) ;
 //        RDFLanguages.register(SPARQLResultSetTSV) ;
 //        RDFLanguages.register(SPARQLResultSetThrift) ;
+//        // Not text. 
         
         ResultSetWriterFactory factory = new ResultSetWriterFactoryStd() ;
-        register(SPARQLResultSetXML, factory) ;
-        register(SPARQLResultSetJSON, factory) ;
-        register(SPARQLResultSetCSV, factory) ;
-        register(SPARQLResultSetTSV, factory) ;
+        register(SPARQLResultSetXML,    factory) ;
+        register(SPARQLResultSetJSON,   factory) ;
+        register(SPARQLResultSetCSV,    factory) ;
+        register(SPARQLResultSetTSV,    factory) ;
         register(SPARQLResultSetThrift, factory) ;
-        register(SPARQLResultSetText, factory) ;
+        register(SPARQLResultSetText,   factory) ;
     }
  
     static { ResultSetLang.init(); }

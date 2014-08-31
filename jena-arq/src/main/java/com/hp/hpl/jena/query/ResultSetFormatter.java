@@ -27,6 +27,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.ResultSetMgr ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
@@ -51,10 +52,14 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.
- *  in various formats. */
+ *  in various formats.
+ *  @see ResultSetMgr
+ */
 
-public class ResultSetFormatter
-{
+public class ResultSetFormatter {
+    // See also ResultSetMgr -- this post-dates this code.
+    // Ideally, the operation here should call ResultSetMgr.
+    
     private ResultSetFormatter() {}
     /**
      * Output a result set in a text format.  The result set is consumed.
