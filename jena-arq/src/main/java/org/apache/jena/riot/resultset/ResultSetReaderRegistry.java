@@ -33,6 +33,7 @@ import java.util.Objects ;
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.thrift.BinRDF ;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.resultset.CSVInput ;
@@ -65,10 +66,10 @@ public class ResultSetReaderRegistry {
         initialized = true ;
 
         ResultSetReaderFactory factory = new ResultSetReaderFactoryStd() ;
-        register(SPARQLResultSetXML, factory) ;
-        register(SPARQLResultSetJSON, factory) ;
-        register(SPARQLResultSetCSV, factory) ;
-        register(SPARQLResultSetTSV, factory) ;
+        register(SPARQLResultSetXML,    factory) ;
+        register(SPARQLResultSetJSON,   factory) ;
+        register(SPARQLResultSetCSV,    factory) ;
+        register(SPARQLResultSetTSV,    factory) ;
         register(SPARQLResultSetThrift, factory) ;
     }
     
@@ -82,9 +83,27 @@ public class ResultSetReaderRegistry {
             if ( lang.equals(SPARQLResultSetJSON) )     return readerJSON ;
             if ( lang.equals(SPARQLResultSetCSV) )      return readerCSV ;
             if ( lang.equals(SPARQLResultSetTSV) )      return readerTSV ;
+            if ( lang.equals(SPARQLResultSetThrift) )   return readerThrift ;
             throw new RiotException("Lang not registered (ResultSet reader)") ;
         }
     }
+    
+    private static class ResultSetReaderThriftFactory implements ResultSetReaderFactory {
+        @Override
+        public ResultSetReader create(Lang lang) {
+            return new ResultSetReader() {
+                @Override
+                public ResultSet read(InputStream in, Context context) {
+                    return BinRDF.readResultSet(in) ;
+                }
+                @Override
+                public ResultSet read(Reader in, Context context) {
+                    throw new NotImplemented("Reading binary data from a java.io.Reader is not possible") ;
+                }} ;
+        }
+    }
+    // These all call static methods, so have no state and so don't
+    // need to be created for each read operation.  
     
     private static ResultSetReader readerXML = new ResultSetReader() {
         @Override public ResultSet read(InputStream in, Context context)    { return XMLInput.fromXML(in); }
@@ -106,8 +125,17 @@ public class ResultSetReaderRegistry {
         @Override public ResultSet read(Reader in, Context context)         { throw new NotImplemented("Reader") ; } 
     } ;
 
+    private static ResultSetReader readerThrift = new ResultSetReader() {
+        @Override public ResultSet read(InputStream in, Context context)    { return BinRDF.readResultSet(in) ;}
+        @Override public ResultSet read(Reader in, Context context)         { 
+            throw new NotImplemented("Reading binary data from a java.io.Reader is not possible") ;
+        }
+    } ;
+
     private static ResultSetReader readerNo = new ResultSetReader() {
         @Override public ResultSet read(InputStream in, Context context)    { return null ; }
         @Override public ResultSet read(Reader in, Context context)         { return null ; }
     } ;
+    
+    
 }

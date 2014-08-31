@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot ;
 
+import static org.apache.jena.riot.RDFLanguages.THRIFT ;
 import org.apache.jena.atlas.lib.Lib ;
 
 /** Constants for writable formats */
@@ -73,6 +74,32 @@ public class RDFFormat {
     public static RDFFormat        RDFXML_PLAIN   = new RDFFormat(Lang.RDFXML, PLAIN) ;
 
     public static RDFFormat        RDFJSON        = new RDFFormat(Lang.RDFJSON) ;
+    
+    
+    /** Variant for Thrift using values */
+    public static final RDFFormatVariant ValueEncoding = new RDFFormatVariant("Value") ;
+    
+    /**
+     * RDF Thrift output. This format is failful representation of RDF writtern
+     * and it is suitable for database dumps. It does not encode numeric
+     * literals as values (see {@linkplain #RDF_THRIFT_VALUES}).
+     *
+     * @see #RDF_THRIFT_VALUES
+     */
+    
+    public static final RDFFormat RDF_THRIFT = new RDFFormat(THRIFT) ;
+    /**
+     * A variant of an an RDFFormat that uses value encoding (e.g. integers,
+     * doubles, decimals as binary). This does not preserve exact represenation
+     * (+001 is the same value as 1, +1 and 001) which may matter for database
+     * dumps. It looses datatype for derived types (xsd;long, xsd:int, xsd:short
+     * and xsd:byte become xsd:integer).
+     * For large volumes of numeric data, it may provide a significant reduction in size
+     * in combination with using prefixes for subjects and predicates.
+     *
+     * @see #RDF_THRIFT
+     */
+    public static final RDFFormat RDF_THRIFT_VALUES = new RDFFormat(THRIFT, ValueEncoding) ;
 
     /**
      * The "null" output format (a sink that prints nothing, usually quite
