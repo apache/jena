@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ "$#" != 1 ]
+then
+    echo "Usage: $(basename $0) FILE" 2>&1
+    exit 1
+fi
+
+
+# Find the namespace
+PKG=../src/main/java/org/apache/jena/riot/thrift/wire
+rm -f "$PKG"/*.java
+
+thrift -r -out ../src/main/java -gen java "$@"
+
+for f in "$PKG"/*.java
+do
+    perl -i.bak -p -e 's/^public (class|enum)/\@SuppressWarnings("all")\npublic $1/' $f
+    rm -f $f.bak
+done
