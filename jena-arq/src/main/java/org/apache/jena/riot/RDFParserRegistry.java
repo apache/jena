@@ -18,7 +18,16 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.* ;
+import static org.apache.jena.riot.RDFLanguages.CSV ;
+import static org.apache.jena.riot.RDFLanguages.JSONLD ;
+import static org.apache.jena.riot.RDFLanguages.N3 ;
+import static org.apache.jena.riot.RDFLanguages.NQUADS ;
+import static org.apache.jena.riot.RDFLanguages.NTRIPLES ;
+import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
+import static org.apache.jena.riot.RDFLanguages.RDFXML ;
+import static org.apache.jena.riot.RDFLanguages.THRIFT ;
+import static org.apache.jena.riot.RDFLanguages.TRIG ;
+import static org.apache.jena.riot.RDFLanguages.TURTLE ;
 
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -34,6 +43,7 @@ import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.thrift.BinRDF ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 //import org.apache.jena.atlas.lib.Sink ;
@@ -61,8 +71,9 @@ public class RDFParserRegistry
     private static Set<Lang> langQuads    = DS.set() ;
 
     /** Generic parser factory. */
-    private static ReaderRIOTFactory parserFactory = new ReaderRIOTFactoryImpl() ;
-    private static ReaderRIOTFactory parserFactoryJsonLD = new ReaderRIOTFactoryJSONLD() ;
+    private static ReaderRIOTFactory parserFactory          = new ReaderRIOTFactoryImpl() ;
+    private static ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD() ;
+    private static ReaderRIOTFactory parserFactoryThrift    = new ReaderRIOTFactoryThrift() ;
     
     private static boolean initialized = false ;
     static { init() ; }
@@ -85,10 +96,16 @@ public class RDFParserRegistry
         registerLangTriples(JSONLD,     parserFactoryJsonLD) ;
         registerLangTriples(RDFJSON,    parserFactory) ;
         registerLangTriples(CSV,        parserFactory) ;
+        registerLangTriples(THRIFT,     parserFactoryThrift) ;
         
         registerLangQuads(JSONLD,       parserFactoryJsonLD) ;
         registerLangQuads(NQUADS,       parserFactory) ;
         registerLangQuads(TRIG,         parserFactory) ;
+        registerLangQuads(THRIFT,       parserFactoryThrift) ;
+        
+        
+
+        //registerLangQuads(THRIFT,        parserFactoryThrift) ;
     }
 
     /** Register a language and it's parser factory.
@@ -193,5 +210,43 @@ public class RDFParserRegistry
             return new JsonLDReader() ;
         }
     }
+    // ---- reader 
+    // to StreamRDF
+    private static class ReaderRIOTFactoryThrift implements ReaderRIOTFactory {
+        @Override
+        public ReaderRIOT create(Lang language) {
+            return new ReaderRIOT_RDFBin() ;
+        }}
+    
+    // XXX Where? ==> lang
+    private static class ReaderRIOT_RDFBin implements ReaderRIOT {
+        @Override
+        public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            BinRDF.inputStreamToStream(in, output) ;
+        }
+
+        @Override
+        public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
+            throw new RiotException("RDF Thrift : Reading binary data from a java.io.reader is not supported. Please use an InputStream") ;
+        }
+
+        @Override
+        public ErrorHandler getErrorHandler() {
+            return null ;
+        }
+
+        @Override
+        public void setErrorHandler(ErrorHandler errorHandler) {}
+
+        @Override
+        public ParserProfile getParserProfile() {
+            return null ;
+        }
+
+        @Override
+        public void setParserProfile(ParserProfile profile) {}
+        
+    }
+
 }
 

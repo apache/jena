@@ -78,6 +78,9 @@ public class Lang
     /** Alternative constant {@linkplain #NQUADS} */
     public static Lang NQ ;
 
+    //** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
+    public static Lang THRIFT ;
+
     /** "CSV" - CSV data read into an RDF model with simple conversion : See Jena-625 */
     public static Lang CSV ;
 

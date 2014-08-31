@@ -118,12 +118,18 @@ public class RDFLanguages
     /** Alternative constant {@linkplain #NQUADS} */
     public static final Lang NQ     = NQUADS ;
     
-    /** CSV - CSV data read into an RDF model with simple conversion : See Jena-625 */
+    /** CSV data.  This can be read into an RDF model with simple conversion */
     public static final Lang CSV   = LangBuilder.create(strLangCSV, contentTypeTextCSV)
                                                 .addAltNames("csv")   
                                                 .addFileExtensions("csv")
                                                 .build() ;
 
+    /** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
+    public static final Lang THRIFT = LangBuilder.create("RDF_THRIFT", "application/rdf+thrift")
+                                                 .addAltNames("RDF-THRIFT", "TRDF")
+                                                 .addFileExtensions("rt", "trdf")
+                                                 .build() ;
+    
     /** Text */
     public static final Lang TEXT   = LangBuilder.create("text", contentTypeTextPlain)
                                                  .addAltNames("TEXT")   
@@ -166,7 +172,8 @@ public class RDFLanguages
         Lang.RDFJSON    = RDFLanguages.RDFJSON ; 
         Lang.NQUADS     = RDFLanguages.NQUADS ;
         Lang.NQ         = RDFLanguages.NQ ;
-        Lang.TRIG       = RDFLanguages.TRIG ; 
+        Lang.TRIG       = RDFLanguages.TRIG ;
+        Lang.THRIFT     = RDFLanguages.THRIFT ;
         Lang.CSV        = RDFLanguages.CSV ;
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
     }
@@ -183,6 +190,7 @@ public class RDFLanguages
         register(RDFJSON) ;
         register(TRIG) ;
         register(NQUADS) ;
+        register(THRIFT) ;
         register(CSV) ;
         register(RDFNULL) ;
         

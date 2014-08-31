@@ -34,6 +34,7 @@ import java.util.Objects ;
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.thrift.BinRDF ;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
@@ -137,6 +138,23 @@ public class ResultSetWriterRegistry {
             if ( lang.equals(SPARQLResultSetTSV) )      return writerTSV ;
             if ( lang.equals(SPARQLResultSetText) )     return writerText ;
             throw new RiotException("Lang not registered (ResultSet writer)") ;
+        }
+    }
+    
+    private static class ResultSetWriterThriftFactory implements ResultSetWriterFactory {
+        @Override
+        public ResultSetWriter create(Lang lang) {
+            return new ResultSetWriter() {
+                @Override
+                public void write(OutputStream out, ResultSet resultSet, Context context)
+                { BinRDF.writeResultSet(out, resultSet) ; }
+                
+                @Override
+                public void write(Writer out, ResultSet resultSet, Context context) {
+                    throw new NotImplemented("Writing binary data to a java.io.Writer is not possible") ;
+
+                }
+            } ;
         }
     }
 }

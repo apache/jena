@@ -28,6 +28,7 @@ import org.apache.jena.atlas.io.AWriter ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.out.CharSpace ;
+import org.apache.jena.riot.thrift.BinRDF ;
 import org.apache.jena.riot.writer.WriterStreamRDFBlocks ;
 import org.apache.jena.riot.writer.WriterStreamRDFFlat ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
@@ -76,13 +77,13 @@ public class StreamRDFWriter {
         }
     } ;
     
-//    private static StreamWriterFactory streamWriterFactoryThrift = new StreamWriterFactory() {
-//        @Override
-//        public StreamRDF create(OutputStream output, RDFFormat format) {
-//            boolean withValues = JenaThrift.RDF_THRIFT_VALUES.equals(format) ; 
-//            return BinRDF.streamToOutputStream(output, withValues) ;
-//        }
-//    } ;
+    private static StreamRDFWriterFactory streamWriterFactoryThrift = new StreamRDFWriterFactory() {
+        @Override
+        public StreamRDF create(OutputStream output, RDFFormat format) {
+            boolean withValues = RDFFormat.RDF_THRIFT_VALUES.equals(format) ; 
+            return BinRDF.streamToOutputStream(output, withValues) ;
+        }
+    } ;
     
     private static WriterRegistry<StreamRDFWriterFactory> registry = new WriterRegistry<>() ;
 
@@ -112,7 +113,7 @@ public class StreamRDFWriter {
         register(Lang.TRIG,         RDFFormat.TRIG_BLOCKS) ;
         register(Lang.NTRIPLES,     RDFFormat.NTRIPLES) ;
         register(Lang.NQUADS,       RDFFormat.NQUADS) ;
-//        register(Lang.THRIFT,       RDFFormat.RDF_THRIFT) ;
+        register(Lang.THRIFT,       RDFFormat.RDF_THRIFT) ;
         
         register(RDFFormat.TURTLE_BLOCKS,   streamWriterFactoryBlocks) ;
         register(RDFFormat.TURTLE_FLAT,     streamWriterFactoryFlat) ;
@@ -127,8 +128,8 @@ public class StreamRDFWriter {
         register(RDFFormat.NQUADS_UTF8,     streamWriterFactoryTriplesQuads) ;
         register(RDFFormat.NQUADS_ASCII,    streamWriterFactoryTriplesQuadsAscii) ;
 
-//        register(JenaThrift.RDF_THRIFT,          streamWriterFactoryThrift) ;
-//        register(JenaThrift.RDF_THRIFT_VALUES,   streamWriterFactoryThrift) ;
+        register(RDFFormat.RDF_THRIFT,          streamWriterFactoryThrift) ;
+        register(RDFFormat.RDF_THRIFT_VALUES,   streamWriterFactoryThrift) ;
     }
 
     /** Get a StreamRDF destination that will output in syntax <tt>Lang</tt>
