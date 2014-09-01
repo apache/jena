@@ -173,7 +173,7 @@ public class RDFLanguages
         Lang.NQUADS     = RDFLanguages.NQUADS ;
         Lang.NQ         = RDFLanguages.NQ ;
         Lang.TRIG       = RDFLanguages.TRIG ;
-        Lang.THRIFT     = RDFLanguages.THRIFT ;
+        Lang.RDFTHRIFT     = RDFLanguages.THRIFT ;
         Lang.CSV        = RDFLanguages.CSV ;
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
     }

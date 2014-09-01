@@ -97,14 +97,14 @@ public class TestStreamRDFThrift extends BaseTest {
 
     @Test public void graph_02() {
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        StreamRDFWriter.write(out, graph, Lang.THRIFT) ;
+        StreamRDFWriter.write(out, graph, Lang.RDFTHRIFT) ;
 
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;
         
         
         Graph g2 = GraphFactory.createGraphMem() ;
-        RDFDataMgr.read(g2, in, Lang.THRIFT) ;
+        RDFDataMgr.read(g2, in, Lang.RDFTHRIFT) ;
         boolean b = IsoMatcher.isomorphic(graph, g2) ;
         assertTrue(b) ;
         
@@ -138,7 +138,7 @@ public class TestStreamRDFThrift extends BaseTest {
     @Test public void dataset_02() {
         DatasetGraph dsg1 = datasetGraph ;
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        StreamRDFWriter.write(out, dsg1, Lang.THRIFT) ;
+        StreamRDFWriter.write(out, dsg1, Lang.RDFTHRIFT) ;
         
         byte[] bytes = out.toByteArray() ;
         ByteArrayInputStream in = new ByteArrayInputStream(bytes) ;

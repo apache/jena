@@ -102,10 +102,6 @@ public class RDFParserRegistry
         registerLangQuads(NQUADS,       parserFactory) ;
         registerLangQuads(TRIG,         parserFactory) ;
         registerLangQuads(THRIFT,       parserFactoryThrift) ;
-        
-        
-
-        //registerLangQuads(THRIFT,        parserFactoryThrift) ;
     }
 
     /** Register a language and it's parser factory.
@@ -210,16 +206,14 @@ public class RDFParserRegistry
             return new JsonLDReader() ;
         }
     }
-    // ---- reader 
-    // to StreamRDF
+ 
     private static class ReaderRIOTFactoryThrift implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language) {
-            return new ReaderRIOT_RDFBin() ;
+            return new ReaderRDFThrift() ;
         }}
     
-    // XXX Where? ==> lang
-    private static class ReaderRIOT_RDFBin implements ReaderRIOT {
+    private static class ReaderRDFThrift implements ReaderRIOT {
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             BinRDF.inputStreamToStream(in, output) ;
