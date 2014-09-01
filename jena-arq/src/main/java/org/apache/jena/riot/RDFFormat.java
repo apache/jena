@@ -37,7 +37,9 @@ public class RDFFormat {
     public static RDFFormatVariant ASCII          = new RDFFormatVariant("ascii") ;
     /** Use UTF-8 output (N-triples, N-Quads) */
     public static RDFFormatVariant UTF8           = new RDFFormatVariant("utf-8") ;
-
+    /** Variant for RDF Thrift using values */
+    public static final RDFFormatVariant ValueEncoding = new RDFFormatVariant("Value") ;
+    
     public static RDFFormat        TURTLE_PRETTY  = new RDFFormat(Lang.TURTLE, PRETTY) ;
     public static RDFFormat        TURTLE         = TURTLE_PRETTY ;
     public static RDFFormat        TTL            = TURTLE_PRETTY ;
@@ -74,13 +76,9 @@ public class RDFFormat {
     public static RDFFormat        RDFXML_PLAIN   = new RDFFormat(Lang.RDFXML, PLAIN) ;
 
     public static RDFFormat        RDFJSON        = new RDFFormat(Lang.RDFJSON) ;
-    
-    
-    /** Variant for Thrift using values */
-    public static final RDFFormatVariant ValueEncoding = new RDFFormatVariant("Value") ;
-    
+
     /**
-     * RDF Thrift output. This format is failful representation of RDF writtern
+     * RDF Thrift output. This format is faithful representation of RDF writtern
      * and it is suitable for database dumps. It does not encode numeric
      * literals as values (see {@linkplain #RDF_THRIFT_VALUES}).
      *

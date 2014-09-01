@@ -142,7 +142,7 @@ public class RDFWriterRegistry
          register(Lang.TRIG,        RDFFormat.TRIG) ;
          register(Lang.NQUADS,      RDFFormat.NQUADS) ;
          register(Lang.RDFNULL,     RDFFormat.RDFNULL) ;
-         register(Lang.THRIFT,      RDFFormat.RDF_THRIFT) ;
+         register(Lang.RDFTHRIFT,      RDFFormat.RDF_THRIFT) ;
 
          // Writer factories.
          register(RDFFormat.TURTLE_PRETTY,  wgfactory) ;

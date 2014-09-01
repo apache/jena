@@ -113,7 +113,7 @@ public class StreamRDFWriter {
         register(Lang.TRIG,         RDFFormat.TRIG_BLOCKS) ;
         register(Lang.NTRIPLES,     RDFFormat.NTRIPLES) ;
         register(Lang.NQUADS,       RDFFormat.NQUADS) ;
-        register(Lang.THRIFT,       RDFFormat.RDF_THRIFT) ;
+        register(Lang.RDFTHRIFT,       RDFFormat.RDF_THRIFT) ;
         
         register(RDFFormat.TURTLE_BLOCKS,   streamWriterFactoryBlocks) ;
         register(RDFFormat.TURTLE_FLAT,     streamWriterFactoryFlat) ;
