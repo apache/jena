@@ -27,8 +27,11 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
  * Interface to concrete storage - read and write Blocks, addressed by id. 
  * Suitable for memory mapped I/O (returns
  * internally allocated space for read, not provided from outside; write() can
- * insist the block written comes from allocate()). This is wrapped in a
- * BlockMgr to provide a higher level abstraction.
+ * insist the block written comes from allocate()).
+ * This interfce can also be backed by an in-memory implemntation 
+ * ({@linkplain BlockAccessMem}, {@linkplain BlockAccessByteArray}).
+ * 
+ * This is wrapped in a BlockMgr to provide a higher level abstraction.
  * 
  * @see BufferChannel
  */
