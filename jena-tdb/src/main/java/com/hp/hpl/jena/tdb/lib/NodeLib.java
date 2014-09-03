@@ -82,7 +82,10 @@ public class NodeLib
         return decode(bb) ;
     }
     
-    /** Encode a node - pref use encodeStore */
+    /**
+     * Encode a node - it is better to use encodeStore which may avoid
+     * anadditional copy in getting the node into the ObjectFile
+     */
     public static ByteBuffer encode(Node node)
     {
         int maxSize = nodec.maxSize(node) ;
@@ -93,7 +96,10 @@ public class NodeLib
         return bb ;
     }
     
-    /** Decode a node - pref use fetchDecode */
+    /**
+     * Decode a node - it is better to use fetchDecode which may avoid an
+     * additional copy in getting the node from the ObjectFile.
+     */
     public static Node decode(ByteBuffer bb)
     {
         bb.position(0) ;

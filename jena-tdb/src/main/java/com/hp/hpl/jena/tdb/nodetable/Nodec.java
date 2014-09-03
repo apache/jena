@@ -16,26 +16,41 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.nodetable;
+package com.hp.hpl.jena.tdb.nodetable ;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
 /** Encode/decode for Nodes into bytes */
-public interface Nodec
-{
-    /** Calucate the maximum number of bytes needed for a Node */   
+public interface Nodec {
+    /**
+     * Calculate the maximum number of bytes needed for a Node. This needs to be
+     * an overestimate and is used to ensure there is space in the bytebuffer
+     * passed to encode.
+     */
     public int maxSize(Node node) ;
-    
-    /** Encode the node into the byte buffer, starting at the given offset. 
-     * The ByteBuffer will have position/limit around the space used on return, <b>without a length code<b>.
-     *   
+
+    /**
+     * Encode the node into the byte buffer, starting at the given offset. The
+     * ByteBuffer will have position/limit around the space used on return,
+     * <b>without a length code<b>.
+     * 
+     * @param node Node to encode.
+     * @param bb ByteBuffer
+     * @param pmap Optional prefix mapping. Can be null.
      * @return Length of byte buffer used for the whole encoding.
-     */ 
+     */
     public int encode(Node node, ByteBuffer bb, PrefixMapping pmap) ;
-    
-    /** Decode the node from the byte buffer. The ByteBuffer position shoudl be the start of the encoding (no binary length for example) */
-    public Node decode(ByteBuffer bb, PrefixMapping pmap) ; 
+
+    /**
+     * Decode the node from the byte buffer. The ByteBuffer position should be
+     * the start of the encoding (no binary length for example)
+     * 
+     * @param bb ByteBuffer
+     * @param pmap Optional prefix mapping. Can be null.
+     * @return the decoded Node.
+     */
+    public Node decode(ByteBuffer bb, PrefixMapping pmap) ;
 }

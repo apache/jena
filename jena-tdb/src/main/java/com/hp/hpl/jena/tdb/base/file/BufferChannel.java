@@ -25,20 +25,16 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 
 
-/** Interface to storage : a simplified version of FileChannel.
- *  Read and write bytes, passed via ByteBuffers, addressed
- *  by file location.
- *  
- *  Not suitable for memory mapped I/O - no allocation from the 
- *  I/O resource but instead reads into storage provided outside
- *  and writes from  storage provided outside.
- *  
- *  Does not insert size of ByteBuffer - size of ByteBuffer passed to
- *  read controls the number of bytes read. 
- *  
- *  Having our own abstraction enables us to implement memory-backed versions.
- *  @see BlockAccess
- *  @see FileChannel
+/**
+ * Interface to storage : a simplified version of FileChannel. Read and write
+ * bytes, passed via ByteBuffers, addressed by file location. This interface is
+ * not suitable for memory mapped I/O - there is no ability to use slices of a
+ * memort mapped file. This interface does not insert size of ByteBuffer - size
+ * of ByteBuffer passed to read controls the number of bytes read. Having our
+ * own abstraction enables us to implement memory-backed versions.
+ * 
+ * @see BlockAccess
+ * @see FileChannel
  */
 public interface BufferChannel extends Sync, Closeable
 {

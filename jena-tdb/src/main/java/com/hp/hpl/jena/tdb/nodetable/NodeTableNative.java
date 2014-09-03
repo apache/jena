@@ -39,12 +39,9 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 /** A concrete NodeTable based on native storage (string file and an index) */ 
 public class NodeTableNative implements NodeTable
 {
-    // TODO Split intio a general accessor (get and put (node,NodeId) pairs)
+    // TODO Split into a general accessor (get and put (node,NodeId) pairs)
     // Abstracts the getAllocateNodeId requirements.
     
-    // Assumes an StringFile and an Indexer, which may be an Index but allows
-    // this to be overriden for a direct use of BDB.
-
     protected ObjectFile objects ;
     protected Index nodeHashToId ;        // hash -> int
     private boolean syncNeeded = false ;
