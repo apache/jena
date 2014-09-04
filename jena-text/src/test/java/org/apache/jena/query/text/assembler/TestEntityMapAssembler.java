@@ -27,6 +27,7 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextIndexException ;
+import org.apache.jena.query.text.analyzer.LowerCaseKeywordAnalyzer ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.analysis.core.SimpleAnalyzer ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
@@ -55,6 +56,7 @@ public class TestEntityMapAssembler {
 	private static final Resource spec3;
 	private static final Resource spec4;
 	private static final Resource spec5;
+	private static final Resource spec6;
 	private static final Resource specNoEntityField;
 	private static final Resource specNoDefaultField;
 	private static final Resource specNoMapProperty;
@@ -110,6 +112,12 @@ public class TestEntityMapAssembler {
     	EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
     	EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec5,  null);
     	assertEquals(KeywordAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
+    }    
+	
+    @Test public void EntityHasMapEntryWithLowerCaseKeywordAnalyzer() {
+    	EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+    	EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec6,  null);
+    	assertEquals(LowerCaseKeywordAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
     }    
 	
 	@Test(expected=TextIndexException.class) public void errorOnNoEntityField() {
@@ -229,6 +237,22 @@ public class TestEntityMapAssembler {
 						    		    				     .addProperty(TextVocab.pAnalyzer, 
 						    		    				    		      model.createResource()
 						    		    				    		           .addProperty(RDF.type, TextVocab.keywordAnalyzer))
+						    		    		  }));
+				
+		// create a simple entity map specification using a lowercase keyword analyzer
+		
+				spec6 = model.createResource(TESTBASE + "spec6")
+						     .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
+						     .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
+						     .addProperty(TextVocab.pMap,
+						    		      model.createList(
+						    		    		  new RDFNode[] {
+						    		    				model.createResource()
+						    		    				     .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
+						    		    				     .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
+						    		    				     .addProperty(TextVocab.pAnalyzer, 
+						    		    				    		      model.createResource()
+						    		    				    		           .addProperty(RDF.type, TextVocab.lowerCaseKeywordAnalyzer))
 						    		    		  }));
 				
 		// bad assembler spec

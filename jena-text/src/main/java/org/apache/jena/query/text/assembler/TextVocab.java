@@ -54,6 +54,7 @@ public class TextVocab
     public static final Property pStopWords         = Vocab.property(NS, "stopWords");
     public static final Resource simpleAnalyzer     = Vocab.resource(NS, "SimpleAnalyzer");
     public static final Resource keywordAnalyzer    = Vocab.resource(NS, "KeywordAnalyzer");
+    public static final Resource lowerCaseKeywordAnalyzer    = Vocab.resource(NS, "LowerCaseKeywordAnalyzer");
 
 }
 

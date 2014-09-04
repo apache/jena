@@ -44,6 +44,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestDatasetWithSimpleAnalyzer.class
     , TestDatasetWithStandardAnalyzer.class
     , TestDatasetWithKeywordAnalyzer.class
+    , TestDatasetWithLowerCaseKeywordAnalyzer.class
 })
 
 public class TS_Text
