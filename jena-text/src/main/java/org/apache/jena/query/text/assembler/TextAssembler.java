@@ -33,6 +33,7 @@ public class TextAssembler
         Assembler.general.implementWith(TextVocab.standardAnalyzer, new StandardAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.simpleAnalyzer,	new SimpleAnalyzerAssembler()) ;
         Assembler.general.implementWith(TextVocab.keywordAnalyzer,	new KeywordAnalyzerAssembler()) ;
+        Assembler.general.implementWith(TextVocab.lowerCaseKeywordAnalyzer,	new LowerCaseKeywordAnalyzerAssembler()) ;
     }
 }
 
