@@ -153,8 +153,8 @@ public class SetupTDB
                                             int keyLength)
     {
         FileSet fs = new FileSet(location, indexName) ;
-        int readCacheSize = params.getReadCacheSize() ;
-        int writeCacheSize = params.getWriteCacheSize() ;
+        int readCacheSize = params.getBlockReadCacheSize() ;
+        int writeCacheSize = params.getBlockWriteCacheSize() ;
         
         // Value part is null (zero length)
         RangeIndex rIndex = makeRangeIndex(location, indexName, keyLength, 0, readCacheSize, writeCacheSize) ;
