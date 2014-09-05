@@ -23,8 +23,8 @@ import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 
 /** Statistics collector, aggregates based on NodeId */
 public class StatsCollectorNodeId extends StatsCollectorBase<NodeId>

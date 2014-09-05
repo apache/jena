@@ -35,14 +35,14 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.index.TupleTable ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleTable ;
 
 public class DumpOps
 {

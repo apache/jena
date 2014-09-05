@@ -27,12 +27,12 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableLib ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTableLib ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
 
 /** Lowlevel utilities for working with TDB */
 

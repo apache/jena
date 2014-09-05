@@ -25,10 +25,10 @@ import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.Hash ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class tdbnode extends CmdTDB

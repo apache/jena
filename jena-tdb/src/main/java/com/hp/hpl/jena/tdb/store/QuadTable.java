@@ -28,9 +28,9 @@ import org.apache.jena.atlas.lib.Tuple ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
 

@@ -31,16 +31,15 @@ import org.apache.jena.atlas.lib.Tuple ;
 
 
 
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
 import com.hp.hpl.jena.sparql.core.Quad;
-
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
 import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 
 public class TupleLib
 {

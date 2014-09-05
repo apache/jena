@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.tdb.setup;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 
 public interface NodeTableBuilder {
     NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, 

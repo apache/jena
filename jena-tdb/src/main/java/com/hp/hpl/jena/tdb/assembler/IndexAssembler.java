@@ -27,21 +27,18 @@ import java.util.Locale ;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
 
-
 import com.hp.hpl.jena.rdf.model.Resource;
-
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-
 import com.hp.hpl.jena.tdb.TDBException;
 import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.IndexBuilder;
 import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndex;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.sys.Names;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 

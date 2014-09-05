@@ -40,12 +40,12 @@ import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.Nodec ;
-import com.hp.hpl.jena.tdb.nodetable.NodecSSE ;
 import com.hp.hpl.jena.tdb.store.Hash ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.NodeType ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetable.Nodec ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodecSSE ;
 
 public class NodeLib
 {

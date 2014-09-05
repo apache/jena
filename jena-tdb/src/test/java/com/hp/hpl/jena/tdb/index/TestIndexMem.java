@@ -20,7 +20,7 @@ package com.hp.hpl.jena.tdb.index;
 
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 
-public class TestIndexMem extends TestIndex
+public class TestIndexMem extends AbstractTestIndex
 {
     @Override
     protected Index makeIndex(int kLen, int vLen)

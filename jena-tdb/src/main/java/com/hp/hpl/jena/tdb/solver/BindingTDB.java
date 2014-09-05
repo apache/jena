@@ -27,8 +27,8 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingBase ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 
 /** Bind that delays turning a NodeId into a Node until explicitly needed by get() */
 

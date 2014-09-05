@@ -28,12 +28,12 @@ import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsResults ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.sys.TDBInternal ;
 
 public class TestStats extends BaseTest

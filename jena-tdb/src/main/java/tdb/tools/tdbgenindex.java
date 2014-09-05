@@ -24,8 +24,8 @@ import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;

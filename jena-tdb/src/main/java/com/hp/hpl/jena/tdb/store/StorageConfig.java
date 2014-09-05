@@ -23,8 +23,8 @@ import java.util.Map ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.setup.SystemParams ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 public class StorageConfig
