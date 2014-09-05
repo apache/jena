@@ -114,17 +114,17 @@ public class SetupTDB
     public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy)
     {
         // The index using for Graph+Prefix => URI
-        String indexPrefixes = params.indexPrefix ;
-        String primary = params.primaryIndexPrefix ;
-        String indexes[] = params.prefixIndexes ;
+        String indexPrefixes = params.getIndexPrefix() ;
+        String primary = params.getPrimaryIndexPrefix() ;
+        String indexes[] = params.getPrefixIndexes() ;
         
         TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
         if ( prefixIndexes.length != indexes.length )
             error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
         
         // The nodetable.
-        String pnNode2Id = params.prefixNode2Id ;
-        String pnId2Node = params.prefixId2Node ;
+        String pnNode2Id = params.getPrefixNode2Id() ;
+        String pnId2Node = params.getPrefixId2Node() ;
         
         // No cache - the prefix mapping is a cache
         NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1, -1)  ;
@@ -153,8 +153,8 @@ public class SetupTDB
                                             int keyLength)
     {
         FileSet fs = new FileSet(location, indexName) ;
-        int readCacheSize = params.readCacheSize ;
-        int writeCacheSize = params.writeCacheSize ;
+        int readCacheSize = params.getReadCacheSize() ;
+        int writeCacheSize = params.getWriteCacheSize() ;
         
         // Value part is null (zero length)
         RangeIndex rIndex = makeRangeIndex(location, indexName, keyLength, 0, readCacheSize, writeCacheSize) ;
@@ -183,7 +183,7 @@ public class SetupTDB
                                            int dftKeyLength, int dftValueLength)
     {
         RecordFactory recordFactory = makeRecordFactory(dftKeyLength, dftValueLength) ;
-        int blkSize = params.blockSize ;
+        int blkSize = params.getBlockSize() ;
         
         // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
         // Does not set order.

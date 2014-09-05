@@ -28,15 +28,15 @@ public class TDBSystemInfo implements TDBSystemInfoMBean
     @Override
     public int getSegmentSize()             { return SystemTDB.SegmentSize; }
     @Override
-    public int getNodeId2NodeCacheSize()    { return params.NodeId2NodeCacheSize ; }
+    public int getNodeId2NodeCacheSize()    { return params.getNodeId2NodeCacheSize() ; }
     @Override
-    public int getNode2NodeIdCacheSize()    { return params.Node2NodeIdCacheSize ; }
+    public int getNode2NodeIdCacheSize()    { return params.getNode2NodeIdCacheSize() ; }
     @Override
-    public int getNodeMissCacheSize()       { return params.NodeMissCacheSize ; }
+    public int getNodeMissCacheSize()       { return params.getNodeMissCacheSize() ; }
     @Override
-    public int getBlockSize()               { return params.blockSize ; }
+    public int getBlockSize()               { return params.getBlockSize() ; }
     @Override
-    public int getBlockReadCacheSize()      { return params.readCacheSize ; }
+    public int getBlockReadCacheSize()      { return params.getReadCacheSize() ; }
     @Override
-    public int getBlockWriteCacheSize()     { return params.writeCacheSize ; }
+    public int getBlockWriteCacheSize()     { return params.getWriteCacheSize() ; }
 }

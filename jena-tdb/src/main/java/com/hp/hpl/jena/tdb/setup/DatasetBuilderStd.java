@@ -62,7 +62,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     public static DatasetGraphTDB build(Location location)
     {
         DatasetBuilderStd x = new DatasetBuilderStd() ;
-        x.setStd() ;
+        x.setup() ;
         return x.build(location, null) ;
     }
     
@@ -74,12 +74,13 @@ public class DatasetBuilderStd implements DatasetBuilder
     public static DatasetBuilderStd stdBuilder()
     {
         DatasetBuilderStd x = new DatasetBuilderStd() ;
-        x.setStd() ;
+        x.setup() ;
         return x ; 
     }
     
-    protected DatasetBuilderStd() {}
+    protected DatasetBuilderStd() { }
     
+    // Used by DatasetBuilderTxn 
     public DatasetBuilderStd(BlockMgrBuilder blockMgrBuilder,
                              NodeTableBuilder nodeTableBuilder)
     {
@@ -109,7 +110,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         set(nodeTableBuilder, tupleIndexBuilder) ;
     }
         
-    protected void setStd()
+    protected void setup()
     {
           ObjectFileBuilder objectFileBuilder     = new Builder.ObjectFileBuilderStd() ;
           BlockMgrBuilder blockMgrBuilder         = new Builder.BlockMgrBuilderStd() ;
@@ -132,6 +133,8 @@ public class DatasetBuilderStd implements DatasetBuilder
         }
     }
     
+    // Main engine for building.
+    // Called by DatasetBuilderTxn
     public DatasetGraphTDB _build(Location location, SystemParams _params, boolean readonly, ReorderTransformation _transform)
     {
         params = _params ;
@@ -139,8 +142,8 @@ public class DatasetBuilderStd implements DatasetBuilder
         DatasetControl policy = createConcurrencyPolicy() ;
         
         NodeTable nodeTable = makeNodeTable(location, 
-                                            params.indexNode2Id, params.indexId2Node,
-                                            params.Node2NodeIdCacheSize, params.NodeId2NodeCacheSize, params.NodeMissCacheSize) ;
+                                            params.getIndexNode2Id(), params.getIndexId2Node(),
+                                            params.getNode2NodeIdCacheSize(), params.getNodeId2NodeCacheSize(), params.getNodeMissCacheSize()) ;
         
         TripleTable tripleTable = makeTripleTable(location, nodeTable, policy) ; 
         QuadTable quadTable = makeQuadTable(location, nodeTable, policy) ;
@@ -168,8 +171,8 @@ public class DatasetBuilderStd implements DatasetBuilder
     // ======== Dataset level
     protected TripleTable makeTripleTable(Location location, NodeTable nodeTable, DatasetControl policy)
     {    
-        String primary = params.primaryIndexTriples ;
-        String[] indexes = params.tripleIndexes ;
+        String primary = params.getPrimaryIndexTriples() ;
+        String[] indexes = params.getTripleIndexes() ;
 
         // Allow experimentation of other index layouts. 
 //        if ( indexes.length != 3 )
@@ -186,8 +189,8 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     protected QuadTable makeQuadTable(Location location, NodeTable nodeTable, DatasetControl policy)
     {    
-        String primary = params.primaryIndexQuads ;
-        String[] indexes = params.quadIndexes ;
+        String primary = params.getPrimaryIndexQuads() ;
+        String[] indexes = params.getQuadIndexes() ;
         
         // Allow experimentation of other index layouts. 
 //        if ( indexes.length != 6 )
@@ -204,15 +207,15 @@ public class DatasetBuilderStd implements DatasetBuilder
 
     protected DatasetPrefixesTDB makePrefixTable(Location location, DatasetControl policy)
     {    
-        String primary = params.primaryIndexPrefix ;
-        String[] indexes = params.prefixIndexes ;
+        String primary = params.getPrimaryIndexPrefix() ;
+        String[] indexes = params.getPrefixIndexes() ;
         
-        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{params.indexPrefix}) ;
+        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{params.getIndexPrefix()}) ;
         if ( prefixIndexes.length != 1 )
             error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
         
-        String pnNode2Id = params.prefixNode2Id ;
-        String pnId2Node = params.prefixId2Node ;
+        String pnNode2Id = params.getPrefixNode2Id() ;
+        String pnId2Node = params.getPrefixId2Node() ;
         
         // No cache - the prefix mapping is a cache
         NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1, -1)  ;
