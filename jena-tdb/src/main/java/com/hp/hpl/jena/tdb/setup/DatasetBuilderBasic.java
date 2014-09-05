@@ -63,7 +63,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
         
         params = config ;
         if ( config == null )
-            params = SystemParams.getStdSystemParams() ;
+            params = SystemParams.getDftSystemParams() ;
         
         NodeTable nodeTable = makeNodeTable(location, params.getIndexNode2Id(), params.getIndexId2Node(),
                                             -1, -1, -1) ; // No caches

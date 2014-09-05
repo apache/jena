@@ -23,7 +23,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TDBSystemInfo implements TDBSystemInfoMBean
 {
-    private static SystemParams params = SystemParams.getStdSystemParams() ;
+    private static SystemParams params = SystemParams.getDftSystemParams() ;
 
     @Override
     public int getSegmentSize()             { return SystemTDB.SegmentSize; }

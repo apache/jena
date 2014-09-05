@@ -68,7 +68,7 @@ public class SetupTDB
         throw new TDBException(msg) ;
     }
 
-    private static SystemParams params = SystemParams.getStdSystemParams() ;
+    private static SystemParams params = SystemParams.getDftSystemParams() ;
 
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)

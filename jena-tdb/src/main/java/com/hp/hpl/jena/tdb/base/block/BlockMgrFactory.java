@@ -55,9 +55,17 @@ public class BlockMgrFactory
         if ( fileSet.isMem() )
             return createMem(fileSet.filename(ext), blockSize) ;
         else
-            return createFile(fileSet.filename(ext), blockSize, readBlockCacheSize, writeBlockCacheSize) ;
+            return createFile(fileSet.filename(ext), null, blockSize, readBlockCacheSize, writeBlockCacheSize) ;
     }
     
+    public static BlockMgr create(FileSet fileSet, FileMode fileMode, String ext, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
+    {
+        if ( fileSet.isMem() )
+            return createMem(fileSet.filename(ext), blockSize) ;
+        else
+            return createFile(fileSet.filename(ext), fileMode, blockSize, readBlockCacheSize, writeBlockCacheSize) ;
+    }
+
     /** Create an in-memory block manager */ 
     public static BlockMgr createMem(String indexName, int blockSize)
     {
@@ -72,16 +80,23 @@ public class BlockMgrFactory
     }
     
     /** Create a BlockMgr backed by a file */
-    public static BlockMgr createFile(String filename, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
+    public static BlockMgr createFile(String filename, int blockSize, int readBlockCacheSize, int writeBlockCacheSize) {
+        return  createFile(filename, null,blockSize, readBlockCacheSize, writeBlockCacheSize) ;
+    }
+
+    /** Create a BlockMgr backed by a file */
+    public static BlockMgr createFile(String filename, FileMode fileMode, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
-        switch ( SystemTDB.fileMode() )
+        if ( fileMode == null )
+            fileMode = SystemTDB.fileMode() ;
+        switch ( fileMode )
         {
             case mapped:
                 return createMMapFile(filename, blockSize) ;
             case direct:
                 return createStdFile(filename, blockSize, readBlockCacheSize, writeBlockCacheSize) ;
         }
-        throw new TDBException("Unknown file mode: "+SystemTDB.fileMode()) ;
+        throw new TDBException("Unknown file mode: "+fileMode) ;
     }        
 
     /** Create a NIO Block Manager */

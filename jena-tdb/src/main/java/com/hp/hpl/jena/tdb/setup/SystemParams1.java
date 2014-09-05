@@ -25,7 +25,7 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** System parameters for a TDB database instance. */
-public class SystemParams
+public class SystemParams1
 {
     private FileMode fileMode             = SystemTDB.fileMode() ;
     private int      blockSize            = SystemTDB.BlockSize ;
@@ -49,10 +49,10 @@ public class SystemParams
     private String   prefixNode2Id        = Names.prefixNode2Id ;
     private String   prefixId2Node        = Names.prefixId2Node ;
     
-    public SystemParams() {}
+    public SystemParams1() {}
     
-    public static SystemParams getStdSystemParams() {
-        return new SystemParams() ;
+    public static SystemParams1 getStdSystemParams() {
+        return new SystemParams1() ;
     }
     
     @Override
