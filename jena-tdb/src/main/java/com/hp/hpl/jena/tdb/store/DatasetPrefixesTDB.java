@@ -62,10 +62,11 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     private final NodeTupleTable nodeTupleTable ;
     
     @Deprecated
-    public static DatasetPrefixesTDB create(Location location, DatasetControl policy) { return create(IndexBuilder.get(), location, policy) ; }
+    public static DatasetPrefixesTDB createTesting(Location location, DatasetControl policy) 
+    { return create(IndexBuilder.get(), location, policy) ; }
     
     @Deprecated
-    public static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location, DatasetControl policy)
+    private static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location, DatasetControl policy)
     { return new DatasetPrefixesTDB(indexBuilder, location, policy) ; }
 
     @Deprecated

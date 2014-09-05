@@ -44,7 +44,7 @@ public class NodeTableFactory
         if ( location != null )
             filesetIdx = new FileSet(location, Names.indexNode2Id) ;
         
-        SystemParams params = SystemParams.getStdSystemParams() ;
+        SystemParams params = SystemParams.getDftSystemParams() ;
         
         return  create(indexBuilder, filesetNodeTable, filesetIdx,
                        params.getNode2NodeIdCacheSize() ,

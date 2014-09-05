@@ -86,7 +86,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
         
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(new Location(dir), new DatasetControlMRSW()) ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.createTesting(new Location(dir), new DatasetControlMRSW()) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         
         String x = pmap1.getNsPrefixURI("x") ;
@@ -101,13 +101,13 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
         
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(new Location(dir), new DatasetControlMRSW()) ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.createTesting(new Location(dir), new DatasetControlMRSW()) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
         
-        prefixes = DatasetPrefixesTDB.create(new Location(dir), new DatasetControlMRSW()) ;
+        prefixes = DatasetPrefixesTDB.createTesting(new Location(dir), new DatasetControlMRSW()) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
         prefixes.close();
     }
