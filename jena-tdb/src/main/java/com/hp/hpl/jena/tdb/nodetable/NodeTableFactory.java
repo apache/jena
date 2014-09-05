@@ -47,9 +47,9 @@ public class NodeTableFactory
         SystemParams params = SystemParams.getStdSystemParams() ;
         
         return  create(indexBuilder, filesetNodeTable, filesetIdx,
-                       params.Node2NodeIdCacheSize ,
-                       params.NodeId2NodeCacheSize ,
-                       params.NodeMissCacheSize ) ;
+                       params.getNode2NodeIdCacheSize() ,
+                       params.getNodeId2NodeCacheSize() ,
+                       params.getNodeMissCacheSize() ) ;
     }
 
     /** Custom node table */
