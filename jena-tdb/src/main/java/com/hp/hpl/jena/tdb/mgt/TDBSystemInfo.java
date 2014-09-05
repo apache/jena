@@ -36,7 +36,7 @@ public class TDBSystemInfo implements TDBSystemInfoMBean
     @Override
     public int getBlockSize()               { return params.getBlockSize() ; }
     @Override
-    public int getBlockReadCacheSize()      { return params.getReadCacheSize() ; }
+    public int getBlockReadCacheSize()      { return params.getBlockReadCacheSize() ; }
     @Override
-    public int getBlockWriteCacheSize()     { return params.getWriteCacheSize() ; }
+    public int getBlockWriteCacheSize()     { return params.getBlockWriteCacheSize() ; }
 }
