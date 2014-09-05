@@ -26,13 +26,11 @@ import org.apache.jena.atlas.iterator.* ;
 import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
 
 public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
 {

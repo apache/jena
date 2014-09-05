@@ -26,7 +26,7 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 
 public class NodeTableAssembler extends AssemblerBase //implements Assembler
 {

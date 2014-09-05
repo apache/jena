@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 
 public interface BuilderSecondaryIndexes
 {

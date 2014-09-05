@@ -28,14 +28,14 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexFactory ;
-import com.hp.hpl.jena.tdb.index.IndexRangeFactory ;
+import com.hp.hpl.jena.tdb.index.RangeIndexFactory ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
+public class IndexFactoryBPlusTree implements IndexFactory, RangeIndexFactory
 {
     private static Logger log = LoggerFactory.getLogger(IndexFactoryBPlusTree.class) ;
     private final int blockSize ;

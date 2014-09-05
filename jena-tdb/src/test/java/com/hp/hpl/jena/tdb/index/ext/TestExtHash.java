@@ -27,11 +27,11 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
 import com.hp.hpl.jena.tdb.base.file.PlainFileMem;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.TestIndex;
+import com.hp.hpl.jena.tdb.index.AbstractTestIndex;
 import com.hp.hpl.jena.tdb.index.ext.ExtHash;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-public class TestExtHash extends TestIndex
+public class TestExtHash extends AbstractTestIndex
 {
 
     static boolean originalNullOut ; 

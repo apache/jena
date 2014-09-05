@@ -35,11 +35,11 @@ import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTableCache ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTableInline ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTableNative ;
 
 public class NodeTableTrans implements NodeTable, TransactionLifecycle
 {

@@ -34,9 +34,8 @@ import com.hp.hpl.jena.tdb.index.ext.TestExtHash;
     TestBPlusTreeRewriter.class,
     
     TestExtHash.class,
-    TestTupleIndexRecord.class,
-    TestTupleIndexRecordDirect.class,
-    TestTupleTable.class
+    TestIndexMem.class
+    
 } )
 
 public class TS_Index

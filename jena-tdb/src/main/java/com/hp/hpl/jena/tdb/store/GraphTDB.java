@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB ;
 import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 

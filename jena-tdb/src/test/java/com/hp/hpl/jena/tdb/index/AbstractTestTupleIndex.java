@@ -28,6 +28,7 @@ import static org.apache.jena.atlas.lib.Tuple.* ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 
 /** Test TupleIndexes (general) */
 public abstract class AbstractTestTupleIndex extends BaseTest

@@ -23,10 +23,10 @@ import org.junit.BeforeClass ;
 
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.TestRangeIndex ;
+import com.hp.hpl.jena.tdb.index.AbstractTestRangeIndex ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class TestBPlusTree extends TestRangeIndex
+public class TestBPlusTree extends AbstractTestRangeIndex
 {
     static boolean originalNullOut ; 
     @BeforeClass static public void beforeClass()

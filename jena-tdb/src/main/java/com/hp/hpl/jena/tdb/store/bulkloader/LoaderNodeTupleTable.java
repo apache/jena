@@ -28,9 +28,9 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 
 /** 
  * Load into one NodeTupleTable (triples, quads, other) 

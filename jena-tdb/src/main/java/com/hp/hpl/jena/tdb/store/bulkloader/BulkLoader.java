@@ -34,11 +34,11 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableView ;
 import com.hp.hpl.jena.tdb.solver.stats.Stats ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollector ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTableView ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 /** Overall framework for bulk loading */

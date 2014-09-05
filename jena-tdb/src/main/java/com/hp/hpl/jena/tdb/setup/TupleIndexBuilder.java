@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.setup;
 import org.apache.jena.atlas.lib.ColumnMap ;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 
 public interface TupleIndexBuilder {
     TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap, String name) ;

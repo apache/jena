@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;

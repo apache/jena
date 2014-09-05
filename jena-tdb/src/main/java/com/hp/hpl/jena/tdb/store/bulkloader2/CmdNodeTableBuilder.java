@@ -47,8 +47,6 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.solver.stats.Stats ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId ;
@@ -56,6 +54,8 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkStreamRDF ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 /** Build node table - write triples/quads as text file */

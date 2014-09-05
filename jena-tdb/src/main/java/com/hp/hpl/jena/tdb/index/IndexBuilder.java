@@ -100,9 +100,9 @@ public class IndexBuilder
 
     // ---- The class .... a pairing of an index builder and a range index builder.
     IndexFactory factoryIndex = null ;
-    IndexRangeFactory builderRangeIndex = null ;
+    RangeIndexFactory builderRangeIndex = null ;
 
-    public IndexBuilder(IndexFactory indexBuilder, IndexRangeFactory rangeIndexBuilder)
+    public IndexBuilder(IndexFactory indexBuilder, RangeIndexFactory rangeIndexBuilder)
     {
         factoryIndex = indexBuilder ;
         builderRangeIndex = rangeIndexBuilder ;

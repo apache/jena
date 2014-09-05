@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.store.bulkloader;
 import java.util.concurrent.Semaphore ;
 
 import com.hp.hpl.jena.sparql.util.Timer ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 
 public class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
 {
