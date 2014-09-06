@@ -23,8 +23,8 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
-import com.hp.hpl.jena.tdb.index.IndexParams ;
+import com.hp.hpl.jena.tdb.setup.B ;
+import com.hp.hpl.jena.tdb.setup.IndexBuilder ;
 import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
@@ -35,6 +35,7 @@ public class NodeTableFactory
     @Deprecated
     public static NodeTable create(IndexBuilder indexBuilder, Location location)
     {
+        // XXX FIX up names - add SystemParams arg
         // The node table (id to node).
         FileSet filesetNodeTable = null ;
         if ( location != null )
@@ -47,53 +48,39 @@ public class NodeTableFactory
         
         SystemParams params = SystemParams.getDftSystemParams() ;
         
-        return  create(indexBuilder, filesetNodeTable, filesetIdx,
-                       params.getNode2NodeIdCacheSize() ,
-                       params.getNodeId2NodeCacheSize() ,
-                       params.getNodeMissCacheSize() ) ;
+        return create(indexBuilder, filesetNodeTable, filesetIdx, params) ;
     }
 
     /** Custom node table */
     public static NodeTable create(IndexBuilder indexBuilder, 
                                    FileSet fsIdToNode, FileSet fsNodeToId,
-                                   int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissCacheSize)
+                                   SystemParams params)
     {
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         
-        // XXX Temp
-        IndexParams indexparams = SystemParams.getDftSystemParams() ;
-        
         if ( fsNodeToId.isMem() )
         {
-            Index nodeToId = indexBuilder.newIndex(FileSet.mem(), SystemTDB.nodeRecordFactory, indexparams) ;
+            Index nodeToId = indexBuilder.buildIndex(fsNodeToId, SystemTDB.nodeRecordFactory, params) ;
             ObjectFile objects = FileFactory.createObjectFileMem(filename) ;
             NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
             
-            nodeTable = NodeTableCache.create(nodeTable, 100, 100, 100) ; 
+            nodeTable = NodeTableCache.create(nodeTable, 100, 100, 10) ; 
             nodeTable =  NodeTableInline.create(nodeTable) ;
             
             return nodeTable ;
-            
-            //return NodeTableIndex.createMem(indexBuilder) ;
         }
         
-        Index nodeToId = indexBuilder.newIndex(fsNodeToId, SystemTDB.nodeRecordFactory, indexparams) ;
+        Index nodeToId = indexBuilder.buildIndex(fsNodeToId, SystemTDB.nodeRecordFactory, params) ;
         // Node table.
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
         NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
-        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissCacheSize) ; 
+        nodeTable = NodeTableCache.create(nodeTable, params) ; 
         nodeTable = NodeTableInline.create(nodeTable) ;
         return nodeTable ;
         
     }
 
-    public static NodeTable createMem(IndexBuilder indexBuilder)
-    {
-        return create(indexBuilder, FileSet.mem(), FileSet.mem(), 100, 100, 10) ;
-    }
-    
-    public static NodeTable createSink(IndexBuilder indexBuilder, Location location)
-    {
-        return new NodeTableSink() ;
+    public static NodeTable createMem() {
+        return create(B.createIndexBuilderMem(), FileSet.mem(), FileSet.mem(), SystemParams.getDftSystemParams()) ;
     }
 }

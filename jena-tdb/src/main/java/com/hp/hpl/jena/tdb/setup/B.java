@@ -18,20 +18,37 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
+import org.apache.jena.atlas.lib.NotImplemented ;
+
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 //import com.hp.hpl.jena.tdb.index.IndexBuilder ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.setup.BuilderIndex.BlockMgrBuilderStd ;
 
 public class B {
     
-    public static IndexBuilder createIndexBuilder() { return null ; }
-    public static IndexBuilder createIndexBuilderMem() { return null ; }
-    public static RangeIndexBuilder createRangeIndexBuilder() { return null ; }
-    public static RangeIndexBuilder createRangeIndexBuilderMem() { return null ; }
+    public static IndexBuilder createIndexBuilderMem() { 
+        return createIndexBuilder(createRangeIndexBuilderMem()) ;
+    }
     
+    public static IndexBuilder createIndexBuilder(final RangeIndexBuilder other) 
+    { 
+        return new IndexBuilder() {
+            @Override
+            public Index buildIndex(FileSet fileSet, RecordFactory recordfactory, IndexParams indexParams) {
+                return other.buildRangeIndex(fileSet, recordfactory, indexParams) ;
+            }
+        } ;
+    }
+
+    public static RangeIndexBuilder createRangeIndexBuilderMem() {
+        BlockMgrBuilder blockMgrBuilderNodes = new BlockMgrBuilderStd() ;
+        BlockMgrBuilder blockMgrBuilderRecords = new BlockMgrBuilderStd() ;
+        return new BuilderIndex.RangeIndexBuilderStd(blockMgrBuilderNodes, blockMgrBuilderRecords) ;
+    }
     
     // c.f. setupTDB
     // BlockMgrSync needed?  Outer sync?
