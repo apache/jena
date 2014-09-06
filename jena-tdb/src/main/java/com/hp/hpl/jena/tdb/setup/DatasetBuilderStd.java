@@ -36,6 +36,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB1 ;
 import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
@@ -91,21 +92,21 @@ public class DatasetBuilderStd implements DatasetBuilder {
         Recorder recorder = new Recorder(this) ;
         BlockMgrBuilder blockMgrBuilderRec = new BlockMgrBuilderRecorder(blockMgrBuilder, recorder) ;
 
-        IndexBuilder indexBuilder = new Builder.IndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
-        RangeIndexBuilder rangeIndexBuilder = new Builder.RangeIndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
+        IndexBuilder indexBuilder = new BuilderIndex.IndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
+        RangeIndexBuilder rangeIndexBuilder = new BuilderIndex.RangeIndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
 
         this.nodeTableBuilder = nodeTableBuilder ;
         nodeTableBuilder = new NodeTableBuilderRecorder(nodeTableBuilder, recorder) ;
 
-        TupleIndexBuilder tupleIndexBuilder = new Builder.TupleIndexBuilderStd(rangeIndexBuilder) ;
+        TupleIndexBuilder tupleIndexBuilder = new BuilderDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
         set(nodeTableBuilder, tupleIndexBuilder) ;
     }
 
     private void standardSetup() {
-        ObjectFileBuilder objectFileBuilder = new Builder.ObjectFileBuilderStd() ;
-        BlockMgrBuilder blockMgrBuilder = new Builder.BlockMgrBuilderStd() ;
-        IndexBuilder indexBuilderNT = new Builder.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-        NodeTableBuilder nodeTableBuilder = new Builder.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
+        ObjectFileBuilder objectFileBuilder = new BuilderIndex.ObjectFileBuilderStd() ;
+        BlockMgrBuilder blockMgrBuilder = new BuilderIndex.BlockMgrBuilderStd() ;
+        IndexBuilder indexBuilderNT = new BuilderIndex.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        NodeTableBuilder nodeTableBuilder = new BuilderDB.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
 
         set(blockMgrBuilder, nodeTableBuilder) ;
     }
@@ -262,7 +263,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         // FileSet
         FileSet fs = new FileSet(location, name) ;
         ColumnMap colMap = new ColumnMap(primary, indexOrder) ;
-        return tupleIndexBuilder.buildTupleIndex(fs, colMap, indexOrder) ;
+        return tupleIndexBuilder.buildTupleIndex(fs, colMap, indexOrder, params) ;
     }
 
     // ----
@@ -271,8 +272,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
                                       int sizeNode2NodeIdCache, int sizeNodeId2NodeCache, int sizeNodeMissCache) {
         FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
         FileSet fsId2Node = new FileSet(location, indexId2Node) ;
-        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, sizeNode2NodeIdCache,
-                                                       sizeNodeId2NodeCache, sizeNodeMissCache) ;
+        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, params) ;
         return nt ;
     }
 
@@ -355,10 +355,8 @@ public class DatasetBuilderStd implements DatasetBuilder {
         }
 
         @Override
-        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache,
-                                        int sizeNodeId2NodeCache, int sizeNodeMissCacheSize) {
-            NodeTable nt = builder.buildNodeTable(fsIndex, fsObjectFile, sizeNode2NodeIdCache, sizeNodeId2NodeCache,
-                                                  sizeNodeMissCacheSize) ;
+        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, SystemParams params) {
+            NodeTable nt = builder.buildNodeTable(fsIndex, fsObjectFile, params) ;
             // It just knows, right?
             FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
             recorder.record(ref, nt) ;
@@ -377,8 +375,8 @@ public class DatasetBuilderStd implements DatasetBuilder {
         }
 
         @Override
-        public BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize) {
-            BlockMgr blkMgr = builder.buildBlockMgr(fileSet, ext, blockSize) ;
+        public BlockMgr buildBlockMgr(FileSet fileSet, String ext, IndexParams params) {
+            BlockMgr blkMgr = builder.buildBlockMgr(fileSet, ext, params) ;
             FileRef ref = FileRef.create(fileSet, ext) ;
             recorder.record(ref, blkMgr) ;
             return blkMgr ;

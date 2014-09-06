@@ -24,6 +24,7 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
@@ -59,9 +60,12 @@ public class NodeTableFactory
     {
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         
+        // XXX Temp
+        IndexParams indexparams = SystemParams.getDftSystemParams() ;
+        
         if ( fsNodeToId.isMem() )
         {
-            Index nodeToId = indexBuilder.newIndex(FileSet.mem(), SystemTDB.nodeRecordFactory) ;
+            Index nodeToId = indexBuilder.newIndex(FileSet.mem(), SystemTDB.nodeRecordFactory, indexparams) ;
             ObjectFile objects = FileFactory.createObjectFileMem(filename) ;
             NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
             
@@ -73,7 +77,7 @@ public class NodeTableFactory
             //return NodeTableIndex.createMem(indexBuilder) ;
         }
         
-        Index nodeToId = indexBuilder.newIndex(fsNodeToId, SystemTDB.nodeRecordFactory) ;
+        Index nodeToId = indexBuilder.newIndex(fsNodeToId, SystemTDB.nodeRecordFactory, indexparams) ;
         // Node table.
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
         NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;

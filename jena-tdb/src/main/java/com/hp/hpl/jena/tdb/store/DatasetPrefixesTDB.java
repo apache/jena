@@ -18,12 +18,7 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.HashMap ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.ColumnMap ;
@@ -39,6 +34,8 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
+import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
@@ -72,6 +69,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Deprecated
     private DatasetPrefixesTDB(IndexBuilder indexBuilder, Location location, DatasetControl policy)
     {
+        IndexParams indexParams = SystemParams.getDftSystemParams() ;
         // TO BE REMOVED when DI sorted out.
         // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
         // GPU index
@@ -79,7 +77,8 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         if ( location != null )
             filesetGPU = new FileSet(location, Names.indexPrefix) ;
         
-        TupleIndex index = new TupleIndexRecord(3, colMap, Names.primaryIndexPrefix, factory, indexBuilder.newRangeIndex(filesetGPU, factory)) ;
+        TupleIndex index = new TupleIndexRecord(3, colMap, Names.primaryIndexPrefix, factory, 
+                                                indexBuilder.newRangeIndex(filesetGPU, factory, indexParams)) ;
         TupleIndex[] indexes = { index } ;
         
         // Node table.

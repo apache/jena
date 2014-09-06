@@ -35,8 +35,8 @@ public class IndexBuilder
     private static IndexBuilder builder         = chooseIndexBuilder() ;
     public static IndexBuilder get()            { return builder ; }
     
-    public static IndexBuilder getBPlusTree()   { return createIndexBuilder(IndexType.BPlusTree) ; }
-    public static IndexBuilder getExtHash()     { return createIndexBuilder(IndexType.ExtHash) ; }
+//    public static IndexBuilder getBPlusTree()   { return createIndexBuilder(IndexType.BPlusTree) ; }
+//    public static IndexBuilder getExtHash()     { return createIndexBuilder(IndexType.ExtHash) ; }
     
     private static IndexBuilder builderMem = null ;
     
@@ -45,11 +45,11 @@ public class IndexBuilder
         return createIndexBuilderMem(SystemTDB.getIndexType()) ;
     }
 
-    /** Convert the index name to a file name */
-    public static String filenameForIndex(String indexName) { return indexName ; }
-
-    /** Convert the index name to a file name */
-    public static FileSet filesetForIndex(Location location, String indexName) { return new FileSet(location, filenameForIndex(indexName)) ; }
+//    /** Convert the index name to a file name */
+//    public static String filenameForIndex(String indexName) { return indexName ; }
+//
+//    /** Convert the index name to a file name */
+//    public static FileSet filesetForIndex(Location location, String indexName) { return new FileSet(location, filenameForIndex(indexName)) ; }
     
     private static synchronized IndexBuilder chooseIndexBuilder()
     {
@@ -80,41 +80,41 @@ public class IndexBuilder
         throw new TDBException("Unrecognized index type: " + indexType) ;
     }
 
-    /** Create an index at the specified place
-     * @param fileset   Place and basename where the file or files needed are found/created.
-     * @return Index
-     */ 
-    static public Index createIndex(FileSet fileset, RecordFactory recordFactory)
-    {
-        return builder.newIndex(fileset, recordFactory) ;
-    }
-
-    /** Create a range index at the specified place
-     * @param fileset   Place and basename where the file or files needed are found/created.
-     * @return RangeIndex
-     */ 
-    static public RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory)
-    {
-        return builder.newRangeIndex(fileset, recordFactory) ;
-    }
+//    /** Create an index at the specified place
+//     * @param fileset   Place and basename where the file or files needed are found/created.
+//     * @return Index
+//     */ 
+//    static public Index createIndex(FileSet fileset, RecordFactory recordFactory, IndexParams params)
+//    {
+//        return builder.newIndex(fileset, recordFactory, params) ;
+//    }
+//
+//    /** Create a range index at the specified place
+//     * @param fileset   Place and basename where the file or files needed are found/created.
+//     * @return RangeIndex
+//     */ 
+//    static public RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory, IndexParams params)
+//    {
+//        return builder.newRangeIndex(fileset, recordFactory, params) ;
+//    }
 
     // ---- The class .... a pairing of an index builder and a range index builder.
     IndexFactory factoryIndex = null ;
     RangeIndexFactory builderRangeIndex = null ;
 
-    public IndexBuilder(IndexFactory indexBuilder, RangeIndexFactory rangeIndexBuilder)
+    private IndexBuilder(IndexFactory indexBuilder, RangeIndexFactory rangeIndexBuilder)
     {
         factoryIndex = indexBuilder ;
         builderRangeIndex = rangeIndexBuilder ;
     }
     
-    public Index newIndex(FileSet fileset, RecordFactory factory)
+    public Index newIndex(FileSet fileset, RecordFactory factory, IndexParams params)
     {
-        return factoryIndex.createIndex(fileset, factory) ;
+        return factoryIndex.createIndex(fileset, factory, params) ;
     }
     
-    public RangeIndex newRangeIndex(FileSet fileset , RecordFactory factory)
+    public RangeIndex newRangeIndex(FileSet fileset , RecordFactory factory, IndexParams params)
     {
-        return builderRangeIndex.createRangeIndex(fileset, factory) ;
+        return builderRangeIndex.createRangeIndex(fileset, factory, params) ;
     }
 }

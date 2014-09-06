@@ -18,28 +18,30 @@
 
 package com.hp.hpl.jena.tdb.assembler;
 
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
-import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
-import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pDescription;
-import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pFile;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty ;
+import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue ;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pDescription ;
+import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pFile ;
 
 import java.util.Locale ;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
 
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.IndexBuilder;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.setup.B ;
+import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
-import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class IndexAssembler extends AssemblerBase //implements Assembler
@@ -83,16 +85,8 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
         }
         // Problems with spotting the index technology.
         FileSet fileset = null ; //FileSet.fromFilename(filename) ;
-        
-        RangeIndex rIndex = IndexBuilder.createRangeIndex(fileset, rf) ;
+        IndexParams idxParams = SystemParams.getDftSystemParams() ;
+        RangeIndex rIndex = B.buildRangeIndex(fileset, rf, idxParams) ;
         return new TupleIndexRecord(desc.length(), new ColumnMap(primary, desc), desc, rf, rIndex) ;
     }
-
-//    public static RangeIndex rangeIndex(String filename, String name)
-//    {
-//     // Problems with spotting the index technology.
-//        FileSet fileset = IndexBuilder.filesetForIndex(new Location(filename), desc) ;
-//        return IndexBuilder.createRangeIndex(new Location(filename), name, FactoryGraphTDB.indexRecordTripleFactory) ;
-//    }
-
 }

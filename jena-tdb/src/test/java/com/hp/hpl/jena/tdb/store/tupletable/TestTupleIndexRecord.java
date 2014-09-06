@@ -21,12 +21,12 @@ package com.hp.hpl.jena.tdb.store.tupletable;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
 
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.AbstractTestTupleIndex ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.setup.B ;
+import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestTupleIndexRecord extends AbstractTestTupleIndex
@@ -36,7 +36,8 @@ public class TestTupleIndexRecord extends AbstractTestTupleIndex
     @Override
     protected TupleIndexRecord create(String description)
     {
-        RangeIndex rIdx = IndexBuilder.mem().newRangeIndex(FileSet.mem(), factory) ;
+        IndexParams indexParams = SystemParams.getDftSystemParams() ; 
+        RangeIndex rIdx = B.buildRangeIndex(null, factory, indexParams) ;
         ColumnMap cmap = new ColumnMap("SPO", description) ;
         TupleIndexRecord index = new TupleIndexRecord(3, cmap, description, factory, rIdx) ;
         return index ;

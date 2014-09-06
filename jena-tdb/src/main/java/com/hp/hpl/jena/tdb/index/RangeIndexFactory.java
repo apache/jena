@@ -24,5 +24,5 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 
 public interface RangeIndexFactory
 {
-    public RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory) ;
+    public RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory, IndexParams params) ;
 }

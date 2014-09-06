@@ -21,29 +21,78 @@ package com.hp.hpl.jena.tdb.setup;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
 //import com.hp.hpl.jena.tdb.index.IndexBuilder ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 
 public class B {
-    // Build things.
+    
+    public static IndexBuilder createIndexBuilder() { return null ; }
+    public static IndexBuilder createIndexBuilderMem() { return null ; }
+    public static RangeIndexBuilder createRangeIndexBuilder() { return null ; }
+    public static RangeIndexBuilder createRangeIndexBuilderMem() { return null ; }
+    
+    
+    // c.f. setupTDB
+    // BlockMgrSync needed?  Outer sync?
+    // XXX Merge with com.hp.hpl.jena.tdb.index.IndexFactory
+    // Two levels - with params and with (lots of) arguments for indexes, blockMgrs
+    // IndexParams
+    
+    // Rework Build.* classes first.
     
     //RecordFactory recordFactory = new RecordFactory(SizeOfNodeId*colMap.length(),0) ;
     
+    public static RangeIndex buildRangeIndexMem(RecordFactory recordFactory) {
+        FileSet fileSet = FileSet.mem() ;
+        return buildRangeIndex(fileSet, recordFactory) ;
+    }
+    
     public static RangeIndex buildRangeIndex(FileSet fileset, RecordFactory recordFactory) {
-        BlockMgrBuilder nodeBld = new Builder.BlockMgrBuilderStd() ;
-        BlockMgrBuilder leavesBld = new Builder.BlockMgrBuilderStd() ;
-        RangeIndexBuilder builder = new Builder.RangeIndexBuilderStd(nodeBld, leavesBld) ;
-        return builder.buildRangeIndex(fileset, recordFactory) ; 
+        IndexParams indexParams = SystemParams.getDftSystemParams() ;
+        return buildRangeIndex(fileset, recordFactory, indexParams) ;
+    }
+        
+    public static RangeIndex buildRangeIndex(FileSet fileset, RecordFactory recordFactory, IndexParams indexParams) {
+        BlockMgrBuilder nodeBld = new BuilderIndex.BlockMgrBuilderStd() ;
+        BlockMgrBuilder leavesBld = new BuilderIndex.BlockMgrBuilderStd() ;
+        RangeIndexBuilder builder = new BuilderIndex.RangeIndexBuilderStd(nodeBld, leavesBld) ;
+        return builder.buildRangeIndex(fileset, recordFactory, indexParams) ; 
     }
     
+    public static Index buildIndexMem(RecordFactory recordFactory) {
+        FileSet fileSet = FileSet.mem() ;
+        return buildIndex(fileSet, recordFactory) ;
+    }
+
     public static Index buildIndex(FileSet fileset, RecordFactory recordFactory) {
-        BlockMgrBuilder nodeBld = new Builder.BlockMgrBuilderStd() ;
-        BlockMgrBuilder leavesBld = new Builder.BlockMgrBuilderStd() ;
-        IndexBuilder builder = new Builder.IndexBuilderStd(nodeBld, leavesBld) ;
-        return builder.buildIndex(fileset, recordFactory) ; 
+        IndexParams indexParams = SystemParams.getDftSystemParams() ;
+        return buildIndex(fileset, recordFactory, indexParams) ;
     }
     
+    public static Index buildIndex(FileSet fileset, RecordFactory recordFactory, IndexParams indexParams) {
+        BlockMgrBuilder nodeBld = new BuilderIndex.BlockMgrBuilderStd() ;
+        BlockMgrBuilder leavesBld = new BuilderIndex.BlockMgrBuilderStd() ;
+        IndexBuilder builder = new BuilderIndex.IndexBuilderStd(nodeBld, leavesBld) ;
+        return builder.buildIndex(fileset, recordFactory, indexParams) ; 
+    }
     
-    
+//    public static NodeTable buildNodeTable(FileSet fileset, SystemParams params) {
+//        BlockMgrBuilder nodeBld = new Builder.BlockMgrBuilderStd() ;
+//        BlockMgrBuilder leavesBld = new Builder.BlockMgrBuilderStd() ;
+//        
+//        NodeTableBuilder ntb = new Builder.NodeTableBuilderStd(null, null) ;
+//        
+//        
+//        IndexBuilder builder = new Builder.IndexBuilderStd(nodeBld, leavesBld) ;
+//        FileSet filesetIdx = new FileSet(params) ;
+//        FileSet filesetObjFile = new FileSet(params.
+//                                                                          
+//        return ntb.buildNodeTable(fileset, 
+//                                  fileset, 
+//                                  params.getNode2NodeIdCacheSize(),
+//                                  params.getNodeId2NodeCacheSize(),
+//                                  params.getNodeMissCacheSize()) ;
+//    }
 }
 

@@ -51,9 +51,9 @@ public class DatasetBuilderBasic //implements DatasetBuilder
     
     private /*public*/ DatasetBuilderBasic(IndexBuilder indexBuilder, RangeIndexBuilder rangeIndexBuilder)
     {
-        ObjectFileBuilder objectFileBuilder = new Builder.ObjectFileBuilderStd()  ;
-        nodeTableBuilder    = new Builder.NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
-        tupleIndexBuilder   = new Builder.TupleIndexBuilderStd(rangeIndexBuilder) ;
+        ObjectFileBuilder objectFileBuilder = new BuilderIndex.ObjectFileBuilderStd()  ;
+        nodeTableBuilder    = new BuilderDB.NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
+        tupleIndexBuilder   = new BuilderDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
     }
 
     //@Override public
@@ -97,7 +97,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
     {
         FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
         FileSet fsId2Node = new FileSet(location, indexId2Node) ;
-        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, sizeNode2NodeIdCache, sizeNodeId2NodeCache, sizeNodeMissCache) ;
+        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, params) ;
         return nt ;
     }
     
@@ -182,7 +182,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
         // FileSet
         FileSet fs = new FileSet(location, name) ;
         ColumnMap colMap = new ColumnMap(primary, indexOrder) ;
-        return tupleIndexBuilder.buildTupleIndex(fs, colMap, indexOrder) ;
+        return tupleIndexBuilder.buildTupleIndex(fs, colMap, indexOrder, params) ;
     }
 
     private static void error(Logger log, String msg)

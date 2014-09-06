@@ -20,8 +20,9 @@ package com.hp.hpl.jena.tdb.setup;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 
 public interface RangeIndexBuilder {
-    RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordfactory) ;
+    RangeIndex buildRangeIndex(FileSet fileSet, RecordFactory recordfactory, IndexParams indexParams) ;
 }
