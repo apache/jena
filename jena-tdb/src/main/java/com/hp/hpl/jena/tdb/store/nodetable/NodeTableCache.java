@@ -27,9 +27,9 @@ import org.apache.jena.atlas.lib.CacheSet ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.logging.Log ;
 
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Cache wrapper around a NodeTable.  
@@ -48,6 +48,14 @@ public class NodeTableCache implements NodeTable
     private CacheSet<Node> notPresent = null ;
     private NodeTable baseTable ;
     private Object lock = new Object() ;
+
+    public static NodeTable create(NodeTable nodeTable, SystemParams params) {
+        int nodeToIdCacheSize = params.getNode2NodeIdCacheSize() ;
+        int idToNodeCacheSize = params.getNodeId2NodeCacheSize() ;
+        if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
+            return nodeTable ;
+        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, params.getNodeMissCacheSize()) ;
+    }
 
     public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize)
     {

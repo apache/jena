@@ -20,7 +20,6 @@ package com.hp.hpl.jena.tdb.index;
 
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryBPlusTree ;
 import com.hp.hpl.jena.tdb.index.factories.IndexFactoryExtHash ;
@@ -28,7 +27,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** A policy holder for making indexes and range indexes.  */
  
-public class IndexBuilder
+class IndexBuilder
 {
     // Migrate to be a general policy place for files.
     
@@ -108,12 +107,12 @@ public class IndexBuilder
         builderRangeIndex = rangeIndexBuilder ;
     }
     
-    public Index newIndex(FileSet fileset, RecordFactory factory, IndexParams params)
+    public Index newIndex$(FileSet fileset, RecordFactory factory, IndexParams params)
     {
         return factoryIndex.createIndex(fileset, factory, params) ;
     }
     
-    public RangeIndex newRangeIndex(FileSet fileset , RecordFactory factory, IndexParams params)
+    public RangeIndex newRangeIndex$(FileSet fileset , RecordFactory factory, IndexParams params)
     {
         return builderRangeIndex.createRangeIndex(fileset, factory, params) ;
     }

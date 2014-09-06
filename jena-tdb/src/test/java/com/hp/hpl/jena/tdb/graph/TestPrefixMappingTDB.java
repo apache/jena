@@ -49,7 +49,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     @Override
     protected PrefixMapping create()
     {
-        last = DatasetPrefixesTDB.testing() ;
+        last = DatasetPrefixesTDB.createTesting() ;
         return view() ;
     }
 
@@ -61,7 +61,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
 
     @Test public void multiple1()
     {
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.testing() ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.createTesting() ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
@@ -71,7 +71,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     
     @Test public void multiple2()
     {
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.testing() ;
+        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.createTesting() ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping("http://graph/") ;  // Same
         PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
@@ -80,7 +80,6 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     }
     
     // Persistent.
-    @SuppressWarnings("deprecation")
     @Test public void persistent1()
     {
         String dir = ConfigTest.getTestingDir() ;
@@ -95,7 +94,6 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     }
     
     // Persistent.
-    @SuppressWarnings("deprecation")
     @Test public void persistent2()
     {
         String dir = ConfigTest.getTestingDir() ;

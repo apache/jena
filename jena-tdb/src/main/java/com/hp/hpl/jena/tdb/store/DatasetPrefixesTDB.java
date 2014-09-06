@@ -33,9 +33,7 @@ import com.hp.hpl.jena.sparql.graph.GraphPrefixesProjection ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
-import com.hp.hpl.jena.tdb.index.IndexParams ;
-import com.hp.hpl.jena.tdb.setup.SystemParams ;
+import com.hp.hpl.jena.tdb.setup.* ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
@@ -51,25 +49,29 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     // Index on GPU and a nodetable.
     // The nodetable is itself an index and a data file.
     
-    static final ColumnMap colMap = new ColumnMap(Names.primaryIndexPrefix, Names.primaryIndexPrefix) ;
     static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
     static final String unamedGraphURI = "" ; //Quad.defaultGraphNode.getURI() ;
     
     // Use NodeTupleTableView?
     private final NodeTupleTable nodeTupleTable ;
     
-    @Deprecated
-    public static DatasetPrefixesTDB createTesting(Location location, DatasetControl policy) 
-    { return create(IndexBuilder.get(), location, policy) ; }
+    /** Testing - dataset prefixes in-memory */
+    public static DatasetPrefixesTDB createTesting() { 
+        return createTesting(Location.mem(), new DatasetControlMRSW()) ;
+    }
+    
+    public static DatasetPrefixesTDB createTesting(Location location, DatasetControl policy) {
+        return new DatasetPrefixesTDB(B.createRangeIndexBuilderMem(), 
+                                      B.createIndexBuilderMem(),
+                                      location, policy) ; 
+    }
     
     @Deprecated
-    private static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location, DatasetControl policy)
-    { return new DatasetPrefixesTDB(indexBuilder, location, policy) ; }
-
-    @Deprecated
-    private DatasetPrefixesTDB(IndexBuilder indexBuilder, Location location, DatasetControl policy)
+    private DatasetPrefixesTDB(RangeIndexBuilder indexRangeBuilder, 
+                               IndexBuilder indexBuilder,
+                               Location location, DatasetControl policy)
     {
-        IndexParams indexParams = SystemParams.getDftSystemParams() ;
+        SystemParams params = SystemParams.getDftSystemParams() ;
         // TO BE REMOVED when DI sorted out.
         // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
         // GPU index
@@ -77,9 +79,15 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         if ( location != null )
             filesetGPU = new FileSet(location, Names.indexPrefix) ;
         
-        TupleIndex index = new TupleIndexRecord(3, colMap, Names.primaryIndexPrefix, factory, 
-                                                indexBuilder.newRangeIndex(filesetGPU, factory, indexParams)) ;
-        TupleIndex[] indexes = { index } ;
+        TupleIndex[] indexes = new TupleIndex[params.getPrefixIndexes().length] ;
+        
+        int i = 0 ;
+        for ( String indexName : params.getPrefixIndexes() ) {
+            ColumnMap colMap = new ColumnMap("GPU", params.getPrimaryIndexPrefix()) ;
+            TupleIndex index = new TupleIndexRecord(3, colMap, indexName, factory, 
+                                                    indexRangeBuilder.buildRangeIndex(filesetGPU, factory, params)) ;
+            indexes[i++] = index ;
+        }
         
         // Node table.
         FileSet filesetNodeTableIdx = null ;
@@ -90,7 +98,13 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         if ( location != null )
             filesetNodeTable = new FileSet(location, Names.prefixId2Node) ;
         
-        NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTable, filesetNodeTableIdx, -1, -1, -1) ;
+        SystemParamsBuilder spBuild = new SystemParamsBuilder() ;
+        spBuild.node2NodeIdCacheSize(-1) ;
+        spBuild.nodeId2NodeCacheSize(-1) ;
+        spBuild.nodeMissCacheSize(-1) ;
+        SystemParams params2 = spBuild.buildParams() ;
+        // No cache.
+        NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTable, filesetNodeTableIdx, params2) ;
         nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes, policy) ;
     }
 
@@ -100,14 +114,6 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     {
         this.nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes, policy) ;
     }
-    
-    private DatasetPrefixesTDB()
-    {
-        this(IndexBuilder.mem(), Location.mem(), new DatasetControlMRSW()) ;
-    }
-    
-    /** Testing - dataset prefixes in-memory */
-    public static DatasetPrefixesTDB testing() { return new DatasetPrefixesTDB() ; }
     
     // Use DatasetControl
 //    public boolean isReadOnly() { return nodeTupleTable.isReadOnly() ; }
