@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.tdb.base.block;
 
 import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.BlockAccess ;
@@ -50,6 +51,7 @@ public class BlockMgrFactory
         return tracker(blockMgr) ;
     }
     
+    // XXX Build then add cache. 
     public static BlockMgr create(FileSet fileSet, String ext, int blockSize, int readBlockCacheSize, int writeBlockCacheSize)
     {
         if ( fileSet.isMem() )
@@ -115,10 +117,37 @@ public class BlockMgrFactory
 
         String fn = FileOps.basename(filename) ;
         
-        blockMgr = BlockMgrCache.create(fn, readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
+        blockMgr = BlockMgrCache.create(readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
         return track(blockMgr) ;
     }
+
+    /** Add a caching layer to a BlockMgr.
+     *  <p>
+     *  This does not make sense for memory BlockMgr or for memory mapper files.
+     *  This function always add the cache.
+     *  
+     *  @see #addCache(BlockMgr, FileSet, FileMode, int, int)
+     */
+    public static BlockMgr addCache(BlockMgr blockMgr, int readBlockCacheSize, int writeBlockCacheSize) {
+        if ( blockMgr instanceof BlockMgrCache )
+            Log.warn(BlockMgrFactory.class, "BlockMgr already has a cache: "+blockMgr.getLabel()) ;
+        return BlockMgrCache.create(readBlockCacheSize, writeBlockCacheSize, blockMgr) ;
+    }
     
+    /** Add a caching layer to a BlockMgr if appropriate.
+     *  This does not make sense for memory BlockMgr or for memory mapper files.
+     *  These are skipped. 
+     */
+    public static BlockMgr addCache(BlockMgr blockMgr, FileSet fileSet, FileMode fileMode, int readBlockCacheSize, int writeBlockCacheSize) {
+        if ( fileSet.isMem() )
+            return blockMgr ;
+        if ( fileMode == null )
+            fileMode = SystemTDB.fileMode() ;
+        if ( fileMode == FileMode.mapped )
+            return blockMgr ;
+        return addCache(blockMgr, readBlockCacheSize, writeBlockCacheSize) ;
+    }
+
     /** Create a Block Manager using direct access, no caching, no nothing. */
     public static BlockMgr createStdFileNoCache(String filename, int blockSize)
     {

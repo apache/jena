@@ -25,5 +25,5 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 public interface IndexFactory
 {
     // The implementations are in the factories subpackage.
-    public Index createIndex(FileSet fileset, RecordFactory recordFactory) ;
+    public Index createIndex(FileSet fileset, RecordFactory recordFactory, IndexParams params) ;
 }

@@ -42,23 +42,21 @@ public class BlockMgrCache extends BlockMgrSync
     
     public static boolean globalLogging = false ;           // Also enable the logging level. 
     private boolean logging = false ;                       // Also enable the logging level. 
-    private String indexName ; 
     // ---- stats
     long cacheReadHits = 0 ;
     long cacheMisses = 0 ;
     long cacheWriteHits = 0 ;
     
-    static BlockMgr create(String indexName, int readSlots, int writeSlots, final BlockMgr blockMgr)
+    static BlockMgr create(int readSlots, int writeSlots, final BlockMgr blockMgr)
     {
         if ( readSlots < 0 && writeSlots < 0 )
             return blockMgr ;
-        return new BlockMgrCache(indexName, readSlots, writeSlots, blockMgr) ;
+        return new BlockMgrCache(readSlots, writeSlots, blockMgr) ;
     }
     
-    private BlockMgrCache(String indexName, int readSlots, int writeSlots, final BlockMgr blockMgr)
+    private BlockMgrCache(int readSlots, int writeSlots, final BlockMgr blockMgr)
     {
         super(blockMgr) ;
-        this.indexName = String.format("%-12s", indexName) ;
         // Caches are related so we can't use a Getter for cache management.
         if ( readSlots < -1 )
             readCache = CacheFactory.createNullCache() ;
@@ -274,8 +272,8 @@ public class BlockMgrCache extends BlockMgrSync
     { 
         if ( ! logging && ! globalLogging ) return ;
         String msg = String.format(fmt, args) ;
-        if ( indexName != null )
-             msg = indexName+" : "+msg ;
+        if ( getLabel() != null )
+             msg = getLabel()+" : "+msg ;
         log.debug(msg) ;
     }
     
@@ -284,8 +282,8 @@ public class BlockMgrCache extends BlockMgrSync
         if ( true )
         {
             String x = "" ;
-            if ( indexName != null )
-                x = indexName+" : ";
+            if ( getLabel() != null )
+                x = getLabel()+" : ";
             log("%sH=%d, M=%d, W=%d", x, cacheReadHits, cacheMisses, cacheWriteHits) ;
         }
         

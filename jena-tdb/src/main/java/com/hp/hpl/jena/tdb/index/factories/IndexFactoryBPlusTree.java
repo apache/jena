@@ -26,56 +26,48 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.IndexFactory ;
-import com.hp.hpl.jena.tdb.index.RangeIndexFactory ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.* ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class IndexFactoryBPlusTree implements IndexFactory, RangeIndexFactory
 {
     private static Logger log = LoggerFactory.getLogger(IndexFactoryBPlusTree.class) ;
-    private final int blockSize ;
 
-    public IndexFactoryBPlusTree()
-    { this(SystemTDB.BlockSize) ; }
+    public IndexFactoryBPlusTree() { }
     
-    public IndexFactoryBPlusTree(int blockSize)
+    @Override
+    public Index createIndex(FileSet fileset, RecordFactory factory, IndexParams params)
     {
-        this.blockSize = blockSize ;
+        return createRangeIndex(fileset, factory, params) ;
     }
     
     @Override
-    public Index createIndex(FileSet fileset, RecordFactory factory)
+    public RangeIndex createRangeIndex(FileSet fileset, RecordFactory factory, IndexParams idxParams)
     {
-        return createRangeIndex(fileset, factory) ;
-    }
-    
-    @Override
-    public RangeIndex createRangeIndex(FileSet fileset, RecordFactory factory)
-    {
+        int blockSize = idxParams.getBlockSize() ; 
+        int readCacheSize = idxParams.getBlockReadCacheSize() ;
+        int writeCacheSize = idxParams.getBlockWriteCacheSize() ;
         int order = BPlusTreeParams.calcOrder(blockSize, factory) ;
         
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        if ( params.getCalcBlockSize() > blockSize )
+        if ( params.getCalcBlockSize() > idxParams.getBlockSize() )
             throw new TDBException("Calculated block size is greater than required size") ;
         
-        BlockMgr blkMgrNodes = createBlockMgr(fileset, Names.bptExtTree, blockSize) ;
-        BlockMgr blkMgrRecords = createBlockMgr(fileset, Names.bptExtRecords, blockSize) ;
+        BlockMgr blkMgrNodes = createBlockMgr(fileset, Names.bptExtTree, blockSize, readCacheSize, writeCacheSize) ;
+        BlockMgr blkMgrRecords = createBlockMgr(fileset, Names.bptExtRecords, blockSize, readCacheSize, writeCacheSize) ;
         return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
     }
     
-    static BlockMgr createBlockMgr(FileSet fileset, String filename, int blockSize)
+    static BlockMgr createBlockMgr(FileSet fileset, String filename, int blockSize,
+                                   int readCacheSize, int writeCacheSize)
     {
         if ( fileset.isMem() )
             return BlockMgrFactory.createMem(filename, blockSize) ;
         
         String fnNodes = fileset.filename(filename) ;
         return BlockMgrFactory.createFile(fnNodes, blockSize, 
-                                          SystemTDB.BlockReadCacheSize,
-                                          SystemTDB.BlockWriteCacheSize) ;
+                                          readCacheSize, writeCacheSize) ;
     }
 }

@@ -20,7 +20,8 @@ package com.hp.hpl.jena.tdb.setup;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
 
 public interface BlockMgrBuilder {
-    BlockMgr buildBlockMgr(FileSet fileSet, String ext, int blockSize) ;
+    BlockMgr buildBlockMgr(FileSet fileSet, String ext, IndexParams indexParams) ;
 }

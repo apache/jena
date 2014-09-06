@@ -24,5 +24,5 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 
 public interface TupleIndexBuilder {
-    TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap, String name) ;
+    TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap, String name, SystemParams params) ;
 }

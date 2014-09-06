@@ -22,10 +22,10 @@ import com.hp.hpl.jena.tdb.base.file.FileSet;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.index.Index;
 import com.hp.hpl.jena.tdb.index.IndexFactory;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.ext.ExtHash;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
-/** Index factory for extendible hash tables in memory (for testing).
+/** Index factory for extensible hash tables in memory (for testing).
  *  Only an index, not a range index
  */
 
@@ -35,8 +35,8 @@ public class IndexFactoryExtHashMem implements IndexFactory
     { }
     
     @Override
-    public Index createIndex(FileSet fileset, RecordFactory recordFactory)
+    public Index createIndex(FileSet fileset, RecordFactory recordFactory, IndexParams params)
     {
-        return ExtHash.createMem(recordFactory, SystemTDB.BlockSize) ;
+        return ExtHash.createMem(recordFactory, params.getBlockSize()) ;
     }
 }

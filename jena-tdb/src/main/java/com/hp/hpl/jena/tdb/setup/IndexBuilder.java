@@ -21,7 +21,8 @@ package com.hp.hpl.jena.tdb.setup;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
 
 public interface IndexBuilder {
-    Index buildIndex(FileSet fileSet, RecordFactory recordfactory) ;
+    Index buildIndex(FileSet fileSet, RecordFactory recordfactory, IndexParams indexParams) ;
 }

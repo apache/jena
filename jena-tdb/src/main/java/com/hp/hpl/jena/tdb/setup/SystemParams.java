@@ -21,9 +21,10 @@ package com.hp.hpl.jena.tdb.setup;
 import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
 
 /** System parameters for a TDB database instance. */
-public class SystemParams
+public class SystemParams implements IndexParams
 {
     // SystemParams are built with a SystemParamsBuilder
     
@@ -91,19 +92,22 @@ public class SystemParams
         return dftSystemParams ;
     }
 
+    @Override
     public FileMode getFileMode() {
         return fileMode ;
     }
-
     
+    @Override
     public int getBlockSize() {
         return blockSize ;
     }
 
+    @Override
     public int getBlockReadCacheSize() {
         return blockReadCacheSize ;
     }
 
+    @Override
     public int getBlockWriteCacheSize() {
         return blockWriteCacheSize ;
     }
