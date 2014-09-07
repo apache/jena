@@ -18,17 +18,15 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
-import org.apache.jena.atlas.lib.NotImplemented ;
-
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
-//import com.hp.hpl.jena.tdb.index.IndexBuilder ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.setup.BuilderIndex.BlockMgrBuilderStd ;
 
 public class B {
+    // c.f. setupTDB
     
     public static IndexBuilder createIndexBuilderMem() { 
         return createIndexBuilder(createRangeIndexBuilderMem()) ;
@@ -50,15 +48,7 @@ public class B {
         return new BuilderIndex.RangeIndexBuilderStd(blockMgrBuilderNodes, blockMgrBuilderRecords) ;
     }
     
-    // c.f. setupTDB
-    // BlockMgrSync needed?  Outer sync?
     // XXX Merge with com.hp.hpl.jena.tdb.index.IndexFactory
-    // Two levels - with params and with (lots of) arguments for indexes, blockMgrs
-    // IndexParams
-    
-    // Rework Build.* classes first.
-    
-    //RecordFactory recordFactory = new RecordFactory(SizeOfNodeId*colMap.length(),0) ;
     
     public static RangeIndex buildRangeIndexMem(RecordFactory recordFactory) {
         FileSet fileSet = FileSet.mem() ;

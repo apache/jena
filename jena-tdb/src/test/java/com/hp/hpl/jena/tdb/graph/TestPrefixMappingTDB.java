@@ -32,7 +32,9 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
@@ -47,21 +49,26 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
 
     
     @Override
-    protected PrefixMapping create()
-    {
-        last = DatasetPrefixesTDB.createTesting() ;
+    protected PrefixMapping create() {
+        last = createTestingMem() ;
         return view() ;
     }
 
+    static DatasetPrefixesTDB createTestingMem() { 
+        return createTesting(Location.mem(), new DatasetControlMRSW()) ;
+    }
+    
+    static DatasetPrefixesTDB createTesting(Location location, DatasetControl policy) {
+        return SetupTDB.makePrefixes(location, policy) ;
+    }
+
     @Override
-    protected PrefixMapping view()
-    {
+    protected PrefixMapping view() {
         return last.getPrefixMapping() ; 
     }
 
-    @Test public void multiple1()
-    {
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.createTesting() ;
+    @Test public void multiple1() {
+        DatasetPrefixesTDB prefixes = createTestingMem() ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
         PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
@@ -69,9 +76,8 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         assertNotNull(pmap1.getNsPrefixURI("x")) ;
     }
     
-    @Test public void multiple2()
-    {
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.createTesting() ;
+    @Test public void multiple2() {
+        DatasetPrefixesTDB prefixes = createTestingMem() ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping("http://graph/") ;  // Same
         PrefixMapping pmap2 = prefixes.getPrefixMapping("http://graph/") ;
         pmap1.setNsPrefix("x", "http://foo/") ;
@@ -80,66 +86,64 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     }
     
     // Persistent.
-    @Test public void persistent1()
-    {
+    @Test
+    public void persistent1() {
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
-        
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.createTesting(new Location(dir), new DatasetControlMRSW()) ;
+
+        DatasetPrefixesTDB prefixes = createTesting(new Location(dir), new DatasetControlMRSW()) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
-        
+
         String x = pmap1.getNsPrefixURI("x") ;
         assertNull(x) ;
-        prefixes.close();
+        prefixes.close() ;
     }
     
     // Persistent.
-    @Test public void persistent2()
-    {
+    @Test
+    public void persistent2() {
         String dir = ConfigTest.getTestingDir() ;
         FileOps.clearDirectory(dir) ;
-        
-        DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.createTesting(new Location(dir), new DatasetControlMRSW()) ;
+
+        DatasetPrefixesTDB prefixes = createTesting(new Location(dir), new DatasetControlMRSW()) ;
         PrefixMapping pmap1 = prefixes.getPrefixMapping() ;
-        
+
         pmap1.setNsPrefix("x", "http://foo/") ;
         prefixes.close() ;
-        
-        prefixes = DatasetPrefixesTDB.createTesting(new Location(dir), new DatasetControlMRSW()) ;
+
+        prefixes = createTesting(new Location(dir), new DatasetControlMRSW()) ;
         assertEquals("http://foo/", pmap1.getNsPrefixURI("x")) ;
-        prefixes.close();
+        prefixes.close() ;
     }
     
-    @Test public void persistent3()
-    {
+    @Test
+    public void persistent3() {
         // Test case from a report by Holger Knublauch
-        if ( false )
-        {
-            //TDB.getContext().set(SystemTDB.symFileMode, "mapped") ;
+        if ( false ) {
+            // TDB.getContext().set(SystemTDB.symFileMode, "mapped") ;
             TDB.getContext().set(SystemTDB.symFileMode, "direct") ;
         }
         String DB = ConfigTest.getCleanDir() ;
         {
             // Create new DB (assuming it's empty now)
             Graph graph = TDBFactory.createDatasetGraph(DB).getDefaultGraph() ;
-            PrefixMapping pm = graph.getPrefixMapping();
-            pm.setNsPrefix("test", "http://test");
-            graph.close();
+            PrefixMapping pm = graph.getPrefixMapping() ;
+            pm.setNsPrefix("test", "http://test") ;
+            graph.close() ;
         }
 
         {
             // Reconnect to the same DB
             Graph graph = TDBFactory.createDatasetGraph(DB).getDefaultGraph() ;
-            PrefixMapping pm = graph.getPrefixMapping();
-            Map<String, String> map = pm.getNsPrefixMap();
+            PrefixMapping pm = graph.getPrefixMapping() ;
+            Map<String, String> map = pm.getNsPrefixMap() ;
             assertEquals(1, map.size()) ;
-            //System.out.println("Size: " + map.size());
-            String ns = pm.getNsPrefixURI("test");
-            //System.out.println("Namespace: " + ns);
+            // System.out.println("Size: " + map.size());
+            String ns = pm.getNsPrefixURI("test") ;
+            // System.out.println("Namespace: " + ns);
             assertEquals("http://test", ns) ;
-            graph.close();
+            graph.close() ;
         }
-        FileOps.deleteSilent(DB);
-
+        FileOps.deleteSilent(DB) ;
     }
 }
