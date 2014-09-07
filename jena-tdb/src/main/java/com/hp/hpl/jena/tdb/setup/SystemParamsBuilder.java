@@ -41,9 +41,6 @@ public class SystemParamsBuilder {
     public static String fFileMode             = "FileMode" ;
     private FileMode     fileMode              = SystemTDB.fileMode() ;
 
-    public static String fBlockSize            = "blockSize" ;
-    private int          blockSize             = SystemTDB.BlockSize ;
-
     public static String fReadCacheSize        = "blockReadCacheSize" ;
     private int          blockReadCacheSize    = SystemTDB.BlockReadCacheSize ;
 
@@ -60,6 +57,9 @@ public class SystemParamsBuilder {
     private int          NodeMissCacheSize     = SystemTDB.NodeMissCacheSize ;
 
     /** Database layout - ignored after a database is created */
+
+    public static String fBlockSize            = "blockSize" ;
+    private int          blockSize             = SystemTDB.BlockSize ;
 
     public static String fIndexNode2Id         = "indexNode2Id" ;
     private String       indexNode2Id          = Names.indexNode2Id ;

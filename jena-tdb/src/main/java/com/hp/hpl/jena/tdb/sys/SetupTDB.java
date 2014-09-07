@@ -41,6 +41,8 @@ import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.store.nodetable.* ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTableConcrete ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
 
@@ -119,11 +121,11 @@ public class SetupTDB
         
         // No cache - the prefix mapping is a cache
         NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1, -1)  ;
-        
-        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes, policy) ; 
-        
+        NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
+                                                                prefixIndexes,
+                                                                prefixNodes, policy) ;
+        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ; 
         log.debug("Prefixes: "+StrUtils.strjoin(", ", indexes)) ;
-        
         return prefixes ;
     }
 

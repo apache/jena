@@ -40,6 +40,8 @@ import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB1 ;
 import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTableConcrete ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.sys.* ;
 
@@ -211,8 +213,10 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
         // No cache - the prefix mapping is a cache
         NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1, -1) ;
-
-        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes, policy) ;
+        NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
+                                                                prefixIndexes,
+                                                                prefixNodes, policy) ;
+        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ;
 
         log.debug("Prefixes: " + primary + " :: " + StrUtils.strjoin(",", indexes)) ;
 
@@ -224,7 +228,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
 
     // ======== Components level
-
+    // XXX ???
     // // This is not actually used in main dataset builder because it's done
     // inside TripleTable/QuadTable.
     // protected NodeTupleTable makeNodeTupleTable(Location location, String
@@ -242,10 +246,12 @@ public class DatasetBuilderStd implements DatasetBuilder {
     // return ntt ;
     // }
 
+
+    // XXX Add params
     private TupleIndex[] makeTupleIndexes(Location location, String primary, String[] indexNames) {
         return makeTupleIndexes(location, primary, indexNames, indexNames) ;
     }
-
+    // XXX Add params
     private TupleIndex[] makeTupleIndexes(Location location, String primary, String[] indexNames, String[] filenames) {
         if ( primary.length() != 3 && primary.length() != 4 )
             error(log, "Bad primary key length: " + primary.length()) ;
@@ -258,6 +264,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
 
     // ----
+    // XXX Add params
     protected TupleIndex makeTupleIndex(Location location, String name, String primary, String indexOrder) {
         // Commonly, name == indexOrder.
         // FileSet
@@ -267,7 +274,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
 
     // ----
-
+    // XXX Add params
     protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node,
                                       int sizeNode2NodeIdCache, int sizeNodeId2NodeCache, int sizeNodeMissCache) {
         FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
