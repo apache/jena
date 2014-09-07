@@ -224,7 +224,7 @@ public class StoreConnection
         StoreConnection sConn = cache.get(location) ;
         if (sConn != null) 
             return sConn ;
-        DatasetGraphTDB dsg = DatasetBuilderStd.build(location) ;
+        DatasetGraphTDB dsg = DatasetBuilderStd.create(location) ;
         sConn = _makeAndCache(dsg) ;
         return sConn ;
     }
@@ -292,7 +292,7 @@ public class StoreConnection
      */
     public static StoreConnection createMemUncached()
     {
-        DatasetGraphTDB dsg = DatasetBuilderStd.build(Location.mem()) ;
+        DatasetGraphTDB dsg = DatasetBuilderStd.create(Location.mem()) ;
         return new StoreConnection(dsg) ;
     }
 

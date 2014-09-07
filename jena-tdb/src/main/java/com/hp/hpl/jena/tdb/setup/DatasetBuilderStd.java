@@ -62,23 +62,35 @@ public class DatasetBuilderStd implements DatasetBuilder {
     private Map<FileRef, BufferChannel> bufferChannels = new HashMap<>() ;
     private Map<FileRef, NodeTable>     nodeTables     = new HashMap<>() ;
 
-    public static DatasetGraphTDB build(Location location) {
-        DatasetBuilderStd x = new DatasetBuilderStd() ;
+    public static DatasetGraphTDB create(Location location) {
+        DatasetBuilderStd x = new DatasetBuilderStd(SystemParams.getDftSystemParams()) ;
         x.standardSetup() ;
-        return x.build(location, null) ;
+        return x.build(location) ;
     }
 
-    public static DatasetGraphTDB build() {
-        return build(Location.mem()) ;
+    public static DatasetGraphTDB create() {
+        return create(Location.mem()) ;
     }
 
     public static DatasetBuilderStd stdBuilder() {
-        DatasetBuilderStd x = new DatasetBuilderStd() ;
+        DatasetBuilderStd x = new DatasetBuilderStd(SystemParams.getDftSystemParams()) ;
         x.standardSetup() ;
         return x ;
     }
 
-    protected DatasetBuilderStd() {}
+    public static DatasetBuilderStd stdBuilder(SystemParams params) {
+        DatasetBuilderStd x = new DatasetBuilderStd(params) ;
+        x.standardSetup() ;
+        return x ;
+    }
+
+    protected DatasetBuilderStd() {
+        this(SystemParams.getDftSystemParams()) ;
+    }
+
+    protected DatasetBuilderStd(SystemParams params) {
+        this.params = params ;
+    }
 
     // Used by DatasetBuilderTxn
     public DatasetBuilderStd(BlockMgrBuilder blockMgrBuilder, NodeTableBuilder nodeTableBuilder) {
@@ -114,10 +126,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
 
     @Override
-    public DatasetGraphTDB build(Location location, SystemParams params) {
-        if ( params == null )
-            params = SystemParams.getDftSystemParams() ;
-
+    public DatasetGraphTDB build(Location location) {
         // Ensure that there is global synchronization
         synchronized (DatasetBuilderStd.class) {
             return _build(location, params, true, null) ;
@@ -126,16 +135,16 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
     // Main engine for building.
     // Called by DatasetBuilderTxn
+    // XXX Rework - provide a cloning constructor (copies maps).
+    // Or "reset"
     public DatasetGraphTDB _build(Location location, SystemParams _params, boolean readonly,
                                   ReorderTransformation _transform) {
-        params = _params ;
+        if ( _params != null )
+            params = _params ;
         init(location) ;
         DatasetControl policy = createConcurrencyPolicy() ;
 
-        NodeTable nodeTable = makeNodeTable(location, params.getIndexNode2Id(), params.getIndexId2Node(),
-                                            params.getNode2NodeIdCacheSize(), params.getNodeId2NodeCacheSize(),
-                                            params.getNodeMissCacheSize()) ;
-
+        NodeTable nodeTable = makeNodeTable(location, params) ;
         TripleTable tripleTable = makeTripleTable(location, nodeTable, policy) ;
         QuadTable quadTable = makeQuadTable(location, nodeTable, policy) ;
         DatasetPrefixesTDB prefixes = makePrefixTable(location, policy) ;
@@ -212,7 +221,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         String pnId2Node = params.getPrefixId2Node() ;
 
         // No cache - the prefix mapping is a cache
-        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1, -1) ;
+        NodeTable prefixNodes = makeNodeTableNoCache(location, pnNode2Id, pnId2Node) ;
         NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
                                                                 prefixIndexes,
                                                                 prefixNodes, policy) ;
@@ -274,13 +283,30 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
 
     // ----
-    // XXX Add params
-    protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node,
-                                      int sizeNode2NodeIdCache, int sizeNodeId2NodeCache, int sizeNodeMissCache) {
+    public NodeTable makeNodeTable(Location location, SystemParams params2) {
+        // Note - uses different params.
+        FileSet fsNodeToId = new FileSet(location, params2.getIndexNode2Id()) ;
+        FileSet fsId2Node = new FileSet(location, params2.getIndexId2Node()) ;
+        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, params2) ;
+        return nt ;
+    }
+    
+    protected NodeTable makeNodeTableNoCache(Location location, String indexNode2Id, String indexId2Node) {
+        return makeNodeTable$(location, indexNode2Id, -1, indexId2Node, -1, -1) ;
+    }
+    
+    private NodeTable makeNodeTable$(Location location, 
+                                    String indexNode2Id, int sizeNode2NodeIdCache,
+                                    String indexId2Node, int sizeNodeId2NodeCache,
+                                    int sizeNodeMissCache) {
         FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
         FileSet fsId2Node = new FileSet(location, indexId2Node) ;
-        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, params) ;
-        return nt ;
+        SystemParamsBuilder spb = new SystemParamsBuilder() ;
+        spb.indexNode2Id(indexNode2Id) ;
+        spb.indexId2Node(indexId2Node) ;
+        spb.node2NodeIdCacheSize(sizeNode2NodeIdCache) ;
+        spb.nodeId2NodeCacheSize(sizeNodeId2NodeCache) ;
+        return makeNodeTable(location, spb.buildParams()) ;
     }
 
     private static void error(Logger log, String msg) {

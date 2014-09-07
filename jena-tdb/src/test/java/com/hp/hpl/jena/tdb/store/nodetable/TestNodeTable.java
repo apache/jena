@@ -19,15 +19,14 @@
 package com.hp.hpl.jena.tdb.store.nodetable;
 
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.setup.BuildDB ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
 public class TestNodeTable extends AbstractTestNodeTable
 {
     @Override
     protected NodeTable createEmptyNodeTable()
     {
-        return SetupTDB.makeNodeTable(Location.mem(), Names.indexNode2Id, 10, Names.indexId2Node, 10, 10) ;
+        return BuildDB.makeNodeTable(Location.mem(), Names.indexNode2Id, 10, Names.indexId2Node, 10, 10) ;
     }
 }

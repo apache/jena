@@ -93,7 +93,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
     {    
         return DatasetBuilderStd.chooseOptimizer(location) ;
     }
-    
+
     protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node, 
                                       int sizeNode2NodeIdCache, int sizeNodeId2NodeCache, int sizeNodeMissCache)
     {

@@ -37,7 +37,7 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.setup.B ;
+import com.hp.hpl.jena.tdb.setup.BuildIndex ;
 import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
@@ -86,7 +86,7 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
         // Problems with spotting the index technology.
         FileSet fileset = null ; //FileSet.fromFilename(filename) ;
         IndexParams idxParams = SystemParams.getDftSystemParams() ;
-        RangeIndex rIndex = B.buildRangeIndex(fileset, rf, idxParams) ;
+        RangeIndex rIndex = BuildIndex.buildRangeIndex(fileset, rf, idxParams) ;
         return new TupleIndexRecord(desc.length(), new ColumnMap(primary, desc), desc, rf, rIndex) ;
     }
 }

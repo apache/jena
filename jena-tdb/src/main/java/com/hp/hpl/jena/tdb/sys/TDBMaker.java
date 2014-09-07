@@ -90,7 +90,7 @@ public class TDBMaker
         @Override
         public DatasetGraphTDB createDatasetGraph(Location location)
         {
-            return DatasetBuilderStd.build(location) ;
+            return DatasetBuilderStd.create(location) ;
         }
     }
     

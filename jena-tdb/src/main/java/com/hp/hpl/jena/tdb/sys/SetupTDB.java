@@ -18,10 +18,7 @@
 
 package com.hp.hpl.jena.tdb.sys ;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 import org.apache.jena.atlas.lib.ColumnMap ;
-import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.tdb.TDB ;
@@ -37,12 +34,8 @@ import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.setup.SystemParams ;
-import com.hp.hpl.jena.tdb.store.* ;
-import com.hp.hpl.jena.tdb.store.nodetable.* ;
-import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.store.nodetupletable.NodeTupleTableConcrete ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
 
@@ -63,71 +56,71 @@ public class SetupTDB
 
     private static SystemParams params = SystemParams.getDftSystemParams() ;
 
-    // And here we make datasets ... 
-    public static DatasetGraphTDB buildDataset(Location location)
-    {
-        return DatasetBuilderStd.build(location) ;
-    }
-
-    //protected static DatasetControl createConcurrencyPolicy() { return new DatasetControlMRSW() ; }
-    
-    public static TripleTable makeTripleTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
-    {
-        String primary = Names.primaryIndexTriples ;
-        String indexes[] = Names.tripleIndexes ;
-        
-        if ( indexes.length != 3 )
-            error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.debug("Triple table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
-        
-        TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
-        if ( tripleIndexes.length != indexes.length )
-            error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
-        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, policy) ;
-        return tripleTable ;
-    }
-    
-    public static QuadTable makeQuadTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
-    {
-        String primary = Names.primaryIndexQuads ;
-        String indexes[] = Names.quadIndexes ;
-
-        if ( indexes.length != 6 )
-            error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
-        log.debug("Quad table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
-        
-        TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
-        if ( quadIndexes.length != indexes.length )
-            error(log, "Wrong number of quad table tuples indexes: "+quadIndexes.length) ;
-        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, policy) ;
-        return quadTable ;
-    }
-
-
-    public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy)
-    {
-        // The index using for Graph+Prefix => URI
-        String indexPrefixes = params.getIndexPrefix() ;
-        String primary = params.getPrimaryIndexPrefix() ;
-        String indexes[] = params.getPrefixIndexes() ;
-        
-        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
-        if ( prefixIndexes.length != indexes.length )
-            error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
-        
-        // The nodetable.
-        String pnNode2Id = params.getPrefixNode2Id() ;
-        String pnId2Node = params.getPrefixId2Node() ;
-        
-        // No cache - the prefix mapping is a cache
-        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1, -1)  ;
-        NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
-                                                                prefixIndexes,
-                                                                prefixNodes, policy) ;
-        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ; 
-        log.debug("Prefixes: "+StrUtils.strjoin(", ", indexes)) ;
-        return prefixes ;
-    }
+//    // And here we make datasets ... 
+//    public static DatasetGraphTDB buildDataset(Location location)
+//    {
+//        return DatasetBuilderStd.build(location) ;
+//    }
+//
+//    //protected static DatasetControl createConcurrencyPolicy() { return new DatasetControlMRSW() ; }
+//    
+//    public static TripleTable makeTripleTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
+//    {
+//        String primary = Names.primaryIndexTriples ;
+//        String indexes[] = Names.tripleIndexes ;
+//        
+//        if ( indexes.length != 3 )
+//            error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
+//        log.debug("Triple table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
+//        
+//        TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
+//        if ( tripleIndexes.length != indexes.length )
+//            error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
+//        TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, policy) ;
+//        return tripleTable ;
+//    }
+//    
+//    public static QuadTable makeQuadTable(Location location, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
+//    {
+//        String primary = Names.primaryIndexQuads ;
+//        String indexes[] = Names.quadIndexes ;
+//
+//        if ( indexes.length != 6 )
+//            error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
+//        log.debug("Quad table: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
+//        
+//        TupleIndex quadIndexes[] = makeTupleIndexes(location, primary, indexes, indexes) ;
+//        if ( quadIndexes.length != indexes.length )
+//            error(log, "Wrong number of quad table tuples indexes: "+quadIndexes.length) ;
+//        QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, policy) ;
+//        return quadTable ;
+//    }
+//
+//
+//    public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy)
+//    {
+//        // The index using for Graph+Prefix => URI
+//        String indexPrefixes = params.getIndexPrefix() ;
+//        String primary = params.getPrimaryIndexPrefix() ;
+//        String indexes[] = params.getPrefixIndexes() ;
+//        
+//        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
+//        if ( prefixIndexes.length != indexes.length )
+//            error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
+//        
+//        // The nodetable.
+//        String pnNode2Id = params.getPrefixNode2Id() ;
+//        String pnId2Node = params.getPrefixId2Node() ;
+//        
+//        // No cache - the prefix mapping is a cache
+//        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1, -1)  ;
+//        NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
+//                                                                prefixIndexes,
+//                                                                prefixNodes, policy) ;
+//        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ; 
+//        log.debug("Prefixes: "+StrUtils.strjoin(", ", indexes)) ;
+//        return prefixes ;
+//    }
 
     public static TupleIndex[] makeTupleIndexes(Location location, String primary, String[] descs, String[] filenames)
     {
@@ -150,37 +143,35 @@ public class SetupTDB
         int writeCacheSize = params.getBlockWriteCacheSize() ;
         
         // Value part is null (zero length)
-        RangeIndex rIndex = makeRangeIndex(location, indexName, keyLength, 0, readCacheSize, writeCacheSize) ;
+        RangeIndex rIndex = makeRangeIndex(location, indexName, params.getBlockSize(), keyLength, 0, readCacheSize, writeCacheSize) ;
         TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), indexOrder, rIndex.getRecordFactory(), rIndex) ;
         return tupleIndex ;
     }
     
-    public static Index makeIndex(Location location, String indexName, 
+    
+    public static Index makeIndex(Location location, String indexName,
+                                  int blkSize,
                                   int dftKeyLength, int dftValueLength, 
                                   int readCacheSize,int writeCacheSize)
     {
-        return makeRangeIndex(location, indexName, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
+        return makeRangeIndex(location, indexName, blkSize, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
     }
     
     public static RangeIndex makeRangeIndex(Location location, String indexName, 
+                                            int blkSize,
                                              int dftKeyLength, int dftValueLength,
                                              int readCacheSize,int writeCacheSize)
     {
          FileSet fs = new FileSet(location, indexName) ;
-         RangeIndex rIndex =  makeBPlusTree(fs, readCacheSize, writeCacheSize, dftKeyLength, dftValueLength) ;
+         RangeIndex rIndex =  makeBPlusTree(fs, blkSize, readCacheSize, writeCacheSize, dftKeyLength, dftValueLength) ;
          return rIndex ;
     }
     
-    public static RangeIndex makeBPlusTree(FileSet fs, 
+    public static RangeIndex makeBPlusTree(FileSet fs, int blkSize,
                                            int readCacheSize, int writeCacheSize,
                                            int dftKeyLength, int dftValueLength)
     {
         RecordFactory recordFactory = makeRecordFactory(dftKeyLength, dftValueLength) ;
-        int blkSize = params.getBlockSize() ;
-        
-        // IndexBuilder.getBPlusTree().newRangeIndex(fs, recordFactory) ;
-        // Does not set order.
-        
         int order = BPlusTreeParams.calcOrder(blkSize, recordFactory.recordLength()) ;
         RangeIndex rIndex = createBPTree(fs, order, blkSize, readCacheSize, writeCacheSize, recordFactory) ;
         return rIndex ;
@@ -190,50 +181,52 @@ public class SetupTDB
     {
         return new RecordFactory(keyLen, valueLen) ;
     }
+//    
+//    /** Make a NodeTable without cache and inline wrappers */ 
+//    public static NodeTable makeNodeTableBase(Location location, String indexNode2Id, String indexId2Node)
+//    {
+//        if (location.isMem()) 
+//            return NodeTableFactory.createMem() ;
+//
+//        // -- make id to node mapping -- Names.indexId2Node
+//        FileSet fsIdToNode = new FileSet(location, indexId2Node) ;
+//        
+//        ObjectFile stringFile = makeObjectFile(fsIdToNode) ;
+//        
+//        // -- make node to id mapping -- Names.indexNode2Id
+//        // Make index of id to node (data table)
+//        
+//        // No caching at the index level - we use the internal caches of the node table.
+//        Index nodeToId = makeIndex(location, indexNode2Id, LenNodeHash, SizeOfNodeId, -1 ,-1) ;
+//        
+//        // -- Make the node table using the components established above.
+//        NodeTable nodeTable = new NodeTableNative(nodeToId, stringFile) ;
+//        return nodeTable ;
+//    }
+//
+//    /** Make a NodeTable with cache and inline wrappers */ 
+//    public static NodeTable makeNodeTable(Location location)
+//    {
+//        return makeNodeTable(location,
+//                             Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize,
+//                             Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize,
+//                             SystemTDB.NodeMissCacheSize) ;
+//    }
+//
+//    /** Make a NodeTable with cache and inline wrappers */ 
+//    public static NodeTable makeNodeTable(Location location,
+//                                          String indexNode2Id, int nodeToIdCacheSize,
+//                                          String indexId2Node, int idToNodeCacheSize,
+//                                          int nodeMissCacheSize)
+//    {
+//        NodeTable nodeTable = makeNodeTableBase(location, indexNode2Id, indexId2Node) ;
+//        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissCacheSize) ; 
+//        nodeTable = NodeTableInline.create(nodeTable) ;
+//        return nodeTable ;
+//    }
+//
     
-    /** Make a NodeTable without cache and inline wrappers */ 
-    public static NodeTable makeNodeTableBase(Location location, String indexNode2Id, String indexId2Node)
-    {
-        if (location.isMem()) 
-            return NodeTableFactory.createMem() ;
-
-        // -- make id to node mapping -- Names.indexId2Node
-        FileSet fsIdToNode = new FileSet(location, indexId2Node) ;
-        
-        ObjectFile stringFile = makeObjectFile(fsIdToNode) ;
-        
-        // -- make node to id mapping -- Names.indexNode2Id
-        // Make index of id to node (data table)
-        
-        // No caching at the index level - we use the internal caches of the node table.
-        Index nodeToId = makeIndex(location, indexNode2Id, LenNodeHash, SizeOfNodeId, -1 ,-1) ;
-        
-        // -- Make the node table using the components established above.
-        NodeTable nodeTable = new NodeTableNative(nodeToId, stringFile) ;
-        return nodeTable ;
-    }
-
-    /** Make a NodeTable with cache and inline wrappers */ 
-    public static NodeTable makeNodeTable(Location location)
-    {
-        return makeNodeTable(location,
-                             Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize,
-                             Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize,
-                             SystemTDB.NodeMissCacheSize) ;
-    }
-
-    /** Make a NodeTable with cache and inline wrappers */ 
-    public static NodeTable makeNodeTable(Location location,
-                                          String indexNode2Id, int nodeToIdCacheSize,
-                                          String indexId2Node, int idToNodeCacheSize,
-                                          int nodeMissCacheSize)
-    {
-        NodeTable nodeTable = makeNodeTableBase(location, indexNode2Id, indexId2Node) ;
-        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissCacheSize) ; 
-        nodeTable = NodeTableInline.create(nodeTable) ;
-        return nodeTable ;
-    }
-
+    // XXX Move to FileFactory
     public static ObjectFile makeObjectFile(FileSet fsIdToNode)
     {
         String filename = fsIdToNode.filename(Names.extNodeData) ;
