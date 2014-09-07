@@ -51,7 +51,7 @@ public class BuildDB
         spb.blockReadCacheSize(readCacheSize) ;
         spb.blockWriteCacheSize(writeCacheSize) ;
         RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength) ;
-        IndexParams idxParams = spb.buildParams() ;
+        IndexParams idxParams = spb.build() ;
         FileSet fs = new FileSet(location, indexName) ;
         RangeIndex rIndex = BuildIndex.buildRangeIndex(fs, recordFactory, idxParams) ;
         TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), indexOrder, rIndex.getRecordFactory(), rIndex) ;
@@ -103,6 +103,6 @@ public class BuildDB
         spb.indexNode2Id(indexNode2Id).node2NodeIdCacheSize(node2NodeIdCacheSize) ;
         spb.indexId2Node(indexId2Node).nodeId2NodeCacheSize(nodeId2NodeCacheSize) ;
         DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder() ;
-        return makeNodeTable(location, spb.buildParams()) ; 
+        return makeNodeTable(location, spb.build()) ; 
     }
 }

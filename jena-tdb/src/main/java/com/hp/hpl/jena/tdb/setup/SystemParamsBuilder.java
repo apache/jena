@@ -18,23 +18,12 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
-import org.apache.jena.atlas.json.JSON ;
-import org.apache.jena.atlas.json.JsonObject ;
-
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class SystemParamsBuilder {
-    /*
-     * There are two possible styles here - centrally managed parameters, so the named
-     * can be used in compiled method names; and an open style here a name (string)
-     * can be used in a map-like way Map<String, Object>
-     * 
-     */
-    
-    
-    // Defaults.
+    // Initial values are the system defaults.
     
     /** Database and query configuration */ 
     
@@ -120,7 +109,7 @@ public class SystemParamsBuilder {
         this.prefixId2Node          = other.getIndexId2Node() ;
     }
     
-    public SystemParams buildParams() {
+    public SystemParams build() {
         return new SystemParams(
                  fileMode, blockSize, blockReadCacheSize, blockWriteCacheSize, 
                  Node2NodeIdCacheSize, NodeId2NodeCacheSize, NodeMissCacheSize,
@@ -130,10 +119,10 @@ public class SystemParamsBuilder {
                  prefixNode2Id, prefixId2Node) ;
     }
     
-    public SystemParams build(String filename) {
-        JsonObject obj = JSON.read(filename) ;
-        return null ;
-    }
+//    public SystemParams build(String filename) {
+//        JsonObject obj = JSON.read(filename) ;
+//        return null ;
+//    }
 
     public FileMode getFileMode() {
         return fileMode ;

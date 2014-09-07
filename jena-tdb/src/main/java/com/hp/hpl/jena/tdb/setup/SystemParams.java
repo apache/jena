@@ -28,7 +28,7 @@ public class SystemParams implements IndexParams
 {
     // SystemParams are built with a SystemParamsBuilder
     
-    private static SystemParams dftSystemParams = new SystemParamsBuilder().buildParams() ;
+    private static SystemParams dftSystemParams = new SystemParamsBuilder().build() ;
     
     /* These are items you can change JVM to JVM */
     
