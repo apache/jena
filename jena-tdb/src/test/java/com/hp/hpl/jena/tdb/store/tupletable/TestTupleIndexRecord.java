@@ -26,7 +26,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.AbstractTestTupleIndex ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.setup.B ;
+import com.hp.hpl.jena.tdb.setup.BuildIndex ;
 import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -38,7 +38,7 @@ public class TestTupleIndexRecord extends AbstractTestTupleIndex
     protected TupleIndexRecord create(String description)
     {
         IndexParams indexParams = SystemParams.getDftSystemParams() ; 
-        RangeIndex rIdx = B.buildRangeIndex(FileSet.mem(), factory, indexParams) ;
+        RangeIndex rIdx = BuildIndex.buildRangeIndex(FileSet.mem(), factory, indexParams) ;
         ColumnMap cmap = new ColumnMap("SPO", description) ;
         TupleIndexRecord index = new TupleIndexRecord(3, cmap, description, factory, rIdx) ;
         return index ;

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,8 +19,6 @@
 package com.hp.hpl.jena.tdb.setup;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
@@ -36,14 +34,8 @@ import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-/** Building datastructures on top of the base file
- *  abstractions of indexes, block managers and object files.  
- */
-public class BuilderDB
-{
-    private static boolean VERBOSE = true ;
-    private static Logger log = LoggerFactory.getLogger(BuilderDB.class) ;
-    
+public class BuilderDB {
+
     public static class TupleIndexBuilderStd implements TupleIndexBuilder
     {
         private final RangeIndexBuilder rangeIndexBuilder ;
@@ -55,7 +47,7 @@ public class BuilderDB
         @Override
         public TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap, String name, SystemParams params) {
             RecordFactory recordFactory = new RecordFactory(SystemTDB.SizeOfNodeId * colMap.length(), 0) ;
-
+    
             RangeIndex rIdx = rangeIndexBuilder.buildRangeIndex(fileSet, recordFactory, params) ;
             TupleIndex tIdx = new TupleIndexRecord(colMap.length(), colMap, name, recordFactory, rIdx) ;
             return tIdx ;
@@ -71,7 +63,7 @@ public class BuilderDB
             this.indexBuilder = indexBuilder ;
             this.objectFileBuilder = objectFileBuilder ;
         }
-
+    
         @Override
         public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, SystemParams params) {
             RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
@@ -86,4 +78,6 @@ public class BuilderDB
             return nodeTable ;
         }
     }
+
 }
+

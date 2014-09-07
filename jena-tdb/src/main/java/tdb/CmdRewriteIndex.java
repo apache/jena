@@ -106,9 +106,8 @@ public class CmdRewriteIndex
         BlockMgr blkMgrNodes ;
         BlockMgr blkMgrRecords ;
         int blockSize = SystemTDB.BlockSize ;
-        Iterator<Record> iterator ;
         
-        RangeIndex rangeIndex = SetupTDB.makeRangeIndex(srcLoc, indexName, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
+        RangeIndex rangeIndex = SetupTDB.makeRangeIndex(srcLoc, indexName, blockSize, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
         BPlusTree bpt = (BPlusTree)rangeIndex ;
         bptParams = bpt.getParams() ;
         recordFactory = bpt.getRecordFactory() ;
@@ -119,7 +118,7 @@ public class CmdRewriteIndex
         blkMgrNodes = BlockMgrFactory.create(destination, Names.bptExtTree, blockSizeNodes, readCacheSize, writeCacheSize) ;
         blkMgrRecords = BlockMgrFactory.create(destination, Names.bptExtRecords, blockSizeRecords, readCacheSize, writeCacheSize) ;
 
-        iterator = bpt.iterator() ;
+        Iterator<Record>  iterator = bpt.iterator() ;
             
 //            // Fakery.
 //            blkMgrNodes = BlockMgrFactory.create(destination, Names.bptExt1, blockSize, readCacheSize, writeCacheSize) ;

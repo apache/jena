@@ -23,7 +23,7 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.setup.B ;
+import com.hp.hpl.jena.tdb.setup.BuildIndex ;
 import com.hp.hpl.jena.tdb.setup.IndexBuilder ;
 import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.sys.Names ;
@@ -81,6 +81,6 @@ public class NodeTableFactory
     }
 
     public static NodeTable createMem() {
-        return create(B.createIndexBuilderMem(), FileSet.mem(), FileSet.mem(), SystemParams.getDftSystemParams()) ;
+        return create(BuildIndex.createIndexBuilderMem(), FileSet.mem(), FileSet.mem(), SystemParams.getDftSystemParams()) ;
     }
 }

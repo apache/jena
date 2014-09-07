@@ -78,7 +78,7 @@ public class DebugTDB
     public static void dumpNodeIndex(String dir)
     {
         Location location = new Location(dir) ;
-        Index nodeToId = SetupTDB.makeIndex(location,  Names.indexNode2Id, SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId, -1 ,-1) ;
+        Index nodeToId = SetupTDB.makeIndex(location, Names.indexNode2Id, SystemTDB.BlockSize, SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId, -1 ,-1) ;
         for ( Record aNodeToId : nodeToId )
         {
             System.out.println( aNodeToId );

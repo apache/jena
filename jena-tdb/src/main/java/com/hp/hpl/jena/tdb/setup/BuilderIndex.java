@@ -35,8 +35,6 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 /** Building indexes, blockMgr and files */ 
 
 public class BuilderIndex {
-    // XXX NO SYSTEM PARAMS here
-    
     public static class IndexBuilderStd implements IndexBuilder
     {
         protected BlockMgrBuilder bMgrNodes ;

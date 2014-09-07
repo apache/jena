@@ -37,11 +37,11 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
+import com.hp.hpl.jena.tdb.setup.BuildDB ;
 import com.hp.hpl.jena.tdb.solver.stats.Stats ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsResults ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.DatasetControlNone ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
 /** Tools to manage a TDB store.  Subcommand based. */
 public class tdbconfig extends CmdSub
@@ -106,7 +106,7 @@ public class tdbconfig extends CmdSub
         protected void exec()
         {
             Location location = getLocation() ;
-            DatasetPrefixStorage prefixes = SetupTDB.makePrefixes(location, new DatasetControlNone()) ;
+            DatasetPrefixStorage prefixes = BuildDB.makePrefixes(location, new DatasetControlNone()) ;
             for ( String gn : prefixes.graphNames() )
             {
                 System.out.println("Graph: "+gn) ;

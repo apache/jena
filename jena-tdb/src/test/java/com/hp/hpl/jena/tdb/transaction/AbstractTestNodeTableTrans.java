@@ -29,9 +29,9 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexMap ;
+import com.hp.hpl.jena.tdb.setup.BuildDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class AbstractTestNodeTableTrans extends BaseTest
@@ -41,7 +41,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     
     private NodeTableTrans create(Transaction txn, Node...nodes)
     {
-        NodeTable base = SetupTDB.makeNodeTable(getLocation()) ;
+        NodeTable base = BuildDB.makeNodeTable(getLocation()) ;
         for ( Node n : nodes )
             base.getAllocateNodeId(n) ;
         return create(txn, base) ;

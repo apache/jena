@@ -36,11 +36,11 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.setup.BuildDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class dumpnodetable extends CmdGeneral
@@ -89,10 +89,10 @@ public class dumpnodetable extends CmdGeneral
 
                             int sizeNodeMissCacheSize)
     {
-        NodeTable nodeTable = SetupTDB.makeNodeTable(new Location(location), 
-                                                     indexNode2Id, node2NodeIdCacheSize,
-                                                     indexId2Node, nodeId2NodeCacheSize,
-                                                     sizeNodeMissCacheSize) ;
+        NodeTable nodeTable = BuildDB.makeNodeTable(new Location(location), 
+                                                    indexNode2Id, node2NodeIdCacheSize,
+                                                    indexId2Node, nodeId2NodeCacheSize,
+                                                    sizeNodeMissCacheSize) ;
     }
     
     

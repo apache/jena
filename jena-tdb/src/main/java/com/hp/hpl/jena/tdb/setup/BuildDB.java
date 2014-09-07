@@ -1,0 +1,108 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.hp.hpl.jena.tdb.setup;
+
+import org.apache.jena.atlas.lib.ColumnMap ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.IndexParams ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
+import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
+
+/** Building datastructures on top of the base file
+ *  abstractions of indexes, block managers and object files.  
+ */
+public class BuildDB
+{
+    private static boolean VERBOSE = true ;
+    private static Logger log = LoggerFactory.getLogger(BuildDB.class) ;
+    private static SystemParams params = SystemParams.getDftSystemParams() ;
+    
+    public static TupleIndex openTupleIndex(Location location, String indexName, String primary, String indexOrder, int readCacheSize, int writeCacheSize, int dftKeyLength, int dftValueLength)
+    {
+        // XXX replace with:
+        // return DatasetBuilderStd.stdBuilder().makeTupleIndex(location, indexName, primary, indexOrder) ;
+        // All this to BuilderDB.
+        SystemParamsBuilder spb = new SystemParamsBuilder() ;
+        spb.blockReadCacheSize(readCacheSize) ;
+        spb.blockWriteCacheSize(writeCacheSize) ;
+        RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength) ;
+        IndexParams idxParams = spb.buildParams() ;
+        FileSet fs = new FileSet(location, indexName) ;
+        RangeIndex rIndex = BuildIndex.buildRangeIndex(fs, recordFactory, idxParams) ;
+        TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), indexOrder, rIndex.getRecordFactory(), rIndex) ;
+        return tupleIndex ;
+    }
+    
+    public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy) {
+        return DatasetBuilderStd.stdBuilder().makePrefixTable(location, policy) ;
+    }
+//        
+//        // The index using for Graph+Prefix => URI
+//        String indexPrefixes = params.getIndexPrefix() ;
+//        String primary = params.getPrimaryIndexPrefix() ;
+//        String indexes[] = params.getPrefixIndexes() ;
+//
+//        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
+//        if ( prefixIndexes.length != indexes.length )
+//            error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
+//
+//        // The nodetable.
+//        String pnNode2Id = params.getPrefixNode2Id() ;
+//        String pnId2Node = params.getPrefixId2Node() ;
+//
+//        // No cache - the prefix mapping is a cache
+//        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1, -1)  ;
+//        NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
+//                                                                prefixIndexes,
+//                                                                prefixNodes, policy) ;
+//        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ; 
+//        log.debug("Prefixes: "+StrUtils.strjoin(", ", indexes)) ;
+//        return prefixes ;
+//      }
+
+    public static NodeTable makeNodeTable(Location location) {
+        return makeNodeTable(location, params) ;
+    }
+
+    public static NodeTable makeNodeTable(Location location, SystemParams params) {
+        DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder(params) ;
+        return dbBuild.makeNodeTable(location, params) ; 
+    }
+    
+    //XXX Reorg all calls to NodeTableBuilder to this argument order.
+    public static NodeTable makeNodeTable(Location location, 
+                                          String indexNode2Id, int node2NodeIdCacheSize,
+                                          String indexId2Node, int nodeId2NodeCacheSize,
+                                          int sizeNodeMissCacheSize) {
+        SystemParamsBuilder spb = new SystemParamsBuilder() ;
+        spb.indexNode2Id(indexNode2Id).node2NodeIdCacheSize(node2NodeIdCacheSize) ;
+        spb.indexId2Node(indexId2Node).nodeId2NodeCacheSize(nodeId2NodeCacheSize) ;
+        DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder() ;
+        return makeNodeTable(location, spb.buildParams()) ; 
+    }
+}

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +16,20 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.store.nodetable;
+package com.hp.hpl.jena.tdb.setup;
 
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.BuildDB ;
+import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 
-
-public class TestNodeTableStored extends AbstractTestNodeTable
-{
-    @Override
-    protected NodeTable createEmptyNodeTable()
-    {
-        return BuildDB.makeNodeTable(Location.mem()) ;
+/** Convenience operation to make things
+ * @see BuildIndex
+ */
+public class DBFactory {
+    // c.f. setupTDB
+    // c.f. NodeTableFactory.
+    
+    public static NodeTable buildNodeTable(Location location, SystemParams params) {
+        return DatasetBuilderStd.stdBuilder().makeNodeTable(location, params) ;
     }
 }
+

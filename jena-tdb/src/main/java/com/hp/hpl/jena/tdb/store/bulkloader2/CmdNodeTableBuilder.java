@@ -134,7 +134,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
     {
         // This formats the location correctly.
         // But we're not really interested in it all.
-        DatasetGraphTDB dsg = DatasetBuilderStd.build(location) ;
+        DatasetGraphTDB dsg = DatasetBuilderStd.create(location) ;
         
         // so close indexes and the prefix table.
         dsg.getTripleTable().getNodeTupleTable().getTupleTable().close();
