@@ -306,7 +306,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         spb.indexId2Node(indexId2Node) ;
         spb.node2NodeIdCacheSize(sizeNode2NodeIdCache) ;
         spb.nodeId2NodeCacheSize(sizeNodeId2NodeCache) ;
-        return makeNodeTable(location, spb.buildParams()) ;
+        return makeNodeTable(location, spb.build()) ;
     }
 
     private static void error(Logger log, String msg) {
