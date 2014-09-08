@@ -88,6 +88,11 @@ public class DatasetBuilderStd implements DatasetBuilder {
         set(blockMgrBuilder, nodeTableBuilder) ;
     }
 
+    protected void set(NodeTableBuilder nodeTableBuilder, TupleIndexBuilder tupleIndexBuilder) {
+        this.nodeTableBuilder = nodeTableBuilder ;
+        this.tupleIndexBuilder = tupleIndexBuilder ;
+    }
+    
     protected void set(BlockMgrBuilder blockMgrBuilder, NodeTableBuilder nodeTableBuilder) {
         recorder = new Recorder() ;
         BlockMgrBuilder blockMgrBuilderRec = new BlockMgrBuilderRecorder(blockMgrBuilder, recorder) ;
@@ -99,9 +104,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         nodeTableBuilder = new NodeTableBuilderRecorder(nodeTableBuilder, recorder) ;
 
         TupleIndexBuilder tupleIndexBuilder = new BuilderDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
-        
-        this.nodeTableBuilder = nodeTableBuilder ;
-        this.tupleIndexBuilder = tupleIndexBuilder ;
+        set(nodeTableBuilder, tupleIndexBuilder) ;
     }
 
     private static SystemParams paramsForLocation(Location location) {
