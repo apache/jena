@@ -20,6 +20,7 @@ package com.hp.hpl.jena.tdb.setup ;
 
 import java.io.File ;
 import java.io.IOException ;
+import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Properties ;
@@ -57,18 +58,12 @@ import com.hp.hpl.jena.tdb.sys.* ;
  */
 
 public class DatasetBuilderStd implements DatasetBuilder {
-    private static final Logger         log            = TDB.logInfo ;
+    private static final Logger log = TDB.logInfo ;
 
-    private NodeTableBuilder            nodeTableBuilder ;
-    private TupleIndexBuilder           tupleIndexBuilder ;
-
-    // XXX Should not be an object field. 
-    //private SystemParams                params ;
-
-    private Map<FileRef, BlockMgr>      blockMgrs      = new HashMap<>() ;
-    private Map<FileRef, BufferChannel> bufferChannels = new HashMap<>() ;
-    private Map<FileRef, NodeTable>     nodeTables     = new HashMap<>() ;
-
+    private NodeTableBuilder    nodeTableBuilder ;
+    private TupleIndexBuilder   tupleIndexBuilder ;
+    private Recorder            recorder = null ;   
+    
     public static DatasetGraphTDB create(Location location) {
         SystemParams params = paramsForLocation(location) ;
         DatasetBuilderStd x = new DatasetBuilderStd() ;
@@ -93,13 +88,8 @@ public class DatasetBuilderStd implements DatasetBuilder {
         set(blockMgrBuilder, nodeTableBuilder) ;
     }
 
-    protected void set(NodeTableBuilder nodeTableBuilder, TupleIndexBuilder tupleIndexBuilder) {
-        this.nodeTableBuilder = nodeTableBuilder ;
-        this.tupleIndexBuilder = tupleIndexBuilder ;
-    }
-
     protected void set(BlockMgrBuilder blockMgrBuilder, NodeTableBuilder nodeTableBuilder) {
-        Recorder recorder = new Recorder(this) ;
+        recorder = new Recorder() ;
         BlockMgrBuilder blockMgrBuilderRec = new BlockMgrBuilderRecorder(blockMgrBuilder, recorder) ;
 
         IndexBuilder indexBuilder = new BuilderIndex.IndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
@@ -109,7 +99,9 @@ public class DatasetBuilderStd implements DatasetBuilder {
         nodeTableBuilder = new NodeTableBuilderRecorder(nodeTableBuilder, recorder) ;
 
         TupleIndexBuilder tupleIndexBuilder = new BuilderDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
-        set(nodeTableBuilder, tupleIndexBuilder) ;
+        
+        this.nodeTableBuilder = nodeTableBuilder ;
+        this.tupleIndexBuilder = tupleIndexBuilder ;
     }
 
     private static SystemParams paramsForLocation(Location location) {
@@ -187,11 +179,11 @@ public class DatasetBuilderStd implements DatasetBuilder {
     // XXX Rework - provide a cloning constructor (copies maps).
     // Or "reset"
     public DatasetGraphTDB _build(Location location, SystemParams params, boolean writeable, ReorderTransformation _transform) {
-        init(location) ;
         return buildWorker(location, writeable, _transform, params) ;
     }
     
-    private DatasetGraphTDB buildWorker(Location location, boolean writeable, ReorderTransformation _transform, SystemParams params) {
+    private synchronized DatasetGraphTDB buildWorker(Location location, boolean writeable, ReorderTransformation _transform, SystemParams params) {
+        recorder.start() ;
         DatasetControl policy = createConcurrencyPolicy() ;
         NodeTable nodeTable = makeNodeTable(location, params) ;
         TripleTable tripleTable = makeTripleTable(location, nodeTable, policy, params) ;
@@ -200,20 +192,24 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
         ReorderTransformation transform = (_transform == null) ? chooseReorderTransformation(location) : _transform ;
 
-        StorageConfig storageConfig = new StorageConfig(location, params, writeable, blockMgrs, bufferChannels,
-                                                        nodeTables) ;
+        StorageConfig storageConfig = new StorageConfig(location, params, writeable, 
+                                                        recorder.blockMgrs, recorder.bufferChannels, recorder.nodeTables) ;
+        
+        recorder.finish() ;
+        
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storageConfig) ;
         // TDB does filter placement on BGPs itself.
         dsg.getContext().set(ARQ.optFilterPlacementBGP, false) ;
         QC.setFactory(dsg.getContext(), OpExecutorTDB1.OpExecFactoryTDB) ;
         return dsg ;
     }
+    
+    private static <X,Y> Map<X,Y> freeze(Map<X,Y> map) {
+        return Collections.unmodifiableMap(new HashMap<>(map)) ;  
+    }
 
     protected DatasetControl createConcurrencyPolicy() {
         return new DatasetControlMRSW() ;
-    }
-
-    protected void init(Location location) {
     }
 
     protected TripleTable makeTripleTable(Location location, NodeTable nodeTable, DatasetControl policy, SystemParams params) {
@@ -437,22 +433,42 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
     static class Recorder implements RecordBlockMgr, RecordNodeTable {
 
-        private DatasetBuilderStd dsBuilder ;
+        Map<FileRef, BlockMgr>      blockMgrs      = null ;
+        Map<FileRef, BufferChannel> bufferChannels = null ;
+        Map<FileRef, NodeTable>     nodeTables     = null ;
+        boolean recording = false ;
 
-        Recorder(DatasetBuilderStd dsBuilder) {
-            this.dsBuilder = dsBuilder ;
+        Recorder() { }
+        
+        void start() {
+            if ( recording )
+                throw new TDBException("Recorder already recording") ;
+            recording      = true ;
+            blockMgrs      = new HashMap<>() ;
+            bufferChannels = new HashMap<>() ;
+            nodeTables     = new HashMap<>() ;
+        } 
+        void finish() {
+            if ( ! recording )
+                throw new TDBException("Recorder not recording") ;
+            blockMgrs      = null ;
+            bufferChannels = null ;
+            nodeTables     = null ;
+            recording      = false ;
         }
-
+        
         @Override
         public void record(FileRef fileRef, BlockMgr blockMgr) {
-            // log.info("BlockMgr: "+fileRef) ;
-            dsBuilder.blockMgrs.put(fileRef, blockMgr) ;
+            if ( recording )
+                // log.info("BlockMgr: "+fileRef) ;
+                blockMgrs.put(fileRef, blockMgr) ;
         }
 
         @Override
         public void record(FileRef fileRef, NodeTable nodeTable) {
-            // log.info("NodeTable: "+fileRef) ;
-            dsBuilder.nodeTables.put(fileRef, nodeTable) ;
+            if ( recording )
+                // log.info("NodeTable: "+fileRef) ;
+                nodeTables.put(fileRef, nodeTable) ;
         }
     }
 }

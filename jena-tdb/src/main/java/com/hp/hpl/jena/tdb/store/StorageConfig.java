@@ -37,9 +37,9 @@ public class StorageConfig
     public final boolean writeable ;
 
     public StorageConfig(Location location, SystemParams params, boolean writeable, 
-                       Map<FileRef, BlockMgr> blockMgrs, 
-                       Map<FileRef, BufferChannel> bufferChannels,
-                       Map<FileRef, NodeTable> nodeTables)
+                         Map<FileRef, BlockMgr> blockMgrs, 
+                         Map<FileRef, BufferChannel> bufferChannels,
+                         Map<FileRef, NodeTable> nodeTables)
     {
         this.location = location ;
         this.params = params ;
