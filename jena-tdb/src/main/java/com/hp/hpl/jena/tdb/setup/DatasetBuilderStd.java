@@ -86,26 +86,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         return x ;
     }
 
-//    /** Create a building : if database settings already at the  location,
-//     * use those otherwiese use the provided defaults.  
-//     */
-//    public static DatasetBuilderStd stdBuilder(SystemParams dftParams) {
-//        DatasetBuilderStd x = new DatasetBuilderStd(dftParams) ;
-//        x.standardSetup() ;
-//        return x ;
-//    }
-
-    protected DatasetBuilderStd() {
-//        this(SystemParams.getDftSystemParams()) ;
-//    }
-//
-//    // XXX Take params out of constructor.  They are location sensitive.
-//    protected DatasetBuilderStd(SystemParams params) {
-//        //Objects.requireNonNull(params) ;
-//        if ( params == null )
-//            params = SystemParams.getDftSystemParams() ;
-//        this.params = params ;
-    }
+    protected DatasetBuilderStd() { }
 
     // Used by DatasetBuilderTxn
     public DatasetBuilderStd(BlockMgrBuilder blockMgrBuilder, NodeTableBuilder nodeTableBuilder) {
@@ -233,12 +214,8 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
 
     protected void init(Location location) {
-        // A last chance to change things.
     }
 
-    // ==== TODO makeNodeTupleTable.
-
-    // ======== Dataset level
     protected TripleTable makeTripleTable(Location location, NodeTable nodeTable, DatasetControl policy, SystemParams params) {
         String primary = params.getPrimaryIndexTriples() ;
         String[] indexes = params.getTripleIndexes() ;
@@ -288,8 +265,10 @@ public class DatasetBuilderStd implements DatasetBuilder {
         String pnNode2Id = params.getPrefixNode2Id() ;
         String pnId2Node = params.getPrefixId2Node() ;
 
+        
+        
         // No cache - the prefix mapping is a cache
-        NodeTable prefixNodes = makeNodeTableNoCache(location, pnNode2Id, pnId2Node) ;
+        NodeTable prefixNodes = makeNodeTableNoCache(location, pnNode2Id, pnId2Node, params) ;
         NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
                                                                 prefixIndexes,
                                                                 prefixNodes, policy) ;
@@ -303,26 +282,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
     protected ReorderTransformation chooseReorderTransformation(Location location) {
         return chooseOptimizer(location) ;
     }
-
-    // ======== Components level
-    // XXX ???
-    // // This is not actually used in main dataset builder because it's done
-    // inside TripleTable/QuadTable.
-    // protected NodeTupleTable makeNodeTupleTable(Location location, String
-    // primary, String[] indexes, NodeTable nodeTable, ConcurrencyPolicy policy)
-    // {
-    // int N = indexes.length ;
-    // TupleIndex tripleIndexes[] = makeTupleIndexes(location, primary, indexes)
-    // ;
-    // if ( tripleIndexes.length != indexes.length )
-    // error(log,
-    // "Wrong number of node table tuples indexes: expected="+N+" : actual="+tripleIndexes.length)
-    // ;
-    // NodeTupleTable ntt = new NodeTupleTableConcrete(N, tripleIndexes,
-    // nodeTable, policy) ;
-    // return ntt ;
-    // }
-
 
     private TupleIndex[] makeTupleIndexes(Location location, String primary, String[] indexNames, SystemParams params) {
         return makeTupleIndexes(location, primary, indexNames, indexNames, params) ;
@@ -353,24 +312,22 @@ public class DatasetBuilderStd implements DatasetBuilder {
         return nt ;
     }
     
-    protected NodeTable makeNodeTableNoCache(Location location, String indexNode2Id, String indexId2Node) {
-        return makeNodeTable$(location, indexNode2Id, -1, indexId2Node, -1, -1) ;
-    }
-    
-    private NodeTable makeNodeTable$(Location location, 
-                                    String indexNode2Id, int sizeNode2NodeIdCache,
-                                    String indexId2Node, int sizeNodeId2NodeCache,
-                                    int sizeNodeMissCache) {
+    /** Make a node table overriding the node->id and id->node table names */ 
+    private NodeTable makeNodeTable$(Location location, String indexNode2Id, String indexId2Node, SystemParams params) {
         FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
         FileSet fsId2Node = new FileSet(location, indexId2Node) ;
-        SystemParamsBuilder spb = new SystemParamsBuilder() ;
-        spb.indexNode2Id(indexNode2Id) ;
-        spb.indexId2Node(indexId2Node) ;
-        spb.node2NodeIdCacheSize(sizeNode2NodeIdCache) ;
-        spb.nodeId2NodeCacheSize(sizeNodeId2NodeCache) ;
-        return makeNodeTable(location, spb.build()) ;
+        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, params) ;
+        return nt ;
     }
-
+    
+    protected NodeTable makeNodeTableNoCache(Location location, String indexNode2Id, String indexId2Node, SystemParams params) {
+        SystemParamsBuilder spb = new SystemParamsBuilder(params) ;
+        spb.node2NodeIdCacheSize(-1) ;
+        spb.nodeId2NodeCacheSize(-1) ;
+        spb.nodeMissCacheSize(-1) ;
+        return makeNodeTable$(location, indexNode2Id, indexId2Node, spb.build()) ;
+    }
+    
     private static void error(Logger log, String msg) {
         if ( log != null )
             log.error(msg) ;
