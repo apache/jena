@@ -59,38 +59,15 @@ public class BuildDB
     }
     
     public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy) {
-        return DatasetBuilderStd.stdBuilder().makePrefixTable(location, policy) ;
+        return DatasetBuilderStd.stdBuilder().makePrefixTable(location, policy, params) ;
     }
-//        
-//        // The index using for Graph+Prefix => URI
-//        String indexPrefixes = params.getIndexPrefix() ;
-//        String primary = params.getPrimaryIndexPrefix() ;
-//        String indexes[] = params.getPrefixIndexes() ;
-//
-//        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
-//        if ( prefixIndexes.length != indexes.length )
-//            error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
-//
-//        // The nodetable.
-//        String pnNode2Id = params.getPrefixNode2Id() ;
-//        String pnId2Node = params.getPrefixId2Node() ;
-//
-//        // No cache - the prefix mapping is a cache
-//        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1, -1)  ;
-//        NodeTupleTable prefixTable = new NodeTupleTableConcrete(primary.length(),
-//                                                                prefixIndexes,
-//                                                                prefixNodes, policy) ;
-//        DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixTable) ; 
-//        log.debug("Prefixes: "+StrUtils.strjoin(", ", indexes)) ;
-//        return prefixes ;
-//      }
 
     public static NodeTable makeNodeTable(Location location) {
         return makeNodeTable(location, params) ;
     }
 
     public static NodeTable makeNodeTable(Location location, SystemParams params) {
-        DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder(params) ;
+        DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder() ;
         return dbBuild.makeNodeTable(location, params) ; 
     }
     

@@ -44,11 +44,13 @@ public class BlockMgrFactory {
     }
 
     public static BlockMgr create(FileSet fileSet, String ext, BlockParams params) {
-        return createFile(fileSet.filename(ext), params) ;
+        return create(fileSet, ext,
+                      params.getFileMode(),
+                      params.getBlockSize(),
+                      params.getBlockReadCacheSize(),
+                      params.getBlockWriteCacheSize()) ;
     }
     
-    // XXX Build then add cache.
-    // XXX Deprecate?
     public static BlockMgr create(FileSet fileSet, String ext, int blockSize, int readBlockCacheSize, int writeBlockCacheSize) {
         return create(fileSet, ext, null, blockSize, readBlockCacheSize, writeBlockCacheSize) ;
     }
