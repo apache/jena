@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.lib;
 
 import java.io.* ;
+import java.util.Objects ;
 import java.util.Properties ;
 
 import org.apache.jena.atlas.AtlasException ;
@@ -27,8 +28,7 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class PropertyUtils
 {
-    /** Java5 does not have read/write from readers/writers - needed for UTF-8 */ 
-    
+    /** Load properties from a file if the file exists */ 
     static public Properties loadFromFile(String filename) throws IOException
     {
         Properties properties = new Properties() ;
@@ -36,12 +36,16 @@ public class PropertyUtils
         return properties ;
     }
     
+    /** Load properties from a file if the file exists */ 
     static public void loadFromFile(Properties properties, String filename) throws IOException
     {
-        String x = FileUtils.readWholeFileAsUTF8(filename) ;
-        byte b[] = x.getBytes(FileUtils.encodingUTF8) ;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(b);
-        properties.load(inputStream) ;
+        Objects.requireNonNull(filename, "File name must not be null") ;
+        if ( "-".equals(filename) )
+            throw new IllegalArgumentException("Filename is \"-\" (stdin not supported)") ;
+
+        try (InputStream in = new FileInputStream(filename); Reader r = FileUtils.asBufferedUTF8(in);) {
+            properties.load(r) ;
+        }
     }
     
     static public void storeToFile(Properties properties, String comment, String filename) throws IOException
