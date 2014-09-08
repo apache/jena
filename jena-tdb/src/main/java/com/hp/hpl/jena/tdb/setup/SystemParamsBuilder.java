@@ -27,60 +27,60 @@ public class SystemParamsBuilder {
     
     /** Database and query configuration */ 
     
-    public static String fFileMode             = "FileMode" ;
+    // public static String fFileMode             = "FileMode" ;
     private FileMode     fileMode              = SystemTDB.fileMode() ;
 
-    public static String fReadCacheSize        = "blockReadCacheSize" ;
+    // public static String fReadCacheSize        = "blockReadCacheSize" ;
     private int          blockReadCacheSize    = SystemTDB.BlockReadCacheSize ;
 
-    public static String fWriteCacheSize       = "blockWriteCacheSize" ;
+    // public static String fWriteCacheSize       = "blockWriteCacheSize" ;
     private int          blockWriteCacheSize   = SystemTDB.BlockWriteCacheSize ;
 
-    public static String fNode2NodeIdCacheSize = "Node2NodeIdCacheSize" ;
+    // public static String fNode2NodeIdCacheSize = "Node2NodeIdCacheSize" ;
     private int          Node2NodeIdCacheSize  = SystemTDB.Node2NodeIdCacheSize ;
 
-    public static String fNodeId2NodeCacheSize = "NodeId2NodeCacheSize" ;
+    // public static String fNodeId2NodeCacheSize = "NodeId2NodeCacheSize" ;
     private int          NodeId2NodeCacheSize  = SystemTDB.NodeId2NodeCacheSize ;
 
-    public static String fNodeMissCacheSize    = "NodeMissCacheSize" ;
+    // public static String fNodeMissCacheSize    = "NodeMissCacheSize" ;
     private int          NodeMissCacheSize     = SystemTDB.NodeMissCacheSize ;
 
     /** Database layout - ignored after a database is created */
 
-    public static String fBlockSize            = "blockSize" ;
+    // public static String fBlockSize            = "blockSize" ;
     private int          blockSize             = SystemTDB.BlockSize ;
 
-    public static String fIndexNode2Id         = "indexNode2Id" ;
+    // public static String fIndexNode2Id         = "indexNode2Id" ;
     private String       indexNode2Id          = Names.indexNode2Id ;
 
-    public static String fIndexId2Node         = "indexId2Node" ;
+    // public static String fIndexId2Node         = "indexId2Node" ;
     private String       indexId2Node          = Names.indexId2Node ;
 
-    public static String fPrimaryIndexTriples  = "primaryIndexTriples" ;
+    // public static String fPrimaryIndexTriples  = "primaryIndexTriples" ;
     private String       primaryIndexTriples   = Names.primaryIndexTriples ;
 
-    public static String fTripleIndexes        = "tripleIndexes" ;
+    // public static String fTripleIndexes        = "tripleIndexes" ;
     private String[]     tripleIndexes         = Names.tripleIndexes ;
 
-    public static String fPrimaryIndexQuads    = "primaryIndexQuads" ;
+    // public static String fPrimaryIndexQuads    = "primaryIndexQuads" ;
     private String       primaryIndexQuads     = Names.primaryIndexQuads ;
 
-    public static String fQuadIndexes          = "quadIndexes" ;
+    // public static String fQuadIndexes          = "quadIndexes" ;
     private String[]     quadIndexes           = Names.quadIndexes ;
 
-    public static String fPrimaryIndexPrefix   = "primaryIndexPrefix" ;
+    // public static String fPrimaryIndexPrefix   = "primaryIndexPrefix" ;
     private String       primaryIndexPrefix    = Names.primaryIndexPrefix ;
 
-    public static String fPrefixIndexes        = "prefixIndexes" ;
+    // public static String fPrefixIndexes        = "prefixIndexes" ;
     private String[]     prefixIndexes         = Names.prefixIndexes ;
 
-    public static String fIndexPrefix          = "indexPrefix" ;
+    // public static String fIndexPrefix          = "indexPrefix" ;
     private String       indexPrefix           = Names.indexPrefix ;
 
-    public static String fPrefixNode2Id        = "prefixNode2Id" ;
+    // public static String fPrefixNode2Id        = "prefixNode2Id" ;
     private String       prefixNode2Id         = Names.prefixNode2Id ;
 
-    public static String fPrefixId2Node        = "prefixId2Node" ;
+    // public static String fPrefixId2Node        = "prefixId2Node" ;
     private String       prefixId2Node         = Names.prefixId2Node ;
 
     public static SystemParamsBuilder create() { return new SystemParamsBuilder() ; }

@@ -49,30 +49,6 @@ public class FileRef
     static Map<String, Integer> name2id = new HashMap<>() ;
     static Map<Integer, FileRef> id2name = new TreeMap<>() ;// new HashMap<Integer, FileRef>() ;
     
-    static private void printTable()
-    {
-        for ( String name : Names.tripleIndexes )
-            bTree(name) ;
-        for ( String name : Names.quadIndexes )
-            bTree(name) ;
-//        // Not the name of the index.
-//        for ( String name : Names.prefixIndexes )
-//            bTree(name) ;
-
-        bTree(Names.prefixId2Node) ;
-        bTree(Names.prefixNode2Id) ;
-        file(Names.indexId2Node+".dat") ;
-        bTree(Names.indexNode2Id) ;
-        bTree(Names.indexPrefix) ;
-        
-        for ( Map.Entry<Integer, FileRef> e : id2name.entrySet() )
-        {
-            System.out.printf("    add(%s+idxOffset , %s) ;\n", e.getKey()-idxOffset, '"'+e.getValue().filename+'"') ;
-        }
-        
-        
-    }
-    
     static {
         //printTable() ;
         add(journalIdx , journalName) ;
