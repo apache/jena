@@ -60,12 +60,12 @@ public class SystemParams implements IndexParams
     private final String   prefixId2Node ;
     
     public SystemParams(FileMode fileMode, int blockSize, int blockReadCacheSize, int blockWriteCacheSize,
-                         int node2NodeIdCacheSize, int nodeId2NodeCacheSize, int nodeMissCacheSize,
-                         String indexNode2Id, String indexId2Node, 
-                         String primaryIndexTriples, String[] tripleIndexes,
-                         String primaryIndexQuads, String[] quadIndexes,
-                         String primaryIndexPrefix, String[] prefixIndexes, String indexPrefix, 
-                         String prefixNode2Id, String prefixId2Node) {
+                        int node2NodeIdCacheSize, int nodeId2NodeCacheSize, int nodeMissCacheSize,
+                        String indexNode2Id, String indexId2Node, 
+                        String primaryIndexTriples, String[] tripleIndexes,
+                        String primaryIndexQuads, String[] quadIndexes,
+                        String primaryIndexPrefix, String[] prefixIndexes, String indexPrefix, 
+                        String prefixNode2Id, String prefixId2Node) {
         this.fileMode               = fileMode ;
         this.blockSize              = blockSize ;
         this.blockReadCacheSize     = blockReadCacheSize ;
