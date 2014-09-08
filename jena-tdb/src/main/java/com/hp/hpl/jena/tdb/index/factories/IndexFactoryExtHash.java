@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.index.factories;
+package com.hp.hpl.jena.tdb.index.factories ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
@@ -29,40 +29,26 @@ import com.hp.hpl.jena.tdb.index.IndexFactory ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.ext.ExtHash ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-/** Index factory for extendible hash tables.
- *  Only an index, not a range index
+/**
+ * Index factory for extensible hash tables. Only an index, not a range index
  */
 
-public class IndexFactoryExtHash implements IndexFactory
-{
-    private final int blockSize ;
+public class IndexFactoryExtHash implements IndexFactory {
+    public IndexFactoryExtHash() {}
 
-    public IndexFactoryExtHash()
-    { this(SystemTDB.BlockSize) ; }
-    
-    public IndexFactoryExtHash(int blockSize)
-    {
-        this.blockSize = blockSize ;
-    }
-    
     @Override
-    public Index createIndex(FileSet fileset, RecordFactory recordFactory, IndexParams params)
-    {
+    public Index createIndex(FileSet fileset, RecordFactory recordFactory, IndexParams idxParams) {
         String fnDictionary = fileset.filename(Names.extHashExt) ;
         PlainFile dictionary = FileFactory.createPlainFileDisk(fnDictionary) ;
-        
+
         String fnBuckets = fileset.filename(Names.extHashBucketExt) ;
-        BlockMgr mgr =  createBlockMgr(fnBuckets, blockSize) ;
+        BlockMgr mgr = createBlockMgr(fnBuckets, idxParams) ;
         ExtHash eHash = new ExtHash(dictionary, recordFactory, mgr) ;
         return eHash ;
     }
-    
-    protected BlockMgr createBlockMgr(String filename, int blockSize)
-    {
-        return BlockMgrFactory.createFile(filename, blockSize, 
-                                          SystemTDB.BlockReadCacheSize,
-                                          SystemTDB.BlockWriteCacheSize) ;
+
+    protected BlockMgr createBlockMgr(String filename, IndexParams idxParams) {
+        return BlockMgrFactory.createFile(filename, idxParams) ;
     }
 }

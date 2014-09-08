@@ -18,10 +18,16 @@
 
 package com.hp.hpl.jena.tdb.setup ;
 
+import java.io.File ;
+import java.io.IOException ;
 import java.util.HashMap ;
 import java.util.Map ;
+import java.util.Properties ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.PropertyUtils ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
@@ -56,6 +62,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
     private NodeTableBuilder            nodeTableBuilder ;
     private TupleIndexBuilder           tupleIndexBuilder ;
 
+    // XXX Should not be an object field. 
     private SystemParams                params ;
 
     private Map<FileRef, BlockMgr>      blockMgrs      = new HashMap<>() ;
@@ -63,7 +70,8 @@ public class DatasetBuilderStd implements DatasetBuilder {
     private Map<FileRef, NodeTable>     nodeTables     = new HashMap<>() ;
 
     public static DatasetGraphTDB create(Location location) {
-        DatasetBuilderStd x = new DatasetBuilderStd(SystemParams.getDftSystemParams()) ;
+        SystemParams params = paramsForLocation(location) ;
+        DatasetBuilderStd x = new DatasetBuilderStd(params) ;
         x.standardSetup() ;
         return x.build(location) ;
     }
@@ -78,8 +86,11 @@ public class DatasetBuilderStd implements DatasetBuilder {
         return x ;
     }
 
-    public static DatasetBuilderStd stdBuilder(SystemParams params) {
-        DatasetBuilderStd x = new DatasetBuilderStd(params) ;
+    /** Create a building : if database settings already at the  location,
+     * use those otherwiese use the provided defaults.  
+     */
+    public static DatasetBuilderStd stdBuilder(SystemParams dftParams) {
+        DatasetBuilderStd x = new DatasetBuilderStd(dftParams) ;
         x.standardSetup() ;
         return x ;
     }
@@ -88,7 +99,11 @@ public class DatasetBuilderStd implements DatasetBuilder {
         this(SystemParams.getDftSystemParams()) ;
     }
 
+    // XXX Take params out of constructor.  They are location sensitive.
     protected DatasetBuilderStd(SystemParams params) {
+        //Objects.requireNonNull(params) ;
+        if ( params == null )
+            params = SystemParams.getDftSystemParams() ;
         this.params = params ;
     }
 
@@ -116,6 +131,54 @@ public class DatasetBuilderStd implements DatasetBuilder {
         set(nodeTableBuilder, tupleIndexBuilder) ;
     }
 
+    private static SystemParams paramsForLocation(Location location) {
+        if ( location.exists(DB_CONFIG_FILE) ) {
+            log.debug("Existing configuration file found") ;
+            Properties properties = new Properties() ;
+            try { 
+                PropertyUtils.loadFromFile(properties, DB_CONFIG_FILE) ;
+            } catch (IOException ex) { IO.exception(ex) ; throw new TDBException("Bad configuration file", ex) ; }
+        }
+        return SystemParams.getDftSystemParams() ;
+    }
+
+//    private void checkIfConfig(Location location) {
+//    }
+
+    private void checkIfNew(Location location) {
+        if ( location.isMem() ) {
+            return ;
+        }
+        
+        if ( FileOps.existsAnyFiles(location.getDirectoryPath()) ) {
+            
+        }
+
+        if ( location.exists(DB_CONFIG_FILE) ) {
+            log.debug("Existing config file") ;
+            return ;
+        }
+        
+    }
+    
+    private void checkConfiguration() { } 
+    
+    private static void checkLocation(Location location) { 
+        if ( location.isMem() )
+            return ;
+        String dirname = location.getDirectoryPath() ;
+        File dir = new File(dirname) ;
+        // File location.
+        if ( ! dir.exists() )
+            error(log, "Does not exist: "+dirname) ;
+        if ( ! dir.isDirectory() )
+            error(log, "Not a directory: "+dirname) ;
+        if ( ! dir.canRead() )
+            error(log, "Directory not readable: "+dirname) ;
+        if ( ! dir.canWrite() )
+            error(log, "Directory not writeable: "+dirname) ;
+    }
+
     private void standardSetup() {
         ObjectFileBuilder objectFileBuilder = new BuilderIndex.ObjectFileBuilderStd() ;
         BlockMgrBuilder blockMgrBuilder = new BuilderIndex.BlockMgrBuilderStd() ;
@@ -129,21 +192,35 @@ public class DatasetBuilderStd implements DatasetBuilder {
     public DatasetGraphTDB build(Location location) {
         // Ensure that there is global synchronization
         synchronized (DatasetBuilderStd.class) {
+            log.debug("Build database: "+location.getDirectoryPath()) ;
+            checkIfNew(location) ;
+            checkLocation(location) ;
             return _build(location, params, true, null) ;
         }
     }
 
+    private static String DB_CONFIG_FILE = "tdb.cfg" ; 
+    
     // Main engine for building.
     // Called by DatasetBuilderTxn
     // XXX Rework - provide a cloning constructor (copies maps).
     // Or "reset"
-    public DatasetGraphTDB _build(Location location, SystemParams _params, boolean readonly,
-                                  ReorderTransformation _transform) {
-        if ( _params != null )
-            params = _params ;
-        init(location) ;
+    public synchronized DatasetGraphTDB _build(Location location, SystemParams _params, boolean writeable,
+                                               ReorderTransformation _transform) {
+        // This should create a new DatabseBuilderStd as a clone and use that!
+        SystemParams dftParams = params ;
+        try { 
+            if ( _params != null )
+                params = _params ;
+            init(location) ;
+            return buildWorker(location, writeable, _transform) ;
+        } finally {
+            params = dftParams ;
+        }
+    }
+    
+    private DatasetGraphTDB buildWorker(Location location, boolean writeable, ReorderTransformation _transform) {
         DatasetControl policy = createConcurrencyPolicy() ;
-
         NodeTable nodeTable = makeNodeTable(location, params) ;
         TripleTable tripleTable = makeTripleTable(location, nodeTable, policy) ;
         QuadTable quadTable = makeQuadTable(location, nodeTable, policy) ;
@@ -151,7 +228,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
 
         ReorderTransformation transform = (_transform == null) ? chooseReorderTransformation(location) : _transform ;
 
-        StorageConfig storageConfig = new StorageConfig(location, params, readonly, blockMgrs, bufferChannels,
+        StorageConfig storageConfig = new StorageConfig(location, params, writeable, blockMgrs, bufferChannels,
                                                         nodeTables) ;
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storageConfig) ;
         // TDB does filter placement on BGPs itself.

@@ -16,11 +16,12 @@
 
 package com.hp.hpl.jena.tdb.index;
 
+import com.hp.hpl.jena.tdb.base.block.BlockParams ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 
-public interface IndexParams {
-    public FileMode getFileMode() ;
-    public int getBlockSize() ;
-    public int getBlockReadCacheSize() ;
-    public int getBlockWriteCacheSize() ;
+public interface IndexParams extends BlockParams {
+    @Override public FileMode getFileMode() ;
+    @Override public int getBlockSize() ;
+    @Override public int getBlockReadCacheSize() ;
+    @Override public int getBlockWriteCacheSize() ;
 }

@@ -20,7 +20,6 @@ package com.hp.hpl.jena.tdb.setup;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
-import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
@@ -32,8 +31,7 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
-/** Building indexes, blockMgr and files */ 
-
+/** Building indexes, blockMgr and object files */ 
 public class BuilderIndex {
     public static class IndexBuilderStd implements IndexBuilder
     {
@@ -115,44 +113,15 @@ public class BuilderIndex {
         }
     }
 
-    public static class BlockMgrBuilderStd/*Base*/ implements BlockMgrBuilder
+    public static class BlockMgrBuilderStd implements BlockMgrBuilder
     {
         public BlockMgrBuilderStd() {}
     
         @Override
         public BlockMgr buildBlockMgr(FileSet fileset, String ext, IndexParams indexParams)
         {
-            BlockMgr mgr = BlockMgrFactory.create(fileset, ext, indexParams.getBlockSize(), 
-                                                  indexParams.getBlockReadCacheSize(), indexParams.getBlockWriteCacheSize()) ;
-            return mgr ;
+            return BlockMgrFactory.create(fileset, ext, indexParams) ;
         }
     }
-
-    // Add cache (iff not memory and not 
-    // XXX Activate
-    public static class BlockMgrBuilderStd2 implements BlockMgrBuilder
-    {
-        private final BlockMgrBuilder other ;
-    
-        public BlockMgrBuilderStd2(BlockMgrBuilder other) {
-            this.other = other ;
-        }
-    
-        @Override
-        public BlockMgr buildBlockMgr(FileSet fileset, String ext, IndexParams indexParams)
-        {
-            BlockMgr blkMgr = other.buildBlockMgr(fileset, ext, indexParams) ;
-            if ( fileset.isMem() )
-                return blkMgr ;
-            int readCacheSize = indexParams.getBlockReadCacheSize() ;
-            int writeCacheSize = indexParams.getBlockWriteCacheSize() ;
-            boolean addCache = 
-                ! fileset.isMem() && indexParams.getFileMode() != FileMode.mapped ;
-            if ( addCache && ( readCacheSize > 0 || writeCacheSize > 0 ) )
-                blkMgr = BlockMgrFactory.addCache(blkMgr, readCacheSize, writeCacheSize) ;
-            return blkMgr ;
-        }
-    }
-
 }
 
