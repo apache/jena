@@ -43,6 +43,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.index.BuilderStdIndex ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.RangeIndexBuilder ;
@@ -158,7 +159,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
 
     private void standardSetup() {
-        ObjectFileBuilder objectFileBuilder = new BuilderStdIndex.ObjectFileBuilderStd() ;
+        ObjectFileBuilder objectFileBuilder = new BuilderStdDB.ObjectFileBuilderStd() ;
         BlockMgrBuilder blockMgrBuilder = new BuilderStdIndex.BlockMgrBuilderStd() ;
         IndexBuilder indexBuilderNT = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
         NodeTableBuilder nodeTableBuilder = new BuilderStdDB.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;

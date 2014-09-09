@@ -55,7 +55,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
     
     private /*public*/ DatasetBuilderBasic(IndexBuilder indexBuilder, RangeIndexBuilder rangeIndexBuilder)
     {
-        ObjectFileBuilder objectFileBuilder = new BuilderStdIndex.ObjectFileBuilderStd()  ;
+        ObjectFileBuilder objectFileBuilder = new BuilderStdDB.ObjectFileBuilderStd()  ;
         nodeTableBuilder    = new BuilderStdDB.NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
         tupleIndexBuilder   = new BuilderStdDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
     }

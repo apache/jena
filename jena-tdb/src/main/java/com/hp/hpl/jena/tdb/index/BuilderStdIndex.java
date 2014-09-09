@@ -16,17 +16,15 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.setup;
+package com.hp.hpl.jena.tdb.index;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
-import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.* ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.setup.BlockMgrBuilder ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 /** Building indexes, blockMgr and object files */ 
@@ -94,20 +92,6 @@ public class BuilderStdIndex {
             BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.bptExtTree, indexParams) ;
             BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.bptExtRecords, indexParams) ;
             return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
-        }
-    }
-
-    public static class ObjectFileBuilderStd implements ObjectFileBuilder
-    {
-        public ObjectFileBuilderStd() { }
-        
-        @Override
-        public ObjectFile buildObjectFile(FileSet fileSet, String ext)
-        {
-            String filename = fileSet.filename(ext) ;
-            if ( fileSet.isMem() )
-                return FileFactory.createObjectFileMem(filename) ;
-            return FileFactory.createObjectFileDisk(filename) ;
         }
     }
 
