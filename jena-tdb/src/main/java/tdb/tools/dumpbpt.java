@@ -35,7 +35,7 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
-import com.hp.hpl.jena.tdb.setup.BuildIndex ;
+import com.hp.hpl.jena.tdb.setup.IndexFactory ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
@@ -114,7 +114,7 @@ public class dumpbpt extends CmdGeneral
             
             
             RecordFactory rf = new RecordFactory(keyLength, valueLength) ;
-            RangeIndex rIndex = BuildIndex.buildRangeIndex(loc, indexName, rf) ;
+            RangeIndex rIndex = IndexFactory.buildRangeIndex(loc, indexName, rf) ;
             BPlusTree bpt = (BPlusTree)rIndex ;
             
             if ( false )
