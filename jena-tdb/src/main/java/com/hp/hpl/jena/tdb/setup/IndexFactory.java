@@ -25,7 +25,7 @@ import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 
-public class BuildIndex {
+public class IndexFactory {
     // XXX Merge with com.hp.hpl.jena.tdb.index.IndexFactory
     // c.f. setupTDB
     

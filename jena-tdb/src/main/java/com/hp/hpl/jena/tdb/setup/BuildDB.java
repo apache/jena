@@ -53,7 +53,7 @@ public class BuildDB
         RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength) ;
         IndexParams idxParams = spb.build() ;
         FileSet fs = new FileSet(location, indexName) ;
-        RangeIndex rIndex = BuildIndex.buildRangeIndex(fs, recordFactory, idxParams) ;
+        RangeIndex rIndex = IndexFactory.buildRangeIndex(fs, recordFactory, idxParams) ;
         TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), indexOrder, rIndex.getRecordFactory(), rIndex) ;
         return tupleIndex ;
     }

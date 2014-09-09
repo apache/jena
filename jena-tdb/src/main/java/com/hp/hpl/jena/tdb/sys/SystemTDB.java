@@ -37,7 +37,6 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.IndexType ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class SystemTDB
@@ -404,36 +403,5 @@ public class SystemTDB
             return FileMode.direct ;
         }
         throw new TDBException("Unrecognized file mode (not one of 'default', 'direct' or 'mapped': "+x) ;
-    }
-    
-    // ---- Index type
-    
-    public static final String indexTypeBTree          = "BTree" ;
-    public static final String indexTypeBPlusTree      = "BPlusTree" ;
-    public static final String indexTypeExtHash        = "ExtHash" ;
-    
-    public static final String defaultIndexType        = indexTypeBPlusTree ; 
-    
-    // Delay until needed so application can set symIndexType
-    private static IndexType indexType = null ;
-
-    public static IndexType getIndexType()
-    {
-        if ( indexType != null )
-            return indexType ;
-        
-        boolean defaultSetting = false ;
-        String x = TDB.getContext().getAsString(SystemTDB.symIndexType) ;
-        if ( x == null )
-        {
-            defaultSetting = true ;
-            x = SystemTDB.defaultIndexType ;
-        }
-        IndexType iType = IndexType.get(x) ;
-        if ( !defaultSetting )
-            LoggerFactory.getLogger(IndexType.class).info("Index type: "+iType) ;
-        
-        indexType = iType ;
-        return iType ;
     }
 }
