@@ -77,7 +77,7 @@ public class ResultSetWriterRegistry {
         register(SPARQLResultSetJSON,   factory) ;
         register(SPARQLResultSetCSV,    factory) ;
         register(SPARQLResultSetTSV,    factory) ;
-        register(SPARQLResultSetThrift, factory) ;
+        register(SPARQLResultSetThrift, new ResultSetWriterThriftFactory()) ;
         register(SPARQLResultSetText,   factory) ;
     }
  
