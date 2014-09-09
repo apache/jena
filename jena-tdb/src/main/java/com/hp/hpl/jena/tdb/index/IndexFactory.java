@@ -16,24 +16,27 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.setup;
+package com.hp.hpl.jena.tdb.index;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.IndexParams ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.setup.BlockMgrBuilder ;
+import com.hp.hpl.jena.tdb.setup.BuilderStdIndex ;
+import com.hp.hpl.jena.tdb.setup.SystemParams ;
+import com.hp.hpl.jena.tdb.setup.BuilderStdIndex.BlockMgrBuilderStd ;
+import com.hp.hpl.jena.tdb.setup.BuilderStdIndex.IndexBuilderStd ;
+import com.hp.hpl.jena.tdb.setup.BuilderStdIndex.RangeIndexBuilderStd ;
 
 public class IndexFactory {
     // XXX Merge with com.hp.hpl.jena.tdb.index.IndexFactory
     // c.f. setupTDB
     
     
-    private static BlockMgrBuilder   blockMgrBuilder   = new BuilderIndex.BlockMgrBuilderStd() ;
-    private static RangeIndexBuilder rangeIndexBuilder = new BuilderIndex.RangeIndexBuilderStd(blockMgrBuilder,
+    private static BlockMgrBuilder   blockMgrBuilder   = new BuilderStdIndex.BlockMgrBuilderStd() ;
+    private static RangeIndexBuilder rangeIndexBuilder = new BuilderStdIndex.RangeIndexBuilderStd(blockMgrBuilder,
                                                                                                blockMgrBuilder) ;
-    private static IndexBuilder      indexBuilder      = new BuilderIndex.IndexBuilderStd(blockMgrBuilder,
+    private static IndexBuilder      indexBuilder      = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilder,
                                                                                           blockMgrBuilder) ;
     
     public static IndexBuilder createIndexBuilderMem() { 
@@ -51,7 +54,7 @@ public class IndexFactory {
     }
 
     public static RangeIndexBuilder createRangeIndexBuilderMem() {
-        return new BuilderIndex.RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        return new BuilderStdIndex.RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
     }
     
     

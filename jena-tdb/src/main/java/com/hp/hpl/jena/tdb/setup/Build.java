@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.IndexFactory ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
@@ -36,10 +37,10 @@ import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 /** Building datastructures on top of the base file
  *  abstractions of indexes, block managers and object files.  
  */
-public class BuildDB
+public class Build
 {
     private static boolean VERBOSE = true ;
-    private static Logger log = LoggerFactory.getLogger(BuildDB.class) ;
+    private static Logger log = LoggerFactory.getLogger(Build.class) ;
     private static SystemParams params = SystemParams.getDftSystemParams() ;
     
     public static TupleIndex openTupleIndex(Location location, String indexName, String primary, String indexOrder, int readCacheSize, int writeCacheSize, int dftKeyLength, int dftValueLength)

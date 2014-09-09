@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory ;
 import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.BuildDB ;
+import com.hp.hpl.jena.tdb.setup.Build ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
@@ -82,8 +82,8 @@ public class CmdIndexCopy
         String indexOrder = indexName2 ;
         String label = indexName1+" => "+indexName2 ;
         
-        TupleIndex index1 = BuildDB.openTupleIndex(location1, indexName1, primary, indexName1, 10, 10, keyLength, valueLength) ;      
-        TupleIndex index2 = BuildDB.openTupleIndex(location2, indexName2, primary, indexOrder, 10, 10, keyLength, valueLength) ;
+        TupleIndex index1 = Build.openTupleIndex(location1, indexName1, primary, indexName1, 10, 10, keyLength, valueLength) ;      
+        TupleIndex index2 = Build.openTupleIndex(location2, indexName2, primary, indexOrder, 10, 10, keyLength, valueLength) ;
         tupleIndexCopy(index1, index2, label) ;
         index1.close() ;
         index2.close() ;

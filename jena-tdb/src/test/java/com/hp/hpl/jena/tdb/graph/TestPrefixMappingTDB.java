@@ -31,7 +31,7 @@ import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.BuildDB ;
+import com.hp.hpl.jena.tdb.setup.Build ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
@@ -59,7 +59,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     }
     
     static DatasetPrefixesTDB createTesting(Location location, DatasetControl policy) {
-        return BuildDB.makePrefixes(location, policy) ;
+        return Build.makePrefixes(location, policy) ;
     }
 
     @Override
