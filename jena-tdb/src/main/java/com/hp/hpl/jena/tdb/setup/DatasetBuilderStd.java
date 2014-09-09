@@ -43,7 +43,9 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
+import com.hp.hpl.jena.tdb.index.RangeIndexBuilder ;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB1 ;
 import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
@@ -97,13 +99,13 @@ public class DatasetBuilderStd implements DatasetBuilder {
         recorder = new Recorder() ;
         BlockMgrBuilder blockMgrBuilderRec = new BlockMgrBuilderRecorder(blockMgrBuilder, recorder) ;
 
-        IndexBuilder indexBuilder = new BuilderIndex.IndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
-        RangeIndexBuilder rangeIndexBuilder = new BuilderIndex.RangeIndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
+        IndexBuilder indexBuilder = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
+        RangeIndexBuilder rangeIndexBuilder = new BuilderStdIndex.RangeIndexBuilderStd(blockMgrBuilderRec, blockMgrBuilderRec) ;
 
         this.nodeTableBuilder = nodeTableBuilder ;
         nodeTableBuilder = new NodeTableBuilderRecorder(nodeTableBuilder, recorder) ;
 
-        TupleIndexBuilder tupleIndexBuilder = new BuilderDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
+        TupleIndexBuilder tupleIndexBuilder = new BuilderStdDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
         set(nodeTableBuilder, tupleIndexBuilder) ;
     }
 
@@ -156,10 +158,10 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
 
     private void standardSetup() {
-        ObjectFileBuilder objectFileBuilder = new BuilderIndex.ObjectFileBuilderStd() ;
-        BlockMgrBuilder blockMgrBuilder = new BuilderIndex.BlockMgrBuilderStd() ;
-        IndexBuilder indexBuilderNT = new BuilderIndex.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-        NodeTableBuilder nodeTableBuilder = new BuilderDB.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
+        ObjectFileBuilder objectFileBuilder = new BuilderStdIndex.ObjectFileBuilderStd() ;
+        BlockMgrBuilder blockMgrBuilder = new BuilderStdIndex.BlockMgrBuilderStd() ;
+        IndexBuilder indexBuilderNT = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
+        NodeTableBuilder nodeTableBuilder = new BuilderStdDB.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
 
         set(blockMgrBuilder, nodeTableBuilder) ;
     }

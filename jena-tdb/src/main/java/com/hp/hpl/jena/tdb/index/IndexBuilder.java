@@ -18,11 +18,9 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 
-
-public interface RangeIndexFactory
-{
-    public RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory, IndexParams params) ;
+public interface IndexBuilder {
+    Index buildIndex(FileSet fileSet, RecordFactory recordfactory, IndexParams indexParams) ;
 }

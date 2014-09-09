@@ -29,6 +29,8 @@ import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.RangeIndexBuilder ;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB1 ;
 import com.hp.hpl.jena.tdb.store.* ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
@@ -53,9 +55,9 @@ public class DatasetBuilderBasic //implements DatasetBuilder
     
     private /*public*/ DatasetBuilderBasic(IndexBuilder indexBuilder, RangeIndexBuilder rangeIndexBuilder)
     {
-        ObjectFileBuilder objectFileBuilder = new BuilderIndex.ObjectFileBuilderStd()  ;
-        nodeTableBuilder    = new BuilderDB.NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
-        tupleIndexBuilder   = new BuilderDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
+        ObjectFileBuilder objectFileBuilder = new BuilderStdIndex.ObjectFileBuilderStd()  ;
+        nodeTableBuilder    = new BuilderStdDB.NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
+        tupleIndexBuilder   = new BuilderStdDB.TupleIndexBuilderStd(rangeIndexBuilder) ;
     }
 
     //@Override public
