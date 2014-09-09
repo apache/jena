@@ -20,6 +20,7 @@ package com.hp.hpl.jena.tdb.setup;
 
 import org.apache.jena.atlas.lib.ColumnMap ;
 
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -78,6 +79,20 @@ public class BuilderStdDB {
                                               params.getNodeMissCacheSize()) ;
             nodeTable = NodeTableInline.create(nodeTable) ;
             return nodeTable ;
+        }
+    }
+
+    public static class ObjectFileBuilderStd implements ObjectFileBuilder
+    {
+        public ObjectFileBuilderStd() { }
+        
+        @Override
+        public ObjectFile buildObjectFile(FileSet fileSet, String ext)
+        {
+            String filename = fileSet.filename(ext) ;
+            if ( fileSet.isMem() )
+                return FileFactory.createObjectFileMem(filename) ;
+            return FileFactory.createObjectFileDisk(filename) ;
         }
     }
 
