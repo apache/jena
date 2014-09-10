@@ -22,6 +22,7 @@ import java.util.List ;
 
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.ResultSetMgr ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -105,6 +106,15 @@ public class QueryExecUtils {
     }
 
     public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat) {
+        // Proper ResultSet formats.
+        Lang lang = ResultsFormat.convert(outputFormat) ;
+        if ( lang != null ) {
+            ResultSetMgr.write(System.out, results, lang) ;
+            System.out.flush() ;
+            return ;
+        }
+        
+        // Old way.
         boolean done = false ;
         if ( prologue == null )
             prologue = new Prologue(globalPrefixMap) ;

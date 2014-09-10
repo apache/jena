@@ -21,7 +21,10 @@ package com.hp.hpl.jena.query;
 import java.io.InputStream ;
 import java.util.List ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.ResultSetMgr ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -63,21 +66,8 @@ public class ResultSetFactory {
     public static ResultSet load(String filenameOrURI, ResultsFormat format) {
         if (format == null)
             format = ResultsFormat.guessSyntax(filenameOrURI);
-
-        if (format == null) {
-            Log.warn(ResultSet.class, "Null format - defaulting to XML");
-            format = ResultsFormat.FMT_RS_XML;
-        }
-
-        if (format.equals(ResultsFormat.FMT_TEXT)) {
-            Log.fatal(ResultSet.class, "Can't read a text result set");
-            throw new ResultSetException("Can't read a text result set");
-        }
-
-        InputStream in = FileManager.get().open(filenameOrURI);
-        if (in == null)
-            throw new NotFoundException("Not found: " + filenameOrURI);
-        return load(in, format);
+        InputStream in = IO.openFile(filenameOrURI) ;
+        return load(in, format) ;
     }
 
     /**
@@ -93,6 +83,11 @@ public class ResultSetFactory {
             Log.warn(ResultSet.class, "Null format - defaulting to XML");
             format = ResultsFormat.FMT_RS_XML;
         }
+        
+        // Old World - new world
+        Lang lang = ResultsFormat.convert(format) ;
+        if ( lang != null )
+            return ResultSetMgr.read(input, lang) ;
 
         if (format.equals(ResultsFormat.FMT_RS_JSON))
             return JSONInput.fromJSON(input);

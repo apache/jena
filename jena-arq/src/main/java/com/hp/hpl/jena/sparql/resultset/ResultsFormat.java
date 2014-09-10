@@ -20,6 +20,12 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import static org.apache.jena.riot.WebContent.* ;
 
+import java.util.HashMap ;
+import java.util.Map ;
+
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.resultset.ResultSetLang ;
+
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.sparql.util.TranslationTable ;
 
@@ -32,6 +38,8 @@ import com.hp.hpl.jena.sparql.util.TranslationTable ;
 //    FMT_RS_RDF , FMT_RDF_XML , FMT_RDF_N3 , FMT_RDF_TTL , FMT_RDF_TURTLE , FMT_RDF_NT ,
 //    FMT_UNKNOWN ;
     
+
+// Old world.  Remove in Jena3
 public class ResultsFormat extends Symbol
 { 
     // ---- Compatibility (this started pre java 1.5)
@@ -42,6 +50,7 @@ public class ResultsFormat extends Symbol
 
     static public ResultsFormat FMT_RS_XML       = new ResultsFormat(contentTypeResultsXML) ;
     static public ResultsFormat FMT_RS_JSON      = new ResultsFormat(contentTypeResultsJSON) ;
+    static public ResultsFormat FMT_RS_THRIFT    = new ResultsFormat(contentTypeResultsThrift) ;
     static public ResultsFormat FMT_RS_CSV       = new ResultsFormat(contentTypeTextCSV) ;
     static public ResultsFormat FMT_RS_TSV       = new ResultsFormat(contentTypeTextTSV) ;
     static public ResultsFormat FMT_RS_SSE       = new ResultsFormat(contentTypeSSE) ;
@@ -66,6 +75,8 @@ public class ResultsFormat extends Symbol
         
         names.put("json",        FMT_RS_JSON) ;
         names.put("srj",         FMT_RS_JSON) ;
+        names.put("srt",         FMT_RS_THRIFT) ;
+        names.put("thrift",      FMT_RS_THRIFT) ;
         
         names.put("sse",         FMT_RS_SSE) ;
         names.put("csv",         FMT_RS_CSV) ;
@@ -126,6 +137,10 @@ public class ResultsFormat extends Symbol
         if ( url.endsWith(".yml") )
             return FMT_RS_JSON ;
         
+        // -- Thrift
+        if ( url.endsWith(".srt") )
+            return FMT_RS_THRIFT ;
+        
         // -- SSE : http://jena.apache.org/documentation/notes/sse.html
         if ( url.endsWith(".sse") )
             return FMT_RS_SSE ;
@@ -154,4 +169,16 @@ public class ResultsFormat extends Symbol
         return names.lookup(s) ;
     }
 
+    static Map<ResultsFormat, Lang> mapResultsFormatToLang = new HashMap<>() ;
+    static {
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_CSV, ResultSetLang.SPARQLResultSetCSV) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_TSV, ResultSetLang.SPARQLResultSetTSV) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_XML, ResultSetLang.SPARQLResultSetXML) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_JSON, ResultSetLang.SPARQLResultSetJSON) ;
+        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_THRIFT, ResultSetLang.SPARQLResultSetThrift) ;
+    }
+
+    public static Lang convert(ResultsFormat fmt) {
+        return mapResultsFormatToLang.get(fmt) ;
+    }
 }
