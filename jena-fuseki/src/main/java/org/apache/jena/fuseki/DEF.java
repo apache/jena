@@ -35,7 +35,8 @@ public class DEF
                                                                           contentTypeNTriplesAlt,
                                                                           contentTypeRDFXML,
                                                                           contentTypeJSONLD,
-                                                                          contentTypeRDFJSON
+                                                                          contentTypeRDFJSON,
+                                                                          contentTypeRDFThrift
                                                                           ) ;
     
     public static final AcceptList quadsOffer         = AcceptList.create(contentTypeTriG,
@@ -47,10 +48,19 @@ public class DEF
                                                                           contentTypeNQuadsAlt2 
                                                                           ) ;
     
-    public static final AcceptList rsOffer            = AcceptList.create(contentTypeResultsJSON,
+    public static final AcceptList rsOfferTable            = AcceptList.create(contentTypeResultsJSON,
+                                                                          contentTypeTextCSV,
+                                                                          contentTypeTextTSV,
+                                                                          contentTypeResultsXML,
+                                                                          contentTypeResultsThrift,
+                                                                          contentTypeTextPlain
+                                                                          ) ;
+    
+    public static final AcceptList rsOfferBoolean            = AcceptList.create(contentTypeResultsJSON,
                                                                           contentTypeTextCSV,
                                                                           contentTypeTextTSV,
                                                                           contentTypeResultsXML,
                                                                           contentTypeTextPlain
                                                                           ) ;
+
 }

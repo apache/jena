@@ -38,7 +38,9 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
+import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.resultset.ResultSetLang ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -61,6 +63,7 @@ public class ResponseResultSet
     private static final String contentOutputText          = "text" ;
     private static final String contentOutputCSV           = "csv" ;
     private static final String contentOutputTSV           = "tsv" ;
+    private static final String contentOutputThrift        = "thrift" ;
     
     public static Map<String,String> shortNamesResultSet = new HashMap<String, String>() ;
     static {
@@ -71,21 +74,19 @@ public class ResponseResultSet
         ResponseOps.put(shortNamesResultSet, contentOutputText,   WebContent.contentTypeTextPlain) ;
         ResponseOps.put(shortNamesResultSet, contentOutputCSV,    WebContent.contentTypeTextCSV) ;
         ResponseOps.put(shortNamesResultSet, contentOutputTSV,    WebContent.contentTypeTextTSV) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputThrift, WebContent.contentTypeResultsThrift) ;
     }
     
     interface OutputContent { void output(ServletOutputStream out) ; }
 
-    static AcceptList prefContentTypeResultSet     = DEF.rsOffer ; 
-    static AcceptList prefContentTypeRDF           = DEF.rdfOffer ;
-
     public static void doResponseResultSet(HttpAction action, Boolean booleanResult)
     {
-        doResponseResultSet$(action, null, booleanResult, null) ;
+        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferTable) ;
     }
 
     public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue)
     {
-        doResponseResultSet$(action, resultSet, null, qPrologue) ;
+        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable) ;
     }
     
     // If we refactor the conneg into a single function, we can split boolean and result set handling. 
@@ -93,7 +94,8 @@ public class ResponseResultSet
     // One or the other argument must be null
     private static void doResponseResultSet$(HttpAction action,
                                              ResultSet resultSet, Boolean booleanResult, 
-                                             Prologue qPrologue) 
+                                             Prologue qPrologue, 
+                                             AcceptList contentTypeOffer) 
     {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
@@ -112,7 +114,7 @@ public class ResponseResultSet
         }
 
         String mimeType = null ; 
-        MediaType i = ConNeg.chooseContentType(request, DEF.rsOffer, DEF.acceptRSXML) ;
+        MediaType i = ConNeg.chooseContentType(request, contentTypeOffer, DEF.acceptRSXML) ;
         if ( i != null )
             mimeType = i.getContentType() ;
         
@@ -137,6 +139,7 @@ public class ResponseResultSet
             contentType = WebContent.contentTypeTextPlain ;
 
         // Better : dispatch on MediaType
+        // Fuseki2 uses the SPARQL parser/write registry.
         if ( equal(serializationType, WebContent.contentTypeResultsXML) )
             sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
         else if ( equal(serializationType, WebContent.contentTypeResultsJSON) )
@@ -147,6 +150,8 @@ public class ResponseResultSet
             csvOutput(action, contentType, resultSet, booleanResult) ;
         else if (equal(serializationType, WebContent.contentTypeTextTSV) )
             tsvOutput(action, contentType, resultSet, booleanResult) ;
+        else if (equal(serializationType, WebContent.contentTypeResultsThrift) )
+            thriftOutput(action, contentType, resultSet, booleanResult) ;
         else
             errorBadRequest("Can't determine output serialization: "+serializationType) ;
     }
@@ -267,6 +272,20 @@ public class ResponseResultSet
                     ResultSetFormatter.outputAsTSV(out, resultSet) ;
                 if (  booleanResult != null )
                     ResultSetFormatter.outputAsTSV(out, booleanResult ) ;
+            }
+        } ;
+        output(action, contentType, WebContent.charsetUTF8, proc) ; 
+    }
+
+    private static void thriftOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult) {
+        OutputContent proc = new OutputContent(){
+            @Override
+            public void output(ServletOutputStream out)
+            {
+                if ( resultSet != null )
+                    ResultSetMgr.write(out, resultSet, ResultSetLang.SPARQLResultSetThrift) ;
+                if ( booleanResult != null )
+                    slog.error("Can't write boolen result in thrift") ;
             }
         } ;
         output(action, contentType, WebContent.charsetUTF8, proc) ; 
