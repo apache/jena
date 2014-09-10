@@ -72,6 +72,10 @@ public class WebContent
     public static final String      contentTypeTriGAlt2          = "application/trig" ;
     public static final ContentType ctTriGAlt2                   = ContentType.create(contentTypeTriGAlt2) ;
 
+    // Unofficial
+    public static final String      contentTypeRDFThrift         = "application/rdf+thrift" ;
+    public static final ContentType ctRDFTHRIFT                  = ContentType.create(contentTypeRDFThrift) ;
+
     public static final String      contentTypeNQuadsAlt1        = "text/n-quads" ;
     public static final ContentType ctNQuadsAlt1                 = ContentType.create(contentTypeNQuadsAlt1) ;
 
@@ -112,6 +116,9 @@ public class WebContent
 
     public static final String      contentTypeJSON              = "application/json" ;
     public static final ContentType ctJSON                       = ContentType.create(contentTypeJSON) ;
+    
+    public static final String      contentTypeResultsThrift     = "application/sparql-results+thrift" ;
+    public static final ContentType ctResultsThrift              = ContentType.create(contentTypeResultsThrift) ;
 
     // Unofficial
     public static final String      contentTypeResultsBIO        = "application/sparql-results+bio" ;

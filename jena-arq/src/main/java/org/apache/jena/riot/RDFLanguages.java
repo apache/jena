@@ -125,7 +125,7 @@ public class RDFLanguages
                                                 .build() ;
 
     /** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
-    public static final Lang THRIFT = LangBuilder.create("RDF_THRIFT", "application/rdf+thrift")
+    public static final Lang THRIFT = LangBuilder.create("RDF_THRIFT", contentTypeRDFThrift)
                                                  .addAltNames("RDF-THRIFT", "TRDF")
                                                  .addFileExtensions("rt", "trdf")
                                                  .build() ;
