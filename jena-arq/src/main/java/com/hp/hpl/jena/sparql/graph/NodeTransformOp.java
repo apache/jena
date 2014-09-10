@@ -186,7 +186,7 @@ class NodeTransformOp extends TransformCopy
         VarExprList varExprList2 = NodeTransformLib.transform(transform, varExprList) ;
         if ( varExprList == varExprList2 )
             return super.transform(opExtend, subOp) ;
-        return OpExtend.extend(subOp, varExprList2) ;
+        return OpExtend.create(subOp, varExprList2) ;
     }
     
     @Override public Op transform(OpOrder opOrder, Op subOp)

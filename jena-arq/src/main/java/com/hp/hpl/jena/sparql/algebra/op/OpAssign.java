@@ -32,50 +32,51 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 public class OpAssign extends OpExtendAssign {
     // These factory operations compress nested assignments if possible.
     // Not possible if it's the reassignment of something already assigned.
-    // Or we could implement something like (let*).
 
+    /** Create an OpAssign or add to an existing one.
+     * This coperation collapses what woudl otherwise be stacks
+     * of OpExtend.
+     */ 
     static public Op assign(Op op, Var var, Expr expr) {
         if ( !(op instanceof OpAssign) )
-            return createAssign(op, var, expr) ;
+            return create(op, var, expr) ;
 
         OpAssign opAssign = (OpAssign)op ;
         if ( opAssign.assignments.contains(var) )
             // Same variable :
             // Layer one assignment over the top of another
-            return createAssign(op, var, expr) ;
+            return create(op, var, expr) ;
 
         opAssign.add(var, expr) ;
         return opAssign ;
     }
 
+    /** Create an v or add to an existing one.
+     * This operation collapses what would otherwise be stacks
+     * of OpAssign.
+     */ 
     static public Op assign(Op op, VarExprList exprs) {
         if ( !(op instanceof OpAssign) )
-            return createAssign(op, exprs) ;
+            return create(op, exprs) ;
 
         OpAssign opAssign = (OpAssign)op ;
         for (Var var : exprs.getVars()) {
             if ( opAssign.assignments.contains(var) )
-                return createAssign(op, exprs) ;
+                return create(op, exprs) ;
         }
 
         opAssign.assignments.addAll(exprs) ;
         return opAssign ;
     }
 
-    /** Make a OpAssign - guaranteed to return an OpAssign */
-    public static OpAssign assignDirect(Op op, VarExprList exprs) {
+    /** Make a OpAssign - this does not aggregate (assign .. (assign ...)) */
+    public static OpAssign create(Op op, VarExprList exprs) {
         return new OpAssign(op, exprs) ;
     }
 
-    static private Op createAssign(Op op, Var var, Expr expr) {
+    /** Make a OpAssign - this does not aggregate (assign .. (assign ...)) */
+    static private Op create(Op op, Var var, Expr expr) {
         return new OpAssign(op, new VarExprList(var, expr)) ;
-    }
-
-    static private Op createAssign(Op op, VarExprList exprs) {
-        // Create, copying the var-expr list
-        VarExprList x = new VarExprList() ;
-        x.addAll(exprs) ;
-        return new OpAssign(op, x) ;
     }
 
     private OpAssign(Op subOp) {

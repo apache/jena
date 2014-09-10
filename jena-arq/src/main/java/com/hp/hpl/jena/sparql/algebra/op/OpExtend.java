@@ -36,49 +36,50 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 public class OpExtend extends OpExtendAssign {
     // There factory operations compress nested assignments if possible.
     // Not possible if it's the reassignment of something already assigned.
-    // Or we could implement something like (let*).
 
+    /** Create an OpExtend or add to an existing one.
+     * This coperation collapses what woudl otherwise be stacks
+     * of OpExtend.
+     */ 
     static public Op extend(Op op, Var var, Expr expr) {
         if ( !(op instanceof OpExtend) )
-            return createExtend(op, var, expr) ;
+            return create(op, var, expr) ;
 
         OpExtend opExtend = (OpExtend)op ;
         if ( opExtend.assignments.contains(var) )
-            return createExtend(op, var, expr) ;
+            return create(op, var, expr) ;
 
         opExtend.assignments.add(var, expr) ;
         return opExtend ;
     }
 
+    /** Create an OpExtend or add to an existing one.
+     * This operation collapses what would otherwise be stacks
+     * of OpExtend.
+     */ 
     static public Op extend(Op op, VarExprList exprs) {
         if ( !(op instanceof OpExtend) )
-            return createExtend(op, exprs) ;
+            return create(op, exprs) ;
 
         OpExtend opExtend = (OpExtend)op ;
         for (Var var : exprs.getVars()) {
             if ( opExtend.assignments.contains(var) )
-                return createExtend(op, exprs) ;
+                return create(op, exprs) ;
         }
 
         opExtend.assignments.addAll(exprs) ;
         return opExtend ;
     }
 
-    /** Make a OpExtend - guaranteed to return an OpExtend */
-    public static OpExtend extendDirect(Op op, VarExprList exprs) {
+    /** Make a OpExtend - this does not aggregate (extend .. (extend ...)) */
+    public static OpExtend create(Op op, VarExprList exprs) {
         return new OpExtend(op, exprs) ;
     }
 
-    static private Op createExtend(Op op, Var var, Expr expr) {
+    /** Make a OpExtend - this does not aggregate (extend .. (extend ...)) */
+    public static Op create(Op op, Var var, Expr expr) {
         VarExprList x = new VarExprList() ;
         x.add(var, expr) ;
-        return new OpExtend(op, x) ;
-    }
-
-    static private Op createExtend(Op op, VarExprList exprs) {
-        // Create, copying the var-expr list
-        VarExprList x = new VarExprList() ;
-        x.addAll(exprs) ;
         return new OpExtend(op, x) ;
     }
 

@@ -717,11 +717,9 @@ public class BuilderOp
                 sub = OpTable.unit() ;
             else
                 sub = build(list, 2) ;
-            return OpExtend.extend(sub, x) ;
+            return OpExtend.create(sub, x) ;
         }
     } ;
-
-    
 
     final protected Build buildSlice = new Build()
     {

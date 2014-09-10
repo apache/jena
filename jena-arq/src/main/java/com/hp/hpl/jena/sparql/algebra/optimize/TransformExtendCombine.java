@@ -72,6 +72,7 @@ public class TransformExtendCombine extends TransformCopy {
             OpExtend x = (OpExtend)subOp ;
             VarExprList outerVarExprList = opExtend.getVarExprList() ;
             VarExprList innerVarExprList = x.getVarExprList() ;
+            // XXX Go back to "create"
             Op r = OpExtend.extend(x.getSubOp(), innerVarExprList) ;
             // This contains an "if already assigned" test.
             r = OpExtend.extend(r, outerVarExprList) ;

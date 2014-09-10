@@ -56,8 +56,8 @@ public class TestTransformPromoteTableEmpty {
     public void promote_table_empty_assignment_03() {
         // Force algebra to have separate extends by using extendDirect()
         Op input = OpTable.empty();
-        input = OpExtend.extendDirect(input, new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
-        input = OpExtend.extendDirect(input, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
+        input = OpExtend.create(input, new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        input = OpExtend.create(input, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
 
         test(input, t_promote, "(table empty)");
     }

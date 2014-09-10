@@ -254,7 +254,7 @@ public class Substitute
             if ( varExprList2.isEmpty() )
                 return subOp ;
             
-            return OpExtend.extend(subOp, varExprList2) ;
+            return OpExtend.create(subOp, varExprList2) ;
         }
         
         private  VarExprList transformVarExprList(VarExprList varExprList)

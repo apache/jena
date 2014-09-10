@@ -226,7 +226,7 @@ public class Transformer
             VarExprList varExpr2 = process(varExpr, exprTransform) ;
             OpAssign opAssign2 = opAssign ;
             if ( varExpr != varExpr2 )
-                opAssign2 = OpAssign.assignDirect(opAssign.getSubOp(), varExpr2) ;
+                opAssign2 = OpAssign.create(opAssign.getSubOp(), varExpr2) ;
             visit1(opAssign2) ;
         }
         
@@ -237,7 +237,7 @@ public class Transformer
             VarExprList varExpr2 = process(varExpr, exprTransform) ;
             OpExtend opExtend2 = opExtend ;
             if ( varExpr != varExpr2 )
-                opExtend2 = OpExtend.extendDirect(opExtend.getSubOp(), varExpr2) ;
+                opExtend2 = OpExtend.create(opExtend.getSubOp(), varExpr2) ;
             visit1(opExtend2) ;
         }
         
