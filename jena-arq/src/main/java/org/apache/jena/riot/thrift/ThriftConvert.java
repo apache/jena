@@ -114,6 +114,9 @@ public class ThriftConvert
         if ( term.isSetAny() )
             return Node.ANY ;
         
+        if ( term.isSetUndefined() )
+            return null;
+        
         throw new RiotThriftException("No conversion to a Node: "+term.toString()) ;
     }
     
