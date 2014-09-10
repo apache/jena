@@ -292,6 +292,21 @@ public class RdfTypesTest {
         TripleWritable tw = new TripleWritable(t);
         testWriteRead(tw, tw);
     }
+    
+    /**
+     * Basic triple writable round tripping test
+     * 
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws ClassNotFoundException
+     */
+    @Test
+    public void triple_writable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+        Triple t = new Triple(NodeFactory.createAnon(), NodeFactory.createURI("http://predicate"), NodeFactory.createLiteral("value"));
+        TripleWritable tw = new TripleWritable(t);
+        testWriteRead(tw, tw);
+    }
 
     /**
      * Basic quad writable round tripping test
@@ -304,6 +319,22 @@ public class RdfTypesTest {
     @Test
     public void quad_writable_01() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
         Quad q = new Quad(Quad.defaultGraphNodeGenerated, NodeFactory.createURI("http://example"), NodeFactory.createURI("http://predicate"),
+                NodeFactory.createLiteral("value"));
+        QuadWritable qw = new QuadWritable(q);
+        testWriteRead(qw, qw);
+    }
+    
+    /**
+     * Basic quad writable round tripping test
+     * 
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws ClassNotFoundException
+     */
+    @Test
+    public void quad_writable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+        Quad q = new Quad(Quad.defaultGraphNodeGenerated, NodeFactory.createAnon(), NodeFactory.createURI("http://predicate"),
                 NodeFactory.createLiteral("value"));
         QuadWritable qw = new QuadWritable(q);
         testWriteRead(qw, qw);

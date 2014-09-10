@@ -19,7 +19,13 @@
 package org.apache.jena.hadoop.rdf.types;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
+
+import org.apache.jena.hadoop.rdf.types.converters.ThriftConverter;
+import org.apache.jena.riot.thrift.ThriftConvert;
+import org.apache.jena.riot.thrift.wire.RDF_Triple;
+import org.apache.thrift.TException;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -31,6 +37,8 @@ import com.hp.hpl.jena.graph.Triple;
  * 
  */
 public class TripleWritable extends AbstractNodeTupleWritable<Triple> {
+
+    private RDF_Triple triple = new RDF_Triple();
 
     /**
      * Creates a new instance using the default NTriples node formatter
@@ -62,6 +70,51 @@ public class TripleWritable extends AbstractNodeTupleWritable<Triple> {
         TripleWritable t = new TripleWritable();
         t.readFields(input);
         return t;
+    }
+
+    @Override
+    public void set(Triple tuple) {
+        super.set(tuple);
+        this.triple.clear();
+    }
+
+    @Override
+    public void readFields(DataInput input) throws IOException {
+        this.triple.clear();
+        int tripleLength = input.readInt();
+        byte[] buffer = new byte[tripleLength];
+        input.readFully(buffer);
+        try {
+            ThriftConverter.fromBytes(buffer, this.triple);
+        } catch (TException e) {
+            throw new IOException(e);
+        }
+        this.setInternal(new Triple(ThriftConvert.convert(this.triple.getS()),
+                ThriftConvert.convert(this.triple.getP()), ThriftConvert.convert(this.triple.getO())));
+    }
+
+    @Override
+    public void write(DataOutput output) throws IOException {
+        if (this.get() == null)
+            throw new IOException(
+                    "Null triples cannot be written using this class, consider using NodeTupleWritable instead");
+        
+        // May not have yet prepared the Thrift triple
+        if (!this.triple.isSetS()) {
+            Triple tuple = this.get();
+            this.triple.setS(ThriftConvert.convert(tuple.getSubject(), false));
+            this.triple.setP(ThriftConvert.convert(tuple.getPredicate(), false));
+            this.triple.setO(ThriftConvert.convert(tuple.getObject(), false));
+        }
+
+        byte[] buffer;
+        try {
+            buffer = ThriftConverter.toBytes(this.triple);
+        } catch (TException e) {
+            throw new IOException(e);
+        }
+        output.writeInt(buffer.length);
+        output.write(buffer);
     }
 
     @Override

@@ -29,10 +29,16 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
 /**
  * A abstract general purpose writable where the actual class represented is
  * composed of a number of {@link Node} instances
- * 
- * 
+ * <p>
+ * The binary encoding of this base implementation is just a variable integer
+ * indicating the number of nodes present followed by the binary encodings of
+ * the {@link NodeWritable} instances. Derived implementations may wish to
+ * override the {@link #readFields(DataInput)} and {@link #write(DataOutput)}
+ * methods in order to use more specialised encodings.
+ * </p>
  * 
  * @param <T>
+ *            Tuple type
  */
 public abstract class AbstractNodeTupleWritable<T> implements WritableComparable<AbstractNodeTupleWritable<T>> {
 
@@ -75,7 +81,7 @@ public abstract class AbstractNodeTupleWritable<T> implements WritableComparable
     }
 
     @Override
-    public final void readFields(DataInput input) throws IOException {
+    public void readFields(DataInput input) throws IOException {
         // Determine how many nodes
         int size = WritableUtils.readVInt(input);
         Node[] ns = new Node[size];
@@ -100,7 +106,7 @@ public abstract class AbstractNodeTupleWritable<T> implements WritableComparable
     protected abstract T createTuple(Node[] ns);
 
     @Override
-    public final void write(DataOutput output) throws IOException {
+    public void write(DataOutput output) throws IOException {
         // Determine how many nodes
         Node[] ns = this.createNodes(this.tuple);
         WritableUtils.writeVInt(output, ns.length);
@@ -111,6 +117,22 @@ public abstract class AbstractNodeTupleWritable<T> implements WritableComparable
             nw.set(ns[i]);
             nw.write(output);
         }
+    }
+
+    /**
+     * Sets the tuple value
+     * <p>
+     * Intended only for internal use i.e. when a derived implementation
+     * overrides {@link #readFields(DataInput)} and needs to set the tuple value
+     * directly i.e. when a derived implementation is using a custom encoding
+     * scheme
+     * </p>
+     * 
+     * @param tuple
+     *            Tuple
+     */
+    protected final void setInternal(T tuple) {
+        this.tuple = tuple;
     }
 
     /**

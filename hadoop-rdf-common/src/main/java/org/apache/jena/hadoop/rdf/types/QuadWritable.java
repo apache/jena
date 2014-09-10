@@ -19,7 +19,13 @@
 package org.apache.jena.hadoop.rdf.types;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
+
+import org.apache.jena.hadoop.rdf.types.converters.ThriftConverter;
+import org.apache.jena.riot.thrift.ThriftConvert;
+import org.apache.jena.riot.thrift.wire.RDF_Quad;
+import org.apache.thrift.TException;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -31,6 +37,8 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * 
  */
 public class QuadWritable extends AbstractNodeTupleWritable<Quad> {
+
+    private RDF_Quad quad = new RDF_Quad();
 
     /**
      * Creates a new empty instance
@@ -64,10 +72,56 @@ public class QuadWritable extends AbstractNodeTupleWritable<Quad> {
     }
 
     @Override
+    public void set(Quad tuple) {
+        super.set(tuple);
+        this.quad.clear();
+    }
+
+    @Override
+    public void readFields(DataInput input) throws IOException {
+        this.quad.clear();
+        int tripleLength = input.readInt();
+        byte[] buffer = new byte[tripleLength];
+        input.readFully(buffer);
+        try {
+            ThriftConverter.fromBytes(buffer, this.quad);
+        } catch (TException e) {
+            throw new IOException(e);
+        }
+        this.setInternal(new Quad(ThriftConvert.convert(this.quad.getG()), ThriftConvert.convert(this.quad.getS()),
+                ThriftConvert.convert(this.quad.getP()), ThriftConvert.convert(this.quad.getO())));
+    }
+
+    @Override
+    public void write(DataOutput output) throws IOException {
+        if (this.get() == null)
+            throw new IOException(
+                    "Null quads cannot be written using this class, consider using NodeTupleWritable instead");
+        
+        // May not have yet prepared the Thrift triple
+        if (!this.quad.isSetS()) {
+            Quad tuple = this.get();
+            this.quad.setG(ThriftConvert.convert(tuple.getGraph(), false));
+            this.quad.setS(ThriftConvert.convert(tuple.getSubject(), false));
+            this.quad.setP(ThriftConvert.convert(tuple.getPredicate(), false));
+            this.quad.setO(ThriftConvert.convert(tuple.getObject(), false));
+        }
+
+        byte[] buffer;
+        try {
+            buffer = ThriftConverter.toBytes(this.quad);
+        } catch (TException e) {
+            throw new IOException(e);
+        }
+        output.writeInt(buffer.length);
+        output.write(buffer);
+    }
+
+    @Override
     protected Quad createTuple(Node[] ns) {
         if (ns.length != 4)
-            throw new IllegalArgumentException(String.format("Incorrect number of nodes to form a quad - got %d but expected 4",
-                    ns.length));
+            throw new IllegalArgumentException(String.format(
+                    "Incorrect number of nodes to form a quad - got %d but expected 4", ns.length));
         return new Quad(ns[0], ns[1], ns[2], ns[3]);
     }
 
