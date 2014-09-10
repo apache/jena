@@ -230,8 +230,8 @@ public class TestOptimizer extends AbstractTestTransform
     
     @Test public void combine_extend_01()
     {
-        Op extend = OpExtend.extendDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
-        extend = OpExtend.extendDirect(extend, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
+        Op extend = OpExtend.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        extend = OpExtend.create(extend, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
         
         String opExpectedString = StrUtils.strjoinNL(
                                             "(extend ((?x 1) (?y 2))",
@@ -242,8 +242,8 @@ public class TestOptimizer extends AbstractTestTransform
     
     @Test public void combine_extend_02()
     {
-        Op extend = OpExtend.extendDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
-        extend = OpExtend.extendDirect(extend, new VarExprList(Var.alloc("y"), new ExprVar("x")));
+        Op extend = OpExtend.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        extend = OpExtend.create(extend, new VarExprList(Var.alloc("y"), new ExprVar("x")));
         
         String opExpectedString = StrUtils.strjoinNL(
                                             "(extend ((?x 1) (?y ?x))",
@@ -255,8 +255,8 @@ public class TestOptimizer extends AbstractTestTransform
     @Test public void combine_extend_03()
     {
         // Technically illegal SPARQL here but useful to validate that the optimizer doesn't do the wrong thing
-        Op extend = OpExtend.extendDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
-        extend = OpExtend.extendDirect(extend, new VarExprList(Var.alloc("x"), new NodeValueInteger(2)));
+        Op extend = OpExtend.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        extend = OpExtend.create(extend, new VarExprList(Var.alloc("x"), new NodeValueInteger(2)));
         
         String opExpectedString = StrUtils.strjoinNL(
                                             "(extend ((?x 2))",
@@ -290,8 +290,8 @@ public class TestOptimizer extends AbstractTestTransform
         
     @Test public void combine_assign_01()
     {
-        Op assign = OpAssign.assignDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
-        assign = OpAssign.assignDirect(assign, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
+        Op assign = OpAssign.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        assign = OpAssign.create(assign, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
         
         String opExpectedString = StrUtils.strjoinNL(
                                             "(assign ((?x 1) (?y 2))",
@@ -302,8 +302,8 @@ public class TestOptimizer extends AbstractTestTransform
     
     @Test public void combine_assign_02()
     {
-        Op assign = OpAssign.assignDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
-        assign = OpAssign.assignDirect(assign, new VarExprList(Var.alloc("y"), new ExprVar("x")));
+        Op assign = OpAssign.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        assign = OpAssign.create(assign, new VarExprList(Var.alloc("y"), new ExprVar("x")));
         
         String opExpectedString = StrUtils.strjoinNL(
                                             "(assign ((?x 1) (?y ?x))",
@@ -314,8 +314,8 @@ public class TestOptimizer extends AbstractTestTransform
     
     @Test public void combine_assign_03()
     {
-        Op assign = OpAssign.assignDirect(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
-        assign = OpAssign.assignDirect(assign, new VarExprList(Var.alloc("x"), new NodeValueInteger(2)));
+        Op assign = OpAssign.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        assign = OpAssign.create(assign, new VarExprList(Var.alloc("x"), new NodeValueInteger(2)));
         
         String opExpectedString = StrUtils.strjoinNL(
                                             "(assign ((?x 2))",

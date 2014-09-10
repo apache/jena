@@ -43,9 +43,12 @@ public class TestAlgebraTranslate extends BaseTest
                                             "  (bgp (triple ?s ?p ?o2)))"
                                             ) ; }
 
-    @Test public void translate_04() { test("?s ?p ?o2 . BIND(?v+1 AS ?v1) BIND(?v + 2 AS ?v2)", 
-                                            "(extend ((?v1 (+ ?v 1)) (?v2 (+ ?v 2)))", 
-                                            "  (bgp (triple ?s ?p ?o2)))"
+    @Test public void translate_04() { test("?s ?p ?o2 . BIND(?v+1 AS ?v1) BIND(?v + 2 AS ?v2)",
+                                            // If combining (extend) during generation.
+                                            //"(extend ((?v1 (+ ?v 1)) (?v2 (+ ?v 2)))", 
+                                            "  (extend ((?v2 (+ ?v 2)))",
+                                            "    (extend ((?v1 (+ ?v 1)))",
+                                            "      (bgp (triple ?s ?p ?o2))))"
                                             ) ; }
     
     
@@ -60,30 +63,13 @@ public class TestAlgebraTranslate extends BaseTest
                                             "  (assign ((?v2 (+ ?v 2)))", 
                                             "    (bgp (triple ?s ?p ?o2))))"
                                             ) ; }
-// 3LC erroneous 
-//    @Test public void translate_07() { test("{ ?s ?p ?o1 . } BIND(?v+1 AS ?v1)",
-//                                            "(join", 
-//                                            "  (bgp (triple ?s ?p ?o1))", 
-//                                            "  (extend ((?v1 (+ ?v 1)))", 
-//                                            "    (table unit)))" 
-//                                            ) ; }
 
     @Test public void translate_07() { test("{ ?s ?p ?o1 . } BIND(?v+1 AS ?v1)",
                                             "(extend ((?v1 (+ ?v 1)))", 
                                             "  (bgp (triple ?s ?p ?o1)) )" 
                                             ) ; }
 
-    
-    
     @Test public void translate_08() { test("BIND(5 AS ?v1)", "(extend ((?v1 5)) [table unit])") ; } 
-
- // 3LC erroneous 
-//    @Test public void translate_09() { test("{ ?s ?p ?o1 . } ?s ?p ?o2 . BIND(?v+1 AS ?v1)",
-//                                            "(join", 
-//                                            "  (bgp (triple ?s ?p ?o1))", 
-//                                            "  (extend ((?v1 (+ ?v 1)))", 
-//                                            "    (bgp (triple ?s ?p ?o2))))"
-//                                            ) ; }
 
     @Test public void translate_09() { test("{ ?s ?p ?o1 . } ?s ?p ?o2 . BIND(?v+1 AS ?v1)",
                                             "(extend ((?v1 (+ ?v 1)))",
@@ -96,16 +82,6 @@ public class TestAlgebraTranslate extends BaseTest
                                             "(extend ((?v1 (+ ?v 1)))",
                                             "   [bgp (triple ?s ?p ?o2) (triple ?s ?p ?o3)])"
                                             ) ; } 
-    
-    
- // 3LC erroneous 
-//    @Test public void translate_11() { test("{ SELECT * {?s ?p ?o2}} BIND(?o+1 AS ?v1)",
-//                                            "(join",
-//                                            "   [bgp (triple ?s ?p ?o2)]",
-//                                            "   [extend ((?v1 (+ ?o 1)))",
-//                                            "     (table unit)",
-//                                            "   ])"
-//                                            ) ; } 
     
     @Test public void translate_11() { test("{ SELECT * {?s ?p ?o2}} BIND(?o+1 AS ?v1)",
                                             "(extend [(?v1 (+ ?o 1))]",

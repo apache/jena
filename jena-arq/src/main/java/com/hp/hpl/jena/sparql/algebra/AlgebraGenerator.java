@@ -351,7 +351,7 @@ public class AlgebraGenerator
         if ( elt instanceof ElementBind )
         {
             ElementBind bind = (ElementBind)elt ;
-            return OpExtend.extend(current, bind.getVar(), bind.getExpr()) ;
+            return OpExtend.create(current, bind.getVar(), bind.getExpr()) ;
         }
 
         if ( elt instanceof ElementOptional )
@@ -582,7 +582,7 @@ public class AlgebraGenerator
         // ---- Assignments from SELECT and other places (so available to ORDER and HAVING)
         if ( ! exprs.isEmpty() )
             // Potential rewrites based of assign introducing aliases.
-            op = OpExtend.extend(op, exprs) ;
+            op = OpExtend.create(op, exprs) ;
 
         // ---- HAVING
         if ( query.hasHaving() )
