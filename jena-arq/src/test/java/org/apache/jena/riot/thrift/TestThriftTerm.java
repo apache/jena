@@ -222,8 +222,10 @@ public class TestThriftTerm extends BaseTest {
     private RDF_Term testTerm(Node node, PrefixMap pmap, boolean asValue) {
         RDF_Term rt = ThriftConvert.convert(node, pmap, asValue) ;
         assertTrue(rt.isSet()) ;
-
-        if ( node.isURI() ) {
+        
+        if ( node == null) {
+            assertTrue(rt.isSetUndefined());
+        } else if ( node.isURI() ) {
             assertTrue(rt.isSetIri() || rt.isSetPrefixName() ) ;
             if ( rt.isSetIri() ) {
                 RDF_IRI iri = rt.getIri() ;
@@ -240,8 +242,7 @@ public class TestThriftTerm extends BaseTest {
             // Nothing specific to check.
             // And not reversible.
             return rt ;
-        }
-        else if ( node.isLiteral() ) {
+        } else if ( node.isLiteral() ) {
             assertTrue(rt.isSetLiteral()) ;
             RDF_Literal lit = rt.getLiteral() ;
             assertTrue(lit.isSetLex()) ;
@@ -278,6 +279,18 @@ public class TestThriftTerm extends BaseTest {
         RDF_Term rt = TRDF.tUNDEF ;
         Node n = ThriftConvert.convert(rt) ;
         assertNull(n) ;
+    }
+    
+    @Test public void round_trip_01() {
+        testTerm(null, null, false);
+    }
+    
+    @Test public void round_trip_02() {
+        testTerm(Node.ANY, null, false);
+    }
+    
+    @Test public void round_trip_03() {
+        testTerm(NodeFactory.createVariable("x"), null, false);
     }
 }
 
