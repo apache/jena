@@ -274,10 +274,10 @@ public class TestThriftTerm extends BaseTest {
             assertEquals(Node.ANY, n) ;
        }
 
-//    @Test public void rdfterm_02() { 
-//        RDF_Term rt = TRDF.UNDEF ;
-//        Node n = TRDF.convert(rt) ;
-//        assertNull(n) ;
-//    }
+    @Test public void rdfterm_02() { 
+        RDF_Term rt = TRDF.tUNDEF ;
+        Node n = ThriftConvert.convert(rt) ;
+        assertNull(n) ;
+    }
 }
 
