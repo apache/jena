@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestOptimizer extends AbstractTestTransform
 {
@@ -264,6 +265,28 @@ public class TestOptimizer extends AbstractTestTransform
         
         check(extend, new TransformExtendCombine(), opExpectedString);
     }
+    
+    @Test public void combine_extend_04()
+    {
+        String opString = StrUtils.strjoinNL
+            ("(extend ((?x 2))"
+            ,"  (extend ((?y 3))"
+            ,"    (distinct"
+            ,"      (extend ((?a 'A') (?b 'B'))"
+            ,"        (extend ((?c 'C'))"
+            ,"          (table unit)"
+            ,"        )))))"
+            );
+        String opExpectedString = StrUtils.strjoinNL
+            ("(extend ((?y 3) (?x 2))"
+            ,"  (distinct"
+            ,"    (extend ((?c 'C') (?a 'A') (?b 'B'))" 
+            ,"      (table unit))))");
+        
+        Op op = SSE.parseOp(opString) ;
+        check(op, new TransformExtendCombine(), opExpectedString);
+    }
+
         
     @Test public void combine_assign_01()
     {
@@ -301,4 +324,26 @@ public class TestOptimizer extends AbstractTestTransform
         
         check(assign, new TransformExtendCombine(), opExpectedString);
     }
+    
+    @Test public void combine_assign_04()
+    {
+        String opString = StrUtils.strjoinNL
+            ("(assign ((?x 2))"
+            ,"  (assign ((?y 3))"
+            ,"    (distinct"
+            ,"      (assign ((?a 'A') (?b 'B'))"
+            ,"        (assign ((?c 'C'))"
+            ,"          (table unit)"
+            ,"        )))))"
+            );
+        String opExpectedString = StrUtils.strjoinNL
+            ("(assign ((?y 3) (?x 2))"
+            ,"  (distinct"
+            ,"    (assign ((?c 'C') (?a 'A') (?b 'B'))" 
+            ,"      (table unit))))");
+        
+        Op op = SSE.parseOp(opString) ;
+        check(op, new TransformExtendCombine(), opExpectedString);
+    }
+
 }
