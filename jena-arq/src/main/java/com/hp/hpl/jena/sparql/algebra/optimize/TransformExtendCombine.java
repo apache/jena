@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
-import com.hp.hpl.jena.sparql.algebra.op.OpExtend;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
+import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
 
 /**
  * An optimizer that aims to combine multiple extend clauses together.
@@ -45,7 +45,21 @@ public class TransformExtendCombine extends TransformCopy {
     @Override
     public Op transform(OpAssign opAssign, Op subOp) {
         if (subOp instanceof OpAssign) {
-            return OpAssign.assign(Transformer.transform(this, subOp), opAssign.getVarExprList());
+            // If a variable is assigned twice, don't do anything.
+            // (assign (?x 2)  (assign (?x 1) op)) => leave alone.
+            // This is the safest option in a rare case.
+            // It would be OK if addAll does a replacement without checking
+            // but having it check and complain about duplicates adds robustness.
+            // In OpExtend, it's actually illegal.
+
+            OpAssign x = (OpAssign)subOp ;
+            VarExprList outerVarExprList = opAssign.getVarExprList() ;
+            VarExprList innerVarExprList = x.getVarExprList() ;
+            
+            Op r = OpAssign.assign(x.getSubOp(), innerVarExprList) ;
+            // This contains an "if already assigned" test.
+            r = OpAssign.assign(r, outerVarExprList) ;
+            return r ;
         }
         return super.transform(opAssign, subOp);
     }
@@ -53,7 +67,15 @@ public class TransformExtendCombine extends TransformCopy {
     @Override
     public Op transform(OpExtend opExtend, Op subOp) {
         if (subOp instanceof OpExtend) {
-            return OpExtend.extend(Transformer.transform(this, subOp), opExtend.getVarExprList());
+            // The case of (extend (?x e1) (extend (?x e2) ...op...))
+            // is actually illegal in SPARQL.  ?x must be a fresh variable.
+            OpExtend x = (OpExtend)subOp ;
+            VarExprList outerVarExprList = opExtend.getVarExprList() ;
+            VarExprList innerVarExprList = x.getVarExprList() ;
+            Op r = OpExtend.extend(x.getSubOp(), innerVarExprList) ;
+            // This contains an "if already assigned" test.
+            r = OpExtend.extend(r, outerVarExprList) ;
+            return r ;
         }
         return super.transform(opExtend, subOp);
     }
