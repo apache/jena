@@ -212,6 +212,11 @@ public class ThriftConvert
     }
     
     public static void toThrift(Node node, PrefixMap pmap, RDF_Term term, boolean allowValues) {
+        if ( node == null) {
+            term.setUndefined(TRDF.UNDEF);
+            return;
+        }
+        
         if ( node.isURI() ) {
             RDF_PrefixName prefixName = contract(node.getURI(), pmap) ;
             if ( prefixName != null ) {
@@ -259,7 +264,7 @@ public class ThriftConvert
             return ;
         }
         
-        if ( Var.isVar(node) ) {
+        if ( node.isVariable() ) {
             RDF_VAR var = new RDF_VAR(node.getName()) ;
             term.setVariable(var) ;
             return ;
