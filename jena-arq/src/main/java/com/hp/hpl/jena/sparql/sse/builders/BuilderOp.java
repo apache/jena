@@ -701,7 +701,7 @@ public class BuilderOp
                 sub = OpTable.unit() ;
             else
                 sub = build(list, 2) ;
-            return OpAssign.assign(sub, x) ;
+            return OpAssign.create(sub, x) ;
         }
     } ;
 
