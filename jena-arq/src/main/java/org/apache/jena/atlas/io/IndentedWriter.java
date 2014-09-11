@@ -33,10 +33,14 @@ import org.apache.jena.atlas.lib.Closeable ;
 public class IndentedWriter extends AWriterBase implements AWriter, Closeable
 {
     /** Stdout wrapped in an IndentedWriter - no line numbers */
-    public static final IndentedWriter stdout = new IndentedWriter(System.out) ; 
+    public static final IndentedWriter stdout = new IndentedWriter(System.out) ;
     /** Stderr wrapped in an IndentedWriter - no line numbers */
     public static final IndentedWriter stderr = new IndentedWriter(System.err) ;
     
+    static {
+        stdout.setFlushOnNewline(true) ;
+        stderr.setFlushOnNewline(true) ;
+    }
     // Note cases:if (!flatMode) 
     // 1/ incIndent - decIndent with no output should not cause any padding
     // 2/ newline() then no text, then finish should not cause a line number.
