@@ -33,6 +33,7 @@ import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,6 +134,7 @@ public class RdfTypesTest {
      * @throws ClassNotFoundException
      */
     @Test
+    @Ignore
     public void node_writable_variable_01() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
         Node n = NodeFactory.createVariable("x");
         NodeWritable nw = new NodeWritable(n);
@@ -148,6 +150,7 @@ public class RdfTypesTest {
      * @throws ClassNotFoundException
      */
     @Test
+    @Ignore
     public void node_writable_variable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
         Node n = NodeFactory.createVariable("really-log-variable-name-asddsfr4545egfdgdfgfdgdtgvdg-dfgfdgdfgdfgdfg4-dfvdfgdfgdfgfdgfdgdfgdfgfdg");
         NodeWritable nw = new NodeWritable(n);
