@@ -22,6 +22,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import org.apache.hadoop.io.WritableComparator;
+import org.apache.jena.hadoop.rdf.types.comparators.SimpleBinaryComparator;
 import org.apache.jena.hadoop.rdf.types.converters.ThriftConverter;
 import org.apache.jena.riot.thrift.ThriftConvert;
 import org.apache.jena.riot.thrift.wire.RDF_Triple;
@@ -37,6 +39,10 @@ import com.hp.hpl.jena.graph.Triple;
  * 
  */
 public class TripleWritable extends AbstractNodeTupleWritable<Triple> {
+    
+    static {
+        WritableComparator.define(TripleWritable.class, new SimpleBinaryComparator());
+    }
 
     private RDF_Triple triple = new RDF_Triple();
 

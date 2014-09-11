@@ -23,7 +23,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
-import org.apache.jena.hadoop.rdf.types.compators.NodeComparator;
+import org.apache.jena.hadoop.rdf.types.comparators.SimpleBinaryComparator;
 import org.apache.jena.hadoop.rdf.types.converters.ThriftConverter;
 import org.apache.jena.riot.thrift.TRDF;
 import org.apache.jena.riot.thrift.ThriftConvert;
@@ -35,11 +35,18 @@ import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 /**
  * A writable for {@link Node} instances
+ * <p>
+ * This uses <a
+ * href="http://afs.github.io/rdf-thrift/rdf-binary-thrift.html">RDF Thrift</a>
+ * for the binary encoding of terms. The in-memory storage for this type is both
+ * a {@link Node} and a {@link RDF_Term} with lazy conversion between the two
+ * forms as necessary.
+ * </p>
  */
 public class NodeWritable implements WritableComparable<NodeWritable> {
 
     static {
-        WritableComparator.define(NodeWritable.class, new NodeComparator());
+        WritableComparator.define(NodeWritable.class, new SimpleBinaryComparator());
     }
 
     private Node node;
@@ -82,6 +89,13 @@ public class NodeWritable implements WritableComparable<NodeWritable> {
      * @return Node
      */
     public Node get() {
+        // We may not have yet loaded the node
+        if (this.node == null) {
+            // If term is set to undefined then node is supposed to be null
+            if (this.term.isSet() && !this.term.isSetUndefined()) {
+                this.node = ThriftConvert.convert(this.term);
+            }
+        }
         return this.node;
     }
 
@@ -94,13 +108,18 @@ public class NodeWritable implements WritableComparable<NodeWritable> {
     public void set(Node n) {
         this.node = n;
         // Clear the term for now
-        // Only convert the Node to it as and when we want to write it out
+        // We only convert the Node to a term as and when we want to write it
+        // out in order to not waste effort if the value is never written out
         this.term.clear();
     }
 
     @Override
     public void readFields(DataInput input) throws IOException {
+        // Clear previous value
+        this.node = null;
         this.term.clear();
+
+        // Read in the new value
         int termLength = input.readInt();
         byte[] buffer = new byte[termLength];
         input.readFully(buffer);
@@ -109,7 +128,8 @@ public class NodeWritable implements WritableComparable<NodeWritable> {
         } catch (TException e) {
             throw new IOException(e);
         }
-        this.node = ThriftConvert.convert(this.term);
+
+        // Note that we don't convert it back into a Node at this time
     }
 
     @Override
@@ -123,6 +143,7 @@ public class NodeWritable implements WritableComparable<NodeWritable> {
             }
         }
 
+        // Write out the Thrift term
         byte[] buffer;
         try {
             buffer = ThriftConverter.toBytes(this.term);
@@ -135,19 +156,27 @@ public class NodeWritable implements WritableComparable<NodeWritable> {
 
     @Override
     public int compareTo(NodeWritable other) {
-        return NodeUtils.compareRDFTerms(this.node, other.node);
+        // Use get() rather than accessing the field directly because the node
+        // field is lazily instantiated from the Thrift term
+        return NodeUtils.compareRDFTerms(this.get(), other.get());
     }
 
     @Override
     public String toString() {
-        if (this.node == null)
+        // Use get() rather than accessing the field directly because the node
+        // field is lazily instantiated from the Thrift term
+        Node n = this.get();
+        if (n == null)
             return "";
-        return this.node.toString();
+        return n.toString();
     }
 
     @Override
     public int hashCode() {
-        return this.node.hashCode();
+        // Use get() rather than accessing the field directly because the node
+        // field is lazily instantiated from the Thrift term
+        Node n = this.get();
+        return n != null ? this.get().hashCode() : 0;
     }
 
     @Override

@@ -108,6 +108,51 @@ public class RdfTypesTest {
         // Check equivalent
         Assert.assertEquals(0, expected.compareTo(actual));
     }
+    
+    /**
+     * Basic node writable round tripping test
+     * 
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws ClassNotFoundException
+     */
+    @Test
+    public void node_writable_null() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+        Node n = null;
+        NodeWritable nw = new NodeWritable(n);
+        testWriteRead(nw, nw);
+    }
+    
+    /**
+     * Basic node writable round tripping test
+     * 
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws ClassNotFoundException
+     */
+    @Test
+    public void node_writable_variable_01() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+        Node n = NodeFactory.createVariable("x");
+        NodeWritable nw = new NodeWritable(n);
+        testWriteRead(nw, nw);
+    }
+    
+    /**
+     * Basic node writable round tripping test
+     * 
+     * @throws IOException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws ClassNotFoundException
+     */
+    @Test
+    public void node_writable_variable_02() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+        Node n = NodeFactory.createVariable("really-log-variable-name-asddsfr4545egfdgdfgfdgdtgvdg-dfgfdgdfgdfgdfg4-dfvdfgdfgdfgfdgfdgdfgdfgfdg");
+        NodeWritable nw = new NodeWritable(n);
+        testWriteRead(nw, nw);
+    }
 
     /**
      * Basic node writable round tripping test

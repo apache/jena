@@ -22,6 +22,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import org.apache.hadoop.io.WritableComparator;
+import org.apache.jena.hadoop.rdf.types.comparators.SimpleBinaryComparator;
 import org.apache.jena.hadoop.rdf.types.converters.ThriftConverter;
 import org.apache.jena.riot.thrift.ThriftConvert;
 import org.apache.jena.riot.thrift.wire.RDF_Quad;
@@ -32,11 +34,12 @@ import com.hp.hpl.jena.sparql.core.Quad;
 
 /**
  * A writable quad
- * 
- * 
- * 
  */
 public class QuadWritable extends AbstractNodeTupleWritable<Quad> {
+
+    static {
+        WritableComparator.define(QuadWritable.class, new SimpleBinaryComparator());
+    }
 
     private RDF_Quad quad = new RDF_Quad();
 
@@ -97,7 +100,7 @@ public class QuadWritable extends AbstractNodeTupleWritable<Quad> {
         if (this.get() == null)
             throw new IOException(
                     "Null quads cannot be written using this class, consider using NodeTupleWritable instead");
-        
+
         // May not have yet prepared the Thrift triple
         if (!this.quad.isSetS()) {
             Quad tuple = this.get();

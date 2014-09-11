@@ -16,17 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.types.compators;
+package org.apache.jena.hadoop.rdf.types.comparators;
 
 import org.apache.hadoop.io.WritableComparator;
 
 /**
- * A comparator for nodes that provides an efficient binary comparison
- * 
- * 
- * 
+ * A general purpose comparator that may be used with any types which can be
+ * compared directly on their binary encodings
  */
-public class NodeComparator extends WritableComparator {
+public class SimpleBinaryComparator extends WritableComparator {
 
     @Override
     public int compare(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2) {
