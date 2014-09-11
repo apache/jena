@@ -580,9 +580,10 @@ public class AlgebraGenerator
         }
         
         // ---- Assignments from SELECT and other places (so available to ORDER and HAVING)
-        if ( ! exprs.isEmpty() )
-            // Potential rewrites based of assign introducing aliases.
-            op = OpExtend.create(op, exprs) ;
+        for ( Var v : exprs.getVars() ) {
+            Expr e = exprs.getExpr(v) ;
+            op = OpExtend.create(op, v, e) ;
+        }
 
         // ---- HAVING
         if ( query.hasHaving() )
