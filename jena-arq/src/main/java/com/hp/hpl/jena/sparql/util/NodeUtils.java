@@ -127,7 +127,22 @@ public class NodeUtils
             return compareLiteralsBySyntax(node1, node2) ;
         
         // One or both not literals
-        // Blank nodes < URIs < Literals
+        // Variables < Blank nodes < URIs < Literals
+        
+        if ( node1.isVariable() )
+        {
+            if ( node2.isVariable() )
+            {
+                return StrUtils.strCompare(node1.getName(), node2.getName()) ;
+            }
+            // Variables before anything else
+            return Expr.CMP_LESS;
+        }
+        
+        if ( node2.isVariable() ) {
+            // node1 not variable
+            return Expr.CMP_GREATER ;
+        }
         
         if ( node1.isBlank() )
         {
@@ -137,7 +152,7 @@ public class NodeUtils
                 String s2 = node2.getBlankNodeId().getLabelString() ;
                 return StrUtils.strCompare(s1, s2) ;
             }
-            // bNodes before anything else.
+            // bNodes before anything but variables
             return Expr.CMP_LESS ;
         }
             

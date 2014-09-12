@@ -247,4 +247,52 @@ public class TestOrdering extends BaseTest
         int y = NodeUtils.compareRDFTerms(nv1.asNode() , nv2.asNode()) ;
         assertTrue(Expr.CMP_GREATER == x ) ;
     }
+    
+    @Test public void test_variable1() {
+        Node x = NodeFactory.createVariable("x");
+        Node y = NodeFactory.createVariable("x");
+        
+        int res = NodeUtils.compareRDFTerms(x, y);
+        assertTrue("Variable nodes should sort by variable names", Expr.CMP_EQUAL == res);
+    }
+    
+    @Test public void test_variable2() {
+        Node x = NodeFactory.createVariable("x");
+        Node y = NodeFactory.createVariable("y");
+        
+        int res = NodeUtils.compareRDFTerms(x, y);
+        assertTrue("Variable nodes should sort by variable names", Expr.CMP_LESS == res);
+        res = NodeUtils.compareRDFTerms(y, x);
+        assertTrue("Variable nodes should sort by variable names", Expr.CMP_GREATER == res);
+    }
+    
+    @Test public void test_variable3() {
+        Node x = NodeFactory.createVariable("x");
+        Node y = NodeFactory.createAnon();
+        
+        int res = NodeUtils.compareRDFTerms(x, y);
+        assertTrue("Variable nodes should be less than blank nodes", Expr.CMP_LESS == res);
+        res = NodeUtils.compareRDFTerms(y, x);
+        assertTrue("Variable nodes should be less than blank nodes", Expr.CMP_GREATER == res);
+    }
+    
+    @Test public void test_variable4() {
+        Node x = NodeFactory.createVariable("x");
+        Node y = NodeFactory.createURI("http://uri");
+        
+        int res = NodeUtils.compareRDFTerms(x, y);
+        assertTrue("Variable nodes should be less than URI nodes", Expr.CMP_LESS == res);
+        res = NodeUtils.compareRDFTerms(y, x);
+        assertTrue("Variable nodes should be less than URI nodes", Expr.CMP_GREATER == res);
+    }
+    
+    @Test public void test_variable5() {
+        Node x = NodeFactory.createVariable("x");
+        Node y = NodeFactory.createLiteral("test");
+        
+        int res = NodeUtils.compareRDFTerms(x, y);
+        assertTrue("Variable nodes should be less than literal nodes", Expr.CMP_LESS == res);
+        res = NodeUtils.compareRDFTerms(y, x);
+        assertTrue("Variable nodes should be less than literal nodes", Expr.CMP_GREATER == res);
+    }
 }
