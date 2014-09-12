@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-public class OpReduced extends OpModifier
+public class OpReduced extends OpDistinctReduced
 {
     public static Op create(Op op)
     {
