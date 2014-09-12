@@ -404,12 +404,20 @@ public class ARQ
     
     /**
      * Context key controlling whether the standard optimizater applies optimizations to joined BGPs to
-     * merge them into single BGPs
+     * merge them into single BGPs.
+     * By default, this transformation is applied.
      */
     public static final Symbol optMergeBGPs = ARQConstants.allocSymbol("optMergeBGPs");
     
+    /**
+     * Context key controlling whether the standard optimizater applies the optimization
+     * to combine stacks of (extend) into one compound operation.  Ditto (assign). 
+     * By default, this transformation is applied.
+     */
+    public static final Symbol optMergeExtends = ARQConstants.allocSymbol("optMergeExtends");
+
     /** 
-     *  Context key controlling whether the main query engine 
+     *  Context key controlling whether the main query engine processes property functions.
      *  
      */  
     public static final Symbol propertyFunctions = ARQConstants.allocSymbol("propertyFunctions") ;
