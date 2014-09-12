@@ -42,6 +42,8 @@ import com.hp.hpl.jena.sparql.core.VarExprList ;
  */
 public class TransformExtendCombine extends TransformCopy {
 
+    public TransformExtendCombine() {}
+    
     @Override
     public Op transform(OpAssign opAssign, Op subOp) {
         if (subOp instanceof OpAssign) {
