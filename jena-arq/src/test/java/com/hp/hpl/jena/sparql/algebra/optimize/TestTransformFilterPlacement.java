@@ -319,6 +319,37 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         test("(filter (= ?x 123) (project (?x) (bgp (?s ?p ?x) (?s ?p ?z) ) ))",
              "(project (?x) (sequence (filter (= ?x 123) (bgp (?s ?p ?x)) ) (bgp (?s ?p ?z))) )") ;
     }
+    
+    @Test public void place_distinct_01() {
+        test("(filter (= ?x 123) (distinct (bgp (?s ?p ?x)) ))",
+             "(distinct (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
+    }
+
+    @Test public void place_distinct_02() {
+        test("(filter (= ?x 123) (distinct (bgp (?s ?p ?o)) ))",
+             "(distinct (filter (= ?x 123) (bgp (?s ?p ?o)) ))") ;
+    }
+    
+    @Test public void place_distinct_03() {
+        test("(filter (= ?x 123) (reduced (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
+             "(reduced (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+    }
+
+    @Test public void place_reduced_01() {
+        test("(filter (= ?x 123) (reduced (bgp (?s ?p ?x)) ))",
+             "(reduced (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
+    }
+
+    @Test public void place_reduced_02() {
+        test("(filter (= ?x 123) (reduced (bgp (?s ?p ?o)) ))",
+             "(reduced (filter (= ?x 123) (bgp (?s ?p ?o)) ))") ;
+    }
+    
+    @Test public void place_reduced_03() {
+        test("(filter (= ?x 123) (distinct (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
+             "(distinct (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+    }
+
 
     @Test public void place_extend_01() {
         test("(filter (= ?x 123) (extend ((?z 123)) (bgp (?s ?p ?x)) ))",
@@ -351,6 +382,60 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         test("(filter (= ?z 1) (join (extend (?x1 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))))" ,
              "(join (extend (?x1 123) (bgp (?s ?p ?x))) (filter (= ?z 1) (bgp (?s ?p ?z))) )") ;
     }
+    
+    @Test public void place_extend_07() {
+        // Push filters through extend where the extend itself is over an
+        // extend that can have filters pushed into it.
+        String x1 = StrUtils.strjoinNL 
+            ("(filter ( (= ?s 5) (= ?w 6) (= ?s1 7) )"
+             ,"  (extend ((?w 2))"
+             ,"    (extend ((?s 1))"
+             ,"      (table (vars ?s1)"
+             ,"        (row [?s1 1])"
+             ,"))))") ;
+        String x2 = StrUtils.strjoinNL 
+            ("(filter (= ?w 6)"
+            ,"  (extend ((?w 2))"
+            ,"    (filter (= ?s 5)"
+            ,"      (extend ((?s 1))"
+            ,"        (filter (= ?s1 7)"
+            ,"          (table (vars ?s1)"
+            ,"            (row [?s1 1])"
+            ,"          ))))))") ;
+        test(x1, x2) ;
+    }
+
+    @Test public void place_extend_08() {
+        // Push filters through extend where the extend itself is over an
+        // extend that can have filters pushed into it.
+        String x1 = StrUtils.strjoinNL 
+            ("(filter ( (= ?s 'S') (= ?w 'W') (= ?s1 'S1') (= ?a 'A') (= ?b 'B'))"
+             ,"  (extend ((?w 2))"
+             ,"    (extend ((?s 1))"
+             ,"      (distinct"
+             ,"        (extend ((?a 2))"
+             ,"          (extend ((?b 1))"
+             ,"            (table (vars ?s1)"
+             ,"              (row [?s1 1])"
+             ,")))))))"
+             ) ;
+        String x2 = StrUtils.strjoinNL
+            ("(filter (= ?w 'W')"
+            ,"  (extend ((?w 2))"
+            ,"    (filter (= ?s 'S')"
+            ,"      (extend ((?s 1))"
+            ,"        (distinct"
+            ,"          (filter (= ?a 'A')"
+            ,"            (extend ((?a 2))"
+            ,"              (filter (= ?b 'B')"
+            ,"                (extend ((?b 1))"
+            ,"                  (filter (= ?s1 'S1')"
+            ,"                    (table (vars ?s1)"
+            ,"                      (row [?s1 1])"
+            ,"                    )))))))))))"
+            ) ;
+        test(x1, x2) ;
+    }
 
     @Test public void place_assign_01() {
         test("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x)) ))",
@@ -359,7 +444,9 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     
     @Test public void place_assign_02() {
         test("(filter ((= ?x1 123) (= ?x2 456)) (assign (?z 789) (bgp (?s ?p ?x1)) ))",
-             "(filter (= ?x2 456) (assign (?z 789) (filter (= ?x1 123) (bgp (?s ?p ?x1)) )))") ;
+             "(filter (= ?x2 456) (assign (?z 789) (filter (= ?x1 123) (bgp (?s ?p ?x1)) )))"
+             ) ;
+             
     }
     
     @Test public void place_assign_03() { // Blocked
@@ -387,7 +474,61 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     @Test public void place_assign_06a() {
         // With No BGP we won't break up the BGP but we will still push the filter down
         testNoBGP("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x) (?s ?p ?x1) )))",
-             "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1)) ) )") ;
+                  "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1)) ) )") ;
+    }
+
+    @Test public void place_assign_07() {
+        // Push filters through assign where the assign itself is over an
+        // assign that can have filters pushed into it.
+        String x1 = StrUtils.strjoinNL 
+            ("(filter ( (= ?s 5) (= ?w 6) (= ?s1 7) )"
+             ,"  (assign ((?w 2))"
+             ,"    (assign ((?s 1))"
+             ,"      (table (vars ?s1)"
+             ,"        (row [?s1 1])"
+             ,"))))") ;
+        String x2 = StrUtils.strjoinNL 
+            ("(filter (= ?w 6)"
+            ,"  (assign ((?w 2))"
+            ,"    (filter (= ?s 5)"
+            ,"      (assign ((?s 1))"
+            ,"        (filter (= ?s1 7)"
+            ,"          (table (vars ?s1)"
+            ,"            (row [?s1 1])"
+            ,"          ))))))") ;
+        test(x1, x2) ;
+    }
+
+    @Test public void place_assign_08() {
+        // Push filters through assign where the assign itself is over an
+        // assign that can have filters pushed into it.
+        String x1 = StrUtils.strjoinNL 
+            ("(filter ( (= ?s 'S') (= ?w 'W') (= ?s1 'S1') (= ?a 'A') (= ?b 'B'))"
+             ,"  (assign ((?w 2))"
+             ,"    (assign ((?s 1))"
+             ,"      (distinct"
+             ,"        (assign ((?a 2))"
+             ,"          (assign ((?b 1))"
+             ,"            (table (vars ?s1)"
+             ,"              (row [?s1 1])"
+             ,")))))))"
+             ) ;
+        String x2 = StrUtils.strjoinNL
+            ("(filter (= ?w 'W')"
+            ,"  (assign ((?w 2))"
+            ,"    (filter (= ?s 'S')"
+            ,"      (assign ((?s 1))"
+            ,"        (distinct"
+            ,"          (filter (= ?a 'A')"
+            ,"            (assign ((?a 2))"
+            ,"              (filter (= ?b 'B')"
+            ,"                (assign ((?b 1))"
+            ,"                  (filter (= ?s1 'S1')"
+            ,"                    (table (vars ?s1)"
+            ,"                      (row [?s1 1])"
+            ,"                    )))))))))))"
+            ) ;
+        test(x1, x2) ;
     }
 
     @Test public void place_filter_01() {
@@ -673,6 +814,5 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
 
         Op op3 = SSE.parseOp(output) ;
         Assert.assertEquals(op3, op2) ;
-        
     }
 }
