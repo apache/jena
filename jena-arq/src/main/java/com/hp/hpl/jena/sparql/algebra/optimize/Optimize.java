@@ -241,6 +241,10 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
             op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
         
+        // Merge (extend) and (assign) stacks
+        if ( context.isTrueOrUndef(ARQ.optMergeExtends) )
+            op = apply("Merge BGPs", new TransformExtendCombine(), op) ;
+        
         // Mark
         if ( false )
             op = OpLabel.create("Transformed", op) ;
