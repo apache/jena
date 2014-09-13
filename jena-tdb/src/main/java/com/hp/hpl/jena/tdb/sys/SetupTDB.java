@@ -34,7 +34,7 @@ import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.setup.SystemParams ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
@@ -54,7 +54,7 @@ public class SetupTDB
         throw new TDBException(msg) ;
     }
 
-    private static SystemParams params = SystemParams.getDftSystemParams() ;
+    private static StoreParams params = StoreParams.getDftStoreParams() ;
 
 //    // And here we make datasets ... 
 //    public static DatasetGraphTDB buildDataset(Location location)

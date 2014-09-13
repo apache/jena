@@ -24,11 +24,11 @@ import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 
 /** System parameters for a TDB database instance. */
-public class SystemParams implements IndexParams
+public class StoreParams implements IndexParams
 {
     // SystemParams are built with a SystemParamsBuilder
     
-    private static SystemParams dftSystemParams = new SystemParamsBuilder().build() ;
+    private static StoreParams dftStoreParams = new StoreParamsBuilder().build() ;
     
     /* These are items you can change JVM to JVM */
     
@@ -59,13 +59,13 @@ public class SystemParams implements IndexParams
     private final String   prefixNode2Id ;
     private final String   prefixId2Node ;
     
-    public SystemParams(FileMode fileMode, int blockSize, int blockReadCacheSize, int blockWriteCacheSize,
-                        int node2NodeIdCacheSize, int nodeId2NodeCacheSize, int nodeMissCacheSize,
-                        String indexNode2Id, String indexId2Node, 
-                        String primaryIndexTriples, String[] tripleIndexes,
-                        String primaryIndexQuads, String[] quadIndexes,
-                        String primaryIndexPrefix, String[] prefixIndexes, String indexPrefix, 
-                        String prefixNode2Id, String prefixId2Node) {
+    public StoreParams(FileMode fileMode, int blockSize, int blockReadCacheSize, int blockWriteCacheSize,
+                       int node2NodeIdCacheSize, int nodeId2NodeCacheSize, int nodeMissCacheSize,
+                       String indexNode2Id, String indexId2Node, 
+                       String primaryIndexTriples, String[] tripleIndexes,
+                       String primaryIndexQuads, String[] quadIndexes,
+                       String primaryIndexPrefix, String[] prefixIndexes, String indexPrefix, 
+                       String prefixNode2Id, String prefixId2Node) {
         this.fileMode               = fileMode ;
         this.blockSize              = blockSize ;
         this.blockReadCacheSize     = blockReadCacheSize ;
@@ -88,8 +88,8 @@ public class SystemParams implements IndexParams
         this.prefixId2Node          = prefixId2Node ;
     }
 
-    public static SystemParams getDftSystemParams() {
-        return dftSystemParams ;
+    public static StoreParams getDftStoreParams() {
+        return dftStoreParams ;
     }
 
     @Override

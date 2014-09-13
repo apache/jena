@@ -29,5 +29,5 @@ public interface DatasetBuilder
      * Build a new Java object for a dataset.
      * Location may already contains files for the state, or may need initializing.  
      */
-    public DatasetGraphTDB build(Location location, SystemParams params) ;
+    public DatasetGraphTDB build(Location location, StoreParams params) ;
 }

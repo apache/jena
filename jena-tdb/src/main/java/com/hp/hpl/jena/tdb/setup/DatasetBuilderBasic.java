@@ -51,7 +51,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
     
     private NodeTableBuilder nodeTableBuilder ;
     private TupleIndexBuilder tupleIndexBuilder ;
-    private SystemParams params ;
+    private StoreParams params ;
     
     private /*public*/ DatasetBuilderBasic(IndexBuilder indexBuilder, RangeIndexBuilder rangeIndexBuilder)
     {
@@ -61,13 +61,13 @@ public class DatasetBuilderBasic //implements DatasetBuilder
     }
 
     //@Override public
-    private DatasetGraphTDB build(Location location, SystemParams config)
+    private DatasetGraphTDB build(Location location, StoreParams config)
     {
         DatasetControl policy = createConcurrencyPolicy() ;
         
         params = config ;
         if ( config == null )
-            params = SystemParams.getDftSystemParams() ;
+            params = StoreParams.getDftStoreParams() ;
         
         NodeTable nodeTable = makeNodeTable(location, params.getIndexNode2Id(), params.getIndexId2Node(),
                                             -1, -1, -1) ; // No caches

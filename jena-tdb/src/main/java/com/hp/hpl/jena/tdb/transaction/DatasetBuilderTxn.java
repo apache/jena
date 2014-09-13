@@ -35,7 +35,7 @@ import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.setup.BlockMgrBuilder ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.setup.NodeTableBuilder ;
-import com.hp.hpl.jena.tdb.setup.SystemParams ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTableInline ;
@@ -119,7 +119,7 @@ public class DatasetBuilderTxn
     class NodeTableBuilderTx implements NodeTableBuilder
     {
         @Override
-        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, SystemParams params) {
+        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, StoreParams params) {
             FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
             NodeTable ntBase = nodeTables.get(ref) ;
             if ( ntBase == null )
@@ -177,7 +177,7 @@ public class DatasetBuilderTxn
     class NodeTableBuilderReadonly implements NodeTableBuilder
     {
         @Override
-        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, SystemParams params) {
+        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, StoreParams params) {
             FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
             NodeTable nt = nodeTables.get(ref) ;
             nt = new NodeTableReadonly(nt) ;
