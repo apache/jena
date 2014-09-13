@@ -48,7 +48,7 @@ public class BuilderStdDB {
         }
         
         @Override
-        public TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap, String name, SystemParams params) {
+        public TupleIndex buildTupleIndex(FileSet fileSet, ColumnMap colMap, String name, StoreParams params) {
             RecordFactory recordFactory = new RecordFactory(SystemTDB.SizeOfNodeId * colMap.length(), 0) ;
     
             RangeIndex rIdx = rangeIndexBuilder.buildRangeIndex(fileSet, recordFactory, params) ;
@@ -68,7 +68,7 @@ public class BuilderStdDB {
         }
     
         @Override
-        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, SystemParams params) {
+        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, StoreParams params) {
             RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
             Index idx = indexBuilder.buildIndex(fsIndex, recordFactory, params) ;
             ObjectFile objectFile = objectFileBuilder.buildObjectFile(fsObjectFile, Names.extNodeData) ;

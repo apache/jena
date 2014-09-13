@@ -23,20 +23,20 @@ import java.util.Map ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.SystemParams ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 public class StorageConfig
 {
-    public final SystemParams params ;
+    public final StoreParams params ;
     public final Map<FileRef, BlockMgr> blockMgrs ;
     public final Map<FileRef, BufferChannel> bufferChannels ;
     public final Map<FileRef, NodeTable> nodeTables ;
     public final Location location ;
     public final boolean writeable ;
 
-    public StorageConfig(Location location, SystemParams params, boolean writeable, 
+    public StorageConfig(Location location, StoreParams params, boolean writeable, 
                          Map<FileRef, BlockMgr> blockMgrs, 
                          Map<FileRef, BufferChannel> bufferChannels,
                          Map<FileRef, NodeTable> nodeTables)

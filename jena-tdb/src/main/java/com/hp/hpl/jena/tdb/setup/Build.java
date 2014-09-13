@@ -41,14 +41,14 @@ public class Build
 {
     private static boolean VERBOSE = true ;
     private static Logger log = LoggerFactory.getLogger(Build.class) ;
-    private static SystemParams params = SystemParams.getDftSystemParams() ;
+    private static StoreParams params = StoreParams.getDftStoreParams() ;
     
     public static TupleIndex openTupleIndex(Location location, String indexName, String primary, String indexOrder, int readCacheSize, int writeCacheSize, int dftKeyLength, int dftValueLength)
     {
         // XXX replace with:
         // return DatasetBuilderStd.stdBuilder().makeTupleIndex(location, indexName, primary, indexOrder) ;
         // All this to BuilderDB.
-        SystemParamsBuilder spb = new SystemParamsBuilder() ;
+        StoreParamsBuilder spb = new StoreParamsBuilder() ;
         spb.blockReadCacheSize(readCacheSize) ;
         spb.blockWriteCacheSize(writeCacheSize) ;
         RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength) ;
@@ -67,7 +67,7 @@ public class Build
         return makeNodeTable(location, params) ;
     }
 
-    public static NodeTable makeNodeTable(Location location, SystemParams params) {
+    public static NodeTable makeNodeTable(Location location, StoreParams params) {
         DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder() ;
         return dbBuild.makeNodeTable(location, params) ; 
     }
@@ -77,7 +77,7 @@ public class Build
                                           String indexNode2Id, int node2NodeIdCacheSize,
                                           String indexId2Node, int nodeId2NodeCacheSize,
                                           int sizeNodeMissCacheSize) {
-        SystemParamsBuilder spb = new SystemParamsBuilder() ;
+        StoreParamsBuilder spb = new StoreParamsBuilder() ;
         spb.indexNode2Id(indexNode2Id).node2NodeIdCacheSize(node2NodeIdCacheSize) ;
         spb.indexId2Node(indexId2Node).nodeId2NodeCacheSize(nodeId2NodeCacheSize) ;
         DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder() ;

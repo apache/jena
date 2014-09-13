@@ -18,12 +18,12 @@
 
 package com.hp.hpl.jena.tdb.mgt;
 
-import com.hp.hpl.jena.tdb.setup.SystemParams ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TDBSystemInfo implements TDBSystemInfoMBean
 {
-    private static SystemParams params = SystemParams.getDftSystemParams() ;
+    private static StoreParams params = StoreParams.getDftStoreParams() ;
 
     @Override
     public int getSegmentSize()             { return SystemTDB.SegmentSize; }

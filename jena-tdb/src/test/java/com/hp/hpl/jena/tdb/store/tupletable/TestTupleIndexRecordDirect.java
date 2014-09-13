@@ -34,7 +34,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.IndexFactory ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.setup.SystemParams ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -50,7 +50,7 @@ public class TestTupleIndexRecordDirect extends BaseTest
     
     static TupleIndexRecord create(String description)
     {
-        IndexParams indexParams = SystemParams.getDftSystemParams() ; 
+        IndexParams indexParams = StoreParams.getDftStoreParams() ; 
         RangeIndex rIdx = IndexFactory.buildRangeIndex(FileSet.mem(), factory, indexParams) ;
         ColumnMap cmap = new ColumnMap("SPO", description) ;
         TupleIndexRecord index = new TupleIndexRecord(3, cmap, description, factory, rIdx) ;

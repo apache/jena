@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.setup.BlockMgrBuilder ;
-import com.hp.hpl.jena.tdb.setup.SystemParams ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 
 public class IndexFactory {
     private static BlockMgrBuilder   blockMgrBuilder   = new BuilderStdIndex.BlockMgrBuilderStd() ;
@@ -66,7 +66,7 @@ public class IndexFactory {
     }
 
     public static RangeIndex buildRangeIndex(FileSet fileset, RecordFactory recordFactory) {
-        IndexParams indexParams = SystemParams.getDftSystemParams() ;
+        IndexParams indexParams = StoreParams.getDftStoreParams() ;
         return buildRangeIndex(fileset, recordFactory, indexParams) ;
     }
         
@@ -80,7 +80,7 @@ public class IndexFactory {
     }
 
     public static Index buildIndex(FileSet fileset, RecordFactory recordFactory) {
-        IndexParams indexParams = SystemParams.getDftSystemParams() ;
+        IndexParams indexParams = StoreParams.getDftStoreParams() ;
         return buildIndex(fileset, recordFactory, indexParams) ;
     }
     

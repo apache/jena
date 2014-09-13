@@ -22,7 +22,7 @@ import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class SystemParamsBuilder {
+public class StoreParamsBuilder {
     // Initial values are the system defaults.
     
     /** Database and query configuration */ 
@@ -83,10 +83,10 @@ public class SystemParamsBuilder {
     // public static String fPrefixId2Node        = "prefixId2Node" ;
     private String       prefixId2Node         = Names.prefixId2Node ;
 
-    public static SystemParamsBuilder create() { return new SystemParamsBuilder() ; }
+    public static StoreParamsBuilder create() { return new StoreParamsBuilder() ; }
     
-    public SystemParamsBuilder() {}
-    public SystemParamsBuilder(SystemParams other) {
+    public StoreParamsBuilder() {}
+    public StoreParamsBuilder(StoreParams other) {
         this.fileMode               = other.getFileMode() ;
         this.blockSize              = other.getBlockSize() ;
         this.blockReadCacheSize     = other.getBlockReadCacheSize() ;
@@ -109,8 +109,8 @@ public class SystemParamsBuilder {
         this.prefixId2Node          = other.getIndexId2Node() ;
     }
     
-    public SystemParams build() {
-        return new SystemParams(
+    public StoreParams build() {
+        return new StoreParams(
                  fileMode, blockSize, blockReadCacheSize, blockWriteCacheSize, 
                  Node2NodeIdCacheSize, NodeId2NodeCacheSize, NodeMissCacheSize,
                  indexNode2Id, indexId2Node, primaryIndexTriples, tripleIndexes,
@@ -128,7 +128,7 @@ public class SystemParamsBuilder {
         return fileMode ;
     }
     
-    public SystemParamsBuilder fileMode(FileMode fileMode) {
+    public StoreParamsBuilder fileMode(FileMode fileMode) {
         this.fileMode = fileMode ;
         return this ;
     }
@@ -137,7 +137,7 @@ public class SystemParamsBuilder {
         return blockSize ;
     }
 
-    public SystemParamsBuilder blockSize(int blockSize) {
+    public StoreParamsBuilder blockSize(int blockSize) {
         this.blockSize = blockSize ;
         return this ;
     }
@@ -146,7 +146,7 @@ public class SystemParamsBuilder {
         return blockReadCacheSize ;
     }
 
-    public SystemParamsBuilder blockReadCacheSize(int blockReadCacheSize) {
+    public StoreParamsBuilder blockReadCacheSize(int blockReadCacheSize) {
         this.blockReadCacheSize = blockReadCacheSize ;
         return this ;
     }
@@ -155,7 +155,7 @@ public class SystemParamsBuilder {
         return blockWriteCacheSize ;
     }
 
-   public SystemParamsBuilder blockWriteCacheSize(int blockWriteCacheSize) {
+   public StoreParamsBuilder blockWriteCacheSize(int blockWriteCacheSize) {
        this.blockWriteCacheSize = blockWriteCacheSize ;
        return this ;
    }
@@ -164,7 +164,7 @@ public class SystemParamsBuilder {
         return Node2NodeIdCacheSize ;
     }
 
-   public SystemParamsBuilder node2NodeIdCacheSize(int node2NodeIdCacheSize) {
+   public StoreParamsBuilder node2NodeIdCacheSize(int node2NodeIdCacheSize) {
        Node2NodeIdCacheSize = node2NodeIdCacheSize ;
        return this ;
    }
@@ -173,7 +173,7 @@ public class SystemParamsBuilder {
         return NodeId2NodeCacheSize ;
     }
 
-   public SystemParamsBuilder nodeId2NodeCacheSize(int nodeId2NodeCacheSize) {
+   public StoreParamsBuilder nodeId2NodeCacheSize(int nodeId2NodeCacheSize) {
        NodeId2NodeCacheSize = nodeId2NodeCacheSize ;
        return this ;
    }
@@ -182,7 +182,7 @@ public class SystemParamsBuilder {
         return NodeMissCacheSize ;
     }
 
-   public SystemParamsBuilder nodeMissCacheSize(int nodeMissCacheSize) {
+   public StoreParamsBuilder nodeMissCacheSize(int nodeMissCacheSize) {
        NodeMissCacheSize = nodeMissCacheSize ;
        return this ;
    }
@@ -191,7 +191,7 @@ public class SystemParamsBuilder {
         return indexNode2Id ;
     }
 
-   public SystemParamsBuilder indexNode2Id(String indexNode2Id) {
+   public StoreParamsBuilder indexNode2Id(String indexNode2Id) {
        this.indexNode2Id = indexNode2Id ;
        return this ;
    }
@@ -200,7 +200,7 @@ public class SystemParamsBuilder {
         return indexId2Node ;
     }
 
-   public SystemParamsBuilder indexId2Node(String indexId2Node) {
+   public StoreParamsBuilder indexId2Node(String indexId2Node) {
        this.indexId2Node = indexId2Node ;
        return this ;
    }
@@ -209,7 +209,7 @@ public class SystemParamsBuilder {
         return primaryIndexTriples ;
     }
 
-   public SystemParamsBuilder primaryIndexTriples(String primaryIndexTriples) {
+   public StoreParamsBuilder primaryIndexTriples(String primaryIndexTriples) {
        this.primaryIndexTriples = primaryIndexTriples ;
        return this ;
    }
@@ -218,12 +218,12 @@ public class SystemParamsBuilder {
         return tripleIndexes ;
     }
 
-   public SystemParamsBuilder tripleIndexes(String[] tripleIndexes) {
+   public StoreParamsBuilder tripleIndexes(String[] tripleIndexes) {
        this.tripleIndexes = tripleIndexes ;
        return this ;
    }
 
-   public SystemParamsBuilder tripleIndexes(int idx, String tripleIndex) {
+   public StoreParamsBuilder tripleIndexes(int idx, String tripleIndex) {
        this.tripleIndexes[idx] = tripleIndex ;
        return this ;
    }
@@ -232,7 +232,7 @@ public class SystemParamsBuilder {
         return primaryIndexQuads ;
     }
 
-   public SystemParamsBuilder primaryIndexQuads(String primaryIndexQuads) {
+   public StoreParamsBuilder primaryIndexQuads(String primaryIndexQuads) {
        this.primaryIndexQuads = primaryIndexQuads ;
        return this ;
    }
@@ -241,12 +241,12 @@ public class SystemParamsBuilder {
         return quadIndexes ;
     }
 
-   public SystemParamsBuilder quadIndexes(int idx, String quadIndex) {
+   public StoreParamsBuilder quadIndexes(int idx, String quadIndex) {
        this.quadIndexes[idx] = quadIndex ;
        return this ;
    }
 
-   public SystemParamsBuilder quadIndexes(String[] quadIndexes) {
+   public StoreParamsBuilder quadIndexes(String[] quadIndexes) {
        this.quadIndexes = quadIndexes ;
        return this ;
    }
@@ -255,7 +255,7 @@ public class SystemParamsBuilder {
         return primaryIndexPrefix ;
     }
 
-   public SystemParamsBuilder primaryIndexPrefix(String primaryIndexPrefix) {
+   public StoreParamsBuilder primaryIndexPrefix(String primaryIndexPrefix) {
        this.primaryIndexPrefix = primaryIndexPrefix ;
        return this ;
    }
@@ -264,12 +264,12 @@ public class SystemParamsBuilder {
         return prefixIndexes ;
     }
 
-   public SystemParamsBuilder prefixIndexes(String[] prefixIndexes) {
+   public StoreParamsBuilder prefixIndexes(String[] prefixIndexes) {
        this.prefixIndexes = prefixIndexes ;
        return this ;
    }
 
-   public SystemParamsBuilder prefixIndexes(int idx, String prefixIndex) {
+   public StoreParamsBuilder prefixIndexes(int idx, String prefixIndex) {
        this.prefixIndexes[idx] = prefixIndex ;
        return this ;
    }
@@ -278,7 +278,7 @@ public class SystemParamsBuilder {
         return indexPrefix ;
     }
 
-   public SystemParamsBuilder indexPrefix(String indexPrefix) {
+   public StoreParamsBuilder indexPrefix(String indexPrefix) {
        this.indexPrefix = indexPrefix ;
        return this ;
    }
@@ -287,7 +287,7 @@ public class SystemParamsBuilder {
         return prefixNode2Id ;
     }
 
-   public SystemParamsBuilder prefixNode2Id(String prefixNode2Id) {
+   public StoreParamsBuilder prefixNode2Id(String prefixNode2Id) {
        this.prefixNode2Id = prefixNode2Id ;
        return this ;
    }
@@ -296,7 +296,7 @@ public class SystemParamsBuilder {
         return prefixId2Node ;
     }
 
-   public SystemParamsBuilder prefixId2Node(String prefixId2Node) {
+   public StoreParamsBuilder prefixId2Node(String prefixId2Node) {
        this.prefixId2Node = prefixId2Node ;
        return this ;
    }

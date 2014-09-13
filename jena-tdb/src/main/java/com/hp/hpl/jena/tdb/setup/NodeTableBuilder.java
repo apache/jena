@@ -22,5 +22,5 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 
 public interface NodeTableBuilder {
-    NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, SystemParams params) ;
+    NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, StoreParams params) ;
 }
