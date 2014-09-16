@@ -117,9 +117,6 @@ public class UpdateFactory
     /** Append update operations to a request */
     protected static UpdateParser setupParser(Prologue prologue, String baseURI, Syntax syntax)
     {
-        if ( syntax != syntaxSPARQL_11 && syntax != syntaxARQ ) 
-            throw new UnsupportedOperationException("Unrecognized syntax for parsing update: "+syntax) ;
-            
         UpdateParser parser = UpdateParser.createParser(syntax) ;
         
         if ( parser == null )
