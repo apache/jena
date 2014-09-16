@@ -19,9 +19,9 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 // newline policy - don't add until needed.
 class UpdateWriterVisitor implements UpdateVisitor
 {
-    private static final int BLOCK_INDENT = 2 ;
-    private final IndentedWriter out ;
-    private final SerializationContext sCxt ;
+    protected static final int BLOCK_INDENT = 2 ;
+    protected final IndentedWriter out ;
+    protected final SerializationContext sCxt ;
 
     public UpdateWriterVisitor(IndentedWriter out, SerializationContext sCxt)
     {
@@ -262,11 +262,15 @@ class UpdateWriterVisitor implements UpdateVisitor
 
         if ( el != null )
         {
-            FormatterElement fmtElement = new FormatterElement(out, sCxt) ;
+            FormatterElement fmtElement = prepareElementFormatter() ;
             fmtElement.visitAsGroup(el) ;
         }
         else
             out.print("{}") ;
         out.decIndent(BLOCK_INDENT) ;
+    }
+
+    protected FormatterElement prepareElementFormatter() {
+        return new FormatterElement(out, sCxt);
     }
 }
