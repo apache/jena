@@ -33,6 +33,7 @@ public class TestFunctions
 {
     private static final NodeValue INT_ZERO = NodeValue.makeInteger(0) ;
     private static final NodeValue INT_ONE  = NodeValue.makeInteger(1) ;
+    @SuppressWarnings("unused")
     private static final NodeValue INT_TWO  = NodeValue.makeInteger(2) ;
     private static final NodeValue TRUE     = NodeValue.TRUE ;
     private static final NodeValue FALSE    = NodeValue.FALSE ;
@@ -41,6 +42,8 @@ public class TestFunctions
 
     @Test public void exprStrLen1() { test("fn:string-length('')", INT_ZERO) ; }
     @Test public void exprStrLen2() { test("fn:string-length('a')", INT_ONE) ; }
+    // Test from JENA-785
+    @Test public void exprStrLen3() { test("fn:string-length('𐐈𐑌𐐻𐐪𐑉𐐿𐐻𐐮𐐿𐐲')", NodeValue.makeInteger(10l)) ; }
 
     // F&O strings are one-based, and substring takes a length
     @Test public void exprSubstring1() { test("fn:substring('',0)", NodeValue.makeString("")) ; }
@@ -58,12 +61,15 @@ public class TestFunctions
     @Test public void exprSubstring10() { test("fn:substring('abc',1.6,1.33)", NodeValue.makeString("b")) ; }
     // This test was added because the test suite had 1199 tests in. 
     @Test public void exprSubstring11() { test("fn:substring('abc',-1, -15.3)", NodeValue.makeString("")) ; }
+    // Test from JENA-785
+    @Test public void exprSubstring12() { test("fn:substring('𐐈𐑌𐐻𐐪𐑉𐐿𐐻𐐮𐐿𐐲', 1, 1)", NodeValue.makeString("𐐈")) ; } 
     
     @Test public void exprJavaSubstring1() { test("afn:substr('abc',0,0)", NodeValue.makeString("")) ; }
     @Test public void exprJavaSubstring2() { test("afn:substr('abc',0,1)", NodeValue.makeString("a")) ; }
-
     @Test public void exprJavaSubstring3() { test("<"+ARQConstants.ARQFunctionLibrary+"substr>('abc',0,0)", NodeValue.makeString("")) ; }
     @Test public void exprJavaSubstring4() { test("<"+ARQConstants.ARQFunctionLibrary+"substr>('abc',0,1)", NodeValue.makeString("a")) ; }
+    // Test from JENA-785
+    @Test public void exprJavaSubstring5() { test("afn:substr('𐐈𐑌𐐻𐐪𐑉𐐿𐐻𐐮𐐿𐐲', 0, 1)", NodeValue.makeString("𐐈")) ; }
     
     @Test public void exprStrStart0() { test("fn:starts-with('abc', '')", TRUE) ; }
     @Test public void exprStrStart1() { test("fn:starts-with('abc', 'a')", TRUE) ; }

@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.function.library;
 
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
 /** string length - F&O operation */
@@ -30,6 +31,6 @@ public class FN_StrLength extends FunctionBase1
     @Override
     public NodeValue exec(NodeValue v)
     {
-        return NodeValue.makeInteger(v.getString().length()) ;
+        return XSDFuncOp.strlen(v);
     }
 }
