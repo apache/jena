@@ -357,7 +357,7 @@ public class XSDFuncOp
                 return NodeValue.makeString(string.substring(start)) ;
 
             int finish = nvFinish.getInteger().intValue() ;
-            return NodeValue.makeString(string.substring(start, finish)) ;
+            return NodeValue.makeString(string.substring(start, string.offsetByCodePoints(start, finish - start))) ;
         } catch (IndexOutOfBoundsException ex) {
             throw new ExprEvalException("IndexOutOfBounds", ex) ;
         }
@@ -365,7 +365,8 @@ public class XSDFuncOp
 
     public static NodeValue strlen(NodeValue nvString) {
         Node n = checkAndGetStringLiteral("strlen", nvString) ;
-        int len = n.getLiteralLexicalForm().length() ;
+        String str = n.getLiteralLexicalForm();
+        int len = str.codePointCount(0, str.length()) ;
         return NodeValue.makeInteger(len) ;
     }
 
@@ -475,7 +476,7 @@ public class XSDFuncOp
             if ( string.length() == 0 )
                 return calcReturn("", n) ;
 
-            String lex2 = string.substring(start, finish) ;
+            String lex2 = string.substring(start, string.offsetByCodePoints(start, finish - start)) ;
             return calcReturn(lex2, n) ;
         } catch (IndexOutOfBoundsException ex) {
             throw new ExprEvalException("IndexOutOfBounds", ex) ;
