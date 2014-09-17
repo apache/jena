@@ -36,16 +36,16 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateWriter implements UpdateSerializer
 {
-    private final IndentedWriter out;
-    private final SerializationContext sCxt;
+    protected final IndentedWriter out;
+    protected final SerializationContext sCxt;
     
-    private UpdateDataWriter udw;
-    private boolean firstOp = true;
-    private boolean opened = false;
+    protected UpdateDataWriter udw;
+    protected boolean firstOp = true;
+    protected boolean opened = false;
     
     /** Create a UpdateWriter for output of a single UpdateRequest.
      *  @param out
-     *  @param sCxt SerializationContext - pass null for one that wil produce legal output.
+     *  @param sCxt SerializationContext - pass null for one that will produce legal output.
      */
     public UpdateWriter(IndentedWriter out, SerializationContext sCxt)
     {
