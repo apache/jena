@@ -23,10 +23,10 @@ import com.hp.hpl.jena.graph.*;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import static com.hp.hpl.jena.reasoner.rulesys.impl.SparqlInRulesGenericFunctions.anyVariableInQueryPattern;
-import static com.hp.hpl.jena.reasoner.rulesys.impl.SparqlInRulesGenericFunctions.getPredicatesQueryPattern;
+import static com.hp.hpl.jena.reasoner.rulesys.Rule.isRuleWithCombinedSparql;
+import static com.hp.hpl.jena.reasoner.rulesys.SparqlInRulesGenericFunctions.anyVariableInQueryPattern;
 
-import static com.hp.hpl.jena.reasoner.rulesys.impl.SparqlInRulesGenericFunctions.getQueryPattern;
+import static com.hp.hpl.jena.reasoner.rulesys.SparqlInRulesGenericFunctions.getQueryPattern;
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
@@ -85,6 +85,13 @@ public class RETEEngine implements FRuleEngineI {
     
     ArrayList<Triple> injectTriples = new ArrayList<> (); 
     
+    
+    ArrayList<SparqlRuleEngine> sparqlRulesCombined = 
+            new ArrayList<SparqlRuleEngine>();
+    
+    ArrayList<SparqlRuleEngine> combinedRulesCompiled = 
+            new ArrayList<SparqlRuleEngine>();
+    
 //  =======================================================================
 //  Constructors
 
@@ -135,6 +142,81 @@ public class RETEEngine implements FRuleEngineI {
         compile(rules, ignoreBrules);
         findAndProcessAxioms();
         fastInit(inserts);
+        processRulesWithCombinedSparqls();
+    }
+    
+    private void processRulesWithCombinedSparqls() {
+        for(SparqlRuleEngine vSparqlRuleEngine : sparqlRulesCombined ){
+            if(!combinedRulesCompiled.contains(vSparqlRuleEngine)) {
+                compiledCombinedRules(vSparqlRuleEngine);
+            }
+            runSparqlRuleEngine(vSparqlRuleEngine);
+        }
+        runAll();
+    }
+    
+    private void compiledCombinedRules(SparqlRuleEngine vSparqlRuleEngine) {
+        RETEClauseCombinedSparqlRules vRETEClauseCombinedSparqlRules = 
+                new RETEClauseCombinedSparqlRules(vSparqlRuleEngine);
+        
+        Rule rule = vSparqlRuleEngine.rule;
+        for ( int i = 0; i < rule.bodyLength(); i++ ) {
+            Object clause = rule.getBodyElement( i );
+            if (clause instanceof SparqlQuery) {
+                SparqlQuery sparqlQuery = (SparqlQuery) clause;
+                if(anyVariableInQueryPattern(sparqlQuery.getQuery())) {
+                    clauseIndex.put(Node.ANY, vRETEClauseCombinedSparqlRules);
+                    wildcardRule = true;
+                }
+                else {
+                    List<Triple> lstPredQP =  getQueryPattern(sparqlQuery.getQuery());
+                    for(Triple t : lstPredQP) {
+                        Node predicate = t.getPredicate();
+                        Node object = t.getObject();
+                        clauseIndex.put(predicate, vRETEClauseCombinedSparqlRules);
+                        if ( !wildcardRule )
+                        {
+                            if ( object.isVariable() )
+                            {
+                                object = Node.ANY;
+                            }
+                            if ( Functor.isFunctor( object ) )
+                            {
+                                object = Node.ANY;
+                            }
+                            recordPredicatePattern( predicate, object );
+                        }
+                    }
+                }
+            }    
+            else if ( clause instanceof TriplePattern )
+            {
+                Node predicate = ( (TriplePattern) clause ).getPredicate();
+                Node object = ( (TriplePattern) clause ).getObject();
+                if ( predicate.isVariable() )
+                {
+                    clauseIndex.put( Node.ANY, vRETEClauseCombinedSparqlRules );
+                    wildcardRule = true;
+                }
+                else
+                {
+                    clauseIndex.put( predicate, vRETEClauseCombinedSparqlRules );
+                    if ( !wildcardRule )
+                    {
+                        if ( object.isVariable() )
+                        {
+                            object = Node.ANY;
+                        }
+                        if ( Functor.isFunctor( object ) )
+                        {
+                            object = Node.ANY;
+                        }
+                        recordPredicatePattern( predicate, object );
+                    }
+                }
+            }          
+        }
+
     }
     
     /**
@@ -278,27 +360,62 @@ public class RETEEngine implements FRuleEngineI {
             boolean[] seenVar = new boolean[numVars];
             RETESourceNode prior = null;
 
-            for ( int i = 0; i < rule.bodyLength(); i++ )
-            {
-                Object clause = rule.getBodyElement( i );
-                if (clause instanceof SparqlQuery) {
-                    SparqlQuery sparqlQuery = (SparqlQuery) clause;
-                    TriplePattern [] head_tp = new TriplePattern[rule.headLength()];
-                    for(int x=0; x<rule.headLength(); x++) {
-                        head_tp[x] = (TriplePattern) rule.getHeadElement(x);
+            if(isRuleWithCombinedSparql(rule)) {
+                sparqlRulesCombined.add(new SparqlRuleEngine(rule));
+            }
+            else {
+                for ( int i = 0; i < rule.bodyLength(); i++ )
+                {
+                    Object clause = rule.getBodyElement( i );
+                    if (clause instanceof SparqlQuery) {
+                        SparqlQuery sparqlQuery = (SparqlQuery) clause;
+                        TriplePattern [] head_tp = new TriplePattern[rule.headLength()];
+                        for(int x=0; x<rule.headLength(); x++) {
+                            head_tp[x] = (TriplePattern) rule.getHeadElement(x);
+                        }
+                        sparqlQuery.setHead(head_tp);
+                        RETEClauseSparql clauseNode = new RETEClauseSparql(sparqlQuery);
+                        if(anyVariableInQueryPattern(sparqlQuery.getQuery())) {
+                            clauseIndex.put(Node.ANY, clauseNode);
+                            wildcardRule = true;
+                        }
+                        else {
+                            List<Triple> lstPredQP =  getQueryPattern(sparqlQuery.getQuery());
+                            for(Triple t : lstPredQP) {
+                                Node predicate = t.getPredicate();
+                                Node object = t.getObject();
+                                clauseIndex.put(predicate, clauseNode);
+                                if ( !wildcardRule )
+                                {
+                                    if ( object.isVariable() )
+                                    {
+                                        object = Node.ANY;
+                                    }
+                                    if ( Functor.isFunctor( object ) )
+                                    {
+                                        object = Node.ANY;
+                                    }
+                                    recordPredicatePattern( predicate, object );
+                                }
+                            }
+                        }
                     }
-                    sparqlQuery.setHead(head_tp);
-                    RETEClauseSparql clauseNode = new RETEClauseSparql(sparqlQuery);
-                    if(anyVariableInQueryPattern(sparqlQuery.getQuery())) {
-                        clauseIndex.put(Node.ANY, clauseNode);
-                        wildcardRule = true;
-                    }
-                    else {
-                        List<Triple> lstPredQP =  getQueryPattern(sparqlQuery.getQuery());
-                        for(Triple t : lstPredQP) {
-                            Node predicate = t.getPredicate();
-                            Node object = t.getObject();
-                            clauseIndex.put(predicate, clauseNode);
+                    else if ( clause instanceof TriplePattern )
+                    {
+                        // Create the filter node for this pattern
+                        ArrayList<Node> clauseVars = new ArrayList<>( numVars );
+                        RETEClauseFilter clauseNode =
+                            RETEClauseFilter.compile( (TriplePattern) clause, numVars, clauseVars );
+                        Node predicate = ( (TriplePattern) clause ).getPredicate();
+                        Node object = ( (TriplePattern) clause ).getObject();
+                        if ( predicate.isVariable() )
+                        {
+                            clauseIndex.put( Node.ANY, clauseNode );
+                            wildcardRule = true;
+                        }
+                        else
+                        {
+                            clauseIndex.put( predicate, clauseNode );
                             if ( !wildcardRule )
                             {
                                 if ( object.isVariable() )
@@ -312,76 +429,45 @@ public class RETEEngine implements FRuleEngineI {
                                 recordPredicatePattern( predicate, object );
                             }
                         }
+
+                        // Create list of variables which should be cross matched between the earlier clauses and this one
+                        ArrayList<Byte> matchIndices = new ArrayList<>( numVars );
+                        for ( Iterator<Node> iv = clauseVars.iterator(); iv.hasNext(); )
+                        {
+                            int varIndex = ( (Node_RuleVariable) iv.next() ).getIndex();
+                            if ( seenVar[varIndex] )
+                            {
+                                matchIndices.add( new Byte( (byte) varIndex ) );
+                            }
+                            seenVar[varIndex] = true;
+                        }
+
+                        // Build the join node
+                        if ( prior == null )
+                        {
+                            // First clause, no joins yet
+                            prior = clauseNode;
+                        }
+                        else
+                        {
+                            RETEQueue leftQ = new RETEQueue( matchIndices );
+                            RETEQueue rightQ = new RETEQueue( matchIndices );
+                            leftQ.setSibling( rightQ );
+                            rightQ.setSibling( leftQ );
+                            clauseNode.setContinuation( rightQ );
+                            prior.setContinuation( leftQ );
+                            prior = leftQ;
+                        }
                     }
                 }
-                else if ( clause instanceof TriplePattern )
+
+                // Finished compiling a rule - add terminal 
+                if ( prior != null )
                 {
-                    // Create the filter node for this pattern
-                    ArrayList<Node> clauseVars = new ArrayList<>( numVars );
-                    RETEClauseFilter clauseNode =
-                        RETEClauseFilter.compile( (TriplePattern) clause, numVars, clauseVars );
-                    Node predicate = ( (TriplePattern) clause ).getPredicate();
-                    Node object = ( (TriplePattern) clause ).getObject();
-                    if ( predicate.isVariable() )
-                    {
-                        clauseIndex.put( Node.ANY, clauseNode );
-                        wildcardRule = true;
-                    }
-                    else
-                    {
-                        clauseIndex.put( predicate, clauseNode );
-                        if ( !wildcardRule )
-                        {
-                            if ( object.isVariable() )
-                            {
-                                object = Node.ANY;
-                            }
-                            if ( Functor.isFunctor( object ) )
-                            {
-                                object = Node.ANY;
-                            }
-                            recordPredicatePattern( predicate, object );
-                        }
-                    }
-
-                    // Create list of variables which should be cross matched between the earlier clauses and this one
-                    ArrayList<Byte> matchIndices = new ArrayList<>( numVars );
-                    for ( Iterator<Node> iv = clauseVars.iterator(); iv.hasNext(); )
-                    {
-                        int varIndex = ( (Node_RuleVariable) iv.next() ).getIndex();
-                        if ( seenVar[varIndex] )
-                        {
-                            matchIndices.add( new Byte( (byte) varIndex ) );
-                        }
-                        seenVar[varIndex] = true;
-                    }
-
-                    // Build the join node
-                    if ( prior == null )
-                    {
-                        // First clause, no joins yet
-                        prior = clauseNode;
-                    }
-                    else
-                    {
-                        RETEQueue leftQ = new RETEQueue( matchIndices );
-                        RETEQueue rightQ = new RETEQueue( matchIndices );
-                        leftQ.setSibling( rightQ );
-                        rightQ.setSibling( leftQ );
-                        clauseNode.setContinuation( rightQ );
-                        prior.setContinuation( leftQ );
-                        prior = leftQ;
-                    }
+                    RETETerminal term = createTerminal( rule );
+                    prior.setContinuation( term );
                 }
-            }
-
-            // Finished compiling a rule - add terminal 
-            if ( prior != null )
-            {
-                RETETerminal term = createTerminal( rule );
-                prior.setContinuation( term );
-            }
-
+            }    
         }
             
         if (wildcardRule) predicatePatterns = null;
@@ -503,6 +589,17 @@ public class RETEEngine implements FRuleEngineI {
         }
     } 
     
+    private void runSparqlRuleEngine(SparqlRuleEngine sre) {
+        sre.setInfGraph(infGraph);
+        if(sre.run()) {
+            for(Triple t : sre.getResult()) {
+                addTriple(t, true);
+            }
+        }
+    } 
+    
+    
+    
     /**
      * Process the queue of pending insert/deletes until the queues are empty.
      * Public to simplify unit tests - not normally called directly.
@@ -544,6 +641,9 @@ public class RETEEngine implements FRuleEngineI {
             }
             else if (rn instanceof RETEClauseSparql) {
                 runSparqlCommand( ((RETEClauseSparql) rn).getSparqlQuery());
+            }
+            else if (rn instanceof RETEClauseCombinedSparqlRules) {
+                runSparqlRuleEngine( ((RETEClauseCombinedSparqlRules) rn).getSparqlRuleEngine());
             }
         }
     }

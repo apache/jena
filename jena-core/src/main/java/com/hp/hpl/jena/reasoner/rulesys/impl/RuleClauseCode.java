@@ -21,6 +21,7 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
+import static com.hp.hpl.jena.reasoner.rulesys.Rule.isRuleWithCombinedSparql;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -100,6 +101,8 @@ public class RuleClauseCode {
     public static final byte CALL_TABLED = 0x18;
     
      public static final byte CALL_SPARQL = 0x15;
+     
+     public static final byte CALL_SPARQLRULEENGINE = 0x23; 
      
     /** call a table code object from a wildcard () */
     public static final byte CALL_WILD_TABLED = 0x19;
@@ -201,24 +204,30 @@ public class RuleClauseCode {
         }
         state.emitHead((TriplePattern)head);
         
-        // Compile the body operations
-        termStart = new int[rule.bodyLength()];
-        for (int i = skip; i < rule.bodyLength(); i++) {
-            termStart[i] = state.p;
-            ClauseEntry entry = rule.getBodyElement(i);
-            if (entry instanceof TriplePattern) {
-                state.emitBody((TriplePattern)entry, ruleStore);
-            } else if (entry instanceof Functor) {
-                state.emitBody((Functor)entry);
-            } else if (entry instanceof SparqlQuery) {
-                //state.emitBody((SparqlQuery)entry);   
-                state.emitBody((SparqlQuery)entry, (TriplePattern) head);                   
-              } 
-            else {
-                throw new LPRuleSyntaxException("can't create new bRules in an bRule", rule);
-            }
+        if(isRuleWithCombinedSparql(rule)) {
+            state.emitBody(new SparqlRuleEngine(rule));
+            termStart = new int[1];
+            termStart[0] = state.p;
         }
-        
+        else {
+            // Compile the body operations
+            termStart = new int[rule.bodyLength()];
+            for (int i = skip; i < rule.bodyLength(); i++) {
+                termStart[i] = state.p;
+                ClauseEntry entry = rule.getBodyElement(i);
+                if (entry instanceof TriplePattern) {
+                    state.emitBody((TriplePattern)entry, ruleStore);
+                } else if (entry instanceof Functor) {
+                    state.emitBody((Functor)entry);
+                } else if (entry instanceof SparqlQuery) {
+                    //state.emitBody((SparqlQuery)entry);   
+                    state.emitBody((SparqlQuery)entry, (TriplePattern) head);                   
+                  } 
+                else {
+                    throw new LPRuleSyntaxException("can't create new bRules in an bRule", rule);
+                }
+            }
+        }    
         // Extract the final code
         code = state.getFinalCode();
         args = state.getFinalArgs();
@@ -599,6 +608,11 @@ public class RuleClauseCode {
             code[p++] = CALL_SPARQL;
             args.add(sparqlQuery);
             args.add(head);           
+        }        
+ 
+        void emitBody(SparqlRuleEngine sparqlRuleEngine) {
+            code[p++] = CALL_SPARQLRULEENGINE;
+            args.add(sparqlRuleEngine);       
         }        
  
         /**

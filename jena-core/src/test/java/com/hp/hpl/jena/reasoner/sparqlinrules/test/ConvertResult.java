@@ -20,6 +20,8 @@ package com.hp.hpl.jena.reasoner.sparqlinrules.test;
 
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.reasoner.rulesys.impl.ResultList;
+import com.hp.hpl.jena.reasoner.rulesys.impl.ResultRow;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,11 +40,11 @@ public class ConvertResult {
             while(rs.hasNext()) {
 
                 QuerySolution qs = rs.nextSolution();
-
+                
                 ResultRow row = new ResultRow();
 
                 for(String field : resultVars) {     
-                     row.addField(new ResultField(field, qs.get(field).toString()));
+                    row.addResult(field, qs.get(field).asNode());
                 }
 
                 rows.add(row);

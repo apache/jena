@@ -21,8 +21,10 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import static com.hp.hpl.jena.reasoner.rulesys.impl.SparqlInRulesGenericFunctions.anyVariableInQueryPattern;
-import static com.hp.hpl.jena.reasoner.rulesys.impl.SparqlInRulesGenericFunctions.getPredicatesQueryPattern;
+import static com.hp.hpl.jena.reasoner.rulesys.Rule.isRuleWithCombinedSparql;
+import static com.hp.hpl.jena.reasoner.rulesys.SparqlInRulesGenericFunctions.anyVariableInQueryPattern;
+import static com.hp.hpl.jena.reasoner.rulesys.SparqlInRulesGenericFunctions.getPredicatesQueryPattern;
+import static com.hp.hpl.jena.reasoner.rulesys.SparqlInRulesGenericFunctions.getQueryPattern;
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.*;
@@ -68,6 +70,15 @@ public class FRuleEngine implements FRuleEngineI {
     boolean processedAxioms = false;
     
     protected static Logger logger = LoggerFactory.getLogger(FRuleEngine.class);
+
+    ArrayList<Triple> injectTriples = new ArrayList<Triple> (); 
+    
+    
+    ArrayList<SparqlRuleEngine> sparqlRulesCombined = 
+            new ArrayList<SparqlRuleEngine>();
+    
+    ArrayList<SparqlRuleEngine> combinedRulesCompiled = 
+            new ArrayList<SparqlRuleEngine>();
     
 //  =======================================================================
 //  Constructors
@@ -82,8 +93,6 @@ public class FRuleEngine implements FRuleEngineI {
         infGraph = parent;
         this.rules = rules;
     }
-
-    ArrayList<Triple> injectTriples = new ArrayList<Triple> (); 
     
     /**
      * Constructor. Build an empty engine to which rules must be added
@@ -113,8 +122,67 @@ public class FRuleEngine implements FRuleEngineI {
         nAxiomRulesFired = nRulesFired;
         logger.debug("Axioms fired " + nAxiomRulesFired + " rules");
         fastInit(inserts);
+        processRulesWithCombinedSparqls();
     }
     
+    private void processRulesWithCombinedSparqls() {
+        BFRuleContext context = new BFRuleContext(infGraph);
+        for(SparqlRuleEngine vSparqlRuleEngine : sparqlRulesCombined ){
+            if(!combinedRulesCompiled.contains(vSparqlRuleEngine)) {
+                compiledCombinedRules(vSparqlRuleEngine);
+            }
+            runSparqlRuleEngine(vSparqlRuleEngine, context);
+        }
+        addSet(context);
+    }
+    
+    
+    private void compiledCombinedRules(SparqlRuleEngine vSparqlRuleEngine) {
+  
+        Rule r = vSparqlRuleEngine.rule;
+        ClausePointer cp = new ClausePointer( vSparqlRuleEngine);
+        
+        for ( int i = 0; i < r.bodyLength(); i++ ) {
+            Object[] body = r.getBody();
+            for ( int j = 0; j < body.length; j++ )
+            {
+                if (body[j] instanceof SparqlQuery) {
+                    SparqlQuery sparqlQuery = (SparqlQuery) body[j];
+                    if(anyVariableInQueryPattern(sparqlQuery.getQuery())) {
+                        clauseIndex.put(Node.ANY, cp);
+                        wildcardRule = true;
+                    }
+                    else {
+                        List<Node> lstPredQP =  getPredicatesQueryPattern(sparqlQuery.getQuery());
+                        for(Node n : lstPredQP) {
+                            clauseIndex.put(n, cp);
+                            if ( !wildcardRule )
+                            {
+                                predicatesUsed.add( n );
+                            }
+                        }
+                    }
+                }
+                else if ( body[j] instanceof TriplePattern )
+                {
+                    Node predicate = ( (TriplePattern) body[j] ).getPredicate();
+                    if ( predicate.isVariable() )
+                    {
+                        clauseIndex.put( Node.ANY, cp );
+                        wildcardRule = true;
+                    }
+                    else
+                    {
+                        clauseIndex.put( predicate, cp );
+                        if ( !wildcardRule )
+                        {
+                            predicatesUsed.add( predicate );
+                        }
+                    }
+                }
+            }
+        }
+    }
     /**
      * Process all available data. This version expects that all the axioms 
      * have already be preprocessed and the clause index already exists.
@@ -254,6 +322,9 @@ public class FRuleEngine implements FRuleEngineI {
                 else if (cp.isSparqlQuery()) {
                     runSparqlCommand( cp.getSparqlQuery(), context);
                 }
+                else if (cp.isSparqlRuleEngine()) {
+                    runSparqlRuleEngine( cp.getSparqlRuleEngine(), context);
+                }
             }
         }
     }
@@ -275,67 +346,81 @@ public class FRuleEngine implements FRuleEngineI {
             {
                 continue;
             }
-            Object[] body = r.getBody();
-            for ( int j = 0; j < body.length; j++ )
-            {
-                if (body[j] instanceof SparqlQuery) {
-                    SparqlQuery sparqlQuery = (SparqlQuery) body[j];
-                    TriplePattern [] head_tp = new TriplePattern[r.headLength()];
-                    for(int x=0; x<r.headLength(); x++) {
-                        head_tp[x] = (TriplePattern) r.getHeadElement(x);
+            if(isRuleWithCombinedSparql(r)) {
+                sparqlRulesCombined.add(new SparqlRuleEngine(r));
+            }
+            else {
+                Object[] body = r.getBody();
+                for ( int j = 0; j < body.length; j++ )
+                {
+                    if (body[j] instanceof SparqlQuery) {
+                        SparqlQuery sparqlQuery = (SparqlQuery) body[j];
+                        TriplePattern [] head_tp = new TriplePattern[r.headLength()];
+                        for(int x=0; x<r.headLength(); x++) {
+                            head_tp[x] = (TriplePattern) r.getHeadElement(x);
+                        }
+                        sparqlQuery.setHead(head_tp);
+                        ClausePointer cp = new ClausePointer( r, j );
+                        if(anyVariableInQueryPattern(sparqlQuery.getQuery())) {
+                            clauseIndex.put(Node.ANY, cp);
+                            wildcardRule = true;
+                        }
+                        else {
+                            List<Node> lstPredQP =  getPredicatesQueryPattern(sparqlQuery.getQuery());
+                            for(Node n : lstPredQP) {
+                                clauseIndex.put(n, cp);
+                                if ( !wildcardRule )
+                                {
+                                    predicatesUsed.add( n );
+                                }
+                            }
+                        }
                     }
-                    sparqlQuery.setHead(head_tp);
-                    ClausePointer cp = new ClausePointer( r, j );
-                    if(anyVariableInQueryPattern(sparqlQuery.getQuery())) {
-                        clauseIndex.put(Node.ANY, cp);
-                        wildcardRule = true;
-                    }
-                    else {
-                        List<Node> lstPredQP =  getPredicatesQueryPattern(sparqlQuery.getQuery());
-                        for(Node n : lstPredQP) {
-                            clauseIndex.put(n, cp);
+                    else if ( body[j] instanceof TriplePattern )
+                    {
+                        Node predicate = ( (TriplePattern) body[j] ).getPredicate();
+                        ClausePointer cp = new ClausePointer( r, j );
+                        if ( predicate.isVariable() )
+                        {
+                            clauseIndex.put( Node.ANY, cp );
+                            wildcardRule = true;
+                        }
+                        else
+                        {
+                            clauseIndex.put( predicate, cp );
                             if ( !wildcardRule )
                             {
-                                predicatesUsed.add( n );
+                                predicatesUsed.add( predicate );
                             }
                         }
                     }
                 }
-                else if ( body[j] instanceof TriplePattern )
-                {
-                    Node predicate = ( (TriplePattern) body[j] ).getPredicate();
-                    ClausePointer cp = new ClausePointer( r, j );
-                    if ( predicate.isVariable() )
-                    {
-                        clauseIndex.put( Node.ANY, cp );
-                        wildcardRule = true;
-                    }
-                    else
-                    {
-                        clauseIndex.put( predicate, cp );
-                        if ( !wildcardRule )
-                        {
-                            predicatesUsed.add( predicate );
-                        }
-                    }
-                }
-            }
+            }    
         }
             
         if (wildcardRule) predicatesUsed = null;
     }
         
     private void runSparqlCommand(SparqlQuery sq, BFRuleContext context) {
-    ArrayList<Triple> result = ExecSparqlCommand.executeSparqlQuery(sq, context.getGraph());
-    for(Triple t : result) {
-  	if(!injectTriples.contains(t)) {
-            injectTriples.add(t);
-            context.add(t);
- 	}
-    }
-    context.flushPending();
- } 
+        ArrayList<Triple> result = ExecSparqlCommand.executeSparqlQuery(sq, context.getGraph());
+        for(Triple t : result) {
+            if(!injectTriples.contains(t)) {
+                injectTriples.add(t);
+                context.add(t);
+            }
+        }
+        context.flushPending();
+    } 
 
+    private void runSparqlRuleEngine(SparqlRuleEngine sre, BFRuleContext context) {
+        sre.setInfGraph(infGraph);
+        if(sre.run()) {
+            for(Triple t : sre.getResult()) {
+                context.add(t);
+            }
+            context.flushPending();
+        }
+    } 
     
     /**
      * Scan the rules for any axioms and insert those
@@ -673,6 +758,9 @@ public class FRuleEngine implements FRuleEngineI {
         /** The rule containing this clause */
         protected Rule rule;
         
+        protected SparqlRuleEngine sparqlRuleEngine;
+        
+        protected boolean isSparqlRuleEngine = false;
         /** The index of the clause in the rule body */
         protected int index;
         
@@ -680,6 +768,11 @@ public class FRuleEngine implements FRuleEngineI {
         ClausePointer(Rule rule, int index) {
             this.rule = rule;
             this.index = index;
+        }
+        
+        ClausePointer(SparqlRuleEngine sparqlRuleEngine) {
+            this.sparqlRuleEngine = sparqlRuleEngine;
+            this.isSparqlRuleEngine = true;
         }
         
         /** Get the clause pointed to */
@@ -691,14 +784,22 @@ public class FRuleEngine implements FRuleEngineI {
             return (SparqlQuery)rule.getBodyElement(index);
         } 
         
+        SparqlRuleEngine getSparqlRuleEngine() {
+            return this.sparqlRuleEngine;
+        }
+                
         boolean isTriplePattern() {
-            if(rule.getBodyElement(index) instanceof TriplePattern) return true;
+            if(!isSparqlRuleEngine && rule.getBodyElement(index) instanceof TriplePattern) return true;
             else return false;
         }
         
         boolean isSparqlQuery() {
-            if(rule.getBodyElement(index) instanceof SparqlQuery) return true;
+            if(!isSparqlRuleEngine && rule.getBodyElement(index) instanceof SparqlQuery) return true;
             else return false;
+        }
+        
+        boolean isSparqlRuleEngine() {
+            return isSparqlRuleEngine;
         }
     }
     

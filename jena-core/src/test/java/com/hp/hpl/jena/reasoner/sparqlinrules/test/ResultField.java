@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.reasoner.sparqlinrules.test;
 
+import com.hp.hpl.jena.reasoner.rulesys.impl.Result;
+
 
 public class ResultField extends Result{
         String var;

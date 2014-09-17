@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.reasoner.sparqlinrules.test;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 
 public abstract class Result implements ResultInt{

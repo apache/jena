@@ -966,21 +966,8 @@ public class Rule implements ClauseEntry {
             if(token.equals("(") && isSparqlCommand()){
                 String SparqlCmd = getSparqlCommand();
 
-                SPARQLParser parser2 = SPARQLParser.createParser(Syntax.defaultQuerySyntax) ;
-                Query q = new Query();
-                
-                Map<String, String> prefixes = this.getPrefixMap();
-                
-                Set keys = prefixes.keySet();
-
-                for (Iterator i = keys.iterator(); i.hasNext();){ 
-                    String key = (String) i.next();
-                    String value = (String) prefixes.get(key);
-                    q.setPrefix(key, value);
-                }
-                parser2.parse(q, SparqlCmd);
-
-                return new SparqlQuery(SparqlCmd, q, this);
+       
+                return new SparqlQuery(SparqlCmd, this);
             } else if (token.equals("(")) {
                 List<Node> nodes = parseNodeList();
                 if (nodes.size() != 3) {
@@ -1115,11 +1102,11 @@ public class Rule implements ClauseEntry {
                 Rule r = null;
                 if (backwardRule) {
                     validateSparqlInHead(body);
-                    validateOnlyOneSparqlIntheBody(head);
+                    //validateOnlyOneSparqlIntheBody(head);
                     r =  new Rule(name, body, head);
                 } else {
                     validateSparqlInHead(head);
-                    validateOnlyOneSparqlIntheBody(body);
+                    //validateOnlyOneSparqlIntheBody(body);
                     r = new Rule(name, head, body);
                 }
                    r.numVars = varMap.keySet().size();
@@ -1238,4 +1225,16 @@ public class Rule implements ClauseEntry {
         }
     }
      
+    public static boolean isRuleWithCombinedSparql(Rule rule) {
+        boolean retV = false;
+        if(rule.bodyLength()>1) {
+            int i=0;
+            while(!retV && i<rule.bodyLength()){
+                retV = (rule.getBodyElement(i) instanceof SparqlQuery);
+                i++;
+            }
+        }
+        
+        return retV;
+    }
 }

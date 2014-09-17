@@ -21,6 +21,7 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import static com.hp.hpl.jena.reasoner.rulesys.impl.RuleClauseCode.CALL_SPARQLRULEENGINE;
 import com.hp.hpl.jena.reasoner.rulesys.impl.RuleClauseCode.CompileState.RuleClauseCodeList;
 import com.hp.hpl.jena.util.PrintUtil;
 
@@ -552,6 +553,18 @@ public class LPInterpreter {
                             ArrayList<Triple> tripleResults = ExecSparqlCommand.executeSparqlQuery(sparqlQuery, head, goal, engine.getInfGraph());
                             setupSparqlMatchCall(pc, ac, tripleResults);
                             continue main;
+                        
+                        case RuleClauseCode.CALL_SPARQLRULEENGINE:
+                            //System.out.println(" ac -> " + ac);
+                            SparqlRuleEngine sparqlRuleEngine = (SparqlRuleEngine) args[ac++];
+                            ArrayList<Triple> tripleResults2 = new ArrayList<Triple>();
+                            sparqlRuleEngine.setInfGraph(this.engine.getInfGraph());
+                            if(sparqlRuleEngine.run()) {
+                                tripleResults2 = sparqlRuleEngine.getResult();
+                            }
+                            //System.out.println("goal 1 -> " + goal.toString());
+                            setupSparqlMatchCall(pc, ac, tripleResults2);
+                            continue main;    
                             
                         case RuleClauseCode.CALL_PREDICATE:
                             List<RuleClauseCode> clauses = ((RuleClauseCodeList) args[ac++]).getList();

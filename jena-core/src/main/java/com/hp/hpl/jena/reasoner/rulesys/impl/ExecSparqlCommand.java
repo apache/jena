@@ -15,7 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
+
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.Node;
@@ -31,6 +32,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.InfModelImpl;
 import com.hp.hpl.jena.reasoner.InfGraph;
 import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.reasoner.rulesys.Functor;
 import com.hp.hpl.jena.reasoner.rulesys.SparqlQuery;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -179,7 +181,26 @@ public class ExecSparqlCommand {
                 }
 
                 Node object = null;
-                if(head.getObject().isConcrete()) {
+                if (Functor.isFunctor(head.getObject())) {
+                    Node[] args = ((Functor)head.getObject().getLiteralValue()).getArgs();
+                    Node[] newArgs = new Node[args.length];
+                    for(int x=0; x<args.length; x++) {
+                        if(!args[x].isVariable()) {
+                            newArgs[x] = args[x];
+                        }
+                        else {
+                            String varName =  args[x].getName().replace("?", "");
+                            if(resultVars.contains(varName)) {
+                                newArgs[x] = qs.get(varName).asNode();
+                            }
+                            else {
+                                newArgs[x] = args[x];
+                            }
+                        }    
+                    }
+                    object = Functor.makeFunctorNode(((Functor)head.getObject().getLiteralValue()).getName(), newArgs);
+                } 
+                else if(head.getObject().isConcrete()) {
                     object = head.getObject();
                 }
                 else {
@@ -225,6 +246,10 @@ public class ExecSparqlCommand {
         
         Model m = new InfModelImpl(infGraph);
 
+        //Query qf = sparqlQuery.getQuery();
+        
+        //addRulePrefixes(qf, sparqlQuery);
+        
         QueryExecution qe = QueryExecutionFactory.create(sparqlQuery.getQuery(), m);
         
         ArrayList<Triple> tripleResults = new ArrayList<Triple>();
@@ -260,7 +285,26 @@ public class ExecSparqlCommand {
                     }
 
                     Node object = null;
-                    if(head.getObject().isConcrete()) {
+                    if (Functor.isFunctor(head.getObject())) {
+                        Node[] args = ((Functor)head.getObject().getLiteralValue()).getArgs();
+                        Node[] newArgs = new Node[args.length];
+                        for(int x=0; x<args.length; x++) {
+                            if(!args[x].isVariable()) {
+                                newArgs[x] = args[x];
+                            }
+                            else {
+                                String varName =  args[x].getName().replace("?", "");
+                                if(resultVars.contains(varName)) {
+                                    newArgs[x] = qs.get(varName).asNode();
+                                }
+                                else {
+                                    newArgs[x] = args[x];
+                                }
+                            }    
+                        }
+                        object = Functor.makeFunctorNode(((Functor)head.getObject().getLiteralValue()).getName(), newArgs);
+                    } 
+                    else if(head.getObject().isConcrete()) {
                         object = head.getObject();
                     }
                     else {
@@ -272,11 +316,11 @@ public class ExecSparqlCommand {
 
                     if(subject != null && predicate != null && object != null) {
                         Triple newT = new Triple(subject, predicate, object);
-                        TriplePattern newTP = new TriplePattern(newT);
+                        //TriplePattern newTP = new TriplePattern(newT);
                         //if(newT.isConcrete() && newTP.compatibleWith(goal)) {
-                        if(newT.isConcrete()) {
+                        //if(newT.isConcrete()) {
                             tripleResults.add(newT);
-                        }
+                        //}
                     }
                 }
 
@@ -329,15 +373,8 @@ public class ExecSparqlCommand {
   
         Model m = new InfModelImpl(infGraph);
         Query qf = QueryFactory.create(sparqlQuery.getSparqlCmd());
-        Map<String, String> rulesPrefixes = sparqlQuery.getRulesPrefixes();
-        Set keys = rulesPrefixes.keySet();
         
-        for (Iterator i = keys.iterator(); i.hasNext();) 
-        {
-            String prefix = (String) i.next();
-            String localname = (String) rulesPrefixes.get(prefix);
-            qf.setPrefix(prefix, localname);
-        }
+        addRulePrefixes(qf, sparqlQuery);
  
         QueryExecution qe = QueryExecutionFactory.create(qf, m);
         
@@ -399,5 +436,47 @@ public class ExecSparqlCommand {
     
         return tripleResults;
     }
-      
+    
+    public static Answer_SparqlInRules executeSparqlQuery2(SparqlQuery sparqlQuery, InfGraph infGraph){
+        
+        Answer_SparqlInRules vAnswer = new Answer_SparqlInRules();
+        
+        Model m = new InfModelImpl(infGraph);
+
+        
+        QueryExecution qe = QueryExecutionFactory.create(sparqlQuery.getQuery(), m);
+        
+        
+        if(qe.getQuery().isSelectType()) {
+        
+            ResultSet results = qe.execSelect(); 
+            
+            if(results.hasNext()) {
+                vAnswer.setAnswerTrue();
+                vAnswer.setResultList(ResultsOp.convertResult(results));
+            }    
+            else {
+                vAnswer.setAnswerFalse();
+            }
+        }
+        else if(qe.getQuery().isAskType()) {
+            vAnswer.setAnswer(qe.execAsk());
+        }
+
+        return vAnswer;
+    }
+        
+    
+    
+    private static void addRulePrefixes(Query q, SparqlQuery sq) {
+        Map<String, String> rulesPrefixes = sq.getRulesPrefixes();
+        Set keys = rulesPrefixes.keySet();
+        
+        for (Iterator i = keys.iterator(); i.hasNext();) 
+        {
+            String prefix = (String) i.next();
+            String localname = (String) rulesPrefixes.get(prefix);
+            q.setPrefix(prefix, localname);
+        }
+    }
 }

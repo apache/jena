@@ -16,10 +16,28 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.reasoner.sparqlinrules.test;
+
+package com.hp.hpl.jena.reasoner.rulesys.impl;
+
+import com.hp.hpl.jena.reasoner.rulesys.SparqlQuery;
+import java.util.Map;
 
 
-public interface ResultInt{
-    public boolean sameResult(Result r);
-}
+public class RETEClauseCombinedSparqlRules implements RETENode{
+
+    SparqlRuleEngine sparqlRuleEngine;
     
+    public RETEClauseCombinedSparqlRules(SparqlRuleEngine sparqlRuleEngine) {
+        this.sparqlRuleEngine = sparqlRuleEngine;
+    }
+    
+    public SparqlRuleEngine getSparqlRuleEngine() {
+        return sparqlRuleEngine;
+    }
+    
+   @Override
+    public RETENode clone(Map<RETENode, RETENode> netCopy, RETERuleContext context) {
+        return new RETEClauseCombinedSparqlRules(this.getSparqlRuleEngine());
+    }
+    
+}

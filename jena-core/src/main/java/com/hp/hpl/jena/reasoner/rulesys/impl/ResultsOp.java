@@ -16,31 +16,31 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.reasoner.sparqlinrules.test;
 
+package com.hp.hpl.jena.reasoner.rulesys.impl;
+
+import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.reasoner.rulesys.impl.Result;
-import com.hp.hpl.jena.reasoner.rulesys.impl.ResultList;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class CompareResults {
-    
-    public static boolean sameResult(ResultSet r1, ResultSet r2) {
-        ResultList result1 = (new ConvertResult()).getresult(r1);
-
-        ResultList result2 = (new ConvertResult()).getresult(r2);
-         
-        return (sameResult(result1.getResult(), result2.getResult()));
-    }
-    
-    public static boolean sameResult_notEmpty(ResultSet r1, ResultSet r2) {
-        ResultList result1 = (new ConvertResult()).getresult(r1);
-
-        ResultList result2 = (new ConvertResult()).getresult(r2);
-
+public class ResultsOp {
+   public static boolean sameResult(ResultSet r1, ResultSet r2) {
+        ArrayList<Binding> list_res1 = new ArrayList<Binding>();
+        ArrayList<Binding> list_res2 = new ArrayList<Binding>();
         
-        return (result1.getResult().size() > 0 && sameResult(result1.getResult(), result2.getResult()));
+        while(r1.hasNext()){
+            list_res1.add(r1.nextBinding());
+        };
+        
+        while(r2.hasNext()){
+            list_res2.add(r2.nextBinding());
+        };
+
+         
+        return (list_res1.containsAll(list_res2) && list_res2.containsAll(list_res1));
     }
     
     public static boolean sameResult (ArrayList<? extends Result> vl1, ArrayList<? extends Result> vl2) {
@@ -64,30 +64,8 @@ public class CompareResults {
 
             return retV;
         }
-    
-    public static boolean sameResult_notEmpty (ArrayList<? extends Result> vl1, ArrayList<? extends Result> vl2) {
-            boolean retV = (vl1.size() >0 && vl2.size() > 0 && vl1.size() == vl2.size());
-
-            if(retV) {
-
-                boolean cont = true;
-                while(cont && vl1.size()>0) {
-                    int pos = getPosAL(vl1.get(0), vl2);
-                    if(pos>=0) {
-                        vl2.remove(pos);
-                        vl1.remove(0);
-                    }
-                    else {
-                        cont = false;
-                    }
-                }
-               retV = retV && vl2.isEmpty();
-            }
-
-            return retV;
-        }
-    
-    public static int getPosAL(Result o, ArrayList<? extends Result> alO) {
+        
+    private static int getPosAL(Result o, ArrayList<? extends Result> alO) {
             int pos = -1;
             int i=0;
             boolean found = false; 
@@ -105,4 +83,27 @@ public class CompareResults {
             return pos; 
         }
 
-    }
+    public static ResultList convertResult(ResultSet rs) {
+        rs.getResultVars();
+
+        List<String> resultVars = rs.getResultVars();
+
+        ArrayList<ResultRow> rows = new ArrayList<>();
+
+        while(rs.hasNext()) {
+
+            QuerySolution qs = rs.nextSolution();
+
+            ResultRow row = new ResultRow();
+
+            for(String field : resultVars) {     
+                 row.addResult(field, qs.get(field).asNode());
+            }
+
+            rows.add(row);
+
+        }    
+        return new ResultList(rows);
+    }    
+    
+}
