@@ -63,7 +63,7 @@ public class Syntax extends Symbol
      *  The default update language syntax must be capable of accepting
      *  any SPARQL query but may also accept extensions. 
      */
-    public static Syntax defaultUpdateSyntax = syntaxARQ ;
+    public static Syntax defaultUpdateSyntax = syntaxSPARQL_11 ;
     
     /** The query syntax currently that is standardized, published, SPARQL - the "default SPARQL Query" */ 
     public static final Syntax syntaxSPARQL = syntaxSPARQL_11 ;

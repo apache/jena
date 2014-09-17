@@ -27,6 +27,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -368,8 +369,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
                                  new Triple(s,p,o2))) ;
     }
     
-    @Test(expected=QueryParseException.class) public void testUpdateBad1()      { testBad("bad-1.ru", 1) ; }
-    
+    @Test(expected = QueryException.class) public void testUpdateBad1()      { testBad("bad-1.ru", 1) ; }
     @Test public void testUpdateBad2()      { testBad("bad-2.ru", 1) ; }
     @Test public void testUpdateBad3()      { testBad("bad-3.ru", 0) ; }
 
