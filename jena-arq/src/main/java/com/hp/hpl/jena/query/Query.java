@@ -41,7 +41,10 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
+import com.hp.hpl.jena.sparql.serializer.QuerySerializer;
+import com.hp.hpl.jena.sparql.serializer.QuerySerializerFactory;
 import com.hp.hpl.jena.sparql.serializer.Serializer ;
+import com.hp.hpl.jena.sparql.serializer.SerializerRegistry;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.PatternVars ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
@@ -825,7 +828,7 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Output the query
      * @param out  OutputStream
      */
-    public void serialize(OutputStream out) { Serializer.serialize(this, out) ; }
+    public void serialize(OutputStream out) { serialize(out, syntax); }
     
     /** Output the query
      * 
@@ -833,14 +836,21 @@ public class Query extends Prologue implements Cloneable, Printable
      * @param syntax  Syntax URI
      */
     
-    public void serialize(OutputStream out, Syntax syntax) { Serializer.serialize(this, out, syntax) ; }
+    public void serialize(OutputStream out, Syntax syntax) { 
+        IndentedWriter writer = new IndentedWriter(out) ;
+        serialize(writer, syntax) ;
+        writer.flush() ;
+        try { out.flush() ; } catch (Exception ex) { } 
+    }
 
     /** Format the query into the buffer
      * 
      * @param buff    IndentedLineBuffer
      */
     
-    public void serialize(IndentedLineBuffer buff) { Serializer.serialize(this, buff) ; }
+    public void serialize(IndentedLineBuffer buff) { 
+        serialize(buff, syntax); 
+    }
     
     /** Format the query
      * 
@@ -848,14 +858,18 @@ public class Query extends Prologue implements Cloneable, Printable
      * @param outSyntax  Syntax URI
      */
     
-    public void serialize(IndentedLineBuffer buff, Syntax outSyntax) { Serializer.serialize(this, buff, outSyntax) ; }
+    public void serialize(IndentedLineBuffer buff, Syntax outSyntax) { 
+        serialize((IndentedWriter)buff, outSyntax);
+    }
 
     /** Format the query
      * 
      * @param writer  IndentedWriter
      */
     
-    public void serialize(IndentedWriter writer) { Serializer.serialize(this, writer) ; }
+    public void serialize(IndentedWriter writer) { 
+        serialize(writer, syntax); 
+    }
 
     /** Format the query
      * 
@@ -865,6 +879,14 @@ public class Query extends Prologue implements Cloneable, Printable
     
     public void serialize(IndentedWriter writer, Syntax outSyntax)
     {
-        Serializer.serialize(this, writer, outSyntax) ;
+        // Try to use a serializer factory if available
+        QuerySerializerFactory factory = SerializerRegistry.get().getQuerySerializerFactory(outSyntax);
+        if (factory != null) {
+            QueryVisitor serializer = factory.create(outSyntax, this, writer);
+            this.visit(serializer);
+        } else {
+            // Otherwise fall back to old default behaviour
+            Serializer.serialize(this, writer, outSyntax) ;
+        }
     }
 }

@@ -18,61 +18,85 @@
 
 package com.hp.hpl.jena.update;
 
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.io.PrintUtils ;
-import org.apache.jena.atlas.io.Printable ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.io.PrintUtils;
+import org.apache.jena.atlas.io.Printable;
 
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.modify.UpdateCompare ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.modify.UpdateCompare;
+import com.hp.hpl.jena.sparql.modify.request.UpdateSerializer;
+import com.hp.hpl.jena.sparql.modify.request.UpdateWriter;
+import com.hp.hpl.jena.sparql.serializer.SerializerRegistry;
+import com.hp.hpl.jena.sparql.serializer.UpdateSerializerFactory;
 
-/** A SPARQL Update consists of a number of operations (e.g. INSERT, CLEAR).
- *  A request is the unit of execution.
+/**
+ * A SPARQL Update consists of a number of operations (e.g. INSERT, CLEAR). A
+ * request is the unit of execution.
  */
-public class UpdateRequest extends Prologue implements Printable, Iterable<Update>
-{
-    private List<Update> operations = new ArrayList<>() ;
-    private List<Update> operationsView = Collections.unmodifiableList(operations) ;
+public class UpdateRequest extends Prologue implements Printable, Iterable<Update> {
+    private List<Update> operations = new ArrayList<>();
+    private List<Update> operationsView = Collections.unmodifiableList(operations);
 
-    public UpdateRequest() { super() ; }
-    public UpdateRequest(Update update)
-    {
-        this() ;
-        add(update) ;
+    public UpdateRequest() {
+        super();
     }
 
-    public UpdateRequest add(Update update) { operations.add(update) ; return this ; } 
-    public UpdateRequest add(String string)
-    { 
-        UpdateFactory.parse(this, string) ;
-        return this ;
+    public UpdateRequest(Update update) {
+        this();
+        add(update);
     }
 
-    public List<Update> getOperations() { return operationsView ; }
-    
-    @Override
-    public Iterator<Update> iterator()
-    {
-        return operationsView.iterator() ;
+    public UpdateRequest add(Update update) {
+        operations.add(update);
+        return this;
     }
-    
+
+    public UpdateRequest add(String string) {
+        UpdateFactory.parse(this, string);
+        return this;
+    }
+
+    public List<Update> getOperations() {
+        return operationsView;
+    }
+
     @Override
-    public String toString()
-    { return PrintUtils.toString(this) ; } 
-    
+    public Iterator<Update> iterator() {
+        return operationsView.iterator();
+    }
+
     @Override
-    public void output(IndentedWriter out)
-    { UpdateWriter.output(this, out) ; }
-    
+    public String toString() {
+        return PrintUtils.toString(this);
+    }
+
+    @Override
+    public void output(IndentedWriter out) {
+        // Try to use a serializer factory if available
+        UpdateSerializerFactory factory = SerializerRegistry.get().getUpdateSerializerFactory(
+                Syntax.defaultUpdateSyntax);
+        if (factory != null) {
+            UpdateSerializer serializer = factory.create(Syntax.defaultUpdateSyntax, this, out);
+            serializer.open();
+            serializer.update(this);
+            serializer.close();
+        } else {
+            // Otherwise fall back to old default behaviour
+            UpdateWriter.output(this, out);
+        }
+    }
+
     public boolean equalTo(UpdateRequest other) {
-        return UpdateCompare.isomorphic(this, other) ; 
+        return UpdateCompare.isomorphic(this, other);
     }
-        
-    // Better to have an explicit "isomorphism" equality and leave .equals alone.
+
+    // Better to have an explicit "isomorphism" equality and leave .equals
+    // alone.
     // The Query object historical did it the other way so leave that.
 }
