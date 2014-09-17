@@ -19,8 +19,6 @@
 package com.hp.hpl.jena.update;
 
 import static com.hp.hpl.jena.query.Syntax.defaultUpdateSyntax ;
-import static com.hp.hpl.jena.query.Syntax.syntaxARQ ;
-import static com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11 ;
 
 import java.io.InputStream ;
 

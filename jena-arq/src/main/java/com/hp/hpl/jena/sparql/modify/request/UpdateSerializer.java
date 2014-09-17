@@ -32,7 +32,7 @@ public interface UpdateSerializer extends Closeable {
     /**
      * Serializes a sequence of updates
      * 
-     * @param updates
+     * @param updateIter
      *            Updates
      */
     public abstract void update(Iterator<? extends Update> updateIter);

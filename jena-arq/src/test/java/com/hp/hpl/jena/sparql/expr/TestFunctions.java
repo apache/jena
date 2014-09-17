@@ -33,8 +33,7 @@ public class TestFunctions
 {
     private static final NodeValue INT_ZERO = NodeValue.makeInteger(0) ;
     private static final NodeValue INT_ONE  = NodeValue.makeInteger(1) ;
-    @SuppressWarnings("unused")
-    private static final NodeValue INT_TWO  = NodeValue.makeInteger(2) ;
+    //private static final NodeValue INT_TWO  = NodeValue.makeInteger(2) ;
     private static final NodeValue TRUE     = NodeValue.TRUE ;
     private static final NodeValue FALSE    = NodeValue.FALSE ;
     
