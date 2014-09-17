@@ -60,7 +60,7 @@ public class TestSolverTDB extends BaseTest
 
     @BeforeClass static public void beforeClass()
     { 
-        graphData = ConfigTest.getTestingDataRoot()+"/data.ttl" ;
+        graphData = ConfigTest.getTestingDataRoot()+"/Data/solver-data.ttl" ;
         graph = TDBFactory.createDatasetGraph().getDefaultGraph() ;
         Model m = ModelFactory.createModelForGraph(graph) ;
         FileManager.get().readModel(m, graphData) ;
