@@ -59,7 +59,7 @@ or
 <br>
 <i>bare-rule</i> := <i>bhterm</i> &lt;- <i>SparqlCommand</i> // backward rule
 <br><br>
-Note: A Sparql command cannot be combined with other rule terms. 
+
 <br><br>
 A SPARQL command is defined in a rule enclosed by \\\\\\SPARQL ... \\\\\\SPARQL :<br>
 
@@ -104,7 +104,7 @@ Next are presented some examples of rules based on SPARQL commands.
 
 	 (?p ex:lastOrderDate ?d) <- 
 		(\\\SPARQL 
-			select ?r (max(?dt) AS ?d) 
+			select ?p (max(?dt) AS ?d) 
 		 	where { 
 				 . . .  
 		 	} 
@@ -117,14 +117,14 @@ Next are presented some examples of rules based on SPARQL commands.
 	 	(\\\SPARQL 
 			(select ?s ?c 
 			 where { 
-				 ?s exa:enroledAt ?c . 
+				 ?s ex:enroledAt ?c . 
 				 MINUS { 
 					 select ?s ?c 
 					 { 
 					 select ?s ?c  
 					 where { 
-						 ?s exa:failsTo ?l . 
-						 ?l exa:isLessonOf ?c . 
+						 ?s ex:failsTo ?l . 
+						 ?l ex:isLessonOf ?c . 
 					 } 
 					 group by ?s ?c 
 					 having (count(1) > 2) 
@@ -196,6 +196,25 @@ Each product must have an unique identifier
 			 group by ?p_id 
 			 having count(1) > 1)
 		\\\SPARQL).
+
+7) A Sparql command can be combined with other rule terms.
+	
+	 (?x rdf:type ex:IronMan) <-
+	    ex:ironMan ex:numberOfSports ?n .
+	    (\\\SPARQL  
+	         (Select ?x     
+	         Where {    
+	             ?x ex:playSport ?y .   
+	         }  
+	         group by ?x    
+	         having (count(1) >=&n)
+	     \\\SPARQL). 
+
+To make reference to an external variable in a Sparql command, a variable instantiated in a rule term, we use the symbol "&". 
+
+Note: in example above, "&n" in sparql command makes reference to "?n" in the rule term. 
+
+
 
 
 1. Holger Knublauch, James A. Hendler, Kingsley Idehen, Spin - overview and motivation, 2011, http://www.w3.org/Submission/2011/SUBM-spin-overview-20110222/.
