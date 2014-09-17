@@ -41,7 +41,6 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
-import com.hp.hpl.jena.sparql.serializer.QuerySerializer;
 import com.hp.hpl.jena.sparql.serializer.QuerySerializerFactory;
 import com.hp.hpl.jena.sparql.serializer.Serializer ;
 import com.hp.hpl.jena.sparql.serializer.SerializerRegistry;
