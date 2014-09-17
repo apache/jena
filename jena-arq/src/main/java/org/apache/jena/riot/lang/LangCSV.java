@@ -18,19 +18,24 @@
 
 package org.apache.jena.riot.lang;
 
-import java.io.InputStream ;
-import java.io.Reader ;
-import java.util.ArrayList ;
-import java.util.List ;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.atlas.csv.CSVParser ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.atlas.csv.CSVParser;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.IRILib;
+import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.system.StreamRDF;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 
 public class LangCSV implements LangRIOT {
 
@@ -83,10 +88,9 @@ public class LangCSV implements LangRIOT {
 		sink.start();
 		CSVParser parser = (input != null) ? CSVParser.create(input)
 				: CSVParser.create(reader);
-		List<String> row = null;
 		ArrayList<Node> predicates = new ArrayList<Node>();
 		int rowNum = 0;
-		while ((row = parser.parse1()) != null) {
+		for (List<String> row : parser) {
 			
 			if (rowNum == 0) {
 				for (String column : row) {
@@ -113,7 +117,7 @@ public class LangCSV implements LangRIOT {
 					Node o;
 					try {
 						// Try for a double.
-						double d = Double.parseDouble(columnValue);
+						Double.parseDouble(columnValue);
 						o = NodeFactory.createLiteral(columnValue,
 								XSDDatatype.XSDdouble);
 					} catch (Exception e) {

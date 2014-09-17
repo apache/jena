@@ -20,6 +20,7 @@ package org.apache.jena.atlas.csv;
 
 class CSVParseException extends RuntimeException
 {
+    private static final long serialVersionUID = -7804460281144630746L;
     public CSVParseException(String msg, Throwable cause)    { super(msg, cause) ; }
     public CSVParseException(String msg)                     { super(msg) ; }
     public CSVParseException(Throwable cause)                { super(cause) ; }

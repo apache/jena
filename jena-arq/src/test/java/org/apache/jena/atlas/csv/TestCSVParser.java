@@ -18,18 +18,12 @@
 
 package org.apache.jena.atlas.csv;
 
-import static org.apache.jena.atlas.csv.CSVTokenType.NL ;
-import static org.apache.jena.atlas.csv.CSVTokenType.QSTRING ;
-import static org.apache.jena.atlas.csv.CSVTokenType.STRING ;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.io.ByteArrayInputStream ;
-import java.io.InputStream ;
-import java.io.UnsupportedEncodingException ;
-import java.util.ArrayList ;
-import java.util.List ;
-
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.junit.Test ;
+import org.apache.jena.atlas.junit.BaseTest;
+import org.junit.Test;
 
 public class TestCSVParser extends BaseTest
 {
@@ -37,38 +31,6 @@ public class TestCSVParser extends BaseTest
     String[] row2 = { "" } ;
     String[] row3 = { "a", "b" } ;
     String[] row4 = { "123", "\"aa\"", "'bb'", "\"''\"Z", "A'\"\"'" } ;
-    
-    CSVToken t1 = new CSVToken(-1, -1, CSVTokenType.COMMA, ",") ;
-    
-    
-    @Test public void csv_parse_term_01() {  csvTerm("123", STRING, "123") ; }
-    @Test public void csv_parse_term_02()  { csvTerm("aa", STRING, "aa") ; }
-    @Test public void csv_parse_term_03()  { csvTerm("\" \"", QSTRING, " ") ; }
-    @Test public void csv_parse_term_04()  { csvTerm("' '", QSTRING, " ") ; }
-    
-    @Test public void csv_parse_term_05()  { csvTerm("\"a\"\"b\"", QSTRING, "a\"b") ; }
-    @Test public void csv_parse_term_06()  { csvTerm("'a\"b'", QSTRING, "a\"b") ; }
-    
-    @Test public void csv_parse_term_07()  { csvTerm("\n", NL, "\n") ; }
-    @Test public void csv_parse_term_08()  { csvTerm("\r", NL, "\n") ; }
-    @Test public void csv_parse_term_09()  { csvTerm("\r\n", NL, "\n") ; }
-    
-    private static void csvTerm(String input, CSVTokenType type, String output)
-    {
-        try
-        {
-            CSVToken expected = new CSVToken(-1, -1, type, output) ;
-
-            InputStream in = new ByteArrayInputStream(input.getBytes("UTF-8")) ;
-            CSVTokenIterator iter = new CSVTokenIterator(in) ;
-            assertTrue(iter.hasNext()) ;
-            CSVToken t = iter.next() ;
-            assertTrue(expected.same(t)) ;
-        } catch (UnsupportedEncodingException e)
-        {
-            throw new RuntimeException(e) ;
-        }
-    }
     
     @Test public void csv_parse_01() { csv("\n", new String[][] {{""}}) ; }
     @Test public void csv_parse_02() { csv("a\n", new String[][] {{"a"}}) ; }
@@ -101,21 +63,11 @@ public class TestCSVParser extends BaseTest
     private static void csv(String input, List<List<String>> answers)
     {
         List<List<String>> x = new ArrayList<>() ;
-        try {
-            InputStream in = new ByteArrayInputStream(input.getBytes("UTF-8")) ;
-            CSVTokenIterator iter = new CSVTokenIterator(in) ;
-            CSVParser parser = new CSVParser(iter) ;
-            List<String> row = null ;
-            while ( (row=parser.parse1())!=null) {
-                x.add(row) ;
-            }
-            assertEquals(answers, x) ;
-        } catch (UnsupportedEncodingException e)
-        {
-            throw new RuntimeException(e) ;
+        CSVParser parser = new CSVParser(new StringReader(input)) ;
+        for (List<String> row : parser) {
+            x.add(row) ;
         }
-        
-        
+        assertEquals(answers, x) ;
     }
 }
 
