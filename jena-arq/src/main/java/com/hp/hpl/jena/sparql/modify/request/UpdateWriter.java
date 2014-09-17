@@ -21,7 +21,6 @@ package com.hp.hpl.jena.sparql.modify.request;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -35,7 +34,7 @@ import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public class UpdateWriter implements Closeable
+public class UpdateWriter implements UpdateSerializer
 {
     private final IndentedWriter out;
     private final SerializationContext sCxt;
@@ -62,6 +61,10 @@ public class UpdateWriter implements Closeable
         this.sCxt = sCxt;
     }
     
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#open()
+     */
+    @Override
     public void open()
     {
         if (null != sCxt)
@@ -169,6 +172,10 @@ public class UpdateWriter implements Closeable
         }
     }
     
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#update(com.hp.hpl.jena.update.Update)
+     */
+    @Override
     public void update(Update update)
     {
         checkOpen();
@@ -196,11 +203,19 @@ public class UpdateWriter implements Closeable
         return new UpdateWriterVisitor(out, sCxt);
     }
     
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#update(java.lang.Iterable)
+     */
+    @Override
     public void update(Iterable<? extends Update> updates)
     {
         update(updates.iterator());
     }
     
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#update(java.util.Iterator)
+     */
+    @Override
     public void update(Iterator<? extends Update> updateIter)
     {
         while (updateIter.hasNext())
@@ -214,6 +229,9 @@ public class UpdateWriter implements Closeable
         out.flush();
     }
     
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.sparql.modify.request.UpdateSerializer#close()
+     */
     @Override
     public void close()
     {

@@ -16,12 +16,13 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-// newline policy - don't add until needed.
-class UpdateWriterVisitor implements UpdateVisitor
+public class UpdateWriterVisitor implements UpdateVisitor
 {
     protected static final int BLOCK_INDENT = 2 ;
     protected final IndentedWriter out ;
     protected final SerializationContext sCxt ;
+    
+    // TODO newline policy - don't add until needed.
 
     public UpdateWriterVisitor(IndentedWriter out, SerializationContext sCxt)
     {
