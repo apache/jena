@@ -29,12 +29,12 @@ import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 public class NodeTableWrapper implements NodeTable
 {
     protected final NodeTable nodeTable ;
+    public final NodeTable wrapped() { return nodeTable ; } 
     
     protected NodeTableWrapper(NodeTable nodeTable)
     {
         this.nodeTable = nodeTable ;
     }
-    
     
     @Override
     public NodeId getAllocateNodeId(Node node)
