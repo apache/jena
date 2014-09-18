@@ -56,8 +56,10 @@ public class ProgressLogger
     
         // *1000L is milli to second conversion
         if ( timePoint != 0 ) {
+            double time = timePoint/1000.0 ;
             long runAvgRate   = (counterTotal * 1000L) / timePoint ;
-            print("Finished: %,d %s (Avg: %,d)", counterTotal, label, runAvgRate) ;
+            
+            print("Finished: %,d %s %.2fs (Avg: %,d)", counterTotal, label, time, runAvgRate) ;
         }
         else
             print("Finished: %,d %s (Avg: ----)", counterTotal, label) ;
