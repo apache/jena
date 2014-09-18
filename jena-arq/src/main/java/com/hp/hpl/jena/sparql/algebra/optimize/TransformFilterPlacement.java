@@ -1,5 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
+z * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -18,7 +18,10 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize ;
 
-import java.util.* ;
+import java.util.Collection ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Set ;
 
 import org.apache.jena.atlas.lib.CollectionUtils ;
 import org.apache.jena.atlas.lib.DS ;
@@ -602,46 +605,13 @@ public class TransformFilterPlacement extends TransformCopy {
 
     private Placement processExtendAssign(ExprList exprs, OpExtendAssign input) {
         // We assume that each (extend) and (assign) is in simple form - always one 
-        // assignment.  We cope with more but do not attempt reordering of assignments.
+        // assignment.  We cope with the general form (multiple assignments)
+        // but do not attempt reordering of assignments.
         List<Var> vars1 = input.getVarExprList().getVars() ;
         ExprList pushed = new ExprList() ;
         ExprList unpushed = new ExprList() ;
         Op subOp = input.getSubOp() ;
         Set<Var> subVars = OpVars.fixedVars(subOp) ;
-        
-//        // ----
-//        // Backwards.
-//        for ( int i = vars1.size()-1; i >= 0 i-- ) {
-//            Var v =  
-//        }
-//        
-//        Set<Var> assignmentVars = new HashSet<>() ; 
-//        ExprList pushed2 = new ExprList() ;
-//        ExprList unpushed2 = new ExprList() ;
-//        for ( Var v : vars1 ) {
-//            assignmentVars.add(v) ;
-//            Expr e = input.getVarExprList().getExpr(v) ;
-//            for ( Expr expr : exprs ) {
-//                Set<Var> exprVars = expr.getVarsMentioned() ;
-//                if ( disjoint(vars1, exprVars) && subVars.containsAll(exprVars) ) 
-//                    System.out.ptinln(
-//                else
-//                    unpushed2.add(expr) ;
-//            }
-//            
-//            
-//            
-//            if ( ! assignmentVars.contains(v) && subVars.containsAll(exprVars) ) {
-//                
-//            }
-//            
-//            
-//        }
-
-        
-        
-        // ----
-        
         
         for ( Expr expr : exprs ) {
             Set<Var> exprVars = expr.getVarsMentioned() ;
