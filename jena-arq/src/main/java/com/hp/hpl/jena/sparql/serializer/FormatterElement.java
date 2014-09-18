@@ -446,6 +446,7 @@ public class FormatterElement extends FormatterBase
         out.decIndent(INDENT) ;
     }
     
+    @SuppressWarnings("deprecation")
     @Override
     public void visit(ElementSubQuery el)
     {
