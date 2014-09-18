@@ -36,8 +36,9 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** Serialize a query into SPARQL or ARQ formats */
-
+/** 
+ * Serialize a query into SPARQL or ARQ formats 
+ */
 public class QuerySerializer implements QueryVisitor
 {
     static final int BLOCK_INDENT = 2 ;
