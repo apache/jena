@@ -60,6 +60,7 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
  * @see QueryExecutionFactory
  * @see ResultSet */
 
+@SuppressWarnings("deprecation") // For use of Serializer
 public class Query extends Prologue implements Cloneable, Printable
 {
     static { ARQ.init() ; /* Ensure everything has started properly */ }
