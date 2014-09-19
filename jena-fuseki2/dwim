@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+curl -XPOST --header "Content-type: text/trig" --data-binary @D.trig \
+     http://localhost:3030/ds/data

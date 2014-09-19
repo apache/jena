@@ -1,0 +1,191 @@
+h1 {
+  margin-top: 0;
+  font-size: 18pt;
+}
+
+h1 + p {
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 16pt;
+}
+
+h2 + p {
+  margin-bottom: 18px;
+}
+
+h3 {
+  font-size: 13pt;
+}
+
+a#server-status-light {
+  display: inline-block;
+  margin: 0;
+  padding-left: 8px;
+  padding-top: 2px;
+}
+#server-status-light span {
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: -8px;
+}
+#server-status-light span.server-up {
+  background-color: #38a800;
+  border:1px solid #4b9b23;
+
+  background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #59e811), color-stop(1, #38a800));
+  background:-moz-linear-gradient(top, #59e811 5%, #38a800 100%);
+  background:-webkit-linear-gradient(top, #59e811 5%, #38a800 100%);
+  background:-o-linear-gradient(top, #59e811 5%, #38a800 100%);
+  background:-ms-linear-gradient(top, #59e811 5%, #38a800 100%);
+  background:linear-gradient(to bottom, #59e811 5%, #38a800 100%);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#59e811', endColorstr='#38a800',GradientType=0);
+}
+
+#server-status-light span.server-down {
+  background-color: #d21e1e;
+  border:1px solid #a02323;
+
+  background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ed2424), color-stop(1, #d21e1e));
+  background:-moz-linear-gradient(top, #ed2424 5%, #d21e1e 100%);
+  background:-webkit-linear-gradient(top, #ed2424 5%, #d21e1e 100%);
+  background:-o-linear-gradient(top, #ed2424 5%, #d21e1e 100%);
+  background:-ms-linear-gradient(top, #ed2424 5%, #d21e1e 100%);
+  background:linear-gradient(to bottom, #ed2424 5%, #d21e1e 100%);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fbb450', endColorstr='#f89306',GradientType=0);
+}
+
+a.navbar-brand {
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 15px;
+  line-height: 1.0;
+}
+
+a.navbar-brand div {
+  display: inline-block;
+}
+
+a.navbar-brand img {
+  margin-top: -25px;
+}
+
+.navbar-right {
+  color: #777;
+  line-height: 1.0;
+}
+
+.navbar-item {
+  padding-top: 15px;
+  padding-right: 4px;
+}
+
+.navbar-nav > li > a > i {
+  color: #428bca;
+}
+
+.options-list {
+  margin-bottom: 5px;
+}
+
+.validation-warning {
+  display:none;
+}
+.has-error .validation-warning, .has-warning .validation-warning {
+  display:block;
+}
+
+.current-dataset {
+  margin-right: 20px;
+}
+
+.current-datasets {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.status-indicator {
+  padding-top: 10px;
+}
+
+.select-picker-label {
+  height: 30px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.content-frame {
+  background-color: #eee;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.tab-pane > div {
+  background-color: white;
+  border-radius: 3px;
+}
+
+#sparqlEndpoint {
+  min-width: 300px;
+}
+
+#fileuploadForm .progress {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.tab-pane .with-dataset {
+  padding: 5px;
+}
+
+.file-description {
+  margin-top: 10px;
+}
+
+.graph-label label {
+  text-align: right;
+  padding-top: 5px;
+}
+
+.dl-horizontal dt {
+  width: 240px;
+}
+
+.dl-horizontal dd {
+  margin-left: 260px
+}
+
+dt span.heading, dd span.heading {
+  font-weight: bold;
+  background-color: #eee;
+  padding: 3px 8px;
+}
+
+dt span.heading {
+  padding-right: 2px;
+}
+dd span.heading {
+  padding-left: 2px;
+}
+dt.font-weight-normal {
+  font-weight: normal;
+}
+dd .numeric {
+  display: inline-block;
+  min-width: 4em;
+  text-align: right;
+}
+
+.bordered-box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.pull-right > button {
+  margin: 10px 2px 0 0;
+}

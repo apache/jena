@@ -1,0 +1,19 @@
+==== Fuseki
+
+== Fuseki 2.0.0
+
+Fuseki 2.0.0 is a major change to Fuseki. Se the documentation for details.
+
+* Security, provided by Apache Shiro.
+* New admin API
+* New UI
+
+Migration:
+
+Existing installations of Fuseki should work unchanged
+but some new functionality if not available to datasets
+defined in the Fuseki config.ttl file.
+
++ Service assemblers should be placed configuration/
+  one service per file.  Only this way will all features,
+  particularly making a dataset offline, be available.

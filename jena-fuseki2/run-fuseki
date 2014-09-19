@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+## Run Fuseki, include development code if it looks like it's available.
+## Or --pages=
+
+function check_dir() {
+    local NAME="$1"
+    local DIR="$2"
+    if [ ! -e "$DIR" ]
+    then
+	echo "$NAME: '$DIR' does not exist" 1>&2
+	exit 1
+    fi
+    if [ ! -d "$DIR" ]
+    then
+	echo "$NAME: '$DIR' exists but is not a directory" 1>&2
+    exit 1
+    fi
+}
+
+export FUSEKI_HOME="${FUSEKI_HOME:-$PWD}"
+check_dir "FUSEKI_HOME" "$FUSEKI_HOME"
+
+export FUSEKI_BASE="${FUSEKI_BASE:-$FUSEKI_HOME/run}"
+check_dir "FUSEKI_BASE" "$FUSEKI_BASE"
+
+CPF="$PWD/fuseki.classpath"
+
+if [ ! -e "$CPF" ]; then
+    echo "Creating Fuseki classpath file"
+    "$PWD/make_cp_mvn" > $CPF
+fi
+
+CP="$(. $CPF)"
+
+# Add development directories.
+if [ -e "$FUSEKI_HOME/classes" ]
+then
+    CP="$FUSEKI_HOME/classes:$CP"
+elif [ -e "$FUSEKI_HOME/target/classes" ]
+then
+    CP="$FUSEKI_HOME/target/classes:$CP"
+fi
+
+# Prepend any development directories here
+DEVDIRS="jena-core jena-tdb jena-arq jena-text"
+for X in $DEVDIRS
+do
+    CPX="$FUSEKI_HOME/../$X/classes"
+    if [ -e "$CPX" ]
+    then
+	CP="$CPX:$CP"
+    fi
+done
+
+FUSEKI_LOG=${FUSEKI_LOG:-}
+JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
+
+exec java -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.FusekiCmd "$@"
+
+# Run as war file.
+# java -jar jetty-runner.jar fuseki-server.war
