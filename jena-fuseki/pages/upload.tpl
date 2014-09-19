@@ -4,12 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Fuseki - A SPARQL 1.1 Server</title>
+    <title>Fuseki - Upload</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/yasqe.min.css" rel="stylesheet">
-    <link href="css/yasr.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -36,8 +34,8 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li ><a href="fuseki.tpl"><span class="glyphicon glyphicon-wrench"></span> Control Panel</a></li>
-             <li class="active" ><a href="sparql.html"><span class="glyphicon glyphicon-play"></span> SPARQL</a></li>
+            <li><a href="./"><span class="glyphicon glyphicon-play"></span> SPARQL</a></li>
+            <li class="active" ><a href="#"><span class="glyphicon glyphicon-circle-arrow-up"></span> Upload Data</a></li>
             <li><a target="_blank" href="http://jena.apache.org/documentation/serving_data/index.html"><span class="glyphicon glyphicon-book"></span> Fuseki Documentation</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-info-sign"></span> Standards <span class="caret"></span></a>
@@ -53,7 +51,6 @@
               <ul class="dropdown-menu" role="menu">
 			      <li><a href="query-validator.html">SPARQL query validator</a></li>
 			      <li><a href="update-validator.html">SPARQL update validator</a></li>
-			      <li><a href="data-validator.html">RDF data validator</a></li>
 			      <li><a href="iri-validator.html">IRI validator</a></li>
               </ul>
             </li>
@@ -61,59 +58,69 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
+    
+    
+<div class="container"
 
-	<div class="jumbotron" style="background-color:white;padding:0px;">
-		<div style="padding-bottom: 5px;">Target graph URI <small>(either use this field, or use <code>FROM</code> in your query)</small>: <input id="default-graph-uri" size="25" value=""></div>
-        <div id="yasqe"></div>
-        <div id="yasr"></div>
-    
-    
-    
+	<div class="row">
+		<div class="col-md-12">
+			<form role="form" class="form-horizontal"  id="uploadForm" action='' enctype="multipart/form-data" method="post">
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="datasetSelector">Dataset</label>
+					<div class="col-sm-10">
+						<select class="form-control" style="width:auto;" id="datasetSelector">
+								#foreach($ds in $datasets)
+								<option value="${ds}">${ds}</option>
+							#end
+				      </select>
+				   </div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="fileInput">File</label>
+					<div class="col-sm-10">
+						<input id="fileInput" class="form-control" type="file" name="UNSET FILE NAME" size="40" multiple="">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="nGraph">Graph</label>
+					<div class="col-sm-10">
+						<input id="nGraph" class="form-control" name="graph" size="40" value="default"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-10 col-sm-offset-2">
+						<input class='btn btn-primary' type="submit" value="Upload">
+					</div>
+				</div>
+			</form>		
+		</div>
+	
 	</div>
-			
-		
+</div>
+
+		        
+		        
+		        
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/yasqe.min.js"></script>
-    
-    <script src="js/yasr.min.js"></script>
-    
     
     <script type="text/javascript">
+    	var datasetEl =  $("#datasetSelector");
+    	var uploadLocations = {};
 
-	    var yasqe = YASQE(document.getElementById("yasqe"), {
-			sparql: {
-				endpoint: "sparql",
-				showQueryButton: true,
-			},
-			createShareLink: null,
-		});
-		var yasr = YASR(document.getElementById("yasr"), {
-			//this way, the URLs in the results are prettified using the defined prefixes in the query
-			getUsedPrefixes: yasqe.getPrefixesFromQuery
-		});
-		 
-		/**
-		* Set some of the hooks to link YASR and YASQE
-		*/
-		yasqe.options.sparql.handlers.success =  function(data, textStatus, xhr) {
-			yasr.setResponse({response: data, contentType: xhr.getResponseHeader("Content-Type")});
-		};
-		yasqe.options.sparql.handlers.error = function(xhr, textStatus, errorThrown) {
-			var exceptionMsg = textStatus + " (response status code " + xhr.status + ")";
-			if (errorThrown && errorThrown.length) exceptionMsg += ": " + errorThrown;
-			yasr.setResponse({exception: exceptionMsg});
-		};
-		    
+		#foreach ( $mapEntry in $mgt.serviceUploads().entrySet() )
+		   uploadLocations["$mapEntry.key"] = "$mapEntry.value";
+		#end
 		
-    	$("#default-graph-uri").on("keyup", function(){
-    		var defaultGraphs = [];
-    		var val = $(this).val();
-    		if (val && val.length) defaultGraphs.push(val);
-    		yasqe.options.sparql.defaultGraphs = defaultGraphs;
-    	});
+		for (var ds in uploadLocations) {
+			$("<option value=" + ds + ">" + ds + "</option>").appendTo(datasetEl);
+		}
+		$("#uploadForm").submit(function() {
+			$(this).attr('action', datasetEl.val() + "/" + uploadLocations[datasetEl.val()]); 
+		});
+	
     
     </script>
   </body>

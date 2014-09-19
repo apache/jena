@@ -18,23 +18,25 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import java.util.List ;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpSession ;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.server.DatasetRef ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.fuseki.server.ServiceRef ;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.server.DatasetRef;
+import org.apache.jena.fuseki.server.DatasetRegistry;
+import org.apache.jena.fuseki.server.ServiceRef;
 
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 
 /** Avoid code in JSPs */
 public class MgtFunctions
@@ -73,6 +75,25 @@ public class MgtFunctions
     {
         return Iter.toList(DatasetRegistry.get().keys()) ;
     }
+    
+    /** Map of datasets with the corresponding query service */ 
+    public static Map<String, String> datasetsQuery(HttpServletRequest request)
+    {
+    	HashMap<String, String> dsQueryEndpoint = new HashMap<String, String>();
+        for (String ds: DatasetRegistry.get().keys()) {
+        	dsQueryEndpoint.put(ds, serviceQuery(ds));
+        }
+        return dsQueryEndpoint;
+    }
+    /** Map of datasets with the corresponding update service */ 
+    public static Map<String, String> datasetsUpdate(HttpServletRequest request)
+    {
+    	HashMap<String, String> dsUpdateEndpoint = new HashMap<String, String>();
+    	for (String ds: DatasetRegistry.get().keys()) {
+    		dsUpdateEndpoint.put(ds, serviceUpdate(ds));
+    	}
+    	return dsUpdateEndpoint;
+    }
 
     /** Return name of */  
     public static String actionDataset(HttpServletRequest request)
@@ -110,6 +131,15 @@ public class MgtFunctions
         if ( ref == null )
             return dft ;
         return serviceNameOrDefault(ref.upload, dft) ;
+    }
+    /** Return a SPARQL upload service name for all datasets */
+    public static Map<String, String> serviceUploads()
+    {
+    	HashMap<String, String> dsUpload = new HashMap<String, String>();
+    	for (String ds: DatasetRegistry.get().keys()) {
+    		dsUpload.put(ds, serviceUpload(ds));
+    	}
+    	return dsUpload;
     }
 
     /** Return a SPARQL Graph Store Protocol (Read) service name for the dataset */
