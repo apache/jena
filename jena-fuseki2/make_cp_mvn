@@ -1,0 +1,34 @@
+#!/usr/bin/env perl
+# Make the maven classpath
+
+$POM="pom.xml" ;
+$POM = @ARGV[0] if ( defined(@ARGV[0]) ) ;
+
+if ( ! -e "$POM" )
+{
+    print STDERR "No POM file: $POM\n" ;
+    exit 1 ;
+}
+$M2=$ENV{'M2_REPO'} ;
+print "#!/bin/bash\n" ;
+print "\n" ;
+print 'XCP="' ;
+
+open(X, "mvn -f $POM dependency:build-classpath -DincludeScope=runtime |") ;
+while(<X>)
+{
+    next if /\[INFO\]/ ;
+    next if /^Download/ ;
+    chop ;
+    #s!$M2/org/apache/jena/jena-[^/]*/[^/]*/[^/]*.jar:!!g ;
+    print "$_" ;
+}
+print "\"\n" ;
+print "\n" ;
+
+print "if [ \"\$CP\" != \'\' ]\n" ;
+print "then\n" ;
+print "   XCP=\"\$CP:\$XCP\"\n" ;
+print "fi\n" ;
+print "\n" ;
+print "echo \"\$XCP\"\n"

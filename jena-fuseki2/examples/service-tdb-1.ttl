@@ -1,0 +1,29 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## Example of a TDB dataset published using Fuseki
+## Persistent storage.
+## read-only
+
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+## Read-only TDB dataset (only read services enabled).
+
+<#service_tdb_read_only> rdf:type fuseki:Service ;
+    rdfs:label                      "TDB Service (R)" ;
+    fuseki:name                     "ds" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceReadGraphStore    "data" ;
+    fuseki:serviceReadGraphStore    "get" ;
+    fuseki:dataset           <#tdb_dataset_read> ;
+    .
+
+<#tdb_dataset_read> rdf:type      tdb:DatasetTDB ;
+    tdb:location "DB1" ;
+    tdb:unionDefaultGraph true ;
+    .
