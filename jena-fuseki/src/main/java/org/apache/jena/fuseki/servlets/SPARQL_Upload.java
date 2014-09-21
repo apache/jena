@@ -98,7 +98,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
             out.println("</p>") ;
             out.println("<script type=\"text/javascript\">");
             out.println("function timeFunction(){");
-            out.println("window.location.href = \"/fuseki.html\";}");
+            out.println("window.location.href = \"/\";}");
             out.println("</script>");
             out.println("</body>") ;
             out.println("</html>") ;

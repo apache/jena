@@ -18,43 +18,59 @@
 
 package org.apache.jena.fuseki.server ;
 
-import static java.lang.String.format ;
-import static org.apache.jena.fuseki.Fuseki.serverLog ;
+import static java.lang.String.format;
+import static org.apache.jena.fuseki.Fuseki.serverLog;
 
-import java.io.FileInputStream ;
-import java.util.* ;
+import java.io.FileInputStream;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import javax.servlet.DispatcherType ;
-import javax.servlet.http.HttpServlet ;
+import javax.servlet.DispatcherType;
+import javax.servlet.http.HttpServlet;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.mgt.ActionDataset ;
-import org.apache.jena.fuseki.mgt.MgtFunctions ;
-import org.apache.jena.fuseki.mgt.PageNames ;
-import org.apache.jena.fuseki.servlets.* ;
-import org.apache.jena.fuseki.validation.DataValidator ;
-import org.apache.jena.fuseki.validation.IRIValidator ;
-import org.apache.jena.fuseki.validation.QueryValidator ;
-import org.apache.jena.fuseki.validation.UpdateValidator ;
-import org.apache.jena.riot.WebContent ;
-import org.eclipse.jetty.http.MimeTypes ;
-import org.eclipse.jetty.security.* ;
-import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
-import org.eclipse.jetty.server.Connector ;
-import org.eclipse.jetty.server.Server ;
-import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
-import org.eclipse.jetty.servlet.DefaultServlet ;
-import org.eclipse.jetty.servlet.ServletContextHandler ;
-import org.eclipse.jetty.servlet.ServletHolder ;
-import org.eclipse.jetty.servlets.GzipFilter ;
-import org.eclipse.jetty.util.security.Constraint ;
-import org.eclipse.jetty.xml.XmlConfiguration ;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.HttpNames;
+import org.apache.jena.fuseki.mgt.ActionDataset;
+import org.apache.jena.fuseki.mgt.MgtFunctions;
+import org.apache.jena.fuseki.mgt.PageNames;
+import org.apache.jena.fuseki.servlets.DumpServlet;
+import org.apache.jena.fuseki.servlets.SPARQL_QueryDataset;
+import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral;
+import org.apache.jena.fuseki.servlets.SPARQL_REST_R;
+import org.apache.jena.fuseki.servlets.SPARQL_REST_RW;
+import org.apache.jena.fuseki.servlets.SPARQL_UberServlet;
+import org.apache.jena.fuseki.servlets.SPARQL_Update;
+import org.apache.jena.fuseki.servlets.SPARQL_Upload;
+import org.apache.jena.fuseki.servlets.SimpleVelocityServlet;
+import org.apache.jena.fuseki.validation.DataValidator;
+import org.apache.jena.fuseki.validation.IRIValidator;
+import org.apache.jena.fuseki.validation.QueryValidator;
+import org.apache.jena.fuseki.validation.UpdateValidator;
+import org.apache.jena.riot.WebContent;
+import org.eclipse.jetty.http.MimeTypes;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.DefaultIdentityService;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.IdentityService;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.nio.BlockingChannelConnector;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.GzipFilter;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.xml.XmlConfiguration;
 
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.mgt.ARQMgt;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 /**
  * SPARQLServer is the Jena server instance which wraps/utilizes 
@@ -278,7 +294,7 @@ public class SPARQLServer {
         }
 
         if ( installManager || installServices ) {
-            String[] files = {"fuseki.html", "index.html"} ;
+            String[] files = {"index.tpl", "index.html"} ;
             context.setWelcomeFiles(files) ;
             addContent(context, "/", serverConfig.pages) ;
         }

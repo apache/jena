@@ -1,35 +1,73 @@
-<!--
-   Licensed to the Apache Software Foundation (ASF) under one or more
-   contributor license agreements.  See the NOTICE file distributed with
-   this work for additional information regarding copyright ownership.
-   The ASF licenses this file to You under the Apache License, Version 2.0
-   (the "License"); you may not use this file except in compliance with
-   the License.  You may obtain a copy of the License at
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fuseki - SPARQL Validator</title>
 
-       http://www.apache.org/licenses/LICENSE-2.0
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/yasqe.min.css" rel="stylesheet">
+    <link href="css/yasr.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
--->
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head><title>SPARQLer Query Validator</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <link rel="stylesheet" type="text/css" href="fuseki.css" />
-
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
   </head>
-  <body>
-    <h1>SPARQLer Query Validator</h1>
+  <body >
+  
+  
+  
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img style="width: 22px; height: 22px;"src="imgs/jena.png"/> Fuseki</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="./"><span class="glyphicon glyphicon-play"></span> SPARQL</a></li>
+            <li ><a href="upload.tpl"><span class="glyphicon glyphicon-circle-arrow-up"></span> Upload Data</a></li>
+            <li><a target="_blank" href="http://jena.apache.org/documentation/serving_data/index.html"><span class="glyphicon glyphicon-book"></span> Fuseki Documentation</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-info-sign"></span> Standards <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+			     <li> <a target="_blank" href="http://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Query</a></li>
+			      <li> <a target="_blank" href="http://www.w3.org/TR/sparql11-update/">SPARQL 1.1 Update</a></li>
+			      <li> <a target="_blank" href="http://www.w3.org/TR/sparql11-protocol/">SPARQL 1.1 Protocol</a></li>
+			      <li> <a target="_blank" href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Uniform HTTP Protocol for Managing RDF Graphs</a>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-check"></span> Validators <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+			      <li class="active"><a href="query-validator.html">SPARQL query validator</a></li>
+			      <li><a href="iri-validator.html">IRI validator</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
 
-    <div class="moreindent">
 
-      <form action="validate/query" method="post" accept-charset="UTF-8">
-	<p>
-	  <textarea name="query" cols="70" rows="30">
-PREFIX xsd:     &lt;http://www.w3.org/2001/XMLSchema#>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+		
+			<form target="_blank" role="form" id="validateForm" class="form-horizontal" action="validate/query" method="post" accept-charset="UTF-8">
+				<textarea id="yasqeValidator" name="query">PREFIX xsd:     &lt;http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf:     &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX rdfs:    &lt;http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl:     &lt;http://www.w3.org/2002/07/owl#>
@@ -40,32 +78,97 @@ PREFIX dc:      &lt;http://purl.org/dc/elements/1.1/>
 SELECT ?book ?title
 WHERE
    { ?book dc:title ?title }</textarea>
-<br/>
-  Input syntax:<br/>
-    <input type="radio" name="languageSyntax" value="SPARQL" checked="checked"/>SPARQL
-    <input type="radio" name="languageSyntax" value="ARQ"/>SPARQL extended syntax
-  <br/>
-  <br/>
-Output:<br/>
-  <input type="checkbox" name="outputFormat" value="sparql" checked="checked"/>SPARQL<br/>
-  <input type="checkbox" name="outputFormat" value="algebra"/>SPARQL algebra<br/>
-  <input type="checkbox" name="outputFormat" value="quads"/>SPARQL algebra (quads)<br/>
-  <input type="checkbox" name="outputFormat" value="opt"/>SPARQL algebra
-(general optimizations)<br/>
-  <input type="checkbox" name="outputFormat" value="optquads"/>SPARQL algebra
-(quads, general optimizations)<br/>
-  <br/>
-  Line numbers:
-  <input type="radio" name="linenumbers" value="true" checked="checked"/>Yes
-  <input type="radio" name="linenumbers" value="false"/>No
-  <br/>
+   				<div id="rowLang" class="form-group">
+					<label class="col-sm-1 control-label" for="languageSyntax">Syntax</label>
+					<div class="col-sm-11">
+						<select name="languageSyntax" class="form-control" style="width:auto;" id="syntax">
+							<option value="SPARQL" selected="selected">SPARQL</option>
+							<option value="ARQ">SPARQL Extended Syntax</option>
+				      </select>
+				   </div>
+				</div>
+   				<div id="rowOutput" class="form-group">
+					<label class="col-sm-1 control-label" for="outputFormat">Output</label>
+					<div class="col-sm-11">
+						<div class="checkbox">
+							<label><input  type="checkbox" name="outputFormat" value="sparql" checked="checked"/>SPARQL</label>
+						</div>
+						<div class="checkbox">
+							<label><input type="checkbox" name="outputFormat" value="algebra"/>SPARQL algebra</label>
+						</div>
+						<div class="checkbox">
+							<label><input type="checkbox" name="outputFormat" value="quads"/>SPARQL algebra (quads)</label>
+						</div>
+						<div class="checkbox">
+							<label><input type="checkbox" name="outputFormat" value="opt"/>SPARQL algebra (general optimizations)</label>
+						</div>
+						<div class="checkbox">
+							<label><input type="checkbox" name="outputFormat" value="optquads"/>SPARQL algebra (quads, general optimizations)</label>
+						</div>
+				   </div>
+				</div>
+				<div id="rowLineNums" class="form-group">
+					<label class="col-sm-1 control-label" for="lineNums">Line Numbers</label>
+					<div class="col-sm-11">
+						<select name="linenumbers" class="form-control" style="width:auto;" id="lineNums">
+							<option value="true" selected="selected">Yes</option>
+							<option value="false">No</option>
+				      </select>
+				   </div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-11 col-sm-offset-1">
+						<input class='btn btn-primary' type="submit" value="Validate SPARQL Query">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery-1.11.1.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<script src="js/yasqe.min.js"></script>
+
+<script type="text/javascript">
+var rowOutput = $("#rowOutput");
+var yasqeTextArea = $("#yasqeValidator");
+var yasqe = YASQE.fromTextArea(document.getElementById("yasqeValidator"), {
+	sparql: {
+		endpoint: null,
+		showQueryButton: false,
+	},
+	createShareLink: null,
+});
+var animate = 0;//first (page) load: 0
+var updateForm = function() {
+	var isUpdate = yasqe.getQueryType() == "INSERT" || yasqe.getQueryType() == "DELETE";
+	if (isUpdate) {
+		yasqeTextArea.attr('name', 'update')
+		rowOutput.hide(animate);
+	} else {
+		yasqeTextArea.attr('name', 'query');
+		rowOutput.show(animate);
+	}
+	animate = 400;
+	
+	
+};
+
+$("#validateForm").submit(function() {
+	yasqe.save();//store text area val 
+	var action = (yasqe.getQueryType() == "INSERT" || yasqe.getQueryType() == "DELETE"? "validate/update": "validate/query")
+	$(this).attr('action', action); 
+});
 
 
-  <input type="submit" value="Validate SPARQL Query" />
-	</p>
-      </form>
+yasqe.on("change",updateForm);
 
-      <hr/>
-    </div>
+//initialize once
+updateForm();
+
+</script>
   </body>
 </html>
