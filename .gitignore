@@ -1,0 +1,26 @@
+# Maven and build files
+target/
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# Idea IntelliJ
+*.ipr
+*.iws
+*.iml
+.idea/
+
+# Caches
+.scala_dependencies
+
+# Other
+.DS_Store
+*.jar
+
+# Backups
+pom.xml.backup
+*~
+.#*
+
