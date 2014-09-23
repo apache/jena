@@ -92,7 +92,7 @@ public class TestSyntaxDetermination extends BaseTest {
     { test(url, contentType, hintLang, expected) ; }
     
     static void test(String url, String ct, Lang hint, Lang expected) {
-        ContentType x = WebContent.determineCT(url, ct, hint) ;
+        ContentType x = WebContent.determineCT(ct, hint, url) ;
         Lang lang = RDFDataMgr.determineLang(url, ct, hint) ;
         assertEquals(expected, lang) ;
     }

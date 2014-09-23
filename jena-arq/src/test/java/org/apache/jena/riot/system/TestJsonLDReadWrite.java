@@ -22,20 +22,20 @@ import static org.apache.jena.riot.RDFLanguages.JSONLD ;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.Iterator ;
+import java.util.Map ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.junit.Assert;
+import org.junit.Assert ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.lib.DatasetLib ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.IsoMatcher ;
 
 /** tests : JSONLD->RDF ; JSONLD->RDF->JSONLD */
 public class TestJsonLDReadWrite extends BaseTest
@@ -138,7 +138,7 @@ public class TestJsonLDReadWrite extends BaseTest
 
     private static boolean isIsomorphic(Dataset ds1, Dataset ds2)
     {
-        return DatasetLib.isomorphic(ds1, ds2) ;
+        return IsoMatcher.isomorphic(ds1.asDatasetGraph(), ds2.asDatasetGraph()) ;
     }
     
     private static void checkNamespaces(Model m, Map<String, String> namespaces) {

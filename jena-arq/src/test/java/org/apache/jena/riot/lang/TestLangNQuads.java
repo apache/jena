@@ -18,10 +18,8 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.StreamRDFCounting ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -29,7 +27,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.lib.DatasetLib ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 
 /** Test of syntax by a quads parser (does not include node validitiy checking) */ 
 
@@ -82,7 +80,7 @@ public class TestLangNQuads extends TestLangNTuples
     
     private DatasetGraph parseToDataset(String string)
     {
-        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         StreamRDF dest = StreamRDFLib.dataset(dsg) ;
         parse(dest, string) ;
         return dsg ;

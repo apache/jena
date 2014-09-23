@@ -21,10 +21,9 @@ package org.apache.jena.riot.lang;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.ErrorHandlerTestLib ;
-import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.apache.jena.riot.lang.LangTriG ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -33,7 +32,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.lib.DatasetLib ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Test the behaviour of the RIOT reader for TriG.  TriG includes checking of terms */
@@ -91,7 +90,7 @@ public class TestLangTrig extends BaseTest
     private static DatasetGraph parse(String... strings)
     {
         String string = StrUtils.strjoin("\n", strings) ;
-        DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         StreamRDF sink = StreamRDFLib.dataset(dsg) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         LangTriG parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
