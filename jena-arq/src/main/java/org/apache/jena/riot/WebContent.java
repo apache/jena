@@ -214,18 +214,35 @@ public class WebContent
         return contentTypeMultipartFormData.equalsIgnoreCase(ct.getContentType()) ;
     }
 
-    /** Determine the content type to be used, given the target URL, the content-type from
+    /**
+     * <p> 
+     *  Determine the content type to be used, given the target URL, the content-type from
      *  Content Negotiation and a hint language.  This is a pragmatic balance.
-     *  A content-type of "text/plain" is ignored - it is too often wrong.  
+     *  A content-type of "text/plain" is ignored - it is too often wrong.
+     *  </p><p>
+     *  The decision is 
+     *  <blockquote>
+     *  <i>Content type</i> (but not text/plain) > <i>hint</i> > <i>file extension</i>.
+     *  </blockquote>
+     *  We make content type (via content negotiation) strongest because a server
+     *  may return something unexpected because that is all it can do. We are
+     *  assuming servers don't lie. The "hint" is really a hint just for file extenion override.
+     *  </p><p>
+     *  In the case of no file extension, this reduces to the hint being
+     *  the default choice if conneg does not produce anything useful.  
+     *  </p>
+     *   
+     * @param contentTypeStr     Content-Type string
+     * @param hintLang  Default language
+     * @param target    The URL of the target (file extension may be used)
+     *  
+     * @return ContentType or null
      */
-    public static ContentType determineCT(String target, String ctStr, Lang hintLang) {
-        boolean isTextPlain = contentTypeTextPlain.equals(ctStr) ;
+    public static ContentType determineCT(String contentTypeStr, Lang hintLang, String target) {
+        boolean isTextPlain = contentTypeTextPlain.equals(contentTypeStr) ;
     
-        if ( ctStr != null  )
-            ctStr = contentTypeCanonical(ctStr) ;
-    
-        // The decision is:
-        // Content type (but not text/plain) > hint > file extension.
+        if ( contentTypeStr != null  )
+            contentTypeStr = contentTypeCanonical(contentTypeStr) ;
     
         // If it's text plain, we ignore it because a lot of naive
         // server setups return text/plain for any file type.
@@ -234,7 +251,7 @@ public class WebContent
         ContentType ct = null ;
         if ( ! isTextPlain )
             // Not guaranteed to be registered as a language here.
-            ct = (ctStr==null) ? null : ContentType.create(ctStr) ;
+            ct = (contentTypeStr==null) ? null : ContentType.create(contentTypeStr) ;
         
         if ( ct == null && hintLang != null ) 
             ct = hintLang.getContentType() ;

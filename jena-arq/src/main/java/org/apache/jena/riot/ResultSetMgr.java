@@ -129,7 +129,7 @@ public class ResultSetMgr {
     }
         
     private static ResultSet process(TypedInputStream in, String srcURI, Lang hintLang, Context context) {
-        ContentType ct = WebContent.determineCT(srcURI, in.getContentType(), hintLang) ;
+        ContentType ct = WebContent.determineCT(in.getContentType(), hintLang, srcURI) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the content type: (URI="+srcURI+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
         ResultSetReader reader = getReader(ct) ;

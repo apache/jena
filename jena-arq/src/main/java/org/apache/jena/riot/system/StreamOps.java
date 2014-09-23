@@ -81,7 +81,7 @@ public class StreamOps {
     }
 
     //        
-//    /** Send a dataset to a StreamRDF as triples and quads, using the xpelcitily given prefix map */
+//    /** Send a dataset to a StreamRDF as triples and quads, using the explicitly given prefix map */
 //    public static void datasetToStream(DatasetGraph datasetGraph, StreamRDF stream, PrefixMap prefixMap) {
 //        
 //    }

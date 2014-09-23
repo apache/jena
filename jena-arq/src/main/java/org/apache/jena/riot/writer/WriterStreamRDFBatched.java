@@ -33,6 +33,8 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 /** Convert the incoming print stream into batches. */
 abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
 {
+    // This has nothing to do with printing except it's under WriterStreamRDFBase
+    // so the operation is "print"
     private Node         currentSubject ;
     private Node         currentGraph ;
     private List<Triple> batchTriples ;
@@ -53,39 +55,38 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
     @Override
     protected final void endData()      { flush() ; }
 
-    private void flush()
-    {
-        finishBatchTriple(currentSubject) ;
+    private void flush() {
+        finishBatchTriples(currentSubject) ;
         finishBatchQuad(currentGraph, currentSubject) ;
         finalizeRun() ;
     }
-    
+
     @Override
-    protected final void reset()
-    {
-        currentSubject  = null ;
-        currentGraph    = null ;
-        batchTriples    = null ;
-        batchQuads      = null ;
+    protected final void reset() {
+        currentSubject = null ;
+        currentGraph = null ;
+        batchTriples = null ;
+        batchQuads = null ;
     }
 
     @Override
-    protected final void print(Quad quad)
-    {
-        if ( false )
-        {
+    protected final void print(Quad quad) {
+        if ( false ) {
             // Merge to a triple stream.
             triple(quad.asTriple()) ;
             return ;
         }
-        
+
         Node g = quad.getGraph() ;
         Node s = quad.getSubject() ;
-        
-        if ( ! Lib.equal(g, currentGraph) || ! Lib.equal(s,  currentSubject) )
-        {
-            if ( currentSubject != null )
-                finishBatchQuad(currentGraph, currentSubject) ;
+
+        if ( !Lib.equal(g, currentGraph) || !Lib.equal(s, currentSubject) ) {
+            if ( currentSubject != null ) {
+                if ( currentGraph == null )
+                    finishBatchTriples(currentSubject) ;
+                else
+                    finishBatchQuad(currentGraph, currentSubject) ;
+            }
             startBatchQuad(g, s) ;
             currentGraph = g ;
             currentSubject = s ;
@@ -94,13 +95,11 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
     }
 
     @Override
-    protected final void print(Triple triple)
-    {
+    protected final void print(Triple triple) {
         Node s = triple.getSubject() ;
-        if ( ! Lib.equal(s, currentSubject) )
-        {
+        if ( !Lib.equal(s, currentSubject) ) {
             if ( currentSubject != null )
-                finishBatchTriple(currentSubject) ;
+                finishBatchTriples(currentSubject) ;
             startBatchTriple(s) ;
 
             currentGraph = null ;
@@ -108,40 +107,34 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
         }
         processTriple(triple) ;
     }
-    
-    private void startBatchTriple(Node subject)
-    {
+
+    private void startBatchTriple(Node subject) {
         batchTriples = new ArrayList<>() ;
     }
-    
-    private void processTriple(Triple triple)
-    {
+
+    private void processTriple(Triple triple) {
         batchTriples.add(triple) ;
     }
 
-    private void finishBatchTriple(Node subject)
-    {
+    private void finishBatchTriples(Node subject) {
         if ( batchTriples != null && batchTriples.size() > 0 ) {
             printBatchTriples(currentSubject, batchTriples) ;
             batchTriples.clear() ;
         }
     }
 
-    private void startBatchQuad(Node graph, Node subject)
-    {
+    private void startBatchQuad(Node graph, Node subject) {
         batchQuads = new ArrayList<>() ;
     }
-    
-    private void processQuad(Quad Quad)
-    {
+
+    private void processQuad(Quad Quad) {
         batchQuads.add(Quad) ;
     }
 
-    private void finishBatchQuad(Node graph, Node subject)
-    {
+    private void finishBatchQuad(Node graph, Node subject) {
         if ( batchQuads != null && batchQuads.size() > 0 ) {
             printBatchQuads(currentGraph, currentSubject, batchQuads) ;
-            batchQuads.clear();
+            batchQuads.clear() ;
         }
     }
 

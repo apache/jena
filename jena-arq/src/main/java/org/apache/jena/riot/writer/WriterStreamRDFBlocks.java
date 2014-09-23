@@ -70,69 +70,59 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
     protected boolean firstGraph        = true ;
     protected int currentGraphIndent    = 0;
 
-    public WriterStreamRDFBlocks(OutputStream output)
-    { 
-        super(output) ;
-    }
-    
-    public WriterStreamRDFBlocks(Writer output)
-    {
+    public WriterStreamRDFBlocks(OutputStream output) {
         super(output) ;
     }
 
-    public WriterStreamRDFBlocks(IndentedWriter output)
-    {
+    public WriterStreamRDFBlocks(Writer output) {
         super(output) ;
     }
-    
+
+    public WriterStreamRDFBlocks(IndentedWriter output) {
+        super(output) ;
+    }
+
     @Override
-    protected void printBatchQuads(Node g, Node s, List<Quad> quads)
-    {
+    protected void printBatchQuads(Node g, Node s, List<Quad> quads) {
         if ( g == null )
             g = Quad.defaultGraphNodeGenerated ;
-        if ( Lib.equal(g,  lastGraph ))
-        {
+        if ( Lib.equal(g, lastGraph) ) {
             // Same graph, different subject.
             out.println(" .") ;
             out.println() ;
-        }
-        else
-        {
+        } else {
             // Start graph
             endGraph(g) ;
             startGraph(g) ;
             lastGraph = g ;
         }
-        List<Triple> triples = GLib.quads2triples(quads.iterator()).toList();
+        List<Triple> triples = GLib.quads2triples(quads.iterator()).toList() ;
         printBatch(s, triples) ;
         // No trailing "." has been printed.
         lastSubject = s ;
     }
 
-    private void gap(int gap)
-    {
+    private void gap(int gap) {
         out.print(' ', gap) ;
     }
 
     @Override
-    protected void printBatchTriples(Node s, List<Triple> triples)
-    {
+    protected void printBatchTriples(Node s, List<Triple> triples) {
         // Blank line?
         // Not if not prefixes and first batch.
         if ( out.getRow() > 1 )
             out.println() ;
-        
+
         printBatch(s, triples) ;
         // End of cluster.
         out.print(" .") ;
-        out.println() ; 
+        out.println() ;
     }
         
-    private void printBatch(Node s, List<Triple> triples)
-    {
+    private void printBatch(Node s, List<Triple> triples) {
         outputNode(s) ;
         if ( out.getCol() > LONG_SUBJECT )
-            out.println() ; 
+            out.println() ;
         else
             gap(GAP_S_P) ;
         out.incIndent(INDENT_PREDICATE) ;
@@ -141,18 +131,16 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
         out.decIndent(INDENT_PREDICATE) ;
     }
         
-    private void writePredicateObjectList(Collection<Triple> triples)
-    {
+    private void writePredicateObjectList(Collection<Triple> triples) {
         // Find width
         int predicateMaxWidth = RiotLib.calcWidthTriples(pMap, baseURI, triples, MIN_PREDICATE, LONG_PREDICATE) ;
         boolean first = true ;
-        for ( Triple triple : triples )
-        {
-            if ( ! first )
+        for ( Triple triple : triples ) {
+            if ( !first )
                 out.println(" ;") ;
             else
                 first = false ;
-                
+
             Node p = triple.getPredicate() ;
             outputNode(p) ;
             out.pad(predicateMaxWidth) ;
@@ -163,8 +151,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
     }
 
     @Override
-    protected void finalizeRun()
-    {
+    protected void finalizeRun() {
         if ( lastGraph != null )
             // last was a quad
             endGraph(null) ;
@@ -173,34 +160,30 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
     protected boolean dftGraph()        { return lastGraph == Quad.defaultGraphNodeGenerated ; }
     protected boolean dftGraph(Node g)  { return g == Quad.defaultGraphNodeGenerated ; }
 
-    protected void startGraph(Node g)
-    {
+    protected void startGraph(Node g) {
         // Start graph
-        if ( lastGraph == null )
-        {
-            boolean NL_START =  ( dftGraph(g) ? NL_GDFT_START : NL_GNMD_START ) ; 
-    
-            if ( ! firstGraph )
+        if ( lastGraph == null ) {
+            boolean NL_START = (dftGraph(g) ? NL_GDFT_START : NL_GNMD_START) ;
+
+            if ( !firstGraph )
                 out.println() ;
             firstGraph = false ;
-            
+
             lastSubject = null ;
-            if ( ! dftGraph(g) )
-            {
+            if ( !dftGraph(g) ) {
                 outputNode(g) ;
                 out.print(" ") ;
             }
-                
+
             if ( NL_START )
                 out.println("{") ;
             else
                 out.print("{ ") ;
-                
+
             if ( dftGraph() )
                 setGraphIndent(INDENT_GDFT) ;
-            else
-            {
-                int x = NL_START ? INDENT_GNMD : out.getCol() ; 
+            else {
+                int x = NL_START ? INDENT_GNMD : out.getCol() ;
                 setGraphIndent(x) ;
             }
             out.incIndent(graphIndent()) ;
@@ -208,15 +191,13 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
         lastGraph = g ;
     }
 
-    protected void endGraph(Node g)
-    {
+    protected void endGraph(Node g) {
         if ( lastGraph == null )
             return ;
-            
+
         // End of graph
-        if ( ! equal(lastGraph, g) )
-        {
-            boolean NL_END =  ( dftGraph(g) ? NL_GDFT_END : NL_GNMD_END ) ; 
+        if ( !equal(lastGraph, g) ) {
+            boolean NL_END = (dftGraph(g) ? NL_GDFT_END : NL_GNMD_END) ;
 
             if ( lastSubject != null )
                 out.print(" .") ;

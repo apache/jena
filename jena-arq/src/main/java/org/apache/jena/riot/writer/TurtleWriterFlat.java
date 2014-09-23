@@ -20,6 +20,7 @@ package org.apache.jena.riot.writer;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.StreamOps ;
 import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -28,9 +29,11 @@ import com.hp.hpl.jena.graph.Graph ;
 public class TurtleWriterFlat extends TurtleWriterBase
 {
     @Override
-    protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI)
-    {
+    protected void output(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI) {
         StreamRDF dest = new WriterStreamRDFFlat(out) ;
-        WriterStream.write(dest, graph, prefixMap, baseURI) ;
+        dest.start() ;
+        dest.base(baseURI) ;
+        StreamOps.sendGraphToStream(graph, dest, prefixMap) ;
+        dest.finish() ;
     }
 }

@@ -67,6 +67,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  *  <li>{@code parse}   -- Read data and send to an {@link StreamRDF}</li>
  *  <li>{@code open}    -- Open a typed input stream to the location, using any alternative locations</li>
  *  <li>{@code write}   -- Write Model/Dataset etc</li> 
+ *  <li>{@code create}  -- Create a reader or writer explicitly</li> 
  *  </ul> 
  */
 
@@ -80,16 +81,8 @@ public class RDFDataMgr
     static Logger log = LoggerFactory.getLogger(RDFDataMgr.class) ;
     private static String riotBase = "http://jena.apache.org/riot/" ;
     
-//    private static String dataStreamManagerSymbolStr = riotBase+"dataStreamManager" ; 
-//    public static Symbol dataStreamManagerSymbol = Symbol.create(dataStreamManagerSymbolStr) ;
-//    
-//    private static String StreamManagerSymbolStr = riotBase+"streamManager" ;
-//    /** @deprecated Use  {@linkplain #dataStreamManagerSymbol} */
-//    @Deprecated
-//    public static Symbol streamManagerSymbolOld = Symbol.create(riotBase+"streamManager") ;
-    
-      private static String StreamManagerSymbolStr = riotBase+"streamManager" ;
-      public static Symbol streamManagerSymbol = Symbol.create(riotBase+"streamManager") ;
+	private static String StreamManagerSymbolStr = riotBase+"streamManager" ;
+	public static Symbol streamManagerSymbol = Symbol.create(riotBase+"streamManager") ;
 
     /** Read triples into a Model from the given location. 
      *  The syntax is detemined from input source URI (content negotiation or extension). 
@@ -326,8 +319,6 @@ public class RDFDataMgr
     private static DatasetGraph createDatasetGraph() { return DatasetGraphFactory.createMem() ; }
     
     // Load:
-    // Macros would be nice.
-
     /** Create a memory Model and read in some data
      * @see #read(Model,String) 
      */ 
@@ -885,33 +876,51 @@ public class RDFDataMgr
         return in ;
     }
     
-    // ----- 
-    // Readers are algorithms and must be stateless (or they must create a per run
-    // instance of something) because they may be called concurrency from different threads.
-    // The Context Readerobject gives the per-run configuration.  
-    
-    // Alternative: A two step factory-instance design means
-    // readers can be created and passed around (e,.g. to set specific features)
-    // We could have had two step design - ReaderFactory-ReaderInstance
-    // no - put the bruden on complicated readers, not everyone. 
-    
-    private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang hintLang, Context context)
+    // -----
+    // Readers are algorithms and must be stateless (or they must create a per
+    // run instance of something) because they may be called concurrency from
+    // different threads. The Context Reader object gives the per-run
+    // configuration.
+
+    private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang lang, Context context)
     {
-        ContentType ct = WebContent.determineCT(baseUri, in.getContentType(), hintLang) ;
+        // Issue is whether lang overrides all.
+        // Not in the case of remote conneg, no file extension, when lang is default. 
+//        // ---- NEW
+//        if ( lang != null ) {
+//            ReaderRIOT reader = createReader(lang) ;
+//            if ( reader == null )
+//                throw new RiotException("No parser registered for language: "+lang.getLabel()) ;
+//            reader.read(in, baseUri, lang.getContentType(), destination, context) ;
+//            return ;
+//        }
+//        // ---- NEW
+        
+        ContentType ct = WebContent.determineCT(in.getContentType(), lang, baseUri) ;
         if ( ct == null )
-            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
+            throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : stream="+in.getContentType()+")") ;
 
         ReaderRIOT reader = getReader(ct) ;
         if ( reader == null )
             throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
         reader.read(in, baseUri, ct, destination, context) ;
     }
-
+    
     // java.io.Readers are NOT preferred.
     private static void process(StreamRDF destination, Reader in, String baseUri, Lang lang, Context context )
     {
+//        // ---- NEW
+//        if ( lang != null ) {
+//            ReaderRIOT reader = createReader(lang) ;
+//            if ( reader == null )
+//                throw new RiotException("No parser registered for language: "+lang.getLabel()) ;
+//            reader.read(in, baseUri, lang.getContentType(), destination, context) ;
+//            return ;
+//        }
+//        // ---- NEW
+
         // Not as good as from an InputStream 
-        ContentType ct = WebContent.determineCT(baseUri, null, lang) ;
+        ContentType ct = WebContent.determineCT(null, lang, baseUri) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the content type: (URI="+baseUri+" : hint="+lang+")") ;
         ReaderRIOT reader = getReader(ct) ;
@@ -919,6 +928,38 @@ public class RDFDataMgr
             throw new RiotException("No parser registered for content type: "+ct.getContentType()) ;
         reader.read(in, baseUri, ct, destination, context) ;
     }
+
+//    ///---- NEW / rewrite
+//    // Lang is definitive.  needs further consideration
+//    private static void process2(StreamRDF destination, TypedInputStream in, String uri, Lang givenLang, Context context)
+//    {
+//        Pair<Lang, ContentType> p = selectLang(in.getMediaType(), uri, givenLang, context) ;
+//        Lang lang = p.getLeft() ;
+//        ContentType ct = p.getRight() ;
+//
+//        if ( lang == null )
+//            throw new RiotException("Syntax not identified (URI="+uri+" : stream="+in.getContentType()+")") ;
+//
+//        ReaderRIOT reader = createReader(lang) ;
+//        if ( reader == null )
+//            throw new RiotException("No parser registered for lang: "+lang.getLabel()) ;
+//        reader.read(in, uri, ct, destination, context) ;
+//    }
+//
+//    private static Pair<Lang, ContentType> selectLang(ContentType ct, String uri, Lang lang, Context context) {
+//        if ( lang != null )
+//            return Pair.create(lang, lang.getContentType()) ;
+//
+//        Lang ctLang = RDFLanguages.contentTypeToLang(ct) ;
+//        if ( ctLang != null )
+//            return Pair.create(ctLang, ct) ;
+//
+//        Lang filenameLang = RDFLanguages.filenameToLang(uri) ;
+//        if ( filenameLang != null )
+//            return Pair.create(filenameLang, filenameLang.getContentType()) ;
+//        return null ;
+//    }
+//    ///---- NEW
 
     /** 
      * @see RDFLanguages#shortnameToLang  to go from Jena short name to {@linkplain Lang}
@@ -947,7 +988,7 @@ public class RDFDataMgr
 
     /** Determine the Lang, given the URI target, any content type header string and a hint */ 
     public static Lang determineLang(String target, String ctStr, Lang hintLang) {
-        ContentType ct = WebContent.determineCT(target, ctStr, hintLang) ;
+        ContentType ct = WebContent.determineCT(ctStr, hintLang, target) ;
         if ( ct == null )
             return hintLang ;
         Lang lang = RDFLanguages.contentTypeToLang(ct) ;
@@ -1226,7 +1267,7 @@ public class RDFDataMgr
         RDFFormat serialization = RDFWriterRegistry.defaultSerialization(lang) ;
         return createGraphWriter$(serialization) ;    
     }
-    
+
     /** Create a writer for an RDF language
      * @param serialization Serialization format
      * @return WriterGraphRIOT
