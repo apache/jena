@@ -124,11 +124,10 @@ public class StoreUtils
     {
         String qs = "SELECT * { GRAPH "+FmtUtils.stringForNode(graphNode)+" { ?s ?p ?o }} LIMIT 1" ;
         Dataset ds = SDBFactory.connectDataset(store) ;
-        QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ;
-        ResultSet rs = qExec.execSelect() ;
-        boolean b = rs.hasNext() ;
-        qExec.close();
-        return b ;
+        try ( QueryExecution qExec = QueryExecutionFactory.create(qs, ds) ) {
+            ResultSet rs = qExec.execSelect() ;
+            return rs.hasNext() ;
+        }
     }
 
     /**
@@ -183,18 +182,12 @@ public class StoreUtils
     }
 
     private static boolean hasColumns(Connection conn, String tableName, Collection<String> colNames) throws SQLException {
-        java.sql.ResultSet res = null;
-        try {
-            res = conn.getMetaData().getColumns(null, null, tableName, null);
+        try ( java.sql.ResultSet res = conn.getMetaData().getColumns(null, null, tableName, null) ) {
             while (res.next()) {
                 String colName = res.getString("COLUMN_NAME");
                 colNames.remove(colName.toLowerCase());
             }
             return colNames.isEmpty();
-        } finally {
-            if (res != null) {
-                res.close();
-            }
         }
     }
 }

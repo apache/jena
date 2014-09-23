@@ -143,15 +143,14 @@ public class sdbquery extends CmdArgsDB
 //                }
                     
                 Query query = modQuery.getQuery() ;
-                QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
-                
-                if ( isVerbose() )
-                    PrintSDB.print(((QueryExecutionBase)qExec).getPlan().getOp()) ;
-                
-                if ( false )
-                    System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
-                QueryExecUtils.executeQuery(query, qExec, modResults.getResultsFormat()) ;
-                qExec.close() ;
+                try ( QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ) {
+                    if ( isVerbose() )
+                        PrintSDB.print(((QueryExecutionBase)qExec).getPlan().getOp()) ;
+                    
+                    if ( false )
+                        System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
+                    QueryExecUtils.executeQuery(query, qExec, modResults.getResultsFormat()) ;
+                }
             }
             long queryTime = getModTime().endTimer() ;
             totalTime = queryTime ;

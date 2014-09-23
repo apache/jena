@@ -52,15 +52,11 @@ public class TestDB
     protected void exec(String sql, Object... args) throws SQLException
     {
         sql = sqlFormat(sql, args) ;
-        Statement stmt = null ;
-        try {
-            stmt = jdbc.createStatement() ;
+        try ( Statement stmt = jdbc.createStatement() ) {
             if ( verbose )
                 System.out.println(sql) ;
             stmt.execute(sql) ;
-        } finally {
-            if ( stmt != null ) stmt.close() ;
-        }
+        } 
     }
     
     protected ResultSet execQuery(String sql, Object... args) throws SQLException

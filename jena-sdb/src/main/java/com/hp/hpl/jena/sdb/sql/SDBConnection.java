@@ -158,11 +158,8 @@ public class SDBConnection
             writeLog("execUpdate", sqlString) ;
         
         Connection conn = getSqlConnection() ;
-        try {
-            Statement s = conn.createStatement() ;
-            int rc = s.executeUpdate(sqlString) ;
-            s.close() ;
-            return rc ;
+        try ( Statement s = conn.createStatement() ) {
+            return s.executeUpdate(sqlString) ;
         } catch (SQLException ex)
         {
             exception("execUpdate", ex, sqlString) ;

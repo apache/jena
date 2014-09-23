@@ -88,35 +88,32 @@ public class TestStringBase extends TestDB
         catch (SQLException ex)
         { throw ex ; } 
         ps.close() ;
+        
+        try (ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName )) {
+            rs.next() ;
+            // In Oracle an empty string is a NULL.  This is not ANSI compliant.
 
-        ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
-        rs.next() ;
-        // In Oracle an empty string is a NULL.  This is not ANSI compliant.
-        
-        String s = rs.getString(1) ;
-        if ( s == null )
-            s = "" ;
-        byte[] b = rs.getBytes(1) ;
-        
-        
-//        boolean wasNull = rs.wasNull() ;
-//        if ( testString != null && wasNull )
-//            fail(testLabel+" : Got null back") ;
+            String s = rs.getString(1) ;
+            if ( s == null )
+                s = "" ;
+            byte[] b = rs.getBytes(1) ;
 
-        rs.close() ;
-        
-        if ( ! testString.equals(s) )   // Debug point
-        {
-            for ( int i = 0 ; i < s.length() ; i++ )
+            //        boolean wasNull = rs.wasNull() ;
+            //        if ( testString != null && wasNull )
+            //            fail(testLabel+" : Got null back") ;
+            if ( ! testString.equals(s) )   // Debug point
             {
-                System.out.printf("%x:%x ", (int)testString.charAt(i), (int)s.charAt(i)) ;
+                for ( int i = 0 ; i < s.length() ; i++ )
+                {
+                    System.out.printf("%x:%x ", (int)testString.charAt(i), (int)s.charAt(i)) ;
+                }
+                System.out.println() ;
+                String $ = s ;              // Pointless
             }
-            System.out.println() ;
-            String $ = s ;              // Pointless
+
+            assertEquals(testLabel+" : "+label, testString, s) ;
+            //System.out.println("Passed: "+label) ;
         }
-                   
-        assertEquals(testLabel+" : "+label, testString, s) ;
-        //System.out.println("Passed: "+label) ;
     }
 
     private void runBytesTest(String label, String testString, String colName, String colType) throws Exception
@@ -138,25 +135,25 @@ public class TestStringBase extends TestDB
         { throw ex ; } 
         ps.close() ;
 
-        ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
-        rs.next() ;
-        byte[]b = rs.getBytes(1) ;
-        
-//        boolean wasNull = rs.wasNull() ;
-//        if ( testString != null && wasNull )
-//            fail(testLabel+": got an SQL null back") ;
+        try ( ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ) {
+            rs.next() ;
+            byte[]b = rs.getBytes(1) ;
+
+            //        boolean wasNull = rs.wasNull() ;
+            //        if ( testString != null && wasNull )
+            //            fail(testLabel+": got an SQL null back") ;
 
             // In Oracle, an empty binary is a NULL.  This is not ANSI compliant.
-        String s = "" ;
-        if ( b != null )
-            s = bytesToString(b) ;
-        rs.close() ;
-        if ( ! testString.equals(s) )   // Debug point
-        {
-            String $ = s ;              // Pointless
-        }
-        assertEquals(testLabel+" : "+label, testString, s) ;
-        //System.out.println("Passed: "+label) ;
+            String s = "" ;
+            if ( b != null )
+                s = bytesToString(b) ;
+            if ( ! testString.equals(s) )   // Debug point
+            {
+                String $ = s ;              // Pointless
+            }
+            assertEquals(testLabel+" : "+label, testString, s) ;
+            //System.out.println("Passed: "+label) ;
+    }
     }
     
      // String(byte[], Charset) and .getBytes(Charset) are Java6-isms.

@@ -122,8 +122,7 @@ public class StoreList
         Model model = FileManager.get().loadModel(fn) ;
         List<Pair<String, String>> data = new ArrayList<Pair<String, String>>();
         Query query = QueryFactory.create(queryString) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-        try {
+        try ( QueryExecution qExec = QueryExecutionFactory.create(query, model) ) {
             ResultSet rs = qExec.execSelect() ;
             
             for ( ; rs.hasNext() ; )
@@ -133,7 +132,7 @@ public class StoreList
                 String desc = qs.getResource("desc").getURI() ;
                 data.add(new Pair<String, String>(label, desc)) ;
             }
-        } finally { qExec.close() ; }
+        }
         return data ;
     }
 }

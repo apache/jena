@@ -43,9 +43,10 @@ public class TableUtils
     {
         try {
             Statement s = conn.createStatement() ; // Not closed - happens when result set closed
-            ResultSet tableData = s.executeQuery("SELECT * FROM "+tableName) ;
-            RS.printResultSet(tableData) ;
-            tableData.close() ;
+            try ( ResultSet tableData = s.executeQuery("SELECT * FROM "+tableName) ) {
+                RS.printResultSet(tableData) ;
+                tableData.close() ;
+            }
         } catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }
     }
@@ -59,18 +60,19 @@ public class TableUtils
     	if (types.length == 0) types = null;
     	// MySQL bug -- doesn't see temporary tables!
     	// Postgres likes lowercase -- I'll try all options
-    	ResultSet tableData = connection.getMetaData().getTables(null, null, table, types);
-    	boolean hasTable = tableData.next();
-    	tableData.close();
+    	boolean hasTable = false ;
+    	try ( ResultSet tableData = connection.getMetaData().getTables(null, null, table, types)) {
+    	    hasTable = tableData.next();
+    	} 
     	if (!hasTable) { // Try lowercase
-    		tableData = connection.getMetaData().getTables(null, null, table.toLowerCase(), types);
-    		hasTable = tableData.next();
-    		tableData.close();
+    		try ( ResultSet tableData = connection.getMetaData().getTables(null, null, table.toLowerCase(), types) ) {
+    		    hasTable = tableData.next();
+    		}
     	}
     	if (!hasTable) { // Try uppercase
-    		tableData = connection.getMetaData().getTables(null, null, table.toUpperCase(), types);
-    		hasTable = tableData.next();
-    		tableData.close();
+    	    try ( ResultSet tableData = connection.getMetaData().getTables(null, null, table.toUpperCase(), types) ) {
+    	        hasTable = tableData.next();
+    	    }
     	}
     	
     	return hasTable;
@@ -108,13 +110,11 @@ public class TableUtils
     /** Get the size of a table (usually called 'Triples') **/
     public static long getTableSize(Connection connection, String table)
     {
-    	long size = -1;
-    	try {
-    		ResultSet res = connection.createStatement().executeQuery("SELECT COUNT(*) FROM " + table);
-    		if (res.next())
-    			size = res.getLong(1);
-    		res.close();
-    	} catch (SQLException e) { throw new SDBExceptionSQL(e) ; }
+        long size = -1;
+        try ( ResultSet res = connection.createStatement().executeQuery("SELECT COUNT(*) FROM " + table) ) {
+            if (res.next())
+                size = res.getLong(1);
+        } catch (SQLException e) { throw new SDBExceptionSQL(e) ; }
     
     	return size;
     }
