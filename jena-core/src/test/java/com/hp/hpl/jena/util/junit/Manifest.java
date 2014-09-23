@@ -85,6 +85,8 @@ public class Manifest
         manifestName = TestUtils.getLiteral(manifestRes, RDFS.label) ;
         if ( manifestName == null )
             manifestName = TestUtils.getLiteral(manifestRes, RDFS.comment) ;
+        if ( manifestName == null )
+            manifestName = TestUtils.getLiteral(manifestRes, TestManifest.name) ;
         manifestStmts.close();
     }
     
