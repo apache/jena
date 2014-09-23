@@ -25,9 +25,15 @@ import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.path.PathCompiler ;
 import com.hp.hpl.jena.sparql.path.PathLib ;
 
-/** Perform the equivalent of the trasnactions in the SPARQL 1.1 spec.
- *  ARQ regards path transformation as an optimization.
- *  ARQ does not execute the exact transformation as per spec as there are better ways to do it.
+/**
+ * Perform the equivalent of the transactions in the SPARQL 1.1 spec. ARQ
+ * regards path transformation as an optimization. ARQ does not execute the
+ * exact transformation as per spec as there are better ways to do it for ARQ.
+ * For example, 
+ * <ul>
+ * <li>Path seq -> BGPs or a (sequence)
+ * <li>"|" is not expanded into a union.
+ * </ul>
  */
 
 public class TransformPathFlattern extends TransformCopy

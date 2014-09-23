@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sparql.core.VarAlloc ;
 import com.hp.hpl.jena.sparql.path.* ;
 
 /** The path transformation step exactly as per the SPARQL 1.1 spec.
+ *  i.e. joins triples rather creatign BGPs. 
  *  It does not produce very nice execution structures so ARQ uses
  *  a functional equivalent, but different, transformation.
  */
