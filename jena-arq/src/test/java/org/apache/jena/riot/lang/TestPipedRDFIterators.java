@@ -108,7 +108,7 @@ public class TestPipedRDFIterators {
         Future<Integer> result = executor.submit(consumeTriples);
         Integer count = 0;
         try {
-            count = result.get(5, TimeUnit.SECONDS);
+            count = result.get(10, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             // Check that it wasn't the producer thread erroring that caused us
             // to time out
@@ -253,7 +253,7 @@ public class TestPipedRDFIterators {
         Future<Integer> result = executor.submit(consumeQuads);
         Integer count = 0;
         try {
-            count = result.get(5, TimeUnit.SECONDS);
+            count = result.get(10, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             // Check that it wasn't the producer thread erroring that caused us
             // to time out
@@ -423,7 +423,7 @@ public class TestPipedRDFIterators {
         Future<Integer> result = executor.submit(consumeTriples);
         Integer count = 0;
         try {
-            count = result.get(5, TimeUnit.SECONDS);
+            count = result.get(10, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             // We expect the producer thread to have errored
             try {
@@ -669,7 +669,7 @@ public class TestPipedRDFIterators {
         // finished even though it errored
         f = executor.submit(consumer);
         try {
-            Object result = f.get(5, TimeUnit.SECONDS);
+            Object result = f.get(10, TimeUnit.SECONDS);
             Assert.fail("An error was expected");
         } catch (ExecutionException e) {
             // Ignore - this is as expected and indicates we successfully
