@@ -330,8 +330,6 @@ public class FormatterElement extends FormatterBase
         int row2 = out.getRow() ;
         if ( row1 != row2 )
             out.newline() ;
-        else
-            out.print(' ') ;
 
         // Finally, close the group.
         out.print("}") ;
