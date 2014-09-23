@@ -55,6 +55,15 @@ public class NodeTableWrapper implements NodeTable
     }
     
     @Override
+    public boolean containsNode(Node node) {
+        return nodeTable.containsNode(node) ;
+    }
+
+    @Override
+    public boolean containsNodeId(NodeId nodeId) {
+        return nodeTable.containsNodeId(nodeId) ;    }
+
+    @Override
     public NodeId allocOffset()
     {
         return nodeTable.allocOffset() ;

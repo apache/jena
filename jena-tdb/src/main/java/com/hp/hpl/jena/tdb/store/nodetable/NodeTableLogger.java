@@ -70,6 +70,23 @@ public class NodeTableLogger implements NodeTable
     }
     
     @Override
+    public boolean containsNode(Node node) {
+        //info("containsNodeId("+id+") =>") ;
+        boolean b = nodeTable.containsNode(node) ;
+        info("containsNode("+node+") => "+b) ;
+        return b ;
+    }
+
+    @Override
+    public boolean containsNodeId(NodeId id) {
+        //info("containsNodeId("+id+") =>") ;
+        boolean b = nodeTable.containsNodeId(id) ;
+        info("containsNodeId("+id+") => "+b) ;
+        return b ;
+    }
+
+    
+    @Override
     public NodeId allocOffset()
     {
         NodeId nodeId = nodeTable.allocOffset() ;

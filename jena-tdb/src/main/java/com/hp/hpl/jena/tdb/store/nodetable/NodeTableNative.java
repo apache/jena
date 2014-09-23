@@ -79,9 +79,21 @@ public class NodeTableNative implements NodeTable
     @Override
     public NodeId getAllocateNodeId(Node node)  { return _idForNode(node, true) ; }
 
+    @Override
+    public boolean containsNode(Node node) {
+        NodeId x = getNodeIdForNode(node) ;
+        return NodeId.isDoesNotExist(x) ;
+    }
+
+    @Override
+    public boolean containsNodeId(NodeId nodeId) {
+        Node x = getNodeForNodeId(nodeId) ;
+        return x == null ;
+    }
+
     // ---- The worker functions
     // Synchronization:
-    // accesIndex and readNodeFromTable
+    // accessIndex and readNodeFromTable
     
     // Cache around this class further out in NodeTableCache are synchronized
     // to maintain cache validatity which indirectly sync access to the NodeTable.

@@ -43,13 +43,19 @@ public interface NodeTable extends Sync, Closeable
     /** Look up node id and return the Node - return null if not found */
     public Node getNodeForNodeId(NodeId id) ;
     
+    /** Test whether the node table contains an entry for node */
+    public boolean containsNode(Node node) ;
+
+    /** Test whether the node table contains an entry for node */
+    public boolean containsNodeId(NodeId nodeId) ;
+
     /** Iterate over all nodes (not necessarily fast).  Does not include inlined NodeIds */
     public Iterator<Pair<NodeId, Node>> all() ;
     
     /** The offset needed to predicate allocation difference between peristent tables - internal function */  
     public NodeId allocOffset() ;
     
-    /** Any thing there? */  
+    /** Anything there? */  
     public boolean isEmpty() ; 
 
 }

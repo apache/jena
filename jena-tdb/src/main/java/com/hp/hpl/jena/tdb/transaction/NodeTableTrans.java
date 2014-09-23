@@ -118,6 +118,20 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         return node ;
     }
 
+    @Override
+    public boolean containsNode(Node node) {
+        NodeId x = getNodeIdForNode(node) ;
+        return NodeId.isDoesNotExist(x) ;
+    }
+
+    @Override
+    public boolean containsNodeId(NodeId nodeId) {
+        Node x = getNodeForNodeId(nodeId) ;
+        return x == null ;
+    }
+
+
+
     /** Convert from a id to the id in the "journal" file */ 
     private NodeId mapToJournal(NodeId id)
     { 

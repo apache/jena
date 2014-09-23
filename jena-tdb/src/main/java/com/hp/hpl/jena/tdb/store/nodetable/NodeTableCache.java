@@ -92,6 +92,18 @@ public class NodeTableCache implements NodeTable
     @Override
     public NodeId getAllocateNodeId(Node node)  { return _idForNode(node, true) ; }
 
+    @Override
+    public boolean containsNode(Node node) {
+        NodeId x = getNodeIdForNode(node) ;
+        return NodeId.isDoesNotExist(x) ;
+    }
+
+    @Override
+    public boolean containsNodeId(NodeId nodeId) {
+        Node x = getNodeForNodeId(nodeId) ;
+        return x == null ;
+    }
+
     // ---- The worker functions
     // NodeId ==> Node
     private Node _retrieveNodeByNodeId(NodeId id)
