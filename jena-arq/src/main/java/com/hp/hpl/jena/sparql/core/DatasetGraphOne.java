@@ -35,7 +35,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
 {
     private final Graph graph ;
     
-    protected DatasetGraphOne(Graph graph) { this.graph = graph ; }
+    public DatasetGraphOne(Graph graph) { this.graph = graph ; }
     
     @Override
     public boolean containsGraph(Node graphNode)
@@ -87,7 +87,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     }      
     
     @Override
-    public void delete(Node g , Node s, Node p, Node o)
+    public void delete(Node g, Node s, Node p, Node o)
     {
         if (  Quad.isDefaultGraph(g) )
             graph.delete(new Triple(s, p, o)) ;
@@ -120,23 +120,19 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o)
     { 
-        if ( true ) throw new UnsupportedOperationException() ;
-        return triples2quadsDftGraph(graph.find(s, p ,o)) ; }
+        return triples2quadsDftGraph(graph.find(s, p ,o)) ; 
+    }
 
-    // -- Not needed.
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
     {
-        if ( true ) throw new UnsupportedOperationException() ;
         // There are no named graphs
         return Iter.nullIterator() ;
     }
 
-    // -- Not needed.
     @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
     {
-        if ( true ) throw new UnsupportedOperationException() ;
         // There are no named graphs
         return Iter.nullIterator() ;
     }
