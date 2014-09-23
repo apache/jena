@@ -155,8 +155,12 @@ public class Optimize implements Rewrite
         OpWalker.walk(op, new OpVisitorExprPrepare(context)) ;
         
         // Convert paths to triple patterns if possible.
-        if ( context.isTrueOrUndef(ARQ.optPathFlatten) )
+        if ( context.isTrueOrUndef(ARQ.optPathFlatten) ) {
             op = apply("Path flattening", new TransformPathFlattern(), op) ;
+            // and merge adjacent BGPs (part 1)
+            if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
+                op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
+        }
 
         // Expression constant folding
         if ( context.isTrueOrUndef(ARQ.optExprConstantFolding) )
