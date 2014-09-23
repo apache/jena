@@ -222,7 +222,7 @@ public abstract class CmdLangParse extends CmdGeneral
         // else use NodeToLabel.createBNodeByLabel() ;
         // Also, as URI.
         final boolean labelsAsGiven = false ;
-        
+
         NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
         if ( labelsAsGiven )
             labels = NodeToLabel.createBNodeByLabelEncoded() ;
@@ -246,7 +246,9 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( labelsAsGiven )
                 reader.getParserProfile().setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
             modTime.startTimer() ;
+            sink.start() ;
             reader.read(in, baseURI, ct, sink, null) ;
+            sink.finish() ;
         } catch (RiotException ex) {
             // Should have handled the exception and logged a message by now.
             // System.err.println("++++"+ex.getMessage());
