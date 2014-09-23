@@ -1,1 +1,1 @@
-<http://a.example/s> <http://a.example/p> "\u0080\u07ff\u0800\u0fff\u1000\ucfff\ud000\ud7ff\ue000\uffff\U00010000\U0003ffff\U00040000\U000fffff\U00100000\U0010fffd" .
+<http://a.example/s> <http://a.example/p> "\u0080\u07FF\u0800\u0FFF\u1000\uCFFF\uD000\uD7FF\uE000\uFFFD\U00010000\U0003FFFD\U00040000\U000FFFFD\U00100000\U0010FFFD" .

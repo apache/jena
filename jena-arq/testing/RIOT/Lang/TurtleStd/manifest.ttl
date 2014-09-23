@@ -43,7 +43,6 @@
     <#localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries>
     <#localName_with_assigned_nfc_PN_CHARS_BASE_character_boundaries>
     <#localName_with_nfc_PN_CHARS_BASE_character_boundaries>
-#    <#localName_with_PN_CHARS_BASE_character_boundaries>
     <#localName_with_leading_underscore>
     <#localName_with_leading_digit>
     <#localName_with_non_leading_extras>
@@ -118,6 +117,20 @@
     <#predicateObjectList_with_two_objectLists>
     <#repeated_semis_at_end>
     <#repeated_semis_not_at_end>
+
+    # tests requested by Jeremy Carroll
+    # http://www.w3.org/2011/rdf-wg/wiki/Turtle_Candidate_Recommendation_Comments#c35
+    <#comment_following_localName>
+    <#number_sign_following_localName>
+    <#comment_following_PNAME_NS>
+    <#number_sign_following_PNAME_NS>
+
+    # tests from Dave Beckett
+    # http://www.w3.org/2011/rdf-wg/wiki/Turtle_Candidate_Recommendation_Comments#c28
+    <#LITERAL_LONG2_with_REVERSE_SOLIDUS>
+    <#turtle-syntax-bad-LITERAL2_with_langtag_and_datatype>
+    <#two_LITERAL_LONG2s>
+    <#langtagged_LONG_with_subtag>
 
     # original tests-ttl
     <#turtle-syntax-file-01>
@@ -295,13 +308,6 @@
     <#turtle-eval-bad-03>
     <#turtle-eval-bad-04>
 
-    # tests from Dave Beckett
-    # http://www.w3.org/2011/rdf-wg/wiki/Turtle_Candidate_Recommendation_Comments#c28
-    <#LITERAL_LONG2_with_REVERSE_SOLIDUS>
-    <#turtle-syntax-bad-LITERAL2_with_langtag_and_datatype>
-    <#two_LITERAL_LONG2s>
-    <#langtagged_LONG_with_subtag>
-
     # tests from David Robillard
     # http://www.w3.org/2011/rdf-wg/wiki/Turtle_Candidate_Recommendation_Comments#c21
     <#turtle-syntax-bad-blank-label-dot-end>
@@ -438,14 +444,6 @@
    rdft:approval rdft:Approved ;
    mf:action    <localName_with_nfc_PN_CHARS_BASE_character_boundaries.ttl> ;
    mf:result    <localName_with_nfc_PN_CHARS_BASE_character_boundaries.nt> ;
-   .
-
-<#localName_with_PN_CHARS_BASE_character_boundaries> rdf:type rdft:TestTurtleEval ;
-   mf:name      "localName_with_PN_CHARS_BASE_character_boundaries" ;
-   rdfs:comment "localName with PN CHARS BASE character boundaries (p:AZazÀÖØöø...)" ;
-   rdft:approval rdft:Rejected ;
-   mf:action    <localName_with_PN_CHARS_BASE_character_boundaries.ttl> ;
-   mf:result    <localName_with_PN_CHARS_BASE_character_boundaries.nt> ;
    .
 
 <#default_namespace_IRI> rdf:type rdft:TestTurtleEval ;
@@ -2342,6 +2340,40 @@
    rdfs:comment "Bad IRI : {abc} (negative evaluation test)" ;
    rdft:approval rdft:Approved ;
    mf:action    <turtle-eval-bad-04.ttl> ;
+   .
+
+# tests requested by Jeremy Carroll
+# http://www.w3.org/2011/rdf-wg/wiki/Turtle_Candidate_Recommendation_Comments#c35
+<#comment_following_localName> rdf:type rdft:TestTurtleEval ;
+   mf:name      "comment_following_localName" ;
+   rdfs:comment "comment following localName" ;
+   rdft:approval rdft:Proposed ;
+   mf:action    <comment_following_localName.ttl> ;
+   mf:result    <IRI_spo.nt> ;
+   .
+
+<#number_sign_following_localName> rdf:type rdft:TestTurtleEval ;
+   mf:name      "number_sign_following_localName" ;
+   rdfs:comment "number sign following localName" ;
+   rdft:approval rdft:Proposed ;
+   mf:action    <number_sign_following_localName.ttl> ;
+   mf:result    <number_sign_following_localName.nt> ;
+   .
+
+<#comment_following_PNAME_NS> rdf:type rdft:TestTurtleEval ;
+   mf:name      "comment_following_PNAME_NS" ;
+   rdfs:comment "comment following PNAME_NS" ;
+   rdft:approval rdft:Proposed ;
+   mf:action    <comment_following_PNAME_NS.ttl> ;
+   mf:result    <comment_following_PNAME_NS.nt> ;
+   .
+
+<#number_sign_following_PNAME_NS> rdf:type rdft:TestTurtleEval ;
+   mf:name      "number_sign_following_PNAME_NS" ;
+   rdfs:comment "number sign following PNAME_NS" ;
+   rdft:approval rdft:Proposed ;
+   mf:action    <number_sign_following_PNAME_NS.ttl> ;
+   mf:result    <number_sign_following_PNAME_NS.nt> ;
    .
 
 # tests from Dave Beckett

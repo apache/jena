@@ -9,10 +9,13 @@
         <N-Triples/manifest.ttl>
         ## <N-Quads/manifest.ttl>
 
-        <TurtleStd/manifest.ttl>    # W3C test suite
         <Turtle2/manifest.ttl>      ## Long tests
         <TurtleSubm/manifest.ttl>
 
         <RDF-JSON/manifest.ttl>
-        ## <TrigStd/manifest.ttl>   # W3C Test Suite
+
+        <NTriplesStd/manifest.ttl>
+        <NQuadsStd/manifest.ttl>
+        <TurtleStd/manifest.ttl>    # W3C test suite
+        <TrigStd/manifest.ttl>   # W3C Test Suite
 	).
