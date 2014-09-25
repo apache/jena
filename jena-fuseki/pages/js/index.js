@@ -26,12 +26,12 @@ var populateDatasetSelect = function() {
 		selectFirstDs = false;
 	}
 }
-
+var yasqe;
 $(document).ready(function() {
 	
 	populateDatasetSelect();
 	
-	var yasqe = YASQE(document.getElementById("yasqe"), {
+	yasqe = YASQE(document.getElementById("yasqe"), {
 		sparql: {
 			endpoint: "sparql",
 			showQueryButton: true,
@@ -59,7 +59,7 @@ $(document).ready(function() {
 	var updateDs = function() {
 	    var getEndpoint = function() {
 	    	
-	    	var dsEndpoints = (yasqe.getQueryType() == "INSERT" || yasqe.getQueryType() == "DELETE"? dsUpdateEndpoints: dsQueryEndpoints);
+	    	var dsEndpoints = (yasqe.getQueryMode() == "update"? dsUpdateEndpoints: dsQueryEndpoints);
 	    	var endpoint = "sparql"
 	    	if (dataset != "-") {
 	    		endpoint = dataset + "/" + dsEndpoints[dataset];
