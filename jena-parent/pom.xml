@@ -77,7 +77,7 @@
       <!-- Turn of doclint for java8 and later -->
       <id>doclint-java8-disable</id>
       <activation>
-	<jdk>[1.8,</jdk>
+	<jdk>[1.8,)</jdk>
       </activation>
 
       <build>
