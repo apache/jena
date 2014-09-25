@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import java.util.ArrayList;
@@ -13,7 +31,6 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpExtend;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
@@ -39,15 +56,18 @@ import com.hp.hpl.jena.sparql.expr.ExprVars;
  * assignment</li>
  * <li>Assignments where the assigned value is never used elsewhere</li>
  * </ol>
- * 
- * @author rvesse
+ * <p>
+ * Both of these changes can only happen inside of projections as otherwise we
+ * have to assume that the user may need the resulting variable and thus we
+ * leave the assignment alone.
+ * </p>
  * 
  */
 public class TransformEliminateAssignments extends TransformCopy {
 
     public static Op eliminate(Op op) {
         AssignmentTracker tracker = new AssignmentTracker();
-        VariableUsagePusher pusher = new VariableUsagePusher(tracker);
+        AssignmentPusher pusher = new AssignmentPusher(tracker);
         AssignmentPopper popper = new AssignmentPopper(tracker);
         Transform transform = new TransformEliminateAssignments(tracker, pusher, popper);
 
@@ -62,6 +82,19 @@ public class TransformEliminateAssignments extends TransformCopy {
         this.before = before;
     }
 
+    protected boolean isApplicable() {
+        // Can only be applied if we are inside a projection as otherwise the
+        // assigned variables need to remain visible
+        if (!this.tracker.insideProjection())
+            return false;
+        // If there are no eligible assignments then don't bother doing any work
+        if (this.tracker.assignments.size() == 0)
+            return false;
+
+        // Otherwise may be applicable
+        return true;
+    }
+
     @Override
     public Op transform(OpExt opExt) {
         return opExt.apply(this, this.before, this.after);
@@ -69,6 +102,9 @@ public class TransformEliminateAssignments extends TransformCopy {
 
     @Override
     public Op transform(OpFilter opFilter, Op subOp) {
+        if (!this.isApplicable())
+            return super.transform(opFilter, subOp);
+
         // See what vars are used in the filter
         Collection<Var> vars = new ArrayList<>();
         for (Expr expr : opFilter.getExprs().getList()) {
@@ -103,16 +139,10 @@ public class TransformEliminateAssignments extends TransformCopy {
     }
 
     @Override
-    public Op transform(OpAssign opAssign, Op subOp) {
-        this.tracker.putAssignments(opAssign.getVarExprList());
-        // Note that for assign we don't eliminate instances where its value is
-        // never used because assign has different semantics to extend that
-        // means in such a case it acts more like a filter
-        return super.transform(opAssign, subOp);
-    }
-
-    @Override
     public Op transform(OpExtend opExtend, Op subOp) {
+        if (!this.tracker.insideProjection())
+            return super.transform(opExtend, subOp);
+
         this.tracker.putAssignments(opExtend.getVarExprList());
 
         // See if there are any assignments we can eliminate entirely i.e. those
@@ -165,6 +195,7 @@ public class TransformEliminateAssignments extends TransformCopy {
     private static class AssignmentTracker extends VariableUsageTracker {
 
         private Map<Var, Expr> assignments = new HashMap<>();
+        private int depth = 0;
 
         public Map<Var, Expr> getAssignments() {
             return this.assignments;
@@ -191,6 +222,36 @@ public class TransformEliminateAssignments extends TransformCopy {
             }
         }
 
+        public void incrementDepth() {
+            this.depth++;
+        }
+
+        public void decrementDepth() {
+            this.depth--;
+            // Clear all assignments if not inside a project
+            if (this.depth == 0)
+                this.assignments.clear();
+        }
+
+        public boolean insideProjection() {
+            return this.depth > 0;
+        }
+    }
+
+    private static class AssignmentPusher extends VariableUsagePusher {
+
+        private AssignmentTracker tracker;
+
+        public AssignmentPusher(AssignmentTracker tracker) {
+            super(tracker);
+            this.tracker = tracker;
+        }
+
+        @Override
+        public void visit(OpProject opProject) {
+            super.visit(opProject);
+            this.tracker.incrementDepth();
+        }
     }
 
     private static class AssignmentPopper extends OpVisitorBase {
@@ -204,8 +265,7 @@ public class TransformEliminateAssignments extends TransformCopy {
         @Override
         public void visit(OpProject opProject) {
             // Any assignments that are not projected should be discarded at
-            // this
-            // point
+            // this point
             Iterator<Var> vars = tracker.getAssignments().keySet().iterator();
             while (vars.hasNext()) {
                 Var var = vars.next();
@@ -213,6 +273,7 @@ public class TransformEliminateAssignments extends TransformCopy {
                     vars.remove();
             }
             tracker.pop();
+            this.tracker.decrementDepth();
         }
 
     }
