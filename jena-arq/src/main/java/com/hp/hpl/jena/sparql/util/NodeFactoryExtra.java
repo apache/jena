@@ -31,13 +31,13 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /**
  * Various convenience helper methods for converting to and from nodes
- *
  */
 public class NodeFactoryExtra
 {
@@ -94,6 +94,7 @@ public class NodeFactoryExtra
         return new QueryParseException(msg, line, column) ;
     }
     
+    /** Create a literal Node, when the datatype, if given, is a string */ 
     public static Node createLiteralNode(String lex, String lang, String datatypeURI)
     {
         if ( datatypeURI != null && datatypeURI.equals("") )
@@ -106,30 +107,46 @@ public class NodeFactoryExtra
         if ( datatypeURI != null )
             dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI);
         
-        Node n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, lang, dType) ;
+        Node n = NodeFactory.createLiteral(lex, lang, dType) ;
         return n ;
     }
     
+    /** Node to int
+     *  
+     * @param node
+     * @return The int value or Integer.MIN_VALUE.
+     */
     public static int nodeToInt(Node node)
     {
         LiteralLabel lit = node.getLiteral() ;
         
-        if ( ! XSDDatatype.XSDinteger.isValidLiteral(lit) )
+        if ( ! XSDDatatype.XSDint.isValidLiteral(lit) )
             return Integer.MIN_VALUE ;
         int i = ((Number)lit.getValue()).intValue() ;
         return i ;
     }
     
+    /** Node to long
+     *  
+     * @param node
+     * @return The long value or Long.MIN_VALUE.
+     */
     public static long nodeToLong(Node node)
     {
         LiteralLabel lit = node.getLiteral() ;
         
-        if ( ! XSDDatatype.XSDinteger.isValidLiteral(lit) )
+        if ( ! XSDDatatype.XSDlong.isValidLiteral(lit) )
             return Long.MIN_VALUE ;
         long i = ((Number)lit.getValue()).longValue() ;
         return i ;
     }
     
+    /** Node to float
+     *  
+     * @param node
+     * @return The float value or Float.NaN
+     */
+
     public static float nodeToFloat(Node node)
     {
         LiteralLabel lit = node.getLiteral();
@@ -140,6 +157,11 @@ public class NodeFactoryExtra
         return f;
     }
     
+    /** Node to double
+     *  
+     * @param node
+     * @return The double value or Double.NaN
+     */
     public static double nodeToDouble(Node node)
     {
         LiteralLabel lit = node.getLiteral();
@@ -150,54 +172,79 @@ public class NodeFactoryExtra
         return d;
     }
     
+    /** int to Node
+     * 
+     * @param integer
+     * @return An xsd:integer
+     */
     public static Node intToNode(int integer)
     {
-        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(Integer.toString(integer), "", XSDDatatype.XSDinteger) ;
+        return NodeFactory.createLiteral(Integer.toString(integer), "", XSDDatatype.XSDinteger) ;
     }
 
+    /** long to Node
+     * 
+     * @param integer
+     * @return An xsd:integer
+     */
     public static Node intToNode(long integer)
     {
-        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(Long.toString(integer), "", XSDDatatype.XSDinteger) ;
+        return NodeFactory.createLiteral(Long.toString(integer), "", XSDDatatype.XSDinteger) ;
     }
 
+    /** float to Node
+     * 
+     * @param value
+     * @return An xsd:float
+     */
     public static Node floatToNode(float value)
     {
-        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(Float.toString(value), "", XSDDatatype.XSDfloat) ;
+        return NodeFactory.createLiteral(Float.toString(value), "", XSDDatatype.XSDfloat) ;
     }
     
+    /** double to Node
+     * 
+     * @param value
+     * @return An double
+     */
     public static Node doubleToNode(double value)
     {
-        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(Double.toString(value), "", XSDDatatype.XSDdouble) ;
+        return NodeFactory.createLiteral(Double.toString(value), "", XSDDatatype.XSDdouble) ;
     }
     
+    /** Calendar to xsd:dateTime Node */
     public static Node dateTimeToNode(Calendar c)
     {
         String lex = Utils.calendarToXSDDateTimeString(c);
-        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime);
+        return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime);
     }
     
+    /** Calendar to xsd:date Node */
     public static Node dateToNode(Calendar c)
     {
         String lex = Utils.calendarToXSDDateString(c);
-        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate);
+        return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate);
     }
     
+    /** Calendar to xsd:time Node */
     public static Node timeToNode(Calendar c)
     {
         String lex = Utils.calendarToXSDTimeString(c);
-        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDtime);
+        return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDtime);
     }
 
+    /** Now, as xsd:dateTime Node */
     public static Node nowAsDateTime()
     {
         String lex = Utils.nowAsXSDDateTimeString() ;
-        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
+        return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
     }
 
+    /** Today, as xsd:date Node */
     public static Node todayAsDate()
     {
         String lex = Utils.todayAsXSDDateString() ;
-        return com.hp.hpl.jena.graph.NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate) ;
+        return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate) ;
     }
 
 }
