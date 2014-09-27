@@ -184,7 +184,7 @@ public class SystemTDB
 //    public static final int SyncTick                = intValue("SyncTick", -1) ;
 
     /** Default BGP optimizer */
-    public static ReorderTransformation defaultOptimizer = ReorderLib.fixed() ;
+    public static ReorderTransformation defaultReorderTransform = ReorderLib.fixed() ;
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;
     
