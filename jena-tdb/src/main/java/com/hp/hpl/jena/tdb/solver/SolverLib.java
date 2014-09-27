@@ -200,11 +200,11 @@ public class SolverLib
         }
     }
     
-    private static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, 
-                                                 Tuple<Node> tuple,
-                                                 boolean anyGraph,
-                                                 Iterator<BindingNodeId> chain, Filter<Tuple<NodeId>> filter,
-                                                 ExecutionContext execCxt)
+    public static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, 
+                                                Tuple<Node> tuple,
+                                                boolean anyGraph,
+                                                Iterator<BindingNodeId> chain, Filter<Tuple<NodeId>> filter,
+                                                ExecutionContext execCxt)
     {
         return new StageMatchTuple(nodeTupleTable, chain, tuple, anyGraph, filter, execCxt) ;
     }
