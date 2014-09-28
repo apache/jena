@@ -621,14 +621,16 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
      * occurs when the returned iterator is used
      */
     public static <T> Iterator<T> debug(final PrintStream out, Iterator<T> stream) {
-        Transform<T, T> x = new Transform<T, T>() {
-            @Override
-            public T convert(T item) {
-                out.println(item) ;
-                return item ;
-            }
-        } ;
-        return map(stream, x) ;
+        try { 
+            Transform<T, T> x = new Transform<T, T>() {
+                @Override
+                public T convert(T item) {
+                    out.println(item) ;
+                    return item ;
+                }
+            } ;
+            return map(stream, x) ;
+        } finally { out.flush() ; }
     }
 
     /** Print an iterator (destructive) */
