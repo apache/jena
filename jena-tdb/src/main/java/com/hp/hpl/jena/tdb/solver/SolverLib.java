@@ -241,33 +241,38 @@ public class SolverLib
         return new Transform<Binding, BindingNodeId>()
         {
             @Override
-            public BindingNodeId convert(Binding binding)
-            {
-                if ( binding instanceof BindingTDB )
-                    return ((BindingTDB)binding).getBindingId() ;
-                
-                BindingNodeId b = new BindingNodeId(binding) ;
-                // and copy over, getting NodeIds.
-                Iterator<Var> vars = binding.vars() ;
-    
-                for ( ; vars.hasNext() ; )
-                {
-                    Var v = vars.next() ;
-                    Node n = binding.get(v) ;  
-                    if ( n == null )
-                        // Variable mentioned in the binding but not actually defined.
-                        // Can occur with BindingProject
-                        continue ;
-                    
-                    // Rely on the node table cache for efficency - we will likely be
-                    // repeatedly looking up the same node in different bindings.
-                    NodeId id = nodeTable.getNodeIdForNode(n) ;
-                    // Even put in "does not exist" for a node now known not to be in the DB.
-                    b.put(v, id) ;
-                }
-                return b ;
+            public BindingNodeId convert(Binding binding) {
+                return SolverLib.convert(binding, nodeTable) ;
             }
         } ;
+    }
+    
+    /** Binding ==> BindingNodeId, given a NodeTable */
+    public static BindingNodeId convert(Binding binding, NodeTable nodeTable) 
+    {
+        if ( binding instanceof BindingTDB )
+            return ((BindingTDB)binding).getBindingId() ;
+
+        BindingNodeId b = new BindingNodeId(binding) ;
+        // and copy over, getting NodeIds.
+        Iterator<Var> vars = binding.vars() ;
+
+        for ( ; vars.hasNext() ; )
+        {
+            Var v = vars.next() ;
+            Node n = binding.get(v) ;  
+            if ( n == null )
+                // Variable mentioned in the binding but not actually defined.
+                // Can occur with BindingProject
+                continue ;
+
+            // Rely on the node table cache for efficency - we will likely be
+            // repeatedly looking up the same node in different bindings.
+            NodeId id = nodeTable.getNodeIdForNode(n) ;
+            // Even put in "does not exist" for a node now known not to be in the DB.
+            b.put(v, id) ;
+        }
+        return b ;
     }
     
     /** Find whether a specific graph name is in the quads table. */
