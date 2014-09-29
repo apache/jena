@@ -313,6 +313,14 @@ The font is available under an  SIL Open Font License 1.1
 and the CSS files under an MIT License.
 See http://fontawesome.io/license/
 
+This product bundles "jQuery File Upload Plugin" 
+which is available under an MIT License.
+See https://github.com/blueimp/jQuery-File-Upload
+
+This product bundles "Bootstrap-select"
+which is available under an MIT License.
+See https://github.com/silviomoreto/bootstrap-select/blob/master/LICENSE
+
 - - - - - - - - - - - - - - - - - - - - - - - 
 
 From Apache HttpComponents Client
