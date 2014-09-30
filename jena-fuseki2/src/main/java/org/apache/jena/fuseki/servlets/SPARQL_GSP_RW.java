@@ -20,6 +20,10 @@ package org.apache.jena.fuseki.servlets;
 
 import static org.apache.jena.riot.WebContent.ctMultipartMixed ;
 import static org.apache.jena.riot.WebContent.matchContentType ;
+
+import java.util.Map ;
+import java.util.Map.Entry ;
+
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
@@ -198,5 +202,8 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
     protected static void clearGraph(Target target) {
         Graph g = target.graph() ;
         g.clear() ;
+        Map<String, String> pm = g.getPrefixMapping().getNsPrefixMap() ;
+        for ( Entry<String, String> e : pm.entrySet() ) 
+            g.getPrefixMapping().removeNsPrefix(e.getKey()) ;
     }
 }
