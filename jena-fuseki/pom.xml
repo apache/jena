@@ -56,12 +56,6 @@
     </license>
   </licenses>
 
-  <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-fuseki</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-fuseki</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-fuseki</url>
-  </scm>
-
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <server.jar.name>${this.root}-server</server.jar.name>

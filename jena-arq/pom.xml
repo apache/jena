@@ -44,12 +44,6 @@
 
   <description>ARQ is a SPARQL 1.1 query engine for Apache Jena</description>
 
-  <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-arq</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-arq</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-arq</url>
-  </scm>
-
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>

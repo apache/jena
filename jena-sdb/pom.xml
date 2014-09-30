@@ -32,12 +32,6 @@
 
   <description>SDB is a persistence layer for use with Apache Jena that uses an SQL database to store triples/quads.</description>
 
-  <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-sdb</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-sdb</developerConnection>
-    <url>http://svn.apache.org/viewvc/jena/tags/jena-2.12.1-SNAPSHOT/jena-sdb</url>
-  </scm>
-
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>

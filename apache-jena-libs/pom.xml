@@ -38,12 +38,6 @@
 
   <description>A convenience POM artifact that may be referenced to pull in all the standard Jena Libraries (Core, ARQ, IRI, and TDB) with a single dependency.</description>
 
-  <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/apache-jena-libs</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/apache-jena-libs</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/apache-jena-libs</url>
-  </scm>
-
   <dependencies>
 
     <dependency>

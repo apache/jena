@@ -53,12 +53,6 @@
     </license>
   </licenses>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/apache-jena</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/apache-jena</developerConnection>
-    <url>http://svn.apache.org/viewvc/jena/tags/jena-2.12.1-SNAPSHOT-SNAPSHOT/tags/jena-2.12.1-SNAPSHOT/trunk</url>
-  </scm>
-
   <dependencies>
 
     <dependency>

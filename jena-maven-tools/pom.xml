@@ -72,11 +72,6 @@
       <comments>A business-friendly OSS license</comments>
     </license>
   </licenses>
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-maven-tools</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-maven-tools</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-maven-tools</url>
-  </scm>
   <organization>
     <name>Apache</name>
     <url>http://www.apache.org</url>
