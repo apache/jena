@@ -158,8 +158,10 @@ public class Quad
         if ( oNode.isVariable() )
             return false ;
         
-        if ( gNode != null && ! gNode.isURI() )
-            return false ;
+        if ( gNode != null ) {
+            if ( ! gNode.isURI() && ! gNode.isBlank() )
+                return false ;
+        }
         
         return true ;
     }
