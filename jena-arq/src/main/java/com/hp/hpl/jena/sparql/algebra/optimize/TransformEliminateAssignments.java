@@ -22,9 +22,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.atlas.lib.CollectionUtils;
+
+import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
@@ -140,9 +143,13 @@ public class TransformEliminateAssignments extends TransformCopy {
 
     @Override
     public Op transform(OpExtend opExtend, Op subOp) {
+        // No point tracking assignments if not in a projection as we can't
+        // possibly eliminate them without a projection to hide the fact that
+        // the assigned value is unnecessary or only used once
         if (!this.tracker.insideProjection())
             return super.transform(opExtend, subOp);
 
+        // Track the assignments for future reference
         this.tracker.putAssignments(opExtend.getVarExprList());
 
         // See if there are any assignments we can eliminate entirely i.e. those
@@ -165,19 +172,67 @@ public class TransformEliminateAssignments extends TransformCopy {
 
         VarExprList modified = new VarExprList();
         for (Var var : assignments.getVars()) {
+            // If an assignment is used more than once then it must be preserved
+            // for now
             if (this.tracker.getUsageCount(var) > 1)
                 modified.add(var, assignments.getExpr(var));
         }
 
+        // If all assignments are used more than once then there are no changes
+        // and we return null
         if (modified.size() == assignments.size())
             return null;
+
         return modified;
     }
 
     @Override
     public Op transform(OpOrder opOrder, Op subOp) {
-        // TODO Auto-generated method stub
+        if (!this.isApplicable())
+            return super.transform(opOrder, subOp);
+
+        // See what vars are used in the sort conditions
+        Collection<Var> vars = new ArrayList<>();
+        for (SortCondition cond : opOrder.getConditions()) {
+            ExprVars.varsMentioned(vars, cond.getExpression());
+        }
+
+        // Are any of these vars single usage?
+        List<SortCondition> conditions = null;
+        for (Var var : vars) {
+            // Usage count will be 2 if we can eliminate the assignment
+            // First usage is when it is introduced by the assignment and the
+            // second is when it is used now in this filter
+            if (this.tracker.getUsageCount(var) == 2 && this.tracker.getAssignments().containsKey(var)) {
+                // Can go back and eliminate that assignment
+                subOp = Transformer.transform(
+                        new TransformRemoveAssignment(var, this.tracker.getAssignments().get(var)), subOp);
+                // Replace the variable usage with the expression within the sort conditions
+                conditions = processConditions(opOrder.getConditions(), conditions, var);
+                this.tracker.getAssignments().remove(var);
+            }
+        }
+
+        // Create a new order if we've substituted any expressions
+        if (conditions != null) {
+            return new OpOrder(subOp, conditions);
+        }
+
         return super.transform(opOrder, subOp);
+    }
+
+    private List<SortCondition> processConditions(List<SortCondition> baseConditions,
+            List<SortCondition> processedConditions, Var var) {
+        List<SortCondition> inputConditions = processedConditions != null ? processedConditions : baseConditions;
+        List<SortCondition> outputConditions = new ArrayList<>();
+
+        for (SortCondition cond : inputConditions) {
+            Expr e = cond.getExpression();
+            e = ExprTransformer.transform(new ExprTransformSubstitute(var, this.tracker.getAssignments().get(var)), e);
+            outputConditions.add(new SortCondition(e, cond.getDirection()));
+        }
+       
+        return outputConditions;
     }
 
     @Override

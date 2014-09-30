@@ -92,6 +92,23 @@ public class TestTransformEliminateAssignments {
              "    (table unit)))");
         //@formatter:on
     }
+    
+    @Test
+    public void eliminate_single_use_extend_03() {
+        // Assigned variable used only once can substitute expression for the
+        // later usage of the variable
+        // However we must be inside a projection as otherwise the assigned
+        // variable would be visible and we couldn't eliminate the assignment
+        //@formatter:off
+        test(StrUtils.strjoinNL("(project (?y)",
+                                "  (order (?x)",
+                                "    (extend (?x true)",
+                                "      (table unit))))"),
+             "(project (?y)",
+             "  (order (true)",
+             "    (table unit)))");
+        //@formatter:on
+    }
 
     @Test
     public void single_use_extend_unchanged_01() {
