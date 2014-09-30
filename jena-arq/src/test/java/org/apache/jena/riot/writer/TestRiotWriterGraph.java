@@ -85,13 +85,13 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     
     @Test public void writer09() { 
         if ( format.getLang() != Lang.JSONLD )
-            // Fails in jsonld-java v0.3
+            // Fails in jsonld-java
             test("writer-rt-09.ttl") ;
         }
     
     @Test public void writer10() { 
         if ( format.getLang() != Lang.JSONLD )
-            // Fails in jsonld-java v0.3
+            // Fails in jsonld-java
             test("writer-rt-10.ttl") ; 
     }
     
