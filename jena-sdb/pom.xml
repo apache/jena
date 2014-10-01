@@ -21,12 +21,12 @@
   <artifactId>jena-sdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SDB (SQL based triple store)</name>
-  <version>1.5.2-SNAPSHOT</version>
+  <version>1.5.1</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
+    <version>11</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
     </dependency>
 
     <!-- Need the tests as well -->
@@ -50,21 +50,21 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
     </dependency>
 
     <!-- Need the tests as well -->
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

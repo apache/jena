@@ -29,7 +29,7 @@
   <packaging>pom</packaging>
   <name>Apache Jena - Distribution</name>
   <url>http://jena.apache.org/</url>
-  <version>2.12.2-SNAPSHOT</version>
+  <version>2.12.1</version>
   <description>
     Apache Jena is a API and toolkit for working with semantic web technologies such as RDF and SPARQL using Java.  This artifact represents the source and binary distribution packages generated for releases.
   </description>
@@ -37,7 +37,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
+    <version>11</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -58,93 +58,93 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.12.1</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.1</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.1</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-sdb</artifactId>
-      <version>1.5.2-SNAPSHOT</version>
+      <version>1.5.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-sdb</artifactId>
-      <version>1.5.2-SNAPSHOT</version>
+      <version>1.5.1</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-sdb</artifactId>
-      <version>1.5.2-SNAPSHOT</version>
+      <version>1.5.1</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
+      <version>1.1.1</version>
       <classifier>sources</classifier>
     </dependency>
 

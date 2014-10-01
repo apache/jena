@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>org.apache.jena</groupId>
 		<artifactId>jena-jdbc</artifactId>
-		<version>1.1.2-SNAPSHOT</version>
+		<version>1.1.1</version>
 	</parent>
 	<artifactId>jena-jdbc-driver-bundle</artifactId>
 	<name>Apache Jena - JDBC Driver Bundle</name>
@@ -39,17 +39,17 @@
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-jdbc-driver-mem</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-jdbc-driver-remote</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-jdbc-driver-tdb</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
 		</dependency>
 
 		<!-- Test Dependencies -->
@@ -62,41 +62,41 @@
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-jdbc-driver-mem</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-jdbc-driver-remote</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-jdbc-driver-tdb</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-jdbc-core</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-fuseki</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-fuseki</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.1</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
