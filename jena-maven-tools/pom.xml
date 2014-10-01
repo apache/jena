@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-maven-tools</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>0.7</version>
+  <version>0.7-SNAPSHOT</version>
   <name>Apache Jena - Maven Plugins, including schemagen</name>
   <description>Plugins for Apache Maven to perform source management activities,
                such as generating Java files from RDF vocabulary sources using
@@ -30,7 +30,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>11</version>
+    <version>11-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -77,7 +77,7 @@
     <url>http://www.apache.org</url>
   </organization>
   <properties>
-      <jenaCoreVersion>2.12.1</jenaCoreVersion>
+      <jenaCoreVersion>2.12.1-SNAPSHOT</jenaCoreVersion>
       <version>${project.version}</version>
       <mavenVersion>3.0.4</mavenVersion>
   </properties>

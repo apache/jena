@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-security</artifactId>
-  <version>2.12.1</version>
+  <version>2.12.1-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -34,7 +34,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>11</version>
+    <version>11-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 	<organization>
