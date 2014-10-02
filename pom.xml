@@ -67,6 +67,7 @@
         <module>jena-tdb</module>
         <module>jena-text</module>
         <module>jena-spatial</module>
+        <module>jena-csv</module>
 
         <!-- Slow to build - exclude from dev build -->
         <!-- <module>jena-sdb</module>            -->
@@ -100,6 +101,7 @@
 
         <module>jena-text</module>
         <module>jena-spatial</module>
+        <module>jena-csv</module>
 
         <module>jena-sdb</module>
 
