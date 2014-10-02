@@ -27,7 +27,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>10</version>
+    <version>11-SNAPSHOT</version>
     <relativePath />
   </parent>
   
@@ -46,12 +46,6 @@
   
   <description>jena-csv is for getting CSVs into a form that is amenable to Jena SPARQL processing, and doing so in a way that is not specific to CSV files. It includes getting the right architecture in place for regular table shaped data, using the core abstraction of PropertyTable.</description> 
   
-  <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/Experimental/jena-csv</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/Experimental/jena-csv</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/Experimental/jena-csv</url>
-  </scm>
-  
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
@@ -63,7 +57,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
-      <version>2.12.0</version>
+      <version>2.12.1-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
     
@@ -78,7 +72,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.12.0</version>
+      <version>2.12.1-SNAPSHOT</version>
       <type>jar</type>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -91,96 +85,92 @@
     </dependency>
   </dependencies>
   
-  
-
   <build>
     <plugins>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-surefire-plugin</artifactId>
-	<configuration>
-	  <systemPropertyVariables>
-	    <log4j.configuration>file:src/test/resources/log4j.properties</log4j.configuration>
-	  </systemPropertyVariables>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <log4j.configuration>file:src/test/resources/log4j.properties</log4j.configuration>
+          </systemPropertyVariables>
 
-	  <includes>
-	    <include>**/TS_*.java</include>
-	  </includes>
-	</configuration>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jar-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-source-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <id>attach-sources</id>
-	    <goals>
-	      <goal>jar-no-fork</goal>
-	    </goals>
-	  </execution>
-	  <!-- Only material in the main jar <execution> <id>attach-sources-test</id> 
-	       <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
-	</executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-javadoc-plugin</artifactId>
-	<configuration>
-	  <version>true</version>
-	  <show>public</show>
-	  <quiet>true</quiet>
-	  <encoding>UTF-8</encoding>
-	  <windowtitle>${project.name} ${project.version}</windowtitle>
-	  <doctitle>${project.name} ${project.version}</doctitle>
-	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-resources-plugin</artifactId>
-	<configuration>
-	  <encoding>UTF-8</encoding>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-dependency-plugin</artifactId>
-	<configuration>
-	  <overWriteReleases>false</overWriteReleases>
-	  <overWriteIfNewer>true</overWriteIfNewer>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteIfNewer>true</overWriteIfNewer>
+        </configuration>
       </plugin>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-eclipse-plugin</artifactId>
-	<configuration>
-	  <!-- By default, have separate Eclipse and maven build areas -->
-	  <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
-	  <downloadSources>true</downloadSources>
-	  <downloadJavadocs>false</downloadJavadocs>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <!-- By default, have separate Eclipse and maven build areas -->
+          <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>false</downloadJavadocs>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-release-plugin</artifactId>
-    <configuration>
-	  <tagBase>https://svn.apache.org/repos/asf/jena/tags/</tagBase>  
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagBase>https://svn.apache.org/repos/asf/jena/tags/</tagBase>
+        </configuration>
       </plugin>
     </plugins>
 
