@@ -89,6 +89,10 @@
       <id>complete</id>
       <activation>
         <activeByDefault>true</activeByDefault>
+        <property>
+          <name>profile.complete</name>
+          <value>true</value>
+        </property>
       </activation>
       <modules>
         <module>jena-parent</module>
@@ -112,26 +116,6 @@
         <module>apache-jena-libs</module>
         <module>apache-jena</module>
       </modules>
-    </profile>
-    
-    <!--
-    This is required to workaround MRELEASE-812/SCM-740 which can cause the release plugin
-    to fail to actually perform commits when using Git 1.9 or higher
-    -->
-    <profile>
-      <id>apache-release</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.maven.scm</groupId>
-          <artifactId>maven-scm-api</artifactId>
-          <version>1.9.1</version>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.maven.scm</groupId>
-          <artifactId>maven-scm-provider-gitexe</artifactId>
-          <version>1.9.1</version>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
 
@@ -171,5 +155,22 @@
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
+
+  <!--
+  This is required to workaround MRELEASE-812/SCM-740 which can cause the release plugin
+  to fail to actually perform commits when using Git 1.9 or higher
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven.scm</groupId>
+      <artifactId>maven-scm-api</artifactId>
+      <version>1.9.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.scm</groupId>
+      <artifactId>maven-scm-provider-gitexe</artifactId>
+      <version>1.9.1</version>
+    </dependency>
+  </dependencies>
 
 </project>
