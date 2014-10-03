@@ -18,18 +18,16 @@
 
 package org.apache.jena.propertytable.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.StringReader ;
 
-import org.apache.jena.atlas.csv.CSVTokenIterator;
-import org.apache.jena.propertytable.BaseTest;
-import org.apache.jena.propertytable.Row;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.jena.atlas.csv.CSVParser ;
+import org.apache.jena.propertytable.BaseTest ;
+import org.apache.jena.propertytable.Row ;
+import org.junit.Assert ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 
 /**
@@ -40,7 +38,7 @@ public abstract class AbstractPropertyTableBuilderTest extends BaseTest {
 
 	@Test
 	public void testFillPropertyTable() {
-		CSVTokenIterator iterator = csv("a,b\nc,d\ne,f");
+		CSVParser iterator = csv("a,b\nc,d\ne,f");
 		PropertyTableBuilder.fillPropertyTable(table, iterator, csvFilePath);
 
 		Assert.assertEquals(3, table.getColumns().size());
@@ -59,7 +57,7 @@ public abstract class AbstractPropertyTableBuilderTest extends BaseTest {
 
 	@Test
 	public void testIrregularTable1() {
-		CSVTokenIterator iterator = csv("a,b\nc\ne,f");
+		CSVParser iterator = csv("a,b\nc\ne,f");
 		PropertyTableBuilder.fillPropertyTable(table, iterator, csvFilePath);
 
 		Assert.assertEquals(3, table.getColumns().size());
@@ -77,7 +75,7 @@ public abstract class AbstractPropertyTableBuilderTest extends BaseTest {
 
 	@Test
 	public void testIrregularTable2() {
-		CSVTokenIterator iterator = csv("a,b\nc,d1,d2\ne,f");
+		CSVParser iterator = csv("a,b\nc,d1,d2\ne,f");
 		PropertyTableBuilder.fillPropertyTable(table, iterator, csvFilePath);
 
 		Assert.assertEquals(3, table.getColumns().size());
@@ -95,7 +93,7 @@ public abstract class AbstractPropertyTableBuilderTest extends BaseTest {
 
 	@Test
 	public void testIrregularTable3() {
-		CSVTokenIterator iterator = csv("a,b\n,d\ne,f");
+		CSVParser iterator = csv("a,b\n,d\ne,f");
 		PropertyTableBuilder.fillPropertyTable(table, iterator, csvFilePath);
 
 		Assert.assertEquals(3, table.getColumns().size());
@@ -135,13 +133,7 @@ public abstract class AbstractPropertyTableBuilderTest extends BaseTest {
 		Assert.assertTrue(collectionContains(table.getColumns(), columnKey));
 	}
 
-	private CSVTokenIterator csv(String input) {
-		try {
-			InputStream in = new ByteArrayInputStream(input.getBytes("UTF-8"));
-			CSVTokenIterator iterator = new CSVTokenIterator(in);
-			return iterator;
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+	private CSVParser csv(String input) {
+	    return CSVParser.create(new StringReader(input));
 	}
 }

@@ -16,36 +16,38 @@
  * limitations under the License.
  */
 
-package riotcmd;
+package riotcmdx;
 
-import arq.cmd.CmdException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.ArgModuleGeneral;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
+import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import riotcmd.CmdLangParse ;
 
-class ModDest implements ArgModuleGeneral{
+import com.hp.hpl.jena.sparql.util.Utils ;
+
+/**
+ * A command line tool for direct and scalable transforming from CSV to the formatted RDF syntax (i.e. N-Triples), 
+ * with no intermediary Graph or PropertyTable.
+ */
+public class csv2rdf extends CmdLangParse{
 	
-	private ArgDecl argDest     = new ArgDecl(ArgDecl.HasValue, "dest") ;
-	private String dest         = null ;
-
-	@Override
-	public void processArgs(CmdArgModule cmdLine) {
-		if ( cmdLine.contains(argDest) ) {
-			dest = cmdLine.getValue(argDest) ;
-        } else {
-        	throw new CmdException("No destination output file! Please add '--dest=file' in the program arguements") ;
-        }
-	}
-
-	@Override
-	public void registerWith(CmdGeneral cmdLine) {
-		cmdLine.getUsage().startCategory("Destination Output") ;
-		cmdLine.add(argDest,    "--dest=file",      "The destination output file") ;	
-	}
-	
-    public String getDest() {
-        return dest ;
+    public static void main(String... argv)
+    {
+        new csv2rdf(argv).mainRun() ;
+    }    
+    
+    protected csv2rdf(String[] argv)
+    {
+        super(argv) ;
     }
+	
+	@Override
+	protected Lang selectLang(String filename, ContentType contentType, Lang dftLang) {
+		return RDFLanguages.CSV; 
+	}
 
+	@Override
+	protected String getCommandName() {
+		return Utils.classShortName(csv2rdf.class) ;
+	}
 }

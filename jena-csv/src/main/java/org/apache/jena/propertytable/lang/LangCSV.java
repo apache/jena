@@ -18,33 +18,21 @@
 
 package org.apache.jena.propertytable.lang;
 
-import static org.apache.jena.riot.RDFLanguages.CSV;
+import java.io.InputStream ;
+import java.io.Reader ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.jena.atlas.csv.CSVParser ;
+import org.apache.jena.propertytable.util.IRILib ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.system.* ;
 
-import org.apache.jena.atlas.csv.CSVParser;
-import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.propertytable.util.IRILib;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.RDFParserRegistry;
-import org.apache.jena.riot.ReaderRIOT;
-import org.apache.jena.riot.ReaderRIOTFactory;
-import org.apache.jena.riot.lang.LangRIOT;
-import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.riot.system.IRIResolver;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.RiotLib;
-import org.apache.jena.riot.system.StreamRDF;
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 /**
  * The LangRIOT implementation for CSV
@@ -61,11 +49,6 @@ public class LangCSV implements LangRIOT {
 	private String filename;
 	private StreamRDF sink;
 	private ParserProfile profile; // Warning - we don't use all of this.
-	
-	public static void register(){
-		RDFParserRegistry.removeRegistration(Lang.CSV);
-		RDFParserRegistry.registerLangTriples(Lang.CSV, new ReaderRIOTFactoryCSV());
-	}
 
 	@Override
 	public Lang getLang() {
@@ -82,8 +65,7 @@ public class LangCSV implements LangRIOT {
 		this.profile = profile;
 	}
 
-	public LangCSV(Reader reader, String base, String filename,
-			ErrorHandler errorHandler, StreamRDF sink) {
+	public LangCSV(Reader reader, String base, String filename, ErrorHandler errorHandler, StreamRDF sink) {
 		this.reader = reader;
 		this.base = base;
 		this.filename = filename;
@@ -91,8 +73,7 @@ public class LangCSV implements LangRIOT {
 		this.profile = RiotLib.profile(getLang(), base, errorHandler);
 	}
 
-	public LangCSV(InputStream in, String base, String filename,
-			ErrorHandler errorHandler, StreamRDF sink) {
+	public LangCSV(InputStream in, String base, String filename, ErrorHandler errorHandler, StreamRDF sink) {
 		this.input = in;
 		this.base = base;
 		this.filename = filename;
@@ -103,8 +84,7 @@ public class LangCSV implements LangRIOT {
 	@Override
 	public void parse() {
 		sink.start();
-		CSVParser parser = (input != null) ? CSVParser.create(input)
-				: CSVParser.create(reader);
+		CSVParser parser = (input != null) ? CSVParser.create(input) : CSVParser.create(reader);
 		List<String> row = null;
 		ArrayList<Node> predicates = new ArrayList<Node>();
 		int rowNum = 0;
@@ -168,62 +148,4 @@ public class LangCSV implements LangRIOT {
 //		Node subject =  NodeFactory.createURI(uri);
 		return subject;
 	}
-	
-	
-	
-	
-    private static class ReaderRIOTFactoryCSV implements ReaderRIOTFactory
-    {
-        @Override
-        public ReaderRIOT create(Lang lang) {
-            return new ReaderRIOTLangCSV(lang) ;
-        }
-    }
-
-    private static class ReaderRIOTLangCSV implements ReaderRIOT
-    {
-        private final Lang lang ;
-        private ErrorHandler errorHandler ; 
-        private ParserProfile parserProfile = null ;
-
-        ReaderRIOTLangCSV(Lang lang) {
-            this.lang = lang ;
-            errorHandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
-        }
-
-        @Override
-        public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            if ( lang == CSV){
-            	LangRIOT parser = new LangCSV (in, baseURI, baseURI, ErrorHandlerFactory.getDefaultErrorHandler(),  output);
-                if ( parserProfile != null )
-                    parser.setProfile(parserProfile);
-                if ( errorHandler != null )
-                    parser.getProfile().setHandler(errorHandler) ;
-                parser.parse() ;
-            } else {
-            	throw new IllegalArgumentException("The Lang must be 'CSV'!");
-            }
-
-        }
-
-        @Override
-        public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        	if ( lang == CSV){
-        		LangRIOT parser = new LangCSV (in, baseURI, baseURI, ErrorHandlerFactory.getDefaultErrorHandler(),  output);
-                if ( parserProfile != null )
-                    parser.setProfile(parserProfile);
-                if ( errorHandler != null )
-                    parser.getProfile().setHandler(errorHandler) ;
-        		parser.parse() ;
-        	} else {
-            	throw new IllegalArgumentException("The Lang must be 'CSV'!");
-            }
-        }
-
-        @Override public ErrorHandler getErrorHandler()                     { return errorHandler ; }
-        @Override public void setErrorHandler(ErrorHandler errorHandler)    { this.errorHandler = errorHandler ; }
-
-        @Override public ParserProfile getParserProfile()                   { return parserProfile ; } 
-        @Override public void setParserProfile(ParserProfile parserProfile) { this.parserProfile = parserProfile ; }
-    }
 }

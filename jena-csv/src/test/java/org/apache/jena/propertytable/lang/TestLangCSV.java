@@ -44,7 +44,7 @@ public class TestLangCSV extends BaseTest {
 
 	@BeforeClass
 	public static void init(){
-		LangCSV.register();
+	      CSV2RDF.init() ;
 	}
 	
 	@Test

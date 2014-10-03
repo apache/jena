@@ -18,21 +18,21 @@
 
 package org.apache.jena.propertytable.impl;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import org.apache.jena.atlas.csv.CSVParser;
-import org.apache.jena.atlas.csv.CSVTokenIterator;
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.propertytable.PropertyTable;
-import org.apache.jena.propertytable.Row;
-import org.apache.jena.propertytable.lang.LangCSV;
-import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.atlas.csv.CSVParser ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.propertytable.PropertyTable ;
+import org.apache.jena.propertytable.Row ;
+import org.apache.jena.propertytable.lang.LangCSV ;
+import org.apache.jena.riot.system.IRIResolver ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 
 
 /**
@@ -75,56 +75,58 @@ public class PropertyTableBuilder {
 
 	protected static PropertyTable fillPropertyTable(PropertyTable table, String csvFilePath ){
 		InputStream input = IO.openFile(csvFilePath) ;
-		CSVTokenIterator iterator = new CSVTokenIterator(input) ;
+		CSVParser iterator = CSVParser.create(input) ;
 		return fillPropertyTable(table, iterator, csvFilePath);
 	}
 	
-	protected static PropertyTable fillPropertyTable(PropertyTable table, CSVTokenIterator iterator, String csvFilePath){
+	protected static PropertyTable fillPropertyTable(PropertyTable table, CSVParser parser, String csvFilePath){
 		if (table == null){
 			return null;
 		}
-		CSVParser parser = new CSVParser (iterator);
-		List<String> rowLine = null;
 		ArrayList<Node> predicates = new ArrayList<Node>();
 		int rowNum = 0;
+		
+		Iterator<List<String>> iter = parser.iterator() ;
+		if ( ! iter.hasNext() )
+		    return table ;
+		List<String> row1 = iter.next() ;
+		table.createColumn(CSV_ROW_NODE);
+        for (String column : row1) {
+            String uri = createColumnKeyURI(csvFilePath, column);
+            Node p = NodeFactory.createURI(uri);
+            predicates.add(p);
+            table.createColumn(p);
+        }
+        
+        rowNum++ ;
+        while(iter.hasNext()) {
+            List<String> rowLine = iter.next();
+            Node subject = LangCSV.caculateSubject(rowNum, csvFilePath);
+            Row row = table.createRow(subject);
 
-		while ((rowLine = parser.parse1()) != null) {
-			if (rowNum == 0) {
-				table.createColumn(CSV_ROW_NODE);
-				for (String column : rowLine) {
-					String uri = createColumnKeyURI(csvFilePath, column);
-					Node p = NodeFactory.createURI(uri);
-					predicates.add(p);
-					table.createColumn(p);
-				}
-			} else {
-				Node subject = LangCSV.caculateSubject(rowNum, csvFilePath);
-				Row row = table.createRow(subject);
-				
-				row.setValue(table.getColumn(CSV_ROW_NODE), NodeFactory.createLiteral(
-						(rowNum + ""), XSDDatatype.XSDinteger));
+            row.setValue(table.getColumn(CSV_ROW_NODE), 
+                         NodeFactory.createLiteral((rowNum + ""), XSDDatatype.XSDinteger));
 
-				for (int col = 0; col < rowLine.size() && col<predicates.size(); col++) {
+            for (int col = 0; col < rowLine.size() && col<predicates.size(); col++) {
 
-					String columnValue = rowLine.get(col).trim();
-					if("".equals(columnValue)){
-						continue;
-					}
-					Node o;
-					try {
-						// Try for a double.
-						double d = Double.parseDouble(columnValue);
-						o = NodeFactory.createLiteral(columnValue,
-								XSDDatatype.XSDdouble);
-					} catch (Exception e) {
-						o = NodeFactory.createLiteral(columnValue);
-					}
-					row.setValue(table.getColumn(predicates.get(col)), o);
-				}
-			}
-			rowNum++;
-		}
-		return table;
+                String columnValue = rowLine.get(col).trim();
+                if("".equals(columnValue)){
+                    continue;
+                }
+                Node o;
+                try {
+                    // Try for a double.
+                    double d = Double.parseDouble(columnValue);
+                    o = NodeFactory.createLiteral(columnValue,
+                                                  XSDDatatype.XSDdouble);
+                } catch (Exception e) {
+                    o = NodeFactory.createLiteral(columnValue);
+                }
+                row.setValue(table.getColumn(predicates.get(col)), o);
+            }
+            rowNum++ ;
+        }
+        return table;
 	}
 	
 	protected static String createColumnKeyURI(String csvFilePath, String column){

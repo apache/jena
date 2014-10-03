@@ -18,23 +18,17 @@
 
 package org.apache.jena.propertytable.graph;
 
-import org.apache.jena.propertytable.graph.GraphCSV;
-import org.apache.jena.propertytable.lang.LangCSV;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.propertytable.lang.CSV2RDF ;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator ;
 
 /**
  * Tests related to GraphCSV with some real world data.
@@ -44,7 +38,7 @@ public class GraphCSVTest extends Assert {
 	
 	@BeforeClass
 	public static void init(){
-		LangCSV.register();
+		CSV2RDF.init() ;
 	}
 	
 	@Test
@@ -90,8 +84,17 @@ public class GraphCSVTest extends Assert {
 		Model csv = ModelFactory.createModelForGraph(new GraphCSV(file));
 		assertEquals(72, csv.size());
 
-		Query query = QueryFactory
-				.create("PREFIX : <src/test/resources/HEFCE_organogram_senior_data_31032011.csv#> SELECT ?name ?unit {?x :Name ?name ; :Unit ?unit ; :Actual%20Pay%20Floor%20%28%A3%29 ?floor ; :Actual%20Pay%20Ceiling%20%28%A3%29 ?ceiling . FILTER(?floor > 100000 && ?ceiling <120000 )}");
+		String x = StrUtils.strjoinNL
+		    ("PREFIX : <src/test/resources/HEFCE_organogram_senior_data_31032011.csv#>"
+		    ,"SELECT ?name ?unit"
+		    ,"{ ?x :Name ?name ;"
+		    ,"     :Unit ?unit ;"
+		    ,"     :Actual%20Pay%20Floor%20%28%A3%29 ?floor ;"
+		    ,"     :Actual%20Pay%20Ceiling%20%28%A3%29 ?ceiling ."
+		    ,"FILTER(?floor > 100000 && ?ceiling <120000 )"
+		    ,"}");
+		
+		Query query = QueryFactory.create(x) ;
 		
 		QueryExecution qexec = QueryExecutionFactory.create(query, csv);
 		ResultSet results = qexec.execSelect();
