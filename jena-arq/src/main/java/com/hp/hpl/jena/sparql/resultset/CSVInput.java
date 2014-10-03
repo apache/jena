@@ -117,7 +117,6 @@ public class CSVInput
             FmtLog.warn(log, "Boolean result variable is '%s', not '_askResult'", vars.get(0).getName()) ; 
         }
         
-        
         List<String> line = parser.parse1() ;
         if ( line.size() != 1 ) {
             throw new ARQException("CSV Boolean Results malformed: data line='"+line+"'") ;

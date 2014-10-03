@@ -18,25 +18,25 @@
 
 package org.apache.jena.atlas.csv ;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.Reader ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.jena.atlas.io.IO;
+import org.apache.commons.csv.CSVFormat ;
+import org.apache.commons.csv.CSVRecord ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
 
-/** Written specifically to handle SPARQL results CSV files.
- *  Acts as a wrapper for Commons CSV parser.
+/** 
+ *  Wrapper for Commons CSV parser.
  */
 public class CSVParser implements Iterable<List<String>>
 {
-    
     private final org.apache.commons.csv.CSVParser parser;
+    private final Iterator<CSVRecord> iterator ;
     
     public static CSVParser create(String filename) {
         InputStream input = IO.openFile(filename) ;
@@ -44,49 +44,44 @@ public class CSVParser implements Iterable<List<String>>
     }
 
     public static CSVParser create(InputStream input) {
-        CSVParser parser = new CSVParser(new InputStreamReader(input)) ;
+        CSVParser parser = new CSVParser(IO.asBufferedUTF8(input)) ;
         return parser ; 
     }
-    
+
+    /** Be careful about charsets */
     public static CSVParser create(Reader input) {
         CSVParser parser = new CSVParser(input) ;
         return parser ; 
     }
 
-    public CSVParser(Reader input) {
+    private CSVParser(Reader input) {
         try {
-            this.parser = CSVFormat.EXCEL.withQuote('\'').parse(input);
+            this.parser = CSVFormat.RFC4180.parse(input);
+            this.iterator = parser.iterator() ;
         } catch (IOException e) {
             throw new CSVParseException("Failed to create the CSV parser: " + e.getMessage(), e);
         }
     }
     
+    private static Transform<CSVRecord, List<String>> transform = new Transform<CSVRecord, List<String>>() {
+        @Override
+        public List<String> convert(CSVRecord record) {
+            return recordToList(record) ;
+        }
+    } ;
+    
     @Override
     public Iterator<List<String>> iterator() {
-        List<List<String>> list = new ArrayList<>();
-        for (CSVRecord record : parser) {
-            List<String> row = new ArrayList<>();
-            for (String columnValue : record) {
-                row.add(columnValue);
-            }
-            list.add(row);
-        }
-        return list.iterator();
+        return Iter.map(iterator, transform) ;
     }
 
     public List<String> parse1() {
-        Iterator<List<String>> iterator = iterator();
-        if (iterator.hasNext()) 
-        {
-            final List<String> firstRow = iterator.next();
-            return firstRow;
-        }
+        if (iterator.hasNext())
+             return recordToList(iterator.next()) ;
         return null;
     }
 
-    static void exception(String msg, long line, long col) {
-        if ( line >= 0 && col > 0 )
-            msg = String.format("[%s, %s] %s", line, col, msg) ;
-        throw new CSVParseException(msg) ;
+    private static List<String> recordToList(CSVRecord record) {
+        return Iter.toList(record.iterator()) ;
     }
 }
