@@ -74,6 +74,7 @@ public class SecuredPrefixMappingTest
 
 			}
 		}
+		Assert.assertNotNull( "Did not find 'testLock' method", lockTest );		
 		pmTest.setup();
 		lockTest.invoke(pmTest);
 
