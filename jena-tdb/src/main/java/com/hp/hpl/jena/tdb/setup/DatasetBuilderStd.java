@@ -383,7 +383,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         }
 
         if ( reorder == null )
-            reorder = SystemTDB.defaultOptimizer ;
+            reorder = SystemTDB.defaultReorderTransform ;
 
         if ( reorder == null && warnAboutOptimizer )
             ARQ.getExecLogger().warn("No BGP optimizer") ;

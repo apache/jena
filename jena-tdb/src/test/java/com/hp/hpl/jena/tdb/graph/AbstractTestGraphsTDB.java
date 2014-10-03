@@ -36,11 +36,11 @@ public class AbstractTestGraphsTDB extends GraphsTests
     
     @BeforeClass public static void setupClass()
     {
-        reorder = SystemTDB.defaultOptimizer ;
-        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+        reorder = SystemTDB.defaultReorderTransform ;
+        SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
     }
     
-    @AfterClass public static void afterClass() {  SystemTDB.defaultOptimizer = reorder ; }
+    @AfterClass public static void afterClass() {  SystemTDB.defaultReorderTransform = reorder ; }
 
     @Override
     protected Dataset createDataset()

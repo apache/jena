@@ -143,6 +143,6 @@ public class FusekiLib {
 
         PrefixMapping pmapSrc = data.getPrefixMapping() ;
         PrefixMapping pmapDest = dsg.getDefaultGraph().getPrefixMapping() ;
-        pmapDest.withDefaultMappings(pmapSrc) ;
+        pmapDest.setNsPrefixes(pmapSrc) ;
     }
 }

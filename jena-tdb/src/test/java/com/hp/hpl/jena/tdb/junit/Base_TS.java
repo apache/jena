@@ -34,17 +34,17 @@ public class Base_TS
     
     @BeforeClass static public void beforeClass()   
     {
-        rt = SystemTDB.defaultOptimizer ;
+        rt = SystemTDB.defaultReorderTransform ;
         level = Logger.getLogger("com.hp.hpl.jena.tdb.info").getLevel() ;
         Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.FATAL) ;
-        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
-        rt = SystemTDB.defaultOptimizer ;
+        SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
+        rt = SystemTDB.defaultReorderTransform ;
     }
     
     @AfterClass static public void afterClass()
     {
         if ( level != null )
             Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(level) ;
-        SystemTDB.defaultOptimizer = rt ;
+        SystemTDB.defaultReorderTransform = rt ;
     }
 }

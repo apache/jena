@@ -78,11 +78,11 @@ public class TC_TDB
         //org.apache.log4j.PropertyConfigurator.configure("log4j.properties") ;
         Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
         //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
-        dftReorder = SystemTDB.defaultOptimizer ;
-        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+        dftReorder = SystemTDB.defaultReorderTransform ;
+        SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
     }
     
     @AfterClass static public void afterClass() {
-        SystemTDB.defaultOptimizer = dftReorder ;
+        SystemTDB.defaultReorderTransform = dftReorder ;
     }
 }
