@@ -90,6 +90,10 @@
       <id>complete</id>
       <activation>
         <activeByDefault>true</activeByDefault>
+        <property>
+          <name>profile.complete</name>
+          <value>true</value>
+        </property>
       </activation>
       <modules>
         <module>jena-parent</module>
@@ -152,5 +156,4 @@
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
-
 </project>
