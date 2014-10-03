@@ -40,6 +40,10 @@ import com.hp.hpl.jena.graph.NodeFactory ;
  */
 public class LangCSV implements LangRIOT {
 
+    /** @deprecated Use {@linkplain CSV2RDF#init} */
+    @Deprecated
+    public static void register() { CSV2RDF.init() ; }
+    
 	public static final String CSV_PREFIX = "http://w3c/future-csv-vocab/";
 	public static final String CSV_ROW = CSV_PREFIX + "row";
 
