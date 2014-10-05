@@ -96,6 +96,12 @@ public class StreamWriterTriX implements StreamRDF {
     public void quad(Quad quad) {
         Node g = quad.getGraph() ;
         
+        if ( g == null || Quad.isDefaultGraph(g) ) {
+            triple(quad.asTriple()) ;
+            return ;
+        }
+            
+        
         if ( inGraph ) {
             if ( ! Objects.equals(g, gn) ) {
                 StreamWriterTriX.endTag(out, TriX.tagGraph) ;
