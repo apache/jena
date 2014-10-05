@@ -24,58 +24,59 @@ import org.apache.jena.atlas.lib.Lib ;
 /** Constants for writable formats */
 public class RDFFormat {
     /** Pretty printing variant */
-    public static RDFFormatVariant PRETTY         = new RDFFormatVariant("pretty") ;
+    public static final RDFFormatVariant PRETTY         = new RDFFormatVariant("pretty") ;
     /**
      * Print in blocks, typically all triples with the same subject in an
      * incoming triple/quad stream
      */
-    public static RDFFormatVariant BLOCKS         = new RDFFormatVariant("blocks") ;
+    public static final RDFFormatVariant BLOCKS         = new RDFFormatVariant("blocks") ;
     /** Print out one per line */
-    public static RDFFormatVariant FLAT           = new RDFFormatVariant("flat") ;
+    public static final RDFFormatVariant FLAT           = new RDFFormatVariant("flat") ;
 
     /** Use ASCII output (N-triples, N-Quads) */
-    public static RDFFormatVariant ASCII          = new RDFFormatVariant("ascii") ;
+    public static final RDFFormatVariant ASCII          = new RDFFormatVariant("ascii") ;
     /** Use UTF-8 output (N-triples, N-Quads) */
-    public static RDFFormatVariant UTF8           = new RDFFormatVariant("utf-8") ;
+    public static final RDFFormatVariant UTF8           = new RDFFormatVariant("utf-8") ;
     /** Variant for RDF Thrift using values */
-    public static final RDFFormatVariant ValueEncoding = new RDFFormatVariant("Value") ;
+    public static final RDFFormatVariant ValueEncoding  = new RDFFormatVariant("Value") ;
     
-    public static RDFFormat        TURTLE_PRETTY  = new RDFFormat(Lang.TURTLE, PRETTY) ;
-    public static RDFFormat        TURTLE         = TURTLE_PRETTY ;
-    public static RDFFormat        TTL            = TURTLE_PRETTY ;
-    public static RDFFormat        TURTLE_BLOCKS  = new RDFFormat(Lang.TURTLE, BLOCKS) ;
-    public static RDFFormat        TURTLE_FLAT    = new RDFFormat(Lang.TURTLE, FLAT) ;
+    public static final RDFFormat        TURTLE_PRETTY  = new RDFFormat(Lang.TURTLE, PRETTY) ;
+    public static final RDFFormat        TURTLE         = TURTLE_PRETTY ;
+    public static final RDFFormat        TTL            = TURTLE_PRETTY ;
+    public static final RDFFormat        TURTLE_BLOCKS  = new RDFFormat(Lang.TURTLE, BLOCKS) ;
+    public static final RDFFormat        TURTLE_FLAT    = new RDFFormat(Lang.TURTLE, FLAT) ;
 
-    public static RDFFormat        NTRIPLES_UTF8  = new RDFFormat(Lang.NTRIPLES, UTF8) ;
-    public static RDFFormat        NTRIPLES       = NTRIPLES_UTF8 ;
-    public static RDFFormat        NT             = NTRIPLES ;
-    public static RDFFormat        NTRIPLES_ASCII = new RDFFormat(Lang.NTRIPLES, ASCII) ;
+    public static final RDFFormat        NTRIPLES_UTF8  = new RDFFormat(Lang.NTRIPLES, UTF8) ;
+    public static final RDFFormat        NTRIPLES       = NTRIPLES_UTF8 ;
+    public static final RDFFormat        NT             = NTRIPLES ;
+    public static final RDFFormat        NTRIPLES_ASCII = new RDFFormat(Lang.NTRIPLES, ASCII) ;
 
-    public static RDFFormat        NQUADS_UTF8    = new RDFFormat(Lang.NQUADS, UTF8) ;
-    public static RDFFormat        NQUADS         = NQUADS_UTF8 ;
-    public static RDFFormat        NQ             = NQUADS ;
-    public static RDFFormat        NQUADS_ASCII   = new RDFFormat(Lang.NQUADS, ASCII) ;
+    public static final RDFFormat        NQUADS_UTF8    = new RDFFormat(Lang.NQUADS, UTF8) ;
+    public static final RDFFormat        NQUADS         = NQUADS_UTF8 ;
+    public static final RDFFormat        NQ             = NQUADS ;
+    public static final RDFFormat        NQUADS_ASCII   = new RDFFormat(Lang.NQUADS, ASCII) ;
 
-    public static RDFFormat        TRIG_PRETTY    = new RDFFormat(Lang.TRIG, PRETTY) ;
-    public static RDFFormat        TRIG           = TRIG_PRETTY ;
-    public static RDFFormat        TRIG_BLOCKS    = new RDFFormat(Lang.TRIG, BLOCKS) ;
-    public static RDFFormat        TRIG_FLAT      = new RDFFormat(Lang.TRIG, FLAT) ;
+    public static final RDFFormat        TRIG_PRETTY    = new RDFFormat(Lang.TRIG, PRETTY) ;
+    public static final RDFFormat        TRIG           = TRIG_PRETTY ;
+    public static final RDFFormat        TRIG_BLOCKS    = new RDFFormat(Lang.TRIG, BLOCKS) ;
+    public static final RDFFormat        TRIG_FLAT      = new RDFFormat(Lang.TRIG, FLAT) ;
 
-    public static RDFFormat        JSONLD_PRETTY  = new RDFFormat(Lang.JSONLD, PRETTY) ;
-    public static RDFFormat        JSONLD         = JSONLD_PRETTY ;
-    public static RDFFormat        JSONLD_FLAT    = new RDFFormat(Lang.JSONLD, FLAT) ;
+    public static final RDFFormat        JSONLD_PRETTY  = new RDFFormat(Lang.JSONLD, PRETTY) ;
+    public static final RDFFormat        JSONLD         = JSONLD_PRETTY ;
+    public static final RDFFormat        JSONLD_FLAT    = new RDFFormat(Lang.JSONLD, FLAT) ;
 
     /** RDF/XML ABBREV variant */
-    public static RDFFormatVariant ABBREV         = new RDFFormatVariant("pretty") ;
+    public static final RDFFormatVariant ABBREV         = new RDFFormatVariant("pretty") ;
     /** Basic RDF/XML variant */
-    public static RDFFormatVariant PLAIN          = new RDFFormatVariant("plain") ;
+    public static final RDFFormatVariant PLAIN          = new RDFFormatVariant("plain") ;
 
-    public static RDFFormat        RDFXML_PRETTY  = new RDFFormat(Lang.RDFXML, ABBREV) ;
-    public static RDFFormat        RDFXML_ABBREV  = RDFXML_PRETTY ;
-    public static RDFFormat        RDFXML         = RDFXML_PRETTY ;
-    public static RDFFormat        RDFXML_PLAIN   = new RDFFormat(Lang.RDFXML, PLAIN) ;
+    public static final RDFFormat        RDFXML_PRETTY  = new RDFFormat(Lang.RDFXML, ABBREV) ;
+    public static final RDFFormat        RDFXML_ABBREV  = RDFXML_PRETTY ;
+    public static final RDFFormat        RDFXML         = RDFXML_PRETTY ;
+    public static final RDFFormat        RDFXML_PLAIN   = new RDFFormat(Lang.RDFXML, PLAIN) ;
 
-    public static RDFFormat        RDFJSON        = new RDFFormat(Lang.RDFJSON) ;
+    public static final RDFFormat        RDFJSON        = new RDFFormat(Lang.RDFJSON) ;
+    public static final RDFFormat        TRIX           = new RDFFormat(Lang.TRIX) ;
 
     /**
      * RDF Thrift output. This format is faithful representation of RDF writtern
@@ -85,7 +86,7 @@ public class RDFFormat {
      * @see #RDF_THRIFT_VALUES
      */
     
-    public static final RDFFormat RDF_THRIFT = new RDFFormat(THRIFT) ;
+    public static final RDFFormat RDF_THRIFT            = new RDFFormat(THRIFT) ;
     /**
      * A variant of an an RDFFormat that uses value encoding (e.g. integers,
      * doubles, decimals as binary). This does not preserve exact represenation
@@ -97,13 +98,13 @@ public class RDFFormat {
      *
      * @see #RDF_THRIFT
      */
-    public static final RDFFormat RDF_THRIFT_VALUES = new RDFFormat(THRIFT, ValueEncoding) ;
+    public static final RDFFormat RDF_THRIFT_VALUES     = new RDFFormat(THRIFT, ValueEncoding) ;
 
     /**
      * The "null" output format (a sink that prints nothing, usually quite
      * efficiently)
      */
-    public static RDFFormat        RDFNULL        = new RDFFormat(Lang.RDFNULL) ;
+    public static final RDFFormat        RDFNULL        = new RDFFormat(Lang.RDFNULL) ;
 
     private final Lang             lang ;
     private final RDFFormatVariant variant ;

@@ -32,6 +32,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRiotWriterDataset.class
     , TestJenaWriters.class
     , TestRDFJSON.class
+    , TestTriXWriter.class
 })
 
 public class TS_RiotWriter

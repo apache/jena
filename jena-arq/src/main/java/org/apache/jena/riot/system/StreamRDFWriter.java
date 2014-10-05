@@ -29,6 +29,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.thrift.BinRDF ;
+import org.apache.jena.riot.writer.StreamWriterTriX ;
 import org.apache.jena.riot.writer.WriterStreamRDFBlocks ;
 import org.apache.jena.riot.writer.WriterStreamRDFFlat ;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain ;
@@ -85,6 +86,13 @@ public class StreamRDFWriter {
         }
     } ;
     
+    private static StreamRDFWriterFactory streamWriterFactoryTriX = new StreamRDFWriterFactory() {
+        @Override
+        public StreamRDF create(OutputStream output, RDFFormat format) {
+            return new StreamWriterTriX(output) ;
+        }
+    } ;
+    
     private static WriterRegistry<StreamRDFWriterFactory> registry = new WriterRegistry<>() ;
 
     /** Register the default serialization for the language (replace any existing registration).
@@ -113,7 +121,8 @@ public class StreamRDFWriter {
         register(Lang.TRIG,         RDFFormat.TRIG_BLOCKS) ;
         register(Lang.NTRIPLES,     RDFFormat.NTRIPLES) ;
         register(Lang.NQUADS,       RDFFormat.NQUADS) ;
-        register(Lang.RDFTHRIFT,       RDFFormat.RDF_THRIFT) ;
+        register(Lang.RDFTHRIFT,    RDFFormat.RDF_THRIFT) ;
+        register(Lang.TRIX,         RDFFormat.TRIX) ;
         
         register(RDFFormat.TURTLE_BLOCKS,   streamWriterFactoryBlocks) ;
         register(RDFFormat.TURTLE_FLAT,     streamWriterFactoryFlat) ;
@@ -130,6 +139,8 @@ public class StreamRDFWriter {
 
         register(RDFFormat.RDF_THRIFT,          streamWriterFactoryThrift) ;
         register(RDFFormat.RDF_THRIFT_VALUES,   streamWriterFactoryThrift) ;
+        
+        register(RDFFormat.TRIX,            streamWriterFactoryTriX) ;
     }
 
     /** Get a StreamRDF destination that will output in syntax <tt>Lang</tt>
