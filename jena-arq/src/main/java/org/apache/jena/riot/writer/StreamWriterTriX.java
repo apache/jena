@@ -42,6 +42,13 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  * @see WriterTriX
  */
 public class StreamWriterTriX implements StreamRDF {
+    /* Notes on writing qname:
+     * 1/ Currently disabled in favour of the most regular XML output.
+     * 2/ There is code in write(Node) to handle it 
+     * 3/ Needs to write prefixes which in turn needs delaying writing the <TriX> start.  
+     * 4/ Needs to check namespace URI is legal for XML.     
+     */
+    
     private static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI() ;
     private IndentedWriter out ;
     private Node gn = null ;
@@ -53,6 +60,7 @@ public class StreamWriterTriX implements StreamRDF {
 
     // Batching.
     @Override public void start() {
+        // Delay until NS known?
         StreamWriterTriX.startXML(out) ;
         StreamWriterTriX.startTag(out, TriX.tagTriX, "xmlns", TriX.NS) ;
         out.println() ;
@@ -122,12 +130,6 @@ public class StreamWriterTriX implements StreamRDF {
         StreamWriterTriX.write(out, quad.asTriple(), pmap) ;
 
     }
-    
-    private void graph(Node gn2) {
-        if ( ! Objects.equals(gn, gn2) ) {
-            
-        }
-    }
 
     static void write(IndentedWriter out, Triple triple, PrefixMap prefixMap) {
         out.println("<triple>") ;
@@ -140,18 +142,21 @@ public class StreamWriterTriX implements StreamRDF {
     }
     
     static void write(IndentedWriter out, Node node, PrefixMap prefixMap) {
-        // The decent use of TriX is very regular output as we do not use <qname>. 
+        
         if ( node.isURI() ) {
             String uri = node.getURI() ;
-            if ( prefixMap != null ) {
-                String abbrev = prefixMap.abbreviate(uri) ;
-                if ( abbrev != null ) {
-                    startTag(out, TriX.tagQName) ;
-                    writeText(out, abbrev) ;
-                    endTag(out, TriX.tagQName) ;
-                    return ;
-                }
-            }
+            // The decent use of TriX is very regular output as we do not use <qname>. 
+            // See Notes above. 
+//            if ( false && prefixMap != null ) {
+//                String abbrev = prefixMap.abbreviate(uri) ;
+//                if ( abbrev != null ) {
+//                    startTag(out, TriX.tagQName) ;
+//                    writeText(out, abbrev) ;
+//                    endTag(out, TriX.tagQName) ;
+//                    out.println() ;
+//                    return ;
+//                }
+//            }
             
             startTag(out, TriX.tagURI) ;
             writeText(out, node.getURI()) ;
