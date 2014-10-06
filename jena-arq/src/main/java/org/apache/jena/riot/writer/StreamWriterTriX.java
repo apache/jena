@@ -54,24 +54,24 @@ public class StreamWriterTriX implements StreamRDF {
     private Node gn = null ;
     private boolean inGraph = false ; 
     private PrefixMap pmap = PrefixMapFactory.create() ;
+    private int depth = 0 ;     // Start/finish count 
 
     public StreamWriterTriX(OutputStream out)   { this.out = new IndentedWriter(out) ; }
     public StreamWriterTriX(IndentedWriter out) { this.out = out ; }
 
     @Override public void start() {
-        // Delay until NS known?
-        StreamWriterTriX.startXML(out) ;
-        StreamWriterTriX.startTag(out, TriX.tagTriX, "xmlns", TriX.NS) ;
-        out.println() ;
-    }
-    
-    @Override public void base(String base) {} // Ignore.
-    
-    @Override public void prefix(String prefix, String iri) {
-        pmap.add(prefix, iri) ;
+        if ( depth == 0 ) {
+            StreamWriterTriX.startXML(out) ;
+            StreamWriterTriX.startTag(out, TriX.tagTriX, "xmlns", TriX.NS) ;
+            out.println() ;
+        }
+        depth ++ ;
     }
     
     @Override public void finish() {
+        depth-- ;
+        if ( depth != 0 )
+            return ;
         if ( inGraph ) {
             StreamWriterTriX.endTag(out, TriX.tagGraph) ;
             out.println() ;
@@ -79,6 +79,12 @@ public class StreamWriterTriX implements StreamRDF {
         StreamWriterTriX.endTag(out, TriX.tagTriX) ;
         out.println() ;
         out.flush() ;
+    }
+    
+    @Override public void base(String base) {} // Ignore.
+    
+    @Override public void prefix(String prefix, String iri) {
+        pmap.add(prefix, iri) ;
     }
     
     @Override
