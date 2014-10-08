@@ -18,15 +18,12 @@
 
 package org.apache.jena.atlas.json;
 
-import java.util.Collection ;
-import java.util.HashMap ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.* ;
 import java.util.Map.Entry ;
 
-public class JsonObject extends JsonValue //implements Map<String, JsonValue>
+public class JsonObject extends JsonValue
 {
-    private final Map<String, JsonValue> map = new HashMap<>() ;
+    private final Map<String, JsonValue> map = new LinkedHashMap<>() ;
     
     @Override
     public boolean isObject()       { return true ; }
