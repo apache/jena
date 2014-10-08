@@ -82,8 +82,10 @@ public class WebContent
     public static final String      contentTypeNQuadsAlt2        = "text/nquads" ;
     public static final ContentType ctNQuadsAlt2                 = ContentType.create(contentTypeNQuadsAlt2) ;
 
-    public static final String      contentTypeTriX              = "application/trix+xml" ;
+    public static final String      contentTypeTriX              = "application/trix" ;
     public static final ContentType ctTriX                       = ContentType.create(contentTypeTriX) ;
+    public static final String      contentTypeTriXxml           = "application/trix+xml" ;
+    public static final ContentType ctTriXxml                    = ContentType.create(contentTypeTriXxml) ;
 
     public static final String      contentTypeOctets            = "application/octet-stream" ;
     public static final ContentType ctOctets                     = ContentType.create(contentTypeOctets) ;
@@ -119,7 +121,7 @@ public class WebContent
     
     public static final String      contentTypeResultsThrift     = "application/sparql-results+thrift" ;
     public static final ContentType ctResultsThrift              = ContentType.create(contentTypeResultsThrift) ;
-
+    
     // Unofficial
     public static final String      contentTypeResultsBIO        = "application/sparql-results+bio" ;
     public static final ContentType ctResultsBIO                 = ContentType.create(contentTypeResultsBIO) ;

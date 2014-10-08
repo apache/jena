@@ -48,6 +48,7 @@ public class RDFLanguages
     public static final String strLangNQuads     = "N-Quads" ;
     public static final String strLangTriG       = "TriG" ;
     public static final String strLangCSV        = "CSV";
+    public static final String strLangTriX       = "TriX";
     
     /*
      * ".owl" is not a formally registered file extension for OWL 
@@ -119,27 +120,35 @@ public class RDFLanguages
     public static final Lang NQ     = NQUADS ;
     
     /** CSV data.  This can be read into an RDF model with simple conversion */
-    public static final Lang CSV   = LangBuilder.create(strLangCSV, contentTypeTextCSV)
-                                                .addAltNames("csv")   
-                                                .addFileExtensions("csv")
-                                                .build() ;
+    public static final Lang CSV        = LangBuilder.create(strLangCSV, contentTypeTextCSV)
+                                                     .addAltNames("csv")   
+                                                     .addFileExtensions("csv")
+                                                     .build() ;
 
     /** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
-    public static final Lang THRIFT = LangBuilder.create("RDF_THRIFT", contentTypeRDFThrift)
-                                                 .addAltNames("RDF-THRIFT", "TRDF")
-                                                 .addFileExtensions("rt", "trdf")
-                                                 .build() ;
+    public static final Lang THRIFT     = LangBuilder.create("RDF_THRIFT", contentTypeRDFThrift)
+                                                     .addAltNames("RDF-THRIFT", "TRDF")
+                                                     .addFileExtensions("rt", "trdf")
+                                                     .build() ;
     
     /** Text */
-    public static final Lang TEXT   = LangBuilder.create("text", contentTypeTextPlain)
-                                                 .addAltNames("TEXT")   
-                                                 .addFileExtensions("txt")
-                                                 .build() ;
+    public static final Lang TEXT       = LangBuilder.create("text", contentTypeTextPlain)
+                                                     .addAltNames("TEXT")   
+                                                     .addFileExtensions("txt")
+                                                     .build() ;
 
+    /** TriX */
+    public static final Lang TRIX       = LangBuilder.create(strLangTriX, contentTypeTriX)
+                                                     .addAltContentTypes(contentTypeTriXxml)
+                                                     .addAltNames("TRIX", "trix")
+                                                     // Extension "xml" is used for RDF/XML.
+                                                     .addFileExtensions("trix")
+                                                     .build() ;
+    
     /** The "null" language */
-    public static final Lang RDFNULL  = LangBuilder.create("rdf/null", "null/rdf")
-                                                .addAltNames("NULL", "null")  
-                                                .build() ;
+    public static final Lang RDFNULL    = LangBuilder.create("rdf/null", "null/rdf")
+                                                     .addAltNames("NULL", "null")  
+                                                     .build() ;
     
     // ---- Central registry
     
@@ -173,8 +182,9 @@ public class RDFLanguages
         Lang.NQUADS     = RDFLanguages.NQUADS ;
         Lang.NQ         = RDFLanguages.NQ ;
         Lang.TRIG       = RDFLanguages.TRIG ;
-        Lang.RDFTHRIFT     = RDFLanguages.THRIFT ;
+        Lang.RDFTHRIFT  = RDFLanguages.THRIFT ;
         Lang.CSV        = RDFLanguages.CSV ;
+        Lang.TRIX       = RDFLanguages.TRIX ;
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
     }
     // ----------------------
@@ -192,6 +202,7 @@ public class RDFLanguages
         register(NQUADS) ;
         register(THRIFT) ;
         register(CSV) ;
+        register(TRIX) ;
         register(RDFNULL) ;
         
         // Check for JSON-LD engine.

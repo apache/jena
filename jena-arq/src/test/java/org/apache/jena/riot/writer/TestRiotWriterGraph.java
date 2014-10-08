@@ -63,6 +63,10 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.NQUADS_UTF8}
             , { RDFFormat.NQUADS_ASCII}
             , { RDFFormat.NQUADS}
+            
+            , { RDFFormat.RDF_THRIFT }
+            , { RDFFormat.RDF_THRIFT_VALUES }
+            , { RDFFormat.TRIX }
         }) ; 
     }
 

@@ -27,7 +27,7 @@ import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
 import static org.apache.jena.riot.RDFLanguages.RDFXML ;
 import static org.apache.jena.riot.RDFLanguages.THRIFT ;
 import static org.apache.jena.riot.RDFLanguages.TRIG ;
-import static org.apache.jena.riot.RDFLanguages.TURTLE ;
+import static org.apache.jena.riot.RDFLanguages.* ;
 
 import java.io.InputStream ;
 import java.io.Reader ;
@@ -39,6 +39,7 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.JsonLDReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.ReaderTriX ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.ParserProfile ;
@@ -46,7 +47,6 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.thrift.BinRDF ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
-//import org.apache.jena.atlas.lib.Sink ;
 
 /** The registry of languages and parsers.
  * To register a new parser:
@@ -74,6 +74,7 @@ public class RDFParserRegistry
     private static ReaderRIOTFactory parserFactory          = new ReaderRIOTFactoryImpl() ;
     private static ReaderRIOTFactory parserFactoryJsonLD    = new ReaderRIOTFactoryJSONLD() ;
     private static ReaderRIOTFactory parserFactoryThrift    = new ReaderRIOTFactoryThrift() ;
+    private static ReaderRIOTFactory parserFactoryTriX      = new ReaderRIOTFactoryTriX() ;
     
     private static boolean initialized = false ;
     static { init() ; }
@@ -97,11 +98,13 @@ public class RDFParserRegistry
         registerLangTriples(RDFJSON,    parserFactory) ;
         registerLangTriples(CSV,        parserFactory) ;
         registerLangTriples(THRIFT,     parserFactoryThrift) ;
+        registerLangTriples(TRIX,       parserFactoryTriX) ;
         
         registerLangQuads(JSONLD,       parserFactoryJsonLD) ;
         registerLangQuads(NQUADS,       parserFactory) ;
         registerLangQuads(TRIG,         parserFactory) ;
         registerLangQuads(THRIFT,       parserFactoryThrift) ;
+        registerLangQuads(TRIX,         parserFactoryTriX) ;
     }
 
     /** Register a language and it's parser factory.
@@ -197,8 +200,7 @@ public class RDFParserRegistry
         @Override public void setParserProfile(ParserProfile parserProfile) { this.parserProfile = parserProfile ; }
     }
 
-    private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory
-    {
+    private static class ReaderRIOTFactoryJSONLD implements ReaderRIOTFactory {
         @Override
         public ReaderRIOT create(Lang language) {
             if ( !Lang.JSONLD.equals(language) )
@@ -242,5 +244,11 @@ public class RDFParserRegistry
         
     }
 
+    private static class ReaderRIOTFactoryTriX implements ReaderRIOTFactory {
+        @Override
+        public ReaderRIOT create(Lang language) {
+            return new ReaderTriX() ;
+        }
+    }
 }
 

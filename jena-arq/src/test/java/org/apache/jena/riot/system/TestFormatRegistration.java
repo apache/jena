@@ -52,6 +52,9 @@ public class TestFormatRegistration extends BaseTest
         add("NQUADS",   x, RDFFormat.NQUADS,     true, true) ;
         add("NQ",       x, RDFFormat.NQ,         true, true) ;
         add("TRIG",     x, RDFFormat.TRIG,       true, true) ;
+        add("TRIX",     x, RDFFormat.TRIX,       true, true) ;
+        add("TRDF",     x, RDFFormat.RDF_THRIFT, true, true) ;
+        add("TRDF",     x, RDFFormat.RDF_THRIFT_VALUES, true, true) ;
         return x ;
     }
     

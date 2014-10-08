@@ -22,10 +22,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RDFParserRegistry ;
-import org.apache.jena.riot.RDFWriterRegistry ;
+import org.apache.jena.riot.* ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
@@ -50,6 +47,8 @@ public class TestLangRegistration extends BaseTest
         add("NQUADS",   x, Lang.NQUADS,     false, true) ;
         add("NQ",       x, Lang.NQ,         false, true) ;
         add("TRIG",     x, Lang.TRIG,       false, true) ;
+        add("TRIX",     x, Lang.TRIX,       true, true) ;
+        add("TRDF",     x, Lang.RDFTHRIFT,  true, true) ;
         return x ;
     }
     

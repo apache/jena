@@ -126,6 +126,22 @@ public class RDFWriterRegistry
         }
     } ;
     
+    static WriterGraphRIOTFactory wgTriXFactory = new WriterGraphRIOTFactory() {
+
+        @Override
+        public WriterGraphRIOT create(RDFFormat syntaxForm) {
+            return new WriterTriX() ;
+        } 
+    } ;
+        
+    static WriterDatasetRIOTFactory wdsTriXFactory = new WriterDatasetRIOTFactory() {
+
+        @Override
+        public WriterDatasetRIOT create(RDFFormat syntaxForm) {
+            return new WriterTriX() ;
+        } 
+    } ;
+        
      public static void init() {}
      static { init$() ; }
      private static void init$()
@@ -142,7 +158,8 @@ public class RDFWriterRegistry
          register(Lang.TRIG,        RDFFormat.TRIG) ;
          register(Lang.NQUADS,      RDFFormat.NQUADS) ;
          register(Lang.RDFNULL,     RDFFormat.RDFNULL) ;
-         register(Lang.RDFTHRIFT,      RDFFormat.RDF_THRIFT) ;
+         register(Lang.RDFTHRIFT,   RDFFormat.RDF_THRIFT) ;
+         register(Lang.TRIX,        RDFFormat.TRIX) ;
 
          // Writer factories.
          register(RDFFormat.TURTLE_PRETTY,  wgfactory) ;
@@ -173,6 +190,8 @@ public class RDFWriterRegistry
          register(RDFFormat.RDF_THRIFT,     wgThriftFactory) ;
          register(RDFFormat.RDF_THRIFT_VALUES, wgThriftFactory) ;
 
+         register(RDFFormat.TRIX, wgTriXFactory) ;
+
          // Datasets
          register(RDFFormat.TRIG_PRETTY,    wdsfactory) ;
          register(RDFFormat.TRIG_BLOCKS,    wdsfactory) ;
@@ -188,7 +207,8 @@ public class RDFWriterRegistry
          
          register(RDFFormat.RDF_THRIFT,     wdsThriftFactory) ;
          register(RDFFormat.RDF_THRIFT_VALUES, wdsThriftFactory) ;
-
+         
+         register(RDFFormat.TRIX, wdsTriXFactory) ;
      }
     
     /** Register the serialization for graphs and it's associated factory
@@ -213,27 +233,31 @@ public class RDFWriterRegistry
     private static void register(RDFFormat serialization)
     { }
     
-    /** Register the default serialization for the language (replace any existing registration).
-     * @param lang      Languages
-     * @param format    The serialization forma to use when the language is used for writing.
+    /**
+     * Register the default serialization for the language (replace any existing
+     * registration).
+     * 
+     * @param lang
+     *            Languages
+     * @param format
+     *            The serialization forma to use when the language is used for
+     *            writing.
      */
-    public static void register(Lang lang, RDFFormat format)
-    {
+    public static void register(Lang lang, RDFFormat format) {
         register(format) ;
         langToFormat.put(lang, format) ;
     }
-    
-    /** Return the format registered as the default for the language */ 
-    public static RDFFormat defaultSerialization(Lang lang)
-    {
+
+    /** Return the format registered as the default for the language */
+    public static RDFFormat defaultSerialization(Lang lang) {
         return langToFormat.get(lang) ;
     }
 
     /** Does the language have a registered output format? */
-    public static boolean contains(Lang lang)
-    { 
-        if ( ! langToFormat.containsKey(lang) ) return false ;
-        
+    public static boolean contains(Lang lang) {
+        if ( !langToFormat.containsKey(lang) )
+            return false ;
+
         RDFFormat fmt = langToFormat.get(lang) ;
         return contains(fmt) ;
     }
@@ -254,34 +278,30 @@ public class RDFWriterRegistry
     }
     
     /** Get the graph writer factory asscoiated with the language */
-    public static WriterGraphRIOTFactory getWriterGraphFactory(Lang lang)
-    {
+    public static WriterGraphRIOTFactory getWriterGraphFactory(Lang lang) {
         RDFFormat serialization = defaultSerialization(lang) ;
         if ( serialization == null )
-            throw new RiotException("No default serialization for language "+lang) ;
+            throw new RiotException("No default serialization for language " + lang) ;
         return getWriterGraphFactory(serialization) ;
     }
 
     /** Get the graph writer factory asscoiated with the output format */
-    public static WriterGraphRIOTFactory getWriterGraphFactory(RDFFormat serialization)
-    {
+    public static WriterGraphRIOTFactory getWriterGraphFactory(RDFFormat serialization) {
         return registryGraph.get(serialization) ;
     }
-    
+
     /** Get the dataset writer factory asscoiated with the language */
-    public static WriterDatasetRIOTFactory getWriterDatasetFactory(Lang lang)
-    {
+    public static WriterDatasetRIOTFactory getWriterDatasetFactory(Lang lang) {
         RDFFormat serialization = defaultSerialization(lang) ;
         if ( serialization == null )
-            throw new RiotException("No default serialization for language "+lang) ;
-        return getWriterDatasetFactory(serialization) ;  
+            throw new RiotException("No default serialization for language " + lang) ;
+        return getWriterDatasetFactory(serialization) ;
     }
 
     /** Get the dataset writer factory asscoiated with the output format */
-    public static WriterDatasetRIOTFactory getWriterDatasetFactory(RDFFormat serialization)
-    {
+    public static WriterDatasetRIOTFactory getWriterDatasetFactory(RDFFormat serialization) {
         if ( serialization == null )
-            return null ; 
+            return null ;
         return registryDataset.get(serialization) ;
     }
 }
