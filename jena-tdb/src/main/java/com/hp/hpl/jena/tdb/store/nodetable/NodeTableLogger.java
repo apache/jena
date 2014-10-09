@@ -129,4 +129,9 @@ public class NodeTableLogger implements NodeTable
             string = label+": "+string ;
         log.info(string) ; 
     }
+
+    @Override
+    public NodeTable wrapped() {
+        return nodeTable ;
+    }
 }
