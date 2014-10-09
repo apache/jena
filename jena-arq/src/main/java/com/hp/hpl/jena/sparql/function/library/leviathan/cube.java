@@ -38,7 +38,7 @@ public class cube extends FunctionBase1 {
                 double dec = v.getDecimal().doubleValue() ;
                 return NodeValue.makeDecimal( Math.pow(dec, 3d)) ;
             case OP_FLOAT:
-                // TODO Should squaring a float keep it a float?
+                // TODO Should cubing a float keep it a float?
             case OP_DOUBLE:
                 return NodeValue.makeDouble( Math.pow(v.getDouble(), 3d) ) ;
             default:
