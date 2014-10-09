@@ -23,6 +23,32 @@ import org.apache.jena.atlas.logging.Log;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 
+/**
+ * Helper for loading class instances
+ * <p>
+ * This is primarily used as a helper by {@link MappedLoader} to dynamically
+ * load in functions without a need to pre-register them. Since these class
+ * names originate from URIs which may contain characters which are not valid in
+ * Java class names this class implements a simple escaping scheme.
+ * </p>
+ * <h3>Escaping Scheme</h3>
+ * <p>
+ * Escaping is applied only to the last portion of the class name, typically
+ * {@link MappedLoader} takes care of mapping a function library namespace
+ * prefix into a java package name and likely only the last portion (the
+ * function name) will require escaping.
+ * </p>
+ * <p>
+ * If the first character of the class name is invalid it is replaced with
+ * {@code F_}. If any subsequent characters are invalid they are ignored and the
+ * subsequent valid character (if any) is promoted to upper case giving a camel
+ * case style valid class name.
+ * </p>
+ * <p>
+ * For example if the last portion of the class name were {@code foo-bar-faz}
+ * then we would end up with an escaped class name of {@code fooBarFaz}.
+ * </p>
+ */
 public class Loader {
     static public Class<?> loadClass(String classNameOrURI) {
         return loadClass(classNameOrURI, null);
