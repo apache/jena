@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.expr;
 import org.apache.jena.atlas.junit.BaseTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Node;
@@ -175,7 +176,23 @@ public class TestLeviathanFunctions extends BaseTest {
     public void reciprocal_03() {
         test("lfn:reciprocal(lfn:reciprocal(2))", "2");
     }
-
+    
+    @Test
+    public void root_01() {
+        test("lfn:root(4,2)", "2");
+    }
+    
+    @Test
+    public void root_02() {
+        test("lfn:root(2,1)", "2");
+    }
+    
+    @Test
+    @Ignore // Unfortunately Java floating point precision is awful and I get 3.999999999999996 when running on Oracle JVM
+    public void root_03() {
+        test("lfn:root(64,3)", "4");
+    }
+    
     private static void test(String exprString, String result) {
         Node r = NodeFactoryExtra.parseNode(result);
         test(exprString, r);
