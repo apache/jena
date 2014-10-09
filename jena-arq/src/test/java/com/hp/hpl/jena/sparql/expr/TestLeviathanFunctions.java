@@ -193,6 +193,41 @@ public class TestLeviathanFunctions extends BaseTest {
         test("lfn:root(64,3)", "4");
     }
     
+    @Test
+    public void sqrt_01() {
+        test("lfn:sqrt(4)", "2");
+    }
+    
+    @Test
+    public void sqrt_02() {
+        test("lfn:sqrt(144)", "12");
+    }
+    
+    @Test
+    public void cartesian_01() {
+        test("lfn:cartesian(0, 0, 0, 0)", "0");
+    }
+    
+    @Test
+    public void cartesian_02() {
+        test("lfn:cartesian(0, 0, 3, 4)", "5");
+    }
+    
+    @Test
+    public void cartesian_03() {
+        test("lfn:cartesian(0, 0, 0, 3, 4, 0)", "5");
+    }
+    
+    @Test
+    public void cartesian_04() {
+        test("lfn:cartesian(0, 0, 0, 0, 3, 4)", "5");
+    }
+    
+    @Test
+    public void cartesian_05() {
+        test("lfn:cartesian(0, 0, 0, 3, 0, 4)", "5");
+    }
+    
     private static void test(String exprString, String result) {
         Node r = NodeFactoryExtra.parseNode(result);
         test(exprString, r);
