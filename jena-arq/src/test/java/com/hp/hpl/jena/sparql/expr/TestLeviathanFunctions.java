@@ -21,7 +21,6 @@ package com.hp.hpl.jena.sparql.expr;
 import org.apache.jena.atlas.junit.BaseTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Node;
@@ -30,12 +29,12 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase;
 import com.hp.hpl.jena.sparql.function.library.leviathan.LeviathanConstants;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
 
 public class TestLeviathanFunctions extends BaseTest {
 
+    private static final double DELTA = 0.0000000001d;
     static boolean warnOnBadLexicalForms = true;
 
     @BeforeClass
@@ -50,8 +49,6 @@ public class TestLeviathanFunctions extends BaseTest {
     }
 
     private static PrefixMapping pmap = new PrefixMappingImpl();
-    private static SerializationContext serContext = new SerializationContext(false);
-
     static {
         pmap.setNsPrefixes(ARQConstants.getGlobalPrefixMap());
         pmap.setNsPrefix("lfn", LeviathanConstants.LeviathanFunctionLibraryURI);
@@ -146,88 +143,97 @@ public class TestLeviathanFunctions extends BaseTest {
     public void log_03() {
         test("lfn:log(-1)", NodeFactoryExtra.doubleToNode(Double.NaN));
     }
-    
+
     @Test
     public void log_04() {
         test("lfn:log(4, 2)", "2");
     }
-    
+
     @Test
     public void log_05() {
         test("lfn:log(4, 16)", "0.5");
     }
-    
+
     @Test
     public void log_06() {
         test("lfn:log(16, 4)", "2");
     }
-    
+
     @Test
     public void reciprocal_01() {
         test("lfn:reciprocal(1)", "1");
     }
-    
+
     @Test
     public void reciprocal_02() {
         test("lfn:reciprocal(2)", "0.5");
     }
-    
+
     @Test
     public void reciprocal_03() {
         test("lfn:reciprocal(lfn:reciprocal(2))", "2");
     }
-    
+
     @Test
     public void root_01() {
         test("lfn:root(4,2)", "2");
     }
-    
+
     @Test
     public void root_02() {
         test("lfn:root(2,1)", "2");
     }
-    
+
     @Test
-    @Ignore // Unfortunately Java floating point precision is awful and I get 3.999999999999996 when running on Oracle JVM
     public void root_03() {
-        test("lfn:root(64,3)", "4");
+        testDouble("lfn:root(64,3)", "4", DELTA);
     }
-    
+
     @Test
     public void sqrt_01() {
         test("lfn:sqrt(4)", "2");
     }
-    
+
     @Test
     public void sqrt_02() {
         test("lfn:sqrt(144)", "12");
     }
-    
+
     @Test
     public void cartesian_01() {
         test("lfn:cartesian(0, 0, 0, 0)", "0");
     }
-    
+
     @Test
     public void cartesian_02() {
         test("lfn:cartesian(0, 0, 3, 4)", "5");
     }
-    
+
     @Test
     public void cartesian_03() {
         test("lfn:cartesian(0, 0, 0, 3, 4, 0)", "5");
     }
-    
+
     @Test
     public void cartesian_04() {
         test("lfn:cartesian(0, 0, 0, 0, 3, 4)", "5");
     }
-    
+
     @Test
     public void cartesian_05() {
         test("lfn:cartesian(0, 0, 0, 3, 0, 4)", "5");
     }
+
+    @Test
+    public void cos_01() {
+        testDouble("lfn:cos(lfn:degrees-to-radians(60))", "0.5", DELTA);
+    }
     
+    @Test
+    public void acos_01() {
+        testDouble("lfn:radians-to-degrees(lfn:cos-1(lfn:cos(lfn:degrees-to-radians(60))))", "60", DELTA);
+    }
+
     private static void test(String exprString, String result) {
         Node r = NodeFactoryExtra.parseNode(result);
         test(exprString, r);
@@ -235,12 +241,36 @@ public class TestLeviathanFunctions extends BaseTest {
 
     private static void test(String exprString, Node result) {
         Expr expr = ExprUtils.parse(exprString, pmap);
-        NodeValue nv = expr.eval(null, new FunctionEnvBase());
-        NodeValue nvr = NodeValue.makeNode(result);
+        NodeValue actual = expr.eval(null, new FunctionEnvBase());
+        NodeValue expected = NodeValue.makeNode(result);
 
         // Note that we don't test lexical form because we can get mismatches
         // between how things like doubles are expressed
-        assertTrue("Not same value: Expected: " + nvr + " : Actual = " + nv, NodeValue.sameAs(nvr, nv));
+        assertTrue("Not same value: Expected = " + expected + " : Actual = " + actual,
+                NodeValue.sameAs(expected, actual));
+    }
+
+    private static void testDouble(String exprString, String result, double delta) {
+        Node r = NodeFactoryExtra.parseNode(result);
+        testDouble(exprString, r, delta);
+    }
+
+    private static void testDouble(String exprString, Node result, double delta) {
+        Expr expr = ExprUtils.parse(exprString, pmap);
+        NodeValue actual = expr.eval(null, new FunctionEnvBase());
+        NodeValue expected = NodeValue.makeNode(result);
+
+        // Note that we don't test lexical form because we can get mismatches
+        // between how things like doubles are expressed
+        if (NodeValue.sameAs(expected, actual))
+            return;
+
+        // Because Java floating point calculations are woefully imprecise we
+        // are in many cases simply testing that the differences between the
+        // values are within a given delta
+        double difference = Math.abs(actual.getDouble() - expected.getDouble());
+        assertTrue("Values not within given delta " + delta + ": Expected = " + expected + " : Actual = " + actual,
+                difference <= delta);
     }
 
     private static void testError(String exprString) {

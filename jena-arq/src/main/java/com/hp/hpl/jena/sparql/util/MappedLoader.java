@@ -18,90 +18,77 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.function.library.leviathan.LeviathanConstants;
 
+public class MappedLoader {
+    // Map string => string of prefixes
+    // e.g. http://jena.hpl.hp.com/ARQ/property# =>
+    // java:com.hp.hpl.jena.sparql.pfunction.
 
-public class MappedLoader
-{
-    // Map string => string of prefixes 
-    //   e.g. http://jena.hpl.hp.com/ARQ/property# => java:com.hp.hpl.jena.sparql.pfunction.
-    
-    static Map<String, String> uriMap = new HashMap<>() ;
-    
+    static Map<String, String> uriMap = new HashMap<>();
+
     static {
         // ARQ library
-        uriMap.put(ARQConstants.ARQFunctionLibraryURI,
-                   ARQConstants.ARQFunctionLibrary) ;
-        uriMap.put(ARQConstants.ARQPropertyFunctionLibraryURI,
-                   ARQConstants.ARQPropertyFunctionLibrary) ;
-        uriMap.put(ARQConstants.ARQProcedureLibraryURI,
-                   ARQConstants.ARQProcedureLibrary) ;
-        
+        uriMap.put(ARQConstants.ARQFunctionLibraryURI, ARQConstants.ARQFunctionLibrary);
+        uriMap.put(ARQConstants.ARQPropertyFunctionLibraryURI, ARQConstants.ARQPropertyFunctionLibrary);
+        uriMap.put(ARQConstants.ARQProcedureLibraryURI, ARQConstants.ARQProcedureLibrary);
+
         // Old name, new name
-        uriMap.put("java:com.hp.hpl.jena.query.function.library.",
-                   "java:com.hp.hpl.jena.sparql.function.library.") ;
-        
-        uriMap.put("java:com.hp.hpl.jena.query.pfunction.library.",
-                   "java:com.hp.hpl.jena.sparql.pfunction.library.") ;
-        
+        uriMap.put("java:com.hp.hpl.jena.query.function.library.", "java:com.hp.hpl.jena.sparql.function.library.");
+
+        uriMap.put("java:com.hp.hpl.jena.query.pfunction.library.", "java:com.hp.hpl.jena.sparql.pfunction.library.");
+
         // Leviathan library
-        uriMap.put(LeviathanConstants.LeviathanFunctionLibraryURI, 
-                   LeviathanConstants.LeviathanFunctionLibrary) ;
+        uriMap.put(LeviathanConstants.LeviathanFunctionLibraryURI, LeviathanConstants.LeviathanFunctionLibrary);
     }
-    
-    public static boolean isPossibleDynamicURI(String uri, Class<?> expectedClass)
-    {
-        uri = mapDynamicURI(uri) ;
-        if ( uri == null )
-            return false ;
+
+    public static boolean isPossibleDynamicURI(String uri, Class<?> expectedClass) {
+        uri = mapDynamicURI(uri);
+        if (uri == null)
+            return false;
         // Need to force the load to check everything.
         // Callers (who are expectedClass sensitive) should have
         // an "alreadyLoaded" cache
-        return loadClass(uri, expectedClass) != null ;
+        return loadClass(uri, expectedClass) != null;
     }
 
-    public static String mapDynamicURI(String uri)
-    {
-        Map.Entry<String, String> e = find(uri) ;
-        if ( e == null )
-        {
-            if ( uri.startsWith(ARQConstants.javaClassURIScheme) )
-                return uri ;
-            return null ;
+    public static String mapDynamicURI(String uri) {
+        Map.Entry<String, String> e = find(uri);
+        if (e == null) {
+            if (uri.startsWith(ARQConstants.javaClassURIScheme))
+                return uri;
+            return null;
         }
-        
-        String k = e.getKey() ;
+
+        String k = e.getKey();
         String v = e.getValue();
 
-        uri = uri.substring(k.length()) ;
-        uri = v + uri ;
-        return uri ;
+        uri = uri.substring(k.length());
+        uri = v + uri;
+        return uri;
     }
-    
-    private static Map.Entry<String,String> find(String uri)
-    {
-        for ( Map.Entry<String, String> e : uriMap.entrySet() )
-        {
+
+    private static Map.Entry<String, String> find(String uri) {
+        for (Map.Entry<String, String> e : uriMap.entrySet()) {
             String k = e.getKey();
-            if ( uri.startsWith( k ) )
-            {
+            if (uri.startsWith(k)) {
                 return e;
             }
         }
-        return null ;
+
+        return null;
     }
-    
-    public static Class<?> loadClass(String uri, Class<?> expectedClass)
-    {
-        uri = mapDynamicURI(uri) ;
-        if ( uri == null )
-            return null ;
-        
-        return Loader.loadClass(uri, expectedClass) ;
+
+    public static Class<?> loadClass(String uri, Class<?> expectedClass) {
+        uri = mapDynamicURI(uri);
+        if (uri == null)
+            return null;
+
+        return Loader.loadClass(uri, expectedClass);
     }
-    
+
 }

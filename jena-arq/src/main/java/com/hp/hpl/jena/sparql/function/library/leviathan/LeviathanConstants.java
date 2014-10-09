@@ -18,8 +18,22 @@
 
 package com.hp.hpl.jena.sparql.function.library.leviathan;
 
+/**
+ * Constants related to support for the <a href=
+ * "https://bitbucket.org/dotnetrdf/dotnetrdf/wiki/DeveloperGuide/SPARQL/Leviathan%20Functions"
+ * >Leviathan Function Library</a> which is a library of extension functions
+ * originally implemented by the <a href="http://www.dotnetrdf.org">dotNetRDF Project</a>.
+ * 
+ */
 public class LeviathanConstants {
 
+    /**
+     * Leviathan Function Library URI
+     */
     public static final String LeviathanFunctionLibraryURI = "http://www.dotnetrdf.org/leviathan#";
+    
+    /**
+     * Leviathan Function Library package
+     */
     public static final String LeviathanFunctionLibrary = "java:com.hp.hpl.jena.sparql.function.library.leviathan.";
 }
