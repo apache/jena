@@ -160,6 +160,21 @@ public class TestLeviathanFunctions extends BaseTest {
     public void log_06() {
         test("lfn:log(16, 4)", "2");
     }
+    
+    @Test
+    public void reciprocal_01() {
+        test("lfn:reciprocal(1)", "1");
+    }
+    
+    @Test
+    public void reciprocal_02() {
+        test("lfn:reciprocal(2)", "0.5");
+    }
+    
+    @Test
+    public void reciprocal_03() {
+        test("lfn:reciprocal(lfn:reciprocal(2))", "2");
+    }
 
     private static void test(String exprString, String result) {
         Node r = NodeFactoryExtra.parseNode(result);
