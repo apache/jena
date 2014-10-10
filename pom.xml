@@ -74,6 +74,7 @@
         <!-- <module>jena-sdb</module>            -->
 
         <module>jena-fuseki</module>
+        <!--<module>jena-fuseki2</module>-->
         <module>jena-security</module>
         <!-- Slow to build - exclude from dev build -->
         <!-- <module>jena-jdbc</module>           -->
@@ -111,6 +112,7 @@
         <module>jena-sdb</module>
 
         <module>jena-fuseki</module>
+        <module>jena-fuseki2</module>
         <module>jena-security</module>
 
         <module>jena-jdbc</module>
