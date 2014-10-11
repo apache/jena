@@ -88,17 +88,6 @@
       <directoryMode>0755</directoryMode>
     </dependencySet>
 
-    <dependencySet>
-      <useProjectArtifact>false</useProjectArtifact>
-      <outputDirectory>javadoc-sdb</outputDirectory>
-      <unpack>true</unpack>
-      <includes>
-	<include>org.apache.jena:jena-sdb:*:javadoc</include>
-      </includes>
-      <fileMode>0622</fileMode>
-      <directoryMode>0755</directoryMode>
-    </dependencySet>
-
   </dependencySets>
 
   <fileSets>
