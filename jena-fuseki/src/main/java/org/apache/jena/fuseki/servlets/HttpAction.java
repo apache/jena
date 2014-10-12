@@ -41,6 +41,10 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Transactional ;
 
+/**
+ * HTTP action that represents the user request lifecycle. Its state is handled in the
+ * {@link SPARQL_ServletBase#executeLifecycle(HttpAction)} method.
+ */
 public class HttpAction
 {
     public final long id ;
@@ -75,7 +79,15 @@ public class HttpAction
     Map <String, String> headers = new HashMap<String, String>() ;
     public HttpServletRequest request;
     public HttpServletResponseTracker response ;
-    
+
+    /**
+     * Creates a new HTTP Action, using the HTTP request and response, and a given ID.
+     *
+     * @param id given ID
+     * @param request HTTP request
+     * @param response HTTP response
+     * @param verbose verbose flag
+     */
     public HttpAction(long id, HttpServletRequest request, HttpServletResponse response, boolean verbose) {
         this.id = id ;
         this.request = request ;
@@ -85,6 +97,17 @@ public class HttpAction
         this.verbose = verbose ;
     }
 
+    /**
+     * <p>Sets the action dataset. Setting a {@link DatasetRef} will replace any existing DatasetRef, as well as
+     * as the {@link DatasetGraph} of the current HTTP Action.</p>
+     *
+     * <p>Once it has updated its members, the HTTP Action will change its transactional state and
+     * {@link Transactional} instance according to its base dataset graph.</p>
+     *
+     * @param desc {@link DatasetRef}
+     * @see Transactional
+     * @see DatasetGraphWrapper
+     */
     public void setDataset(DatasetRef desc) {
         this.dsRef = desc ;
         this.dsg = desc.dataset ;
@@ -102,23 +125,46 @@ public class HttpAction
         }
     }
 
+    /**
+     * Returns <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
+     * <code>false otherwise</code>.
+     *
+     * @param dsg a {@link DatasetGraph}
+     * @return <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
+     * <code>false otherwise</code>
+     */
     private static boolean isTransactional(DatasetGraph dsg) {
         return (dsg instanceof Transactional) ;
     }
 
+    /**
+     * A {@link DatasetGraph} may contain other <strong>wrapped DatasetGraph's</strong>. This method will return
+     * the first instance (including the argument to this method) that <strong>is not</strong> an instance of
+     * {@link DatasetGraphWrapper}.
+     *
+     * @param dsg a {@link DatasetGraph}
+     * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
+     */
     private static DatasetGraph unwrap(DatasetGraph dsg) {
         while (dsg instanceof DatasetGraphWrapper) {
             dsg = ((DatasetGraphWrapper)dsg).getWrapped() ;
         }
         return dsg ;
     }
-        
+
+    /**
+     * Sets the {@link ServiceRef}.
+     *
+     * @param srvRef a {@link ServiceRef}
+     */
     public void setService(ServiceRef srvRef) {
         this.srvRef = srvRef ; 
     }
     
     /**
-     * Returns whether or not the underlying DatasetGraph is fully transactional (supports rollback)
+     * Returns whether or not the underlying DatasetGraph is fully transactional (supports rollback).
+     * @return <code>true</code> if the underlying DatasetGraph is fully transactional (supports rollback),
+     * <code>false</code> otherwise.
      */
     public boolean isTransactional() {
         return isTransactional ;

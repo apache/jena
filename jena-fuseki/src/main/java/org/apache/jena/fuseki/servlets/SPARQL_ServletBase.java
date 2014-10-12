@@ -41,12 +41,22 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
+/**
+ * Base servlet for SPARQL requests.
+ */
 public abstract class SPARQL_ServletBase extends ServletBase
 {
-    
+    /**
+     * Creates a new SPARQL base Servlet.
+     */
     protected SPARQL_ServletBase()      {   super() ; }
     
     // Common framework for handling HTTP requests
+    /**
+     * Handles GET and POST requests.
+     * @param request HTTP request
+     * @param response HTTP response
+     */
     protected void doCommon(HttpServletRequest request, HttpServletResponse response)
     //throws ServletException, IOException
     {
@@ -97,26 +107,59 @@ public abstract class SPARQL_ServletBase extends ServletBase
 
     // ---- Operation lifecycle
 
-    /** Return a fresh WebAction for this request */
+    /**
+     * Returns a fresh HTTP Action for this request.
+     * @param id the Request ID
+     * @param request HTTP request
+     * @param response HTTP response
+     * @return a new HTTP Action
+     */
     protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
         // Need a way to set verbose logging on a per servlet and per request basis. 
         return new HttpAction(id, request, response, verboseLogging) ;
     }
 
+    /**
+     * Validates a HTTP Action.
+     * @param action HTTP Action
+     */
     protected abstract void validate(HttpAction action) ;
+
+    /**
+     * Performs the HTTP Action.
+     * @param action HTTP Action
+     */
     protected abstract void perform(HttpAction action) ;
 
-    // Default start/finish steps. 
+    /**
+     * Default start step.
+     * @param action HTTP Action
+     */
     protected void startRequest(HttpAction action) {
     }
-    
+
+    /**
+     * Default finish step.
+     * @param action HTTP Action
+     */
     protected void finishRequest(HttpAction action) { }
-    
+
+    /**
+     * Archives the HTTP Action.
+     * @param action HTTP Action
+     * @see HttpAction#minimize()
+     */
     private void archiveHttpAction(HttpAction action)
     {
         action.minimize() ;
     }
 
+    /**
+     * Executes common tasks, including mapping the request to the right dataset, setting the dataset into the HTTP
+     * action, and retrieving the service for the dataset requested. Finally, it calls the
+     * {@link #executeAction(HttpAction)} method, which executes the HTTP Action life cycle.
+     * @param action HTTP Action
+     */
     private void execCommonWorker(HttpAction action)
     {
         DatasetRef dsRef = null ;
@@ -139,21 +182,31 @@ public abstract class SPARQL_ServletBase extends ServletBase
         action.setService(srvRef) ;
         executeAction(action) ;
     }
-        
+
+    /**
+     * Utility method, that increments and returns the AtomicLong value.
+     * @param x AtomicLong
+     */
     protected void inc(AtomicLong x)
     {
         x.incrementAndGet() ;
     }
 
-    // Execute - no stats.
-    // Intecept point for the UberServlet 
+    /**
+     * Executes the HTTP Action. Serves as intercept point for the UberServlet.
+     * @param action HTTP Action
+     */
     protected void executeAction(HttpAction action)
     {
         executeLifecycle(action) ;
     }
     
-    // This is the service request lifecycle.
-    // Called directly by the UberServlet which has not done any stats by this point.
+    /**
+     * Handles the service request lifecycle. Called directly by the UberServlet,
+     * which has not done any stats by this point.
+     * @param action {@link HttpAction}
+     * @see HttpAction
+     */
     protected void executeLifecycle(HttpAction action)
     {
         incCounter(action.dsRef, Requests) ;
@@ -184,7 +237,12 @@ public abstract class SPARQL_ServletBase extends ServletBase
             finishRequest(action) ;
         }
     }
-    
+
+    /**
+     * Increments a counter.
+     * @param counters a {@link Counter}
+     * @param name a {@link CounterName}
+     */
     protected static void incCounter(Counters counters, CounterName name) {
         try {
             if ( counters.getCounters().contains(name) )
@@ -193,7 +251,12 @@ public abstract class SPARQL_ServletBase extends ServletBase
             Fuseki.serverLog.warn("Exception on counter inc", ex) ;
         }
     }
-    
+
+    /**
+     * Decrements a counter.
+     * @param counters a {@link Counter}
+     * @param name a {@link CounterName}
+     */
     protected static void decCounter(Counters counters, CounterName name) {
         try {
             if ( counters.getCounters().contains(name) )
@@ -203,13 +266,24 @@ public abstract class SPARQL_ServletBase extends ServletBase
         }
     }
 
-    @SuppressWarnings("unused") // ServletException
+    /**
+     * <p>Sends an <strong>error</strong> when the PATCH method is called.</p>
+     * <p>Throws ServletException or IOException as per overloaded method signature.</p>
+     * @param request HTTP request
+     * @param response HTTP response
+     * @throws ServletException from overloaded method signature
+     * @throws IOException from overloaded method signature
+     */
     protected void doPatch(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "HTTP PATCH not supported");
     }
-    
+
+    /**
+     * Prints the HTTP Action request to the program log, using the INFO level.
+     * @param action {@link HttpAction}
+     */
     private void printRequest(HttpAction action)
     {
         String url = wholeRequestURL(action.request) ;
@@ -230,7 +304,13 @@ public abstract class SPARQL_ServletBase extends ServletBase
             }
         }
     }
-    
+
+    /**
+     * Initiates the response, by setting common headers such as Access-Control-Allow-Origin and Server, and
+     * the Vary header if the request method used was a GET.
+     * @param request HTTP request
+     * @param response HTTP response
+     */
     private void initResponse(HttpServletRequest request, HttpServletResponse response)
     {
         setCommonHeaders(response) ;
@@ -239,7 +319,11 @@ public abstract class SPARQL_ServletBase extends ServletBase
         if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) || HttpNames.METHOD_HEAD.equalsIgnoreCase(method) )
             setVaryHeader(response) ;
     }
-    
+
+    /**
+     * Prints the HTTP Action response to the program log, using the INFO level.
+     * @param action {@link HttpAction}
+     */
     private void printResponse(HttpAction action)
     {
         long time = action.getTime() ;
@@ -262,7 +346,21 @@ public abstract class SPARQL_ServletBase extends ServletBase
         else
             log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, action.message, timeStr)) ;
     }
-    
+
+    /**
+     * <p>Given a time epoch, it will return the time in milli seconds if it is less than 1000,
+     * otherwise it will normalize it to display as second.</p>
+     * <p>It appends a 'ms' suffix when using milli seconds, and ditto <i>s</i> for seconds.</p>
+     * <p>For instance: </p>
+     * <ul>
+     * <li>10 emits 10 ms</li>
+     * <li>999 emits 999 ms</li>
+     * <li>1000 emits 1.000000 s</li>
+     * <li>10000 emits 10.000000 s</li>
+     * </ul>
+     * @param time the time epoch
+     * @return the time in milli seconds or in seconds
+     */
     private static String fmtMillis(long time)
     {
         // Millis only? seconds only?
@@ -271,18 +369,21 @@ public abstract class SPARQL_ServletBase extends ServletBase
         return String.format("%,.3f s", time/1000.0) ;
     }
 
-    /** Map request to uri in the registry.
-     *  null means no mapping done (passthrough). 
+    /**
+     * Map request to uri in the registry. null means no mapping done (passthrough).
+     * @param uri the URI
+     * @return the dataset
      */
     protected String mapRequestToDataset(String uri) 
     {
         return mapRequestToDataset$(uri) ;
     }
     
-    /** A possible implementation for mapRequestToDataset(String)
-     *  that assums the form /dataset/service 
+    /**
+     * A possible implementation for mapRequestToDataset(String) that assumes the form /dataset/service.
+     * @param uri the URI
+     * @return the dataset
      */
-    
     protected static String mapRequestToDataset$(String uri)
     {
         // Chop off trailing part - the service selector
@@ -299,6 +400,14 @@ public abstract class SPARQL_ServletBase extends ServletBase
         return uri.substring(0, i) ;
     }
 
+    /**
+     * Maps a request to a service (e.g. Query, Update).
+     * @param dsRef a {@link DatasetRef}
+     * @param uri the URI
+     * @param datasetURI the dataset URI
+     * @return an empty String (i.e. "") if the DatasetRef is null, or if its name is longer than the URI's name.
+     * Otherwise will return the service name.
+     */
     protected String mapRequestToService(DatasetRef dsRef, String uri, String datasetURI)
     {
         if ( dsRef == null )
@@ -309,9 +418,11 @@ public abstract class SPARQL_ServletBase extends ServletBase
         
     }
     
-    /** Implementation of mapRequestToDataset(String) that looks for
-     * the longest match in the registry.
-     * This includes use in direct naming GSP. 
+    /**
+     * Implementation of mapRequestToDataset(String) that looks for the longest match in the registry.
+     * This includes use in direct naming GSP.
+     * @param uri the URI
+     * @return <code>null</code> if the URI is null, otherwise will return the longest match in the registry.
      */
     protected static String mapRequestToDatasetLongest$(String uri) 
     {

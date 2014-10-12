@@ -28,7 +28,9 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.riot.web.HttpNames ;
 
-// Move statics to a lib (ActionLib?)
+/**
+ * Addition HTTP Servlet operations. 
+ */
 public abstract class ServletBase extends HttpServlet {
     public static final String METHOD_DELETE    = "DELETE" ;
     public static final String METHOD_HEAD      = "HEAD" ;
