@@ -55,9 +55,12 @@ public abstract class ActionBase extends ServletBase
         //super.init() ;
     }
     
-    // Common framework for handling HTTP requests
+    /**
+     * Common framework for handling HTTP requests.
+     * @param request
+     * @param response
+     */
     protected void doCommon(HttpServletRequest request, HttpServletResponse response)
-    //throws ServletException, IOException
     {
         try {
             long id = allocRequestId(request, response);
@@ -105,26 +108,46 @@ public abstract class ActionBase extends ServletBase
 
     // ---- Operation lifecycle
 
-    /** Return a fresh WebAction for this request */
+    /**
+     * Returns a fresh HTTP Action for this request.
+     * @param id the Request ID
+     * @param request HTTP request
+     * @param response HTTP response
+     * @return a new HTTP Action
+     */
     protected HttpAction allocHttpAction(long id, HttpServletRequest request, HttpServletResponse response) {
         // Need a way to set verbose logging on a per servlet and per request basis. 
         return new HttpAction(id, log, request, response, Fuseki.verboseLogging) ;
     }
 
-    // Default start/finish steps. 
+    /**
+     * Begin handling an {@link HttpAction}  
+     * @param action
+     */
     protected final void startRequest(HttpAction action) {
         action.startRequest() ;
     }
     
+    /**
+     * Stop handling an {@link HttpAction}  
+     */
     protected final void finishRequest(HttpAction action) {
         action.finishRequest() ;
     }
     
+    /**
+     * Archives the HTTP Action.
+     * @param action HTTP Action
+     * @see HttpAction#minimize()
+     */
     private void archiveHttpAction(HttpAction action) {
         action.minimize() ;
     }
 
-    /** execution point */
+    /**
+     * Execute this request, which maybe a admin operation or a client request. 
+     * @param action HTTP Action
+     */
     protected abstract void execCommonWorker(HttpAction action) ;
     
     /** Extract the name after the container name (serverlet name).
@@ -210,6 +233,22 @@ public abstract class ActionBase extends ServletBase
         else
             log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, action.message, timeStr)) ;
     }
+
+    /**
+     * <p>Given a time point, return the time as a milli second string if it is less than 1000,
+     * otherwise return a seconds string.</p>
+     * <p>It appends a 'ms' suffix when using milli seconds,
+     *  and <i>s</i> for seconds.</p>
+     * <p>For instance: </p>
+     * <ul>
+     * <li>10 emits 10 ms</li>
+     * <li>999 emits 999 ms</li>
+     * <li>1000 emits 1.000 s</li>
+     * <li>10000 emits 10.000 s</li>
+     * </ul>
+     * @param time the time in milliseconds
+     * @return the time as a display string
+     */
 
     private static String fmtMillis(long time) {
         // Millis only? seconds only?
