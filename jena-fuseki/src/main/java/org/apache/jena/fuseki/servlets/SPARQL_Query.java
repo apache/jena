@@ -46,6 +46,9 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
+/**
+ * Handles SPARQL Query requests.
+ */
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
     public SPARQL_Query()   { super() ; }
@@ -111,8 +114,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                                              paramCallback, 
                                                              paramForceAccept,
                                                              paramTimeout) ;
-    
-    /** Called to validate arguments */
+
     @Override
     protected void validate(HttpAction action)
     {
@@ -137,10 +139,17 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         // Query not yet parsed.
     }
     
-    /** Validate the request after checking HTTP method and HTTP Parameters */ 
+    /**
+     * Validate the request after checking HTTP method and HTTP Parameters.
+     * @param action HTTP Action
+     */
     protected abstract void validateRequest(HttpAction action) ;
     
-    /** Helper for validating request */
+    /**
+     * Helper method for validating request.
+     * @param request HTTP request
+     * @param params parameters in a collection of Strings
+     */
     protected void validateParams(HttpServletRequest request, Collection<String> params)
     {
         ContentType ct = FusekiLib.getContentType(request) ;
@@ -254,7 +263,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         }
     }
 
-    /** Check the query - if unacceptable, throw ActionErrorException or call super.error */
+    /**
+     * Check the query, throwing ActionErrorException when not valid, or calling super#error.
+     * @param action HTTP Action
+     * @param query the Query
+     */
     protected abstract void validateQuery(HttpAction action, Query query) ;
 
     protected QueryExecution createQueryExecution(Query query, Dataset dataset)
