@@ -32,6 +32,10 @@ import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.web.HttpSC ;
 import org.slf4j.Logger ;
 
+/**
+ * An abstract HTTP Servlet. Contains implementation methods for setting the request status in a HTTP Action,
+ * and a mechanism to allocate unique ID's to new requests.
+ */
 public abstract class ServletBase extends HttpServlet
 {
     protected static final Logger log = Fuseki.requestLog ;
@@ -74,6 +78,12 @@ public abstract class ServletBase extends HttpServlet
         catch (IOException ex) { errorOccurred(ex) ; }
     }
 
+    /**
+     * Returns the HTTP request URL, appended with any additional URL parameters used.
+     *
+     * @param request HTTP request
+     * @return complete request URL
+     */
     protected static String wholeRequestURL(HttpServletRequest request)
     {
         StringBuffer sb = request.getRequestURL() ;
