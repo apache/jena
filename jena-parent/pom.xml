@@ -309,6 +309,35 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- Run the RAT Plugin -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+	<version>0.11</version>
+        <executions>
+          <execution>
+            <id>rat-checks</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+           <excludeSubProjects>true</excludeSubProjects>
+             <excludes>
+	       <exclude>**/DEPENDENCIES</exclude>
+               <exclude>**/*.txt</exclude>
+                    <!--<exclude>**/*.md</exclude>
+                    <exclude>**/*.json</exclude>
+                    <exclude>**/*.parquet</exclude>
+                    <exclude>**/META-INF/services/java.sql.Driver</exclude>
+                    <exclude>**/git.properties</exclude>
+                    <exclude>**/target/rat.txt</exclude>-->
+            </excludes>
+        </configuration>
+      </plugin>
     </plugins>
 
     <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->
