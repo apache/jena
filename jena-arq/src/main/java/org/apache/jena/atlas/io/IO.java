@@ -23,7 +23,7 @@ import java.nio.charset.Charset ;
 import java.util.zip.GZIPInputStream ;
 import java.util.zip.GZIPOutputStream ;
 
-import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.riot.out.CharSpace ;
 import org.apache.jena.riot.system.IRILib ;
@@ -56,7 +56,7 @@ public class IO
         try {
            return openFileEx(filename) ;
         }
-        catch (Exception ex) { throw new AtlasException(ex) ; }
+        catch (Exception ex) { throw new RuntimeIOException(ex) ; }
     }
     
     /** Open an input stream to a file; do not mask IOExceptions. 
@@ -136,7 +136,7 @@ public class IO
         try {
            return openOutputFileEx(filename) ;
         }
-        catch (Exception ex) { IO.exception(null) ; return null ; }
+        catch (IOException ex) { IO.exception(ex) ; return null ; }
     }
     
     /** Open an input stream to a file; do not mask IOExceptions. 
@@ -230,11 +230,11 @@ public class IO
     }
 
     public static void exception(IOException ex) {
-        throw new AtlasException(ex) ;
+        throw new RuntimeIOException(ex) ;
     }
 
     public static void exception(String msg, IOException ex) {
-        throw new AtlasException(msg, ex) ;
+        throw new RuntimeIOException(msg, ex) ;
     }
     
     public static void flush(OutputStream out) { 
