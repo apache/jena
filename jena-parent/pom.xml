@@ -327,14 +327,19 @@
         <configuration>
            <excludeSubProjects>true</excludeSubProjects>
              <excludes>
-	       <exclude>**/DEPENDENCIES</exclude>
+               <exclude>**/DEPENDENCIES</exclude>
                <exclude>**/*.txt</exclude>
-                    <!--<exclude>**/*.md</exclude>
-                    <exclude>**/*.json</exclude>
-                    <exclude>**/*.parquet</exclude>
-                    <exclude>**/META-INF/services/java.sql.Driver</exclude>
-                    <exclude>**/git.properties</exclude>
-                    <exclude>**/target/rat.txt</exclude>-->
+               
+               <!-- These might be too extreme an excludes -->
+               <!-- 
+               Unfortunately Jena historically has large numbers of small
+               test files with no license headers.  Since Jena was donated to the
+               ASF under a Software Grant it is assumed that all rights for the
+               
+               -->
+               <exclude>**/src/test/resources/**/*</exclude>
+               <exclude>**/testing/**/*</exclude>
+               
             </excludes>
         </configuration>
       </plugin>
