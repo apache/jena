@@ -22,8 +22,6 @@ package org.apache.jena.fuseki.server;
 public enum CounterName {
     // There are generic names - apply to all services and datasets - and
     // also specific ones that relate only to a particular kind of service.
-    // By having a fixed list, we 
-
     
     // Total request received
     Requests("requests"),
@@ -39,6 +37,7 @@ public enum CounterName {
     // Query - standard and ... 
     QueryTimeouts("query.timeouts") ,
     QueryExecErrors("query.execerrors") ,
+    QueryIOErrors("query.ioerrors") ,
     
     // Update - standard and ...
     UpdateExecErrors("update.execerrors"),

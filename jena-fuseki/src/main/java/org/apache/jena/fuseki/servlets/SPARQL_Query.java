@@ -31,6 +31,7 @@ import java.util.* ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -235,6 +236,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         } catch (QueryParseException ex) {
             incCounter(action.srvRef, RequestsBad) ;
             errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
+        } catch (RuntimeIOException ex) {
+            errorBadRequest("Runtime IO Exception: \n" + queryString + "\n\r" + ex.getMessage()) ;
         }
         // Should not happen.
         catch (QueryException ex) {
@@ -254,6 +257,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             // Additional counter information.
             incCounter(action.srvRef, QueryTimeouts) ; 
             throw ex ; 
+        } catch (RuntimeIOException ex) {
+            incCounter(action.srvRef, QueryExecErrors) ;
+            throw ex ;
         } catch (QueryExecException ex) { 
             // Additional counter information.
             incCounter(action.srvRef, QueryExecErrors) ; 

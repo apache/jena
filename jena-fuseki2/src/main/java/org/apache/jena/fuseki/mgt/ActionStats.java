@@ -168,6 +168,7 @@ public class ActionStats extends ActionContainerItem
         out.println("    Bad requests  = "+counter(dSrv, OperationName.Query, CounterName.RequestsBad)) ;
         out.println("    Timeouts      = "+counter(dSrv, OperationName.Query, CounterName.QueryTimeouts)) ;
         out.println("    Bad exec      = "+counter(dSrv, OperationName.Query, CounterName.QueryExecErrors)) ;
+        out.println("    IO Errors     = "+counter(dSrv, OperationName.Query, CounterName.QueryIOErrors)) ;
 
         out.println("  SPARQL Update:") ;
         out.println("    Request       = "+counter(dSrv, OperationName.Update, CounterName.Requests)) ;

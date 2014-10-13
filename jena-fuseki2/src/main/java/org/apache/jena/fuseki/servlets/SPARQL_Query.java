@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.servlets ;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.server.CounterName.QueryExecErrors ;
 import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts ;
 import static org.apache.jena.riot.WebContent.ctHTMLForm ;
 import static org.apache.jena.riot.WebContent.ctSPARQLQuery ;
@@ -258,10 +257,6 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         } catch (QueryCancelledException ex) {
             // Additional counter information.
             incCounter(action.getEndpoint().getCounters(), QueryTimeouts) ;
-            throw ex ;
-        } catch (QueryExecException ex) {
-            // Additional counter information.
-            incCounter(action.getEndpoint().getCounters(), QueryExecErrors) ;
             throw ex ;
         } finally { action.endRead() ; }
     }
