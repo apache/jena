@@ -1,0 +1,463 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<uris>
+  <uri base="http://host/" relative="../foo" />
+  <uri base="http://host/xyz" relative="../foo" />
+
+  <uri base='http://www.example.org/a/b/c/d' relative='d/z?x=a'/>
+  <uri base='http://www.example.org/a/b/c/d' relative='http://example.com/A'/>
+  <uri base='http://www.example.org/a/b/c/d/' relative=''/>
+  <uri base='http://www.example.org/a/b/c/d/' relative='.'/>
+  <uri base='http://www.example.org/a/b/c/d/' relative='../../C/D'/>
+  <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/'/>
+  <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/X#bar'/>
+  <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/e/f/g/'/>
+  <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/z?x=a'/>
+  <uri base='http://www.example.org./a/b/c/d/' relative='http://ex.org/../../c/d/z?x=a'/>
+  <uri absolute='http://ex.org./../../c/d/z?x=a'/>
+
+  <uri base='http://www.example.org/a/b/c/d/' relative='http://ex.org/c/./d/z?x=a'/>
+
+  <uri absolute='http://ex.org/c/./d/z?x=a'/>
+
+
+  <uri absolute='mailto:'/>
+  <uri absolute='mailto:?subject=test'/>
+
+  <uri absolute='file:C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf'/>
+  <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.rdf' relative='http://example.org/#André'/>
+  <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.rdf' relative='http://example.org/#Andr%C3%A9'/>
+  <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test2.rdf' relative='#Dürst'/>
+  <uri absolute='h^ttp:prop'/>
+  <uri absolute='h^ttp:title'/>
+  <uri absolute='ht#tp://jjc3.org/demo.mp3#frag'/>
+  <uri absolute='ht^tp:'/>
+  <uri absolute='ht^tp://www.w3.org/demo.mp3'/>
+  <uri absolute='ht^tp:Foo'/>
+  <uri absolute='http:'/>
+  <uri absolute='http://46229EFFE16A9BD60B9F1BE88B2DB047ADDED785/demo.mp3'/>
+  <uri absolute='http://example.org/#Andre&#301;'/>
+  <uri absolute='http://example.org/#André'/>
+  <uri absolute='http://example.org/&#9;'/>
+  <uri absolute='http://example.org/&#xA;&#xA;'/>
+  <uri absolute='http://example.org/&#xD;'/>
+  <uri absolute='http://example.org/&lt;b&gt;boo'/>
+  <uri absolute='http://example.org/&quot;'/>
+  <uri absolute='http://André.example.org/foo'/>
+  <uri absolute='http://andré.example.org/foo'/>
+  <uri absolute='http://xn--andr--ep-.example.org/foo'/>
+
+
+  <uri absolute='Http://example.org/'/>
+  <uri absolute='Http://example.org/prop'/>
+  <uri absolute='NC:ispinfo'/>
+  <uri absolute='NC:trickMe'/>
+  <uri absolute='_:a'/>
+  <uri absolute='_:aa'/>
+  <uri absolute='app://calendar/event'/>
+  <uri absolute='chrome://messenger/content/mailPrefsOverlay.xul'/>
+  <uri absolute='domain:a'/>
+  <uri absolute='domain:aol.com'/>
+  <uri absolute='eh:/'/>
+  <uri absolute='eh://'/>
+  <uri absolute='eh://R'/>
+  <uri absolute='eh:/O'/>
+  <uri absolute='eh:/a'/>
+  <uri absolute='eh:/bark'/>
+  <uri absolute='file:///C:/Documents and Settings/jjchplb/Local Settings/Temp/test-load-with-41.rdf'/>
+  <uri absolute='file:///C:/eclipse/workspace/jena2/testing/ARQ/Construct/reif-result-1.rdf'/>
+  <uri absolute='file:///test01'/>
+  <uri absolute='file:///test02'/>
+  <uri absolute='file:///test03'/>
+  <uri absolute='file:///test04'/>
+  <uri absolute='file:///test05'/>
+  <uri absolute='file:///testutf8'/>
+  <uri absolute='file:/C:/a'/>
+  <uri absolute='file:/C:/orel/orel0_5.owl#'/>
+  <uri absolute='file:/C:/orel/orel0_5.owl#Agent'/>
+  <uri absolute='file:/C:/orel/orel0_5.owl'/>
+  <uri absolute='file:C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf'/>
+  <uri absolute='file:doc/inference/data/owlDemoSchema.xml'/>
+  <uri absolute='file:etc/ont-policy-test.rdf'/>
+  <uri absolute='file:testing/ontology/list5.rdf#e'/>
+  <uri absolute='file:vocabularies/rdf-schema.rdf'/>
+  <uri absolute='ftp://net.fred.org/'/>
+  <uri absolute='ftp://net.fred.org/P'/>
+  <uri absolute='ftp:ftp/'/>
+  <uri absolute='ftp:ftp/P'/>
+
+  <uri absolute='h^ttp:'/>
+  <uri absolute='h^ttp:prop'/>
+  <uri absolute='h^ttp:title'/>
+  <uri absolute='ht#tp://jjc3.org/demo.mp3#frag'/>
+  <uri absolute='ht^tp:'/>
+  <uri absolute='ht^tp://www.w3.org/demo.mp3'/>
+  <uri absolute='ht^tp:Foo'/>
+  <uri absolute='http:'/>
+  <uri absolute='http://46229EFFE16A9BD60B9F1BE88B2DB047ADDED785/demo.mp3'/>
+  <uri absolute='http://NoHTML.example.org'/>
+  <uri absolute='http://a.com/ontology#'/>
+  <uri absolute='http://a.com/ontology'/>
+  <uri absolute='http://aldabaran.hpl.hp.com/rdftest/test18/'/>
+  <uri absolute='http://bar.com/irrelevant'/>
+  <uri absolute='http://decsai.ugr.es/~ontoserver/bacarex2.owl#'/>
+  <uri absolute='http://decsai.ugr.es/~ontoserver/bacarex2.owl#Importance'/>
+  <uri absolute='http://desc'/>
+  <uri absolute='http://dickinson-i-4/daml/tests/test-add-0.daml#'/>
+  <uri absolute='http://dickinson-i-4/daml/tests/test-add-0.daml#TestClass'/>
+  <uri absolute='http://domain/S'/>
+  <uri absolute='http://eg.com/'/>
+  <uri absolute='http://ex/dt'/>
+
+  <uri absolute='http://example.com/A'/>
+  <uri absolute='http://example.com/test0'/>
+  <uri absolute='http://example.org/    '/>
+  <uri absolute='http://example.org/   '/>
+  <uri absolute='http://example.org/  '/>
+  <uri absolute='http://example.org/ '/>
+  <uri absolute='http://example.org/#'/>
+  <uri absolute='http://example.org/#Andr%C3%A9'/>
+  <uri absolute='http://example.org/#Andre&#301;'/>
+  <uri absolute='http://example.org/#André'/>
+  <uri absolute='http://example.org/&#9;'/>
+  <uri absolute='http://example.org/&#xA;&#xA;'/>
+  <uri absolute='http://example.org/&#xD;'/>
+  <uri absolute='http://example.org/&lt;b&gt;boo'/>
+  <uri absolute='http://example.org/&quot;'/>
+  <uri absolute='http://example.org/2#'/>
+  <uri absolute='http://example.org/2#Class'/>
+  <uri absolute='http://example.org/Range2'/>
+  <uri absolute='http://example.org/\\'/>
+  <uri absolute='http://example.org/`'/>
+  <uri absolute='http://example.org/data#Socrates'/>
+  <uri absolute='http://example.org/data/'/>
+  <uri absolute='http://example.org/{'/>
+  <uri absolute='http://example.org/|'/>
+  <uri absolute='http://example.org/}'/>
+  <uri absolute='http://example/barfoo'/>
+  <uri absolute='http://example/q?abc=1&amp;def=2'/>
+  <uri absolute='http://foo.com/    '/>
+  <uri absolute='http://foo.com/   '/>
+  <uri absolute='http://foo.com/  '/>
+  <uri absolute='http://foo.com/ '/>
+  <uri absolute='http://foo.com/&#9;'/>
+  <uri absolute='http://foo.com/&#xA;&#xA;'/>
+  <uri absolute='http://foo.com/&#xD;'/>
+  <uri absolute='http://foo.com/&apos;'/>
+  <uri absolute='http://foo.com/&lt;b&gt;boo'/>
+  <uri absolute='http://foo.com/&quot;'/>
+  <uri absolute='http://foo.com/'/>
+  <uri absolute='http://foo.com/Hello#activation.xul'/>
+  <uri absolute='http://foo.com/Hello#bar'/>
+  <uri absolute='http://foo.com/Hello#bm-find.xul'/>
+  <uri absolute='http://foo.com/Hello#bookmarks.xul'/>
+  <uri absolute='http://foo.com/Hello#pref-appearance.xul'/>
+  <uri absolute='http://home.netscape.com/NC-rdf#'/>
+  <uri absolute='http://home.netscape.com/NC-rdf#hostName'/>
+  <uri absolute='http://jjc#3.org/demo.mp3#frag'/>
+  <uri absolute='http://jjc^3.org/demo.mp3'/>
+  <uri absolute='http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#'/>
+  <uri absolute='http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1'/>
+  <uri absolute='http://localhost:8080/axis/daml/a.daml#'/>
+  <uri absolute='http://localhost:8080/kc2c#C1'/>
+  <uri absolute='http://localhost:8080/kc2c#i1'/>
+  <uri absolute='http://localhost:8080/kc2c#i2'/>
+  <uri absolute='http://localhost:8080/kc2c#p1'/>
+  <uri absolute='http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/newsid_4447000/4447211.stm'/>
+  <uri absolute='http://oiled.man.example.net/test#p1.comp'/>
+  <uri absolute='http://purl.org/dc/elements/1.0/title'/>
+  <uri absolute='http://purl.org/dc/elements/1.1/'/>
+  <uri absolute='http://purl.org/dc/elements/1.1/copyright'/>
+  <uri absolute='http://purl.org/metadata/dublin_core#Creator'/>
+  <uri absolute='http://purl.org/metadata/dublin_core#Title'/>
+  <uri absolute='http://rdf.dmoz.org/Top/World/Tamil/x'/>
+  <uri absolute='http://somewhere/JohnSmith/'/>
+  <uri absolute='http://web.resource.org/cc/'/>
+  <uri absolute='http://ww^w/'/>
+  <uri absolute='http://www.cs101.org/2003/08/07/RDF/JenaBugOntology#'/>
+  <uri absolute='http://www.daml.org/2001/03/daml+oil#Class'/>
+  <uri absolute='http://www.daml.org/2001/03/daml+oil#Datatype'/>
+  <uri absolute='http://www.daml.org/2001/03/daml+oil-ex#Adam'/>
+  <uri absolute='http://www.example.org/A/B#foo/'/>
+  <uri absolute='http://www.example.org/a/b/c/d/z?x=a'/>
+  <uri absolute='http://www.mozilla.org/rdf/chrome#dtTest'/>
+  <uri absolute='http://www.w#3.org/demo.mp3'/>
+  <uri absolute='http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq'/>
+  <uri absolute='http://www.w3.org/2000/01/rdf-schema#ConstraintProperty'/>
+  <uri absolute='http://www.w3.org/2000/01/rdf-schema#Container'/>
+  <uri absolute='http://www.w3.org/2000/03/rdf-tracking/#rdfms-duplicate-member-props'/>
+  <uri absolute='http://www.w3.org/2000/10/XMLSchema#positiveInteger'/>
+  <uri absolute='http://www.w3.org/2000/10/XMLSchema#string'/>
+  <uri absolute='http://www.w3.org/2001/XMLSchema#gYear'/>
+  <uri absolute='http://www.w3.org/2001/XMLSchema#gYearMonth'/>
+  <uri absolute='http://www.w3.org/2001/vcard-rdf/3.0#work'/>
+  <uri absolute='mailto:Jeremy_Carroll@hp.com'/>
+  <uri absolute='mailto:alice@work.example'/>
+  <uri absolute='mailto:bob@work.example'/>
+  <uri absolute='uri:urn:x-rdf:test#a'/>
+  <uri absolute='uri:urn:x-rdf:test#b'/>
+  <uri absolute='uri:urn:x-rdf:test#c'/>
+  <uri absolute='urn:foo#'/>
+  <uri absolute='urn:foo#A'/>
+  <uri absolute='urn:foo#p'/>
+  <uri absolute='urn:x-hp-jena:test#A'/>
+  <uri absolute='urn:x-hp-jena:test#a0'/>
+  <uri absolute='urn:x-hp-jena:test#a1'/>
+  <uri absolute='urn:x-hp:eg#D'/>
+  <uri absolute='urn:x-hp:eg/'/>
+  <uri absolute='urn:x-hp:eg/hasGraphics'/>
+  <uri absolute='urn:x-hp:eg/hasMotherBoard'/>
+  <uri base='urn:x-hp:eg/hasMotherBoard'  relative='#'/>
+  <uri base='base:x'  relative='#'/>
+  <uri base='file:///C:/Documents and Settings/jjchplb/Local Settings/Temp/test-load-with-41.rdf' relative=''/>
+  <uri base='file:///C:/Documents and Settings/jjchplb/Local Settings/Temp/test-load-with-41.rdf' relative='eh:/a'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/' relative='#'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/' relative=''/>
+
+  <uri base='file:///C:/eclipse/workspace/jena2/' relative='base'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/' relative='eh://R'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/' relative='eh:/O'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/' relative='file:foo.n3'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/' relative='file:model8.n3'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/' relative='rdf://test.com#'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/foo.n3' relative='z'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ARQ/Ask/manifest.ttl' relative=''/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ARQ/Basic/manifest.ttl' relative='r-base-prefix-3.ttl'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ARQ/Basic/manifest.ttl' relative='r-base-prefix-4.ttl'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ARQ/Optional/result-opt-1.ttl' relative='mailto:bert@example.net'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ARQ/manifest-arq.ttl' relative='Bound/manifest.n3'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ARQ/manifest-arq.ttl' relative='Construct/manifest.ttl'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ARQ/manifest-arq.ttl' relative='Dataset/manifest.n3'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/DAWG-Approved/examples/ex2-4a.n3' relative='mailto:jlow@example.com'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/DAWG/examples/manifest.n3' relative='ex11.2.3.2_0.rq'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/RDQL-ARQ/result-0-01.n3' relative='urn:/*not_a_comment*/'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ontology/bugs/test_hk_06/b.owl' relative='#y1'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ontology/bugs/test_hk_06/b.owl' relative=''/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ontology/bugs/test_hk_07A.owl' relative='foo#ClassAC'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/ontology/bugs/test_hk_07A.owl' relative='file:testing/ontology/bugs/test_hk_07A.owl'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/reasoners/bugs/sbug.rdf' relative='jason6'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/reasoners/bugs/subpropertyModel.n3' relative='urn:x-propNum100'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/reasoners/bugs/unbroken.n3' relative='eh:/V'/>
+  <uri base='file:///C:/eclipse/workspace/jena2/testing/reasoners/bugs/unbroken.n3' relative='eh:/a'/>
+  <uri base='file:C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf' relative=''/>
+  <uri base='file:C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf' relative='http://spoo.net/O'/>
+  <uri base='file:C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf' relative='http://spoo.net/S'/>
+  <uri base='file:doc/inference/data/owlDemoSchema.xml' relative='urn:x-hp:eg/'/>
+  <uri base='file:testing/abbreviated/relative-uris.rdf' relative=''/>
+  <uri base='file:testing/abbreviated/relative-uris.rdf' relative='.'/>
+  <uri base='file:testing/abbreviated/relative-uris.rdf' relative='../../C/D'/>
+  <uri base='file:testing/abbreviated/relative-uris.rdf' relative='//example.com/A'/>
+  <uri base='file:testing/abbreviated/relative-uris.rdf' relative='/A/B#foo/'/>
+  <uri base='file:testing/abbreviated/relative-uris.rdf' relative='X#bar'/>
+  <uri base='file:testing/abbreviated/relative-uris.rdf' relative='e/f/g/'/>
+  <uri base='file:testing/abbreviated/relative-uris.rdf' relative='http://www.example.org/a/b/c/d/'/>
+  <uri base='file:testing/abbreviated/relative-uris.rdf' relative='z?x=a'/>
+  <uri base='file:testing/arp/error-msgs/test06.rdf' relative=''/>
+  <uri base='file:testing/arp/qname-in-ID/bug74_0.rdf' relative='#one'/>
+  <uri base='file:testing/arp/qname-in-ID/bug74_0.rdf' relative='#sw:test'/>
+  <uri base='file:testing/ontology/bugs/test_dk_01.xml' relative='http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#'/>
+  <uri base='file:testing/ontology/bugs/test_dk_01.xml' relative='owl#Thing'/>
+  <uri base='file:testing/ontology/bugs/test_oh_01.owl' relative='#__rest3'/>
+  <uri base='file:testing/ontology/daml/test-instance-load.daml' relative='file:testing/ontology/daml/test-instance-load-classes.daml'/>
+  <uri base='file:testing/ontology/owl/list-syntax/test-ldp.rdf' relative='#Union2'/>
+  <uri base='file:testing/reasoners/bugs/cardFPTest.owl' relative='urn:foo'/>
+  <uri base='file:testing/reasoners/bugs/deleteBug.owl' relative='http://decsai.ugr.es/~ontoserver/bacarex2.owl'/>
+  <uri base='file:testing/reasoners/bugs/equivalentClassTest.owl' relative='#A'/>
+  <uri base='http://bar.com/irrelevant' relative='NC:ispinfo'/>
+  <uri base='http://bar.com/irrelevant' relative='NC:trickMe'/>
+  <uri base='http://bar.com/irrelevant' relative='chrome://messenger/content/mailPrefsOverlay.xul'/>
+  <uri base='http://bar.com/irrelevant' relative='domain:aol.com'/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/    '/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/   '/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/  '/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/ '/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/&#9;'/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/&#xA;&#xA;'/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/&#xD;'/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/&apos;'/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/&lt;b&gt;boo'/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/&quot;'/>
+  <uri base='http://bar.com/irrelevant' relative='http://foo.com/'/>
+
+  <!--
+    <uri base='http://bar.com/irrelevant' relative='http://foo.com/\\'/>
+    <uri base='http://bar.com/irrelevant' relative='http://foo.com/`'/>
+    <uri base='http://bar.com/irrelevant' relative='http://foo.com/{'/>
+    <uri base='http://bar.com/irrelevant' relative='http://foo.com/|'/>
+    <uri base='http://bar.com/irrelevant' relative='http://foo.com/}'/>
+    <uri base='http://example.org' relative='relfile'/>
+    <uri base='http://example.org' relative='test'/>
+    <uri base='http://example.org/' relative='#333-555-666'/>
+    <uri base='http://example.org/' relative='#?bb'/>
+    <uri base='http://example.org/' relative='#_:xx'/>
+    <uri base='http://example.org/' relative='#a/b'/>
+    <uri base='http://example.org/base/' relative='#en'/>
+    <uri base='http://example.org/base/' relative=''/>
+    <uri base='http://example.org/base/' relative='en'/>
+    <uri base='http://example.org/base/' relative='http://ex/dt'/>
+    <uri base='http://example.org/base/en' relative='#en'/>
+    <uri base='http://example.org/base/en' relative=''/>
+    <uri base='http://example.org/base/en' relative='en'/>
+    <uri base='http://example.org/bug74_0.rdf' relative='#sw:test'/>
+    <uri base='http://example.org/dir/file#frag' relative=''/>
+    <uri base='http://example.org/dir/file' relative='#foo'/>
+    <uri base='http://example.org/dir/file' relative='../relfile'/>
+    <uri base='http://example.org/dir/file' relative='//another.example.org/absfile'/>
+    <uri base='http://example.org/dir/file' relative='/absfile'/>
+    <uri base='http://example.org/foo' relative='    '/>
+    <uri base='http://example.org/foo' relative='   '/>
+    <uri base='http://example.org/foo' relative='  '/>
+    <uri base='http://example.org/foo' relative=' '/>
+    <uri base='http://example.org/foo' relative='&#9;'/>
+    <uri base='http://example.org/foo' relative='&#xA;&#xA;'/>
+    <uri base='http://example.org/foo' relative='&#xD;'/>
+    <uri base='http://example.org/foo' relative='&apos;'/>
+    <uri base='http://example.org/foo' relative='&lt;b&gt;boo'/>
+    <uri base='http://example.org/foo' relative='&quot;'/>
+    <uri base='http://example.org/foo' relative=''/>
+    <uri base='http://example.org/foo' relative='/'/>
+    <uri base='http://example.org/foo' relative='\\'/>
+    <uri base='http://example.org/foo' relative='`'/>
+    <uri base='http://example.org/foo' relative='{'/>
+    <uri base='http://example.org/foo' relative='|'/>
+    <uri base='http://example.org/foo' relative='}'/>
+    <uri base='http://example.org/ontology/list4.rdf' relative='uri:urn:x-rdf:test'/>
+    <uri base='http://example/' relative='#'/>
+    <uri base='http://example/' relative=''/>
+    <uri base='http://foo.com/Hello' relative='.'/>
+    <uri base='http://foo.com/Hello' relative='/'/>
+    <uri base='http://foo.com/Hello' relative='NC:ispinfo'/>
+    <uri base='http://foo.com/Hello' relative='NC:trickMe'/>
+    <uri base='http://foo.com/Hello' relative='\\'/>
+    <uri base='http://foo.com/Hello' relative='`'/>
+    <uri base='http://foo.com/Hello' relative='chrome://messenger/content/mailPrefsOverlay.xul'/>
+    <uri base='http://foo.com/Hello' relative='domain:aol.com'/>
+    <uri base='http://foo.com/Hello' relative='urn:foo#P1'/>
+    <uri base='http://foo.com/Hello' relative='{'/>
+    <uri base='http://foo.com/Hello' relative='|'/>
+    <uri base='http://foo.com/Hello' relative='}'/>
+    <uri base='http://host/base/' relative='#'/>
+    <uri base='http://host/base/' relative=''/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative=' '/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='#'/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='&#9;'/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='&#xA;&#xA;'/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='&#xD;'/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='&apos;'/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='&lt;b&gt;boo'/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='&quot;'/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative=''/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='/'/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='\\'/>
+    <uri base='http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf' relative='`'/>
+    <uri base='http://www.example.org/A/B#' relative=''/>
+    <uri base='http://www.example.org/A/B' relative='#foo/'/>
+    <uri base='http://www.example.org/A/B' relative='../A/B#foo/'/>
+    <uri base='http://www.example.org/A/B' relative='../a/b/C/D'/>
+    <uri base='http://www.example.org/A/B' relative='../a/b/c/d/'/>
+    <uri base='http://www.example.org/A/B' relative='../a/b/c/d/X#bar'/>
+    <uri base='http://www.example.org/A/B' relative='../a/b/c/d/e/f/g/'/>
+    <uri base='http://www.example.org/A/B' relative='../a/b/c/d/z?x=a'/>
+    <uri base='http://www.example.org/A/B' relative='//example.com/A'/>
+    <uri base='http://www.example.org/A/B' relative='//www.example.org/A/B#foo/'/>
+    <uri base='http://www.example.org/A/B' relative='//www.example.org/a/b/C/D'/>
+    <uri base='http://www.example.org/A/B' relative='//www.example.org/a/b/c/d/'/>
+    <uri base='http://www.example.org/A/B' relative='//www.example.org/a/b/c/d/X#bar'/>
+    <uri base='http://www.example.org/A/B' relative='//www.example.org/a/b/c/d/e/f/g/'/>
+    <uri base='http://www.example.org/A/B' relative='//www.example.org/a/b/c/d/z?x=a'/>
+    <uri base='http://www.example.org/A/B' relative='/A/B#foo/'/>
+    <uri base='http://www.example.org/A/B' relative='/a/b/C/D'/>
+    <uri base='http://www.example.org/A/B' relative='/a/b/c/d/'/>
+    <uri base='http://www.example.org/A/B' relative='/a/b/c/d/X#bar'/>
+    <uri base='http://www.example.org/A/B' relative='/a/b/c/d/e/f/g/'/>
+    <uri base='http://www.example.org/A/B' relative='/a/b/c/d/z?x=a'/>
+    <uri base='http://www.example.org/A/B' relative='B#foo/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../../b/C/D'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../../b/c/d/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../../b/c/d/X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../../b/c/d/e/f/g/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../../b/c/d/z?x=a'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../C/D'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../c/d/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../c/d/X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../c/d/e/f/g/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='../c/d/z?x=a'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='//example.com/A'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='//www.example.org/A/B#foo/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='//www.example.org/a/b/C/D'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='//www.example.org/a/b/c/d/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='//www.example.org/a/b/c/d/X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='//www.example.org/a/b/c/d/e/f/g/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='//www.example.org/a/b/c/d/z?x=a'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='/A/B#foo/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='/a/b/C/D'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='/a/b/c/d/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='/a/b/c/d/X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='/a/b/c/d/e/f/g/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='/a/b/c/d/z?x=a'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='d/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='d/X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='d/e/f/g/'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='d/z?x=a'/>
+    <uri base='http://www.example.org/a/b/c/d' relative='http://example.com/A'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative=''/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='.'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='../../C/D'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/e/f/g/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/z?x=a'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='../d/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='../d/X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='../d/e/f/g/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='../d/z?x=a'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='//example.com/A'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='//www.example.org/A/B#foo/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='//www.example.org/a/b/C/D'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='//www.example.org/a/b/c/d/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='//www.example.org/a/b/c/d/X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='//www.example.org/a/b/c/d/e/f/g/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='//www.example.org/a/b/c/d/z?x=a'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='/A/B#foo/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='/a/b/C/D'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='/a/b/c/d/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='/a/b/c/d/X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='/a/b/c/d/e/f/g/'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='/a/b/c/d/z?x=a'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='X#bar'/>
+    <uri base='http://www.example.org/a/b/c/d/' relative='e/f/g/'/>
+    <uri base='http://www.hpl.hp.com/semweb/2003/query_tester/rdfs/data3.rdf' relative='eg;Amy'/>
+    <uri base='http://www.hpl.hp.com/semweb/2003/query_tester/rdfs/data3.rdf' relative='eg;John'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/extra-credit/conclusions002.rdf' relative='premises002#N-times-M'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.rdf' relative='http://example.org/#André'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.rdf' relative='http://example.org/#Andr%C3%A9'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test2.rdf' relative='#Dürst'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-id/error001.rdf' relative='#333-555-666'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-id/error001.rdf' relative=''/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-id/error002.rdf' relative='#_:xx'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-id/error003.rdf' relative='#q:name'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-id/error004.rdf' relative='#a/b'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-id/error005.rdf' relative='#?bb'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/error001.rdf' relative='mailto:Jeremy_Carroll@hp.com'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test006.rdf' relative='relFile'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test007.rdf' relative=''/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test007.rdf' relative='../relfile'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test009.rdf' relative='/absfile'/>
+    <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test010.rdf' relative='//another.example.org/absfile'/>
+    <uri base='http://www.w3.org/2002/03owlt/extra-credit/conclusions002' relative='premises002#N-times-M'/>
+  -->
+</uris>

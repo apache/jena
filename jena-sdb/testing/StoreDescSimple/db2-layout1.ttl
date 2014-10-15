@@ -1,0 +1,17 @@
+@prefix sdb:     <http://jena.hpl.hp.com/2007/sdb#> .
+@prefix rdfs:	 <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+_:c rdf:type sdb:SDBConnection ;
+    sdb:sdbType        "DB2" ;
+    sdb:sdbHost        "sweb-sdb-4:50000" ;
+    sdb:sdbName        "TEST1" ;
+    # Universal
+    sdb:driver         "com.ibm.db2.jcc.DB2Driver" ;
+    .
+
+[] rdf:type sdb:Store ;
+    sdb:layout         "layout1" ;
+    sdb:connection     _:c ;
+.

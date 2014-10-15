@@ -1,0 +1,4 @@
+# Some international stuff
+@prefix : <http://example/> .
+
+:x :p "Unicode: 03 B1 α" .

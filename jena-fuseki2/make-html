@@ -1,0 +1,14 @@
+#!/bin/bash
+
+for f in "$@"
+do
+    echo "==== $f"
+    B="$(basename $f .md)"
+    D="$(dirname $f)"
+    X="$D/$B.html"
+    curl -s -XPOST -H 'Content-type:text/plain' \
+	--data-binary @$f \
+	https://api.github.com/markdown/raw \
+	> $X
+    
+done

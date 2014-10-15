@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+ 
+<!-- 
+  Reference: http://wiki.eclipse.org/Jetty/Reference/jetty.xml_syntax
+  http://wiki.eclipse.org/Jetty/Reference/jetty.xml
+-->
+
+<Configure id="Fuseki" class="org.eclipse.jetty.server.Server">
+  <Call name="addConnector">
+    <Arg>
+      <!-- org.eclipse.jetty.server.nio.BlockingChannelConnector -->
+      <!-- org.eclipse.jetty.server.nio.SelectChannelConnector -->
+      <New class="org.eclipse.jetty.server.nio.SelectChannelConnector">
+	<!-- BlockingChannelConnector specific:
+	     <Set name="useDirectBuffer">false</Set>
+	-->
+	<!-- Only listen to interface ...
+	<Set name="host">localhost</Set>
+	-->
+	<Set name="port">3535</Set>
+	<Set name="maxIdleTime">0</Set>
+	<!-- All connectors -->
+	<Set name="requestHeaderSize">65536</Set>       <!-- 64*1024 -->
+	<Set name="requestBufferSize">5242880</Set>     <!-- 5*1024*1024 -->
+	<Set name="responseBufferSize">5242880</Set>    <!-- 5*1024*1024 -->
+      </New>
+    </Arg>
+  </Call>
+</Configure>

@@ -1,0 +1,32 @@
+#!/bin/bash
+# How to do a file upload in curl
+
+# GSP strict
+U='http://localhost:3030/ds/data?graph=http://example/G'
+# PUT
+## curl --upload-file D.ttl --header 'Content-Type: text/turtle' "$U"
+
+# POST
+curl -XPOST --upload-file D.ttl --header 'Content-Type: text/turtle' "$U"
+
+# GSP strict / file upload
+## curl -F 'file=@D.ttl' http://localhost:3030/ds/data
+
+# Quads to GSP
+
+## curl -F 'file=@D.ttl' http://localhost:3030/ds/data
+## curl -F 'file=@D.trig' http://localhost:3030/ds/data
+
+# Quads to graph : NGs in data ignored
+# curl -F 'file=@D.trig' 'http://localhost:3030/ds/data?default'
+#curl -F 'file=@D.trig' 'http://localhost:3030/ds/data?graph=http://example/G'
+
+# Dataset
+## curl -F 'file=@D.trig' http://localhost:3030/ds
+
+# Upload service
+## curl -F 'file=@D.trig' -F 'name=http://graph/' 'http://localhost:3030/ds/upload'
+
+
+echo "==== Dataset"
+curl  http://localhost:3030/ds

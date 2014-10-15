@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+
+# The environment for this sub-script is setup by "tdbloader2"
+
+# Exit on error.
+set -e
+
+# Sort order is ASCII
+export LC_ALL="C"
+
+log() { echo " $(date $DATE)" "$@" ; }
+
+TMP=$$
+#DATE="+%Y-%m-%dT%H:%M:%S%:z"
+DATE="+%H:%M:%S"
+
+##--parallel is not always available.
+SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+
+# Classpath set in "tdbloader2"
+if [ -z "$JENA_CP" ]
+then
+    echo "Classpath not provided : set JENA_CP" 1>&2
+    exit 1
+fi
+
+USAGE="Usage: tdbloader2 --loc location datafile ..."
+PKG=com.hp.hpl.jena.tdb.store.bulkloader2
+
+if [ "$#" -lt 2 ] ; then echo "$USAGE" 1>&2 ; exit 1 ; fi
+
+## Process --loc. Yuk.
+ARG1="$1"
+shift
+if [ "$ARG1" = "-loc" -o  "$ARG1" = "--loc" ]
+then
+    LOC="$1"
+    shift
+else 
+    LOC="${ARG1/-*loc=/}"
+    if [ "$ARG1" = "$LOC" ] ; then echo $USAGE 1>&2 ; exit 1 ; fi
+fi
+
+# Look for any index and data files in the directory.
+# Skip a possible configuration file
+if test -n "$(find "$LOC" -maxdepth 1 -type f ! -name 'this.*' -print -quit)"
+then 
+    echo "Not empty: $LOC"
+    exit 1
+fi
+
+if [ ! -e "$LOC" ] ; then mkdir "$LOC" ; fi
+if [ ! -d "$LOC" ] ; then echo "Not a directory: $LOC" ; exit 1 ; fi
+
+FILES="$@"
+## Stdin?
+KEEPWORKFILES="${KEEPWORKFILES:-}"
+# ---- Start
+log "-- TDB Bulk Loader Start"
+TIME1="$(date +%s)"
+
+# ---- Data loading phase
+log "Data phase"
+# Produce nodes file and triples/quads text file.
+
+DATA_TRIPLES="$LOC/data-triples.$TMP"
+DATA_QUADS="$LOC/data-quads.$TMP"
+
+java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableBuilder \
+    "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
+
+# ---- Index intermediates
+## All files are writtern S P O / G S P O columns per row but in different sort orders.
+log "Index phase"
+
+process_rows()
+{
+    local KEYS="$1"
+    local DATA="$2"
+    local IDX=$3
+    local WORK="$LOC/$IDX-txt"
+
+    if [ ! -s "$DATA" ]
+    then
+	return
+	fi
+
+    log "Index $IDX"
+    sort $SORT_ARGS -u $KEYS < "$DATA" > $WORK
+    log "Build $IDX"
+    rm -f "$LOC/$IDX.dat"
+    rm -f "$LOC/$IDX.idn"
+    java -cp "$JENA_CP" "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
+    # Remove intermediary file.
+    if [ "$KEEPWORKFILES" != "yes" ] 
+    then
+	rm "$WORK" 
+    fi
+}
+
+K1="-k 1,1"
+K2="-k 2,2"
+K3="-k 3,3"
+K4="-k 4,4"
+
+process_rows "$K1 $K2 $K3" "$DATA_TRIPLES" SPO
+
+process_rows "$K2 $K3 $K1" "$DATA_TRIPLES" POS
+
+process_rows "$K3 $K1 $K2" "$DATA_TRIPLES" OSP
+
+process_rows "$K1 $K2 $K3 $K4" "$DATA_QUADS" GSPO
+
+process_rows "$K1 $K3 $K4 $K2" "$DATA_QUADS" GPOS
+
+process_rows "$K1 $K4 $K2 $K3" "$DATA_QUADS" GOSP
+
+process_rows "$K2 $K3 $K4 $K1" "$DATA_QUADS" SPOG
+
+process_rows "$K3 $K4 $K2 $K1" "$DATA_QUADS" POSG
+
+process_rows "$K4 $K2 $K3 $K1" "$DATA_QUADS" OSPG
+
+log "Index phase end"
+TIME2="$(date +%s)"
+
+# ---- Clean up.
+
+if [ "$KEEPWORKFILES" != "yes" ] 
+then
+    rm -f "$DATA_TRIPLES" "$DATA_QUADS" 
+fi
+
+# ---- End
+log "-- TDB Bulk Loader Finish"
+ELAPSED=$(($TIME2-$TIME1))
+log "-- $ELAPSED seconds"

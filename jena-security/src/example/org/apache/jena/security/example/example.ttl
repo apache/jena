@@ -1,0 +1,33 @@
+@prefix ex: <http://example.com/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+ex:msg1 rdf:type ex:msg; 
+	ex:to "bob";
+	ex:from "alice" ;
+	ex:subj "alice to bob 1";
+	.
+
+ex:msg2  rdf:type ex:msg; 
+	ex:to "alice";
+	ex:from "bob";
+	ex:subj "bob to alice 1";
+	.
+	
+ex:msg3  rdf:type ex:msg; 
+	ex:to "chuck" ;
+	ex:from "alice";
+	ex:subj "alice to chuck 1";
+	.
+	
+ex:msg4  rdf:type ex:msg; 
+	ex:to "darla" ;
+	ex:from "bob" ;
+	ex:subj "bob to darla 1"
+	.
+
+ex:msg5  rdf:type ex:msg; 
+	ex:to "alice";
+	ex:from "bob";
+	ex:subj "bob to alice 2";
+	.
+	

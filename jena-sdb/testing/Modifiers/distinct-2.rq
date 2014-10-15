@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+SELECT DISTINCT ?v 
+{ ?x :p ?v .
+  ?y :q ?w .    # Cross product
+}

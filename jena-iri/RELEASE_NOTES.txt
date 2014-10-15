@@ -1,0 +1,30 @@
+
+Release Notes:
+
+iri-0.9.1:
+Remove icu4j dependency.
+
+iri-0.7:
+Java5 compatible.
+
+iri-0.6:
+Convert to Java6
+
+iri-0.4: 
+  fixed mailto scheme rules
+  set file: to allow sameSchemeRelativeRefs in jenaImplementation
+  fixed bug in relativize code
+  This version is used by Jena 2.5.3.
+  Added some documentation.
+
+iri-0.3:  First released version
+
+This version is released to provide a stable
+version of the source for Jena 2.5.
+It is not intended for use as a general purpose library.
+In particular, many of the methods are unimplemented;
+the documentation is inadequate.
+Partial support may be available on 
+jena-dev@yahoogroups.com.
+
+iri-0.2:  Version in Jena 2.4

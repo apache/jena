@@ -1,0 +1,1722 @@
+<!DOCTYPE violations SYSTEM  'violations.dtd'>
+
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License
+-->
+
+
+<violations>
+	<specification id="RDF" href="http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref">
+		
+		<name>
+Resource Description Framework (RDF):
+Concepts and Abstract Syntax
+</name>
+		<section>RDF URI References</section>
+           <require component="SCHEME"><text>representing an <em>absolute URI</em> with optional fragment identifier</text></require>
+                
+	    <bad>foo/bar</bad>
+	    <bad>#frag</bad>
+	    <bad>//example.org/foo/bar#frag</bad>
+	</specification>
+	
+	<specification id="URI" rfc="3986">
+		<name>Uniform Resource Identifier (URI): Generic Syntax</name>
+	</specification>
+        
+        
+	<specification id="Unicode" href="http://www.unicode.org/">
+		<name>Unicode</name>
+	</specification>
+	
+	
+	<specification id="IRI" rfc="3987">
+		<name>Internationalized Resource Identifiers (IRIs)</name>
+	</specification>
+	
+	<specification id="XML" href="http://www.w3.org/TR/2004/REC-xml-20040204/#dt-sysid">
+		<name>Extensible Markup Language (XML) 1.0 (Third Edition)</name>
+		<section>system identifier</section>
+           <prohibit component="FRAGMENT"><text>TODO</text></prohibit>
+	</specification>
+	
+	<specification id="XLink" href="http://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators">
+		<name>XML Linking Language (XLink) Version 1.0</name>
+		<section>Locator Attribute (href)</section>
+	</specification>
+	<specification id="Schema" href="http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/#anyURI">
+		<name>XML Schema Part 2: Datatypes Second Edition</name>
+		<section>anyURI</section>
+	</specification>
+	
+        <specification id="URL_Registratrion" type="other" rfc="2717">
+           <name>
+        Registration Procedures for URL
+              Scheme Names</name>
+        </specification>
+        
+        <scheme id="http" type="scheme" rfc="2616">
+           <name>Hypertext Transfer Protocol -- HTTP/1.1</name>
+           <defn section="3.2.2">
+<pre>
+http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
+</pre>
+           </defn>
+           <complete/>
+           <dns/>
+           <port>80</port>
+           <prohibit component="USER"/>
+           <require component="HOST"/>
+           <good>http://www.example.org/foo/bar</good>
+           <bad>http://www.example.org:80/foo/bar</bad>
+           <bad>http:foo/bar</bad>
+           <bad>http://user@www.example.org/foo/bar</bad>
+        </scheme>
+<scheme id="https" type="scheme" rfc="2818">
+  <name>Hypertext Transfer Protocol Secure</name>
+    <defn section="2.4">
+HTTP/TLS is differentiated from HTTP URIs by using the 'https' protocol identifier in place of the 'http' protocol identifier. 
+    </defn>       
+  <defn ref="http" section="3.2.2">
+<pre>
+http_URL = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]
+</pre>
+           </defn>
+           <complete/>
+           <dns/>
+           <port>443</port>
+           <prohibit component="USER"/>
+           <require component="HOST"/>
+           <good>https://www.example.org/foo/bar</good>
+           <bad>https://www.example.org:443/foo/bar</bad>
+           <bad>https:foo/bar</bad>
+           <bad>https://user@www.example.org/foo/bar</bad>
+</scheme>
+        
+        <scheme id="ftp" type="scheme" rfc="1738" section="3.2">
+  <name>File Transfer Protocol</name>
+  <defn section="5">
+<pre>
+ftpurl = "ftp://" login [ "/" fpath [ ";type=" ftptype ]]
+fpath = fsegment *[ "/" fsegment ]
+fsegment = *[ uchar | "?" | ":" | "@" | "&amp;" | "=" ]
+ftptype = "A" | "I" | "D" | "a" | "i" | "d"
+</pre>
+<pre>
+login = [ user [ ":" password ] "@" ] hostport
+</pre>
+<pre>
+safe = "$" | "-" | "_" | "." | "+"
+extra = "!" | "*" | "'" | "(" | ")" | ","
+escape = "%" hex hex
+unreserved = alpha | digit | safe | extra
+uchar = unreserved | escape
+</pre>
+</defn>
+           <complete/>
+
+           <dns/>
+           <port>21</port>
+           <require component="HOST" section="5"><text>
+<pre>
+ftpurl = "ftp://" login [ "/" fpath [ ";type=" ftptype ]]
+
+login = [ user [ ":" password ] "@" ] hostport
+</pre></text>
+           </require>
+           <pattern component="PATHQUERY" reserved="~;">[^;~]*(;@{mustLowerCase(type)}=@{shouldLowerCase([aid])}|)</pattern>
+           <good>ftp://user@example.org/foo/bar;type=d</good>
+           <bad>ftp:///foo/bar</bad>
+           <!--
+           <bad>ftp://user@example.org/foo/bar?type=d</bad>
+           -->
+           <bad>ftp://user@example.org/foo/bar;type=z</bad>
+           <bad>ftp://user@example.org/foo/b;ar;type=d</bad>
+</scheme>
+
+
+<scheme id="mailto" type="scheme" rfc="2368">
+  <name>Electronic mail address</name>
+  <prohibit component="AUTHORITY"><text>
+<pre>
+     mailtoURL  =  "mailto:" [ to ] [ headers ]
+     to         =  #mailbox
+     headers    =  "?" header *( "&amp;" header )
+     header     =  hname "=" hvalue
+     hname      =  *urlc
+     hvalue     =  *urlc
+</pre></text></prohibit> 
+</scheme>
+
+<scheme id="news" type="scheme" rfc="1738" section="3.6">
+  <name>USENET news</name>
+  <defn section="5">
+<pre>
+newsurl = "news:" grouppart
+grouppart = "*" | group | article
+group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
+article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;" | "=" ] "@" host
+</pre>
+<pre>
+safe = "$" | "-" | "_" | "." | "+"
+extra = "!" | "*" | "'" | "(" | ")" | ","
+escape = "%" hex hex
+unreserved = alpha | digit | safe | extra
+uchar = unreserved | escape
+</pre>
+</defn>
+
+           <complete/>
+           <prohibit component="AUTHORITY" section="5"><text>
+<pre>
+newsurl = "news:" grouppart
+grouppart = "*" | group | article
+group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
+article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;" | "=" ] "@" host
+</pre>
+</text></prohibit>
+           <require component="PATH" section="5"><text>
+<pre>
+newsurl = "news:" grouppart
+grouppart = "*" | group | article
+group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
+article = 1*[ uchar | ";" | "/" | "?" | ":" | "&amp;" | "=" ] "@" host
+</pre>
+</text></require>
+           <pattern component="PATHQUERY" reserved="~@">[^@]+@@{host}|[*]|[a-zA-Z][-a-zA-Z0-9.+_]*</pattern>
+           <good>news:*</good>
+           <good>news:group.it</good>
+           <good>news:arb?itrary@news.example.org</good>
+           <good>news:arbitrary@news.example.org</good>
+           <bad>news:arbitrary@news.exampl<unicode>00E7</unicode>.org</bad>
+           <bad>news:arbitr?ary@news.exampl<unicode>00E7</unicode>.org</bad>
+           <bad>news:///foo/bar</bad>
+           <bad>news://user@example.org/foo</bad>
+</scheme>
+<scheme id="nntp" type="scheme" rfc="1738"  section="3.7">
+  <name>USENET news using NNTP access</name>
+  
+  <defn section="5">
+<pre>
+nntpurl = "nntp://" hostport "/" group [ "/" digits ]
+</pre>
+<pre>
+group = alpha *[ alpha | digit | "-" | "." | "+" | "_" ]
+</pre>
+</defn>
+           <complete/>
+
+           <dns/>
+           <port>119</port>
+           <prohibit component="QUERY"/>
+           <prohibit component="USER"/>
+           <require component="HOST"/>
+           <pattern component="PATH">/[a-zA-Z][-a-zA-Z0-9.+_]*(/[0-9]+)?</pattern>
+           <bad>nntp://user@example.org/foo</bad>
+           <bad>nntp:/foo</bad>
+           <bad>nntp:///foo</bad>
+           <bad>nntp://example.org/foo/4/3</bad>
+           <bad>nntp://example.org/</bad>
+           <bad>nntp://example.org/foo/</bad>
+           <bad>nntp://example.org/*</bad>
+           <good>nntp://example.org/foo4</good>
+           <good>nntp://example.org/foo/4</good>
+</scheme>
+<scheme id="telnet" type="scheme" rfc="4248">
+  <name>Reference to interactive sessions</name>
+</scheme>
+<scheme id="wais" type="scheme" rfc="4156">
+  <name>Wide Area Information Servers</name>
+</scheme>
+<scheme id="file" type="scheme" rfc="1738" section="3.10">
+  <name>Host-specific file names</name>
+  
+  <defn section="5">
+<pre>
+fileurl = "file://" [ host | "localhost" ] "/" fpath
+</pre>
+<pre>
+fpath = fsegment *[ "/" fsegment ]
+fsegment = *[ uchar | "?" | ":" | "@" | "&amp;" | "=" ]
+</pre>
+<pre>
+safe = "$" | "-" | "_" | "." | "+"
+extra = "!" | "*" | "'" | "(" | ")" | ","
+escape = "%" hex hex
+unreserved = alpha | digit | safe | extra
+uchar = unreserved | escape
+</pre>
+</defn>
+           <complete/>
+           <dns/>
+           <prohibit component="USER" section="5"><text>
+<pre>
+fileurl = "file://" [ host | "localhost" ] "/" fpath
+</pre></text></prohibit>
+           <prohibit component="PORT" section="5"><text>
+<pre>
+fileurl = "file://" [ host | "localhost" ] "/" fpath
+</pre></text></prohibit>
+           <require component="PATH" section="5"><text>
+<pre>
+fileurl = "file://" [ host | "localhost" ] "/" fpath
+</pre></text></require>
+           <require component="AUTHORITY" section="5"><text>
+<pre>
+fileurl = "file://" [ host | "localhost" ] "/" fpath
+</pre></text></require>
+           <pattern component="PATHQUERY" reserved="~;" >[^;~]*</pattern>
+           <bad>file://user@example.org/foo/bar</bad>
+           <bad>file://eg:4029/foo/bar</bad>
+           <bad>file:/foo/bar</bad>
+           <bad>file://example.org</bad>
+           <bad>file://foo/bar;t</bad>
+           <bad>file://foo/~jjc</bad>
+           <good>file:///foo/b</good>
+           <good>file:///foo/b?ar/yuk</good>
+</scheme>
+<scheme id="prospero" type="scheme" rfc="4157">
+  <name>Prospero Directory Service</name>
+</scheme>
+
+<scheme id="gopher" type="scheme" rfc="4266">
+  <name>The gopher URI scheme</name>
+</scheme>
+<scheme id="z39.50s" type="scheme" rfc="2056">
+  <name>Z39.50 Session</name>
+</scheme>
+<scheme id="z39.50r" type="scheme" rfc="2056">
+  <name>Z39.50 Retrieval</name>
+</scheme>
+<scheme id="cid" type="scheme" rfc="2392">
+  <name>content identifier</name>
+</scheme>
+<scheme id="mid" type="scheme" rfc="2392">
+  <name>message identifier</name>
+</scheme>
+<scheme id="vemmi" type="scheme" rfc="2122">
+  <name>versatile multimedia interface</name>
+</scheme>
+<scheme id="service" type="scheme" rfc="2609">
+  <name>service location</name>
+</scheme>
+<scheme id="imap" type="scheme" rfc="2192">
+  <name>internet message access protocol</name>
+</scheme>
+<scheme id="nfs" type="scheme" rfc="2224">
+  <name>network file system protocol</name>
+</scheme>
+<scheme id="acap" type="scheme" rfc="2244">
+  <name>application configuration access protocol</name>
+</scheme>
+<scheme id="rtsp" type="scheme" rfc="2326">
+  <name>real time streaming protocol</name>
+</scheme>
+<scheme id="tip" type="scheme" rfc="2371">
+  <name>Transaction Internet Protocol</name>
+</scheme>
+<scheme id="pop" type="scheme" rfc="2384">
+  <name>Post Office Protocol v3</name>
+</scheme>
+<scheme id="data" type="scheme" rfc="2397">
+  <name>data</name>
+</scheme>
+<scheme id="dav" type="scheme" rfc="2518">
+  <name>dav</name>
+</scheme>
+<scheme id="opaquelocktoken" type="scheme" rfc="2518">
+  <name>opaquelocktoken</name>
+</scheme>
+<scheme id="sip" type="scheme" rfc="3261">
+  <name>session initiation protocol</name>
+</scheme>
+<scheme id="sips" type="scheme" rfc="3261">
+  <name>secure session intitiaion protocol</name>
+</scheme>
+<scheme id="tel" type="scheme" rfc="2806">
+  <name>telephone</name>
+</scheme>
+<scheme id="fax" type="scheme" rfc="2806">
+  <name>fax</name>
+</scheme>
+<scheme id="modem" type="scheme" rfc="2806">
+  <name>modem</name>
+</scheme>
+<scheme id="soap.beep" type="scheme" rfc="3288">
+  <name>soap.beep</name>
+</scheme>
+<scheme id="soap.beeps" type="scheme" rfc="3288">
+  <name>soap.beeps</name>
+</scheme>
+<scheme id="xmlrpc.beep" type="scheme" rfc="3529">
+  <name>xmlrpc.beep</name>
+</scheme>
+<scheme id="xmlrpc.beeps" type="scheme" rfc="3529">
+  <name>xmlrpc.beeps</name>
+</scheme>
+<scheme id="urn" type="scheme" rfc="2141">
+  <name>Uniform Resource Names</name>
+  <defn section="2">
+   All URNs have the following syntax (phrases enclosed in quotes are REQUIRED):
+<pre>
+&lt;URN> ::= "urn:" &lt;NID> ":" &lt;NSS>
+</pre>
+</defn>
+<defn section="2.1">
+<pre>
+&lt;NID>         ::= &lt;let-num> [ 1,31&lt;let-num-hyp> ]
+
+&lt;let-num-hyp> ::= &lt;upper> | &lt;lower> | &lt;number> | "-"
+
+&lt;let-num>     ::= &lt;upper> | &lt;lower> | &lt;number>
+</pre>
+</defn>
+<defn section="2.2">
+<pre>
+&lt;NSS>         ::= 1*&lt;URN chars>
+
+&lt;URN chars>   ::= &lt;trans> | "%" &lt;hex> &lt;hex>
+
+&lt;trans>       ::= &lt;upper> | &lt;lower> | &lt;number> | &lt;other> | &lt;reserved>
+
+&lt;other>       ::= "(" | ")" | "+" | "," | "-" | "." |
+                  ":" | "=" | "@" | ";" | "$" |
+                  "_" | "!" | "*" | "'"
+</pre>
+</defn>
+<defn section="2.3.2">
+RFC 1630 [2] reserves the characters "/", "?", and "#" for particular purposes. 
+The URN-WG has not yet debated the applicability and precise semantics of those 
+purposes as applied to URNs. Therefore, these characters are RESERVED for future 
+developments. Namespace developers SHOULD NOT use these characters in unencoded form, 
+but rather use the appropriate %-encoding for each character.
+</defn>
+           <prohibit component="AUTHORITY">
+           <text section="2">
+<pre>
+&lt;URN> ::= "urn:" &lt;NID> ":" &lt;NSS>
+</pre>
+</text>
+<text section="2.1">
+<pre>
+&lt;NID>         ::= &lt;let-num> [ 1,31&lt;let-num-hyp> ]
+</pre>
+</text></prohibit>
+
+           <prohibit component="QUERY" section="2.3.2"/>
+           <require component="PATH">
+           <text section="2">
+<pre>
+&lt;URN> ::= "urn:" &lt;NID> ":" &lt;NSS>
+</pre>
+</text></require>
+           
+           <pattern component="PATH" reserved="/~">(?![uU][rR][nN]:)[a-zA-Z0-9][-a-zA-Z0-9]{1,31}:[^/~]+</pattern>
+           <good>urn:x-hp:foo<unicode>00E9</unicode></good>
+           <bad>urn:x-hp:foo/bar</bad>
+           <bad>urn:urn:foo</bad>
+           <good>urn:urn-1:foo</good>
+           <bad>urn://foo</bad>
+           <bad>urn:foo:bar?query</bad>
+           <bad>urn:foo:ff~</bad>
+           <todo>case of NIS</todo>
+           <todo>
+           registry of URNs, implement something of the NSS with Namespace specific rules.
+           </todo>
+           <todo>
+ To avoid confusion with the "urn:" identifier, the NID "urn" is reserved and MUST NOT be used.
+ </todo>
+ <todo>e-mail about frags in URNs</todo>
+           <todo>
+In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-encoded form.           
+           </todo>
+</scheme>
+<scheme id="go" type="scheme" rfc="3368">
+  <name>go</name>
+</scheme>
+<scheme id="h323" type="scheme" rfc="3508">
+  <name>H.323</name>
+</scheme>
+<scheme id="ipp" type="scheme" rfc="3510">
+  <name>Internet Printing Protocol</name>
+</scheme>
+<scheme id="tftp" type="scheme" rfc="3617">
+  <name>Trivial File Transfer Protocol</name>
+</scheme>
+<scheme id="mupdate" type="scheme" rfc="3656">
+  <name>Mailbox Update (MUPDATE) Protocol</name>
+</scheme>
+<scheme id="pres" type="scheme" rfc="3859">
+  <name>Presence</name>
+</scheme>
+<scheme id="im" type="scheme" rfc="3860">
+  <name>Instant Messaging</name>
+</scheme>
+<scheme id="mtqp" type="scheme" rfc="3887">
+  <name>Message Tracking Query Protocol</name>
+</scheme>
+<scheme id="iris.beep" type="scheme" rfc="3983">
+  <name>iris.beep</name>
+</scheme>
+<scheme id="dict" type="scheme" rfc="2229">
+  <name>dictionary service protocol</name>
+</scheme>
+<scheme id="snmp" type="scheme" rfc="4088">
+  <name>Simple Network Management Protocol</name>
+</scheme>
+<scheme id="crid" type="scheme" rfc="4078">
+  <name>TV-Anytime Content Reference Identifier</name>
+</scheme>
+<scheme id="tag" type="scheme" rfc="4151">
+  <name>tag</name>
+</scheme>
+
+<scheme id="afs" type="scheme" href="http://www.iana.org/assignments/uri-schemes">
+  <name>Andrew File System global file names</name>
+</scheme>
+
+<scheme id="tn3270" type="scheme" href="http://www.iana.org/assignments/uri-schemes">
+  <name>Interactive 3270 emulation sessions</name>
+</scheme>
+
+
+<scheme id="mailserver" type="scheme" href="http://www.iana.org/assignments/uri-schemes">
+  <name>Access to data available from mail servers</name>
+</scheme>
+
+
+<scheme id="dns" type="scheme" href="http://www.iana.org/assignments/uri-schemes">
+  <name>Domain Name System</name>
+</scheme>
+
+<scheme id="info" type="scheme" href="http://www.iana.org/assignments/uri-schemes">
+  <name>Information Assets with Identifiers in Public Namespaces</name>
+</scheme>
+
+<scheme id="ldap" type="scheme" href="http://www.iana.org/assignments/uri-schemes">
+  <name>Lightweight Directory Access Protocol</name>
+</scheme>
+        
+	<violation>
+		<name>ILLEGAL_CHARACTER</name> 
+	
+	    <description>
+		    The character violates the grammar rules for URIs/IRIs.
+	    </description>
+	    
+	    <also ref="URI" fragment="page-49"/>
+	    <also ref="IRI" section="2.2"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>ht$tp://example.org/foo</bad>
+	</violation>
+	<!--
+    <violation>
+	    <name>RELATIVE_URI</name>
+	    <description>
+		    The IRI is relative not absolute.
+	    </description>
+	    <spec ref="RDF">
+		    <text>representing an <em>absolute URI</em> with optional fragment identifier</text>
+	    </spec>
+	    <bad>foo/bar</bad>
+	    <bad>#frag</bad>
+	    <bad>//example.org/foo/bar#frag</bad>
+    </violation>
+    -->
+    <violation>
+	    <name>PERCENT_ENCODING_SHOULD_BE_UPPERCASE</name>
+	    <minting/>
+	    <description>
+		   Percent-escape sequences should use uppercase.
+	    </description>
+	    <spec ref="URI">
+	    <text section="2.1">
+             URI producers and normalizers should use <em>uppercase</em>
+	     hexadecimal digits for all percent-encodings.
+            </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://example.org/foo%c3%80</bad>
+    </violation>
+        <violation>
+	    <name>SUPERFLUOUS_NON_ASCII_PERCENT_ENCODING</name>
+	    <unimplemented/>
+	    <minting/>
+	    <description>
+		   Percent-escape sequences should not be used unnecessarily.
+	    </description>
+	    <spec ref="IRI">
+	          <text section="3.2">
+			   URI-to-IRI conversion removes percent-encodings
+                  </text>
+	    </spec>
+	    <comment>The IRI specification only weakly suggests that
+		    Unicode characters should be used in preference
+		    to percent encodings.</comment>
+	    <bad>http://example.org/foo%C3%A9r</bad>
+    </violation>
+        <violation>
+	    <name>SUPERFLUOUS_ASCII_PERCENT_ENCODING</name>
+	    <unimplemented/>
+	    <minting/>
+	    <description>
+		   Percent-escape sequences should not be used unnecessarily.
+	    </description>
+	    <spec ref="URI">
+	          <text section="2.3">
+			  For consistency, percent-encoded octets in the
+			  ranges of ALPHA 
+			  (%41-%5A and %61-%7A), DIGIT (%30-%39), hyphen
+			  (%2D), period (%2E), underscore (%5F), or tilde
+			  (%7E) should not be created by URI producers
+                  </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://example.org/foo%5Fb%61r</bad>
+    </violation>
+    
+    <violation>
+	    <name>UNWISE_CHARACTER</name>
+	
+            <minting/>
+            
+	    <description>
+		    The character matches no grammar rules of URIs/IRIs.
+		    These characters are permitted in RDF URI References,
+		    XML system identifiers, and XML Schema anyURIs.
+	    </description>
+            
+            <comment>Whitespace is dealt with separately.</comment>
+
+	    <see>IRIFactory#allowUnwiseCharacters</see>
+            <see>#WHITESPACE</see>
+            <see>#DOUBLE_WHITESPACE</see>
+	    <spec ref="IRI">
+             <text fragment="page-13">
+              Systems accepting IRIs MAY also deal with the printable characters in US-ASCII 
+              that are not allowed in URIs, namely "&lt;", ">", '"', space, "{", "}", "|", "\", 
+              "^", and "`", in step 2 above. If these characters are found but are not converted, 
+              then the conversion SHOULD fail. 
+             </text>
+            </spec>
+	    <also ref="URI" fragment="page-49"/>
+	    <bad>http://example.org/fo|o</bad>
+	    <bad>http://example.org/fo&lt;o</bad>
+	    <bad>http://example.org/fo>o</bad>
+	    <bad>http://example.org/fo"o</bad>
+	    <bad>http://example.org/fo`o</bad>
+    </violation>
+    
+    
+    <violation>
+	    <name>CONTROL_CHARACTER</name>
+            
+	    <description>
+		    Control characters are not allowed in URIs or RDF URI References.
+	    </description>
+
+            <spec ref="RDF">
+               <text>
+               A URI reference within an RDF graph (an RDF URI reference) is a Unicode string [UNICODE] that:
+<ul>
+<li>
+     does not contain any control characters ( #x00 - #x1F, #x7F-#x9F)
+</li>
+</ul>
+               </text>
+            </spec>
+            <spec ref="IRI">
+              <text>
+<pre>
+ucschar = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
+        / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
+        / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
+        / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
+        / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
+        / %xD0000-DFFFD / %xE1000-EFFFD
+</pre>
+             </text>
+            </spec>
+	    <also ref="URI"/>
+	    <bad>http://example.org/fo<unicode>007F</unicode>o</bad>
+	    <bad>http://example.org/fo<unicode>0085</unicode>o</bad>
+	    <bad>http://example.org/fo<unicode>0009</unicode>o</bad>
+	    <bad>http://example.org/fo<unicode>0001</unicode>o</bad>
+    </violation>
+    
+    <violation>
+	    <name>NON_XML_CHARACTER</name> 
+	    <description>
+		    The character is not legal in XML.
+	    </description>
+	    
+	    <spec ref="XML">
+		    <text fragment="NT-Char"> 
+Char ::=   #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+	            </text>
+	    </spec>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://example.org/foo<unicode>0001</unicode></bad>
+    </violation>
+    <violation>
+	    <name>DISCOURAGED_XML_CHARACTER</name> 
+	    <minting/>
+	    <description>
+		    The character is discouraged in XML documents.
+	    </description>
+	    
+	    <spec ref="XML">
+		    <text fragment="char32"> 
+Document authors are encouraged to avoid "compatibility characters", as defined in 
+section 6.8 of [Unicode] (see also D21 in section 3.6 of [Unicode3]). The characters 
+defined in the following ranges are also discouraged. They are either control 
+characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F], 
+[#xFDD0-#xFDDF],
+	            </text>
+	    </spec>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://example.org/foo<unicode>0080</unicode></bad>
+    </violation>
+    <violation>
+	    <name>NON_INITIAL_DOT_SEGMENT</name>
+	    <minting/>
+	    <security/>
+	    <description>
+		    The path contains a segment /../ not at the beginning
+		    of a relative reference, or it contains a /./ 
+		    These should be removed.
+	    </description>
+	    <spec ref="URI">
+	    <text section="6.2.2.3">
+		    The complete path segments "." and ".." are intended <em>only</em> for use within relative references 
+            </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://example.org/../foo</bad>
+	    <bad>http://example.org/foo/../foo</bad>
+	    <bad>http://example.org/foo/..</bad>
+	    <bad>http://example.org/foo/./foo</bad>
+	    <bad>http://example.org/./foo</bad>
+	    <bad>http://example.org/foo/.</bad>
+    </violation>
+   
+    <violation>
+	    <name>EMPTY_SCHEME</name>
+	    <description>
+		    The scheme component is empty.
+	    </description>
+	    
+	    <spec ref="URI">
+		    <text section="3.1"> Scheme names consist of a sequence of characters <em>beginning 
+				    with a letter</em> and followed by any combination of letters, 
+			    digits, plus ("+"), period ("."), or hyphen ("-"). </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>://example.org/foo</bad>
+    </violation>
+
+    <violation>
+	    <name>SCHEME_MUST_START_WITH_LETTER</name> 
+	    <description>
+		    The scheme component must start with a letter.
+	    </description>
+	    
+	    <spec ref="URI">
+		    <text section="3.1"> Scheme names consist of a sequence of characters <em>beginning 
+			    with a letter</em> and followed by any combination of letters, 
+			    digits, plus ("+"), period ("."), or hyphen ("-"). </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>007://example.org/foo</bad>
+    </violation>
+    <violation>
+	    <name>LOWERCASE_PREFERRED</name> 
+	    <minting/>
+	    <description>lowercase is preferred in this component</description>
+	    <spec ref="URI">
+		    <text section="3.1" component="SCHEME">An implementation should accept uppercase letters as equivalent to lowercase in scheme names (e.g., allow "HTTP" as well as "http") for the sake of robustness but should only produce lowercase scheme names for consistency. </text>
+		    <text section="3.2.2" component="HOST">
+			    Although host is case-insensitive, producers and normalizers should use <em>lowercase for registered names</em> and hexadecimal addresses for the sake of uniformity, while only using uppercase letters for percent-encodings.
+	            </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>HTTP://example.org/foo</bad>
+	    <bad>http://eXamPle.org/foo</bad>
+    </violation>
+    <violation>
+	    <name>PORT_SHOULD_NOT_BE_EMPTY</name>
+	    <minting/>
+	    <description>The colon introducing an empty port component should be omitted entirely,
+	    or a port number should be specified.</description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			    URI producers and normalizers should omit the port component <em>and its ":" delimiter</em> if port is empty 
+	            </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://example.org:/foo</bad>
+    </violation>
+    <violation>
+	    <name>DEFAULT_PORT_SHOULD_BE_OMITTED</name>
+	    <minting/>
+	    <description>If the port is the default one for the scheme it should be omitted.
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			    URI producers and normalizers should omit the port component and its ":" delimiter if port is empty  or if its value would be the <em>same as that of the scheme's default.</em> 
+	            </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://example.org:80/foo</bad>
+    </violation>
+    <violation>
+	    <name>PORT_SHOULD_NOT_BE_WELL_KNOWN</name>
+	    <security/>
+	    <description>
+		    Ports under 1024 should be accessed
+		    using the appropriate scheme name.
+	    </description>
+	    <spec ref="URI">
+		    <text section="7.2">
+			    Applications should prevent dereference of a URI that specifies a TCP port number within the "well-known port" range <em>(0 - 1023)</em> unless the protocol being used to dereference that URI is compatible with the protocol expected on that well-known port.
+	            </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://example.org:180/foo</bad>
+    </violation>
+
+    <violation>
+	    <name>PORT_SHOULD_NOT_START_IN_ZERO</name>
+	    <minting/>
+	    <description>Leading zeros in the port number should be omitted.
+		    This is an added feature of this implementation,
+			    not mandated by any standard.
+	    </description>
+	    <also ref="URI"/>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://example.org:08080/foo</bad>
+    </violation>
+<!--
+    <violation><name>IRI_CHARACTER</name> 
+	    <description>
+		Non-ASCII characters are not permitted in URIs.
+	    </description>
+	    <spec ref="URI">
+		    <text section="1.3">
+		     This specification uses the Augmented Backus-Naur Form (ABNF) notation of [RFC2234], including the following core ABNF syntax rules defined by that specification: ALPHA (letters), CR (carriage return), DIGIT (decimal digits), DQUOTE (double quote), HEXDIG (hexadecimal digits), LF (line feed), and SP (space).
+	     </text>
+		    <text section="2">
+			     The ABNF notation defines its terminal values to be non-negative integers (codepoints) based on the US-ASCII coded character set [ASCII]. 
+	            </text>
+	    </spec>
+	    <bad>http://example.org/André</bad>
+    </violation>
+-->
+    <violation>
+	    <name>BIDI_FORMATTING_CHARACTER</name>
+            <unimplemented/>
+            <description>A prohibited bi-directional control character was found.</description>
+	    <spec ref="IRI">
+		    <text section="4.1">
+			     IRIs MUST NOT contain bidirectional formatting characters (LRM, RLM, LRE, RLE, LRO, RLO, and PDF). 
+	     </text>
+	    </spec>
+	    <bad>http://example.org/Andr<unicode>202A</unicode>bar</bad>
+	    <bad>http://example.org/Andr<unicode>202B</unicode>bar</bad>
+	    <bad>http://example.org/Andr<unicode>202C</unicode>bar</bad>
+	    <bad>http://example.org/Andr<unicode>202D</unicode>bar</bad>
+	    <bad>http://example.org/Andr<unicode>202E</unicode>bar</bad>
+	    <bad>http://example.org/Andr<unicode>200E</unicode>bar</bad>
+	    <bad>http://example.org/Andr<unicode>200F</unicode>bar</bad>
+    </violation>
+
+    <violation>
+	    <name>WHITESPACE</name>
+
+	    <description>
+A single whitespace character.
+These match no grammar rules of URIs/IRIs.
+		    These characters are permitted in RDF URI References,
+		    XML system identifiers, and XML Schema anyURIs.
+	    </description>
+
+	    <see>IRIFactory#allowUnwiseCharacters</see>
+            
+            <see>#NOT_XML_SCHEMA_WHITESPACE</see>
+            <see>#UNWISE_CHARACTER</see>
+            <see>#DOUBLE_WHITESPACE</see>
+	    <also ref="URI"/>
+	    <also ref="IRI"/>
+
+	    <bad>http://example.org/ foo</bad>
+	    <bad>file:///Program Files</bad>
+    </violation>
+    
+    <violation>
+	    <name>DOUBLE_WHITESPACE</name>
+
+	    <description>
+Either two or more consecutive whitespace characters, or leading or trailing whitespace.
+
+These match no grammar rules of URIs/IRIs.
+These characters are permitted in RDF URI References,
+XML system identifiers, but not XML Schema anyURIs.
+	    </description>
+
+	    <see>IRIFactory#allowUnwiseCharacters</see>
+            <see>#NOT_XML_SCHEMA_WHITESPACE</see>
+            <see>#UNWISE_CHARACTER</see>
+            <see>#WHITESPACE</see>
+	    <also ref="URI"/>
+	    <also ref="IRI"/>
+            <also ref="Schema"/>
+
+	    <bad>http://example.org/  foo</bad>
+	    <bad>file:///Program  Files</bad>
+	    <bad>file:///TabBar </bad>
+	    <bad> rel-with-initial-space</bad>
+    </violation>
+
+    <violation>
+	    <name>NOT_XML_SCHEMA_WHITESPACE</name>
+
+	    <description>
+Whitespace characters 
+		    match no grammar rules of URIs/IRIs.
+		    These characters are permitted in RDF URI References,
+	and	    XML system identifiers.
+	However, tab and new line characters, and consecutive space characters
+	cannot occur in XML Schema anyURIs.
+	    </description>
+
+	    <see>IRIFactory#allowUnwiseCharacters</see>
+            <see>#DOUBLE_WHITESPACE</see>
+            <see>#WHITESPACE</see>
+            
+	    <also ref="URI"/>
+	    <also ref="IRI"/>
+	    <spec ref="Schema">
+<text fragment="schema">
+<pre>
+&lt;xs:simpleType name=&quot;anyURI&quot; id=&quot;anyURI&quot;&gt;
+		    [...]
+    &lt;xs:restriction base=&quot;xs:anySimpleType&quot;&gt;
+      &lt;xs:whiteSpace fixed=&quot;true&quot; value=&quot;collapse&quot; id=&quot;anyURI.whiteSpace&quot;/&gt;
+
+    &lt;/xs:restriction&gt;
+&lt;/xs:simpleType&gt;
+</pre>
+  </text>
+            </spec>
+
+	    <bad>file:///Tab<unicode>0009</unicode>Bar</bad>
+	    <bad>file:///Tab<unicode>000A</unicode>Bar</bad>
+	    <bad>file:///Tab<unicode>000D</unicode>Bar</bad>
+    </violation>
+
+    <violation>
+	    <name>DOUBLE_DASH_IN_REG_NAME</name>
+	    <internal/>
+	    <bad>http://foo--bar//</bad>
+    </violation>
+    
+    
+    <violation>
+	    <name>SCHEME_INCLUDES_DASH</name>
+	    <internal/>
+	    <bad>ht-tp://foo.bar//</bad>
+	    <bad>-http://foo.bar//</bad>
+	    <bad>http-://foo.bar//</bad>
+    </violation>
+    
+    
+    <violation>
+	    <name>NON_URI_CHARACTER</name>
+	    <internal/>
+	    <bad>http://foo-bar//&#x333;a</bad>
+	    <bad>http://foo-b&#x333;ar//</bad>
+    </violation>
+    
+    
+    <violation>
+	    <name>PERCENT_20</name>
+	    <internal/>
+	    <bad>http://foo-bar//%20a</bad>
+    </violation>
+    
+    
+    <violation>
+	    <name>PERCENT</name>
+	    <internal/>
+	    <bad>http://foo-bar//%AAa</bad>
+    </violation>
+
+    <violation>
+	    <name>IP_V6_OR_FUTURE_ADDRESS_SYNTAX</name>
+	    <description>
+		    A syntax violation was detected in an IP V6 (or future) address.
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			    <pre>
+IP-literal  = "[" ( IPv6address / IPvFuture  ) "]"
+IPvFuture   = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )
+IPv6address =  6( h16 ":" ) ls32
+            /                       "::" 5( h16 ":" ) ls32
+            / [               h16 ] "::" 4( h16 ":" ) ls32
+            / [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
+            / [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
+            / [ *3( h16 ":" ) h16 ] "::"    h16 ":"   ls32
+            / [ *4( h16 ":" ) h16 ] "::"              ls32
+            / [ *5( h16 ":" ) h16 ] "::"              h16
+            / [ *6( h16 ":" ) h16 ] "::"
+
+ls32        = ( h16 ":" h16 ) / IPv4address
+                  ; least-significant 32 bits of address
+h16         = 1*4HEXDIG 
+		  ; 16 bits of address represented in hexadecimal
+</pre>
+	            </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://[/</bad>
+	    <bad>ldap://[20015:db8::7]/c=GB?objectClass?one</bad>
+	    <bad>ldap://[2001:db8:::7]/c=GB?objectClass?one</bad>
+    </violation>
+
+    <violation>
+	    <name>IPv6ADDRESS_SHOULD_BE_LOWERCASE</name>
+	    <minting/>
+	    <description>
+	IP version 6 addresses should use lowercase hexadecimal
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			    Although host is case-insensitive, producers and normalizers 
+			    <em>should use lowercase</em> for registered names and <em>hexadecimal addresses</em> for the sake of uniformity
+		    </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>ldap://[2001:Db8::7]/c=GB?objectClass?one</bad>
+	    <bad>ldap://[2001:dB8::7]/c=GB?objectClass?one</bad>
+    </violation>
+
+    <!--
+      RFC 1123 sec 2.1 chnages this.
+    <violation>
+	    <name>IP_V4_HAS_FOUR_COMPONENTS</name>
+	    <description>
+		    A host entry is entirely numeric but does not have
+		    four components like an IP version 4 address.
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			    A host identified by an IPv4 literal address is represented in dotted-decimal notation (a sequence of <em>four decimal numbers</em> in the range 0 to 255, separated by "."),
+		    </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>ldap://30.55.102/c=GB?objectClass?one</bad>
+	    <bad>ldap://20.20.20.20.20/c=GB?objectClass?one</bad>
+    </violation>
+    -->
+
+    <violation>
+	    <name>IP_V4_OCTET_RANGE</name>
+	    <description>
+		    A host entry consists of four numbers,
+		    but they are not in the range 0-255, or have leading zeros.
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			    A host identified by an IPv4 literal address is represented in dotted-decimal notation (a sequence of <em>four decimal numbers</em> in the range <em>0 to 255</em>, separated by "."),
+		    </text>
+		    <text section="3.2.2">
+			    <pre>
+dec-octet   = DIGIT                 ; 0-9
+            / %x31-39 DIGIT         ; 10-99
+            / "1" 2DIGIT            ; 100-199
+            / "2" %x30-34 DIGIT     ; 200-249
+            / "25" %x30-35          ; 250-255
+</pre>
+		    </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>ldap://155.00.55.102/c=GB?objectClass?one</bad>
+	    <bad>ldap://20.256.20.20/c=GB?objectClass?one</bad>
+	    <bad>ldap://20.1000.20.20/c=GB?objectClass?one</bad>
+	    <bad>ldap://20.010.20.20/c=GB?objectClass?one</bad>
+    </violation>
+    <violation>
+	    <name>NOT_DNS_NAME</name>
+	    <dns/>
+	    <description>
+		    The host component did not meet the restrictions on DNS names.
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			    URI producers should use names that <em>conform to the DNS syntax</em>, even when use of DNS is not immediately apparent, and should limit these names to no more than 255 characters in length.
+		    </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>ldap://foo$/c=GB?objectClass?one</bad>
+	    <bad>http://foo.example.$org/</bad>
+    </violation>
+    <violation>
+	    <name>USE_PUNYCODE_NOT_PERCENTS</name>
+	    <minting/>
+	    <dns/>
+	    <description>
+		    The host component used percent encoding, where punycode is preferred.
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.
+		    </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>ftp://andr%C3%A9.example.org/</bad>
+    </violation>
+    <violation>
+	    <name>ILLEGAL_PERCENT_ENCODING</name>
+	    <description>
+		    The host component a percent occurred without two following hexadecimal digits.
+	    </description>
+	    <spec ref="URI">
+		    <text section="2.1">
+			     A percent-encoded octet is encoded as a character triplet, consisting of the percent character "%" followed by the two hexadecimal digits representing that octet's numeric value. 
+		    </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>ftp://andr%%A9.example.org/</bad>
+	    <bad>ftp://andr%.example.org/</bad>
+	    <bad>ftp://andre.example.org/%</bad>
+	    <bad>ftp://andre.example.org/%A</bad>
+	    <bad>ftp://andre.example.org/%A?</bad>
+	    <bad>ftp://andre.example.org/%A#</bad>
+    </violation>
+    <violation>
+	    <name>ACE_PREFIX</name>
+	    <internal/>
+    </violation>
+    <!--
+    <violation>
+	    <name>HAS_SURROGATE</name>
+	    <internal/>
+	    <bad>http:/foo/p<unicode>D800</unicode><unicode>DF02</unicode></bad>
+    </violation>
+    -->
+    <violation>
+	    <name>LONE_SURROGATE</name>
+	    <description>
+		    A unicode surrogate character that is not of a surrogate pair.
+	    </description>
+	    <bad>http:/foo/p<unicode>D800</unicode></bad>
+    </violation>
+    <violation><name>DNS_LABEL_DASH_START_OR_END</name> 
+	    <dns/>
+	    <description>
+		    A DNS name had a - at the beginning or end.
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			     Such a name consists of a sequence of domain labels separated by ".", each domain label starting and ending with an alphanumeric character and possibly also containing "-" characters. 
+		    </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>ldap://-foo/c=GB?objectClass?one</bad>
+	    <bad>http://foo.example.org-/</bad>
+	    <bad>http://foo.example.org--/</bad>
+	    <bad>http://--foo.example.org/</bad>
+	    <bad>http://-fo-o.example.org/</bad>
+    </violation>
+    <violation>
+	    <name>BAD_IDN_UNASSIGNED_CHARS</name> 
+	    <minting/>
+	    <description>
+		    Characters used in the IRI were unassigned in the version of Unicode known
+                    by this system. They may have been assigned since.
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			    When a non-ASCII registered name represents an internationalized domain name intended for resolution via the DNS, the name must be transformed to the IDNA encoding [RFC3490] prior to name lookup.  URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.
+		    </text>
+	    </spec>
+	    <spec ref="IRI">
+		    <text section="3.1">
+			    Replace the ireg-name part of the IRI by the part converted using the ToASCII operation specified in section 4.1 of [RFC3490] on each dot-separated label, and by using U+002E (FULL STOP) as a label separator, with the flag UseSTD3ASCIIRules set to TRUE, and with the flag AllowUnassigned set to FALSE for creating IRIs and set to TRUE otherwise.
+		    </text>
+	    </spec>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://foo.example<unicode>0221</unicode>.org/</bad>
+    </violation>
+    <violation>
+	    <name>BAD_IDN</name> 
+	    <description>
+		    The Internationalized Domain Name check failed.
+	    </description>
+	    <spec ref="URI">
+		    <text section="3.2.2">
+			    When a non-ASCII registered name represents an internationalized domain name intended for resolution via the DNS, the name must be transformed to the IDNA encoding [RFC3490] prior to name lookup.  URI producers should provide these registered names in the IDNA encoding, rather than a percent-encoding, if they wish to maximize interoperability with legacy URI resolvers.
+		    </text>
+	    </spec>
+	    <spec ref="IRI">
+		    <text section="3.1">
+			    Replace the ireg-name part of the IRI by the part converted using the ToASCII operation specified in section 4.1 of [RFC3490] on each dot-separated label, and by using U+002E (FULL STOP) as a label separator, with the flag UseSTD3ASCIIRules set to TRUE, and with the flag AllowUnassigned set to FALSE for creating IRIs and set to TRUE otherwise.
+		    </text>
+	    </spec>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://--foo.example.org/</bad>
+	    <bad>http://xn--andr--ep-.example.org/</bad>
+	    <!-- icu4j and jdk seem to think these shouldn't explode -->
+	    <!-- REMOVE !! bits to uncomment
+	    <bad>http://xn-!!-andr-!!-ep.example.org/</bad>
+	    <bad>http://xn-!!-a-bpad.example.org/</bad>-->
+	    <bad>http://xn.example.<unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode><unicode>3333</unicode>/</bad>
+    </violation>
+    <!--
+    <violation>
+	    <name>ARBITRARY_CHARACTER</name>
+	    <description>
+		    The character is not permitted in IRIs.
+	    </description>
+	    
+	    <spec ref="IRI">
+	      <text section="2.2">
+<pre>
+ ucschar        = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
+                / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
+                / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
+                / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
+                / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
+                / %xD0000-DFFFD / %xE1000-EFFFD
+
+ iprivate       = %xE000-F8FF / %xF0000-FFFFD / %x100000-10FFFD
+
+</pre>
+	     </text>
+	    </spec>
+	    <bad>http://example.org/foo<unicode>0006</unicode></bad>
+	    <bad>http://example.org/foo?<unicode>D800</unicode></bad>
+	    <bad>http://example.org/foo#<unicode>0080</unicode></bad>
+	    <bad>http://example.org<unicode>FDD5</unicode></bad>
+    </violation>
+    -->
+    <violation>
+	    <name>HAS_PASSWORD</name>
+	    <must/>
+	    <security/>
+	    <description>
+	Including passwords in URIs is deprecated.
+	    </description>
+	    <spec ref="URI">
+	    <text section="3.2.1">
+Use of the format "user:password" in the userinfo field is deprecated.		    
+	    </text>
+	    <text section="3.2.1">
+Applications may choose to ignore or reject such data when it is received as part of a reference and should reject the storage of such data in unencrypted form. The passing of authentication information in clear text has proven to be a security risk in almost every case where it has been used.
+            </text>
+	    </spec>
+	    <also ref="IRI"/>
+	    <also ref="RDF"/>
+	    <also ref="XML"/>
+	    <also ref="XLink"/>
+	    <also ref="Schema"/>
+	    <bad>http://user:pass@example.org/</bad>
+    </violation>
+    <violation>
+	    <name>DISCOURAGED_IRI_CHARACTER</name>
+            <unimplemented/>
+	    <minting/>
+	    <description>
+	Certain characters are discouraged in IRIs.
+	    </description>
+	    <comment>Implementation is very partial. The amount of guidance
+		    as to which characters to discourage is insufficient.</comment>
+	    <spec ref="IRI">
+	    <text section="6.1">
+The UCS contains many areas of characters for which there are
+strong visual look-alikes. Because of the likelihood of transcription errors, these also should be avoided. This includes the full-width equivalents of Latin characters, half-width Katakana characters for Japanese, and many others. It also includes many look-alikes of "space", "delims", and "unwise", characters excluded in [RFC3491].
+	    </text>
+	    </spec>
+	    <bad>http://example.org/<unicode>2000</unicode>en-quad</bad>
+	    <bad>http://example.org/<unicode>205F</unicode>medium-mathematical-space</bad>
+	    <bad>http://example<unicode>FF95</unicode>.org/</bad>
+	    <bad>http://example<unicode>FF47</unicode>.org/</bad>
+    </violation>
+  <!--
+FF01;FULLWIDTH EXCLAMATION MARK;Po;0;ON;<wide> 0021;;;;N;;;;;
+FF02;FULLWIDTH QUOTATION MARK;Po;0;ON;<wide> 0022;;;;N;;;;;
+FF03;FULLWIDTH NUMBER SIGN;Po;0;ET;<wide> 0023;;;;N;;;;;
+FF04;FULLWIDTH DOLLAR SIGN;Sc;0;ET;<wide> 0024;;;;N;;;;;
+FF05;FULLWIDTH PERCENT SIGN;Po;0;ET;<wide> 0025;;;;N;;;;;
+FF06;FULLWIDTH AMPERSAND;Po;0;ON;<wide> 0026;;;;N;;;;;
+FF07;FULLWIDTH APOSTROPHE;Po;0;ON;<wide> 0027;;;;N;;;;;
+FF08;FULLWIDTH LEFT PARENTHESIS;Ps;0;ON;<wide> 0028;;;;Y;FULLWIDTH OPENING PARENTHESIS;;;;
+FF09;FULLWIDTH RIGHT PARENTHESIS;Pe;0;ON;<wide> 0029;;;;Y;FULLWIDTH CLOSING PARENTHESIS;;;;
+FF0A;FULLWIDTH ASTERISK;Po;0;ON;<wide> 002A;;;;N;;;;;
+FF0B;FULLWIDTH PLUS SIGN;Sm;0;ES;<wide> 002B;;;;N;;;;;
+FF0C;FULLWIDTH COMMA;Po;0;CS;<wide> 002C;;;;N;;;;;
+FF0D;FULLWIDTH HYPHEN-MINUS;Pd;0;ES;<wide> 002D;;;;N;;;;;
+FF0E;FULLWIDTH FULL STOP;Po;0;CS;<wide> 002E;;;;N;FULLWIDTH PERIOD;;;;
+FF0F;FULLWIDTH SOLIDUS;Po;0;CS;<wide> 002F;;;;N;FULLWIDTH SLASH;;;;
+FF10;FULLWIDTH DIGIT ZERO;Nd;0;EN;<wide> 0030;0;0;0;N;;;;;
+FF11;FULLWIDTH DIGIT ONE;Nd;0;EN;<wide> 0031;1;1;1;N;;;;;
+FF12;FULLWIDTH DIGIT TWO;Nd;0;EN;<wide> 0032;2;2;2;N;;;;;
+FF13;FULLWIDTH DIGIT THREE;Nd;0;EN;<wide> 0033;3;3;3;N;;;;;
+FF14;FULLWIDTH DIGIT FOUR;Nd;0;EN;<wide> 0034;4;4;4;N;;;;;
+FF15;FULLWIDTH DIGIT FIVE;Nd;0;EN;<wide> 0035;5;5;5;N;;;;;
+FF16;FULLWIDTH DIGIT SIX;Nd;0;EN;<wide> 0036;6;6;6;N;;;;;
+FF17;FULLWIDTH DIGIT SEVEN;Nd;0;EN;<wide> 0037;7;7;7;N;;;;;
+FF18;FULLWIDTH DIGIT EIGHT;Nd;0;EN;<wide> 0038;8;8;8;N;;;;;
+FF19;FULLWIDTH DIGIT NINE;Nd;0;EN;<wide> 0039;9;9;9;N;;;;;
+FF1A;FULLWIDTH COLON;Po;0;CS;<wide> 003A;;;;N;;;;;
+FF1B;FULLWIDTH SEMICOLON;Po;0;ON;<wide> 003B;;;;N;;;;;
+FF1C;FULLWIDTH LESS-THAN SIGN;Sm;0;ON;<wide> 003C;;;;Y;;;;;
+FF1D;FULLWIDTH EQUALS SIGN;Sm;0;ON;<wide> 003D;;;;N;;;;;
+FF1E;FULLWIDTH GREATER-THAN SIGN;Sm;0;ON;<wide> 003E;;;;Y;;;;;
+FF1F;FULLWIDTH QUESTION MARK;Po;0;ON;<wide> 003F;;;;N;;;;;
+FF20;FULLWIDTH COMMERCIAL AT;Po;0;ON;<wide> 0040;;;;N;;;;;
+FF21;FULLWIDTH LATIN CAPITAL LETTER A;Lu;0;L;<wide> 0041;;;;N;;;;FF41;
+FF22;FULLWIDTH LATIN CAPITAL LETTER B;Lu;0;L;<wide> 0042;;;;N;;;;FF42;
+FF23;FULLWIDTH LATIN CAPITAL LETTER C;Lu;0;L;<wide> 0043;;;;N;;;;FF43;
+FF24;FULLWIDTH LATIN CAPITAL LETTER D;Lu;0;L;<wide> 0044;;;;N;;;;FF44;
+FF25;FULLWIDTH LATIN CAPITAL LETTER E;Lu;0;L;<wide> 0045;;;;N;;;;FF45;
+FF26;FULLWIDTH LATIN CAPITAL LETTER F;Lu;0;L;<wide> 0046;;;;N;;;;FF46;
+FF27;FULLWIDTH LATIN CAPITAL LETTER G;Lu;0;L;<wide> 0047;;;;N;;;;FF47;
+FF28;FULLWIDTH LATIN CAPITAL LETTER H;Lu;0;L;<wide> 0048;;;;N;;;;FF48;
+FF29;FULLWIDTH LATIN CAPITAL LETTER I;Lu;0;L;<wide> 0049;;;;N;;;;FF49;
+FF2A;FULLWIDTH LATIN CAPITAL LETTER J;Lu;0;L;<wide> 004A;;;;N;;;;FF4A;
+FF2B;FULLWIDTH LATIN CAPITAL LETTER K;Lu;0;L;<wide> 004B;;;;N;;;;FF4B;
+FF2C;FULLWIDTH LATIN CAPITAL LETTER L;Lu;0;L;<wide> 004C;;;;N;;;;FF4C;
+FF2D;FULLWIDTH LATIN CAPITAL LETTER M;Lu;0;L;<wide> 004D;;;;N;;;;FF4D;
+FF2E;FULLWIDTH LATIN CAPITAL LETTER N;Lu;0;L;<wide> 004E;;;;N;;;;FF4E;
+FF2F;FULLWIDTH LATIN CAPITAL LETTER O;Lu;0;L;<wide> 004F;;;;N;;;;FF4F;
+FF30;FULLWIDTH LATIN CAPITAL LETTER P;Lu;0;L;<wide> 0050;;;;N;;;;FF50;
+FF31;FULLWIDTH LATIN CAPITAL LETTER Q;Lu;0;L;<wide> 0051;;;;N;;;;FF51;
+FF32;FULLWIDTH LATIN CAPITAL LETTER R;Lu;0;L;<wide> 0052;;;;N;;;;FF52;
+FF33;FULLWIDTH LATIN CAPITAL LETTER S;Lu;0;L;<wide> 0053;;;;N;;;;FF53;
+FF34;FULLWIDTH LATIN CAPITAL LETTER T;Lu;0;L;<wide> 0054;;;;N;;;;FF54;
+FF35;FULLWIDTH LATIN CAPITAL LETTER U;Lu;0;L;<wide> 0055;;;;N;;;;FF55;
+FF36;FULLWIDTH LATIN CAPITAL LETTER V;Lu;0;L;<wide> 0056;;;;N;;;;FF56;
+FF37;FULLWIDTH LATIN CAPITAL LETTER W;Lu;0;L;<wide> 0057;;;;N;;;;FF57;
+FF38;FULLWIDTH LATIN CAPITAL LETTER X;Lu;0;L;<wide> 0058;;;;N;;;;FF58;
+FF39;FULLWIDTH LATIN CAPITAL LETTER Y;Lu;0;L;<wide> 0059;;;;N;;;;FF59;
+FF3A;FULLWIDTH LATIN CAPITAL LETTER Z;Lu;0;L;<wide> 005A;;;;N;;;;FF5A;
+FF3B;FULLWIDTH LEFT SQUARE BRACKET;Ps;0;ON;<wide> 005B;;;;Y;FULLWIDTH OPENING SQUARE BRACKET;;;;
+FF3C;FULLWIDTH REVERSE SOLIDUS;Po;0;ON;<wide> 005C;;;;N;FULLWIDTH BACKSLASH;;;;
+FF3D;FULLWIDTH RIGHT SQUARE BRACKET;Pe;0;ON;<wide> 005D;;;;Y;FULLWIDTH CLOSING SQUARE BRACKET;;;;
+FF3E;FULLWIDTH CIRCUMFLEX ACCENT;Sk;0;ON;<wide> 005E;;;;N;FULLWIDTH SPACING CIRCUMFLEX;;;;
+FF3F;FULLWIDTH LOW LINE;Pc;0;ON;<wide> 005F;;;;N;FULLWIDTH SPACING UNDERSCORE;;;;
+FF40;FULLWIDTH GRAVE ACCENT;Sk;0;ON;<wide> 0060;;;;N;FULLWIDTH SPACING GRAVE;;;;
+FF41;FULLWIDTH LATIN SMALL LETTER A;Ll;0;L;<wide> 0061;;;;N;;;FF21;;FF21
+FF42;FULLWIDTH LATIN SMALL LETTER B;Ll;0;L;<wide> 0062;;;;N;;;FF22;;FF22
+FF43;FULLWIDTH LATIN SMALL LETTER C;Ll;0;L;<wide> 0063;;;;N;;;FF23;;FF23
+FF44;FULLWIDTH LATIN SMALL LETTER D;Ll;0;L;<wide> 0064;;;;N;;;FF24;;FF24
+FF45;FULLWIDTH LATIN SMALL LETTER E;Ll;0;L;<wide> 0065;;;;N;;;FF25;;FF25
+FF46;FULLWIDTH LATIN SMALL LETTER F;Ll;0;L;<wide> 0066;;;;N;;;FF26;;FF26
+FF47;FULLWIDTH LATIN SMALL LETTER G;Ll;0;L;<wide> 0067;;;;N;;;FF27;;FF27
+FF48;FULLWIDTH LATIN SMALL LETTER H;Ll;0;L;<wide> 0068;;;;N;;;FF28;;FF28
+FF49;FULLWIDTH LATIN SMALL LETTER I;Ll;0;L;<wide> 0069;;;;N;;;FF29;;FF29
+FF4A;FULLWIDTH LATIN SMALL LETTER J;Ll;0;L;<wide> 006A;;;;N;;;FF2A;;FF2A
+FF4B;FULLWIDTH LATIN SMALL LETTER K;Ll;0;L;<wide> 006B;;;;N;;;FF2B;;FF2B
+FF4C;FULLWIDTH LATIN SMALL LETTER L;Ll;0;L;<wide> 006C;;;;N;;;FF2C;;FF2C
+FF4D;FULLWIDTH LATIN SMALL LETTER M;Ll;0;L;<wide> 006D;;;;N;;;FF2D;;FF2D
+FF4E;FULLWIDTH LATIN SMALL LETTER N;Ll;0;L;<wide> 006E;;;;N;;;FF2E;;FF2E
+FF4F;FULLWIDTH LATIN SMALL LETTER O;Ll;0;L;<wide> 006F;;;;N;;;FF2F;;FF2F
+FF50;FULLWIDTH LATIN SMALL LETTER P;Ll;0;L;<wide> 0070;;;;N;;;FF30;;FF30
+FF51;FULLWIDTH LATIN SMALL LETTER Q;Ll;0;L;<wide> 0071;;;;N;;;FF31;;FF31
+FF52;FULLWIDTH LATIN SMALL LETTER R;Ll;0;L;<wide> 0072;;;;N;;;FF32;;FF32
+FF53;FULLWIDTH LATIN SMALL LETTER S;Ll;0;L;<wide> 0073;;;;N;;;FF33;;FF33
+FF54;FULLWIDTH LATIN SMALL LETTER T;Ll;0;L;<wide> 0074;;;;N;;;FF34;;FF34
+FF55;FULLWIDTH LATIN SMALL LETTER U;Ll;0;L;<wide> 0075;;;;N;;;FF35;;FF35
+FF56;FULLWIDTH LATIN SMALL LETTER V;Ll;0;L;<wide> 0076;;;;N;;;FF36;;FF36
+FF57;FULLWIDTH LATIN SMALL LETTER W;Ll;0;L;<wide> 0077;;;;N;;;FF37;;FF37
+FF58;FULLWIDTH LATIN SMALL LETTER X;Ll;0;L;<wide> 0078;;;;N;;;FF38;;FF38
+FF59;FULLWIDTH LATIN SMALL LETTER Y;Ll;0;L;<wide> 0079;;;;N;;;FF39;;FF39
+FF5A;FULLWIDTH LATIN SMALL LETTER Z;Ll;0;L;<wide> 007A;;;;N;;;FF3A;;FF3A
+FF5B;FULLWIDTH LEFT CURLY BRACKET;Ps;0;ON;<wide> 007B;;;;Y;FULLWIDTH OPENING CURLY BRACKET;;;;
+FF5C;FULLWIDTH VERTICAL LINE;Sm;0;ON;<wide> 007C;;;;N;FULLWIDTH VERTICAL BAR;;;;
+FF5D;FULLWIDTH RIGHT CURLY BRACKET;Pe;0;ON;<wide> 007D;;;;Y;FULLWIDTH CLOSING CURLY BRACKET;;;;
+FF5E;FULLWIDTH TILDE;Sm;0;ON;<wide> 007E;;;;N;FULLWIDTH SPACING TILDE;;;;
+FF5F;FULLWIDTH LEFT WHITE PARENTHESIS;Ps;0;ON;<wide> 2985;;;;Y;;*;;;
+FF60;FULLWIDTH RIGHT WHITE PARENTHESIS;Pe;0;ON;<wide> 2986;;;;Y;;*;;;
+FF61;HALFWIDTH IDEOGRAPHIC FULL STOP;Po;0;ON;<narrow> 3002;;;;N;HALFWIDTH IDEOGRAPHIC PERIOD;;;;
+FF62;HALFWIDTH LEFT CORNER BRACKET;Ps;0;ON;<narrow> 300C;;;;Y;HALFWIDTH OPENING CORNER BRACKET;;;;
+FF63;HALFWIDTH RIGHT CORNER BRACKET;Pe;0;ON;<narrow> 300D;;;;Y;HALFWIDTH CLOSING CORNER BRACKET;;;;
+FF64;HALFWIDTH IDEOGRAPHIC COMMA;Po;0;ON;<narrow> 3001;;;;N;;;;;
+FF65;HALFWIDTH KATAKANA MIDDLE DOT;Po;0;ON;<narrow> 30FB;;;;N;;;;;
+FF66;HALFWIDTH KATAKANA LETTER WO;Lo;0;L;<narrow> 30F2;;;;N;;;;;
+FF67;HALFWIDTH KATAKANA LETTER SMALL A;Lo;0;L;<narrow> 30A1;;;;N;;;;;
+FF68;HALFWIDTH KATAKANA LETTER SMALL I;Lo;0;L;<narrow> 30A3;;;;N;;;;;
+FF69;HALFWIDTH KATAKANA LETTER SMALL U;Lo;0;L;<narrow> 30A5;;;;N;;;;;
+FF6A;HALFWIDTH KATAKANA LETTER SMALL E;Lo;0;L;<narrow> 30A7;;;;N;;;;;
+FF6B;HALFWIDTH KATAKANA LETTER SMALL O;Lo;0;L;<narrow> 30A9;;;;N;;;;;
+FF6C;HALFWIDTH KATAKANA LETTER SMALL YA;Lo;0;L;<narrow> 30E3;;;;N;;;;;
+FF6D;HALFWIDTH KATAKANA LETTER SMALL YU;Lo;0;L;<narrow> 30E5;;;;N;;;;;
+FF6E;HALFWIDTH KATAKANA LETTER SMALL YO;Lo;0;L;<narrow> 30E7;;;;N;;;;;
+FF6F;HALFWIDTH KATAKANA LETTER SMALL TU;Lo;0;L;<narrow> 30C3;;;;N;;;;;
+FF70;HALFWIDTH KATAKANA-HIRAGANA PROLONGED SOUND MARK;Lm;0;L;<narrow> 30FC;;;;N;;;;;
+FF71;HALFWIDTH KATAKANA LETTER A;Lo;0;L;<narrow> 30A2;;;;N;;;;;
+FF72;HALFWIDTH KATAKANA LETTER I;Lo;0;L;<narrow> 30A4;;;;N;;;;;
+FF73;HALFWIDTH KATAKANA LETTER U;Lo;0;L;<narrow> 30A6;;;;N;;;;;
+FF74;HALFWIDTH KATAKANA LETTER E;Lo;0;L;<narrow> 30A8;;;;N;;;;;
+FF75;HALFWIDTH KATAKANA LETTER O;Lo;0;L;<narrow> 30AA;;;;N;;;;;
+FF76;HALFWIDTH KATAKANA LETTER KA;Lo;0;L;<narrow> 30AB;;;;N;;;;;
+FF77;HALFWIDTH KATAKANA LETTER KI;Lo;0;L;<narrow> 30AD;;;;N;;;;;
+FF78;HALFWIDTH KATAKANA LETTER KU;Lo;0;L;<narrow> 30AF;;;;N;;;;;
+FF79;HALFWIDTH KATAKANA LETTER KE;Lo;0;L;<narrow> 30B1;;;;N;;;;;
+FF7A;HALFWIDTH KATAKANA LETTER KO;Lo;0;L;<narrow> 30B3;;;;N;;;;;
+FF7B;HALFWIDTH KATAKANA LETTER SA;Lo;0;L;<narrow> 30B5;;;;N;;;;;
+FF7C;HALFWIDTH KATAKANA LETTER SI;Lo;0;L;<narrow> 30B7;;;;N;;;;;
+FF7D;HALFWIDTH KATAKANA LETTER SU;Lo;0;L;<narrow> 30B9;;;;N;;;;;
+FF7E;HALFWIDTH KATAKANA LETTER SE;Lo;0;L;<narrow> 30BB;;;;N;;;;;
+FF7F;HALFWIDTH KATAKANA LETTER SO;Lo;0;L;<narrow> 30BD;;;;N;;;;;
+FF80;HALFWIDTH KATAKANA LETTER TA;Lo;0;L;<narrow> 30BF;;;;N;;;;;
+FF81;HALFWIDTH KATAKANA LETTER TI;Lo;0;L;<narrow> 30C1;;;;N;;;;;
+FF82;HALFWIDTH KATAKANA LETTER TU;Lo;0;L;<narrow> 30C4;;;;N;;;;;
+FF83;HALFWIDTH KATAKANA LETTER TE;Lo;0;L;<narrow> 30C6;;;;N;;;;;
+FF84;HALFWIDTH KATAKANA LETTER TO;Lo;0;L;<narrow> 30C8;;;;N;;;;;
+FF85;HALFWIDTH KATAKANA LETTER NA;Lo;0;L;<narrow> 30CA;;;;N;;;;;
+FF86;HALFWIDTH KATAKANA LETTER NI;Lo;0;L;<narrow> 30CB;;;;N;;;;;
+FF87;HALFWIDTH KATAKANA LETTER NU;Lo;0;L;<narrow> 30CC;;;;N;;;;;
+FF88;HALFWIDTH KATAKANA LETTER NE;Lo;0;L;<narrow> 30CD;;;;N;;;;;
+FF89;HALFWIDTH KATAKANA LETTER NO;Lo;0;L;<narrow> 30CE;;;;N;;;;;
+FF8A;HALFWIDTH KATAKANA LETTER HA;Lo;0;L;<narrow> 30CF;;;;N;;;;;
+FF8B;HALFWIDTH KATAKANA LETTER HI;Lo;0;L;<narrow> 30D2;;;;N;;;;;
+FF8C;HALFWIDTH KATAKANA LETTER HU;Lo;0;L;<narrow> 30D5;;;;N;;;;;
+FF8D;HALFWIDTH KATAKANA LETTER HE;Lo;0;L;<narrow> 30D8;;;;N;;;;;
+FF8E;HALFWIDTH KATAKANA LETTER HO;Lo;0;L;<narrow> 30DB;;;;N;;;;;
+FF8F;HALFWIDTH KATAKANA LETTER MA;Lo;0;L;<narrow> 30DE;;;;N;;;;;
+FF90;HALFWIDTH KATAKANA LETTER MI;Lo;0;L;<narrow> 30DF;;;;N;;;;;
+FF91;HALFWIDTH KATAKANA LETTER MU;Lo;0;L;<narrow> 30E0;;;;N;;;;;
+FF92;HALFWIDTH KATAKANA LETTER ME;Lo;0;L;<narrow> 30E1;;;;N;;;;;
+FF93;HALFWIDTH KATAKANA LETTER MO;Lo;0;L;<narrow> 30E2;;;;N;;;;;
+FF94;HALFWIDTH KATAKANA LETTER YA;Lo;0;L;<narrow> 30E4;;;;N;;;;;
+FF95;HALFWIDTH KATAKANA LETTER YU;Lo;0;L;<narrow> 30E6;;;;N;;;;;
+FF96;HALFWIDTH KATAKANA LETTER YO;Lo;0;L;<narrow> 30E8;;;;N;;;;;
+FF97;HALFWIDTH KATAKANA LETTER RA;Lo;0;L;<narrow> 30E9;;;;N;;;;;
+FF98;HALFWIDTH KATAKANA LETTER RI;Lo;0;L;<narrow> 30EA;;;;N;;;;;
+FF99;HALFWIDTH KATAKANA LETTER RU;Lo;0;L;<narrow> 30EB;;;;N;;;;;
+FF9A;HALFWIDTH KATAKANA LETTER RE;Lo;0;L;<narrow> 30EC;;;;N;;;;;
+FF9B;HALFWIDTH KATAKANA LETTER RO;Lo;0;L;<narrow> 30ED;;;;N;;;;;
+FF9C;HALFWIDTH KATAKANA LETTER WA;Lo;0;L;<narrow> 30EF;;;;N;;;;;
+FF9D;HALFWIDTH KATAKANA LETTER N;Lo;0;L;<narrow> 30F3;;;;N;;;;;
+FF9E;HALFWIDTH KATAKANA VOICED SOUND MARK;Lm;0;L;<narrow> 3099;;;;N;;halfwidth katakana-hiragana voiced sound mark;;;
+FF9F;HALFWIDTH KATAKANA SEMI-VOICED SOUND MARK;Lm;0;L;<narrow> 309A;;;;N;;halfwidth katakana-hiragana semi-voiced sound mark;;;
+	-->  
+    <violation>
+	    <name>BAD_BIDI_SUBCOMPONENT</name>
+	    <unimplemented/>
+	    <should/>
+	    <description>
+	There are restrictions on bidi characters in subcomponents of IRIs
+	    </description>
+	    <spec ref="IRI">
+		    <text section="4.2">
+<ol>
+	<li>
+A component SHOULD NOT use both right-to-left and left-to-right
+    characters.
+    </li>
+    <li>
+A component using right-to-left characters SHOULD start and end
+    with right-to-left characters.
+    </li></ol>	    </text>
+	    </spec>
+
+    </violation>
+    <!--
+    <violation><name>HAS_PORT</name> </violation>
+    <violation><name>HAS_FRAGMENT</name> </violation>
+    <violation><name>USES_GENERIC_SYNTAX</name> </violation>
+    <violation><name>USES_OPAQUE_SYNTAX</name> </violation>
+    <violation><name>NO_HOST</name> </violation>
+    <violation><name>NO_AUTHORITY</name> </violation>
+    -->
+    <violation><name>DNS_LENGTH_LIMIT</name></violation>
+    <violation><name>DNS_LABEL_LENGTH_LIMIT</name></violation>
+    <violation><name>NOT_UTF8_ESCAPE</name></violation>
+    <violation><name>NOT_UTF8_ESCAPE_IN_HOST</name></violation>
+    <violation><name>BAD_DOT_IN_IDN</name></violation>
+    <violation><name>UNREGISTERED_IANA_SCHEME</name>
+    
+    <description>
+      The scheme name does not have a "-" in it, but is not in the IANA registry.
+      (Last updated from the registry January 2006)
+      </description>
+      <spec ref="URL_Registratrion">
+        <text section="">
+        </text>
+      </spec>
+      <spec ref="URI">
+        <text section="3.2">
+         The NAMES of schemes registered in the IETF tree MUST NOT contain the dash 
+         (also known as the hyphen and minus sign) character ('-') USASCII value 2Dh. 
+         Use of this character can cause confusion with schemes registered in 
+         alternative trees (see section 3.3).
+        </text>
+           <text section="3.3">
+        The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:
+<pre>
+      &lt;prefix>'-'&lt;tree-specific identifier>
+</pre>
+For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix. 
+ </text>
+      </spec>
+      <also ref="IRI"/>
+      <also ref="XLink"/>
+      <also ref="XML"/>
+      <also ref="RDF"/>
+      <also ref="Schema"/>
+      <bad>foo://example.org/bar</bad>
+    </violation>
+    <violation><name>UNREGISTERED_NONIETF_SCHEME_TREE</name>
+    
+    <description>
+      The scheme name has a "-" in it, but it does not start in "x-"
+      and the prefix is not known as the prefix of an alternative tree for
+      URI schemes.
+      </description>
+      <comment>
+      There is no standard provision for "x-" as a prefix for private use schemes.
+      This is a feature of this implementation.
+      As far as I am aware, no alternative trees have been registered.
+      </comment>
+      <spec ref="URL_Registratrion">
+           <text section="3.3">
+        The syntax for alternative trees shall be as follows: each tree will be identified by a unique prefix, which must be established in the same fashion as a URL scheme name in the IETF tree, except that the prefix must be defined by a Standards Track document. Scheme names in the new tree are then constructed by prepending the prefix to an identifier unique to each scheme in that tree, as prescribed by that tree's identifying document:
+<pre>
+      &lt;prefix>'-'&lt;tree-specific identifier>
+</pre>
+For instance, the "foo" tree would allow creation of scheme names of the form: "foo-blahblah:" and "foo-bar:", where the tree prescribes an arbitrary USASCII string following the tree's unique prefix. 
+ </text>
+      </spec>
+      <also ref="URI"/>
+      <also ref="IRI"/>
+      <also ref="XLink"/>
+      <also ref="XML"/>
+      <also ref="RDF"/>
+      <also ref="Schema"/>
+      <bad>foo-bar://example.org/bar</bad>
+    </violation>
+    <violation><name>NOT_NFC</name>
+	    <unimplemented/>  
+    <should/>
+    <description>
+      The IRI is not in Unicode Normal Form C.
+    </description>
+      <spec ref="IRI">
+        <text section="5.3.2.2">
+        To avoid false negatives and problems with transcoding, IRIs SHOULD be created by using NFC. 
+        </text>
+      </spec>
+      <bad>http://example.org/#Andre<unicode>0301</unicode></bad>
+    </violation>
+    
+    <violation><name>NOT_NFKC</name>
+    <unimplemented/>  
+    <minting/>
+    <description>
+      The IRI is not in Unicode Normal Form KC.
+    </description>
+      <spec ref="IRI">
+        <text section="7.5">
+        Although there may be exceptions, newly created resource names should generally be in NFKC
+        </text>
+      </spec>
+      <bad>http://example.org/#Andre<unicode>0301</unicode></bad>
+    </violation>
+    
+    <violation>
+      <name>DEPRECATED_UNICODE_CHARACTER</name>
+      <description>TODO</description>
+      <also ref="Unicode"/>
+      <also ref="IRI"/>
+    </violation>
+    
+    <violation>
+      <name>UNDEFINED_UNICODE_CHARACTER</name>
+      <description>TODO</description>
+      <also ref="Unicode"/>
+      <also ref="IRI"/>
+    </violation>
+    
+    <violation>
+      <name>PRIVATE_USE_CHARACTER</name>
+      <description>TODO</description>
+      <also ref="Unicode"/>
+      <also ref="IRI"/>
+    </violation>
+    
+    
+    <violation>
+      <name>UNICODE_CONTROL_CHARACTER</name>
+      <description>TODO</description>
+      <also ref="Unicode"/>
+      <also ref="IRI"/>
+    </violation>
+    
+    <violation>
+      <name>UNASSIGNED_UNICODE_CHARACTER</name>
+      <minting/>
+      <description>The character code is not assigned in the version of Unicode implemented here.</description>
+      <also ref="Unicode"/>
+      <also ref="IRI"/>
+    </violation>
+    
+    
+    <violation>
+      <name>MAYBE_NOT_NFC</name>
+	    <internal/>
+    </violation>
+    
+    
+    <violation>
+      <name>MAYBE_NOT_NFKC</name>
+	    <internal/>
+    </violation>
+    
+    <violation>
+      <name>UNICODE_WHITESPACE</name>
+      <description>TODO</description>
+      <also ref="Unicode"/>
+      <also ref="IRI"/>
+    </violation>
+    
+    <violation>
+      <name>COMPATIBILITY_CHARACTER</name>
+      <description>TODO</description>
+      <also ref="Unicode"/>
+      <also ref="IRI"/>
+    </violation>
+    
+    
+    <violation>
+      <name>REQUIRED_COMPONENT_MISSING</name>
+      <description>A component that is required by the scheme is missing.</description>
+    </violation>
+    
+    <violation>
+      <name>PROHIBITED_COMPONENT_PRESENT</name>
+      <description>A component that is prohibited by the scheme is present.</description>
+    </violation>
+      
+    
+    <violation>
+      <name>SCHEME_REQUIRES_LOWERCASE</name>
+      <description>Some part of the scheme specific syntax requires lowercase.</description>
+    </violation>
+    
+    <violation>
+      <name>SCHEME_PREFERS_LOWERCASE</name>
+      <description>Some part of the scheme specific syntax prefers lowercase.</description>
+      <minting/>
+    </violation>
+    
+    <violation>
+      <name>SCHEME_PATTERN_MATCH_FAILED</name>
+      <description>The scheme specific syntax rules are violated.</description>
+    </violation>
+    
+    <violation><name>QUERY_IN_LEGACY_SCHEME</name></violation>
+</violations>
+
+
+

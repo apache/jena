@@ -1,0 +1,25 @@
+This file lists the dependences for Apache Jena Spatial.
+  Version numbers are given in the POM file for a particular distribution. 
+
+Apache Projects:   Apache Software License
+  Apache Jena, including the Jena IRI library
+  Apache Xerces-J
+  Apache log4j
+  Apache HttpComponents (HTTP Client)
+  Apache Commons Codec
+  Apache Lucene
+
+SLF4J : http://www.slf4j.org/
+  Copyright (c) 2004-2008 QOS.ch
+  MIT License
+
+JUnit : http://junit.org/
+  Common Public License - v 1.0
+
+spatial4j : https://github.com/spatial4j/spatial4j
+  Apache Software License - v 2.0
+
+The following dependency is optional and wil need to be provided by the user:
+
+JTS Topology Suite : http://tsusiatsoftware.net/jts/main.html
+  LGPL Licence

@@ -1,0 +1,87 @@
+#!/bin/bash  -- hint to emacs
+
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# **** Source this file, not execute it.
+
+
+## Environment variable usage:
+## SDBROOT         :: The root of the SDB installation (required)
+## SDB_JDBC        :: The JDBC jar file, or path list of JDBC jars
+## JVM_ARGS        :: Additional argument to the JVM (e.g. -Xmx1024M)
+## 
+##   Default store description 
+##   is the file sdb.ttl in the
+##   current directory
+
+## Also: 
+## SDB_USER         :: JDBC user name
+## SDB_PASSWORD     :: JDBC password
+
+## Source this file to set:
+##  SDB_CP          :: Classpath
+##  SDB_SPEC        :: Default store specification
+##  SDB_CMD         :: The SDB command to call.
+
+# Check for alternative name
+SDBROOT="${SDBROOT:-$SDB_ROOT}"
+
+## ---- Check root
+if [ "$SDBROOT" = "" ]
+then
+    echo "SDBROOT is not set" 1>&2
+    exit 1
+    fi
+
+## ---- Set class path separator 
+SEP=':'
+if [ "$OSTYPE" = "cygwin" ]
+then
+    SEP=';'
+    fi
+
+## ---- who am I?
+SDB_CMD=$(basename $0)
+
+## ---- JDBC
+## Commercial drivers can't be shipped for license reasons
+
+## ---- Additional JDBC jar files.
+# JDBC_CONNECTOR is deprecated
+
+SDB_JDBC="${SDB_JDBC:-$JDBC_CONNECTOR}"
+if [ "$SDB_JDBC" = "" ]
+then
+    echo "Warning: SDB_JDBC not set" 2>&1
+    fi
+
+export SDB_CP="${SDB_JDBC}"
+
+## ---- Add the script engine
+if [ "$SDB_SCRIPT" != "" ]
+then
+    SDB_CP="$SDB_SCRIPT$SEP$CP"
+fi
+
+## ---- JVM Args e.g. -Xmx1024M
+JVM_ARGS=${JVM_ARGS:-}
+
+## ---- Classpath : adds in current CP
+SDB_CP="$($SDBROOT/bin/sdb_path)"
+
+## ---- Store description (default)
+SDB_SPEC="${SDB_SPEC:---sdb=sdb.ttl}"

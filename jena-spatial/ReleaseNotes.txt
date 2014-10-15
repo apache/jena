@@ -1,0 +1,18 @@
+Release Notes 
+=============
+
+==== Jena Spatial 1.0.2
+
+Update to Lucene 4.2.6 and spatial4j 0.4.
+
+==== Jena Spatial 1.0.0
++ Jena spatial search support with property functions:
+  nearby
+  withinCircle
+  withinBox
+  intersectBox
+  north
+  south
+  west
+  east
+

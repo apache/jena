@@ -1,0 +1,13 @@
+This file lists the dependences for the Jena IRI Library.
+  Version numbers are given in the POM file for a particular distribution. 
+
+JUnit : http://junit.org/
+  Common Public License - v 1.0
+
+In addition, code is generated for the project using JFlex.
+JFlex is not needed at runtime.
+
+JFlex
+  http://jflex.de/
+  http://sourceforge.net/projects/jflex/
+  GNU General Public License (GPL)

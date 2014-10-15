@@ -1,0 +1,107 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Union of named graphs" ;
+    mf:entries
+    ( 
+      [  mf:name    "Merge-1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-1.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-1-results.srx>
+      ]
+      [  mf:name    "Merge-2" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-2.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-2-results.srx>
+      ]
+      [  mf:name    "Merge-3" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-3.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-3-results.srx>
+      ]
+      [  mf:name    "Merge-4" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-4.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-4-results.srx>
+      ]
+      [  mf:name    "Merge-5" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-5.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-5-results.srx>
+      ]
+      [  mf:name    "Merge-6" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-6.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-6-results.srx>
+      ]
+      # Queries that need more than one SQL query (currently)
+      [  mf:name    "Merge-A" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-A.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-A-results.srx>
+      ]
+      [  mf:name    "Merge-B" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <merge-B.rq> ;
+              qt:data <data-dft.ttl> ;
+              qt:graphData <data-1.ttl> ;
+              qt:graphData <data-2.ttl> ;
+            ] ;
+         mf:result <merge-B-results.srx>
+      ]
+    ).

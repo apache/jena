@@ -1,0 +1,86 @@
+SDB Change Log
+==============
+
+
+
+==== SDB v1.4.0
+
++ Integrated with main Jena build process.
++ Add support for SAP database (JENA-241) - thanks to Fergal Monaghan
+
+==== SDB v1.3.4-snapshot
+
++ Enable safe concurrent updates on postgresql, db2 and
+  oracle.
+
+==== SDB v1.3.3
+
++ Upgraded to ARQ 2.8.6
+  Includes SPARQL 1.1 Update support.
++ Add processing of regex filters to SQL LIKE for substrings
+  regex must not involve metacharcaters except ^ and $
+  (anchored and unanchored, case sensitive and case insensitive)
+
+==== SDB v1.3.2
+
++ Upgraded to ARQ 2.8.5 and Jena 2.6.3.
+    Older versions of these jars will not work.
++ Enable OFFSET/LIMIT processing of SQL.
++ Work around MySQL bug concerning IN
+
+==== SDB v1.3.1
+
++ Changed the index structure for the quad table to improve converage.
+  Migration: drop all secondary indexes and reindex.
++ Added StoreUtils.isFormatted(Store)
++ Added sdbdelete and sdbload --replace option
+
+==== SDB v1.3
+
++ Reification: Support for Reification style "standard" (only)
+
++ Upgraded to Jena 2.6.0 and ARQ 2.7.0 
+    Older versions of these jars will not work.
+    antlr-2.7.5.jar and concurrent.jar removed, logging now slf4j
+    
++ Added improvement for Oracle to avoid blob handling over JDBC for lexical forms <= 2000.
+  Thanks to Metatomix (Scott Kagels) for the patches. 
+
+==== SDB v1.2
+
++ Must use ARQ 2.6 (changes to quad support in preparation for optimization and path support)
++ Fix to BulkLoader (MS SQL Server) to allow creating a second store over an JDBC so JDBC pooled conenctions work
++ Added Store#isClosed(). Does nothing currently except track whether you've called close().
++ Various bug fixes
+
+==== SDB v1.1
+
++ SPARQL/Update support 
+
++ Jar upgrades: 
+    commons-logging-1.1.1
+    new versions ARQ and Jena jars (no name changes).
+    
++ MySQL : Node table schema changed to be LONGTEXT.  In v1.0 literals longer than 64K caused errors.
+  Old databases layouts continue to work.  Ideally, reformat and reload. 
+    
+**** The named graph indexing has been improved ****
+  Old databases still work but ideally should be reindexed.
+  
+  Migration: drop indexes with SBD 1.0 tools, create indexes with SDB 1.1 tools
+  Manaual deletion of all secondary indexes via DB admin tools also will work 
+
++ Assembler structures clarified.  [document on wiki]
+
++ SQL code generation made more regular.
+
++ H2 support
+
++ removeAll() fastpath added
+
+==== SDB v1.0
+
++ DB2 support
++ Fix: Transaction handling
++ More testing
+

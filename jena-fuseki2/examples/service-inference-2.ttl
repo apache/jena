@@ -1,0 +1,43 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+# Example of a data service with SPARQL query abnd update on an 
+# inference model.  Data is taken from TDB.
+
+## ---------------------------------------------------------------
+## Service with only SPARQL query on an inference model.
+## Inference model base data is in TDB.
+
+<#service2>  rdf:type fuseki:Service ;
+    fuseki:name              "inf" ;             # http://host/inf
+    fuseki:serviceQuery      "sparql" ;          # SPARQL query service
+    fuseki:serviceUpdate     "update" ;
+    fuseki:dataset           <#dataset> ;
+    .
+
+<#dataset> rdf:type       ja:RDFDataset ;
+    ja:defaultGraph       <#model_inf> ;
+     .
+
+<#model_inf> a ja:InfModel ;
+     ja:baseModel <#tdbGraph> ;
+     ja:reasoner [
+         ja:reasonerURL <http://jena.hpl.hp.com/2003/OWLFBRuleReasoner>
+     ] .
+
+## Base data in TDB.
+<#tdbDataset> rdf:type tdb:DatasetTDB ;
+    tdb:location "DB" ;
+    # If the unionDefaultGraph is used, then the "update" service should be removed.
+    # tdb:unionDefaultGraph true ;
+    .
+
+<#tdbGraph> rdf:type tdb:GraphTDB ;
+    tdb:dataset <#tdbDataset> .

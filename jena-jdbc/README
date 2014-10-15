@@ -1,0 +1,151 @@
+Jena JDBC 
+=========
+
+Jena JDBC is a new experimental module to provide a framework for SPARQL over JDBC that can be reused and extended
+by user code as necessary.  The initial aim is not to provide any SQL to SPARQL translation though that may
+eventually be added as a layer on top of the basic framework.
+
+NOTE - This is an experimental module subject to rapid change and with no guarantees that it will coalesce into a 
+       releasable project at any point in the future.
+
+Module Structure
+----------------
+
+The current experimental code consists of 6 modules:
+
+jena-jdbc                Parent module for this subsystem
+jena-jdbc-core           Core framework of reusable components and test harnesses for SPARQL over JDBC
+jena-jdbc-driver-mem     JDBC driver over an ARQ in-memory dataset
+jena-jdbc-driver-tdb     JDBC driver over a TDB dataset
+jena-jdbc-driver-remote  JDBC driver over remote SPARQL endpoints
+jena-jdbc-driver-bundle  Convenience artifact that creates a shaded JAR containing all the drivers and their dependencies
+
+The aim is to provide common and abstract implementations of everything a SPARQL over JDBC driver will need in the core
+module and to provide driver specific implementations in the relevant packages.
+
+Drivers
+=======
+
+Drivers all use a URL that starts with the following prefix:
+
+jdbc:jena:
+
+Each driver then has its own specific prefix which is then followed by a number of parameters e.g.
+
+jdbc:jena:foo:param=value&arg=1234
+
+Arguments may be separated by ampersand (&), semicolon (;) or pipe (|)
+
+There are some common driver parameters supported by all Jena drivers:
+
+jdbc-compatibility=5
+
+Sets the JDBC compatibility level (range 1-9 with 1 being lowest) which affects some aspects of driver behaviour.
+
+pre-processor=my.package.class
+
+May be specified as many times as desired to register CommandPreProcessor implementations for connections.
+
+post-processor=my.package.class
+
+May be specified as many times as desired to register ResultsPostProcessor implementations for connections.
+
+In-Memory
+---------
+
+Driver Class: org.apache.jena.jdbc.mem.MemDriver
+Driver URL Prefix: jdbc:jena:mem:
+Driver Parameters:
+
+dataset=file.nq
+
+Sets a dataset file to load in as the initial dataset, this or the empty parameter must be provided
+
+empty=true
+
+Sets that the driver will run against an initially empty dataset
+
+Notes:
+- In-Memory datasets do not support transactions
+
+TDB
+---
+
+Driver Class: org.apache.jena.jdbc.tdb.TDBDriver
+Driver URL Prefix: jdbc:jena:tdb:
+Driver Parameters:
+
+location=/path/to/dataset
+
+Sets the location of the TDB dataset to create/load, may use the special location memory to specify a non-persistent in-memory TDB dataset.
+
+must-exist=true
+
+If set then ensures that only existing TDB datasets may be used, prevents incorrect paths leading to unexpected empty datasets
+
+Notes:
+- TDB is always used in transactional mode, auto-commit is on by default
+- Using the in-memory dataset is NOT recommended for anything other than unit testing
+
+Remote
+------
+
+Driver Class: org.apache.jena.jdbc.remote.RemoteEndpointDriver
+Driver URL Prefix: jdbc:jena:remote:
+Driver Parameters:
+
+query=http://example.org/query
+
+Sets the SPARQL Query endpoint to use, one/both of this and the update parameter must be set.  Set only this for a read-only connection
+
+update=http://example.org/update
+
+Sets the SPARQL Update endpoint to use, one/both of this and the query parameter must be set.  Set only this for a write-only connection
+
+default-graph-uri=http://graph
+
+Sets a default graph for SPARQL queries, may be specified multiple times
+
+named-graph-uri=http://graph
+
+Sets a named graph for SPARQL queries, may be specified multiple times
+
+using-graph-uri=http://graph
+
+Sets a default graph for SPARQL updates, may be specified multiple times
+
+using-named-graph-uri=http://graph
+
+Sets a named graph for SPARQL updates, may be specified multiple times
+
+user=username
+
+Sets a user name to authenticate against the remote server with
+
+password=password
+
+Sets a password to authenticate against the remote server with
+
+select-results-type=application/sparql-results+xml
+
+Sets the results type to request for SELECT queries
+
+model-results-type=text/turtle
+
+Sets the results type to request for CONSTRUCT/DESCRIBE queries
+
+Notes:
+- Remote connections do not support transactions
+
+
+To Do List
+==========
+
+This is early experimental prototyping and there is much to be done, this represents a current list of things that need implementing:
+
+- Drivers
+ - Support auto-commit parameter for TDB driver URLs
+ - Remote Endpoint Driver
+  - Provide a convenience Fuseki Driver which is merely a layer over a Remote Endpoint driver 
+- Statement and Result Handling
+ - Implement a ResultSetBuffered to support setFetchSize()

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!--  Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
+
+<properties version="1.0">
+  <comment>SDB System Properties</comment>
+  <entry key="com.hp.hpl.jena.sdb.version">${project.version}</entry>
+  <entry key="com.hp.hpl.jena.sdb.build.datetime">${build.time.xsd}</entry>
+</properties>

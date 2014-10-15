@@ -1,0 +1,16 @@
+PREFIX   :      <http://example/>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+# Variable spans block.
+
+SELECT ?v ?p
+WHERE
+ { ?x :p ?v
+   OPTIONAL
+   {
+     :x ?p ?x .
+     FILTER regex(?v, "^A")
+   }
+ }

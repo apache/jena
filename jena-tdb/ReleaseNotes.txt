@@ -1,0 +1,78 @@
+ChangeLog for TDB
+=================
+
+==== TDB 1.1.0
+
+Jena now requires Java7 as of this version.
+At the same time some classes and methods previous deprecated and marked
+for removal have now been removed.
+
+QueryExecution is now AutoCloeable and can be used with try-resource.
+
++ JENA-720 : NodeId did not handle BigDecimal correctly 
+
+==== TDB 1.0.1
+
++ JENA-550 : tdbloader2 now checks that the target location either 
+  does not exist or does not contain database files. 
+
+
+==== TDB 1.0.0
+
+This was also know as TDB 0.10.2 
+
+==== TDB 0.10.1
+
++ JENA-426 : Default statistics gathering now collects information on rdf:type usage.
+  Large databases, with small numbers of different classes, may benefit from recalculating stats.opt.   
+
+==== TDB 0.10.0
+
+** TDB 0.10.0 depends on Jena 2.10.0 (ARQ 2.10.0)
+
++ Improve the performance of union default graph by efficiently handling potential duplicates.  
++ Command line tdbquery: --mem (or --data) reads into an in-memory dadaset and executes the query.
++ JENA-289 : QueryExecution timeouts now cause TDB BGPs to timeout even if they produce no output. 
++ JENA-363 : Fix to handling of integers with absolute values between 2^56 and 2^63.  
++ JENA-346 : Further fixes for default union graph + write transactions.
++ Consolidation of versions numbers.
++ JENA-344 : Union default graph now works for SPARQL Update WHERE clauses. 
+
+==== TDB 0.9.4
+
++ Enable batching of flushing commits to the main database - 
+  This improves transactional write performance.
++ Extensive testing and fixing for recovery due to abrupt termination of the JVM.  
++ JENA-318 : Fix rejection of bad language tags.
++ JENA_317 : Fix to handling decimal numbers.  Decimals of around 15 digits could be corrupted.  
++ JENA-301 : Recovery did not reset internal file state under certain conditions.  
++ Bug fix: out-of-range derived integers (e.g. xsd:int)
++ Cache read transaction datastructures and reuse view when possible.
++ Add StoreConnection flush() operation to push delayed writer-commits if possible.    
++ JENA-290 : TDB txn creation touched stats unnecessarily, causing slow down. 
+
+==== TDB 0.9.3
+
++ Batching of writer-commits to improve write transaction performance.
+
+==== TDB 0.9.2
+
++ Bug fix (for use in Fuseki).  Caused excessive, if harmless log messages.
+
+==== TDB 0.9.1
+
++ (JENA-252) Fix multithreaded interaction transitioning to transactional mode
++ (JENA-250) Fix lack of sync transitioning to transactional mode
++ Added tdbloader3 (i.e. a pure Java version of tdbloader2) (JENA-117)
++ Bug fix: Graph.size() reports '0' for TDB "urn:x-arq:UnionGraph" (JENA-222) 	
++ Bug fix: Illegal UTF-8 could corrupt the node table. Use binary-safe encoder/decoder (JENA-225)
++ Bug fix: (JENA-230)
+
+==== TDB 0.9.0
+
+TDB 0.9.0 introduces ACID transactions for TDB.  This is based on write-ahead logging.
+
++ Transactions and transactional datasets.
+  http://jena.apache.org/documentation/tdb/tdb_transactions.html
++ Maven group id is now "org.apache.jena" and artifact name is "jena-tdb". 
++ Java 6 is required to run TDB.

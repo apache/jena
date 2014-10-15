@@ -1,0 +1,306 @@
+#------------------------------------------------------------------
+# OWL rule set v0.1
+# This rule set is design to implement owl(f)lite using pure
+# tabled backward chaining. It is experimental and not fully debugged.
+# $Id: owl-b.rules,v 1.7 2004-07-02 08:08:21 der Exp $
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# RDFS Axioms
+#------------------------------------------------------------------
+
+-> (rdf:type      rdfs:range rdfs:Class).
+-> (rdfs:Resource  rdf:type  rdfs:Class).
+-> (rdfs:Literal   rdf:type  rdfs:Class).
+-> (rdf:Statement  rdf:type  rdfs:Class).
+-> (rdf:nil        rdf:type  rdf:List).
+-> (rdf:subject    rdf:type  rdf:Property).
+-> (rdf:object     rdf:type  rdf:Property).
+-> (rdf:predicate  rdf:type  rdf:Property).
+-> (rdf:first      rdf:type  rdf:Property).
+-> (rdf:rest       rdf:type  rdf:Property).
+        
+-> (rdfs:subPropertyOf rdfs:domain rdf:Property).
+-> (rdfs:subClassOf rdfs:domain rdfs:Class).
+-> (rdfs:domain rdfs:domain rdf:Property).
+-> (rdfs:range rdfs:domain rdf:Property).
+-> (rdf:subject rdfs:domain rdf:Statement).
+-> (rdf:predicate rdfs:domain rdf:Statement).
+-> (rdf:object rdfs:domain rdf:Statement).
+-> (rdf:first rdfs:domain rdf:List).
+-> (rdf:rest rdfs:domain rdf:List).
+
+-> (rdfs:subPropertyOf rdfs:range rdf:Property).
+-> (rdfs:subClassOf rdfs:range rdfs:Class).
+-> (rdfs:domain rdfs:range rdfs:Class).
+-> (rdfs:range rdfs:range rdfs:Class).
+-> (rdf:type rdfs:range rdfs:Class).
+-> (rdfs:comment rdfs:range rdfs:Literal).
+-> (rdfs:label rdfs:range rdfs:Literal).
+-> (rdf:rest rdfs:range rdf:List).
+
+-> (rdf:Alt rdfs:subClassOf rdfs:Container).
+-> (rdf:Bag rdfs:subClassOf rdfs:Container).
+-> (rdf:Seq rdfs:subClassOf rdfs:Container).
+-> (rdfs:ContainerMembershipProperty rdfs:subClassOf rdf:Property).
+
+-> (rdfs:isDefinedBy rdfs:subPropertyOf rdfs:seeAlso).
+
+-> (rdf:XMLLiteral rdf:type rdfs:Datatype).
+-> (rdfs:Datatype rdfs:subClassOf rdfs:Class).
+
+#------------------------------------------------------------------
+# RDFS Closure rules
+#------------------------------------------------------------------
+
+# This one could be omitted since the results are not really very interesting!
+#[rdf1: (?x ?p ?y) -> (?x rdf:type rdfs:Resource)]
+#[rdf1b: (?x ?p ?y), notLiteral(?y) -> (?y rdf:type rdfs:Resource)]
+#[rdf4: (?x ?p ?y) -> (?p rdf:type rdf:Property)]
+#[rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
+
+
+[rdfs2:  bound(?c)   (?p rdfs:domain ?c) (?x ?p ?y)  -> (?x rdf:type ?c)] 
+[rdfs2:  unbound(?c) (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)] 
+
+[rdfs3:  bound(?c)   (?p rdfs:range ?c) (?x ?p ?y) -> (?y rdf:type ?c)] 
+[rdfs3:  unbound(?c) (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)] 
+
+[rdfs5a: unbound(?c) (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
+[rdfs5a: bound(?c)   (?b rdfs:subPropertyOf ?c)  (?a rdfs:subPropertyOf ?b)-> (?a rdfs:subPropertyOf ?c)] 
+
+[rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
+
+[rdfs6:  unbound(?q) (?a ?p ?b) (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
+[rdfs6:  bound(?q)   (?p rdfs:subPropertyOf ?q) (?a ?p ?b) -> (?a ?q ?b)] 
+
+[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
+
+[rdfs8:  unbound(?c) (?a rdfs:subClassOf ?b) (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
+[rdfs8:  bound(?c)   (?b rdfs:subClassOf ?c) (?a rdfs:subClassOf ?b) -> (?a rdfs:subClassOf ?c)] 
+
+[rdfs9:  bound(?y)   (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)] 
+[rdfs9:  unbound(?y) (?a rdf:type ?x) (?x rdfs:subClassOf ?y) -> (?a rdf:type ?y)] 
+
+[rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)] 
+
+#------------------------------------------------------------------
+# RDFS iff extensions needed for OWL
+#------------------------------------------------------------------
+[rdfs2a: (?x rdfs:domain ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:domain ?z)]
+[rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]
+
+#------------------------------------------------------------------
+# OWL axioms
+#------------------------------------------------------------------
+
+-> (rdf:first rdf:type owl:FunctionalProperty).
+-> (rdf:rest rdf:type owl:FunctionalProperty).
+
+-> (rdfs:domain owl:SymmetricProperty owl:ObjectProperty).
+-> (rdfs:domain owl:TransitiveProperty owl:ObjectProperty).
+-> (rdfs:domain owl:InverseFunctionalProperty owl:ObjectProperty).
+
+-> (rdfs:range owl:ObjectProperty owl:Thing).
+-> (rdfs:domain owl:ObjectProperty owl:Thing).
+
+-> (owl:Class rdfs:subClassOf rdfs:Class).
+-> (owl:Restriction rdfs:subClassOf owl:Class).
+
+# Omitted since this owl:Class is likelty to die anyway.
+#-> (rdfs:Class rdfs:subClassOf owl:Class).
+
+-> (owl:Thing rdf:type owl:Class).
+
+# These might need to be pre-expanded in the initial rule set
+-> (owl:equivalentProperty rdf:type owl:SymmetricProperty).
+-> (owl:equivalentProperty rdf:type owl:TransitiveProperty).
+-> (owl:equivalentClass rdf:type owl:SymmetricProperty).
+-> (owl:equivalentClass rdf:type owl:TransitiveProperty).
+-> (owl:sameIndividualAs rdf:type owl:SymmetricProperty).
+-> (owl:sameIndividualAs rdf:type owl:TransitiveProperty).
+-> (owl:sameIndividualAs owl:equivalentProperty owl:sameAs).
+-> (owl:differentFrom rdf:type owl:SymmetricProperty).
+
+-> (owl:intersectionOf rdfs:domain owl:Class).
+
+#------------------------------------------------------------------
+# OWL Rules
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# Class rules
+# (Note: compiling intersectionOf to an n+1 rule set is done procedurally)
+#------------------------------------------------------------------
+
+# Identify restriction assertions
+
+[restriction1: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:someValuesFrom ?D)
+						-> (?C owl:equivalentClass some(?P, ?D))]
+						
+[restriction2: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
+						-> (?C owl:equivalentClass all(?P, ?D))]
+						
+[restriction3: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:minCardinality ?X)
+						-> (?C owl:equivalentClass min(?P, ?X))]
+		
+[restriction4: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X)
+						-> (?C owl:equivalentClass max(?P, ?X))]
+		
+[restriction5: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:cardinality ?X)
+						-> (?C owl:equivalentClass card(?P, ?X)), 
+						   (?C rdfs:subClassOf min(?P, ?X)), 
+						   (?C rdfs:subClassOf max(?P, ?X)) ]
+		
+[restriction6: (?C rdfs:subClassOf min(?P, ?X)), (?C rdfs:subClassOf max(?P, ?X)) 
+       					-> (?C rdfs:subClassOf card(?P, ?X))]
+
+# Needed for the case where ?R is a restriction literal and so does not appear in the subject position
+
+[restrictionSubclass1: bound(?D) (?D owl:equivalentClass ?R), isFunctor(?R), 
+											(?X rdf:type ?R)-> (?X rdf:type ?D)]
+										
+[restrictionSubclass1: unbound(?D) (?X rdf:type ?R), isFunctor(?R), 
+								(?D owl:equivalentClass ?R) -> (?X rdf:type ?D)]
+							
+[restrictionSubclass2: bound(?R), isFunctor(?R), (?D owl:equivalentClass ?R), 
+										   (?X rdf:type ?D) -> (?X rdf:type ?R)]
+									   
+[restrictionSubclass2: unbound(?R), (?X rdf:type ?D), (?D owl:equivalentClass ?R),
+											isFunctor(?R) -> (?X rdf:type ?R)]
+
+# Interactions between cardinalities and some/all
+
+[restrictionProc1: (?X rdf:type, max(?P, 1)), (?X, rdf:type, some(?P, ?C)) 
+						-> (?X rdf:type all(?P, ?C))]
+
+[restrictionProc2a: unbound(?X), (?P rdf:type owl:FunctionalProperty), (?X, rdf:type, some(?P, ?C)) 
+						-> (?X rdf:type all(?P, ?C))]
+
+[restrictionProc2b: bound(?X),(?X, rdf:type, some(?P, ?C)), (?P rdf:type owl:FunctionalProperty), 
+						-> (?X rdf:type all(?P, ?C))]
+
+[restrictionProc4a: (?X rdf:type all(?P, ?C)), (?X ?P ?Y), notEqual(?P, rdf:type) 
+						-> (?X rdf:type some(?P, ?C))]
+
+[restrictionProc4b: unbound(?Y), (?X rdf:type all(?P, ?C)), (?X ?P ?Y), notEqual(?P, rdf:type) 
+						-> (?Y rdf:type ?C)]
+
+[restrictionProc4c: bound(?Y), (?X ?P ?Y), (?X rdf:type all(?P, ?C)), notEqual(?P, rdf:type) 
+						-> (?Y rdf:type ?C)]       					
+		
+[restrictionProc5: (?P rdfs:range ?C), (?X ?P *), notFunctor(?C) -> (?X rdf:type some(?P, ?C))]
+
+[restrictionProc6: (?D owl:equivalentClass all(?P, ?C)) (?P rdfs:range ?C)
+						-> (owl:Thing rdfs:subClassOf ?D)]
+
+[restrictionProc7: (?A rdf:type max(?P, 1)), (?A ?P ?B), (?A ?P ?C) -> (?B owl:sameIndividualAs ?C)]
+
+[restrictionProc8: (?X rdf:type min(?P, 1)), (?X rdf:type max(?P, 0)) -> (?X rdf:type owl:Nothing)]
+
+[restrictionProc9: (?X rdf:type max(?P, 0)) (?X ?P *) -> (?X rdf:type owl:Nothing)]
+
+## Omitted 10 for now, requires prototype generation
+
+[restrictionProc11: (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing) 
+						-> (?X rdf:type max(?P, 1))]
+		
+#[restrictionProc12: bound (?D), (?D rdf:type owl:Class), (?P rdfs:range ?C), notFunctor(?C)  
+#						-> (?D rdfs:subClassOf all(?P, ?C)) ]
+[restrictionProc12: bound(?P), (?P rdfs:range ?C), (?D rdf:type owl:Class), notFunctor(?C)  
+						-> (?D rdfs:subClassOf all(?P, ?C)) ]
+		
+[restrictionProc13: (owl:Thing rdfs:subClassOf all(?P, ?C)) -> (?P rdfs:range ?C)]
+
+#[restrictionProc13: (owl:Thing rdfs:subClassOf all(?P, ?C)) 
+#						-> (?P rdfs:range ?C), (?P rdf:type owl:ObjectProperty)]
+
+# There is a problem with this when used backward chaining -
+# if we supported (* type *) matches then we are doing search over all data.
+#[card3: (?X ?P ?V), (?V rdf:type ?C), notFunctor(?C) -> (?X rdf:type some(?P, ?C))]
+[card3: bound(?P), bound(?X), (?X ?P ?V), (?V rdf:type ?C) -> (?X rdf:type some(?P, ?C))]
+
+#------------------------------------------------------------------
+# Disjointness and equivalence rules
+#------------------------------------------------------------------
+
+[distinct1: (?C owl:disjointWith ?D), (?X rdf:type ?C), (?Y rdf:type ?D) 
+						-> (?X owl:differentFrom ?Y) ]
+
+# This one is best done backwards or with a dedicated equality reasoner
+# Hacked for now just for completeness
+
+# [distinct2: (* owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
+
+# To be improved when resolve how to record contradictions
+
+#[conflict1: (?X owl:sameIndividualAs ?Y), (?X owl:differentFrom ?Y) 
+#						-> contradiction('same/different', ?X, ?Y) ]
+		
+#[conflict2: (?X rdf:type ?C), (?X rdf:type ?D), (?C owl:disjointWith ?D) 
+#						-> contradiction('disjoint classes overlap', ?C, ?D, ?X) ]
+
+#------------------------------------------------------------------
+# Property rules
+#------------------------------------------------------------------
+
+# symmetric
+[symmetricProperty1: bound(?P) (?P rdf:type owl:SymmetricProperty), (?X ?P ?Y) -> (?Y ?P ?X)]
+[symmetricProperty1: unbound(?P), (?X ?P ?Y) (?P rdf:type owl:SymmetricProperty) -> (?Y ?P ?X)]
+
+# equivalentProperty 
+
+[equivalentProperty1: (?P owl:equivalentProperty ?Q) 
+						-> (?P rdfs:subPropertyOf ?Q), (?Q rdfs:subPropertyOf ?P) ]
+						
+[equivalentProperty2: (?P rdfs:subPropertyOf ?Q), (?Q rdfs:subPropertyOf ?P) 
+						-> (?P owl:equivalentProperty ?Q) ]
+						
+[equivalentProperty3: (?P owl:sameAs ?Q), (?P rdf:type rdf:Property), (?Q rdf:type rdf:Property) 
+						-> (?P owl:equivalentProperty ?Q) ]
+						
+# equivalentClass
+[equivalentClass1: (?P owl:equivalentClass ?Q) 
+						-> (?P rdfs:subClassOf ?Q), (?Q rdfs:subClassOf ?P) ]
+						
+[equivalentClass2: (?P rdfs:subClassOf ?Q), (?Q rdfs:subClassOf ?P) 
+						-> (?P owl:equivalentClass ?Q) ]
+						
+[equivalentClass3: (?P owl:sameAs ?Q), (?P rdf:type rdfs:Class), (?Q rdf:type rdfs:Class) 
+						-> (?P owl:equivalentClass ?Q) ]
+
+# inverseOf
+[inverseOf1: (?P owl:inverseOf ?Q) -> (?Q owl:inverseOf ?P) ]
+
+[inverseOf2: bound(?P), (?P owl:inverseOf ?Q), (?X ?P ?Y) -> (?Y ?Q ?X) ]
+[inverseOf2: unbound(?P), (?X ?P ?Y), (?P owl:inverseOf ?Q) -> (?Y ?Q ?X) ]
+
+[inverseOf3: (?P owl:inverseOf ?Q), (?P rdf:type owl:FunctionalProperty) 
+						-> (?Q rdf:type owl:InverseFunctionalProperty) ]
+		
+[inverseOf4: (?P owl:inverseOf ?Q), (?P rdf:type owl:InverseFunctionalProperty) 
+						-> (?Q rdf:type owl:FunctionalProperty) ]
+
+# Transitive
+[transitivePropery1: (?P rdf:type owl:TransitiveProperty), (?A ?P ?B), (?B ?P ?C) -> (?A ?P ?C)]
+
+# sameIndividualAs
+[sameIndividualAs1: (?P rdf:type owl:FunctionalProperty), (?A ?P ?B), (?A ?P ?C) 
+                    -> (?B owl:sameIndividualAs ?C) ]
+                    
+[sameIndividualAs2: (?P rdf:type owl:InverseFunctionalProperty), (?A ?P ?B), (?C ?P ?B) 
+                    -> (?A owl:sameIndividualAs ?C) ]
+                    
+[sameIndividualAs3: (?X owl:sameAs ?Y), (?X rdf:type owl:Thing), (?Y rdf:type old:Thing) 
+                    -> (?X owl:sameIndividualAs ?Y) ]
+                    
+
+[sameIndividualAs4: bound(?Y), (?X owl:sameIndividualAs ?Y), (?X ?P ?V) -> (?Y ?P ?V) ]
+[sameIndividualAs4: unbound(?Y), (?X ?P ?V) (?X owl:sameIndividualAs ?Y) -> (?Y ?P ?V) ]
+
+[sameIndividualAs5: bound(?Y) (?X owl:sameIndividualAs ?Y), (?V ?P ?X) -> (?V ?P ?Y) ]
+[sameIndividualAs5: unbound(?Y), (?V ?P ?X) (?X owl:sameIndividualAs ?Y) -> (?V ?P ?Y) ]
+
+[sameIndividualAs6: (?X owl:sameIndividualAs ?Y) -> (?X rdf:type owl:Thing) ]
+
+# Don't yet handle reflexivity of sameIndividualAs

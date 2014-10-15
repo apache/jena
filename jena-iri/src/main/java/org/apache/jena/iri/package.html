@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<html>
+<head>
+</head>
+ <body>
+ <p>An implementation of RFC 3987, Internationalized Resource Identifiers,
+ and of related standards.</p>
+ <p>Use an IRIFactory to parse Strings as IRI objects
+ which:
+ </p>
+ <ul>
+ <li> report violations of the standards, 
+ <li>permit
+ accessing the components of the IRI.
+ <li> support IRI normalization
+ <li> support the IRI and URI comparison ladders
+ </ul>
+ 
+<p>An IRIFactory allows:</p>
+ <ul>
+   <li>The setting of conformance levels,
+   particularly identifying which standard(s) to enforce
+   <li>The creation of IRI objects, checking
+   them against the selected standard(s)
+   <li>The setting of optional behaviours, as 
+   specified in the various standard(s)
+  </ul>
+  <p>The easiest way to use this package is to use
+ one of the preconfigured factories, implementing
+ RFC 3987 or RFC 3986 or a combination implementation
+ appropriate for Semantic Web applications.
+ See the documentation for IRIFactory for more information.
+ </p> 
+<p>This implementation is limited to 16bits,
+and hence approximately Unicode 2.1 support.
+While the Unicode 4.1 code charts are used,
+all characters from these
+greater than \uFFFF are ignored.
+Behaviour with Unicode 4.1 IRIs in Java 1.5,
+using characters greater than \uFFFF
+is undefined.
+This limitation will not be reviewed until
+Java 1.6 is fully released, and Jena migrates
+from supporting Java 1.4 and 1.5 to supporting
+Java 1.5 and 1.6.
+</p>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Testing with derby : create DBs:
+
+sdbconfig --sdb testing/StoreDesc/derby-hash.ttl  --create
+sdbconfig --sdb testing/StoreDesc/derby-index.ttl  --create
+sdbconfig --sdb testing/StoreDescSimple/derby-layout1.ttl  --create

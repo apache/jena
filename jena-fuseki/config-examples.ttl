@@ -1,0 +1,123 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## A collection of example configurations for Fuseki
+
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+[] rdf:type fuseki:Server ;
+   # Timeout - server-wide default: milliseconds.
+   # Format 1: "1000" -- 1 second timeout
+   # Format 2: "10000,60000" -- 10s timeout to first result, then 60s timeout to for rest of query.
+   # See java doc for ARQ.queryTimeout
+   # ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+
+   # ja:loadClass "your.code.Class" ;
+
+   fuseki:services (
+     <#service1>
+     <#service2>
+     <#service3>
+   ) .
+
+# Custom code.
+[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+
+# TDB
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+
+## ---------------------------------------------------------------
+## Updatable in-memory dataset.
+
+<#service1> rdf:type fuseki:Service ;
+    # URI of the dataset -- http://host:port/ds
+    fuseki:name                     "ds" ; 
+
+    # SPARQL query services e.g. http://host:port/ds/sparql?query=...
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceQuery             "query" ;
+    # SPARQL Update service -- http://host:port/ds/update?request=...
+    fuseki:serviceUpdate            "update" ;   # SPARQL query service -- /ds/update
+
+    # Upload service -- http://host:port/ds/upload?graph=default or ?graph=URI or ?default
+    # followed by a multipart body, each part being RDF syntax.
+    # Syntax determined by the file name extension.
+    fuseki:serviceUpload            "upload" ;   # Non-SPARQL upload service
+
+    # SPARQL Graph store protocol (read and write)
+    # GET, PUT, POST DELETE to http://host:port/ds/data?graph= or ?default=
+    fuseki:serviceReadWriteGraphStore      "data" ;     
+
+    # A separate read-only graph store endpoint:
+    fuseki:serviceReadGraphStore       "get" ;   # Graph store protocol (read only) -- /ds/get
+
+    fuseki:dataset           <#emptyDataset> ;
+    .
+
+## In-memory, initially empty.
+<#emptyDataset> rdf:type ja:RDFDataset .
+
+## ---------------------------------------------------------------
+## Read-only access to a small books database.
+
+<#service2> rdf:type fuseki:Service ;
+    fuseki:name                     "books" ;    # http://host:port/books
+    fuseki:serviceQuery             "query" ;    # SPARQL query service
+    fuseki:serviceReadGraphStore    "get" ;      # SPARQL Graph store protocol (read only)
+    fuseki:dataset                   <#books> ;
+    # Configuration
+    .
+    
+<#books>    rdf:type ja:RDFDataset ;
+    rdfs:label "Books" ;
+    ja:defaultGraph 
+      [ rdfs:label "books.ttl" ;
+        a ja:MemoryModel ;
+        ja:content [ja:externalContent <file:Data/books.ttl> ] ;
+      ] ;
+    .
+## ---------------------------------------------------------------
+## TDB dataset with only SPARQL query.
+
+<#service3>  rdf:type fuseki:Service ;
+    fuseki:name              "inf" ;             # http://host/inf
+    fuseki:serviceQuery      "sparql" ;          # SPARQL query service
+    fuseki:dataset           <#dataset> ;
+    .
+
+<#dataset> rdf:type       ja:RDFDataset ;
+    ja:defaultGraph       <#model_inf_2> ;
+     .
+
+# ---- RDFS Inference models
+# These must be incorporate in a dataset in order to use them.
+# All in one file.
+
+<#model_inf_1> a ja:InfModel ;
+    rdfs:label "Inf-1" ;
+    ja:baseModel 
+        [ a ja:MemoryModel ;
+          ja:content [ja:externalContent <file:Data/test_data_rdfs.ttl>] ;
+        ] ;
+    ja:reasoner
+         [ ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner> ]
+    .
+
+# Separate ABox and TBox
+
+<#model_inf_2> a ja:InfModel ;
+    rdfs:label "Inf-2" ;
+    ja:baseModel 
+        [ a ja:MemoryModel ;
+          ja:content [ja:externalContent <file:Data/test_abox.ttl>] ;
+          ja:content [ja:externalContent <file:Data/test_tbox.ttl>] ;
+        ] ;
+    ja:reasoner
+         [ ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner> ] 
+    . 

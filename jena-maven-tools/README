@@ -1,0 +1,26 @@
+Jena Maven Tools
+
+This project provides Apache Maven plugins that run Apache Jena
+RDF processing tools from the command line.
+
+Available plugins:
+
+  * Jena Schemagen plugin
+    The Schemagen tool in Apache Jena creates Java source files
+    from OWL and RDF ontology documents, making it easy to include
+    constants from an ontology directly in a Java project.
+
+
+Changes
+
+Version 0.4
+
+  * Moved source code from org.openjena package tree to org.apache.jena
+  * Removed some obsolete project artefacts (e.g. src/site)
+  * Added license headers to conform to Apache Software Foundation policy,
+    and added a rat:check target to the pom file.
+
+Acknowledgements
+
+  * Significant contributions to the schemagen plugin, and Maven plugin
+    integration in general, were made by Shane StClair.

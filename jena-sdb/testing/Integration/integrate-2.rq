@@ -1,0 +1,5 @@
+PREFIX : <http://example/>
+
+SELECT *
+WHERE 
+ { { :x :p ?v1 } UNION { :a :q2 ?v2 } }

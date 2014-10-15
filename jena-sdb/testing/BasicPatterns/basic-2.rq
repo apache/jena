@@ -1,0 +1,8 @@
+# two triple patterns
+PREFIX : <http://example/>
+
+SELECT * WHERE
+{ 
+    ?x :p 1 .
+    ?x :p ?a .
+}

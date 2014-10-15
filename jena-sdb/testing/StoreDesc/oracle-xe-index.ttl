@@ -1,0 +1,19 @@
+@prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
+
+_:c rdf:type sdb:SDBConnection ;
+    sdb:sdbType        "oracle" ;
+    sdb:sdbHost        "localhost:1521" ;
+    sdb:sdbName        "XE" ;
+    ## Use different users to have different tests database in the same installation
+    sdb:sdbUser        "test2-index" ;
+    sdb:sdbPassword    "test2-index" ;
+#    sdb:driver         "oracle.jdbc.driver.OracleDriver" ;
+    .
+
+[] rdf:type sdb:Store ;
+    sdb:layout         "layout2/index" ;
+    sdb:connection     _:c ;
+.

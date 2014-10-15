@@ -1,0 +1,19 @@
+This file lists the dependences for Apache Jena ARQ.
+  Version numbers are given in the POM file for a particular distribution. 
+
+Apache Projects:   Apache Software License
+  Apache Jena, including the Jena IRI library
+  Apache Xerces-J
+  Apache log4j
+  Apache HttpComponents (HTTP Client)
+  Apache Commons Codec
+
+ICU4J : http://icu-project.org/
+   IBM X License (to version ICU4J 3.4.4)
+
+SLF4J : http://www.slf4j.org/
+  Copyright (c) 2004-2008 QOS.ch
+  MIT License
+
+JUnit : http://junit.org/
+  Common Public License - v 1.0

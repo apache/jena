@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jena-spatial</artifactId>
+  <packaging>jar</packaging>
+  <name>Apache Jena - SPARQL Spatial Search</name>
+  <version>1.1.2-SNAPSHOT</version>
+
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-parent</artifactId>
+    <version>12-SNAPSHOT</version>
+    <relativePath>../jena-parent</relativePath>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <jdk.version>1.6</jdk.version>
+    <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
+  </properties>
+
+  <dependencies>
+
+    <!-- All Jena libs -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>apache-jena-libs</artifactId>
+      <version>2.12.2-SNAPSHOT</version>
+      <type>pom</type>
+    </dependency>
+
+    <!-- Testing support -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>2.12.2-SNAPSHOT</version>
+      <type>jar</type>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Lucene dependencies -->
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-spatial</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analyzers-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queryparser</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.spatial4j</groupId>
+      <artifactId>spatial4j</artifactId>
+    </dependency>
+    
+    <dependency>
+      <artifactId>solr-solrj</artifactId>
+      <groupId>org.apache.solr</groupId>
+    </dependency>
+      <!--
+    <dependency>
+      <artifactId>solr-core</artifactId>
+      <groupId>org.apache.solr</groupId>
+      <version>${ver.solr}</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <exclusions>
+	<exclusion>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-api</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-jdk14</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>test</scope>
+    </dependency>
+    -->
+  </dependencies>
+
+  <build>
+
+    <resources>
+      <resource>
+	<filtering>true</filtering>
+	<directory>src/main/resources</directory>
+	<includes>
+	  <include>org/apache/jena/query/spatial/properties.xml</include>
+	</includes>
+      </resource>
+      <resource>
+	<filtering>false</filtering>
+	<directory>src/main/resources</directory>
+	<excludes>
+	  <exclude>org/apache/jena/query/spatial/properties.xml</exclude>
+	</excludes>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<configuration>
+	  <systemPropertyVariables>
+	    <log4j.configuration>file:src/test/resources/log4j.properties</log4j.configuration>
+	  </systemPropertyVariables>
+
+	  <includes>
+	    <include>**/TS_*.java</include>
+	  </includes>
+	</configuration>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-source-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>attach-sources</id>
+	    <goals>
+	      <goal>jar-no-fork</goal>
+	    </goals>
+	  </execution>
+	  <!-- Only material in the main jar <execution> <id>attach-sources-test</id> 
+	       <goals> <goal>test-jar-no-fork</goal> </goals> </execution> -->
+	</executions>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-javadoc-plugin</artifactId>
+	<configuration>
+	  <version>true</version>
+	  <show>public</show>
+	  <quiet>true</quiet>
+	  <encoding>UTF-8</encoding>
+	  <windowtitle>${project.name} ${project.version}</windowtitle>
+	  <doctitle>${project.name} ${project.version}</doctitle>
+	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
+	</configuration>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-resources-plugin</artifactId>
+	<configuration>
+	  <encoding>UTF-8</encoding>
+	</configuration>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-dependency-plugin</artifactId>
+	<configuration>
+	  <overWriteReleases>false</overWriteReleases>
+	  <overWriteIfNewer>true</overWriteIfNewer>
+	</configuration>
+      </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-eclipse-plugin</artifactId>
+	<configuration>
+	  <!-- By default, have separate Eclipse and maven build areas -->
+	  <buildOutputDirectory>${project.build.directory}/classes</buildOutputDirectory>
+	  <downloadSources>true</downloadSources>
+	  <downloadJavadocs>false</downloadJavadocs>
+	</configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+</project>

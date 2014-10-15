@@ -1,0 +1,70 @@
+#Store list for the normal layout (also known as "layout2")
+
+@prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix desc:     <StoreDesc/> .
+
+# All the store descriptions for a test run of the query suite.
+# The rdfs:label is used to name the JUnit tests uniquely - it is required.
+
+_:x rdf:type sdb:StoreList ;
+    sdb:list
+    (
+##       [ rdfs:label "H2/Hash" ;
+##         sdb:description <StoreDesc/h2-hash.ttl> ]
+## 
+##       [ rdfs:label "H2/Index" ;
+##         sdb:description <StoreDesc/h2-index.ttl> ]
+
+      [ rdfs:label "Derby/Hash" ;
+        sdb:description <StoreDesc/derby-hash.ttl> ]
+
+      [ rdfs:label "Derby/Index" ;
+        sdb:description <StoreDesc/derby-index.ttl> ]
+
+      [ rdfs:label "HSQLDB/Hash" ;
+        sdb:description <StoreDesc/hsqldb-hash.ttl> ]
+
+      [ rdfs:label "HSQLDB/Index" ;
+        sdb:description <StoreDesc/hsqldb-index.ttl> ]
+
+## 
+##       [ rdfs:label "PGSQL/Hash" ;
+##         sdb:description <StoreDesc/pgsql-hash.ttl> ]
+## 
+##       [ rdfs:label "PGSQL/Index" ;
+##         sdb:description <StoreDesc/pgsql-index.ttl> ]
+## 
+##       [ rdfs:label "MySQL/Hash" ;
+##         sdb:description <StoreDesc/mysql-hash.ttl> ]
+## 
+##       [ rdfs:label "MySQL/Index" ;
+##         sdb:description <StoreDesc/mysql-index.ttl> ]
+## 
+##       [ rdfs:label "OracleXE/Hash" ;
+##         sdb:description <StoreDesc/oracle-xe-hash.ttl> ]
+## 
+##       [ rdfs:label "OracleXE/Index" ;
+##         sdb:description <StoreDesc/oracle-xe-index.ttl> ]
+## 
+##       [ rdfs:label "MS-SQL-e/Hash" ;
+##         sdb:description <StoreDesc/ms-sql-e-hash.ttl> ]
+## 
+##       [ rdfs:label "MS-SQL-e/Index" ;
+##         sdb:description <StoreDesc/ms-sql-e-index.ttl> ]
+## 
+##       [ rdfs:label "DB2/Hash" ;
+##         sdb:description <StoreDesc/db2-hash.ttl> ]
+## 
+##       [ rdfs:label "DB2/Index" ;
+##         sdb:description <StoreDesc/db2-index.ttl> ]
+## 
+##       [ rdfs:label "SAP/Hash" ;
+##         sdb:description <StoreDesc/sap-hash.ttl> ]
+## 
+##       [ rdfs:label "SAP/Index" ;
+##         sdb:description <StoreDesc/sap-index.ttl> ]
+
+
+       ) .

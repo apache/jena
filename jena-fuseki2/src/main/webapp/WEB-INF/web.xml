@@ -1,0 +1,248 @@
+<?xml version="1.0"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	 version="3.0">
+
+  <display-name>Apache Jena Fuseki Server</display-name>
+
+  <!-- Apache Shiro setup -->
+  <!-- First filter -->
+  <listener>
+    <!--<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>-->
+    <!-- Support multiple locations, looks in Fuseki-relevant places -->
+    <listener-class>org.apache.jena.fuseki.server.ShiroEnvironmentLoader</listener-class>
+  </listener>
+
+  <filter>
+    <filter-name>ShiroFilter</filter-name>
+    <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>ShiroFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+
+  <context-param>
+    <param-name>shiroConfigLocations</param-name>
+    <!-- Try a path name in: FUSEKI_BASE, FUSEKI_HOME, war resource
+	 If a "file:" then look there and there only.
+    -->
+    <param-value>shiro.ini</param-value>
+  </context-param>
+
+  <!-- Apache Jena Fuseki setup -->
+
+  <listener>
+    <listener-class>org.apache.jena.fuseki.server.FusekiServletContextListener</listener-class>
+  </listener>
+
+  <filter>
+    <filter-name>Fuseki</filter-name>
+    <filter-class>org.apache.jena.fuseki.servlets.FusekiFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Fuseki</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+
+  <!-- Validators -->
+  <servlet>
+    <servlet-name>QueryValidator</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.validation.QueryValidator</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>UpdateValidator</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.validation.UpdateValidator</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>DataValidator</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.validation.DataValidator</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>IRIValidator</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.validation.IRIValidator</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>QueryValidator</servlet-name>
+    <url-pattern>/validate/query</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>UpdateValidator</servlet-name>
+    <url-pattern>/validate/update</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>IRIValidator</servlet-name>
+    <url-pattern>/validate/iri</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DataValidator</servlet-name>
+    <url-pattern>/validate/data</url-pattern>
+  </servlet-mapping>
+
+  <!-- Admin controls-->
+  
+  <servlet>
+    <servlet-name>DumpServlet</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.DumpServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ServerStatusServlet</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionServerStatus</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>PingServlet</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionPing</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+   <servlet-name>DumpServlet</servlet-name>
+   <url-pattern>/$/dump</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ServerStatusServlet</servlet-name>
+    <url-pattern>/$/server</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>PingServlet</servlet-name>
+    <url-pattern>/$/ping</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>ActionDatasets</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionDatasets</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>ActionStats</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionStats</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ActionLogs</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionLogs</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ActionBackup</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionBackup</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>ActionTasks</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionTasks</servlet-class>
+  </servlet>
+
+  <!-- A management action that only creates a background task that sleeps.
+       Useful for writing tests for managegemt tools that exercise the
+        background task functionality.
+  -->
+  <servlet>
+    <servlet-name>ActionSleep</servlet-name>
+    <servlet-class>org.apache.jena.fuseki.mgt.ActionSleep</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ActionDatasets</servlet-name>
+    <url-pattern>/$/datasets/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionStats</servlet-name>
+    <url-pattern>/$/stats/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionLogs</servlet-name>
+    <url-pattern>/$/logs</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionBackup</servlet-name>
+    <url-pattern>/$/backup/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionBackup</servlet-name>
+    <url-pattern>/$/backups/*</url-pattern>         <!-- Alt spelling -->
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionTasks</servlet-name>
+    <url-pattern>/$/tasks/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ActionSleep</servlet-name>
+    <url-pattern>/$/sleep/*</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <mime-mapping>
+    <extension>rdf</extension>
+    <mime-type>application/rdf+xml;charset=utf-8</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>ttl</extension>
+    <mime-type>text/turtle;charset=utf-8</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>nt</extension>
+    <mime-type>text/plain;charset=utf-8</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>nq</extension>
+    <mime-type>text/nquads;charset=utf-8</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>trig</extension>
+    <mime-type>application/trig;charset=utf-8</mime-type>
+  </mime-mapping>
+
+  <!-- If using security via Shiro - ->
+
+  <listener>
+    <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+  </listener>
+
+  <filter>
+    <filter-name>ShiroFilter</filter-name>
+    <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>ShiroFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+  -->
+
+</web-app>

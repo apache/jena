@@ -1,0 +1,7 @@
+#!/bin/bash
+
+DB="ds"
+
+curl -v -XPOST 'http://localhost:3030/$/sleep?interval=10000'
+
+curl -v 'http://localhost:3030/$/tasks'

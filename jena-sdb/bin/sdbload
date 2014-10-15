@@ -1,0 +1,5 @@
+#!/bin/bash
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+source "$SDBROOT/bin/sdb_init"
+exec java $JVM_ARGS -cp "$SDB_CP" "sdb.$SDB_CMD" $SDB_SPEC "$@"

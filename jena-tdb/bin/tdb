@@ -1,0 +1,12 @@
+#!/bin/sh
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# Run something, setting the classpath for TDB code.
+if [ "$#" = 0 ]
+then
+    echo "Usage: $0 classname [args ...]"
+    exit 1
+    fi
+
+. "$TDBROOT/bin/tdb_init"
+exec java $JVM_ARGS $SOCKS -cp "$TDB_CP" "$@"

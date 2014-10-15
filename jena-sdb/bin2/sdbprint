@@ -1,0 +1,9 @@
+#!/bin/bash
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+if [ "$SDBROOT" == "" ]
+then
+    echo "SDBROOT not set" 1>&2
+    exit 1
+    fi
+exec "${SDBROOT}/bin/sdbprint" "$@"

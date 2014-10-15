@@ -1,0 +1,9 @@
+# single triple pattern, single optional
+PREFIX : <http://example/>
+
+SELECT * WHERE
+{ 
+    ?x :p 1 .
+    OPTIONAL { ?x :noSuchProp ?v }
+}
+

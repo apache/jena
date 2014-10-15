@@ -1,0 +1,13 @@
+#!/bin/bash
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# Replicate the commands
+
+## sdbdump sdbconfig sdbinfo sdbload sdbprint
+## sdbquery sdbsql sdbtest sdbtruncate sdbmeta
+## but not anything sdb_*
+
+for c in sdb[a-z]*
+do
+  cp sdb_cmd $c
+  done

@@ -1,0 +1,68 @@
+#!/bin/sh
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+DIRROOT="$1"
+
+if [ "$DIRROOT" = "" ]; then
+    echo "No directory given" 1>&2
+    exit 1
+fi
+
+SEP=':'
+CP=${CP:-}
+
+which mvn > /dev/null
+HAS_MAVEN=$?
+if [ -e "$DIRROOT/pom.xml" ] && [ $HAS_MAVEN -eq 0 ]; then
+    # Take advantage of maven dependency plugin
+    
+    # We want to filter out maven's INFO, WARNING and dependency download messages
+    # We leave ERROR messages alone even though they'll break the classpath we don't want
+    # to suppress them
+    MVN_OUTPUT_PATTERN="(^\[?(INFO|WARNING)|Download)"
+    
+    # Switch up to the root directory and run maven
+    CURR_DIR=$PWD
+    cd $DIRROOT
+    MVN_CP=`mvn dependency:build-classpath -U | egrep -v ${MVN_OUTPUT_PATTERN}`
+    cd $CURR_DIR
+    
+    # Append the result to any user defined classpath
+    [ "$CP" != "" ] && CP="${CP}${SEP}"
+    CP="${CP}${MVN_CP}"
+else
+    # Use the crude method
+    M2_REPO="${M2_REPO:-$HOME/.m2/repository/}" ;
+    X=$(perl -ne 'next unless /\spath="$M2_REPO([^"]*)"/s ; print "$1","\n"' $DIRROOT/.classpath)
+
+    for x in $X
+    do
+      [ "$CP" != "" ] && CP="${CP}${SEP}"
+      CP="$CP$M2_REPO$x"
+    done
+fi
+
+for D in "$DIRROOT/../jena-core"  "$DIRROOT/../jena-arq"  "$DIRROOT" 
+do
+    if [ -e "$D/classes" ]; then 
+	CP="$D/classes${SEP}$CP"
+    elif [ -e "$D/target/classes" ]; then
+	CP="$DIRROOT/target/classes${SEP}$CP"
+    fi
+done
+
+echo "$CP"

@@ -1,0 +1,41 @@
+# Store descriptions for the simple layout (also known as "layout1")
+
+@prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix desc:     <StoreDesc/> .
+
+# The rdfs:label is used to name the JUnit tests uniquely - it is required.
+
+_:x rdf:type sdb:StoreList ;
+    sdb:list
+    (
+##       [ rdfs:label "H2/Simple" ;
+##         sdb:description <StoreDescSimple/h2-layout1.ttl> ]
+
+       [ rdfs:label "Derby/Simple" ;
+         sdb:description <StoreDescSimple/derby-layout1.ttl> ]
+
+       [ rdfs:label "HSQLDB/Simple" ;
+         sdb:description <StoreDescSimple/hsqldb-layout1.ttl> ]
+
+## 
+##       [ rdfs:label "PGSQL/Simple" ;
+##         sdb:description <StoreDescSimple/pgsql-layout1.ttl> ]
+## 
+##       [ rdfs:label "MySQL/Simple" ;
+##         sdb:description <StoreDescSimple/mysql-layout1.ttl> ]
+## 
+##       [ rdfs:label "OracleXE/Simple" ;
+##         sdb:description <StoreDescSimple/oracle-xe-layout1.ttl> ]
+## 
+##       [ rdfs:label "MS-SQL-e/Simple" ;
+##         sdb:description <StoreDescSimple/ms-sql-e-layout1.ttl> ]
+## 
+##       [ rdfs:label "DB2/Simple" ;
+##         sdb:description <StoreDescSimple/db2-layout1.ttl> ]
+## 
+##       [ rdfs:label "SAP/Simple" ;
+##         sdb:description <StoreDescSimple/sap-layout1.ttl> ]
+
+    ) .

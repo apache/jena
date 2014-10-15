@@ -1,0 +1,77 @@
+## Example of a TDB dataset and text index published using Fuseki
+
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix text:    <http://jena.apache.org/text#> .
+
+[] rdf:type fuseki:Server ;
+   # Timeout - server-wide default: milliseconds.
+   # Format 1: "1000" -- 1 second timeout
+   # Format 2: "10000,60000" -- 10s timeout to first result, then 60s timeout to for rest of query.
+   # See java doc for ARQ.queryTimeout
+   # ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+   # ja:loadClass "your.code.Class" ;
+
+   fuseki:services (
+     <#service_text_tdb>
+   ) .
+
+# TDB
+[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+
+# Text
+[] ja:loadClass "org.apache.jena.query.text.TextQuery" .
+text:TextDataset      rdfs:subClassOf   ja:RDFDataset .
+#text:TextIndexSolr    rdfs:subClassOf   text:TextIndex .
+text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
+
+## ---------------------------------------------------------------
+
+<#service_text_tdb> rdf:type fuseki:Service ;
+    rdfs:label                      "TDB/text service" ;
+    fuseki:name                     "ds" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceUpdate            "update" ;
+    fuseki:serviceUpload            "upload" ;
+    fuseki:serviceReadGraphStore    "get" ;
+    fuseki:serviceReadWriteGraphStore    "data" ;
+    fuseki:dataset                  <#text_dataset> ;
+    .
+
+<#text_dataset> rdf:type     text:TextDataset ;
+    text:dataset   <#dataset> ;
+    ##text:index   <#indexSolr> ;
+    text:index     <#indexLucene> ;
+    .
+
+<#dataset> rdf:type      tdb:DatasetTDB ;
+    tdb:location "DB" ;
+    ##tdb:unionDefaultGraph true ;
+    .
+
+<#indexSolr> a text:TextIndexSolr ;
+    #text:server <http://localhost:8983/solr/COLLECTION> ;
+    text:server <embedded:SolrARQ> ;
+    text:entityMap <#entMap> ;
+    .
+
+<#indexLucene> a text:TextIndexLucene ;
+    text:directory <file:Lucene> ;
+    ##text:directory "mem" ;
+    text:entityMap <#entMap> ;
+    .
+
+<#entMap> a text:EntityMap ;
+    text:entityField      "uri" ;
+    text:defaultField     "text" ;        ## Should be defined in the text:map.
+    text:map (
+         # rdfs:label            
+         [ text:field "text" ; text:predicate rdfs:label ]
+         ) .

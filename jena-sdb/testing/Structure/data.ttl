@@ -1,0 +1,23 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+
+@prefix : <http://example/> .
+
+:x :p :z1 .
+:x :p :z2 .
+:x :p :z3 .
+:x :p :z4 .
+
+:z1 :q1 "w11-1" .
+:z1 :q1 "w11-2" .
+
+:z2 :q1 "w21-1" .
+:z2 :q2 "w22-1" .
+
+:z3 :q2 "w32-1" .
+:z3 :q2 "w32-2" .
+
+:z4 :q3 "w43-1" .
+
+:x :r "AA" .
+:x :r "BB" .

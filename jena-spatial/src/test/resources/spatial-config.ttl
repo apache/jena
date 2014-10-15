@@ -1,0 +1,54 @@
+## Example of a TDB dataset and spatial index
+
+@prefix :        <http://localhost/jena_example/#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix spatial: <http://jena.apache.org/spatial#> .
+
+# TDB
+[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+
+# Spatial
+[] ja:loadClass "org.apache.jena.query.spatial.SpatialQuery" .
+spatial:SpatialtDataset  rdfs:subClassOf  ja:RDFDataset .
+#spatial:SpatialIndexSolr  rdfs:subClassOf  spatial:SpatialIndex .
+spatial:SpatialIndexLucene  rdfs:subClassOf   spatial:SpatialIndex .
+
+## ---------------------------------------------------------------
+## This URI must be fixed - it's used to assemble the spatial dataset.
+
+:spatial_dataset rdf:type     spatial:SpatialDataset ;
+    spatial:dataset   <#dataset> ;
+    ##spaital:index   <#indexSolr> ;
+    spatial:index     <#indexLucene> ;
+    .
+
+<#dataset> rdf:type      tdb:DatasetTDB ;
+    tdb:location "--mem--" ;
+    tdb:unionDefaultGraph true ;
+    .
+
+<#indexLucene> a spatial:SpatialIndexLucene ;
+    #spatial:directory <file:Lucene> ;
+    spatial:directory "mem" ;
+    spatial:definition <#definition> ;
+    .
+
+<#definition> a spatial:EntityDefinition ;
+    spatial:entityField      "uri" ;
+    spatial:geoField     "geo" ;
+    # custom geo predicates for 1) latitude/longitude
+    spatial:hasSpatialPredicatePairs (
+         [ spatial:latitude :latitude_1 ; spatial:longitude :longitude_1 ]
+         [ spatial:latitude :latitude_2 ; spatial:longitude :longitude_2 ]
+         ) ;
+    # custom geo predicates for 2) Well Known Text Literal
+    spatial:hasWKTPredicates (:wkt_1 :wkt_2) ;
+    # custom SpatialContextFactory for 2) Well Known Text Literal
+    spatial:spatialContextFactory
+         "com.spatial4j.core.context.jts.JtsSpatialContextFactory"
+    .

@@ -1,0 +1,11 @@
+This file lists the dependences for Apache Jena.
+
+  Version numbers are given in the POM file for a particular distribution. 
+  Additional dependencies may be specified in individual modules.
+
+SLF4J : http://www.slf4j.org/
+  Copyright (c) 2004-2008 QOS.ch
+  MIT License
+
+JUnit : http://junit.org/
+  Common Public License - v1.0

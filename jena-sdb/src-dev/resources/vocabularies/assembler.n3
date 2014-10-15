@@ -1,0 +1,590 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:        <http://www.w3.org/2002/07/owl#> .
+
+@prefix ja:         <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+@prefix lm:         <http://jena.hpl.hp.com/2004/08/location-mapping#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+
+@prefix :           <#> .
+
+<>  rdfs:comment     "Vocabulary for describing Jena models" ;
+    dc:creator       "Chris Dollin" ;
+    dc:creator       "the Jena team" ;
+    dc:subject       "" ;
+    dc:publisher     "HP" ;
+    dc:title         "Jena Model Spec" ;
+    dc:description   "Vocabulary for describing Jena models" ;
+    dc:date          "2005-11-15" ;
+    dc:format        "RDF" ;
+    dc:identifier    :
+    .
+
+#
+# Alias for owl:imports
+#
+
+ja:imports a rdf:Property
+    ; rdfs:label "Assembler.imports"
+    ; rdfs:comment
+        """property whose object is another JA description to
+        be loaded into this one; equivalent to owl:imports."""
+    .
+
+#
+# Assembler object: those things that can be specified and created
+#
+
+ja:Object a rdfs:Class
+    ; rdfs:label "Assembler.Object"
+    ; rdfs:comment "the class of Assembler objects"
+    .
+
+#
+# Assembler model base type.
+#
+
+ja:Model a rdfs:Class
+    ; rdfs:subClassOf ja:Object
+    ; rdfs:subClassOf ja:Loadable
+	; rdfs:subClassOf ja:ContentItem
+    ; rdfs:label "Assembler.Model"
+    ; rdfs:comment "the class of Assembler model objects"
+    .
+
+#
+# every Model can be given a ReificationMode
+#
+
+ja:reificationMode a rdf:Property
+    ; rdfs:label "Assembler.reificationMode"
+    ; rdfs:comment "property to attach a ReificationMode to a Model"
+    ; rdfs:domain ja:Model
+    ; rdfs:range ja:ReificationMode
+    .
+
+#
+# every model can has some content specified by a Content object.
+#
+
+ja:content a rdf:Property
+    ; rdfs:label "Assembler.content"
+    ; rdfs:comment
+        """specifies that the subject Loadable is to be loaded with
+        all the contents specified by the object Content.
+        """
+    ; rdfs:domain ja:Loadable
+    ; rdfs:range ja:Content
+    .
+
+ja:initialContent a rdf:Property
+    ; rdfs:label "Assembler.initialContent"
+    ; rdfs:comment
+        """specifies that the subject Loadable is to be loaded with
+        all the contents specified by the object Load when it is first
+        created - ie not when eg an existing database model is opened.
+        """
+    ; rdfs:domain ja:Loadable
+    ; rdfs:range ja:Content
+    .
+
+ja:Loadable a rdfs:Class
+    ; rdfs:subClassOf ja:Object
+    ; rdfs:label "Assembler.Loadable"
+    ; rdfs:comment "a Loadable object, namely a Model or a Load"
+    .
+
+ja:HasFileManager a rdfs:Class
+	; rdfs:subClassOf ja:Object
+	; rdfs:label "Assembler.HasFileManager"
+	; rdfs:comment "an object that may have a fileManager property"
+	.
+
+ja:Content a rdfs:Class
+    ; rdfs:subClassOf ja:HasFileManager
+    ; rdfs:label "Assembler.Content"
+    ; rdfs:comment "content to be loaded into a Loadable"
+    .
+
+#
+# there are two kinds of Load. A ContentGroup collects together
+# other Loads, specified with ja:content.
+#
+
+ja:ContentGroup a rdfs:Class
+    ; rdfs:subClassOf ja:Content, ja:Loadable
+    .
+
+#
+# the other kind of Content is a ContentItem, which is either a
+# URL or a literal string with an optional language name.
+#
+
+ja:ContentItem a rdfs:Class
+    ; rdfs:subClassOf ja:Content
+    ; rdfs:subClassOf [owl:onProperty ja:fileManager; owl:maxCardinality 1]
+    ; rdfs:label "Assembler.ContentItem"
+    ; rdfs:comment "a single loadable model item"
+    .
+
+ja:externalContent a rdf:Property
+    ; rdfs:label "Assembler.externalContent"
+    ; rdfs:comment
+        """the subject Load is to be loaded from
+        the object URL"""
+    ; rdfs:domain ja:ContentItem
+    .
+
+ja:literalContent a rdf:Property
+    ; rdfs:label "Assembler.literalContent"
+    ; rdfs:comment
+        """the subject Load is to be loaded from the
+        object String"""
+    ; rdfs:domain ja:ContentItem
+    .
+
+ja:contentEncoding a rdf:Property
+    ; rdfs:label "Assembler.contentEncoding"
+    ; rdfs:comment
+        """specifies the name of the encoding language (N3, RDF/XML, etc)
+        for the associated file or string. Overrides any guess that might
+        otherwise be made. Guesses when omitted: starts with '<' means
+        RDF/XML, starts with '@' or '#' means N3, otherwise NTRIPLE"""
+    ; rdfs:domain ja:ContentItem
+    .
+
+#
+# default models [typically memory models]
+#
+
+ja:DefaultModel a rdfs:Class
+    ; rdfs:subClassOf ja:Model
+    ; rdfs:label "Assembler.DefaultModel"
+    ; rdfs:comment "the default model description"
+    .
+
+#
+# memory models
+#
+
+ja:MemoryModel a rdfs:Class
+    ; rdfs:subClassOf ja:Model
+    ; rdfs:label "Assembler.MemoryModel"
+    ; rdfs:comment "description of a memory model"
+    .
+
+#
+# named models [for file & database models]
+#
+
+ja:NamedModel a rdfs:Class
+    ; rdfs:subClassOf ja:Model
+    ; rdfs:subClassOf [owl:onProperty ja:modelName; owl:cardinality 1]
+    ; rdfs:label "Assembler.NamedModel"
+    ; rdfs:comment
+        """superclass for FileModel,
+        accepting the modelName property"""
+    .
+
+ja:modelName a rdf:Property
+    ; rdfs:label "Assembler.modelName"
+    ; rdfs:comment
+        """property specifying that the subject NamedModel shall
+        have the object String as its name. If the object is a URI
+        node, it has the spelling of the URI as its name."""
+    ; rdfs:domain ja:NamedModel
+    .
+
+#
+# file models
+#
+
+ja:FileModel a rdfs:Class
+    ; rdfs:subClassOf ja:NamedModel
+    ; rdfs:subClassOf [owl:onProperty ja:fileEncoding; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:directory; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:mapName; owl:maxCardinality 1]
+    ; rdfs:label "Assembler.FileModel"
+    ; rdfs:comment
+        """a FileModel is a file-backed NamedModel implemented as a
+        MemoryModel with the name given by the modelName and in the
+        directory given by fromDirectory."""
+    .
+
+ja:directory a rdf:Property
+    ; rdfs:label "directory"
+    ; rdfs:comment
+        """property of a FileModel giving the directory in which the
+        modelName is to be resolved. Query: is the current behaviour
+        of FileModels to be preserved?"""
+    ; rdfs:domain ja:FileModel
+    .
+
+ja:mapName a rdf:Property
+	; rdfs:label "Assembler.mapName"
+	; rdfs:domain ja:FileModel
+	; rdfs:comment
+		"""property of a FileModel specifying whether the modelName should
+		be escaped by replacing _, /, and : by __, _S, _C before being used,
+		to allow URIs as model names without implying nested directory
+		strucure. If ommitted or not ja:true, no translation is done."""
+	.
+
+ja:fileEncoding a rdf:Property
+    ; rdfs:domain ja:FileModel
+    ; rdfs:label "Assemble.fileEncoding"
+    ; rdfs:comment """FileModel property to give language encoding"""
+    .
+
+ja:Connectable a rdfs:Class
+    ; rdfs:subClassOf ja:Object
+    ; rdfs:label "Assembler.Connectable"
+    .
+	
+ja:ModelSource a rdfs:Class
+    ; rdfs:subClassOf ja:Connectable
+    ; rdfs:label "Assembler.ModelSource"
+    ; rdfs:comment "Source of models by name for an OntModelSpec"
+    .
+#
+# inference models
+#
+
+ja:InfModel a rdfs:Class
+    ; rdfs:subClassOf ja:Model
+    ; rdfs:subClassOf [owl:onProperty ja:baseModel; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:reasoner; owl:maxCardinality 1]
+    ; rdfs:label "Assembler.InfModel"
+    ; rdfs:comment
+        """class of inference models given by applying a reasoner to a base model
+        (which might be implictly the a default model)"""
+    .
+
+ja:reasoner a rdf:Property
+    ; rdfs:label "Assembler.reasoner"
+    ; rdfs:comment
+        """property of an inference model that specifies the reasoner
+        to use."""
+    ; rdfs:domain ja:InfModel
+    ; rdfs:range ja:ReasonerFactory
+    .
+
+ja:baseModel a rdf:Property
+    ; rdfs:label "Assembler.baseModel"
+    ; rdfs:comment
+        """optional property of an inference model that specifies the
+        base model over which inference is done."""
+    ; rdfs:domain ja:InfModel
+    ; rdfs:range ja:Model
+    .
+
+#
+# reasoner factories; see also properties of HasRules.
+#
+
+ja:ReasonerFactory a rdfs:Class
+    ; rdfs:subClassOf ja:HasRules
+    ; rdfs:subClassOf [owl:onProperty ja:ReasonerURL; owl:maxCardinality 1]
+    ; rdfs:label "Assembler.ReasonerFactory"
+    ; rdfs:comment
+        """class of ReasonerFactory objects, allowing arbitrary reasoner
+        properties to be attached."""
+    .
+
+ja:reasonerURL a rdf:Property
+    ; rdfs:label "Assembler.reasonerURL"
+    ; rdfs:comment
+        """property of a ReasonerFactory specifying the URL of the reasoner
+        in the reasoner registry; only one such property per reasoner."""
+    ; rdfs:domain ja:ReasonerFactory
+    .
+
+ja:reasonerClass a rdf:Property
+    ; rdfs:label "Assembler.reasonerClass"
+    ; rdfs:comment "property of a ReasonerFactory giving the class name"
+    ; rdfs:domain ja:ReasonerFactory
+    .
+
+ja:reasonerFactory a rdf:Property
+	; rdfs:label "Assembler.reasonerFactory"
+	; rdfs:comment "property of an OntModelSpec giving the reasoner for the spec"
+	; rdfs:range ja:ReasonerFactory
+	; rdfs:domain ja:OntModelSpec
+	.
+
+ja:schema a rdf:Property
+    ; rdfs:label "Assembler.schemaURL"
+    ; rdfs:comment
+        """property of a Reasoner specifying schema Models to be loaded.
+        Multiple schemas can be given; they are unioned
+        together before being supplied to the reasoner."""
+    ; rdfs:domain ja:ReasonerFactory
+    ; rdfs:range ja:Model
+    .
+
+#
+# rulesets
+#
+
+ja:HasRules a rdfs:Class
+    ; rdfs:subClassOf ja:Object
+    ; rdfs:label "Assembler.HasRules"
+    ; rdfs:comment
+        """the class of things that can have rules attached,
+        viz, Reasoners and RuleSets."""
+    .
+
+ja:RuleSet a rdfs:Class
+    ; rdfs:subClassOf ja:HasRules
+    ; rdfs:label "Assembler.RuleSet"
+    ; rdfs:comment
+        """class of sets of rules (for a Jena rule engine) specified
+        within the Assembler file. A RuleSet may refer to rules by
+        their URL, by their containing RuleSets, or by including them
+        as string literals."""
+    .
+
+ja:rules a rdf:Property
+    ; rdfs:label "Assembler.rules"
+    ; rdfs:comment
+        """property of a GenericRuleReasoner or RuleSet which specifies
+        rules given witin rulesets within the Assembler RDF. Multiple
+        such properties can be given."""
+    ; rdfs:domain ja:HasRules
+    ; rdfs:range ja:RuleSet
+    .
+
+ja:rulesFrom a rdf:Property
+    ; rdfs:label "Assembler.rulesFrom"
+    ; rdfs:comment
+        """property of a RuleSet which identifies rules by their URL.
+        The target resource is loaded and parsed as a rule string."""
+    ; rdfs:domain ja:HasRules
+    .
+
+ja:rule a rdf:Property
+    ; rdfs:label "Assembler.rule"
+    ; rdfs:comment
+        """property of a RuleSet specifying a rule (or rules) as a
+        literal string."""
+    ; rdfs:domain ja:HasRules
+    .
+
+#
+#
+#
+
+ja:LocationMapper a rdfs:Class
+    ; rdfs:subClassOf ja:Object
+    ; rdfs:subClassOf [owl:onProperty lm:mapping; owl:maxCardinality 1]
+    ; rdfs:label "Assembler.LocationMapper"
+    ; rdfs:comment "class of LocationMapper specificiations"
+    .
+
+lm:mapping a rdf:Property
+    ; rdfs:domain ja:LocationMapper
+    ; rdfs:label "LocationMapper.mapping"
+    ; rdfs:comment
+        """LocationMapper property which identifies location mappings and
+        which we have stolen to identify ja:LocationMapper specifications."""
+    .
+
+ja:FileManager a rdfs:Class
+    ; rdfs:subClassOf ja:Object
+    ; rdfs:subClassOf [owl:onProperty ja:locationMapper; owl:maxCardinality 1]
+    ; rdfs:label "Assembler.FileManager"
+    ; rdfs:comment "class of FileManager specifications"
+    .
+
+ja:locationMapper a rdf:Property
+    ; rdfs:domain ja:FileManager
+    ; rdfs:range ja:LocationMapper
+    ; rdfs:label "Assembler.locationMapper"
+    ; rdfs:comment "FileManager property which identifies its LocationMapper."
+    .
+
+ja:DocumentManager a rdfs:Class
+	; rdfs:subClassOf ja:HasFileManager
+    ; rdfs:subClassOf [owl:onProperty ja:fileManager; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:policyPath; owl:maxCardinality 1]
+    ; rdfs:label "Assembler.DocumentManager"
+    ; rdfs:comment "class of OntDocumentManager specificiations"
+    .
+
+ja:fileManager a rdf:Property
+    ; rdfs:domain ja:HasFileManager
+    ; rdfs:range ja:FileManager
+    ; rdfs:label "Assembler.fileManager"
+    ; rdfs:comment
+        """property of a DocumentManager whose value is its FileManager"""
+    .
+
+ja:policyPath a rdf:Property
+    ; rdfs:domain ja:DocumentManager
+    ; rdfs:label "Assembler.policyPath"
+    ; rdfs:comment
+        """property of a DocumentManager whose value is its metadata policy path"""
+    .
+
+#
+# ontology models. every ontology model is an inference model.
+#
+
+ja:OntModel a rdfs:Class
+    ; rdfs:subClassOf ja:InfModel, ja:UnionModel
+    ; rdfs:label "Assembler.OntModel"
+    ; rdfs:comment "the class of OntModel specifications"
+    .
+
+ja:OntModelSpec a rdfs:Class
+    ; rdfs:subClassOf ja:Object
+    ; rdfs:subClassOf [owl:onProperty ja:ontLanguage; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:documentManager; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:importSource; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:reasonerFactory; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:like; owl:maxCardinality 1]
+    ; rdfs:label "Assembler.OntModelSpec"
+    ; rdfs:comment "class of OntModelSpec objects for OntModel construction"
+    .
+
+ja:ontModelSpec a rdf:Property
+    ; rdfs:label "Assembler.ontModelSpec"
+    ; rdfs:comment "property of an OntModel giving its OntModelSpec"
+    ; rdfs:domain ja:OntModel
+    ; rdfs:range ja:OntModelSpec
+    .
+
+ja:likeBuiltinSpec a rdf:Property
+    ; rdfs:label "Assembler.likeBuiltinSpec"
+    ; rdfs:comment "property of an OntModelSpec giving an internal spec it's like"
+    ; rdfs:domain ja:OntModelSpec
+    .
+
+ja:ontLanguage a rdf:Property
+    ; rdfs:label "Assembler.ontLanguage"
+    ; rdfs:comment
+        """property of an OntModelSpec that specifies the ontology
+        language."""
+    ; rdfs:domain ja:OntModelSpec
+    .
+
+ja:documentManager a rdf:Property
+    ; rdfs:label "Assembler.docManager"
+    ; rdfs:comment
+        """property of an OntModelSpec that specifies the
+        document manager of the model. If omitted, the model has
+        the default document manager."""
+    ; rdfs:domain ja:OntModelSpec
+    .
+
+ja:importSource a rdf:Property
+    ; rdfs:label "Assembler.importSource"
+    ; rdfs:comment
+        """property of an OntModelSpec that specifies the importSource
+        of the model. If omitted, the model has a default MemoryModelMaker. """
+    ; rdfs:domain ja:OntModelSpec
+    .
+
+#
+# union models
+#
+
+ja:UnionModel a rdfs:Class
+    ; rdfs:subClassOf ja:Model
+    ; rdfs:subClassOf [owl:onProperty ja:rootModel; owl:maxCardinality 1]
+    ; rdfs:label "Assembler.Union"
+    ; rdfs:comment "class of Union models"
+    .
+
+ja:subModel a rdf:Property
+    ; rdfs:label "Assembler.subModel"
+    ; rdfs:comment
+        """property of a UnionModel that specifies one of its non-root sub-models.
+        Arbitrarily many sub-models can be supplied."""
+    ; rdfs:domain ja:UnionModel
+    ; rdfs:range ja:Model
+    .
+
+ja:rootModel a rdf:Property
+    ; rdfs:domain ja:UnionModel
+    ; rdfs:range ja:Model
+    ; rdfs:label "Assembler.rootModel"
+    ; rdfs:comment
+        """property of a UnionModel that specifies its mutable base model"""
+    .
+
+#
+# reification modes
+#
+
+ja:ReificationMode a rdfs:Class
+    ; rdfs:label "Assembler.ReificationMode"
+    ; rdfs:comment "the class of reification modes"
+    .
+
+ja:standard a ja:ReificationMode
+    ; rdfs:label "Standard"
+    ; rdfs:comment "reification mode Standard - all reification triples visible"
+    .
+
+ja:minimal a ja:ReificationMode
+    ; rdfs:label "Minimal"
+    ; rdfs:comment "reification mode Minimal - no reification triples visible"
+    .
+
+ja:convenient a ja:ReificationMode
+    ; rdfs:label "Convenient"
+    ; rdfs:comment "reification mode Convenient"
+    .
+
+#
+# prefix mappings
+#
+
+ja:PrefixMapping a rdfs:Class
+    ; rdfs:subClassOf ja:Object
+    ; rdfs:label "Assembler.PrefixMapping"
+    ; rdfs:comment
+        """class encoding a Jena prefix mapping"""
+    .
+
+ja:prefixMapping a rdf:Property
+    ; rdfs:label "Assembler.prefixMapping"
+    ; rdfs:comment
+        """property used to attach a PrefixMapping to a Model"""
+    ; rdfs:domain ja:Model
+    ; rdfs:range ja:PrefixMapping
+    .
+
+ja:includes a rdf:Property
+    ; rdfs:label "Assembler.includes"
+    ; rdfs:comment """property to allow one prefix mapping to include another"""
+    ; rdfs:domain ja:PrefixMapping
+    ; rdfs:range ja:PrefixMapping
+    .
+
+ja:SinglePrefixMapping a rdfs:Class
+    ; rdfs:subClassOf ja:PrefixMapping
+    ; rdfs:subClassOf [owl:onProperty ja:prefix; owl:cardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:namespace; owl:cardinality 1]
+    ; rdfs:label "Assembler.SinglePrefixMapping"
+    ; rdfs:comment """class encoding a single prefix mapping maplet"""
+    .
+
+ja:prefix a rdf:Property
+    ; rdfs:label "Assembler.prefix"
+    ; rdfs:comment """property for specifing the prefix of a SimplePrefixMapping"""
+    ; rdfs:domain ja:SinglePrefixMapping
+    .
+
+ja:namespace a rdf:Property
+    ; rdfs:label "Assembler.namespace"
+    ; rdfs:comment """property for specifying the URL of a SimplePrefixMapping"""
+    ; rdfs:domain ja:SinglePrefixMapping
+    .
+
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# End:

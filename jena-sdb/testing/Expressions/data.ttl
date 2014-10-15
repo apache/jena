@@ -1,0 +1,24 @@
+@prefix   :      <http://example/> .
+@prefix  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix  rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+:x :p1 :x1 .
+:x :p2 :x2 .
+
+
+:x1 :p "aaa" .
+
+:x2 :p "aab" .
+:x3 :p "aba" .
+:x4 :p "baa" .
+
+:x5 :p "abb" .
+:x6 :p "bab" .
+:x7 :p "bba" .
+
+:x8 :p "bbb" .
+
+:y1 :p "AAA" .
+:y2 :p "AAb" .
+:y3 :p "Abb" .

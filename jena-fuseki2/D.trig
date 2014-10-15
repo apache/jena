@@ -1,0 +1,4 @@
+prefix : <http://example/>
+
+{ :s :p "quads" }
+:g { :s :p 2 }

@@ -1,0 +1,11 @@
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX  :       <http://example/>
+PREFIX  ex:     <http://example/ns#>
+
+# Optional var in RHS.
+
+SELECT *
+{
+   { ?x :p ?z OPTIONAL { ?z :q1 ?w } }
+   ?x :p ?w 
+}

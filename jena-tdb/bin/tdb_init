@@ -1,0 +1,32 @@
+# -*- mode:sh -*-
+
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# Source this file, not execute it.
+## Environment variable usage:
+## TDBROOT         :: The root of the TDB installation (required)
+## JVM_ARGS        :: Additional argument to the JVM (e.g. -Xmx1024M)
+
+## Source this file to set:
+##  JVM_ARGS
+##  TDB_CP         :: Classpath
+##  TDB_CMD        :: The TDB command to call.
+
+## ---- Check root
+if [ "$TDBROOT" = "" ]
+then
+    echo "TDBROOT is not set" 1>&2
+    exit 1
+    fi
+
+## ---- who am I?
+TDB_CMD=$(basename $0)
+
+## ---- JVM Args e.g. -Xmx1200M
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+
+## ---- Classpath : adds in current CP
+TDB_CP="$($TDBROOT/bin/tdb_path)"
+
+## ## ---- Store description (default)
+## TDB_SPEC="${TDB_SPEC:---tdb=tdb.ttl}"
