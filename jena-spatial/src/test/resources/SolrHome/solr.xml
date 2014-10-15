@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<solr persistent="true">
-<cores adminPath="/admin/cores" defaultCoreName="SolrARQCollection">
-<core name="SolrARQCollection" instanceDir="SolrARQCollection" >
-<property name="dataDir" value="../../../../../target/test/SolrARQCollection/data" />
-</core>
-</cores>
-</solr>

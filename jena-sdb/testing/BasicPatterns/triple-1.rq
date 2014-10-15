@@ -1,7 +1,0 @@
-PREFIX : <http://example/>
-
-SELECT *
-{ 
-    ?x ?p ?x
-}
-

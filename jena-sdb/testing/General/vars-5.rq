@@ -1,3 +1,0 @@
-PREFIX : <http://example/>
-
-SELECT ?x_1 ?X_1 { ?x_1 :p1 ?X_1 }

@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jena-querybuilder</artifactId>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.apache.jena</groupId>
+  		<artifactId>apache-jena-libs</artifactId>
+  		<type>pom</type>
+  	</dependency>
+  	<dependency>
+			<groupId>org.xenei</groupId>
+			<artifactId>junit-contracts</artifactId>
+		</dependency>
+  </dependencies>
+  <name>Apache Jena Query Builder- jena-querybulder</name>
+  <inceptionYear>2014</inceptionYear>
+  <organization>
+  	<name>The Apache Software Foundation</name>
+  	<url>http://www.apache.org/</url>
+  </organization>
+  <properties>
+  	
+  </properties>
+  <scm>
+ <!-- 	<url>https://svn.apache.org/repos/asf/jena/Experimental/jena-common/</url>
+  	<connection>scm:svn:https://svn.apache.org/repos/asf/jena/Experimental/jena-common/</connection>
+  	<developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/Experimental/jena-common/</developerConnection>
+  	-->
+  </scm>
+  <parent>
+  	<groupId>org.apache.jena</groupId>
+  	<artifactId>jena-extras</artifactId>
+  	<relativePath>..</relativePath>
+  	<version>2.12.2-SNAPSHOT</version>
+  </parent>
+  <description>A utility package to simplify the building of ARQ queries in code.  Provides both a simple builder interface for queries as well as simple prepared statement processing.</description>
+</project>

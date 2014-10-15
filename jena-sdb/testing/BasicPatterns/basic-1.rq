@@ -1,8 +1,0 @@
-# single triple pattern
-PREFIX : <http://example/>
-
-SELECT * WHERE
-{ 
-    ?x :p 1 .
-}
-
