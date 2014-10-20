@@ -32,15 +32,12 @@
 	<!-- Properties common across all profiles -->
 	<properties>
 		<plugin.compiler.version>2.5.1</plugin.compiler.version>
-		<arq.version>2.12.1-SNAPSHOT</arq.version>
+		<arq.version>2.12.1</arq.version>
 		<junit.version>4.11</junit.version>
 		<mrunit.version>1.0.0</mrunit.version>
 	</properties>
 
 	<!-- Profiles to allow building for different Hadoop versions -->
-	<!-- Currently there is only a single profile targeting Hadoop 2.x because 
-		we're using the newer MRv2 APIs which aren't backwards compatible with Hadoop 
-		1.x versions -->
 	<profiles>
 		<!-- Hadoop 2.x Stable -->
 		<profile>
@@ -49,7 +46,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<hadoop.version>2.4.1</hadoop.version>
+				<hadoop.version>2.5.1</hadoop.version>
 			</properties>
 		</profile>
 
@@ -57,7 +54,7 @@
 		<profile>
 			<id>hadoop_023x</id>
 			<properties>
-				<hadoop.version>0.23.9</hadoop.version>
+				<hadoop.version>0.23.11</hadoop.version>
 			</properties>
 		</profile>
 	</profiles>
