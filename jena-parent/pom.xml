@@ -16,7 +16,8 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.jena</groupId>
@@ -71,19 +72,19 @@
       <!-- Turn of doclint for java8 and later -->
       <id>doclint-java8-disable</id>
       <activation>
-	<jdk>[1.8,)</jdk>
+        <jdk>[1.8,)</jdk>
       </activation>
 
       <build>
-	<plugins>
-	  <plugin>
-	    <groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-javadoc-plugin</artifactId>
-	    <configuration>
-	      <additionalparam>-Xdoclint:none</additionalparam>
-	    </configuration>
-	  </plugin>
-	</plugins>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <additionalparam>-Xdoclint:none</additionalparam>
+            </configuration>
+          </plugin>
+        </plugins>
       </build>
     </profile>
   </profiles>
@@ -295,53 +296,31 @@
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <execution>
-            <id>enforce-java</id>
+            <id>enforce</id>
             <goals>
               <goal>enforce</goal>
             </goals>
-            <configuration>
+            <configuration combine.self="override">
               <rules>
                 <requireJavaVersion>
                   <version>1.7.0</version>
                 </requireJavaVersion>
-              </rules>    
+                <requirePluginVersions>
+                  <message>Best practice is to always define plugin
+                    versions!</message>
+                  <banLatest>true</banLatest>
+                  <banRelease>true</banRelease>
+                </requirePluginVersions>
+                <requireReleaseDeps>
+                  <message>No SNAPSHOT dependencies are allowed!</message>
+                  <onlyWhenRelease>true</onlyWhenRelease>
+                </requireReleaseDeps>
+              </rules>
+              <fail>true</fail>
+              <failFast>true</failFast>
             </configuration>
           </execution>
         </executions>
-      </plugin>
-
-      <!-- Run the RAT Plugin -->
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-	<version>0.11</version>
-        <executions>
-          <execution>
-            <id>rat-checks</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-           <excludeSubProjects>true</excludeSubProjects>
-             <excludes>
-               <exclude>**/DEPENDENCIES</exclude>
-               <exclude>**/*.txt</exclude>
-               
-               <!-- These might be too extreme an excludes -->
-               <!-- 
-               Unfortunately Jena historically has large numbers of small
-               test files with no license headers.  Since Jena was donated to the
-               ASF under a Software Grant it is assumed that all rights for the
-               
-               -->
-               <exclude>**/src/test/resources/**/*</exclude>
-               <exclude>**/testing/**/*</exclude>
-               
-            </excludes>
-        </configuration>
       </plugin>
     </plugins>
 
@@ -475,18 +454,18 @@
 	<!-- Temp fix for remote-resources while waiting for remote-resources >1.5
 	     1.6 should fix this - SNAPSHOT already does.
 	-->
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-remote-resources-plugin</artifactId>
-	  <version>1.5</version>
-	  <dependencies>
-	    <dependency>
-	      <groupId>org.apache.maven.shared</groupId>
-	      <artifactId>maven-filtering</artifactId>
-	      <version>1.2</version>
-	    </dependency>
-	  </dependencies>
-	</plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.5</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.shared</groupId>
+              <artifactId>maven-filtering</artifactId>
+              <version>1.2</version>
+            </dependency>
+          </dependencies>
+        </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -523,7 +502,8 @@
           <configuration>
             <rules>
               <requirePluginVersions>
-                <message>Best practice is to always define plugin versions!</message>
+                <message>Best practice is to always define plugin
+                  versions!</message>
                 <banLatest>true</banLatest>
                 <banRelease>true</banRelease>
               </requirePluginVersions>
