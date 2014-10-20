@@ -339,13 +339,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         String timeoutParameter = action.request.getParameter("timeout") ;
         if ( timeoutHeader != null ) {
             try {
-                desiredTimeout = (int)Float.parseFloat(timeoutHeader) * 1000 ;
+                desiredTimeout = (int)(Float.parseFloat(timeoutHeader) * 1000) ;
             } catch (NumberFormatException e) {
                 throw new FusekiException("Timeout header must be a number", e) ;
             }
         } else if ( timeoutParameter != null ) {
             try {
-                desiredTimeout = (int)Float.parseFloat(timeoutParameter) * 1000 ;
+                desiredTimeout = (int)(Float.parseFloat(timeoutParameter) * 1000) ;
             } catch (NumberFormatException e) {
                 throw new FusekiException("timeout parameter must be a number", e) ;
             }
