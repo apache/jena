@@ -16,25 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text;
-
-import org.apache.jena.atlas.logging.Log ;
+package org.apache.jena.query.spatial;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** Functions relating to text query */
-public class TextQueryFuncs {
+public class SpatialQueryFuncs {
+    
+    static { System.out.println("SPATIAL DEBUG") ; }
 
     /** Create a string to put in a Lucene/Solr index for the subject node */  
     public static String subjectToString(Node s) {
         if ( s == null )
             throw new IllegalArgumentException("Subject node can not be null") ;
         if ( ! (s.isURI() || s.isBlank() ) )
-            throw new TextIndexException("Found a subject that is not a URI nor a blank node: "+s) ; 
+            throw new SpatialIndexException("Found a subject that is not a URI nor a blank node: "+s) ; 
         return nodeToString(s) ;
     }
 
@@ -43,7 +40,7 @@ public class TextQueryFuncs {
         if ( g == null )
             return null ;
         if ( ! (g.isURI() || g.isBlank() ) )
-            throw new TextIndexException("Found a graph label that is not a URI nor a blank node: "+g) ; 
+            throw new SpatialIndexException("Found a graph label that is not a URI nor a blank node: "+g) ; 
         return nodeToString(g) ;
     }
 
@@ -60,37 +57,5 @@ public class TextQueryFuncs {
         else
             return NodeFactory.createURI(v) ;
     }
-
-    /** Create an Entity from a quad.
-     * Returns null if the quad is not a candidate for indexing.
-     */
-    public static Entity entityFromQuad(EntityDefinition defn , Quad quad ) {
-        return entityFromQuad(defn, quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
-    }
-
-    /** Create an Entity from a quad (as g/s/p/o).
-     * Returns null if the quad is not a candidate for indexing.
-     */
-    public static Entity entityFromQuad(EntityDefinition defn , Node g , Node s , Node p , Node o ) {
-        String field = defn.getField(p) ;
-        if ( field == null )
-            return null ;
-    
-        String x = TextQueryFuncs.subjectToString(s) ;
-        String graphText = TextQueryFuncs.graphNodeToString(g) ;
-        Entity entity = new Entity(x, graphText) ;
-        String graphField = defn.getGraphField() ;
-        if ( defn.getGraphField() != null )
-            entity.put(graphField, graphText) ;
-    
-        if ( !o.isLiteral() ) {
-            Log.warn(TextQuery.class, "Not a literal value for mapped field-predicate: " + field + " :: "
-                     + FmtUtils.stringForString(field)) ;
-            return null ;
-        }
-        entity.put(field, o.getLiteralLexicalForm()) ;
-        return entity ;
-    }
-
 }
 
