@@ -327,21 +327,63 @@
         <configuration>
            <excludeSubProjects>true</excludeSubProjects>
              <excludes>
-               <exclude>**/DEPENDENCIES</exclude>
-               <exclude>**/*.txt</exclude>
-               
                <!--
                jena-core exclusions
                -->
                <exclude>**/src-examples/data/*</exclude>
+               
+               <!--
+               jena-sdb exclusions
+               -->
+               <exclude>**/Old/*</exclude>
+               
+               <!--
+               jena-fuseki exclusions
+               -->
+               <exclude>**/dist/ABOUT</exclude>
+               
+               <!-- General exclusions -->
+               <!-- 
+               Vocabularies are often just local copies of vocabularies
+               published by others
+               -->
                <exclude>**/vocabularies/*</exclude>
-               <exclude>**/Grammar/turtle</exclude>
+               <exclude>**/Vocabularies/*</exclude>
+               <!--
+               Grammars are typically based directly off the BNF published in
+               relevant standards
+               -->
+               <exclude>**/Grammar/**/*</exclude>
+               <!--
+               Javadoc add-ons files are required to be simple and our javadoc configuration
+               will ensure appropriate license and copyright statements are inserted
+               into generated documentation anyway so no need to put license statements in these
+               files
+               -->
+               <exclude>**/src/main/**/*.html</exclude>
+               
+               <exclude>**/DEPENDENCIES</exclude>
+               
+               <!--
+               Text and Markdown files are typically used only for documentation purposes
+               and license declarations are usually spurious in these files since often they
+               will refer to the LICENSE/NOTICE for users to find the actual licenses
+               -->
+               <exclude>**/*.txt</exclude>
+               <exclude>**/*.md</exclude>
+               
+               <!--
+               META-INF services files can include comments but a license header would be
+               unecessarily clutter so we exclude these
+               -->
+               <exclude>**/META-INF/services/*</exclude>
                
                <!--
                Unfortunately Jena historically has large numbers of small
                test files with no license headers.  Since Jena was donated to the
-               ASF under a Software Grant it is assumed that all rights for the
-               
+               ASF under a Software Grant it is assumed that all rights for these
+               are correct or they are included under other appropriate licenses
+               e.g. W3C Test Case license
                -->
                <exclude>**/src/test/resources/**/*</exclude>
                <exclude>**/testing/**/*</exclude>
