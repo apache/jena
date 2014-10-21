@@ -333,11 +333,6 @@
                <exclude>**/src-examples/data/*</exclude>
                
                <!--
-               jena-sdb exclusions
-               -->
-               <exclude>**/Old/*</exclude>
-               
-               <!--
                jena-fuseki exclusions
                -->
                <exclude>**/dist/ABOUT</exclude>
@@ -349,11 +344,7 @@
                -->
                <exclude>**/vocabularies/*</exclude>
                <exclude>**/Vocabularies/*</exclude>
-               <!--
-               Grammars are typically based directly off the BNF published in
-               relevant standards
-               -->
-               <exclude>**/Grammar/**/*</exclude>
+
                <!--
                Javadoc add-ons files are required to be simple and our javadoc configuration
                will ensure appropriate license and copyright statements are inserted
