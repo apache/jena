@@ -369,13 +369,15 @@
                -->
                <exclude>**/META-INF/services/*</exclude>
                
-               <!--
-               Unfortunately Jena historically has large numbers of small
-               test files with no license headers.  Since Jena was donated to the
-               ASF under a Software Grant it is assumed that all rights for these
-               are correct or they are included under other appropriate licenses
-               e.g. W3C Test Case license
-               -->
+	       <!--
+		 Jena historically has large numbers of small test files
+		 with no license headers.  Such small files are not required 
+		 to have headers. 
+
+		 In addition, there are files with different Licenses
+		 (e.g. W3C Software Licence, W3C Test Suite License) as
+		 noted in the code tree.
+	       -->
                <exclude>**/src/test/resources/**/*</exclude>
                <exclude>**/testing/**/*</exclude>
                
