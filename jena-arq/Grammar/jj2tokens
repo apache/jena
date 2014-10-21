@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
 # Extract tokens (will need more editting)
 
 $/ = undef ;

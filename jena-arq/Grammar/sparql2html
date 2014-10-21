@@ -1,3 +1,4 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 echo "Grammar to X.html, fragments file to Y.html"
 jj2html 'sparql.txt' 'tokens.txt' > X.html
 grammarExtracts < X.html > Y.html
