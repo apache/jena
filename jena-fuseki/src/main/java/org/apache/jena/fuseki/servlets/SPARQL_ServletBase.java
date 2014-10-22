@@ -32,6 +32,7 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.* ;
@@ -90,6 +91,9 @@ public abstract class SPARQL_ServletBase extends ServletBase
                     responseSendError(response, ex.rc, ex.message) ;
                 else
                     responseSendError(response, ex.rc) ;
+            } catch (RuntimeIOException ex) {
+                log.warn(format("[%d] Runtime IO Exception (client left?) RC = %d", id, HttpSC.INTERNAL_SERVER_ERROR_500)) ;
+                responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
             } catch (Throwable ex) {
                 // This should not happen.
                 //ex.printStackTrace(System.err) ;

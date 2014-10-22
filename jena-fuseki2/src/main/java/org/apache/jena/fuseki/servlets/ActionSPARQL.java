@@ -24,6 +24,7 @@ import static org.apache.jena.fuseki.server.CounterName.RequestsGood ;
 
 import java.io.InputStream ;
 
+import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.Lang ;
@@ -130,7 +131,7 @@ public abstract class ActionSPARQL extends ActionBase
                 // Success
                 incCounter(csOperation, RequestsGood) ;
                 incCounter(csService, RequestsGood) ;
-            } catch (ActionErrorException | QueryCancelledException ex) {
+            } catch (ActionErrorException | QueryCancelledException | RuntimeIOException ex) {
                 incCounter(csOperation, RequestsBad) ;
                 incCounter(csService, RequestsBad) ;
                 throw ex ;

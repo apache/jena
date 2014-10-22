@@ -322,6 +322,81 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- Run the RAT Plugin -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+	<version>0.11</version>
+        <executions>
+          <execution>
+            <id>rat-checks</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+           <excludeSubProjects>true</excludeSubProjects>
+             <excludes>
+               <!--
+               jena-core exclusions
+               -->
+               <exclude>**/src-examples/data/*</exclude>
+               
+               <!--
+               jena-fuseki exclusions
+               -->
+               <exclude>**/dist/ABOUT</exclude>
+               
+               <!-- General exclusions -->
+               <!-- 
+               Vocabularies are often just local copies of vocabularies
+               published by others
+               -->
+               <exclude>**/vocabularies/*</exclude>
+               <exclude>**/Vocabularies/*</exclude>
+
+               <!--
+               Javadoc add-ons files are required to be simple and our javadoc configuration
+               will ensure appropriate license and copyright statements are inserted
+               into generated documentation anyway so no need to put license statements in these
+               files
+               -->
+               <exclude>**/src/main/**/*.html</exclude>
+               
+               <exclude>**/DEPENDENCIES</exclude>
+               
+               <!--
+               Text and Markdown files are typically used only for documentation purposes
+               and license declarations are usually spurious in these files since often they
+               will refer to the LICENSE/NOTICE for users to find the actual licenses
+               -->
+               <exclude>**/*.txt</exclude>
+               <exclude>**/*.md</exclude>
+               
+               <!--
+               META-INF services files can include comments but a license header would be
+               unecessarily clutter so we exclude these
+               -->
+               <exclude>**/META-INF/services/*</exclude>
+               
+	       <!--
+		 Jena historically has large numbers of small test files
+		 with no license headers.  Such small files are not required 
+		 to have headers. 
+
+		 In addition, there are files with different Licenses
+		 (e.g. W3C Software Licence, W3C Test Suite License) as
+		 noted in the code tree.
+	       -->
+               <exclude>**/src/test/resources/**/*</exclude>
+               <exclude>**/testing/**/*</exclude>
+               
+            </excludes>
+        </configuration>
+      </plugin>
     </plugins>
 
     <!-- Plugin version list: http://maven.apache.org/plugins/index.html -->

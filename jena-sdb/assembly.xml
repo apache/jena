@@ -41,11 +41,11 @@
 
   <files>
     <file>
-      <source>dist/LICENSE-dist</source>
+      <source>dist/LICENSE</source>
       <destName>LICENSE</destName>
     </file>
     <file>
-      <source>dist/NOTICE-dist</source>
+      <source>dist/NOTICE</source>
       <destName>NOTICE</destName>
     </file>
   </files>

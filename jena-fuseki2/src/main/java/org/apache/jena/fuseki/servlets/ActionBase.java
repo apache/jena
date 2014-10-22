@@ -28,6 +28,7 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.web.HttpSC ;
@@ -91,6 +92,9 @@ public abstract class ActionBase extends ServletBase
                     ServletOps.responseSendError(response, ex.rc, ex.message) ;
                 else
                     ServletOps.responseSendError(response, ex.rc) ;
+            } catch (RuntimeIOException ex) {
+                log.warn(format("[%d] Runtime IO Exception (client left?) RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
+                ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
             } catch (Throwable ex) {
                 // This should not happen.
                 //ex.printStackTrace(System.err) ;
