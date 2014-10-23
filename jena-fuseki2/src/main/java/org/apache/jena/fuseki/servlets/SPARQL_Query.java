@@ -87,8 +87,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
-        // response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,POST");
-        setCommonHeaders(response) ;
+        setCommonHeadersForOptions(response) ;
         response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }

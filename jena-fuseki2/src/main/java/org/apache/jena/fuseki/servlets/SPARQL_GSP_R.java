@@ -58,7 +58,7 @@ public class SPARQL_GSP_R extends SPARQL_GSP
                             action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
 
         action.beginRead() ;
-
+        setCommonHeaders(action.response) ;
         try {
             Target target = determineTarget(action) ;
             if ( action.log.isDebugEnabled() )
@@ -81,6 +81,7 @@ public class SPARQL_GSP_R extends SPARQL_GSP
     
     @Override
     protected void doOptions(HttpAction action) {
+        setCommonHeadersForOptions(action.response) ;
         action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS") ;
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
         ServletOps.success(action) ;
@@ -89,6 +90,7 @@ public class SPARQL_GSP_R extends SPARQL_GSP
     @Override
     protected void doHead(HttpAction action) {
         action.beginRead() ;
+        setCommonHeaders(action.response) ;
         try { 
             Target target = determineTarget(action) ;
             if ( action.log.isDebugEnabled() )
