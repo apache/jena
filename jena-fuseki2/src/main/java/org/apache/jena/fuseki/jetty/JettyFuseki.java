@@ -67,7 +67,7 @@ public class JettyFuseki {
     private Server              server         = null ;
     
     // webapp setup - standard maven layout
-    public static       String contextpath    = "/" ;
+    public static       String contextpath     = "/" ;
     public static final String resourceBase1   = "webapp" ;             // Standalone jar
     public static final String resourceBase2   = "src/main/webapp" ;    // Development
 
