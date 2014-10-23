@@ -336,6 +336,13 @@
                jena-fuseki exclusions
                -->
                <exclude>**/dist/ABOUT</exclude>
+               <exclude>**/SEE_FUSEKI2</exclude>
+               <!-- 
+               Need to exclude CSS since much of it comes from other Apache licensed projects 
+               e.g. Bootstrap, Qonsole
+               
+               -->
+               <exclude>**/src/main/webapp/css/*</exclude>
                
                <!-- General exclusions -->
                <!-- 
@@ -369,15 +376,15 @@
                -->
                <exclude>**/META-INF/services/*</exclude>
                
-	       <!--
-		 Jena historically has large numbers of small test files
-		 with no license headers.  Such small files are not required 
-		 to have headers. 
+               <!--
+               Jena historically has large numbers of small test file
+               with no license headers.  Such small files are not required 
+               to have headers. 
 
-		 In addition, there are files with different Licenses
-		 (e.g. W3C Software Licence, W3C Test Suite License) as
-		 noted in the code tree.
-	       -->
+               In addition, there are files with different Licenses
+               (e.g. W3C Software Licence, W3C Test Suite License) as
+               noted in the code tree.
+               -->
                <exclude>**/src/test/resources/**/*</exclude>
                <exclude>**/testing/**/*</exclude>
                
