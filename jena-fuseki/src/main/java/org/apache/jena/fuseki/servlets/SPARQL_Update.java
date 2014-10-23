@@ -84,6 +84,7 @@ public class SPARQL_Update extends SPARQL_Protocol
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
     {
+        setCommonHeadersForOptions(response) ;
         response.setHeader(HttpNames.hAllow, "OPTIONS,POST");
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
