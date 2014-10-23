@@ -41,7 +41,15 @@ public class HttpNames
     
     // CORS: 
     //   http://www.w3.org/TR/cors/  http://esw.w3.org/CORS_Enabled
-    public static final String hAccessControlAllowOrigin = "Access-Control-Allow-Origin" ;
+    public static final String hAccessControlAllowOrigin        = "Access-Control-Allow-Origin" ;
+    public static final String hAccessControlExposeHeaders      = "Access-Control-Expose-Headers" ;
+    public static final String hAccessControlMaxAge             = "Access-Control-Max-Age" ;
+    public static final String hAccessControlAllowCredentials   = "Access-Control-Allow-Credentials" ; 
+    public static final String hAccessControlAllowMethods       = "Access-Control-Allow-Methods" ;
+    public static final String hAccessControlAllowHeaders       = "Access-Control-Allow-Headers" ;
+    public static final String hOrigin                          = "Origin" ;
+    public static final String hAccessControlRequestMethod      = "Access-Control-Request-Method" ;
+    public static final String hAccessControlRequestHeaders     = "Access-Control-Request-Headers" ;
     
     // Fuseki parameter names 
     public static final String paramGraph           = "graph" ;
