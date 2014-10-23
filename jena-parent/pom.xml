@@ -390,6 +390,9 @@
                -->
                <exclude>**/src/test/resources/**/*</exclude>
                <exclude>**/testing/**/*</exclude>
+
+               <exclude>**/log4j.properties</exclude>
+               <exclude>**/log4j-testing.properties</exclude>
                
             </excludes>
         </configuration>
