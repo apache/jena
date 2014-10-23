@@ -20,7 +20,7 @@
 	<artifactId>jena-extras</artifactId>
 	<version>2.12.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Apache Jena Extras - jena-extras</name>
+	<name>Apache Jena - Extras</name>
 	<description>Extra packages for Jena development.
 This is the parent module for the Jena Extra modules.  
 	These modules provide utiliities and larger packages that make Apache Jena development or usage 
