@@ -236,6 +236,8 @@ public abstract class ActionBase extends ServletBase
                                    HttpSC.getMessage(action.statusCode), timeStr)) ;
         else
             log.info(String.format("[%d] %d %s (%s) ", action.id, action.statusCode, action.message, timeStr)) ;
+        
+        // See also HttpAction.finishRequest - request logging happens there.
     }
 
     /**

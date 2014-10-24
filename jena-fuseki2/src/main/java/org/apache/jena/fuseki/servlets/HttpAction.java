@@ -286,7 +286,7 @@ public class HttpAction
         if ( dataAccessPoint != null ) 
             dataAccessPoint.finishRequest(this) ;
         // Standard logging goes here.
-        if ( Fuseki.requestLog != null ) {
+        if ( Fuseki.requestLog != null && Fuseki.requestLog.isInfoEnabled() ) { 
             String s = RequestLog.combinedNCSA(this) ;
             Fuseki.requestLog.info(s);
         }

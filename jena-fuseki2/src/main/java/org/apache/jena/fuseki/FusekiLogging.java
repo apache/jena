@@ -52,7 +52,7 @@ public class FusekiLogging
 
          "# System logs.",
          "log4j.logger." + Fuseki.serverLogName     + "=INFO",
-         "log4j.logger." + Fuseki.actionLogName    + "=INFO",
+         "log4j.logger." + Fuseki.actionLogName     + "=INFO",
          "log4j.logger." + Fuseki.adminLogName      + "=INFO",
          "log4j.logger." + Fuseki.validationLogName + "=INFO",
          "log4j.logger." + Fuseki.configLogName     + "=INFO",
@@ -61,9 +61,17 @@ public class FusekiLogging
          "log4j.logger.org.eclipse.jetty=WARN" ,
          "log4j.logger.org.apache.shiro=WARN",
 
+         "# NCSA RequestAccess log",
+         "log4j.appender.plain=org.apache.log4j.ConsoleAppender",
+         "log4j.appender.plain.target=System.out",
+         "log4j.appender.plain.layout=org.apache.log4j.PatternLayout",
+         "log4j.appender.plain.layout.ConversionPattern=%m%n",
+         "log4j.additivity."+Fuseki.requestLogName   + "=false",
+         "log4j.logger."+Fuseki.requestLogName       + "=OFF, plain",
+         
          "## Parser output", 
          "log4j.additivity" + SysRIOT.riotLoggerName + "=false",
-         "log4j.logger." + SysRIOT.riotLoggerName + "=INFO, jena.plainstdout"
+         "log4j.logger." + SysRIOT.riotLoggerName + "=INFO, plainstdout"
             ) ;
 
     // Set logging.
