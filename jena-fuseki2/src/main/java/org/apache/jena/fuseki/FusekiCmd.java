@@ -318,7 +318,6 @@ public class FusekiCmd {
 
         @Override
         protected void exec() {
-            //*************
             FusekiServletContextListener.initialSetup = cmdLineDataset ;
             // For standalone, command line use ...
             JettyFuseki.initializeServer(jettyServerConfig) ;

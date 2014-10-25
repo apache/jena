@@ -134,7 +134,7 @@ public class Fuseki {
     public static final Logger        serverLog         = LoggerFactory.getLogger(serverLogName) ;
 
     /** Logger used for the servletContent.log operations (if settable -- depends on environment) */
-    public static final String        servletRequestLogName     = PATH + ".Request" ;
+    public static final String        servletRequestLogName     = PATH + ".Servlet" ;
 
     /** Actual log file for config server messages. */
     public static final String        configLogName     = PATH + ".Config" ;
