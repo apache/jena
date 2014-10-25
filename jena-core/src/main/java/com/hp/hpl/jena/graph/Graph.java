@@ -28,12 +28,10 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
     The interface to be satisfied by implementations maintaining collections
     of RDF triples. The core interface is small (add, delete, find, contains) and
     is augmented by additional classes to handle more complicated matters
-    such as reification, query handling, bulk update, event management,
-    and transaction handling.
-<p>
-    For <code>add(Triple)</code> see GraphAdd.
+    such as event management.
+    @see GraphBase for an implementation framework.
 */
-public interface Graph  extends GraphAdd
+public interface Graph
     {
     /**
         An immutable empty graph. 
@@ -87,7 +85,6 @@ public interface Graph  extends GraphAdd
         @param t the triple to add to the graph
         @throws AddDeniedException if the triple cannot be added 
      */
-    @Override
     void add( Triple t ) throws AddDeniedException;
 
     /** 
