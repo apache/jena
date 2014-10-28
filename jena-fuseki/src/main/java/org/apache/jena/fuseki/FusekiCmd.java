@@ -105,7 +105,6 @@ public class FusekiCmd extends CmdARQ
         String fn = "log4j.properties" ;
         File f = new File(fn) ;
         if ( f.exists() ) {
-            System.out.println("File") ;
             // Use file log4j.properties
             System.setProperty("log4j.configuration", "file:"+fn) ;
             return ;
