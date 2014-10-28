@@ -27,8 +27,9 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
     <version>12-SNAPSHOT</version>
-    <relativePath />
+    <relativePath>../jena-parent</relativePath>
   </parent>
+
   
   
     <!-- Need if the parent is a snapshot -->

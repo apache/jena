@@ -55,7 +55,7 @@
   <profiles>
     <profile>
       <!--
-        This is the dev profile, tyopically used locally with "mvn clean install".
+        This is the dev profile, typically used locally with "mvn clean install".
         It only builds the common modules and
         does not build SDB nor the slow-to-test JDBC module.
       -->
