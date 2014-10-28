@@ -40,44 +40,46 @@
   </parent>
 
   <properties>
-      <jena.version>2.12.2-SNAPSHOT</jena.version>
-      <tdb.version>1.1.2-SNAPSHOT</tdb.version>
-      <sdb.version>1.5.2-SNAPSHOT</sdb.version>
-      <iri.version>1.1.2-SNAPSHOT</iri.version>
+    <!-- TODO: Move to jena-parent? -->
+    <ver.jena>2.12.2-SNAPSHOT</ver.jena>
+    <ver.jena-tdb>1.1.2-SNAPSHOT</ver.jena-tdb>
+    <ver.jena-sdb>1.5.2-SNAPSHOT</ver.jena-sdb>
+    <ver.jena-iri>1.1.2-SNAPSHOT</ver.jena-iri>
+    <ver.httpcore>4.2.5</ver.httpcore>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>${jena.version}</version>
+      <version>${ver.jena}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>${jena.version}</version>
+      <version>${ver.jena}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>${tdb.version}</version>
+      <version>${ver.jena-tdb}</version>
       <scope>provided</scope>
    </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-sdb</artifactId>
-      <version>${sdb.version}</version>
+      <version>${ver.jena-sdb}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>${iri.version}</version>
+      <version>${ver.jena-iri}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -99,7 +101,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
     		<artifactId>httpcore-osgi</artifactId>
-    		<version>4.2.5</version>
+        <version>${ver.httpcore}</version> 
         </dependency>
   </dependencies>
 
