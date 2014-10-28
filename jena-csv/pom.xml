@@ -29,6 +29,7 @@
     <version>12-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
+
   
   
     <!-- Need if the parent is a snapshot -->
