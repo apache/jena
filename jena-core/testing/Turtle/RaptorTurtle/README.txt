@@ -18,3 +18,7 @@ The tests should be performed with an assumed base URI
 of http://www.w3.org/2001/sw/DataAccess/df1/tests/
 
 Dave
+-------------------------------------------------
+Changes:
+test-10 is a "same value" test.  Converted to "same term"
+
