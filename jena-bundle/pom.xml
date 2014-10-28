@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.jena</groupId>
+  <artifactId>jena-bundle</artifactId>
+  <packaging>bundle</packaging>
+  <name>Apache Jena - OSGi bundle</name>
+  <url>http://jena.apache.org/</url>
+  <version>2.12.2-SNAPSHOT</version>
+  <description>
+      Embedding all Jena modules in a single OSGi bundle.
+      This works around classloader issues such as Jena's use of
+      Class.forName(), but does not yet support other OSGi bundles
+      to easily plug in 3rd party Jena implementations of say readers
+      and writers.
+  </description>
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-parent</artifactId>
+    <version>12-SNAPSHOT</version>
+    <relativePath>../jena-parent</relativePath>
+  </parent>
+
+  <properties>
+      <jena.version>2.12.2-SNAPSHOT</jena.version>
+      <tdb.version>1.1.2-SNAPSHOT</tdb.version>
+      <sdb.version>1.5.2-SNAPSHOT</sdb.version>
+      <iri.version>1.1.2-SNAPSHOT</iri.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>${jena.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <version>${jena.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>${tdb.version}</version>
+      <scope>provided</scope>
+   </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-sdb</artifactId>
+      <version>${sdb.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-iri</artifactId>
+      <version>${iri.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Disabled as this is not included in apache-jena distribution
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki</artifactId>
+      <version>${ver.fuseki}</version>
+      <scope>provided</scope>
+    </dependency>
+    -->
+
+    <!-- OSGi versions of Jena dependencies -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+    		<artifactId>httpclient-osgi</artifactId>
+    		<version>${ver.httpclient}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+    		<artifactId>httpcore-osgi</artifactId>
+    		<version>4.2.2</version>
+        </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <configuration>
+                <instructions>
+                    <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*,org.openjena.riot.*</Export-Package>
+                    <Embed-Dependency>*;scope=provided;groupId=!org.apache.httpcomponents</Embed-Dependency>
+                    <Embed-Transitive>true</Embed-Transitive>
+                    <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,*</Import-Package>
+                </instructions>
+            </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

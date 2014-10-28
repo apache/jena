@@ -117,6 +117,7 @@
         <module>apache-jena-libs</module>
         <module>apache-jena</module>
         <module>jena-extras</module>
+        <module>jena-bundle</module>
       </modules>
     </profile>
   </profiles>
