@@ -54,6 +54,29 @@
       <artifactId>jena-arq</artifactId>
       <version>${ver.jena}</version>
       <scope>provided</scope>
+            <exclusions>
+              <!-- These are all embedded within httpclient-osgi -->
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient-cache</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>fluent-hc</artifactId>
+              </exclusion>
+            </exclusions>
     </dependency>
 
     <dependency>
@@ -95,13 +118,54 @@
     <!-- OSGi versions of Jena dependencies -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-    		<artifactId>httpclient-osgi</artifactId>
-    		<version>${ver.httpclient}</version>
+            <artifactId>httpclient-osgi</artifactId>
+            <version>${ver.httpclient}</version>
+            <exclusions>
+              <!-- These are all embedded within httpclient-osgi -->
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient-cache</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>fluent-hc</artifactId>
+              </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-    		<artifactId>httpcore-osgi</artifactId>
-        <version>${ver.httpcore}</version> 
+          <artifactId>httpcore-osgi</artifactId>
+          <version>${ver.httpcore}</version> 
+            <exclusions>
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore-osgi</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore-osgi-nio</artifactId>
+              </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>com.github.jsonld-java</groupId>
+          <artifactId>jsonld-java</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-csv</artifactId>
         </dependency>
   </dependencies>
 
@@ -112,8 +176,8 @@
             <artifactId>maven-bundle-plugin</artifactId>
             <configuration>
                 <instructions>
-                    <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*,org.openjena.riot.*</Export-Package>
-                    <Embed-Dependency>*;scope=provided;groupId=!org.apache.httpcomponents</Embed-Dependency>
+                    <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
+                    <Embed-Dependency>*;scope=provided;groupId=!org.apache.httpcomponents;groupId=!com.github.jsonld-java;groupId=!org.apache.commons.csv;groupId=!org.apache.thrift;artifactId=!commons-lang3</Embed-Dependency>
                     <Embed-Transitive>true</Embed-Transitive>
                     <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,*</Import-Package>
                 </instructions>
