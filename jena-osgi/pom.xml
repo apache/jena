@@ -20,7 +20,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
-  <artifactId>jena-bundle</artifactId>
+  <artifactId>jena-osgi</artifactId>
   <packaging>bundle</packaging>
   <name>Apache Jena - OSGi bundle</name>
   <url>http://jena.apache.org/</url>
