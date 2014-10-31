@@ -162,6 +162,10 @@
         <dependency>
           <groupId>com.github.jsonld-java</groupId>
           <artifactId>jsonld-java</artifactId>
+          <scope>provided</scope>
+          <!-- FIXME: From jsonld-java 0.5.1 or newer (which is then OSGi
+               bundle), drop <scope>provided  so that we can use it
+               as a real dependency -->
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
