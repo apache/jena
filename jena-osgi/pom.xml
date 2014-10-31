@@ -197,7 +197,7 @@
             <configuration>
                 <instructions>
                     <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
-                    <Embed-Dependency>*;scope=provided;groupId=!org.apache.httpcomponents;groupId=!org.apache.commons.csv;groupId=!org.apache.thrift;artifactId=!commons-lang3;groupId=!com.fasterxml.jackson.core</Embed-Dependency>
+                    <Embed-Dependency>*;scope=provided;groupId=!org.apache.httpcomponents;groupId=!org.apache.commons.csv;groupId=!com.fasterxml.jackson.core;groupId=!org.slf4j;artifactId=!commons-lang3</Embed-Dependency>
                     <Embed-Transitive>true</Embed-Transitive>
                     <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,*</Import-Package>
                 </instructions>
