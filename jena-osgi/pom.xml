@@ -151,11 +151,11 @@
             <exclusions>
               <exclusion>
                 <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore-osgi</artifactId>
+                <artifactId>httpcore</artifactId>
               </exclusion>
               <exclusion>
                 <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore-osgi-nio</artifactId>
+                <artifactId>httpcore-nio</artifactId>
               </exclusion>
             </exclusions>
         </dependency>
@@ -167,6 +167,21 @@
                bundle), drop <scope>provided  so that we can use it
                as a real dependency -->
         </dependency>
+        <!--
+             but until jsonld-java 0.5.1, we'll need to depend on jackson-databind and jackson-core ourselves
+             as bundles:
+             -->
+        <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+          <version>${ver.jackson}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+          <version>${ver.jackson}</version>
+        </dependency>
+
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-csv</artifactId>
@@ -181,7 +196,7 @@
             <configuration>
                 <instructions>
                     <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
-                    <Embed-Dependency>*;scope=provided;groupId=!org.apache.httpcomponents;groupId=!org.apache.commons.csv;groupId=!org.apache.thrift;artifactId=!commons-lang3</Embed-Dependency>
+                    <Embed-Dependency>*;scope=provided;groupId=!org.apache.httpcomponents;groupId=!org.apache.commons.csv;groupId=!org.apache.thrift;artifactId=!commons-lang3,groupId=!com.fasterxml.jackson.core</Embed-Dependency>
                     <Embed-Transitive>true</Embed-Transitive>
                     <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,*</Import-Package>
                 </instructions>
