@@ -393,6 +393,8 @@
 
                <exclude>**/log4j.properties</exclude>
                <exclude>**/log4j-testing.properties</exclude>
+               <exclude>**/derby.log</exclude>
+               <exclude>**/DB/**/*</exclude>
                
             </excludes>
         </configuration>
