@@ -22,7 +22,6 @@ import java.io.FileReader ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
-import org.apache.jena.atlas.io.PeekReader ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.QueryException ;
@@ -41,9 +40,9 @@ public class ParserARQUpdate extends UpdateParser
     }
     
     @Override
-    protected void parse$(UpdateSink sink, PeekReader pr)
+    protected void parse$(UpdateSink sink, Reader r)
     {
-        _parse(sink, pr) ;
+        _parse(sink, r) ;
     }
 
     /** Use with care - Reader must be UTF-8 */ 

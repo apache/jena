@@ -35,7 +35,7 @@ function grammar
     (cd "$DIR" ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java )
 
     echo "---- Process grammar -- $1"
-    javacc -OUTPUT_DIRECTORY=$DIR  -JDK_VERSION=1.5 "${FILE}"
+    javacc -OUTPUT_DIRECTORY=$DIR  -JDK_VERSION=1.7 "${FILE}"
     RC=$?
 
     [ "$RC" = 0 ] || return
@@ -93,11 +93,12 @@ function grammar
 	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
     mv F $F
 
-##     echo "---- Fixing Java warnings in ${CLASS} ..."
-##     F="$DIR/${CLASS}.java"
+    echo "---- Fixing Java warnings in ${CLASS} ..."
+    F="$DIR/${CLASS}.java"
+    sed -e 's/public class /\n@SuppressWarnings("all")\npublic class /' < $F > F 
 ##     sed -e 's/for (java.util.Iterator/for (java.util.Iterator<int[]>/' \
 ## 	-e 's/(int\[\])//' < $F > F
-##     mv F $F
+    mv F $F
 
     echo "---- Done"
 }

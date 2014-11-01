@@ -19,12 +19,12 @@
 package com.hp.hpl.jena.sparql.lang;
 
 import java.io.InputStream ;
-
-import org.apache.jena.atlas.io.PeekReader ;
+import java.io.Reader ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.modify.UpdateSink ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /** This class provides the root of lower level access to all the parsers.
  *  Each subclass hides the details of the per-language exception handlers and other
@@ -36,23 +36,19 @@ public abstract class UpdateParser
 {
     public final void parse(UpdateSink sink, String updateString) throws QueryParseException
     {
-        // Sort out BOM
-        if ( updateString.startsWith("\uFEFF") )
-            updateString = updateString.substring(1) ;
         parse$(sink, updateString) ;
     }
 
     protected abstract void parse$(UpdateSink sink, String updateString) throws QueryParseException ;
 
-    public void parse(UpdateSink sink, InputStream input) throws QueryParseException
+    public final void parse(UpdateSink sink, InputStream input) throws QueryParseException
     {
-        // :-( Wrap in something that we can use to look for a BOM.
-        // ?? Move BOM processing to grammar and reverse this.
-        PeekReader pr = PeekReader.makeUTF8(input) ;
-        parse$(sink, pr) ;
+        // BOM processing moved to the grammar.
+        Reader r = FileUtils.asBufferedUTF8(input) ;
+        parse$(sink, r) ;
     }
     
-    protected abstract void parse$(UpdateSink sink, PeekReader pr) throws QueryParseException ;
+    protected abstract void parse$(UpdateSink sink, Reader r) throws QueryParseException ;
 
     public static boolean canParse(Syntax syntaxURI)
     {
