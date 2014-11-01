@@ -84,6 +84,14 @@
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
+      <version>${ver.thrift}</version>
+      <exclusions>
+	<!-- Use whatever version Jena is using -->
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpcore</artifactId>
+	</exclusion>
+      </exclusions>
     </dependency>
 
     <!-- 
