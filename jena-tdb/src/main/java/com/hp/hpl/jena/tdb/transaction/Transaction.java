@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.tdb.transaction;
 import java.io.IOException ;
 import java.util.ArrayList ;
-import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -54,14 +53,12 @@ public class Transaction
     
     private boolean changesPending ;
     
-    public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr)
-    {
+    public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr) {
         this.id = id ;
         if (label == null )
             label = "Txn" ;
         label = label+"["+id+"]" ;
-        switch(mode)
-        {
+        switch(mode) {
             case READ : label = label+"/R" ; break ;
             case WRITE : label = label+"/W" ; break ;
         }
@@ -72,7 +69,7 @@ public class Transaction
         this.mode = mode ;
         this.journal = ( txnMgr == null ) ? null : txnMgr.getJournal() ;
         activedsg = null ;      // Don't know yet.
-        this.iterators = new ArrayList<>() ;
+        this.iterators = null ; //new ArrayList<>() ;   // Debugging aid.
         state = TxnState.ACTIVE ;
         outcome = TxnOutcome.UNFINISHED ;
         changesPending = (mode == ReadWrite.WRITE) ;
@@ -96,14 +93,11 @@ public class Transaction
      * calling into the transaction manager
      */
     
-    public void commit()
-    {
-        synchronized (this)
-        {
+    public void commit() {
+        synchronized (this) {
             // Do prepare, write the COMMIT record.
             // Enacting is left to the TransactionManager.
-            switch(mode)
-            {
+            switch(mode) {
                 case READ:
                     outcome = TxnOutcome.R_COMMITED ;
                     break ;
@@ -153,8 +147,7 @@ public class Transaction
         }
         
         try { txnMgr.notifyCommit(this) ; }
-        catch (RuntimeException ex)
-        {
+        catch (RuntimeException ex) {
             if ( isIOException(ex) )
                 SystemTDB.errlog.warn("IOException after commit point : transaction commited but internal status not recorded properly : "+ex.getMessage()) ;
             else
@@ -163,21 +156,16 @@ public class Transaction
         }
     }
     
-    private boolean isIOException(Throwable ex)
-    {
-//        if ( ex == null ) return false ;
-//        if ( ex instanceof IOException ) return true ;
-//        return isIOException(ex.getCause()) ;
-        while(ex != null )
-        {
-            if ( ex instanceof IOException ) return true ;
+    private boolean isIOException(Throwable ex) {
+        while (ex != null) {
+            if ( ex instanceof IOException )
+                return true ;
             ex = ex.getCause() ;
         }
         return false ;
     }
 
-    private void prepare()
-    {
+    private void prepare() {
         state = TxnState.PREPARING ;
         for ( BlockMgrJournal x : blkMgrs )
             x.commitPrepare(this) ;
@@ -185,30 +173,27 @@ public class Transaction
             x.commitPrepare(this) ;
     }
 
-    public void abort()
-    { 
-        synchronized (this)
-        {
-            switch(mode)
-            {
-                case READ:
+    public void abort() {
+        synchronized (this) {
+            switch (mode) {
+                case READ :
                     state = TxnState.ABORTED ;
                     outcome = TxnOutcome.R_ABORTED ;
                     break ;
-                case WRITE:
+                case WRITE :
                     if ( state != TxnState.ACTIVE )
-                        throw new TDBTransactionException("Transaction has already committed or aborted") ; 
+                        throw new TDBTransactionException("Transaction has already committed or aborted") ;
                     try {
                         // Clearup.
                         for ( BlockMgrJournal x : blkMgrs )
                             x.abort(this) ;
-    
+
                         for ( NodeTableTrans x : nodeTableTrans )
                             x.abort(this) ;
-                    } catch (RuntimeException ex)
-                    {
+                    }
+                    catch (RuntimeException ex) {
                         if ( isIOException(ex) )
-                            SystemTDB.errlog.warn("IOException during 'abort' : "+ex.getMessage()) ;
+                            SystemTDB.errlog.warn("IOException during 'abort' : " + ex.getMessage()) ;
                         else
                             SystemTDB.errlog.warn("Exception during 'abort'", ex) ;
                         // It's a bit of a mess!
@@ -217,14 +202,14 @@ public class Transaction
                     state = TxnState.ABORTED ;
                     outcome = TxnOutcome.W_ABORTED ;
                     // [TxTDB:TODO]
-                    // journal.truncate to last commit 
-                    // Not need currently as the journal is only written in prepare. 
+                    // journal.truncate to last commit
+                    // Not need currently as the journal is only written in
+                    // prepare.
                     break ;
             }
         }
         try { txnMgr.notifyAbort(this) ; } 
-        catch (RuntimeException ex)
-        {
+        catch (RuntimeException ex) {
             if ( isIOException(ex) )
                 SystemTDB.errlog.warn("IOException during post-abort (transaction did abort): "+ex.getMessage()) ;
             else
@@ -238,36 +223,28 @@ public class Transaction
      *  read transactions "auto commit" on close().
      *  write transactions must call abort or commit.
      */
-    public void close()
-    {
-        synchronized (this)
-        {
-            switch(state)
-            {
-                case CLOSED:    return ;    // Can call close() repeatedly.
-                case ACTIVE:
-                    if ( mode == ReadWrite.READ )
-                    {    
+    public void close() {
+        //Log.info(this, "Peek = "+peekCount+" ; count = "+count) ; 
+        
+        synchronized (this) {
+            switch (state) {
+                case CLOSED :
+                    return ; // Can call close() repeatedly.
+                case ACTIVE :
+                    if ( mode == ReadWrite.READ ) {
                         commit() ;
                         outcome = TxnOutcome.R_CLOSED ;
-                    }
-                    else
-                    {
-                        SystemTDB.errlog.warn("Transaction not commited or aborted: "+this) ;
+                    } else {
+                        SystemTDB.errlog.warn("Transaction not commited or aborted: " + this) ;
                         abort() ;
                     }
                     break ;
-                default:
+                default :
             }
             state = TxnState.CLOSED ;
-            // Imperfect : too many higher level iterators build on unclosables
-            // (e.g. anon iterators in Iter) 
-            // so close does not get passed to the base.   
-//            for ( Iterator<?> iter : iterators )
-//                Log.info(this, "Active iterator: "+iter) ;
-            
-            // Clear per-transaction temporary state. 
-            iterators.clear() ;
+            // Clear per-transaction temporary state.
+            if ( iterators != null )
+                iterators.clear() ;
         }
         // Called once.
         txnMgr.notifyClose(this) ;
@@ -293,83 +270,62 @@ public class Transaction
     
     public DatasetGraphTxn getActiveDataset()       { return activedsg ; }
 
-    public void setActiveDataset(DatasetGraphTxn activedsg)
-    { 
+    public void setActiveDataset(DatasetGraphTxn activedsg) { 
         this.activedsg = activedsg ;
         if ( activedsg.getTransaction() != this )
             Log.warn(this, "Active DSG does not point to this transaction; "+this) ;
     }
-        
 
     public Journal getJournal()                     { return journal ; }
 
-    public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
-    
-    public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
-    public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
-    
-    // Debugging versions - concurrency problems show up because concurrent access
-    // to iterators.contains can miss entries when removed by abother thread.
-    // See JENA-131.
-    // After TDB 0.9 release, remove debug code.
+//    public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
+//    
+    private int count = 0 ;
+    private int peekCount = 0 ;
 
-//    private static final boolean DEBUG = false ;     // Don't check-in to SVN trunk with this set to true.
-//
-//    public void addIterator(Iterator<?> iter)
-//    {
-//        if ( ! DEBUG )
-//            iterators.add(iter) ;
-//        else
-//        {
-//            if ( iterators.contains(iter) )
-//                System.err.println("Already added") ;
-//            iterators.add(iter) ;
-//        }
-//    }
-//
-//    public void removeIterator(Iterator<? > iter)
-//    {
-//        if ( ! DEBUG )
-//            iterators.remove(iter) ;
-//        else
-//        {
-//            if ( ! iterators.contains(iter) )
-//                System.err.println("Already closed or not tracked: "+iter) ;
-//        }
-//    }
+    public void addIterator(Iterator<? > iter) {
+        count++ ;
+        peekCount = Math.max(peekCount, count) ;
+        if ( iterators != null )
+            iterators.add(iter) ;
+    }
+
+    // The code does not perfectly record end of iterator.
+    public void removeIterator(Iterator<? > iter) {
+        count-- ;
+        if ( iterators != null )
+            iterators.remove(iter) ;
+        if ( count == 0 ) {
+            peekCount= 0 ;
+        }
+    }
     
     /** Return the list of items registered for the transaction lifecycle */ 
-    public List<TransactionLifecycle> lifecycleComponents()
-    {
+    public List<TransactionLifecycle> lifecycleComponents() {
         List<TransactionLifecycle> x = new ArrayList<>() ;
         x.addAll(nodeTableTrans) ;
         x.addAll(blkMgrs) ;
         return x ;
     }
     
-    public void addComponent(NodeTableTrans ntt)
-    {
+    public void addComponent(NodeTableTrans ntt) {
         nodeTableTrans.add(ntt) ;
     }
 
-    public void addComponent(BlockMgrJournal blkMgr)
-    {
+    public void addComponent(BlockMgrJournal blkMgr) {
         blkMgrs.add(blkMgr) ;
     }
 
-    public DatasetGraphTDB getBaseDataset()
-    {
+    public DatasetGraphTDB getBaseDataset() {
         return basedsg ;
     }
-    
+
     @Override
-    public String toString()
-    {
-        return "Transaction: "+id+" : Mode="+mode+" : State="+state+" : "+basedsg.getLocation().getDirectoryPath() ;
+    public String toString() {
+        return "Transaction: " + id + " : Mode=" + mode + " : State=" + state + " : " + basedsg.getLocation().getDirectoryPath() ;
     }
-    
-    public String getLabel()
-    {
+
+    public String getLabel() {
         return label ;
     }
 }
