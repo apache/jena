@@ -207,6 +207,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${ver.slf4j}</version>
+    </dependency>
   </dependencies>
 
   <build>
