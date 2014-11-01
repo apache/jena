@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 /** The null aggregate (which can't be written in SPARQL) 
- * calculates nothering but does help remember the group key  
+ * calculates nothing but does help remember the group key.  
  */
 public class AggNull extends AggregatorBase
 {
