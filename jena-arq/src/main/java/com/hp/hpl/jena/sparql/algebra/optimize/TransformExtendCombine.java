@@ -56,10 +56,10 @@ public class TransformExtendCombine extends TransformCopy {
 
             OpAssign x = (OpAssign)subOp ;
             VarExprList outerVarExprList = opAssign.getVarExprList() ;
-            VarExprList innerVarExprList = x.getVarExprList() ;
+            VarExprList innerVarExprList = new VarExprList(x.getVarExprList()) ;    // Copy
             
             Op r = OpAssign.assign(x.getSubOp(), innerVarExprList) ;
-            // This contains an "if already assigned" test.
+            // This contains an "if already (assign)" test.
             r = OpAssign.assign(r, outerVarExprList) ;
             return r ;
         }
@@ -73,10 +73,9 @@ public class TransformExtendCombine extends TransformCopy {
             // is actually illegal in SPARQL.  ?x must be a fresh variable.
             OpExtend x = (OpExtend)subOp ;
             VarExprList outerVarExprList = opExtend.getVarExprList() ;
-            VarExprList innerVarExprList = x.getVarExprList() ;
-            // XXX Go back to "create"
+            VarExprList innerVarExprList = new VarExprList(x.getVarExprList()) ;    // Copy
             Op r = OpExtend.extend(x.getSubOp(), innerVarExprList) ;
-            // This contains an "if already assigned" test.
+            // This contains an "if already (extend)" test.
             r = OpExtend.extend(r, outerVarExprList) ;
             return r ;
         }
