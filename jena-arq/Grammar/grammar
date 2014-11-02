@@ -127,13 +127,18 @@ do
           ;;
 
       sparql11|sparql_11.jj)
+	  # License header.  cpp is run to exclude comments from \$GRAMMAR
+	  # because thay picks up unwanted material as well as the comments
+	  # in $GRAMMAR
+	  cp header.jj sparql_11.jj
           # The parser that is exactly the working group grammar.
-          cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_11 > sparql_11.jj
+          cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_11 >> sparql_11.jj
           grammar sparql_11.jj sparql_11 SPARQLParser11
           ;;
 
       arq|arq.jj)
-          cat "$GRAMMAR" | cpp -P -DARQ - > arq.jj
+	  cp header.jj arq.jj
+          cat "$GRAMMAR" | cpp -P -DARQ - >> arq.jj
           grammar arq.jj arq ARQParser
           ;;
 

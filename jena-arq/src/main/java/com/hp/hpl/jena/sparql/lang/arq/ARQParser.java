@@ -167,6 +167,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case VAR2:
     case EXISTS:
     case NOT:
+    case AGG:
     case COUNT:
     case MIN:
     case MAX:
@@ -257,6 +258,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         case PNAME_LN:
         case EXISTS:
         case NOT:
+        case AGG:
         case COUNT:
         case MIN:
         case MAX:
@@ -405,6 +407,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         case VAR2:
         case EXISTS:
         case NOT:
+        case AGG:
         case COUNT:
         case MIN:
         case MAX:
@@ -775,6 +778,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case VAR2:
       case EXISTS:
       case NOT:
+      case AGG:
       case COUNT:
       case MIN:
       case MAX:
@@ -851,6 +855,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EXISTS:
     case NOT:
+    case AGG:
     case COUNT:
     case MIN:
     case MAX:
@@ -960,6 +965,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case PNAME_LN:
       case EXISTS:
       case NOT:
+      case AGG:
       case COUNT:
       case MIN:
       case MAX:
@@ -1055,6 +1061,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case DESC:
       case EXISTS:
       case NOT:
+      case AGG:
       case COUNT:
       case MIN:
       case MAX:
@@ -1156,6 +1163,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case VAR2:
     case EXISTS:
     case NOT:
+    case AGG:
     case COUNT:
     case MIN:
     case MAX:
@@ -1224,6 +1232,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case PNAME_LN:
       case EXISTS:
       case NOT:
+      case AGG:
       case COUNT:
       case MIN:
       case MAX:
@@ -2512,6 +2521,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case EXISTS:
     case NOT:
+    case AGG:
     case COUNT:
     case MIN:
     case MAX:
@@ -4092,6 +4102,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case VAR2:
     case EXISTS:
     case NOT:
+    case AGG:
     case COUNT:
     case MIN:
     case MAX:
@@ -4189,6 +4200,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case EXISTS:
     case NOT:
+    case AGG:
     case COUNT:
     case MIN:
     case MAX:
@@ -4309,6 +4321,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                        Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
                        Node gn ; ExprList a ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case AGG:
     case COUNT:
     case MIN:
     case MAX:
@@ -4853,6 +4866,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case VAR2:
       case EXISTS:
       case NOT:
+      case AGG:
       case COUNT:
       case MIN:
       case MAX:
@@ -5079,6 +5093,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       }
       jj_consume_token(RPAREN);
       agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ;
+      break;
+    case AGG:
+      t = jj_consume_token(AGG);
+            String iri ;
+      iri = iri();
+      a = ExpressionList();
+        agg = AggregatorFactory.create(iri, a) ;
       break;
     default:
       jj_la1[158] = jj_gen;
@@ -5386,88 +5407,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(4, xla); }
   }
 
-  private boolean jj_3R_109() {
-    if (jj_scan_token(REGEX)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_99() {
-    if (jj_3R_111()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_98() {
-    if (jj_3R_110()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_97() {
-    if (jj_3R_109()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_123() {
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_96() {
-    if (jj_scan_token(IS_NUMERIC)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_131() {
-    if (jj_scan_token(IRIref)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_95() {
-    if (jj_scan_token(IS_LITERAL)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_94() {
-    if (jj_scan_token(IS_BLANK)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_156() {
-    if (jj_scan_token(ANON)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_106() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(165)) {
-    jj_scanpos = xsp;
-    if (jj_3R_123()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_93() {
-    if (jj_scan_token(IS_URI)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_155() {
-    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_146() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_155()) {
-    jj_scanpos = xsp;
-    if (jj_3R_156()) return true;
-    }
+  private boolean jj_3R_152() {
+    if (jj_scan_token(PNAME_NS)) return true;
     return false;
   }
 
@@ -5483,8 +5424,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_166() {
-    if (jj_scan_token(PNAME_NS)) return true;
+  private boolean jj_3R_151() {
+    if (jj_scan_token(PNAME_LN)) return true;
     return false;
   }
 
@@ -5494,24 +5435,24 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_146() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_151()) {
+    jj_scanpos = xsp;
+    if (jj_3R_152()) return true;
+    }
+    return false;
+  }
+
   private boolean jj_3R_89() {
     if (jj_scan_token(STRLANG)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_165() {
-    if (jj_scan_token(PNAME_LN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_157() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_165()) {
-    jj_scanpos = xsp;
-    if (jj_3R_166()) return true;
-    }
+  private boolean jj_3R_139() {
+    if (jj_3R_146()) return true;
     return false;
   }
 
@@ -5521,22 +5462,17 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_148() {
-    if (jj_3R_157()) return true;
+  private boolean jj_3R_138() {
+    if (jj_3R_133()) return true;
     return false;
   }
 
-  private boolean jj_3R_147() {
-    if (jj_3R_131()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_142() {
+  private boolean jj_3R_132() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_147()) {
+    if (jj_3R_138()) {
     jj_scanpos = xsp;
-    if (jj_3R_148()) return true;
+    if (jj_3R_139()) return true;
     }
     return false;
   }
@@ -5547,13 +5483,28 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_164() {
+    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_163() {
+    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
+    return false;
+  }
+
   private boolean jj_3R_86() {
     if (jj_scan_token(COALESCE)) return true;
     if (jj_3R_106()) return true;
     return false;
   }
 
-  private boolean jj_3R_141() {
+  private boolean jj_3R_162() {
+    if (jj_scan_token(STRING_LITERAL2)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_145() {
     if (jj_scan_token(NIL)) return true;
     return false;
   }
@@ -5564,8 +5515,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_140() {
-    if (jj_3R_146()) return true;
+  private boolean jj_3R_161() {
+    if (jj_scan_token(STRING_LITERAL1)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_144() {
+    if (jj_3R_150()) return true;
     return false;
   }
 
@@ -5575,13 +5531,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_161() {
-    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_139() {
-    if (jj_3R_145()) return true;
+  private boolean jj_3R_143() {
+    if (jj_3R_149()) return true;
     return false;
   }
 
@@ -5591,13 +5542,24 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_160() {
-    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
+  private boolean jj_3R_153() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_161()) {
+    jj_scanpos = xsp;
+    if (jj_3R_162()) {
+    jj_scanpos = xsp;
+    if (jj_3R_163()) {
+    jj_scanpos = xsp;
+    if (jj_3R_164()) return true;
+    }
+    }
+    }
     return false;
   }
 
-  private boolean jj_3R_138() {
-    if (jj_3R_144()) return true;
+  private boolean jj_3R_142() {
+    if (jj_3R_148()) return true;
     return false;
   }
 
@@ -5607,13 +5569,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_159() {
-    if (jj_scan_token(STRING_LITERAL2)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_137() {
-    if (jj_3R_143()) return true;
+  private boolean jj_3R_141() {
+    if (jj_3R_147()) return true;
     return false;
   }
 
@@ -5623,30 +5580,25 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_158() {
-    if (jj_scan_token(STRING_LITERAL1)) return true;
+  private boolean jj_3R_140() {
+    if (jj_3R_132()) return true;
     return false;
   }
 
-  private boolean jj_3R_136() {
-    if (jj_3R_142()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_133() {
+  private boolean jj_3R_135() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_136()) {
-    jj_scanpos = xsp;
-    if (jj_3R_137()) {
-    jj_scanpos = xsp;
-    if (jj_3R_138()) {
-    jj_scanpos = xsp;
-    if (jj_3R_139()) {
-    jj_scanpos = xsp;
     if (jj_3R_140()) {
     jj_scanpos = xsp;
-    if (jj_3R_141()) return true;
+    if (jj_3R_141()) {
+    jj_scanpos = xsp;
+    if (jj_3R_142()) {
+    jj_scanpos = xsp;
+    if (jj_3R_143()) {
+    jj_scanpos = xsp;
+    if (jj_3R_144()) {
+    jj_scanpos = xsp;
+    if (jj_3R_145()) return true;
     }
     }
     }
@@ -5661,8 +5613,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_128() {
-    if (jj_3R_133()) return true;
+  private boolean jj_3R_129() {
+    if (jj_3R_135()) return true;
     return false;
   }
 
@@ -5672,19 +5624,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_149() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_158()) {
-    jj_scanpos = xsp;
-    if (jj_3R_159()) {
-    jj_scanpos = xsp;
-    if (jj_3R_160()) {
-    jj_scanpos = xsp;
-    if (jj_3R_161()) return true;
-    }
-    }
-    }
+  private boolean jj_3R_158() {
+    if (jj_scan_token(FALSE)) return true;
     return false;
   }
 
@@ -5694,7 +5635,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_132() {
+  private boolean jj_3R_134() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(14)) {
@@ -5710,6 +5651,21 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_157() {
+    if (jj_scan_token(TRUE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_149() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_157()) {
+    jj_scanpos = xsp;
+    if (jj_3R_158()) return true;
+    }
+    return false;
+  }
+
   private boolean jj_3R_76() {
     if (jj_scan_token(TZ)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -5719,11 +5675,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_75() {
     if (jj_scan_token(TIMEZONE)) return true;
     if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_154() {
-    if (jj_scan_token(FALSE)) return true;
     return false;
   }
 
@@ -5739,18 +5690,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_153() {
-    if (jj_scan_token(TRUE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_145() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_153()) {
-    jj_scanpos = xsp;
-    if (jj_3R_154()) return true;
-    }
+  private boolean jj_3R_176() {
+    if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
     return false;
   }
 
@@ -5760,9 +5701,32 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_175() {
+    if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
+    return false;
+  }
+
   private boolean jj_3R_71() {
     if (jj_scan_token(DAY)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_174() {
+    if (jj_scan_token(INTEGER_NEGATIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_167() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_174()) {
+    jj_scanpos = xsp;
+    if (jj_3R_175()) {
+    jj_scanpos = xsp;
+    if (jj_3R_176()) return true;
+    }
+    }
     return false;
   }
 
@@ -5778,18 +5742,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_175() {
-    if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_174() {
-    if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_127() {
-    if (jj_3R_132()) return true;
+  private boolean jj_3R_128() {
+    if (jj_3R_134()) return true;
     return false;
   }
 
@@ -5800,29 +5754,21 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_173() {
-    if (jj_scan_token(INTEGER_NEGATIVE)) return true;
+    if (jj_scan_token(DOUBLE_POSITIVE)) return true;
     return false;
   }
 
-  private boolean jj_3R_164() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_173()) {
-    jj_scanpos = xsp;
-    if (jj_3R_174()) {
-    jj_scanpos = xsp;
-    if (jj_3R_175()) return true;
-    }
-    }
+  private boolean jj_3R_172() {
+    if (jj_scan_token(DECIMAL_POSITIVE)) return true;
     return false;
   }
 
   private boolean jj_3R_114() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_127()) {
+    if (jj_3R_128()) {
     jj_scanpos = xsp;
-    if (jj_3R_128()) return true;
+    if (jj_3R_129()) return true;
     }
     return false;
   }
@@ -5833,19 +5779,27 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_171() {
+    if (jj_scan_token(INTEGER_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_166() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_171()) {
+    jj_scanpos = xsp;
+    if (jj_3R_172()) {
+    jj_scanpos = xsp;
+    if (jj_3R_173()) return true;
+    }
+    }
+    return false;
+  }
+
   private boolean jj_3R_66() {
     if (jj_scan_token(STRENDS)) return true;
     if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_172() {
-    if (jj_scan_token(DOUBLE_POSITIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_171() {
-    if (jj_scan_token(DECIMAL_POSITIVE)) return true;
     return false;
   }
 
@@ -5856,26 +5810,36 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_170() {
-    if (jj_scan_token(INTEGER_POSITIVE)) return true;
+    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
-  private boolean jj_3R_163() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_170()) {
-    jj_scanpos = xsp;
-    if (jj_3R_171()) {
-    jj_scanpos = xsp;
-    if (jj_3R_172()) return true;
-    }
-    }
+  private boolean jj_3R_169() {
+    if (jj_scan_token(DECIMAL)) return true;
     return false;
   }
 
   private boolean jj_3R_64() {
     if (jj_scan_token(CONTAINS)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_168() {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_165() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_168()) {
+    jj_scanpos = xsp;
+    if (jj_3R_169()) {
+    jj_scanpos = xsp;
+    if (jj_3R_170()) return true;
+    }
+    }
     return false;
   }
 
@@ -5891,19 +5855,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_169() {
-    if (jj_scan_token(DOUBLE)) return true;
-    return false;
-  }
-
   private boolean jj_3R_61() {
     if (jj_scan_token(UCASE)) return true;
     if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_168() {
-    if (jj_scan_token(DECIMAL)) return true;
     return false;
   }
 
@@ -5912,21 +5866,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_167() {
-    if (jj_scan_token(INTEGER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_162() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_167()) {
-    jj_scanpos = xsp;
-    if (jj_3R_168()) {
-    jj_scanpos = xsp;
-    if (jj_3R_169()) return true;
-    }
-    }
+  private boolean jj_3R_156() {
+    if (jj_3R_167()) return true;
     return false;
   }
 
@@ -5936,8 +5877,18 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_155() {
+    if (jj_3R_166()) return true;
+    return false;
+  }
+
   private boolean jj_3R_58() {
     if (jj_3R_107()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_154() {
+    if (jj_3R_165()) return true;
     return false;
   }
 
@@ -5953,19 +5904,22 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_152() {
-    if (jj_3R_164()) return true;
-    return false;
-  }
-
   private boolean jj_3R_55() {
     if (jj_scan_token(FLOOR)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_151() {
-    if (jj_3R_163()) return true;
+  private boolean jj_3R_148() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_154()) {
+    jj_scanpos = xsp;
+    if (jj_3R_155()) {
+    jj_scanpos = xsp;
+    if (jj_3R_156()) return true;
+    }
+    }
     return false;
   }
 
@@ -6023,11 +5977,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_150() {
-    if (jj_3R_162()) return true;
-    return false;
-  }
-
   private boolean jj_3R_53() {
     if (jj_scan_token(ABS)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -6045,21 +5994,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_124() {
+  private boolean jj_3R_125() {
     if (jj_scan_token(LBRACE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_144() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_150()) {
-    jj_scanpos = xsp;
-    if (jj_3R_151()) {
-    jj_scanpos = xsp;
-    if (jj_3R_152()) return true;
-    }
-    }
     return false;
   }
 
@@ -6091,6 +6027,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_147() {
+    if (jj_3R_153()) return true;
+    return false;
+  }
+
   private boolean jj_3R_49() {
     if (jj_scan_token(IRI)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -6100,11 +6041,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_48() {
     if (jj_scan_token(BOUND)) return true;
     if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_143() {
-    if (jj_3R_149()) return true;
     return false;
   }
 
@@ -6317,7 +6253,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_134() {
+  private boolean jj_3R_123() {
+    if (jj_scan_token(AGG)) return true;
+    if (jj_3R_132()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_136() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
@@ -6329,7 +6271,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_113() {
-    if (jj_3R_126()) return true;
+    if (jj_3R_127()) return true;
     return false;
   }
 
@@ -6345,10 +6287,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_126() {
+  private boolean jj_3R_127() {
     if (jj_scan_token(PREFIX)) return true;
     if (jj_scan_token(PNAME_NS)) return true;
-    if (jj_3R_131()) return true;
+    if (jj_3R_133()) return true;
     return false;
   }
 
@@ -6370,9 +6312,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_125() {
+  private boolean jj_3R_126() {
     if (jj_scan_token(BASE)) return true;
-    if (jj_3R_131()) return true;
+    if (jj_3R_133()) return true;
     return false;
   }
 
@@ -6383,7 +6325,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_112() {
-    if (jj_3R_125()) return true;
+    if (jj_3R_126()) return true;
     return false;
   }
 
@@ -6412,7 +6354,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_135() {
+  private boolean jj_3R_137() {
     if (jj_scan_token(LBRACKET)) return true;
     return false;
   }
@@ -6432,32 +6374,35 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_121()) {
     jj_scanpos = xsp;
-    if (jj_3R_122()) return true;
+    if (jj_3R_122()) {
+    jj_scanpos = xsp;
+    if (jj_3R_123()) return true;
     }
     }
     }
     }
     }
     }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_131() {
+    if (jj_3R_137()) return true;
     return false;
   }
 
   private boolean jj_3R_130() {
-    if (jj_3R_135()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_129() {
-    if (jj_3R_134()) return true;
+    if (jj_3R_136()) return true;
     return false;
   }
 
   private boolean jj_3R_115() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_129()) {
+    if (jj_3R_130()) {
     jj_scanpos = xsp;
-    if (jj_3R_130()) return true;
+    if (jj_3R_131()) return true;
     }
     return false;
   }
@@ -6470,7 +6415,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_110() {
     if (jj_scan_token(EXISTS)) return true;
-    if (jj_3R_124()) return true;
+    if (jj_3R_125()) return true;
     return false;
   }
 
@@ -6512,6 +6457,91 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_109() {
+    if (jj_scan_token(REGEX)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_99() {
+    if (jj_3R_111()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_98() {
+    if (jj_3R_110()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_133() {
+    if (jj_scan_token(IRIref)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_97() {
+    if (jj_3R_109()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_124() {
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_96() {
+    if (jj_scan_token(IS_NUMERIC)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_160() {
+    if (jj_scan_token(ANON)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_95() {
+    if (jj_scan_token(IS_LITERAL)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_159() {
+    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_150() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_159()) {
+    jj_scanpos = xsp;
+    if (jj_3R_160()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_94() {
+    if (jj_scan_token(IS_BLANK)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_106() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(165)) {
+    jj_scanpos = xsp;
+    if (jj_3R_124()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_93() {
+    if (jj_scan_token(IS_URI)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
   /** Generated Token Manager. */
   public ARQParserTokenManager token_source;
   JavaCharStream jj_input_stream;
@@ -6544,7 +6574,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_la1_0 = new int[] {0xe400000,0x200,0x300000,0x300000,0x0,0x1800000,0x1800000,0x1c00,0x0,0xdc00,0xdc00,0xdc00,0x0,0x0,0xfc00,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x1c00,0x0,0x0,0x0,0x40000000,0x30000000,0xdc00,0x0,0xdc00,0x1c00,0xdc00,0x0,0xdc00,0xdc00,0x20000000,0x10000000,0x30000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0xfc00,0x0,0x0,0xfc00,0xfc00,0x0,0x400000,0xfc00,0x0,0x0,0xfc00,0xfc00,0x0,0x0,0x0,0xc000,0x1c00,0xc000,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0x1c00,0x800000,0x0,0x0,0x0,0x0,0xfc00,0x0,0xfc00,0x8dc00,0x0,0x8dc00,0x8dc00,0x0,0xfc00,0x88dc00,0x88dc00,0x0,0x88dc00,0x88dc00,0x0,0x0,0x0,0x0,0x0,0x881c00,0x0,0x0,0x0,0x0,0x881c00,0x0,0x81c00,0x81c00,0x81c00,0x81c00,0x0,0x0,0xfc00,0xfc00,0xfc00,0xfc00,0xfc00,0xdc00,0xc000,0x3c00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0xdc00,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x1800,0x2000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x20,0x0,0x0,0x0,0x20000,0xb7c18000,0xb7c18000,0xb7c18000,0x20,0x20,0x0,0x60,0x0,0x0,0x20,0x40,0x20,0x10,0x40,0x40000,0x80000,0x0,0x0,0xb7c18000,0x20000,0xb7c18000,0xb7c18000,0xb7c1800c,0xc,0xb7c18000,0xb7c1800c,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x100,0x100,0x110,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x4001fb01,0x0,0x0,0x0,0x0,0x4001fb01,0x0,0x0,0x2,0x0,0x0,0x0,0x2,0x0,0x2,0x400,0xb7c18000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xb7c18000,0xb7c18000,0x0,0x0,0xb7c18000,0x0,0x0,0x0,0x0,0xb7c18000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x37c00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x20,0x0,0x0,0x0,0x20000,0xb7e18000,0xb7e18000,0xb7e18000,0x20,0x20,0x0,0x60,0x0,0x0,0x20,0x40,0x20,0x10,0x40,0x40000,0x80000,0x0,0x0,0xb7e18000,0x20000,0xb7e18000,0xb7e18000,0xb7e1800c,0xc,0xb7e18000,0xb7e1800c,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x100,0x100,0x110,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x4001fb01,0x0,0x0,0x0,0x0,0x4001fb01,0x0,0x0,0x2,0x0,0x0,0x0,0x2,0x0,0x2,0x400,0xb7e18000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xb7e18000,0xb7e18000,0x0,0x0,0xb7e18000,0x0,0x0,0x0,0x0,0xb7e18000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x37e00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
       jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfffffcbd,0xfffffcbd,0xfffffcbd,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfffffcbd,0x0,0xfffffcbd,0xfffffcbd,0xfffffcbd,0x0,0xfffffcbd,0xfffffcbd,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfffffcbd,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x300,0x300,0x0,0x300,0x300,0x0,0x0,0x0,0x0,0x0,0x300,0x0,0x0,0x0,0x0,0x300,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfffffcbd,0xfffffcbd,0x0,0x0,0xfffffcbd,0x0,0x0,0x0,0x0,0xfffffcbd,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
