@@ -34,6 +34,7 @@ import com.hp.hpl.jena.tdb.base.objectfile.TS_ObjectFile ;
 import com.hp.hpl.jena.tdb.graph.TS_Graph ;
 import com.hp.hpl.jena.tdb.index.TS_Index ;
 import com.hp.hpl.jena.tdb.lib.TS_LibTDB ;
+import com.hp.hpl.jena.tdb.setup.TS_TDBSetup ;
 import com.hp.hpl.jena.tdb.solver.TS_SolverTDB ;
 import com.hp.hpl.jena.tdb.store.TS_Store ;
 import com.hp.hpl.jena.tdb.store.nodetable.TS_NodeTable ;
@@ -54,6 +55,7 @@ import com.hp.hpl.jena.tdb.transaction.TS_TransactionTDB ;
     , TS_NodeTable.class
     , TS_Index.class
     , TS_TupleTable.class
+    , TS_TDBSetup.class
     , TS_Store.class        // The main storage implementation.  Slow tests.
     , TS_SolverTDB.class
     , TS_Sys.class
