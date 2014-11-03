@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
+import java.util.Arrays ;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
@@ -205,6 +207,103 @@ public class StoreParams implements IndexParams
 
     private void fmt(StringBuilder buff, String name, int value) {
         buff.append(String.format("%-20s   %s\n", name, value)) ;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31 ;
+        int result = 1 ;
+        result = prime * result + Node2NodeIdCacheSize ;
+        result = prime * result + NodeId2NodeCacheSize ;
+        result = prime * result + NodeMissCacheSize ;
+        result = prime * result + blockReadCacheSize ;
+        result = prime * result + blockSize ;
+        result = prime * result + blockWriteCacheSize ;
+        result = prime * result + ((fileMode == null) ? 0 : fileMode.hashCode()) ;
+        result = prime * result + ((indexId2Node == null) ? 0 : indexId2Node.hashCode()) ;
+        result = prime * result + ((indexNode2Id == null) ? 0 : indexNode2Id.hashCode()) ;
+        result = prime * result + ((indexPrefix == null) ? 0 : indexPrefix.hashCode()) ;
+        result = prime * result + ((prefixId2Node == null) ? 0 : prefixId2Node.hashCode()) ;
+        result = prime * result + Arrays.hashCode(prefixIndexes) ;
+        result = prime * result + ((prefixNode2Id == null) ? 0 : prefixNode2Id.hashCode()) ;
+        result = prime * result + ((primaryIndexPrefix == null) ? 0 : primaryIndexPrefix.hashCode()) ;
+        result = prime * result + ((primaryIndexQuads == null) ? 0 : primaryIndexQuads.hashCode()) ;
+        result = prime * result + ((primaryIndexTriples == null) ? 0 : primaryIndexTriples.hashCode()) ;
+        result = prime * result + Arrays.hashCode(quadIndexes) ;
+        result = prime * result + Arrays.hashCode(tripleIndexes) ;
+        return result ;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true ;
+        if ( obj == null )
+            return false ;
+        if ( getClass() != obj.getClass() )
+            return false ;
+        StoreParams other = (StoreParams)obj ;
+        if ( Node2NodeIdCacheSize != other.Node2NodeIdCacheSize )
+            return false ;
+        if ( NodeId2NodeCacheSize != other.NodeId2NodeCacheSize )
+            return false ;
+        if ( NodeMissCacheSize != other.NodeMissCacheSize )
+            return false ;
+        if ( blockReadCacheSize != other.blockReadCacheSize )
+            return false ;
+        if ( blockSize != other.blockSize )
+            return false ;
+        if ( blockWriteCacheSize != other.blockWriteCacheSize )
+            return false ;
+        if ( fileMode != other.fileMode )
+            return false ;
+        if ( indexId2Node == null ) {
+            if ( other.indexId2Node != null )
+                return false ;
+        } else if ( !indexId2Node.equals(other.indexId2Node) )
+            return false ;
+        if ( indexNode2Id == null ) {
+            if ( other.indexNode2Id != null )
+                return false ;
+        } else if ( !indexNode2Id.equals(other.indexNode2Id) )
+            return false ;
+        if ( indexPrefix == null ) {
+            if ( other.indexPrefix != null )
+                return false ;
+        } else if ( !indexPrefix.equals(other.indexPrefix) )
+            return false ;
+        if ( prefixId2Node == null ) {
+            if ( other.prefixId2Node != null )
+                return false ;
+        } else if ( !prefixId2Node.equals(other.prefixId2Node) )
+            return false ;
+        if ( !Arrays.equals(prefixIndexes, other.prefixIndexes) )
+            return false ;
+        if ( prefixNode2Id == null ) {
+            if ( other.prefixNode2Id != null )
+                return false ;
+        } else if ( !prefixNode2Id.equals(other.prefixNode2Id) )
+            return false ;
+        if ( primaryIndexPrefix == null ) {
+            if ( other.primaryIndexPrefix != null )
+                return false ;
+        } else if ( !primaryIndexPrefix.equals(other.primaryIndexPrefix) )
+            return false ;
+        if ( primaryIndexQuads == null ) {
+            if ( other.primaryIndexQuads != null )
+                return false ;
+        } else if ( !primaryIndexQuads.equals(other.primaryIndexQuads) )
+            return false ;
+        if ( primaryIndexTriples == null ) {
+            if ( other.primaryIndexTriples != null )
+                return false ;
+        } else if ( !primaryIndexTriples.equals(other.primaryIndexTriples) )
+            return false ;
+        if ( !Arrays.equals(quadIndexes, other.quadIndexes) )
+            return false ;
+        if ( !Arrays.equals(tripleIndexes, other.tripleIndexes) )
+            return false ;
+        return true ;
     }
 
 }
