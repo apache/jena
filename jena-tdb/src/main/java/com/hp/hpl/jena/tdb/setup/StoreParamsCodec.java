@@ -26,6 +26,8 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 
+import static com.hp.hpl.jena.tdb.setup.StoreParamsBuilder.* ;
+
 /** Encode and decode {@linkplain StoreParams} */ 
 public class StoreParamsCodec {
     
@@ -33,51 +35,67 @@ public class StoreParamsCodec {
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("StoreParams") ;    // "StoreParams" is an internal alignment marker - not in the JSON.
         
-        encode(builder, "tdb.FileMode",                 params.getFileMode().name()) ;
-        encode(builder, "tdb.BlockSize",                params.getBlockSize()) ;
-        encode(builder, "tdb.BlockReadCacheSize",       params.getBlockReadCacheSize()) ;
-        encode(builder, "tdb.BlockWriteCacheSize",      params.getBlockWriteCacheSize()) ;
-        encode(builder, "tdb.Node2NodeIdCacheSize",     params.getNode2NodeIdCacheSize()) ;
-        encode(builder, "tdb.NodeId2NodeCacheSize",     params.getNodeId2NodeCacheSize()) ;
-        encode(builder, "tdb.NodeMissCacheSize",        params.getNodeMissCacheSize()) ;
-        encode(builder, "tdb.IndexNode2Id",             params.getIndexNode2Id()) ;
-        encode(builder, "tdb.IndexId2Node",             params.getIndexId2Node()) ;
-        encode(builder, "tdb.PrimaryIndexTriples",      params.getPrimaryIndexTriples()) ;
-        encode(builder, "tdb.TripleIndexes",            params.getTripleIndexes()) ;
-        encode(builder, "tdb.PrimaryIndexQuads",        params.getPrimaryIndexQuads()) ;
-        encode(builder, "tdb.QuadIndexes",              params.getQuadIndexes()) ;
-        encode(builder, "tdb.PrimaryIndexPrefix",       params.getPrimaryIndexPrefix()) ;
-        encode(builder, "tdb.PrefixIndexes",            params.getPrefixIndexes()) ;
-        encode(builder, "tdb.IndexPrefix",              params.getIndexPrefix()) ;
-        encode(builder, "tdb.PrefixNode2Id",            params.getPrefixNode2Id()) ;
-        encode(builder, "tdb.PrefixId2Node",            params.getPrefixId2Node()) ;
+        encode(builder, key(fFileMode),                 params.getFileMode().name()) ;
+        encode(builder, key(fBlockSize),                params.getBlockSize()) ;
+        encode(builder, key(fBlockReadCacheSize),       params.getBlockReadCacheSize()) ;
+        encode(builder, key(fBlockWriteCacheSize),      params.getBlockWriteCacheSize()) ;
+        encode(builder, key(fNode2NodeIdCacheSize),     params.getNode2NodeIdCacheSize()) ;
+        encode(builder, key(fNodeId2NodeCacheSize),     params.getNodeId2NodeCacheSize()) ;
+        encode(builder, key(fNodeMissCacheSize),        params.getNodeMissCacheSize()) ;
+        encode(builder, key(fIndexNode2Id),             params.getIndexNode2Id()) ;
+        encode(builder, key(fIndexId2Node),             params.getIndexId2Node()) ;
+        encode(builder, key(fPrimaryIndexTriples),      params.getPrimaryIndexTriples()) ;
+        encode(builder, key(fTripleIndexes),            params.getTripleIndexes()) ;
+        encode(builder, key(fPrimaryIndexQuads),        params.getPrimaryIndexQuads()) ;
+        encode(builder, key(fQuadIndexes),              params.getQuadIndexes()) ;
+        encode(builder, key(fPrimaryIndexPrefix),       params.getPrimaryIndexPrefix()) ;
+        encode(builder, key(fPrefixIndexes),            params.getPrefixIndexes()) ;
+        encode(builder, key(fIndexPrefix),              params.getIndexPrefix()) ;
+        encode(builder, key(fPrefixNode2Id),            params.getPrefixNode2Id()) ;
+        encode(builder, key(fPrefixId2Node),            params.getPrefixId2Node()) ;
+        
         builder.finishObject("StoreParams") ;
         return (JsonObject)builder.build() ;
+    }
+
+    private static final String jsonKeyPrefix= "tdb." ;
+    
+    private static String key(String string) {
+        if ( string.startsWith(jsonKeyPrefix))
+            throw new TDBException("Key name already starts with '"+jsonKeyPrefix+"'") ;
+        return jsonKeyPrefix+string ;
+    }
+
+    private static String unkey(String string) {
+        if ( ! string.startsWith(jsonKeyPrefix) )
+            throw new TDBException("JSON key name does not start with '"+jsonKeyPrefix+"'") ;
+        return string.substring(jsonKeyPrefix.length()) ;
     }
 
     public static StoreParams decode(JsonObject json) {
         StoreParamsBuilder builder = StoreParamsBuilder.create() ;
         
         for ( String key : json.keys() ) {
-            switch(key) {
-                case "tdb.FileMode" :               builder.fileMode(FileMode.valueOf(getString(json, key))) ; break ;
-                case "tdb.BlockSize":               builder.blockSize(getInt(json, key)) ; break ;
-                case "tdb.BlockReadCacheSize":      builder.blockReadCacheSize(getInt(json, key)) ; break ;
-                case "tdb.BlockWriteCacheSize":     builder.blockWriteCacheSize(getInt(json, key)) ; break ;
-                case "tdb.Node2NodeIdCacheSize":    builder.node2NodeIdCacheSize(getInt(json, key)) ; break ;
-                case "tdb.NodeId2NodeCacheSize":    builder.nodeId2NodeCacheSize(getInt(json, key)) ; break ;
-                case "tdb.NodeMissCacheSize":       builder.nodeMissCacheSize(getInt(json, key)) ; break ;
-                case "tdb.IndexNode2Id":            builder.indexNode2Id(getString(json, key)) ; break ;
-                case "tdb.IndexId2Node":            builder.indexId2Node(getString(json, key)) ; break ;
-                case "tdb.PrimaryIndexTriples":     builder.primaryIndexTriples(getString(json, key)) ; break ;
-                case "tdb.TripleIndexes":           builder.tripleIndexes(getStringArray(json, key)) ; break ;
-                case "tdb.PrimaryIndexQuads":       builder.primaryIndexQuads(getString(json, key)) ; break ;
-                case "tdb.QuadIndexes":             builder.quadIndexes(getStringArray(json, key)) ; break ;
-                case "tdb.PrimaryIndexPrefix":      builder.primaryIndexPrefix(getString(json, key)) ; break ;
-                case "tdb.PrefixIndexes":           builder.prefixIndexes(getStringArray(json, key)) ; break ;
-                case "tdb.IndexPrefix":             builder.indexPrefix(getString(json, key)) ; break ;
-                case "tdb.PrefixNode2Id":           builder.prefixNode2Id(getString(json, key)) ; break ;
-                case "tdb.PrefixId2Node":           builder.prefixId2Node(getString(json, key)) ; break ;
+            String short_key = unkey(key) ;
+            switch(short_key) {
+                case fFileMode :               builder.fileMode(FileMode.valueOf(getString(json, key))) ;   break ;
+                case fBlockSize:               builder.blockSize(getInt(json, key)) ;                       break ;
+                case fBlockReadCacheSize:      builder.blockReadCacheSize(getInt(json, key)) ;              break ;
+                case fBlockWriteCacheSize:     builder.blockWriteCacheSize(getInt(json, key)) ;             break ;
+                case fNode2NodeIdCacheSize:    builder.node2NodeIdCacheSize(getInt(json, key)) ;            break ;
+                case fNodeId2NodeCacheSize:    builder.nodeId2NodeCacheSize(getInt(json, key)) ;            break ;
+                case fNodeMissCacheSize:       builder.nodeMissCacheSize(getInt(json, key)) ;               break ;
+                case fIndexNode2Id:            builder.indexNode2Id(getString(json, key)) ;                 break ;
+                case fIndexId2Node:            builder.indexId2Node(getString(json, key)) ;                 break ;
+                case fPrimaryIndexTriples:     builder.primaryIndexTriples(getString(json, key)) ;          break ;
+                case fTripleIndexes:           builder.tripleIndexes(getStringArray(json, key)) ;           break ;
+                case fPrimaryIndexQuads:       builder.primaryIndexQuads(getString(json, key)) ;            break ;
+                case fQuadIndexes:             builder.quadIndexes(getStringArray(json, key)) ;             break ;
+                case fPrimaryIndexPrefix:      builder.primaryIndexPrefix(getString(json, key)) ;           break ;
+                case fPrefixIndexes:           builder.prefixIndexes(getStringArray(json, key)) ;           break ;
+                case fIndexPrefix:             builder.indexPrefix(getString(json, key)) ;                  break ;
+                case fPrefixNode2Id:           builder.prefixNode2Id(getString(json, key)) ;                break ;
+                case fPrefixId2Node:           builder.prefixId2Node(getString(json, key)) ;                break ;
                 default:
                     throw new TDBException("StoreParams key no recognized: "+key) ;
             }

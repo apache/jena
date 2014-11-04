@@ -57,7 +57,7 @@ public class TestStoreParams extends BaseTest {
     }
 
     @Test public void store_params_05() {
-        String xs = "{ \"tdb.BlockSize\": 2048 }" ;
+        String xs = "{ \"tdb.block_size\": 2048 }" ;
         JsonObject x = JSON.parse(xs) ;
         StoreParams paramsExpected = StoreParamsBuilder.create().blockSize(2048).build() ;
         StoreParams paramsActual = StoreParamsCodec.decode(x) ;
@@ -65,7 +65,7 @@ public class TestStoreParams extends BaseTest {
     }
 
     @Test public void store_params_06() {
-        String xs = "{ \"tdb.FileMode\": \"direct\" , \"tdb.BlockSize\": 2048 }" ;
+        String xs = "{ \"tdb.file_mode\": \"direct\" , \"tdb.block_size\": 2048 }" ;
         JsonObject x = JSON.parse(xs) ;
         StoreParams paramsExpected = StoreParamsBuilder.create().blockSize(2048).fileMode(FileMode.direct).build() ;
         StoreParams paramsActual = StoreParamsCodec.decode(x) ;
@@ -73,7 +73,7 @@ public class TestStoreParams extends BaseTest {
     }
 
     @Test public void store_params_07() {
-        String xs = "{ \"tdb.TripleIndexes\" : [ \"POS\" , \"PSO\"] } " ; 
+        String xs = "{ \"tdb.triple_indexes\" : [ \"POS\" , \"PSO\"] } " ; 
         JsonObject x = JSON.parse(xs) ;
         StoreParams params = StoreParamsCodec.decode(x) ;
         String[] expected =  { "POS" , "PSO" } ;
@@ -82,7 +82,7 @@ public class TestStoreParams extends BaseTest {
 
     @Test(expected=TDBException.class)
     public void store_params_08() {
-        String xs = "{ \"tdb.TriplesIndexes\" : [ \"POS\" , \"PSO\"] } " ; // Misspelt. 
+        String xs = "{ \"tdb.triples_indexes\" : [ \"POS\" , \"PSO\"] } " ; // Misspelt. 
         JsonObject x = JSON.parse(xs) ;
         StoreParams params = StoreParamsCodec.decode(x) ;
         String[] expected =  { "POS" , "PSO" } ;

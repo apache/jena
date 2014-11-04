@@ -26,62 +26,63 @@ public class StoreParamsBuilder {
     // Initial values are the system defaults.
     
     /** Database and query configuration */ 
+    // Key names are the base name -  encode/decode may add a prefix.
     
-    // public static String fFileMode             = "FileMode" ;
-    private FileMode     fileMode              = SystemTDB.fileMode() ;
+    public static final String fFileMode             = "file_mode" ;
+    private FileMode           fileMode              = SystemTDB.fileMode() ;
 
-    // public static String fReadCacheSize        = "blockReadCacheSize" ;
-    private int          blockReadCacheSize    = SystemTDB.BlockReadCacheSize ;
+    public static final String fBlockReadCacheSize   = "block_read_cache_size" ;
+    private int                blockReadCacheSize    = SystemTDB.BlockReadCacheSize ;
 
-    // public static String fWriteCacheSize       = "blockWriteCacheSize" ;
-    private int          blockWriteCacheSize   = SystemTDB.BlockWriteCacheSize ;
+    public static final String fBlockWriteCacheSize  = "block_write_cache_size" ;
+    private int                blockWriteCacheSize   = SystemTDB.BlockWriteCacheSize ;
 
-    // public static String fNode2NodeIdCacheSize = "Node2NodeIdCacheSize" ;
-    private int          Node2NodeIdCacheSize  = SystemTDB.Node2NodeIdCacheSize ;
+    public static final String fNode2NodeIdCacheSize = "node2nodeid_cache_size" ;
+    private int                Node2NodeIdCacheSize  = SystemTDB.Node2NodeIdCacheSize ;
 
-    // public static String fNodeId2NodeCacheSize = "NodeId2NodeCacheSize" ;
-    private int          NodeId2NodeCacheSize  = SystemTDB.NodeId2NodeCacheSize ;
+    public static final String fNodeId2NodeCacheSize = "nodeid2node_cache_size" ;
+    private int                NodeId2NodeCacheSize  = SystemTDB.NodeId2NodeCacheSize ;
 
-    // public static String fNodeMissCacheSize    = "NodeMissCacheSize" ;
-    private int          NodeMissCacheSize     = SystemTDB.NodeMissCacheSize ;
+    public static final String fNodeMissCacheSize    = "node_miss_cache_size" ;
+    private int                NodeMissCacheSize     = SystemTDB.NodeMissCacheSize ;
 
     /** Database layout - ignored after a database is created */
 
-    // public static String fBlockSize            = "blockSize" ;
-    private int          blockSize             = SystemTDB.BlockSize ;
+    public static final String fBlockSize            = "block_size" ;
+    private int                blockSize             = SystemTDB.BlockSize ;
 
-    // public static String fIndexNode2Id         = "indexNode2Id" ;
-    private String       indexNode2Id          = Names.indexNode2Id ;
+    public static final String fIndexNode2Id         = "index_node2id" ;
+    private String             indexNode2Id          = Names.indexNode2Id ;
 
-    // public static String fIndexId2Node         = "indexId2Node" ;
-    private String       indexId2Node          = Names.indexId2Node ;
+    public static final String fIndexId2Node         = "index_id2node" ;
+    private String             indexId2Node          = Names.indexId2Node ;
 
-    // public static String fPrimaryIndexTriples  = "primaryIndexTriples" ;
-    private String       primaryIndexTriples   = Names.primaryIndexTriples ;
+    public static final String fPrimaryIndexTriples  = "triple_index_primary" ;
+    private String             primaryIndexTriples   = Names.primaryIndexTriples ;
 
-    // public static String fTripleIndexes        = "tripleIndexes" ;
-    private String[]     tripleIndexes         = Names.tripleIndexes ;
+    public static final String fTripleIndexes        = "triple_indexes" ;
+    private String[]           tripleIndexes         = Names.tripleIndexes ;
 
-    // public static String fPrimaryIndexQuads    = "primaryIndexQuads" ;
-    private String       primaryIndexQuads     = Names.primaryIndexQuads ;
+    public static final String fPrimaryIndexQuads    = "quad_index_primary" ;
+    private String             primaryIndexQuads     = Names.primaryIndexQuads ;
 
-    // public static String fQuadIndexes          = "quadIndexes" ;
-    private String[]     quadIndexes           = Names.quadIndexes ;
+    public static final String fQuadIndexes          = "quad_indexes" ;
+    private String[]           quadIndexes           = Names.quadIndexes ;
 
-    // public static String fPrimaryIndexPrefix   = "primaryIndexPrefix" ;
-    private String       primaryIndexPrefix    = Names.primaryIndexPrefix ;
+    public static final String fPrimaryIndexPrefix   = "prefix_index_primary" ;
+    private String             primaryIndexPrefix    = Names.primaryIndexPrefix ;
 
-    // public static String fPrefixIndexes        = "prefixIndexes" ;
-    private String[]     prefixIndexes         = Names.prefixIndexes ;
+    public static final String fPrefixIndexes        = "prefix_indexes" ;
+    private String[]           prefixIndexes         = Names.prefixIndexes ;
 
-    // public static String fIndexPrefix          = "indexPrefix" ;
-    private String       indexPrefix           = Names.indexPrefix ;
+    public static final String fIndexPrefix          = "file_prefix_index" ;
+    private String             indexPrefix           = Names.indexPrefix ;
 
-    // public static String fPrefixNode2Id        = "prefixNode2Id" ;
-    private String       prefixNode2Id         = Names.prefixNode2Id ;
+    public static final String fPrefixNode2Id        = "file_prefix_nodeid" ;
+    private String             prefixNode2Id         = Names.prefixNode2Id ;
 
-    // public static String fPrefixId2Node        = "prefixId2Node" ;
-    private String       prefixId2Node         = Names.prefixId2Node ;
+    public static final String fPrefixId2Node        = "file_prefix_id2node" ;
+    private String             prefixId2Node         = Names.prefixId2Node ;
 
     public static StoreParamsBuilder create() { return new StoreParamsBuilder() ; }
     
