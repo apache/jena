@@ -22,8 +22,17 @@ import com.hp.hpl.jena.tdb.base.block.BlockParams ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 
 public interface IndexParams extends BlockParams {
+    /** File Mode */
     @Override public FileMode getFileMode() ;
+
+    /** Block size - this is only configurable when the on-disk are created.
+     * After that, the same value as at creation must be used each time.
+     */
     @Override public int getBlockSize() ;
+    
+    /** Block read cache size (mmap'ed files do not have a block cache)*/
     @Override public int getBlockReadCacheSize() ;
+    
+    /** Block write cache size (mmap'ed files do not have a block cache)*/
     @Override public int getBlockWriteCacheSize() ;
 }

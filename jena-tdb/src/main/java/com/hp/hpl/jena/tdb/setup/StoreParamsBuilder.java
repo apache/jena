@@ -85,6 +85,24 @@ public class StoreParamsBuilder {
     private String             prefixId2Node         = Names.prefixId2Node ;
 
     public static StoreParamsBuilder create() { return new StoreParamsBuilder() ; }
+
+    /** Using a base set of {@linkplain StoreParams}, and update with dynamic parameters.
+     * 
+     * @param baseParams
+     * @param additionalParams
+     * @return StoreParams
+     */
+    
+    public static StoreParams modify(StoreParams baseParams, StoreParamsDynamic additionalParams) {
+        return new StoreParamsBuilder(baseParams)
+            .fileMode(additionalParams.getFileMode())
+            .blockReadCacheSize(additionalParams.getBlockReadCacheSize())
+            .blockWriteCacheSize(additionalParams.getBlockWriteCacheSize())
+            .node2NodeIdCacheSize(additionalParams.getNode2NodeIdCacheSize())
+            .nodeId2NodeCacheSize(additionalParams.getNodeId2NodeCacheSize())
+            .nodeMissCacheSize(additionalParams.getNodeMissCacheSize())
+            .build();
+    }
     
     public StoreParamsBuilder() {}
     public StoreParamsBuilder(StoreParams other) {

@@ -26,7 +26,7 @@ import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 
 /** System parameters for a TDB database instance. */
-public class StoreParams implements IndexParams
+public class StoreParams implements IndexParams, StoreParamsDynamic
 {
     // SystemParams are built with a SystemParamsBuilder
     
@@ -114,14 +114,17 @@ public class StoreParams implements IndexParams
         return blockWriteCacheSize ;
     }
 
+    @Override
     public int getNode2NodeIdCacheSize() {
         return Node2NodeIdCacheSize ;
     }
 
+    @Override
     public int getNodeId2NodeCacheSize() {
         return NodeId2NodeCacheSize ;
     }
 
+    @Override
     public int getNodeMissCacheSize() {
         return NodeMissCacheSize ;
     }
