@@ -142,7 +142,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         // Later - attach prefix table to parser.
         dsg.getPrefixes().close() ;
         
-        ProgressLogger monitor = new ProgressLogger(cmdLog, "Data", BulkLoader.DataTickPoint,BulkLoader.superTick) ;
+        ProgressLogger monitor = new ProgressLogger(cmdLog, "Data", BulkLoader.DataTickPoint, BulkLoader.superTick) ;
         OutputStream outputTriples = null ;
         OutputStream outputQuads = null ;
         

@@ -230,12 +230,12 @@ public class StoreConnection
         return sConn ;
     }
 
-    @Deprecated
+    /** Make a StoreConnection based on any StoreParams at eh location or the system defaults. */
     public static StoreConnection make(Location location) {
         return make(location, null) ;
     }
 
-                                                    /**
+    /**
      * Return the StoreConnection if one already exists for this location, else
      * return null
      */

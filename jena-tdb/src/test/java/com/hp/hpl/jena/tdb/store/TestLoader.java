@@ -61,7 +61,7 @@ public class TestLoader extends BaseTest {
     }
 
     static DatasetGraphTDB fresh() {
-        return TDBMaker.createDatasetGraphTDB(Location.mem()) ;
+        return TDBMaker.createDatasetGraphTDB(Location.mem(), null) ;
     }
 
     @Test

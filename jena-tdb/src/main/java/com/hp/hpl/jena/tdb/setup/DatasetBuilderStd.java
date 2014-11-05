@@ -67,28 +67,47 @@ public class DatasetBuilderStd implements DatasetBuilder {
     private TupleIndexBuilder   tupleIndexBuilder ;
     private Recorder            recorder = null ;   
     
-    @Deprecated
+    /**
+     * 
+     * @param location
+     * @return DatasetGraphTDB
+     */
     public static DatasetGraphTDB create(Location location) {
         return create(location, null) ;
     }
     
-    public static DatasetGraphTDB create(Location location, StoreParams $params) {
-        StoreParams params = paramsForLocation(location) ;
+    /**
+     * Create a {@linkplain DatasetGraphTDB} with a set of {@linkplain StoreParams}.
+     * The parameters for a store have 3 inputs: the parameters provided,
+     * any parameters 
+     * 
+     * 
+     * 
+     * @param location   Where to create the database.
+     * @param params     Store parameters to use (null means use default). 
+     * @return DatasetGraphTDB
+     */
+    public static DatasetGraphTDB create(Location location, StoreParams params) {
+        StoreParams $params = paramsForLocation(location) ;
         // ---- Experimental
-        if ( ! location.isMem() && $params != null ) {
+        if ( ! location.isMem() && params != null ) {
             if ( FileOps.existsAnyFiles(location.getDirectoryPath()) )
-                params = StoreParamsBuilder.modify(params, $params) ;
+                $params = StoreParamsBuilder.modify($params, params) ;
             else
-                params = $params ;
-            $params = null ;
+                $params = params ;
+            params = null ;
         }
 
         // ----
-        if ( $params != null )
+        if ( params != null )
             log.warn("StoreParams != null (experimental)") ;
         DatasetBuilderStd x = new DatasetBuilderStd() ;
         x.standardSetup() ;
-        return x.build(location, params) ;
+        DatasetGraphTDB dsg = x.build(location, $params) ;
+        // Write params.
+        //if ( params != StoreParams.getDftStoreParams() )
+        
+        return dsg ;
     }
 
     public static DatasetGraphTDB create(StoreParams params) {

@@ -25,12 +25,25 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.index.IndexParams ;
 
-/** System parameters for a TDB database instance. */
+/** System parameters for a TDB database instance. 
+ * <p>
+ * Some parameters can be changed from run to run
+ * and some parameters can only be changed at the point the database is
+ * created.  
+ * <p>
+ * Getting paramters settings wrong can destroy a databse.   
+ * Alternating the block size is not encouraged and should only be
+ * done if necessary.  It can silently destroy a database if set
+ * to a different value than thatused to create the database.  The
+ * default value of 8Kbytes is good for almo
+ * 
+ * 
+ * 
+ * @see StoreParamsBuilder  for constructing StoreParams
+ * @see StoreParamsConst    for default values. 
+ */
 public class StoreParams implements IndexParams, StoreParamsDynamic
 {
-    // SystemParams are built with a SystemParamsBuilder
-    
-    private static StoreParams dftStoreParams = StoreParamsBuilder.create().build() ;
     
     /* These are items you can change JVM to JVM */
     
@@ -89,9 +102,25 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
         this.prefixNode2Id          = prefixNode2Id ;
         this.prefixId2Node          = prefixId2Node ;
     }
-
+    
+    /** The system default settings. This is the normal set to use.
+     *  It is the set of values used when no StoreParams is provided,
+     *  which is the normal usage.
+     */
     public static StoreParams getDftStoreParams() {
-        return dftStoreParams ;
+        return StoreParamsConst.dftStoreParams ;
+    }
+    
+    /** A {@code StoreParams} that provides a smaller
+     * in-JVM foot print.  This is compatible with
+     * any database but it it is wise to use this consistently,
+     * that is, use when created and when opened later.
+     * It reduces cache sizes and runs the database in "direct"
+     * file mode so as not to use memory mapped files
+     * in addition to the JVM space.
+     */
+    public static StoreParams getSmallStoreParams() {
+        return StoreParamsConst.smallStoreParams ;
     }
 
     @Override
