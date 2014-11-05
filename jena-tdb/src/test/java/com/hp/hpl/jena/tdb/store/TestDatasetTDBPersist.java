@@ -56,7 +56,7 @@ public class TestDatasetTDBPersist extends BaseTest
     {   
     	String dirname = ConfigTest.getCleanDir() ;
     	StoreConnection.reset() ;
-		graphLocation = new GraphLocation(new Location(dirname)) ;
+		graphLocation = new GraphLocation(Location.create(dirname)) ;
         graphLocation.createDataset() ;
     }
     

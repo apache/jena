@@ -42,7 +42,7 @@ public class NodeTableAssembler extends AssemblerBase //implements Assembler
 
     //private Location location = null ;
     
-    //public NodeTableAssembler()                     { this.location = new Location(".") ; }
+    //public NodeTableAssembler()                     { this.location = Location.create(".") ; }
     //public NodeTableAssembler(Location location)    { this.location = location ; }
     
     public NodeTableAssembler()                     { }
@@ -52,7 +52,7 @@ public class NodeTableAssembler extends AssemblerBase //implements Assembler
     {
         String location = getAsStringValue(root, pNodeIndex) ;
 //        if ( location != null )
-//            return NodeTableFactory.create(IndexBuilder.get(), new Location(location)) ;
+//            return NodeTableFactory.create(IndexBuilder.get(), Location.create(location)) ;
 //        
 //        String nodeIndex = getAsStringValue(root, pNodeIndex) ;
 //        String nodeData = getAsStringValue(root, pNodeData) ;

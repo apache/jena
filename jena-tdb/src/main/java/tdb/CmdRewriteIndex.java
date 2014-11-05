@@ -49,8 +49,8 @@ public class CmdRewriteIndex
             System.exit(1) ;
         }
         
-        Location srcLoc = new Location(argv[0]) ;
-        Location dstLoc = new Location(argv[1]) ;
+        Location srcLoc = Location.create(argv[0]) ;
+        Location dstLoc = Location.create(argv[1]) ;
         String indexName = argv[2] ;
         
         if ( ! FileOps.exists(argv[1]) )

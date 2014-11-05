@@ -69,7 +69,7 @@ public class CmdIndexBuild
         
         // Argument processing
         
-        Location location = new Location(locationStr) ;
+        Location location = Location.create(locationStr) ;
         
         //InputStream input = System.in ;
         InputStream input = IO.openFile(dataFile) ;

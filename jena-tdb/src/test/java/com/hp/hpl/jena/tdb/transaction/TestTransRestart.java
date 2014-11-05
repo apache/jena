@@ -59,7 +59,7 @@ public class TestTransRestart extends BaseTest {
     
     @Before public void setup() {
         path = ConfigTest.getCleanDir() ; 
-        location = new Location (path) ;
+        location = Location.create (path) ;
         if ( useTransactionsSetup )
             setupTxn() ;
         else

@@ -53,8 +53,14 @@ public class Location {
 
     /** Return a memory location with a name */
     static public Location mem(String name) {
-        Location loc = new Location() ;
+        Location loc = Location.mem() ;
         memInit(loc, name) ;
+        return loc ;
+    }
+
+    /** Return a location for a directory on disk */
+    static public Location create(String directoryName) {
+        Location loc = Location.create(directoryName) ;
         return loc ;
     }
 
@@ -142,7 +148,7 @@ public class Location {
     public Location getSubLocation(String dirname) {
         String newName = pathname + dirname ;
         ensure(newName) ;
-        return new Location(newName) ;
+        return Location.create(newName) ;
     }
 
     private void ensure(String dirname) {

@@ -96,7 +96,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
 //        if ( !super.contains(argQuadsOut) ) throw new CmdException("Required: --quads FILE") ;
         
         locationString   = super.getValue(argLocation) ;
-        location = new Location(locationString) ;
+        location = Location.create(locationString) ;
 
         dataFileTriples  = super.getValue(argTriplesOut) ;
         if ( dataFileTriples == null )
