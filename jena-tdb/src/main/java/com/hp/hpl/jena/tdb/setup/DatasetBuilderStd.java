@@ -67,15 +67,23 @@ public class DatasetBuilderStd implements DatasetBuilder {
     private TupleIndexBuilder   tupleIndexBuilder ;
     private Recorder            recorder = null ;   
     
+    @Deprecated
     public static DatasetGraphTDB create(Location location) {
+        return create(location, null) ;
+    }
+    
+    public static DatasetGraphTDB create(Location location, StoreParams $params) {
+        if ( $params != null )
+            log.warn("StoreParams != null (ignored)") ;
         StoreParams params = paramsForLocation(location) ;
         DatasetBuilderStd x = new DatasetBuilderStd() ;
         x.standardSetup() ;
         return x.build(location, params) ;
     }
 
-    public static DatasetGraphTDB create() {
-        return create(Location.mem()) ;
+    public static DatasetGraphTDB create(StoreParams params) {
+        // Memory version?
+        return create(Location.mem(), params) ;
     }
 
     public static DatasetBuilderStd stdBuilder() {

@@ -19,70 +19,49 @@
 package com.hp.hpl.jena.tdb.setup;
 
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class StoreParamsBuilder {
-    // Initial values are the system defaults.
-    
+    // See also StoreParamsConst.
     /** Database and query configuration */ 
     // Key names are the base name -  encode/decode may add a prefix.
     
-    public static final String fFileMode             = "file_mode" ;
-    private FileMode           fileMode              = SystemTDB.fileMode() ;
+    private FileMode           fileMode              = StoreParamsConst.fileMode ;
 
-    public static final String fBlockReadCacheSize   = "block_read_cache_size" ;
-    private int                blockReadCacheSize    = SystemTDB.BlockReadCacheSize ;
+    private int                blockReadCacheSize    = StoreParamsConst.blockReadCacheSize ;
 
-    public static final String fBlockWriteCacheSize  = "block_write_cache_size" ;
-    private int                blockWriteCacheSize   = SystemTDB.BlockWriteCacheSize ;
+    private int                blockWriteCacheSize   = StoreParamsConst.blockWriteCacheSize ;
 
-    public static final String fNode2NodeIdCacheSize = "node2nodeid_cache_size" ;
-    private int                Node2NodeIdCacheSize  = SystemTDB.Node2NodeIdCacheSize ;
+    private int                Node2NodeIdCacheSize  = StoreParamsConst.Node2NodeIdCacheSize ;
 
-    public static final String fNodeId2NodeCacheSize = "nodeid2node_cache_size" ;
-    private int                NodeId2NodeCacheSize  = SystemTDB.NodeId2NodeCacheSize ;
+    private int                NodeId2NodeCacheSize  = StoreParamsConst.NodeId2NodeCacheSize ;
 
-    public static final String fNodeMissCacheSize    = "node_miss_cache_size" ;
-    private int                NodeMissCacheSize     = SystemTDB.NodeMissCacheSize ;
+    private int                NodeMissCacheSize     = StoreParamsConst.NodeMissCacheSize ;
 
     /** Database layout - ignored after a database is created */
 
-    public static final String fBlockSize            = "block_size" ;
-    private int                blockSize             = SystemTDB.BlockSize ;
+    private int                blockSize             = StoreParamsConst.blockSize ;
 
-    public static final String fIndexNode2Id         = "index_node2id" ;
-    private String             indexNode2Id          = Names.indexNode2Id ;
+    private String             indexNode2Id          = StoreParamsConst.indexNode2Id ;
 
-    public static final String fIndexId2Node         = "index_id2node" ;
-    private String             indexId2Node          = Names.indexId2Node ;
+    private String             indexId2Node          = StoreParamsConst.indexId2Node ;
 
-    public static final String fPrimaryIndexTriples  = "triple_index_primary" ;
-    private String             primaryIndexTriples   = Names.primaryIndexTriples ;
+    private String             primaryIndexTriples   = StoreParamsConst.primaryIndexTriples ;
 
-    public static final String fTripleIndexes        = "triple_indexes" ;
-    private String[]           tripleIndexes         = Names.tripleIndexes ;
+    private String[]           tripleIndexes         = StoreParamsConst.tripleIndexes ;
 
-    public static final String fPrimaryIndexQuads    = "quad_index_primary" ;
-    private String             primaryIndexQuads     = Names.primaryIndexQuads ;
+    private String             primaryIndexQuads     = StoreParamsConst.primaryIndexQuads ;
 
-    public static final String fQuadIndexes          = "quad_indexes" ;
-    private String[]           quadIndexes           = Names.quadIndexes ;
+    private String[]           quadIndexes           = StoreParamsConst.quadIndexes ;
 
-    public static final String fPrimaryIndexPrefix   = "prefix_index_primary" ;
-    private String             primaryIndexPrefix    = Names.primaryIndexPrefix ;
+    private String             primaryIndexPrefix    = StoreParamsConst.primaryIndexPrefix ;
 
-    public static final String fPrefixIndexes        = "prefix_indexes" ;
-    private String[]           prefixIndexes         = Names.prefixIndexes ;
+    private String[]           prefixIndexes         = StoreParamsConst.prefixIndexes ;
 
-    public static final String fIndexPrefix          = "file_prefix_index" ;
-    private String             indexPrefix           = Names.indexPrefix ;
+    private String             indexPrefix           = StoreParamsConst.indexPrefix ;
 
-    public static final String fPrefixNode2Id        = "file_prefix_nodeid" ;
-    private String             prefixNode2Id         = Names.prefixNode2Id ;
+    private String             prefixNode2Id         = StoreParamsConst.prefixNode2Id ;
 
-    public static final String fPrefixId2Node        = "file_prefix_id2node" ;
-    private String             prefixId2Node         = Names.prefixId2Node ;
+    private String             prefixId2Node         = StoreParamsConst.prefixId2Node ;
 
     public static StoreParamsBuilder create() { return new StoreParamsBuilder() ; }
 

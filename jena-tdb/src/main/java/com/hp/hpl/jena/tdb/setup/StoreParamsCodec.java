@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 
-import static com.hp.hpl.jena.tdb.setup.StoreParamsBuilder.* ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.* ;
 
 /** Encode and decode {@linkplain StoreParams} */ 
 public class StoreParamsCodec {

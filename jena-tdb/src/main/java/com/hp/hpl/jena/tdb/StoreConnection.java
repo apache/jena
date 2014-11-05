@@ -27,10 +27,11 @@ import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.tdb.base.file.ChannelManager ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.file.LocationLock;
+import com.hp.hpl.jena.tdb.base.file.LocationLock ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.* ;
 
 /** A StoreConnection is the reference to the underlying storage.
@@ -166,10 +167,10 @@ public class StoreConnection
     private static Map<Location, StoreConnection> cache = new HashMap<>() ;
 
     // ---- statics managing the cache.
-    /** Obtain a StoreConenction for a particular location */
+    /** Obtain a StoreConnection for a particular location */
     public static StoreConnection make(String location)
     {
-        return make(new Location(location)) ;
+        return make(Location.create(location)) ;
     }
 
     /** Stop managing all locations. Use with great care. */
@@ -219,17 +220,22 @@ public class StoreConnection
      * Return a StoreConnection for a particular connection. This is used to
      * create transactions for the database at the location.
      */
-    public static synchronized StoreConnection make(Location location)
+    public static synchronized StoreConnection make(Location location, StoreParams params)
     {
         StoreConnection sConn = cache.get(location) ;
         if (sConn != null) 
             return sConn ;
-        DatasetGraphTDB dsg = DatasetBuilderStd.create(location) ;
+        DatasetGraphTDB dsg = DatasetBuilderStd.create(location, params) ;
         sConn = _makeAndCache(dsg) ;
         return sConn ;
     }
 
-    /**
+    @Deprecated
+    public static StoreConnection make(Location location) {
+        return make(location, null) ;
+    }
+
+                                                    /**
      * Return the StoreConnection if one already exists for this location, else
      * return null
      */
@@ -292,7 +298,7 @@ public class StoreConnection
      */
     public static StoreConnection createMemUncached()
     {
-        DatasetGraphTDB dsg = DatasetBuilderStd.create(Location.mem()) ;
+        DatasetGraphTDB dsg = DatasetBuilderStd.create(Location.mem(), null) ;
         return new StoreConnection(dsg) ;
     }
 
