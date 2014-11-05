@@ -73,9 +73,19 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
     
     public static DatasetGraphTDB create(Location location, StoreParams $params) {
-        if ( $params != null )
-            log.warn("StoreParams != null (ignored)") ;
         StoreParams params = paramsForLocation(location) ;
+        // ---- Experimental
+        if ( ! location.isMem() && $params != null ) {
+            if ( FileOps.existsAnyFiles(location.getDirectoryPath()) )
+                params = StoreParamsBuilder.modify(params, $params) ;
+            else
+                params = $params ;
+            $params = null ;
+        }
+
+        // ----
+        if ( $params != null )
+            log.warn("StoreParams != null (experimental)") ;
         DatasetBuilderStd x = new DatasetBuilderStd() ;
         x.standardSetup() ;
         return x.build(location, params) ;
@@ -331,7 +341,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
     
     protected NodeTable makeNodeTableNoCache(Location location, String indexNode2Id, String indexId2Node, StoreParams params) {
-        StoreParamsBuilder spb = new StoreParamsBuilder(params) ;
+        StoreParamsBuilder spb = StoreParamsBuilder.create(params) ;
         spb.node2NodeIdCacheSize(-1) ;
         spb.nodeId2NodeCacheSize(-1) ;
         spb.nodeMissCacheSize(-1) ;

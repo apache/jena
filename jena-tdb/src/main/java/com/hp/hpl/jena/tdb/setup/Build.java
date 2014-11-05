@@ -48,7 +48,7 @@ public class Build
         // XXX replace with:
         // return DatasetBuilderStd.stdBuilder().makeTupleIndex(location, indexName, primary, indexOrder) ;
         // All this to BuilderDB.
-        StoreParamsBuilder spb = new StoreParamsBuilder() ;
+        StoreParamsBuilder spb = StoreParamsBuilder.create() ;
         spb.blockReadCacheSize(readCacheSize) ;
         spb.blockWriteCacheSize(writeCacheSize) ;
         RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength) ;
@@ -77,7 +77,7 @@ public class Build
                                           String indexNode2Id, int node2NodeIdCacheSize,
                                           String indexId2Node, int nodeId2NodeCacheSize,
                                           int sizeNodeMissCacheSize) {
-        StoreParamsBuilder spb = new StoreParamsBuilder() ;
+        StoreParamsBuilder spb = StoreParamsBuilder.create() ;
         spb.indexNode2Id(indexNode2Id).node2NodeIdCacheSize(node2NodeIdCacheSize) ;
         spb.indexId2Node(indexId2Node).nodeId2NodeCacheSize(nodeId2NodeCacheSize) ;
         DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder() ;

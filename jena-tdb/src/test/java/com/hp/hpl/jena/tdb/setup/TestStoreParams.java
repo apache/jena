@@ -36,11 +36,17 @@ public class TestStoreParams extends BaseTest {
     }
     
     @Test public void store_params_02() {
-        StoreParams sp = StoreParamsBuilder.create().build() ;
+        StoreParams input = StoreParams.getDftStoreParams() ;
+        StoreParams sp = StoreParamsBuilder.create(input).build() ;
         assertEqualsStoreParams(StoreParams.getDftStoreParams(), sp) ; 
     }
 
     @Test public void store_params_03() {
+        StoreParams sp = StoreParamsBuilder.create().build() ;
+        assertEqualsStoreParams(StoreParams.getDftStoreParams(), sp) ; 
+    }
+
+    @Test public void store_params_04() {
         StoreParams params = StoreParamsBuilder.create().build() ;
         StoreParams params2 = roundTrip(params) ;
         assertEqualsStoreParams(params,params2) ;
@@ -48,7 +54,7 @@ public class TestStoreParams extends BaseTest {
     
     // ----
     
-    @Test public void store_params_04() {
+    @Test public void store_params_10() {
         StoreParams params = StoreParamsBuilder.create().fileMode(FileMode.direct).blockSize(1024).build() ;
         StoreParams params2 = roundTrip(params) ;
         assertEqualsStoreParams(params,params2) ;
@@ -56,7 +62,7 @@ public class TestStoreParams extends BaseTest {
         assertEquals(params.getBlockSize(), params2.getBlockSize()) ;
     }
 
-    @Test public void store_params_05() {
+    @Test public void store_params_11() {
         String xs = "{ \"tdb.block_size\": 2048 }" ;
         JsonObject x = JSON.parse(xs) ;
         StoreParams paramsExpected = StoreParamsBuilder.create().blockSize(2048).build() ;
@@ -64,7 +70,7 @@ public class TestStoreParams extends BaseTest {
         assertEqualsStoreParams(paramsExpected,paramsActual) ;
     }
 
-    @Test public void store_params_06() {
+    @Test public void store_params_12() {
         String xs = "{ \"tdb.file_mode\": \"direct\" , \"tdb.block_size\": 2048 }" ;
         JsonObject x = JSON.parse(xs) ;
         StoreParams paramsExpected = StoreParamsBuilder.create().blockSize(2048).fileMode(FileMode.direct).build() ;
@@ -72,7 +78,7 @@ public class TestStoreParams extends BaseTest {
         assertEqualsStoreParams(paramsExpected,paramsActual) ;
     }
 
-    @Test public void store_params_07() {
+    @Test public void store_params_13() {
         String xs = "{ \"tdb.triple_indexes\" : [ \"POS\" , \"PSO\"] } " ; 
         JsonObject x = JSON.parse(xs) ;
         StoreParams params = StoreParamsCodec.decode(x) ;
@@ -81,7 +87,7 @@ public class TestStoreParams extends BaseTest {
     }
 
     @Test(expected=TDBException.class)
-    public void store_params_08() {
+    public void store_params_14() {
         String xs = "{ \"tdb.triples_indexes\" : [ \"POS\" , \"PSO\"] } " ; // Misspelt. 
         JsonObject x = JSON.parse(xs) ;
         StoreParams params = StoreParamsCodec.decode(x) ;

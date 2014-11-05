@@ -30,6 +30,9 @@ public interface StoreParamsDynamic {
     /** Store-wide file access mode */ 
     public FileMode getFileMode() ;
     
+    /** Block size - must agree with the original creation of the database */ 
+    public int getBlockSize() ;
+
     /** Block read cache (note: mapped files do not have a block cache) */
     public int getBlockReadCacheSize() ;
 

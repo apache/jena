@@ -30,7 +30,7 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
 {
     // SystemParams are built with a SystemParamsBuilder
     
-    private static StoreParams dftStoreParams = new StoreParamsBuilder().build() ;
+    private static StoreParams dftStoreParams = StoreParamsBuilder.create().build() ;
     
     /* These are items you can change JVM to JVM */
     

@@ -63,7 +63,13 @@ public class StoreParamsBuilder {
 
     private String             prefixId2Node         = StoreParamsConst.prefixId2Node ;
 
-    public static StoreParamsBuilder create() { return new StoreParamsBuilder() ; }
+    public static StoreParamsBuilder create() {
+        return new StoreParamsBuilder() ;
+    }
+
+    public static StoreParamsBuilder create(StoreParams params) {
+        return new StoreParamsBuilder(params) ;
+    }
 
     /** Using a base set of {@linkplain StoreParams}, and update with dynamic parameters.
      * 
@@ -75,6 +81,7 @@ public class StoreParamsBuilder {
     public static StoreParams modify(StoreParams baseParams, StoreParamsDynamic additionalParams) {
         return new StoreParamsBuilder(baseParams)
             .fileMode(additionalParams.getFileMode())
+            .blockSize(additionalParams.getBlockSize())
             .blockReadCacheSize(additionalParams.getBlockReadCacheSize())
             .blockWriteCacheSize(additionalParams.getBlockWriteCacheSize())
             .node2NodeIdCacheSize(additionalParams.getNode2NodeIdCacheSize())
@@ -83,8 +90,8 @@ public class StoreParamsBuilder {
             .build();
     }
     
-    public StoreParamsBuilder() {}
-    public StoreParamsBuilder(StoreParams other) {
+    private StoreParamsBuilder() {}
+    private StoreParamsBuilder(StoreParams other) {
         this.fileMode               = other.getFileMode() ;
         this.blockSize              = other.getBlockSize() ;
         this.blockReadCacheSize     = other.getBlockReadCacheSize() ;
@@ -95,16 +102,19 @@ public class StoreParamsBuilder {
 
         this.indexNode2Id           = other.getIndexNode2Id() ;
         this.indexId2Node           = other.getIndexId2Node() ;
-        this.primaryIndexTriples    = other.getPrimaryIndexPrefix() ;
-        this.tripleIndexes          = other.getQuadIndexes() ;
-        this.primaryIndexQuads      = other.getPrimaryIndexPrefix() ;
-        this.quadIndexes            = other.getPrefixIndexes() ;
-        this.primaryIndexPrefix     = other.getIndexPrefix() ;
+        
+        this.primaryIndexTriples    = other.getPrimaryIndexTriples() ;
+        this.tripleIndexes          = other.getTripleIndexes() ;
+        
+        this.primaryIndexQuads      = other.getPrimaryIndexQuads() ;
+        this.quadIndexes            = other.getQuadIndexes() ;
+        
+        this.primaryIndexPrefix     = other.getPrimaryIndexPrefix() ;
         this.prefixIndexes          = other.getPrefixIndexes() ;
         this.indexPrefix            = other.getIndexPrefix() ;
 
-        this.prefixNode2Id          = other.getIndexNode2Id() ;
-        this.prefixId2Node          = other.getIndexId2Node() ;
+        this.prefixNode2Id          = other.getPrefixNode2Id() ;
+        this.prefixId2Node          = other.getPrefixId2Node() ;
     }
     
     public StoreParams build() {
