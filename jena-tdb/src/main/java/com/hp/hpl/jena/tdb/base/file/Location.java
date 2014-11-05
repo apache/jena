@@ -60,7 +60,7 @@ public class Location {
 
     /** Return a location for a directory on disk */
     static public Location create(String directoryName) {
-        Location loc = Location.create(directoryName) ;
+        Location loc = new Location(directoryName) ;
         return loc ;
     }
 
