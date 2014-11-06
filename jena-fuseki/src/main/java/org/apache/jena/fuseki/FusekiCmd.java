@@ -243,7 +243,7 @@ public class FusekiCmd extends CmdARQ
         if ( fusekiConfigFile != null )
         {
             if ( x > 1 )
-                throw new CmdException("Dataset specificed on the command line and also a configuration file specificed.") ;
+                throw new CmdException("Dataset specified on the command line and also a configuration file specified.") ;
         }
         else
         {
