@@ -27,15 +27,15 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 //TestParamsCreate
 /** This test suite uses on-diskstructures and can be slow */ 
 public class TestStoreParamsChoose extends BaseTest {
-    StoreParams pApp = StoreParamsBuilder.create()
+    static final StoreParams pApp = StoreParamsBuilder.create()
         .blockSize(12)              // Not dynamic
         .nodeMissCacheSize(12)      // Dynamic
         .build();
-    StoreParams pLoc = StoreParamsBuilder.create()
+    static final StoreParams pLoc = StoreParamsBuilder.create()
         .blockSize(0)
         .nodeMissCacheSize(0).build();
     
-    StoreParams pDft = StoreParams.getDftStoreParams() ;
+    static final StoreParams pDft = StoreParams.getDftStoreParams() ;
 
     @Test public void params_choose_new_1() {
         StoreParams p = Build.fixStoreParams(Location.mem(), true, null, null, pDft) ;
