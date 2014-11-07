@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.setup;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 
 /** Store parameters that can be adjusted after a store has been created,
- *  and given different values when the JVM attaches to a store area. 
+ *  and given different values when the JVM attachs to a store area. 
  *  (They are still fixed for any given database once created in a JVM.) 
  */
 
@@ -29,23 +29,26 @@ public interface StoreParamsDynamic {
     
     /** Store-wide file access mode */ 
     public FileMode getFileMode() ;
+    public boolean isSetFileMode() ;
     
-    /** Block size - must agree with the original creation of the database */ 
-    public int getBlockSize() ;
-
     /** Block read cache (note: mapped files do not have a block cache) */
-    public int getBlockReadCacheSize() ;
+    public Integer getBlockReadCacheSize() ;
+    public boolean isSetBlockReadCacheSize() ;
 
     /** Block write cache (note: mapped files do not have a block cache) */
-    public int getBlockWriteCacheSize() ;
+    public Integer getBlockWriteCacheSize() ;
+    public boolean isSetBlockWriteCacheSize() ;
     
     /** Node cache for Node->NodeId. */
-    public int getNode2NodeIdCacheSize() ;
+    public Integer getNode2NodeIdCacheSize() ;
+    public boolean isSetNode2NodeIdCacheSize() ;
     
     /** Node cache for NodeId->Node. Important for SPARQL results. */
-    public int getNodeId2NodeCacheSize() ;
+    public Integer getNodeId2NodeCacheSize() ;
+    public boolean isSetNodeId2NodeCacheSize() ;
 
     /** Node cache for recording known misses */
-    public int getNodeMissCacheSize() ;
+    public Integer getNodeMissCacheSize() ;
+    public boolean isSetNodeMissCacheSize() ;
 }
 

@@ -53,7 +53,7 @@ public class Location {
 
     /** Return a memory location with a name */
     static public Location mem(String name) {
-        Location loc = Location.mem() ;
+        Location loc = new Location() ;
         memInit(loc, name) ;
         return loc ;
     }

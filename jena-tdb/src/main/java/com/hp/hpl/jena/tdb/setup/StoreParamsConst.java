@@ -23,33 +23,11 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class StoreParamsConst {
+    /** Filename of the TDB configuration file */
+    public static final String TDB_CONFIG_FILE = "tdb.cfg" ;
     
     // SystemParams are built with a SystemParamsBuilder
     
-    /** The system default parameters for on-disk databases. */
-    static StoreParams dftStoreParams = StoreParamsBuilder.create().build() ;
-
-    /** The system default parameters for in-memory databases. */
-    static StoreParams dftMemStoreParams = StoreParamsBuilder.create()
-        .fileMode(FileMode.direct)
-        // Small block caches, mainly so it behaves like a direct on-disk database.  
-        .blockReadCacheSize(10)
-        .blockWriteCacheSize(10)
-        .node2NodeIdCacheSize(10000)
-        .nodeId2NodeCacheSize(10000)
-        .nodeMissCacheSize(100)
-        .build() ;
-    
-    /** The "small store" parameters. */
-    static StoreParams smallStoreParams = StoreParamsBuilder.create()
-        .fileMode(FileMode.direct)
-        .blockReadCacheSize(100)
-        .blockWriteCacheSize(100)
-        .node2NodeIdCacheSize(10000)
-        .nodeId2NodeCacheSize(10000)
-        .nodeMissCacheSize(100)
-        .build() ;
-
     // Initial values are the system defaults.
     
     /** Database and query configuration */ 
@@ -109,6 +87,34 @@ public class StoreParamsConst {
     
     public static final String   fPrefixId2Node        = "file_prefix_id2node" ;
     public static final String   prefixId2Node         = Names.prefixId2Node ;
+
+    // Must be after the constants above to get initialization order right
+    // because StoreParamsBuilder uses these constants.
+     
+    /** The system default parameters for on-disk databases. */
+    static StoreParams dftStoreParams = StoreParamsBuilder.create().build() ;
+
+    /** The system default parameters for in-memory databases. */
+    static StoreParams dftMemStoreParams = StoreParamsBuilder.create()
+        .fileMode(FileMode.direct)
+        // Small block caches, mainly so it behaves like a direct on-disk database.  
+        .blockReadCacheSize(10)
+        .blockWriteCacheSize(10)
+        .node2NodeIdCacheSize(10000)
+        .nodeId2NodeCacheSize(10000)
+        .nodeMissCacheSize(100)
+        .build() ;
     
+    /** The "small store" parameters. */
+    static StoreParams smallStoreParams = StoreParamsBuilder.create()
+        .fileMode(FileMode.direct)
+        .blockReadCacheSize(100)
+        .blockWriteCacheSize(100)
+        .node2NodeIdCacheSize(10000)
+        .nodeId2NodeCacheSize(10000)
+        .nodeMissCacheSize(100)
+        .build() ;
+
+
 }
 

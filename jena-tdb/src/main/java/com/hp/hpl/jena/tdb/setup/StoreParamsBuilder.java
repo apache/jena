@@ -21,48 +21,85 @@ package com.hp.hpl.jena.tdb.setup;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 
 public class StoreParamsBuilder {
+    // Immuatable.
+    static class Item<X> {
+        final X value  ;
+        final boolean isSet ;
+        
+        Item(X value, boolean isSet) {
+            this.value = value ;
+            this.isSet = isSet ;
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31 ;
+            int result = 1 ;
+            result = prime * result + (isSet ? 1231 : 1237) ;
+            result = prime * result + ((value == null) ? 0 : value.hashCode()) ;
+            return result ;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj )
+                return true ;
+            if ( obj == null )
+                return false ;
+            if ( getClass() != obj.getClass() )
+                return false ;
+            Item<?> other = (Item<?>)obj ;
+            if ( isSet != other.isSet )
+                return false ;
+            if ( value == null ) {
+                if ( other.value != null )
+                    return false ;
+            } else if ( !value.equals(other.value) )
+                return false ;
+            return true ;
+        }
+    }
+    
     // See also StoreParamsConst.
     /** Database and query configuration */ 
     // Key names are the base name -  encode/decode may add a prefix.
     
-    private FileMode           fileMode              = StoreParamsConst.fileMode ;
+    private Item<FileMode>           fileMode              = new Item<>(StoreParamsConst.fileMode, false) ;
 
-    private int                blockReadCacheSize    = StoreParamsConst.blockReadCacheSize ;
+    private Item<Integer>            blockReadCacheSize    = new Item<>(StoreParamsConst.blockReadCacheSize, false) ;
 
-    private int                blockWriteCacheSize   = StoreParamsConst.blockWriteCacheSize ;
+    private Item<Integer>            blockWriteCacheSize   = new Item<>(StoreParamsConst.blockWriteCacheSize, false) ;
 
-    private int                Node2NodeIdCacheSize  = StoreParamsConst.Node2NodeIdCacheSize ;
+    private Item<Integer>            Node2NodeIdCacheSize  = new Item<>(StoreParamsConst.Node2NodeIdCacheSize, false) ;
 
-    private int                NodeId2NodeCacheSize  = StoreParamsConst.NodeId2NodeCacheSize ;
+    private Item<Integer>            NodeId2NodeCacheSize  = new Item<>(StoreParamsConst.NodeId2NodeCacheSize, false) ;
 
-    private int                NodeMissCacheSize     = StoreParamsConst.NodeMissCacheSize ;
+    private Item<Integer>            NodeMissCacheSize     = new Item<>(StoreParamsConst.NodeMissCacheSize, false) ;
 
     /** Database layout - ignored after a database is created */
 
-    private int                blockSize             = StoreParamsConst.blockSize ;
+    private Item<Integer>            blockSize             = new Item<>(StoreParamsConst.blockSize, false) ;
 
-    private String             indexNode2Id          = StoreParamsConst.indexNode2Id ;
+    private Item<String>             indexNode2Id          = new Item<>(StoreParamsConst.indexNode2Id, false) ;
 
-    private String             indexId2Node          = StoreParamsConst.indexId2Node ;
+    private Item<String>             indexId2Node          = new Item<>(StoreParamsConst.indexId2Node, false) ;
 
-    private String             primaryIndexTriples   = StoreParamsConst.primaryIndexTriples ;
+    private Item<String>             primaryIndexTriples   = new Item<>(StoreParamsConst.primaryIndexTriples, false) ;
 
-    private String[]           tripleIndexes         = StoreParamsConst.tripleIndexes ;
+    private Item<String[]>           tripleIndexes         = new Item<>(StoreParamsConst.tripleIndexes, false) ;
 
-    private String             primaryIndexQuads     = StoreParamsConst.primaryIndexQuads ;
+    private Item<String>             primaryIndexQuads     = new Item<>(StoreParamsConst.primaryIndexQuads, false) ;
 
-    private String[]           quadIndexes           = StoreParamsConst.quadIndexes ;
+    private Item<String[]>           quadIndexes           = new Item<>(StoreParamsConst.quadIndexes, false) ;
 
-    private String             primaryIndexPrefix    = StoreParamsConst.primaryIndexPrefix ;
+    private Item<String>             primaryIndexPrefix    = new Item<>(StoreParamsConst.primaryIndexPrefix, false) ;
 
-    private String[]           prefixIndexes         = StoreParamsConst.prefixIndexes ;
+    private Item<String[]>           prefixIndexes         = new Item<>(StoreParamsConst.prefixIndexes, false) ;
 
-    private String             indexPrefix           = StoreParamsConst.indexPrefix ;
+    private Item<String>             indexPrefix           = new Item<>(StoreParamsConst.indexPrefix, false) ;
 
-    private String             prefixNode2Id         = StoreParamsConst.prefixNode2Id ;
+    private Item<String>             prefixNode2Id         = new Item<>(StoreParamsConst.prefixNode2Id, false) ;
 
-    private String             prefixId2Node         = StoreParamsConst.prefixId2Node ;
-
+    private Item<String>             prefixId2Node         = new Item<>(StoreParamsConst.prefixId2Node, false) ;
+    
     public static StoreParamsBuilder create() {
         return new StoreParamsBuilder() ;
     }
@@ -79,42 +116,57 @@ public class StoreParamsBuilder {
      */
     
     public static StoreParams modify(StoreParams baseParams, StoreParamsDynamic additionalParams) {
-        return new StoreParamsBuilder(baseParams)
-            .fileMode(additionalParams.getFileMode())
-            .blockSize(additionalParams.getBlockSize())
-            .blockReadCacheSize(additionalParams.getBlockReadCacheSize())
-            .blockWriteCacheSize(additionalParams.getBlockWriteCacheSize())
-            .node2NodeIdCacheSize(additionalParams.getNode2NodeIdCacheSize())
-            .nodeId2NodeCacheSize(additionalParams.getNodeId2NodeCacheSize())
-            .nodeMissCacheSize(additionalParams.getNodeMissCacheSize())
-            .build();
+        StoreParamsBuilder b = new StoreParamsBuilder(baseParams) ;
+        // Merge explicitly set params 
+        if ( additionalParams.isSetFileMode() )
+            b.fileMode(additionalParams.getFileMode()) ;
+        
+        if ( additionalParams.isSetBlockReadCacheSize() )
+            b.blockReadCacheSize(additionalParams.getBlockReadCacheSize()) ;
+
+        if ( additionalParams.isSetBlockWriteCacheSize() )
+            b.blockWriteCacheSize(additionalParams.getBlockWriteCacheSize()) ;
+        
+        if ( additionalParams.isSetNode2NodeIdCacheSize() )            
+            b.node2NodeIdCacheSize(additionalParams.getNode2NodeIdCacheSize()) ;
+        
+        if ( additionalParams.isSetNodeId2NodeCacheSize() )            
+            b.nodeId2NodeCacheSize(additionalParams.getNodeId2NodeCacheSize()) ;
+        
+        if ( additionalParams.isSetNodeMissCacheSize() )
+            b.nodeMissCacheSize(additionalParams.getNodeMissCacheSize()) ;
+
+        return b.build();
     }
     
+
     private StoreParamsBuilder() {}
+    
+    /** Initial with a StoreParams as default values */
     private StoreParamsBuilder(StoreParams other) {
-        this.fileMode               = other.getFileMode() ;
-        this.blockSize              = other.getBlockSize() ;
-        this.blockReadCacheSize     = other.getBlockReadCacheSize() ;
-        this.blockWriteCacheSize    = other.getBlockWriteCacheSize() ;
-        this.Node2NodeIdCacheSize   = other.getNode2NodeIdCacheSize() ;
-        this.NodeId2NodeCacheSize   = other.getNodeId2NodeCacheSize() ;
-        this.NodeMissCacheSize      = other.getNodeMissCacheSize() ;
+        this.fileMode               = other.fileMode ;
+        this.blockSize              = other.blockSize ;
+        this.blockReadCacheSize     = other.blockReadCacheSize ; 
+        this.blockWriteCacheSize    = other.blockWriteCacheSize ; 
+        this.Node2NodeIdCacheSize   = other.Node2NodeIdCacheSize ; 
+        this.NodeId2NodeCacheSize   = other.NodeId2NodeCacheSize ; 
+        this.NodeMissCacheSize      = other.NodeMissCacheSize ; 
 
-        this.indexNode2Id           = other.getIndexNode2Id() ;
-        this.indexId2Node           = other.getIndexId2Node() ;
+        this.indexNode2Id           = other.indexNode2Id ; 
+        this.indexId2Node           = other.indexId2Node ; 
         
-        this.primaryIndexTriples    = other.getPrimaryIndexTriples() ;
-        this.tripleIndexes          = other.getTripleIndexes() ;
+        this.primaryIndexTriples    = other.primaryIndexTriples ; 
+        this.tripleIndexes          = other.tripleIndexes ; 
         
-        this.primaryIndexQuads      = other.getPrimaryIndexQuads() ;
-        this.quadIndexes            = other.getQuadIndexes() ;
-        
-        this.primaryIndexPrefix     = other.getPrimaryIndexPrefix() ;
-        this.prefixIndexes          = other.getPrefixIndexes() ;
-        this.indexPrefix            = other.getIndexPrefix() ;
+        this.primaryIndexQuads      = other.primaryIndexQuads ; 
+        this.quadIndexes            = other.quadIndexes ; 
 
-        this.prefixNode2Id          = other.getPrefixNode2Id() ;
-        this.prefixId2Node          = other.getPrefixId2Node() ;
+        this.primaryIndexPrefix     = other.primaryIndexPrefix ; 
+        this.prefixIndexes          = other.prefixIndexes ; 
+        this.indexPrefix            = other.indexPrefix ; 
+
+        this.prefixNode2Id          = other.prefixNode2Id ; 
+        this.prefixId2Node          = other.prefixId2Node ; 
     }
     
     public StoreParams build() {
@@ -127,185 +179,165 @@ public class StoreParamsBuilder {
                  prefixNode2Id, prefixId2Node) ;
     }
     
-//    public SystemParams build(String filename) {
-//        JsonObject obj = JSON.read(filename) ;
-//        return null ;
-//    }
-
     public FileMode getFileMode() {
-        return fileMode ;
+        return fileMode.value ;
     }
     
     public StoreParamsBuilder fileMode(FileMode fileMode) {
-        this.fileMode = fileMode ;
+        this.fileMode = new Item<>(fileMode, true) ;
         return this ;
     }
     
     public int getBlockSize() {
-        return blockSize ;
+        return blockSize.value ;
     }
 
     public StoreParamsBuilder blockSize(int blockSize) {
-        this.blockSize = blockSize ;
+        this.blockSize = new Item<>(blockSize, true) ;
         return this ;
     }
 
     public int getBlockReadCacheSize() {
-        return blockReadCacheSize ;
+        return blockReadCacheSize.value ;
     }
 
     public StoreParamsBuilder blockReadCacheSize(int blockReadCacheSize) {
-        this.blockReadCacheSize = blockReadCacheSize ;
+        this.blockReadCacheSize = new Item<>(blockReadCacheSize, true) ;
         return this ;
     }
 
     public int getBlockWriteCacheSize() {
-        return blockWriteCacheSize ;
+        return blockWriteCacheSize.value ;
     }
 
    public StoreParamsBuilder blockWriteCacheSize(int blockWriteCacheSize) {
-       this.blockWriteCacheSize = blockWriteCacheSize ;
+       this.blockWriteCacheSize = new Item<>(blockWriteCacheSize, true) ;
        return this ;
    }
 
     public int getNode2NodeIdCacheSize() {
-        return Node2NodeIdCacheSize ;
+        return Node2NodeIdCacheSize.value ;
     }
 
    public StoreParamsBuilder node2NodeIdCacheSize(int node2NodeIdCacheSize) {
-       Node2NodeIdCacheSize = node2NodeIdCacheSize ;
+       Node2NodeIdCacheSize = new Item<>(node2NodeIdCacheSize, true) ;
        return this ;
    }
 
     public int getNodeId2NodeCacheSize() {
-        return NodeId2NodeCacheSize ;
+        return NodeId2NodeCacheSize.value ;
     }
 
    public StoreParamsBuilder nodeId2NodeCacheSize(int nodeId2NodeCacheSize) {
-       NodeId2NodeCacheSize = nodeId2NodeCacheSize ;
+       NodeId2NodeCacheSize = new Item<>(nodeId2NodeCacheSize, true) ;
        return this ;
    }
 
     public int getNodeMissCacheSize() {
-        return NodeMissCacheSize ;
+        return NodeMissCacheSize.value ;
     }
 
    public StoreParamsBuilder nodeMissCacheSize(int nodeMissCacheSize) {
-       NodeMissCacheSize = nodeMissCacheSize ;
+       NodeMissCacheSize = new Item<>(nodeMissCacheSize, true) ;
        return this ;
    }
 
     public String getIndexNode2Id() {
-        return indexNode2Id ;
+        return indexNode2Id.value ;
     }
 
    public StoreParamsBuilder indexNode2Id(String indexNode2Id) {
-       this.indexNode2Id = indexNode2Id ;
+       this.indexNode2Id = new Item<>(indexNode2Id, true) ;
        return this ;
    }
 
     public String getIndexId2Node() {
-        return indexId2Node ;
+        return indexId2Node.value ;
     }
 
    public StoreParamsBuilder indexId2Node(String indexId2Node) {
-       this.indexId2Node = indexId2Node ;
+       this.indexId2Node = new Item<>(indexId2Node, true) ;
        return this ;
    }
 
     public String getPrimaryIndexTriples() {
-        return primaryIndexTriples ;
+        return primaryIndexTriples.value ;
     }
 
    public StoreParamsBuilder primaryIndexTriples(String primaryIndexTriples) {
-       this.primaryIndexTriples = primaryIndexTriples ;
+       this.primaryIndexTriples = new Item<>(primaryIndexTriples, true) ;
        return this ;
    }
 
     public String[] getTripleIndexes() {
-        return tripleIndexes ;
+        return tripleIndexes.value ;
     }
 
    public StoreParamsBuilder tripleIndexes(String[] tripleIndexes) {
-       this.tripleIndexes = tripleIndexes ;
+       this.tripleIndexes = new Item<>(tripleIndexes, true) ;
        return this ;
    }
 
-   public StoreParamsBuilder tripleIndexes(int idx, String tripleIndex) {
-       this.tripleIndexes[idx] = tripleIndex ;
-       return this ;
+   public String getPrimaryIndexQuads() {
+       return primaryIndexQuads.value ;
    }
-
-    public String getPrimaryIndexQuads() {
-        return primaryIndexQuads ;
-    }
 
    public StoreParamsBuilder primaryIndexQuads(String primaryIndexQuads) {
-       this.primaryIndexQuads = primaryIndexQuads ;
+       this.primaryIndexQuads = new Item<>(primaryIndexQuads, true) ;
        return this ;
    }
 
     public String[] getQuadIndexes() {
-        return quadIndexes ;
+        return quadIndexes.value ;
     }
 
-   public StoreParamsBuilder quadIndexes(int idx, String quadIndex) {
-       this.quadIndexes[idx] = quadIndex ;
-       return this ;
-   }
-
    public StoreParamsBuilder quadIndexes(String[] quadIndexes) {
-       this.quadIndexes = quadIndexes ;
+       this.quadIndexes = new Item<>(quadIndexes, true) ;
        return this ;
    }
 
     public String getPrimaryIndexPrefix() {
-        return primaryIndexPrefix ;
+        return primaryIndexPrefix.value ;
     }
 
    public StoreParamsBuilder primaryIndexPrefix(String primaryIndexPrefix) {
-       this.primaryIndexPrefix = primaryIndexPrefix ;
+       this.primaryIndexPrefix = new Item<>(primaryIndexPrefix, true) ;
        return this ;
    }
 
     public String[] getPrefixIndexes() {
-        return prefixIndexes ;
+        return prefixIndexes.value ;
     }
 
    public StoreParamsBuilder prefixIndexes(String[] prefixIndexes) {
-       this.prefixIndexes = prefixIndexes ;
-       return this ;
-   }
-
-   public StoreParamsBuilder prefixIndexes(int idx, String prefixIndex) {
-       this.prefixIndexes[idx] = prefixIndex ;
+       this.prefixIndexes = new Item<>(prefixIndexes, true) ;
        return this ;
    }
 
     public String getIndexPrefix() {
-        return indexPrefix ;
+        return indexPrefix.value ;
     }
 
    public StoreParamsBuilder indexPrefix(String indexPrefix) {
-       this.indexPrefix = indexPrefix ;
+       this.indexPrefix = new Item<>(indexPrefix, true) ;
        return this ;
    }
 
     public String getPrefixNode2Id() {
-        return prefixNode2Id ;
+        return prefixNode2Id.value ;
     }
 
    public StoreParamsBuilder prefixNode2Id(String prefixNode2Id) {
-       this.prefixNode2Id = prefixNode2Id ;
+       this.prefixNode2Id = new Item<>(prefixNode2Id, true) ;
        return this ;
    }
 
     public String getPrefixId2Node() {
-        return prefixId2Node ;
+        return prefixId2Node.value ;
     }
 
    public StoreParamsBuilder prefixId2Node(String prefixId2Node) {
-       this.prefixId2Node = prefixId2Node ;
+       this.prefixId2Node = new Item<>(prefixId2Node, true) ;
        return this ;
    }
 }

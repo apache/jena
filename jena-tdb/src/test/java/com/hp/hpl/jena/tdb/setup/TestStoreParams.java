@@ -18,16 +18,13 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
-import java.util.Objects ;
-
-import com.hp.hpl.jena.tdb.TDBException ;
-import com.hp.hpl.jena.tdb.base.block.FileMode ;
-
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.junit.Test ;
+
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
 
 public class TestStoreParams extends BaseTest {
 
@@ -95,6 +92,43 @@ public class TestStoreParams extends BaseTest {
         assertArrayEquals(expected, params.getTripleIndexes()) ;
     }
 
+    // Check that setting gets recorded and propagated.
+
+    @Test public void store_params_20() {
+        StoreParams params = StoreParamsBuilder.create().blockReadCacheSize(0).build();
+        assertTrue(params.isSetBlockReadCacheSize()) ;
+        assertFalse(params.isSetBlockWriteCacheSize()) ;
+    }
+    
+    @Test public void store_params_21() {
+        StoreParams params1 = StoreParamsBuilder.create().blockReadCacheSize(0).build();
+        assertTrue(params1.isSetBlockReadCacheSize()) ;
+        assertFalse(params1.isSetBlockWriteCacheSize()) ;
+        StoreParams params2 = StoreParamsBuilder.create(params1).blockWriteCacheSize(0).build();
+        assertTrue(params2.isSetBlockReadCacheSize()) ;
+        assertTrue(params2.isSetBlockWriteCacheSize()) ;
+        assertFalse(params2.isSetNodeMissCacheSize()) ;
+    }
+
+    // Modify
+    @Test public void store_params_22() {
+        StoreParams params1 = StoreParamsBuilder.create()
+            .blockReadCacheSize(0)
+            .blockWriteCacheSize(1)
+            .build();
+        StoreParams params2 = StoreParamsBuilder.create()
+            .blockReadCacheSize(5)
+            .build();
+        StoreParams params3 = StoreParamsBuilder.modify(params1, params2) ;
+        assertFalse(params2.isSetBlockWriteCacheSize()) ;
+        assertTrue(params3.isSetBlockReadCacheSize()) ;
+        assertTrue(params3.isSetBlockWriteCacheSize()) ;
+        assertEquals(5, params3.getBlockReadCacheSize().intValue()) ;   // From params2
+        assertEquals(1, params3.getBlockWriteCacheSize().intValue()) ;  // From params1, not params2(unset)
+        
+    }
+
+    
     // --------
     
     private static StoreParams roundTrip(StoreParams params) {
@@ -104,22 +138,6 @@ public class TestStoreParams extends BaseTest {
     }
     
     private static void assertEqualsStoreParams(StoreParams params1, StoreParams params2) {
-        assertTrue(same(params1, params2)) ;
-    }
-    
-    private static boolean same(StoreParams params1, StoreParams params2) {
-        boolean b0 = same0(params1, params2) ;
-        boolean b1 = same1(params1, params2) ;
-        if ( b0 != b1 )
-            throw new InternalErrorException() ; 
-        return b0 ;
-    }
-    
-    private static boolean same0(StoreParams params1, StoreParams params2) {
-        return params1.toString().equals(params2.toString()) ;
-    }
-    
-    private static boolean same1(StoreParams params1, StoreParams params2) {
-        return Objects.equals(params1, params2) ;
+        assertTrue(StoreParams.sameValues(params1, params2)) ;
     }
 }

@@ -24,6 +24,8 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestStoreParams.class
+    , TestStoreParamsChoose.class
+    , TestStoreParamsCreate.class
 })
 public class TS_TDBSetup {
     
