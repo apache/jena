@@ -74,7 +74,15 @@ public class FileOps {
     }
 
     /** Delete all files and directories (recursively) in a directory */
+    public static void clearAll(String d) {
+        clearAll(new File(d)) ;
+    }
+
+    /** Delete all files and directories (recursively) in a directory */
     public static void clearAll(File d) {
+        if ( ! d.exists() )
+            return ;
+        
         for ( File f : d.listFiles() ) {
             if ( ".".equals(f.getName()) || "..".equals(f.getName()) )
                 continue ;
