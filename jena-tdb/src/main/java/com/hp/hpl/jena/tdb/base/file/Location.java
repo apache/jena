@@ -80,6 +80,8 @@ public class Location {
         location.lock = new LocationLock(location);
     }
 
+    /** @deprecated Use{@linkplain  Location#create(String)} */
+    @Deprecated
     public Location(String rootname) {
         super() ;
         if ( rootname.equals(Names.memName) ) {
