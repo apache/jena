@@ -50,7 +50,7 @@ public class FileSet
     /** Create a FileSet given Location (directory) and name within the directory */  
     public FileSet(String directory, String basename)
     {
-        initFileSet(new Location(directory), basename) ;
+        initFileSet(Location.create(directory), basename) ;
     }
     
     /** Create a FileSet given Location (directory) and name within the directory */  
@@ -61,7 +61,7 @@ public class FileSet
         String fn = t.get(1) ;
         if ( dir == null )
             dir = "." ;
-        initFileSet(new Location(dir), fn) ;
+        initFileSet(Location.create(dir), fn) ;
     }
     
     /** Create a FileSet given Location (directory) and name within the directory */  

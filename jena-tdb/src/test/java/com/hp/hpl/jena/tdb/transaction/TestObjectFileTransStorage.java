@@ -29,7 +29,7 @@ public class TestObjectFileTransStorage extends AbstractTestObjectFileTrans
     ObjectFile createFile(String basename)
     {
 //        String dir = ConfigTest.getTestingDir() ;
-//        Location loc = new Location(dir) ;
+//        Location loc = Location.create(dir) ;
 //        String fn = loc.getPath(basename) ;
 //        FileOps.deleteSilent(fn) ;
 //        BufferChannel chan = new BufferChannelFile(fn) ;
@@ -46,7 +46,7 @@ public class TestObjectFileTransStorage extends AbstractTestObjectFileTrans
     void deleteFile(String basename)
     {
 //        String dir = ConfigTest.getTestingDir() ;
-//        Location loc = new Location(dir) ;
+//        Location loc = Location.create(dir) ;
 //        String fn = loc.getPath(basename) ;
 //        FileOps.delete(fn) ;
     }

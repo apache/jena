@@ -28,11 +28,11 @@ public interface IndexParams extends BlockParams {
     /** Block size - this is only configurable when the on-disk are created.
      * After that, the same value as at creation must be used each time.
      */
-    @Override public int getBlockSize() ;
+    @Override public Integer getBlockSize() ;
     
     /** Block read cache size (mmap'ed files do not have a block cache)*/
-    @Override public int getBlockReadCacheSize() ;
+    @Override public Integer getBlockReadCacheSize() ;
     
     /** Block write cache size (mmap'ed files do not have a block cache)*/
-    @Override public int getBlockWriteCacheSize() ;
+    @Override public Integer getBlockWriteCacheSize() ;
 }

@@ -61,20 +61,15 @@ public class JSON
     /** Read a JSON object from a file */ 
     public static JsonObject read(String filename)
     {
-        try
-        {
-            try (InputStream in = IO.openFileEx( filename ))
-            {
-                return JSON.parse( in );
-            }
+        try (InputStream in = IO.openFileEx(filename)) {
+            return JSON.parse(in) ;
         }
-        catch (FileNotFoundException ex)
-        {
-            throw new RuntimeException("File not found: "+filename, ex) ;
+        catch (FileNotFoundException ex) {
+            IO.exception("File not found: " + filename, ex) ;
+            return null ;
         }
-        catch (IOException ex)
-        {
-            IO.exception("IOException: "+filename, ex);
+        catch (IOException ex) {
+            IO.exception("IOException: " + filename, ex) ;
             return null ;
         }
     }

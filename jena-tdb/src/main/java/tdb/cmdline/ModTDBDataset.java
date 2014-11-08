@@ -108,7 +108,7 @@ public class ModTDBDataset extends ModDataset
         List<String> x = locations() ;
         if ( x.size() == 0 )
             return null ;
-        return new Location(x.get(0)) ;
+        return Location.create(x.get(0)) ;
     }
     
     public List<String> locations()

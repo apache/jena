@@ -18,6 +18,35 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.TDB_CONFIG_FILE ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fBlockReadCacheSize ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fBlockSize ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fBlockWriteCacheSize ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fFileMode ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fIndexId2Node ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fIndexNode2Id ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fIndexPrefix ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fNode2NodeIdCacheSize ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fNodeId2NodeCacheSize ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fNodeMissCacheSize ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fPrefixId2Node ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fPrefixIndexes ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fPrefixNode2Id ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fPrimaryIndexPrefix ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fPrimaryIndexQuads ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fPrimaryIndexTriples ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fQuadIndexes ;
+import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.fTripleIndexes ;
+
+import java.io.BufferedOutputStream ;
+import java.io.FileOutputStream ;
+import java.io.IOException ;
+import java.io.OutputStream ;
+
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonParseException;
 import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonObject ;
@@ -25,11 +54,41 @@ import org.apache.jena.atlas.json.JsonObject ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
-
-import static com.hp.hpl.jena.tdb.setup.StoreParamsBuilder.* ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 
 /** Encode and decode {@linkplain StoreParams} */ 
 public class StoreParamsCodec {
+    
+    /** Write to a file */ 
+    public static void write(Location location, StoreParams params) {
+        write(location.getPath(TDB_CONFIG_FILE) ,params) ;
+    }
+    
+    /** Write to a file */ 
+    public static void write(String filename, StoreParams params) {
+        try (OutputStream out = new FileOutputStream(filename); 
+             OutputStream out2 = new BufferedOutputStream(out); ) {
+            JsonObject object = encodeToJson(params) ;
+            JSON.write(out2, object) ;
+            out2.write('\n') ;
+        }
+        catch (IOException ex) { IO.exception(ex); }
+    }
+
+    /** Read from a file */ 
+    public static StoreParams read(Location location) {
+        return read(location.getPath(TDB_CONFIG_FILE)) ;
+    }
+    
+    /** Read from a file, if possible. */ 
+    public static StoreParams read(String filename) {
+        try {
+            JsonObject obj = JSON.read(filename) ;
+            return StoreParamsCodec.decode(obj) ;
+        } 
+        catch (JsonParseException ex) { return null ; }
+        catch (AtlasException ex) { return null ; }
+    }
     
     public static JsonObject encodeToJson(StoreParams params) {
         JsonBuilder builder = new JsonBuilder() ;
@@ -73,7 +132,7 @@ public class StoreParamsCodec {
     }
 
     public static StoreParams decode(JsonObject json) {
-        StoreParamsBuilder builder = StoreParamsBuilder.create() ;
+        StoreParamsBuilder builder = StoreParams.builder() ;
         
         for ( String key : json.keys() ) {
             String short_key = unkey(key) ;

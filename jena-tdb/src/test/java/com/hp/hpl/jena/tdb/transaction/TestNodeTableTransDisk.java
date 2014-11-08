@@ -34,7 +34,7 @@ public class TestNodeTableTransDisk extends AbstractTestNodeTableTrans
     @Before public void before()
     {
     	String dir = ConfigTest.getCleanDir() ;
-    	loc = new Location(dir) ;
+    	loc = Location.create(dir) ;
     }
     
     @Override

@@ -64,8 +64,9 @@ public class IO
      * If the filename ends in .gz, wrap in  GZIPInputStream  
      * @param filename
      * @throws FileNotFoundException 
+     * @throws IOException
      */
-    static public InputStream openFileEx(String filename) throws IOException {
+    static public InputStream openFileEx(String filename) throws IOException, FileNotFoundException {
         if ( filename == null || filename.equals("-") )
             return System.in ;
         if ( filename.startsWith("file:") )

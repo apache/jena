@@ -49,7 +49,7 @@ public class ModLocation implements ArgModuleGeneral
         if ( cmdLine.contains(locationDecl) )
         {
             String dir = cmdLine.getValue(locationDecl) ;
-            location = new Location(dir) ;
+            location = Location.create(dir) ;
         }
     }
     
