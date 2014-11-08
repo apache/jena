@@ -27,38 +27,38 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 //TestParamsCreate
 /** This test suite uses on-diskstructures and can be slow */ 
 public class TestStoreParamsChoose extends BaseTest {
-    static final StoreParams pApp = StoreParamsBuilder.create()
+    static final StoreParams pApp = StoreParams.builder()
         .blockSize(12)              // Not dynamic
         .nodeMissCacheSize(12)      // Dynamic
         .build();
-    static final StoreParams pLoc = StoreParamsBuilder.create()
+    static final StoreParams pLoc = StoreParams.builder()
         .blockSize(0)
         .nodeMissCacheSize(0).build();
     
     static final StoreParams pDft = StoreParams.getDftStoreParams() ;
 
     @Test public void params_choose_new_1() {
-        StoreParams p = Build.fixStoreParams(Location.mem(), true, null, null, pDft) ;
+        StoreParams p = Build.decideStoreParams(Location.mem(), true, null, null, pDft) ;
         // New store, no pLoc, no pApp so pDft.
         assertTrue(StoreParams.sameValues(p, pDft)) ;
     }
     
     @Test public void params_choose_new_2() {
-        StoreParams p = Build.fixStoreParams(Location.mem(), true, pApp, null, pDft) ;
+        StoreParams p = Build.decideStoreParams(Location.mem(), true, pApp, null, pDft) ;
         // New store, no pLoc, so pApp is the enire settings.
         assertEquals(12, p.getBlockSize().intValue()) ;
         assertTrue(StoreParams.sameValues(p, pApp)) ;
     }
 
     @Test public void params_choose_new_3() {
-        StoreParams p = Build.fixStoreParams(Location.mem(), true, null, pLoc, pDft) ;
+        StoreParams p = Build.decideStoreParams(Location.mem(), true, null, pLoc, pDft) ;
         // New store, pLoc, no pApp, so pLoc is the entire settings.
         assertEquals(0, p.getBlockSize().intValue()) ;
         assertTrue(StoreParams.sameValues(p, pLoc)) ;
     }
 
     @Test public void params_choose_new_4() {
-        StoreParams p = Build.fixStoreParams(Location.mem(), true, pApp, pLoc, pDft) ;
+        StoreParams p = Build.decideStoreParams(Location.mem(), true, pApp, pLoc, pDft) ;
         // New store, pLoc, no pApp, so pLoc is the entire settings.
         
         assertFalse(StoreParams.sameValues(p, pApp)) ;
@@ -70,13 +70,13 @@ public class TestStoreParamsChoose extends BaseTest {
     }
 
     @Test public void params_choose_existing_1() {
-        StoreParams p = Build.fixStoreParams(Location.mem(), false, null, null, pDft) ;
+        StoreParams p = Build.decideStoreParams(Location.mem(), false, null, null, pDft) ;
         // p is pDft.
         assertTrue(StoreParams.sameValues(p, pDft)) ;
     }
 
     @Test public void params_choose_existing_2() {
-        StoreParams p = Build.fixStoreParams(Location.mem(), false, pApp, null, pDft) ;
+        StoreParams p = Build.decideStoreParams(Location.mem(), false, pApp, null, pDft) ;
         // p is pLoc modified by pApp
         assertFalse(StoreParams.sameValues(p, pApp)) ;
         assertFalse(StoreParams.sameValues(p, pDft)) ;
@@ -86,14 +86,14 @@ public class TestStoreParamsChoose extends BaseTest {
     }
     
     @Test public void params_choose_existing_3() {
-        StoreParams p = Build.fixStoreParams(Location.mem(), false, null, pLoc, pDft) ;
+        StoreParams p = Build.decideStoreParams(Location.mem(), false, null, pLoc, pDft) ;
         // p is pLoc
         assertTrue(StoreParams.sameValues(p, pLoc)) ;
         
     }
 
     @Test public void params_choose_existing_4() {
-        StoreParams p = Build.fixStoreParams(Location.mem(), false, pApp, pLoc, pDft) ;
+        StoreParams p = Build.decideStoreParams(Location.mem(), false, pApp, pLoc, pDft) ;
         // p is pLoc modifed by pApp.
         assertFalse(StoreParams.sameValues(p, pApp)) ;
         assertFalse(StoreParams.sameValues(p, pLoc)) ;
@@ -108,7 +108,7 @@ public class TestStoreParamsChoose extends BaseTest {
         Location loc = Location.create("target/test/DB") ;
         FileOps.clearAll(loc.getDirectoryPath());
         // Clear.
-        StoreParams p = Build.fixStoreParams(loc, true, pApp, null, pDft) ;
+        StoreParams p = Build.decideStoreParams(loc, true, pApp, null, pDft) ;
         // Check location now has a pLoc.
         String fn = loc.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
         assertTrue(FileOps.exists(fn)) ;
@@ -124,7 +124,7 @@ public class TestStoreParamsChoose extends BaseTest {
         StoreParamsCodec.write(loc, pLoc); 
         
         // Clear.
-        StoreParams p = Build.fixStoreParams(loc, true, null, pLoc, pDft) ;
+        StoreParams p = Build.decideStoreParams(loc, true, null, pLoc, pDft) ;
         // Check location still has a pLoc.
         String fn = loc.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
         assertTrue(FileOps.exists(fn)) ;
@@ -140,7 +140,7 @@ public class TestStoreParamsChoose extends BaseTest {
         StoreParamsCodec.write(loc, pLoc); 
         
         // Clear.
-        StoreParams p = Build.fixStoreParams(loc, true, pApp, pLoc, pDft) ;
+        StoreParams p = Build.decideStoreParams(loc, true, pApp, pLoc, pDft) ;
         // Check location still has a pLoc.
         String fn = loc.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
         assertTrue(FileOps.exists(fn)) ;

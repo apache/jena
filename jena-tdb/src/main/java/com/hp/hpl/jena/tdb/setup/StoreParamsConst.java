@@ -92,10 +92,10 @@ public class StoreParamsConst {
     // because StoreParamsBuilder uses these constants.
      
     /** The system default parameters for on-disk databases. */
-    static StoreParams dftStoreParams = StoreParamsBuilder.create().build() ;
+    static StoreParams dftStoreParams = StoreParams.builder().build() ;
 
     /** The system default parameters for in-memory databases. */
-    static StoreParams dftMemStoreParams = StoreParamsBuilder.create()
+    static StoreParams dftMemStoreParams = StoreParams.builder()
         .fileMode(FileMode.direct)
         // Small block caches, mainly so it behaves like a direct on-disk database.  
         .blockReadCacheSize(10)
@@ -106,7 +106,7 @@ public class StoreParamsConst {
         .build() ;
     
     /** The "small store" parameters. */
-    static StoreParams smallStoreParams = StoreParamsBuilder.create()
+    static StoreParams smallStoreParams = StoreParams.builder()
         .fileMode(FileMode.direct)
         .blockReadCacheSize(100)
         .blockWriteCacheSize(100)
@@ -114,7 +114,5 @@ public class StoreParamsConst {
         .nodeId2NodeCacheSize(10000)
         .nodeMissCacheSize(100)
         .build() ;
-
-
 }
 

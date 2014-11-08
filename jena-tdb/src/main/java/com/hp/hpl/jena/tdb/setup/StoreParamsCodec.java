@@ -43,8 +43,10 @@ import java.io.FileOutputStream ;
 import java.io.IOException ;
 import java.io.OutputStream ;
 
+import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonParseException;
 import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonBuilder ;
 import org.apache.jena.atlas.json.JsonObject ;
@@ -78,10 +80,14 @@ public class StoreParamsCodec {
         return read(location.getPath(TDB_CONFIG_FILE)) ;
     }
     
-    /** Read from a file */ 
+    /** Read from a file, if possible. */ 
     public static StoreParams read(String filename) {
-        JsonObject obj = JSON.read(filename) ;
-        return StoreParamsCodec.decode(obj) ;
+        try {
+            JsonObject obj = JSON.read(filename) ;
+            return StoreParamsCodec.decode(obj) ;
+        } 
+        catch (JsonParseException ex) { return null ; }
+        catch (AtlasException ex) { return null ; }
     }
     
     public static JsonObject encodeToJson(StoreParams params) {
@@ -126,7 +132,7 @@ public class StoreParamsCodec {
     }
 
     public static StoreParams decode(JsonObject json) {
-        StoreParamsBuilder builder = StoreParamsBuilder.create() ;
+        StoreParamsBuilder builder = StoreParams.builder() ;
         
         for ( String key : json.keys() ) {
             String short_key = unkey(key) ;

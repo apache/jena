@@ -19,16 +19,12 @@
 package com.hp.hpl.jena.tdb.setup ;
 
 import java.io.File ;
-import java.io.IOException ;
+import java.io.FileFilter ;
 import java.util.Collections ;
 import java.util.HashMap ;
 import java.util.Map ;
-import java.util.Properties ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.ColumnMap ;
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.PropertyUtils ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
@@ -81,34 +77,50 @@ public class DatasetBuilderStd implements DatasetBuilder {
      * The parameters for a store have 3 inputs: the parameters provided,
      * any parameters 
      * 
-     * 
-     * 
-     * @param location   Where to create the database.
-     * @param params     Store parameters to use (null means use default). 
+     * @param location    Where to create the database.
+     * @param appParams   Store parameters to use (null means use default). {See {@linkplain StoreParams}). 
      * @return DatasetGraphTDB
      */
-    public static DatasetGraphTDB create(Location location, StoreParams params) {
-        StoreParams $params = paramsForLocation(location) ;
-        // ---- Experimental
-        if ( ! location.isMem() && params != null ) {
-            if ( FileOps.existsAnyFiles(location.getDirectoryPath()) )
-                $params = StoreParamsBuilder.modify($params, params) ;
-            else
-                $params = params ;
-            params = null ;
-        }
-
-        // ----
-        if ( params != null )
-            log.warn("StoreParams != null (experimental)") ;
+    public static DatasetGraphTDB create(Location location, StoreParams appParams) {
+        StoreParams locParams = StoreParamsCodec.read(location) ;
+        StoreParams dftParams = StoreParams.getDftStoreParams() ;
+        // This can write the chosen parameters if necessary (new database, appParams != null, locParams == null)
+        boolean newArea = isNewDatabaseArea(location) ;
+        StoreParams params = Build.decideStoreParams(location, newArea, appParams, locParams, dftParams) ;
         DatasetBuilderStd x = new DatasetBuilderStd() ;
         x.standardSetup() ;
-        DatasetGraphTDB dsg = x.build(location, $params) ;
-        // Write params.
-        //if ( params != StoreParams.getDftStoreParams() )
-        
+        DatasetGraphTDB dsg = x.build(location, params) ;
         return dsg ;
     }
+    
+    /** Look at a directory and see if it is a new area */
+    private static boolean isNewDatabaseArea(Location location) {
+        if ( location.isMem() )
+            return true ;
+        File d = new File(location.getDirectoryPath()) ;
+        if ( !d.exists() )
+            return true ;
+        FileFilter ff = fileFilterNewDB ;
+        File[] entries = d.listFiles(ff) ;
+        return entries.length == 0 ;
+    }
+
+    static FileFilter fileFilterNewDB  = new FileFilter() {
+        @Override
+        public boolean accept(File pathname) {
+            String fn = pathname.getName() ;
+            if ( fn.equals(".") || fn.equals("..") )
+                return false ;
+            if ( pathname.isDirectory() )
+                return true ;
+
+            if ( fn.equals(StoreParamsConst.TDB_CONFIG_FILE) )
+                return false ;
+            return true ;
+        }
+    } ;
+
+
 
     public static DatasetGraphTDB create(StoreParams params) {
         // Memory version?
@@ -147,38 +159,7 @@ public class DatasetBuilderStd implements DatasetBuilder {
         set(nodeTableBuilder, tupleIndexBuilder) ;
     }
 
-    private static StoreParams paramsForLocation(Location location) {
-        if ( location.exists(DB_CONFIG_FILE) ) {
-            log.debug("Existing configuration file found") ;
-            Properties properties = new Properties() ;
-            try { 
-                PropertyUtils.loadFromFile(properties, DB_CONFIG_FILE) ;
-            } catch (IOException ex) { IO.exception(ex) ; throw new TDBException("Bad configuration file", ex) ; }
-        }
-        return StoreParams.getDftStoreParams() ;
-    }
 
-//    private void checkIfConfig(Location location) {
-//    }
-
-    private void checkIfNew(Location location) {
-        if ( location.isMem() ) {
-            return ;
-        }
-        
-        if ( FileOps.existsAnyFiles(location.getDirectoryPath()) ) {
-            
-        }
-
-        if ( location.exists(DB_CONFIG_FILE) ) {
-            log.debug("Existing config file") ;
-            return ;
-        }
-        
-    }
-    
-    private void checkConfiguration() { } 
-    
     private static void checkLocation(Location location) { 
         if ( location.isMem() )
             return ;
@@ -200,7 +181,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
         BlockMgrBuilder blockMgrBuilder = new BuilderStdIndex.BlockMgrBuilderStd() ;
         IndexBuilder indexBuilderNT = new BuilderStdIndex.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
         NodeTableBuilder nodeTableBuilder = new BuilderStdDB.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
-
         set(blockMgrBuilder, nodeTableBuilder) ;
     }
 
@@ -209,7 +189,6 @@ public class DatasetBuilderStd implements DatasetBuilder {
         // Ensure that there is global synchronization
         synchronized (DatasetBuilderStd.class) {
             log.debug("Build database: "+location.getDirectoryPath()) ;
-            checkIfNew(location) ;
             checkLocation(location) ;
             return _build(location, params, true, null) ;
         }
@@ -360,10 +339,10 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
     
     protected NodeTable makeNodeTableNoCache(Location location, String indexNode2Id, String indexId2Node, StoreParams params) {
-        StoreParamsBuilder spb = StoreParamsBuilder.create(params) ;
-        spb.node2NodeIdCacheSize(-1) ;
-        spb.nodeId2NodeCacheSize(-1) ;
-        spb.nodeMissCacheSize(-1) ;
+        StoreParamsBuilder spb = StoreParams.builder(params)
+            .node2NodeIdCacheSize(-1)
+            .nodeId2NodeCacheSize(-1)
+            .nodeMissCacheSize(-1) ;
         return makeNodeTable$(location, indexNode2Id, indexId2Node, spb.build()) ;
     }
     

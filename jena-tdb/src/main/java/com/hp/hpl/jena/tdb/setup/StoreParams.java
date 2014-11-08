@@ -73,6 +73,17 @@ public class StoreParams implements IndexParams, StoreParamsDynamic
     /*package*/ final Item<String>             prefixNode2Id ;
     /*package*/ final Item<String>             prefixId2Node ;
 
+    /** Build StoreParams, starting from system defaults.
+     * 
+     * @return StoreParamsBuilder
+     */
+    public static StoreParamsBuilder builder() { return StoreParamsBuilder.create() ; }
+    
+    /** Build StoreParams, starting from given default values.
+     * 
+     * @return StoreParamsBuilder
+     */
+    public static StoreParamsBuilder builder(StoreParams params) { return StoreParamsBuilder.create(params) ; }
     
     /*package*/ StoreParams(Item<FileMode> fileMode, Item<Integer> blockSize,
                             Item<Integer> blockReadCacheSize, Item<Integer> blockWriteCacheSize,

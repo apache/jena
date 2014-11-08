@@ -49,7 +49,7 @@ public class Build
         // XXX replace with:
         // return DatasetBuilderStd.stdBuilder().makeTupleIndex(location, indexName, primary, indexOrder) ;
         // All this to BuilderDB.
-        StoreParamsBuilder spb = StoreParamsBuilder.create() ;
+        StoreParamsBuilder spb = StoreParams.builder() ;
         spb.blockReadCacheSize(readCacheSize) ;
         spb.blockWriteCacheSize(writeCacheSize) ;
         RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength) ;
@@ -78,7 +78,7 @@ public class Build
                                           String indexNode2Id, int node2NodeIdCacheSize,
                                           String indexId2Node, int nodeId2NodeCacheSize,
                                           int sizeNodeMissCacheSize) {
-        StoreParamsBuilder spb = StoreParamsBuilder.create() ;
+        StoreParamsBuilder spb = StoreParams.builder() ;
         spb.indexNode2Id(indexNode2Id).node2NodeIdCacheSize(node2NodeIdCacheSize) ;
         spb.indexId2Node(indexId2Node).nodeId2NodeCacheSize(nodeId2NodeCacheSize) ;
         DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder() ;
@@ -125,7 +125,7 @@ public class Build
      * @see StoreParams
      * @see StoreParamsDynamic
      */
-    static StoreParams fixStoreParams(Location location, boolean isNew, StoreParams pApp, StoreParams pLoc, StoreParams pDft) {
+    static StoreParams decideStoreParams(Location location, boolean isNew, StoreParams pApp, StoreParams pLoc, StoreParams pDft) {
         StoreParams p = null ;
         if ( pLoc != null ) {
             // pLoc so use it, modify by pApp.

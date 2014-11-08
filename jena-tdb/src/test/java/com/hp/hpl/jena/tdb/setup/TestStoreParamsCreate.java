@@ -20,9 +20,6 @@ package com.hp.hpl.jena.tdb.setup;
 
 import static com.hp.hpl.jena.tdb.setup.StoreParamsConst.TDB_CONFIG_FILE ;
 
-import java.io.File ;
-import java.io.FileOutputStream ;
-import java.io.IOException ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
 import java.nio.file.Paths ;
@@ -35,45 +32,136 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.setup.StoreParams ;
-import com.hp.hpl.jena.tdb.setup.StoreParamsCodec ;
 
-//TestParamsCreate
-/** This test suite uses on-diskstructures and can be slow */ 
+/**
+ * This test suite uses on-disk structures, does a lot of clean/create/sync
+ * calls and can be noticably slow.
+ */
 public class TestStoreParamsCreate extends BaseTest {
-    static String DB_DIR = "target/test/DB" ; 
+    private final String DB_DIR = ConfigTest.getCleanDir() ;
+    private final Path db = Paths.get(DB_DIR) ;
+    private final Path cfg = Paths.get(DB_DIR, TDB_CONFIG_FILE) ;
+    private final Location loc = Location.create(DB_DIR) ;
     
-    @Before public void clearAnyDatabase() {
-        FileOps.clearAll(new File(DB_DIR)); 
+    static final StoreParams pApp = StoreParams.getSmallStoreParams() ; 
+    static final StoreParams pDft = StoreParams.getDftStoreParams() ;
+    static final StoreParams pSpecial = StoreParams.builder(pApp)
+        .blockSize(1024)
+        .blockReadCacheSize(4)
+        .build();
+    
+    @Before public void clearupTest() { 
+        // Flush and clean.
+        StoreConnection.expel(loc, true) ;
+        FileOps.clearAll(DB_DIR);
     }
 
-    @After public void clearupTest() {}
-
+    @After public void expelDatabase() { 
+        StoreConnection.expel(loc, true) ;
+    }
     
     @Test public void params_create_01() {
-        Location loc = Location.create(DB_DIR) ;
         StoreConnection.make(loc, null) ;
-        Path db = Paths.get(DB_DIR) ;
+        // Check.  Default setup, no params.
         assertTrue("DB directory", Files.exists(db)) ;
-        Path dbCfg = db.resolve(TDB_CONFIG_FILE) ;
-        // Fake it.
-        try {
-            new FileOutputStream(dbCfg.toFile()).close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        
-        assertTrue("DB config file", Files.exists(dbCfg)) ;
-        
+        assertFalse("Config file unexpectedly found", Files.exists(cfg)) ;
     }
     
-    // Create store.
-    // Test params.
+    @Test public void params_create_02() {
+        StoreConnection.make(loc, pApp) ;
+        // Check.  Custom setup.
+        assertTrue("DB directory", Files.exists(db)) ;
+        assertTrue("Config file not found", Files.exists(cfg)) ;
+        StoreParams pLoc = StoreParamsCodec.read(loc) ;
+        assertTrue(StoreParams.sameValues(pLoc, pApp)) ;
+    }
     
+    // Defaults
+    @Test public void params_reconnect_01() { 
+        // Create.
+        StoreConnection.make(loc, null) ;
+        // Drop.
+        StoreConnection.expel(loc, true) ;
+        // Reconnect
+        StoreConnection.make(loc, null) ;
+        StoreParams pLoc = StoreParamsCodec.read(loc) ;
+        assertNull(pLoc) ;
+        
+        StoreParams pDB = StoreConnection.getExisting(loc).getBaseDataset().getConfig().params ;
+        assertNotNull(pDB) ;
+        // Should be the default setup.
+        assertTrue(StoreParams.sameValues(pDft, pDB)) ;
+    }
+    
+    // Defaults, then reconnect with app modified.
+    @Test public void params_reconnect_02() { 
+        // Create.
+        StoreConnection.make(loc, null) ;
+        // Drop.
+        StoreConnection.expel(loc, true) ;
+        // Reconnect
+        StoreConnection.make(loc, pSpecial) ;
+        //StoreParams pLoc = StoreParamsCodec.read(loc) ;
+        //assertNotNull(pLoc) ;
+        
+        StoreParams pDB = StoreConnection.getExisting(loc).getBaseDataset().getConfig().params ;
+        assertNotNull(pDB) ;
+        // Should be the default setup, modified by pApp for cache sizes.
+        assertFalse(StoreParams.sameValues(pDft, pDB)) ;
+        assertFalse(StoreParams.sameValues(pSpecial, pDB)) ;
+
+        // Check it's default-modified-by-special.
+        assertEquals(pSpecial.getBlockReadCacheSize(), pDB.getBlockReadCacheSize()) ;
+        assertNotEquals(pDft.getBlockReadCacheSize(), pDB.getBlockReadCacheSize()) ;
+        
+        assertNotEquals(pSpecial.getBlockSize(), pDB.getBlockSize()) ;
+        assertEquals(pDft.getBlockSize(), pDB.getBlockSize()) ;
+    }
+    
+    // Custom, then reconnect with some special settings.
+    @Test public void params_reconnect_03() { 
+        // Create.
+        StoreConnection.make(loc, pApp) ;
+        // Drop.
+        StoreConnection.expel(loc, true) ;
+        // Reconnect
+        StoreConnection.make(loc, pSpecial) ;
+        //StoreParams pLoc = StoreParamsCodec.read(loc) ;
+        //assertNotNull(pLoc) ;
+        
+        StoreParams pDB = StoreConnection.getExisting(loc).getBaseDataset().getConfig().params ;
+        assertNotNull(pDB) ;
+        // Should be the default setup, modified by pApp for cache sizes.
+        assertFalse(StoreParams.sameValues(pApp, pDB)) ;
+        assertFalse(StoreParams.sameValues(pSpecial, pDB)) ;
+
+        // Check it's default-modified-by-special.
+        assertEquals(pSpecial.getBlockReadCacheSize(), pDB.getBlockReadCacheSize()) ;
+        assertNotEquals(pApp.getBlockReadCacheSize(), pDB.getBlockReadCacheSize()) ;
+        
+        assertNotEquals(pSpecial.getBlockSize(), pDB.getBlockSize()) ;
+        assertEquals(pApp.getBlockSize(), pDB.getBlockSize()) ;
+    }
+
+    
+//    // Custom then modified.
+//    @Test public void params_reconnect_03() { 
+//        // Create.
+//        StoreConnection.make(loc, pLoc) ;
+//        // Drop.
+//        StoreConnection.expel(loc, true) ;
+//        // Reconnect
+//        StoreConnection.make(loc, pApp) ;
+//        StoreParams pLoc = StoreParamsCodec.read(loc) ;
+//        assertFalse(StoreParams.sameValues(pApp, pLoc)) ;
+//        assertFalse(StoreParams.sameValues(pApp, pLoc)) ;
+//    }
+
+    // Dataset tests
+
     static StoreParams read(Location location) {
         String fn = location.getPath(TDB_CONFIG_FILE) ;
         JsonObject obj = JSON.read(fn) ;

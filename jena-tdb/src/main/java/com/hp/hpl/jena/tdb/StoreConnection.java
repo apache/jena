@@ -230,7 +230,7 @@ public class StoreConnection
         return sConn ;
     }
 
-    /** Make a StoreConnection based on any StoreParams at eh location or the system defaults. */
+    /** Make a StoreConnection based on any StoreParams at the location or the system defaults. */
     public static StoreConnection make(Location location) {
         return make(location, null) ;
     }
