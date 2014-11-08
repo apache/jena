@@ -22,11 +22,14 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 
 //TestParamsCreate
-/** This test suite uses on-diskstructures and can be slow */ 
+/** This test suite uses on-disk structures and can be slow */ 
 public class TestStoreParamsChoose extends BaseTest {
+    private String DIR = ConfigTest.getCleanDir() ;
+    
     static final StoreParams pApp = StoreParams.builder()
         .blockSize(12)              // Not dynamic
         .nodeMissCacheSize(12)      // Dynamic
@@ -105,7 +108,7 @@ public class TestStoreParamsChoose extends BaseTest {
     
     @Test public void params_choose_new_persist_1() {
         // new database, app defined.
-        Location loc = Location.create("target/test/DB") ;
+        Location loc = Location.create(DIR) ;
         FileOps.clearAll(loc.getDirectoryPath());
         // Clear.
         StoreParams p = Build.decideStoreParams(loc, true, pApp, null, pDft) ;
@@ -119,7 +122,7 @@ public class TestStoreParamsChoose extends BaseTest {
     
     @Test public void params_choose_new_persist_2() {
         // new database, location defined.
-        Location loc = Location.create("target/test/DB") ;
+        Location loc = Location.create(DIR) ;
         FileOps.clearAll(loc.getDirectoryPath());
         StoreParamsCodec.write(loc, pLoc); 
         
@@ -135,7 +138,7 @@ public class TestStoreParamsChoose extends BaseTest {
 
     @Test public void params_choose_new_persist_3() {
         // new database, location defined, application modified.
-        Location loc = Location.create("target/test/DB") ;
+        Location loc = Location.create(DIR) ;
         FileOps.clearAll(loc.getDirectoryPath());
         StoreParamsCodec.write(loc, pLoc); 
         
