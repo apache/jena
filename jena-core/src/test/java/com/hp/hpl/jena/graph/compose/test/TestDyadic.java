@@ -47,7 +47,10 @@ public abstract class TestDyadic extends AbstractTestGraph
 			};
 		}
 	
-	public void testDyadic() 
+	/**
+	 * Test the things() iterator generating utility function.
+	 */
+	public void testThings()
 		{
 		ExtendedIterator<String> it1 = things( "now is the time" );
 		ExtendedIterator<String> it2 = things( "now is the time" );
