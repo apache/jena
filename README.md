@@ -1,10 +1,9 @@
-Jena README
+README
 ===========
 
-Fork of Apache Jena. 
-from tag jena-2.12.1 (version 050c298ada38749a1ff166a77851b963991e4785)
+Fork of Apache Jena from tag jena-2.12.1 (version 050c298ada38749a1ff166a77851b963991e4785)
 
-This fork in used to implement scoring access, multi-lingual indexing and multi-index management in jena-text (branch multilingual-indexing)
+This fork in used to implement scoring access, multi-lingual indexing and multi-index management in **jena-text** (branch multilingual-indexing)
 
 
 
@@ -50,7 +49,7 @@ example 2: retrieve resources (and scores) with term 'book' in label on index 'l
 (?uri ?score) text:query (rdfs:label 'book' 'library')
 ```
 
-example 2: retrieve resources (and scores) with term 'book' in label on english index or with term 'livre' in label on french index.
+example 3: retrieve resources (and scores) with term 'book' in label on english index or with term 'livre' in label on french index.
 ```
 { 
     (?uri ?score) text:query (rdfs:label 'book' 'library' 'en') 
