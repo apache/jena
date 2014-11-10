@@ -31,6 +31,7 @@ public interface TextIndex extends Closeable //, Transactional
     // Update operations
     public abstract void startIndexing() ;
     public abstract void addEntity(Entity entity) ;
+    public abstract void deleteEntity(Entity entity) ;
     public abstract void finishIndexing() ;
     public abstract void abortIndexing() ;
     
@@ -47,4 +48,24 @@ public interface TextIndex extends Closeable //, Transactional
     public abstract List<Node> query(String qs) ;
 
     public abstract EntityDefinition getDocDef() ;
+
+    //
+    // methods which return score for each result
+    // At some point may refactor these to replace the methods without score
+    //
+    public abstract List<NodeAndScore> queryWithScore(String qs, int limit);
+    public abstract List<NodeAndScore> queryWithScore(String qs) ;
+
+    public class NodeAndScore {
+        private Node node;
+        private float score;
+
+        public NodeAndScore(Node node, float score) {
+            this.node = node;
+            this.score = score;
+        }
+
+        public Node getNode() { return node ; }
+        public float getScore() { return score ; }
+    }
 }

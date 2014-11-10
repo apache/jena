@@ -50,12 +50,29 @@ public class TextDocProducerTriples implements TextDocProducer {
     public void change(QuadAction qaction, Node g, Node s, Node p, Node o) {
         // One document per triple/quad
 
-        if ( qaction != QuadAction.ADD )
+        if ( qaction != QuadAction.ADD &&
+             qaction != QuadAction.DELETE )
             return ;
 
         Entity entity = TextQueryFuncs.entityFromQuad(defn, g, s, p, o) ;
-        if ( entity != null )
+        if ( entity != null ) {
             // Null means does not match defn
-            indexer.addEntity(entity) ;
+            if (qaction == QuadAction.ADD) {
+                if (indexer instanceof TextIndexLuceneMultiLingual) {
+                    String lang = o.getLiteral().language();
+                    ((TextIndexLuceneMultiLingual)indexer).addEntity(entity, lang);
+                }
+                else
+                    indexer.addEntity(entity) ;
+            }
+            else if (qaction == QuadAction.DELETE) {
+                if (indexer instanceof TextIndexLuceneMultiLingual) {
+                    String lang = o.getLiteral().language();
+                    ((TextIndexLuceneMultiLingual)indexer).deleteEntity(entity, lang);
+                }
+                else
+                    indexer.deleteEntity(entity) ;
+            }
+        }
     }
 }

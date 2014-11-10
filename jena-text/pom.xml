@@ -21,7 +21,7 @@
   <artifactId>jena-text</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - SPARQL Text Search</name>
-  <version>1.1.1</version>
+  <version>1.1.1-extended</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -207,5 +207,18 @@
     </plugins>
     
   </build>
-  
+
+  <distributionManagement>
+      <repository>
+          <id>licef</id>
+          <name>licef-releases</name>
+          <url>http://hades.licef.ca:8080/artifactory/libs-release-local</url>
+      </repository>
+      <snapshotRepository>
+          <id>licef</id>
+          <name>licef-snapshots</name>
+          <url>http://hades.licef.ca:8080/artifactory/libs-snapshot-local</url>
+      </snapshotRepository>
+  </distributionManagement>
+
 </project>

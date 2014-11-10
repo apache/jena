@@ -85,6 +85,10 @@ public class TextIndexSolr implements TextIndex
         } catch (Exception e) { exception(e) ; }
     }
 
+    @Override
+    public void deleteEntity(Entity entity) {
+    }
+
     private SolrInputDocument solrDoc(Entity entity)
     {
         SolrInputDocument doc = new SolrInputDocument() ;
@@ -187,10 +191,37 @@ public class TextIndexSolr implements TextIndex
         
         return results ; 
     }
-    
+
+    @Override
+    public List<NodeAndScore> queryWithScore(String qs) { return queryWithScore(qs, 0) ; }
+
+    @Override
+    public List<NodeAndScore> queryWithScore(String qs, int limit)
+    {
+        SolrDocumentList solrResults = solrQuery(qs, limit) ;
+        List<NodeAndScore> results = new ArrayList<NodeAndScore>() ;
+
+        for ( SolrDocument sd : solrResults )
+        {
+            String uriStr = (String)sd.getFieldValue(docDef.getEntityField()) ;
+            float score = Float.valueOf(sd.getFieldValue("score").toString());
+            //log.info("Entity: "+uriStr) ;
+            results.add(new NodeAndScore(Node.createURI(uriStr), score)) ;
+        }
+
+        if ( limit > 0 && results.size() > limit )
+            results = results.subList(0, limit) ;
+
+        return results ;
+    }
+
     private SolrDocumentList solrQuery(String qs, int limit)
     {
         SolrQuery sq = new SolrQuery(qs) ;
+        // include score in results
+        sq.addField(docDef.getEntityField())
+                .addField("score");
+
         //** score
         //sq.setIncludeScore(true) ;
         if ( limit > 0 )

@@ -24,19 +24,17 @@ import java.util.Map.Entry ;
 
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.es.SpanishAnalyzer;
+import org.apache.lucene.analysis.fr.FrenchAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.document.* ;
-import org.apache.lucene.index.DirectoryReader ;
-import org.apache.lucene.index.IndexReader ;
-import org.apache.lucene.index.IndexWriter ;
-import org.apache.lucene.index.IndexWriterConfig ;
+import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException ;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
-import org.apache.lucene.search.IndexSearcher ;
-import org.apache.lucene.search.Query ;
-import org.apache.lucene.search.ScoreDoc ;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.util.Version ;
 import org.slf4j.Logger ;
@@ -70,7 +68,13 @@ public class TextIndexLucene implements TextIndex {
     private IndexWriter            indexWriter ;
     private Analyzer               analyzer ;
 
+    private static final String BORDER_DELIMITER = "borderdelimiter";
+
     public TextIndexLucene(Directory directory, EntityDefinition def) {
+        this(directory, def, null);
+    }
+
+    public TextIndexLucene(Directory directory, EntityDefinition def, String lang) {
         this.directory = directory ;
         this.docDef = def ;
 
@@ -87,8 +91,18 @@ public class TextIndexLucene implements TextIndex {
         		analyzerPerField.put(field, analyzer);
         	}
         }
-        
-        this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
+
+        Analyzer _analyzer;
+        if( "en".equals( lang ) )
+            _analyzer = new EnglishAnalyzer(VER);
+        else if( "fr".equals( lang ) )
+            _analyzer = new FrenchAnalyzer(VER);
+        else if( "es".equals( lang ) )
+            _analyzer = new SpanishAnalyzer(VER);
+        else
+            _analyzer = new StandardAnalyzer(VER);
+
+        this.analyzer = new PerFieldAnalyzerWrapper(_analyzer, analyzerPerField) ;
 
         // force creation of the index if it don't exist
         // otherwise if we get a search before data is written we get an
@@ -168,6 +182,34 @@ public class TextIndexLucene implements TextIndex {
         }
     }
 
+    @Override
+    public void deleteEntity(Entity entity) {
+        if ( log.isDebugEnabled() )
+            log.debug("Delete entity: "+entity) ;
+        try {
+            boolean autoBatch = (indexWriter == null) ;
+
+            TermQuery qUri = new TermQuery(new Term("uri", entity.getId()));
+            Map<String, Object> map = entity.getMap();
+            String property = map.keySet().iterator().next();
+            String value = (String)map.get(property);
+
+            QueryParser qp = new QueryParser(VER, property, analyzer);
+            Query qPropValue = qp.parse("\"" + BORDER_DELIMITER + " " + value + " " + BORDER_DELIMITER + "\"");
+
+            BooleanQuery q = new BooleanQuery();
+            q.add(qUri, BooleanClause.Occur.MUST);
+            q.add(qPropValue, BooleanClause.Occur.MUST);
+
+            if ( autoBatch )
+                startIndexing() ;
+            indexWriter.deleteDocuments(q);
+            if ( autoBatch )
+                finishIndexing() ;
+
+        } catch (Exception e) { exception(e) ; }
+    }
+
     private Document doc(Entity entity) {
         Document doc = new Document() ;
         Field entField = new Field(docDef.getEntityField(), entity.getId(), ftIRI) ;
@@ -180,7 +222,7 @@ public class TextIndexLucene implements TextIndex {
         }
 
         for ( Entry<String, Object> e : entity.getMap().entrySet() ) {
-            Field field = new Field(e.getKey(), (String)e.getValue(), ftText) ;
+            Field field = new Field(e.getKey(), BORDER_DELIMITER + " " + e.getValue() + " " + BORDER_DELIMITER, ftText) ;
             doc.add(field) ;
         }
         return doc ;
@@ -292,5 +334,51 @@ public class TextIndexLucene implements TextIndex {
 
     private static void exception(Exception ex) {
         throw new TextIndexException(ex) ;
+    }
+
+    public List<NodeAndScore> queryWithScore(String qs) { return queryWithScore(qs, 0) ; }
+
+    public List<NodeAndScore> queryWithScore(String qs, int limit) {
+        try {
+            // Upgrade at Java7 ...
+            IndexReader indexReader = DirectoryReader.open(directory) ;
+            try {
+                return queryWithScore$(indexReader, qs, limit) ;
+            } finally {
+                indexReader.close() ;
+            }
+        } catch (ParseException ex) {
+            exception(ex) ;
+            return null ;
+        } catch (IOException ex) {
+            exception(ex) ;
+            return null ;
+        }
+    }
+
+    public List<NodeAndScore> queryWithScore$(IndexReader indexReader , String qs, int limit) throws ParseException, IOException {
+        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+        QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer);
+        Query query = queryParser.parse(qs);
+
+        if ( limit <= 0 )
+            limit = MAX_N ;
+        ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;
+
+        List<NodeAndScore> results = new ArrayList<NodeAndScore>() ;
+
+        // Align and DRY with Solr.
+        for ( ScoreDoc sd : sDocs )
+        {
+            Document doc = indexSearcher.doc(sd.doc) ;
+            String[] values = doc.getValues(docDef.getEntityField()) ;
+            float score = sd.score;
+            for ( String v : values )
+            {
+                Node n = Node.createURI(v);
+                results.add(new NodeAndScore(n, score)) ;
+            }
+        }
+        return results ;
     }
 }

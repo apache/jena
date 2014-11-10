@@ -28,6 +28,9 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
+import java.io.File;
+import java.util.Hashtable;
+
 public class TextDatasetFactory
 {
     static { TextQuery.init(); }
@@ -65,6 +68,24 @@ public class TextDatasetFactory
     {
         TextIndex index = new TextIndexLucene(directory, entMap) ;
         return index ; 
+    }
+
+    public static TextIndex createLuceneIndexLocalized(Directory directory, EntityDefinition entMap, String lang)
+    {
+        TextIndex index = new TextIndexLucene(directory, entMap, lang) ;
+        return index ;
+    }
+
+    public static TextIndex createLuceneIndexMultiLingual(File directory, EntityDefinition entMap, String[] languages)
+    {
+        TextIndex index = new TextIndexLuceneMultiLingual(directory, entMap, languages) ;
+        return index ;
+    }
+
+    public static TextIndex createMinimalLuceneIndex(Hashtable cfg, EntityDefinition entMap)
+    {
+        TextIndex index = new TextIndexLuceneMinimal(cfg, entMap) ;
+        return index ;
     }
 
     /** Create a text-indexed dataset, using Lucene */ 

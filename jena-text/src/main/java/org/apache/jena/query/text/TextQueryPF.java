@@ -18,12 +18,20 @@
 
 package org.apache.jena.query.text ;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List ;
 
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -65,8 +73,14 @@ public class TextQueryPF extends PropertyFunctionBase {
         DatasetGraph dsg = execCxt.getDataset() ;
         server = chooseTextIndex(dsg) ;
 
-        if (!argSubject.isNode())
-            throw new QueryBuildException("Subject is not a single node: " + argSubject) ;
+        if ( argSubject.isList()) {
+            List<Node> list = argSubject.getArgList();
+            if (list.size() == 0) {
+                throw new QueryBuildException(predicate + ": has empty subject list");
+            } else if (list.size() > 2) {
+                throw new QueryBuildException(predicate + ": subject list too long");
+            }
+        }
 
         if (argObject.isList()) {
             List<Node> list = argObject.getArgList() ;
@@ -75,6 +89,38 @@ public class TextQueryPF extends PropertyFunctionBase {
 
             if (list.size() > 4)
                 throw new QueryBuildException("Too many arguments in list : " + list) ;
+        }
+
+        // If retrieved index is an instance of TextIndexLuceneMinimal, we work with multi lingual indexes.
+        // We need to switch with the right index.
+        // The pattern is :
+        // (?uri ?score) text:query (property "string" ['graph name'] ['indexed language'])
+        // ex : (?uri ?score) text:query (rdfs:label "school" 'myGraph' 'fr')
+        // note: default index is the unlocalized index related to the default graph.
+        if (server instanceof TextIndexLuceneMinimal) {
+            int size = argObject.getArgList().size();
+            //explicit index to select
+            String indexName = ((TextIndexLuceneMinimal)server).getDefaultGraphName(); //default index
+            File indexesDir = ((TextIndexLuceneMinimal)server).getIndexesDirectory();
+            String lang = null;
+            if (size > 2) {
+                indexName = argObject.getArgList().get(2).getLiteral().toString();
+                //language specified
+                if (size > 3) {
+                    Node langEl = argObject.getArgList().get(3);
+                    lang = langEl.getLiteral().toString();
+                    argObject.getArgList().remove(3);
+                }
+                argObject.getArgList().remove(2);
+            }
+            File indexDir = new File(indexesDir, indexName);
+            if (lang != null)
+                indexDir = new File(indexDir, lang);
+            try {
+                Directory dir = FSDirectory.open(indexDir);
+                server = new TextIndexLucene(dir, server.getDocDef(), lang);
+            } catch (IOException e) {
+            }
         }
     }
 
@@ -112,21 +158,35 @@ public class TextQueryPF extends PropertyFunctionBase {
             return IterLib.result(binding, execCxt) ;
         }
 
-        DatasetGraph dsg = execCxt.getDataset() ;
+        //DatasetGraph dsg = execCxt.getDataset() ;
 
         argSubject = Substitute.substitute(argSubject, binding) ;
         argObject = Substitute.substitute(argObject, binding) ;
 
-        if (!argSubject.isNode())
-            throw new InternalErrorException("Subject is not a node (it was earlier!)") ;
-
-        Node s = argSubject.getArg() ;
+        Node s;
+        Node scoreVar = null;
+        if (argSubject.isNode() )
+        {
+            s = argSubject.getArg() ;
+        } else {
+            List<Node> list = argSubject.getArgList();
+            if (list.size() == 0 || list.size() > 2) {
+                throw new TextIndexException(predicate + ": change in subject list size");
+            }
+            s = list.get(0);
+            if (list.size() == 2) {
+                scoreVar = list.get(1);
+                // this could have been picked up at query build time
+                if (! scoreVar.isVariable())
+                    throw new TextIndexException(predicate + ": score variable is not a variable");
+            }
+        }
 
         if (s.isLiteral())
             // Does not match
             return IterLib.noResults(execCxt) ;
 
-        StrMatch match = objectToStruct(argObject) ;
+        StrMatch match = objectToStruct(scoreVar, argObject) ;
         if (match == null) {
             // can't match
             return IterLib.noResults(execCxt) ;
@@ -142,12 +202,17 @@ public class TextQueryPF extends PropertyFunctionBase {
         return qIter ;
     }
 
-    private QueryIterator variableSubject(Binding binding, Node s, StrMatch match, ExecutionContext execCxt) {
-        Var v = Var.alloc(s) ;
-        List<Node> r = query(match.getQueryString(), match.getLimit(), execCxt) ;
+    private QueryIterator variableSubject(Binding binding, Node subject, StrMatch match, ExecutionContext execCxt) {
+        List<Var> vars = new ArrayList<Var>();
+        vars.add(Var.alloc(subject));
+        if (match.getScoreVar() != null)
+            vars.add(Var.alloc(match.getScoreVar()));
+
+//        List<Node> r = server.query(match.getQueryString(), match.getLimit(), exceCtx) ;
+        List<TextIndex.NodeAndScore> r = server.queryWithScore(match.getQueryString(), match.getLimit());
         // Make distinct. Note interaction with limit is imperfect
         r = Iter.iter(r).distinct().toList() ;
-        QueryIterator qIter = new QueryIterExtendByVar(binding, v, r.iterator(), execCxt) ;
+        QueryIterator qIter = new QueryIterExtendByVars(binding, vars, new NodeAndScoreToListIterator(r.iterator()), execCxt);
         return qIter ;
     }
 
@@ -188,7 +253,7 @@ public class TextQueryPF extends PropertyFunctionBase {
     }
     
     /** Deconstruct the node or list object argument and make a StrMatch */
-    private StrMatch objectToStruct(PropFuncArg argObject) {
+    private StrMatch objectToStruct(Node scoreVar, PropFuncArg argObject) {
         EntityDefinition docDef = server.getDocDef() ;
         if (argObject.isNode()) {
             Node o = argObject.getArg() ;
@@ -204,11 +269,12 @@ public class TextQueryPF extends PropertyFunctionBase {
             }
 
             String qs = o.getLiteralLexicalForm() ;
-            return new StrMatch(null, qs, -1, 0) ;
+            return new StrMatch(null, qs, -1, 0, scoreVar) ;
         }
 
         List<Node> list = argObject.getArgList() ;
-        if (list.size() == 0 || list.size() > 3)
+//        if (list.size() == 0 || list.size() > 3)
+        if (list.size() == 0 || list.size() > 4) //changed args size -AM
             throw new TextIndexException("Change in object list size") ;
 
         Node predicate = null ;
@@ -252,11 +318,19 @@ public class TextQueryPF extends PropertyFunctionBase {
             limit = (v < 0) ? -1 : v ;
         }
 
+        if (idx < list.size()) {
+            // Score limit?
+            x = list.get(idx) ;
+            idx++ ;
+            float v = NodeFactoryExtra.nodeToFloat(x) ;
+            score = (v < 0) ? 0 : v ;
+        }
+
         String qs = queryString ;
         if (field != null)
             qs = field + ":" + qs ;
 
-        return new StrMatch(predicate, qs, limit, score) ;
+        return new StrMatch(predicate, qs, limit, score, scoreVar) ;
     }
 
     class StrMatch {
@@ -264,13 +338,15 @@ public class TextQueryPF extends PropertyFunctionBase {
         private final String queryString ;
         private final int    limit ;
         private final float  scoreLimit ;
+        private final Node   scoreVar ;
 
-        public StrMatch(Node property, String queryString, int limit, float scoreLimit) {
+        public StrMatch(Node property, String queryString, int limit, float scoreLimit, Node scoreVar) {
             super() ;
             this.property = property ;
             this.queryString = queryString ;
             this.limit = limit ;
             this.scoreLimit = scoreLimit ;
+            this.scoreVar = scoreVar ;
         }
 
         public Node getProperty() {
@@ -288,5 +364,99 @@ public class TextQueryPF extends PropertyFunctionBase {
         public float getScoreLimit() {
             return scoreLimit ;
         }
+
+        public Node getScoreVar() {
+            return scoreVar;
+        }
+    }
+
+
+    //
+    // turn a NodeAndScoreIterator into an List<Node> iterator
+    //
+    private class NodeAndScoreToListIterator implements Iterator<List<Node>> {
+
+        private Iterator<TextIndex.NodeAndScore> iter;
+
+        NodeAndScoreToListIterator(Iterator<TextIndex.NodeAndScore> iter) {
+            this.iter = iter;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return iter.hasNext();
+        }
+
+        @Override
+        public List<Node> next() {
+            List<Node> result = new ArrayList<Node>();
+            TextIndex.NodeAndScore ns = iter.next();
+            result.add(ns.getNode());
+            result.add(Node.createLiteral( Float.toString(ns.getScore()), XSDDatatype.XSDfloat));
+            return result;
+        }
+
+        @Override
+        public void remove() {
+            iter.remove();
+        }
+    }
+
+    /**
+     * Yield new bindings, with a fixed parent, with multiple variables from an iterator.
+     */
+
+    // this code is cloned from QueryIterExtendByVar (not singular Var)
+    // and generalized to handle a list of vars and nodes to bind.
+    // Not being familiar with the internals of ARQ, there may be an existing
+    // query iterator it would be better to use, but bwm didn't find it.
+
+    private class QueryIterExtendByVars extends QueryIter
+    {
+        // Use QueryIterProcessBinding?
+        private Binding binding ;
+        private List<Var> vars ;
+        private Iterator<List<Node>> members ;
+
+        QueryIterExtendByVars(Binding binding, List<Var> vars, Iterator<List<Node>> members, ExecutionContext execCxt)
+        {
+            super(execCxt) ;
+            this.binding = binding ;
+            this.vars = vars ;
+            this.members = members ;
+        }
+
+        @Override
+        protected boolean hasNextBinding()
+        {
+            return members.hasNext() ;
+        }
+
+        @Override
+        protected Binding moveToNextBinding()
+        {
+            List<Node> nodes = members.next() ;
+
+            // silently ignore differences in the number of nodes and vars to bind them to
+            // bind as many vars as there is data
+            // ignore any nodes for which there are no variables
+
+            Iterator<Node> nodeIter = nodes.iterator();
+            Iterator<Var> varIter = vars.iterator();
+            Binding b = binding;
+            for ( ; nodeIter.hasNext() && varIter.hasNext(); )
+            {
+                b = BindingFactory.binding(b, varIter.next(), nodeIter.next()) ;
+            }
+            return b ;
+        }
+
+        @Override
+        protected void closeIterator()
+        { }
+
+        @Override
+        protected void requestCancel()
+        { }
     }
 }
