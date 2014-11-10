@@ -213,7 +213,7 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
      * @throws InterruptedException 
      */
     @Test
-    public final void output_01() throws IOException, InterruptedException {
+    public void output_01() throws IOException, InterruptedException {
         this.testOutput(this.folder.getRoot(), EMPTY_SIZE);
     }
     
@@ -224,7 +224,7 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
      * @throws InterruptedException 
      */
     @Test
-    public final void output_02() throws IOException, InterruptedException {
+    public void output_02() throws IOException, InterruptedException {
         this.testOutput(this.folder.getRoot(), SMALL_SIZE);
     }
     
@@ -235,7 +235,7 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
      * @throws InterruptedException 
      */
     @Test
-    public final void output_03() throws IOException, InterruptedException {
+    public void output_03() throws IOException, InterruptedException {
         this.testOutput(this.folder.getRoot(), LARGE_SIZE);
     }
     
@@ -246,7 +246,7 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
      * @throws InterruptedException 
      */
     @Test
-    public final void output_04() throws IOException, InterruptedException {
+    public void output_04() throws IOException, InterruptedException {
         this.testOutput(this.folder.getRoot(), VERY_LARGE_SIZE);
     }
 }

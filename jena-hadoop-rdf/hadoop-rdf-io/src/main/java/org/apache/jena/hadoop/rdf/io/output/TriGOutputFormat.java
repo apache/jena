@@ -37,23 +37,21 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * @param <TKey>
  *            Key type
  */
-public class TriGOutputFormat<TKey> extends
-		AbstractStreamRdfNodeTupleOutputFormat<TKey, Quad, QuadWritable> {
+public class TriGOutputFormat<TKey> extends AbstractStreamRdfNodeTupleOutputFormat<TKey, Quad, QuadWritable> {
 
-	@Override
-	protected RecordWriter<TKey, QuadWritable> getRecordWriter(
-			StreamRDF stream, Writer writer, Configuration config) {
-		return new StreamRdfQuadWriter<TKey>(stream, writer);
-	}
+    @Override
+    protected RecordWriter<TKey, QuadWritable> getRecordWriter(StreamRDF stream, Writer writer, Configuration config) {
+        return new StreamRdfQuadWriter<TKey>(stream, writer);
+    }
 
-	@Override
-	protected StreamRDF getStream(Writer writer, Configuration config) {
-		return new WriterStreamRDFBlocks(writer);
-	}
+    @Override
+    protected StreamRDF getStream(Writer writer, Configuration config) {
+        return new WriterStreamRDFBlocks(writer);
+    }
 
-	@Override
-	protected String getFileExtension() {
-		return ".trig";
-	}
+    @Override
+    protected String getFileExtension() {
+        return ".trig";
+    }
 
 }

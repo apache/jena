@@ -22,7 +22,6 @@ import java.util.UUID;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.JobContext;
-import org.apache.jena.hadoop.rdf.io.HadoopIOConstants;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.IRIResolver;
@@ -32,7 +31,6 @@ import org.apache.jena.riot.system.Prologue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * RDF IO utility functions
  * 
@@ -40,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class RdfIOUtils {
-    private static final Logger log = LoggerFactory.getLogger(RdfIOUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RdfIOUtils.class);
 
     /**
      * Private constructor prevents instantiation
@@ -79,11 +77,11 @@ public class RdfIOUtils {
         String jobId = context.getJobID().toString();
         if (jobId == null) {
             jobId = String.valueOf(System.currentTimeMillis());
-            log.warn(
-                    "Job ID was not set, using current milliseconds of {}. Sequence of MapReduce jobs must handle carefully blank nodes.",
+            LOGGER.warn(
+                    "Job ID was not set, using current milliseconds of {}. Sequence of MapReduce jobs must carefully handle blank nodes.",
                     jobId);
         }
-        log.debug("MapReduceAllocator({}, {})", jobId, path);
+        LOGGER.debug("Generating Blank Node Seed from Job Details (ID={}, Input Path={})", jobId, path);
 
         // Form a reproducible seed for the run
         return new UUID(jobId.hashCode(), path.hashCode());

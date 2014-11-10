@@ -37,23 +37,21 @@ import com.hp.hpl.jena.graph.Triple;
  * @param <TKey>
  *            Key type
  */
-public class TurtleOutputFormat<TKey> extends
-		AbstractStreamRdfNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
+public class TurtleOutputFormat<TKey> extends AbstractStreamRdfNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
 
-	@Override
-	protected String getFileExtension() {
-		return ".ttl";
-	}
+    @Override
+    protected String getFileExtension() {
+        return ".ttl";
+    }
 
-	@Override
-	protected RecordWriter<TKey, TripleWritable> getRecordWriter(
-			StreamRDF stream, Writer writer, Configuration config) {
-		return new StreamRdfTripleWriter<TKey>(stream, writer);
-	}
+    @Override
+    protected RecordWriter<TKey, TripleWritable> getRecordWriter(StreamRDF stream, Writer writer, Configuration config) {
+        return new StreamRdfTripleWriter<TKey>(stream, writer);
+    }
 
-	@Override
-	protected StreamRDF getStream(Writer writer, Configuration config) {
-		return new WriterStreamRDFBlocks(writer);
-	}
+    @Override
+    protected StreamRDF getStream(Writer writer, Configuration config) {
+        return new WriterStreamRDFBlocks(writer);
+    }
 
 }
