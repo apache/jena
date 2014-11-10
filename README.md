@@ -10,7 +10,7 @@ This fork in used to implement scoring access, multi-lingual indexing and multi-
 Index creation
 --------------
 
-
+```
 Dataset ds = TextDatasetFactory.create(dataset, index);
 ```
 
