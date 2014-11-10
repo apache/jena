@@ -47,7 +47,7 @@ public class SPARQL_REST_R extends SPARQL_REST
         // Assume success - do the set up before grabbing the lock.
         // Sets content type.
         MediaType mediaType = HttpAction.contentNegotationRDF(action) ;
-        
+       
         ServletOutputStream output ;
         try { output = action.response.getOutputStream() ; }
         catch (IOException ex) { errorOccurred(ex) ; output = null ; }
@@ -60,6 +60,7 @@ public class SPARQL_REST_R extends SPARQL_REST
                             action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
 
         action.beginRead() ;
+        setCommonHeaders(action.response) ;
 
         try {
             Target target = determineTarget(action) ;
@@ -84,6 +85,7 @@ public class SPARQL_REST_R extends SPARQL_REST
     @Override
     protected void doOptions(HttpAction action)
     {
+        setCommonHeadersForOptions(action.response) ;
         action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS") ;
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
         success(action) ;
@@ -92,6 +94,7 @@ public class SPARQL_REST_R extends SPARQL_REST
     @Override
     protected void doHead(HttpAction action)
     {
+        setCommonHeaders(action.response) ;
         action.beginRead() ;
         try { 
             Target target = determineTarget(action) ;

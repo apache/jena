@@ -60,7 +60,7 @@ public class TestLocationLock {
 
     @Test
     public void location_lock_dir_01() {
-        Location dir = new Location(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
         Assert.assertTrue(lock.canLock());
         Assert.assertFalse(lock.isLocked());
@@ -82,7 +82,7 @@ public class TestLocationLock {
     public void location_lock_dir_02() throws IOException {
         Assume.assumeTrue(negativePidsTreatedAsAlive);
 
-        Location dir = new Location(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
         Assert.assertTrue(lock.canLock());
         Assert.assertFalse(lock.isLocked());
@@ -100,7 +100,7 @@ public class TestLocationLock {
 
     @Test
     public void location_lock_dir_03() {
-        Location dir = new Location(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
         Assert.assertTrue(lock.canLock());
         Assert.assertFalse(lock.isLocked());
@@ -124,7 +124,7 @@ public class TestLocationLock {
     public void location_lock_dir_error_01() throws IOException {
         Assume.assumeTrue(negativePidsTreatedAsAlive);
 
-        Location dir = new Location(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
         Assert.assertTrue(lock.canLock());
         Assert.assertFalse(lock.isLocked());
@@ -148,7 +148,7 @@ public class TestLocationLock {
     public void location_lock_dir_error_02() throws IOException {
         Assume.assumeTrue(negativePidsTreatedAsAlive);
 
-        Location dir = new Location(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
         Assert.assertTrue(lock.canLock());
         Assert.assertFalse(lock.isLocked());
@@ -173,7 +173,7 @@ public class TestLocationLock {
     public void location_lock_dir_error_03() throws IOException {
         Assume.assumeTrue(negativePidsTreatedAsAlive);
         
-        Location dir = new Location(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
         Assert.assertTrue(lock.canLock());
         Assert.assertFalse(lock.isLocked());

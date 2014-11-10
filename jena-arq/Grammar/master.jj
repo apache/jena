@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -110,6 +110,7 @@ PARSER_END(CLASS)
 // Query only entry point
 void QueryUnit(): { }
 {
+  ByteOrderMark()
   { startQuery() ; }
   Query() <EOF>
   { finishQuery() ; }
@@ -129,6 +130,7 @@ void Query() : { }
 #ifdef UPDATE
 void UpdateUnit() : {}
 {
+  ByteOrderMark()
   { startUpdateRequest() ; }
   Update()
   <EOF>
@@ -136,6 +138,10 @@ void UpdateUnit() : {}
 }
 #endif
 
+void ByteOrderMark() : {}
+{
+   (<BOM>)?
+}
 
 void Prologue() : {}
 {
@@ -706,7 +712,7 @@ void TriplesTemplate(TripleCollector acc) : { }
 #endif
 }
 
-#endif // UPDATE
+#endif
 
 // ---- General Graph Pattern 
 
@@ -1194,9 +1200,10 @@ void ObjectPath(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 #ifdef ARQ
 Path PathUnit() : { Path p ; }
 {
-    p = Path()
-    <EOF>
-    { return p ; }
+  ByteOrderMark()
+  p = Path()
+  <EOF>
+  { return p ; }
 }
 #endif
 
@@ -1935,6 +1942,15 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
 #endif
     <RPAREN>
     { agg = AggregatorFactory.createGroupConcat(distinct, expr, sep, ordered) ; }
+
+#ifdef ARQ
+    /* Temporary syntax*/
+    | t = <AGG>
+          { String iri ; }
+          iri = iri() a = ExpressionList()
+      { agg = AggregatorFactory.create(iri, a) ; }
+#endif
+
    )
 
    {
@@ -2106,6 +2122,8 @@ TOKEN: {
 |
   // Whitespace or comment.
   <#WSC: <WS> | <SINGLE_LINE_COMMENT> >
+|
+  <BOM:    "\uFEFF">
 }
 
 // Main tokens */

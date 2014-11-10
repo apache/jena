@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,18 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.tdb.setup;
 
-import com.hp.hpl.jena.shared.*;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-/**
-    The Add part of Graph's interface. It proved convenient to factor this
-    out so that it could be used in the reification code.
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestStoreParams.class
+    , TestStoreParamsChoose.class
+    , TestStoreParamsCreate.class
+})
+public class TS_TDBSetup {
     
- */
-public interface GraphAdd
-    {
-    /** 
-        Add the triple t (if possible) to the set belonging to this graph 
-     
-        @param t the triple to add to the graph
-        @throws AddDeniedException if the triple cannot be added 
-    */
-    void add( Triple t ) throws AddDeniedException;
-    }
+}
+

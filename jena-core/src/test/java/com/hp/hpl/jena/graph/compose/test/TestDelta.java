@@ -22,45 +22,116 @@ import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.compose.Delta ;
+import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 
-@SuppressWarnings("deprecation")
-public class TestDelta extends TestDyadic 
-	{
-		
-	public TestDelta( String name )
-		{ super( name ); }
-		
-	public static TestSuite suite()
-    	{ return new TestSuite( TestDelta.class ); }			
-    	
-	@Override
-	public Graph getGraph()
-	{
-		Graph gBase = graphWith( "" );
+public class TestDelta extends AbstractTestGraph
+{
+
+    private static final String DEFAULT_TRIPLES = "x R y; p S q";
+
+    public TestDelta( String name )
+    {
+        super( name );
+    }
+
+    public static TestSuite suite()
+    {
+        return new TestSuite( TestDelta.class );
+    }
+
+    @Override
+    public Graph getGraph()
+    {
+        Graph gBase = graphWith( "" );
         return new Delta( gBase ); 
-	}
-	
-	public void testDelta() 
-		{
-		Graph x = graphWith( "x R y" );
-		assertContains( "x", "x R y", x );
-		x.delete( triple( "x R y" ) );
-		assertOmits( "x", x, "x R y" );
-	/* */	
-		Graph base = graphWith( "x R y; p S q; I like cheese; pins pop balloons" );
-		Graph save = graphWith( "x R y; p S q; I like cheese; pins pop balloons" );
+    }
+
+    public void testDeltaMirrorsBase()
+    {
+        Graph base = graphWith( DEFAULT_TRIPLES );
         Delta delta = new Delta( base );
-		assertContainsAll( "Delta", delta, "x R y; p S q; I like cheese; pins pop balloons" );
-		assertContainsAll( "Delta", base, "x R y; p S q; I like cheese; pins pop balloons" );
-	/* */
-		delta.add( triple( "pigs fly winglessly" ) );
-		delta.delete( triple( "I like cheese" ) );
-	/* */
-		assertContainsAll( "changed Delta", delta, "x R y; p S q; pins pop balloons; pigs fly winglessly" );
-		assertOmits( "changed delta", delta, "I like cheese" );
-		assertContains( "delta additions", "pigs fly winglessly", delta.getAdditions() );
-		assertOmits( "delta additions", delta.getAdditions(), "I like cheese" );
-		assertContains( "delta deletions", "I like cheese", delta.getDeletions() );
-		assertOmits( "delta deletions", delta.getDeletions(), "pigs fly winglessly" );
-		}
-	}
+        assertIsomorphic(base, delta);
+    }
+
+    public void testAddGoesToAdditions()
+    {
+        Graph base = graphWith( DEFAULT_TRIPLES );
+        Delta delta = new Delta( base );
+        delta.add( triple( "x R z" ) );
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), base);
+        assertIsomorphic(graphWith( "x R z" ), delta.getAdditions());
+        assertIsomorphic(graphWith( "" ), delta.getDeletions());
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES + "; x R z" ), delta);
+    }
+
+    public void testDeleteGoesToDeletions()
+    {
+        Graph base = graphWith( DEFAULT_TRIPLES );
+        Delta delta = new Delta( base );
+        delta.delete( triple( "x R y" ) );
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), base);
+        assertIsomorphic(graphWith( "x R y" ), delta.getDeletions());
+        assertIsomorphic(graphWith( "p S q" ), delta);
+    }
+
+    public void testRedundantAddNoOp()
+    {
+        Graph base = graphWith( DEFAULT_TRIPLES );
+        Delta delta = new Delta( base ) ;
+        delta.add( triple( "x R y" ) ) ;
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), base);
+        assertIsomorphic(graphWith( "" ), delta.getAdditions());
+        assertIsomorphic(graphWith( "" ), delta.getDeletions());
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), delta);
+    }
+
+    public void testRedundantDeleteNoOp()
+    {
+        Graph base = graphWith( DEFAULT_TRIPLES ) ;
+        Delta delta = new Delta( base ) ;
+        delta.delete( triple( "a T b" ) ) ;
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), base);
+        assertIsomorphic(graphWith( "" ), delta.getAdditions());
+        assertIsomorphic(graphWith( "" ), delta.getDeletions());
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), delta);
+    }
+
+    public void testAddThenDelete()
+    {
+        Graph base = graphWith( DEFAULT_TRIPLES ) ;
+        Delta delta = new Delta( base ) ;
+        delta.add( triple( "a T b" ) ) ;
+        delta.delete( triple( "a T b" ) ) ;
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), base);
+        assertIsomorphic(graphWith( "" ), delta.getAdditions());
+        assertIsomorphic(graphWith( "" ), delta.getDeletions());
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), delta);
+    }
+
+    public void testDeleteThenAdd()
+    {
+        Graph base = graphWith( DEFAULT_TRIPLES ) ;
+        Delta delta = new Delta( base ) ;
+        delta.delete( triple( "p S q" ) ) ;
+        delta.add( triple( "p S q" ) ) ;
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), base);
+        assertIsomorphic(graphWith( "" ), delta.getAdditions());
+        assertIsomorphic(graphWith( "" ), delta.getDeletions());
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), delta);
+    }
+
+    public void testAddAndDelete()
+    {
+        Graph base = graphWith( DEFAULT_TRIPLES ) ;
+        Delta delta = new Delta( base ) ;
+        delta.delete( triple( "a T b" ) ) ;
+        delta.add( triple( "x R z" ) ) ;
+        delta.delete( triple( "p S q" ) ) ;
+        delta.add( triple( "a T b" ) ) ;
+        assertIsomorphic(graphWith( DEFAULT_TRIPLES ), base);
+        assertIsomorphic(graphWith( "a T b; x R z" ), delta.getAdditions());
+        assertIsomorphic(graphWith( "p S q" ), delta.getDeletions());
+        assertIsomorphic(graphWith( "x R y ; x R z; a T b" ), delta);
+    }
+
+}

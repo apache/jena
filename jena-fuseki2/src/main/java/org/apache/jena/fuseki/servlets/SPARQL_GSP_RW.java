@@ -46,16 +46,15 @@ public class SPARQL_GSP_RW extends SPARQL_GSP_R
     { super() ; }
 
     @Override
-    protected void doOptions(HttpAction action)
-    {
+    protected void doOptions(HttpAction action) {
+        setCommonHeadersForOptions(action.response) ;
         action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,PUT,DELETE,POST");
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
         ServletOps.success(action) ;
     }
     
     @Override
-    protected void doDelete(HttpAction action)
-    {
+    protected void doDelete(HttpAction action) {
         action.beginWrite() ;
         try {
             Target target = determineTarget(action) ;

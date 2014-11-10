@@ -24,8 +24,6 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
 
 public class SpatialQueryFuncs {
     
-    static { System.out.println("SPATIAL DEBUG") ; }
-
     /** Create a string to put in a Lucene/Solr index for the subject node */  
     public static String subjectToString(Node s) {
         if ( s == null )

@@ -70,7 +70,7 @@ public class T_TransSystem
     static boolean MEM                  = true ;
     static String location              = true ? "/mnt/ssd1/tmp/DB163" : ConfigTest.getTestingDirDB() ;     // Using an SSD here is very helpful
     //static String location              = ConfigTest.getTestingDirDB() ;     // Using an SSD here is very helpful
-    static final Location LOC           = MEM ? Location.mem() : new Location(location) ;
+    static final Location LOC           = MEM ? Location.mem() : Location.create(location) ;
     
     static { 
         //SystemTDB.isWindows
@@ -416,7 +416,7 @@ public class T_TransSystem
         {
             FileOps.clearDirectory(LOC.getDirectoryPath()) ;
             // Clean because it's new.
-            //LOC = new Location(ConfigTest.getTestingDirUnique()) ;
+            //LOC = Location.create(ConfigTest.getTestingDirUnique()) ;
         }
     }
 
@@ -669,7 +669,7 @@ public class T_TransSystem
 
     private static int initCount = -1 ;
 
-    //static final Location LOC = new Location(ConfigTest.getTestingDirDB()) ;
+    //static final Location LOC = Location.create(ConfigTest.getTestingDirDB()) ;
     static final AtomicInteger gen = new AtomicInteger() ;
     
 }

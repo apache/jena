@@ -31,9 +31,6 @@ public abstract class SPARQLParser
 {
     public final Query parse(Query query, String queryString) throws QueryParseException
     {
-        // Sort out BOM
-        if ( queryString.startsWith("\uFEFF") )
-            queryString = queryString.substring(1) ;
         return parse$(query, queryString) ;
     }
     

@@ -24,7 +24,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.shared.*;
 
-// Purely syntactic: Uses .equals, not .sameVAlueAs (see the one note at "PURE SYNTAX" below) 
+// Purely syntactic: Uses .equals, not .sameVAlueAs (see the one note at "PURE SYNTAX" below and "containsSameTerm") 
 
 /**
  * An implemantation of graph isomorphism for Graph equality.
@@ -292,7 +292,7 @@ public class GraphMatcher extends java.lang.Object {
                 Triple s = ss.next();
                 AnonStatement ass = new AnonStatement(s);
                 if ( ass.pattern == NOVARS ) {
-                    if ( !otherm.contains( s ) ) return -1;
+                    if ( !containsSameTerm( otherm, s ) ) return -1;
                 } else {
                     hash += ass.myHashCode(ass.vars[0]);
                     for (int i=0;i<ass.vars.length;i++) {
@@ -310,6 +310,30 @@ public class GraphMatcher extends java.lang.Object {
             ss.close();
         }
     }
+    
+    /** Special "contains" test that always provide "same term", 
+     * not "sameValueAs" semantics on the containment.
+     * @param otherm
+     * @param triple
+     * @return
+     */
+    private static boolean containsSameTerm(Graph otherm, Triple triple) {
+        boolean b = otherm.contains(triple) ;
+        Node o = triple.getObject() ;
+        if ( !o.isConcrete() || !o.isLiteral() )
+            return b ;
+        if ( ! b )
+            return false ;
+        // Force to same term when o is a ground literal.
+        ExtendedIterator<Triple> iter = otherm.find(triple) ;
+        while (iter.hasNext()) {
+            Triple t = iter.next() ;
+            if ( t.getObject().equals(o) )
+                return true ;
+        }
+        return false ;
+    }
+    
     private Bucket smallestBucket() {
         check(HASH_OK);
         Iterator<Bucket> bit = table.values().iterator();

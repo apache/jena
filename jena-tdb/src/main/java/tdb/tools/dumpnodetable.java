@@ -89,7 +89,7 @@ public class dumpnodetable extends CmdGeneral
 
                             int sizeNodeMissCacheSize)
     {
-        NodeTable nodeTable = Build.makeNodeTable(new Location(location), 
+        NodeTable nodeTable = Build.makeNodeTable(Location.create(location), 
                                                     indexNode2Id, node2NodeIdCacheSize,
                                                     indexId2Node, nodeId2NodeCacheSize,
                                                     sizeNodeMissCacheSize) ;

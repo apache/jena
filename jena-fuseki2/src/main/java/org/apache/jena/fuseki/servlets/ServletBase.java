@@ -82,8 +82,17 @@ public abstract class ServletBase extends HttpServlet {
         httpResponse.setHeader(HttpNames.hVary, varyHeaderSetting) ;
     }
 
+    public static boolean CORS_ENABLED = false ;
+    
+    public static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
+        if ( CORS_ENABLED )
+            httpResponse.setHeader(HttpNames.hAccessControlAllowHeaders, "X-Requested-With, Content-Type, Authorization") ;
+        setCommonHeaders(httpResponse) ;
+    }
+
     public static void setCommonHeaders(HttpServletResponse httpResponse) {
-        httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
+        if ( CORS_ENABLED )
+            httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
         httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
     }
 }

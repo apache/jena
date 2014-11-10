@@ -45,7 +45,7 @@ import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
  * @see DatasetBuilderStd
  */ 
 
-public class DatasetBuilderBasic //implements DatasetBuilder
+/*public*/ class DatasetBuilderBasic //implements DatasetBuilder
 {
     private static final Logger log = LoggerFactory.getLogger(DatasetBuilderBasic.class) ;
     
@@ -89,9 +89,9 @@ public class DatasetBuilderBasic //implements DatasetBuilder
         return dsg ;
     }
     
-    protected DatasetControl createConcurrencyPolicy() { return new DatasetControlMRSW() ; }
+    private DatasetControl createConcurrencyPolicy() { return new DatasetControlMRSW() ; }
     
-    protected ReorderTransformation chooseReorderTransformation(Location location)
+    private ReorderTransformation chooseReorderTransformation(Location location)
     {    
         return DatasetBuilderStd.chooseOptimizer(location) ;
     }
@@ -106,7 +106,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
     }
     
     // ======== Dataset level
-    protected TripleTable makeTripleTable(Location location, NodeTable nodeTable, DatasetControl policy)
+    private TripleTable makeTripleTable(Location location, NodeTable nodeTable, DatasetControl policy)
     {    
         String primary = params.getPrimaryIndexTriples() ;
         String[] indexes = params.getTripleIndexes() ;
@@ -123,7 +123,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
         return tripleTable ;
     }
     
-    protected QuadTable makeQuadTable(Location location, NodeTable nodeTable, DatasetControl policy)
+    private QuadTable makeQuadTable(Location location, NodeTable nodeTable, DatasetControl policy)
     {    
         String primary = params.getPrimaryIndexQuads() ;
         String[] indexes = params.getQuadIndexes() ;
@@ -140,7 +140,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
         return quadTable ;
     }
 
-    protected DatasetPrefixesTDB makePrefixTable(Location location, DatasetControl policy)
+    private DatasetPrefixesTDB makePrefixTable(Location location, DatasetControl policy)
     {    
         String primary = params.getPrimaryIndexPrefix() ;
         String[] indexes = params.getPrefixIndexes() ;
@@ -180,7 +180,7 @@ public class DatasetBuilderBasic //implements DatasetBuilder
     }
 
     // ----
-    protected TupleIndex makeTupleIndex(Location location, String name, String primary, String indexOrder)
+    private TupleIndex makeTupleIndex(Location location, String name, String primary, String indexOrder)
     {
         // Commonly,  name == indexOrder.
         // FileSet

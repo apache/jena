@@ -70,8 +70,8 @@ public class CmdIndexCopy
         
         // Argument processing
         
-        Location location1 = new Location(locationStr1) ;
-        Location location2 = new Location(locationStr2) ;
+        Location location1 = Location.create(locationStr1) ;
+        Location location2 = Location.create(locationStr2) ;
         
         int keyLength = SystemTDB.SizeOfNodeId * indexName1.length() ;
         int valueLength = 0 ;

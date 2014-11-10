@@ -38,7 +38,7 @@ public class TestOptimizer extends AbstractTestTransform
     // A lot of the optimizer is tested by using the scripted queries.
     // Theer are many tests of individual transforms.
     
-    @Test public void slice_order_to_topn_01()
+    @Test public void slice_order_to_topn_01() 
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 42"  ;  
@@ -287,6 +287,14 @@ public class TestOptimizer extends AbstractTestTransform
         check(op, new TransformExtendCombine(), opExpectedString);
     }
 
+    @Test public void combine_extend_05()
+    {
+        // JENA-809 : check no changes to input.
+        String x = "(project (?x) (extend ((?bar 2)) (extend ((?foo 1)) (table unit))))" ;
+        String y = "(project (?x) (extend ((?foo 1) (?bar 2)) (table unit)))" ;
+        AbstractTestTransform.checkAlgebra(x, new TransformExtendCombine(), y);
+    }
+
         
     @Test public void combine_assign_01()
     {
@@ -345,5 +353,14 @@ public class TestOptimizer extends AbstractTestTransform
         Op op = SSE.parseOp(opString) ;
         check(op, new TransformExtendCombine(), opExpectedString);
     }
+    
+    @Test public void combine_assign_05()
+    {
+        // JENA-809 : check no changes to input.
+        String x = "(project (?x) (assign ((?bar 2)) (assign ((?foo 1)) (table unit))))" ;
+        String y = "(project (?x) (assign ((?foo 1) (?bar 2)) (table unit)))" ;
+        AbstractTestTransform.checkAlgebra(x, new TransformExtendCombine(), y);
+    }
+
 
 }
