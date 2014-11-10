@@ -17,7 +17,6 @@
 # limitations under the License.
 
 ## Run Fuseki, include development code if it looks like it's available.
-## Or --pages=
 
 function check_dir() {
     local NAME="$1"

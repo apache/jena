@@ -42,10 +42,10 @@ public class tdbgenindex
             System.exit(1) ;
         }
         
-        Location srcLoc = new Location(argv[0]) ;
+        Location srcLoc = Location.create(argv[0]) ;
         String srcIndexName = argv[1] ;
         
-        Location dstLoc = new Location(argv[2]) ;
+        Location dstLoc = Location.create(argv[2]) ;
         String dstIndexName = argv[3] ;
         
         int readCacheSize = 0 ;

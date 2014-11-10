@@ -85,7 +85,7 @@ public class T_TDBWriteTransaction {
     {
         if ( false )
         {
-            Journal journal = Journal.create(new Location(location)) ;
+            Journal journal = Journal.create(Location.create(location)) ;
             JournalControl.print(journal) ;
             journal.close() ;
         }

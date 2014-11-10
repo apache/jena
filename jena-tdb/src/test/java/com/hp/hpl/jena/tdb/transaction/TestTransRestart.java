@@ -59,7 +59,7 @@ public class TestTransRestart extends BaseTest {
     
     @Before public void setup() {
         path = ConfigTest.getCleanDir() ; 
-        location = new Location (path) ;
+        location = Location.create (path) ;
         if ( useTransactionsSetup )
             setupTxn() ;
         else
@@ -71,7 +71,7 @@ public class TestTransRestart extends BaseTest {
         cleanup() ;
     }
     
-    private static DatasetGraphTDB createPlain(Location location) { return TDBMaker.createDatasetGraphTDB(location) ; }
+    private static DatasetGraphTDB createPlain(Location location) { return TDBMaker.createDatasetGraphTDB(location, null) ; }
     
     private void setupPlain() {
         // Make without transactions.

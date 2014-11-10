@@ -56,7 +56,7 @@ public class SystemState {
         initialized = true ;
         
         if ( location == null )
-            location = new Location(FusekiServer.dirSystemDatabase.toString()) ;
+            location = Location.create(FusekiServer.dirSystemDatabase.toString()) ;
         
         if ( ! location.isMem() )
             FileOps.ensureDir(location.getDirectoryPath()) ;

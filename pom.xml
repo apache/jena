@@ -55,7 +55,7 @@
   <profiles>
     <profile>
       <!--
-        This is the dev profile, tyopically used locally with "mvn clean install".
+        This is the dev profile, typically used locally with "mvn clean install".
         It only builds the common modules and
         does not build SDB nor the slow-to-test JDBC module.
       -->
@@ -74,12 +74,14 @@
         <!-- <module>jena-sdb</module>            -->
 
         <module>jena-fuseki</module>
+        <!--<module>jena-fuseki2</module>-->
         <module>jena-security</module>
         <!-- Slow to build - exclude from dev build -->
         <!-- <module>jena-jdbc</module>           -->
         <!-- <module>jena-maven-tools</module>    -->
         <!-- <module>apache-jena-libs</module>    -->
         <!-- <module>apache-jena</module>         -->
+        <module>jena-extras</module>
       </modules>
     </profile>
 
@@ -111,6 +113,7 @@
         <module>jena-sdb</module>
 
         <module>jena-fuseki</module>
+        <module>jena-fuseki2</module>
         <module>jena-security</module>
 
         <module>jena-jdbc</module>
@@ -118,6 +121,7 @@
 
         <module>apache-jena-libs</module>
         <module>apache-jena</module>
+        <module>jena-extras</module>
       </modules>
     </profile>
   </profiles>

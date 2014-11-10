@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.graph.Node;
 import com.spatial4j.core.shape.Shape;
 
@@ -46,7 +48,8 @@ public class SpatialIndexContext {
 			return;
 		}
 
-		String x = (s.isURI()) ? s.getURI() : s.getBlankNodeLabel();
+		String x = SpatialQueryFuncs.subjectToString(s) ;
+		Log.info(getClass(), "Subject: "+x) ;
 
 		if (defn.isSpatialPredicate(p) && SpatialValueUtil.isDecimal(o.getLiteral())) {
 

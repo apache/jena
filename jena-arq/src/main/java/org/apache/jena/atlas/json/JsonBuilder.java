@@ -45,6 +45,8 @@ public class JsonBuilder {
     // The depth of this stack is the object depth. key: { key: ... } 
     private Deque<String> keys  = new ArrayDeque<>() ;
 
+    static JsonBuilder create() { return new JsonBuilder() ; }
+    
     public JsonBuilder() {
 
     }

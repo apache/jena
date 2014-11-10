@@ -403,4 +403,10 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             log.debug(label+": "+x) ;
         }
     }
+
+    // Return the base table, not the nodeTableJournal
+    @Override
+    public NodeTable wrapped() {
+        return base ;
+    }
 }

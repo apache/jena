@@ -66,7 +66,9 @@ public abstract class AbstractTestTransform extends BaseTest {
         queryString = "PREFIX : <http://example/>\n" + queryString ;
         Query query = QueryFactory.create(queryString) ;
         Op opQuery = Algebra.compile(query) ;
+        Op op1 = Algebra.compile(query) ;   // Safe copy
         check(opQuery, opExpectedString) ;
+        assertEquals("Modification of input during optimization", op1, opQuery) ;
     }
 
     private static void check(Op opToOptimize, String opExpectedString) {
@@ -84,17 +86,17 @@ public abstract class AbstractTestTransform extends BaseTest {
     
     public static void checkAlgebra(String algString, Transform additionalOptimizer, String opExpectedString) {
         Op algebra = SSE.parseOp(algString) ;
-        algebra = Algebra.optimize(algebra) ;
-        algebra = Transformer.transform(additionalOptimizer, algebra);
+        Op algebra1 = SSE.parseOp(algString) ;  // Safe copy
+        Op optimized = Algebra.optimize(algebra) ;
+        if ( additionalOptimizer != null )
+            optimized = Transformer.transform(additionalOptimizer, optimized);
         Op opExpected = SSE.parseOp(opExpectedString != null ? opExpectedString : algString);
-        assertEquals(opExpected, algebra) ;
+        assertEquals(opExpected, optimized) ;
+        assertEquals("Modification of input during optimization", algebra1, algebra) ;
     }
 
     public static void checkAlgebra(String algString, String opExpectedString) {
-        Op algebra = SSE.parseOp(algString) ;
-        algebra = Algebra.optimize(algebra) ;
-        Op opExpected = SSE.parseOp(opExpectedString != null ? opExpectedString : algString);
-        assertEquals(opExpected, algebra) ;
+        checkAlgebra(algString, null, opExpectedString); 
     }
 
 }

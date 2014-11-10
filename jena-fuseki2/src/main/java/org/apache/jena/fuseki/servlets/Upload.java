@@ -92,7 +92,6 @@ public class Upload {
         String base = ActionLib.wholeRequestURL(action.request) ;
         ServletFileUpload upload = new ServletFileUpload();
         //log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName)) ;
-        // This is teh overal count.
         
         // Overall counting.
         StreamRDFCounting countingDest =  StreamRDFLib.count(dest) ;

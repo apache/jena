@@ -28,10 +28,16 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import com.hp.hpl.jena.sparql.util.Utils ;
+
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.servlets.ServletOps ;
 import org.apache.jena.web.HttpSC ;
 
+/** The ping servlet provides a low costy, uncached endpoint that can be used
+ * to determine if this component is running and responding.  For example,
+ * a nagios check should use this endpoint.    
+ */
 public class ActionPing extends HttpServlet
 {
     // Ping is special.
@@ -58,10 +64,11 @@ public class ActionPing extends HttpServlet
     protected void doCommon(HttpServletRequest request, HttpServletResponse response) {
         try {
             ServletOps.setNoCache(response) ; 
-            ServletOutputStream out = response.getOutputStream() ;
             response.setContentType(contentTypeTextPlain);
             response.setCharacterEncoding(charsetUTF8) ;
             response.setStatus(HttpSC.OK_200);
+            ServletOutputStream out = response.getOutputStream() ;
+            out.println(Utils.nowAsXSDDateTimeString());
         } catch (IOException ex) {
             Fuseki.serverLog.warn("ping :: IOException :: "+ex.getMessage());
         }

@@ -35,7 +35,7 @@ public class TestStringFileDisk extends AbstractTestStringFile
     {
         String dir = ConfigTest.getTestingDir() ;
       clearDirectory(dir) ;
-      Location loc = new Location(dir) ;
+      Location loc = Location.create(dir) ;
       fn = loc.getPath("xyz", "node") ;
       FileOps.delete(fn) ;
       return FileFactory.createStringFileDisk(fn) ;

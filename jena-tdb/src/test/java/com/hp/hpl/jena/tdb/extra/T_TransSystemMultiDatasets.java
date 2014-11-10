@@ -77,7 +77,7 @@ public class T_TransSystemMultiDatasets
 
     private static int count_datasets = 0 ;
     static Location createLocation() {
-    	return MEM ? Location.mem() : new Location(ConfigTest.getTestingDirDB() + File.separator + "DB-" + ++count_datasets) ;
+    	return MEM ? Location.mem() : Location.create(ConfigTest.getTestingDirDB() + File.separator + "DB-" + ++count_datasets) ;
     }
 
     static final int Iterations             = MEM ? 1000 : 100 ;
@@ -548,7 +548,7 @@ public class T_TransSystemMultiDatasets
 
     private static int initCount = -1 ;
 
-    //static final Location LOC = new Location(ConfigTest.getTestingDirDB()) ;
+    //static final Location LOC = Location.create(ConfigTest.getTestingDirDB()) ;
     static final AtomicInteger gen = new AtomicInteger() ;
     
 }

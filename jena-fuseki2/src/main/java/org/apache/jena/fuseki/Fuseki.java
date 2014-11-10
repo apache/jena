@@ -105,40 +105,41 @@ public class Fuseki {
     public static final String        requestLogName    = PATH + ".Request" ;
 
     // See HttpAction.finishRequest.
-    /** Instance of log for operations */
-    public static final Logger        requestLog        = null ; // LoggerFactory.getLogger(requestLogName) ;
-
-    /** Admin log file for operations */
+    // Normally OFF
+    /** Instance of a log for requests: format is NCSA. */
+    public static final Logger        requestLog        = LoggerFactory.getLogger(requestLogName) ;
+    
+    /** Admin log file for operations. */
     public static final String        adminLogName      = PATH + ".Admin" ;
 
-    /** Instance of log for operations */
+    /** Instance of log for operations. */
     public static final Logger        adminLog          = LoggerFactory.getLogger(adminLogName) ;
 
-    /** Admin log file for operations */
+    /** Admin log file for operations. */
     public static final String        builderLogName    = PATH + ".Builder" ;
 
-    /** Instance of log for operations */
+    /** Instance of log for operations. */
     public static final Logger        builderLog        = LoggerFactory.getLogger(builderLogName) ;
 
-    /** Validation log file for operations */
+    /** Validation log file for operations. */
     public static final String        validationLogName = PATH + ".Validate" ;
 
-    /** Instance of log for validation */
+    /** Instance of log for validation. */
     public static final Logger        validationLog     = LoggerFactory.getLogger(adminLogName) ;
 
     /** Actual log file for general server messages. */
     public static final String        serverLogName     = PATH + ".Server" ;
 
-    /** Instance of log for general server messages */
+    /** Instance of log for general server messages. */
     public static final Logger        serverLog         = LoggerFactory.getLogger(serverLogName) ;
 
     /** Logger used for the servletContent.log operations (if settable -- depends on environment) */
-    public static final String        servletRequestLogName     = PATH + ".Request" ;
+    public static final String        servletRequestLogName     = PATH + ".Servlet" ;
 
     /** Actual log file for config server messages. */
     public static final String        configLogName     = PATH + ".Config" ;
 
-    /** Instance of log for config server message s */
+    /** Instance of log for config server messages. */
     public static final Logger        configLog         = LoggerFactory.getLogger(configLogName) ;
 
     /** Instance of log for config server message s */

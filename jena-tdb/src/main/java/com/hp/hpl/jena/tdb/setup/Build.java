@@ -22,6 +22,7 @@ import org.apache.jena.atlas.lib.ColumnMap ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -48,7 +49,7 @@ public class Build
         // XXX replace with:
         // return DatasetBuilderStd.stdBuilder().makeTupleIndex(location, indexName, primary, indexOrder) ;
         // All this to BuilderDB.
-        StoreParamsBuilder spb = new StoreParamsBuilder() ;
+        StoreParamsBuilder spb = StoreParams.builder() ;
         spb.blockReadCacheSize(readCacheSize) ;
         spb.blockWriteCacheSize(writeCacheSize) ;
         RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength) ;
@@ -77,10 +78,77 @@ public class Build
                                           String indexNode2Id, int node2NodeIdCacheSize,
                                           String indexId2Node, int nodeId2NodeCacheSize,
                                           int sizeNodeMissCacheSize) {
-        StoreParamsBuilder spb = new StoreParamsBuilder() ;
+        StoreParamsBuilder spb = StoreParams.builder() ;
         spb.indexNode2Id(indexNode2Id).node2NodeIdCacheSize(node2NodeIdCacheSize) ;
         spb.indexId2Node(indexId2Node).nodeId2NodeCacheSize(nodeId2NodeCacheSize) ;
         DatasetBuilderStd dbBuild = DatasetBuilderStd.stdBuilder() ;
         return makeNodeTable(location, spb.build()) ; 
+    }
+    
+    /** Choose the StoreParams.  This is the policy applied when creating or reattaching to a database.
+     *  (extracted and put here to keep the size of DatasetBuildStd  
+     * <p>
+     * If the location has parameters in a <tt>tdb.cfg</tt> file, use them, as modified by any
+     * application-supplied internal parameters.
+     * <p>
+     * Otherwise, if this is a new database, use the application provided
+     * parameters or if there are no application provided 
+     * parameters, use the system default parameters.
+     * Write the parameters used to the location in <tt>tdb.cfg</tt>
+     * <p>If this is an existing database and there are no location recorded parameters,
+     * use system default parameters, modified by application parameters.   
+     * <p>
+     * Notes:
+     * <ul>
+     * <li><i>Modification</i> involves setting any of the parameters than can vary from run to run. 
+     * These are the cache sizes and the file mode. 
+     * <li><i>Block size</i>: it is critical that this set correctly. Silent corruption
+     * of a database may occur if this is changed.  At the moment, it is not possible to provide
+     * a complete check of block size.
+     * <ul>  
+     * <p>
+     * Do not edit store parameters recorded at a location after the database has been created.
+     * Only the dynamic parameters cna be safely changed. That is better done though the application
+     * providing some parameters in the {@linkplain TDBFactory} call.
+     * <p>
+     * This includes changing filenames,  indexing choices and block size. 
+     * Otherwise, the database may be permanetly and irrecovably corrupted.
+     * You have been warned. 
+     * 
+     * @param location The place where the database is or will be.
+     * @param isNew  Whether the database is being created or whether there is an existing database.
+     * @param pApp   Application-provide store parameters.
+     * @param pLoc   Store parameters foud at the location.
+     * @param pDft   System default store parameters.
+     * @return       StoreParams
+     * 
+     * @see StoreParams
+     * @see StoreParamsDynamic
+     */
+    static StoreParams decideStoreParams(Location location, boolean isNew, StoreParams pApp, StoreParams pLoc, StoreParams pDft) {
+        StoreParams p = null ;
+        if ( pLoc != null ) {
+            // pLoc so use it, modify by pApp.
+            // Covers new and reconnect cases.
+            p = pLoc ;
+            if ( pApp != null )
+                p = StoreParamsBuilder.modify(pLoc, pApp) ;
+            return p ;
+        }
+        // No pLoc.
+        // Use pApp if available.  Write to location if new.
+        if ( pApp != null ) {
+            if ( isNew ) {
+                if ( ! location.isMem() ) {
+                    String filename = location.getPath(StoreParamsConst.TDB_CONFIG_FILE) ;
+                    StoreParamsCodec.write(filename, pApp) ;
+                }
+                return pApp ;
+            }
+            // Not new : pLoc is implicitly pDft.
+            return StoreParamsBuilder.modify(pDft, pApp) ;
+        }
+        // no pLoc, no pApp
+        return pDft ;
     }
 }

@@ -41,7 +41,7 @@ public class T_QuadsObjectIsNull {
 //	}
 
 	static String DIR = "DBX" ;
-	static Location location = new Location(DIR) ;
+	static Location location = Location.create(DIR) ;
 
 	public static void main(String[] args) {
 

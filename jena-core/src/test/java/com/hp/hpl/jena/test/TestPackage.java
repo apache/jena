@@ -30,7 +30,7 @@ import com.hp.hpl.jena.assembler.test.TestAssemblerPackage;
  * Note, it is better to name your test suites on creation
  * rather than in this file.
  */
-public class TestPackage extends TestCase{
+public class TestPackage extends TestCase {
 
     static {
     	setLog4jConfiguration(JenaTest.log4jFilenameTests) ;
@@ -39,6 +39,7 @@ public class TestPackage extends TestCase{
     static public TestSuite suite() {
         TestSuite ts = new TestSuite() ;
         ts.setName("Jena") ;
+        addTest(ts,  "System setup", TestSystemSetup.suite());
         addTest(ts,  "Enhanced", com.hp.hpl.jena.enhanced.test.TestPackage.suite());
         addTest(ts,  "Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
         addTest(ts,  "Mem", com.hp.hpl.jena.mem.test.TestMemPackage.suite() );

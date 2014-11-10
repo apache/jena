@@ -26,7 +26,7 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** Functions relateing to text query */
+/** Functions relating to text query */
 public class TextQueryFuncs {
 
     /** Create a string to put in a Lucene/Solr index for the subject node */  

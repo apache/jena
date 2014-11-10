@@ -35,7 +35,7 @@ function grammar
     (cd "$DIR" ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java )
 
     echo "---- Process grammar -- $1"
-    javacc -OUTPUT_DIRECTORY=$DIR  -JDK_VERSION=1.5 "${FILE}"
+    javacc -OUTPUT_DIRECTORY=$DIR  -JDK_VERSION=1.7 "${FILE}"
     RC=$?
 
     [ "$RC" = 0 ] || return
@@ -93,11 +93,12 @@ function grammar
 	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
     mv F $F
 
-##     echo "---- Fixing Java warnings in ${CLASS} ..."
-##     F="$DIR/${CLASS}.java"
+    echo "---- Fixing Java warnings in ${CLASS} ..."
+    F="$DIR/${CLASS}.java"
+    sed -e 's/public class /\n@SuppressWarnings("all")\npublic class /' < $F > F 
 ##     sed -e 's/for (java.util.Iterator/for (java.util.Iterator<int[]>/' \
 ## 	-e 's/(int\[\])//' < $F > F
-##     mv F $F
+    mv F $F
 
     echo "---- Done"
 }
@@ -119,20 +120,25 @@ do
     
           # SPARQL 1.0 - use a static copy.
           # The parser that is exactly the working group grammar.
-##           #### cat "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_10 > sparql_10.jj
+##           #### cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_10 > sparql_10.jj
 ##           grammar sparql_10.jj sparql_10 SPARQLParser10
 ##           ;;
          echo "SPARQL 1.0 - not rebuilt"
           ;;
 
       sparql11|sparql_11.jj)
+	  # License header.  cpp is run to exclude comments from \$GRAMMAR
+	  # because thay picks up unwanted material as well as the comments
+	  # in $GRAMMAR
+	  cp header.jj sparql_11.jj
           # The parser that is exactly the working group grammar.
-          cat "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_11 > sparql_11.jj
+          cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_11 >> sparql_11.jj
           grammar sparql_11.jj sparql_11 SPARQLParser11
           ;;
 
       arq|arq.jj)
-          cat "$GRAMMAR" | cpp -P -C -DARQ > arq.jj
+	  cp header.jj arq.jj
+          cat "$GRAMMAR" | cpp -P -DARQ - >> arq.jj
           grammar arq.jj arq ARQParser
           ;;
 

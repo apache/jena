@@ -19,38 +19,46 @@
 package com.hp.hpl.jena.graph.compose ;
 
 import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.impl.SimpleEventManager;
 import com.hp.hpl.jena.util.iterator.* ;
 
 /**
  * Graph operation for wrapping a base graph and leaving it unchanged while
  * recording all the attempted updates for later access.
+ * 
+ * The behavior of this class is not well defined if triples are added to or
+ * removed from the base graph, the additions graph, or the deletions graph
+ * while this graph is in use.
  */
 
-@Deprecated
-public class Delta extends Dyadic implements Graph
+public class Delta extends CompositionBase implements Graph
 {
     private Graph base ;
+    private Graph additions ;
+    private Graph deletions ;
 
     public Delta(Graph base)
     {
-        super(Factory.createGraphMem(), Factory.createGraphMem()) ;
+        super() ;
         this.base = base ;
+        this.additions = Factory.createGraphMem();
+        this.deletions = Factory.createGraphMem();
     }
 
     /**
-     * Answer the graph of all triples added
+     * Answer the graph of all triples added.
      */
     public Graph getAdditions()
     {
-        return L ;
+        return additions ;
     }
 
     /**
-     * Answer the graph of all triples removed
+     * Answer the graph of all triples removed.
      */
     public Graph getDeletions()
     {
-        return R ;
+        return deletions ;
     }
 
     /**
@@ -60,9 +68,9 @@ public class Delta extends Dyadic implements Graph
     @Override
     public void performAdd(Triple t)
     {
-        if (!base.contains(t)) 
-            L.add(t) ;
-        R.delete(t) ;
+        if (!base.contains(t))
+            additions.add(t) ;
+        deletions.delete(t) ;
     }
 
     /**
@@ -71,9 +79,9 @@ public class Delta extends Dyadic implements Graph
     @Override
     public void performDelete(Triple t)
     {
-        L.delete(t) ;
-        if (base.contains(t)) 
-            R.add(t) ;
+        additions.delete(t) ;
+        if (base.contains(t))
+            deletions.add(t) ;
     }
 
     /**
@@ -81,9 +89,10 @@ public class Delta extends Dyadic implements Graph
      * add the ones that have been added.
      */
     @Override
-    protected ExtendedIterator<Triple> _graphBaseFind(TripleMatch tm)
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch tm)
     {
-        return base.find(tm).filterDrop(ifIn(GraphUtil.findAll(R))).andThen(L.find(tm)) ;
+        ExtendedIterator<Triple> iterator = base.find(tm).filterDrop(ifIn(GraphUtil.findAll(deletions))).andThen(additions.find(tm)) ;
+        return SimpleEventManager.notifyingRemove( this, iterator ) ;
     }
 
     @Override
@@ -91,11 +100,13 @@ public class Delta extends Dyadic implements Graph
     {
         super.close() ;
         base.close() ;
+        additions.close() ;
+        deletions.close() ;
     }
 
     @Override
     public int graphBaseSize()
     {
-        return base.size() + L.size() - R.size() ;
+        return base.size() + additions.size() - deletions.size() ;
     }
 }

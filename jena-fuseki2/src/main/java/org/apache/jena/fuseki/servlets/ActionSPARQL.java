@@ -24,6 +24,7 @@ import static org.apache.jena.fuseki.server.CounterName.RequestsGood ;
 
 import java.io.InputStream ;
 
+import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.* ;
 import org.apache.jena.riot.Lang ;
@@ -44,6 +45,12 @@ public abstract class ActionSPARQL extends ActionBase
     protected abstract void validate(HttpAction action) ;
     protected abstract void perform(HttpAction action) ;
 
+    /**
+     * Executes common tasks, including mapping the request to the right dataset, setting the dataset into the HTTP
+     * action, and retrieving the service for the dataset requested. Finally, it calls the
+     * {@link #executeAction(HttpAction)} method, which executes the HTTP Action life cycle.
+     * @param action HTTP Action
+     */
     @Override
     protected void execCommonWorker(HttpAction action) {
         DataAccessPoint dataAccessPoint ;
@@ -77,11 +84,27 @@ public abstract class ActionSPARQL extends ActionBase
         executeAction(action) ;
     }
 
-    // Execute - allow interception before stats added.
+    /** Execute a SPARQL request. Statistics have not been adjusted at this point.
+     * 
+     * @param action
+     */
     protected void executeAction(HttpAction action) {
         executeLifecycle(action) ;
     }
     
+    /** 
+     * Standard execution lifecycle for a SPARQL Request.
+     * <ul>
+     * <li>{@link #startRequest(HttpAction)}</li>
+     * <li>initial statistics,</li>
+     * <li>{@link #validate(HttpAction)} request,</li>
+     * <li>{@link #perform(HttpAction)} request,</li>
+     * <li>completion/error statistics,</li>
+     * <li>{@link #finishRequest(HttpAction)}
+     * </ul>
+     * 
+     * @param action
+     */
     // This is the service request lifecycle.
     final
     protected void executeLifecycle(HttpAction action) {
@@ -108,7 +131,7 @@ public abstract class ActionSPARQL extends ActionBase
                 // Success
                 incCounter(csOperation, RequestsGood) ;
                 incCounter(csService, RequestsGood) ;
-            } catch (ActionErrorException | QueryCancelledException ex) {
+            } catch (ActionErrorException | QueryCancelledException | RuntimeIOException ex) {
                 incCounter(csOperation, RequestsBad) ;
                 incCounter(csService, RequestsBad) ;
                 throw ex ;
@@ -118,8 +141,11 @@ public abstract class ActionSPARQL extends ActionBase
         }
     }
     
-    /** Map request to uri in the registry.
-     *  null means no mapping done (passthrough). 
+    /**
+     * Map request {@link HttpAction} to uri in the registry.
+     * A return of ull means no mapping done (passthrough).
+     * @param uri the URI
+     * @return the dataset
      */
     protected String mapRequestToDataset(HttpAction action) {
         return ActionLib.mapRequestToDataset(action) ;
@@ -133,11 +159,13 @@ public abstract class ActionSPARQL extends ActionBase
         return ActionLib.mapRequestToOperation(action, dataAccessPoint) ;
     }
 
+    /** Increment counter */
     protected static void incCounter(Counters counters, CounterName name) {
         if ( counters == null ) return ;
         incCounter(counters.getCounters(), name) ; 
     }
     
+    /** Decrement counter */
     protected static void decCounter(Counters counters, CounterName name) {
         if ( counters == null ) return ;
         decCounter(counters.getCounters(), name) ; 

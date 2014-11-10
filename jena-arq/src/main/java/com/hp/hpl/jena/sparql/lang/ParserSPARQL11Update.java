@@ -19,11 +19,9 @@
 package com.hp.hpl.jena.sparql.lang;
 
 import java.io.FileReader ;
-import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
-import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.LoggerFactory ;
 
@@ -33,40 +31,28 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
 import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 import com.hp.hpl.jena.update.UpdateException ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 
 public class ParserSPARQL11Update extends UpdateParser
 {
     @Override
-    protected void parse$(UpdateSink sink, String updateString)
-    {
+    protected void parse$(UpdateSink sink, String updateString) {
         Reader r = new StringReader(updateString) ;
         _parse(sink, r) ;
     }
-    
+
     @Override
-    protected void parse$(UpdateSink sink, PeekReader pr)
-    {
-        _parse(sink, pr) ;
-    }
-    
-    @Override
-    public void parse(UpdateSink sink, InputStream in)
-    {
-        Reader r = FileUtils.asBufferedUTF8(in) ;
+    protected void parse$(UpdateSink sink, Reader r) {
         _parse(sink, r) ;
     }
 
-    public void parse(UpdateSink sink, Reader r)
-    {
+    public void parse(UpdateSink sink, Reader r) {
         if ( r instanceof FileReader )
             LoggerFactory.getLogger(this.getClass()).warn("FileReader passed to ParserSPARQL11Update.parse - use a FileInputStream") ;
         _parse(sink, r) ;
     }
     
-    private void _parse(UpdateSink sink, Reader r)
-    {
+    private void _parse(UpdateSink sink, Reader r) {
         SPARQLParser11 parser = null ;
         try {
             parser = new SPARQLParser11(r) ;
@@ -77,8 +63,8 @@ public class ParserSPARQL11Update extends UpdateParser
         { 
             throw new QueryParseException(ex.getMessage(),
                                           ex.currentToken.beginLine,
-                                          ex.currentToken.beginColumn
-            ) ; }
+                                          ex.currentToken.beginColumn) ;
+        }
         catch (com.hp.hpl.jena.sparql.lang.sparql_11.TokenMgrError tErr)
         {
             // Last valid token : not the same as token error message - but this should not happen

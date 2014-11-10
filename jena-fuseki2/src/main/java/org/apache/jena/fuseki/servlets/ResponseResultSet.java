@@ -38,6 +38,7 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
@@ -230,7 +231,7 @@ public class ResponseResultSet
 
             if ( callback != null )
                 out.println(")") ;
-        } catch (IOException ex) { ServletOps.errorOccurred(ex) ; }
+        } catch (IOException ex) { IO.exception(ex) ; }
     }
     
     private static void textOutput(HttpAction action, String contentType, final ResultSet resultSet, final Prologue qPrologue, final Boolean booleanResult)

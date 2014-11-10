@@ -58,6 +58,12 @@ public class Location {
         return loc ;
     }
 
+    /** Return a location for a directory on disk */
+    static public Location create(String directoryName) {
+        Location loc = new Location(directoryName) ;
+        return loc ;
+    }
+
     private Location() {}
 
     private static void memInit(Location location, String name) {
@@ -74,6 +80,8 @@ public class Location {
         location.lock = new LocationLock(location);
     }
 
+    /** @deprecated Use{@linkplain  Location#create(String)} */
+    @Deprecated
     public Location(String rootname) {
         super() ;
         if ( rootname.equals(Names.memName) ) {
@@ -142,7 +150,7 @@ public class Location {
     public Location getSubLocation(String dirname) {
         String newName = pathname + dirname ;
         ensure(newName) ;
-        return new Location(newName) ;
+        return Location.create(newName) ;
     }
 
     private void ensure(String dirname) {

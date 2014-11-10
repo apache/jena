@@ -24,7 +24,6 @@ import static org.apache.jena.fuseki.Fuseki.serverLog ;
 import java.io.FileInputStream ;
 
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
@@ -67,7 +66,7 @@ public class JettyFuseki {
     private Server              server         = null ;
     
     // webapp setup - standard maven layout
-    public static       String contextpath    = "/" ;
+    public static       String contextpath     = "/" ;
     public static final String resourceBase1   = "webapp" ;             // Standalone jar
     public static final String resourceBase2   = "src/main/webapp" ;    // Development
 
@@ -189,8 +188,6 @@ public class JettyFuseki {
       // which happens during server startup. 
       // This the name of the ServletContext logger as well
       webapp.setDisplayName(Fuseki.servletRequestLogName);  
-      LogCtl.set(Fuseki.servletRequestLogName, "WARN"); 
-      
       webapp.setParentLoaderPriority(true);  // Normal Java classloader behaviour.
       webapp.setErrorHandler(new FusekiErrorHandler()) ;
       return webapp ;
@@ -203,6 +200,7 @@ public class JettyFuseki {
             configServer(jettyConfig) ;
         else
             defaultServerConfig(serverConfig.port, serverConfig.loopback) ;
+
         WebAppContext webapp = createWebApp(contextPath) ;
         server.setHandler(webapp) ;
         // Replaced by Shiro.

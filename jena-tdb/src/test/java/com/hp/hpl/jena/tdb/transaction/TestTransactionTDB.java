@@ -45,7 +45,7 @@ public class TestTransactionTDB extends AbstractTestTransaction
     @Before public void before()
     {
         DIR = ConfigTest.getCleanDir() ;
-        StoreConnection.release(new Location(DIR)) ;
+        StoreConnection.release(Location.create(DIR)) ;
     }
     
     @After public void after()
