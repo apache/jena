@@ -23,6 +23,7 @@ import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
@@ -36,7 +37,7 @@ public class TDBMaker
     /** Create a DatasetGraph that supports transactions */  
     public static DatasetGraphTransaction createDatasetGraphTransaction(String location)
     {
-        return createDatasetGraphTransaction(new Location(location)) ;
+        return createDatasetGraphTransaction(Location.create(location)) ;
     }
     
     /** Create a Dataset that supports transactions */  
@@ -72,35 +73,44 @@ public class TDBMaker
     /* The one we are using */
     private static DatasetGraphMakerTDB builder = new BuilderStd() ;
 
-    public static DatasetGraphTDB createDatasetGraphTDB(Location loc)
-    { return builder.createDatasetGraph(loc) ; }
+    
+    public static DatasetGraphTDB createDatasetGraphTDB(Location loc, StoreParams params)
+    { return builder.createDatasetGraph(loc, params) ; }
 
+    
+    @Deprecated
+    public static DatasetGraphTDB createDatasetGraphTDB(Location loc) {
+        return createDatasetGraphTDB(loc, null) ;
+    }
+    
     // -- Different ways of doing it.
     
     /** Interface to maker of the actual implementations of TDB datasets */ 
     private interface DatasetGraphMakerTDB 
     {
         /** Create a TDB-backed dataset at a given location */
-        public DatasetGraphTDB createDatasetGraph(Location location) ;
+        public DatasetGraphTDB createDatasetGraph(Location location, StoreParams params) ;
     }
 
     /** Make directly the base DatasetGraphTDB */
     private static class BuilderStd implements DatasetGraphMakerTDB
     {
         @Override
-        public DatasetGraphTDB createDatasetGraph(Location location)
+        public DatasetGraphTDB createDatasetGraph(Location location, StoreParams params)
         {
-            return DatasetBuilderStd.create(location) ;
+            return DatasetBuilderStd.create(location, params) ;
         }
     }
     
     /** Make by creating the normal, transactional one and finding the base */ 
-    private static class BuilderBase implements DatasetGraphMakerTDB
+    private static class _BuilderBase implements DatasetGraphMakerTDB
     {
         @Override
-        public DatasetGraphTDB createDatasetGraph(Location location)
+        public DatasetGraphTDB createDatasetGraph(Location location, StoreParams params)
         {
-            DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ;
+            if ( params != null )
+                System.err.println("StoreParams != null : ignored at the moment") ;
+            DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ; // , params) ;
             return TDBInternal.getBaseDatasetGraphTDB(dsg) ;
         }
     }
@@ -109,9 +119,9 @@ public class TDBMaker
     private static class BuilderStoreConnectionBase implements DatasetGraphMakerTDB
     {
         @Override
-        public DatasetGraphTDB createDatasetGraph(Location location)
+        public DatasetGraphTDB createDatasetGraph(Location location, StoreParams params)
         {
-            return StoreConnection.make(location).getBaseDataset() ;
+            return StoreConnection.make(location, params).getBaseDataset() ;
         }
     }
     

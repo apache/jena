@@ -19,8 +19,6 @@
 package org.apache.jena.atlas.json.io;
 
 import java.util.Set ;
-import java.util.SortedSet ;
-import java.util.TreeSet ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.json.* ;
@@ -87,9 +85,8 @@ public class JsonWriter implements JsonVisitor
         return true ;
     }
     private void writeObjectCompact(JsonObject jsonObject, Set<String> x) {
-        SortedSet<String> y = new TreeSet<>(x) ;
         boolean first = true ;
-        for ( String k : y ) {
+        for ( String k : x ) {
             if ( ! first )
                 out.print(ObjectSep) ;
             first =  false ;
@@ -105,10 +102,9 @@ public class JsonWriter implements JsonVisitor
     
     private void writeObjectLong(JsonObject jsonObject, Set<String> x) {
         // Just after the opening { 
-        SortedSet<String> y = new TreeSet<>(x) ;
         boolean first = true ;
         out.println() ;
-        for ( String k : y ) {
+        for ( String k : x ) {
             if ( ! first ) {    
                 out.print(ObjectSep) ;
                 out.println() ; 

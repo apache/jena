@@ -1,0 +1,3 @@
+Town,Population,Predicate With Space,`~!@#$%^&*()-_=+[{]}|\;:'"<.>/?,1234
+Southton,123000.0,PredicateWithSpace1,NonURICharacters1,DigitalLocalName1
+Northville,654000,PredicateWithSpace2,NonURICharacters2,DigitalLocalName2

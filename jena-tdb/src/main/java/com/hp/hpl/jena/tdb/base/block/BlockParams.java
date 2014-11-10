@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb.base.block;
 
 public interface BlockParams {
     public FileMode getFileMode() ;
-    public int getBlockSize() ;
-    public int getBlockReadCacheSize() ;
-    public int getBlockWriteCacheSize() ;
+    public Integer getBlockSize() ;
+    public Integer getBlockReadCacheSize() ;
+    public Integer getBlockWriteCacheSize() ;
 }
 

@@ -86,6 +86,7 @@ public class UnitTestEval extends LangTestCase
 
             if ( !b )
             {
+                System.out.println("**** Test: "+getName()) ;
                 System.out.println("---- Parsed");
                 RDFDataMgr.write(System.out, dsg, Lang.TRIG) ;
                 System.out.println("---- Expected");

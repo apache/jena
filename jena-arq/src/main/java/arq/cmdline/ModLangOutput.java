@@ -52,6 +52,8 @@ public class ModLangOutput implements ArgModuleGeneral
 //                    .distinct()
 //                    .forEach(x -> System.err.println("   "+x.getLabel())) ;
                 
+                System.err.println("Language '"+output.getLabel()+"' can not be used for streamed out (try rdfcat)") ;
+                System.err.println("Streaming languages are:") ;
                 Set<Lang> seen = new HashSet<>() ;
                 for ( RDFFormat fmt : StreamRDFWriter.registered()) {
                     if ( seen.contains(fmt.getLang()) )
@@ -60,7 +62,7 @@ public class ModLangOutput implements ArgModuleGeneral
                     System.err.println("   "+fmt.getLang().getLabel()) ;
                 }
                 
-                throw new CmdException("Not recognized as an streaming RDF language : '"+langName+"'") ;
+                throw new CmdException("Not a streaming RDF language : '"+langName+"'") ;
             }
             format = StreamRDFWriter.defaultSerialization(output) ;
         }

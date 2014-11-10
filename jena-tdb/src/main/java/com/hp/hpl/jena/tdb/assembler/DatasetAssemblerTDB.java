@@ -54,7 +54,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
             throw new AssemblerException(root, "No location given") ;
 
         String dir = getStringValue(root, pLocation) ;
-        Location loc = new Location(dir) ;
+        Location loc = Location.create(dir) ;
         DatasetGraph dsg = TDBFactory.createDatasetGraph(loc) ;
 
         if ( root.hasProperty(pUnionDefaultGraph) ) {

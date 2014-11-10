@@ -105,7 +105,6 @@ public class FusekiCmd extends CmdARQ
         String fn = "log4j.properties" ;
         File f = new File(fn) ;
         if ( f.exists() ) {
-            System.out.println("File") ;
             // Use file log4j.properties
             System.setProperty("log4j.configuration", "file:"+fn) ;
             return ;
@@ -243,14 +242,18 @@ public class FusekiCmd extends CmdARQ
 
         if ( fusekiConfigFile != null )
         {
-            if ( x > 1 )
-                throw new CmdException("Dataset specificed on the command line and also a configuration file specificed.") ;
+            if ( x >= 1 )
+                throw new CmdException("Dataset specified on the command line but a configuration file also given.") ;
         }
         else
         {
-            if ( x == 0 )
+            if ( x != 1 )
                 throw new CmdException("Required: either --config=FILE or one of --mem, --file, --loc or --desc") ;
         }
+        
+        // One of:
+        // argMem, argFile, argMemTDB, argTDB, 
+        
         
         if ( contains(argMem) )
         {
@@ -309,7 +312,7 @@ public class FusekiCmd extends CmdARQ
         if ( contains(argFusekiConfig) )
         {
             if ( dsg != null )
-                throw new CmdException("Dataset specificed on the command line and also a configuration file specificed.") ;
+                throw new CmdException("(internal error) Dataset specificed on the command line but a a configuration file also given.") ;
             fusekiConfigFile = getValue(argFusekiConfig) ;
         }
         

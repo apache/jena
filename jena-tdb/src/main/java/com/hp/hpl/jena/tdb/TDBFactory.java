@@ -45,7 +45,7 @@ public class TDBFactory
     
     /** Create or connect to a TDB-backed dataset */ 
     public static Dataset createDataset(String dir)
-    { return createDataset(new Location(dir)) ; }
+    { return createDataset(Location.create(dir)) ; }
 
     /** Create or connect to a TDB-backed dataset */ 
     public static Dataset createDataset(Location location)
@@ -66,7 +66,7 @@ public class TDBFactory
 
     /** Create or connect to a TDB-backed dataset (graph-level) */
     public static DatasetGraph createDatasetGraph(String directory)
-    { return createDatasetGraph(new Location(directory)) ; }
+    { return createDatasetGraph(Location.create(directory)) ; }
 
     /** Create or connect to a TDB-backed dataset (graph-level) */
     public static DatasetGraph createDatasetGraph(Location location)
@@ -232,7 +232,7 @@ public class TDBFactory
     @Deprecated
     public static Graph createGraph(String dir)
     {
-        Location loc = new Location(dir) ;
+        Location loc = Location.create(dir) ;
         return createGraph(loc) ;
     }
     

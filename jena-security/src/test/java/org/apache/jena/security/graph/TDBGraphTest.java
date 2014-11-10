@@ -44,8 +44,7 @@ public class TDBGraphTest extends MemGraphTest
 	protected Graph createGraph() throws IOException
 	{
 		TDB.init();
-		f = new File(System.getProperty("java.io.tmpdir") + "/TDBTest");
-		dsGraph = TDBFactory.createDatasetGraph(f.getCanonicalPath());
+		dsGraph = TDBFactory.createDataset().asDatasetGraph();
 		return dsGraph.getDefaultGraph();
 	}
 
@@ -54,7 +53,6 @@ public class TDBGraphTest extends MemGraphTest
 	{
 		TDB.sync(dsGraph);
 		dsGraph.close();
-		f.delete();
 		TDB.closedown();
 	}
 

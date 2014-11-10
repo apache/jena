@@ -62,7 +62,7 @@ public class SecuredPrefixMappingTest
 			if (m.isAnnotationPresent(Test.class))
 			{
 				// lock test must come last
-				if (!m.getName().equals("lockTest"))
+				if (m.getName().equals("testLock"))
 				{
 					lockTest = m;
 				}
@@ -74,6 +74,7 @@ public class SecuredPrefixMappingTest
 
 			}
 		}
+		Assert.assertNotNull( "Did not find 'testLock' method", lockTest );		
 		pmTest.setup();
 		lockTest.invoke(pmTest);
 

@@ -61,7 +61,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     protected Iter<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o)
     {
         Graph graph = fetchGraph(g) ;
-        if ( g == null )
+        if ( graph == null )
             return Iter.nullIter() ;
         return triples2quads(g, graph.find(s, p, o)) ;
     }

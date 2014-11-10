@@ -275,4 +275,9 @@ public class NodeTableNative implements NodeTable
     {
         return getObjects().isEmpty() ;
     }
+
+    @Override
+    public NodeTable wrapped() {
+        return null ;
+    }
 }

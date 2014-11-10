@@ -247,7 +247,7 @@ public class Optimize implements Rewrite
         
         // Merge (extend) and (assign) stacks
         if ( context.isTrueOrUndef(ARQ.optMergeExtends) )
-            op = apply("Merge BGPs", new TransformExtendCombine(), op) ;
+            op = apply("Combine BIND/LET", new TransformExtendCombine(), op) ;
         
         // Mark
         if ( false )

@@ -608,9 +608,30 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
             ((Closeable)iter).close() ;
     }
 
+
     /**
      * Print an iterator to stdout, return a copy of the iterator. Printing
-     * occurs when
+     * occurs now. See {@linkplain #debug} for an operation to print as the
+     * iterator is used. 
+     */
+    public static <T> Iterator<T> log(Iterator<T> stream) {
+        return log(System.out, stream) ;
+    }
+
+    /**
+     * Print an iterator to stdout, return a copy of the iterator. Printing
+     * occurs when the returned iterator is used
+     */
+    public static <T> Iterator<T> log(final PrintStream out, Iterator<T> stream) {
+        Iterator<T> iter = debug(out, stream) ;
+        // And force it to run.
+        return Iter.toList(iter).iterator();
+    }
+    
+    /**
+     * Print an iterator to stdout, return a copy of the iterator. Printing
+     * occurs when the iterator is used.  See {@linkplain #log} for
+     * an operation to print now. 
      */
     public static <T> Iterator<T> debug(Iterator<T> stream) {
         return debug(System.out, stream) ;
@@ -621,14 +642,16 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
      * occurs when the returned iterator is used
      */
     public static <T> Iterator<T> debug(final PrintStream out, Iterator<T> stream) {
-        Transform<T, T> x = new Transform<T, T>() {
-            @Override
-            public T convert(T item) {
-                out.println(item) ;
-                return item ;
-            }
-        } ;
-        return map(stream, x) ;
+        try { 
+            Transform<T, T> x = new Transform<T, T>() {
+                @Override
+                public T convert(T item) {
+                    out.println(item) ;
+                    return item ;
+                }
+            } ;
+            return map(stream, x) ;
+        } finally { out.flush() ; }
     }
 
     /** Print an iterator (destructive) */

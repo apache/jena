@@ -212,15 +212,13 @@ public class LogCtl {
      * Return true if we think Log4J is not initialized.
      */
     
-    public static boolean setLog4j() {
+    public static void setLog4j() {
         if ( System.getProperty("log4j.configuration") == null ) {
             String fn = "log4j.properties" ;
             File f = new File(fn) ;
             if ( f.exists() )
                 System.setProperty("log4j.configuration", "file:" + fn) ;
         }
-    
-        return (System.getProperty("log4j.configuration") != null) ;
     }
 
     /** Set log4j properties (XML or properties file) */
@@ -233,11 +231,8 @@ public class LogCtl {
 
     /**
      * Set logging, suitable for a command line application.
-     * <ol>
-     * <li>Check for -Dlog4j.configuration.</li>
-     * <li>Looks for log4j.properties file in current directory.</li>
-     * <li>Sets log4j using an internal configuration.</li>
-     * </ol>
+     * If "log4j.configuration" not set, then use the built-in default, 
+     * else just leave to log4j startup.
      */
     public static void setCmdLogging() {
         setCmdLogging(log4Jsetup) ;
@@ -245,16 +240,12 @@ public class LogCtl {
 
     /**
      * Set logging, suitable for a command line application.
-     * <ol>
-     * <li>Check for -Dlog4j.configuration.</li>
-     * <li>Looks for log4j.properties file in current directory.</li>
-     * <li>Sets log4j using the provided default configuration.</li>
-     * </ol>
-     * T
+     * If "log4j.configuration" not set, then use the provided default 
+     * (log4j properties syntax) else just leave to log4j startup.
      */
     public static void setCmdLogging(String defaultConfig) {
-        if ( !setLog4j() )
-            resetLogging(log4Jsetup) ;
+        if (System.getProperty("log4j.configuration") == null )
+            resetLogging(defaultConfig) ;
     }
 
     public static void resetLogging(String config) {

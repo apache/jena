@@ -24,37 +24,91 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.compose.Union ;
 
 public class TestUnion extends TestDyadic 
-	{
-	public TestUnion( String name )
-		{ super( name ); }
-			
-	public static TestSuite suite()
-    	{ return new TestSuite( TestUnion.class ); }
-    	
-	@Override
-	public Graph getGraph()
-	{
-		Graph gBase = graphWith( "" ), g1 = graphWith( "" );
+{
+    public TestUnion( String name )
+    { super( name ); }
+
+    public static TestSuite suite()
+    { return new TestSuite( TestUnion.class ); }
+
+    @Override
+    public Graph getGraph()
+    {
+        Graph gBase = graphWith( "" ), g1 = graphWith( "" );
         return new Union( gBase, g1 ); 
-	}
-	
-	public void testUnion() 
-		{
-        Graph g1 = graphWith( "x R y; p R q" );
-        Graph g2 = graphWith( "r A s; x R y" );
-        Union u = new Union( g1, g2 );
-        assertContains( "Union", "x R y", u );
-        assertContains( "Union", "p R q", u );
-        assertContains( "Union", "r A s", u );
-        if (u.size() != 3)
-            fail( "oops: size of union is not 3" );
-        u.add( triple( "cats eat cheese" ) );
-        assertContains( "Union", "cats eat cheese", u );
-        if 
-        	(
-        	contains( g1, "cats eat cheese" ) == false
-        	&& contains( g2, "cats eat cheese" ) == false
-        	)
-            fail( "oops: neither g1 nor g2 contains `cats eat cheese`" );
-		}
-	}
+    }
+
+    public Union unionOf( String s1, String s2 )
+    {
+        return new Union( graphWith( s1 ), graphWith ( s2 ) );
+    }
+
+    public void testStaticUnion()
+    {
+        assertIsomorphic(graphWith( "" ), unionOf( "", "" ));
+        assertIsomorphic(graphWith( "x R y" ), unionOf( "x R y", "" ) );
+        assertIsomorphic(graphWith( "x R y" ), unionOf( "", "x R y" ) );
+        assertIsomorphic(graphWith( "x R y; x R z" ), unionOf( "x R y", "x R z" ) );
+        assertIsomorphic(graphWith( "x R y" ), unionOf( "x R y", "x R y" ) );
+    }
+
+    public void testUnionReflectsChangesToOperands() {
+        Graph l = graphWith( "x R y" );
+        Graph r = graphWith( "x R y" );
+        Union u = new Union( l, r );
+
+        assertIsomorphic( graphWith( "x R y" ), u );
+
+        l.add( triple( "x R z" ) );
+        assertIsomorphic( graphWith( "x R y; x R z" ), u );
+
+        l.delete( triple( "x R y" ) );
+        assertIsomorphic( graphWith( "x R y; x R z" ), u );
+
+        r.add( triple( "p S q" ) );
+        assertIsomorphic( graphWith( "x R y; x R z; p S q" ), u );
+
+        r.delete( triple( "x R y" ) );
+        assertIsomorphic( graphWith( "x R z; p S q" ), u );
+    }
+
+    public void testAdd() {
+        Graph l = graphWith( "x R y" );
+        Graph r = graphWith( "x R y; p S q" );
+        Union u = new Union( l, r );
+
+        u.add( triple("x R y") );
+        assertIsomorphic( graphWith( "x R y" ), l);
+        assertIsomorphic( graphWith( "x R y; p S q" ), r);
+
+        u.add( triple("p S q") );
+        assertIsomorphic( graphWith( "x R y; p S q" ), l);
+        assertIsomorphic( graphWith( "x R y; p S q" ), r);
+
+        u.add( triple("r A s") );
+        assertIsomorphic( graphWith( "x R y; p S q; r A s" ), l);
+        assertIsomorphic( graphWith( "x R y; p S q" ), r);
+    }
+
+    public void testDelete() {
+        Graph l = graphWith( "x R y; x R z" );
+        Graph r = graphWith( "x R y; p S q" );
+        Union u = new Union( l, r );
+
+        u.delete( triple( "r A s" ) );
+        assertIsomorphic( graphWith( "x R y; x R z" ), l);
+        assertIsomorphic( graphWith( "x R y; p S q" ), r);
+
+        u.delete( triple( "x R z" ) );
+        assertIsomorphic( graphWith( "x R y" ), l);
+        assertIsomorphic( graphWith( "x R y; p S q" ), r);
+
+        u.delete( triple ( "p S q" ) );
+        assertIsomorphic( graphWith( "x R y" ), l);
+        assertIsomorphic( graphWith( "x R y" ), r);
+
+        u.delete( triple ( "x R y" ) );
+        assertIsomorphic( graphWith( "" ), l);
+        assertIsomorphic( graphWith( "" ), r);
+    }
+}

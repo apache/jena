@@ -303,7 +303,6 @@ public class Transformer
             if ( varExpr != varExpr2 )
                 changed = true ;
             
-            
             List<ExprAggregator> aggs = opGroup.getAggregators() ;
             List<ExprAggregator> aggs2 = aggs ;
             

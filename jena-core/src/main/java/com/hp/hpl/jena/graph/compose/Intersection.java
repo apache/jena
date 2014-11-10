@@ -29,10 +29,8 @@ import com.hp.hpl.jena.util.iterator.*;
 
 
 /**
-    an implementation of a dynamic intersection of two models.
+    The dynamic intersection of two graphs L and R. <code>add()</code> affects both L and R, whereas <code>delete()</code> affects L only.
 */
-
-@Deprecated
 public class Intersection extends Dyadic implements Graph
 	{
 	public Intersection( Graph L, Graph R )

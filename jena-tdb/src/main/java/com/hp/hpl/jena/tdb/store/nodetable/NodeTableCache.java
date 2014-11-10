@@ -75,7 +75,8 @@ public class NodeTableCache implements NodeTable
             notPresent = CacheFactory.createCacheSet(nodeMissesCacheSize) ;
     }
 
-    public final NodeTable getBaseTable() { return baseTable ; } 
+    @Override
+    public final NodeTable wrapped() { return baseTable ; } 
     
     /** Get the Node for this NodeId, or null if none */
     @Override

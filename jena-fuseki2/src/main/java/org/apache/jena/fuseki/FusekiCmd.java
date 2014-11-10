@@ -159,7 +159,7 @@ public class FusekiCmd {
 
             // ---- Datasets
 
-            if ( contains(argMem) )
+            if ( contains(argMem) )             
                 x++ ;
             if ( contains(argFile) )
                 x++ ;
@@ -171,18 +171,18 @@ public class FusekiCmd {
                 x++ ;
 
             if ( cmdLineDataset.fusekiConfigFile != null ) {
-                if ( x > 1 )
-                    throw new CmdException("Dataset specified on the command line and also a configuration file specified.") ;
+                if ( x >= 1 )
+                    throw new CmdException("Dataset specified on the command line but a configuration file also given.") ;
             } else {
-                //            if ( x == 0 )
-                //                throw new CmdException("Required: either --config=FILE or one of --mem, --file, --loc or --desc") ;
+                // No configuration file.  0 or 1 legal.
+                if ( x > 1 )
+                    throw new CmdException("Multiple ways providing a dataset. Only one of --mem, --file, --loc or --desc") ;
             }
 
             if ( contains(argMem) ) {
                 log.info("Dataset: in-memory") ;
                 cmdLineDataset = new ServerInitialConfig() ;
                 cmdLineDataset.templateFile = Template.templateMemFN ; 
-                //
             }
 
             if ( contains(argFile) ) {
@@ -318,7 +318,6 @@ public class FusekiCmd {
 
         @Override
         protected void exec() {
-            //*************
             FusekiServletContextListener.initialSetup = cmdLineDataset ;
             // For standalone, command line use ...
             JettyFuseki.initializeServer(jettyServerConfig) ;

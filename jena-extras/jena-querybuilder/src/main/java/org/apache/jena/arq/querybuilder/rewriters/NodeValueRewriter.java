@@ -1,0 +1,96 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.jena.arq.querybuilder.rewriters;
+
+import java.util.Map;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueBoolean;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDT;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDuration;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueFloat;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueNode;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueString;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
+
+/**
+ * A rewriter that implements NoveValueVisitor
+ *
+ */
+class NodeValueRewriter extends AbstractRewriter<NodeValue> implements
+		NodeValueVisitor {
+
+	/**
+	 * Constructor.  
+	 * @param values The values to replace.
+	 */
+	public NodeValueRewriter(Map<Var, Node> values) {
+		super(values);
+	}
+
+	@Override
+	public void visit(NodeValueBoolean nv) {
+		push(new NodeValueBoolean(nv.getBoolean(), changeNode(nv.getNode())));
+	}
+
+	@Override
+	public void visit(NodeValueDecimal nv) {
+		push(new NodeValueDecimal(nv.getDecimal(), changeNode(nv.getNode())));
+	}
+
+	@Override
+	public void visit(NodeValueDouble nv) {
+		push(new NodeValueDouble(nv.getDouble(), changeNode(nv.getNode())));
+	}
+
+	@Override
+	public void visit(NodeValueFloat nv) {
+		push(new NodeValueFloat(nv.getFloat(), changeNode(nv.getNode())));
+	}
+
+	@Override
+	public void visit(NodeValueInteger nv) {
+		push(new NodeValueInteger(nv.getInteger(), changeNode(nv.getNode())));
+	}
+
+	@Override
+	public void visit(NodeValueNode nv) {
+		push(new NodeValueNode(changeNode(nv.getNode())));
+	}
+
+	@Override
+	public void visit(NodeValueString nv) {
+		push(new NodeValueString(nv.getString(), changeNode(nv.getNode())));
+	}
+
+	@Override
+	public void visit(NodeValueDT nv) {
+		push(new NodeValueDT(nv.getDateTime().toXMLFormat(),
+				changeNode(nv.getNode())));
+	}
+
+	@Override
+	public void visit(NodeValueDuration nodeValueDuration) {
+		push(new NodeValueDuration(nodeValueDuration.getDuration(),
+				changeNode(nodeValueDuration.getNode())));
+	}
+}

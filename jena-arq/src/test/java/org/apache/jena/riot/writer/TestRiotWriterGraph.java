@@ -63,6 +63,10 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.NQUADS_UTF8}
             , { RDFFormat.NQUADS_ASCII}
             , { RDFFormat.NQUADS}
+            
+            , { RDFFormat.RDF_THRIFT }
+            , { RDFFormat.RDF_THRIFT_VALUES }
+            , { RDFFormat.TRIX }
         }) ; 
     }
 
@@ -85,13 +89,13 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     
     @Test public void writer09() { 
         if ( format.getLang() != Lang.JSONLD )
-            // Fails in jsonld-java v0.3
+            // Fails in jsonld-java
             test("writer-rt-09.ttl") ;
         }
     
     @Test public void writer10() { 
         if ( format.getLang() != Lang.JSONLD )
-            // Fails in jsonld-java v0.3
+            // Fails in jsonld-java
             test("writer-rt-10.ttl") ; 
     }
     

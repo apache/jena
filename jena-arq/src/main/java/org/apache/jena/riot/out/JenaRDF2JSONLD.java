@@ -51,9 +51,12 @@ class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
                 Node o = q.getObject() ;
                 Node g = q.getGraph() ;
                 
-                String gq = blankNodeOrIRIString(g) ;
-                if ( gq == null )
-                    throw new RiotException("Graph node is not a URI or a blank node") ; 
+                String gq = null ;
+                if ( g != null && ! Quad.isDefaultGraph(g) ) {
+                    gq = blankNodeOrIRIString(g) ;
+                    if ( gq == null )
+                        throw new RiotException("Graph node is not a URI or a blank node") ;
+                }
                 
                 String sq = blankNodeOrIRIString(s) ;
                 if ( sq == null )
@@ -88,15 +91,10 @@ class JenaRDF2JSONLD implements com.github.jsonldjava.core.RDFParser {
     }
 
     private String blankNodeOrIRIString(Node x)
-    
     {
         if ( x.isURI() ) return x.getURI() ;
         if ( x.isBlank() )
             return labels.get(null,  x) ;
-        if ( x.isLiteral() ) {
-            
-        }
-            
         return null ;
     }
 }    

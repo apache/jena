@@ -22,6 +22,8 @@ import static java.lang.String.format ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.util.Map ;
+import java.util.Map.Entry ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -47,6 +49,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     @Override
     protected void doOptions(HttpAction action)
     {
+        setCommonHeadersForOptions(action.response) ;
         action.response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,PUT,DELETE,POST");
         action.response.setHeader(HttpNames.hContentLengh, "0") ;
         success(action) ;
@@ -222,5 +225,8 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     protected static void clearGraph(Target target) {
         Graph g = target.graph() ;
         g.clear() ;
+        Map<String, String> pm = g.getPrefixMapping().getNsPrefixMap() ;
+        for ( Entry<String, String> e : pm.entrySet() ) 
+            g.getPrefixMapping().removeNsPrefix(e.getKey()) ;
     }
 }

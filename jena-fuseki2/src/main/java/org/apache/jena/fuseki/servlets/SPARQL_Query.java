@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.servlets ;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.server.CounterName.QueryExecErrors ;
 import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts ;
 import static org.apache.jena.riot.WebContent.ctHTMLForm ;
 import static org.apache.jena.riot.WebContent.ctSPARQLQuery ;
@@ -59,6 +58,11 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
+/** Handle SPARQL Query requests overt eh SPARQL Protocol. 
+ * Subclasses provide this algorithm with the actual dataset to query, whether
+ * a dataset hosted by this server ({@link SPARQL_QueryDataset}) or 
+ * speciifed in the protocol request ({@link SPARQL_QueryGeneral}).   
+ */ 
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
@@ -83,8 +87,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
-        // response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,POST");
-        setCommonHeaders(response) ;
+        setCommonHeadersForOptions(response) ;
         response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST") ;
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
@@ -121,7 +124,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                                             paramQueryRef, paramStyleSheet, paramAccept, paramOutput1,
                                                             paramOutput2, paramCallback, paramForceAccept, paramTimeout) ;
 
-    /** Called to validate arguments */
+    /**
+     * Validate the request, checking HTTP method and HTTP Parameters.
+     * @param action HTTP Action
+     */
     @Override
     protected void validate(HttpAction action) {
         String method = action.request.getMethod().toUpperCase(Locale.ROOT) ;
@@ -144,10 +150,17 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         // Query not yet parsed.
     }
 
-    /** Validate the request after checking HTTP method and HTTP Parameters */
+    /**
+     * Validate the request after checking HTTP method and HTTP Parameters.
+     * @param action HTTP Action
+     */
     protected abstract void validateRequest(HttpAction action) ;
 
-    /** Helper for validating request */
+    /**
+     * Helper method for validating request.
+     * @param request HTTP request
+     * @param params parameters in a collection of Strings
+     */
     protected void validateParams(HttpAction action, Collection<String> params) {
         HttpServletRequest request = action.request ;
         ContentType ct = FusekiLib.getContentType(request) ;
@@ -244,28 +257,38 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             // Additional counter information.
             incCounter(action.getEndpoint().getCounters(), QueryTimeouts) ;
             throw ex ;
-        } catch (QueryExecException ex) {
-            // Additional counter information.
-            incCounter(action.getEndpoint().getCounters(), QueryExecErrors) ;
-            throw ex ;
         } finally { action.endRead() ; }
     }
 
     /**
      * Check the query - if unacceptable, throw ActionErrorException or call
      * super.error
+     * @param action HTTP Action
+     * @param query  SPARQL Query
      */
     protected abstract void validateQuery(HttpAction action, Query query) ;
 
+    /** Create the {@link QueryExecution} for this operation.
+     * @param query
+     * @param dataset
+     * @return QueryExecution
+     */
     protected QueryExecution createQueryExecution(Query query, Dataset dataset) {
         return QueryExecutionFactory.create(query, dataset) ;
     }
 
-    protected SPARQLResult executeQuery(HttpAction action, QueryExecution qExec, Query query, String queryStringLog) {
-        setAnyTimeouts(qExec, action) ;
+    /** Perform the {@link QueryExecution} once.
+     * @param action
+     * @param queryExecution
+     * @param query
+     * @param queryStringLog Informational string created from the initial query. 
+     * @return
+     */
+    protected SPARQLResult executeQuery(HttpAction action, QueryExecution queryExecution, Query query, String queryStringLog) {
+        setAnyTimeouts(queryExecution, action) ;
 
         if ( query.isSelectType() ) {
-            ResultSet rs = qExec.execSelect() ;
+            ResultSet rs = queryExecution.execSelect() ;
 
             // Force some query execution now.
             //
@@ -285,19 +308,19 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         }
 
         if ( query.isConstructType() ) {
-            Model model = qExec.execConstruct() ;
+            Model model = queryExecution.execConstruct() ;
             action.log.info(format("[%d] exec/construct", action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isDescribeType() ) {
-            Model model = qExec.execDescribe() ;
+            Model model = queryExecution.execDescribe() ;
             action.log.info(format("[%d] exec/describe", action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isAskType() ) {
-            boolean b = qExec.execAsk() ;
+            boolean b = queryExecution.execAsk() ;
             action.log.info(format("[%d] exec/ask", action.id)) ;
             return new SPARQLResult(b) ;
         }
@@ -315,13 +338,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         String timeoutParameter = action.request.getParameter("timeout") ;
         if ( timeoutHeader != null ) {
             try {
-                desiredTimeout = (int)Float.parseFloat(timeoutHeader) * 1000 ;
+                desiredTimeout = (int)(Float.parseFloat(timeoutHeader) * 1000) ;
             } catch (NumberFormatException e) {
                 throw new FusekiException("Timeout header must be a number", e) ;
             }
         } else if ( timeoutParameter != null ) {
             try {
-                desiredTimeout = (int)Float.parseFloat(timeoutParameter) * 1000 ;
+                desiredTimeout = (int)(Float.parseFloat(timeoutParameter) * 1000) ;
             } catch (NumberFormatException e) {
                 throw new FusekiException("timeout parameter must be a number", e) ;
             }
@@ -332,8 +355,19 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             qexec.setTimeout(desiredTimeout) ;
     }
 
+    /** Choose the dataset for this SPARQL Query request. 
+     * @param action
+     * @param query
+     * @param queryStringLog 
+     * @return {@link Dataset}
+     */
     protected abstract Dataset decideDataset(HttpAction action, Query query, String queryStringLog) ;
 
+    /** Ship the results to the remote caller.
+     * @param action
+     * @param result
+     * @param qPrologue
+     */
     protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue) {
         if ( result.isResultSet() )
             ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue) ;

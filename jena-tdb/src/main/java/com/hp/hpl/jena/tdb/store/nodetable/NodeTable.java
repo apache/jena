@@ -58,4 +58,8 @@ public interface NodeTable extends Sync, Closeable
     /** Anything there? */  
     public boolean isEmpty() ; 
 
+    /** Return a NodeTable if this instance wraps another, else return null */  
+    public NodeTable wrapped() ; 
+
+    
 }

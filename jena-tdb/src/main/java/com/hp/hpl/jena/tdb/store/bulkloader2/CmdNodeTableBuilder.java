@@ -96,7 +96,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
 //        if ( !super.contains(argQuadsOut) ) throw new CmdException("Required: --quads FILE") ;
         
         locationString   = super.getValue(argLocation) ;
-        location = new Location(locationString) ;
+        location = Location.create(locationString) ;
 
         dataFileTriples  = super.getValue(argTriplesOut) ;
         if ( dataFileTriples == null )
@@ -142,7 +142,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         // Later - attach prefix table to parser.
         dsg.getPrefixes().close() ;
         
-        ProgressLogger monitor = new ProgressLogger(cmdLog, "Data", BulkLoader.DataTickPoint,BulkLoader.superTick) ;
+        ProgressLogger monitor = new ProgressLogger(cmdLog, "Data", BulkLoader.DataTickPoint, BulkLoader.superTick) ;
         OutputStream outputTriples = null ;
         OutputStream outputQuads = null ;
         

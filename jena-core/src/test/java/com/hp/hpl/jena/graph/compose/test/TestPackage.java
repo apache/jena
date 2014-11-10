@@ -32,14 +32,9 @@ import junit.framework.*;
 
 public class TestPackage extends TestCase {
     
-    @SuppressWarnings("deprecation")
     public static TestSuite suite() {
     	TestSuite result = new TestSuite();
-    	/*
-        suite( result, Intersection.class );
-        suite( result, Union.class );
-        suite( result, Difference.class );
-        */
+
     	GraphModelFactory gmf = new GraphModelFactory(){
 
 			@Override
@@ -81,7 +76,6 @@ public class TestPackage extends TestCase {
     	{
     		result.addTest( atp.testAt(i) );
     	}
-    	//suite.addTestSuite( new PlainModelTestSuite( ))
     /* */
         result.addTest( TestDelta.suite() );
         result.addTest( TestUnion.suite() );
@@ -95,7 +89,6 @@ public class TestPackage extends TestCase {
         return  result;
     }
 
-    
     private static abstract class GraphModelFactory implements TestingModelFactory
 	{
     	abstract Graph getGraph();

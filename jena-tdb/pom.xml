@@ -21,12 +21,12 @@
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - TDB (Native Triple Store)</name>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.1.2-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>11-SNAPSHOT</version>
+    <version>12-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -44,12 +44,6 @@
 
   <description>TDB is a storage subsystem for Jena and ARQ, it is a native triple store providing persisent disk based storage of triples/quads.</description>
 
-  <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-tdb</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-tdb</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.12.1-SNAPSHOT/jena-tdb</url>
-  </scm>
-  
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
@@ -60,28 +54,28 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.12.1-SNAPSHOT</version>
+      <version>2.12.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
       <classifier>tests</classifier>
-      <version>2.12.1-SNAPSHOT</version>
+      <version>2.12.2-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
      <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.12.1-SNAPSHOT</version>
+      <version>2.12.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>2.12.1-SNAPSHOT</version>
+      <version>2.12.2-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 

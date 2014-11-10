@@ -60,7 +60,7 @@ public class TestAlarmClock extends BaseTest {
     public void alarm_03() {
         AlarmClock alarmClock = new AlarmClock() ;
         alarmClock.add(callback, 10) ;
-        alarmClock.add(callback, 100000) ;
+        alarmClock.add(callback, 1000000) ;
         sleep(150) ;
         // ping1 went off.
         assertEquals(1, count.get()) ;
@@ -82,9 +82,10 @@ public class TestAlarmClock extends BaseTest {
     @Test
     public void alarm_05() {
         AlarmClock alarmClock = new AlarmClock() ;
-        alarmClock.add(callback, 100) ;
+        alarmClock.add(callback, 1000) ;
         alarmClock.reset(callback, 2000) ;
         sleep(50) ;
+        // The reset should have removed the callback before it happened.
         assertEquals(0, count.get()) ;
         alarmClock.release() ;
     }

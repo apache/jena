@@ -41,7 +41,7 @@ public class TestCSVParser extends BaseTest
     @Test public void csv_parse_07() { csv(",,\n", new String[][] {{"", "", ""}}) ; }
     
     @Test public void csv_parse_10() { csv("\n\n", new String[][] { {""}, {""} }) ; }
-    @Test public void csv_parse_11() { csv("'aa'\naa\n", new String[][] { {"aa"}, {"aa"} }) ; }
+    @Test public void csv_parse_11() { csv("'aa'\naa\n", new String[][] { {"'aa'"}, {"aa"} }) ; }
     @Test public void csv_parse_12() { csv("\naa", new String[][] { {""}, {"aa"} }) ; }
     @Test public void csv_parse_13() { csv("a,b\nc,d", new String[][] { {"a", "b"}, {"c", "d"} }) ; }
     @Test public void csv_parse_14() { csv("a,b\rc,d", new String[][] { {"a", "b"}, {"c", "d"} }) ; }
@@ -63,7 +63,7 @@ public class TestCSVParser extends BaseTest
     private static void csv(String input, List<List<String>> answers)
     {
         List<List<String>> x = new ArrayList<>() ;
-        CSVParser parser = new CSVParser(new StringReader(input)) ;
+        CSVParser parser = CSVParser.create(new StringReader(input)) ;
         for (List<String> row : parser) {
             x.add(row) ;
         }

@@ -28,7 +28,9 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.riot.web.HttpNames ;
 
-// Move statics to a lib (ActionLib?)
+/**
+ * Addition HTTP Servlet operations. 
+ */
 public abstract class ServletBase extends HttpServlet {
     public static final String METHOD_DELETE    = "DELETE" ;
     public static final String METHOD_HEAD      = "HEAD" ;
@@ -80,8 +82,17 @@ public abstract class ServletBase extends HttpServlet {
         httpResponse.setHeader(HttpNames.hVary, varyHeaderSetting) ;
     }
 
+    public static boolean CORS_ENABLED = false ;
+    
+    public static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
+        if ( CORS_ENABLED )
+            httpResponse.setHeader(HttpNames.hAccessControlAllowHeaders, "X-Requested-With, Content-Type, Authorization") ;
+        setCommonHeaders(httpResponse) ;
+    }
+
     public static void setCommonHeaders(HttpServletResponse httpResponse) {
-        httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
+        if ( CORS_ENABLED )
+            httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
         httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
     }
 }

@@ -50,7 +50,7 @@ public abstract class AbstractTestTextAssembler {
 		SIMPLE_DATASET_SPEC =
 				model.createResource(TESTBASE + "simpleDatasetSpec")
 				     .addProperty(RDF.type, VocabTDB.tDatasetTDB)
-				     .addProperty(VocabTDB.pLocation, "DB");
+				     .addProperty(VocabTDB.pLocation, "target/test/DB");
 		
 		SIMPLE_INDEX_SPEC =
 				model.createResource(TESTBASE + "simpleIndexSpec")

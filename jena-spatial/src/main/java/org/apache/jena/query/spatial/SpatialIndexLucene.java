@@ -42,8 +42,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.NodeFactory ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 import com.spatial4j.core.shape.Point ;
 import com.spatial4j.core.shape.Shape ;
 
@@ -219,7 +217,7 @@ public class SpatialIndexLucene implements SpatialIndex {
 			Document doc = indexSearcher.doc(sd.doc);
 			String[] values = doc.getValues(docDef.getEntityField());
 			for (String v : values) {
-				Node n = NodeFactory.createURI(v);
+			    Node n = SpatialQueryFuncs.stringToNode(v) ;
 				results.add(n);
 			}
 		}
@@ -231,10 +229,6 @@ public class SpatialIndexLucene implements SpatialIndex {
 		return docDef;
 	}
 
-	private Node entryToNode(String v) {
-		// TEMP
-		return NodeFactoryExtra.createLiteralNode(v, null, null);
-	}
 
 	private static void exception(Exception ex) {
 		throw new SpatialIndexException(ex);

@@ -34,7 +34,7 @@ public class QueryIterNullIterator extends QueryIter
 {
     public static QueryIterator create(ExecutionContext qCxt) { return new QueryIterNullIterator(qCxt) ; }
     
-    // Or QueryIterYeildN with N = 0 ;
+    // Or QueryIterYieldN with N = 0 ;
     // but sometimes it clearer just to w-r-i-t-e the code.
     
     public QueryIterNullIterator(ExecutionContext qCxt) { super(qCxt) ; }

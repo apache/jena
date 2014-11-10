@@ -39,7 +39,7 @@ public class TestGraphTDB extends AbstractTestGraph2
     @BeforeClass public static void beforeClass()
     {
         StoreConnection.reset() ;
-        graphLocation = new GraphLocation(new Location(ConfigTest.getCleanDir())) ;
+        graphLocation = new GraphLocation(Location.create(ConfigTest.getCleanDir())) ;
         graphLocation.release() ;
         graphLocation.clearDirectory() ;
         graphLocation.createGraph() ;

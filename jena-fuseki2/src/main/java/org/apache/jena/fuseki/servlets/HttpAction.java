@@ -30,10 +30,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.server.DataAccessPoint ;
-import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Endpoint ;
-import org.apache.jena.fuseki.server.RequestLog ;
+import org.apache.jena.fuseki.server.* ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -43,6 +40,10 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Transactional ;
 
+/**
+ * HTTP action that represents the user request lifecycle. Its state is handled in the
+ * {@link ActionSPARQL#executeAction(HttpAction)} method.
+ */
 public class HttpAction
 {
     public final long id ;
@@ -92,6 +93,15 @@ public class HttpAction
     private final String actionURI ;
     private final String contextPath ;
     
+    /**
+     * Creates a new HTTP Action, using the HTTP request and response, and a given ID.
+     *
+     * @param id given ID
+     * @param log Logger for this action 
+     * @param request HTTP request
+     * @param response HTTP response
+     * @param verbose verbose flag
+     */
     public HttpAction(long id, Logger log, HttpServletRequest request, HttpServletResponse response, boolean verbose) {
         this.id = id ;
         this.log = log ;
@@ -104,7 +114,18 @@ public class HttpAction
         this.actionURI = ActionLib.actionURI(request) ;
     }
 
-    /** Initialization after action creation during lifecycle setup */
+    /** Initialization after action creation during lifecycle setup.
+     * <p>Sets the action dataset. Setting will replace any existing {@link DataAccessPoint} and {@link DataService},
+     * as the {@link DatasetGraph} of the current HTTP Action.</p>
+     *
+     * <p>Once it has updated its members, the HTTP Action will change its transactional state and
+     * {@link Transactional} instance according to its base dataset graph.</p>
+     *
+     * @param dataAccessPoint {@link DataAccessPoint}
+     * @param dService {@link DataService}
+     * @see Transactional
+     */
+    
     public void setRequest(DataAccessPoint dataAccessPoint, DataService dService) {
         this.dataAccessPoint = dataAccessPoint ;
         if ( dataAccessPoint != null )
@@ -139,11 +160,27 @@ public class HttpAction
         this.datasetName = datasetUri ;
     }
     
+    /**
+     * Returns <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
+     * <code>false otherwise</code>.
+     *
+     * @param dsg a {@link DatasetGraph}
+     * @return <code>true</code> iff the given {@link DatasetGraph} is an instance of {@link Transactional},
+     * <code>false otherwise</code>
+     */
     private static boolean isTransactional(DatasetGraph dsg) {
         return (dsg instanceof Transactional) ;
     }
 
-    private static DatasetGraph unwrap(DatasetGraph dsg) {
+    /**
+     * A {@link DatasetGraph} may contain other <strong>wrapped DatasetGraph's</strong>. This method will return
+     * the first instance (including the argument to this method) that <strong>is not</strong> an instance of
+     * {@link DatasetGraphWrapper}.
+     *
+     * @param dsg a {@link DatasetGraph}
+     * @return the first found {@link DatasetGraph} that is not an instance of {@link DatasetGraphWrapper}
+     */
+   private static DatasetGraph unwrap(DatasetGraph dsg) {
         while (dsg instanceof DatasetGraphWrapper) {
             dsg = ((DatasetGraphWrapper)dsg).getWrapped() ;
         }
@@ -151,24 +188,29 @@ public class HttpAction
     }
         
     /** This is the requestURI with the context path removed.
-     * It should be used internally for dispatch
+     *  It should be used internally for dispatch.
      */
     public String getActionURI() {
         return actionURI ;
     }
     
-    /** This is the requestURI with the context path removed.
-     * It should be used internally for dispatch
+    /** Get the context path.
      */
     public String getContextPath() {
         return contextPath ;
     }
-
+    
+    
+    /** Set the endpoint and endpoint name that this is an action for. 
+     * @param srvRef {@link Endpoint}
+     * @param endpointName
+     */
     public void setEndpoint(Endpoint srvRef, String endpointName) {
         this.endpoint = srvRef ; 
         this.endpointName = endpointName ;
     }
     
+    /** Get the endpoint for the action (may be null) . */
     public Endpoint getEndpoint() {
         return endpoint ; 
     }
@@ -244,12 +286,16 @@ public class HttpAction
         if ( dataAccessPoint != null ) 
             dataAccessPoint.finishRequest(this) ;
         // Standard logging goes here.
-        if ( Fuseki.requestLog != null ) {
+        if ( Fuseki.requestLog != null && Fuseki.requestLog.isInfoEnabled() ) { 
             String s = RequestLog.combinedNCSA(this) ;
             Fuseki.requestLog.info(s);
         }
     }
     
+    /** If inside the transaction for the action, return the active {@link DatasetGraph},
+     *  otherwise return null.
+     * @return Current active {@link DatasetGraph}
+     */
     public final DatasetGraph getActiveDSG() {
         return activeDSG ;
     }

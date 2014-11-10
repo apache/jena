@@ -41,7 +41,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** Operations on binary RDF (which uses <a href="http://thrift.apache.org/">Apache Thrift</a>).
  * See also {@linkplain ThriftConvert}, for specific functions on binary RDF.
- * @See ThriftConvert 
+ * @see ThriftConvert 
  */
 public class BinRDF {
     

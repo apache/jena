@@ -52,7 +52,7 @@ public class FusekiLogging
 
          "# System logs.",
          "log4j.logger." + Fuseki.serverLogName     + "=INFO",
-         "log4j.logger." + Fuseki.actionLogName    + "=INFO",
+         "log4j.logger." + Fuseki.actionLogName     + "=INFO",
          "log4j.logger." + Fuseki.adminLogName      + "=INFO",
          "log4j.logger." + Fuseki.validationLogName + "=INFO",
          "log4j.logger." + Fuseki.configLogName     + "=INFO",
@@ -61,9 +61,17 @@ public class FusekiLogging
          "log4j.logger.org.eclipse.jetty=WARN" ,
          "log4j.logger.org.apache.shiro=WARN",
 
+         "# NCSA RequestAccess log",
+         "log4j.appender.plain=org.apache.log4j.ConsoleAppender",
+         "log4j.appender.plain.target=System.out",
+         "log4j.appender.plain.layout=org.apache.log4j.PatternLayout",
+         "log4j.appender.plain.layout.ConversionPattern=%m%n",
+         "log4j.additivity."+Fuseki.requestLogName   + "=false",
+         "log4j.logger."+Fuseki.requestLogName       + "=OFF, plain",
+         
          "## Parser output", 
          "log4j.additivity" + SysRIOT.riotLoggerName + "=false",
-         "log4j.logger." + SysRIOT.riotLoggerName + "=INFO, jena.plainstdout"
+         "log4j.logger." + SysRIOT.riotLoggerName + "=INFO, plainstdout"
             ) ;
 
     // Set logging.
@@ -72,37 +80,57 @@ public class FusekiLogging
     // 3/ Use log4j.properties on the classpath.
     // 4/ Use Built in.
 
+    private static boolean LogLogging = false ;
+    
     public static void setLogging() {
+        if ( LogLogging )
+            System.err.println("Fuseki logging") ;
         // No loggers have been created but configuration may have been set up.
         String x = System.getProperty("log4j.configuration", null) ;
+        if ( LogLogging )
+            System.err.println("log4j.configuration = " + x) ;
 
-        if ( x != null && !x.equals("set") )
+        if ( x != null ) // && !x.equals("set") )
+            // Punt to log4j proper, or maybe already set.
             // "set" indicates that logging was set before.
             return ;
-
-        // Look for a log4j.properties in the current working directory for easy customization.
+        if ( LogLogging )
+            System.err.println("Fuseki logging - setup") ;
+        // Look for a log4j.properties in the current working directory for easy
+        // customization.
         try {
+            if ( LogLogging )
+                System.err.println("Fuseki logging - look for local log4j.properties") ;
             String fn = "log4j.properties" ;
             File f = new File(fn) ;
             if ( f.exists() ) {
+                if ( LogLogging )
+                    System.err.println("Fuseki logging - found file:log4j.properties") ;
                 PropertyConfigurator.configure(fn) ;
                 System.setProperty("log4j.configuration", "file:" + fn) ;
                 return ;
             }
-        } catch (Throwable th) {}
-        
+            if ( LogLogging )
+                System.err.println("Fuseki logging - no local log4j.properties") ;
+        }
+        catch (Throwable th) {}
+
         // Try log4j.properties
 
         // The log4j general is initialization done in a class static
         // in LogManager so it can't be called again in any sensible manner.
         // Instead, we include the same basic mechanism ...
+        if ( LogLogging )
+            System.err.println("Fuseki logging - look for URL log4j.properties") ;
         URL url = Loader.getResource("log4j.properties") ;
         if ( url != null ) {
-            PropertyConfigurator.configure(url);
+            PropertyConfigurator.configure(url) ;
             System.setProperty("log4j.configuration", url.toString()) ;
             return ;
         }
 
+        if ( LogLogging )
+            System.err.println("Fuseki logging - LogCtl.resetLogging") ;
         // Use builtin.
         LogCtl.resetLogging(log4Jsetup) ;
         // Stop anything attempting to do it again.

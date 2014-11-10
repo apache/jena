@@ -23,7 +23,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>2.12.1-SNAPSHOT</version>
+  <version>2.12.2-SNAPSHOT</version>
 
   <!-- Needed for -Papache-release -->
   <parent>
@@ -46,15 +46,16 @@
   </organization>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/trunk/</url>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/jena.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/jena.git</developerConnection>
+    <url>https://git-wip-us.apache.org/repos/asf/jena.git</url>
+    <tag>HEAD</tag>
   </scm>
 
   <profiles>
     <profile>
       <!--
-        This is the dev profile, tyopically used locally with "mvn clean install".
+        This is the dev profile, typically used locally with "mvn clean install".
         It only builds the common modules and
         does not build SDB nor the slow-to-test JDBC module.
       -->
@@ -67,17 +68,20 @@
         <module>jena-tdb</module>
         <module>jena-text</module>
         <module>jena-spatial</module>
+        <module>jena-csv</module>
 
         <!-- Slow to build - exclude from dev build -->
         <!-- <module>jena-sdb</module>            -->
 
         <module>jena-fuseki</module>
+        <!--<module>jena-fuseki2</module>-->
         <module>jena-security</module>
         <!-- Slow to build - exclude from dev build -->
         <!-- <module>jena-jdbc</module>           -->
         <!-- <module>jena-maven-tools</module>    -->
         <!-- <module>apache-jena-libs</module>    -->
         <!-- <module>apache-jena</module>         -->
+        <module>jena-extras</module>
       </modules>
     </profile>
 
@@ -89,6 +93,10 @@
       <id>complete</id>
       <activation>
         <activeByDefault>true</activeByDefault>
+        <property>
+          <name>profile.complete</name>
+          <value>true</value>
+        </property>
       </activation>
       <modules>
         <module>jena-parent</module>
@@ -100,10 +108,12 @@
 
         <module>jena-text</module>
         <module>jena-spatial</module>
+        <module>jena-csv</module>
 
         <module>jena-sdb</module>
 
         <module>jena-fuseki</module>
+        <module>jena-fuseki2</module>
         <module>jena-security</module>
 
         <module>jena-jdbc</module>
@@ -111,6 +121,7 @@
 
         <module>apache-jena-libs</module>
         <module>apache-jena</module>
+        <module>jena-extras</module>
       </modules>
     </profile>
   </profiles>
@@ -151,5 +162,4 @@
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
-
 </project>

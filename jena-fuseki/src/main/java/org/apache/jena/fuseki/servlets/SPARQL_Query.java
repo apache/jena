@@ -31,6 +31,7 @@ import java.util.* ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.RuntimeIOException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -46,6 +47,9 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
+/**
+ * Handles SPARQL Query requests.
+ */
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
     public SPARQL_Query()   { super() ; }
@@ -65,8 +69,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
     {
-        //response.setHeader(HttpNames.hAllow, "GET,HEAD,OPTIONS,POST");
-        setCommonHeaders(response) ;
+        setCommonHeadersForOptions(response) ;
         response.setHeader(HttpNames.hAllow, "GET,OPTIONS,POST");
         response.setHeader(HttpNames.hContentLengh, "0") ;
     }
@@ -111,8 +114,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                                              paramCallback, 
                                                              paramForceAccept,
                                                              paramTimeout) ;
-    
-    /** Called to validate arguments */
+
     @Override
     protected void validate(HttpAction action)
     {
@@ -137,10 +139,17 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         // Query not yet parsed.
     }
     
-    /** Validate the request after checking HTTP method and HTTP Parameters */ 
+    /**
+     * Validate the request after checking HTTP method and HTTP Parameters.
+     * @param action HTTP Action
+     */
     protected abstract void validateRequest(HttpAction action) ;
     
-    /** Helper for validating request */
+    /**
+     * Helper method for validating request.
+     * @param request HTTP request
+     * @param params parameters in a collection of Strings
+     */
     protected void validateParams(HttpServletRequest request, Collection<String> params)
     {
         ContentType ct = FusekiLib.getContentType(request) ;
@@ -226,6 +235,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         } catch (QueryParseException ex) {
             incCounter(action.srvRef, RequestsBad) ;
             errorBadRequest("Parse error: \n" + queryString + "\n\r" + messageForQPE(ex)) ;
+        } catch (RuntimeIOException ex) {
+            errorBadRequest("Runtime IO Exception: \n" + queryString + "\n\r" + ex.getMessage()) ;
         }
         // Should not happen.
         catch (QueryException ex) {
@@ -245,16 +256,23 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             // Additional counter information.
             incCounter(action.srvRef, QueryTimeouts) ; 
             throw ex ; 
+        } catch (RuntimeIOException ex) {
+            incCounter(action.srvRef, QueryExecErrors) ;
+            throw ex ;
         } catch (QueryExecException ex) { 
             // Additional counter information.
             incCounter(action.srvRef, QueryExecErrors) ; 
-            throw ex ; 
+            throw ex ;
         } finally { 
             action.endRead() ;
         }
     }
 
-    /** Check the query - if unacceptable, throw ActionErrorException or call super.error */
+    /**
+     * Check the query, throwing ActionErrorException when not valid, or calling super#error.
+     * @param action HTTP Action
+     * @param query the Query
+     */
     protected abstract void validateQuery(HttpAction action, Query query) ;
 
     protected QueryExecution createQueryExecution(Query query, Dataset dataset)

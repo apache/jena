@@ -30,10 +30,15 @@ import org.apache.jena.fuseki.server.DataAccessPointRegistry ;
 /** Operations related to servlets */
 
 public class ActionLib {
-    public static String mapRequestToDataset(HttpAction action) {
-        String uri = action.getActionURI() ;
-        return mapActionRequestToDataset(uri) ;
-    }
+    /**
+     * A possible implementation for {@link ActionSPARQL#mapRequestToDataset}
+     * that assumes the form /dataset/service.
+     * @param action the request
+     * @return the dataset
+     */    public static String mapRequestToDataset(HttpAction action) {
+         String uri = action.getActionURI() ;
+         return mapActionRequestToDataset(uri) ;
+     }
     
     /** Map request to uri in the registry.
      *  A possible implementation for mapRequestToDataset(String)
@@ -101,6 +106,11 @@ public class ActionLib {
         return ds ;
     }
 
+    /** Calculate the fill URL including query string
+     * for the HTTP request. This may be quite long.
+     * @param request HttpServletRequest
+     * @return String The full URL, including query string.
+     */
     public static String wholeRequestURL(HttpServletRequest request) {
         StringBuffer sb = request.getRequestURL() ;
         String queryString = request.getQueryString() ;

@@ -18,28 +18,27 @@
 
 package org.apache.jena.query.spatial;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import org.apache.lucene.spatial.SpatialStrategy;
-import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy;
-import org.apache.lucene.spatial.prefix.tree.GeohashPrefixTree;
-import org.apache.lucene.spatial.prefix.tree.SpatialPrefixTree;
-import org.apache.lucene.spatial.query.SpatialOperation;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.SolrInputDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.lucene.spatial.SpatialStrategy ;
+import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy ;
+import org.apache.lucene.spatial.prefix.tree.GeohashPrefixTree ;
+import org.apache.lucene.spatial.prefix.tree.SpatialPrefixTree ;
+import org.apache.lucene.spatial.query.SpatialOperation ;
+import org.apache.solr.client.solrj.SolrQuery ;
+import org.apache.solr.client.solrj.SolrServer ;
+import org.apache.solr.client.solrj.SolrServerException ;
+import org.apache.solr.client.solrj.response.QueryResponse ;
+import org.apache.solr.common.SolrDocument ;
+import org.apache.solr.common.SolrDocumentList ;
+import org.apache.solr.common.SolrInputDocument ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
-import com.spatial4j.core.shape.Shape;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
+import com.spatial4j.core.shape.Shape ;
 
 public class SpatialIndexSolr implements SpatialIndex {
 	private static Logger log = LoggerFactory.getLogger(SpatialIndexSolr.class);
@@ -129,9 +128,9 @@ public class SpatialIndexSolr implements SpatialIndex {
 		List<Node> results = new ArrayList<Node>();
 
 		for (SolrDocument sd : solrResults) {
-			String uriStr = (String) sd.getFieldValue(docDef.getEntityField());
-			// log.info("Entity: "+uriStr) ;
-			results.add(NodeFactory.createURI(uriStr));
+			String str = (String) sd.getFieldValue(docDef.getEntityField());
+			Node n = SpatialQueryFuncs.stringToNode(str) ;
+			results.add(n) ;
 		}
 
 		if (limit > 0 && results.size() > limit)

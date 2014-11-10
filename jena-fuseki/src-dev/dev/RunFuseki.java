@@ -61,7 +61,7 @@ public class RunFuseki
         
         FusekiCmd.main(
                      //  "-v",
-                     "--mem", "/ds"
+                     "--mem", "--update", "/ds"
                      //"--update", "--loc="+tmpdir+"DB", "--set=tdb:unionDefaultGraph=true", "/ds"
                      //"--update", "--mem", "/ds"
 

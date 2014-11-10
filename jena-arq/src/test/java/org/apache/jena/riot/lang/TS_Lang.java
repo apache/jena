@@ -38,9 +38,13 @@ import org.junit.runners.Suite ;
     , TestLangTurtle.class
     , TestLangTrig.class
     , TestLangRdfJson.class
+    , TestTriXReader.class
+    , TestTriXBad.class
+    // Thrift is done in the "thift" package
     , TestParserFactory.class
     , TestPipedRDFIterators.class
     , TestCollectorStream.class
+
 })
 
 

@@ -61,6 +61,7 @@ public class ManagementServer
         addServlet(context, new MgtCmdServlet(),    "/mgt") ;
         addServlet(context, new DumpServlet(),      "/dump") ;
         addServlet(context, new StatsServlet(),     "/stats") ;
+        addServlet(context, new PingServlet(),      "/ping") ;
         
         return server ; 
         // Old plan
