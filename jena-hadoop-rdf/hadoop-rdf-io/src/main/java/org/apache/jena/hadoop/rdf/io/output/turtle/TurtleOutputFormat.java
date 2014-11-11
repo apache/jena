@@ -33,8 +33,6 @@ import com.hp.hpl.jena.graph.Triple;
 /**
  * Turtle output format
  * 
- * 
- * 
  * @param <TKey>
  *            Key type
  */

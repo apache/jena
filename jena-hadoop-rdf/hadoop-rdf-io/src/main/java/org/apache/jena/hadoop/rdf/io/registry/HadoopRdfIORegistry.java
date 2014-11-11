@@ -17,10 +17,9 @@ import org.apache.jena.riot.Lang;
  * readers and writers based on a provided {@link Lang}
  * <p>
  * Readers and writers are dynamically discovered using the Java
- * {@link ServiceLoader} mechanism. This will look for files under
+ * {@link ServiceLoader} mechanism. This will look for a file under
  * {@code META-INF/services} named
- * {@code org.apache.jena.hadoop.rdf.io.registry.ReaderFactory} and
- * {@code org.apache.jena.hadoop.rdf.io.registry.WriterFactory}. These follow
+ * {@code org.apache.jena.hadoop.rdf.io.registry.ReaderFactory} . This follows
  * the standard {@linkplain ServiceLoader} format of provided one class name per
  * line which implements the relevant interface.
  * </p>
