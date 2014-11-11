@@ -33,5 +33,10 @@ public interface ResultSetWriter {
      * Write the ResultSet to the Writer
      */
     public void write(Writer out, ResultSet resultSet, Context context) ;
+    
+    /**
+     * Write a boolean result to the output stream
+     */
+    public void write(OutputStream out, boolean result, Context context);
 }
 

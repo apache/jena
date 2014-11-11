@@ -61,7 +61,7 @@ public class ResultSetMgr {
         return read(uri, null) ;
     }
     
-    /** Read a result set from the URI, in the speficied syntax */ 
+    /** Read a result set from the URI, in the specified syntax */ 
     public static ResultSet read(String uri, Lang lang) {
         return parse(uri, lang, null) ;
     }
@@ -151,7 +151,7 @@ public class ResultSetMgr {
     
     // -------------------------------
 
-    /** Write a SPARQL result set to the output stream in the speciifcied language/syntax.
+    /** Write a SPARQL result set to the output stream in the specified language/syntax.
      * @param out
      * @param resultSet
      * @param lang
@@ -161,6 +161,18 @@ public class ResultSetMgr {
         if ( f == null )
             throw new RiotException("No resultSet writer for "+lang) ;
         f.create(lang).write(out, resultSet, null) ;
+    }
+    
+    /** Write a SPARQL boolean result to the output stream in the specified language/syntax.
+     * @param out
+     * @param resultSet
+     * @param lang
+     */
+    public static void write(OutputStream out, boolean result, Lang lang) {
+        ResultSetWriterFactory f = ResultSetWriterRegistry.lookup(lang) ;
+        if ( f == null )
+            throw new RiotException("No resultSet writer for "+lang) ;
+        f.create(lang).write(out, result, null) ;
     }
     
 //    /** Write a SPARQL result set to the {@link java.io.Writer} in the speciifcied language/syntax.
