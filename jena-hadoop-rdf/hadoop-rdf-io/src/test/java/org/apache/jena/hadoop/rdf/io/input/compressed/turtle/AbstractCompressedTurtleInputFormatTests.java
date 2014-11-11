@@ -21,8 +21,8 @@ package org.apache.jena.hadoop.rdf.io.input.compressed.turtle;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputFormat;
-import org.apache.jena.hadoop.rdf.io.input.TurtleInputFormat;
 import org.apache.jena.hadoop.rdf.io.input.compressed.AbstractCompressedWholeFileTripleInputFormatTests;
+import org.apache.jena.hadoop.rdf.io.input.turtle.TurtleInputFormat;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 

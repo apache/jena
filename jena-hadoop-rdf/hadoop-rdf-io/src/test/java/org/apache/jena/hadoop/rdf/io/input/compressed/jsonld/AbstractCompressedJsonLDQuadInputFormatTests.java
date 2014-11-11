@@ -21,8 +21,8 @@ package org.apache.jena.hadoop.rdf.io.input.compressed.jsonld;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputFormat;
-import org.apache.jena.hadoop.rdf.io.input.JsonLDQuadInputFormat;
 import org.apache.jena.hadoop.rdf.io.input.compressed.AbstractCompressedWholeFileQuadInputFormatTests;
+import org.apache.jena.hadoop.rdf.io.input.jsonld.JsonLDQuadInputFormat;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 

@@ -21,8 +21,8 @@ package org.apache.jena.hadoop.rdf.io.input.compressed.ntriples;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputFormat;
-import org.apache.jena.hadoop.rdf.io.input.NTriplesInputFormat;
 import org.apache.jena.hadoop.rdf.io.input.compressed.AbstractCompressedTriplesInputFormatTests;
+import org.apache.jena.hadoop.rdf.io.input.ntriples.NTriplesInputFormat;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
 

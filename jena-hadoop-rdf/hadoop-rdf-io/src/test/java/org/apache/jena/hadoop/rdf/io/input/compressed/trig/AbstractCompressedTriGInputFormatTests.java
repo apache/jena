@@ -21,8 +21,8 @@ package org.apache.jena.hadoop.rdf.io.input.compressed.trig;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputFormat;
-import org.apache.jena.hadoop.rdf.io.input.TriGInputFormat;
 import org.apache.jena.hadoop.rdf.io.input.compressed.AbstractCompressedWholeFileQuadInputFormatTests;
+import org.apache.jena.hadoop.rdf.io.input.trig.TriGInputFormat;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 

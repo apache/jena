@@ -22,6 +22,10 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.jena.hadoop.rdf.io.input.readers.ntriples.WholeFileNTriplesReader;
+import org.apache.jena.hadoop.rdf.io.input.readers.rdfjson.RdfJsonReader;
+import org.apache.jena.hadoop.rdf.io.input.readers.rdfxml.RdfXmlReader;
+import org.apache.jena.hadoop.rdf.io.input.readers.turtle.TurtleReader;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
