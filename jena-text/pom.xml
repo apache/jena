@@ -59,22 +59,26 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
+      <version>4.6.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-analyzers-common</artifactId>
+      <version>4.6.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-queryparser</artifactId>
+      <version>4.6.1</version>
     </dependency>
 
     <!-- Solr client -->
     <dependency>
       <artifactId>solr-solrj</artifactId>
       <groupId>org.apache.solr</groupId>
+      <version>4.6.1</version>
     </dependency>
 
     <!-- Embedded server if used for testing
@@ -139,7 +143,8 @@
 	  <includes>
 	    <include>**/TS_*.java</include>
 	  </includes>
-	</configuration>
+      <skipTests>true</skipTests>
+    </configuration>
       </plugin>
 
       <plugin>

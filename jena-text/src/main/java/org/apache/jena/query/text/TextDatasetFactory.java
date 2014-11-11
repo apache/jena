@@ -82,13 +82,7 @@ public class TextDatasetFactory
         return index ;
     }
 
-    public static TextIndex createMinimalLuceneIndex(Hashtable cfg, EntityDefinition entMap)
-    {
-        TextIndex index = new TextIndexLuceneMinimal(cfg, entMap) ;
-        return index ;
-    }
-
-    /** Create a text-indexed dataset, using Lucene */ 
+    /** Create a text-indexed dataset, using Lucene */
     public static Dataset createLucene(Dataset base, Directory directory, EntityDefinition entMap)
     {
         TextIndex index = createLuceneIndex(directory, entMap) ;

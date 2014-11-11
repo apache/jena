@@ -42,6 +42,13 @@ public class TextIndexLuceneMultiLingual extends TextIndexLucene {
         }
     }
 
+    TextIndex getIndex(String lang) {
+        if (lang == null)
+            return indexes.get("default");
+        else
+            return indexes.get(lang);
+    }
+
     public void startIndexing() {
         if (indexes == null)
             return;

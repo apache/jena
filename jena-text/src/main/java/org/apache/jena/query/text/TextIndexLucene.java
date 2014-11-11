@@ -358,9 +358,9 @@ public class TextIndexLucene implements TextIndex {
 
     public List<NodeAndScore> queryWithScore$(IndexReader indexReader , String qs, int limit) throws ParseException, IOException {
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-        QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer);
+        //QueryParser queryParser = new QueryParser(VER, docDef.getPrimaryField(), analyzer);
+        QueryParser queryParser = new QueryParser(VER, qs.split(":")[0], analyzer);
         Query query = queryParser.parse(qs);
-
         if ( limit <= 0 )
             limit = MAX_N ;
         ScoreDoc[] sDocs = indexSearcher.search(query, limit).scoreDocs ;

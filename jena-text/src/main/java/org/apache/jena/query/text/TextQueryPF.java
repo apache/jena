@@ -91,37 +91,27 @@ public class TextQueryPF extends PropertyFunctionBase {
                 throw new QueryBuildException("Too many arguments in list : " + list) ;
         }
 
-        // If retrieved index is an instance of TextIndexLuceneMinimal, we work with multi lingual indexes.
-        // We need to switch with the right index.
+        // If retrieved index is an instance of TextIndexLuceneMultiLingual, we need to switch with the right index.
         // The pattern is :
-        // (?uri ?score) text:query (property "string" ['graph name'] ['indexed language'])
-        // ex : (?uri ?score) text:query (rdfs:label "school" 'myGraph' 'fr')
-        // note: default index is the unlocalized index related to the default graph.
-        if (server instanceof TextIndexLuceneMinimal) {
-            int size = argObject.getArgList().size();
-            //explicit index to select
-            String indexName = ((TextIndexLuceneMinimal)server).getDefaultGraphName(); //default index
-            File indexesDir = ((TextIndexLuceneMinimal)server).getIndexesDirectory();
-            String lang = null;
-            if (size > 2) {
-                indexName = argObject.getArgList().get(2).getLiteral().toString();
-                //language specified
-                if (size > 3) {
-                    Node langEl = argObject.getArgList().get(3);
-                    lang = langEl.getLiteral().toString();
-                    argObject.getArgList().remove(3);
-                }
-                argObject.getArgList().remove(2);
-            }
-            File indexDir = new File(indexesDir, indexName);
-            if (lang != null)
-                indexDir = new File(indexDir, lang);
-            try {
-                Directory dir = FSDirectory.open(indexDir);
-                server = new TextIndexLucene(dir, server.getDocDef(), lang);
-            } catch (IOException e) {
+        // (?uri ?score) text:query (property 'string' ['lang:language'])
+        // ex : (?uri ?score) text:query (rdfs:label 'livre' 'lang:fr')
+        // note: default index is the unlocalized index (if lang arg is not present).
+        if (server instanceof TextIndexLuceneMultiLingual) {
+            String lang = getArg("lang", argObject);
+            server = ((TextIndexLuceneMultiLingual)server).getIndex(lang);
+        }
+    }
+
+    private String getArg(String prefix, PropFuncArg argObject) {
+        for (Iterator it = argObject.getArgList().iterator(); it.hasNext(); ) {
+            Node node = (Node)it.next();
+            if (node.isLiteral()) {
+                String arg = node.getLiteral().toString();
+                if (arg.startsWith(prefix + ":"))
+                    return arg.split(":")[1];
             }
         }
+        return null;
     }
 
     private static TextIndex chooseTextIndex(DatasetGraph dsg) {
@@ -185,7 +175,6 @@ public class TextQueryPF extends PropertyFunctionBase {
         if (s.isLiteral())
             // Does not match
             return IterLib.noResults(execCxt) ;
-
         StrMatch match = objectToStruct(scoreVar, argObject) ;
         if (match == null) {
             // can't match
