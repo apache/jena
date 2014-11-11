@@ -443,11 +443,16 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return Iter.operate(stream, action) ;
     }
 
+    /** See {@linkplain #append(Iterator, Iterator)} for scale considerations */ 
     public static <T> Iterator<T> append(Iterable<T> iter1, Iterable<T> iter2) {
         return IteratorCons.create(iterator(iter1), iterator(iter2)) ;
     }
 
     // Could try for <? extends T> on each arg.
+    /** Join two iterators.
+     * If there potentially going to be many iterators, it is better to 
+     * create an {@linkplain IteratorConcat} explicitly and add each iterator
+     */
     public static <T> Iterator<T> append(Iterator<? extends T> iter1, Iterator<? extends T> iter2) {
         return IteratorCons.create(iter1, iter2) ;
     }
