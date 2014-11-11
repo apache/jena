@@ -22,8 +22,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.RecordReader;
-import org.apache.jena.hadoop.rdf.io.input.readers.nquads.WholeFileNQuadsReader;
-import org.apache.jena.hadoop.rdf.io.input.readers.trig.TriGReader;
+import org.apache.jena.hadoop.rdf.io.registry.HadoopRdfIORegistry;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
@@ -32,23 +31,19 @@ import com.hp.hpl.jena.sparql.core.Quad;
 
 /**
  * A record reader that reads triples from any RDF quads format
- * 
- * 
- * 
  */
 public class QuadsReader extends AbstractRdfReader<Quad, QuadWritable> {
 
     @Override
     protected RecordReader<LongWritable, QuadWritable> selectRecordReader(Lang lang) throws IOException {
         if (!RDFLanguages.isQuads(lang))
-            throw new IOException(lang.getLabel() + " is not a RDF quads format, perhaps you wanted TriplesInputFormat or TriplesOrQuadsInputFormat instead?");
+            throw new IOException(
+                    lang.getLabel()
+                            + " is not a RDF quads format, perhaps you wanted TriplesInputFormat or TriplesOrQuadsInputFormat instead?");
 
-        if (lang.equals(Lang.NQ) || lang.equals(Lang.NQUADS)) {
-            return new WholeFileNQuadsReader();
-        } else if (lang.equals(Lang.TRIG)) {
-            return new TriGReader();
-        }
-        throw new IOException(lang.getLabel() + " has no associated RecordReader implementation");
+        // This will throw an appropriate error if the language does not support
+        // triples
+        return HadoopRdfIORegistry.createQuadReader(lang);
     }
 
 }

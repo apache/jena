@@ -22,12 +22,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.RecordReader;
-import org.apache.jena.hadoop.rdf.io.input.readers.nquads.WholeFileNQuadsReader;
-import org.apache.jena.hadoop.rdf.io.input.readers.ntriples.WholeFileNTriplesReader;
-import org.apache.jena.hadoop.rdf.io.input.readers.rdfjson.RdfJsonReader;
-import org.apache.jena.hadoop.rdf.io.input.readers.rdfxml.RdfXmlReader;
-import org.apache.jena.hadoop.rdf.io.input.readers.trig.TriGReader;
-import org.apache.jena.hadoop.rdf.io.input.readers.turtle.TurtleReader;
+import org.apache.jena.hadoop.rdf.io.registry.HadoopRdfIORegistry;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
@@ -51,20 +46,14 @@ public class TriplesOrQuadsReader extends AbstractRdfReader<Quad, QuadWritable> 
         if (!RDFLanguages.isQuads(lang) && !RDFLanguages.isTriples(lang))
             throw new IOException(lang.getLabel() + " is not a RDF triples/quads format");
 
-        if (lang.equals(Lang.NQ) || lang.equals(Lang.NQUADS)) {
-            return new WholeFileNQuadsReader();
-        } else if (lang.equals(Lang.TRIG)) {
-            return new TriGReader();
-        } else if (lang.equals(Lang.NTRIPLES) || lang.equals(Lang.NT)) {
-            return new TriplesToQuadsReader(new WholeFileNTriplesReader());
-        } else if (lang.equals(Lang.TTL) || lang.equals(Lang.TURTLE) || lang.equals(Lang.N3)) {
-            return new TriplesToQuadsReader(new TurtleReader());
-        } else if (lang.equals(Lang.RDFXML)) {
-            return new TriplesToQuadsReader(new RdfXmlReader());
-        } else if (lang.equals(Lang.RDFJSON)) {
-            return new TriplesToQuadsReader(new RdfJsonReader());
+        if (HadoopRdfIORegistry.hasQuadReader(lang)) {
+            // Supports quads directly
+            return HadoopRdfIORegistry.createQuadReader(lang);
+        } else {
+            // Try to create a triples reader and wrap upwards into quads
+            // This will throw an error if a triple reader is not available
+            return new TriplesToQuadsReader(HadoopRdfIORegistry.createTripleReader(lang));
         }
-        throw new IOException(lang.getLabel() + " has no associated RecordReader implementation");
     }
 
     /**

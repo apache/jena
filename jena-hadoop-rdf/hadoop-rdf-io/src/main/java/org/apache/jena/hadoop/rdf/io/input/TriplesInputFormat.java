@@ -27,13 +27,9 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.jena.hadoop.rdf.io.input.readers.TriplesReader;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
-
 /**
  * RDF input format that can handle any RDF triples format that ARQ supports
  * selecting the format to use for each file based upon the file extension
- * 
- * 
- * 
  */
 public class TriplesInputFormat extends AbstractWholeFileInputFormat<LongWritable, TripleWritable> {
 
