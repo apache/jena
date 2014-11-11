@@ -5,24 +5,43 @@ Fork of Apache Jena from tag jena-2.12.1 (version 050c298ada38749a1ff166a77851b9
 
 This fork in used to implement scoring access, multi-lingual indexing and multi-index management in **jena-text** (branch multilingual-indexing)
 
+Read Jena text documentation first : http://jena.apache.org/documentation/query/text-query.html
 
 
-Index creation
+Combining Lucene indexes with datasets
 --------------
 
+In the following cases, **dir** is a lucene Directory abstract type.
+It could be a disk index with 
 ```
+File folder = new File("./myIndex");
+Directory dir = FSDirectory.open(folder);
+```
+or in memory with 
+```
+Directory dir = new RAMDirectory();
+```
+
+**entDef** is the definition of predicates to index.
+``` 
+EntityDefinition entDef = new EntityDefinition("uri", "text", RDFS.label);
+```
+
+Case 1: Standard index
+```
+TextIndex index = TextDatasetFactory.createLuceneIndex(dir, entDef);
 Dataset ds = TextDatasetFactory.create(dataset, index);
 ```
 
 
-Case 2: On localized index for all the dataset (ex: french)<br/>
+Case 2: Localized index (ex: french)
 ```
 TextIndex index = TextDatasetFactory.createLuceneIndexLocalized(dir, entDef, "fr");
 Dataset ds = TextDatasetFactory.create(dataset, index);
 ```
 
 
-Case 3: On multi-lingual index for all the dataset (ex: french, english)<br/>
+Case 3: Multilingual indexes(ex: french, english)
 ```
 TextIndex index = TextDatasetFactory.createLuceneIndexMultiLingual(dir, entDef, new String[]{"fr", "en"});
 Dataset ds = TextDatasetFactory.create(dataset, index);
