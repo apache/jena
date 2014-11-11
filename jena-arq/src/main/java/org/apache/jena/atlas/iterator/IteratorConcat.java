@@ -37,7 +37,6 @@ public class IteratorConcat<T> implements Iterator<T>
     private Iterator<T> removeFrom = null ;
     boolean finished = false ;
     
-    /** @see IteratorCons */
     public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2)
     {
         if (iter2 == null) return iter1 ;

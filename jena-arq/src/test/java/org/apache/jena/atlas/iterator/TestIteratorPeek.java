@@ -45,7 +45,7 @@ public class TestIteratorPeek extends BaseTest
     @Test public void iter_01() 
     {
         Iter<String> iter = Iter.iter(data2) ;
-        iter = iter.append(data2.iterator()) ;
+        iter = iter.concat(data2.iterator()) ;
         test(iter, "x", "y", "z", "x", "y", "z") ;
     }
     

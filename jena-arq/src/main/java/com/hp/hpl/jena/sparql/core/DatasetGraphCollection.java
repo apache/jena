@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.core;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorConcat;
 import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -70,7 +71,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
     {
         Iterator<Node> gnames = listGraphNodes() ;
-        Iterator<Quad> iter = null ;
+        IteratorConcat<Quad> iter = new IteratorConcat<>() ;
         // Named graphs
         for ( ; gnames.hasNext() ; )  
         {
@@ -78,7 +79,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
             Iterator<Quad> qIter = findInSpecificNamedGraph(gn, s, p, o) ;
             if ( qIter != null )
                 // copes with null for iter
-                iter = Iter.append(iter, qIter) ;
+                iter.add(qIter) ;
         }
         return iter ;
     }
