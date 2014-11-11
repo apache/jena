@@ -19,7 +19,8 @@
 package org.apache.jena.hadoop.rdf.io.input;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
@@ -41,15 +42,16 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * 
  */
 public abstract class AbstractWholeFileQuadInputFormatTests extends AbstractNodeTupleInputFormatTests<Quad, QuadWritable> {
+    
+    private static final Charset utf8 = Charset.forName("utf-8");
 
     @Override
     protected boolean canSplitInputs() {
         return false;
     }
 
-    @SuppressWarnings("deprecation")
-    private void writeTuples(Dataset ds, Writer writer) {
-        RDFDataMgr.write(writer, ds, RDFWriterRegistry.defaultSerialization(this.getRdfLanguage()));
+    private void writeTuples(Dataset ds, OutputStream output) {
+        RDFDataMgr.write(output, ds, RDFWriterRegistry.defaultSerialization(this.getRdfLanguage()));
     }
 
     /**
@@ -59,7 +61,7 @@ public abstract class AbstractWholeFileQuadInputFormatTests extends AbstractNode
      */
     protected abstract Lang getRdfLanguage();
 
-    private void writeGoodTuples(Writer writer, int num) throws IOException {
+    private void writeGoodTuples(OutputStream output, int num) throws IOException {
         Dataset ds = DatasetFactory.createMem();
         Model m = ModelFactory.createDefaultModel();
         Resource currSubj = m.createResource("http://example.org/subjects/0");
@@ -77,35 +79,37 @@ public abstract class AbstractWholeFileQuadInputFormatTests extends AbstractNode
         if (!m.isEmpty()) {
             ds.addNamedModel("http://example.org/graphs/extra", m);
         }
-        this.writeTuples(ds, writer);
+        this.writeTuples(ds, output);
     }
 
     @Override
-    protected final void generateTuples(Writer writer, int num) throws IOException {
-        this.writeGoodTuples(writer, num);
-        writer.close();
+    protected final void generateTuples(OutputStream output, int num) throws IOException {
+        this.writeGoodTuples(output, num);
+        output.close();
     }
 
     @Override
-    protected final void generateMixedTuples(Writer writer, int num) throws IOException {
+    protected final void generateMixedTuples(OutputStream output, int num) throws IOException {
         // Write good data
-        this.writeGoodTuples(writer, num / 2);
+        this.writeGoodTuples(output, num / 2);
 
         // Write junk data
+        byte[] junk = "junk data\n".getBytes(utf8);
         for (int i = 0; i < num / 2; i++) {
-            writer.write("junk data\n");
+            output.write(junk);
         }
 
-        writer.flush();
-        writer.close();
+        output.flush();
+        output.close();
     }
 
     @Override
-    protected final void generateBadTuples(Writer writer, int num) throws IOException {
+    protected final void generateBadTuples(OutputStream output, int num) throws IOException {
+        byte[] junk = "junk data\n".getBytes(utf8);
         for (int i = 0; i < num; i++) {
-            writer.write("junk data\n");
+            output.write(junk);
         }
-        writer.flush();
-        writer.close();
+        output.flush();
+        output.close();
     }
 }

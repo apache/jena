@@ -22,8 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.nio.charset.Charset;
 
 import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configuration;
@@ -48,6 +47,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public abstract class AbstractCompressedWholeFileTripleInputFormatTests extends
         AbstractNodeTupleInputFormatTests<Triple, TripleWritable> {
 
+    private static final Charset utf8 = Charset.forName("utf-8");
+
     @Override
     protected Configuration prepareConfiguration() {
         Configuration config = super.prepareConfiguration();
@@ -56,14 +57,13 @@ public abstract class AbstractCompressedWholeFileTripleInputFormatTests extends
     }
 
     @Override
-    protected Writer getWriter(File f) throws IOException {
+    protected OutputStream getOutputStream(File f) throws IOException {
         CompressionCodec codec = this.getCompressionCodec();
         if (codec instanceof Configurable) {
             ((Configurable) codec).setConf(this.prepareConfiguration());
         }
         FileOutputStream fileOutput = new FileOutputStream(f, false);
-        OutputStream output = codec.createOutputStream(fileOutput);
-        return new OutputStreamWriter(output);
+        return codec.createOutputStream(fileOutput);
     }
 
     /**
@@ -82,9 +82,8 @@ public abstract class AbstractCompressedWholeFileTripleInputFormatTests extends
         return false;
     }
 
-    @SuppressWarnings("deprecation")
-    private void writeTuples(Model m, Writer writer) {
-        RDFDataMgr.write(writer, m, this.getRdfLanguage());
+    private void writeTuples(Model m, OutputStream output) {
+        RDFDataMgr.write(output, m, this.getRdfLanguage());
     }
 
     /**
@@ -95,7 +94,7 @@ public abstract class AbstractCompressedWholeFileTripleInputFormatTests extends
     protected abstract Lang getRdfLanguage();
 
     @Override
-    protected final void generateTuples(Writer writer, int num) throws IOException {
+    protected final void generateTuples(OutputStream output, int num) throws IOException {
         Model m = ModelFactory.createDefaultModel();
         Resource currSubj = m.createResource("http://example.org/subjects/0");
         Property predicate = m.createProperty("http://example.org/predicate");
@@ -105,12 +104,12 @@ public abstract class AbstractCompressedWholeFileTripleInputFormatTests extends
             }
             m.add(currSubj, predicate, m.createTypedLiteral(i));
         }
-        this.writeTuples(m, writer);
-        writer.close();
+        this.writeTuples(m, output);
+        output.close();
     }
 
     @Override
-    protected final void generateMixedTuples(Writer writer, int num) throws IOException {
+    protected final void generateMixedTuples(OutputStream output, int num) throws IOException {
         // Write good data
         Model m = ModelFactory.createDefaultModel();
         Resource currSubj = m.createResource("http://example.org/subjects/0");
@@ -121,23 +120,25 @@ public abstract class AbstractCompressedWholeFileTripleInputFormatTests extends
             }
             m.add(currSubj, predicate, m.createTypedLiteral(i));
         }
-        this.writeTuples(m, writer);
+        this.writeTuples(m, output);
 
         // Write junk data
+        byte[] junk = "junk data\n".getBytes(utf8);
         for (int i = 0; i < num / 2; i++) {
-            writer.write("junk data\n");
+            output.write(junk);
         }
 
-        writer.flush();
-        writer.close();
+        output.flush();
+        output.close();
     }
 
     @Override
-    protected final void generateBadTuples(Writer writer, int num) throws IOException {
+    protected final void generateBadTuples(OutputStream output, int num) throws IOException {
+        byte[] junk = "junk data\n".getBytes(utf8);
         for (int i = 0; i < num; i++) {
-            writer.write("junk data\n");
+            output.write(junk);
         }
-        writer.flush();
-        writer.close();
+        output.flush();
+        output.close();
     }
 }

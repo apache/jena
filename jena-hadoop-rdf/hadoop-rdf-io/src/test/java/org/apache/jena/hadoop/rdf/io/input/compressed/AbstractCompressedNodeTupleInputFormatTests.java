@@ -22,9 +22,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-
 import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.compress.CompressionCodec;
@@ -41,7 +38,7 @@ import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
  */
 public abstract class AbstractCompressedNodeTupleInputFormatTests<TValue, T extends AbstractNodeTupleWritable<TValue>> extends
         AbstractNodeTupleInputFormatTests<TValue, T> {
-
+    
     @Override
     protected Configuration prepareConfiguration() {
         Configuration config = super.prepareConfiguration();
@@ -50,14 +47,13 @@ public abstract class AbstractCompressedNodeTupleInputFormatTests<TValue, T exte
     }
 
     @Override
-    protected Writer getWriter(File f) throws IOException {
+    protected OutputStream getOutputStream(File f) throws IOException {
         CompressionCodec codec = this.getCompressionCodec();
         if (codec instanceof Configurable) {
             ((Configurable) codec).setConf(this.prepareConfiguration());
         }
         FileOutputStream fileOutput = new FileOutputStream(f, false);
-        OutputStream output = codec.createOutputStream(fileOutput);
-        return new OutputStreamWriter(output);
+        return codec.createOutputStream(fileOutput);
     }
 
     /**

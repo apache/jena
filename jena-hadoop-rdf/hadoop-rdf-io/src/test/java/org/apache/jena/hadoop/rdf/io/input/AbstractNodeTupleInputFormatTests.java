@@ -19,9 +19,9 @@
 package org.apache.jena.hadoop.rdf.io.input;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
@@ -52,7 +52,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Abstract node tuple input format tests
@@ -98,11 +97,16 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
     public void afterTest() {
         // Should be unnecessary since JUnit will clean up the temporary folder
         // anyway but best to do this regardless
-        empty.delete();
-        small.delete();
-        large.delete();
-        bad.delete();
-        mixed.delete();
+        if (empty != null)
+            empty.delete();
+        if (small != null)
+            small.delete();
+        if (large != null)
+            large.delete();
+        if (bad != null)
+            bad.delete();
+        if (mixed != null)
+            mixed.delete();
     }
 
     /**
@@ -152,31 +156,31 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws IOException
      */
     protected final void generateTuples(File f, int num) throws IOException {
-        this.generateTuples(this.getWriter(f), num);
+        this.generateTuples(this.getOutputStream(f), num);
     }
 
     /**
-     * Gets the writer to use for generating tuples
+     * Gets the output stream to use for generating tuples
      * 
      * @param f
      *            File
-     * @return Writer
+     * @return Output Stream
      * @throws IOException
      */
-    protected Writer getWriter(File f) throws IOException {
-        return new FileWriter(f, false);
+    protected OutputStream getOutputStream(File f) throws IOException {
+        return new FileOutputStream(f, false);
     }
 
     /**
      * Generates tuples used for tests
      * 
-     * @param writer
-     *            Writer to write to
+     * @param output
+     *            Output Stream to write to
      * @param num
      *            Number of tuples to generate
      * @throws IOException
      */
-    protected abstract void generateTuples(Writer writer, int num) throws IOException;
+    protected abstract void generateTuples(OutputStream output, int num) throws IOException;
 
     /**
      * Generates bad tuples used for tests
@@ -188,19 +192,19 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws IOException
      */
     protected final void generateBadTuples(File f, int num) throws IOException {
-        this.generateBadTuples(this.getWriter(f), num);
+        this.generateBadTuples(this.getOutputStream(f), num);
     }
 
     /**
      * Generates bad tuples used for tests
      * 
-     * @param writer
-     *            Writer to write to
+     * @param output
+     *            Output Stream to write to
      * @param num
      *            Number of bad tuples to generate
      * @throws IOException
      */
-    protected abstract void generateBadTuples(Writer writer, int num) throws IOException;
+    protected abstract void generateBadTuples(OutputStream output, int num) throws IOException;
 
     /**
      * Generates a mixture of good and bad tuples used for tests
@@ -213,20 +217,20 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @throws IOException
      */
     protected final void generateMixedTuples(File f, int num) throws IOException {
-        this.generateMixedTuples(this.getWriter(f), num);
+        this.generateMixedTuples(this.getOutputStream(f), num);
     }
 
     /**
      * Generates a mixture of good and bad tuples used for tests
      * 
-     * @param writer
-     *            Writer to write to
+     * @param output
+     *            Output Stream to write to
      * @param num
      *            Number of tuples to generate, they should be a 50/50 mix of
      *            good and bad tuples
      * @throws IOException
      */
-    protected abstract void generateMixedTuples(Writer write, int num) throws IOException;
+    protected abstract void generateMixedTuples(OutputStream output, int num) throws IOException;
 
     /**
      * Adds an input path to the job configuration
@@ -260,7 +264,8 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
             Assert.assertFalse(reader.nextKeyValue());
         } else {
             Assert.fail(String.format(
-                    "Expected progress of 0.0 or 1.0 before reader has been accessed for first time but got %f", progress));
+                    "Expected progress of 0.0 or 1.0 before reader has been accessed for first time but got %f",
+                    progress));
         }
 
         // Count tuples
@@ -283,7 +288,8 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
         return count;
     }
 
-    protected final void checkTuples(RecordReader<LongWritable, T> reader, int expected) throws IOException, InterruptedException {
+    protected final void checkTuples(RecordReader<LongWritable, T> reader, int expected) throws IOException,
+            InterruptedException {
         Assert.assertEquals(expected, this.countTuples(reader));
     }
 
@@ -495,8 +501,8 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      */
     @Test
     public final void multiple_inputs_02() throws IOException, InterruptedException, ClassNotFoundException {
-        testMultipleInputs(new File[] { folder.getRoot() }, this.canSplitInputs() ? 4 : 5, EMPTY_SIZE + SMALL_SIZE + LARGE_SIZE
-                + (MIXED_SIZE / 2));
+        testMultipleInputs(new File[] { folder.getRoot() }, this.canSplitInputs() ? 4 : 5, EMPTY_SIZE + SMALL_SIZE
+                + LARGE_SIZE + (MIXED_SIZE / 2));
     }
 
     protected final void testSplitInputs(Configuration config, File[] inputs, int expectedSplits, int expectedTuples)
@@ -536,7 +542,7 @@ public abstract class AbstractNodeTupleInputFormatTests<TValue, T extends Abstra
      * @param split
      *            Input split
      * @return True if a valid split, false otherwise
-     * @throws IOException 
+     * @throws IOException
      */
     protected boolean isValidSplit(InputSplit split, Configuration config) throws IOException {
         return split instanceof FileSplit;

@@ -19,7 +19,8 @@
 package org.apache.jena.hadoop.rdf.io.input;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
@@ -32,37 +33,40 @@ import com.hp.hpl.jena.graph.Triple;
  * 
  */
 public abstract class AbstractTriplesInputFormatTests extends AbstractNodeTupleInputFormatTests<Triple, TripleWritable> {
+    
+    private static final Charset utf8 = Charset.forName("utf-8");
 
     @Override
-    protected void generateTuples(Writer writer, int num) throws IOException {
+    protected void generateTuples(OutputStream output, int num) throws IOException {
         for (int i = 0; i < num; i++) {
-            writer.write("<http://subjects/" + i + "> <http://predicate> \"" + i + "\" .\n");
+            output.write(("<http://subjects/" + i + "> <http://predicate> \"" + i + "\" .\n").getBytes(utf8));
         }
-        writer.flush();
-        writer.close();
+        output.flush();
+        output.close();
     }
 
     @Override
-    protected void generateBadTuples(Writer writer, int num) throws IOException {
+    protected void generateBadTuples(OutputStream output, int num) throws IOException {
+        byte[] junk = "<http://broken\n".getBytes(utf8);
         for (int i = 0; i < num; i++) {
-            writer.write("<http://broken\n");
+            output.write(junk);
         }
-        writer.flush();
-        writer.close();
+        output.flush();
+        output.close();
     }
 
     @Override
-    protected void generateMixedTuples(Writer writer, int num) throws IOException {
+    protected void generateMixedTuples(OutputStream output, int num) throws IOException {
         boolean bad = false;
         for (int i = 0; i < num; i++, bad = !bad) {
             if (bad) {
-                writer.write("<http://broken\n");
+                output.write("<http://broken\n".getBytes(utf8));
             } else {
-                writer.write("<http://subjects/" + i + "> <http://predicate> \"" + i + "\" .\n");
+                output.write(("<http://subjects/" + i + "> <http://predicate> \"" + i + "\" .\n").getBytes(utf8));
             }
         }
-        writer.flush();
-        writer.close();
+        output.flush();
+        output.close();
     }
 
 }
