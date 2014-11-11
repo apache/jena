@@ -443,11 +443,18 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return Iter.operate(stream, action) ;
     }
 
+    /**
+     * @deprecated Use {@link #concat(Iterable, Iterable)} instead which is much more performant
+     */
+    @Deprecated
     public static <T> Iterator<T> append(Iterable<T> iter1, Iterable<T> iter2) {
         return IteratorCons.create(iterator(iter1), iterator(iter2)) ;
     }
 
-    // Could try for <? extends T> on each arg.
+    /**
+     * @deprecated Use {@link #concat(Iterator, Iterator)} instead which is much more performant
+     */
+    @Deprecated
     public static <T> Iterator<T> append(Iterator<? extends T> iter1, Iterator<? extends T> iter2) {
         return IteratorCons.create(iter1, iter2) ;
     }
@@ -747,7 +754,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
             return iter2 ;
         if ( iter2 == null )
             return iter1 ;
-        return iter1.append(iter2) ;
+        return iter1.concat(iter2) ;
     }
 
     public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2) {
@@ -755,7 +762,15 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
             return iter2 ;
         if ( iter2 == null )
             return iter1 ;
-        return Iter.iter(iter1).append(Iter.iter(iter2)) ;
+        return Iter.iter(iter1).concat(Iter.iter(iter2)) ;
+    }
+    
+    public static <T> Iterator<T> concat(Iterable<T> iter1, Iterable<T> iter2) {
+        if (iter1 == null)
+            return iter2.iterator();
+        if (iter2 == null)
+            return iter1.iterator();
+        return Iter.concat(iter1.iterator(), iter2.iterator());
     }
 
     public static <T> T first(Iterator<T> iter, Filter<T> filter) {
@@ -886,8 +901,16 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         apply(iterator, action) ;
     }
 
+    /**
+     * @deprecated Use {@link #concat(Iterator)} instead which is much more performant
+     */
+    @Deprecated
     public Iter<T> append(Iterator<T> iter) {
         return new Iter<>(IteratorCons.create(iterator, iter)) ;
+    }
+    
+    public Iter<T> concat(Iterator<T> iter) {
+        return new Iter<>(IteratorConcat.concat(iterator, iter));
     }
 
     /** Return an Iter that yields at most the first N items */

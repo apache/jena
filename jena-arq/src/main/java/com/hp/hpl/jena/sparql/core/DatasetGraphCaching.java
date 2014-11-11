@@ -177,7 +177,7 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
             for ( ; iter.hasNext() ; )
             {
                 Node gn = iter.next() ;
-                quads = Iter.append(quads, findInSpecificNamedGraph(dsg, gn, s, p, o)) ;
+                quads = Iter.concat(quads, findInSpecificNamedGraph(dsg, gn, s, p, o)) ;
             }
             return quads ;
         }
