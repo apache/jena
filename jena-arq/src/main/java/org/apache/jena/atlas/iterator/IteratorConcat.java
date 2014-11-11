@@ -37,6 +37,13 @@ public class IteratorConcat<T> implements Iterator<T>
     private Iterator<T> removeFrom = null ;
     boolean finished = false ;
     
+    /** 
+     * Usually better to create an IteratorConcat explicitly and add iterator if there are going to be many.
+     * @param iter1
+     * @param iter2
+     * @return Iterator
+     * @see IteratorCons
+     */
     public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2)
     {
         if (iter2 == null) return iter1 ;

@@ -72,13 +72,13 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     {
         Iterator<Node> gnames = listGraphNodes() ;
         IteratorConcat<Quad> iter = new IteratorConcat<>() ;
+
         // Named graphs
         for ( ; gnames.hasNext() ; )  
         {
             Node gn = gnames.next();
             Iterator<Quad> qIter = findInSpecificNamedGraph(gn, s, p, o) ;
             if ( qIter != null )
-                // copes with null for iter
                 iter.add(qIter) ;
         }
         return iter ;
