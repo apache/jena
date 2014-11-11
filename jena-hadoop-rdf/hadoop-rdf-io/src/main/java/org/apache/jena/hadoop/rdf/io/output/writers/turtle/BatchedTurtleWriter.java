@@ -16,36 +16,39 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.nquads;
+package org.apache.jena.hadoop.rdf.io.output.writers.turtle;
 
-import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.mapreduce.OutputFormat;
-import org.apache.jena.hadoop.rdf.io.output.AbstractQuadOutputFormatTests;
-import org.apache.jena.hadoop.rdf.types.QuadWritable;
+import java.io.Writer;
+
+import org.apache.jena.hadoop.rdf.io.output.writers.AbstractBatchedTripleWriter;
 import org.apache.jena.riot.Lang;
 
-
 /**
- * Tests for NQuads output format
+ * A record writer for Turtle that uses the batched approach, note that this
+ * approach will produce invalid data when blank nodes span batches
  * 
  * 
  * 
+ * @param <TKey>
  */
-public class NQuadsOutputTest extends AbstractQuadOutputFormatTests {
+public class BatchedTurtleWriter<TKey> extends
+		AbstractBatchedTripleWriter<TKey> {
 
-    @Override
-    protected String getFileExtension() {
-        return ".nq";
-    }
+	/**
+	 * Creates a new record writer
+	 * 
+	 * @param writer
+	 *            Writer
+	 * @param batchSize
+	 *            Batch size
+	 */
+	public BatchedTurtleWriter(Writer writer, long batchSize) {
+		super(writer, batchSize);
+	}
 
-    @Override
-    protected Lang getRdfLanguage() {
-        return Lang.NQUADS;
-    }
-
-    @Override
-    protected OutputFormat<NullWritable, QuadWritable> getOutputFormat() {
-        return new NQuadsOutputFormat<NullWritable>();
-    }
+	@Override
+	protected Lang getRdfLanguage() {
+		return Lang.TURTLE;
+	}
 
 }

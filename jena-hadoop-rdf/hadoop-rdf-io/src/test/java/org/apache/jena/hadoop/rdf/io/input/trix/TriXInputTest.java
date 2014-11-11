@@ -16,43 +16,35 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.writers;
+package org.apache.jena.hadoop.rdf.io.input.trix;
 
-import java.io.Writer;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.jena.hadoop.rdf.io.input.AbstractWholeFileQuadInputFormatTests;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+import org.apache.jena.riot.Lang;
 
-import org.apache.jena.riot.out.CharSpace;
-import org.apache.jena.riot.out.NodeFormatterNT;
 
 /**
- * A NTriples based node writer
+ * Tests for TriX input
  * 
- * 
- * 
- * @param <TValue>
- *            Value type
+ *
  */
-public class NTriplesNodeWriter<TValue> extends AbstractNodeWriter<TValue> {
+public class TriXInputTest extends AbstractWholeFileQuadInputFormatTests {
 
-    /**
-     * Creates a new writer
-     * 
-     * @param writer
-     *            Writer
-     */
-    public NTriplesNodeWriter(Writer writer) {
-        super(writer);
+    @Override
+    protected Lang getRdfLanguage() {
+        return Lang.TRIX;
     }
 
-    /**
-     * Creates a new writer
-     * 
-     * @param writer
-     *            Writer
-     * @param charSpace
-     *            Character space to use
-     */
-    public NTriplesNodeWriter(Writer writer, CharSpace charSpace) {
-        super(writer, new NodeFormatterNT(charSpace));
+    @Override
+    protected String getFileExtension() {
+        return ".trix";
+    }
+
+    @Override
+    protected InputFormat<LongWritable, QuadWritable> getInputFormat() {
+        return new TriXInputFormat();
     }
 
 }

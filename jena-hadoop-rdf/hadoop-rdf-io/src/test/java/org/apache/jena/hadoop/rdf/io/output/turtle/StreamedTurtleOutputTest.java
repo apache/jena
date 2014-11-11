@@ -26,7 +26,6 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.hadoop.rdf.io.output.AbstractTripleOutputFormatTests;
-import org.apache.jena.hadoop.rdf.io.output.TurtleOutputFormat;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 import org.junit.runner.RunWith;

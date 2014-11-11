@@ -16,35 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.writers;
+package org.apache.jena.hadoop.rdf.io.output.rdfjson;
 
 import java.io.Writer;
 
-import org.apache.jena.riot.Lang;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.hadoop.rdf.io.output.AbstractNodeTupleOutputFormat;
+import org.apache.jena.hadoop.rdf.io.output.writers.rdfjson.RdfJsonWriter;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
+
+import com.hp.hpl.jena.graph.Triple;
 
 /**
- * A record writer for RDF/XML
+ * RDF/JSON output format
+ * 
  * 
  * 
  * @param <TKey>
  *            Key type
- * 
  */
-public class RdfXmlWriter<TKey> extends AbstractWholeFileTripleWriter<TKey> {
+public class RdfJsonOutputFormat<TKey> extends AbstractNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
 
-    /**
-     * Creates a new record writer
-     * 
-     * @param writer
-     *            Writer
-     */
-    public RdfXmlWriter(Writer writer) {
-        super(writer);
+    @Override
+    protected String getFileExtension() {
+        return ".rj";
     }
 
     @Override
-    protected Lang getRdfLanguage() {
-        return Lang.RDFXML;
+    protected RecordWriter<TKey, TripleWritable> getRecordWriter(Writer writer, Configuration config) {
+        return new RdfJsonWriter<TKey>(writer);
     }
 
 }

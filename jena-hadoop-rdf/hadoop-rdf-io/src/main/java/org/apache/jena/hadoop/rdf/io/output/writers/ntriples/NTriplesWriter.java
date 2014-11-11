@@ -16,35 +16,43 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output;
+package org.apache.jena.hadoop.rdf.io.output.writers.ntriples;
 
 import java.io.Writer;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.writers.RdfJsonWriter;
-import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
+import org.apache.jena.hadoop.rdf.io.output.writers.AbstractLineBasedTripleWriter;
+import org.apache.jena.riot.out.CharSpace;
+import org.apache.jena.riot.out.NodeFormatterNT;
 
 /**
- * RDF/JSON output format
- * 
+ * A record writer for NTriples
  * 
  * 
  * @param <TKey>
  *            Key type
+ * 
  */
-public class RdfJsonOutputFormat<TKey> extends AbstractNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
+public class NTriplesWriter<TKey> extends AbstractLineBasedTripleWriter<TKey> {
 
-    @Override
-    protected String getFileExtension() {
-        return ".rj";
+    /**
+     * Creates a new writer
+     * 
+     * @param writer
+     *            Writer
+     */
+    public NTriplesWriter(Writer writer) {
+        super(writer, new NodeFormatterNT());
     }
 
-    @Override
-    protected RecordWriter<TKey, TripleWritable> getRecordWriter(Writer writer, Configuration config) {
-        return new RdfJsonWriter<TKey>(writer);
+    /**
+     * Creates a new writer using the given character space
+     * 
+     * @param writer
+     *            Writer
+     * @param charSpace
+     *            Character space
+     */
+    public NTriplesWriter(Writer writer, CharSpace charSpace) {
+        super(writer, new NodeFormatterNT(charSpace));
     }
-
 }

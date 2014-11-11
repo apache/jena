@@ -16,38 +16,37 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output;
+package org.apache.jena.hadoop.rdf.io.output.writers.trig;
 
 import java.io.Writer;
 
-import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.writers.BatchedTurtleWriter;
-import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
+import org.apache.jena.hadoop.rdf.io.output.writers.AbstractBatchedQuadWriter;
+import org.apache.jena.riot.Lang;
 
 /**
- * Output format for Turtle that uses a batched approach, note that this will
- * produce invalid data where blank nodes span batches so it is typically better
- * to use the {@link TurtleOutputFormat} instead
- * 
- * 
- * 
+ * A record writer for TriG that uses the batched approach, note that this
+ * approach will produce invalid data when blank nodes span batches
+ *  
  * @param <TKey>
  *            Key type
  */
-public class BatchedTurtleOutputFormat<TKey> extends
-		AbstractBatchedNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
+public class BatchedTriGWriter<TKey> extends AbstractBatchedQuadWriter<TKey> {
 
-	@Override
-	protected RecordWriter<TKey, TripleWritable> getRecordWriter(Writer writer,
-			long batchSize) {
-		return new BatchedTurtleWriter<TKey>(writer, batchSize);
+	/**
+	 * Creates a new record writer
+	 * 
+	 * @param writer
+	 *            Writer
+	 * @param batchSize
+	 *            Batch size
+	 */
+	public BatchedTriGWriter(Writer writer, long batchSize) {
+		super(writer, batchSize);
 	}
 
 	@Override
-	protected String getFileExtension() {
-		return ".ttl";
+	protected Lang getRdfLanguage() {
+		return Lang.TRIG;
 	}
 
 }

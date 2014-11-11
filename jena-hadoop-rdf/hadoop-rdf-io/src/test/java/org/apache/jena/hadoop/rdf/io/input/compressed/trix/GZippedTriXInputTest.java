@@ -16,29 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output;
+package org.apache.jena.hadoop.rdf.io.input.compressed.trix;
 
-import java.io.Writer;
-
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.writers.NTriplesNodeWriter;
-import org.apache.jena.hadoop.rdf.types.NodeWritable;
-
+import org.apache.hadoop.io.compress.GzipCodec;
+import org.apache.jena.hadoop.rdf.io.input.compressed.trig.AbstractCompressedTriGInputFormatTests;
 
 /**
- * NTriples based node output format
- * 
- * 
- * 
- * @param <TValue>
- *            Value type
+ * Tests for GZipped TriX input
  */
-public class NTriplesNodeOutputFormat<TValue> extends AbstractNodeOutputFormat<TValue> {
+public class GZippedTriXInputTest extends AbstractCompressedTriGInputFormatTests {
 
-    @Override
-    protected RecordWriter<NodeWritable, TValue> getRecordWriter(Writer writer, Configuration config) {
-        return new NTriplesNodeWriter<TValue>(writer);
+    /**
+     * Creates new tests
+     */
+    public GZippedTriXInputTest() {
+        super(".trix.gz", new GzipCodec());
     }
-
 }

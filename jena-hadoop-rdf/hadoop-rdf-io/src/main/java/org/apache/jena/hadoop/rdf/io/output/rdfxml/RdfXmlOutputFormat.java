@@ -16,35 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output;
+package org.apache.jena.hadoop.rdf.io.output.rdfxml;
 
 import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.writers.NQuadsWriter;
-import org.apache.jena.hadoop.rdf.types.QuadWritable;
+import org.apache.jena.hadoop.rdf.io.output.AbstractNodeTupleOutputFormat;
+import org.apache.jena.hadoop.rdf.io.output.writers.rdfxml.RdfXmlWriter;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
-import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.graph.Triple;
 
 /**
- * NQuads output format
+ * RDF/XML output format
  * 
  * 
  * 
  * @param <TKey>
  *            Key type
  */
-public class NQuadsOutputFormat<TKey> extends AbstractNodeTupleOutputFormat<TKey, Quad, QuadWritable> {
-
-    @Override
-    protected RecordWriter<TKey, QuadWritable> getRecordWriter(Writer writer, Configuration config) {
-        return new NQuadsWriter<TKey>(writer);
-    }
+public class RdfXmlOutputFormat<TKey> extends AbstractNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
 
     @Override
     protected String getFileExtension() {
-        return ".nq";
+        return ".rdf";
+    }
+
+    @Override
+    protected RecordWriter<TKey, TripleWritable> getRecordWriter(Writer writer, Configuration config) {
+        return new RdfXmlWriter<TKey>(writer);
     }
 
 }

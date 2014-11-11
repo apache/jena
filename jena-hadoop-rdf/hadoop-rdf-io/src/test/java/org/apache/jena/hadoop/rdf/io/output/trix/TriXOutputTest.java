@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.nquads;
+package org.apache.jena.hadoop.rdf.io.output.trix;
 
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.OutputFormat;
@@ -24,28 +24,24 @@ import org.apache.jena.hadoop.rdf.io.output.AbstractQuadOutputFormatTests;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 
-
 /**
- * Tests for NQuads output format
- * 
- * 
- * 
+ * Tests for TriX output format
  */
-public class NQuadsOutputTest extends AbstractQuadOutputFormatTests {
+public class TriXOutputTest extends AbstractQuadOutputFormatTests {
 
     @Override
     protected String getFileExtension() {
-        return ".nq";
+        return ".trix";
     }
 
     @Override
     protected Lang getRdfLanguage() {
-        return Lang.NQUADS;
+        return Lang.TRIX;
     }
 
     @Override
     protected OutputFormat<NullWritable, QuadWritable> getOutputFormat() {
-        return new NQuadsOutputFormat<NullWritable>();
+        return new TriXOutputFormat<NullWritable>();
     }
 
 }

@@ -16,22 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.writers;
+package org.apache.jena.hadoop.rdf.io.output.writers.ntriples;
 
 import java.io.Writer;
 
+import org.apache.jena.hadoop.rdf.io.output.writers.AbstractNodeWriter;
 import org.apache.jena.riot.out.CharSpace;
 import org.apache.jena.riot.out.NodeFormatterNT;
 
 /**
- * A record writer for NTriples
+ * A NTriples based node writer
  * 
  * 
- * @param <TKey>
- *            Key type
  * 
+ * @param <TValue>
+ *            Value type
  */
-public class NTriplesWriter<TKey> extends AbstractLineBasedTripleWriter<TKey> {
+public class NTriplesNodeWriter<TValue> extends AbstractNodeWriter<TValue> {
 
     /**
      * Creates a new writer
@@ -39,19 +40,20 @@ public class NTriplesWriter<TKey> extends AbstractLineBasedTripleWriter<TKey> {
      * @param writer
      *            Writer
      */
-    public NTriplesWriter(Writer writer) {
-        super(writer, new NodeFormatterNT());
+    public NTriplesNodeWriter(Writer writer) {
+        super(writer);
     }
 
     /**
-     * Creates a new writer using the given character space
+     * Creates a new writer
      * 
      * @param writer
      *            Writer
      * @param charSpace
-     *            Character space
+     *            Character space to use
      */
-    public NTriplesWriter(Writer writer, CharSpace charSpace) {
+    public NTriplesNodeWriter(Writer writer, CharSpace charSpace) {
         super(writer, new NodeFormatterNT(charSpace));
     }
+
 }

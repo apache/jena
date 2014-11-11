@@ -16,27 +16,43 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output;
+package org.apache.jena.hadoop.rdf.io.output.trig;
 
 import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.writers.JsonLDQuadWriter;
+import org.apache.jena.hadoop.rdf.io.output.AbstractStreamRdfNodeTupleOutputFormat;
+import org.apache.jena.hadoop.rdf.io.output.writers.StreamRdfQuadWriter;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.writer.WriterStreamRDFBlocks;
 
 import com.hp.hpl.jena.sparql.core.Quad;
 
-public class JsonLDQuadOutputFormat<TKey> extends AbstractNodeTupleOutputFormat<TKey, Quad, QuadWritable> {
+/**
+ * Output format for TriG
+ * 
+ * 
+ * 
+ * @param <TKey>
+ *            Key type
+ */
+public class TriGOutputFormat<TKey> extends AbstractStreamRdfNodeTupleOutputFormat<TKey, Quad, QuadWritable> {
 
     @Override
-    protected String getFileExtension() {
-        return ".jsonld";
+    protected RecordWriter<TKey, QuadWritable> getRecordWriter(StreamRDF stream, Writer writer, Configuration config) {
+        return new StreamRdfQuadWriter<TKey>(stream, writer);
     }
 
     @Override
-    protected RecordWriter<TKey, QuadWritable> getRecordWriter(Writer writer, Configuration config) {
-        return new JsonLDQuadWriter<TKey>(writer);
+    protected StreamRDF getStream(Writer writer, Configuration config) {
+        return new WriterStreamRDFBlocks(writer);
+    }
+
+    @Override
+    protected String getFileExtension() {
+        return ".trig";
     }
 
 }

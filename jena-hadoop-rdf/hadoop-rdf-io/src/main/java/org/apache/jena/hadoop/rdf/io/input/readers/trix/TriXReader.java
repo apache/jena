@@ -16,35 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.writers;
+package org.apache.jena.hadoop.rdf.io.input.readers.trix;
 
-import java.io.Writer;
-
+import org.apache.jena.hadoop.rdf.io.input.readers.AbstractWholeFileQuadReader;
 import org.apache.jena.riot.Lang;
 
 /**
- * A record writer for RDF/JSON
+ * A record reader for TriX files
  * 
  * 
- * @param <TKey>
- *            Key type
  * 
  */
-public class RdfJsonWriter<TKey> extends AbstractWholeFileTripleWriter<TKey> {
-
-    /**
-     * Creates a new record writer
-     * 
-     * @param writer
-     *            Writer
-     */
-    public RdfJsonWriter(Writer writer) {
-        super(writer);
-    }
+public class TriXReader extends AbstractWholeFileQuadReader {
 
     @Override
     protected Lang getRdfLanguage() {
-        return Lang.RDFJSON;
+        return Lang.TRIX;
     }
 
 }

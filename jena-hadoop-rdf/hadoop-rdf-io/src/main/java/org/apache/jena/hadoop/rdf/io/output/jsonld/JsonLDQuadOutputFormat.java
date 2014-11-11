@@ -16,22 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.writers;
+package org.apache.jena.hadoop.rdf.io.output.jsonld;
 
 import java.io.Writer;
 
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFLanguages;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.hadoop.rdf.io.output.AbstractNodeTupleOutputFormat;
+import org.apache.jena.hadoop.rdf.io.output.writers.jsonld.JsonLDQuadWriter;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
-public class JsonLDTripleWriter<TKey> extends AbstractWholeFileTripleWriter<TKey> {
+import com.hp.hpl.jena.sparql.core.Quad;
 
-    public JsonLDTripleWriter(Writer writer) {
-        super(writer);
+public class JsonLDQuadOutputFormat<TKey> extends AbstractNodeTupleOutputFormat<TKey, Quad, QuadWritable> {
+
+    @Override
+    protected String getFileExtension() {
+        return ".jsonld";
     }
 
     @Override
-    protected Lang getRdfLanguage() {
-        return RDFLanguages.JSONLD;
+    protected RecordWriter<TKey, QuadWritable> getRecordWriter(Writer writer, Configuration config) {
+        return new JsonLDQuadWriter<TKey>(writer);
     }
 
 }

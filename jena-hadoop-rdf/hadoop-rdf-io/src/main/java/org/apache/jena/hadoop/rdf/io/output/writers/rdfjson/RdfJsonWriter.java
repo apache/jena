@@ -16,38 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.writers;
+package org.apache.jena.hadoop.rdf.io.output.writers.rdfjson;
 
 import java.io.Writer;
 
+import org.apache.jena.hadoop.rdf.io.output.writers.AbstractWholeFileTripleWriter;
 import org.apache.jena.riot.Lang;
 
 /**
- * A record writer for Turtle that uses the batched approach, note that this
- * approach will produce invalid data when blank nodes span batches
- * 
+ * A record writer for RDF/JSON
  * 
  * 
  * @param <TKey>
+ *            Key type
+ * 
  */
-public class BatchedTurtleWriter<TKey> extends
-		AbstractBatchedTripleWriter<TKey> {
+public class RdfJsonWriter<TKey> extends AbstractWholeFileTripleWriter<TKey> {
 
-	/**
-	 * Creates a new record writer
-	 * 
-	 * @param writer
-	 *            Writer
-	 * @param batchSize
-	 *            Batch size
-	 */
-	public BatchedTurtleWriter(Writer writer, long batchSize) {
-		super(writer, batchSize);
-	}
+    /**
+     * Creates a new record writer
+     * 
+     * @param writer
+     *            Writer
+     */
+    public RdfJsonWriter(Writer writer) {
+        super(writer);
+    }
 
-	@Override
-	protected Lang getRdfLanguage() {
-		return Lang.TURTLE;
-	}
+    @Override
+    protected Lang getRdfLanguage() {
+        return Lang.RDFJSON;
+    }
 
 }

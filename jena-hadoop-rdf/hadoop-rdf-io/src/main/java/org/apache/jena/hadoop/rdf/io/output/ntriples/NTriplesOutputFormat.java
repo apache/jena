@@ -16,35 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output;
+package org.apache.jena.hadoop.rdf.io.output.ntriples;
 
 import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.writers.RdfXmlWriter;
+import org.apache.jena.hadoop.rdf.io.output.AbstractNodeTupleOutputFormat;
+import org.apache.jena.hadoop.rdf.io.output.writers.ntriples.NTriplesWriter;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 
 import com.hp.hpl.jena.graph.Triple;
 
 /**
- * RDF/XML output format
+ * NTriples output format
  * 
  * 
+ * @param <TKey> 
  * 
- * @param <TKey>
- *            Key type
  */
-public class RdfXmlOutputFormat<TKey> extends AbstractNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
-
-    @Override
-    protected String getFileExtension() {
-        return ".rdf";
-    }
+public class NTriplesOutputFormat<TKey> extends AbstractNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
 
     @Override
     protected RecordWriter<TKey, TripleWritable> getRecordWriter(Writer writer, Configuration config) {
-        return new RdfXmlWriter<TKey>(writer);
+        return new NTriplesWriter<TKey>(writer);
     }
+
+    @Override
+    protected String getFileExtension() {
+        return ".nt";
+    }
+
 
 }

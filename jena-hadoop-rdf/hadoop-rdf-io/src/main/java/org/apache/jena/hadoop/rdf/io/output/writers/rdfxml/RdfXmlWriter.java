@@ -16,36 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.nquads;
+package org.apache.jena.hadoop.rdf.io.output.writers.rdfxml;
 
-import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.mapreduce.OutputFormat;
-import org.apache.jena.hadoop.rdf.io.output.AbstractQuadOutputFormatTests;
-import org.apache.jena.hadoop.rdf.types.QuadWritable;
+import java.io.Writer;
+
+import org.apache.jena.hadoop.rdf.io.output.writers.AbstractWholeFileTripleWriter;
 import org.apache.jena.riot.Lang;
 
-
 /**
- * Tests for NQuads output format
+ * A record writer for RDF/XML
  * 
  * 
+ * @param <TKey>
+ *            Key type
  * 
  */
-public class NQuadsOutputTest extends AbstractQuadOutputFormatTests {
+public class RdfXmlWriter<TKey> extends AbstractWholeFileTripleWriter<TKey> {
 
-    @Override
-    protected String getFileExtension() {
-        return ".nq";
+    /**
+     * Creates a new record writer
+     * 
+     * @param writer
+     *            Writer
+     */
+    public RdfXmlWriter(Writer writer) {
+        super(writer);
     }
 
     @Override
     protected Lang getRdfLanguage() {
-        return Lang.NQUADS;
-    }
-
-    @Override
-    protected OutputFormat<NullWritable, QuadWritable> getOutputFormat() {
-        return new NQuadsOutputFormat<NullWritable>();
+        return Lang.RDFXML;
     }
 
 }

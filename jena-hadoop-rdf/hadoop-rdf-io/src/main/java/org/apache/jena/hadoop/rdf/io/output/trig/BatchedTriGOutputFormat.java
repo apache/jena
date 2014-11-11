@@ -16,12 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output;
+package org.apache.jena.hadoop.rdf.io.output.trig;
 
 import java.io.Writer;
 
 import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.writers.BatchedTriGWriter;
+import org.apache.jena.hadoop.rdf.io.output.AbstractBatchedNodeTupleOutputFormat;
+import org.apache.jena.hadoop.rdf.io.output.writers.trig.BatchedTriGWriter;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
 import com.hp.hpl.jena.sparql.core.Quad;

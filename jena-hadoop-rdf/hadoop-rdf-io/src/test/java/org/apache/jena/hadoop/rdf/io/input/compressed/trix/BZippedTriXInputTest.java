@@ -16,36 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.nquads;
+package org.apache.jena.hadoop.rdf.io.input.compressed.trix;
 
-import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.mapreduce.OutputFormat;
-import org.apache.jena.hadoop.rdf.io.output.AbstractQuadOutputFormatTests;
-import org.apache.jena.hadoop.rdf.types.QuadWritable;
-import org.apache.jena.riot.Lang;
-
+import org.apache.hadoop.io.compress.BZip2Codec;
+import org.apache.jena.hadoop.rdf.io.input.compressed.trig.AbstractCompressedTriGInputFormatTests;
 
 /**
- * Tests for NQuads output format
- * 
- * 
- * 
+ * Tests for BZipped TriX input
  */
-public class NQuadsOutputTest extends AbstractQuadOutputFormatTests {
+public class BZippedTriXInputTest extends AbstractCompressedTriGInputFormatTests {
 
-    @Override
-    protected String getFileExtension() {
-        return ".nq";
+    /**
+     * Creates new tests
+     */
+    public BZippedTriXInputTest() {
+        super(".trix.bz2", new BZip2Codec());
     }
-
-    @Override
-    protected Lang getRdfLanguage() {
-        return Lang.NQUADS;
-    }
-
-    @Override
-    protected OutputFormat<NullWritable, QuadWritable> getOutputFormat() {
-        return new NQuadsOutputFormat<NullWritable>();
-    }
-
 }

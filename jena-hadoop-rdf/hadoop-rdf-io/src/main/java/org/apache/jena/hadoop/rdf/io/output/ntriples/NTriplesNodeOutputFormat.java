@@ -16,41 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.writers;
+package org.apache.jena.hadoop.rdf.io.output.ntriples;
 
 import java.io.Writer;
 
-import org.apache.jena.riot.out.CharSpace;
-import org.apache.jena.riot.out.NodeFormatterNT;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.mapreduce.RecordWriter;
+import org.apache.jena.hadoop.rdf.io.output.AbstractNodeOutputFormat;
+import org.apache.jena.hadoop.rdf.io.output.writers.ntriples.NTriplesNodeWriter;
+import org.apache.jena.hadoop.rdf.types.NodeWritable;
+
 
 /**
- * A record writer for NQuads
+ * NTriples based node output format
  * 
  * 
  * 
- * @param <TKey>
+ * @param <TValue>
+ *            Value type
  */
-public class NQuadsWriter<TKey> extends AbstractLineBasedQuadWriter<TKey> {
+public class NTriplesNodeOutputFormat<TValue> extends AbstractNodeOutputFormat<TValue> {
 
-    /**
-     * Creates a new writer
-     * 
-     * @param writer
-     *            Writer
-     */
-    public NQuadsWriter(Writer writer) {
-        super(writer, new NodeFormatterNT());
+    @Override
+    protected RecordWriter<NodeWritable, TValue> getRecordWriter(Writer writer, Configuration config) {
+        return new NTriplesNodeWriter<TValue>(writer);
     }
 
-    /**
-     * Creates a new writer using the given character space
-     * 
-     * @param writer
-     *            Writer
-     * @param charSpace
-     *            Character space
-     */
-    public NQuadsWriter(Writer writer, CharSpace charSpace) {
-        super(writer, new NodeFormatterNT(charSpace));
-    }
 }

@@ -16,16 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.writers;
+package org.apache.jena.hadoop.rdf.io.output.writers.jsonld;
 
 import java.io.Writer;
 
+import org.apache.jena.hadoop.rdf.io.output.writers.AbstractWholeFileTripleWriter;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 
-public class JsonLDQuadWriter<TKey> extends AbstractWholeFileQuadWriter<TKey> {
+public class JsonLDTripleWriter<TKey> extends AbstractWholeFileTripleWriter<TKey> {
 
-    public JsonLDQuadWriter(Writer writer) {
+    public JsonLDTripleWriter(Writer writer) {
         super(writer);
     }
 

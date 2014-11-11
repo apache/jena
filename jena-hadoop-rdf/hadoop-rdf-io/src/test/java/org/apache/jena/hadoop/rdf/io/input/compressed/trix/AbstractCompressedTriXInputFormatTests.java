@@ -16,21 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.input.compressed.trig;
+package org.apache.jena.hadoop.rdf.io.input.compressed.trix;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.jena.hadoop.rdf.io.input.compressed.AbstractCompressedWholeFileQuadInputFormatTests;
-import org.apache.jena.hadoop.rdf.io.input.trig.TriGInputFormat;
+import org.apache.jena.hadoop.rdf.io.input.trix.TriXInputFormat;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
 import org.apache.jena.riot.Lang;
 
 
 /**
- * Abstract compressed TriG input tests
+ * Abstract compressed TriX input tests
  */
-public abstract class AbstractCompressedTriGInputFormatTests extends
+public abstract class AbstractCompressedTriXInputFormatTests extends
         AbstractCompressedWholeFileQuadInputFormatTests {
 
     private String ext;
@@ -44,7 +44,7 @@ public abstract class AbstractCompressedTriGInputFormatTests extends
      * @param codec
      *            Compression codec
      */
-    public AbstractCompressedTriGInputFormatTests(String ext, CompressionCodec codec) {
+    public AbstractCompressedTriXInputFormatTests(String ext, CompressionCodec codec) {
         this.ext = ext;
         this.codec = codec;
     }
@@ -61,12 +61,12 @@ public abstract class AbstractCompressedTriGInputFormatTests extends
 
     @Override
     protected final Lang getRdfLanguage() {
-        return Lang.TRIG;
+        return Lang.TRIX;
     }
 
     @Override
     protected final InputFormat<LongWritable, QuadWritable> getInputFormat() {
-        return new TriGInputFormat();
+        return new TriXInputFormat();
     }
 
 }

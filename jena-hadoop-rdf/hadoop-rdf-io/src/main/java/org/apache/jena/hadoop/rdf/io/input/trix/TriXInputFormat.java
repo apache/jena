@@ -16,36 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.writers;
+package org.apache.jena.hadoop.rdf.io.input.trix;
 
-import java.io.Writer;
+import java.io.IOException;
 
-import org.apache.jena.riot.Lang;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.jena.hadoop.rdf.io.input.AbstractWholeFileInputFormat;
+import org.apache.jena.hadoop.rdf.io.input.readers.trix.TriXReader;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
 
 /**
- * A record writer for TriG that uses the batched approach, note that this
- * approach will produce invalid data when blank nodes span batches
- *  
- * @param <TKey>
- *            Key type
+ * Input format for TriX
  */
-public class BatchedTriGWriter<TKey> extends AbstractBatchedQuadWriter<TKey> {
+public class TriXInputFormat extends AbstractWholeFileInputFormat<LongWritable, QuadWritable> {
 
-	/**
-	 * Creates a new record writer
-	 * 
-	 * @param writer
-	 *            Writer
-	 * @param batchSize
-	 *            Batch size
-	 */
-	public BatchedTriGWriter(Writer writer, long batchSize) {
-		super(writer, batchSize);
-	}
-
-	@Override
-	protected Lang getRdfLanguage() {
-		return Lang.TRIG;
-	}
+    @Override
+    public RecordReader<LongWritable, QuadWritable> createRecordReader(InputSplit split, TaskAttemptContext context)
+            throws IOException, InterruptedException {
+        return new TriXReader();
+    }
 
 }

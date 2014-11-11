@@ -21,7 +21,6 @@ package org.apache.jena.hadoop.rdf.io.output.rdfxml;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.jena.hadoop.rdf.io.output.AbstractTripleOutputFormatTests;
-import org.apache.jena.hadoop.rdf.io.output.RdfXmlOutputFormat;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
 
