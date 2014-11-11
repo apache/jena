@@ -4,8 +4,7 @@ ChangeLog for ARQ
 
 ==== Jena 2.12.2
 
-+ JENA-813 : Improve performance of DatasetGraphCollection, deprecate and remove usage of Iter.append() and
-             IteratorCons in favour of Iter.concat() and IteratorConcat
++ JENA-813 : Improve performance of DatasetGraphCollection for large numbes of named graphs.
 
 ==== Jena 2.12.1
 
