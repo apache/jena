@@ -16,35 +16,33 @@
  * limitations under the License.
  */
 
-package org.apache.jena.hadoop.rdf.io.output.turtle;
+package org.apache.jena.hadoop.rdf.io.output.thrift;
 
-import java.io.Writer;
-
-import org.apache.hadoop.mapreduce.RecordWriter;
-import org.apache.jena.hadoop.rdf.io.output.AbstractBatchedNodeTupleOutputFormat;
-import org.apache.jena.hadoop.rdf.io.output.writers.turtle.BatchedTurtleWriter;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.mapreduce.OutputFormat;
+import org.apache.jena.hadoop.rdf.io.output.AbstractTripleOutputFormatTests;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
-
-import com.hp.hpl.jena.graph.Triple;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
 
 /**
- * Output format for Turtle that uses a batched approach, note that this will
- * produce invalid data where blank nodes span batches so it is typically better
- * to use the {@link TurtleOutputFormat} instead
- * 
- * @param <TKey>
- *            Key type
+ * Tests for Thrift output format
  */
-public class BatchedTurtleOutputFormat<TKey> extends AbstractBatchedNodeTupleOutputFormat<TKey, Triple, TripleWritable> {
-
-    @Override
-    protected RecordWriter<TKey, TripleWritable> getRecordWriter(Writer writer, long batchSize) {
-        return new BatchedTurtleWriter<TKey>(writer, batchSize);
-    }
+public class ThriftTripleOutputTest extends AbstractTripleOutputFormatTests {
 
     @Override
     protected String getFileExtension() {
-        return ".ttl";
+        return ".trdf";
+    }
+
+    @Override
+    protected Lang getRdfLanguage() {
+        return RDFLanguages.THRIFT;
+    }
+
+    @Override
+    protected OutputFormat<NullWritable, TripleWritable> getOutputFormat() {
+        return new ThriftTripleOutputFormat<NullWritable>();
     }
 
 }
