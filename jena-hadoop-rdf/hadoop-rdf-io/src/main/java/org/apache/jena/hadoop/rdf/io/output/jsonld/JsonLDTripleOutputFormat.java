@@ -21,6 +21,7 @@ package org.apache.jena.hadoop.rdf.io.output.jsonld;
 import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.jena.hadoop.rdf.io.output.AbstractNodeTupleOutputFormat;
 import org.apache.jena.hadoop.rdf.io.output.writers.jsonld.JsonLDTripleWriter;
@@ -36,7 +37,7 @@ public class JsonLDTripleOutputFormat<TKey> extends AbstractNodeTupleOutputForma
     }
 
     @Override
-    protected RecordWriter<TKey, TripleWritable> getRecordWriter(Writer writer, Configuration config) {
+    protected RecordWriter<TKey, TripleWritable> getRecordWriter(Writer writer, Configuration config, Path outputPath) {
         return new JsonLDTripleWriter<TKey>(writer);
     }
 

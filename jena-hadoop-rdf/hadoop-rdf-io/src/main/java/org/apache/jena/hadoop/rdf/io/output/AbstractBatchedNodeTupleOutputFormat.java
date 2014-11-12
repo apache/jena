@@ -21,6 +21,7 @@ package org.apache.jena.hadoop.rdf.io.output;
 import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.hadoop.rdf.io.output.writers.AbstractBatchedNodeTupleWriter;
@@ -44,7 +45,7 @@ public abstract class AbstractBatchedNodeTupleOutputFormat<TKey, TTuple, TValue 
         AbstractNodeTupleOutputFormat<TKey, TTuple, TValue> {
 
     @Override
-    protected RecordWriter<TKey, TValue> getRecordWriter(Writer writer, Configuration config) {
+    protected RecordWriter<TKey, TValue> getRecordWriter(Writer writer, Configuration config, Path outputPath) {
         long batchSize = config.getLong(RdfIOConstants.OUTPUT_BATCH_SIZE, RdfIOConstants.DEFAULT_OUTPUT_BATCH_SIZE);
         return this.getRecordWriter(writer, batchSize);
     }

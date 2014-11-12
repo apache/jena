@@ -36,7 +36,6 @@ import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * An abstract implementation of an output format for line based tuple formats
  * where the key is ignored and only the tuple values will be output
@@ -71,10 +70,12 @@ public abstract class AbstractNodeTupleOutputFormat<TKey, TValue, T extends Abst
         FileSystem fs = file.getFileSystem(config);
         if (!isCompressed) {
             FSDataOutputStream fileOut = fs.create(file, false);
-            return this.getRecordWriter(new OutputStreamWriter(fileOut), config);
+            return this.getRecordWriter(new OutputStreamWriter(fileOut), config, file);
         } else {
+            // TODO Do we need to append the relevant extension to the path
+            // here?
             FSDataOutputStream fileOut = fs.create(file, false);
-            return this.getRecordWriter(new OutputStreamWriter(codec.createOutputStream(fileOut)), config);
+            return this.getRecordWriter(new OutputStreamWriter(codec.createOutputStream(fileOut)), config, file);
         }
     }
 
@@ -92,8 +93,14 @@ public abstract class AbstractNodeTupleOutputFormat<TKey, TValue, T extends Abst
      *            Writer to write output to
      * @param config
      *            Configuration
+     * @param outputPath
+     *            Output path being written to
      * @return Record writer
+     * @throws IOException
+     *             May be thrown if a record writer cannot be obtained for any
+     *             reason
      */
-    protected abstract RecordWriter<TKey, T> getRecordWriter(Writer writer, Configuration config);
+    protected abstract RecordWriter<TKey, T> getRecordWriter(Writer writer, Configuration config, Path outputPath)
+            throws IOException;
 
 }

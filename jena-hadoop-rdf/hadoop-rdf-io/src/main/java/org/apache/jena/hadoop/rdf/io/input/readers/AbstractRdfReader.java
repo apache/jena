@@ -32,13 +32,10 @@ import org.apache.jena.riot.RDFLanguages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * An abstract record reader for arbitrary RDF which provides support for
  * selecting the actual record reader to use based on detecting the RDF language
  * from the file name
- * 
- * 
  * 
  * @param <TValue>
  *            Tuple type
@@ -52,7 +49,8 @@ public abstract class AbstractRdfReader<TValue, T extends AbstractNodeTupleWrita
     private RecordReader<LongWritable, T> reader;
 
     @Override
-    public void initialize(InputSplit genericSplit, TaskAttemptContext context) throws IOException, InterruptedException {
+    public void initialize(InputSplit genericSplit, TaskAttemptContext context) throws IOException,
+            InterruptedException {
         LOG.debug("initialize({}, {})", genericSplit, context);
 
         // Assuming file split

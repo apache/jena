@@ -21,6 +21,7 @@ package org.apache.jena.hadoop.rdf.io.output;
 import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.riot.system.StreamRDF;
@@ -40,7 +41,7 @@ public abstract class AbstractStreamRdfNodeTupleOutputFormat<TKey, TTuple, TValu
         extends AbstractNodeTupleOutputFormat<TKey, TTuple, TValue> {
 
     @Override
-    protected RecordWriter<TKey, TValue> getRecordWriter(Writer writer, Configuration config) {
+    protected RecordWriter<TKey, TValue> getRecordWriter(Writer writer, Configuration config, Path outputPath) {
         return getRecordWriter(getStream(writer, config), writer, config);
     }
 

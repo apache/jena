@@ -21,6 +21,7 @@ package org.apache.jena.hadoop.rdf.io.output.nquads;
 import java.io.Writer;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.jena.hadoop.rdf.io.output.AbstractNodeTupleOutputFormat;
 import org.apache.jena.hadoop.rdf.io.output.writers.nquads.NQuadsWriter;
@@ -39,7 +40,7 @@ import com.hp.hpl.jena.sparql.core.Quad;
 public class NQuadsOutputFormat<TKey> extends AbstractNodeTupleOutputFormat<TKey, Quad, QuadWritable> {
 
     @Override
-    protected RecordWriter<TKey, QuadWritable> getRecordWriter(Writer writer, Configuration config) {
+    protected RecordWriter<TKey, QuadWritable> getRecordWriter(Writer writer, Configuration config, Path outputPath) {
         return new NQuadsWriter<TKey>(writer);
     }
 
