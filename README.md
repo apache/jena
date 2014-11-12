@@ -84,7 +84,7 @@ example 3: retrieve resources (and scores) with term 'book' in label on english 
 ```
 PREFIX text: <http://jena.apache.org/text#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT ?uri ?label
+SELECT ?uri ?label ?score
 WHERE {
     { 
         (?uri ?score) text:query (rdfs:label 'book' 'lang:en') 
