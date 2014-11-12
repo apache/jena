@@ -49,9 +49,6 @@ import org.apache.jena.hadoop.rdf.stats.jobs.JobFactory;
 /**
  * Entry point for the Hadoop job, handles launching all the relevant Hadoop
  * jobs
- * 
- * 
- * 
  */
 @Command(name = "bin/hadoop jar PATH_TO_JAR com.yarcdata.urika.hadoop.rdf.stats.RdfStats", description = "A command which computes statistics on RDF data using Hadoop")
 public class RdfStats implements Tool {
