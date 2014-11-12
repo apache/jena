@@ -51,7 +51,6 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Abstract node tuple output format tests
  * 
@@ -117,8 +116,11 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
 
     /**
      * Checks that tuples are as expected
-     * @param f File
-     * @param expected Expected number of tuples
+     * 
+     * @param f
+     *            File
+     * @param expected
+     *            Expected number of tuples
      */
     protected void checkTuples(File f, long expected) {
         Assert.assertEquals(expected, this.countTuples(f));
@@ -155,10 +157,11 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
         Path outputPath = fs.makeQualified(new Path(f.getAbsolutePath()));
         FileOutputFormat.setOutputPath(job, outputPath);
     }
-    
+
     protected File findOutputFile(File dir, JobContext context) throws FileNotFoundException, IOException {
         Path outputPath = FileOutputFormat.getOutputPath(context);
-        RemoteIterator<LocatedFileStatus> files = outputPath.getFileSystem(context.getConfiguration()).listFiles(outputPath, true);
+        RemoteIterator<LocatedFileStatus> files = outputPath.getFileSystem(context.getConfiguration()).listFiles(
+                outputPath, true);
         while (files.hasNext()) {
             LocatedFileStatus status = files.next();
             if (status.isFile() && !status.getPath().getName().startsWith("_")) {
@@ -176,7 +179,7 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
      * @param num
      *            Number of tuples to output
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     protected final void testOutput(File f, int num) throws IOException, InterruptedException {
         // Prepare configuration
@@ -189,7 +192,7 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
         this.addOutputPath(f, job.getConfiguration(), job);
         JobContext context = new JobContextImpl(job.getConfiguration(), job.getJobID());
         Assert.assertNotNull(FileOutputFormat.getOutputPath(context));
-        
+
         // Output the data
         TaskAttemptID id = new TaskAttemptID("outputTest", 1, TaskType.MAP, 1, 1);
         TaskAttemptContext taskContext = new TaskAttemptContextImpl(job.getConfiguration(), id);
@@ -199,7 +202,7 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
             writer.write(NullWritable.get(), tuples.next());
         }
         writer.close(taskContext);
-        
+
         // Check output
         File outputFile = this.findOutputFile(this.folder.getRoot(), context);
         Assert.assertNotNull(outputFile);
@@ -210,40 +213,40 @@ public abstract class AbstractNodeTupleOutputFormatTests<TValue, T extends Abstr
      * Basic output tests
      * 
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     @Test
     public void output_01() throws IOException, InterruptedException {
         this.testOutput(this.folder.getRoot(), EMPTY_SIZE);
     }
-    
+
     /**
      * Basic output tests
      * 
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     @Test
     public void output_02() throws IOException, InterruptedException {
         this.testOutput(this.folder.getRoot(), SMALL_SIZE);
     }
-    
+
     /**
      * Basic output tests
      * 
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     @Test
     public void output_03() throws IOException, InterruptedException {
         this.testOutput(this.folder.getRoot(), LARGE_SIZE);
     }
-    
+
     /**
      * Basic output tests
      * 
      * @throws IOException
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     @Test
     public void output_04() throws IOException, InterruptedException {

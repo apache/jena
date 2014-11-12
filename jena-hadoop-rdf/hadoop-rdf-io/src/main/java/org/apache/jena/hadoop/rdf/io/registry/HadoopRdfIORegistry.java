@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *     
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.apache.jena.hadoop.rdf.io.registry;
 
 import java.io.IOException;
@@ -20,9 +38,10 @@ import org.apache.jena.riot.Lang;
  * readers and writers based on a provided {@link Lang}
  * <p>
  * Readers and writers are dynamically discovered using the Java
- * {@link ServiceLoader} mechanism. This will look for a file under
+ * {@link ServiceLoader} mechanism. This will look for files under
  * {@code META-INF/services} named
- * {@code org.apache.jena.hadoop.rdf.io.registry.ReaderFactory} . This follows
+ * {@code org.apache.jena.hadoop.rdf.io.registry.ReaderFactory} and
+ * {@code org.apache.jena.hadoop.rdf.io.registry.WriterFactory}. This follows
  * the standard {@linkplain ServiceLoader} format of provided one class name per
  * line which implements the relevant interface.
  * </p>
@@ -252,7 +271,7 @@ public class HadoopRdfIORegistry {
         if (!f.canWriteQuads())
             throw new IOException(lang.getName() + " does not support writeing quads");
 
-        RecordWriter<TKey, QuadWritable> rwriter = f.<TKey>createQuadWriter(writer, config);
+        RecordWriter<TKey, QuadWritable> rwriter = f.<TKey> createQuadWriter(writer, config);
         if (rwriter == null)
             throw new IOException("Registered factory for " + lang.getName() + " produced a null triples writer");
         return rwriter;
@@ -283,7 +302,7 @@ public class HadoopRdfIORegistry {
         if (!f.canWriteTriples())
             throw new IOException(lang.getName() + " does not support writing triples");
 
-        RecordWriter<TKey, TripleWritable> rwriter = f.<TKey>createTripleWriter(writer, config);
+        RecordWriter<TKey, TripleWritable> rwriter = f.<TKey> createTripleWriter(writer, config);
         if (rwriter == null)
             throw new IOException("Registered factory for " + lang.getName() + " produced a null triples writer");
         return rwriter;
