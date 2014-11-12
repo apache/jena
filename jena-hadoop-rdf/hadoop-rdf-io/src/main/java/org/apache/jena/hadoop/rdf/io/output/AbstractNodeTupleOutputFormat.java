@@ -59,21 +59,24 @@ public abstract class AbstractNodeTupleOutputFormat<TKey, TValue, T extends Abst
         Configuration config = context.getConfiguration();
         boolean isCompressed = getCompressOutput(context);
         CompressionCodec codec = null;
+        
+        // Build the output file path
         String extension = this.getFileExtension();
         if (isCompressed) {
+            // Add compression extension if applicable
             Class<? extends CompressionCodec> codecClass = getOutputCompressorClass(context, GzipCodec.class);
             codec = (CompressionCodec) ReflectionUtils.newInstance(codecClass, config);
             extension += codec.getDefaultExtension();
         }
         Path file = getDefaultWorkFile(context, extension);
         LOG.info("Writing output to file " + file);
+        
+        // Open the file appropriately and create a record writer for it
         FileSystem fs = file.getFileSystem(config);
         if (!isCompressed) {
             FSDataOutputStream fileOut = fs.create(file, false);
             return this.getRecordWriter(new OutputStreamWriter(fileOut), config, file);
         } else {
-            // TODO Do we need to append the relevant extension to the path
-            // here?
             FSDataOutputStream fileOut = fs.create(file, false);
             return this.getRecordWriter(new OutputStreamWriter(codec.createOutputStream(fileOut)), config, file);
         }
