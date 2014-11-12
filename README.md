@@ -48,34 +48,52 @@ Dataset ds = TextDatasetFactory.create(dataset, index);
 ```
 
 
-Note: dir parameter permits the usage of multiple index directories
 
 SPARQL full-text clauses
 ------------------------
+The following examples mix free text search (on lucene linguistic related indexes) within SPARQL queries . 
 
-The query pattern is
+The query pattern of full text clauses is
 ```
-(?uri ?score) text:query (property "string" ['graph name'] ['indexed language'])
+(?uri [?score]) text:query (property 'query' ['lang:language'])
 ```
         
-example 1: retrieve resources (and scores) with term 'school' in label (unlocalized)
+example 1: retrieve resources (and scores) with term 'school' in rdfs label (unlocalized)
 ```
-(?uri ?score) text:query (rdfs:label 'school')
+PREFIX text: <http://jena.apache.org/text#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?uri ?label ?score
+WHERE {
+    (?uri ?score) text:query (rdfs:label 'school') .
+    ?uri rdfs:label ?label
+}
 ```
 
-example 2: retrieve resources (and scores) with term 'book' in label on index 'library' related to http://uri/library named graph and unlocalized.
+example 2: retrieve resources (without score) with term 'book' in rdfs label on english lucene index.
 ```
-(?uri ?score) text:query (rdfs:label 'book' 'library')
+PREFIX text: <http://jena.apache.org/text#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?uri ?label
+WHERE {
+    ?uri text:query (rdfs:label 'book' 'lang:en') .
+    ?uri rdfs:label ?label
+}
 ```
 
 example 3: retrieve resources (and scores) with term 'book' in label on english index or with term 'livre' in label on french index.
 ```
-{ 
-    (?uri ?score) text:query (rdfs:label 'book' 'library' 'en') 
-}
-UNION
-{ 
-    (?uri ?score) text:query (rdfs:label 'livre' 'library' 'fr') 
+PREFIX text: <http://jena.apache.org/text#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?uri ?label
+WHERE {
+    { 
+        (?uri ?score) text:query (rdfs:label 'book' 'lang:en') 
+    }
+    UNION
+    { 
+        (?uri ?score) text:query (rdfs:label 'livre' 'lang:fr') 
+    }
+    ?uri rdfs:label ?label
 }
 ```
 
