@@ -62,8 +62,7 @@ public class FusekiServer
     public static Path FUSEKI_BASE = null ;
     
     public static final boolean isWindows = SystemTDB.isWindows ;
-        
-    
+ 
     /** Unused */
     //public static final String DFT_FUSEKI_HOME  = 
     //    isWindows ? /*What's correct here?*/ "/usr/share/fuseki" : "/usr/share/fuseki" ;
