@@ -981,9 +981,6 @@ public class XSDFuncOp
 
     private static int compareDuration(Duration duration1, Duration duration2) {
         // Returns codes are -1/0/1 but also 2 for "Indeterminate"
-        // Not fully sure when Indeterminate is returned with regards to a
-        // duration
-
         int x = duration1.compare(duration2) ;
         return convertComparison(x) ;
     }
