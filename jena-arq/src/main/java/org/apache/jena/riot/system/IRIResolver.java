@@ -177,7 +177,7 @@ public abstract class IRIResolver
      * @return String An absolute URI
      */
     static public String resolveStringSilent(String relStr) throws RiotException {
-        return resolveIRI(relStr).toString() ;
+        return globalResolver.resolveSilent(relStr).toString() ;
     }
 
     /**

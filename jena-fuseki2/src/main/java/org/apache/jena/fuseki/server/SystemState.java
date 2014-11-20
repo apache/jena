@@ -20,11 +20,15 @@ package org.apache.jena.fuseki.server;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.fuseki.Fuseki ;
 
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.setup.StoreParams ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class SystemState {
@@ -50,6 +54,21 @@ public class SystemState {
         init$() ;
     }
     
+    /** Small footprint database.  The system database records the server state.
+     * It should not be performance critical, mainly being used for system admin
+     * functions.
+     * <p>Direct mode so that it is not competing for OS file cache space.
+     * <p>Small caches - 
+     */
+    private static final StoreParams systemDatabaseParams = StoreParams.builder()
+        .fileMode(FileMode.direct)
+        .blockReadCacheSize(20)
+        .blockWriteCacheSize(20)
+        .node2NodeIdCacheSize(5000)
+        .nodeId2NodeCacheSize(5000)
+        .nodeMissCacheSize(100)
+        .build() ;
+    
     public /* for testing */ static void init$() {
         if ( initialized )
             return ;
@@ -60,6 +79,11 @@ public class SystemState {
         
         if ( ! location.isMem() )
             FileOps.ensureDir(location.getDirectoryPath()) ;
+        
+        // Force it into the store connection as a low footprint
+        if ( StoreConnection.getExisting(location) != null )
+            Fuseki.serverLog.warn("System database already in the StoreConnection cache") ;
+        StoreConnection.make(location, systemDatabaseParams) ;
         
         dataset = TDBFactory.createDataset(location) ;
         dsg     = (DatasetGraphTransaction)(dataset.asDatasetGraph()) ;
