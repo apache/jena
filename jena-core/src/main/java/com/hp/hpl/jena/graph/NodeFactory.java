@@ -59,12 +59,11 @@ public class NodeFactory
         @param isXml If true then lit is exclusive canonical XML of type 
             rdf:XMLLiteral, and no checking will be invoked.
     */
-    public static Node createLiteral( String lit, String lang, boolean isXml )
-        {
-        if (lit == null) throw new NullPointerException
-            ( "null for literals has been illegal since Jena 2.0" );
-        return createLiteral( LiteralLabelFactory.create( lit, lang, isXml ) ); 
-        }
+    public static Node createLiteral( String lex, String lang, boolean isXml )
+    {
+        if (lex == null) throw new NullPointerException( "null lexical form for literal" );
+        return createLiteral( LiteralLabelFactory.create( lex, lang, isXml ) ); 
+    }
 
     /**
      * Build a literal node from its lexical form. The
