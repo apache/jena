@@ -94,6 +94,11 @@ public class TestNodeFmt extends BaseTest
             test(nodeFormatterNTutf8, "'abc'^^xsd:string", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#string>") ;
     }
     
+    @Test public void nodefmt_rdf11_02() {
+        // Same in RDF 1.0 and RDF 1.1
+        test(nodeFormatterNTutf8, "'abc'^^rdf:langString",  "\"abc\"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#langString>") ;
+    }
+    
     @Test public void nodefmt_ttl_01()  { test(nodeFormatterTTL, "?x") ; }
     @Test public void nodefmt_ttl_02()  { test(nodeFormatterTTL, "?xyz") ; }
     @Test public void nodefmt_ttl_03()  { test(nodeFormatterTTL, Var.alloc(""), "?") ; }
