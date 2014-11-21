@@ -81,7 +81,7 @@ public class JenaRuntime
      * </p>
      */
     
-    public static boolean isRDF11 = true ; 
+    public static boolean isRDF11 = false ; 
     
     // --------------------------------------------------------------
     
