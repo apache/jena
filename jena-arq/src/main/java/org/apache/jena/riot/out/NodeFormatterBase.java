@@ -21,6 +21,7 @@ package org.apache.jena.riot.out;
 import org.apache.jena.atlas.io.AWriter ;
 
 import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
@@ -53,27 +54,46 @@ public abstract class NodeFormatterBase implements NodeFormatter
     @Override
     public void formatBNode(AWriter w, Node n)       { formatBNode(w, n.getBlankNodeLabel()) ; }
 
+//    /** A Node is a simple string if:
+//     * <li>(RDF 1.0) No datatype and no language tag.
+//     * <li>(RDF 1.1) xsd:string
+//     */
+//    private static boolean isSimpleString(Node n) {
+//        RDFDatatype dt = n.getLiteralDatatype() ;
+//        if ( dt == null )
+//            return ! isLangString(n) ;
+//        if ( JenaRuntime.isRDF11 )
+//            return dt.equals(XSDDatatype.XSDstring) ; 
+//        return false ;
+//    }         
+//    
+//    /** A Node is a language string if it has a language tag. (RDF 1.0 and RDF 1.1) */
+//    private static boolean isLangString(Node n) {
+//        String lang = n.getLiteralLanguage() ;
+//        if ( lang == null )
+//            return false ;
+//        return ! lang.equals("") ;
+//    }
+ 
     @Override
     public void formatLiteral(AWriter w, Node n)
     {
-        String dt = n.getLiteralDatatypeURI() ;
+        RDFDatatype dt = n.getLiteralDatatype() ;
         String lang = n.getLiteralLanguage() ;
         String lex = n.getLiteralLexicalForm() ;
         
-        // In RDF 1.1, print xsd:string and language strings without datatype explicitly.
-        // dt should not be null for RDF 1.1 but let's play carefully. 
-        boolean shortString = JenaRuntime.isRDF11 ? (dt == null || dt.equals(XSDDatatype.XSDstring.getURI())) 
-                                                  : (dt == null) ;
-        
-        if ( shortString )
-        {
-            if ( lang == null || lang.equals("") )
-                formatLitString(w, lex) ;
-            else
-                formatLitLang(w, lex,lang) ;
+        if ( lang != null && ! lang.equals("") ) {
+            formatLitLang(w, lex, lang) ;
+        } else if ( dt == null ) {
+            // RDF 1.0, simple literal.
+            formatLitString(w, lex) ;
+        } else if ( JenaRuntime.isRDF11 && dt.equals(XSDDatatype.XSDstring) ) {
+            // RDF 1.1, xsd:string - outptu as short string.
+            formatLitString(w, lex) ;
+        } else {
+            // Datatype, no language tag, not short string.
+            formatLitDT(w, lex, dt.getURI()) ;
         }
-        else
-            formatLitDT(w, lex, dt) ;
     }
 
     @Override

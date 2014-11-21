@@ -182,14 +182,14 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	 *       @param xml If true then s is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
 	
 	 */
-	LiteralLabelImpl(String s, String lg, boolean xml) {
-	    setLiteralLabel_3(s, lg, xml) ;
+	LiteralLabelImpl(String s, String lang, boolean xml) {
+	    setLiteralLabel_3(s, lang, xml) ;
 	}
 
-	private void setLiteralLabel_3(String s, String lg, boolean xml) {
+	private void setLiteralLabel_3(String s, String lang, boolean xml) {
 	    // Constructor extraction: Preparation for moving into Node_Literal.
         this.lexicalForm = s;
-        this.lang = (lg == null ? "" : lg);
+        this.lang = (lang == null ? "" : lang);
         if (xml) {
             // XML Literal
             this.dtype = XMLLiteralType.theXMLLiteralType;

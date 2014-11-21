@@ -17,11 +17,15 @@
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
-import java.util.regex.*;
+import java.util.regex.Matcher ;
+import java.util.regex.Pattern ;
 
-import org.apache.xerces.util.XMLChar;
+import org.apache.xerces.util.XMLChar ;
 
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.shared.CannotEncodeCharacterException ;
 
 /** Some utility functions.
  */
@@ -197,21 +201,21 @@ public class Util extends Object {
         return result + s.substring(lastPos, s.length());
     }
 
-    /** Call System.getProperty and suppresses SecurityException, (simply returns null).
-     *@return The property value, or null if none or there is a SecurityException.
-     */
-    public static String XgetProperty(String p) {
-        return XgetProperty( p, null );
-    }
-    /** Call System.getProperty and suppresses SecurityException, (simply returns null).
-     *@return The property value, or null if none or there is a SecurityException.
-     */
-    public static String XgetProperty(String p, String def) {
-        try {
-            return System.getProperty(p, def);
-        } catch (SecurityException e) {
-            return def;
+    /** Return true if the literal should be written as a string, without datatype or lang. (RDF 1.0 and RDF 1.1) */ 
+    public static boolean isSimpleString(Literal lit) {
+        if ( lit.getDatatypeURI() == null ) {
+            return ! isLangString(lit) ;
         }
+        if ( JenaRuntime.isRDF11 && lit.getDatatypeURI().equals(XSDDatatype.XSDstring.getURI()) )
+            return true;
+        return false ;
     }
-
+    
+    /** Return true if the literals shodul be written with a language string. (RDF 1.0 and RDF 1.1) */
+    public static boolean isLangString(Literal lit) {
+        String lang = lit.getLanguage() ;
+        if ( lang == null )
+            return false ;
+        return ! lang.equals("") ;
+    }
 }

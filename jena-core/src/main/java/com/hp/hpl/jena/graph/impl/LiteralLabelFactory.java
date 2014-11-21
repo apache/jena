@@ -18,23 +18,39 @@
 
 package com.hp.hpl.jena.graph.impl;
 
-import com.hp.hpl.jena.datatypes.DatatypeFormatException;
-import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class LiteralLabelFactory
 {
+    private static final RDFDatatype dtSLangString = NodeFactory.getType(RDF.Nodes.langString.getURI()) ;
+    
+    private static RDFDatatype fixDatatype(RDFDatatype dtype, String lang) {
+        if ( dtype != null ) 
+            return dtype ;
+        if ( JenaRuntime.isRDF11 )
+            dtype = (lang == null || lang.equals("")) ? XSDDatatype.XSDstring : dtSLangString  ;
+        return dtype ;
+    }
+    
     public static LiteralLabel createLiteralLabel( String lex, String lang, RDFDatatype dtype ) 
     throws DatatypeFormatException
-    { return new LiteralLabelImpl( lex, lang, dtype ); }
+    { 
+        dtype = fixDatatype(dtype, lang) ;
+        return new LiteralLabelImpl( lex, lang, dtype ); }
 
     /**
      * Build a plain literal label from its lexical form. 
      * @param lex the lexical form of the literal
      * @param lang the optional language tag, only relevant for plain literals
      */
-    public static LiteralLabel create(String lex, String lang) 
-    {
-        return new LiteralLabelImpl(lex, lang, null);
+    public static LiteralLabel create(String lex, String lang) {
+        RDFDatatype dt =  fixDatatype(null, lang) ;
+        return new LiteralLabelImpl(lex, lang, dt);
     }
 
     /**
@@ -46,6 +62,7 @@ public class LiteralLabelFactory
      * @param dtype the type of the literal, null for old style "plain" literals
      */
     public static LiteralLabel create(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+        dtype = fixDatatype(dtype, lang) ;
         return new LiteralLabelImpl(value, lang, dtype) ; 
     }
 
@@ -56,6 +73,8 @@ public class LiteralLabelFactory
      * @param value the literal value to encapsulate
      */
     public static LiteralLabel create(Object value) {
+        if ( value instanceof String )
+            create((String)value, null) ;
         return new LiteralLabelImpl(value) ;
     }
 
@@ -63,8 +82,10 @@ public class LiteralLabelFactory
      * Creates either a plain literal or an XMLLiteral.
      *       @param xml If true then s is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
      */
-    public static LiteralLabel create(String s, String lg, boolean xml) {
-        return new LiteralLabelImpl(s, lg, xml) ;
+    public static LiteralLabel create(String s, String lang, boolean xml) {
+        if ( xml )
+            return new LiteralLabelImpl(s, lang, xml) ;
+        return create(s, lang) ;
     }
 
     

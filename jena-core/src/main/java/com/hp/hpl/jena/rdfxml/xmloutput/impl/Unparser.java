@@ -115,24 +115,22 @@ package com.hp.hpl.jena.rdfxml.xmloutput.impl;
  * 
  * [6.34] literal ::= (any well-formed XML)
  */
-import java.io.PrintWriter;
-import java.util.*;
+import java.io.PrintWriter ;
+import java.util.* ;
 
-import org.apache.xerces.util.XMLChar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRI ;
+import org.apache.xerces.util.XMLChar ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.JenaRuntime ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.shared.BrokenException;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.impl.PropertyImpl ;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
+import com.hp.hpl.jena.shared.BrokenException ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.PropertyNotFoundException ;
+import com.hp.hpl.jena.util.iterator.* ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /**
  * An Unparser will output a model in the abbreviated syntax. *
@@ -458,24 +456,14 @@ class Unparser {
         return true;
     }
     
-    /** Return true if to be written as a string, without datatype or lang */ 
-    /*package*/ static boolean isSimpleString(Literal lit) {
-        if ( lit.getDatatypeURI() == null ) 
-            return true;
-        if ( JenaRuntime.isRDF11 && lit.getDatatypeURI().equals(XSDDatatype.XSDstring.getURI()) )
-            return true;
-        if ( JenaRuntime.isRDF11 && lit.getDatatypeURI().equals(RDF.langString.getId()) )
-            return true;
-        
-        return false ;
-    }
-
     private boolean wPropertyEltDatatype(WType wt, Property prop, Statement s,
             RDFNode r) {
         if (! (r instanceof Literal) )
             return false ;
         Literal lit = ((Literal) r) ;
-        if ( isSimpleString(lit) ) 
+        if ( Util.isSimpleString(lit) ) 
+            return false;
+        if ( Util.isLangString(lit) )
             return false;
         
         // print out with "datatype="
