@@ -49,24 +49,6 @@ public class LiteralLabelFactory
         return new LiteralLabelImpl(value, lang, dtype) ; 
     }
 
-
-//    /**
-//     * Build a typed literal label supplying both value and lexical form.
-//     * The caller guarantees that the lexical form is legal, 
-//     * and the value corresponds. 
-//     * 
-//     * @param lex the lexical form of the literal
-//     * @param value the value of the literal
-//     * @param lang the optional language tag, only relevant for plain literals
-//     * @param dtype the type of the literal, null for old style "plain" literals
-//     */
-//    public static LiteralLabel create(String lex,
-//                                      Object value,
-//                                      String lang,
-//                                      RDFDatatype dtype) {
-//        return new LiteralLabelImpl(lex, value, lang, dtype) ; 
-//    }
-
     /**
      * Build a typed literal label from its value form using
      * whatever datatype is currently registered as the the default
@@ -78,10 +60,8 @@ public class LiteralLabelFactory
     }
 
     /**
-     * Old style constructor. Creates either a plain literal or an
-     * XMLLiteral.
+     * Creates either a plain literal or an XMLLiteral.
      *       @param xml If true then s is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
-
      */
     public static LiteralLabel create(String s, String lg, boolean xml) {
         return new LiteralLabelImpl(s, lg, xml) ;
