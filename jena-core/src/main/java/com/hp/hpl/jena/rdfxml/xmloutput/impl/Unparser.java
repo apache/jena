@@ -121,8 +121,10 @@ import java.util.*;
 import org.apache.xerces.util.XMLChar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.apache.jena.iri.IRI;
+
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.Util;
@@ -455,13 +457,28 @@ class Unparser {
         print(">");
         return true;
     }
+    
+    /** Return true if to be written as a string, without datatype or lang */ 
+    /*package*/ static boolean isSimpleString(Literal lit) {
+        if ( lit.getDatatypeURI() == null ) 
+            return true;
+        if ( JenaRuntime.isRDF11 && lit.getDatatypeURI().equals(XSDDatatype.XSDstring.getURI()) )
+            return true;
+        if ( JenaRuntime.isRDF11 && lit.getDatatypeURI().equals(RDF.langString.getId()) )
+            return true;
+        
+        return false ;
+    }
 
     private boolean wPropertyEltDatatype(WType wt, Property prop, Statement s,
             RDFNode r) {
-        if (!((r instanceof Literal) && ((Literal) r).getDatatypeURI() != null)) {
+        if (! (r instanceof Literal) )
+            return false ;
+        Literal lit = ((Literal) r) ;
+        if ( isSimpleString(lit) ) 
             return false;
-        }
-        // print out.
+        
+        // print out with "datatype="
         done(s);
         tab();
         print("<");

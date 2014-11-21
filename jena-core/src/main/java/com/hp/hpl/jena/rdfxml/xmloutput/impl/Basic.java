@@ -170,8 +170,10 @@ public class Basic extends BaseXMLWriter
 			writer.print(" " + rdfAt("parseType") + "=" + attributeQuoted( "Literal" )+">");
 			writer.print( form );
 		} else {
+		    // No lang.
 			String dt = l.getDatatypeURI();
-			if (dt != null) writer.print( " " + rdfAt( "datatype" ) + "=" + substitutedAttribute( dt ) );
+			if ( ! Unparser.isSimpleString(l) ) 
+			    writer.print( " " + rdfAt( "datatype" ) + "=" + substitutedAttribute( dt ) );
             writer.print(">");
             writer.print( Util.substituteEntitiesInElementContent( form ) );
 		}
