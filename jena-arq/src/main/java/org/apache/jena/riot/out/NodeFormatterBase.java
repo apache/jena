@@ -54,27 +54,6 @@ public abstract class NodeFormatterBase implements NodeFormatter
     @Override
     public void formatBNode(AWriter w, Node n)       { formatBNode(w, n.getBlankNodeLabel()) ; }
 
-//    /** A Node is a simple string if:
-//     * <li>(RDF 1.0) No datatype and no language tag.
-//     * <li>(RDF 1.1) xsd:string
-//     */
-//    private static boolean isSimpleString(Node n) {
-//        RDFDatatype dt = n.getLiteralDatatype() ;
-//        if ( dt == null )
-//            return ! isLangString(n) ;
-//        if ( JenaRuntime.isRDF11 )
-//            return dt.equals(XSDDatatype.XSDstring) ; 
-//        return false ;
-//    }         
-//    
-//    /** A Node is a language string if it has a language tag. (RDF 1.0 and RDF 1.1) */
-//    private static boolean isLangString(Node n) {
-//        String lang = n.getLiteralLanguage() ;
-//        if ( lang == null )
-//            return false ;
-//        return ! lang.equals("") ;
-//    }
- 
     @Override
     public void formatLiteral(AWriter w, Node n)
     {
