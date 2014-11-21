@@ -20,6 +20,8 @@ package org.apache.jena.riot.out;
 
 import org.apache.jena.atlas.io.AWriter ;
 
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
@@ -58,7 +60,12 @@ public abstract class NodeFormatterBase implements NodeFormatter
         String lang = n.getLiteralLanguage() ;
         String lex = n.getLiteralLexicalForm() ;
         
-        if ( dt == null )
+        // In RDF 1.1, print xsd:string and language strings without datatype explicitly.
+        // dt should not be null for RDF 1.1 but let's play carefully. 
+        boolean shortString = JenaRuntime.isRDF11 ? (dt == null || dt.equals(XSDDatatype.XSDstring.getURI())) 
+                                                  : (dt == null) ;
+        
+        if ( shortString )
         {
             if ( lang == null || lang.equals("") )
                 formatLitString(w, lex) ;
