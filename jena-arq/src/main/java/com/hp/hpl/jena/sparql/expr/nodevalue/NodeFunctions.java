@@ -181,7 +181,7 @@ public class NodeFunctions {
         if ( plainLiteral ) {
             boolean simpleLiteral = (node.getLiteralLanguage() == null || node.getLiteralLanguage().equals("")) ;
             if ( !simpleLiteral )
-                return NodeConst.dtRDFlangString ;
+                return NodeConst.rdfLangString ;
             return XSD.xstring.asNode() ;
         }
         return NodeFactory.createURI(s) ;

@@ -144,13 +144,13 @@ public class TestNodeFunctions extends BaseTest {
         NodeValue nv = NodeValue.makeNode("abc", "fr", (String)null) ;
         // SPARQL 1.0
         // try {
-        // NodeValue r = NodeFunctions.datatype(nv) ;
-        // fail("Expect a type exception but call succeeded") ;
+        //   NodeValue r = NodeFunctions.datatype(nv) ;
+        //   fail("Expect a type exception but call succeeded") ;
         // }
         // catch (ExprTypeException ex) {}
         // SPARQL 1.1 / RDF 1.1
         NodeValue r = NodeFunctions.datatype(nv) ;
-        NodeValue e = NodeValue.makeNode(NodeConst.dtRDFlangString) ;
+        NodeValue e = NodeValue.makeNode(NodeConst.rdfLangString) ;
         assertEquals(e, r) ;
     }
 

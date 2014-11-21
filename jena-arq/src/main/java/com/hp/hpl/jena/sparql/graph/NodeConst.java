@@ -24,6 +24,7 @@ import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
+/** Some node constants */
 public class NodeConst
 {
     public static final Node nodeTrue       = NodeFactory.createLiteral("true", null,  XSDDatatype.XSDboolean) ; 
@@ -41,6 +42,5 @@ public class NodeConst
     public static final Node nodeANY        = Node.ANY ;
     
     public static final Node nodeOwlSameAs  = OWL.sameAs.asNode() ;
-    public static final Node dtRDFlangString = NodeFactory.createURI(RDF.getURI()+"langString") ;
-
+    public static final Node rdfLangString  = RDF.Nodes.langString ;
 }
