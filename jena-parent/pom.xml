@@ -395,7 +395,8 @@
                <exclude>**/log4j-testing.properties</exclude>
                <exclude>**/derby.log</exclude>
                <exclude>**/DB/**/*</exclude>
-               
+	       <!-- TDB config files JSON - no comments allowed -->
+               <exclude>**/tdb*.cfg</exclude>
             </excludes>
         </configuration>
       </plugin>
