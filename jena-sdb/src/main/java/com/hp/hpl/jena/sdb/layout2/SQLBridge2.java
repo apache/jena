@@ -241,7 +241,7 @@ public class SQLBridge2 extends SQLBridgeBase
             case URI:
                 return NodeFactory.createURI(lex) ;
             case STRING:
-                return NodeFactory.createLiteral(lex, lang, false) ;
+                return NodeFactory.createLiteral(lex, lang) ;
             case XSDSTRING:
                 return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDstring) ;
             case INTEGER:
