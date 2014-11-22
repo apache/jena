@@ -24,9 +24,11 @@ import java.util.Objects ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.datatypes.xsd.impl.*;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 
 /**
@@ -267,13 +269,21 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	*/
 	@Override
     public String toString(boolean quoting) {
-		StringBuilder b = new StringBuilder();
-		if (quoting) b.append('"');
-		b.append(getLexicalForm());
-		if (quoting) b.append('"');
-		if (lang != null && !lang.equals( "" )) b.append( "@" ).append(lang);
-		if (dtype != null) b.append( "^^" ).append(dtype.getURI());
-		return b.toString();
+        StringBuilder b = new StringBuilder() ;
+        if ( quoting )
+            b.append('"') ;
+        String lex = getLexicalForm() ;
+        lex = Util.replace(lex, "\"", "\\\"") ;
+        b.append(lex) ;
+        if ( quoting )
+            b.append('"') ;
+        if ( lang != null && !lang.equals("") )
+            b.append("@").append(lang) ;
+        else if ( dtype != null ) {
+            if ( ! ( JenaRuntime.isRDF11 && dtype.equals(XSDDatatype.XSDstring) ) )  
+                b.append("^^").append(dtype.getURI()) ;
+        }
+        return b.toString() ;
 	}
 
 	@Override
