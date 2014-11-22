@@ -60,12 +60,9 @@ public abstract class StatementBase
 	
 	public abstract RDFNode getObject();
 
-	protected StatementImpl stringReplace(String s, String lang,
-			boolean wellFormed)
-		{
-		return replace(new LiteralImpl(NodeFactory.createLiteral(s, lang, wellFormed),
-				model));
-		}
+	protected StatementImpl stringReplace(String s, String lang, boolean wellFormed) {
+	    return replace(new LiteralImpl(NodeFactory.createLiteral(s, lang, wellFormed), model));
+	}
 
 	/**
 	 * "replace" the Object of this statement with the literal string value _s_.

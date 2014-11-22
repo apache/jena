@@ -348,7 +348,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     }
         
     private Literal literal( String s, String lang )
-        { return new LiteralImpl( NodeFactory.createLiteral( s, lang, false ), getModelCom() ); }
+        { return new LiteralImpl( NodeFactory.createLiteral( s, lang ), getModelCom() ); }
         
     protected void shiftUp(int start, int finish)  {
         Statement stmt = null;

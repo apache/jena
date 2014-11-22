@@ -896,7 +896,7 @@ public class Rule implements ClauseEntry {
                     RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
                     return NodeFactory.createLiteral(lit, "", dt);
                 } else {
-                    return NodeFactory.createLiteral(lit, "", false);
+                    return NodeFactory.createLiteral(lit, "");
                 }                
             } else  if ( Character.isDigit(token.charAt(0)) || 
                          (token.charAt(0) == '-' && token.length() > 1 && Character.isDigit(token.charAt(1))) ) {
@@ -928,7 +928,7 @@ public class Rule implements ClauseEntry {
                 }
             }
             // Default is a plain literal
-            return NodeFactory.createLiteral(lit, "", false);
+            return NodeFactory.createLiteral(lit, "");
         }
         
         /**

@@ -55,7 +55,9 @@ public class NodeFactory
     { return createLiteral( value, "", false ); }
 
     /** make a literal with specified language and XMLishness.
-        _lit_ must *not* be null.
+        lexical form must not be null.
+        @param lex 
+        @param lang
         @param isXml If true then lit is exclusive canonical XML of type 
             rdf:XMLLiteral, and no checking will be invoked.
     */
@@ -63,6 +65,19 @@ public class NodeFactory
     {
         if (lex == null) throw new NullPointerException( "null lexical form for literal" );
         return createLiteral( LiteralLabelFactory.create( lex, lang, isXml ) ); 
+    }
+
+    /** Make a literal with specified language.
+        lexical form must not be null.
+        @param lex 
+        @param lang
+     */
+    public static Node createLiteral( String lex, String lang)
+    {
+        // Equivalent to create(lex, lang, false) except the XML flag is
+        // hidden so client code does not see it unnecesarily.
+        if (lex == null) throw new NullPointerException( "null lexical form for literal" );
+        return createLiteral( LiteralLabelFactory.create( lex, lang) ); 
     }
 
     /**

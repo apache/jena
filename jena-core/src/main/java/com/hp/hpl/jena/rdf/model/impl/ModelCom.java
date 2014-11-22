@@ -479,7 +479,7 @@ implements Model, PrefixMapping, Lock
         if (O != null) {
             // this is not OK when L is null: returns only the statements whose lang is ""
             // return listStatements( S, P, Node.createLiteral( O, L, false ) );
-            if (L != null) return listStatements( S, P, NodeFactory.createLiteral( O, L, false ) );
+            if (L != null) return listStatements( S, P, NodeFactory.createLiteral( O, L ) );
             // there's maybe a better way
             return new StringFilteredStmtIterator(O, listStatements(S, P, Node.ANY));
         } else {

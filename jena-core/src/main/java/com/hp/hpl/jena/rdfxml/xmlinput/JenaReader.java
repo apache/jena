@@ -106,7 +106,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     private static Node convert(ALiteral lit) {
         String dtURI = lit.getDatatypeURI();
         if (dtURI == null)
-            return NodeFactory.createLiteral(lit.toString(), lit.getLang(), false);
+            return NodeFactory.createLiteral(lit.toString(), lit.getLang());
 
         if (lit.isWellFormedXML()) {
             return NodeFactory.createLiteral(lit.toString(), null, true);

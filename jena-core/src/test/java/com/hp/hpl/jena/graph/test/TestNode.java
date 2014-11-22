@@ -589,8 +589,8 @@ public class TestNode extends GraphTestBase
         {
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dtInt = tm.getTypeByValue( new Integer( 10 ) );
-        Node plain = NodeFactory.createLiteral( "rhubarb", "", false );    
-        Node english = NodeFactory.createLiteral( "eccentric", "en_UK", false );
+        Node plain = NodeFactory.createLiteral( "rhubarb", "");    
+        Node english = NodeFactory.createLiteral( "eccentric", "en_UK");
         Node typed = NodeFactory.createLiteral( "10", "", dtInt );
         assertEquals( "\"rhubarb\"", plain.toString() );
         assertEquals( "rhubarb", plain.toString( false ) );
