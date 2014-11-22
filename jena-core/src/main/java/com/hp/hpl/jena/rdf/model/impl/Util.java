@@ -185,20 +185,8 @@ public class Util extends Object {
             }
         }
 
-    public static String replace(
-        String s,
-        String oldString,
-        String newString) {
-        String result = "";
-        int length = oldString.length();
-        int pos = s.indexOf(oldString);
-        int lastPos = 0;
-        while (pos >= 0) {
-            result = result + s.substring(lastPos, pos) + newString;
-            lastPos = pos + length;
-            pos = s.indexOf(oldString, lastPos);
-        }
-        return result + s.substring(lastPos, s.length());
+    public static String replace(String s, String oldString, String newString) {
+        return s.replace(oldString, newString) ;
     }
 
     /** Return true if the literal should be written as a string, without datatype or lang. (RDF 1.0 and RDF 1.1) */ 
