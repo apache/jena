@@ -78,16 +78,14 @@ public class TestTokenForNode extends BaseTest
     @Test public void tokenForNode22()
     { test( "12e0", TokenType.DOUBLE, "12e0", null, null, null) ; }
 
-    private static void test(String nodeStr,
-                             TokenType type, String image, String image2, Token subToken1, Token subToken2)
+    private static void test(String nodeStr, TokenType type, String image, String image2, Token subToken1, Token subToken2)
     {
         Node n = NodeFactoryExtra.parseNode(nodeStr) ;
         test(n, type, image, image2, subToken1, subToken2) ;
     }
     
     
-    private static void test(Node node,
-                             TokenType type, String image, String image2, Token subToken1, Token subToken2)
+    private static void test(Node node, TokenType type, String image, String image2, Token subToken1, Token subToken2)
     {
         Token t = Token.tokenForNode(node, base, prefixMap) ;
         assertEquals(type, t.getType()) ;
