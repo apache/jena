@@ -361,16 +361,17 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	    }
 	    LiteralLabel otherLiteral = (LiteralLabel) other;
 	    
-	    boolean typeEqual = Objects.equals(dtype, otherLiteral.getDatatype()) ;
-	    if ( !typeEqual )
+	    boolean typeEquals = Objects.equals(dtype, otherLiteral.getDatatype()) ;
+	    if ( !typeEquals )
 	        return false ;
 
-	    boolean lexEquals = Objects.equals(lexicalForm, otherLiteral.getLexicalForm());
+	    // Don't just use this.lexcialForm -- need to force delayed calculation from values.
+	    boolean lexEquals = Objects.equals(getLexicalForm(), otherLiteral.getLexicalForm());
         if ( ! lexEquals )
             return false ;
 
-        boolean langEqual = Objects.equals(lang, otherLiteral.language()) ;
-	    if ( ! langEqual )
+        boolean langEquals = Objects.equals(lang, otherLiteral.language()) ;
+	    if ( ! langEquals )
 	        return false ;
 	    // Ignore xml flag as it is calculated from the lexical form + datatype 
 	    // Ignore value as lexical form + datatype -> value is a function. 
