@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.expr ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
@@ -31,13 +32,6 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 public class TestNodeFunctions extends BaseTest {
     private static final double accuracyExact = 0.0d ;
     private static final double accuracyClose = 0.000001d ;
-
-    // public static TestSuite suite()
-    // {
-    // TestSuite ts = new TestSuite(TestNodeFunctions.class) ;
-    // ts.setName(Utils.classShortName(TestNodeFunctions.class)) ;
-    // return ts ;
-    // }
 
     @Test public void testSameTerm1() {
         Node n1 = NodeFactory.createLiteral("xyz") ;
@@ -60,7 +54,10 @@ public class TestNodeFunctions extends BaseTest {
     @Test public void testSameTerm4() {
         Node n1 = NodeFactory.createLiteral("xyz") ;
         Node n2 = NodeFactory.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
-        assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
+        if ( JenaRuntime.isRDF11 )
+            assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
+        else
+            assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm5() {

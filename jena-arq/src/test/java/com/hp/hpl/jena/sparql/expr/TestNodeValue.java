@@ -26,6 +26,7 @@ import java.util.TimeZone ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
@@ -630,9 +631,12 @@ public class TestNodeValue extends BaseTest
         assertTrue("Not a string: "+v, v.isString()) ;
         assertTrue("Not a node: "+v, v.hasNode()) ;
         String actualStr = v.asQuotedString() ;
-        assertEquals("Print form mismatch",
-                     "\"string\"^^<"+XSDDatatype.XSDstring.getURI()+">",
-                     actualStr) ;
+        String rightAnswer = JenaRuntime.isRDF11
+            // RDF 1.1 -- appearance is a without ^^
+            ? "\"string\""
+            : "\"string\"^^<"+XSDDatatype.XSDstring.getURI()+">" ;
+        
+        assertEquals("Print form mismatch", rightAnswer, actualStr) ;
     }
 
     // TODO testSameValueDecimal tests

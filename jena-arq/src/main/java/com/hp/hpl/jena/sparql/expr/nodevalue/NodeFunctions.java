@@ -30,11 +30,13 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
+
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 /**
@@ -52,9 +54,15 @@ public class NodeFunctions {
         Node n = nv.asNode() ;
         if ( !n.isLiteral() )
             throw new ExprEvalException(label + ": Not a literal: " + nv) ;
-        RDFDatatype dt = n.getLiteralDatatype() ;
         String lang = n.getLiteralLanguage() ;
-
+        
+        if ( NodeUtils.isLangString(n) )
+            // Language tag.  Legal.  
+            return n ;
+        
+        // No language tag : either no datatype or a datatype of xsd:string 
+        // Special case : rdf:langString and no language ==> Illegal
+        RDFDatatype dt = n.getLiteralDatatype() ;
         if ( dt != null && !dt.equals(XSDDatatype.XSDstring) )
             throw new ExprEvalException(label + ": Not a string literal: " + nv) ;
         return n ;
