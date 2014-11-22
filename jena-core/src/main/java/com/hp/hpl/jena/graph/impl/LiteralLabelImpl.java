@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.graph.impl;
 
 import java.util.Locale ;
+import java.util.Objects ;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -299,7 +300,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
     public Object getIndexingValue() {
         return
             isXML() ? this
-            : !lang.equals( "" ) ? getLexicalForm() + "@" + lang.toLowerCase(Locale.ENGLISH)
+            : !lang.equals( "" ) ? getLexicalForm() + "@" + lang.toLowerCase(Locale.ROOT)
             : wellformed ? getValue()
             : getLexicalForm() 
             ;
@@ -359,15 +360,21 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	        return false;
 	    }
 	    LiteralLabel otherLiteral = (LiteralLabel) other;
-	    boolean typeEqual =
-	        (dtype == null
-	            ? otherLiteral.getDatatype() == null
-	            : dtype.equals(otherLiteral.getDatatype()));
-	    boolean langEqual =
-	        (dtype == null ? lang.equals(otherLiteral.language()) : true);
-	    return typeEqual
-	        && langEqual
-	        && getLexicalForm().equals(otherLiteral.getLexicalForm());
+	    
+	    boolean typeEqual = Objects.equals(dtype, otherLiteral.getDatatype()) ;
+	    if ( !typeEqual )
+	        return false ;
+
+	    boolean lexEquals = Objects.equals(lexicalForm, otherLiteral.getLexicalForm());
+        if ( ! lexEquals )
+            return false ;
+
+        boolean langEqual = Objects.equals(lang, otherLiteral.language()) ;
+	    if ( ! langEqual )
+	        return false ;
+	    // Ignore xml flag as it is calculated from the lexical form + datatype 
+	    // Ignore value as lexical form + datatype -> value is a function. 
+	    return true ;
 	}
 
 	/** 
