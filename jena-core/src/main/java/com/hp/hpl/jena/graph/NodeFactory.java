@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph ;
 
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
@@ -25,95 +25,113 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 
-public class NodeFactory
-{
+public class NodeFactory {
 
-    public static RDFDatatype getType( String s )
-    { return TypeMapper.getInstance().getSafeTypeByName( s ); }
+    public static RDFDatatype getType(String s) {
+        return TypeMapper.getInstance().getSafeTypeByName(s) ;
+    }
 
-    /** make a blank node with a fresh anon id */ 
-    public static Node createAnon()
-        { return createAnon( AnonId.create() ); }
+    /** make a blank node with a fresh anon id */
+    public static Node createAnon() {
+        return createAnon(AnonId.create()) ;
+    }
 
     /** make a blank node with the specified label */
-    public static Node createAnon( AnonId id )
-        { return Node.create( Node.makeAnon, id ); }
+    public static Node createAnon(AnonId id) {
+        return Node.create(Node.makeAnon, id) ;
+    }
 
     /** make a literal node with the specified literal value */
-    public static Node createLiteral( LiteralLabel lit )
-        { return Node.create( Node.makeLiteral, lit ); }
+    public static Node createLiteral(LiteralLabel lit) {
+        return Node.create(Node.makeLiteral, lit) ;
+    }
 
     /** make a URI node with the specified URIref string */
-    public static Node createURI( String uri )
-        { return Node.create( Node.makeURI, uri ); }
+    public static Node createURI(String uri) {
+        return Node.create(Node.makeURI, uri) ;
+    }
 
     /** make a variable node with a given name */
-    public static Node createVariable( String name )
-        { return Node.create( Node.makeVariable, Node_Variable.variable( name ) ); }
-
-    public static Node createLiteral( String value )
-    { return createLiteral( value, "", false ); }
-
-    /** make a literal with specified language and XMLishness.
-        lexical form must not be null.
-        @param lex 
-        @param lang
-        @param isXml If true then lit is exclusive canonical XML of type 
-            rdf:XMLLiteral, and no checking will be invoked.
-    */
-    public static Node createLiteral( String lex, String lang, boolean isXml )
-    {
-        if (lex == null) throw new NullPointerException( "null lexical form for literal" );
-        return createLiteral( LiteralLabelFactory.create( lex, lang, isXml ) ); 
+    public static Node createVariable(String name) {
+        return Node.create(Node.makeVariable, Node_Variable.variable(name)) ;
     }
 
-    /** Make a literal with specified language.
-        lexical form must not be null.
-        @param lex 
-        @param lang
+    public static Node createLiteral(String value) {
+        return createLiteral(value, "", false) ;
+    }
+
+    /**
+     * make a literal with specified language and XMLishness. lexical form must
+     * not be null.
+     * 
+     * @param lex
+     * @param lang
+     * @param isXml
+     *            If true then lit is exclusive canonical XML of type
+     *            rdf:XMLLiteral, and no checking will be invoked.
      */
-    public static Node createLiteral( String lex, String lang)
-    {
+    public static Node createLiteral(String lex, String lang, boolean isXml) {
+        if ( lex == null )
+            throw new NullPointerException("null lexical form for literal") ;
+        return createLiteral(LiteralLabelFactory.create(lex, lang, isXml)) ;
+    }
+
+    /**
+     * Make a literal with specified language. lexical form must not be null.
+     * 
+     * @param lex
+     *            the lexical form of the literal
+     * @param lang
+     *            the optional language tag
+     */
+    public static Node createLiteral(String lex, String lang) {
         // Equivalent to create(lex, lang, false) except the XML flag is
         // hidden so client code does not see it unnecesarily.
-        if (lex == null) throw new NullPointerException( "null lexical form for literal" );
-        return createLiteral( LiteralLabelFactory.create( lex, lang) ); 
+        if ( lex == null )
+            throw new NullPointerException("null lexical form for literal") ;
+        return createLiteral(LiteralLabelFactory.create(lex, lang)) ;
     }
 
     /**
-     * Build a literal node from its lexical form. The
-     * lexical form will be parsed now and the value stored. If
-     * the form is not legal this will throw an exception.
+     * Build a literal node from its lexical form. The lexical form will be
+     * parsed now and the value stored. If the form is not legal this will throw
+     * an exception.
      * 
-     * @param lex the lexical form of the literal
-     * @param lang the optional language tag
-     * @param dtype the type of the literal, null for old style "plain" literals
-     * @throws DatatypeFormatException if lex is not a legal form of dtype
+     * @param lex
+     *            the lexical form of the literal
+     * @param lang
+     *            the optional language tag
+     * @param dtype
+     *            the type of the literal
+     * @throws DatatypeFormatException
+     *             if lex is not a legal form of dtype
      */
-    public static Node createLiteral( String lex, String lang, RDFDatatype dtype ) 
-        throws DatatypeFormatException 
-        { return createLiteral( LiteralLabelFactory.createLiteralLabel( lex, lang, dtype ) ); }
+    public static Node createLiteral(String lex, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+        return createLiteral(LiteralLabelFactory.createLiteralLabel(lex, lang, dtype)) ;
+    }
 
     /**
-     * Build a typed literal node from its lexical form. The
-     * lexical form will be parsed now and the value stored. If
-     * the form is not legal this will throw an exception.
+     * Build a typed literal node from its lexical form. The lexical form will
+     * be parsed now and the value stored. If the form is not legal this will
+     * throw an exception.
      * 
-     * @param lex the lexical form of the literal
-     * @param dtype the type of the literal, null for old style "plain" literals
-     * @throws DatatypeFormatException if lex is not a legal form of dtype
+     * @param lex
+     *            the lexical form of the literal
+     * @param dtype
+     *            the type of the literal
+     * @throws DatatypeFormatException
+     *             if lex is not a legal form of dtype
      */
-    public static Node createLiteral( String lex, RDFDatatype dtype ) 
-        throws DatatypeFormatException 
-        { return createLiteral( LiteralLabelFactory.createLiteralLabel( lex, "", dtype ) ); }
+    public static Node createLiteral(String lex, RDFDatatype dtype) throws DatatypeFormatException {
+        return createLiteral(LiteralLabelFactory.create(lex, dtype)) ;
+    }
 
-    public static Node createUncachedLiteral( Object value, String lang, RDFDatatype dtype ) 
-    throws DatatypeFormatException 
-    { return new Node_Literal( LiteralLabelFactory.create( value, lang, dtype ) ); }
+    public static Node createUncachedLiteral(Object value, String lang, RDFDatatype dtype) throws DatatypeFormatException {
+        return new Node_Literal(LiteralLabelFactory.create(value, lang, dtype)) ;
+    }
 
-    public static Node createUncachedLiteral( Object value, RDFDatatype dtype ) 
-    throws DatatypeFormatException 
-    { return new Node_Literal( LiteralLabelFactory.create( value, "", dtype ) ); }
+    public static Node createUncachedLiteral(Object value, RDFDatatype dtype) throws DatatypeFormatException {
+        return new Node_Literal(LiteralLabelFactory.create(value, "", dtype)) ;
+    }
 
 }
-

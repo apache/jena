@@ -83,7 +83,7 @@ public abstract class AbstractTestNodeTable extends BaseTest
     @Test public void nodetable_06()    { testNode("'x'^^<http://example/dt>") ; }
     @Test public void nodetable_07()    { testNode("'نواف'") ; }
     
-    static Node badNode1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("abc", "99bad", null) ;
+    static Node badNode1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("abc", "99bad") ;
     
     @Test public void nodetable_bad_01()    { testNodeBad(badNode1) ; }
     @Test public void nodetable_bad_02()    

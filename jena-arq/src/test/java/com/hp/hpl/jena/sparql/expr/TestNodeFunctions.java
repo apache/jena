@@ -53,7 +53,7 @@ public class TestNodeFunctions extends BaseTest {
 
     @Test public void testSameTerm4() {
         Node n1 = NodeFactory.createLiteral("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
+        Node n2 = NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring) ;
         if ( JenaRuntime.isRDF11 )
             assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
         else
@@ -61,20 +61,20 @@ public class TestNodeFunctions extends BaseTest {
     }
 
     @Test public void testSameTerm5() {
-        Node n1 = NodeFactory.createLiteral("xyz", "en", null) ;
-        Node n2 = NodeFactory.createLiteral("xyz", null, null) ;
+        Node n1 = NodeFactory.createLiteral("xyz", "en") ;
+        Node n2 = NodeFactory.createLiteral("xyz") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm6() {
-        Node n1 = NodeFactory.createLiteral("xyz", "en", null) ;
-        Node n2 = NodeFactory.createLiteral("xyz", "EN", null) ;
+        Node n1 = NodeFactory.createLiteral("xyz", "en") ;
+        Node n2 = NodeFactory.createLiteral("xyz", "EN") ;
         assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testRDFtermEquals1() {
         Node n1 = NodeFactory.createURI("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz", null, null) ;
+        Node n2 = NodeFactory.createLiteral("xyz") ;
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
 
@@ -82,13 +82,13 @@ public class TestNodeFunctions extends BaseTest {
     public void testRDFtermEquals3() {
         // Unextended - no language tag
         Node n1 = NodeFactory.createLiteral("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n2 = NodeFactory.createLiteral("xyz", "en") ;
         NodeFunctions.rdfTermEquals(n1, n2) ;
     }
 
     @Test public void testRDFtermEquals2() {
-        Node n1 = NodeFactory.createLiteral("xyz", "en", null) ;
-        Node n2 = NodeFactory.createLiteral("xyz", "EN", null) ;
+        Node n1 = NodeFactory.createLiteral("xyz", "en") ;
+        Node n2 = NodeFactory.createLiteral("xyz", "EN") ;
         assertTrue(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
 
@@ -164,7 +164,7 @@ public class TestNodeFunctions extends BaseTest {
     }
 
     @Test public void testLang1() {
-        Node n = NodeFactory.createLiteral("abc", "en-gb", null) ;
+        Node n = NodeFactory.createLiteral("abc", "en-gb") ;
         assertEquals("en-gb", NodeFunctions.lang(n)) ;
     }
 

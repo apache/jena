@@ -894,7 +894,7 @@ public class Rule implements ClauseEntry {
                         }
                     } 
                     RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-                    return NodeFactory.createLiteral(lit, "", dt);
+                    return NodeFactory.createLiteral(lit, dt);
                 } else {
                     return NodeFactory.createLiteral(lit, "");
                 }                
@@ -918,12 +918,12 @@ public class Rule implements ClauseEntry {
                 if ( lit.contains( "." ) ) {
                     // Float?
                     if (XSDDatatype.XSDfloat.isValid(lit)) {
-                        return NodeFactory.createLiteral(lit, "", XSDDatatype.XSDfloat);
+                        return NodeFactory.createLiteral(lit, XSDDatatype.XSDfloat);
                     }
                 } else {
                     // Int?
                     if (XSDDatatype.XSDint.isValid(lit)) {
-                        return NodeFactory.createLiteral(lit, "", XSDDatatype.XSDint);
+                        return NodeFactory.createLiteral(lit, XSDDatatype.XSDint);
                     }
                 }
             }

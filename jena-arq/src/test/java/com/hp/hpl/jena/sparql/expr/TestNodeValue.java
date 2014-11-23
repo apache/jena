@@ -728,18 +728,18 @@ public class TestNodeValue extends BaseTest
     
     @Test public void testLang1()
     {
-        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en") ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
-        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en") ;
         NodeValue nv2 = NodeValue.makeNode(n2) ;
         assertTrue(NodeValue.sameAs(nv1, nv2)) ;
     }
     
     @Test public void testLang2()
     {
-        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en") ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
-        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "EN", null) ;
+        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "EN") ;
         NodeValue nv2 = NodeValue.makeNode(n2) ;
         assertTrue(NodeValue.sameAs(nv1, nv2)) ;
         assertFalse(nv1.equals(nv2)) ;
@@ -747,18 +747,18 @@ public class TestNodeValue extends BaseTest
 
     @Test public void testLang3()
     {
-        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en") ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
-        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en") ;
         NodeValue nv2 = NodeValue.makeNode(n2) ;
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
     }
     
     @Test public void testLang4()
     {
-        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en", null) ;
+        Node n1 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "en") ;
         NodeValue nv1 = NodeValue.makeNode(n1) ;
-        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "EN", null) ;
+        Node n2 = com.hp.hpl.jena.graph.NodeFactory.createLiteral("xyz", "EN") ;
         NodeValue nv2 = NodeValue.makeNode(n2) ;
         assertFalse(NodeValue.notSameAs(nv1, nv2)) ;
         assertFalse(nv1.equals(nv2)) ;

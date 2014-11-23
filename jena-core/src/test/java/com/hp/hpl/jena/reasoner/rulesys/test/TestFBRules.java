@@ -636,7 +636,7 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(n2, p, Functor.makeFunctorNode("f", new Node[] {
                                         a, Util.makeIntNode(0)  })));
         data.add(new Triple(n3, p, Functor.makeFunctorNode("f", new Node[] {
-               a, NodeFactory.createLiteral( "0", "", XSDDatatype.XSDnonNegativeInteger ) } )));
+               a, NodeFactory.createLiteral( "0", XSDDatatype.XSDnonNegativeInteger ) } )));
         InfGraph infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
@@ -713,9 +713,9 @@ public class TestFBRules extends TestCase {
         // XSD timeDate point comparisons
         data = Factory.createGraphMem();
         XSDDatatype dt = new XSDDatatype("dateTime");
-        data.add(new Triple(n1, q, NodeFactory.createLiteral("2000-03-04T20:00:00Z", "", XSDDatatype.XSDdateTime)));
-        data.add(new Triple(n2, q, NodeFactory.createLiteral("2001-03-04T20:00:00Z", "", XSDDatatype.XSDdateTime)));
-        data.add(new Triple(n3, q, NodeFactory.createLiteral("2002-03-04T20:00:00Z", "", XSDDatatype.XSDdateTime)));
+        data.add(new Triple(n1, q, NodeFactory.createLiteral("2000-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
+        data.add(new Triple(n2, q, NodeFactory.createLiteral("2001-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
+        data.add(new Triple(n3, q, NodeFactory.createLiteral("2002-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
         infgraph = createInfGraph(rules, data);
                
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
@@ -796,18 +796,18 @@ public class TestFBRules extends TestCase {
         
         TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),
             new Triple[] {
-                new Triple(n1, s, NodeFactory.createLiteral("literal", "", null)),
-                new Triple(n1, s, NodeFactory.createLiteral("notBNode", "", null)),
+                new Triple(n1, s, NodeFactory.createLiteral("literal")),
+                new Triple(n1, s, NodeFactory.createLiteral("notBNode")),
             });
         TestUtil.assertIteratorValues(this, infgraph.find(n2, s, null),
             new Triple[] {
-                new Triple(n2, s, NodeFactory.createLiteral("notLiteral", "", null)),
-                new Triple(n2, s, NodeFactory.createLiteral("notBNode", "", null)),
+                new Triple(n2, s, NodeFactory.createLiteral("notLiteral")),
+                new Triple(n2, s, NodeFactory.createLiteral("notBNode")),
             });
         TestUtil.assertIteratorValues(this, infgraph.find(n3, s, null),
             new Triple[] {
-                new Triple(n3, s, NodeFactory.createLiteral("notLiteral", "", null)),
-                new Triple(n3, s, NodeFactory.createLiteral("bNode", "", null)),
+                new Triple(n3, s, NodeFactory.createLiteral("notLiteral")),
+                new Triple(n3, s, NodeFactory.createLiteral("bNode")),
             });
          
         // Data type checking
@@ -821,33 +821,33 @@ public class TestFBRules extends TestCase {
                        "";
         data = Factory.createGraphMem();
         data.add(new Triple(n1, p, Util.makeIntNode(3)) );
-        data.add(new Triple(n2, p, NodeFactory.createLiteral("foo", "", null)) );
-        data.add(new Triple(n3, p, NodeFactory.createLiteral("foo", "", XSDDatatype.XSDstring)) );
+        data.add(new Triple(n2, p, NodeFactory.createLiteral("foo")) );
+        data.add(new Triple(n3, p, NodeFactory.createLiteral("foo", XSDDatatype.XSDstring)) );
         data.add(new Triple(n4, p, n4));
-        data.add(new Triple(n5, p, NodeFactory.createLiteral("-1", "", XSDDatatype.XSDnonNegativeInteger)) );
+        data.add(new Triple(n5, p, NodeFactory.createLiteral("-1", XSDDatatype.XSDnonNegativeInteger)) );
         infgraph = createInfGraph(rules, data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
             new Triple[] {
-                new Triple(n1, s, NodeFactory.createLiteral("isLiteral", "", null)),
-                new Triple(n1, s, NodeFactory.createLiteral("isXSDInt", "", null)),
-                new Triple(n1, s, NodeFactory.createLiteral("notXSDString", "", null)),
+                new Triple(n1, s, NodeFactory.createLiteral("isLiteral")),
+                new Triple(n1, s, NodeFactory.createLiteral("isXSDInt")),
+                new Triple(n1, s, NodeFactory.createLiteral("notXSDString")),
 
-                new Triple(n2, s, NodeFactory.createLiteral("isLiteral", "", null)),
-                new Triple(n2, s, NodeFactory.createLiteral("notXSDInt", "", null)),
-                new Triple(n2, s, NodeFactory.createLiteral("isXSDString", "", null)),
+                new Triple(n2, s, NodeFactory.createLiteral("isLiteral")),
+                new Triple(n2, s, NodeFactory.createLiteral("notXSDInt")),
+                new Triple(n2, s, NodeFactory.createLiteral("isXSDString")),
 
-                new Triple(n3, s, NodeFactory.createLiteral("isLiteral", "", null)),
-                new Triple(n3, s, NodeFactory.createLiteral("notXSDInt", "", null)),
-                new Triple(n3, s, NodeFactory.createLiteral("isXSDString", "", null)),
+                new Triple(n3, s, NodeFactory.createLiteral("isLiteral")),
+                new Triple(n3, s, NodeFactory.createLiteral("notXSDInt")),
+                new Triple(n3, s, NodeFactory.createLiteral("isXSDString")),
 
-                new Triple(n4, s, NodeFactory.createLiteral("notLiteral", "", null)),
-                new Triple(n4, s, NodeFactory.createLiteral("notXSDInt", "", null)),
-                new Triple(n4, s, NodeFactory.createLiteral("notXSDString", "", null)),
+                new Triple(n4, s, NodeFactory.createLiteral("notLiteral")),
+                new Triple(n4, s, NodeFactory.createLiteral("notXSDInt")),
+                new Triple(n4, s, NodeFactory.createLiteral("notXSDString")),
 
-                new Triple(n5, s, NodeFactory.createLiteral("notLiteral", "", null)),
-                new Triple(n5, s, NodeFactory.createLiteral("notXSDInt", "", null)),
-                new Triple(n5, s, NodeFactory.createLiteral("notXSDString", "", null)),
+                new Triple(n5, s, NodeFactory.createLiteral("notLiteral")),
+                new Triple(n5, s, NodeFactory.createLiteral("notXSDInt")),
+                new Triple(n5, s, NodeFactory.createLiteral("notXSDString")),
             });
             
         // Literal counting

@@ -566,7 +566,7 @@ public class T_TransSystem
         Node s = NodeFactory.createURI("S") ;
         Node p = NodeFactory.createURI("P"+value) ;
         // Integer - that gets inlined.
-        Node o = NodeFactory.createLiteral(Integer.toString(value), null, XSDDatatype.XSDinteger) ;
+        Node o = NodeFactory.createLiteral(Integer.toString(value), XSDDatatype.XSDinteger) ;
         return new Quad(g,s,p,o) ;
     }
 

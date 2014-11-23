@@ -427,7 +427,7 @@ public class NodeFunctions {
         Node dt = v2.asNode() ;
         // Check?
 
-        Node n = NodeFactory.createLiteral(lex, null, NodeFactory.getType(dt.getURI())) ;
+        Node n = NodeFactory.createLiteral(lex, NodeFactory.getType(dt.getURI())) ;
         return NodeValue.makeNode(n) ;
     }
 
@@ -441,7 +441,7 @@ public class NodeFunctions {
         String lang = v2.asString() ;
         // Check?
 
-        Node n = NodeFactory.createLiteral(lex, lang, null) ;
+        Node n = NodeFactory.createLiteral(lex, lang) ;
         return NodeValue.makeNode(n) ;
     }
 

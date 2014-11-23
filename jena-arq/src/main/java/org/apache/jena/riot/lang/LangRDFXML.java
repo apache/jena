@@ -181,7 +181,7 @@ public class LangRDFXML implements LangRIOT
             }
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-            return NodeFactory.createLiteral(lit.toString(), null, dt);
+            return NodeFactory.createLiteral(lit.toString(), dt);
 
         }
 

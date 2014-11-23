@@ -441,9 +441,9 @@ public final class Token
                 if ( x == null )
                     throw new RiotException("Can't expand prefixed name: "+this) ;
                 return NodeFactory.createURI(x) ;
-            case DECIMAL :  return NodeFactory.createLiteral(tokenImage, null, XSDDatatype.XSDdecimal)  ; 
-            case DOUBLE :   return NodeFactory.createLiteral(tokenImage, null, XSDDatatype.XSDdouble)  ;
-            case INTEGER:   return NodeFactory.createLiteral(tokenImage, null, XSDDatatype.XSDinteger) ;
+            case DECIMAL :  return NodeFactory.createLiteral(tokenImage, XSDDatatype.XSDdecimal)  ; 
+            case DOUBLE :   return NodeFactory.createLiteral(tokenImage, XSDDatatype.XSDdouble)  ;
+            case INTEGER:   return NodeFactory.createLiteral(tokenImage, XSDDatatype.XSDinteger) ;
             case LITERAL_DT :
             {
                 Token lexToken = getSubToken1() ;
@@ -456,9 +456,9 @@ public final class Token
                 if ( ! n.isURI() )
                     throw new RiotException("Invalid token: "+this) ;
                 RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(n.getURI()) ;
-                return NodeFactory.createLiteral(lexToken.getImage(), null, dt)  ;
+                return NodeFactory.createLiteral(lexToken.getImage(), dt)  ;
             }
-            case LITERAL_LANG : return NodeFactory.createLiteral(tokenImage, tokenImage2, null)  ;
+            case LITERAL_LANG : return NodeFactory.createLiteral(tokenImage, tokenImage2)  ;
             case STRING:
             case STRING1:
             case STRING2:

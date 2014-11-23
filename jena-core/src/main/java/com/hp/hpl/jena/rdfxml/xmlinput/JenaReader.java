@@ -113,7 +113,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         }
 
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-        return NodeFactory.createLiteral(lit.toString(), null, dt);
+        return NodeFactory.createLiteral(lit.toString(), dt);
 
     }
 

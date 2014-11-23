@@ -27,6 +27,14 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class LiteralLabelFactory
 {
+    // This code works for RDF 1.0 and RDF 1.1
+    //
+    // In RDF 1.0, "abc" has no datatype and is a different term to "abc"^^xsd:string
+    // In RDF 1.0, "abc"@en has no datatype.
+    //
+    // In RDF 1.1, "abc" has no datatype xsd:string and is the same term as "abc"^^xsd:string
+    // In RDF 1.1, "abc"@en has datatype rdf:langString.
+    
     private static final RDFDatatype dtSLangString = NodeFactory.getType(RDF.Nodes.langString.getURI()) ;
     
     private static RDFDatatype fixDatatype(RDFDatatype dtype, String lang) {
@@ -37,19 +45,27 @@ public class LiteralLabelFactory
         return dtype ;
     }
     
+    /** Create a literal with a dataype. */ 
+    public static LiteralLabel create( String lex, RDFDatatype dtype) {
+        return new LiteralLabelImpl( lex, "", dtype );
+    }
+
+    /** Using {@linkplain #create(String, String)} or {@linkplain #create(String, RDFDatatype)}
+     * where possible is preferred.
+     */
     public static LiteralLabel createLiteralLabel( String lex, String lang, RDFDatatype dtype ) 
-    throws DatatypeFormatException
+        throws DatatypeFormatException
     { 
         dtype = fixDatatype(dtype, lang) ;
         return new LiteralLabelImpl( lex, lang, dtype ); }
 
     /**
-     * Build a plain literal label from its lexical form. 
+     * Build a plain literal label from its lexical form and language tag.
      * @param lex the lexical form of the literal
      * @param lang the optional language tag, only relevant for plain literals
      */
     public static LiteralLabel create(String lex, String lang) {
-        RDFDatatype dt =  fixDatatype(null, lang) ;
+        RDFDatatype dt = fixDatatype(null, lang) ;
         return new LiteralLabelImpl(lex, lang, dt);
     }
 
@@ -74,7 +90,7 @@ public class LiteralLabelFactory
      */
     public static LiteralLabel create(Object value) {
         if ( value instanceof String )
-            create((String)value, null) ;
+            create((String)value, (RDFDatatype)null) ;
         return new LiteralLabelImpl(value) ;
     }
 

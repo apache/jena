@@ -83,6 +83,7 @@ import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
@@ -342,7 +343,7 @@ public abstract class NodeValue extends ExprNode
                                
     public static NodeValue makeNode(String lexicalForm, XSDDatatype dtype)
     {
-        Node n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, null, dtype) ;
+        Node n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, dtype) ;
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;
     }
@@ -364,14 +365,14 @@ public abstract class NodeValue extends ExprNode
             Log.warn(NodeValue.class, "Both lang tag and datatype defined (lexcial form '"+lexicalForm+"')") ;
         
         Node n = null ; 
-        
-        if ( datatype != null)
-        {
+        if ( langTag != null )
+            n = NodeFactory.createLiteral(lexicalForm, langTag) ;
+        else if ( datatype != null) {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatype) ;
-            n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, null, dType) ;
-        }
-        else
-            n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, langTag, null) ;
+            n = NodeFactory.createLiteral(lexicalForm, dType) ;
+        } else 
+            n = NodeFactory.createLiteral(lexicalForm) ;
+            
         return NodeValue.makeNode(n) ;
     }
     

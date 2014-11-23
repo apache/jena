@@ -276,7 +276,7 @@ public class ResourceFactory {
         @Override
         public Literal createTypedLiteral( String string , RDFDatatype dType)
         {
-            return new LiteralImpl(NodeFactory.createLiteral(string, "", dType), null) ;
+            return new LiteralImpl(NodeFactory.createLiteral(string, dType), null) ;
         }
 
         @Override

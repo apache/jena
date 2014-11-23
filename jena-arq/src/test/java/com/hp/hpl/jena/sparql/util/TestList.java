@@ -191,12 +191,12 @@ public class TestList extends BaseTest
         return new GNode(graph, t.getObject()) ;
     }
     
-    private static Node node1 = NodeFactory.createLiteral("1", "", XSDDatatype.XSDinteger) ;
-    private static Node node2 = NodeFactory.createLiteral("2", "", XSDDatatype.XSDinteger) ;
-    private static Node node3 = NodeFactory.createLiteral("3", "", XSDDatatype.XSDinteger) ;
-    private static Node node4 = NodeFactory.createLiteral("4", "", XSDDatatype.XSDinteger) ;
+    private static Node node1 = NodeFactory.createLiteral("1", XSDDatatype.XSDinteger) ;
+    private static Node node2 = NodeFactory.createLiteral("2", XSDDatatype.XSDinteger) ;
+    private static Node node3 = NodeFactory.createLiteral("3", XSDDatatype.XSDinteger) ;
+    private static Node node4 = NodeFactory.createLiteral("4", XSDDatatype.XSDinteger) ;
     
-    private static Node node0 = NodeFactory.createLiteral("0", "", XSDDatatype.XSDinteger) ;
+    private static Node node0 = NodeFactory.createLiteral("0", XSDDatatype.XSDinteger) ;
     
     private static Node r = NodeFactory.createURI("http://example/r") ;
     private static Node p = NodeFactory.createURI("http://example/p") ;

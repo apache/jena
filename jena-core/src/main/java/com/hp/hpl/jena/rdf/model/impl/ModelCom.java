@@ -173,7 +173,7 @@ implements Model, PrefixMapping, Lock
     { return new LiteralImpl( NodeFactory.createLiteral( s, lang, wellFormed), this ); }
 
     private Literal literal( String lex, RDFDatatype datatype)
-    { return new LiteralImpl( NodeFactory.createLiteral( lex, "", datatype), this ); }
+    { return new LiteralImpl( NodeFactory.createLiteral( lex, datatype), this ); }
 
     @Override
     public Model add( Resource s, Property p, String o, String l )
@@ -708,7 +708,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(String lex, RDFDatatype dtype) 
         throws DatatypeFormatException {
-        return new LiteralImpl( NodeFactory.createLiteral( lex, "", dtype ), this);
+        return new LiteralImpl( NodeFactory.createLiteral( lex, dtype ), this);
     }
 
     /**
@@ -735,7 +735,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(String lex, String typeURI)  {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
-        LiteralLabel ll = LiteralLabelFactory.createLiteralLabel( lex, "", dt );
+        LiteralLabel ll = LiteralLabelFactory.create( lex, dt );
         return new LiteralImpl( NodeFactory.createLiteral(ll), this );
     }
 

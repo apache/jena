@@ -530,18 +530,6 @@ public class XSDFuncOp
     private static NodeValue calcReturn(String result, Node arg) {
         Node n2 = NodeFactory.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralDatatype()) ; 
         return NodeValue.makeNode(n2) ;
-        
-//        if ( arg.getLiteralDatatype() != null )
-//        {
-//            if ( arg.getLiteralDatatype() != XSDDatatype.XSDstring )
-//                throw new ARQInternalErrorException("Excepted only xsd:string: "+arg) ; 
-//            // Must be xsd:string
-//            return NodeValue.makeNode(result, XSDDatatype.XSDstring ) ;
-//        }
-//        String lang = arg.getLiteralLanguage() ;
-//        if ( lang == null ) lang = "" ;
-//        if ( lang.equals("") ) return NodeValue.makeString(result) ;
-//        return NodeValue.makeNode(result, lang, (String)null) ;
     }
     
     public static NodeValue strBefore(NodeValue string, NodeValue match) {
@@ -1302,15 +1290,15 @@ public class XSDFuncOp
         if ( "".equals(dts.timezone) )
             return null ;
         if ( "Z".equals(dts.timezone) ) {
-            Node n = NodeFactory.createLiteral("PT0S", null, NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteral("PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
         if ( "+00:00".equals(dts.timezone) ) {
-            Node n = NodeFactory.createLiteral("PT0S", null, NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteral("PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
         if ( "-00:00".equals(dts.timezone) ) {
-            Node n = NodeFactory.createLiteral("-PT0S", null, NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteral("-PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
 

@@ -81,7 +81,7 @@ public class NodeCreateUtils
         if (first == '\'' || first == '\"')
             return NodeFactory.createLiteral( newString( pm, first, x ) );
         if (Character.isDigit( first )) 
-            return NodeFactory.createLiteral( x, "", XSDDatatype.XSDinteger );
+            return NodeFactory.createLiteral( x, XSDDatatype.XSDinteger );
         if (first == '_')
             return NodeFactory.createAnon( new AnonId( x ) );
         if (x.equals( "??" ))
@@ -135,7 +135,7 @@ public class NodeCreateUtils
         int colon = langOrType.indexOf( ':' );
         return colon < 0 
             ? LiteralLabelFactory.create( content, langOrType, false )
-            : LiteralLabelFactory.createLiteralLabel( content, "", NodeFactory.getType( pm.expandPrefix( langOrType ) ) )
+            : LiteralLabelFactory.create( content, NodeFactory.getType( pm.expandPrefix( langOrType ) ) )
             ;
         }
 
