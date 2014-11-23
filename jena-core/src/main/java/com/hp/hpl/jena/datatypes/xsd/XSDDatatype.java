@@ -285,7 +285,7 @@ public class XSDDatatype extends BaseDatatype {
     /**
      * Compares two instances of values of the given datatype.
      * This ignores lang tags and defers to the equality function
-     * defined by the Xerces package - to be checked.
+     * defined by the Xerces package.
      */
     @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
