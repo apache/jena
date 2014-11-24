@@ -53,10 +53,11 @@ public class AggSum  extends AggregatorBase
     public Expr getExpr() { return expr ; }
 
     @Override
-    public Node getValueEmpty()     { return null ; } //return NodeValue.toNode(noValuesToSum) ; } 
+    public Node getValueEmpty() { return NodeValue.toNode(noValuesToSum) ; } 
 
     @Override
     public int hashCode()   { return HC_AggSum ^ expr.hashCode() ; }
+    
     @Override
     public boolean equals(Object other)
     {
