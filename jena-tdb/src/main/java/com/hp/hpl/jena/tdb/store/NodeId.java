@@ -297,23 +297,23 @@ public class NodeId
                 
             case INTEGER : {
                 long val = IntegerNode.unpack(v) ;
-                Node n = NodeFactory.createLiteral(Long.toString(val), null, XSDDatatype.XSDinteger) ;
+                Node n = NodeFactory.createLiteral(Long.toString(val), XSDDatatype.XSDinteger) ;
                 return n ;
             }
             case DECIMAL : {
                 BigDecimal d = DecimalNode.unpackAsBigDecimal(v) ;
                 String x = d.toPlainString() ;
-                return NodeFactory.createLiteral(x, null, XSDDatatype.XSDdecimal) ;
+                return NodeFactory.createLiteral(x, XSDDatatype.XSDdecimal) ;
             }
             case DATETIME : {
                 long val = BitsLong.clear(v, 56, 64) ;
                 String lex = DateTimeNode.unpackDateTime(val) ;
-                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
+                return NodeFactory.createLiteral(lex, XSDDatatype.XSDdateTime) ;
             }
             case DATE : {
                 long val = BitsLong.clear(v, 56, 64) ;
                 String lex = DateTimeNode.unpackDate(val) ;
-                return NodeFactory.createLiteral(lex, null, XSDDatatype.XSDdate) ;
+                return NodeFactory.createLiteral(lex, XSDDatatype.XSDdate) ;
             }
             case BOOLEAN : {
                 long val = BitsLong.clear(v, 56, 64) ;

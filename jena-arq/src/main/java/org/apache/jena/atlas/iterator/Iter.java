@@ -443,18 +443,18 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         return Iter.operate(stream, action) ;
     }
 
-    /**
-     * @deprecated Use {@link #concat(Iterable, Iterable)} instead which is much more performant
+    /** Join two iteratables
+     * If there, potentially, going to be many iterators, it is better to 
+     * create an {@linkplain IteratorConcat} explicitly and add each iterator.
      */
-    @Deprecated
-    public static <T> Iterator<T> append(Iterable<T> iter1, Iterable<T> iter2) {
+    public static <T> Iterator<T> append(Iterable<? extends T> iter1, Iterable<? extends T> iter2) {
         return IteratorCons.create(iterator(iter1), iterator(iter2)) ;
     }
 
-    /**
-     * @deprecated Use {@link #concat(Iterator, Iterator)} instead which is much more performant
+    /** Join two iterator
+     * If there, potentially, going to be many iterators, it is better to 
+     * create an {@linkplain IteratorConcat} explicitly and add each iterator.
      */
-    @Deprecated
     public static <T> Iterator<T> append(Iterator<? extends T> iter1, Iterator<? extends T> iter2) {
         return IteratorCons.create(iter1, iter2) ;
     }
@@ -754,7 +754,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
             return iter2 ;
         if ( iter2 == null )
             return iter1 ;
-        return iter1.concat(iter2) ;
+        return iter1.append(iter2) ;
     }
 
     public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2) {
@@ -762,15 +762,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
             return iter2 ;
         if ( iter2 == null )
             return iter1 ;
-        return Iter.iter(iter1).concat(Iter.iter(iter2)) ;
-    }
-    
-    public static <T> Iterator<T> concat(Iterable<T> iter1, Iterable<T> iter2) {
-        if (iter1 == null)
-            return iter2.iterator();
-        if (iter2 == null)
-            return iter1.iterator();
-        return Iter.concat(iter1.iterator(), iter2.iterator());
+        return Iter.iter(iter1).append(Iter.iter(iter2)) ;
     }
 
     public static <T> T first(Iterator<T> iter, Filter<T> filter) {
@@ -901,16 +893,12 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
         apply(iterator, action) ;
     }
 
-    /**
-     * @deprecated Use {@link #concat(Iterator)} instead which is much more performant
+    /** Join on an iterator.
+     * If there are going to be many iterators, uit is better to create an {@linkplain IteratorConcat}
+     * and <tt>.add</tt> each iterator.  The overheads are much lower. 
      */
-    @Deprecated
     public Iter<T> append(Iterator<T> iter) {
         return new Iter<>(IteratorCons.create(iterator, iter)) ;
-    }
-    
-    public Iter<T> concat(Iterator<T> iter) {
-        return new Iter<>(IteratorConcat.concat(iterator, iter));
     }
 
     /** Return an Iter that yields at most the first N items */
@@ -948,14 +936,6 @@ public class Iter<T> implements Iterable<T>, Iterator<T> {
     }
 
     // ---- Iterator
-
-    // ----
-    // Could merge in concatenated iterators - if used a lot there is reducable
-    // cost.
-    // Just putting in a slot is free (?) because objects of one or two slots
-    // have
-    // the same memory allocation.
-    // And .. be an iterator framework for extension
 
     @Override
     public boolean hasNext() {

@@ -82,7 +82,7 @@ class NormalizeValue
                 String lex2 = xcal.toXMLFormat() ;
                 if ( lex2.equals(lexicalForm) )
                     return node ;
-                return NodeFactory.createLiteral(lex2, null, datatype) ;
+                return NodeFactory.createLiteral(lex2, datatype) ;
             }
             // The only variablity for a valid date/dateTime/g* type is:
             //   Second part can have fractional seconds '.' s+ (if present) represents the fractional seconds;
@@ -107,7 +107,7 @@ class NormalizeValue
             // Can't happen.  We munged dts.second. 
 //            if ( lex2.equals(lexicalForm) )
 //                return node ;
-            return NodeFactory.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, datatype) ;
         }
     } ;
     
@@ -142,7 +142,7 @@ class NormalizeValue
             // If it's a subtype of integer, then output a new node of datatype integer.
             if ( datatype.equals(XSDDatatype.XSDinteger) && lex2.equals(lexicalForm) )
                 return node ;
-            return NodeFactory.createLiteral(lex2, null, XSDDatatype.XSDinteger) ;
+            return NodeFactory.createLiteral(lex2, XSDDatatype.XSDinteger) ;
         }
     } ;
 
@@ -160,7 +160,7 @@ class NormalizeValue
                 lex2 = lex2+".0" ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
-            return NodeFactory.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, datatype) ;
         }
     } ;
     
@@ -190,7 +190,7 @@ class NormalizeValue
             String lex2 = fmtFloatingPoint.format(d) ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
-            return NodeFactory.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, datatype) ;
         }
     } ;
     
@@ -202,7 +202,7 @@ class NormalizeValue
             String lex2 = fmtFloatingPoint.format(f) ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
-            return NodeFactory.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, datatype) ;
         }
     } ;
 
@@ -220,7 +220,7 @@ class NormalizeValue
         @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
-            return NodeFactory.createLiteral(lexicalForm, "", datatype) ;
+            return NodeFactory.createLiteral(lexicalForm, datatype) ;
         }
     } ;
 
@@ -240,7 +240,7 @@ class NormalizeValue
             if ( idx == lexicalForm.length()-1 )
                 return NodeFactory.createLiteral(lex) ;
             String lang = lexicalForm.substring(idx+1) ;
-            return NodeFactory.createLiteral(lex,lang, null) ;
+            return NodeFactory.createLiteral(lex,lang) ;
         }
     } ;
 }

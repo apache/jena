@@ -19,13 +19,16 @@
 package com.hp.hpl.jena.graph.impl;
 
 import java.util.Locale ;
+import java.util.Objects ;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.datatypes.xsd.impl.*;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 
 /**
@@ -182,14 +185,14 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	 *       @param xml If true then s is exclusive canonical XML of type rdf:XMLLiteral, and no checking will be invoked.
 	
 	 */
-	LiteralLabelImpl(String s, String lg, boolean xml) {
-	    setLiteralLabel_3(s, lg, xml) ;
+	LiteralLabelImpl(String s, String lang, boolean xml) {
+	    setLiteralLabel_3(s, lang, xml) ;
 	}
 
-	private void setLiteralLabel_3(String s, String lg, boolean xml) {
+	private void setLiteralLabel_3(String s, String lang, boolean xml) {
 	    // Constructor extraction: Preparation for moving into Node_Literal.
         this.lexicalForm = s;
-        this.lang = (lg == null ? "" : lg);
+        this.lang = (lang == null ? "" : lang);
         if (xml) {
             // XML Literal
             this.dtype = XMLLiteralType.theXMLLiteralType;
@@ -266,13 +269,21 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	*/
 	@Override
     public String toString(boolean quoting) {
-		StringBuilder b = new StringBuilder();
-		if (quoting) b.append('"');
-		b.append(getLexicalForm());
-		if (quoting) b.append('"');
-		if (lang != null && !lang.equals( "" )) b.append( "@" ).append(lang);
-		if (dtype != null) b.append( "^^" ).append(dtype.getURI());
-		return b.toString();
+        StringBuilder b = new StringBuilder() ;
+        if ( quoting )
+            b.append('"') ;
+        String lex = getLexicalForm() ;
+        lex = Util.replace(lex, "\"", "\\\"") ;
+        b.append(lex) ;
+        if ( quoting )
+            b.append('"') ;
+        if ( lang != null && !lang.equals("") )
+            b.append("@").append(lang) ;
+        else if ( dtype != null ) {
+            if ( ! ( JenaRuntime.isRDF11 && dtype.equals(XSDDatatype.XSDstring) ) )  
+                b.append("^^").append(dtype.getURI()) ;
+        }
+        return b.toString() ;
 	}
 
 	@Override
@@ -299,7 +310,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
     public Object getIndexingValue() {
         return
             isXML() ? this
-            : !lang.equals( "" ) ? getLexicalForm() + "@" + lang.toLowerCase(Locale.ENGLISH)
+            : !lang.equals( "" ) ? getLexicalForm() + "@" + lang.toLowerCase(Locale.ROOT)
             : wellformed ? getValue()
             : getLexicalForm() 
             ;
@@ -359,15 +370,22 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	        return false;
 	    }
 	    LiteralLabel otherLiteral = (LiteralLabel) other;
-	    boolean typeEqual =
-	        (dtype == null
-	            ? otherLiteral.getDatatype() == null
-	            : dtype.equals(otherLiteral.getDatatype()));
-	    boolean langEqual =
-	        (dtype == null ? lang.equals(otherLiteral.language()) : true);
-	    return typeEqual
-	        && langEqual
-	        && getLexicalForm().equals(otherLiteral.getLexicalForm());
+	    
+	    boolean typeEquals = Objects.equals(dtype, otherLiteral.getDatatype()) ;
+	    if ( !typeEquals )
+	        return false ;
+
+	    // Don't just use this.lexcialForm -- need to force delayed calculation from values.
+	    boolean lexEquals = Objects.equals(getLexicalForm(), otherLiteral.getLexicalForm());
+        if ( ! lexEquals )
+            return false ;
+
+        boolean langEquals = Objects.equals(lang, otherLiteral.language()) ;
+	    if ( ! langEquals )
+	        return false ;
+	    // Ignore xml flag as it is calculated from the lexical form + datatype 
+	    // Ignore value as lexical form + datatype -> value is a function. 
+	    return true ;
 	}
 
 	/** 

@@ -174,14 +174,14 @@ public class LangRDFXML implements LangRIOT
         private static Node convert(ALiteral lit) {
             String dtURI = lit.getDatatypeURI();
             if (dtURI == null)
-                return NodeFactory.createLiteral(lit.toString(), lit.getLang(), false);
+                return NodeFactory.createLiteral(lit.toString(), lit.getLang());
 
             if (lit.isWellFormedXML()) {
                 return NodeFactory.createLiteral(lit.toString(), null, true);
             }
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-            return NodeFactory.createLiteral(lit.toString(), null, dt);
+            return NodeFactory.createLiteral(lit.toString(), dt);
 
         }
 

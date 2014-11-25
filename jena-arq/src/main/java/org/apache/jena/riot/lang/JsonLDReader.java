@@ -180,7 +180,7 @@ public class JsonLDReader implements ReaderRIOT
         if ( lang == null && datatype == null )
             return NodeFactory.createLiteral(lex) ;
         if ( lang != null )
-            return NodeFactory.createLiteral(lex, lang, null) ;
+            return NodeFactory.createLiteral(lex, lang) ;
         RDFDatatype dt = NodeFactory.getType(datatype) ;
         return NodeFactory.createLiteral(lex, dt) ;
     }

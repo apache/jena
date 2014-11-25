@@ -578,8 +578,8 @@ public class TestNode extends GraphTestBase
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dt1 = tm.getTypeByValue( new Integer( 10 ) );
         RDFDatatype dt2 = tm.getTypeByValue( new Short( (short) 10 ) );
-        Node a = NodeFactory.createLiteral( "10", "", dt1 );
-        Node b = NodeFactory.createLiteral( "10", "", dt2 );
+        Node a = NodeFactory.createLiteral( "10", dt1 );
+        Node b = NodeFactory.createLiteral( "10", dt2 );
         assertDiffer( "types must make a difference", a, b );
         assertTrue( "A and B must express the same value", a.sameValueAs( b ) );
         assertTrue( "matching literals must respect sameValueAs", a.matches( b ) );
@@ -589,9 +589,9 @@ public class TestNode extends GraphTestBase
         {
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dtInt = tm.getTypeByValue( new Integer( 10 ) );
-        Node plain = NodeFactory.createLiteral( "rhubarb", "", false );    
-        Node english = NodeFactory.createLiteral( "eccentric", "en_UK", false );
-        Node typed = NodeFactory.createLiteral( "10", "", dtInt );
+        Node plain = NodeFactory.createLiteral( "rhubarb", "");    
+        Node english = NodeFactory.createLiteral( "eccentric", "en_UK");
+        Node typed = NodeFactory.createLiteral( "10", dtInt );
         assertEquals( "\"rhubarb\"", plain.toString() );
         assertEquals( "rhubarb", plain.toString( false ) );
         assertEquals( "\"eccentric\"@en_UK", english.toString() );

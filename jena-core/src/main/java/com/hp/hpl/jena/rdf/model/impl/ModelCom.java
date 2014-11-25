@@ -173,7 +173,7 @@ implements Model, PrefixMapping, Lock
     { return new LiteralImpl( NodeFactory.createLiteral( s, lang, wellFormed), this ); }
 
     private Literal literal( String lex, RDFDatatype datatype)
-    { return new LiteralImpl( NodeFactory.createLiteral( lex, "", datatype), this ); }
+    { return new LiteralImpl( NodeFactory.createLiteral( lex, datatype), this ); }
 
     @Override
     public Model add( Resource s, Property p, String o, String l )
@@ -479,7 +479,7 @@ implements Model, PrefixMapping, Lock
         if (O != null) {
             // this is not OK when L is null: returns only the statements whose lang is ""
             // return listStatements( S, P, Node.createLiteral( O, L, false ) );
-            if (L != null) return listStatements( S, P, NodeFactory.createLiteral( O, L, false ) );
+            if (L != null) return listStatements( S, P, NodeFactory.createLiteral( O, L ) );
             // there's maybe a better way
             return new StringFilteredStmtIterator(O, listStatements(S, P, Node.ANY));
         } else {
@@ -708,7 +708,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(String lex, RDFDatatype dtype) 
         throws DatatypeFormatException {
-        return new LiteralImpl( NodeFactory.createLiteral( lex, "", dtype ), this);
+        return new LiteralImpl( NodeFactory.createLiteral( lex, dtype ), this);
     }
 
     /**
@@ -735,7 +735,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Literal createTypedLiteral(String lex, String typeURI)  {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
-        LiteralLabel ll = LiteralLabelFactory.createLiteralLabel( lex, "", dt );
+        LiteralLabel ll = LiteralLabelFactory.create( lex, dt );
         return new LiteralImpl( NodeFactory.createLiteral(ll), this );
     }
 

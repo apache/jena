@@ -24,13 +24,13 @@ import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.lib.DS ;
 
-/** Iterator of Iterators */
+/** Iterator of Iterators
+ *  IteratorConcat is better when there are lots of iterators to be joined.
+ *  IteratorCons is slightly better for two iterators. 
+ */
 
 public class IteratorConcat<T> implements Iterator<T>
 {
-    // No - we don't really need IteratorCons and IteratorConcat
-    // Historical.
-    
     private List<Iterator<T>> iterators = DS.list(); 
     int idx = -1 ;
     private Iterator<T> current = null ;
@@ -38,7 +38,7 @@ public class IteratorConcat<T> implements Iterator<T>
     boolean finished = false ;
     
     /** 
-     * Usually better to create an IteratorConcat explicitly and add iterator if there are going to be many.
+     * Usually, it is better to create an IteratorConcat explicitly and add iterator if there are going to be many.
      * @param iter1
      * @param iter2
      * @return Iterator
@@ -54,6 +54,9 @@ public class IteratorConcat<T> implements Iterator<T>
         return c ;
     }
  
+    public IteratorConcat() {}
+
+    
     public void add(Iterator<T> iter) { iterators.add(iter) ; }
     
     @Override

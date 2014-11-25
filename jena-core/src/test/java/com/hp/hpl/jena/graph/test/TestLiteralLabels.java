@@ -18,11 +18,13 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
+import junit.framework.Test ;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.datatypes.BaseDatatype ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
 
 public class TestLiteralLabels extends GraphTestBase
 {

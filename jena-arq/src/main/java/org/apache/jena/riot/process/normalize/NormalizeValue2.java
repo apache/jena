@@ -133,7 +133,7 @@ class NormalizeValue2
             String lex2 = rebuild(chars) ;
             if ( lex2 == null )
                 return node ;
-            return NodeFactory.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, datatype) ;
         }
     } ;
 
@@ -152,7 +152,7 @@ class NormalizeValue2
             String lex2 = rebuild(chars) ;
             if ( lex2 == null )
                 return node ;
-            return NodeFactory.createLiteral(lex2, null, datatype) ;
+            return NodeFactory.createLiteral(lex2, datatype) ;
         }
     } ;
 }

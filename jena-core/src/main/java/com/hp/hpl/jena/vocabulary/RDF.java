@@ -59,6 +59,9 @@ public class RDF{
     public static final Property object = property( "object" );
     public static final Property type = property( "type" );
     public static final Property value = property( "value" );
+    
+    // RDF 1.1 - the datatype of language strings
+    public static final Resource langString = resource("langString") ;
 
     /**
         The same items of vocabulary, but at the Node level, parked inside a
@@ -80,6 +83,7 @@ public class RDF{
         public static final Node object = RDF.object.asNode();
         public static final Node type = RDF.type.asNode();
         public static final Node value = RDF.value.asNode();
+        public static final Node langString = RDF.langString.asNode();
         }
 
 }

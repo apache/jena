@@ -20,6 +20,9 @@ package org.apache.jena.riot.out;
 
 import org.apache.jena.atlas.io.AWriter ;
 
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
@@ -54,19 +57,22 @@ public abstract class NodeFormatterBase implements NodeFormatter
     @Override
     public void formatLiteral(AWriter w, Node n)
     {
-        String dt = n.getLiteralDatatypeURI() ;
+        RDFDatatype dt = n.getLiteralDatatype() ;
         String lang = n.getLiteralLanguage() ;
         String lex = n.getLiteralLexicalForm() ;
         
-        if ( dt == null )
-        {
-            if ( lang == null || lang.equals("") )
-                formatLitString(w, lex) ;
-            else
-                formatLitLang(w, lex,lang) ;
+        if ( lang != null && ! lang.equals("") ) {
+            formatLitLang(w, lex, lang) ;
+        } else if ( dt == null ) {
+            // RDF 1.0, simple literal.
+            formatLitString(w, lex) ;
+        } else if ( JenaRuntime.isRDF11 && dt.equals(XSDDatatype.XSDstring) ) {
+            // RDF 1.1, xsd:string - outptu as short string.
+            formatLitString(w, lex) ;
+        } else {
+            // Datatype, no language tag, not short string.
+            formatLitDT(w, lex, dt.getURI()) ;
         }
-        else
-            formatLitDT(w, lex, dt) ;
     }
 
     @Override

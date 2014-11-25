@@ -59,14 +59,14 @@ public class TestComparatorBuiltins extends TestCase {
         doTestComparator("1.0", "1.1", XSDDatatype.XSDfloat);
         doTestComparator("1.0", "1.1", XSDDatatype.XSDdouble);
         doTestComparator(
-                NodeFactory.createLiteral("1.0", "", XSDDatatype.XSDfloat),
-                NodeFactory.createLiteral("1.1", "", XSDDatatype.XSDdouble) );
+                NodeFactory.createLiteral("1.0", XSDDatatype.XSDfloat),
+                NodeFactory.createLiteral("1.1", XSDDatatype.XSDdouble) );
         doTestComparator(
-                NodeFactory.createLiteral("1", "", XSDDatatype.XSDint),
-                NodeFactory.createLiteral("2", "", XSDDatatype.XSDinteger) );
+                NodeFactory.createLiteral("1", XSDDatatype.XSDint),
+                NodeFactory.createLiteral("2", XSDDatatype.XSDinteger) );
         doTestComparator(
-                NodeFactory.createLiteral("1", "", XSDDatatype.XSDint),
-                NodeFactory.createLiteral("2", "", XSDDatatype.XSDlong) );
+                NodeFactory.createLiteral("1", XSDDatatype.XSDint),
+                NodeFactory.createLiteral("2", XSDDatatype.XSDlong) );
     }
     
     public void testComparatorTime() {
@@ -77,8 +77,8 @@ public class TestComparatorBuiltins extends TestCase {
     }
     
     public void doTestComparator(String lLow, String lHigh, RDFDatatype type) {
-        Node nl = NodeFactory.createLiteral(lLow, "", type);
-        Node nh = NodeFactory.createLiteral(lHigh, "", type);
+        Node nl = NodeFactory.createLiteral(lLow, type);
+        Node nh = NodeFactory.createLiteral(lHigh, type);
         doTestComparator(nl, nh);
         
         doTestBuiltins(nl, nh);
@@ -91,8 +91,8 @@ public class TestComparatorBuiltins extends TestCase {
     }
 
     public void doTestBuiltins(String lLow, String lHigh, RDFDatatype type) {
-        Node nl = NodeFactory.createLiteral(lLow, "", type);
-        Node nh = NodeFactory.createLiteral(lHigh, "", type);
+        Node nl = NodeFactory.createLiteral(lLow, type);
+        Node nh = NodeFactory.createLiteral(lHigh, type);
         doTestBuiltins(nl, nh);
     }
     

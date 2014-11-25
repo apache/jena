@@ -136,17 +136,17 @@ public class ParserBase
     
     protected Node createLiteralInteger(String lexicalForm)
     {
-        return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
+        return NodeFactory.createLiteral(lexicalForm, XSDDatatype.XSDinteger) ;
     }
     
     protected Node createLiteralDouble(String lexicalForm)
     {
-        return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
+        return NodeFactory.createLiteral(lexicalForm, XSDDatatype.XSDdouble) ;
     }
     
     protected Node createLiteralDecimal(String lexicalForm)
     {
-        return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
+        return NodeFactory.createLiteral(lexicalForm, XSDDatatype.XSDdecimal) ;
     }
 
     protected Node stripSign(Node node)
@@ -166,14 +166,16 @@ public class ParserBase
     protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI)
     {
         Node n = null ;
-        // Can't have type and lang tag.
-        if ( datatypeURI != null)
+        // Can't have type and lang tag in parsing.
+        if (  datatypeURI != null)
         {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI) ;
-            n = NodeFactory.createLiteral(lexicalForm, null, dType) ;
+            n = NodeFactory.createLiteral(lexicalForm, dType) ;
         }
+        else if ( langTag != null && ! langTag.isEmpty() )
+            n = NodeFactory.createLiteral(lexicalForm, langTag) ;
         else
-            n = NodeFactory.createLiteral(lexicalForm, langTag, null) ;
+            n = NodeFactory.createLiteral(lexicalForm) ;
         return n ;
     }
     

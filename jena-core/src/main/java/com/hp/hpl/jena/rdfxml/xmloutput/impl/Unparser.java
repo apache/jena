@@ -115,22 +115,22 @@ package com.hp.hpl.jena.rdfxml.xmloutput.impl;
  * 
  * [6.34] literal ::= (any well-formed XML)
  */
-import java.io.PrintWriter;
-import java.util.*;
+import java.io.PrintWriter ;
+import java.util.* ;
 
-import org.apache.xerces.util.XMLChar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.iri.IRI ;
+import org.apache.xerces.util.XMLChar ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import org.apache.jena.iri.IRI;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.shared.BrokenException;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.impl.PropertyImpl ;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
+import com.hp.hpl.jena.shared.BrokenException ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.PropertyNotFoundException ;
+import com.hp.hpl.jena.util.iterator.* ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /**
  * An Unparser will output a model in the abbreviated syntax. *
@@ -455,13 +455,18 @@ class Unparser {
         print(">");
         return true;
     }
-
+    
     private boolean wPropertyEltDatatype(WType wt, Property prop, Statement s,
             RDFNode r) {
-        if (!((r instanceof Literal) && ((Literal) r).getDatatypeURI() != null)) {
+        if (! (r instanceof Literal) )
+            return false ;
+        Literal lit = ((Literal) r) ;
+        if ( Util.isSimpleString(lit) ) 
             return false;
-        }
-        // print out.
+        if ( Util.isLangString(lit) )
+            return false;
+        
+        // print out with "datatype="
         done(s);
         tab();
         print("<");

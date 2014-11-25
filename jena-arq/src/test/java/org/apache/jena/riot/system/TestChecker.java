@@ -29,6 +29,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;
 import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
+/** Tests for node Checker */
 public class TestChecker
 {
     static Checker checker = new Checker(new ErrorHandlerTestLib.ErrorHandlerEx()) ;

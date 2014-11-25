@@ -165,7 +165,7 @@ public class ResultSetMgr {
     
     /** Write a SPARQL boolean result to the output stream in the specified language/syntax.
      * @param out
-     * @param resultSet
+     * @param result
      * @param lang
      */
     public static void write(OutputStream out, boolean result, Lang lang) {

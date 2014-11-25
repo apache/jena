@@ -101,21 +101,18 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         if ( anyGraphs )
         {
             iterMatches = Iter.operate(iterMatches, quadsToAnyTriples) ;
-            // If any slots were set, then the index would be ???G and we can use distinctAdjacent.
-            // If all slots are unset, the index is probably GSPO (SPOG would be better in this one case). 
-            // This is a safe, if potentially costly, choice. 
-            
             //Guaranteed 
             //iterMatches = Iter.distinct(iterMatches) ;
             
-            // This depends on the way indexes are choose and
+            // This depends on the way indexes are chosen and
             // the indexing pattern. It assumes that the index 
             // chosen ends in G so same triples are adjacent 
             // in a union query.
+            // 
             // If any slot is defined, then the index will be X??G.
-            // if no slot is defined, then the index will be ???G.
+            // If no slot is defined, then the index will be ???G.
+            // But the  TupleTable
             //  See TupleTable.scanAllIndex that ensures the latter.
-            //  The former assumes indexes are either G... or ...G.
             //  No G part way through.
             iterMatches = Iter.distinctAdjacent(iterMatches) ;
         }

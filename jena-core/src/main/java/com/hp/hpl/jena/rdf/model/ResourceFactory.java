@@ -265,18 +265,18 @@ public class ResourceFactory {
         
         @Override
         public Literal createPlainLiteral( String string ) {
-            return new LiteralImpl(  NodeFactory.createLiteral( string, "", false ), null );
+            return new LiteralImpl(  NodeFactory.createLiteral( string, "" ), null );
         }
 
         @Override
         public Literal createLangLiteral( String string , String lang ) {
-            return new LiteralImpl(  NodeFactory.createLiteral( string, lang, false ), null );
+            return new LiteralImpl(  NodeFactory.createLiteral( string, lang ), null );
         }
         
         @Override
         public Literal createTypedLiteral( String string , RDFDatatype dType)
         {
-            return new LiteralImpl(NodeFactory.createLiteral(string, "", dType), null) ;
+            return new LiteralImpl(NodeFactory.createLiteral(string, dType), null) ;
         }
 
         @Override

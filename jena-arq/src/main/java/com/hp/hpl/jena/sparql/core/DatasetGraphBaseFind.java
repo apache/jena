@@ -73,7 +73,7 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
         if ( iter1 == null && iter2 == null )
             return Iter.nullIterator() ;
         // Copes with null in either position.
-        return Iter.concat(iter1, iter2) ;
+        return Iter.append(iter1, iter2) ;
     }
 
     protected abstract Iterator<Quad> findInDftGraph(Node s, Node p , Node o) ;

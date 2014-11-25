@@ -37,29 +37,29 @@ public class TestIter
     List<String> data3 = Arrays.asList(null, "x", null, null, null, "y", "z", null);
  
     @Test
-    public void concat_1()
+    public void append_1()
     {
-        Iterator<String> iter = Iter.concat(data1, data0) ;
+        Iterator<String> iter = Iter.append(data1, data0) ;
         test(iter, "a") ;
     }
         
         
     @Test
-    public void concat_2()
+    public void append_2()
     {
-        Iterator<String> iter = Iter.concat(data0, data1) ;
+        Iterator<String> iter = Iter.append(data0, data1) ;
         test(iter, "a") ;
     }
         
     @Test
-    public void concat_3()
+    public void append_3()
     {
-        Iterator<String> iter = Iter.concat(data1, data2) ;
+        Iterator<String> iter = Iter.append(data1, data2) ;
         test(iter, "a", "x", "y", "z") ;
     }
 
     @Test
-    public void concat_4()
+    public void append_4()
     {
         List<String> L = new ArrayList<>(3);
         L.add("a");
@@ -71,7 +71,7 @@ public class TestIter
         R.add("f");
         
         
-        Iterator<String> LR = Iter.concat(L, R) ;
+        Iterator<String> LR = Iter.append(L, R) ;
         
         while (LR.hasNext())
         {
@@ -89,7 +89,7 @@ public class TestIter
     }
     
     @Test
-    public void concat_5()
+    public void append_5()
     {
         List<String> L = new ArrayList<>(3);
         L.add("a");
@@ -101,7 +101,7 @@ public class TestIter
         R.add("f");
         
         
-        Iterator<String> LR = Iter.concat(L, R) ;
+        Iterator<String> LR = Iter.append(L, R) ;
         
         while (LR.hasNext())
         {
@@ -119,7 +119,7 @@ public class TestIter
     }
     
     @Test
-    public void concat_6()
+    public void append_6()
     {
         List<String> L = new ArrayList<>(3);
         L.add("a");
@@ -131,7 +131,7 @@ public class TestIter
         R.add("f");
         
         
-        Iterator<String> LR = Iter.concat(L, R) ;
+        Iterator<String> LR = Iter.append(L, R) ;
         
         while (LR.hasNext())
         {

@@ -89,14 +89,14 @@ public class ThriftConvert
             long x = term.getValInteger() ;
             String lex = Long.toString(x, 10) ;
             RDFDatatype dt = XSDDatatype.XSDinteger ;
-            return NodeFactory.createLiteral(lex, null, dt) ;
+            return NodeFactory.createLiteral(lex, dt) ;
         }
         
         if ( term.isSetValDouble() ) {
             double x = term.getValDouble() ;
             String lex = Double.toString(x) ;
             RDFDatatype dt = XSDDatatype.XSDdouble ;
-            return NodeFactory.createLiteral(lex, null, dt) ;
+            return NodeFactory.createLiteral(lex, dt) ;
         }
         
         if ( term.isSetValDecimal() ) {
@@ -105,7 +105,7 @@ public class ThriftConvert
             BigDecimal d =  BigDecimal.valueOf(value, scale) ;
             String lex = d.toPlainString() ;
             RDFDatatype dt = XSDDatatype.XSDdecimal ;
-            return NodeFactory.createLiteral(lex, null, dt) ;
+            return NodeFactory.createLiteral(lex, dt) ;
         }
 
         if ( term.isSetVariable() )

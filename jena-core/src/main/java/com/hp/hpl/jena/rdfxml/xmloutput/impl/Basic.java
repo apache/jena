@@ -163,18 +163,22 @@ public class Basic extends BaseXMLWriter
 	protected void writeLiteral( Literal l, PrintWriter writer ) {
 		String lang = l.getLanguage();
         String form = l.getLexicalForm();
-		if (!lang.equals("")) {
+		if (Util.isLangString(l)) {
 			writer.print(" xml:lang=" + attributeQuoted( lang ));
-		}
-		if (l.isWellFormedXML() && !blockLiterals) {
+		} else if (l.isWellFormedXML() && !blockLiterals) {
+		    // RDF XML Literals inline.
 			writer.print(" " + rdfAt("parseType") + "=" + attributeQuoted( "Literal" )+">");
 			writer.print( form );
+			return ;
 		} else {
-			String dt = l.getDatatypeURI();
-			if (dt != null) writer.print( " " + rdfAt( "datatype" ) + "=" + substitutedAttribute( dt ) );
-            writer.print(">");
-            writer.print( Util.substituteEntitiesInElementContent( form ) );
+	        // Datatype (if not xsd:string and RDF 1.1) 
+	        String dt = l.getDatatypeURI();
+	        if ( ! Util.isSimpleString(l) ) 
+	            writer.print( " " + rdfAt( "datatype" ) + "=" + substitutedAttribute( dt ) );
 		}
+		// Content.
+		writer.print(">");
+		writer.print( Util.substituteEntitiesInElementContent( form ) );
 	}
 
 }

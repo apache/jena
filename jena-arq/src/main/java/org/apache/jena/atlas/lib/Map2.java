@@ -81,7 +81,7 @@ public class Map2<K, V> implements Iterable<K>
         Iter<K> iter1 = Iter.iter(map1.keySet().iterator()) ;
         if ( map2 == null )
             return iter1 ; 
-        return iter1.concat(Iter.iter(map2.iterator())) ;
+        return iter1.append(map2.iterator()) ;
     }
     
     public boolean isEmpty()
