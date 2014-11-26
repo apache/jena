@@ -44,6 +44,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.XSD ;
    
 /**
@@ -231,13 +232,23 @@ public class TestTypedLiterals extends TestCase {
     
     }
 
-    public void testRDFLangString() {
+    public void testRDFLangString_1() {
+        // Registration
+        RDFDatatype dt = TypeMapper.getInstance().getTypeByName(RDF.langString.getURI()) ;
+        assertEquals(RDF.dtLangString, dt) ;
+        assertTrue(RDF.dtLangString == dt) ;
+    }
+    
+    public void testRDFLangString_2() {
         // "abc"^^rdf:langString (no language tag)
         Literal ll1 = m.createTypedLiteral("abc", RDFLangString.rdfLangString) ;
-        if ( JenaRuntime.isRDF11 ) {
-            Literal ll2 = m.createLiteral("xyz", "en") ;
+        assertEquals("", ll1.getLanguage()) ;
+        Literal ll2 = m.createLiteral("xyz", "en") ;
+        
+        if ( JenaRuntime.isRDF11 )
             assertTrue(ll1.getDatatype() == ll2.getDatatype()) ; 
-        }
+        else
+            assertTrue(ll1.getDatatype() != ll2.getDatatype()) ;
     }
 
     /**
