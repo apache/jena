@@ -29,7 +29,9 @@ import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.datatypes.xsd.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.Util ;
+import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /**
  * Represents the "contents" of a Node_Literal.
@@ -394,15 +396,84 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
     */
 	@Override
     public boolean sameValueAs( LiteralLabel other ) {
-		if (other == null)
-			return false;
-		if (!wellformed || !other.isWellFormedRaw()) 
-			return areIllFormedLiteralsSameValueAs( other );
-		return dtype == null 
-		    ? isPlainLiteralSameValueAsOther( other ) 
-		    : isTypedLiteralSameValueAsOther( other );
+	    
+	    return sameValueAs(this, other) ;
+	    
+//		if (other == null)
+//			return false;
+//		if (!wellformed || !other.isWellFormedRaw()) 
+//			return areIllFormedLiteralsSameValueAs( other );
+//		return dtype == null 
+//		    ? isPlainLiteralSameValueAsOther( other ) 
+//		    : isTypedLiteralSameValueAsOther( other );
 	}
 
+	// -------------
+    private static boolean sameValueAs(LiteralLabel lit1, LiteralLabel lit2) {
+        //return  lit1.sameValueAs(lit2) ; 
+        if ( lit1 == null )
+            throw new NullPointerException() ;
+        if ( lit2 == null )
+            throw new NullPointerException() ;
+        // Strings.
+        if ( isStringValue(lit1) && isStringValue(lit2) ) {
+            // Complete compatibility mode.
+            if ( JenaParameters.enablePlainLiteralSameAsString )
+                return lit1.getLexicalForm().equals(lit2.getLexicalForm()) ;
+            else
+                return lit1.getLexicalForm().equals(lit2.getLexicalForm()) &&
+                    Objects.equals(lit1.getDatatype(), lit2.getDatatype()) ;
+        }
+        
+        if ( isStringValue(lit1) ) return false ;
+        if ( isStringValue(lit2) ) return false ;
+        
+        // Language tag strings
+        if ( isLangString(lit1) && isLangString(lit2) ) {
+            String lex1 = lit1.getLexicalForm() ;
+            String lex2 = lit2.getLexicalForm() ;
+            return lex1.equals(lex2) && lit1.language().equalsIgnoreCase(lit2.language()) ;
+        } 
+        if ( isLangString(lit1) ) return false ;
+        if ( isLangString(lit2) ) return false ;
+        
+        // Both not strings, not lang strings.
+        // Datatype set.
+        if ( lit1.isWellFormedRaw() && lit2.isWellFormedRaw() )
+            // Both well-formed.
+            return lit1.getDatatype().isEqual(lit1, lit2) ;
+        if ( ! lit1.isWellFormedRaw() && ! lit2.isWellFormedRaw() )
+            return lit1.equals(lit2) ;
+        // One is well formed, the other is not.
+        return false ;
+    }
+    /** Return true if the literal lable is a string value (RDF 1.0 and RDF 1.1) */ 
+    private static boolean isStringValue(LiteralLabel lit) {
+        if ( lit.getDatatype() == null )
+            // RDF 1.0
+            return ! isLangString(lit) ;
+        if ( lit.getDatatype().equals(XSDDatatype.XSDstring)  )
+            return true;
+        return false ;
+    }
+    
+    /** Return true if the literal label is a language string. (RDF 1.0 and RDF 1.1) */
+    public static boolean isLangString(LiteralLabel lit) {
+        String lang = lit.language() ;
+        if ( lang == null )
+            return false ;
+        // Check.
+        if ( lang.equals("") )
+            return false ;
+        // This is an additional check.
+        if ( JenaRuntime.isRDF11 ) {
+            if ( ! Objects.equals(lit.getDatatype(), RDF.dtLangString) )
+                throw new JenaException("Literal with language string which is not rdf:langString: "+lit) ;
+        }
+        return true ;
+    }
+    // -------------
+	
 	/**
 	    Need to support comparison of ill-formed literals in order for the WG 
 	    tests on ill formed literals to be testable using isIsomorphic to. "same
