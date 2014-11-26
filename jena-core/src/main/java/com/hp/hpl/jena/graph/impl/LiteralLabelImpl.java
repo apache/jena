@@ -396,19 +396,15 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
     */
 	@Override
     public boolean sameValueAs( LiteralLabel other ) {
-	    
 	    return sameValueAs(this, other) ;
-	    
-//		if (other == null)
-//			return false;
-//		if (!wellformed || !other.isWellFormedRaw()) 
-//			return areIllFormedLiteralsSameValueAs( other );
-//		return dtype == null 
-//		    ? isPlainLiteralSameValueAsOther( other ) 
-//		    : isTypedLiteralSameValueAsOther( other );
 	}
-
-	// -------------
+	/** 
+	 * Two literal labels are the "same value" if they are the same string,
+	 * or same language string or same value-by-datatype or .equals (= Same RDF Term)
+	 * @param lit1
+	 * @param lit2
+	 * @return
+	 */
     private static boolean sameValueAs(LiteralLabel lit1, LiteralLabel lit2) {
         //return  lit1.sameValueAs(lit2) ; 
         if ( lit1 == null )
@@ -447,7 +443,8 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
         // One is well formed, the other is not.
         return false ;
     }
-    /** Return true if the literal lable is a string value (RDF 1.0 and RDF 1.1) */ 
+    
+	/** Return true if the literal lable is a string value (RDF 1.0 and RDF 1.1) */ 
     private static boolean isStringValue(LiteralLabel lit) {
         if ( lit.getDatatype() == null )
             // RDF 1.0
@@ -472,58 +469,6 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
         }
         return true ;
     }
-    // -------------
-	
-	/**
-	    Need to support comparison of ill-formed literals in order for the WG 
-	    tests on ill formed literals to be testable using isIsomorphic to. "same
-	    value as" on ill-formed literals is defined to mean "same lexical form
-	    and same [ignoring case] language code".
-	<p>
-	    precondition: at least one of <i>this</i> and <i>other</i> is
-	    ill-formed.
-	*/
-    private boolean areIllFormedLiteralsSameValueAs( LiteralLabel other )
-        { return  !other.isWellFormedRaw() && sameByFormAndLanguage( other ); }
-
-    /**
-        Answer true iff <i>this</i> and <i>other</i> have the same lexical
-        form and [ignoring case] language code. [Note: both typed literals
-        and plain literals have the empty string as language code.]
-    */
-    private boolean sameByFormAndLanguage( LiteralLabel other )
-        {
-        String lex1 = getLexicalForm() ;
-        String lex2 = other.getLexicalForm() ;
-        return 
-            lex1.equals( lex2 ) 
-            && lang.equalsIgnoreCase( other.language() );
-        }
-
-    private boolean isTypedLiteralSameValueAsOther( LiteralLabel other )
-        {
-        return other.getDatatype() == null
-            ? looksLikePlainString( this ) && sameByFormAndLanguage( other )
-            : dtype.isEqual( this, other );
-        }
-
-    private boolean isPlainLiteralSameValueAsOther( LiteralLabel other )
-        {
-        return other.getDatatype() == null || looksLikePlainString( other )
-            ? sameByFormAndLanguage( other )
-            : false;
-        }
-
-    /**
-        Answer true iff <i>L</i> has type XSD string and we're treating plain
-        literals and xsd string literals as "the same".
-    */
-    private boolean looksLikePlainString( LiteralLabel L )
-        {
-        return 
-            L.getDatatype().equals( XSDDatatype.XSDstring )
-            && JenaParameters.enablePlainLiteralSameAsString;
-        }
 
     private int hash = 0 ;
 	/** 
