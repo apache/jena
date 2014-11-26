@@ -30,11 +30,13 @@ import junit.framework.TestSuite ;
 import org.apache.xerces.impl.dv.util.HexBin ;
 import org.junit.Assert ;
 
+import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.datatypes.BaseDatatype ;
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.* ;
+import com.hp.hpl.jena.datatypes.xsd.impl.RDFLangString ;
 import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType ;
 import com.hp.hpl.jena.enhanced.EnhNode ;
 import com.hp.hpl.jena.graph.* ;
@@ -227,6 +229,15 @@ public class TestTypedLiterals extends TestCase {
 		ll = m.createTypedLiteral("<good></good>",XMLLiteralType.theXMLLiteralType);
 		assertTrue("Well-formed XMLLiteral.",((EnhNode)ll).asNode().getLiteralIsXML());
     
+    }
+
+    public void testRDFLangString() {
+        // "abc"^^rdf:langString (no language tag)
+        Literal ll1 = m.createTypedLiteral("abc", RDFLangString.rdfLangString) ;
+        if ( JenaRuntime.isRDF11 ) {
+            Literal ll2 = m.createLiteral("xyz", "en") ;
+            assertTrue(ll1.getDatatype() == ll2.getDatatype()) ; 
+        }
     }
 
     /**
