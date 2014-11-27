@@ -126,13 +126,13 @@ public class FusekiServer
         
         if ( FUSEKI_HOME == null ) {
             // Make absolute
-            String x1 = System.getenv("FUSEKI_HOME") ;
+            String x1 = getenv("FUSEKI_HOME") ;
             if ( x1 != null )
                 FUSEKI_HOME = Paths.get(x1) ;
         }
             
         if ( FUSEKI_BASE == null ) {
-            String x2 = System.getenv("FUSEKI_BASE") ;
+            String x2 = getenv("FUSEKI_BASE") ;
             if ( x2 != null )
                 FUSEKI_BASE = Paths.get(x2) ;
             else {
@@ -192,6 +192,12 @@ public class FusekiServer
         }
         
         serverInitialized = true ;
+    }
+    
+    /** Get environment variable value. */
+    private static String getenv(String name) {
+        //Possible intercept poiint
+        return System.getenv(name) ;
     }
 
     private static boolean emptyDir(Path dir) {
