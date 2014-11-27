@@ -71,7 +71,7 @@ public class TestBlankNodeDivergence {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     // Ignored due to JENA-820, serves as a test case that demonstrates the
     // issue, once a workaround is available this test can be enabled and should
     // pass
@@ -127,12 +127,14 @@ public class TestBlankNodeDivergence {
             // intermediate outputs
             // As described in JENA-820 at this point the blank nodes are
             // consistent, however when we read them from different files they
-            // get treated as different nodes and so the blank nodes diverge
-            // which is incorrect behaviour
+            // by default get treated as different nodes and so the blank nodes
+            // diverge which is incorrect and undesirable behaviour in
+            // multi-stage pipelines
             System.out.println(intermediateOutputDir.getAbsolutePath());
             job = Job.getInstance(config);
             job.setInputFormatClass(NTriplesInputFormat.class);
             FileInputFormat.setInputPaths(job, new Path(intermediateOutputDir.getAbsolutePath()));
+            job.getConfiguration().setBoolean(RdfIOConstants.GLOBAL_BNODE_IDENTITY, true); // JENA-820 workaround
             context = new JobContextImpl(job.getConfiguration(), job.getJobID());
 
             // Get the splits

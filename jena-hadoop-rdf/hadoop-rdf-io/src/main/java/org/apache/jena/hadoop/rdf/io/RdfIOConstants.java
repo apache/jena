@@ -53,4 +53,29 @@ public class RdfIOConstants {
      * Default batch size for batched output formats
      */
     public static final long DEFAULT_OUTPUT_BATCH_SIZE = 10000;
+
+    /**
+     * Configuration key used to control behaviour with regards to how blank
+     * nodes are handled.
+     * <p>
+     * The default behaviour is that blank nodes are file scoped which is what
+     * the RDF specifications require.
+     * </p>
+     * <p>
+     * However in the case of a multi-stage pipeline this behaviour can cause
+     * blank nodes to diverge over several jobs and introduce spurious blank
+     * nodes over time. This is described in <a
+     * href="https://issues.apache.org/jira/browse/JENA-820">JENA-820</a> and
+     * enabling this flag for jobs in your pipeline allow you to work around
+     * this problem.
+     * </p>
+     * <h3>Warning</h3> You should only enable this flag for jobs that take in
+     * RDF output originating from previous jobs since our normal blank node
+     * allocation policy ensures that blank nodes will be file scoped and unique
+     * over all files (barring unfortunate hasing collisions). If you enable
+     * this for jobs that take in RDF originating from other sources you may
+     * incorrectly conflate blank nodes that are supposed to distinct and
+     * separate nodes.
+     */
+    public static final String GLOBAL_BNODE_IDENTITY = "rdf.io.input.bnodes.global-identity";
 }

@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.JobContext;
+import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.IRIResolver;
@@ -81,9 +82,20 @@ public class RdfIOUtils {
                     "Job ID was not set, using current milliseconds of {}. Sequence of MapReduce jobs must carefully handle blank nodes.",
                     jobId);
         }
-        LOGGER.debug("Generating Blank Node Seed from Job Details (ID={}, Input Path={})", jobId, path);
 
-        // Form a reproducible seed for the run
-        return new UUID(jobId.hashCode(), path.hashCode());
+        if (!context.getConfiguration().getBoolean(RdfIOConstants.GLOBAL_BNODE_IDENTITY, false)) {
+            // Using normal file scoped blank node allocation
+            LOGGER.debug("Generating Blank Node Seed from Job Details (ID={}, Input Path={})", jobId, path);
+
+            // Form a reproducible seed for the run
+            return new UUID(jobId.hashCode(), path.hashCode());
+        } else {
+            // Using globally scoped blank node allocation
+            LOGGER.warn(
+                    "Using globally scoped blank node allocation policy from Job Details (ID={}) - this is unsafe if your RDF inputs did not originate from a previous job",
+                    jobId);
+            
+            return new UUID(jobId.hashCode(), 0);
+        }
     }
 }
