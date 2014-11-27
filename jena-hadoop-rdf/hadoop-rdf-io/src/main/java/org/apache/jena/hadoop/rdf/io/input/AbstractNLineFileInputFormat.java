@@ -27,6 +27,8 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract line based input format that reuses the machinery from
@@ -40,6 +42,8 @@ import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
  *            Value type
  */
 public abstract class AbstractNLineFileInputFormat<TKey, TValue> extends FileInputFormat<TKey, TValue> {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNLineFileInputFormat.class);
 
     /**
      * Logically splits the set of input files for the job, splits N lines of
@@ -48,9 +52,17 @@ public abstract class AbstractNLineFileInputFormat<TKey, TValue> extends FileInp
      * @see FileInputFormat#getSplits(JobContext)
      */
     public final List<InputSplit> getSplits(JobContext job) throws IOException {
+        boolean debug = LOGGER.isDebugEnabled();
+        if (debug && FileInputFormat.getInputDirRecursive(job)) {
+            LOGGER.debug("Recursive searching for input data is enabled");
+        }
+        
         List<InputSplit> splits = new ArrayList<InputSplit>();
         int numLinesPerSplit = NLineInputFormat.getNumLinesPerSplit(job);
         for (FileStatus status : listStatus(job)) {
+            if (debug) {
+                LOGGER.debug("Determining how to split input file/directory {}", status.getPath());
+            }
             splits.addAll(NLineInputFormat.getSplitsForFile(status, job.getConfiguration(), numLinesPerSplit));
         }
         return splits;

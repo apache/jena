@@ -184,7 +184,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
 
             // Skip lines that exceed the line length limit that has been set
             if (newSize >= maxLineLength) {
-                LOG.warn("Skipped oversized line of size " + newSize + " at position " + (pos - newSize));
+                LOG.warn("Skipped oversized line of size {} at position {}", newSize, (pos - newSize));
                 continue;
             }
 
@@ -199,7 +199,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
                     break;
                 } else {
                     // Empty line/Comment line
-                    LOG.debug("Valid line with no triple at position " + (pos - newSize));
+                    LOG.debug("Valid line with no triple at position {}", (pos - newSize));
                     continue;
                 }
             } catch (Throwable e) {
@@ -207,7 +207,7 @@ public abstract class AbstractLineBasedNodeTupleReader<TValue, T extends Abstrac
                 LOG.error("Bad tuple at position " + (pos - newSize), e);
                 if (this.ignoreBadTuples)
                     continue;
-                throw new IOException("Bad tuple at position " + (pos - newSize), e);
+                throw new IOException(String.format("Bad tuple at position %d", (pos - newSize)), e);
             }
         }
         boolean result = this.tuple != null;

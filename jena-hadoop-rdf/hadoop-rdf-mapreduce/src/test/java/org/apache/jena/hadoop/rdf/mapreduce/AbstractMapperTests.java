@@ -50,14 +50,18 @@ public abstract class AbstractMapperTests<TKeyIn, TValueIn, TKeyOut, TValueOut> 
      * @return Map driver
      */
     protected MapDriver<TKeyIn, TValueIn, TKeyOut, TValueOut> getMapDriver() {
-        MapDriver<TKeyIn, TValueIn, TKeyOut, TValueOut> driver = new MapDriver<TKeyIn, TValueIn, TKeyOut, TValueOut>(this.getInstance());
+        MapDriver<TKeyIn, TValueIn, TKeyOut, TValueOut> driver = new MapDriver<TKeyIn, TValueIn, TKeyOut, TValueOut>(
+                this.getInstance());
         this.configureDriver(driver);
         return driver;
     }
-    
+
     /**
-     * Method that may be overridden by test harnesses which need to configure the driver in more detail e.g. add configuration keys
-     * @param driver Driver
+     * Method that may be overridden by test harnesses which need to configure
+     * the driver in more detail e.g. add configuration keys
+     * 
+     * @param driver
+     *            Driver
      */
     protected void configureDriver(MapDriver<TKeyIn, TValueIn, TKeyOut, TValueOut> driver) {
         // Does nothing
