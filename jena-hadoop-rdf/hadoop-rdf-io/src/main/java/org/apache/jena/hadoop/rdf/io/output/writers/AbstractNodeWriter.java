@@ -26,13 +26,19 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.Writer2;
+import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.hadoop.rdf.types.NodeTupleWritable;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
+import org.apache.jena.hadoop.rdf.types.QuadWritable;
+import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterNT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.Quad;
 
 /**
  * Abstract implementation of a record writer which writes pairs of nodes and
@@ -80,7 +86,7 @@ public abstract class AbstractNodeWriter<TValue> extends RecordWriter<NodeWritab
         this.formatter = formatter;
         this.writer = Writer2.wrap(writer);
     }
-    
+
     @Override
     public final void write(NodeWritable key, TValue value) throws IOException, InterruptedException {
         this.writeKey(key);
@@ -96,19 +102,68 @@ public abstract class AbstractNodeWriter<TValue> extends RecordWriter<NodeWritab
      *            Key
      */
     protected void writeKey(NodeWritable key) {
-        Node n = key.get();
+        writeNode(key.get());
+    }
+
+    /**
+     * Writes a Node
+     * 
+     * @param n
+     *            Node
+     */
+    protected void writeNode(Node n) {
         this.getNodeFormatter().format(this.writer, n);
     }
 
     /**
+     * Writes a sequence of nodes
+     * 
+     * @param ns
+     *            Nodes
+     */
+    protected void writeNodes(Node... ns) {
+        String sep = this.getSeparator();
+        for (int i = 0; i < ns.length; i++) {
+            writeNode(ns[i]);
+            if (i < ns.length - 1)
+                this.writer.write(sep);
+        }
+    }
+
+    /**
      * Writes the given value
+     * <p>
+     * If the value is one of the RDF primitives - {@link NodeWritable},
+     * {@link TripleWritable}, {@link QuadWritable} and
+     * {@link NodeTupleWritable} - then it is formatted as a series of nodes
+     * separated by the separator. Otherwise it is formatted by simply calling
+     * {@code toString()} on it.
+     * </p>
      * 
      * @param value
+     *            Values
      */
     protected void writeValue(TValue value) {
-        if (value instanceof NullWritable)
+        // Handle null specially
+        if (value instanceof NullWritable || value == null)
             return;
-        this.writer.write(value.toString());
+
+        // Handle RDF primitives specially and format them as proper nodes
+        if (value instanceof NodeWritable) {
+            this.writeKey((NodeWritable) value);
+        } else if (value instanceof TripleWritable) {
+            Triple t = ((TripleWritable) value).get();
+            this.writeNodes(t.getSubject(), t.getPredicate(), t.getObject());
+        } else if (value instanceof QuadWritable) {
+            Quad q = ((QuadWritable) value).get();
+            this.writeNodes(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
+        } else if (value instanceof NodeTupleWritable) {
+            Tuple<Node> tuple = ((NodeTupleWritable) value).get();
+            this.writeNodes(tuple.tuple());
+        } else {
+            // For arbitrary values just toString() them
+            this.writer.write(value.toString());
+        }
     }
 
     @Override
