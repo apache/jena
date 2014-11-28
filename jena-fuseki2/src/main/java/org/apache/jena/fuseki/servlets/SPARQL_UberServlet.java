@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DataAccessPoint ;
@@ -40,7 +39,9 @@ import org.apache.jena.riot.web.HttpNames ;
 
 /** This servlet can be attached to a dataset location
  *  and acts as a router for all SPARQL operations
- *  (query, update, graph store, both direct and indirect naming). 
+ *  (query, update, graph store, both direct and 
+ *  indirect naming, quads operations on a dataset and
+ *  ?query and ?update directly on a dataset.) 
  */
 public abstract class SPARQL_UberServlet extends ActionSPARQL
 {
@@ -84,13 +85,15 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action, OperationName.GSP_R) ; }
         @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action, OperationName.GSP) ; }
 
-        private boolean isEnabled(HttpAction action, OperationName opName)
-        {  Endpoint operation = action.getEndpoint() ;
-        
-            return operation != null &&
-                operation.getOperationName() == opName &&
-                // XXX Active
-                operation.endpointName != null ;
+        // Test whether there is a configuration that allows this action as the operation given.
+        // Ignores the operation in the action (set due to parsing - it might be "quads"
+        // which is the generic operation when just the dataset is specificed.  
+        private boolean isEnabled(HttpAction action, OperationName opName) {
+            // Disregard the operation name of the action
+            DataService dSrv = action.getDataService() ;
+            if ( dSrv == null )
+                return false;
+            return ! dSrv.getOperation(opName).isEmpty() ;
         }
     }
     
@@ -155,6 +158,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 //        if ( ! dSrv.isActive() )
 //            ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
         
+        // Part after the DataAccessPoint (dataset) name.
         String trailing = findTrailing(actionURI, desc.getName()) ;
         String qs = request.getQueryString() ;
 
@@ -190,24 +194,30 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         }
         
         if ( !hasTrailing ) {
-            if ( ct != null ) {
-                if ( hasParamQuery || contentTypeSPARQLQuery.equalsIgnoreCase(ct) ) {
-                    // SPARQL Query
-                    if ( !allowQuery(action) )
-                        ServletOps.errorForbidden("Forbidden: SPARQL query") ;
-                    executeRequest(action, queryServlet) ;
-                    return ;
-                }
+            boolean isPOST = action.getRequest().getMethod().equals(HttpNames.METHOD_POST) ;
+            // Nothing after the DataAccessPoint i.e Dataset by name.
+            // e.g.  http://localhost:3030/ds?query=
+            // Query - GET or POST.
+            // Query - ?query= or body of application/sparql-query
+            if ( hasParamQuery || ( isPOST && contentTypeSPARQLQuery.equalsIgnoreCase(ct) ) ) {
+                // SPARQL Query
+                if ( !allowQuery(action) )
+                    ServletOps.errorForbidden("Forbidden: SPARQL query") ;
+                executeRequest(action, queryServlet) ;
+                return ;
+            }
 
-                if ( hasParamUpdate || contentTypeSPARQLUpdate.equalsIgnoreCase(ct) ) {
-                    // SPARQL Update
-                    if ( !allowQuery(action) )
-                        ServletOps.errorForbidden("Forbidden: SPARQL query") ;
-                    executeRequest(action, updateServlet) ;
-                    return ;
-                }
+            // Insist on POST for update.
+            // Update - ?update= or body of application/sparql-update
+            if ( isPOST && ( hasParamUpdate || contentTypeSPARQLUpdate.equalsIgnoreCase(ct) ) ) {
+                // SPARQL Update
+                if ( !allowUpdate(action) )
+                    ServletOps.errorForbidden("Forbidden: SPARQL update") ;
+                executeRequest(action, updateServlet) ;
+                return ;
             }
             
+            // ?graph=, ?default
             if ( hasParamGraph || hasParamGraphDefault ) {
                 doGraphStoreProtocol(action) ;
                 return ;
@@ -218,13 +228,10 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         }
         
         final boolean checkForPossibleService = true ;
-        if ( checkForPossibleService ) {
+        if ( checkForPossibleService && action.getEndpoint() != null ) {
             // There is a trailing part.
             // Check it's not the same name as a registered service.
             // If so, dispatch to that service.
-            
-            // action.operation == query etc.
-            
             if ( serviceDispatch(action, OperationName.Query, queryServlet) ) return ; 
             if ( serviceDispatch(action, OperationName.Update, updateServlet) ) return ; 
             if ( serviceDispatch(action, OperationName.Upload, uploadServlet) ) return ;
@@ -236,9 +243,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
                 if ( serviceDispatch(action, OperationName.GSP_R, restQuads_R) ) return ;
                 if ( serviceDispatch(action, OperationName.GSP, restQuads_RW) ) return ;
             }
-                
-            // If no params, its a daatset operation.
-        }       
+        }
         // There is a trailing part - params are illegal by this point.
         if ( hasParams )
             // ?? Revisit to include query-on-one-graph 
@@ -259,27 +264,26 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         // The GSP servlets handle direct and indirect naming. 
         Endpoint operation = action.getEndpoint() ;
         String method = action.request.getMethod() ;
-        
+
+        // Try to route to read service.
+
         if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) ||
-             HttpNames.METHOD_HEAD.equalsIgnoreCase(method) ) 
+            HttpNames.METHOD_HEAD.equalsIgnoreCase(method) ) 
         {
-           if ( ! allowREST_R(action))
-           // Graphs Store Protocol, indirect naming, read
-           // Indirect naming. Prefer the R service if available.
-           if ( OperationName.GSP_R == operation.getOperationName() )
-               executeRequest(action, gspServlet_R) ;
-           else if ( OperationName.GSP == operation.getOperationName() )
-               executeRequest(action, gspServlet_RW) ;
-           else
-               ServletOps.errorMethodNotAllowed(method) ;
-           return ;
-       }
-       
-       // Graphs Store Protocol, indirect naming, write
-       if ( ! allowREST_W(action))
-           ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : Write operation : "+method) ;
-       executeRequest(action, gspServlet_RW) ;
-       return ;
+            // Graphs Store Protocol, indirect naming, read operations
+            // Try to send to the R service, else drop through to RW service dispatch.
+            if ( allowREST_R(action)) 
+                ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
+            executeRequest(action, gspServlet_R) ;
+            return ;
+        }
+
+        // Graphs Store Protocol, indirect naming, write (or read, though actually handled above)
+        // operations on the RW service.
+        if ( ! allowREST_W(action))
+            ServletOps.errorForbidden("Forbidden: SPARQL Graph Store Protocol : "+method) ;
+        executeRequest(action, gspServlet_RW) ;
+        return ;
     }
 
     private void executeRequest(HttpAction action, ActionSPARQL servlet) {
@@ -292,8 +296,6 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
 //              errorMethodNotAllowed(request.getMethod()) ;
 //          // ** relative servlet forward
 //          request.getRequestDispatcher(target).forward(request, response) ;    
-        
-
 //          // ** absolute srvlet forward
 //          // getServletContext().getRequestDispatcher(target) ;
 //      } catch (Exception e) { errorOccurred(e) ; }        
@@ -315,10 +317,8 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
      */
     private boolean serviceDispatch(HttpAction action, OperationName opName, ActionSPARQL servlet) {
         Endpoint operation = action.getEndpoint() ;
-        if ( operation == null ) {
-            Fuseki.serverLog.warn("No operation: "+opName, new Throwable()) ;
+        if ( operation == null )
             return false ;
-        }
         if ( ! operation.isType(opName) ) 
             return false ;
         servlet.executeLifecycle(action) ;
@@ -332,6 +332,7 @@ public abstract class SPARQL_UberServlet extends ActionSPARQL
         return uri.substring(dsname.length()+1) ;   // Skip the separating "/"
     }
 
+    // Route everything to "doCommon"
     @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
