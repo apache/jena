@@ -157,7 +157,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             for ( ; en.hasMoreElements() ; ) {
                 String name = en.nextElement() ;
                 if ( !params.contains(name) )
-                    ServletOps.warning(action, "SPARQL Update: Unrecognize request parameter (ignored): "+name) ;
+                    ServletOps.warning(action, "SPARQL Update: Unrecognized request parameter (ignored): "+name) ;
             }
         }
     }
