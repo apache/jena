@@ -118,7 +118,7 @@ public class LiteralImpl extends EnhNode implements Literal {
     
     /**
      * Return true if this is a "plain" (i.e. old style, not typed) literal.
-     * For RDF 1.1, the most compatible choice is "xsd:string". 
+     * For RDF 1.1, the most compatible choice is "xsd:string" or "rdf:langString". 
      */
     private boolean isPlainLiteral() {
         if ( JenaRuntime.isRDF11 )
