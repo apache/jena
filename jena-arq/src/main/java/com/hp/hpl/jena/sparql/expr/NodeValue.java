@@ -654,7 +654,6 @@ public abstract class NodeValue extends ExprNode
 
     public static int compareAlways(NodeValue nv1, NodeValue nv2)
     {
-        // ***** Only called from a test. Sort out with NodeUtils.
         try {
             int x = compare(nv1, nv2, true) ;
             // Same?

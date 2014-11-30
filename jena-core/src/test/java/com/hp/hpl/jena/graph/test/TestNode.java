@@ -710,7 +710,7 @@ public class TestNode extends GraphTestBase
 
     private static void assertLangString(Node n) {
         RDFDatatype dt = n.getLiteralDatatype() ;
-        assertNotSame("", n.getLiteralLanguage() ) ;    // "" is not legal.
+        assertDiffer("", n.getLiteralLanguage() ) ;    // "" is not legal.
         if ( JenaRuntime.isRDF11 )
             assertEquals(RDF.dtLangString, dt) ;
         else

@@ -195,7 +195,7 @@ public class NodeUtils
     private static int compareLiteralsBySyntax(Node node1, Node node2)
     {
         if ( node1 == null || ! node1.isLiteral() ||
-        node2 == null || ! node2.isLiteral() )
+             node2 == null || ! node2.isLiteral() )
             throw new ARQInternalErrorException("compareLiteralsBySyntax called with non-literal: ("+node1+","+node2+")") ;
 
         if ( node1.equals(node2) )
