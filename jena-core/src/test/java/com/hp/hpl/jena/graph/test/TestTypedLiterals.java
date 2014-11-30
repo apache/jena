@@ -1125,18 +1125,21 @@ public class TestTypedLiterals extends TestCase {
         JenaParameters.enableEagerLiteralValidation = originalFlag;
         assertTrue("Early datatype format exception", foundException);
         
-        originalFlag = JenaParameters.enablePlainLiteralSameAsString;
-        Literal l1 = m.createLiteral("test string");
-        Literal l2 = m.createTypedLiteral("test string", XSDDatatype.XSDstring);
-        JenaParameters.enablePlainLiteralSameAsString = true;
-        boolean ok1 = l1.sameValueAs(l2); 
-        JenaParameters.enablePlainLiteralSameAsString = false;
-        boolean ok2 = ! l1.sameValueAs(l2); 
-        JenaParameters.enablePlainLiteralSameAsString = originalFlag;
-        assertTrue( ok1 );
-        assertTrue( ok2 );
+        if ( ! JenaRuntime.isRDF11 ) {
+            // RDF 1.1 -  Simple Literals are identical terms to xsd:string hence same value always.
+            originalFlag = JenaParameters.enablePlainLiteralSameAsString;
+            Literal l1 = m.createLiteral("test string");
+            Literal l2 = m.createTypedLiteral("test string", XSDDatatype.XSDstring);
+            JenaParameters.enablePlainLiteralSameAsString = true;
+            boolean ok1 = l1.sameValueAs(l2); 
+            JenaParameters.enablePlainLiteralSameAsString = false;
+            boolean ok2 = ! l1.sameValueAs(l2); 
+            JenaParameters.enablePlainLiteralSameAsString = originalFlag;
+            assertTrue( ok1 );
+            assertTrue( ok2 );
+        }
     }
-    
+
     /**
      * Test that equality function takes lexical distinction into account. 
      */
