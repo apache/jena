@@ -50,6 +50,7 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 /**
  * Unit test for the typed literal machinery - including RDFDatatype,
  * TypeMapper and LiteralLabel.
+ * See also TestLiteralLabelSameValueAs
  */
 public class TestTypedLiterals extends TestCase {
               

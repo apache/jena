@@ -21,7 +21,6 @@ package com.hp.hpl.jena.datatypes.xsd.impl;
 import com.hp.hpl.jena.datatypes.BaseDatatype ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
-import com.hp.hpl.jena.vocabulary.RDF ;
 
 /** rdf:langString.
  * This covers the unusual case of "foo"^^"rdf:langString"
@@ -31,7 +30,8 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class RDFLangString extends BaseDatatype implements RDFDatatype {
     /** Singleton instance */
-    public static final RDFDatatype rdfLangString = new RDFLangString(RDF.getURI() + "langString");
+    // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
+    public static final RDFDatatype rdfLangString = new RDFLangString("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");
     
     /**
      * Private constructor.
