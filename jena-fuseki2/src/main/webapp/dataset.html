@@ -5,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/font-awesome.min.css" rel="stylesheet" media="screen">
-    <link href="css/codemirror.css" rel="stylesheet" media="screen">
-    <link href="css/foldgutter.css" rel="stylesheet" media="screen">
     <link href="css/qonsole.css" rel="stylesheet" media="screen">
-    <link href="css/jquery.dataTables.css" rel="stylesheet" media="screen">
     <link href="css/bootstrap-select.min.css" rel="stylesheet" media="screen">
 
     <link href="css/jquery.fileupload-ui.css" rel="stylesheet" media="screen">
     <link href="css/jquery.fileupload.css" rel="stylesheet" media="screen">
 
     <link href="css/fui.css" rel="stylesheet" media="screen">
+    
+    <link href="css/codemirror.min.css" rel="stylesheet">
+    <link href="css/yasqe.min.css" rel="stylesheet">
+    <link href="css/yasr.min.css" rel="stylesheet">
+    
 
-    <script data-main="js/app/main.dataset.js" src="js/lib/require.min.js"></script>
+    
 
     <!--[if lt IE 9]>
       <script src="js/lib/html5shiv.js"></script>
@@ -111,38 +113,37 @@
                             </li>
                           </ul>
                         </div>
-
+                        <div class="col-md-12 well">
+                            <div class="query-chrome" style="margin-top:0px; display:inline-block;width:40%">
+                                  <div class="form-group">
+	                                <label for="sparqlEndpoint">SPARQL endpoint</label>
+	                                <input type="text" class="form-control" id="sparqlEndpoint" />
+	                              </div>
+                            </div>
+                             <div class="query-chrome" style="margin-top:0px; display:inline-block; width:28%">
+                                  <div class="form-group">
+                                    <label for="selectContentType">Content Type (Select)</label>
+                                    <select id="selectContentType" class="form-control">
+                                      <option value="application/sparql-results+json">JSON</option>
+                                      <option value="application/sparql-results+xml">XML</option>
+                                      <option value="text/csv">CSV</option>
+                                      <option value="text/tab-separated-values">TSV</option>
+                                    </select>
+                                  </div>
+                            </div>
+                            <div class="query-chrome" style="margin-top:0px; display:inline-block; width:28%">
+                                  <div class="form-group">
+                                    <label for="graphContentType">Content Type (Graph)</label>
+                                    <select id="graphContentType" class="form-control">
+									  <option value="text/turtle">Turtle</option>
+									  <option value="application/rdf+xml">XML</option>
+									</select>
+                                  </div>
+                            </div>
+                        </div>
                         <div class="col-md-12 well">
                           <div class="query-edit">
                             <div id="query-edit-cm" class=""></div>
-                          </div>
-                          <div class="query-chrome">
-                            <form class="form-inline" role="form">
-                              <div class="form-group">
-                                <label for="sparqlEndpoint">SPARQL endpoint</label>
-                                <input type="text" class="form-control" id="sparqlEndpoint" />
-                              </div>
-                              <div class="form-group">
-                                <label for="displayFormat">Results</label>
-                                <div class="dropdown ">
-                                  <a data-toggle="dropdown" class="btn btn-custom2 display-format" href="#" data-value="tsv">
-                                    <span>table</span> <i class="icon-collapse"></i>
-                                  </a>
-                                  <ul class="dropdown-menu formats  " role="menu" aria-labelledby="dropdownMenu2">
-                                    <li role='presentation' class="" ><a data-value="tsv" role='menuitem' tabindex='-1' href='#'>table</a></li>
-                                    <li role='presentation' class="" ><a data-value="text"role='menuitem' tabindex='-1' href='#'>plain text</a></li>
-                                    <li role='presentation' class="" ><a data-value="json"role='menuitem' tabindex='-1' href='#'>JSON</a></li>
-                                    <li role='presentation' class="" ><a data-value="xml"role='menuitem' tabindex='-1' href='#'>XML</a></li>
-                                  </ul>
-                                </div>
-
-                              </div>
-                              <div class="form-group">
-                                <label>&nbsp;</label>
-                                <a href="#" class="btn btn-success run-query form-control">perform query</a>
-                              </div>
-
-                            </form>
                           </div>
                         </div>
 
@@ -239,6 +240,6 @@
       </div>
 
     </div>
-
+    <script data-main="js/app/main.dataset.js" src="js/lib/require.js"></script>
   </body>
 </html>
