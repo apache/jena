@@ -55,4 +55,8 @@ public class RdfXmlBlankNodeTest extends AbstractTripleBlankNodeTests {
         return new RdfXmlInputFormat();
     }
 
+    @Override
+    protected boolean respectsParserProfile() {
+        return false;
+    }
 }

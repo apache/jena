@@ -20,49 +20,44 @@ package org.apache.jena.hadoop.rdf.io.input.bnodes;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.OutputFormat;
-import org.apache.jena.hadoop.rdf.io.input.thrift.ThriftTripleInputFormat;
-import org.apache.jena.hadoop.rdf.io.output.thrift.ThriftTripleOutputFormat;
+import org.apache.jena.hadoop.rdf.io.input.jsonld.JsonLDTripleInputFormat;
+import org.apache.jena.hadoop.rdf.io.input.rdfjson.RdfJsonInputFormat;
+import org.apache.jena.hadoop.rdf.io.output.jsonld.JsonLDTripleOutputFormat;
 import org.apache.jena.hadoop.rdf.types.TripleWritable;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFLanguages;
 
 /**
- * Tests blank node divergence when using the {@link RdfThriftInputFormat}
+ * Tests blank node divergence when using the {@link RdfJsonInputFormat}
  */
-public class RdfThriftBlankNodeTest extends AbstractTripleBlankNodeTests {
+public class JsonLdTripleBlankNodeTest extends AbstractTripleBlankNodeTests {
 
     @Override
     protected Lang getLanguage() {
-        return RDFLanguages.THRIFT;
+        return Lang.JSONLD;
     }
 
     @Override
     protected String getInitialInputExtension() {
-        return ".trdf";
+        return ".jsonld";
     }
 
     @Override
     protected InputFormat<LongWritable, TripleWritable> createInitialInputFormat() {
-        return new ThriftTripleInputFormat();
+        return new JsonLDTripleInputFormat();
     }
 
     @Override
     protected OutputFormat<LongWritable, TripleWritable> createIntermediateOutputFormat() {
-        return new ThriftTripleOutputFormat<>();
+        return new JsonLDTripleOutputFormat<>();
     }
 
     @Override
     protected InputFormat<LongWritable, TripleWritable> createIntermediateInputFormat() {
-        return new ThriftTripleInputFormat();
+        return new JsonLDTripleInputFormat();
     }
 
     @Override
     protected boolean respectsParserProfile() {
         return false;
-    }
-    
-    @Override
-    protected boolean preservesBlankNodeIdentity() {
-        return true;
     }
 }
