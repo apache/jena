@@ -33,14 +33,17 @@ import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.jena.hadoop.rdf.io.RdfIOConstants;
+import org.apache.jena.hadoop.rdf.io.input.util.RdfIOUtils;
 import org.apache.jena.hadoop.rdf.io.input.util.TrackableInputStream;
 import org.apache.jena.hadoop.rdf.io.input.util.TrackedInputStream;
 import org.apache.jena.hadoop.rdf.io.input.util.TrackedPipedRDFStream;
 import org.apache.jena.hadoop.rdf.types.AbstractNodeTupleWritable;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.lang.PipedRDFIterator;
 import org.apache.jena.riot.lang.PipedRDFStream;
+import org.apache.jena.riot.system.ParserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,7 +133,8 @@ public abstract class AbstractWholeFileNodeTupleReader<TValue, T extends Abstrac
         // Set up background thread for parser
         iter = this.getPipedIterator();
         this.stream = this.getPipedStream(iter, this.input);
-        Runnable parserRunnable = this.createRunnable(this, this.input, stream, this.getRdfLanguage());
+        ParserProfile profile = RdfIOUtils.createParserProfile(context, file);
+        Runnable parserRunnable = this.createRunnable(this, this.input, stream, this.getRdfLanguage(), profile);
         this.parserThread = new Thread(parserRunnable);
         this.parserThread.setDaemon(true);
         this.parserThread.start();
@@ -171,12 +175,14 @@ public abstract class AbstractWholeFileNodeTupleReader<TValue, T extends Abstrac
      * @return Parser runnable
      */
     private Runnable createRunnable(@SuppressWarnings("rawtypes") final AbstractWholeFileNodeTupleReader reader, final InputStream input,
-            final PipedRDFStream<TValue> stream, final Lang lang) {
+            final PipedRDFStream<TValue> stream, final Lang lang, final ParserProfile profile) {
         return new Runnable() {
             @Override
             public void run() {
                 try {
-                    RDFDataMgr.parse(stream, input, null, lang);
+                    ReaderRIOT riotReader = RDFDataMgr.createReader(lang);
+                    riotReader.setParserProfile(profile);
+                    riotReader.read(input, null, lang.getContentType(), stream, null);
                     reader.setParserFinished(null);
                 } catch (Throwable e) {
                     reader.setParserFinished(e);
