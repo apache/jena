@@ -31,10 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.*;
-
+import com.hp.hpl.jena.rdf.model.impl.Util ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
-
 import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -606,16 +605,10 @@ public class N3JenaWriterCommon implements RDFWriter
         string(sbuff, s, singleQuoteLiteral) ;
         sbuff.append(quoteMarks);
     
-        // Format the language tag 
-        if ( lang != null && lang.length()>0)
-        {
+        if ( Util.isLangString(literal) ) {
             sbuff.append("@") ;
             sbuff.append(lang) ;
-        }
-        
-        // Format the datatype
-        if ( datatype != null )
-        {
+        } else if ( ! Util.isSimpleString(literal) ) {
             sbuff.append("^^") ;
             sbuff.append(formatURI(datatype)) ;
         }
