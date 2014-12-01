@@ -61,18 +61,32 @@ public class NodeFunctions {
             return n ;
         
         // No language tag : either no datatype or a datatype of xsd:string 
-        // Special case : rdf:langString and no language ==> Illegal
+        // Includes the case of rdf:langString and no language ==> Illegal as a compatible string.
+
         RDFDatatype dt = n.getLiteralDatatype() ;
-        if ( dt != null && !dt.equals(XSDDatatype.XSDstring) )
-            throw new ExprEvalException(label + ": Not a string literal: " + nv) ;
-        return n ;
+        if ( dt == null )
+            return n ;
+        if ( XSDDatatype.XSDstring.equals(dt) )
+            return n ;
+        throw new ExprEvalException(label + ": Not a string literal: " + nv) ;
     }
 
     /**
      * Check for string operations with primary first arg and second second arg
-     * (e.g. CONTAINS)
+     * (e.g. CONTAINS).  The arguments are not used in the same way and the check
+     * operation is not symmetric. 
+     * <li> "abc"@en is compatible with "abc"
+     * <li> "abc" is NOT compatible with "abc"@en
      */
     public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) {
+        
+        /* Quote the spec:
+         * Compatibility of two arguments is defined as:
+         *    The arguments are simple literals or literals typed as xsd:string
+         *    The arguments are plain literals with identical language tags
+         *    The first argument is a plain literal with language tag and the second argument is a simple literal or literal typed as xsd:string
+         */
+        
         Node n1 = checkAndGetStringLiteral(label, arg1) ;
         Node n2 = checkAndGetStringLiteral(label, arg2) ;
         String lang1 = n1.getLiteralLanguage() ;
@@ -82,22 +96,44 @@ public class NodeFunctions {
         if ( lang2 == null )
             lang2 = "" ;
 
-        if ( n1.getLiteralDatatype() != null ) {
-            // n1 is an xsd string by checkAndGetString
-            if ( XSDDatatype.XSDstring.equals(n2.getLiteralDatatypeURI()) )
-                return ;
-            if ( n2.getLiteralLanguage().equals("") )
+        // Case 1
+        if ( lang1.equals("") ) { 
+            if ( lang2.equals("") )
                 return ;
             throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
         }
 
-        // Incompatible?
-        // arg1 simple or xsd:string, arg2 has a lang.
-        if ( lang1.equals("") && !lang2.equals("") )
-            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
-        // arg1 with lang, arg2 has a different lang.
-        if ( !lang1.equals("") && (!lang2.equals("") && !lang1.equals(lang2)) )
-            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
+        // Case 2
+        if ( lang1.equalsIgnoreCase(lang2) )
+            return ;
+        
+        // Case 3
+        if ( lang2.equals("") )
+            return ;
+
+        throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
+        
+        // ----------
+                
+//                if ( lang1.equals("") && !lang2.equals("") )
+//            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
+//        
+//        
+//        
+//        if ( n1.getLiteralDatatype() != null ) {
+//            // n1 is an xsd string by checkAndGetString
+//            if ( XSDDatatype.XSDstring.equals(n2.getLiteralDatatypeURI()) )
+//                return ;
+//            if ( n2.getLiteralLanguage().equals("") )
+//                return ;
+//            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
+//        }
+//
+//        // Incompatible?
+//        // arg1 simple or xsd:string, arg2 has a lang.
+//        // arg1 with lang, arg2 has a different lang.
+//        if ( !lang1.equals("") && (!lang2.equals("") && !lang1.equals(lang2)) )
+//            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2) ;
     }
 
     // -------- sameTerm

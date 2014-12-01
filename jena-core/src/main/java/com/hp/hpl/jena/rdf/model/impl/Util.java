@@ -23,7 +23,9 @@ import java.util.regex.Pattern ;
 import org.apache.xerces.util.XMLChar ;
 
 import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.shared.CannotEncodeCharacterException ;
 
@@ -189,6 +191,32 @@ public class Util extends Object {
         return s.replace(oldString, newString) ;
     }
 
+    /**
+     * A Node is a simple string if: 
+     * <li>(RDF 1.0) No datatype and no language tag.
+     * <li>(RDF 1.1) xsd:string
+     */
+    public static boolean isSimpleString(Node n) {
+        RDFDatatype dt = n.getLiteralDatatype() ;
+        if ( dt == null )
+            return !isLangString(n) ;
+        if ( JenaRuntime.isRDF11 )
+            return dt.equals(XSDDatatype.XSDstring) ;
+        return false ;
+    }
+
+    /**
+     * A Node is a language string if it has a language tag. 
+     * (RDF 1.0 and RDF 1.1)
+     */
+    public static boolean isLangString(Node n) {
+        String lang = n.getLiteralLanguage() ;
+        if ( lang == null )
+            return false ;
+        return !lang.equals("") ;
+    }
+
+    
     /** Return true if the literal should be written as a string, without datatype or lang. (RDF 1.0 and RDF 1.1) */ 
     public static boolean isSimpleString(Literal lit) {
         if ( lit.getDatatypeURI() == null ) {
@@ -206,4 +234,5 @@ public class Util extends Object {
             return false ;
         return ! lang.equals("") ;
     }
+
 }

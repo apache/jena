@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.graph;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
@@ -41,6 +42,7 @@ public class NodeConst
     public static final Node nodeNil        = RDF.Nodes.nil ;
     public static final Node nodeANY        = Node.ANY ;
     
-    public static final Node nodeOwlSameAs  = OWL.sameAs.asNode() ;
-    public static final Node rdfLangString  = RDF.Nodes.langString ;
+    public static final Node nodeOwlSameAs          = OWL.sameAs.asNode() ;
+    public static final Node rdfLangString          = RDF.Nodes.langString ;
+    public static final RDFDatatype dtLangString    = RDF.dtLangString ;
 }

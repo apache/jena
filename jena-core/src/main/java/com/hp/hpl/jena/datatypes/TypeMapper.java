@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.impl.RDFLangString ;
 import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 
@@ -67,6 +68,7 @@ public class TypeMapper {
     public static void reset() {
         theTypeMap = new TypeMapper();
         theTypeMap.registerDatatype(XMLLiteralType.theXMLLiteralType);
+        theTypeMap.registerDatatype(RDFLangString.rdfLangString) ;
         XSDDatatype.loadXSDSimpleTypes(theTypeMap);
 
         // add primitive types
@@ -120,7 +122,7 @@ public class TypeMapper {
                 // Plain literal
                 return null;
             } else {
-                // Uknown datatype
+                // Unknown datatype
                 if (JenaParameters.enableSilentAcceptanceOfUnknownDatatypes) {
                     dtype = new BaseDatatype(uri);
                     registerDatatype(dtype);

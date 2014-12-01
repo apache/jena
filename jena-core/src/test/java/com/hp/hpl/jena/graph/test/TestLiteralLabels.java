@@ -26,6 +26,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
 
+// See also TestLiteralLabelSameValueAs, TestTypedLiterals
 public class TestLiteralLabels extends GraphTestBase
 {
     public TestLiteralLabels(String name)

@@ -96,6 +96,7 @@ import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.* ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 public abstract class NodeValue extends ExprNode
 {
@@ -653,7 +654,6 @@ public abstract class NodeValue extends ExprNode
 
     public static int compareAlways(NodeValue nv1, NodeValue nv2)
     {
-        // ***** Only called from a test. Sort out with NodeUtils.
         try {
             int x = compare(nv1, nv2, true) ;
             // Same?
@@ -980,7 +980,7 @@ public abstract class NodeValue extends ExprNode
             // Not a literal - no value to extract
             return new NodeValueNode(node) ;
 
-        boolean hasLangTag = ( node.getLiteralLanguage() != null && ! node.getLiteralLanguage().equals("")) ;
+        boolean hasLangTag = NodeUtils.isLangString(node) ;
         boolean isPlainLiteral = ( node.getLiteralDatatypeURI() == null && ! hasLangTag ) ; 
             
         if ( isPlainLiteral )
@@ -988,7 +988,8 @@ public abstract class NodeValue extends ExprNode
 
         if ( hasLangTag )
         {
-            if ( node.getLiteralDatatypeURI() != null )
+            // Works for RDF 1.0 and RDF 1.1
+            if ( node.getLiteralDatatype() != null && ! RDF.dtLangString.equals(node.getLiteralDatatype()) )
             {
                 if ( NodeValue.VerboseWarnings )
                     Log.warn(NodeValue.class, "Lang tag and datatype (datatype ignored)") ;
