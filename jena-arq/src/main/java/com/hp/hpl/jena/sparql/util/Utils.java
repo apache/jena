@@ -19,12 +19,12 @@
 package com.hp.hpl.jena.sparql.util;
 
 import java.math.BigDecimal ;
-import java.text.DateFormat ;
-import java.text.SimpleDateFormat ;
 import java.util.Calendar ;
 import java.util.Date ;
 import java.util.GregorianCalendar ;
 import java.util.TimeZone ;
+
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 
@@ -32,7 +32,12 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 
 public class Utils
 {
-    static public String className(Object obj) { 
+    private static final FastDateFormat dateTimeFmt_display = FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss z") ;
+    private static final FastDateFormat dateFmt_yyyymmdd    = FastDateFormat.getInstance("yyyy-MM-dd") ;
+    private static final FastDateFormat dateTimeFmt_XSD     = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSS") ;
+    private static final FastDateFormat timeFmt_hhmmssSS    = FastDateFormat.getInstance("HH:mm:ss.SSS");
+
+    static public String className(Object obj) {
         if ( obj == null )
             return "null" ;
         return classShortName(obj.getClass()) ;
@@ -63,59 +68,50 @@ public class Utils
     
     /** Return "now" as readable string (date in yyyy/MM/dd format) */
     public static String nowAsString()
-    { return nowAsString("yyyy/MM/dd HH:mm:ss z") ; }
+    { return nowAsString(dateTimeFmt_display) ; }
     
     public static String nowAsString(String formatString)
     {
-        DateFormat df = new SimpleDateFormat(formatString) ;
+        FastDateFormat df = FastDateFormat.getInstance(formatString) ;
         return df.format(new Date()) ;
     }
-    
-//    public static XSDDateTime calendarToXSDDateTime(Calendar cal)
-//    {
-//        return new XSDDateTime(cal) ;
-//    }
-//
-//    public static XSDDateTime calendarToXSDDate(Calendar cal)
-//    {
-//        // Ensure it is an XSDDate, not a dateTime.
-//        return (XSDDateTime)XSDDatatype.XSDdate.parse(calendarToXSDDateString(cal)) ;
-//    }
 
-    
+    public static String nowAsString(FastDateFormat dateFormat)
+    {
+        return dateFormat.format(new Date()) ;
+    }
+
     public static String calendarToXSDDateTimeString(Calendar cal)
     {
-        return calendarToXSDString(cal, "yyyy-MM-dd'T'HH:mm:ss.SSS") ;
+        return calendarToXSDString(cal, dateTimeFmt_XSD) ;
     }
     
     public static String calendarToXSDDateString(Calendar cal)
     {
-        return calendarToXSDString(cal, "yyyy-MM-dd") ;
+        return calendarToXSDString(cal, dateFmt_yyyymmdd) ;
     }
     
     public static String calendarToXSDTimeString(Calendar cal)
     {
-        return calendarToXSDString(cal, "HH:mm:ss.SSS");
+        return calendarToXSDString(cal, timeFmt_hhmmssSS);
     }
-    
-    private static String calendarToXSDString(Calendar cal, String fmt)
+
+    private static String calendarToXSDString(Calendar cal, FastDateFormat fmt )
     {
         // c.f. Constructor on Jena's XSDDateTime
         // Only issue is that it looses the timezone through (Xerces)
         // normalizing to UTC.
-        SimpleDateFormat dFmt = new SimpleDateFormat(fmt) ;
-        Date date = cal.getTime() ;
-        String lex = dFmt.format(date) ;
-        lex = lex+calcTimezone(cal) ;
-        return lex ;
+        Date date = cal.getTime();
+        String lex = fmt.format(date);
+        lex = lex + calcTimezone(cal);
+        return lex;
     }
-    
+
     private static String calcTimezone(Calendar cal)
     {
         Date date = cal.getTime() ;
         TimeZone z = cal.getTimeZone() ;
-        int tzOff = z.getRawOffset() ;
-        int tz = tzOff ;
+        int tz = z.getRawOffset();
 
         if ( z.inDaylightTime(date) )
         {
