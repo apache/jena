@@ -18,21 +18,14 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
-import org.apache.jena.atlas.lib.ColumnMap ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.IndexFactory ;
-import com.hp.hpl.jena.tdb.index.IndexParams ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.tupletable.TupleIndex ;
-import com.hp.hpl.jena.tdb.store.tupletable.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
 /** Building datastructures on top of the base file
@@ -44,6 +37,14 @@ public class Build
     private static Logger log = LoggerFactory.getLogger(Build.class) ;
     private static StoreParams params = StoreParams.getDftStoreParams() ;
     
+    public static TupleIndex openTupleIndex(Location loc, String indexName, String primary, String indexOrder) {
+        return openTupleIndex(loc, indexName, primary, indexOrder, params) ;
+    }
+    
+    public static TupleIndex openTupleIndex(Location location, String indexName, String primary, String indexOrder, StoreParams params) {
+        return DatasetBuilderStd.stdBuilder().makeTupleIndex(location, indexName, primary, indexOrder, params) ;
+    }
+    
     public static TupleIndex openTupleIndex(Location location, String indexName, String primary, String indexOrder, int readCacheSize, int writeCacheSize, int dftKeyLength, int dftValueLength)
     {
         // XXX replace with:
@@ -52,12 +53,7 @@ public class Build
         StoreParamsBuilder spb = StoreParams.builder() ;
         spb.blockReadCacheSize(readCacheSize) ;
         spb.blockWriteCacheSize(writeCacheSize) ;
-        RecordFactory recordFactory = new RecordFactory(dftKeyLength, dftValueLength) ;
-        IndexParams idxParams = spb.build() ;
-        FileSet fs = new FileSet(location, indexName) ;
-        RangeIndex rIndex = IndexFactory.buildRangeIndex(fs, recordFactory, idxParams) ;
-        TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), indexOrder, rIndex.getRecordFactory(), rIndex) ;
-        return tupleIndex ;
+        return openTupleIndex(location, indexName, primary, indexOrder, spb.build()) ;
     }
     
     public static DatasetPrefixesTDB makePrefixes(Location location, DatasetControl policy) {
