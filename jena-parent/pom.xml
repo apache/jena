@@ -131,6 +131,25 @@
       </dependency>
 
       <dependency>
+	<groupId>org.apache.thrift</groupId>
+	<artifactId>libthrift</artifactId>
+	<version>0.9.2</version>
+	<exclusions>
+	  <!-- Use whatever version Jena is using -->
+	  <exclusion>
+	    <groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpcore</artifactId>
+	  </exclusion>
+	</exclusions>
+      </dependency>
+
+      <dependency>
+	<groupId>org.apache.commons</groupId>
+	<artifactId>commons-csv</artifactId>
+	<version>1.0</version>
+      </dependency>
+
+      <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
         <version>${ver.commons-fileupload}</version>
