@@ -136,8 +136,17 @@ public class TestFmtUtils
     }
 
     @Test
-    public void anonNode() {
+    public void anonNode1() {
+        FmtUtils.resetBNodeLabels(); 
         assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createAnon())) ;
+    }
+
+    @Test
+    public void anonNode2() {
+        FmtUtils.resetBNodeLabels(); 
+        assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createAnon())) ;
+        assertEquals("_:b1", FmtUtils.stringForNode(NodeFactory.createAnon())) ;
+        assertEquals("_:b2", FmtUtils.stringForNode(NodeFactory.createAnon())) ;
     }
 
     @Test
