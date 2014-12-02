@@ -102,7 +102,7 @@ public class TestFmtUtils
     @Test
     public void stringLiteral() throws Exception {
         Node_Literal nl = (Node_Literal)NodeFactory.createUncachedLiteral("abc", "no", new XSDDatatype("string")) ;
-        assertEquals("\"abc\"@no^^<http://www.w3.org/2001/XMLSchema#string>", FmtUtils.stringForLiteral(nl, getContext())) ;
+        assertEquals("\"abc\"@no", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
