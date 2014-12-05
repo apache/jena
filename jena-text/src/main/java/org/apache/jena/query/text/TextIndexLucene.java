@@ -133,9 +133,11 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public void finishIndexing() {
         try {
-            indexWriter.commit() ;
-            indexWriter.close() ;
-            indexWriter = null ;
+            if (indexWriter != null) {
+                indexWriter.commit();
+                indexWriter.close();
+                indexWriter = null;
+            }
         }
         catch (IOException e) {
             exception(e) ;
@@ -145,7 +147,8 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public void abortIndexing() {
         try {
-            indexWriter.rollback() ;
+            if (indexWriter != null)
+                indexWriter.rollback() ;
         }
         catch (IOException ex) {
             exception(ex) ;
@@ -169,13 +172,14 @@ public class TextIndexLucene implements TextIndex {
             log.debug("Add entity: " + entity) ;
         try {
             boolean autoBatch = (indexWriter == null) ;
-
             Document doc = doc(entity) ;
             if ( autoBatch )
                 startIndexing() ;
             indexWriter.addDocument(doc) ;
-            if ( autoBatch )
-                finishIndexing() ;
+// put in comment for work with jena transaction
+//            if ( autoBatch )
+//                finishIndexing() ;
+
         }
         catch (IOException e) {
             exception(e) ;
@@ -204,8 +208,9 @@ public class TextIndexLucene implements TextIndex {
             if ( autoBatch )
                 startIndexing() ;
             indexWriter.deleteDocuments(q);
-            if ( autoBatch )
-                finishIndexing() ;
+// put in comment for work with jena transaction
+//            if ( autoBatch )
+//                finishIndexing() ;
 
         } catch (Exception e) { exception(e) ; }
     }

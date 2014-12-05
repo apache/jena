@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 public class TextDatasetFactory
@@ -76,7 +77,7 @@ public class TextDatasetFactory
         return index ;
     }
 
-    public static TextIndex createLuceneIndexMultiLingual(File directory, EntityDefinition entMap, String[] languages)
+    public static TextIndex createLuceneIndexMultiLingual(File directory, EntityDefinition entMap, HashSet languages)
     {
         TextIndex index = new TextIndexLuceneMultiLingual(directory, entMap, languages) ;
         return index ;

@@ -6,7 +6,10 @@ import org.apache.lucene.store.RAMDirectory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +20,7 @@ public class TextIndexLuceneMultiLingual extends TextIndexLucene {
 
     Hashtable<String, TextIndex> indexes;
 
-    public TextIndexLuceneMultiLingual(File directory, EntityDefinition def, String[] languages) {
+    public TextIndexLuceneMultiLingual(File directory, EntityDefinition def, HashSet languages) {
         super(new RAMDirectory(), def);
 
         indexes = new Hashtable<String, TextIndex>();
@@ -30,7 +33,8 @@ public class TextIndexLuceneMultiLingual extends TextIndexLucene {
             indexes.put("default", index);
 
             //language indexes
-            for (String lang : languages) {
+            for (Iterator it = languages.iterator(); it.hasNext();) {
+                String lang = (String)it.next();
                 indexDir = new File(directory, lang );
                 dir = FSDirectory.open(indexDir);
                 index = new TextIndexLucene(dir, def, lang);
@@ -40,6 +44,10 @@ public class TextIndexLuceneMultiLingual extends TextIndexLucene {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Collection<TextIndex> getIndexes() {
+        return indexes.values();
     }
 
     TextIndex getIndex(String lang) {
