@@ -48,7 +48,15 @@ TextIndex index = TextDatasetFactory.createLuceneIndexMultiLingual(dir, entDef, 
 Dataset ds = TextDatasetFactory.create(dataset, index);
 ```
 
-
+Transaction
+--------------
+Indexes are not 'auto-commit'. 
+Hence, changes on them during a Jena transaction process will be taken into account when one of the following method will be called.
+```
+index.finishIndexing(); //to commit
+or 
+index.abortIndexing();  //to rollback
+```
 
 SPARQL full-text clauses
 ------------------------
