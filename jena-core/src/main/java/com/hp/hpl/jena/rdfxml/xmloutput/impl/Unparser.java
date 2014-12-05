@@ -1038,7 +1038,7 @@ class Unparser {
     private void wPropAttrString(Property p, Literal l) {
         print(" ");
         wQNameAttr(p);
-        print("=" + quote(l.getString()));
+        print("=" + quote(l.getLexicalForm())) ;
     }
 
     /*
@@ -1337,6 +1337,8 @@ class Unparser {
 
         if (s.getObject() instanceof Literal) {
             Literal l = s.getLiteral();
+            if ( ! Util.isSimpleString(l) )
+            
             if (l.getDatatypeURI() != null)
                 return false;
 
