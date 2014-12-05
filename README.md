@@ -43,7 +43,8 @@ Dataset ds = TextDatasetFactory.create(dataset, index);
 
 Case 3: Multilingual indexes(ex: french, english)
 ```
-TextIndex index = TextDatasetFactory.createLuceneIndexMultiLingual(dir, entDef, new String[]{"fr", "en"});
+HashSet languages = new HashSet(Arrays.asList(new String[]{"fr", "en"}));
+TextIndex index = TextDatasetFactory.createLuceneIndexMultiLingual(dir, entDef, languages);
 Dataset ds = TextDatasetFactory.create(dataset, index);
 ```
 
