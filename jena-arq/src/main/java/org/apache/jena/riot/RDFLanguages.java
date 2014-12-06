@@ -49,6 +49,7 @@ public class RDFLanguages
     public static final String strLangTriG       = "TriG" ;
     public static final String strLangCSV        = "CSV";
     public static final String strLangTriX       = "TriX";
+    public static final String strLangRDFTHRIFT  = "RDF-THRIFT";
     
     /*
      * ".owl" is not a formally registered file extension for OWL 
@@ -126,8 +127,8 @@ public class RDFLanguages
                                                      .build() ;
 
     /** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
-    public static final Lang THRIFT     = LangBuilder.create("RDF_THRIFT", contentTypeRDFThrift)
-                                                     .addAltNames("RDF-THRIFT", "TRDF")
+    public static final Lang THRIFT     = LangBuilder.create(strLangRDFTHRIFT, contentTypeRDFThrift)
+                                                     .addAltNames("RDF_THRIFT", "RDFTHRIFT", "RDF/THRIFT", "TRDF")
                                                      .addFileExtensions("rt", "trdf")
                                                      .build() ;
     
