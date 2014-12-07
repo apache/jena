@@ -18,25 +18,24 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import static org.apache.jena.atlas.lib.CollectionUtils.disjoint;
+import static org.apache.jena.atlas.lib.CollectionUtils.disjoint ;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.* ;
 
-import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.lib.Pair ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVars;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.*;
-import com.hp.hpl.jena.sparql.core.Substitute;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarExprList;
-import com.hp.hpl.jena.sparql.expr.*;
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVars ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
+import com.hp.hpl.jena.sparql.core.Substitute ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.expr.* ;
 
 /**
  * A transform that aims to optimize queries where there is an equality
@@ -188,23 +187,40 @@ public class TransformFilterEquality extends TransformCopy {
 
         if (var == null || constant == null)
             return null;
+        
+        if ( constant.isIRI() || constant.isBlank() )
+            return Pair.create(var, constant);
 
-        // Corner case: sameTerm is false for string/plain literal,
-        // but true in the graph for graph matching.
+        // Literals.  Without knowing more, only ones with a lang tag
+        // have the feature that .equals is the same as .sameValueAs.
+        // In RDF 1.1, it is also true of xsd:strings.
+
         if (e instanceof E_SameTerm) {
-            if (!ARQ.isStrictMode() && constant.isString())
-                return null;
+            if ( ! JenaRuntime.isRDF11 ) {
+                // Corner case: sameTerm is false for string/plain literal,
+                // but true in the graph for graph matching.
+                if (!ARQ.isStrictMode() && constant.isString())
+                    return null;
+            }
+            return Pair.create(var, constant);
         }
 
-        // Final check for "=" where a FILTER = can do value matching when the
-        // graph does not.
-        if (e instanceof E_Equals) {
-            // Value based?
-            if (!ARQ.isStrictMode() && constant.isLiteral())
-                return null;
-        }
+        // ( e instanceof E_Equals)
+        
+        Node n = constant.getNode() ;
+        if ( Util.isLangString(n) )
+            return Pair.create(var, constant);
 
-        return Pair.create(var, constant);
+        if ( JenaRuntime.isRDF11 ) {
+            // RDF 1.1 : simple literals are xsd:strings.  
+            if ( Util.isSimpleString(n) )
+                return Pair.create(var, constant);
+        } 
+        
+        // Otherwise, lexical forms are not 1-1 with values so not safe.
+        // e.g. +001 and 1 are both integer value but different terms. 
+        
+        return null ;
     }
 
     private static Collection<Var> varsMentionedInEqualityFilters(List<Pair<Var, NodeValue>> equalities) {
