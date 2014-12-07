@@ -25,6 +25,7 @@ import org.apache.jena.atlas.lib.BitsLong ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
@@ -171,6 +172,37 @@ public class NodeId
             Log.warn(NodeId.class, "Failed to process "+node) ;
             return null ; 
         }
+    }
+    
+    /** Datatypes that are candidates for inlining */ 
+    private static RDFDatatype[] datatypes = { 
+        XSDDatatype.XSDdecimal,
+        XSDDatatype.XSDinteger,
+        
+        XSDDatatype.XSDlong,
+        XSDDatatype.XSDint,
+        XSDDatatype.XSDshort,
+        XSDDatatype.XSDbyte,
+        
+        XSDDatatype.XSDunsignedLong,
+        XSDDatatype.XSDunsignedInt,
+        XSDDatatype.XSDunsignedShort,
+        XSDDatatype.XSDunsignedByte,
+        
+        XSDDatatype.XSDdateTime,
+        XSDDatatype.XSDdate,
+        XSDDatatype.XSDboolean
+    } ;
+
+    /** Return true if this node has a datatype that look sliek it is inlineable.
+     * The node may still be out of range (e.g. very large integer).
+     * Only inline(Node)->NodeId can determine that. 
+     */
+    public static boolean hasInlineDatatype(Node node) {
+        RDFDatatype dtn = node.getLiteralDatatype() ;
+        for ( RDFDatatype dt : datatypes )
+            if ( dt.equals(dtn) ) return true ;
+        return false ;
     }
      
     private static NodeId inline$(Node node)

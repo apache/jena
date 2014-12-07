@@ -225,10 +225,7 @@ public class TestNodeId extends BaseTest
     @Test public void nodeId_boolean_4()
     { test("'0'^^xsd:boolean", NodeFactoryExtra.parseNode("'false'^^xsd:boolean")) ; }
 
-    private void test(String x)
-    {
-        test(x, x) ;
-    }
+    private void test(String x) { test(x, x) ; }
     
     private void test(String x, String expected)
     {
@@ -239,6 +236,11 @@ public class TestNodeId extends BaseTest
     {
         Node n = NodeFactoryExtra.parseNode(x) ;
         NodeId nodeId = NodeId.inline(n) ;
+        boolean b = NodeId.hasInlineDatatype(n) ;
+
+        if ( nodeId != null )
+            assertTrue("Converted NodeId but datatype test was false", b) ;
+        
         if ( correct == null )
         {
             assertNull("Expected no encoding: got: "+nodeId, nodeId) ;
