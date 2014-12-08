@@ -67,8 +67,11 @@ public class JettyFuseki {
     
     // webapp setup - standard maven layout
     public static       String contextpath     = "/" ;
-    public static final String resourceBase1   = "webapp" ;             // Standalone jar
-    public static final String resourceBase2   = "src/main/webapp" ;    // Development
+    // Standalone jar
+    public static final String resourceBase1   = "webapp" ;
+    // Development
+    public static final String resourceBase2   = "src/main/webapp" ;
+    
 
     /**
      * Default setup which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}
@@ -169,14 +172,26 @@ public class JettyFuseki {
     public static WebAppContext createWebApp(String contextPath) {
       WebAppContext webapp = new WebAppContext();
       webapp.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
-      String resourceBase = null ;
-      if ( /*resourceBase == null &&*/ FileOps.exists(resourceBase1) )
-          resourceBase = resourceBase1 ;
-      if ( resourceBase == null && FileOps.exists(resourceBase2) )
-          resourceBase = resourceBase2 ;
-      if ( resourceBase == null )
-          Fuseki.serverLog.warn("Can't find resourceBase (tried "+resourceBase1+" and "+resourceBase2+")") ;
       
+      // Hunt for the webapp for the standalone jar (or development system). 
+      // Note that Path FUSEKI_HOME is not initialized until the webapp starts
+      // so it is not available here.
+      
+      String resourceBase3 = null ;
+      String resourceBase4 = null ;
+      if ( System.getenv("FUSEKI_HOME") != null ) {
+          resourceBase3 = System.getenv("FUSEKI_HOME")+"/"+resourceBase1 ;
+          resourceBase3 = System.getenv("FUSEKI_HOME")+"/"+resourceBase2 ;
+      }
+      
+      String resourceBase = tryResourceBase(resourceBase1, null) ;
+      resourceBase = tryResourceBase(resourceBase2, resourceBase) ;
+      resourceBase = tryResourceBase(resourceBase3, resourceBase) ;
+      resourceBase = tryResourceBase(resourceBase4, resourceBase) ;
+
+      if ( resourceBase == null )
+          Fuseki.serverLog.warn("Can't find resourceBase (tried "+resourceBase1+", "+resourceBase2+" and "+resourceBase3+")") ;
+
       webapp.setDescriptor(resourceBase+"/WEB-INF/web.xml");
       webapp.setResourceBase(resourceBase);
       webapp.setContextPath(contextPath);
@@ -191,6 +206,14 @@ public class JettyFuseki {
       webapp.setParentLoaderPriority(true);  // Normal Java classloader behaviour.
       webapp.setErrorHandler(new FusekiErrorHandler()) ;
       return webapp ;
+    }
+    
+    private static String tryResourceBase(String maybeResourceBase, String currentResourceBase) {
+        if ( currentResourceBase != null )
+            return currentResourceBase ;
+        if ( maybeResourceBase != null && FileOps.exists(maybeResourceBase) )
+            return maybeResourceBase ;
+        return currentResourceBase ;
     }
     
     private void buildServerWebapp(String contextPath, String jettyConfig, boolean enableCompression) {
