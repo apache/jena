@@ -81,7 +81,7 @@ public class FusekiServletContextListener implements ServletContextListener {
                     System.exit(0) ;
                 }
             } catch (Throwable th) { 
-                Fuseki.serverLog.error("Exception in initialization", th) ;
+                Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage()) ;
                 throw th ;
             }
         }
