@@ -39,11 +39,11 @@ check_dir "FUSEKI_HOME" "$FUSEKI_HOME"
 export FUSEKI_BASE="${FUSEKI_BASE:-$FUSEKI_HOME/run}"
 check_dir "FUSEKI_BASE" "$FUSEKI_BASE"
 
-CPF="$PWD/fuseki.classpath"
+CPF="$FUSEKI_HOME/fuseki.classpath"
 
 if [ ! -e "$CPF" ]; then
-    echo "Creating Fuseki classpath file"
-    "$PWD/make_cp_mvn" > $CPF
+    echo "Need to create Fuseki classpath file"
+    exit 1
 fi
 
 CP="$(. $CPF)"
@@ -61,7 +61,7 @@ fi
 DEVDIRS="jena-core jena-tdb jena-arq jena-text"
 for X in $DEVDIRS
 do
-    CPX="$FUSEKI_HOME/../$X/classes"
+    CPX="$FUSEKI_HOME/../$X/target/classes"
     if [ -e "$CPX" ]
     then
 	CP="$CPX:$CP"
