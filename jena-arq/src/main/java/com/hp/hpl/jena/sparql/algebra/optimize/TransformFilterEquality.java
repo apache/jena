@@ -191,26 +191,24 @@ public class TransformFilterEquality extends TransformCopy {
         if ( constant.isIRI() || constant.isBlank() )
             return Pair.create(var, constant);
 
-        // Literals.  Without knowing more, only ones with a lang tag
-        // have the feature that .equals is the same as .sameValueAs.
-        // In RDF 1.1, it is also true of xsd:strings.
+        // Literals.  Without knowing more, .equals is not the same as
+        // SPARQL "=" (or .sameValueAs).  
+        // In RDF 1.1, it is true of xsd:strings.
 
         if (e instanceof E_SameTerm) {
             if ( ! JenaRuntime.isRDF11 ) {
                 // Corner case: sameTerm is false for string/plain literal,
-                // but true in the graph for graph matching.
+                // but true in the in-memory graph for graph matching.
+                // All becomes a non-issue in RDF 1.1
                 if (!ARQ.isStrictMode() && constant.isString())
                     return null;
             }
             return Pair.create(var, constant);
         }
 
-        // ( e instanceof E_Equals)
+        // At this point, ( e instanceof E_Equals)
         
         Node n = constant.getNode() ;
-        if ( Util.isLangString(n) )
-            return Pair.create(var, constant);
-
         if ( JenaRuntime.isRDF11 ) {
             // RDF 1.1 : simple literals are xsd:strings.  
             if ( Util.isSimpleString(n) )
