@@ -801,13 +801,13 @@ public abstract class NodeValue extends ExprNode
                 x = StrUtils.strCompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm()) ;
                 if ( x != Expr.CMP_EQUAL )
                     return x ;
-                // Same lexcial forms, same lang tag by value
+                // Same lexical forms, same lang tag by value
                 // Try to split by syntactic lang tags.
                 x = StrUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
                 // Maybe they are the same after all!
                 // Should be node.equals by now.
                 if ( x == Expr.CMP_EQUAL  && ! NodeFunctions.sameTerm(node1, node2) )
-                    throw new ARQInternalErrorException("Look the same (lang tags) but no node equals") ;
+                    throw new ARQInternalErrorException("Looks like the same (lang tags) but not node equals") ;
                 return x ;
             }
             
