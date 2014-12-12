@@ -189,8 +189,11 @@ public class JettyFuseki {
       resourceBase = tryResourceBase(resourceBase3, resourceBase) ;
       resourceBase = tryResourceBase(resourceBase4, resourceBase) ;
 
-      if ( resourceBase == null )
-          Fuseki.serverLog.warn("Can't find resourceBase (tried "+resourceBase1+", "+resourceBase2+" and "+resourceBase3+")") ;
+      if ( resourceBase == null ) {
+          Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+", "+resourceBase2+" and "+resourceBase3+")") ;
+          Fuseki.serverLog.error("Failed to start") ;
+          throw new FusekiException("Failed to start") ;
+      }
 
       webapp.setDescriptor(resourceBase+"/WEB-INF/web.xml");
       webapp.setResourceBase(resourceBase);

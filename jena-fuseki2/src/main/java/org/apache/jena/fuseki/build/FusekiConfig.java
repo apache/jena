@@ -35,7 +35,6 @@ import org.apache.jena.fuseki.server.DatasetStatus ;
 import org.apache.jena.fuseki.server.FusekiVocab ;
 import org.apache.jena.fuseki.server.SystemState ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RiotException ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.assembler.JA ;

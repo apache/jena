@@ -104,6 +104,7 @@ define(
 
       onDatasetRemoveSuccess: function( data, dsId ) {
         console.log( "deleted dataset" );
+	window.location.reload() ;
       },
 
       /** Removing the dataset did not work: notify the user */

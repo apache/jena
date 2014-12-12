@@ -306,9 +306,9 @@ public class ActionDatasets extends ActionContainerItem {
             
             // Name to graph
             // Statically configured databases aren't in the system database.
-            Quad q = getOne(SystemState.getDatasetGraph(), null, null, pServiceName.asNode(), null) ;
-            if ( q == null )
-                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
+            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), null) ;
+//            if ( q == null )
+//                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
             if ( q != null ) {
                 Node gn = q.getGraph() ;
                 //action.log.info("SHUTDOWN NEEDED"); // To ensure it goes away?
