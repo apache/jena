@@ -300,16 +300,20 @@ public class ActionDatasets extends ActionContainerItem {
             // Redo check inside transaction.
             if ( ref == null )
                 ServletOps.errorNotFound("No such dataset registered: "+name);
-                
+
+            // Make it invisible to the outside.
+            DataAccessPointRegistry.get().remove(name) ;
+            
             // Name to graph
+            // Statically configured databases aren't in the system database.
             Quad q = getOne(SystemState.getDatasetGraph(), null, null, pServiceName.asNode(), null) ;
             if ( q == null )
                 ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
-            Node gn = q.getGraph() ;
-
-            action.log.info("SHUTDOWN NEEDED");
-            DataAccessPointRegistry.get().remove(name) ;
-            systemDSG.deleteAny(gn, null, null, null) ;
+            if ( q != null ) {
+                Node gn = q.getGraph() ;
+                //action.log.info("SHUTDOWN NEEDED"); // To ensure it goes away?
+                systemDSG.deleteAny(gn, null, null, null) ;
+            }
             systemDSG.commit() ;
             committed = true ;
             ServletOps.success(action) ;
