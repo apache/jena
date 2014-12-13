@@ -24,19 +24,18 @@
 
 package com.hp.hpl.jena.rdfxml.xmlinput.impl;
 
-import org.xml.sax.SAXParseException;
-import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRI ;
+import org.xml.sax.SAXParseException ;
 
 import com.hp.hpl.jena.rdfxml.xmlinput.ARPErrorNumbers ;
-import com.hp.hpl.jena.rdfxml.xmlinput.lang.LanguageTagCodes ;
 
 /**
  * 
  * Both the baseURI and the lang may be tainted with errors. They should not be
  * accessed without providing a taint object to propogate such tainting.
  */
-public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
-        LanguageTagCodes {
+public class XMLContext extends AbsXMLContext implements ARPErrorNumbers
+{
     // final private String base;
 
     /**

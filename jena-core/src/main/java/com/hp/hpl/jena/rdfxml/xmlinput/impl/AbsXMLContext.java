@@ -18,21 +18,18 @@
 
 package com.hp.hpl.jena.rdfxml.xmlinput.impl;
 
-import java.util.Iterator;
+import java.util.Iterator ;
+import java.util.regex.Pattern ;
 
-import org.xml.sax.SAXParseException;
-import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIComponents;
-import org.apache.jena.iri.Violation;
-import org.apache.jena.iri.ViolationCodes;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIComponents ;
+import org.apache.jena.iri.Violation ;
+import org.apache.jena.iri.ViolationCodes ;
+import org.xml.sax.SAXParseException ;
 
 import com.hp.hpl.jena.rdfxml.xmlinput.ARPErrorNumbers ;
-import com.hp.hpl.jena.rdfxml.xmlinput.lang.LanguageTag ;
-import com.hp.hpl.jena.rdfxml.xmlinput.lang.LanguageTagCodes ;
-import com.hp.hpl.jena.rdfxml.xmlinput.lang.LanguageTagSyntaxException ;
 
-public abstract class AbsXMLContext implements ARPErrorNumbers,
-        LanguageTagCodes {
+public abstract class AbsXMLContext implements ARPErrorNumbers {
 
     // protected static String truncateXMLBase(String rslt) {
     // if (rslt == null)
@@ -166,12 +163,10 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
                         && irie.getComponent() == IRIComponents.SCHEME) {
                     if (!forErrors.allowRelativeURIs())
                         forErrors.warning(taintMe, WARN_RELATIVE_URI,
-                                "Relative URIs are not permitted in RDF: specifically <"
-                                        + rslt.toString() + ">");
+                                "Relative URIs are not permitted in RDF: specifically <"+rslt.toString()+">");
 
                 } else
-                    forErrors.warning(taintMe, WARN_MALFORMED_URI, "Bad URI: "
-                            + msg);
+                    forErrors.warning(taintMe, WARN_MALFORMED_URI, "Bad URI: " + msg);
             }
         }
     }
@@ -181,41 +176,19 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
         return resolveAsURI(forErrors, taintMe, u, true).toString();
     }
 
-    private void checkXMLLang(XMLHandler arp, Taint taintMe, String newLang)
-            throws SAXParseException {
+    private static Pattern langPattern = Pattern.compile("[a-zA-Z]+('-' [a-zA-Z0-9]+)*") ;
+        
+    /* This is just a light syntactic check of the language tag.
+     * See JENA-827.
+     * Jena, when parsing RDF/XML, used to check the syntax and against (an encoded copy of) the IANA registry.
+     * Elsewhere, Turtle et al and SPARQL, Jena has always only performed this syntax check.
+     */
+    private void checkXMLLang(XMLHandler arp, Taint taintMe, String newLang) throws SAXParseException {
         if (newLang.equals(""))
             return;
-        try {
-            LanguageTag tag = new LanguageTag(newLang);
-            int tagType = tag.tagType();
-            if (tagType == LT_ILLEGAL) {
-                arp.warning(taintMe, WARN_BAD_XMLLANG, tag.errorMessage());
-            }
-            if ((tagType & LT_UNDETERMINED) == LT_UNDETERMINED) {
-                arp
-                        .warning(taintMe, WARN_BAD_XMLLANG,
-                                "Unnecessary use of language tag \"und\" prohibited by RFC3066");
-            }
-            if ((tagType & LT_IANA_DEPRECATED) == LT_IANA_DEPRECATED) {
-                arp.warning(taintMe, WARN_DEPRECATED_XMLLANG,
-                        "Use of deprecated language tag \"" + newLang + "\".");
-            }
-            if ((tagType & LT_PRIVATE_USE) == LT_PRIVATE_USE) {
-                arp.warning(taintMe, IGN_PRIVATE_XMLLANG,
-                        "Use of (IANA) private language tag \"" + newLang
-                                + "\".");
-            } else if ((tagType & LT_LOCAL_USE) == LT_LOCAL_USE) {
-                arp.warning(taintMe, IGN_PRIVATE_XMLLANG,
-                        "Use of (ISO639-2) local use language tag \"" + newLang
-                                + "\".");
-            } else if ((tagType & LT_EXTRA) == LT_EXTRA) {
-                arp.warning(taintMe, IGN_PRIVATE_XMLLANG,
-                        "Use of additional private subtags on language \""
-                                + newLang + "\".");
-            }
-        } catch (LanguageTagSyntaxException e) {
-            arp.warning(taintMe, WARN_MALFORMED_XMLLANG, e.getMessage());
-        }
+        if (newLang.equalsIgnoreCase("und") )
+            arp.warning(taintMe, WARN_BAD_XMLLANG, "Bad language tag: "+newLang+" (not allowed)") ;
+        if ( ! langPattern.matcher(newLang).matches() ) 
+            arp.warning(taintMe, WARN_BAD_XMLLANG, "Bad language tag: "+newLang) ;
     }
-
 }
