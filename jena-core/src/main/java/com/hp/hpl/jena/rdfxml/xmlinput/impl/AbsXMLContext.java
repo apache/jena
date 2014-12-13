@@ -176,7 +176,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
         return resolveAsURI(forErrors, taintMe, u, true).toString();
     }
 
-    private static Pattern langPattern = Pattern.compile("[a-zA-Z]+('-' [a-zA-Z0-9]+)*") ;
+    private static Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*") ;
         
     /* This is just a light syntactic check of the language tag.
      * See JENA-827.
