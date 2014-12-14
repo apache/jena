@@ -44,6 +44,9 @@ import com.hp.hpl.jena.util.FileUtils ;
 public class ShiroEnvironmentLoader extends EnvironmentLoader implements ServletContextListener {
     private static Logger confLog = Fuseki.configLog ;
     private ServletContext servletContext ; 
+    
+    public ShiroEnvironmentLoader() {}
+    
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         FusekiServer.init() ; 
@@ -56,7 +59,6 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             // Exit?
             throw ex ;
         }
-        
     }
 
     @Override
