@@ -35,6 +35,7 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
+import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.build.Builder ;
 import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.apache.jena.fuseki.build.Template ;
@@ -126,13 +127,13 @@ public class FusekiServer
         
         if ( FUSEKI_HOME == null ) {
             // Make absolute
-            String x1 = getenv("FUSEKI_HOME") ;
+            String x1 = FusekiLib.getenv("FUSEKI_HOME") ;
             if ( x1 != null )
                 FUSEKI_HOME = Paths.get(x1) ;
         }
             
         if ( FUSEKI_BASE == null ) {
-            String x2 = getenv("FUSEKI_BASE") ;
+            String x2 = FusekiLib.getenv("FUSEKI_BASE") ;
             if ( x2 != null )
                 FUSEKI_BASE = Paths.get(x2) ;
             else {
@@ -178,7 +179,8 @@ public class FusekiServer
         dirLogs             = writeableDirectory(FUSEKI_BASE, logsNameBase) ;
         dirSystemDatabase   = writeableDirectory(FUSEKI_BASE, systemDatabaseNameBase) ;
         dirFileArea         = writeableDirectory(FUSEKI_BASE, systemFileAreaBase) ;
-        
+        //Possible intercept poiint
+
         // ---- Initialize with files.
         
         if ( Files.isRegularFile(FUSEKI_BASE) ) 
@@ -194,12 +196,6 @@ public class FusekiServer
         serverInitialized = true ;
     }
     
-    /** Get environment variable value. */
-    private static String getenv(String name) {
-        //Possible intercept poiint
-        return System.getenv(name) ;
-    }
-
     private static boolean emptyDir(Path dir) {
         return dir.toFile().list().length <= 2 ;
     }

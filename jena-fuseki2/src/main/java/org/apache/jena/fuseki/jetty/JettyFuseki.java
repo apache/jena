@@ -26,6 +26,7 @@ import java.io.FileInputStream ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
@@ -179,9 +180,11 @@ public class JettyFuseki {
       
       String resourceBase3 = null ;
       String resourceBase4 = null ;
-      if ( System.getenv("FUSEKI_HOME") != null ) {
-          resourceBase3 = System.getenv("FUSEKI_HOME")+"/"+resourceBase1 ;
-          resourceBase3 = System.getenv("FUSEKI_HOME")+"/"+resourceBase2 ;
+      // FusekiServer.FUSEKI_HOME is not set at this point (it is set in webapp initialization)
+      String HOME = FusekiLib.getenv("FUSEKI_HOME") ;
+      if ( HOME != null ) {
+          resourceBase3 = HOME+"/"+resourceBase1 ;
+          resourceBase4 = HOME+"/"+resourceBase2 ;
       }
       
       String resourceBase = tryResourceBase(resourceBase1, null) ;
@@ -190,7 +193,10 @@ public class JettyFuseki {
       resourceBase = tryResourceBase(resourceBase4, resourceBase) ;
 
       if ( resourceBase == null ) {
-          Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+", "+resourceBase2+" and "+resourceBase3+")") ;
+          if ( resourceBase3 == null )
+              Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+" and "+resourceBase2+")") ;
+          else
+              Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+", "+resourceBase2+", "+resourceBase3+" and "+resourceBase4+")") ;
           Fuseki.serverLog.error("Failed to start") ;
           throw new FusekiException("Failed to start") ;
       }
