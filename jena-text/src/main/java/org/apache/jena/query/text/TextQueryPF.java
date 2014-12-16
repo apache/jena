@@ -22,7 +22,6 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -130,8 +129,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         }
 
         //last chance case
-        Object executor = c.get(ARQConstants.sysOpExecutorFactory);
-        TextIndex index = TextDatasetFactory.getIndex(executor);
+        TextIndex index = TextDatasetFactory.getCtxtIndex();
         if (index != null)
             return index;
 

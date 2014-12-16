@@ -121,14 +121,14 @@ public class TextDatasetFactory
     //Store of indexes for retrieving index in query execution
     //Because DatasetGraph.context is set to null in QueryExecution.make(Query,Dataset)
     //So wee must keep reference
-    private static Hashtable<Object, TextIndex> indexTable = new Hashtable<>();
+    private static Hashtable<String, TextIndex> indexTable = new Hashtable<>();
 
-    static TextIndex getIndex(Object obj) {
-        return indexTable.remove(obj);
+    static TextIndex getCtxtIndex() {
+        return indexTable.remove(Thread.currentThread().toString());
     }
 
-    public static void setIndex(Object obj, TextIndex index) {
-        indexTable.put(obj, index);
+    public static void setCtxtIndex(TextIndex index) {
+        indexTable.put(Thread.currentThread().toString(), index);
     }
 }
 
