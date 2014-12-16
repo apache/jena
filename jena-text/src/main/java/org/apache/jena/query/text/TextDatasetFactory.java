@@ -117,5 +117,18 @@ public class TextDatasetFactory
         TextIndex index = createSolrIndex(server, entMap) ;
         return create(base, index) ; 
     }
+
+    //Store of indexes for retrieving index in query execution
+    //Because DatasetGraph.context is set to null in QueryExecution.make(Query,Dataset)
+    //So wee must keep reference
+    private static Hashtable<Object, TextIndex> indexTable = new Hashtable<>();
+
+    static TextIndex getIndex(Object obj) {
+        return indexTable.remove(obj);
+    }
+
+    public static void setIndex(Object obj, TextIndex index) {
+        indexTable.put(obj, index);
+    }
 }
 

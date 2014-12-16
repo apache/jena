@@ -50,6 +50,10 @@ public class TextIndexLuceneMultiLingual extends TextIndexLucene {
         return indexes.values();
     }
 
+    boolean containsLanguage(String lang) {
+        return indexes.containsKey(lang);
+    }
+
     TextIndex getIndex(String lang) {
         if (lang == null)
             return indexes.get("default");

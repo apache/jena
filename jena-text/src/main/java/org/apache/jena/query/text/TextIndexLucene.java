@@ -135,8 +135,7 @@ public class TextIndexLucene implements TextIndex {
         try {
             if (indexWriter != null) {
                 indexWriter.commit();
-                indexWriter.close();
-                indexWriter = null;
+                close();
             }
         }
         catch (IOException e) {
@@ -147,8 +146,10 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public void abortIndexing() {
         try {
-            if (indexWriter != null)
-                indexWriter.rollback() ;
+            if (indexWriter != null) {
+                indexWriter.rollback();
+                close();
+            }
         }
         catch (IOException ex) {
             exception(ex) ;
@@ -160,6 +161,7 @@ public class TextIndexLucene implements TextIndex {
         if ( indexWriter != null )
             try {
                 indexWriter.close() ;
+                indexWriter = null;
             }
             catch (IOException ex) {
                 exception(ex) ;

@@ -18,39 +18,33 @@
 
 package org.apache.jena.query.text ;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List ;
-
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.core.*;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.lucene.queryparser.classic.QueryParserBase ;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice;
+import com.hp.hpl.jena.sparql.mgt.Explain;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.IterLib;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.lucene.queryparser.classic.QueryParserBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.QueryBuildException ;
-import com.hp.hpl.jena.sparql.core.* ;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterExtendByVar ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice ;
-import com.hp.hpl.jena.sparql.mgt.Explain ;
-import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionBase ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.IterLib ;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /** property function that accesses a Solr server */
 public class TextQueryPF extends PropertyFunctionBase {
@@ -98,7 +92,10 @@ public class TextQueryPF extends PropertyFunctionBase {
         // note: default index is the unlocalized index (if lang arg is not present).
         if (server instanceof TextIndexLuceneMultiLingual) {
             String lang = getArg("lang", argObject);
-            server = ((TextIndexLuceneMultiLingual)server).getIndex(lang);
+            TextIndexLuceneMultiLingual iml = (TextIndexLuceneMultiLingual)server;
+            if (!iml.containsLanguage(lang))
+                lang = null;
+            server = iml.getIndex(lang);
         }
     }
 
@@ -119,7 +116,6 @@ public class TextQueryPF extends PropertyFunctionBase {
         Context c = dsg.getContext() ; 
         
         Object obj = dsg.getContext().get(TextQuery.textIndex) ;
-
         if (obj != null) {
             try {
                 return (TextIndex)obj ;
@@ -132,6 +128,13 @@ public class TextQueryPF extends PropertyFunctionBase {
             DatasetGraphText x = (DatasetGraphText)dsg ;
             return x.getTextIndex() ;
         }
+
+        //last chance case
+        Object executor = c.get(ARQConstants.sysOpExecutorFactory);
+        TextIndex index = TextDatasetFactory.getIndex(executor);
+        if (index != null)
+            return index;
+
         Log.warn(TextQueryPF.class, "Failed to find the text index : tried context and as a text-enabled dataset") ;
         return null ;
     }
