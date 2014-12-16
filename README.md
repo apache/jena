@@ -105,4 +105,4 @@ WHERE {
     ?uri rdfs:label ?label
 }
 ```
-
+If language mentionned in 'lang:lg' param doesn't exist as index, default non-language index is used. 
