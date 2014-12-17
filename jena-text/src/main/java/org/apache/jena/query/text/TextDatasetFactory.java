@@ -124,11 +124,15 @@ public class TextDatasetFactory
     private static Hashtable<String, TextIndex> indexTable = new Hashtable<>();
 
     static TextIndex getCtxtIndex() {
-        return indexTable.remove(Thread.currentThread().toString());
+        return indexTable.get(Thread.currentThread().toString());
     }
 
     public static void setCtxtIndex(TextIndex index) {
         indexTable.put(Thread.currentThread().toString(), index);
+    }
+
+    public static void clearCtxtIndex() {
+        indexTable.remove(Thread.currentThread().toString());
     }
 }
 
