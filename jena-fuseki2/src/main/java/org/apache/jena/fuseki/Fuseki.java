@@ -208,6 +208,7 @@ public class Fuseki {
         // Don't set TDB batch commits.
         // This can be slower, but it less memory hungry and more predictable.
         TransactionManager.QueueBatchSize = 0 ;
+        FusekiLogging.setLogging() ;
     }
     
     /**

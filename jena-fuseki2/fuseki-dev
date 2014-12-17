@@ -68,7 +68,7 @@ do
     fi
 done
 
-FUSEKI_LOG=${FUSEKI_LOG:-}
+FUSEKI_LOG="" #${FUSEKI_LOG:-}
 JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 
 exec java -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.FusekiCmd "$@"

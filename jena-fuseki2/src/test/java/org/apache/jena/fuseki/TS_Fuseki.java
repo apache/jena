@@ -53,6 +53,8 @@ public class TS_Fuseki extends ServerTest
         LogCtl.logLevel(Fuseki.configLogName,   WARN1, WARN2);
         LogCtl.logLevel(Fuseki.adminLogName,    WARN1, WARN2);
         LogCtl.logLevel(Fuseki.builderLogName,  WARN1, WARN2);
-        LogCtl.logLevel(Fuseki.actionLogName,  WARN1, WARN2);
+        LogCtl.logLevel(Fuseki.actionLogName,   WARN1, WARN2);
+        LogCtl.logLevel(Fuseki.requestLogName,  WARN1, WARN2);
+        LogCtl.logLevel(Fuseki.servletRequestLogName,   WARN1, WARN2);
     }
 }
