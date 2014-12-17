@@ -77,7 +77,7 @@ public class TextDatasetFactory
         return index ;
     }
 
-    public static TextIndex createLuceneIndexMultiLingual(File directory, EntityDefinition entMap, HashSet languages)
+    public static TextIndex createLuceneIndexMultiLingual(File directory, EntityDefinition entMap, String[] languages)
     {
         TextIndex index = new TextIndexLuceneMultiLingual(directory, entMap, languages) ;
         return index ;

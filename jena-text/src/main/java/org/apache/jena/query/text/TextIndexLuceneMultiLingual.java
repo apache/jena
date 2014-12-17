@@ -20,7 +20,7 @@ public class TextIndexLuceneMultiLingual extends TextIndexLucene {
 
     Hashtable<String, TextIndex> indexes;
 
-    public TextIndexLuceneMultiLingual(File directory, EntityDefinition def, HashSet languages) {
+    public TextIndexLuceneMultiLingual(File directory, EntityDefinition def, String[] languages) {
         super(new RAMDirectory(), def);
 
         indexes = new Hashtable<String, TextIndex>();
@@ -33,8 +33,7 @@ public class TextIndexLuceneMultiLingual extends TextIndexLucene {
             indexes.put("default", index);
 
             //language indexes
-            for (Iterator it = languages.iterator(); it.hasNext();) {
-                String lang = (String)it.next();
+            for (String lang : languages) {
                 indexDir = new File(directory, lang );
                 dir = FSDirectory.open(indexDir);
                 index = new TextIndexLucene(dir, def, lang);
