@@ -121,79 +121,84 @@ public class FusekiServer
         if ( initialized )
             return ;
         initialized = true ;
-        Fuseki.init() ;
-        
-        // ----  Set and check FUSEKI_HOME and FUSEKI_BASE
-        
-        if ( FUSEKI_HOME == null ) {
-            // Make absolute
-            String x1 = FusekiLib.getenv("FUSEKI_HOME") ;
-            if ( x1 != null )
-                FUSEKI_HOME = Paths.get(x1) ;
-        }
-            
-        if ( FUSEKI_BASE == null ) {
-            String x2 = FusekiLib.getenv("FUSEKI_BASE") ;
-            if ( x2 != null )
-                FUSEKI_BASE = Paths.get(x2) ;
-            else {
-                if ( FUSEKI_HOME != null )
-                    FUSEKI_BASE = FUSEKI_HOME.resolve(runArea) ;
-                else
-                    // Neither FUSEKI_HOME nor FUSEKI_BASE set.
-                    FUSEKI_BASE = Paths.get(DFT_FUSEKI_BASE) ;
+        try {
+            Fuseki.init() ;
+
+            // ----  Set and check FUSEKI_HOME and FUSEKI_BASE
+
+            if ( FUSEKI_HOME == null ) {
+                // Make absolute
+                String x1 = FusekiLib.getenv("FUSEKI_HOME") ;
+                if ( x1 != null )
+                    FUSEKI_HOME = Paths.get(x1) ;
             }
-        }
-        
-        if ( FUSEKI_HOME != null )
-            FUSEKI_HOME = FUSEKI_HOME.toAbsolutePath() ;
-        
-        FUSEKI_BASE = FUSEKI_BASE.toAbsolutePath() ;
-        
-        Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "unset" : FUSEKI_HOME.toString())) ;
-        Fuseki.configLog.info("FUSEKI_BASE="+FUSEKI_BASE.toString());
 
-        // If FUSEKI_HOME exists, it may be FUSEKI_BASE.
-        
-        if ( FUSEKI_HOME != null ) {
-            if ( ! Files.isDirectory(FUSEKI_HOME) )
-                throw new FusekiConfigException("FUSEKI_HOME is not a directory: "+FUSEKI_HOME) ;
-            if ( ! Files.isReadable(FUSEKI_HOME) )
-                throw new FusekiConfigException("FUSEKI_HOME is not readable: "+FUSEKI_HOME) ;
-        }
-            
-        if ( Files.exists(FUSEKI_BASE) ) {
-            if ( ! Files.isDirectory(FUSEKI_BASE) )
-                throw new FusekiConfigException("FUSEKI_BASE is not a directory: "+FUSEKI_BASE) ;
-            if ( ! Files.isWritable(FUSEKI_BASE) )
-                throw new FusekiConfigException("FUSEKI_BASE is not writable: "+FUSEKI_BASE) ;
-        } else {
-            ensureDir(FUSEKI_BASE);
-        }
+            if ( FUSEKI_BASE == null ) {
+                String x2 = FusekiLib.getenv("FUSEKI_BASE") ;
+                if ( x2 != null )
+                    FUSEKI_BASE = Paths.get(x2) ;
+                else {
+                    if ( FUSEKI_HOME != null )
+                        FUSEKI_BASE = FUSEKI_HOME.resolve(runArea) ;
+                    else
+                        // Neither FUSEKI_HOME nor FUSEKI_BASE set.
+                        FUSEKI_BASE = Paths.get(DFT_FUSEKI_BASE) ;
+                }
+            }
 
-        // Ensure FUSEKI_BASE has the assumed directories.
-        dirTemplates        = writeableDirectory(FUSEKI_BASE, templatesNameBase) ;
-        dirDatabases        = writeableDirectory(FUSEKI_BASE, databasesLocationBase) ;
-        dirBackups          = writeableDirectory(FUSEKI_BASE, backupDirNameBase) ;
-        dirConfiguration    = writeableDirectory(FUSEKI_BASE, configDirNameBase) ;
-        dirLogs             = writeableDirectory(FUSEKI_BASE, logsNameBase) ;
-        dirSystemDatabase   = writeableDirectory(FUSEKI_BASE, systemDatabaseNameBase) ;
-        dirFileArea         = writeableDirectory(FUSEKI_BASE, systemFileAreaBase) ;
-        //Possible intercept poiint
+            if ( FUSEKI_HOME != null )
+                FUSEKI_HOME = FUSEKI_HOME.toAbsolutePath() ;
 
-        // ---- Initialize with files.
-        
-        if ( Files.isRegularFile(FUSEKI_BASE) ) 
-            throw new FusekiConfigException("FUSEKI_BASE exists but is a file") ;
-        
-        // Copy missing files into FUSEKI_BASE
-        copyFileIfMissing(null, DFT_SHIRO_INI, FUSEKI_BASE) ;
-        copyFileIfMissing(null, DFT_CONFIG, FUSEKI_BASE) ;
-        for ( String n : Template.templateNames ) {
-            copyFileIfMissing(null, n, FUSEKI_BASE) ;
+            FUSEKI_BASE = FUSEKI_BASE.toAbsolutePath() ;
+
+            Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "unset" : FUSEKI_HOME.toString())) ;
+            Fuseki.configLog.info("FUSEKI_BASE="+FUSEKI_BASE.toString());
+
+            // If FUSEKI_HOME exists, it may be FUSEKI_BASE.
+
+            if ( FUSEKI_HOME != null ) {
+                if ( ! Files.isDirectory(FUSEKI_HOME) )
+                    throw new FusekiConfigException("FUSEKI_HOME is not a directory: "+FUSEKI_HOME) ;
+                if ( ! Files.isReadable(FUSEKI_HOME) )
+                    throw new FusekiConfigException("FUSEKI_HOME is not readable: "+FUSEKI_HOME) ;
+            }
+
+            if ( Files.exists(FUSEKI_BASE) ) {
+                if ( ! Files.isDirectory(FUSEKI_BASE) )
+                    throw new FusekiConfigException("FUSEKI_BASE is not a directory: "+FUSEKI_BASE) ;
+                if ( ! Files.isWritable(FUSEKI_BASE) )
+                    throw new FusekiConfigException("FUSEKI_BASE is not writable: "+FUSEKI_BASE) ;
+            } else {
+                ensureDir(FUSEKI_BASE);
+            }
+
+            // Ensure FUSEKI_BASE has the assumed directories.
+            dirTemplates        = writeableDirectory(FUSEKI_BASE, templatesNameBase) ;
+            dirDatabases        = writeableDirectory(FUSEKI_BASE, databasesLocationBase) ;
+            dirBackups          = writeableDirectory(FUSEKI_BASE, backupDirNameBase) ;
+            dirConfiguration    = writeableDirectory(FUSEKI_BASE, configDirNameBase) ;
+            dirLogs             = writeableDirectory(FUSEKI_BASE, logsNameBase) ;
+            dirSystemDatabase   = writeableDirectory(FUSEKI_BASE, systemDatabaseNameBase) ;
+            dirFileArea         = writeableDirectory(FUSEKI_BASE, systemFileAreaBase) ;
+            //Possible intercept point
+
+            // ---- Initialize with files.
+
+            if ( Files.isRegularFile(FUSEKI_BASE) ) 
+                throw new FusekiConfigException("FUSEKI_BASE exists but is a file") ;
+
+            // Copy missing files into FUSEKI_BASE
+            copyFileIfMissing(null, DFT_SHIRO_INI, FUSEKI_BASE) ;
+            copyFileIfMissing(null, DFT_CONFIG, FUSEKI_BASE) ;
+            for ( String n : Template.templateNames ) {
+                copyFileIfMissing(null, n, FUSEKI_BASE) ;
+            }
+
+            serverInitialized = true ;
+        } catch (RuntimeException ex) {
+            Fuseki.serverLog.error("Exception in server initialization", ex) ;
+            throw ex ;
         }
-        
-        serverInitialized = true ;
     }
     
     private static boolean emptyDir(Path dir) {
