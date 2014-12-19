@@ -23,7 +23,7 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestHttpOp ;
-import org.apache.jena.fuseki.server.FusekiEnvInit ;
+import org.apache.jena.fuseki.server.FusekiEnv ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
@@ -50,11 +50,11 @@ public class TS_Fuseki extends ServerTest
     public static final String FusekiTestHome = "target/FusekiHome" ;
     public static final String FusekiTestBase = FusekiTestHome+"/run" ;
     
-    @BeforeClass public static void setQuietLogging() {
+    @BeforeClass public static void setupForFusekiServer() {
         FileOps.ensureDir(FusekiTestHome);
         FileOps.clearDirectory(FusekiTestHome);
         System.setProperty("FUSEKI_HOME", FusekiTestHome) ;
-        FusekiEnvInit.setEnvironment() ;
+        FusekiEnv.setEnvironment() ;
         FusekiLogging.setLogging();
         
         org.apache.log4j.Level WARN1 = org.apache.log4j.Level.WARN ; 

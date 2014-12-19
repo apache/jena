@@ -27,7 +27,7 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
-import org.apache.jena.fuseki.server.FusekiServer ;
+import org.apache.jena.fuseki.server.FusekiEnv ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.* ;
@@ -171,7 +171,7 @@ public class JettyFuseki {
     }
 
     public static WebAppContext createWebApp(String contextPath) {
-        FusekiServer.init(); 
+        FusekiEnv.setEnvironment();
         WebAppContext webapp = new WebAppContext();
         webapp.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
 
@@ -181,8 +181,8 @@ public class JettyFuseki {
 
         String resourceBase3 = null ;
         String resourceBase4 = null ;
-        if ( FusekiServer.FUSEKI_HOME != null ) {
-            String HOME = FusekiServer.FUSEKI_HOME.toString() ;
+        if ( FusekiEnv.FUSEKI_HOME != null ) {
+            String HOME = FusekiEnv.FUSEKI_HOME.toString() ;
             resourceBase3 = HOME+"/"+resourceBase1 ;
             resourceBase4 = HOME+"/"+resourceBase2 ;
         }

@@ -32,7 +32,7 @@ public class FusekiServerEnvironmentInit implements ServletContextListener {
     
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        FusekiEnvInit.setEnvironment();
+        FusekiEnv.setEnvironment();
         FusekiLogging.setLogging();
     }
 

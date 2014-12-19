@@ -28,15 +28,15 @@ import java.nio.file.Paths ;
  * 
  * @See FusekiServer 
  */ 
-public class FusekiEnvInit {
+public class FusekiEnv {
     /** Root of the Fuseki installation for fixed files. 
      *  This may be null (e.g. running inside a web application container) */ 
-    public static Path ENV_FUSEKI_HOME = null ;
+    public static Path FUSEKI_HOME = null ;
     
     /** Root of the varying files in this deployment. Often $FUSEKI_HOME/run.
      * This is not null - it may be /etc/fuseki, which must be writable.
      */ 
-    public static Path ENV_FUSEKI_BASE = null ;
+    public static Path FUSEKI_BASE = null ;
     
     static final boolean isWindows = determineIfWindows() ;
     
@@ -65,34 +65,34 @@ public class FusekiEnvInit {
             return ;
         initialized = true ;
         logInit("FusekiInitEnv") ;
-        logInit("Start: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s", ENV_FUSEKI_HOME, ENV_FUSEKI_BASE) ;
+        logInit("Start: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s", FUSEKI_HOME, FUSEKI_BASE) ;
         
-        if ( ENV_FUSEKI_HOME == null ) {
+        if ( FUSEKI_HOME == null ) {
             // Make absolute
             String x1 = getenv("FUSEKI_HOME") ;
             if ( x1 != null )
-                ENV_FUSEKI_HOME = Paths.get(x1) ;
+                FUSEKI_HOME = Paths.get(x1) ;
         }
 
-        if ( ENV_FUSEKI_BASE == null ) {
+        if ( FUSEKI_BASE == null ) {
             String x2 = getenv("FUSEKI_BASE") ;
             if ( x2 != null )
-                ENV_FUSEKI_BASE = Paths.get(x2) ;
+                FUSEKI_BASE = Paths.get(x2) ;
             else {
-                if ( ENV_FUSEKI_HOME != null )
-                    ENV_FUSEKI_BASE = ENV_FUSEKI_HOME.resolve(ENV_runArea) ;
+                if ( FUSEKI_HOME != null )
+                    FUSEKI_BASE = FUSEKI_HOME.resolve(ENV_runArea) ;
                 else
                     // Neither FUSEKI_HOME nor FUSEKI_BASE set.
-                    ENV_FUSEKI_BASE = Paths.get(DFT_FUSEKI_BASE) ;
+                    FUSEKI_BASE = Paths.get(DFT_FUSEKI_BASE) ;
             }
         }
 
-        if ( ENV_FUSEKI_HOME != null )
-            ENV_FUSEKI_HOME = ENV_FUSEKI_HOME.toAbsolutePath() ;
+        if ( FUSEKI_HOME != null )
+            FUSEKI_HOME = FUSEKI_HOME.toAbsolutePath() ;
 
-        ENV_FUSEKI_BASE = ENV_FUSEKI_BASE.toAbsolutePath() ;
+        FUSEKI_BASE = FUSEKI_BASE.toAbsolutePath() ;
 
-        logInit("Finish: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s", ENV_FUSEKI_HOME, ENV_FUSEKI_BASE) ;
+        logInit("Finish: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s", FUSEKI_HOME, FUSEKI_BASE) ;
     }
     
     private static void logInit(String fmt, Object ... args) {

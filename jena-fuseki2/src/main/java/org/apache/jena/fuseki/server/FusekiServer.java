@@ -59,15 +59,15 @@ public class FusekiServer
     
     /** Root of the Fuseki installation for fixed files. 
      * This may be null (e.g. running inside a web application container) */ 
-    public static Path FUSEKI_HOME = null ;
+    //public static Path FUSEKI_HOME = null ;
     
     /** Root of the varying files in this deployment. Often $FUSEKI_HOME/run.
      * This is not null - it may be /etc/fuseki, which must be writable.
      */ 
-    public static Path FUSEKI_BASE = null ;
+    //public static Path FUSEKI_BASE = null ;
     
     // Relative names of directories in the FUSEKI_BASE area.
-    public static final String     runArea                  = FusekiEnvInit.ENV_runArea ;
+    public static final String     runArea                  = FusekiEnv.ENV_runArea ;
     public static final String     databasesLocationBase    = "databases" ;
     // Place to put Lucene text and spatial indexes.
     //private static final String        databaseIndexesDir       = "indexes" ;
@@ -118,9 +118,9 @@ public class FusekiServer
             return ;
         initialized = true ;
         try {
-            FusekiEnvInit.setEnvironment() ;
-            FUSEKI_HOME = FusekiEnvInit.ENV_FUSEKI_HOME ;
-            FUSEKI_BASE = FusekiEnvInit.ENV_FUSEKI_BASE ;
+            FusekiEnv.setEnvironment() ;
+            Path FUSEKI_HOME = FusekiEnv.FUSEKI_HOME ;
+            Path FUSEKI_BASE = FusekiEnv.FUSEKI_BASE ;
             
             Fuseki.init() ;
             Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "unset" : FUSEKI_HOME.toString())) ;
@@ -319,9 +319,9 @@ public class FusekiServer
         }
         
         if ( ! params.containsKey("FUSEKI_BASE") )
-            params.put("FUSEKI_BASE", pathStringOrElse(FUSEKI_BASE, "unset")) ;
+            params.put("FUSEKI_BASE", pathStringOrElse(FusekiEnv.FUSEKI_BASE, "unset")) ;
         if ( ! params.containsKey("FUSEKI_HOME") )
-            params.put("FUSEKI_HOME", pathStringOrElse(FUSEKI_HOME, "unset")) ;
+            params.put("FUSEKI_HOME", pathStringOrElse(FusekiEnv.FUSEKI_HOME, "unset")) ;
     }
 
     private static String pathStringOrElse(Path path, String dft) {

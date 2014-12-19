@@ -189,7 +189,6 @@ public class Fuseki {
         return startDateTime ;
     }
 
-
     /**
      * Initialize an instance of the Fuseki server stack.
      */
@@ -197,6 +196,7 @@ public class Fuseki {
         if ( initialized )
             return ;
         initialized = true ;
+        // FusekiEnv.setEnvironment() ;
         FusekiLogging.setLogging() ;
         ARQ.init() ;
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;

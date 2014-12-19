@@ -37,6 +37,7 @@ import org.apache.shiro.web.env.WebEnvironment ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** A place to perform Fuseki-specific initialization of Apache Shiro.
+ *  Runs after listener FusekiServerEnvironmentInit and before FusekiServerListener
  *  This means finding shiro.ini in multiple possible places, based on
  *  different deployment setups.
  */
@@ -90,7 +91,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
     
     /** Look for a Shiro ini file, or return null */
     private static String huntForShiroIni(String[] locations) {
-        FusekiEnvInit.setEnvironment() ;
+        FusekiEnv.setEnvironment() ;
         Fuseki.init();
         for ( String loc : locations ) {
             // If file:, look for that file.
@@ -112,10 +113,10 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             // No scheme .
             Path p = Paths.get(loc) ;
             
-            String fn = resolve(FusekiServer.FUSEKI_BASE, p) ;
+            String fn = resolve(FusekiEnv.FUSEKI_BASE, p) ;
             if ( fn != null )
                 return "file://"+fn ;
-            fn = resolve(FusekiServer.FUSEKI_HOME, p) ;
+            fn = resolve(FusekiEnv.FUSEKI_HOME, p) ;
             if ( fn != null )
                 return "file://"+fn ;
             

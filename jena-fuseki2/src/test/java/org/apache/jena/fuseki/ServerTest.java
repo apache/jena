@@ -100,11 +100,11 @@ public class ServerTest {
     }
 
     protected static void setupServer() {
-        FusekiServer.FUSEKI_HOME = Paths.get(TS_Fuseki.FusekiTestHome).toAbsolutePath() ;
+        FusekiEnv.FUSEKI_HOME = Paths.get(TS_Fuseki.FusekiTestHome).toAbsolutePath() ;
         FileOps.ensureDir("target");
         FileOps.ensureDir(TS_Fuseki.FusekiTestHome);
         FileOps.ensureDir(TS_Fuseki.FusekiTestBase) ;
-        FusekiServer.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
+        FusekiEnv.FUSEKI_BASE = Paths.get(TS_Fuseki.FusekiTestBase).toAbsolutePath() ;
         setupServer(null) ;
     }
     

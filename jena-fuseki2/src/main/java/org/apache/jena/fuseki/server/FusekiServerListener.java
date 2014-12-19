@@ -62,7 +62,7 @@ public class FusekiServerListener implements ServletContextListener {
 
             if ( initialSetup == null ) {
                 initialSetup = new ServerInitialConfig() ;
-                String cfg = FusekiServer.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
+                String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
                 initialSetup.fusekiConfigFile = cfg ;
             }
 

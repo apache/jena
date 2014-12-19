@@ -23,7 +23,7 @@ import java.net.URL ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.fuseki.server.FusekiEnvInit ;
+import org.apache.jena.fuseki.server.FusekiEnv ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.apache.log4j.helpers.Loader ;
@@ -55,7 +55,7 @@ public class FusekiLogging
         if ( loggingInitialized )
             return ;
         loggingInitialized = true ;
-        FusekiEnvInit.setEnvironment() ;
+        FusekiEnv.setEnvironment() ;
         
         logLogging("Fuseki logging") ;
         // No loggers have been created but configuration may have been set up.
@@ -75,8 +75,8 @@ public class FusekiLogging
         String fn1 = "log4j.properties" ;
         String fn2 = null ;
         
-        if ( FusekiEnvInit.ENV_FUSEKI_BASE != null ) 
-            fn2 = FusekiEnvInit.ENV_FUSEKI_BASE.toString()+"/log4j.properties" ;
+        if ( FusekiEnv.FUSEKI_BASE != null ) 
+            fn2 = FusekiEnv.FUSEKI_BASE.toString()+"/log4j.properties" ;
         if ( attempt(fn1) ) return ; 
         if ( attempt(fn2) ) return ;
         
