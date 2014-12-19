@@ -33,7 +33,6 @@ import org.apache.shiro.io.ResourceUtils ;
 import org.apache.shiro.web.env.EnvironmentLoader ;
 import org.apache.shiro.web.env.ResourceBasedWebEnvironment ;
 import org.apache.shiro.web.env.WebEnvironment ;
-import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
@@ -42,7 +41,6 @@ import com.hp.hpl.jena.util.FileUtils ;
  *  different deployment setups.
  */
 public class ShiroEnvironmentLoader extends EnvironmentLoader implements ServletContextListener {
-    private static Logger confLog = Fuseki.configLog ;
     private ServletContext servletContext ; 
     
     public ShiroEnvironmentLoader() {}
@@ -90,12 +88,10 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
     
     private static final String FILE = "file" ;
     
-    //Siro needs a URL, or a resource name.
-    // TODO Log choice.
-    // TODO check file: works.
-    
     /** Look for a Shiro ini file, or return null */
     private static String huntForShiroIni(String[] locations) {
+        FusekiEnvInit.setEnvironment() ;
+        Fuseki.init();
         for ( String loc : locations ) {
             // If file:, look for that file.
             // If a relative name without scheme, look in FUSEKI_BASE, FUSEKI_HOME, webapp. 
@@ -115,6 +111,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             }
             // No scheme .
             Path p = Paths.get(loc) ;
+            
             String fn = resolve(FusekiServer.FUSEKI_BASE, p) ;
             if ( fn != null )
                 return "file://"+fn ;

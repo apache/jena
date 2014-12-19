@@ -23,6 +23,7 @@ import java.net.URL ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
+import org.apache.jena.fuseki.server.FusekiEnvInit ;
 import org.apache.jena.riot.SysRIOT ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.apache.log4j.helpers.Loader ;
@@ -47,13 +48,14 @@ public class FusekiLogging
         "org/apache/jena/fuseki/log4j.properties"
     } ;
     
-    private static final boolean LogLogging = false ;
-    private static boolean loggingInitialized = false ;
+    private static final boolean LogLogging     = false ;
+    private static boolean loggingInitialized   = false ;
     
     public static synchronized void setLogging() {
         if ( loggingInitialized )
             return ;
         loggingInitialized = true ;
+        FusekiEnvInit.setEnvironment() ;
         
         logLogging("Fuseki logging") ;
         // No loggers have been created but configuration may have been set up.
@@ -68,20 +70,16 @@ public class FusekiLogging
             return ;
         }
         logLogging("Fuseki logging - setup") ;
-        // Look for a log4j.properties in the current working directory for easy
-        // customization.
-        try {
-            String fn = "log4j.properties" ;
-            File f = new File(fn) ;
-            if ( f.exists() ) {
-                logLogging("Fuseki logging - found file:log4j.properties") ;
-                PropertyConfigurator.configure(fn) ;
-                System.setProperty("log4j.configuration", "file:" + fn) ;
-                return ;
-            }
-        }
-        catch (Throwable th) {}
-
+        // Look for a log4j.properties in the current working directory
+        // and an existing FUSEKI_BASE for easy customization.
+        String fn1 = "log4j.properties" ;
+        String fn2 = null ;
+        
+        if ( FusekiEnvInit.ENV_FUSEKI_BASE != null ) 
+            fn2 = FusekiEnvInit.ENV_FUSEKI_BASE.toString()+"/log4j.properties" ;
+        if ( attempt(fn1) ) return ; 
+        if ( attempt(fn2) ) return ;
+        
         // Try classpath
         for ( String resourceName : resourcesForLog4jProperties ) {
             // The log4j general initialization is done in a class static
@@ -102,6 +100,20 @@ public class FusekiLogging
         LogCtl.resetLogging(dftLog4j);
         // Stop anything attempting to do it again.
         System.setProperty("log4j.configuration", "set") ;
+    }
+
+    private static boolean attempt(String fn) {
+        try {
+            File f = new File(fn) ;
+            if ( f.exists() ) {
+                logLogging("Fuseki logging - found file:log4j.properties") ;
+                PropertyConfigurator.configure(fn) ;
+                System.setProperty("log4j.configuration", "file:" + fn) ;
+                return true ;
+            }
+        }
+        catch (Throwable th) {}
+        return false ;
     }
 
     private static void logLogging(String fmt, Object ... args) {

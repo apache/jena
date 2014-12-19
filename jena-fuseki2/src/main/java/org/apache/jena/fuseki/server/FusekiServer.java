@@ -18,10 +18,12 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.io.* ;
+import java.io.File ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.StringReader ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
-import java.nio.file.Paths ;
 import java.nio.file.StandardCopyOption ;
 import java.util.ArrayList ;
 import java.util.HashMap ;
@@ -35,7 +37,6 @@ import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.build.Builder ;
 import org.apache.jena.fuseki.build.FusekiConfig ;
 import org.apache.jena.fuseki.build.Template ;
@@ -49,10 +50,13 @@ import arq.cmd.CmdException ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class FusekiServer
 {
+    // Initialization of FUSEKI_HOME and FUSEKI_BASE is done in FusekiEnvInit
+    // so that the code is independent of any logging.  FusekiLogging can use
+    // initialized values of FUSEKI_BASE while looking forlog4j configuration.
+    
     /** Root of the Fuseki installation for fixed files. 
      * This may be null (e.g. running inside a web application container) */ 
     public static Path FUSEKI_HOME = null ;
@@ -62,31 +66,23 @@ public class FusekiServer
      */ 
     public static Path FUSEKI_BASE = null ;
     
-    public static final boolean isWindows = SystemTDB.isWindows ;
- 
-    /** Unused */
-    //public static final String DFT_FUSEKI_HOME  = 
-    //    isWindows ? /*What's correct here?*/ "/usr/share/fuseki" : "/usr/share/fuseki" ;
-    public static final String DFT_FUSEKI_BASE  = 
-        isWindows ? /*What's correct here?*/ "/etc/fuseki"       : "/etc/fuseki" ;
-    
+    // Relative names of directories in the FUSEKI_BASE area.
+    public static final String     runArea                  = FusekiEnvInit.ENV_runArea ;
+    public static final String     databasesLocationBase    = "databases" ;
+    // Place to put Lucene text and spatial indexes.
+    //private static final String        databaseIndexesDir       = "indexes" ;
+      
+    public static final String     backupDirNameBase        = "backups" ;
+    public static final String     configDirNameBase        = "configuration" ;
+    public static final String     logsNameBase             = "logs" ;
+    public static final String     systemDatabaseNameBase   = "system" ;
+    public static final String     systemFileAreaBase       = "system_files" ;
+    public static final String     templatesNameBase        = "templates" ;
+    // This name is in web.xml as well.
+    public static final String     DFT_SHIRO_INI            = "shiro.ini" ; 
     // In FUSEKI_BASE
-    public static final String DFT_CONFIG       = "config.ttl" ;
-
-    // Relative names of directories
-    private static final String        runArea                  = "run" ;
-    private static final String        databasesLocationBase    = "databases" ;
-    //private static final String        databaseIndexesDir       = "indexes" ;       // Place to put Lucene text and spatial indexes.  
-    private static final String        backupDirNameBase        = "backups" ;
-    private static final String        configDirNameBase        = "configuration" ;
-    private static final String        logsNameBase             = "logs" ;
-    private static final String        systemDatabaseNameBase   = "system" ;
-    private static final String        systemFileAreaBase       = "system_files" ;
-    private static final String        templatesNameBase        = "templates" ;
-    private static final String        DFT_SHIRO_INI            = "shiro.ini" ; // This name is in web.xml as well. 
+    public static final String     DFT_CONFIG               = "config.ttl" ;
     
-    // --- Set during server initialization
-
     /** Directory for TDB databases - this is known to the assembler templates */
     public static Path        dirDatabases       = null ;
     
@@ -122,38 +118,15 @@ public class FusekiServer
             return ;
         initialized = true ;
         try {
+            FusekiEnvInit.setEnvironment() ;
+            FUSEKI_HOME = FusekiEnvInit.ENV_FUSEKI_HOME ;
+            FUSEKI_BASE = FusekiEnvInit.ENV_FUSEKI_BASE ;
+            
             Fuseki.init() ;
-
-            // ----  Set and check FUSEKI_HOME and FUSEKI_BASE
-
-            if ( FUSEKI_HOME == null ) {
-                // Make absolute
-                String x1 = FusekiLib.getenv("FUSEKI_HOME") ;
-                if ( x1 != null )
-                    FUSEKI_HOME = Paths.get(x1) ;
-            }
-
-            if ( FUSEKI_BASE == null ) {
-                String x2 = FusekiLib.getenv("FUSEKI_BASE") ;
-                if ( x2 != null )
-                    FUSEKI_BASE = Paths.get(x2) ;
-                else {
-                    if ( FUSEKI_HOME != null )
-                        FUSEKI_BASE = FUSEKI_HOME.resolve(runArea) ;
-                    else
-                        // Neither FUSEKI_HOME nor FUSEKI_BASE set.
-                        FUSEKI_BASE = Paths.get(DFT_FUSEKI_BASE) ;
-                }
-            }
-
-            if ( FUSEKI_HOME != null )
-                FUSEKI_HOME = FUSEKI_HOME.toAbsolutePath() ;
-
-            FUSEKI_BASE = FUSEKI_BASE.toAbsolutePath() ;
-
             Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "unset" : FUSEKI_HOME.toString())) ;
             Fuseki.configLog.info("FUSEKI_BASE="+FUSEKI_BASE.toString());
 
+            // ----  Check FUSEKI_HOME and FUSEKI_BASE
             // If FUSEKI_HOME exists, it may be FUSEKI_BASE.
 
             if ( FUSEKI_HOME != null ) {

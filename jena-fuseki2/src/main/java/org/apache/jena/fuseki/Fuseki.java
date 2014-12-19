@@ -197,6 +197,7 @@ public class Fuseki {
         if ( initialized )
             return ;
         initialized = true ;
+        FusekiLogging.setLogging() ;
         ARQ.init() ;
         SystemInfo sysInfo = new SystemInfo(FusekiIRI, PATH, VERSION, BUILD_DATE) ;
         SystemARQ.registerSubSystem(sysInfo) ;
@@ -208,7 +209,6 @@ public class Fuseki {
         // Don't set TDB batch commits.
         // This can be slower, but it less memory hungry and more predictable.
         TransactionManager.QueueBatchSize = 0 ;
-        FusekiLogging.setLogging() ;
     }
     
     /**

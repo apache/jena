@@ -255,12 +255,4 @@ public class FusekiLib {
         }
         return "<" + uri + ">" ;
     }
-    
-    /** Get environment variable value (maybe in system properties) */
-    public static String getenv(String name) {
-        String x = System.getenv(name) ;
-        if ( x == null )
-            x = System.getProperty(name) ;
-        return x ;
-    }
 }

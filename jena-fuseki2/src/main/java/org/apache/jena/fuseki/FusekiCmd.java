@@ -24,7 +24,7 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
-import org.apache.jena.fuseki.server.FusekiServletContextListener ;
+import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -47,10 +47,8 @@ public class FusekiCmd {
     // FusekiCmdInner inherits from CmdMain which statically sets logging.
     // By java classloading, super class statics run before the 
     // statics of a class are run.
+
     static {
-        // If this is not set, log4j initializes beause LogManger is touched,
-        // which find the src/main/resources/log4j.properties
-        //System.setProperty("log4j.configuration", "file:log4j.properties") ;
         FusekiLogging.setLogging() ;
     }
 
@@ -323,7 +321,7 @@ public class FusekiCmd {
 
         @Override
         protected void exec() {
-            FusekiServletContextListener.initialSetup = cmdLineDataset ;
+            FusekiServerListener.initialSetup = cmdLineDataset ;
             // For standalone, command line use ...
             JettyFuseki.initializeServer(jettyServerConfig) ;
             JettyFuseki.instance.start() ;

@@ -26,8 +26,8 @@ import java.io.FileInputStream ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.mgt.MgtJMX ;
+import org.apache.jena.fuseki.server.FusekiServer ;
 import org.eclipse.jetty.security.* ;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator ;
 import org.eclipse.jetty.server.* ;
@@ -171,52 +171,60 @@ public class JettyFuseki {
     }
 
     public static WebAppContext createWebApp(String contextPath) {
-      WebAppContext webapp = new WebAppContext();
-      webapp.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
-      
-      // Hunt for the webapp for the standalone jar (or development system). 
-      // Note that Path FUSEKI_HOME is not initialized until the webapp starts
-      // so it is not available here.
-      
-      String resourceBase3 = null ;
-      String resourceBase4 = null ;
-      // FusekiServer.FUSEKI_HOME is not set at this point (it is set in webapp initialization)
-      String HOME = FusekiLib.getenv("FUSEKI_HOME") ;
-      if ( HOME != null ) {
-          resourceBase3 = HOME+"/"+resourceBase1 ;
-          resourceBase4 = HOME+"/"+resourceBase2 ;
-      }
-      
-      String resourceBase = tryResourceBase(resourceBase1, null) ;
-      resourceBase = tryResourceBase(resourceBase2, resourceBase) ;
-      resourceBase = tryResourceBase(resourceBase3, resourceBase) ;
-      resourceBase = tryResourceBase(resourceBase4, resourceBase) ;
+        FusekiServer.init(); 
+        WebAppContext webapp = new WebAppContext();
+        webapp.getServletContext().getContextHandler().setMaxFormContentSize(10 * 1000 * 1000) ;
 
-      if ( resourceBase == null ) {
-          if ( resourceBase3 == null )
-              Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+" and "+resourceBase2+")") ;
-          else
-              Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+", "+resourceBase2+", "+resourceBase3+" and "+resourceBase4+")") ;
-          Fuseki.serverLog.error("Failed to start") ;
-          throw new FusekiException("Failed to start") ;
-      }
+        // Hunt for the webapp for the standalone jar (or development system). 
+        // Note that Path FUSEKI_HOME is not initialized until the webapp starts
+        // so it is not available here.
 
-      webapp.setDescriptor(resourceBase+"/WEB-INF/web.xml");
-      webapp.setResourceBase(resourceBase);
-      webapp.setContextPath(contextPath);
-      
-      //-- Jetty setup for the ServletContext logger.
-      // The name of the Jetty-allocated slf4j/log4j logger is
-      // the display name or, if null, the context path name.   
-      // It is set, without checking for a previous call of setLogger in "doStart"
-      // which happens during server startup. 
-      // This the name of the ServletContext logger as well
-      webapp.setDisplayName(Fuseki.servletRequestLogName);  
-      webapp.setParentLoaderPriority(true);  // Normal Java classloader behaviour.
-      webapp.setErrorHandler(new FusekiErrorHandler()) ;
-      return webapp ;
+        String resourceBase3 = null ;
+        String resourceBase4 = null ;
+        if ( FusekiServer.FUSEKI_HOME != null ) {
+            String HOME = FusekiServer.FUSEKI_HOME.toString() ;
+            resourceBase3 = HOME+"/"+resourceBase1 ;
+            resourceBase4 = HOME+"/"+resourceBase2 ;
+        }
+
+        String resourceBase = tryResourceBase(resourceBase1, null) ;
+        resourceBase = tryResourceBase(resourceBase2, resourceBase) ;
+        resourceBase = tryResourceBase(resourceBase3, resourceBase) ;
+        resourceBase = tryResourceBase(resourceBase4, resourceBase) ;
+
+        if ( resourceBase == null ) {
+            if ( resourceBase3 == null )
+                Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+" and "+resourceBase2+")") ;
+            else
+                Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+", "+resourceBase2+", "+resourceBase3+" and "+resourceBase4+")") ;
+            Fuseki.serverLog.error("Failed to start") ;
+            throw new FusekiException("Failed to start") ;
+        }
+
+        webapp.setDescriptor(resourceBase+"/WEB-INF/web.xml");
+        webapp.setResourceBase(resourceBase);
+        webapp.setContextPath(contextPath);
+
+        //-- Jetty setup for the ServletContext logger.
+        // The name of the Jetty-allocated slf4j/log4j logger is
+        // the display name or, if null, the context path name.   
+        // It is set, without checking for a previous call of setLogger in "doStart"
+        // which happens during server startup. 
+        // This the name of the ServletContext logger as well
+        webapp.setDisplayName(Fuseki.servletRequestLogName);  
+        webapp.setParentLoaderPriority(true);  // Normal Java classloader behaviour.
+        webapp.setErrorHandler(new FusekiErrorHandler()) ;
+        return webapp ;
     }
     
+
+    public static String getenv(String name) {
+        String x = System.getenv(name) ;
+        if ( x == null )
+            x = System.getProperty(name) ;
+        return x ;
+    }
+
     private static String tryResourceBase(String maybeResourceBase, String currentResourceBase) {
         if ( currentResourceBase != null )
             return currentResourceBase ;
