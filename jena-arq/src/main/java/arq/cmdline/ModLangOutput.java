@@ -32,7 +32,7 @@ import arq.cmd.CmdException ;
 public class ModLangOutput implements ArgModuleGeneral
 {
     protected ArgDecl argOutput       = new ArgDecl(ArgDecl.HasValue, "out", "output") ;
-    protected ArgDecl argPretty       = new ArgDecl(ArgDecl.HasValue, "formatted", "pretty") ;
+    protected ArgDecl argPretty       = new ArgDecl(ArgDecl.HasValue, "formatted", "pretty", "fmt") ;
     protected ArgDecl argStream       = new ArgDecl(ArgDecl.HasValue, "stream") ;
     private RDFFormat streamOutput    = null ;
     private RDFFormat formattedOutput = null ;
