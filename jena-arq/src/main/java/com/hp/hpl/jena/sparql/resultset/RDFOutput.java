@@ -82,8 +82,10 @@ public class RDFOutput
             if ( includeTypeProperties )
                 thisSolution.addProperty(RDF.type, ResultSetGraphVocab.ResultSolution) ;
             results.addProperty(ResultSetGraphVocab.solution, thisSolution) ;
-            if ( false )
-                results.addLiteral(ResultSetGraphVocab.index, count) ;
+            if ( false ) { // IFF query was completely sorted 
+                Literal x = model.createTypedLiteral(count+"",XSDDatatype.XSDinteger) ;
+                thisSolution.addLiteral(ResultSetGraphVocab.index, x) ;
+            }
 
             Iterator<String> iter = getAllVars() ?
                                     rBind.varNames() :
