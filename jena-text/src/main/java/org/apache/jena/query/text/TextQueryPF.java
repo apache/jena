@@ -280,7 +280,7 @@ public class TextQueryPF extends PropertyFunctionBase {
             x = list.get(idx) ;
             field = docDef.getField(predicate) ;
             if (field == null) {
-                log.warn("Predicate not indexed: " + predicate) ;
+                //log.warn("Predicate not indexed: " + predicate) ;
                 return null ;
             }
         }
