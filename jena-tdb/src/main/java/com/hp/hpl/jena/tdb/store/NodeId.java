@@ -31,6 +31,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -162,10 +163,14 @@ public class NodeId
             return null ;
         }
         
-        if ( ! node.isLiteral() ) return null ;
-        if ( node.getLiteralDatatype() == null ) return null ;
+        if ( ! enableInlineLiterals )
+            return null ;
+
+        if ( ! node.isLiteral() )  
+            return null ;
         
-        if ( ! enableInlineLiterals ) return null ;
+        if ( NodeUtils.isSimpleString(node) || NodeUtils.isLangString(node) )
+            return null ;
         
         try { return inline$(node) ; }
         catch (Throwable th) {
