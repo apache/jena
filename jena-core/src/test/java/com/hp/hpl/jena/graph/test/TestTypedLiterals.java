@@ -124,7 +124,7 @@ public class TestTypedLiterals extends TestCase {
         
         // Check we can create a literal of an unregistered java type without anything blowing up
         Object foo = new java.sql.Date(123456l);
-        LiteralLabel ll = LiteralLabelFactory.create(foo);
+        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(foo);
         assertEquals(ll.getLexicalForm(), foo.toString());
     }
     

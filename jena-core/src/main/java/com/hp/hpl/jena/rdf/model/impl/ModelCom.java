@@ -681,7 +681,7 @@ implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral(String v)  {
-        LiteralLabel ll = LiteralLabelFactory.create(v);
+        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(v);
         return new LiteralImpl(NodeFactory.createLiteral(ll), this);
     }
 
@@ -764,7 +764,7 @@ implements Model, PrefixMapping, Lock
         // Catch special case of a Calendar which we want to act as if it were an XSDDateTime
         if (value instanceof Calendar) 
             return createTypedLiteral( (Calendar)value );
-        LiteralLabel ll = LiteralLabelFactory.create( value );
+        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral( value );
         return new LiteralImpl( NodeFactory.createLiteral( ll ), this);
     }
 

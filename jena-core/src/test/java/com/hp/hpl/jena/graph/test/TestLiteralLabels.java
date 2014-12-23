@@ -97,8 +97,8 @@ public class TestLiteralLabels extends GraphTestBase
 
     public void testEquality1()
     {
-        LiteralLabel A = LiteralLabelFactory.create("xyz") ;
-        LiteralLabel B = LiteralLabelFactory.create("xyz") ;
+        LiteralLabel A = LiteralLabelFactory.createTypedLiteral("xyz") ;
+        LiteralLabel B = LiteralLabelFactory.createTypedLiteral("xyz") ;
         assertTrue(A.equals(B)) ;
         assertTrue(A.sameValueAs(B)) ;
         assertEquals(A.hashCode(), B.hashCode()) ;
@@ -106,8 +106,8 @@ public class TestLiteralLabels extends GraphTestBase
     
     public void testEquality2()
     {
-        LiteralLabel A = LiteralLabelFactory.create("xyz") ;
-        LiteralLabel B = LiteralLabelFactory.create("XYZ") ;
+        LiteralLabel A = LiteralLabelFactory.createTypedLiteral("xyz") ;
+        LiteralLabel B = LiteralLabelFactory.createTypedLiteral("XYZ") ;
         assertFalse(A.equals(B)) ;
         assertFalse(A.sameValueAs(B)) ;
     }
