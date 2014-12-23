@@ -17,21 +17,22 @@
  */
 package org.apache.jena.security.model;
 
-import com.hp.hpl.jena.datatypes.DatatypeFormatException;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.ResourceRequiredException;
+import org.apache.jena.security.AccessDeniedException ;
+import org.apache.jena.security.MockSecurityEvaluator ;
+import org.apache.jena.security.SecurityEvaluator.Action ;
+import org.apache.jena.security.SecurityEvaluatorParameters ;
+import org.apache.jena.security.model.impl.SecuredLiteralImpl ;
+import org.junit.Assert ;
+import org.junit.Before ;
+import org.junit.Test ;
+import org.junit.runner.RunWith ;
 
-import org.apache.jena.security.AccessDeniedException;
-import org.apache.jena.security.MockSecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluatorParameters;
-import org.apache.jena.security.SecurityEvaluator.Action;
-import org.apache.jena.security.model.SecuredLiteral;
-import org.apache.jena.security.model.impl.SecuredLiteralImpl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
+import com.hp.hpl.jena.rdf.model.ResourceRequiredException ;
+import com.hp.hpl.jena.shared.BadBooleanException ;
+import com.hp.hpl.jena.shared.BadCharLiteralException ;
 
 @RunWith( value = SecurityEvaluatorParameters.class )
 public class SecuredLiteralTest extends SecuredRDFNodeTest
@@ -119,7 +120,7 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 								e, e.getTriple()));
 			}
 		}
-		catch (final DatatypeFormatException e)
+		catch (final DatatypeFormatException | BadBooleanException e )
 		{
 			// expected
 		}
@@ -145,7 +146,7 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 								e, e.getTriple()));
 			}
 		}
-		catch (final DatatypeFormatException e)
+		catch (final DatatypeFormatException | NumberFormatException e )
 		{
 			// expected
 		}
@@ -171,7 +172,7 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 								e, e.getTriple()));
 			}
 		}
-		catch (final DatatypeFormatException e)
+		catch (final DatatypeFormatException | BadCharLiteralException e )
 		{
 			// expected
 		}
@@ -241,7 +242,7 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 								e, e.getTriple()));
 			}
 		}
-		catch (final DatatypeFormatException e)
+		catch (final DatatypeFormatException | NumberFormatException e )
 		{
 			// expected
 		}
