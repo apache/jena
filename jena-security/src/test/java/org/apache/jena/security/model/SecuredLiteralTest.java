@@ -268,7 +268,7 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 								e, e.getTriple()));
 			}
 		}
-		catch (final DatatypeFormatException e)
+		catch (final DatatypeFormatException | NumberFormatException e )
 		{
 			// expected
 		}
@@ -294,7 +294,7 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 								e, e.getTriple()));
 			}
 		}
-		catch (final DatatypeFormatException e)
+		catch (final DatatypeFormatException | NumberFormatException e )
 		{
 			// expected
 		}
@@ -364,7 +364,7 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 								e, e.getTriple()));
 			}
 		}
-		catch (final DatatypeFormatException e)
+		catch (final DatatypeFormatException | NumberFormatException e )
 		{
 			// expected
 		}
@@ -390,7 +390,7 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 								e, e.getTriple()));
 			}
 		}
-		catch (final DatatypeFormatException e)
+		catch (final DatatypeFormatException | NumberFormatException e )
 		{
 			// expected
 		}
@@ -416,7 +416,7 @@ public class SecuredLiteralTest extends SecuredRDFNodeTest
 								e, e.getTriple()));
 			}
 		}
-		catch (final DatatypeFormatException e)
+		catch (final DatatypeFormatException | NumberFormatException e )
 		{
 			// expected
 		}
