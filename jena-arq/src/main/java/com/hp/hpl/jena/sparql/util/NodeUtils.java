@@ -48,31 +48,17 @@ public class NodeUtils
         boolean equal(Node n1, Node n2) ;
     }
 
+    /** IRI to Node */ 
     public static Node asNode(IRI iri) {
         return NodeFactory.createURI(iri.toString()) ;
     }
 
+    /** IRI string to Node */ 
     public static Node asNode(String iri) {
         return NodeFactory.createURI(iri) ;
     }
 
-    public static boolean isStringLiteral(Node literal) {
-        if ( !literal.isLiteral() )
-            return false ;
-        RDFDatatype dType = literal.getLiteralDatatype() ;
-        String langTag = literal.getLiteralLanguage() ;
-
-        // Language?
-        if ( langTag == null || !langTag.equals("") )
-            return false ;
-
-        // Datatype
-        if ( dType != null && !dType.equals(XSDDatatype.XSDstring) )
-            return false ;
-
-        return true ;
-    }
-
+    /** Return true if the node is a literal and has a language tag */ 
     public static boolean hasLang(Node node) {
         if ( !node.isLiteral() )
             return false ;
@@ -84,14 +70,27 @@ public class NodeUtils
         return true ;
     }
 
-    // Get the string value of plain literal or XSD string.
-
+    /** Get lexical for of anythign that looks like a string literal.
+     * Returns the string value of plain literal (simple literal
+     * or lang string) or XSD string.
+     */
     public static String stringLiteral(Node literal) {
-        if ( !isStringLiteral(literal) )
+        if ( !literal.isLiteral() )
             return null ;
-        return literal.getLiteralLexicalForm() ;
+        RDFDatatype dType = literal.getLiteralDatatype() ;
+        String langTag = literal.getLiteralLanguage() ;
+
+        // Language?
+        if ( langTag != null && !langTag.equals("") )
+            return literal.getLiteralLexicalForm() ;
+
+        if ( dType == null || dType.equals(XSDDatatype.XSDstring) )
+            return literal.getLiteralLexicalForm() ;
+
+        return null ;
     }
 
+    /** Convert IRI Nodes to strings.  Skip other kinds of Node */  
     public static Iterator<String> nodesToURIs(Iterator<Node> iter) {
         MapFilter<Node, String> mapper = new MapFilter<Node, String>() {
             @Override
@@ -105,6 +104,7 @@ public class NodeUtils
         return conv ;
     }
 
+    /** Convert IRI String to Node */  
     public static Set<Node> convertToNodes(Collection<String> uris) {
         Set<Node> nodes = new HashSet<>() ;
         for ( String x : uris )
