@@ -86,8 +86,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 				+ node("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
 				+ SPACE + "foaf:Person" + OPT_SPACE + DOT + SPACE + OPTIONAL
 				+ OPEN_CURLY + var("s") + SPACE + "foaf:name" + SPACE
-				+ quote("Smith") + "\\^\\^"
-				+ node("http://www.w3.org/2001/XMLSchema#string") + SPACE + DOT
+				+ quote("Smith") + presentStringType() + SPACE + DOT
 				+ OPT_SPACE + CLOSE_CURLY + CLOSE_CURLY, query);
 		assertContainsRegex(ORDER_BY + var("s"), query);
 	}
