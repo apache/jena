@@ -90,9 +90,8 @@ public abstract class AbstractTestDatasetWithSpatialIndex {
 	public static void doTestQuery(Dataset dataset, String queryString, Set<String> expectedEntityURIs, int expectedNumResults, boolean throwException) {
 		Query query = QueryFactory.create(queryString) ;
 		
-		QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ;
-		try {
-			dataset.begin(ReadWrite.READ);
+		dataset.begin(ReadWrite.READ);
+		try ( QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ) {
 		    ResultSet results = qexec.execSelect() ;
 
 		    boolean b = ( (expectedNumResults > 0) == results.hasNext() ) ;
@@ -115,9 +114,7 @@ public abstract class AbstractTestDatasetWithSpatialIndex {
 			if (!throwException){
 				fail("The exception is not supposed to be thrown: "+ e.getMessage());
 			}	
-		} finally { qexec.close() ; dataset.end() ; }			
-		
-	
+		} finally { dataset.end() ; }			
 	}
 	
 }
