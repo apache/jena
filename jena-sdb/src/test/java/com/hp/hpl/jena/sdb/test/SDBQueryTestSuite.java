@@ -48,7 +48,7 @@ public class SDBQueryTestSuite extends TestSuite
             ARQ.getContext().setFalse(SDB.annotateGeneratedSQL) ;
 
         QueryTestSDBFactory.make(this, SDBTestSetup.storeList, SDBTestSetup.manifestMain) ;
-        QueryTestSDBFactory.make(this, SDBTestSetup.storeListSimple, SDBTestSetup.manifestSimple) ;
+        //QueryTestSDBFactory.make(this, SDBTestSetup.storeListSimple, SDBTestSetup.manifestSimple) ;
     }
     
  
