@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 /** Operations associated with nodes and layout 2 (the Triples+Nodes layout)
  */
@@ -93,8 +94,11 @@ public class NodeLayout2
         else throw new SDBException("Attempt to hash a variable") ;
                          
         String datatypeStr = "" ;
-        if ( n.isLiteral() )
+        if ( n.isLiteral() ) {
             datatypeStr = n.getLiteralDatatypeURI() ;
+            if ( NodeUtils.isSimpleString(n) || NodeUtils.isLangString(n) )
+                datatypeStr = null ;
+        }
         String langStr = "" ;
         if ( n.isLiteral() )
             langStr = n.getLiteralLanguage() ;
