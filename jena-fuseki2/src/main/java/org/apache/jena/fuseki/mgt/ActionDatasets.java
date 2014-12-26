@@ -253,7 +253,7 @@ public class ActionDatasets extends ActionContainerItem {
         params.put(Template.NAME, dbName) ;
         FusekiServer.addGlobals(params); 
         
-        action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
+        //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
         if ( dbType == null || dbName == null )
             ServletOps.errorBadRequest("Required parameters: dbName and dbType");
         if ( ! dbType.equals(tDatabasetTDB) && ! dbType.equals(tDatabasetMem) )
