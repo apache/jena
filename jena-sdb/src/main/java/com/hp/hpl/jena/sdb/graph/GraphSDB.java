@@ -263,7 +263,7 @@ public class GraphSDB extends GraphBase implements Graph
     @Override
     public GraphEventManager getEventManager()
     {
-    	if (gem == null) gem = new EventManagerSDB( this );
+    	if (gem == null) gem = new EventManagerSDB( );
         return gem;
     }
     

@@ -18,15 +18,16 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.impl.SimpleEventManager;
 
 public class EventManagerSDB extends SimpleEventManager {
 	
-	public EventManagerSDB(GraphSDB graph)
-	{
-		super(graph);
+	public EventManagerSDB() {
+		super();
 	}
 	
 	/*
@@ -35,10 +36,14 @@ public class EventManagerSDB extends SimpleEventManager {
 	@Override
 	public void notifyEvent(Graph arg0, Object arg1)
     {
-		if (arg1.equals(GraphEvents.startRead) )
-			((GraphSDB) graph).startBulkUpdate() ;
-		if (arg1.equals(GraphEvents.finishRead) )
-            ((GraphSDB) graph).finishBulkUpdate() ;
+	    if ( arg0 instanceof GraphSDB) {
+    		if (arg1.equals(GraphEvents.startRead) )
+    			((GraphSDB) arg0).startBulkUpdate() ;
+    		if (arg1.equals(GraphEvents.finishRead) )
+                ((GraphSDB) arg0).finishBulkUpdate() ;
+	    } else
+	        Log.warn(this, "Non GraphSDB passed to EventManagerSDB.notifyEvent");
+	    
 		super.notifyEvent(arg0, arg1) ;
 	}
 }

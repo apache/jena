@@ -106,7 +106,7 @@ public abstract class GraphBase implements GraphWithPerform
     @Override
     public GraphEventManager getEventManager()
         { 
-        if (gem == null) gem = new SimpleEventManager( this ); 
+        if (gem == null) gem = new SimpleEventManager( ); 
         return gem;
         }
     
