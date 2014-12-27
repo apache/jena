@@ -333,7 +333,7 @@ start() {
     then
       CH_USER="--chuid $FUSEKI_USER"
     fi
-    if start-stop-daemon --start $CH_USER --chdir "$FUSEKI_HOME" --background --make-pidfile --pidfile "$FUSEKI_PID" --startas "$JAVA" -- "${RUN_ARGS[@]}"
+    if start-stop-daemon --start $CH_USER --chdir "$FUSEKI_HOME" --background --make-pidfile --pidfile "$FUSEKI_PID" --startas /bin/bash -- -c "exec $JAVA ${RUN_ARGS[*]} > $FUSEKI_LOGS_STDERROUT 2>&1"
     then
       sleep 2
       if running "$FUSEKI_PID"
