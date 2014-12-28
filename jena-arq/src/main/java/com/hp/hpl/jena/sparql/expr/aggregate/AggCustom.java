@@ -18,12 +18,20 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import java.util.Locale ;
+
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
+import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 /** Syntax element and framework execution for custom aggregates.  
  */
@@ -32,33 +40,75 @@ public class AggCustom extends AggregatorBase
     // See also ExprAggregator
     
     private final String iri ;
-    private final ExprList exprs ;
 
-    public AggCustom(String iri, ExprList exprs) { this.iri = iri ; this.exprs = exprs ; } 
+    public AggCustom(String iri, ExprList exprs) { 
+        super("AGG", false, exprs) ;
+        this.iri = iri ; 
+    } 
     
     @Override
-    public Aggregator copy(Expr expr) { return this ; }
+    public Aggregator copy(ExprList exprs) { return new AggCustom(iri, exprs) ; }
     
     @Override
-    public String toString() {
-        return "AGG <>" ;
+    public String asSparqlExpr(SerializationContext sCxt) {
+        IndentedLineBuffer x = new IndentedLineBuffer() ;
+        x.append("(") ;
+        x.incIndent(); 
+        x.append(getName().toLowerCase(Locale.ROOT)) ;
+        x.append(" <") ;
+        x.append(iri);
+        x.append(">") ;
+        if ( isDistinct )
+            x.append("DISTINCT ") ;
+        ExprUtils.fmtSPARQL(x, getExprList(), sCxt) ;
+        x.append(")") ;
+        return x.asString() ;
     }
 
     @Override
-    public String toPrefixString() { return "(agg <"+iri+">)" ; }
+    public String toPrefixString() { 
+        IndentedLineBuffer x = new IndentedLineBuffer() ;
+        x.append("(") ;
+        x.append(getName()) ;
+        x.append(" <") ;
+        x.append(iri);
+        x.append(">") ;
+        x.incIndent(); 
+
+        x.append(getName().toLowerCase(Locale.ROOT)) ;
+        if ( isDistinct )
+            x.append("distinct ") ;
+        boolean first = true ;
+        for ( Expr e : getExprList() ) {
+            if ( ! first )
+                x.append(" ");
+            first = false ;
+            WriterExpr.output(x, e, null) ;
+            first = false ;
+
+        }
+        x.decIndent();
+        x.append(")") ;
+        return x.asString() ;
+    }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return createAccNull() ;
+        AccumulatorFactory f = AggregateRegistry.getAccumulatorFactory(iri) ;
+        if ( f == null )
+            throw new QueryExecException("Unregistered aggregate: "+iri) ;
+        return f.createAccumulator(this) ;
     }
 
     @Override
-    public Node getValueEmpty()     { return null ; } 
+    public Node getValueEmpty()     { return AggregateRegistry.getNoGroupValue(iri) ; } 
 
     @Override
     public Expr getExpr()           { return null ; }
     
+    public String getIRI()                  { return iri ; }
+
     @Override
     public int hashCode()   { return HC_AggNull ; }
     @Override

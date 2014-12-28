@@ -18,24 +18,20 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import org.apache.jena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 public class AggMaxDistinct extends AggMaxBase
 {
     // ---- MAX( DISTINCT expr)
-    public AggMaxDistinct(Expr expr) { super(expr) ; } 
+    public AggMaxDistinct(Expr expr) { super(expr, true) ; } 
     @Override
-    public Aggregator copy(Expr expr) { return new AggMaxDistinct(expr) ; }
+    public Aggregator copy(ExprList expr) { return new AggMaxDistinct(expr.get(0)) ; }
 
     @Override
-    public String toString() { return "max(distinct "+ExprUtils.fmtSPARQL(getExpr())+")" ; }
-    @Override
-    public String toPrefixString() { return "(max distinct "+WriterExpr.asString(getExpr())+")" ; }
-
-    @Override
-    public int hashCode()   { return HC_AggMaxDistinct ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggMaxDistinct ^ getExpr().hashCode() ; }
     
     @Override
     public boolean equals(Object other)
@@ -44,7 +40,7 @@ public class AggMaxDistinct extends AggMaxBase
         if ( ! ( other instanceof AggMaxDistinct ) )
             return false ;
         AggMaxDistinct agg = (AggMaxDistinct)other ;
-        return expr.equals(agg.expr) ;
+        return Lib.equal(exprList, agg.exprList) ;
     }
 
 }

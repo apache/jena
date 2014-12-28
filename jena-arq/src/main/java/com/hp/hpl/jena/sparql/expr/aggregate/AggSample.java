@@ -18,42 +18,34 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import org.apache.jena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 public class AggSample extends AggregatorBase
 {
     // ---- Sample(expr)
-    private final Expr expr ;
-
-    public AggSample(Expr expr) { this.expr = expr ; } 
-    @Override
-    public Aggregator copy(Expr expr) { return new AggSample(expr) ; }
+    public AggSample(Expr expr) { super("SAMPLE", false, expr) ; } 
     
     @Override
-    public String toString() { return "sample("+ExprUtils.fmtSPARQL(expr)+")" ; }
-    @Override
-    public String toPrefixString() { return "(sample "+WriterExpr.asString(expr)+")" ; }
-
+    public Aggregator copy(ExprList exprs) { return new AggSample(exprs.get(0)) ; }
+    
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccSample(expr) ;
+        return new AccSample(getExpr()) ;
     }
-
-    @Override
-    public Expr getExpr() { return expr ; }
 
     @Override
     public Node getValueEmpty()     { return null ; } 
 
     @Override
-    public int hashCode()   { return HC_AggSample ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggSample ^ getExpr().hashCode() ; }
     @Override
     public boolean equals(Object other)
     {
@@ -61,7 +53,7 @@ public class AggSample extends AggregatorBase
         if ( ! ( other instanceof AggSample ) )
             return false ;
         AggSample agg = (AggSample)other ;
-        return agg.getExpr().equals(getExpr()) ;
+        return Lib.equal(this.exprList, agg.exprList) ;
     } 
 
     // ---- Accumulator

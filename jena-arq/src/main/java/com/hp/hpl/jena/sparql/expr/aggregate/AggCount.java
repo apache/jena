@@ -18,22 +18,24 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
-
-import org.apache.jena.atlas.logging.Log ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 public class AggCount extends AggregatorBase
 {
     // ---- COUNT(*)
 
-    public AggCount() { }
+    public AggCount() { super("COUNT", false, (ExprList)null) ; }
     @Override
-    public Aggregator copy(Expr expr)
+    public Aggregator copy(ExprList expr)
     { 
         if ( expr != null )
             Log.warn(this, "Copying non-null expression for COUNT(*)") ;
@@ -48,6 +50,8 @@ public class AggCount extends AggregatorBase
         return new AggCount.AccCount();
     }
 
+    @Override
+    public String asSparqlExpr(SerializationContext sCxt)       { return "count(*)" ; }
     @Override
     public String toString()        { return "count(*)" ; }
     @Override

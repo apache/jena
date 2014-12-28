@@ -192,6 +192,14 @@ public class ExprUtils
         return buff.toString() ; 
     }
 
+    public static String fmtSPARQL(ExprList exprs, SerializationContext sCxt)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        fmtSPARQL(buff, exprs, sCxt) ;
+        return buff.toString() ; 
+    }
+
+
     public static String strComparison(int cmp)
     {
         switch (cmp)

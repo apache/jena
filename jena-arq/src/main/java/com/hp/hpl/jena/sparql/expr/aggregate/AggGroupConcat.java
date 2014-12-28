@@ -24,6 +24,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
@@ -33,7 +34,6 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 public class AggGroupConcat extends AggregatorBase
 {
     static final String SeparatorDefault = " " ;
-    private final Expr expr ;
     private final String separator ;
     private final String effectiveSeparator ;
 
@@ -46,18 +46,18 @@ public class AggGroupConcat extends AggregatorBase
     
     private AggGroupConcat(Expr expr, String effectiveSeparator, String separatorSeen)
     {
-        this.expr = expr ; 
+        super("GROUP_CONCAT", false, expr) ;
         this.separator = separatorSeen ;
         this.effectiveSeparator = effectiveSeparator ; 
     }
     
     @Override
-    public Aggregator copy(Expr expr) { return new AggGroupConcat(expr, effectiveSeparator, separator) ; }
+    public Aggregator copy(ExprList expr) { return new AggGroupConcat(expr.get(0), effectiveSeparator, separator) ; }
 
     @Override
     public String toString()
     {
-        String x = "GROUP_CONCAT("+ExprUtils.fmtSPARQL(expr) ;
+        String x = "GROUP_CONCAT("+ExprUtils.fmtSPARQL(getExpr()) ;
         if ( separator != null )
         {
             String y = StrUtils.escapeString(separator) ;
@@ -77,26 +77,23 @@ public class AggGroupConcat extends AggregatorBase
             String y = StrUtils.escapeString(separator) ;
             x = x+"(separator '"+y+"') " ;
         }
-        x = x+WriterExpr.asString(expr)+")" ;
+        x = x+WriterExpr.asString(getExpr())+")" ;
         return x ; 
     }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccGroupConcat(expr, effectiveSeparator) ;
+        return new AccGroupConcat(getExpr(), effectiveSeparator) ;
     }
 
-    @Override
-    public Expr getExpr() { return expr ; }
-    
     public String getSeparator() { return separator ; }
 
     @Override
     public Node getValueEmpty() { return NodeConst.emptyString ; } 
     
     @Override
-    public int hashCode()   { return HC_AggCountVar ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggCountVar ^ exprList.hashCode() ; }
     
     @Override
     public boolean equals(Object other)

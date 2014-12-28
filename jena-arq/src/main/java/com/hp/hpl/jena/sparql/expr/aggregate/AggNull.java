@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
@@ -29,15 +29,10 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
  */
 public class AggNull extends AggregatorBase
 {
-    public AggNull() { } 
+    public AggNull() { super("AGGNULL", false, (ExprList)null) ; } 
     @Override
-    public Aggregator copy(Expr expr) { return this ; }
+    public Aggregator copy(ExprList exprs) { return this ; }
     
-    @Override
-    public String toString() { return "aggnull()" ; }
-    @Override
-    public String toPrefixString() { return "(aggnull)" ; }
-
     @Override
     public Accumulator createAccumulator()
     { 
@@ -47,9 +42,6 @@ public class AggNull extends AggregatorBase
     @Override
     public Node getValueEmpty()     { return null ; } 
 
-    @Override
-    public Expr getExpr()           { return null ; }
-    
     @Override
     public int hashCode()   { return HC_AggNull ; }
     @Override

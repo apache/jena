@@ -22,39 +22,29 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 public class AggSumDistinct  extends AggregatorBase
 {
     // ---- SUM(DISTINCT expr)
-    private Expr expr ;
-
-    public AggSumDistinct(Expr expr) { this.expr = expr ; } 
+    public AggSumDistinct(Expr expr) { super("SUM", true, expr) ; } 
     @Override
-    public Aggregator copy(Expr expr) { return new AggSumDistinct(expr) ; }
+    public Aggregator copy(ExprList exprs) { return new AggSumDistinct(exprs.get(0)) ; }
 
     private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
     
     @Override
-    public String toString() { return "sum(distinct "+ExprUtils.fmtSPARQL(expr)+")" ; }
-    @Override
-    public String toPrefixString() { return "(sum distinct "+WriterExpr.asString(expr)+")" ; }
-
-    @Override
     public Accumulator createAccumulator()
     { 
-        return new AccSumDistinct(expr) ;
+        return new AccSumDistinct(getExpr()) ;
     }
 
     @Override
-    public Expr getExpr() { return expr ; }
-
-    @Override
-    public int hashCode()   { return HC_AggSumDistinct ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggSumDistinct ^ getExpr().hashCode() ; }
+    
     @Override
     public boolean equals(Object other)
     {

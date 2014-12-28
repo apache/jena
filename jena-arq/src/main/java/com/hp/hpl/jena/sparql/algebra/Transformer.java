@@ -320,8 +320,8 @@ public class Transformer
                     changed = true ;
 
                 // The Aggregator expression
-                Expr e = aggregator.getExpr() ;
-                Expr e2 = e ;
+                ExprList e = aggregator.getExprList() ;
+                ExprList e2 = e ;
                 if ( e != null )    // Null means "no relevant expression" e.g. COUNT(*)
                     e2 = transform(e, exprTransform) ;
                 if ( e != e2 )
