@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 /** 
  * Reading and writing of Result Sets.
- * {@linkplain ResultSetFormatter} provides output to text.
+ * {@link ResultSetFormatter} provides output to text.
  * @see ResultSetFactory
  * @see ResultSetFormatter 
  */
@@ -42,10 +42,10 @@ public class ResultSetMgr {
     }
     
     /**
-     * Read from an {@code InputStream} and produce a {@linkplain ResultSet};
+     * Read from an {@code InputStream} and produce a {@link ResultSet};
      * the stream is expect to use syntax {@code lang}.  Note that returned
      * result set may stream and so the input stream be read while the ResultSet is used.
-     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
+     * See {@link ResultSetFactory#copyResults(ResultSet)}
      * for a ResultSet that is detached from the {@code InputStream}.
      * 
      * @param in
@@ -67,13 +67,13 @@ public class ResultSetMgr {
     }
 
 //    /**
-//     * Read from an {@code Reader} and produce a {@linkplain ResultSet};
+//     * Read from an {@code Reader} and produce a {@link ResultSet};
 //     * the stream is expect to use syntax {@code lang}.  
 //     * Using InputStreams is better to ensure the character set
 //     * of the input matches that of the syntax.  
 //     * Note that returned
 //     * result set may stream and so the input stream be read while the ResultSet is used.
-//     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
+//     * See {@link ResultSetFactory#copyResults(ResultSet)}
 //     * for a ResultSet that is detached from the {@code InputStream}.
 //     * 
 //     * @param in
@@ -91,11 +91,11 @@ public class ResultSetMgr {
 //    
 //    
 //    /**
-//     * Read from an {@code StringReader} and produce a {@linkplain ResultSet};
+//     * Read from an {@code StringReader} and produce a {@link ResultSet};
 //     * the stream is expect to use syntax {@code lang}.  
 //     * Note that returned
 //     * result set may stream and so the input stream be read while the ResultSet is used.
-//     * See {@linkplain ResultSetFactory#copyResults(ResultSet)}
+//     * See {@link ResultSetFactory#copyResults(ResultSet)}
 //     * for a ResultSet that is detached from the {@code InputStream}.
 //     * 
 //     * @param in

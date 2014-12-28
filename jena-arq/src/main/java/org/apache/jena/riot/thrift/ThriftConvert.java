@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Convert to and from Thrift wire objects.
- * See {@linkplain StreamRDF2Thrift} and {@linkplain Thrift2StreamRDF}
+ * See {@link StreamRDF2Thrift} and {@link Thrift2StreamRDF}
  * for ways to convert as streams (they recycle intermediate objects).
  * @see StreamRDF2Thrift
  * @see Thrift2StreamRDF

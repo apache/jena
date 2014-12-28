@@ -83,7 +83,7 @@ public class Location {
         location.lock = new LocationLock(location);
     }
 
-    /** @deprecated Use{@linkplain  Location#create(String)} */
+    /** @deprecated Use{@link  Location#create(String)} */
     @Deprecated
     public Location(String rootname) {
         super() ;

@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** The main Op used in converting SPARQL algebra to quad form.
  * OpQuadPattern reflects the fact that quads come in per-GRAPH units. 
- * {@linkplain OpQuadBlock} is for a general containers of quads
+ * {@link OpQuadBlock} is for a general containers of quads
  * without any contract on the quads sharing the same garph node.   
  */
 public class OpQuadPattern extends Op0

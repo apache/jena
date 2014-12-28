@@ -143,9 +143,9 @@ public interface QueryExecution extends AutoCloseable
 	public void abort();
 	
     /** Close the query execution and stop query evaluation as soon as convenient.
-     *  QueryExecution objects, and a {@linkplain ResultSet} from {@linkplain #execSelect},
+     *  QueryExecution objects, and a {@link ResultSet} from {@link #execSelect},
      *  can not be used once the QueryExecution is closed.  
-     *  Model results from {@linkplain #execConstruct} and {@linkplain #execDescribe}
+     *  Model results from {@link #execConstruct} and {@link #execDescribe}
      *  are stil valid.
      *  It is important to close query execution objects in order to release
      *  resources such as working memory and to stop the query execution.

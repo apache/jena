@@ -39,7 +39,7 @@ public class Tuple<T> implements Iterable<T> {
      * Create a tuple from an array of elements. The array is not copied and
      * should not be modified after this call.
      * <p>
-     * There is also a {@linkplain TupleBuilder} which does create an idendent
+     * There is also a {@link TupleBuilder} which does create an idendent
      * copy, in case that style is preferrable for creating tuples.
      */
     public static <X> Tuple<X> create(X[] elements) {

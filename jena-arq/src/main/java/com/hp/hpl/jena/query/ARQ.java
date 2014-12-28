@@ -306,7 +306,7 @@ public class ARQ
      *  Context key controlling whether the main query engine moves filters to the "best" place using 
      *  the more limited and conservative strategy which does not place as many filters
      *  Must be explicitly set "true" to operate.
-     *  Filter placement, via {@linkplain #optFilterPlacement} must also be active (which it is by default).
+     *  Filter placement, via {@link #optFilterPlacement} must also be active (which it is by default).
      * @see #optFilterPlacement
      */ 
     public static final Symbol optFilterPlacementConservative = ARQConstants.allocSymbol("optFilterPlacementConservative") ;

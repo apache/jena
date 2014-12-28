@@ -73,7 +73,7 @@ public class RDFLanguages
                                                 .addAltContentTypes(contentTypeTurtleAlt1, contentTypeTurtleAlt2)
                                                 .addFileExtensions("ttl")
                                                 .build() ;
-    /** Alternative constant for {@linkplain #TURTLE} */
+    /** Alternative constant for {@link #TURTLE} */
     public static final Lang TTL    = TURTLE ;
     
     /** N3 (treat as Turtle) */
@@ -89,7 +89,7 @@ public class RDFLanguages
                                                 .addAltContentTypes(contentTypeNTriplesAlt)
                                                 .addFileExtensions("nt")
                                                 .build() ;
-    /** Alternative constant for {@linkplain #NTRIPLES} */
+    /** Alternative constant for {@link #NTRIPLES} */
     public static final Lang NT     = NTRIPLES ;
 
     /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
@@ -117,7 +117,7 @@ public class RDFLanguages
                                                 .addFileExtensions("nq")
                                                 .build() ;
     
-    /** Alternative constant {@linkplain #NQUADS} */
+    /** Alternative constant {@link #NQUADS} */
     public static final Lang NQ     = NQUADS ;
     
     /** CSV data.  This can be read into an RDF model with simple conversion */

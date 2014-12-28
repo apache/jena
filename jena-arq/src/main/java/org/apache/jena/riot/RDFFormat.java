@@ -81,7 +81,7 @@ public class RDFFormat {
     /**
      * RDF Thrift output. This format is faithful representation of RDF writtern
      * and it is suitable for database dumps. It does not encode numeric
-     * literals as values (see {@linkplain #RDF_THRIFT_VALUES}).
+     * literals as values (see {@link #RDF_THRIFT_VALUES}).
      *
      * @see #RDF_THRIFT_VALUES
      */

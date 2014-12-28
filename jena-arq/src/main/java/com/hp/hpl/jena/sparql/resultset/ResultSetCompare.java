@@ -36,8 +36,8 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
 /** Comparison of ResultSets.
- *  Note that reading ResultSets is destructive so consiuder using {@linkplain ResultSetRewindable}
- *  from {@linkplain ResultSetFactory#makeRewindable} 
+ *  Note that reading ResultSets is destructive so consiuder using {@link ResultSetRewindable}
+ *  from {@link ResultSetFactory#makeRewindable} 
  */
 
 public class ResultSetCompare

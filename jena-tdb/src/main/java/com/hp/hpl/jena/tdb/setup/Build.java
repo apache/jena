@@ -105,7 +105,7 @@ public class Build
      * <p>
      * Do not edit store parameters recorded at a location after the database has been created.
      * Only the dynamic parameters cna be safely changed. That is better done though the application
-     * providing some parameters in the {@linkplain TDBFactory} call.
+     * providing some parameters in the {@link TDBFactory} call.
      * <p>
      * This includes changing filenames,  indexing choices and block size. 
      * Otherwise, the database may be permanetly and irrecovably corrupted.

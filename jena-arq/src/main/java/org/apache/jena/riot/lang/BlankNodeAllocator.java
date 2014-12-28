@@ -30,11 +30,11 @@ public interface BlankNodeAllocator
     public Node alloc(String label) ;
     
     /** Create a fresh blank node, different from anything generated so far.
-     *  Will not clash with a node allocated by {@linkplain #alloc}
+     *  Will not clash with a node allocated by {@link #alloc}
      */
     public Node create() ;
     
-    /** Reset allocation state - calls to {@linkplain #alloc} or {@linkplain #create} */    
+    /** Reset allocation state - calls to {@link #alloc} or {@link #create} */    
     public void reset() ;
 }
 

@@ -50,7 +50,7 @@ public class LiteralLabelFactory
         return new LiteralLabelImpl( lex, "", dtype );
     }
 
-    /** Using {@linkplain #create(String, String)} or {@linkplain #create(String, RDFDatatype)}
+    /** Using {@link #create(String, String)} or {@link #create(String, RDFDatatype)}
      * where possible is preferred.
      */
     public static LiteralLabel createLiteralLabel( String lex, String lang, RDFDatatype dtype ) 
@@ -82,7 +82,7 @@ public class LiteralLabelFactory
         return new LiteralLabelImpl(value, lang, dtype) ; 
     }
 
-    /** Use {@linkplain #createTypedLiteral} */
+    /** Use {@link #createTypedLiteral} */
     @Deprecated
     public static LiteralLabel create(Object value) {
         return createTypedLiteral(value) ;

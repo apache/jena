@@ -46,13 +46,13 @@ public class ResultSetWriterRegistry {
 
     private static Map<Lang, ResultSetWriterFactory> registry = new HashMap<>() ;
     
-    /** Lookup a {@linkplain Lang} to get the registered {@linkplain ResultSetReaderFactory} (or null) */
+    /** Lookup a {@link Lang} to get the registered {@link ResultSetReaderFactory} (or null) */
     public static ResultSetWriterFactory lookup(Lang lang) {
         Objects.requireNonNull(lang) ;
         return registry.get(lang) ;
     }
 
-    /** Register a {@linkplain ResultSetReaderFactory} for a {@linkplain Lang} */
+    /** Register a {@link ResultSetReaderFactory} for a {@link Lang} */
     public static void register(Lang lang, ResultSetWriterFactory factory) {
         Objects.requireNonNull(lang) ;
         Objects.requireNonNull(factory) ;

@@ -122,7 +122,7 @@ public class RiotReader
     // -------- Parsers
     
     /** Create a parser 
-     * @deprecated Use {@linkplain RDFDataMgr#createReader(Lang)}
+     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
      */
     @Deprecated
     public static LangRIOT createParser(InputStream input, Lang lang, String baseIRI, StreamRDF dest)
@@ -142,7 +142,7 @@ public class RiotReader
     }
 
     /** Create a parser 
-     * @deprecated Use {@linkplain RDFDataMgr#createReader(Lang)}
+     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
      */
     @Deprecated
     public static LangRIOT createParser(Reader input, Lang lang, String baseIRI, StreamRDF dest)
@@ -162,7 +162,7 @@ public class RiotReader
     }
 
     /** Create a parser 
-     * @deprecated Use {@linkplain RDFDataMgr#createReader(Lang)}
+     * @deprecated Use {@link RDFDataMgr#createReader(Lang)}
      */
     @Deprecated  
     public static LangRIOT createParser(Tokenizer tokenizer, Lang lang, String baseIRI, StreamRDF dest)

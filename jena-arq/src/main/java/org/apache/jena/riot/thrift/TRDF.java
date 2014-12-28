@@ -61,7 +61,7 @@ public class TRDF {
 
     /**
      * Create Thrift protocol for the OutputStream.
-     * The caller must call {@linkplain TRDF#flush(TProtocol)} 
+     * The caller must call {@link TRDF#flush(TProtocol)} 
      * which will flush the underlying (internally buffered) output stream. 
      * @param out OutputStream
      */
@@ -78,7 +78,7 @@ public class TRDF {
     }
 
     /**
-     * Decode the contents of the input stream and send to the {@linkplain StreamRDF}.
+     * Decode the contents of the input stream and send to the {@link StreamRDF}.
      * @param filename
      */
     public static TProtocol protocol(String filename) {
@@ -96,12 +96,12 @@ public class TRDF {
         throw new RiotThriftException("No protocol impl choosen") ;
     }
 
-    /** Flush a TProtocol; expections converted to {@linkplain RiotException} */  
+    /** Flush a TProtocol; expections converted to {@link RiotException} */  
     public static void flush(TProtocol protocol) {
         flush(protocol.getTransport()) ;
     }
 
-    /** Flush a TTransport; expections converted to {@linkplain RiotException} */  
+    /** Flush a TTransport; expections converted to {@link RiotException} */  
     public static void flush(TTransport transport) {
         try { transport.flush() ; }
         catch (TException ex) { TRDF.exception(ex) ; }
