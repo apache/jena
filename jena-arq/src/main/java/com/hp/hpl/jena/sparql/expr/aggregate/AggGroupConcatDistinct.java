@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -27,8 +26,7 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 
 public class AggGroupConcatDistinct extends AggregatorBase
 {
@@ -53,30 +51,13 @@ public class AggGroupConcatDistinct extends AggregatorBase
     public Aggregator copy(ExprList exprs) { return new AggGroupConcatDistinct(exprs.get(0), effectiveSeparator, separator) ; }
 
     @Override
-    public String toString()
-    {
-        String x = "GROUP_CONCAT(DISTINCT "+ExprUtils.fmtSPARQL(getExpr()) ;
-        if ( separator != null )
-        {
-            String y = StrUtils.escapeString(separator) ;
-            x = x+"; SEPARATOR='"+y+"'" ;
-        }
-        x = x+")" ;
-        return x ; 
-    }    
+    public String toPrefixString() {
+        return AggGroupConcat.prefixGroupConcatString(super.isDistinct,  separator, getExprList()) ;
+    }
     
     @Override
-    public String toPrefixString()
-    {
-        String x = "(group_concat distinct " ;
-        
-        if ( separator != null )
-        {
-            String y = StrUtils.escapeString(separator) ;
-            x = x+"(separator '"+y+"') " ;
-        }
-        x = x+WriterExpr.asString(getExpr())+")" ;
-        return x ; 
+    public String asSparqlExpr(SerializationContext sCxt) {
+        return AggGroupConcat.asSparqlExpr(isDistinct, separator, exprList, sCxt) ;
     }
 
     @Override

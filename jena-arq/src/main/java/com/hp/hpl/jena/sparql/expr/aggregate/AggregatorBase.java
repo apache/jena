@@ -95,21 +95,6 @@ public abstract class AggregatorBase implements Aggregator
         return copy(e) ;
     }
     
-    @Override
-    public String asSparqlExpr(SerializationContext sCxt) {
-        IndentedLineBuffer x = new IndentedLineBuffer() ;
-        x.append(getName()) ;
-        x.append("(") ;
-        if ( isDistinct )
-            x.append("DISTINCT") ;
-        if ( getExprList() != null ) {
-            x.append(" ");
-            ExprUtils.fmtSPARQL(x, getExprList(), sCxt) ;
-        }
-        x.append(")") ;
-        return x.asString() ;
-    }
-    
     /** Many aggergate use a single expression.
      *  This convebnience operation gets the expression if there is exactly one.
      */
@@ -127,6 +112,19 @@ public abstract class AggregatorBase implements Aggregator
 
     @Override
     public String toString()                { return asSparqlExpr(null) ; }
+
+    @Override
+    public String asSparqlExpr(SerializationContext sCxt) {
+        IndentedLineBuffer x = new IndentedLineBuffer() ;
+        x.append(getName()) ;
+        x.append("(") ;
+        if ( isDistinct )
+            x.append("DISTINCT ") ;
+        if ( getExprList() != null )
+            ExprUtils.fmtSPARQL(x, getExprList(), sCxt) ;
+        x.append(")") ;
+        return x.asString() ;
+    }
 
     @Override
     public String toPrefixString() {
