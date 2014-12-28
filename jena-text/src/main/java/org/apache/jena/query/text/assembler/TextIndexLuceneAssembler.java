@@ -45,12 +45,12 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
     /*
     <#index> a :TextIndexLucene ;
         #text:directory "mem" ;
+        #text:directory "DIR" ;
         text:directory <file:DIR> ;
         text:entityMap <#endMap> ;
         .
     */
 
-    @SuppressWarnings("resource")
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {
         try {
@@ -61,10 +61,13 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             
             RDFNode n = root.getProperty(pDirectory).getObject() ;
             if ( n.isLiteral() ) {
-                if ( !"mem".equals(n.asLiteral().getLexicalForm()) )
-                    throw new TextIndexException("No 'text:directory' property on " + root
-                                                 + " is a literal and not \"mem\"") ;
-                directory = new RAMDirectory() ;
+                String literalValue = n.toString() ; 
+                if (literalValue.equals("mem")) {
+                    directory = new RAMDirectory() ;
+                } else {
+                    File dir = new File(literalValue) ;
+                    directory = FSDirectory.open(dir) ;
+                }
             } else {
                 Resource x = n.asResource() ;
                 String path = IRILib.IRIToFilename(x.getURI()) ;
