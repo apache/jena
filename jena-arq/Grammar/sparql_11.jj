@@ -684,7 +684,16 @@ Expr FunctionCall() : { String fname ; ExprList a ; }
 {
   fname = iri()
   a = ArgList()
-  { return new E_Function(fname, a) ; }
+  {
+     if ( AggregateRegistry.isRegistered(fname) ) {
+         if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
+         Aggregator agg = AggregatorFactory.create(fname, a) ;
+         Expr exprAgg = getQuery().allocAggregate(agg) ;
+         return exprAgg ;
+     }
+     return new E_Function(fname, a) ;
+  }
 }
 ExprList ArgList() : { Expr expr ; boolean distinct = false ;
                       ExprList args = new ExprList() ; Token t ; }
@@ -1332,6 +1341,13 @@ Expr iriOrFunction() : { String iri ; ExprList a = null ;
   (a = ArgList())?
   { if ( a == null )
        return asExpr(createNode(iri)) ;
+    if ( AggregateRegistry.isRegistered(iri) ) {
+         if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
+         Aggregator agg = AggregatorFactory.create(iri, a) ;
+         Expr exprAgg = getQuery().allocAggregate(agg) ;
+         return exprAgg ;
+      }
     return new E_Function(iri, a) ;
   }
 }

@@ -2257,7 +2257,14 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
                         String fname ; ExprList a ;
     fname = iri();
     a = ArgList();
-    {if (true) return new E_Function(fname, a) ;}
+     if ( AggregateRegistry.isRegistered(fname) ) {
+         if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
+         Aggregator agg = AggregatorFactory.createCustom(fname, a) ;
+         Expr exprAgg = getQuery().allocAggregate(agg) ;
+         {if (true) return exprAgg ;}
+     }
+     {if (true) return new E_Function(fname, a) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -4617,6 +4624,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
     if ( a == null )
        {if (true) return asExpr(createNode(iri)) ;}
+    if ( AggregateRegistry.isRegistered(iri) ) {
+         if ( ! allowAggregatesInExpressions )
+            throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
+         Aggregator agg = AggregatorFactory.createCustom(iri, a) ;
+         Expr exprAgg = getQuery().allocAggregate(agg) ;
+         {if (true) return exprAgg ;}
+      }
     {if (true) return new E_Function(iri, a) ;}
     throw new Error("Missing return statement in function");
   }

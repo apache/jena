@@ -64,7 +64,7 @@ public class AggregatorFactory {
         return new AggNull() ;
     }
 
-    public static Aggregator create(String iri, ExprList a) {
+    public static Aggregator createCustom(String iri, ExprList a) {
         if ( ! AggregateRegistry.isRegistered(iri) )
             Log.fatal(AggregatorFactory.class, "Not registered: custom aggregate <"+iri+">") ;
         return new AggCustom(iri, a) ;

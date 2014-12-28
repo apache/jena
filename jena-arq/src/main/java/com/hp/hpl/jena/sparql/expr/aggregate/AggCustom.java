@@ -52,14 +52,18 @@ public class AggCustom extends AggregatorBase
     @Override
     public String asSparqlExpr(SerializationContext sCxt) {
         IndentedLineBuffer x = new IndentedLineBuffer() ;
-        x.append("(") ;
-        x.incIndent(); 
-        x.append(getName().toLowerCase(Locale.ROOT)) ;
-        x.append(" <") ;
+        if ( false ) {
+            // AGG <iri>(...) syntax.
+            x.append(getName()) ;
+            x.append(" ") ;
+        }
+        x.append("<") ;
         x.append(iri);
         x.append(">") ;
         if ( isDistinct )
-            x.append("DISTINCT ") ;
+            x.append(" DISTINCT ") ;
+        x.incIndent(); 
+        x.append("(") ;
         ExprUtils.fmtSPARQL(x, getExprList(), sCxt) ;
         x.append(")") ;
         return x.asString() ;
@@ -69,13 +73,12 @@ public class AggCustom extends AggregatorBase
     public String toPrefixString() { 
         IndentedLineBuffer x = new IndentedLineBuffer() ;
         x.append("(") ;
-        x.append(getName()) ;
+        x.append(getName().toLowerCase(Locale.ROOT)) ;
         x.append(" <") ;
         x.append(iri);
-        x.append(">") ;
+        x.append("> ") ;
         x.incIndent(); 
-
-        x.append(getName().toLowerCase(Locale.ROOT)) ;
+        
         if ( isDistinct )
             x.append("distinct ") ;
         boolean first = true ;
@@ -85,7 +88,6 @@ public class AggCustom extends AggregatorBase
             first = false ;
             WriterExpr.output(x, e, null) ;
             first = false ;
-
         }
         x.decIndent();
         x.append(")") ;
