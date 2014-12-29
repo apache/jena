@@ -135,12 +135,7 @@ public class CommandLine
         for ( ; i < argList.size() ; i++ )
         {
             String argStr = argList.get(i) ;
-            if (endProcessing(argStr))
-                break ;
             
-            if ( ignoreArgument(argStr) )
-                continue ;
-
             // If the flag has a "=" or :, it is long form --arg=value.
             // Split and insert the arg
             int j1 = argStr.indexOf('=') ;
@@ -186,11 +181,13 @@ public class CommandLine
 
                 argDecl.trigger(arg) ;
             }
-            else
+            else {
                 handleUnrecognizedArg( argList.get(i) );
 //                if ( ! getIgnoreUnknown() )
 //                    // Not recognized
 //                    throw new IllegalArgumentException("Unknown argument: "+argStr) ;
+
+            }
         }
 
         // Remainder.
