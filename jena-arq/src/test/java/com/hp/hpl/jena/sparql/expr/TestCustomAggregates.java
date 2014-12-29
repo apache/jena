@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -28,11 +29,9 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
@@ -145,5 +144,20 @@ public class TestCustomAggregates extends BaseTest {
             assertEquals(-1, v) ;
         }
     }
+    
+    @Test public void customAgg_22() {
+        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) {?s ?p ?o }" ;
+        Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
+        Op op = Algebra.compile(q) ;
+        String x = StrUtils.strjoinNL
+            ("(project (?x)"
+            ,"   (extend ((?x ?.0))"
+            ,"       (group () ((?.0 (agg <http://example.test/agg> ?o)))"
+            ,"         (bgp (triple ?s ?p ?o)))))"
+             ) ;
+        Op op2 = SSE.parseOp(x) ;
+        assertEquals(op2, op); 
+    }
+
 }
 
