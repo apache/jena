@@ -97,8 +97,7 @@ public abstract class AbstractRegexpBasedTest {
 	}
 
 	protected final void assertContainsRegex(String expected, String[] lst) {
-
-		Pattern patt = Pattern.compile(expected, Pattern.DOTALL);
+		Pattern patt = Pattern.compile(expected, Pattern.DOTALL|Pattern.CASE_INSENSITIVE);
 		for (String s : lst) {
 			if (patt.matcher(s).find()) {
 				return;
