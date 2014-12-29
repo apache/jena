@@ -1397,10 +1397,10 @@ public class BuilderExpr
             Item z = x.car() ;
             if ( ! z.isNodeURI() )
                 BuilderLib.broken(list, "Not an IRI for aggregate: "+z) ;
+            x = x.cdr() ;
             boolean distinct = startsWithDistinct(x) ;
             if ( distinct )
                 x = x.cdr();
-            x = list.cdr();
             ExprList e = buildExprListUntagged(x, 0) ;
             Aggregator agg = AggregatorFactory.createCustom(z.getNode().getURI(), e) ;
             return new ExprAggregator(null, agg) ; 
