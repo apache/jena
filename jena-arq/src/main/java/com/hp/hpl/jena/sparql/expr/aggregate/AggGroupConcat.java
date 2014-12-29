@@ -126,6 +126,7 @@ public class AggGroupConcat extends AggregatorBase
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof AggGroupConcat ) )
             return false ;
         AggGroupConcat agg = (AggGroupConcat)other ;

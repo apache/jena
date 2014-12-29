@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import java.util.Locale ;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryExecException ;
@@ -112,12 +113,19 @@ public class AggCustom extends AggregatorBase
     public String getIRI()                  { return iri ; }
 
     @Override
-    public int hashCode()   { return HC_AggNull ; }
+    public int hashCode()   { return HC_AggCustom ^ getExprList().hashCode() ^ iri.hashCode() ; }
+    
     @Override
     public boolean equals(Object other)
     {
-        if ( this == other ) return true ; 
-        return ( other instanceof AggCustom ) ;
+        if ( this == other ) return true ;
+        if ( ! ( other instanceof AggCustom ) )
+            return false ;
+        AggCustom agg = (AggCustom)other ;
+        return 
+            Lib.equal(this.iri, agg.iri) &&
+            this.isDistinct == agg.isDistinct &&
+            Lib.equal(this.getExprList(), agg.getExprList()) ;
     } 
 
     public static Accumulator createAccNull() { return new  AccCustom() ; }

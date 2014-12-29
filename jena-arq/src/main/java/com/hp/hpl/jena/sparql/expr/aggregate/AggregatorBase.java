@@ -174,5 +174,6 @@ public abstract class AggregatorBase implements Aggregator
     protected static final int HC_AggGroupConcatDistinct    =  0x17F ;
     
     protected static final int HC_AggNull                   =  0x180 ;
+    protected static final int HC_AggCustom                 =  0x181 ;
     
 }

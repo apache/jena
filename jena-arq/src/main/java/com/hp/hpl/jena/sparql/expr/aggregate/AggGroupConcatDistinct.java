@@ -77,6 +77,7 @@ public class AggGroupConcatDistinct extends AggregatorBase
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof AggGroupConcatDistinct ) )
             return false ;
         AggGroupConcatDistinct agg = (AggGroupConcatDistinct)other ;

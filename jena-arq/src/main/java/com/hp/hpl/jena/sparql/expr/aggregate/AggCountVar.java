@@ -45,6 +45,7 @@ public class AggCountVar extends AggregatorBase
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof AggCountVar ) )
             return false ;
         AggCountVar agg = (AggCountVar)other ;
