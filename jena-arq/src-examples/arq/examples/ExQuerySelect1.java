@@ -63,23 +63,22 @@ public class ExQuerySelect1
         // Create a single execution of this query, apply to a model
         // which is wrapped up as a Dataset
         
-        QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-        // Or QueryExecutionFactory.create(queryString, model) ;
+        try(QueryExecution qexec = QueryExecutionFactory.create(query, model)){
+            // Or QueryExecutionFactory.create(queryString, model) ;
 
-        System.out.println("Titles: ") ;
-        
-        try {
+            System.out.println("Titles: ") ;
+
             // Assumption: it's a SELECT query.
             ResultSet rs = qexec.execSelect() ;
-            
+
             // The order of results is undefined. 
             for ( ; rs.hasNext() ; )
             {
                 QuerySolution rb = rs.nextSolution() ;
-                
+
                 // Get title - variable names do not include the '?' (or '$')
                 RDFNode x = rb.get("title") ;
-                
+
                 // Check the type of the result value
                 if ( x.isLiteral() )
                 {
@@ -88,13 +87,8 @@ public class ExQuerySelect1
                 }
                 else
                     System.out.println("Strange - not a literal: "+x) ;
-                    
+
             }
-        }
-        finally
-        {
-            // QueryExecution objects should be closed to free any system resources 
-            qexec.close() ;
         }
     }
     
