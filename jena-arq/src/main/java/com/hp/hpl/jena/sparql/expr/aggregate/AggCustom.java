@@ -26,6 +26,7 @@ import org.apache.jena.atlas.lib.Lib ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -53,8 +54,10 @@ public class AggCustom extends AggregatorBase
     @Override
     public String asSparqlExpr(SerializationContext sCxt) {
         IndentedLineBuffer x = new IndentedLineBuffer() ;
-        if ( false ) {
-            // AGG <iri>(...) syntax.
+        if ( ! AggregateRegistry.isRegistered(iri) ) {
+            // If not registered and if parsed in again not registered, it becomes a function.
+            // AGG <iri>(...) syntax.  It can;'t have been legal SPARQL 1.1 unless it got
+            // unregistered in which case all bets are off anyway.
             x.append(getName()) ;
             x.append(" ") ;
         }
@@ -113,12 +116,29 @@ public class AggCustom extends AggregatorBase
     public String getIRI()                  { return iri ; }
 
     @Override
-    public int hashCode()   { return HC_AggCustom ^ getExprList().hashCode() ^ iri.hashCode() ; }
+    public int hashCode()   {
+        if ( ! AggregateRegistry.isRegistered(iri) ) {
+            return asFunction().hashCode() ;
+        }
+        return HC_AggCustom ^ getExprList().hashCode() ^ iri.hashCode() ;
+    }
+    
+    private E_Function asFunction() {
+        return new E_Function(iri, exprList) ;
+    }
     
     @Override
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
+        
+        if ( ! AggregateRegistry.isRegistered(iri) ) {
+            E_Function f1 = asFunction() ;
+            if ( other instanceof AggCustom )
+                other = ((AggCustom)other).asFunction() ;
+            return f1.equals(other) ;
+        }
+        
         if ( ! ( other instanceof AggCustom ) )
             return false ;
         AggCustom agg = (AggCustom)other ;
