@@ -66,7 +66,7 @@ public class AggregatorFactory {
 
     public static Aggregator createCustom(String iri, ExprList a) {
         if ( ! AggregateRegistry.isRegistered(iri) )
-            Log.fatal(AggregatorFactory.class, "Not registered: custom aggregate <"+iri+">") ;
+            Log.warn(AggregatorFactory.class, "Not registered: custom aggregate <"+iri+">") ;
         return new AggCustom(iri, a) ;
     }
 }
