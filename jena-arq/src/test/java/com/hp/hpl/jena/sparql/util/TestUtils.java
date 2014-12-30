@@ -35,7 +35,7 @@ public class TestUtils {
 		Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1,"Z") ;
 		assertEquals("1984-03-22T14:32:01.000+00:00", calendarToXSDDateTimeString(cal));
 		cal.setTimeZone(TimeZone.getTimeZone("MST"));
-		assertEquals("1984-03-22T14:32:01.000-07:00", calendarToXSDDateTimeString(cal));
+		assertEquals("1984-03-22T07:32:01.000-07:00", calendarToXSDDateTimeString(cal));
 	}
 
 	@Test
@@ -45,17 +45,15 @@ public class TestUtils {
 		assertEquals("1984-03-22+00:00", calendarToXSDDateString(cal));
 		cal.setTimeZone(TimeZone.getTimeZone("MST"));
 		assertEquals("1984-03-22-07:00", calendarToXSDDateString(cal));
-
 	}
 
 	@Test
 	public void testCalendarToXSDTimeString() throws Exception {
 		Calendar cal = createCalendar(1984, Calendar.MARCH, 22, 14, 32, 1, "GMT+01:00");
-		cal.setTimeZone(TimeZone.getTimeZone("GMT+01:00")) ;
-		// Moves the cal
-		assertEquals("13:32:01.000+01:00", calendarToXSDTimeString(cal));
+		assertEquals("14:32:01.000+01:00", calendarToXSDTimeString(cal));
+		// Different timezone - moves the cal point-in-time.
 		cal.setTimeZone(TimeZone.getTimeZone("MST"));
-		assertEquals("13:32:01.000-07:00", calendarToXSDTimeString(cal));
+		assertEquals("06:32:01.000-07:00", calendarToXSDTimeString(cal));
 	}
 	
 	private static Calendar createCalendar(int year, int month, int dayOfMonth, int hourOfDay,
