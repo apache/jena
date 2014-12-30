@@ -237,6 +237,8 @@ public class ArgDecl
 
     static String canonicalForm(String str)
     {
+        if ( str.equals("-") )
+            return str;
         if ( str.startsWith("--") )
             return str.substring(2) ;
 

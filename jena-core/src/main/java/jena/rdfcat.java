@@ -265,6 +265,9 @@ public class rdfcat
 
     /* main loop */
     protected void go( String[] args ) {
+        if (args == null || args.length == 0) {
+            usage();
+        }
         // ensure we use the new RIOT parser subsystem
         enableRIOTParser();
 
