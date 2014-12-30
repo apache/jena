@@ -38,9 +38,24 @@ public class Utils {
     //    FastDateFormat uses "ZZ" for this.
     private static final FastDateFormat dateTimeFmt_display = FastDateFormat.getInstance("yyyy/MM/dd HH:mm:ss z") ;
     private static final FastDateFormat dateFmt_yyyymmdd    = FastDateFormat.getInstance("yyyy-MM-ddZZ") ;
-    private static final FastDateFormat dateTimeFmt_XSD     = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSZZ") ;
-    private static final FastDateFormat timeFmt_hhmmssSS    = FastDateFormat.getInstance("HH:mm:ss.SSSZZ") ;
+    
+    // Canonical form of datetimes: as of XML Schema Datatypes 1.1
+    // http://www.w3.org/TR/xmlschema11-2/
+    // The canonical form of seconds, including fractional part is the minimum length number,
+    // so the milliseconds never ends in zero.  
+    // Whole seconds have no fractional part.
+    // Jena uses millis as 3 digits if non-zero.
+    
+    // For milliseconds == 0
+    private static final FastDateFormat dateTimeFmt_XSD_ms0     = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssZZ") ;
+    // For milliseconds != 0
+    private static final FastDateFormat dateTimeFmt_XSD_ms      = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSZZ") ;
 
+    // For milliseconds == 0
+    private static final FastDateFormat timeFmt_XSD_ms0         = FastDateFormat.getInstance("HH:mm:ssZZ") ;
+    // For milliseconds != 0
+    private static final FastDateFormat timeFmt_XSD_ms          = FastDateFormat.getInstance("HH:mm:ss.SSSZZ") ;
+    
     static public String className(Object obj) {
         if ( obj == null )
             return "null" ;
@@ -80,16 +95,28 @@ public class Utils {
         return dateFormat.format(new Date()) ;
     }
 
+    private static boolean hasZeroMilliSeconds(Calendar cal) {
+        return ! cal.isSet(Calendar.MILLISECOND) || cal.get(Calendar.MILLISECOND) == 0 ;
+    }
+    
+    // Canonical fom : if ms == 0, don't include in the string.
     public static String calendarToXSDDateTimeString(Calendar cal) {
-        return calendarToXSDString(cal, dateTimeFmt_XSD) ;
+        FastDateFormat fmt = hasZeroMilliSeconds(cal) 
+            ? dateTimeFmt_XSD_ms0 
+            : dateTimeFmt_XSD_ms ;
+        return calendarToXSDString(cal, fmt) ;
     }
 
     public static String calendarToXSDDateString(Calendar cal) {
         return calendarToXSDString(cal, dateFmt_yyyymmdd) ;
     }
 
+    // Canonical fom : if ms == 0, don't include in the string.
     public static String calendarToXSDTimeString(Calendar cal) {
-        return calendarToXSDString(cal, timeFmt_hhmmssSS) ;
+        FastDateFormat fmt = hasZeroMilliSeconds(cal) 
+            ? timeFmt_XSD_ms0 
+            : timeFmt_XSD_ms ;
+        return calendarToXSDString(cal, fmt) ;
     }
 
     private static String calendarToXSDString(Calendar cal, FastDateFormat fmt) {
