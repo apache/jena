@@ -445,7 +445,6 @@ public class ARQ
     {
         SystemARQ.StrictDateTimeFO      = true ;
         SystemARQ.ValueExtensions       = false ;
-        SystemARQ.SameValueAsString     = false ;
         SystemARQ.EnableRomanNumerals   = false ;
         
         context.set(optimization,                   false) ;
@@ -467,7 +466,6 @@ public class ARQ
     public static void setNormalMode() {
         SystemARQ.StrictDateTimeFO      = false ;
         SystemARQ.ValueExtensions       = true ;
-        SystemARQ.SameValueAsString     = true ;
         SystemARQ.EnableRomanNumerals   = false ;
         setNormalMode(ARQ.getContext()) ; 
     }
@@ -553,7 +551,6 @@ public class ARQ
     {
         SystemARQ.StrictDateTimeFO      = false ;
         SystemARQ.ValueExtensions       = true ;
-        SystemARQ.SameValueAsString     = true ;
         SystemARQ.EnableRomanNumerals   = false ; 
 
         Context context = new Context() ;

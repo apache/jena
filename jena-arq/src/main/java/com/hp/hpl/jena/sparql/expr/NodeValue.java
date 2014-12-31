@@ -1063,8 +1063,8 @@ public abstract class NodeValue extends ExprNode
 
         try { // DatatypeFormatException - should not happen
             
-            if ( SystemARQ.SameValueAsString && XSDstring.isValidLiteral(lit) ) 
-                    // String - plain or xsd:string
+            if ( XSDstring.isValidLiteral(lit) ) 
+                // String - plain or xsd:string, or derived datatype.
                 return new NodeValueString(lit.getLexicalForm(), node) ;
             
             // Otherwise xsd:string is like any other unknown datatype.
