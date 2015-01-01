@@ -18,11 +18,12 @@
 
 package com.hp.hpl.jena.graph.compose;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.CollectionFactory;
-import com.hp.hpl.jena.util.iterator.*;
+import java.util.Set ;
 
-import java.util.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.util.CollectionFactory ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
     A class representing the dynamic union of two graphs. Addition only affects the left 
@@ -58,7 +59,7 @@ public class Union extends Dyadic implements Graph
         duplicates. That last is a performance penalty, but I see no way to remove it
         unless we know the graphs do not overlap.
     */
-	@Override protected ExtendedIterator<Triple> _graphBaseFind( final TripleMatch t ) 
+	@Override protected ExtendedIterator<Triple> _graphBaseFind( final Triple t ) 
 	    {
 	    Set<Triple> seen = CollectionFactory.createHashedSet();
         return recording( L.find( t ), seen ).andThen( rejecting( R.find( t ), seen ) ); 

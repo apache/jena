@@ -97,8 +97,14 @@ public class WrappedGraph implements GraphWithPerform
         getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
     }
 
+    /** @depracted Use {@link #find(Triple)} */
     @Override
+    @Deprecated
     public ExtendedIterator<Triple> find( TripleMatch m )
+    { return SimpleEventManager.notifyingRemove( this, base.find( m ) ); }
+
+    @Override
+    public ExtendedIterator<Triple> find( Triple m )
     { return SimpleEventManager.notifyingRemove( this, base.find( m ) ); }
 
     @Override

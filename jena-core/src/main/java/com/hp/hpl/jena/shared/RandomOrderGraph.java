@@ -50,8 +50,8 @@ public class RandomOrderGraph extends WrappedGraph {
 	}
 	
 	@Override
-    public ExtendedIterator<Triple> find( TripleMatch m )
-	{ return new RandomOrderIterator<>(bufsz,super.find( m ));
+    public ExtendedIterator<Triple> find( Triple triple )
+	{ return new RandomOrderIterator<>(bufsz,super.find( triple ));
 	}
 
 	@Override

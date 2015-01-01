@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.util.graph;
 
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.NullIterator ;
@@ -28,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator ;
 public class GraphSink extends GraphBase
 {
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(Triple triple)
     { return NullIterator.instance() ; }
     
     @Override

@@ -23,6 +23,7 @@ import com.hp.hpl.jena.shared.AddDeniedException ;
 import com.hp.hpl.jena.shared.DeleteDeniedException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NullIterator ;
 
 /**
     The interface to be satisfied by implementations maintaining collections
@@ -38,7 +39,7 @@ public interface Graph
     */
     public static final Graph emptyGraph = new GraphBase()
         { @Override
-        public ExtendedIterator<Triple> graphBaseFind( TripleMatch tm ) { return Triple.None; } };
+        public ExtendedIterator<Triple> graphBaseFind( Triple tm ) { return NullIterator.instance(); } };
     	
     /** 
         true if this graph's content depends on the other graph. May be
@@ -100,10 +101,21 @@ public interface Graph
 	   
         @param m a Triple[Match] encoding the pattern to look for
         @return an iterator of all triples in this graph that match m
+        @deprecated Use {@link #find(Triple)}
     */
+	@Deprecated 
 	ExtendedIterator<Triple> find(TripleMatch m);
-    
-	  /** Returns an iterator over Triple.
+	
+	/** 
+        Returns an iterator over all the Triples that match the triple pattern.
+   
+        @param m a Triple[Match] encoding the pattern to look for
+        @return an iterator of all triples in this graph that match m
+	 */
+	ExtendedIterator<Triple> find(Triple m);
+
+
+/** Returns an iterator over Triple.
 	   */
 	ExtendedIterator<Triple> find(Node s,Node p,Node o);
     

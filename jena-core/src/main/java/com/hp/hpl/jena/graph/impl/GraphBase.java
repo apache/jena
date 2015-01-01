@@ -260,9 +260,18 @@ public abstract class GraphBase implements GraphWithPerform
          <code>m</code>. Subclasses cannot over-ride this, because it implements
          the appending of reification quadlets; instead they must implement
          graphBaseFind(TripleMatch).
+         @deprecated Use {@link #find(Triple)} 
 	*/
+	@Deprecated
     @Override
     public final ExtendedIterator<Triple> find(TripleMatch m)
+    {
+        checkOpen() ;
+        return graphBaseFind(m) ;
+    }
+
+    @Override
+    public final ExtendedIterator<Triple> find(Triple m)
     {
         checkOpen() ;
         return graphBaseFind(m) ;
@@ -272,11 +281,17 @@ public abstract class GraphBase implements GraphWithPerform
         Answer an iterator over all the triples held in this graph's non-reified triple store
         that match <code>m</code>. Subclasses <i>must</i> override; it is the core
         implementation for <code>find(TripleMatch)</code>.
+        @deprecated Use/implement {@link #graphBaseFind(Triple)}
     */
-    protected abstract ExtendedIterator<Triple> graphBaseFind( TripleMatch m );
+    @Deprecated
+    protected ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) {
+        return graphBaseFind( (Triple)m ) ;
+    }
 
-    public ExtendedIterator<Triple> forTestingOnly_graphBaseFind( TripleMatch tm )
-        { return graphBaseFind( tm ); }
+    protected abstract ExtendedIterator<Triple> graphBaseFind( Triple triplePattern );
+
+    public ExtendedIterator<Triple> forTestingOnly_graphBaseFind( Triple t )
+        { return graphBaseFind( t ); }
     
     /**
          

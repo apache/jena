@@ -133,8 +133,8 @@ public class GraphMem extends GraphMemBase
          Answer an ExtendedIterator over all the triples in this graph that match the
          triple-pattern <code>m</code>. Delegated to the store.
      */
-    @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
-    { return store.find( m.asTriple() ); }
+    @Override public ExtendedIterator<Triple> graphBaseFind( Triple m ) 
+    { return store.find( m ); }
 
     /**
          Answer true iff this graph contains <code>t</code>. If <code>t</code>
