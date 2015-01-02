@@ -24,7 +24,7 @@ import org.apache.jena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -93,7 +93,7 @@ public interface DatasetGraph extends Closeable
     public Iterator<Quad> find() ;
     
     /** Find matching quads in the dataset - may include wildcards, Node.ANY or null
-     * @see Graph#find(TripleMatch)
+     * @see Graph#find(Triple)
      */
     public Iterator<Quad> find(Quad quad) ;
     

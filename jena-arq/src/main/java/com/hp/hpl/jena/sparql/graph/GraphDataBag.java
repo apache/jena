@@ -23,7 +23,6 @@ import org.apache.jena.atlas.data.ThresholdPolicy ;
 
 import com.hp.hpl.jena.graph.Capabilities ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.TripleMatchIterator ;
 import com.hp.hpl.jena.graph.impl.TripleStore ;
 import com.hp.hpl.jena.mem.GraphMemBase ;
@@ -115,9 +114,9 @@ public abstract class GraphDataBag extends GraphMemBase
     }
 
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
-        return new TripleMatchIterator(m.asTriple(), db.iterator()) ;
+        return new TripleMatchIterator(m, db.iterator()) ;
     }
 
 }

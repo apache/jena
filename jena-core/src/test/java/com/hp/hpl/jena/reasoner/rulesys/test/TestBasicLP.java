@@ -1315,10 +1315,10 @@ public class TestBasicLP  extends TestCase {
      * Generic test operation.
      * @param ruleSrc the source of the rules
      * @param triples a set of triples to insert in the graph before the query
-     * @param query the TripleMatch to search for
+     * @param query the Triple to search for
      * @param results the array of expected results
      */
-    private void doTest(String ruleSrc, Triple[] triples, TripleMatch query, Object[] results) {
+    private void doTest(String ruleSrc, Triple[] triples, Triple query, Object[] results) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
         Graph data = Factory.createGraphMem();
         for ( Triple triple : triples )
@@ -1334,10 +1334,10 @@ public class TestBasicLP  extends TestCase {
      * @param ruleSrc the source of the rules
      * @param tabled the predicates that should be tabled
      * @param triples a set of triples to insert in the graph before the query
-     * @param query the TripleMatch to search for
+     * @param query the Triple to search for
      * @param results the array of expected results
      */
-    private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, TripleMatch query, Object[] results) {
+    private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, Triple query, Object[] results) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
         Graph data = Factory.createGraphMem();
         for ( Triple triple : triples )
@@ -1352,10 +1352,10 @@ public class TestBasicLP  extends TestCase {
     /** 
      * Generic base test operation on a graph with the single triple (a, p, b)
      * @param ruleSrc the source of the rules
-     * @param query the TripleMatch to search for
+     * @param query the Triple to search for
      * @param results the array of expected results
      */
-    private void doBasicTest(String ruleSrc, TripleMatch query, Object[] results) {
+    private void doBasicTest(String ruleSrc, Triple query, Object[] results) {
         doTest(ruleSrc, new Triple[]{new Triple(a,p,b)}, query, results);
     }
     

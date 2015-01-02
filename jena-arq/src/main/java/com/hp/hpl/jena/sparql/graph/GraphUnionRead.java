@@ -26,7 +26,6 @@ import org.apache.jena.atlas.iterator.IteratorConcat ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
@@ -62,7 +61,7 @@ public class GraphUnionRead extends GraphBase
     }
 
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+    protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
         IteratorConcat<Triple> iter = new IteratorConcat<>() ;
         for ( Node gn : graphs )

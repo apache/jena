@@ -20,7 +20,6 @@ package com.hp.hpl.jena.graph.compose;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -35,7 +34,7 @@ public class DisjointUnion extends Dyadic
     public DisjointUnion( Graph L, Graph R )
         { super( L, R ); }
 
-    @Override protected ExtendedIterator<Triple> _graphBaseFind( TripleMatch m )
+    @Override protected ExtendedIterator<Triple> _graphBaseFind( Triple m )
         { return L.find( m ) .andThen( R.find( m ) ); }
     
     @Override public boolean graphBaseContains( Triple t )

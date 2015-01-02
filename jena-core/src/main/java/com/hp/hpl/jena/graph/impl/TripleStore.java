@@ -75,7 +75,7 @@ public interface TripleStore
          Answer an ExtendedIterator returning all the triples from this store that
          match the pattern <code>m = (S, P, O)</code>.
     */
-    public abstract ExtendedIterator<Triple> find( TripleMatch tm );
+    public abstract ExtendedIterator<Triple> find( Triple t );
 
     /**
         Clear this store, ie remove all triples from it.

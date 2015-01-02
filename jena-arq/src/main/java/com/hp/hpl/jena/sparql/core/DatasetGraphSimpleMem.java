@@ -28,7 +28,6 @@ import java.util.Set ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
@@ -167,7 +166,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
         public void performDelete(Triple t) { triples.remove(t) ; }
 
         @Override
-        protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+        protected ExtendedIterator<Triple> graphBaseFind(Triple m)
         {
             List<Triple> results = new ArrayList<>() ;
             for ( Triple t : triples )
@@ -194,7 +193,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
         public void performDelete(Triple t) { Quad q = new Quad(graphName, t) ; quads.remove(q) ; }
 
         @Override
-        protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+        protected ExtendedIterator<Triple> graphBaseFind(Triple m)
         {
             List<Triple> results = new ArrayList<>() ;
             
