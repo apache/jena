@@ -285,7 +285,12 @@ public abstract class GraphBase implements GraphWithPerform
     */
     @Deprecated
     protected ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) {
-        return graphBaseFind( (Triple)m ) ;
+        try {
+            return graphBaseFind( (Triple)m ) ;
+        } catch (ClassCastException ex) {
+            Triple t = Triple.createMatch(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+            return graphBaseFind( t ) ;
+        }
     }
 
     protected abstract ExtendedIterator<Triple> graphBaseFind( Triple triplePattern );
