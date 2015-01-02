@@ -333,7 +333,7 @@
           <shadedClassifierName>server</shadedClassifierName>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>org.apache.jena.fuseki.FusekiCmd</mainClass>
+              <mainClass>org.apache.jena.fuseki.cmd.FusekiCmd</mainClass>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
             <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
