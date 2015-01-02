@@ -17,27 +17,18 @@
  */
 package org.apache.jena.security.graph.impl;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphStatisticsHandler;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.TransactionHandler;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.shared.AddDeniedException;
-import com.hp.hpl.jena.shared.DeleteDeniedException;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.security.SecurityEvaluator ;
+import org.apache.jena.security.SecurityEvaluator.Action ;
+import org.apache.jena.security.graph.* ;
+import org.apache.jena.security.impl.ItemHolder ;
+import org.apache.jena.security.impl.SecuredItem ;
+import org.apache.jena.security.impl.SecuredItemImpl ;
+import org.apache.jena.security.utils.PermTripleFilter ;
 
-import org.apache.jena.security.SecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluator.Action;
-import org.apache.jena.security.graph.SecuredBulkUpdateHandler;
-import org.apache.jena.security.graph.SecuredCapabilities;
-import org.apache.jena.security.graph.SecuredGraph;
-import org.apache.jena.security.graph.SecuredGraphEventManager;
-import org.apache.jena.security.graph.SecuredPrefixMapping;
-import org.apache.jena.security.impl.ItemHolder;
-import org.apache.jena.security.impl.SecuredItem;
-import org.apache.jena.security.impl.SecuredItemImpl;
-import org.apache.jena.security.utils.PermTripleFilter;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.shared.AddDeniedException ;
+import com.hp.hpl.jena.shared.DeleteDeniedException ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
  * Implementation of SecuredGraph to be used by a SecuredItemInvoker proxy.
@@ -169,19 +160,28 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph
 		return retval;
 	}
 
-	@Override
-	public ExtendedIterator<Triple> find( final TripleMatch m )
-	{
-		checkRead();
-		ExtendedIterator<Triple> retval = holder.getBaseItem().find(m);
-		if (!canRead(Triple.ANY))
-		{
-			retval = retval.filterKeep(new PermTripleFilter(Action.Read, this));
-		}
-		return retval;
-	}
+	/** @deprecated Use/implement {@link #find(Triple)} */
+	@Deprecated
+    @Override
+    public ExtendedIterator<Triple> find( final TripleMatch m ) {
+	    return find(Triple.createMatch(m.getMatchSubject(),
+	                                   m.getMatchPredicate(),
+	                                   m.getMatchObject())) ;
+    }
+	
+    @Override
+    public ExtendedIterator<Triple> find( final Triple m )
+    {
+        checkRead();
+        ExtendedIterator<Triple> retval = holder.getBaseItem().find(m);
+        if (!canRead(Triple.ANY))
+        {
+            retval = retval.filterKeep(new PermTripleFilter(Action.Read, this));
+        }
+        return retval;
+    }
 
-	@SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation")
     @Override
 	public SecuredBulkUpdateHandler getBulkUpdateHandler()
 	{
