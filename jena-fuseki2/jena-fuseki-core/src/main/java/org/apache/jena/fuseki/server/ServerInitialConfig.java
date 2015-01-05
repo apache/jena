@@ -32,9 +32,8 @@ public class ServerInitialConfig {
     public boolean   allowUpdate      = false ;
     // Or this ...
     public String    fusekiConfigFile = null ;
-    
     // Special case - directly pass in the dataset graphs - datasetPath must be given.
-    // This is not persistet across server restarts. 
+    // This is not persistent across server restarts. 
     public DatasetGraph dsg           = null ;
     
 }
