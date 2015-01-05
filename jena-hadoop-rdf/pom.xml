@@ -11,7 +11,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>jena-hadoop-rdf</artifactId>
+  <artifactId>jena-elephas</artifactId>
   <version>0.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -22,14 +22,14 @@
     <relativePath>../jena-parent</relativePath>
   </parent>
 
-  <name>Apache Jena - RDF Tools for Hadoop</name>
+  <name>Apache Jena - Elephas</name>
   <description>A collection of tools for working with RDF on the Hadoop platform</description>
 
   <modules>
-    <module>hadoop-rdf-io</module>
-    <module>hadoop-rdf-common</module>
-    <module>hadoop-rdf-mapreduce</module>
-    <module>hadoop-rdf-stats</module>
+    <module>jena-elephas-io</module>
+    <module>jena-elephas-common</module>
+    <module>jena-elephas-mapreduce</module>
+    <module>jena-elephas-stats</module>
   </modules>
 
   <!-- Properties common across all profiles -->
@@ -42,22 +42,14 @@
 
 	<!-- Profiles to allow building for different Hadoop versions -->
   <profiles>
-    <!-- Hadoop 2.x Stable -->
+    <!-- Hadoop 2.x Latest -->
     <profile>
       <id>hadoop_2x</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <hadoop.version>2.5.1</hadoop.version>
-      </properties>
-    </profile>
-
-    <!-- Hadoop 0.23 -->
-    <profile>
-      <id>hadoop_023x</id>
-      <properties>
-        <hadoop.version>0.23.11</hadoop.version>
+        <hadoop.version>2.5.0</hadoop.version>
       </properties>
     </profile>
   </profiles>
@@ -75,7 +67,7 @@
         <artifactId>hadoop-mapreduce-client-common</artifactId>
         <version>${hadoop.version}</version>
       </dependency>
-
+      
       <!-- Jena Dependencies -->
       <dependency>
         <groupId>org.apache.jena</groupId>
