@@ -290,11 +290,16 @@ public class JettyFuseki {
 
     private void defaultServerConfig(int port, boolean loopback) {
         server = new Server() ;
-        ConnectionFactory f1 = new HttpConnectionFactory() ;
-        ConnectionFactory f2 = new SslConnectionFactory() ;
+        HttpConnectionFactory f1 = new HttpConnectionFactory() ;
+        // Some people do try very large operations ...
+        f1.getHttpConfiguration().setRequestHeaderSize(64 * 1024);
+        f1.getHttpConfiguration().setOutputBufferSize(5 * 1024 * 1024) ;
+        
+        //SslConnectionFactory f2 = new SslConnectionFactory() ;
         
         ServerConnector connector = new ServerConnector(server, f1) ; //, f2) ;
-        connector.setPort(port);
+        connector.setPort(port) ;
+        
         server.addConnector(connector);
         
         if ( loopback )
