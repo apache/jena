@@ -79,6 +79,7 @@
 	    <!--<phase/>-->
             <goals><goal>single</goal></goals>
             <configuration>
+	      <appendAssemblyId>false</appendAssemblyId>
               <descriptors>
                 <descriptor>assembly-dist.xml</descriptor>
               </descriptors>
