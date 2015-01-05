@@ -19,33 +19,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Apache Jena Fuseki (SPARQL 1.1 Server)</name>
-  <groupId>org.apache.jena</groupId>
-  <artifactId>jena-fuseki</artifactId>
+  <name>Apache Jena Fuseki - Binary distribution</name>
+  <artifactId>jena-fuseki-dist</artifactId>
   <version>2.0.0-SNAPSHOT</version>
-
-  <description>Apache Jena Fuseki</description>
+  <packaging>pom</packaging>
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <artifactId>jena-fuseki</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent> 
 
-  <packaging>pom</packaging>
+  <description>Fuseki distribution</description>
   <url>http://jena.apache.org/</url>
-
-  <repositories>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
 
   <organization>
     <name>Apache Jena</name>
@@ -60,22 +47,48 @@
   </licenses>
 
   <properties>
-    <this.root>${project.artifactId}-${project.version}</this.root>
-    
-    <server.jar.name>${this.root}-server</server.jar.name>
-    <!-- Eventually, move to jena-parent -->
-    <ver.jetty>9.1.1.v20140108</ver.jetty>
-    <ver.shiro>1.2.2</ver.shiro>
-
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>  
   </properties>
 
-  <modules>
-    <module>jena-fuseki-core</module>
-    <module>jena-fuseki-war</module>
-    <module>jena-fuseki-server</module>
-    <module>jena-fuseki-dist</module>
-  </modules>
+  <dependencies>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-server</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-war</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+
+  </dependencies>
+  <build>
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>create-zip-assembly</id>
+	    <phase>package</phase>
+	    <!--<phase/>-->
+            <goals><goal>single</goal></goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly-dist.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+
+  </build>
   
 </project>

@@ -34,7 +34,19 @@ Assumes jar made and onejar has been assembled.
 
   <baseDirectory>${project.artifactId}-${project.version}</baseDirectory>
 
+  <dependencySets>
+    <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
+      <includes>
+	<include>org.apache.jena:jena-fuseki-server:jar</include>
+	<include>org.apache.jena:jena-fuseki-war:war</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+
   <files>
+    
+    <!--
     <file>
       <source>${project.build.directory}/${server.jar.name}.jar</source>
       <outputDirectory></outputDirectory>
@@ -45,7 +57,7 @@ Assumes jar made and onejar has been assembled.
       <outputDirectory></outputDirectory>
       <destName>fuseki-server.war</destName>
     </file>
-
+    -->
     <file>
       <source>dist/LICENSE</source>
       <destName>LICENSE</destName>
@@ -80,7 +92,7 @@ Assumes jar made and onejar has been assembled.
     </fileSet>
 
      <fileSet>
-       <directory>src/main/webapp</directory>
+       <directory>../jena-fuseki-core/src/main/webapp</directory>
        <outputDirectory>webapp</outputDirectory>
     </fileSet>
 
