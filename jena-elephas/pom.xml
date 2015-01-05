@@ -49,7 +49,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <hadoop.version>2.5.0</hadoop.version>
+        <hadoop.version>2.6.0</hadoop.version>
       </properties>
     </profile>
   </profiles>

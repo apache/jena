@@ -77,7 +77,7 @@
         <!-- <module>jena-maven-tools</module>    -->
         <!-- <module>apache-jena-libs</module>    -->
         <!-- <module>apache-jena</module>         -->
-        <!-- <module>jena-hadoop-rdf</module> -->
+        <!-- <module>jena-elephas</module> -->
         <module>jena-extras</module>
       </modules>
     </profile>
@@ -116,7 +116,7 @@
         <module>jena-jdbc</module>
         <module>jena-maven-tools</module>
         
-        <module>jena-hadoop-rdf</module>
+        <module>jena-elephas</module>
 
         <module>apache-jena-libs</module>
         <module>apache-jena</module>

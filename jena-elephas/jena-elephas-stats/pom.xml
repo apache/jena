@@ -24,19 +24,19 @@
 		<version>0.9.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>jena-elephas-stats</artifactId>
-	<name>Apache Jena - RDF Tools for Hadoop - Statistics Demo App</name>
+	<name>Apache Jena - Elephas - Statistics Demo App</name>
 	<description>A demo application that can be run on Hadoop to produce a statistical analysis on arbitrary RDF inputs</description>
 
 	<dependencies>
 		<!-- Internal Project Dependencies -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-hadoop-rdf-io</artifactId>
+			<artifactId>jena-elephas-io</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-hadoop-rdf-mapreduce</artifactId>
+			<artifactId>jena-elephas-mapreduce</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
