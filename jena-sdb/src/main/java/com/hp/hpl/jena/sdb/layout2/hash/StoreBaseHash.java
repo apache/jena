@@ -21,7 +21,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
@@ -36,6 +35,7 @@ import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 import com.hp.hpl.jena.sdb.store.SQLGenerator;
 import com.hp.hpl.jena.sdb.store.StoreFormatter;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class StoreBaseHash extends StoreBase
 {
@@ -66,7 +66,7 @@ public class StoreBaseHash extends StoreBase
         {
             lang = node.getLiteralLanguage();
             datatype = node.getLiteralDatatypeURI();
-            if (datatype == null)
+            if ( NodeUtils.isSimpleString(node) || NodeUtils.isLangString(node) )
                 datatype = "";
         }
         

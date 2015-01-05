@@ -26,7 +26,7 @@ import org.apache.jena.atlas.lib.Bytes ;
 /** Hash values. */ 
 public class Hash
 {
-    byte [] bytes ;
+    private byte [] bytes ;
     public Hash(int len) { bytes = new byte[len] ; }
     public int getLen() { return bytes.length ; }
     public byte [] getBytes() { return bytes ; }

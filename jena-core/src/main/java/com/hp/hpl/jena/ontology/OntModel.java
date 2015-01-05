@@ -265,10 +265,10 @@ public interface OntModel
     /**
      * <p>
      * Answer an iterator that ranges over all of the various forms of class description resource
-     * in this model.  Class descriptions include {@linkplain #listEnumeratedClasses enumerated}
-     * classes, {@linkplain #listUnionClasses union} classes, {@linkplain #listComplementClasses complement}
-     * classes, {@linkplain #listIntersectionClasses intersection} classes, {@linkplain #listClasses named}
-     * classes and {@linkplain #listRestrictions property restrictions}.
+     * in this model.  Class descriptions include {@link #listEnumeratedClasses enumerated}
+     * classes, {@link #listUnionClasses union} classes, {@link #listComplementClasses complement}
+     * classes, {@link #listIntersectionClasses intersection} classes, {@link #listClasses named}
+     * classes and {@link #listRestrictions property restrictions}.
      * </p>
      * @return An iterator over class description resources.
      */

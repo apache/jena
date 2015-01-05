@@ -33,17 +33,19 @@ import org.apache.shiro.io.ResourceUtils ;
 import org.apache.shiro.web.env.EnvironmentLoader ;
 import org.apache.shiro.web.env.ResourceBasedWebEnvironment ;
 import org.apache.shiro.web.env.WebEnvironment ;
-import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** A place to perform Fuseki-specific initialization of Apache Shiro.
+ *  Runs after listener FusekiServerEnvironmentInit and before FusekiServerListener
  *  This means finding shiro.ini in multiple possible places, based on
  *  different deployment setups.
  */
 public class ShiroEnvironmentLoader extends EnvironmentLoader implements ServletContextListener {
-    private static Logger confLog = Fuseki.configLog ;
     private ServletContext servletContext ; 
+    
+    public ShiroEnvironmentLoader() {}
+    
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         FusekiServer.init() ; 
@@ -56,7 +58,6 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             // Exit?
             throw ex ;
         }
-        
     }
 
     @Override
@@ -68,9 +69,9 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
      * Normal Shiro initialization only supports one location for an INI file.
      *  
      * When given multiple multiple locations for the shiro.ini file, and 
-     * if a {@linkplain ResourceBasedWebEnvironment}, check the list of configuration
+     * if a {@link ResourceBasedWebEnvironment}, check the list of configuration
      * locations, testing whether the name identified an existing resource.  
-     * For the first resource name found to exist, reset the {@linkplain ResourceBasedWebEnvironment}
+     * For the first resource name found to exist, reset the {@link ResourceBasedWebEnvironment}
      * to name that resource alone so the normal Shiro initialization  
      */
     @Override
@@ -88,12 +89,10 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
     
     private static final String FILE = "file" ;
     
-    //Siro needs a URL, or a resource name.
-    // TODO Log choice.
-    // TODO check file: works.
-    
     /** Look for a Shiro ini file, or return null */
     private static String huntForShiroIni(String[] locations) {
+        FusekiEnv.setEnvironment() ;
+        Fuseki.init();
         for ( String loc : locations ) {
             // If file:, look for that file.
             // If a relative name without scheme, look in FUSEKI_BASE, FUSEKI_HOME, webapp. 
@@ -113,10 +112,11 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
             }
             // No scheme .
             Path p = Paths.get(loc) ;
-            String fn = resolve(FusekiServer.FUSEKI_BASE, p) ;
+            
+            String fn = resolve(FusekiEnv.FUSEKI_BASE, p) ;
             if ( fn != null )
                 return "file://"+fn ;
-            fn = resolve(FusekiServer.FUSEKI_HOME, p) ;
+            fn = resolve(FusekiEnv.FUSEKI_HOME, p) ;
             if ( fn != null )
                 return "file://"+fn ;
             

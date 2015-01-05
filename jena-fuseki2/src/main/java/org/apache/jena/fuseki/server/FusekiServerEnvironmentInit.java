@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,32 +16,26 @@
  * limitations under the License.
  */
 
-/*
- * LanguageTagSyntaxException.java
- *
- * Created on July 25, 2001, 9:32 AM
+package org.apache.jena.fuseki.server;
+
+import javax.servlet.ServletContextEvent ;
+import javax.servlet.ServletContextListener ;
+
+import org.apache.jena.fuseki.FusekiLogging ;
+
+/** Setup the enviroment and logging.
+ *  Runs before the ShiroEnvironmentLoader.
  */
+public class FusekiServerEnvironmentInit implements ServletContextListener {
 
-package com.hp.hpl.jena.rdfxml.xmlinput.lang;
-
-/**
- * A LanguageTag did not conform to RFC3066.
-  This exception is for the
- * syntactic rules of RFC3066 section 2.1.
- */
-public class LanguageTagSyntaxException extends java.lang.Exception {
-
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 5425207434895448094L;
-
-    /**
- * Constructs an <code>LanguageTagSyntaxException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    LanguageTagSyntaxException(String msg) {
-        super(msg);
+    public FusekiServerEnvironmentInit() { }
+    
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        FusekiEnv.setEnvironment();
+        FusekiLogging.setLogging();
     }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {}
 }

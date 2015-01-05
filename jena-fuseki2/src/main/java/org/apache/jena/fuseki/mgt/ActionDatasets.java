@@ -253,7 +253,7 @@ public class ActionDatasets extends ActionContainerItem {
         params.put(Template.NAME, dbName) ;
         FusekiServer.addGlobals(params); 
         
-        action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
+        //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType )) ;
         if ( dbType == null || dbName == null )
             ServletOps.errorBadRequest("Required parameters: dbName and dbType");
         if ( ! dbType.equals(tDatabasetTDB) && ! dbType.equals(tDatabasetMem) )
@@ -300,16 +300,20 @@ public class ActionDatasets extends ActionContainerItem {
             // Redo check inside transaction.
             if ( ref == null )
                 ServletOps.errorNotFound("No such dataset registered: "+name);
-                
-            // Name to graph
-            Quad q = getOne(SystemState.getDatasetGraph(), null, null, pServiceName.asNode(), null) ;
-            if ( q == null )
-                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
-            Node gn = q.getGraph() ;
 
-            action.log.info("SHUTDOWN NEEDED");
+            // Make it invisible to the outside.
             DataAccessPointRegistry.get().remove(name) ;
-            systemDSG.deleteAny(gn, null, null, null) ;
+            
+            // Name to graph
+            // Statically configured databases aren't in the system database.
+            Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), null) ;
+//            if ( q == null )
+//                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
+            if ( q != null ) {
+                Node gn = q.getGraph() ;
+                //action.log.info("SHUTDOWN NEEDED"); // To ensure it goes away?
+                systemDSG.deleteAny(gn, null, null, null) ;
+            }
             systemDSG.commit() ;
             committed = true ;
             ServletOps.success(action) ;

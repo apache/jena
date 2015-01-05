@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 /** Given an Iterator that returns Iterator's, this creates an
  * Iterator over the next level values.
  * Similar to list splicing in lisp.
- * @deprecated use {@linkplain com.hp.hpl.jena.util.iterator.WrappedIterator#create}
+ * @deprecated use {@link com.hp.hpl.jena.util.iterator.WrappedIterator#create}
  */
 @Deprecated
 public class IteratorIterator<T> implements Iterator<T>

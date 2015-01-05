@@ -18,10 +18,7 @@
 
 package org.apache.jena.riot;
 
-import java.util.Collection ;
-import java.util.Collections ;
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.* ;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.riot.out.CharSpace ;
@@ -276,6 +273,15 @@ public class RDFWriterRegistry
     public static Collection<RDFFormat> registeredDatasetFormats() {
         return Collections.unmodifiableSet(registryDataset.keySet()) ;
     }
+    
+    /** All registered formats */
+    public static Collection<RDFFormat> registered() {
+        Set<RDFFormat> x = new HashSet<>() ;
+        x.addAll(registryGraph.keySet()) ;
+        x.addAll(registryDataset.keySet()) ;
+        return Collections.unmodifiableSet(x) ;
+    }
+    
     
     /** Get the graph writer factory asscoiated with the language */
     public static WriterGraphRIOTFactory getWriterGraphFactory(Lang lang) {

@@ -40,7 +40,7 @@ import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** Operations on binary RDF (which uses <a href="http://thrift.apache.org/">Apache Thrift</a>).
- * See also {@linkplain ThriftConvert}, for specific functions on binary RDF.
+ * See also {@link ThriftConvert}, for specific functions on binary RDF.
  * @see ThriftConvert 
  */
 public class BinRDF {
@@ -49,10 +49,10 @@ public class BinRDF {
     private static int BUFSIZE_OUT  = 128*1024 ;
 
     /** 
-     * Create an {@linkplain StreamRDF} for output.  A filename ending {@code .gz} will have
+     * Create an {@link StreamRDF} for output.  A filename ending {@code .gz} will have
      * a gzip compressor added to the output path. A filename of "-" is {@code System.out}.
-     * The file is closed when {@linkplain StreamRDF#finish()} is called unless it is {@code System.out}.  
-     * Call {@linkplain StreamRDF#start()}...{@linkplain StreamRDF#finish()}.
+     * The file is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * 
      * @param filename The file
      * @return StreamRDF A stream to send to.
@@ -63,10 +63,10 @@ public class BinRDF {
     }
     
     /** 
-     * Create an {@linkplain StreamRDF} for output.  A filename ending {@code .gz} will have
+     * Create an {@link StreamRDF} for output.  A filename ending {@code .gz} will have
      * a gzip compressor added to the output path. A filename of "-" is {@code System.out}.
-     * The file is closed when {@linkplain StreamRDF#finish()} is called unless it is {@code System.out}.  
-     * Call {@linkplain StreamRDF#start()}...{@linkplain StreamRDF#finish()}.
+     * The file is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * 
      * @param filename The file
      * @param withValues - whether to encode numeric values as values.
@@ -81,9 +81,9 @@ public class BinRDF {
     }
     
     /** 
-     * Create an {@linkplain StreamRDF} for output.
-     * The {@code OutputStream} is closed when {@linkplain StreamRDF#finish()} is called unless it is {@code System.out}.  
-     * Call {@linkplain StreamRDF#start()}...{@linkplain StreamRDF#finish()}.
+     * Create an {@link StreamRDF} for output.
+     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * @param out OutputStream
      * @return StreamRDF A stream to send to. 
      */
@@ -92,9 +92,9 @@ public class BinRDF {
     }
     
     /** 
-     * Create an {@linkplain StreamRDF} for output.
-     * The {@code OutputStream} is closed when {@linkplain StreamRDF#finish()} is called unless it is {@code System.out}.  
-     * Call {@linkplain StreamRDF#start()}...{@linkplain StreamRDF#finish()}.
+     * Create an {@link StreamRDF} for output.
+     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * @param out OutputStream
      * @param withValues - whether to encode numeric values as values.
      * @return StreamRDF A stream to send to. 
@@ -104,9 +104,9 @@ public class BinRDF {
     }
 
     /** 
-     * Create an {@linkplain StreamRDF} for output.
-     * The {@code OutputStream} is closed when {@linkplain StreamRDF#finish()} is called unless it is {@code System.out}.  
-     * Call {@linkplain StreamRDF#start()}...{@linkplain StreamRDF#finish()}.
+     * Create an {@link StreamRDF} for output.
+     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * @param protocol Output and encoding.
      * @return StreamRDF A stream to send to. 
      */
@@ -115,9 +115,9 @@ public class BinRDF {
     }
 
     /** 
-     * Create an {@linkplain StreamRDF} for output.
-     * The {@code OutputStream} is closed when {@linkplain StreamRDF#finish()} is called unless it is {@code System.out}.  
-     * Call {@linkplain StreamRDF#start()}...{@linkplain StreamRDF#finish()}.
+     * Create an {@link StreamRDF} for output.
+     * The {@code OutputStream} is closed when {@link StreamRDF#finish()} is called unless it is {@code System.out}.  
+     * Call {@link StreamRDF#start()}...{@link StreamRDF#finish()}.
      * @param protocol Output and encoding.
      * @param withValues - whether to encode numeric values as values.
      * @return StreamRDF A stream to send to. 
@@ -127,7 +127,7 @@ public class BinRDF {
     }
 
     /**
-     * Decode the contents of the file and send to the {@linkplain StreamRDF}.
+     * Decode the contents of the file and send to the {@link StreamRDF}.
      * A filename ending {@code .gz} will have a gzip decompressor added.
      * A filename of "-" is {@code System.in}.
      * @param filename The file.
@@ -140,7 +140,7 @@ public class BinRDF {
     }
         
     /**
-     * Decode the contents of the input stream and send to the {@linkplain StreamRDF}.
+     * Decode the contents of the input stream and send to the {@link StreamRDF}.
      * @param in InputStream
      * @param dest StreamRDF
      */
@@ -150,7 +150,7 @@ public class BinRDF {
     }
 
     /**
-     * Decode the contents of the TProtocol and send to the {@linkplain StreamRDF}.
+     * Decode the contents of the TProtocol and send to the {@link StreamRDF}.
      * @param protocol TProtocol
      * @param dest Sink
      */

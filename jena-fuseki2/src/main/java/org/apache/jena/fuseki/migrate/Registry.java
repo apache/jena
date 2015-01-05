@@ -19,24 +19,21 @@
 package org.apache.jena.fuseki.migrate;
 
 import java.util.Collection ;
-import java.util.HashMap ;
 import java.util.Map ;
+import java.util.concurrent.ConcurrentHashMap ;
 
 public class Registry<K,T>
 {
-    protected Map<K, T> registry = new HashMap<>() ;
+    protected Map<K, T> registry = new ConcurrentHashMap<>() ;
     
     public Registry() {}
     
-    public void put(K key, T value) { registry.put(key, value) ; }
-    
-    public T get(K key) { return registry.get(key) ; }
-    
+    public void put(K key, T value)     { registry.put(key, value) ; }
+    public T get(K key)                 { return registry.get(key) ; }
     public boolean isRegistered(K key)  { return registry.containsKey(key) ; }
     public void remove(K key)           { registry.remove(key) ; } 
     public Collection<K> keys()         { return registry.keySet() ; }
-    //public Iterator<String> keys() { return registry.keySet().iterator() ; }
-    
+    //public Iterator<String> keys()      { return registry.keySet().iterator() ; }
     public int size()                   { return registry.size() ; }
     public boolean isEmpty()            { return registry.isEmpty() ; }
 }

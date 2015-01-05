@@ -22,9 +22,9 @@ import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.InputStream ;
 
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.system.* ;
 
 /** Example of using RIOT directly.
@@ -46,9 +46,7 @@ public class ExRIOT_2
         // RIOT controls the conversion from bytes to java chars.
         InputStream in = new FileInputStream("data.trig") ;
         
-        // Better is:
-        // RDFDataMgr.parse(noWhere, in, "http://example/base", RDFLanguages.TRIG, null) ;
-        RiotReader.parse(in, RDFLanguages.TRIG, "http://example/base", noWhere) ;
+        RDFDataMgr.parse(noWhere, in, "http://example/base", RDFLanguages.TRIG, null) ;
         
         // --- Or create a parser and do the parsing as separate steps.
         String baseURI = "http://example/base" ;
@@ -56,7 +54,8 @@ public class ExRIOT_2
         // It is always better to use an  InputStream, rather than a Java Reader.
         // The parsers will do the necessary character set conversion.  
         in = new FileInputStream("data.trig") ;
-        LangRIOT parser = RiotReader.createParser(in, RDFLanguages.TRIG, "http://example/base", noWhere) ;
+        
+        ReaderRIOT parser = RDFDataMgr.createReader(RDFLanguages.TRIG) ;
         
         // Access the setup of the RIOT built-in parsers.
         
@@ -67,12 +66,12 @@ public class ExRIOT_2
         ParserProfile profile = RiotLib.profile(baseURI, true, true, errHandler) ;
 
         // Just set the error handler.
-        parser.getProfile().setHandler(errHandler) ;
+        parser.setErrorHandler(errHandler) ;
         
         // Or replace the whole parser profile.
-        parser.setProfile(profile) ;
+        parser.setParserProfile(profile) ;
 
         // Do the work.
-        parser.parse() ;
+        parser.read(in, "http://example/base", null, noWhere, null);
     }
 }

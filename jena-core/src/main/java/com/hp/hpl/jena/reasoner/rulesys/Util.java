@@ -213,7 +213,7 @@ public class Util {
      * Construct a new integer valued node
      */
     public static Node makeIntNode(int value) {
-        return NodeFactory.createLiteral(LiteralLabelFactory.create( value ));
+        return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( value ));
     }
 
     /**
@@ -221,9 +221,9 @@ public class Util {
      */
     public static Node makeLongNode(long value) {
         if (value > Integer.MAX_VALUE) {
-            return NodeFactory.createLiteral(LiteralLabelFactory.create( value ));
+            return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( value ));
         } else {
-            return NodeFactory.createLiteral(LiteralLabelFactory.create( (int) value ));
+            return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( (int) value ));
         }
     }
 
@@ -231,7 +231,7 @@ public class Util {
      * Construct a new double valued node
      */
     public static Node makeDoubleNode(double value) {
-        return NodeFactory.createLiteral(LiteralLabelFactory.create( value ));
+        return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( value ));
     }
 
     /**

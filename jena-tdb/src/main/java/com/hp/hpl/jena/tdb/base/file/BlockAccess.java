@@ -29,7 +29,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
  * internally allocated space for read, not provided from outside; write() can
  * insist the block written comes from allocate()).
  * This interfce can also be backed by an in-memory implemntation 
- * ({@linkplain BlockAccessMem}, {@linkplain BlockAccessByteArray}).
+ * ({@link BlockAccessMem}, {@link BlockAccessByteArray}).
  * 
  * This is wrapped in a BlockMgr to provide a higher level abstraction.
  * 

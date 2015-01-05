@@ -40,7 +40,7 @@ public class TestGraphBaseToString extends GraphTestBase
         @Override public void performAdd( Triple t )
             { triples.add( t ); }
         
-        @Override protected ExtendedIterator<Triple> graphBaseFind( TripleMatch m )
+        @Override protected ExtendedIterator<Triple> graphBaseFind( Triple m )
             { return WrappedIterator.<Triple>create( triples.iterator() ); }
         }
 

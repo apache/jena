@@ -26,7 +26,6 @@ import com.hp.hpl.jena.rdf.model.Model ;
  *  <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol</a>.
  *  The factory methods in {@link DatasetAccessorFactory} provides creators for 
  *  {@code DatasetAccessor}s to local and remote (over HTTP) data.
- *  local na dremote   
  *  
  *  @see DatasetAccessorFactory
  */

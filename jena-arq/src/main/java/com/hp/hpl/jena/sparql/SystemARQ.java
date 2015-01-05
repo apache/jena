@@ -46,11 +46,7 @@ public class SystemARQ
      *  Examples incldue xsd;date and simple literal/xsd:string.
      */
     public static boolean ValueExtensions       = true ;
-    /** Control whether simple literals, string literals without datatype orlanguage tag, 
-     *  are created sameValueAs xsd:string.  Normally true. 
-     *  Some testing for pre-RDF-1.1 assumes otherwise.    
-     */
-    public static boolean SameValueAsString     = true ;
+
     /**
      * Under strict F&O, dateTimes and dates with no timezone have one magically applied. 
      * This default timezone is implementation dependent and can lead to different answers

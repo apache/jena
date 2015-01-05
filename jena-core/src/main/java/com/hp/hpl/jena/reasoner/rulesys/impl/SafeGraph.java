@@ -18,14 +18,13 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.graph.impl.SimpleEventManager;
-import com.hp.hpl.jena.graph.impl.WrappedGraph;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.SimpleEventManager ;
+import com.hp.hpl.jena.graph.impl.WrappedGraph ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.Filter ;
 
 /**
  * A SafeGraph wraps a graph which might contain generalized RDF
@@ -40,8 +39,8 @@ public class SafeGraph extends WrappedGraph implements Graph {
     }
 
     @Override
-    public ExtendedIterator<Triple> find( TripleMatch m ) {
-        return find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject());
+    public ExtendedIterator<Triple> find( Triple triple ) {
+        return find(triple.getMatchSubject(), triple.getMatchPredicate(), triple.getMatchObject());
     }
     
     @Override

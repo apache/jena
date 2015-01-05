@@ -26,7 +26,6 @@ import org.apache.jena.riot.other.GLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
@@ -98,7 +97,7 @@ public class GraphView extends GraphBase implements Sync
     }
 
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m) {
+    protected ExtendedIterator<Triple> graphBaseFind(Triple m) {
         if ( m == null ) m = Triple.ANY ;
         Node s = m.getMatchSubject() ;
         Node p = m.getMatchPredicate() ;

@@ -6,7 +6,19 @@ require.config({
     'bootstrap':            'bootstrap.min',
     'jquery':               'jquery-1.10.2.min',
     'marionette':           'backbone.marionette',
-    'sprintf':              'sprintf-0.7-beta1'
+    'sprintf':              'sprintf-0.7-beta1',
+    'datatables':           'jquery.dataTables.min',
+    'yasqe':                'yasqe.min',
+    'yasr':                 'yasr.min',
+    'pivottable':           'pivot.min',
+    'jquery-ui':            'jquery-ui.min'
+  },
+  map: {
+      '*': {
+          'codemirror': 'lib/codemirror',
+          'jquery.dataTables.min' : 'datatables',
+          'jquery-ui': 'jquery-ui'
+      },
   },
   shim: {
     'underscore': {
@@ -35,10 +47,22 @@ require.config({
       deps: ['jquery']
     },
     'qonsole': {
-      deps: ['addon/fold/brace-fold', 'addon/fold/comment-fold', 'addon/fold/foldgutter', 'addon/fold/xml-fold',
-             'mode/javascript/javascript', 'mode/sparql/sparql', 'mode/xml/xml', 'jquery.dataTables.min',
-             'remote-sparql-service'],
+      deps: ['yasqe', 'yasr'],
       exports: 'qonsole'
+    },
+    'yasqe': {
+      deps: ['jquery', 'lib/codemirror'],
+      exports: 'YASQE'
+    },
+    'yasr': {
+        deps: ['pivottable', 'jquery', 'lib/codemirror', 'datatables'],
+        exports: 'YASR'
+    },
+    'pivottable': {
+        deps: ['jquery-ui']
+    },
+    'jquery-ui': {
+        deps: ['jquery']
     },
     'jquery.fileupload': {
       deps: ['jquery.fileupload.local', 'jquery.iframe-transport', 'jquery.ui.widget']
@@ -55,9 +79,6 @@ require.config({
     'marionette': {
       deps: ['backbone'],
       exports: 'Marionette'
-    },
-    'lib/codemirror': {
-      exports: 'CodeMirror'
     },
     'addon/fold/foldcode': {deps: ['lib/codemirror']},
     'addon/fold/brace-fold': {deps: ['addon/fold/foldcode']},

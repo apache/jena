@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,14 +16,16 @@
  * limitations under the License.
  */
 
-package arq.cmdline;
+package com.hp.hpl.jena.sparql.expr.aggregate;
 
-
-public abstract class CmdLARQ extends CmdARQ
-{
-    protected CmdLARQ(String[] argv)
-    {
-        super(argv) ;
-    }
-
+/** Fatory to create accumulators. An Accumulator is
+ * processor for one group key for one execution.
+ */
+public interface AccumulatorFactory {
+    /**
+     * 
+     * @return Accumulator
+     */
+    public Accumulator createAccumulator(AggCustom agg) ;
 }
+

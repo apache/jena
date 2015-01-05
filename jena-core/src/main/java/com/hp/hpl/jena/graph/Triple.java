@@ -19,16 +19,14 @@
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
+import com.hp.hpl.jena.util.iterator.* ;
 
 /**
     Triples are the basis for RDF statements; they have a subject, predicate, and
     object field (all nodes) and express the notion that the relationship named
     by the predicate holds between the subject and the object.
  */
+@SuppressWarnings("deprecation")
 public class Triple implements TripleMatch 
     {    
 	private final Node subj, pred, obj;
@@ -45,8 +43,10 @@ public class Triple implements TripleMatch
 	
 	/**
 	    A triple-iterator with no elements.
+	    @deprecated Use {@link NullIterator#instance()}
 	*/
-	public static final ExtendedIterator<Triple> None = new NiceIterator<>();
+	@Deprecated
+	public static final ExtendedIterator<Triple> None = NullIterator.instance() ;
 	
     /**
         return a human-readable string "subject @predicate object" describing the triple
@@ -110,7 +110,9 @@ public class Triple implements TripleMatch
     private static Node nullToAny( Node n )
         { return n == null ? Node.ANY : n; }        
         
+    /** @deprecated Not needed. */
     @Override
+    @Deprecated
     public Triple asTriple()
         { return this; }
         

@@ -64,8 +64,9 @@ public class AggregatorFactory {
         return new AggNull() ;
     }
 
-    public static Aggregator create(java.lang.String iri, ExprList a) {
-        Log.fatal(AggregatorFactory.class, "Not implemented: custom aggregates (extedned syntax)") ;
+    public static Aggregator createCustom(String iri, ExprList a) {
+        if ( ! AggregateRegistry.isRegistered(iri) )
+            Log.warn(AggregatorFactory.class, "Not registered: custom aggregate <"+iri+">") ;
         return new AggCustom(iri, a) ;
     }
 }

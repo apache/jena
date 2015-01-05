@@ -22,36 +22,27 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 public class AggAvgDistinct extends AggregatorBase
 {
     // ---- AVG(DISTINCT expr)
     private Expr expr ;
 
-    public AggAvgDistinct(Expr expr) { this.expr = expr ; } 
+    public AggAvgDistinct(Expr expr) { super("AVG", true, expr) ; } 
     @Override
-    public Aggregator copy(Expr expr) { return new AggAvgDistinct(expr) ; }
+    public Aggregator copy(ExprList expr) { return new AggAvg(expr.get(0)) ; }
 
     private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; 
-
-    @Override
-    public String toString() { return "avg(distinct "+ExprUtils.fmtSPARQL(expr)+")" ; }
-    @Override
-    public String toPrefixString() { return "(avg distinct "+WriterExpr.asString(expr)+")" ; }
 
     @Override
     public Accumulator createAccumulator()
     { 
         return new AccAvgDistinct(expr) ;
     }
-
-    @Override
-    public final Expr getExpr() { return expr ; }
 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 

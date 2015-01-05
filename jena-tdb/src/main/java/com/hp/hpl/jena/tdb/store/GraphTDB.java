@@ -106,8 +106,8 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
         super.close() ;
     }
 
-    protected static ExtendedIterator<Triple> graphBaseFindDft(DatasetGraphTDB dataset, TripleMatch m) {
-        Iterator<Quad> iterQuads = dataset.find(Quad.defaultGraphIRI, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+    protected static ExtendedIterator<Triple> graphBaseFindDft(DatasetGraphTDB dataset, Triple triple) {
+        Iterator<Quad> iterQuads = dataset.find(Quad.defaultGraphIRI, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
         if ( iterQuads == null )
             return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
         // Can't be duplicates - fixed graph node..
@@ -115,7 +115,7 @@ public class GraphTDB extends GraphView implements Closeable, Sync {
         return WrappedIterator.createNoRemove(iterTriples) ;
     }
 
-    protected static ExtendedIterator<Triple> graphBaseFindNG(DatasetGraphTDB dataset, Node graphNode, TripleMatch m) {
+    protected static ExtendedIterator<Triple> graphBaseFindNG(DatasetGraphTDB dataset, Node graphNode, Triple m) {
         Node gn = graphNode ;
         // Explicitly named union graph.
         if ( isUnionGraph(gn) )

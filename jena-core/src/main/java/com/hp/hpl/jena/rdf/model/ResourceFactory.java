@@ -286,7 +286,7 @@ public class ResourceFactory {
                 Object valuec = new XSDDateTime( (Calendar) value);
                 ll = LiteralLabelFactory.create(valuec, "", XSDDatatype.XSDdateTime);
             } else {
-                ll =  LiteralLabelFactory.create(value);
+                ll =  LiteralLabelFactory.createTypedLiteral(value);
             }
             return new LiteralImpl(NodeFactory.createLiteral( ll ), null) ;
         }

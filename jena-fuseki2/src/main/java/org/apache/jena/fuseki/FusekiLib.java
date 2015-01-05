@@ -202,13 +202,12 @@ public class FusekiLib {
     }
     
     public static RDFNode getOne(Resource svc, String property) {
-        String localName = property.substring(property.indexOf(':') + 1) ;
         ResultSet rs = FusekiLib.query("SELECT * { ?svc " + property + " ?x}", svc.getModel(), "svc", svc) ;
         if ( !rs.hasNext() )
-            throw new FusekiConfigException("No " + localName + " for service " + FusekiLib.nodeLabel(svc)) ;
+            throw new FusekiConfigException("No property '" + property + "' for service " + FusekiLib.nodeLabel(svc)) ;
         RDFNode x = rs.next().get("x") ;
         if ( rs.hasNext() )
-            throw new FusekiConfigException("Multiple " + localName + " for service " + FusekiLib.nodeLabel(svc)) ;
+            throw new FusekiConfigException("Multiple properties '" + property + "' for service " + FusekiLib.nodeLabel(svc)) ;
         return x ;
     }
     
@@ -256,5 +255,4 @@ public class FusekiLib {
         }
         return "<" + uri + ">" ;
     }
-
 }

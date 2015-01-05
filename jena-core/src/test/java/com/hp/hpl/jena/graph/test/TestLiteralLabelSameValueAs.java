@@ -59,7 +59,7 @@ public class TestLiteralLabelSameValueAs
     }
     
     private static LiteralLabel gen(String lex) {
-        return LiteralLabelFactory.create(lex) ;
+        return LiteralLabelFactory.createTypedLiteral(lex) ;
     }
 
     static RDFDatatype dtUnknown = NodeFactory.getType("http://example/unknown") ; 

@@ -23,14 +23,19 @@
 
   <display-name>Apache Jena Fuseki Server</display-name>
 
+  <listener>
+    <!-- Basic server initialiation, including logging -->
+    <listener-class>org.apache.jena.fuseki.server.FusekiServerEnvironmentInit</listener-class>
+  </listener>
+
   <!-- Apache Shiro setup -->
-  <!-- First filter -->
   <listener>
     <!--<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>-->
     <!-- Support multiple locations, looks in Fuseki-relevant places -->
     <listener-class>org.apache.jena.fuseki.server.ShiroEnvironmentLoader</listener-class>
   </listener>
 
+  <!-- First filter -->
   <filter>
     <filter-name>ShiroFilter</filter-name>
     <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
@@ -56,7 +61,7 @@
   <!-- Apache Jena Fuseki setup -->
 
   <listener>
-    <listener-class>org.apache.jena.fuseki.server.FusekiServletContextListener</listener-class>
+    <listener-class>org.apache.jena.fuseki.server.FusekiServerListener</listener-class>
   </listener>
 
   <filter>

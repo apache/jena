@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
@@ -35,6 +34,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleLoaderOne;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class TupleLoaderOneHash extends TupleLoaderOne
 {
@@ -68,7 +68,7 @@ public class TupleLoaderOneHash extends TupleLoaderOne
         {
             lang = node.getLiteralLanguage() ;
             datatype = node.getLiteralDatatypeURI() ;
-            if ( datatype == null )
+            if ( NodeUtils.isSimpleString(node) || NodeUtils.isLangString(node) )
                 datatype = "" ;
         }
         

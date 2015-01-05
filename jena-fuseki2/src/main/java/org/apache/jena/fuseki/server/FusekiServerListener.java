@@ -23,25 +23,21 @@ import javax.servlet.ServletContextEvent ;
 import javax.servlet.ServletContextListener ;
 
 import org.apache.jena.fuseki.Fuseki ;
-import org.slf4j.Logger ;
 
-public class FusekiServletContextListener implements ServletContextListener {
-    private static Logger confLog = Fuseki.configLog ; 
+public class FusekiServerListener implements ServletContextListener {
 
-    public FusekiServletContextListener() {
-        confLog.debug("FusekiServletContextListener created") ;
-    }
+    public FusekiServerListener() { }
     
     public static ServerInitialConfig initialSetup = null ;
 
-    private volatile Boolean initialized = false ;
+    private boolean initialized = false ;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext() ;
         String x = servletContext.getContextPath() ;
         if ( ! x.isEmpty() ) 
-            confLog.info("Context path = "+x) ;
+            Fuseki.configLog.info("Context path = "+x) ;
 //        String x = System.getProperty("user.dir") ;
 //        Path currentRelativePath = Paths.get("");
 //        String s = currentRelativePath.toAbsolutePath().toString();
@@ -52,43 +48,34 @@ public class FusekiServletContextListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {}
 
-    public void init() {
+    public synchronized void init() {
         if ( initialized )
             return ;
-        synchronized(initialized)
-        {
-            if ( initialized )
+        initialized = true ;
+
+        try {
+            FusekiServer.init() ; 
+            if ( ! FusekiServer.serverInitialized ) {
+                Fuseki.serverLog.error("Failed to initialize : Server not running") ;
                 return ;
-            initialized = true ;
-
-            try {
-                FusekiServer.init() ; 
-                if ( ! FusekiServer.serverInitialized ) {
-                    Fuseki.serverLog.error("Failed to initialize : Server not running") ;
-                    return ;
-                }
-                
-                if ( initialSetup == null ) {
-                    initialSetup = new ServerInitialConfig() ;
-                    String cfg = FusekiServer.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
-                    initialSetup.fusekiConfigFile = cfg ;
-                }
-
-                if ( initialSetup != null ) {
-                    FusekiServer.initializeDataAccessPoints(initialSetup, FusekiServer.dirConfiguration.toString()) ;
-                } else {
-                    Fuseki.serverLog.error("No configuration") ;
-                    System.exit(0) ;
-                }
-            } catch (Throwable th) { 
-                Fuseki.serverLog.error("Exception in initialization", th) ;
-                throw th ;
             }
+
+            if ( initialSetup == null ) {
+                initialSetup = new ServerInitialConfig() ;
+                String cfg = FusekiEnv.FUSEKI_BASE.resolve(FusekiServer.DFT_CONFIG).toAbsolutePath().toString() ;
+                initialSetup.fusekiConfigFile = cfg ;
+            }
+
+            if ( initialSetup != null ) {
+                FusekiServer.initializeDataAccessPoints(initialSetup, FusekiServer.dirConfiguration.toString()) ;
+            } else {
+                Fuseki.serverLog.error("No configuration") ;
+                System.exit(0) ;
+            }
+        } catch (Throwable th) { 
+            Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage()) ;
+            throw th ;
         }
-    }
-    
-    public static String chooseFusekiDirectory() {
-        return "" ;
     }
 }
 

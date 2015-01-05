@@ -369,7 +369,7 @@ public class HttpAction
     public HttpServletResponseTracker getResponse()     { return response ; }
     
     /** Return the recorded time taken in milliseconds. 
-     *  {@linkplain #setStartTime} and {@linkplain #setFinishTime}
+     *  {@link #setStartTime} and {@link #setFinishTime}
      *  must have been called.
      */
     public long getTime()

@@ -22,7 +22,7 @@ import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
 /** IteratorCons : the concatenation of two iterators.
- * See also {@linkplain IteratorConcat}.
+ * See also {@link IteratorConcat}.
  * If there potentially many iterators to be joined, it is better to 
  *  create an IteratorConcat explicitly and add each iterator.
  *  IteratorCons is slightly better in the two iterator case.

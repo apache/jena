@@ -25,7 +25,7 @@ import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 
 
-/** This class is not thread-safe. Add a synchronization wrapper if needed ({@linkplain CacheFactory#createSync})  */
+/** This class is not thread-safe. Add a synchronization wrapper if needed ({@link CacheFactory#createSync})  */
 
 public class CacheLRU<K,V> implements Cache<K,V>
 {

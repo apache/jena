@@ -75,7 +75,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 
 		String[] s = byLine(query.toString());
 		assertContainsRegex("GROUP BY\\s+\\?groupBy", s);
-		assertContainsRegex("HAVING\\s+\\( sum\\(\\?lprice\\) > 10 \\)", s);
+		assertContainsRegex("HAVING\\s+\\( SUM\\(\\?lprice\\) > 10 \\)", s);
 		assertContainsRegex("ORDER BY\\s+\\?orderBy", s);
 		assertContainsRegex("LIMIT\\s+500", s);
 		assertContainsRegex("OFFSET\\s+200", s);

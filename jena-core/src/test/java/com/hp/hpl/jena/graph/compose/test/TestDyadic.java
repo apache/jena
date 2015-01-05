@@ -69,7 +69,7 @@ public abstract class TestDyadic extends AbstractTestGraph
         Graph g = Factory.createGraphMem(), h = Factory.createGraphMem();
         Dyadic d = new Dyadic( g, h )
             {
-            @Override protected ExtendedIterator<Triple> _graphBaseFind( TripleMatch m ) { return null; }
+            @Override protected ExtendedIterator<Triple> _graphBaseFind( Triple m ) { return null; }
             };
         assertSame( g, d.getL() );
         assertSame( h, d.getR() );

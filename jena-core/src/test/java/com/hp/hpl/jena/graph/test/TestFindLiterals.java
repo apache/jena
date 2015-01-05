@@ -112,10 +112,10 @@ public class TestFindLiterals extends GraphTestBase
     
     public void testProgrammaticValues() 
         {
-        Node ab = NodeFactory.createLiteral( LiteralLabelFactory.create( (byte) 42 ) );
-        Node as = NodeFactory.createLiteral( LiteralLabelFactory.create( (short) 42 ) );
-        Node ai = NodeFactory.createLiteral( LiteralLabelFactory.create( 42 ) );
-        Node al = NodeFactory.createLiteral( LiteralLabelFactory.create( (long) 42 ) );
+        Node ab = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( (byte) 42 ) );
+        Node as = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( (short) 42 ) );
+        Node ai = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( 42 ) );
+        Node al = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( (long) 42 ) );
         Graph g = graphWith( "" );
         Node SB = NodeCreateUtils.create( "SB" );
         Node SS = NodeCreateUtils.create( "SS" );

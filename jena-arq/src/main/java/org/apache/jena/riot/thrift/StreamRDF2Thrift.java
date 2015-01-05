@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Encode StreamRDF in Thrift.
- *  Usually used via {@linkplain BinRDF} functions. 
+ *  Usually used via {@link BinRDF} functions. 
  * 
  * @see Thrift2StreamRDF (for each RDF_StreamRow) for the reverse process.
  */ 

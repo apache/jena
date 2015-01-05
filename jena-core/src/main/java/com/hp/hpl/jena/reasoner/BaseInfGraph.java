@@ -367,8 +367,8 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * filter added to find(Node x 3) -- and test cases, of course.
      */
     @Override
-    public ExtendedIterator<Triple> graphBaseFind(TripleMatch m) {
-        return graphBaseFind(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject())
+    protected ExtendedIterator<Triple> graphBaseFind(Triple triple) {
+        return graphBaseFind(triple.getMatchSubject(), triple.getMatchPredicate(), triple.getMatchObject())
              // .filterKeep(new TripleMatchFilter(m.asTriple()))
              ;
     }
@@ -379,7 +379,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * will have also consulted the raw data.
      */
     @Override
-    public ExtendedIterator<Triple> graphBaseFind(Node subject, Node property, Node object) {
+    protected ExtendedIterator<Triple> graphBaseFind(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), fdata);
     }
 

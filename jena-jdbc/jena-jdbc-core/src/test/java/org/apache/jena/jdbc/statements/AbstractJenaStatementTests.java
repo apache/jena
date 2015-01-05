@@ -18,38 +18,30 @@
 
 package org.apache.jena.jdbc.statements;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.NClob;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Types;
-import java.util.Calendar;
+import java.io.InputStream ;
+import java.io.Reader ;
+import java.math.BigDecimal ;
+import java.net.MalformedURLException ;
+import java.net.URI ;
+import java.net.URISyntaxException ;
+import java.net.URL ;
+import java.sql.* ;
+import java.util.Calendar ;
+import java.util.TimeZone ;
 
-import org.apache.jena.iri.IRIFactory;
-import org.apache.jena.jdbc.connections.JenaConnection;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.jdbc.connections.JenaConnection ;
+import org.junit.AfterClass ;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.query.ParameterizedSparqlString;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.NodeFactoryExtra;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.NodeFactory ;
+import com.hp.hpl.jena.query.ParameterizedSparqlString ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.NodeFactoryExtra ;
 
 /**
  * Tests for statement, note many tests are included at a higher level in the
@@ -68,6 +60,24 @@ public abstract class AbstractJenaStatementTests {
      */
     protected abstract JenaConnection getConnection() throws SQLException;
 
+    /* Java sort of gets 1 Jan 1970 wrong for Europe/London:
+     *    http://stackoverflow.com/questions/1238172/why-does-an-hour-get-added-on-to-java-util-date-for-dates-before-nov-1-1971
+     *    http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4832236
+     *  This stabilizes the tests for everyone.
+     */
+    
+    static TimeZone timezone = null ; 
+    @BeforeClass public static void fixTimezone() {
+        timezone = TimeZone.getDefault() ;
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC")) ;
+    }
+        
+    @AfterClass public static void resetTimezone() {
+        if ( timezone != null )
+            TimeZone.setDefault(timezone) ;
+    }
+      
+    
     /**
      * Test error case when trying to create statement with null connection
      * 

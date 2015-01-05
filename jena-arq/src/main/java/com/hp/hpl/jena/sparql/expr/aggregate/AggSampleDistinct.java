@@ -21,36 +21,25 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 public class AggSampleDistinct extends AggregatorBase
 {
     // ---- Sample(DISTINCT expr)
-    private final Expr expr ;
-
-    public AggSampleDistinct(Expr expr) { this.expr = expr ; } 
+    public AggSampleDistinct(Expr expr) { super("SAMPLE", true, expr) ; } 
     @Override
-    public Aggregator copy(Expr expr) { return new AggSampleDistinct(expr) ; }
-
-    @Override
-    public String toString() { return "SAMPLE(DISTINCT "+ExprUtils.fmtSPARQL(expr)+")" ; }
-    @Override
-    public String toPrefixString() { return "(sample distinct"+WriterExpr.asString(expr)+")" ; }
+    public Aggregator copy(ExprList exprs) { return new AggSampleDistinct(exprs.get(0)) ; }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccSampleDistict(expr) ;
+        return new AccSampleDistict(getExpr()) ;
     }
 
     @Override
-    public Expr getExpr() { return expr ; }
-
-    @Override
-    public int hashCode()   { return HC_AggSample ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggSample ^ getExpr().hashCode() ; }
     @Override
     public boolean equals(Object other)
     {

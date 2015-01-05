@@ -50,7 +50,7 @@ public class LiteralLabelFactory
         return new LiteralLabelImpl( lex, "", dtype );
     }
 
-    /** Using {@linkplain #create(String, String)} or {@linkplain #create(String, RDFDatatype)}
+    /** Using {@link #create(String, String)} or {@link #create(String, RDFDatatype)}
      * where possible is preferred.
      */
     public static LiteralLabel createLiteralLabel( String lex, String lang, RDFDatatype dtype ) 
@@ -82,15 +82,20 @@ public class LiteralLabelFactory
         return new LiteralLabelImpl(value, lang, dtype) ; 
     }
 
+    /** Use {@link #createTypedLiteral} */
+    @Deprecated
+    public static LiteralLabel create(Object value) {
+        return createTypedLiteral(value) ;
+    }
+    
     /**
      * Build a typed literal label from its value form using
      * whatever datatype is currently registered as the the default
      * representation for this java class. No language tag is supplied.
+     * A plain strign becomes an xsd:string.
      * @param value the literal value to encapsulate
      */
-    public static LiteralLabel create(Object value) {
-        if ( value instanceof String )
-            create((String)value, (RDFDatatype)null) ;
+    public static LiteralLabel createTypedLiteral(Object value) {
         return new LiteralLabelImpl(value) ;
     }
 

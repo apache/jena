@@ -1,0 +1,12 @@
+#!/bin/bash
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+RDF=RDF_10
+
+cp testing/ARQ/BasicPatterns/result-B-01-${RDF}.n3 testing/ARQ/BasicPatterns/result-B-01.n3
+cp testing/ARQ/Sort/sort-result-2_${RDF}.ttl testing/ARQ/Sort/sort-result-2.ttl
+cp testing/ARQ/Sort/sort-result-3_${RDF}.ttl testing/ARQ/Sort/sort-result-3.ttl
+cp testing/ARQ/Distinct/distinct-all_${RDF}.srx testing/ARQ/Distinct/distinct-all.srx
+cp testing/ARQ/Distinct/distinct-str_${RDF}.srx testing/ARQ/Distinct/distinct-str.srx
+cp testing/DAWG-Final/distinct/distinct-all_${RDF}.srx testing/DAWG-Final/distinct/distinct-all.srx
+cp testing/DAWG-Final/distinct/distinct-str_${RDF}.srx testing/DAWG-Final/distinct/distinct-str.srx

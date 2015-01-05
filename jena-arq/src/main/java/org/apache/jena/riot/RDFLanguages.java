@@ -49,6 +49,7 @@ public class RDFLanguages
     public static final String strLangTriG       = "TriG" ;
     public static final String strLangCSV        = "CSV";
     public static final String strLangTriX       = "TriX";
+    public static final String strLangRDFTHRIFT  = "RDF-THRIFT";
     
     /*
      * ".owl" is not a formally registered file extension for OWL 
@@ -72,7 +73,7 @@ public class RDFLanguages
                                                 .addAltContentTypes(contentTypeTurtleAlt1, contentTypeTurtleAlt2)
                                                 .addFileExtensions("ttl")
                                                 .build() ;
-    /** Alternative constant for {@linkplain #TURTLE} */
+    /** Alternative constant for {@link #TURTLE} */
     public static final Lang TTL    = TURTLE ;
     
     /** N3 (treat as Turtle) */
@@ -88,7 +89,7 @@ public class RDFLanguages
                                                 .addAltContentTypes(contentTypeNTriplesAlt)
                                                 .addFileExtensions("nt")
                                                 .build() ;
-    /** Alternative constant for {@linkplain #NTRIPLES} */
+    /** Alternative constant for {@link #NTRIPLES} */
     public static final Lang NT     = NTRIPLES ;
 
     /** <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
@@ -116,7 +117,7 @@ public class RDFLanguages
                                                 .addFileExtensions("nq")
                                                 .build() ;
     
-    /** Alternative constant {@linkplain #NQUADS} */
+    /** Alternative constant {@link #NQUADS} */
     public static final Lang NQ     = NQUADS ;
     
     /** CSV data.  This can be read into an RDF model with simple conversion */
@@ -126,8 +127,8 @@ public class RDFLanguages
                                                      .build() ;
 
     /** The RDF syntax "RDF Thrift" : see http://jena.apache.org/documentation/io */ 
-    public static final Lang THRIFT     = LangBuilder.create("RDF_THRIFT", contentTypeRDFThrift)
-                                                     .addAltNames("RDF-THRIFT", "TRDF")
+    public static final Lang THRIFT     = LangBuilder.create(strLangRDFTHRIFT, contentTypeRDFThrift)
+                                                     .addAltNames("RDF_THRIFT", "RDFTHRIFT", "RDF/THRIFT", "TRDF")
                                                      .addFileExtensions("rt", "trdf")
                                                      .build() ;
     

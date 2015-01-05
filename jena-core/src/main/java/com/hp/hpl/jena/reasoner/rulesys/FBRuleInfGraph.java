@@ -427,7 +427,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                     // An axiom
                     for ( int j = 0; j < r.headLength(); j++ )
                     {
-                        Object head = r.getHeadElement( j );
+                        ClauseEntry head = r.getHeadElement( j );
                         if ( head instanceof TriplePattern )
                         {
                             TriplePattern h = (TriplePattern) head;

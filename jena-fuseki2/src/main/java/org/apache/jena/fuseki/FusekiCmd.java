@@ -24,7 +24,7 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
-import org.apache.jena.fuseki.server.FusekiServletContextListener ;
+import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
@@ -47,18 +47,21 @@ public class FusekiCmd {
     // FusekiCmdInner inherits from CmdMain which statically sets logging.
     // By java classloading, super class statics run before the 
     // statics of a class are run.
-    // (Cmd logging should be done lower down but it's normally convenient
-    // to have to set in all circumstances). 
-    static { FusekiLogging.setLogging() ; }
+
+    static {
+        FusekiLogging.setLogging() ;
+    }
 
     static public void main(String... argv) {
-        FusekiCmdInner.main(argv);
+        FusekiCmdInner.innerMain(argv);
     }
     
     static class FusekiCmdInner extends CmdARQ {
-        // Legacy.
+        // --mgt. --mgtPort  :: Legacy.
         private static ArgDecl  argMgt          = new ArgDecl(ArgDecl.NoValue, "mgt") ;
         private static ArgDecl  argMgtPort      = new ArgDecl(ArgDecl.HasValue, "mgtPort", "mgtport") ;
+        
+        // --home :: Legacy - do not use.
         private static ArgDecl  argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
         private static ArgDecl  argPages        = new ArgDecl(ArgDecl.HasValue, "pages") ;
 
@@ -82,7 +85,7 @@ public class FusekiCmd {
 
         // fuseki [--mem|--desc assembler.ttl] [--port PORT] **** /datasetURI
 
-        static public void main(String... argv) {
+        static public void innerMain(String... argv) {
             // Just to make sure ...
             ARQ.init() ;
             TDB.init() ;
@@ -318,7 +321,7 @@ public class FusekiCmd {
 
         @Override
         protected void exec() {
-            FusekiServletContextListener.initialSetup = cmdLineDataset ;
+            FusekiServerListener.initialSetup = cmdLineDataset ;
             // For standalone, command line use ...
             JettyFuseki.initializeServer(jettyServerConfig) ;
             JettyFuseki.instance.start() ;

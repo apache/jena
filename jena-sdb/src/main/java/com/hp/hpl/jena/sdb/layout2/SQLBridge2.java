@@ -229,8 +229,6 @@ public class SQLBridge2 extends SQLBridgeBase
             lex = "" ;
         return lex;
     }
-    
-    
 
     private static Node makeNode(String lex, String datatype, String lang, ValueType vType)
     {

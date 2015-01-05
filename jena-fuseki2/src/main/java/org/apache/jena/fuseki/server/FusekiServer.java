@@ -18,10 +18,12 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.io.* ;
+import java.io.File ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.StringReader ;
 import java.nio.file.Files ;
 import java.nio.file.Path ;
-import java.nio.file.Paths ;
 import java.nio.file.StandardCopyOption ;
 import java.util.ArrayList ;
 import java.util.HashMap ;
@@ -48,44 +50,39 @@ import arq.cmd.CmdException ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class FusekiServer
 {
+    // Initialization of FUSEKI_HOME and FUSEKI_BASE is done in FusekiEnvInit
+    // so that the code is independent of any logging.  FusekiLogging can use
+    // initialized values of FUSEKI_BASE while looking forlog4j configuration.
+    
     /** Root of the Fuseki installation for fixed files. 
      * This may be null (e.g. running inside a web application container) */ 
-    public static Path FUSEKI_HOME = null ;
+    //public static Path FUSEKI_HOME = null ;
     
     /** Root of the varying files in this deployment. Often $FUSEKI_HOME/run.
      * This is not null - it may be /etc/fuseki, which must be writable.
      */ 
-    public static Path FUSEKI_BASE = null ;
+    //public static Path FUSEKI_BASE = null ;
     
-    public static final boolean isWindows = SystemTDB.isWindows ;
- 
-    /** Unused */
-    //public static final String DFT_FUSEKI_HOME  = 
-    //    isWindows ? /*What's correct here?*/ "/usr/share/fuseki" : "/usr/share/fuseki" ;
-    public static final String DFT_FUSEKI_BASE  = 
-        isWindows ? /*What's correct here?*/ "/etc/fuseki"       : "/etc/fuseki" ;
-    
+    // Relative names of directories in the FUSEKI_BASE area.
+    public static final String     runArea                  = FusekiEnv.ENV_runArea ;
+    public static final String     databasesLocationBase    = "databases" ;
+    // Place to put Lucene text and spatial indexes.
+    //private static final String        databaseIndexesDir       = "indexes" ;
+      
+    public static final String     backupDirNameBase        = "backups" ;
+    public static final String     configDirNameBase        = "configuration" ;
+    public static final String     logsNameBase             = "logs" ;
+    public static final String     systemDatabaseNameBase   = "system" ;
+    public static final String     systemFileAreaBase       = "system_files" ;
+    public static final String     templatesNameBase        = "templates" ;
+    // This name is in web.xml as well.
+    public static final String     DFT_SHIRO_INI            = "shiro.ini" ; 
     // In FUSEKI_BASE
-    public static final String DFT_CONFIG       = "config.ttl" ;
-
-    // Relative names of directories
-    private static final String        runArea                  = "run" ;
-    private static final String        databasesLocationBase    = "databases" ;
-    //private static final String        databaseIndexesDir       = "indexes" ;       // Place to put Lucene text and spatial indexes.  
-    private static final String        backupDirNameBase        = "backups" ;
-    private static final String        configDirNameBase        = "configuration" ;
-    private static final String        logsNameBase             = "logs" ;
-    private static final String        systemDatabaseNameBase   = "system" ;
-    private static final String        systemFileAreaBase       = "system_files" ;
-    private static final String        templatesNameBase        = "templates" ;
-    private static final String        DFT_SHIRO_INI            = "shiro.ini" ; // This name is in web.xml as well. 
+    public static final String     DFT_CONFIG               = "config.ttl" ;
     
-    // --- Set during server initialization
-
     /** Directory for TDB databases - this is known to the assembler templates */
     public static Path        dirDatabases       = null ;
     
@@ -120,86 +117,63 @@ public class FusekiServer
         if ( initialized )
             return ;
         initialized = true ;
-        Fuseki.init() ;
-        
-        // ----  Set and check FUSEKI_HOME and FUSEKI_BASE
-        
-        if ( FUSEKI_HOME == null ) {
-            // Make absolute
-            String x1 = getenv("FUSEKI_HOME") ;
-            if ( x1 != null )
-                FUSEKI_HOME = Paths.get(x1) ;
-        }
+        try {
+            FusekiEnv.setEnvironment() ;
+            Path FUSEKI_HOME = FusekiEnv.FUSEKI_HOME ;
+            Path FUSEKI_BASE = FusekiEnv.FUSEKI_BASE ;
             
-        if ( FUSEKI_BASE == null ) {
-            String x2 = getenv("FUSEKI_BASE") ;
-            if ( x2 != null )
-                FUSEKI_BASE = Paths.get(x2) ;
-            else {
-                if ( FUSEKI_HOME != null )
-                    FUSEKI_BASE = FUSEKI_HOME.resolve(runArea) ;
-                else
-                    // Neither FUSEKI_HOME nor FUSEKI_BASE set.
-                    FUSEKI_BASE = Paths.get(DFT_FUSEKI_BASE) ;
+            Fuseki.init() ;
+            Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "unset" : FUSEKI_HOME.toString())) ;
+            Fuseki.configLog.info("FUSEKI_BASE="+FUSEKI_BASE.toString());
+
+            // ----  Check FUSEKI_HOME and FUSEKI_BASE
+            // If FUSEKI_HOME exists, it may be FUSEKI_BASE.
+
+            if ( FUSEKI_HOME != null ) {
+                if ( ! Files.isDirectory(FUSEKI_HOME) )
+                    throw new FusekiConfigException("FUSEKI_HOME is not a directory: "+FUSEKI_HOME) ;
+                if ( ! Files.isReadable(FUSEKI_HOME) )
+                    throw new FusekiConfigException("FUSEKI_HOME is not readable: "+FUSEKI_HOME) ;
             }
-        }
-        
-        if ( FUSEKI_HOME != null )
-            FUSEKI_HOME = FUSEKI_HOME.toAbsolutePath() ;
-        
-        FUSEKI_BASE = FUSEKI_BASE.toAbsolutePath() ;
-        
-        Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "unset" : FUSEKI_HOME.toString())) ;
-        Fuseki.configLog.info("FUSEKI_BASE="+FUSEKI_BASE.toString());
 
-        // If FUSEKI_HOME exists, it may be FUSEKI_BASE.
-        
-        if ( FUSEKI_HOME != null ) {
-            if ( ! Files.isDirectory(FUSEKI_HOME) )
-                throw new FusekiConfigException("FUSEKI_HOME is not a directory: "+FUSEKI_HOME) ;
-            if ( ! Files.isReadable(FUSEKI_HOME) )
-                throw new FusekiConfigException("FUSEKI_HOME is not readable: "+FUSEKI_HOME) ;
-        }
-            
-        if ( Files.exists(FUSEKI_BASE) ) {
-            if ( ! Files.isDirectory(FUSEKI_BASE) )
-                throw new FusekiConfigException("FUSEKI_BASE is not a directory: "+FUSEKI_BASE) ;
-            if ( ! Files.isWritable(FUSEKI_BASE) )
-                throw new FusekiConfigException("FUSEKI_BASE is not writable: "+FUSEKI_BASE) ;
-        } else {
-            ensureDir(FUSEKI_BASE);
-        }
+            if ( Files.exists(FUSEKI_BASE) ) {
+                if ( ! Files.isDirectory(FUSEKI_BASE) )
+                    throw new FusekiConfigException("FUSEKI_BASE is not a directory: "+FUSEKI_BASE) ;
+                if ( ! Files.isWritable(FUSEKI_BASE) )
+                    throw new FusekiConfigException("FUSEKI_BASE is not writable: "+FUSEKI_BASE) ;
+            } else {
+                ensureDir(FUSEKI_BASE);
+            }
 
-        // Ensure FUSEKI_BASE has the assumed directories.
-        dirTemplates        = writeableDirectory(FUSEKI_BASE, templatesNameBase) ;
-        dirDatabases        = writeableDirectory(FUSEKI_BASE, databasesLocationBase) ;
-        dirBackups          = writeableDirectory(FUSEKI_BASE, backupDirNameBase) ;
-        dirConfiguration    = writeableDirectory(FUSEKI_BASE, configDirNameBase) ;
-        dirLogs             = writeableDirectory(FUSEKI_BASE, logsNameBase) ;
-        dirSystemDatabase   = writeableDirectory(FUSEKI_BASE, systemDatabaseNameBase) ;
-        dirFileArea         = writeableDirectory(FUSEKI_BASE, systemFileAreaBase) ;
-        
-        // ---- Initialize with files.
-        
-        if ( Files.isRegularFile(FUSEKI_BASE) ) 
-            throw new FusekiConfigException("FUSEKI_BASE exists but is a file") ;
-        
-        // Copy missing files into FUSEKI_BASE
-        copyFileIfMissing(null, DFT_SHIRO_INI, FUSEKI_BASE) ;
-        copyFileIfMissing(null, DFT_CONFIG, FUSEKI_BASE) ;
-        for ( String n : Template.templateNames ) {
-            copyFileIfMissing(null, n, FUSEKI_BASE) ;
+            // Ensure FUSEKI_BASE has the assumed directories.
+            dirTemplates        = writeableDirectory(FUSEKI_BASE, templatesNameBase) ;
+            dirDatabases        = writeableDirectory(FUSEKI_BASE, databasesLocationBase) ;
+            dirBackups          = writeableDirectory(FUSEKI_BASE, backupDirNameBase) ;
+            dirConfiguration    = writeableDirectory(FUSEKI_BASE, configDirNameBase) ;
+            dirLogs             = writeableDirectory(FUSEKI_BASE, logsNameBase) ;
+            dirSystemDatabase   = writeableDirectory(FUSEKI_BASE, systemDatabaseNameBase) ;
+            dirFileArea         = writeableDirectory(FUSEKI_BASE, systemFileAreaBase) ;
+            //Possible intercept point
+
+            // ---- Initialize with files.
+
+            if ( Files.isRegularFile(FUSEKI_BASE) ) 
+                throw new FusekiConfigException("FUSEKI_BASE exists but is a file") ;
+
+            // Copy missing files into FUSEKI_BASE
+            copyFileIfMissing(null, DFT_SHIRO_INI, FUSEKI_BASE) ;
+            copyFileIfMissing(null, DFT_CONFIG, FUSEKI_BASE) ;
+            for ( String n : Template.templateNames ) {
+                copyFileIfMissing(null, n, FUSEKI_BASE) ;
+            }
+
+            serverInitialized = true ;
+        } catch (RuntimeException ex) {
+            Fuseki.serverLog.error("Exception in server initialization", ex) ;
+            throw ex ;
         }
-        
-        serverInitialized = true ;
     }
     
-    /** Get environment variable value. */
-    private static String getenv(String name) {
-        //Possible intercept poiint
-        return System.getenv(name) ;
-    }
-
     private static boolean emptyDir(Path dir) {
         return dir.toFile().list().length <= 2 ;
     }
@@ -345,9 +319,9 @@ public class FusekiServer
         }
         
         if ( ! params.containsKey("FUSEKI_BASE") )
-            params.put("FUSEKI_BASE", pathStringOrElse(FUSEKI_BASE, "unset")) ;
+            params.put("FUSEKI_BASE", pathStringOrElse(FusekiEnv.FUSEKI_BASE, "unset")) ;
         if ( ! params.containsKey("FUSEKI_HOME") )
-            params.put("FUSEKI_HOME", pathStringOrElse(FUSEKI_HOME, "unset")) ;
+            params.put("FUSEKI_HOME", pathStringOrElse(FusekiEnv.FUSEKI_HOME, "unset")) ;
     }
 
     private static String pathStringOrElse(Path path, String dft) {

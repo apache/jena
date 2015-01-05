@@ -22,44 +22,33 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
-import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 public class AggAvg extends AggregatorBase
 {
     // ---- AVG(?var)
-    private Expr expr ;
-
-    public AggAvg(Expr expr) { this.expr = expr ; } 
+    public AggAvg(Expr expr) { super("AVG", false, expr) ; } 
     @Override
-    public Aggregator copy(Expr expr) { return new AggAvg(expr) ; }
+    public Aggregator copy(ExprList expr) { return new AggAvg(expr.get(0)) ; }
 
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
     private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; // null 
 
     @Override
-    public String toString() { return "avg("+ExprUtils.fmtSPARQL(expr)+")" ; }
-    @Override
-    public String toPrefixString() { return "(avg "+WriterExpr.asString(expr)+")" ; }
-
-    @Override
     public Accumulator createAccumulator()
     { 
-        return new AccAvg(expr) ;
+        return new AccAvg(getExpr()) ;
     }
-
-    @Override
-    public final Expr getExpr() { return expr ; }
 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
     
     @Override
-    public int hashCode()   { return HC_AggAvg ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggAvg ^ getExprList().hashCode() ; }
 
     @Override
     public boolean equals(Object other)
@@ -67,9 +56,8 @@ public class AggAvg extends AggregatorBase
         if ( this == other ) return true ;
         if ( ! ( other instanceof AggAvg ) ) return false ;
         AggAvg a = (AggAvg)other ;
-        return expr.equals(a.expr) ;
+        return exprList.equals(a.exprList) ;
     }
-
     
     // ---- Accumulator
     private static class AccAvg extends AccumulatorExpr

@@ -95,7 +95,7 @@ public class TestUnionStatistics extends GraphTestBase
         {
         return new GraphBase() 
             {
-            @Override protected ExtendedIterator<Triple> graphBaseFind( TripleMatch m )
+            @Override protected ExtendedIterator<Triple> graphBaseFind( Triple m )
                 {    
                 throw new RuntimeException( "should never be called" );
                 }

@@ -14,11 +14,11 @@ define(
 
         this.listenTo( this.model, "change", this.onModelChange, this );
 
-        fui.vent.on( "action.delete.confirm", this.onConfirmRemoveDataset );
-        fui.vent.on( "action.backup.confirm", this.onConfirmBackupDataset );
+        fui.vent.on( "action.delete.confirm", this.onConfirmRemoveDataset, this );
+        fui.vent.on( "action.backup.confirm", this.onConfirmBackupDataset, this );
 
-        fui.vent.on( "task.status", this.onTaskStatus );
-        fui.vent.on( "task.failed", this.onTaskFailed );
+        fui.vent.on( "task.status", this.onTaskStatus, this );
+        fui.vent.on( "task.failed", this.onTaskFailed, this );
       },
 
       template: _.template( datasetManagementViewTpl ),
@@ -86,8 +86,10 @@ define(
         var dsId = elem.data( "ds-id" );
         var eventId = elem.data( "event-id" );
 
-        fui.vent.trigger( eventId, dsId );
         this.ui.actionConfirmModal.modal( 'hide' );
+        _.delay( function() {
+          fui.vent.trigger( eventId, dsId );
+        }, 100 );
       },
 
       /** User has confirmed that the dataset can be deleted */
@@ -102,8 +104,9 @@ define(
            .error( function( jqxhr, msg, err ) {self.onDatasetRemoveFail( jqxhr, msg, err, dsId );} );
       },
 
+      /** Callback after successfully removing a dataset */
       onDatasetRemoveSuccess: function( data, dsId ) {
-        console.log( "deleted dataset" );
+        this.model.loadServerDescription();
       },
 
       /** Removing the dataset did not work: notify the user */

@@ -176,21 +176,17 @@ public class SpatialIndexLucene implements SpatialIndex {
 		return doc;
 	}
 	
-	@Override
-	public List<Node> query(Shape shape, int limit, SpatialOperation operation) {
-		try {
-			// Upgrade at Java7 ...
-			IndexReader indexReader = DirectoryReader.open(directory);
-			try {
-				return query$(indexReader, shape, limit, operation);
-			} finally {
-				indexReader.close();
-			}
-		} catch (Exception ex) {
-			exception(ex);
-			return null;
-		}
-	}
+    @Override
+    public List<Node> query(Shape shape, int limit, SpatialOperation operation) {
+        // Upgrade at Java7 ...
+        try (IndexReader indexReader = DirectoryReader.open(directory)) {
+            return query$(indexReader, shape, limit, operation) ;
+        }
+        catch (Exception ex) {
+            exception(ex) ;
+            return null ;
+        }
+    }
 	
 	private List<Node> query$(IndexReader indexReader, Shape shape, int limit, SpatialOperation operation) throws IOException {
 		if (limit <= 0)

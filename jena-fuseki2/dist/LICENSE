@@ -272,9 +272,6 @@ MIT license.  See http://codemirror.net/LICENSE
 This product bundles "jquery", which is available under an
 MIT license.  See https://jquery.org/license/
 
-This product bundles "DataTables", which is available under a
-"BSD 3-clause" license.  See http://datatables.net/license_bsd
-
 This product bundles "jquery.form", which is available under an
 MIT license.  See http://malsup.github.io/mit-license.txt
 
@@ -320,6 +317,18 @@ See https://github.com/blueimp/jQuery-File-Upload
 This product bundles "Bootstrap-select"
 which is available under an MIT License.
 See https://github.com/silviomoreto/bootstrap-select/blob/master/LICENSE
+
+This product bundles "pivot.js"
+which is available under a BSD 3-clause style license.
+https://github.com/rwjblue/pivot.js/blob/master/LICENSE
+
+This product bundles "YASEQE - Yet Another Sparql Query Editor"
+which is available under an MIT License.
+See http://yasqe.yasgui.org/license.txt
+
+This product bundles "YASR - Yet Another Sparql Resultset GUI"
+which is available under an MIT License.
+See http://yasr.yasgui.org/license.txt
 
 - - - - - - - - - - - - - - - - - - - - - - - 
 

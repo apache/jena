@@ -22,7 +22,9 @@ package com.hp.hpl.jena.graph;
     Interface for triple matching; may become obsolete. <i>do not assume this is
     stable</i>. Triple matches are defined by subject, predicate, and object, and
     may be converted to triples [which in fact subsume the work of TripleMatch].
+    @deprecated Use {@link Triple} directly. This interface will be removed.
 */
+@Deprecated
 public interface TripleMatch {
     
     /** If it is known that all triples selected by this filter will
@@ -39,6 +41,8 @@ public interface TripleMatch {
 
     /**
         Answer a Triple capturing this match.
+        @eeprecated Use {@link Triple} directly. 
     */
+    @Deprecated
     Triple asTriple();
 }

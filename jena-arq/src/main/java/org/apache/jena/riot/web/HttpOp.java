@@ -203,7 +203,7 @@ public class HttpOp {
 
     /**
      * Return the current default {@link HttpClient}. This may be null, meaning
-     * a new {@linkplain HttpClient} is created each time, if none is provided
+     * a new {@link HttpClient} is created each time, if none is provided
      * in the HttpOp function call.
      * 
      * @return Default HTTP Client

@@ -21,40 +21,31 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
-import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 
 public class AggCountVar extends AggregatorBase
 {
     // ---- COUNT(?var)
-    private Expr expr ;
-
-    public AggCountVar(Expr expr) { this.expr = expr ; }
+    public AggCountVar(Expr expr) { super("COUNT", false, expr) ; }
     @Override
-    public Aggregator copy(Expr expr) { return new AggCountVar(expr) ; }
-
-    @Override
-    public String toString() { return "count("+expr+")" ; }
-    @Override
-    public String toPrefixString() { return "(count "+WriterExpr.asString(expr)+")" ; }
+    public Aggregator copy(ExprList expr) { return new AggCountVar(expr.get(0)) ; }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccCountVar(expr) ;
+        return new AccCountVar(getExpr()) ;
     }
 
     @Override
-    public Expr getExpr() { return expr ; }
-
-    @Override
-    public int hashCode()   { return HC_AggCountVar ^ expr.hashCode() ; }
+    public int hashCode()   { return HC_AggCountVar ^ exprList.hashCode() ; }
     
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
         if ( ! ( other instanceof AggCountVar ) )
             return false ;
         AggCountVar agg = (AggCountVar)other ;

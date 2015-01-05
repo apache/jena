@@ -62,7 +62,7 @@ define(
       /** Set the endpoint URL based on the selected dataset name */
       setEndpointURL: function( dsName ) {
         var dataset = fui.models.fusekiServer.dataset( dsName );
-        $( "#sparqlEndpoint" ).val( dataset.queryURL() );
+        qonsole.setCurrentEndpoint( dataset.queryURL() );
       }
 
     } );

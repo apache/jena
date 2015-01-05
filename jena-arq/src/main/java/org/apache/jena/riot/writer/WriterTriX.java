@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Write TriX.
  * See {@link TriX} for details.
- * The writer defers to {@linkplain StreamWriterTriX}. 
+ * The writer defers to {@link StreamWriterTriX}. 
  * @see TriX
  * @see ReaderTriX
  * @see StreamWriterTriX

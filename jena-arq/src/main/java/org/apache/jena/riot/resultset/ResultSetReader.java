@@ -28,10 +28,10 @@ import com.hp.hpl.jena.sparql.util.Context ;
 public interface ResultSetReader {
     
     /**
-     * Read from an {@code InputStream} and produce a {@linkplain ResultSet}.
+     * Read from an {@code InputStream} and produce a {@link ResultSet}.
      * Note that return result may stream and so the input stream be read
      * while the ResultSet is used.
-     * See {@linkplain ResultSetFactory#copyResults(ResultSet)} for a ResultSet that is detached from the {@code InputStream}.
+     * See {@link ResultSetFactory#copyResults(ResultSet)} for a ResultSet that is detached from the {@code InputStream}.
      * @param in InputStream to read from.
      * @param context
      * @return ResultSet
@@ -40,10 +40,10 @@ public interface ResultSetReader {
     
     /**
      * Using {@link #read(InputStream, Context)} is preferred.
-     * Read from an {@code Reader} and produce a {@linkplain ResultSet}.
+     * Read from an {@code Reader} and produce a {@link ResultSet}.
      * Note that return result may stream and so the reader be read
      * while the ResultSet is used.
-     * See {@linkplain ResultSetFactory#copyResults(ResultSet)} for a ResultSet that is detached from the {@code InputStream}.
+     * See {@link ResultSetFactory#copyResults(ResultSet)} for a ResultSet that is detached from the {@code InputStream}.
      * @param in Reader
      * @param context
      * @return ResultSet

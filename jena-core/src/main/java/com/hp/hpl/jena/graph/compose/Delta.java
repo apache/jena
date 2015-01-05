@@ -89,9 +89,9 @@ public class Delta extends CompositionBase implements Graph
      * add the ones that have been added.
      */
     @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch tm)
+    protected ExtendedIterator<Triple> graphBaseFind(Triple t)
     {
-        ExtendedIterator<Triple> iterator = base.find(tm).filterDrop(ifIn(GraphUtil.findAll(deletions))).andThen(additions.find(tm)) ;
+        ExtendedIterator<Triple> iterator = base.find(t).filterDrop(ifIn(GraphUtil.findAll(deletions))).andThen(additions.find(t)) ;
         return SimpleEventManager.notifyingRemove( this, iterator ) ;
     }
 

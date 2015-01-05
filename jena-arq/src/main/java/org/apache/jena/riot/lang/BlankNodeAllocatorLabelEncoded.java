@@ -31,7 +31,7 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
 /**
  * Allocate blank nodes according to the label given. 
  * This alloctor reconstructs labels made by
- * {@linkplain NodeToLabel#createBNodeByLabelEncoded()}
+ * {@link NodeToLabel#createBNodeByLabelEncoded()}
  */
 
 public class BlankNodeAllocatorLabelEncoded implements BlankNodeAllocator {

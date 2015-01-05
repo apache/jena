@@ -80,7 +80,7 @@ public abstract class SpatialOperationWithBoxPFBase extends SpatialOperationPFBa
 			log.warn("Latitude 1 is not a literal " + list);
 			return null;
 		}
-		if (!SpatialValueUtil.isDecimal(x.getLiteral())) {
+		if (!SpatialValueUtil.isDecimal(x)) {
 			log.warn("Latitude 1 is not a decimal " + list);
 			return null;
 		}
@@ -93,7 +93,7 @@ public abstract class SpatialOperationWithBoxPFBase extends SpatialOperationPFBa
 			log.warn("Longitude 1 is not a literal " + list);
 			return null;
 		}
-		if (!SpatialValueUtil.isDecimal(x.getLiteral())) {
+		if (!SpatialValueUtil.isDecimal(x)) {
 			log.warn("Longitude 1 is not a decimal " + list);
 			return null;
 		}
@@ -106,7 +106,7 @@ public abstract class SpatialOperationWithBoxPFBase extends SpatialOperationPFBa
 			log.warn("Latitude 2 is not a literal " + list);
 			return null;
 		}
-		if (!SpatialValueUtil.isDecimal(x.getLiteral())) {
+		if (!SpatialValueUtil.isDecimal(x)) {
 			log.warn("Latitude 2 is not a decimal " + list);
 			return null;
 		}
@@ -119,7 +119,7 @@ public abstract class SpatialOperationWithBoxPFBase extends SpatialOperationPFBa
 			log.warn("Longitude 2 is not a literal " + list);
 			return null;
 		}
-		if (!SpatialValueUtil.isDecimal(x.getLiteral())) {
+		if (!SpatialValueUtil.isDecimal(x)) {
 			log.warn("Longitude 2 is not a decimal " + list);
 			return null;
 		}

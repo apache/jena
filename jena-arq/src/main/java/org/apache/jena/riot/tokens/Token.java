@@ -58,6 +58,7 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 public final class Token
@@ -104,8 +105,8 @@ public final class Token
     
     public final Token setCntrlCode(int cntrlCode)      { this.cntrlCode = cntrlCode ; return this ; }
 
-    public final Token setSubToken1(Token subToken)      { this.subToken1 = subToken ; return this ; }
-    public final Token setSubToken2(Token subToken)      { this.subToken2 = subToken ; return this ; }
+    public final Token setSubToken1(Token subToken)     { this.subToken1 = subToken ; return this ; }
+    public final Token setSubToken2(Token subToken)     { this.subToken2 = subToken ; return this ; }
     
     static Token create(String s)
     {
@@ -140,19 +141,17 @@ public final class Token
     }
 
     Token(String string) { this(STRING, string) ; } 
-    
+
     Token(TokenType type) { this(type, null, null) ; }
-  
+
     Token(TokenType type, String image1) { this(type, image1, null) ; }
-  
-    Token(TokenType type, String image1, String image2)
-    { 
-      this() ;
-      setType(type) ;
-      setImage(image1) ;
-      setImage2(image2) ;
+
+    Token(TokenType type, String image1, String image2) { 
+        this() ;
+        setType(type) ;
+        setImage(image1) ;
+        setImage2(image2) ;
     }
-    
     
 //    private Token(TokenType type) { this(type, null, null, null) ; }
 //    
@@ -544,114 +543,106 @@ public final class Token
         return tokenForNode(n, prologue.getBaseURI(), prologue.getPrefixMap()) ;
     }
 
-    public static Token tokenForNode(Node node, String base, PrefixMap mapping)
-    {
-            if ( node.isURI() )
-            {
-                String uri = node.getURI();
-                if ( mapping != null )
-                {
-                    Pair<String,String> pname = mapping.abbrev(uri) ;
-                    if ( pname != null )
-                        return new Token(TokenType.PREFIXED_NAME, pname.getLeft(), pname.getRight()) ;
-                }
-                if ( base != null )
-                {
-                    String x = FmtUtils.abbrevByBase(uri, base) ;
-                    if ( x != null ) 
-                        return new Token(TokenType.IRI, x) ;
-                }
-                return new Token(IRI, node.getURI()) ;
+    public static Token tokenForNode(Node node, String base, PrefixMap mapping) {
+        if ( node.isURI() ) {
+            String uri = node.getURI() ;
+            if ( mapping != null ) {
+                Pair<String, String> pname = mapping.abbrev(uri) ;
+                if ( pname != null )
+                    return new Token(TokenType.PREFIXED_NAME, pname.getLeft(), pname.getRight()) ;
             }
-            if ( node.isBlank() )
-                return new Token(BNODE, node.getBlankNodeLabel()) ;
-            if ( node.isVariable() )
-                return new Token(VAR, node.getName()) ;
-            if ( node.isLiteral() )
-            {
-                String datatype = node.getLiteralDatatypeURI() ;
-                String lang = node.getLiteralLanguage() ;
-                String s = node.getLiteralLexicalForm() ;
-                
-                if ( datatype != null )
-                {
-                    // Special form we know how to handle?
-                    // Assume valid text
-                    if ( datatype.equals(XSD.integer.getURI()) )
-                    {
-                        try {
-                            String s1 = s ;
-                            // BigInteger does not allow leading +
-                            // so chop it off before the format test
-                            // BigDecimal does allow a leading +
-                            if ( s.startsWith("+") )
-                                s1 = s.substring(1) ;
-                            new java.math.BigInteger(s1) ;
-                            return new Token(INTEGER, s) ;
-                        } catch (NumberFormatException nfe) {}
-                        // No luck.  Continue.
-                        // Continuing is always safe.
-                    }
-                    
-                    if ( datatype.equals(XSD.decimal.getURI()) )
-                    {
-                        if ( s.indexOf('.') > 0 )
-                        {
-                            try {
-                                // BigDecimal does allow a leading +
-                                new java.math.BigDecimal(s) ;
-                                return new Token(DECIMAL, s) ;
-                            } catch (NumberFormatException nfe) {}
-                            // No luck.  Continue.
-                        }
-                    }
-                    
-                    if ( datatype.equals(XSD.xdouble.getURI()) )
-                    {
-                        // Assumes SPARQL has decimals and doubles.
-                        // Must have 'e' or 'E' to be a double short form.
-    
-                        if ( s.indexOf('e') >= 0 || s.indexOf('E') >= 0 )
-                        {
-                            try {
-                                Double.parseDouble(s) ;
-                                return new Token(DOUBLE, s) ; 
-                            } catch (NumberFormatException nfe) {}
-                            // No luck.  Continue.
-                        }
-                    }
-    
-    //                if ( datatype.equals(XSD.xboolean.getURI()) )
-    //                {
-    //                    if ( s.equalsIgnoreCase("true") ) return new Token(BOOLEAN, s) ;
-    //                    if ( s.equalsIgnoreCase("false") ) return new Token(BOOLEAN, s) ;
-    //                }
-                    // Not a recognized form.
-                    // Has datatype.
-                    
-                    Node dt = NodeFactory.createURI(datatype) ;
-                    Token subToken1 = new Token(STRING, s) ;
-                    Token subToken2 = tokenForNode(dt) ;
-                    Token t = new Token(LITERAL_DT, s) ;
-                    t.setSubToken1(subToken1) ;
-                    t.setSubToken2(subToken2) ;
-                    return t ;
-                }
-    
-                if ( lang != null && lang.length()>0)
-                {
-                    Token lex = new Token(s) ;
-                    return new Token(LITERAL_LANG, s, lang, lex, null) ;
-                }
-                
-                // Plain.
-                return new Token(STRING, s) ; 
+            if ( base != null ) {
+                String x = FmtUtils.abbrevByBase(uri, base) ;
+                if ( x != null )
+                    return new Token(TokenType.IRI, x) ;
             }
-            
-            if ( node.equals(Node.ANY) )
-                return new Token(TokenType.KEYWORD, ImageANY) ;
-            
-            throw new IllegalArgumentException() ;
-            
+            return new Token(IRI, node.getURI()) ;
         }
+
+        if ( node.isBlank() )
+            return new Token(BNODE, node.getBlankNodeLabel()) ;
+
+        if ( node.isVariable() )
+            return new Token(VAR, node.getName()) ;
+
+        if ( node.isLiteral() ) {
+            if ( NodeUtils.isSimpleString(node) ) {
+                String lex = node.getLiteralLexicalForm() ;
+                return new Token(STRING, lex) ;
+            }
+
+            if ( NodeUtils.isLangString(node) ) {
+                String lex = node.getLiteralLexicalForm() ;
+                Token sub1 = new Token(STRING, lex) ;
+                String lang = node.getLiteralLanguage() ;
+                return new Token(LITERAL_LANG, lex, lang, sub1, null) ;
+            }
+
+            // Has a datatype (RDF 1.0 and RDF 1.1)
+            String datatype = node.getLiteralDatatypeURI() ;
+            String s = node.getLiteralLexicalForm() ;
+
+            // Special form we know how to handle?
+            // Assume valid text
+            if ( datatype.equals(XSD.integer.getURI()) ) {
+                try {
+                    String s1 = s ;
+                    // BigInteger does not allow leading +
+                    // so chop it off before the format test
+                    // BigDecimal does allow a leading +
+                    if ( s.startsWith("+") )
+                        s1 = s.substring(1) ;
+                    new java.math.BigInteger(s1) ;
+                    return new Token(INTEGER, s) ;
+                }
+                catch (NumberFormatException nfe) {}
+                // No luck. Continue.
+                // Continuing is always safe.
+            }
+
+            if ( datatype.equals(XSD.decimal.getURI()) ) {
+                if ( s.indexOf('.') > 0 ) {
+                    try {
+                        // BigDecimal does allow a leading +
+                        new java.math.BigDecimal(s) ;
+                        return new Token(DECIMAL, s) ;
+                    }
+                    catch (NumberFormatException nfe) {}
+                    // No luck. Continue.
+                }
+            }
+
+            if ( datatype.equals(XSD.xdouble.getURI()) ) {
+                // Assumes SPARQL has decimals and doubles.
+                // Must have 'e' or 'E' to be a double short form.
+
+                if ( s.indexOf('e') >= 0 || s.indexOf('E') >= 0 ) {
+                    try {
+                        Double.parseDouble(s) ;
+                        return new Token(DOUBLE, s) ;
+                    }
+                    catch (NumberFormatException nfe) {}
+                    // No luck. Continue.
+                }
+            }
+
+            // if ( datatype.equals(XSD.xboolean.getURI()) ) {
+            //     if ( s.equalsIgnoreCase("true") ) return new Token(BOOLEAN, s) ;
+            //     if ( s.equalsIgnoreCase("false") ) return new Token(BOOLEAN, s) ;
+            // }
+
+            Node dt = NodeFactory.createURI(datatype) ;
+            Token subToken1 = new Token(STRING, s) ;
+            Token subToken2 = tokenForNode(dt) ;
+            Token t = new Token(LITERAL_DT, s) ;
+            t.setSubToken1(subToken1) ;
+            t.setSubToken2(subToken2) ;
+            return t ;
+        }
+
+        if ( node.equals(Node.ANY) )
+            return new Token(TokenType.KEYWORD, ImageANY) ;
+
+        throw new IllegalArgumentException() ;
+    }
 }

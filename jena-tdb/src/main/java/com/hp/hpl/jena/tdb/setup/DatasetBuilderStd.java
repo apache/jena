@@ -73,12 +73,12 @@ public class DatasetBuilderStd implements DatasetBuilder {
     }
     
     /**
-     * Create a {@linkplain DatasetGraphTDB} with a set of {@linkplain StoreParams}.
+     * Create a {@link DatasetGraphTDB} with a set of {@link StoreParams}.
      * The parameters for a store have 3 inputs: the parameters provided,
      * any parameters 
      * 
      * @param location    Where to create the database.
-     * @param appParams   Store parameters to use (null means use default). {See {@linkplain StoreParams}). 
+     * @param appParams   Store parameters to use (null means use default). {See {@link StoreParams}). 
      * @return DatasetGraphTDB
      */
     public static DatasetGraphTDB create(Location location, StoreParams appParams) {
