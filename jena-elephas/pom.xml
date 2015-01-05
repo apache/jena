@@ -34,7 +34,7 @@
 
   <!-- Properties common across all profiles -->
   <properties>
-    <plugin.compiler.version>2.5.1</plugin.compiler.version>
+    <plugin.compiler.version>2.6.0</plugin.compiler.version>
     <arq.version>2.12.2-SNAPSHOT</arq.version>
     <junit.version>4.11</junit.version>
     <mrunit.version>1.0.0</mrunit.version>
@@ -67,7 +67,12 @@
         <artifactId>hadoop-mapreduce-client-common</artifactId>
         <version>${hadoop.version}</version>
       </dependency>
-      
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>11.0.2</version>
+      </dependency>
+
       <!-- Jena Dependencies -->
       <dependency>
         <groupId>org.apache.jena</groupId>
