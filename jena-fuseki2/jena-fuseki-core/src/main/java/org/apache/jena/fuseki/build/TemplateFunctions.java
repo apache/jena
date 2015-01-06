@@ -22,6 +22,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Map ;
 import java.util.Map.Entry ;
+import java.util.regex.Matcher ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.fuseki.Fuseki ;
@@ -61,7 +62,9 @@ public class TemplateFunctions
     /** Create a template from a String */ 
     public static String templateString(String template, Map<String, String> params) {
         for ( Entry<String, String> e : params.entrySet() ) {
-            template = template.replaceAll("\\{"+e.getKey()+"\\}", e.getValue()) ;
+            // Backslashes (\) and dollar signs ($) in the replacement string have special meaning.
+            String x = Matcher.quoteReplacement(e.getValue()) ; 
+            template = template.replaceAll("\\{"+e.getKey()+"\\}", x) ;
         }
         return template ;
     }
