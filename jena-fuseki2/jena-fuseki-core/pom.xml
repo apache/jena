@@ -25,7 +25,7 @@
     <relativePath>../</relativePath>
   </parent> 
   
-  <name>Apache Jena Fuseki - Server engine</name>
+  <name>Apache Jena - Fuseki Server Engine</name>
   <artifactId>jena-fuseki-core</artifactId>
 
   <!-- We make the JAR file so that the shade plugin includes it.
