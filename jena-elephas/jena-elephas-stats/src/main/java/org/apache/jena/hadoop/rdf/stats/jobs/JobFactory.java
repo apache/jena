@@ -28,6 +28,7 @@ import org.apache.hadoop.io.SequenceFile.CompressionType;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.compress.BZip2Codec;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.chain.ChainMapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.NLineInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
@@ -56,12 +57,14 @@ import org.apache.jena.hadoop.rdf.mapreduce.count.datatypes.QuadDataTypeCountMap
 import org.apache.jena.hadoop.rdf.mapreduce.count.datatypes.TripleDataTypeCountMapper;
 import org.apache.jena.hadoop.rdf.mapreduce.count.namespaces.QuadNamespaceCountMapper;
 import org.apache.jena.hadoop.rdf.mapreduce.count.namespaces.TripleNamespaceCountMapper;
+import org.apache.jena.hadoop.rdf.mapreduce.count.positional.QuadGraphCountMapper;
 import org.apache.jena.hadoop.rdf.mapreduce.count.positional.QuadObjectCountMapper;
 import org.apache.jena.hadoop.rdf.mapreduce.count.positional.TripleObjectCountMapper;
 import org.apache.jena.hadoop.rdf.mapreduce.filter.positional.QuadFilterByPredicateMapper;
 import org.apache.jena.hadoop.rdf.mapreduce.filter.positional.TripleFilterByPredicateUriMapper;
 import org.apache.jena.hadoop.rdf.mapreduce.group.QuadGroupBySubjectMapper;
 import org.apache.jena.hadoop.rdf.mapreduce.group.TripleGroupBySubjectMapper;
+import org.apache.jena.hadoop.rdf.mapreduce.transform.TriplesToQuadsConstantGraphMapper;
 import org.apache.jena.hadoop.rdf.types.CharacteristicSetWritable;
 import org.apache.jena.hadoop.rdf.types.NodeWritable;
 import org.apache.jena.hadoop.rdf.types.QuadWritable;
@@ -177,6 +180,67 @@ public class JobFactory {
         FileInputFormat.setInputPaths(job, StringUtils.arrayToString(inputPaths));
         FileOutputFormat.setOutputPath(job, new Path(outputPath));
 
+        return job;
+    }
+    
+    public static Job getTripleGraphSizesJob(Configuration config, String[] inputPaths, String outputPath) throws IOException {
+        Job job = Job.getInstance(config);
+        job.setJarByClass(JobFactory.class);
+        job.setJobName("RDF Triples Graph Sizes");
+        
+        // Map/Reduce classes
+        ChainMapper.addMapper(job, TriplesToQuadsConstantGraphMapper.class, LongWritable.class, TripleWritable.class, LongWritable.class, QuadWritable.class, config);
+        ChainMapper.addMapper(job, QuadGraphCountMapper.class, LongWritable.class, QuadWritable.class, NodeWritable.class, LongWritable.class, config);
+        job.setMapOutputKeyClass(NodeWritable.class);
+        job.setMapOutputValueClass(LongWritable.class);
+        job.setReducerClass(NodeCountReducer.class);
+        
+        // Input and Output
+        job.setInputFormatClass(TriplesInputFormat.class);
+        job.setOutputFormatClass(NTriplesNodeOutputFormat.class);
+        FileInputFormat.setInputPaths(job, StringUtils.arrayToString(inputPaths));
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        
+        return job;
+    }
+    
+    public static Job getQuadGraphSizesJob(Configuration config, String[] inputPaths, String outputPath) throws IOException {
+        Job job = Job.getInstance(config);
+        job.setJarByClass(JobFactory.class);
+        job.setJobName("RDF Quads Graph Sizes");
+        
+        // Map/Reduce classes
+        job.setMapperClass(QuadGraphCountMapper.class);
+        job.setMapOutputKeyClass(NodeWritable.class);
+        job.setMapOutputValueClass(LongWritable.class);
+        job.setReducerClass(NodeCountReducer.class);
+        
+        // Input and Output
+        job.setInputFormatClass(QuadsInputFormat.class);
+        job.setOutputFormatClass(NTriplesNodeOutputFormat.class);
+        FileInputFormat.setInputPaths(job, StringUtils.arrayToString(inputPaths));
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        
+        return job;
+    }
+    
+    public static Job getGraphSizesJob(Configuration config, String[] inputPaths, String outputPath) throws IOException {
+        Job job = Job.getInstance(config);
+        job.setJarByClass(JobFactory.class);
+        job.setJobName("RDF Graph Sizes");
+        
+        // Map/Reduce classes
+        job.setMapperClass(QuadGraphCountMapper.class);
+        job.setMapOutputKeyClass(NodeWritable.class);
+        job.setMapOutputValueClass(LongWritable.class);
+        job.setReducerClass(NodeCountReducer.class);
+        
+        // Input and Output
+        job.setInputFormatClass(TriplesOrQuadsInputFormat.class);
+        job.setOutputFormatClass(NTriplesNodeOutputFormat.class);
+        FileInputFormat.setInputPaths(job, StringUtils.arrayToString(inputPaths));
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        
         return job;
     }
 

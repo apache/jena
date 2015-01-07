@@ -42,9 +42,8 @@
 
 		<!-- CLI related Dependencies -->
 		<dependency>
-			<groupId>io.airlift</groupId>
+			<groupId>com.github.rvesse</groupId>
 			<artifactId>airline</artifactId>
-			<version>0.6</version>
 		</dependency>
 
 		<!-- Hadoop Dependencies -->

@@ -38,6 +38,7 @@
     <arq.version>2.12.2-SNAPSHOT</arq.version>
     <junit.version>4.11</junit.version>
     <mrunit.version>1.0.0</mrunit.version>
+    <airline.version>0.8</airline.version>
   </properties>
 
 	<!-- Profiles to allow building for different Hadoop versions -->
@@ -78,6 +79,13 @@
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-arq</artifactId>
         <version>${arq.version}</version>
+      </dependency>
+      
+      <!-- CLI Related Dependencies -->
+      <dependency>
+        <groupId>com.github.rvesse</groupId>
+        <artifactId>airline</artifactId>
+        <version>${airline.version}</version>
       </dependency>
 
       <!-- Test Dependencies -->

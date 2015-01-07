@@ -18,19 +18,19 @@
 
 package org.apache.jena.hadoop.rdf.stats;
 
-import io.airlift.command.Arguments;
-import io.airlift.command.Command;
-import io.airlift.command.Help;
-import io.airlift.command.HelpOption;
-import io.airlift.command.Option;
-import io.airlift.command.OptionType;
-import io.airlift.command.ParseArgumentsMissingException;
-import io.airlift.command.ParseArgumentsUnexpectedException;
-import io.airlift.command.ParseException;
-import io.airlift.command.ParseOptionMissingException;
-import io.airlift.command.ParseOptionMissingValueException;
-import io.airlift.command.SingleCommand;
-import io.airlift.command.model.CommandMetadata;
+import io.airlift.airline.Arguments;
+import io.airlift.airline.Command;
+import io.airlift.airline.HelpOption;
+import io.airlift.airline.Option;
+import io.airlift.airline.ParseArgumentsMissingException;
+import io.airlift.airline.ParseArgumentsUnexpectedException;
+import io.airlift.airline.ParseException;
+import io.airlift.airline.ParseOptionIllegalValueException;
+import io.airlift.airline.ParseOptionMissingException;
+import io.airlift.airline.ParseOptionMissingValueException;
+import io.airlift.airline.SingleCommand;
+import io.airlift.airline.help.Help;
+import io.airlift.airline.model.CommandMetadata;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +44,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.jena.hadoop.rdf.stats.jobs.JobFactory;
-
 
 /**
  * Entry point for the Hadoop job, handles launching all the relevant Hadoop
@@ -67,38 +66,41 @@ public class RdfStats implements Tool {
     /**
      * Gets/Sets whether all available statistics will be calculated
      */
-    @Option(name = { "-a", "--all" }, description = "Requests that all available statistics be calculated", type = OptionType.COMMAND)
+    @Option(name = { "-a", "--all" }, description = "Requests that all available statistics be calculated")
     public boolean all = false;
 
     /**
      * Gets/Sets whether node usage counts will be calculated
      */
-    @Option(name = { "-n", "--node-count" }, description = "Requests that node usage counts be calculated", type = OptionType.COMMAND)
+    @Option(name = { "-n", "--node-count" }, description = "Requests that node usage counts be calculated")
     public boolean nodeCount = false;
 
     /**
      * Gets/Sets whether characteristic sets will be calculated
      */
-    @Option(name = { "-c", "--characteristic-sets" }, description = "Requests that characteristic sets be calculated", type = OptionType.COMMAND)
+    @Option(name = { "-c", "--characteristic-sets" }, hidden = true, description = "Requests that characteristic sets be calculated (hidden as this has scalability issues)")
     public boolean characteristicSets = false;
 
     /**
      * Gets/Sets whether type counts will be calculated
      */
-    @Option(name = { "-t", "--type-counts" }, description = "Requests that rdf:type usage counts be calculated", type = OptionType.COMMAND)
+    @Option(name = { "-t", "--type-counts" }, description = "Requests that rdf:type usage counts be calculated")
     public boolean typeCount = false;
 
     /**
      * Gets/Sets whether data type counts will be calculated
      */
-    @Option(name = { "-d", "--data-types" }, description = "Requests that literal data type usage counts be calculated", type = OptionType.COMMAND)
+    @Option(name = { "-d", "--data-types" }, description = "Requests that literal data type usage counts be calculated")
     public boolean dataTypeCount = false;
 
     /**
      * Gets/Sets whether namespace counts will be calculated
      */
-    @Option(name = { "--namespaces" }, description = "Requests that namespace usage counts be calculated", type = OptionType.COMMAND)
+    @Option(name = { "--namespaces" }, description = "Requests that namespace usage counts be calculated")
     public boolean namespaceCount = false;
+    
+    @Option(name = { "-g", "--graph-sizes" }, description = "Requests that the size of each named graph be counted")
+    public boolean graphSize = false;
 
     /**
      * Gets/Sets the input data type used
@@ -143,12 +145,10 @@ public class RdfStats implements Tool {
         System.exit(1);
     }
 
-    private static void showUsage() {
+    private static void showUsage() throws IOException {
         CommandMetadata metadata = SingleCommand.singleCommand(RdfStats.class).getCommandMetadata();
-        StringBuilder builder = new StringBuilder();
-        Help.help(metadata, builder);
         System.err.print(ANSI_RESET);
-        System.err.println(builder.toString());
+        Help.help(metadata, System.err);
         System.exit(1);
     }
 
@@ -196,11 +196,10 @@ public class RdfStats implements Tool {
             System.err.println(ANSI_RED + e.getMessage());
             System.err.println();
             showUsage();
-            // TODO Re-enable as and when we upgrade Airline
-            // } catch (ParseOptionIllegalValueException e) {
-            // System.err.println(ANSI_RED + e.getMessage());
-            // System.err.println();
-            // showUsage();
+        } catch (ParseOptionIllegalValueException e) {
+            System.err.println(ANSI_RED + e.getMessage());
+            System.err.println();
+            showUsage();
         } catch (ParseException e) {
             System.err.println(ANSI_RED + e.getMessage());
             System.err.println();
@@ -242,6 +241,8 @@ public class RdfStats implements Tool {
             statsRequested++;
         if (this.namespaceCount)
             statsRequested++;
+        if (this.graphSize)
+            statsRequested++;
 
         // Error if no statistics requested
         if (statsRequested == 0) {
@@ -254,6 +255,10 @@ public class RdfStats implements Tool {
         // Compute statistics
         if (this.nodeCount) {
             Job job = this.selectNodeCountJob();
+            statsComputed = this.computeStatistic(job, statsComputed, statsRequested);
+        }
+        if (this.graphSize) {
+            Job job = this.selectGraphSizeJob();
             statsComputed = this.computeStatistic(job, statsComputed, statsRequested);
         }
         if (this.typeCount) {
@@ -320,7 +325,8 @@ public class RdfStats implements Tool {
             try {
                 boolean success = this.runJob(job);
                 if (!success && !continueOnFailure)
-                    throw new IllegalStateException("Unable to complete job sequence because Job " + job.getJobName() + " failed");
+                    throw new IllegalStateException("Unable to complete job sequence because Job " + job.getJobName()
+                            + " failed");
             } catch (IllegalStateException e) {
                 throw e;
             } catch (Throwable e) {
@@ -342,6 +348,20 @@ public class RdfStats implements Tool {
             return JobFactory.getTripleNodeCountJob(this.config, inputs, realOutputPath);
         } else {
             return JobFactory.getNodeCountJob(this.config, inputs, realOutputPath);
+        }
+    }
+    
+    private Job selectGraphSizeJob() throws IOException {
+        String realOutputPath = outputPath + "graph-sizes/";
+        String[] inputs = new String[this.inputPaths.size()];
+        this.inputPaths.toArray(inputs);
+        
+        if (DATA_TYPE_QUADS.equals(this.inputType)) {
+            return JobFactory.getQuadGraphSizesJob(this.config, inputs, realOutputPath);
+        } else if (DATA_TYPE_TRIPLES.equals(this.inputType)) {
+            return JobFactory.getTripleGraphSizesJob(this.config, inputs, realOutputPath);
+        } else {
+            return JobFactory.getGraphSizesJob(this.config, inputs, realOutputPath);
         }
     }
 
@@ -380,9 +400,11 @@ public class RdfStats implements Tool {
         this.inputPaths.toArray(inputs);
 
         if (DATA_TYPE_QUADS.equals(this.inputType)) {
-            return JobFactory.getQuadCharacteristicSetJobs(this.config, inputs, intermediateOutputPath, finalOutputPath);
+            return JobFactory
+                    .getQuadCharacteristicSetJobs(this.config, inputs, intermediateOutputPath, finalOutputPath);
         } else if (DATA_TYPE_TRIPLES.equals(this.inputType)) {
-            return JobFactory.getTripleCharacteristicSetJobs(this.config, inputs, intermediateOutputPath, finalOutputPath);
+            return JobFactory.getTripleCharacteristicSetJobs(this.config, inputs, intermediateOutputPath,
+                    finalOutputPath);
         } else {
             return JobFactory.getCharacteristicSetJobs(this.config, inputs, intermediateOutputPath, finalOutputPath);
         }
