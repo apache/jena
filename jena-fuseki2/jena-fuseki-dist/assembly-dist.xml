@@ -17,8 +17,8 @@
 -->
 
 <!-- 
-The distribution.
-Assumes jar made and onejar has been assembled.
+  The distribution.
+  Assumes jar made and onejar has been assembled.
 -->
 
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
@@ -57,18 +57,6 @@ Assumes jar made and onejar has been assembled.
 
   <files>
     
-    <!--
-    <file>
-      <source>${project.build.directory}/${server.jar.name}.jar</source>
-      <outputDirectory></outputDirectory>
-      <destName>fuseki-server.jar</destName>
-    </file>
-    <file>
-      <source>${project.build.directory}/${project.build.finalName}.war</source>
-      <outputDirectory></outputDirectory>
-      <destName>fuseki-server.war</destName>
-    </file>
-    -->
     <file>
       <source>dist/LICENSE</source>
       <destName>LICENSE</destName>
