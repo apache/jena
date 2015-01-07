@@ -179,7 +179,6 @@
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
-      <version>${ver.thrift}</version>
       <exclusions>
         <!-- Use httpclient-osgi instead -->
         <exclusion>
@@ -201,6 +200,10 @@
       <artifactId>slf4j-api</artifactId>
       <version>${ver.slf4j}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -211,7 +214,7 @@
             <configuration>
                 <instructions>
                     <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
-                    <Embed-Dependency>*;scope=provided</Embed-Dependency>
+                    <Embed-Dependency>artifactId=jena*,artifactId=xercesImpl,artifactId=xml-apis</Embed-Dependency>
                     <Embed-Transitive>true</Embed-Transitive>
                     <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,*</Import-Package>
                 </instructions>
