@@ -60,12 +60,6 @@
       <type>pom</type>
     </dependency>
     
-    <!-- Google Code Guava -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-	
     <!-- Testing support -->
     <dependency>
       <groupId>org.apache.jena</groupId>

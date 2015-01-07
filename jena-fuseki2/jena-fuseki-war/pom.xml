@@ -18,22 +18,24 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
-  </parent> 
 
-  <name>Apache Jena Fuseki - SPARQL 1.1 Server</name>
-  <artifactId>jena-fuseki</artifactId>
+  <name>Apache Jena Fuseki - WAR file</name>
+  <artifactId>jena-fuseki-war</artifactId>
   <version>2.0.0-SNAPSHOT</version>
 
-  <description>Apache Jena Fuseki</description>
-  <packaging>pom</packaging>
-  
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-fuseki</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent> 
+
+  <packaging>war</packaging>
+
+  <description>WAR file for Fuseki</description>
   <url>http://jena.apache.org/</url>
 
+  <!-- Need if the parent is a snapshot -->
   <repositories>
     <repository>
       <id>apache.snapshots</id>
@@ -69,11 +71,39 @@
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>  
   </properties>
 
-  <modules>
-    <module>jena-fuseki-core</module>
-    <module>jena-fuseki-war</module>
-    <module>jena-fuseki-server</module>
-    <module>jena-fuseki-dist</module>
-  </modules>
+  <dependencies>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.4</version>
+        <executions> 
+          <execution>
+            <id>generate-webapp</id>
+            <phase>package</phase>
+            <goals><goal>war</goal></goals>
+          </execution>
+        </executions>
+        <configuration>
+	  <warSourceDirectory>../jena-fuseki-core/src/main/webapp</warSourceDirectory>
+	  <webXml>../jena-fuseki-core/src/main/webapp/WEB-INF/web.xml</webXml>
+          <!-- Safe: Don't put in the Jetty dependency nor javax.servlet -->
+          <packagingExcludes>WEB-INF/lib/jetty-*,WEB-INF/lib/javax.servlet*</packagingExcludes>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
   
 </project>

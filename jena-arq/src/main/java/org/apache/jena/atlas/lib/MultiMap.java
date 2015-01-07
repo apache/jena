@@ -65,7 +65,10 @@ public abstract class MultiMap<K, V>
         x.add(value) ;
     }
     
-    public void remove(K key, V value)  { map.get(key).remove(value) ; }
+    public void remove(K key, V value)  {
+        if ( map.containsKey(key))
+            map.get(key).remove(value) ;
+    }
     public void removeKey(K key)        { map.remove(key) ; }
     
     protected Collection<V> valuesForKey(K key) { return map.get(key); }
