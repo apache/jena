@@ -290,7 +290,7 @@ public class FusekiServer
         
         addGlobals(params); 
 
-        String str = TemplateFunctions.templateFile(templateFile, params) ;
+        String str = TemplateFunctions.templateFile(templateFile, params, Lang.TTL) ;
         Lang lang = RDFLanguages.filenameToLang(str, Lang.TTL) ;
         StringReader sr =  new StringReader(str) ;
         Model model = ModelFactory.createDefaultModel() ;

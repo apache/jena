@@ -261,9 +261,9 @@ public class ActionDatasets extends ActionContainerItem {
         
         String template = null ;
         if ( dbType.equalsIgnoreCase(tDatabasetTDB))
-            template = TemplateFunctions.templateFile(Template.templateTDBFN, params) ;
+            template = TemplateFunctions.templateFile(Template.templateTDBFN, params, Lang.TTL) ;
         if ( dbType.equalsIgnoreCase(tDatabasetMem))
-            template = TemplateFunctions.templateFile(Template.templateMemFN, params) ;
+            template = TemplateFunctions.templateFile(Template.templateMemFN, params, Lang.TTL) ;
         RDFDataMgr.parse(dest, new StringReader(template), "http://base/", Lang.TTL) ;
     }
 

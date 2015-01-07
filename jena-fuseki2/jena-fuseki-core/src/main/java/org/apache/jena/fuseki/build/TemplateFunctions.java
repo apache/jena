@@ -22,17 +22,17 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Map ;
 import java.util.Map.Entry ;
-import java.util.regex.Matcher ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.riot.Lang ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
 public class TemplateFunctions
 {
     /** Read in a template from a file, substitute for {NAME} and return the string. */
-    public static String templateFile(String templateName, Map<String, String> params) {
+    public static String templateFile(String templateName, Map<String, String> params, Lang lang) {
         String templateFilename = Template.getPath(templateName).toString() ;
         String template ;
         try { template = FileUtils.readWholeFileAsUTF8(templateFilename) ; }
@@ -40,11 +40,11 @@ public class TemplateFunctions
             Fuseki.serverLog.error("File not found: "+templateFilename);
             IO.exception(ex); return null ;
         }
-        return templateString(template, params) ;
+        return templateString(template, params, lang) ;
     }
     
     /** Read a template file, substitute for {NAME} and return the model. */
-    public static String templateResource(String resourceName, Map<String, String> params) {
+    public static String templateResource(String resourceName, Map<String, String> params, Lang lang) {
         String template ;
         try {
             InputStream in = TemplateFunctions.class.getClassLoader().getResourceAsStream(resourceName) ;
@@ -56,15 +56,31 @@ public class TemplateFunctions
             Fuseki.serverLog.error("Error reading resource: "+resourceName);
             IO.exception(ex); return null ;
         }
-        return templateString(template, params) ;
+        return templateString(template, params, lang) ;
     }
 
     /** Create a template from a String */ 
-    public static String templateString(String template, Map<String, String> params) {
+    public static String templateString(String template, Map<String, String> params, Lang lang) {
         for ( Entry<String, String> e : params.entrySet() ) {
-            // Backslashes (\) and dollar signs ($) in the replacement string have special meaning.
-            String x = Matcher.quoteReplacement(e.getValue()) ; 
-            template = template.replaceAll("\\{"+e.getKey()+"\\}", x) ;
+            // Literal string replacement.
+            // If using .replaceAll, need to use Match.quoteReplacement on the value.
+            String x = e.getValue() ;
+            String k = "{"+e.getKey()+"}" ;
+            
+            if ( lang != null ) {
+                if ( Lang.TTL.equals(lang)     ||
+                     Lang.TRIG.equals(lang)    ||
+                     Lang.NT.equals(lang)      ||
+                     Lang.NQ.equals(lang)      ||
+                     Lang.JSONLD.equals(lang)  ||
+                     Lang.RDFJSON.equals(lang) 
+                    ) {
+                    // Make safe for a RDF language ""-string - especially MS Windows \ path separators.
+                    x = x.replace("\\", "\\\\") ;
+                    x = x.replace("\"", "\\\"") ;
+                }
+            }
+            template = template.replace(k, x) ;
         }
         return template ;
     }
