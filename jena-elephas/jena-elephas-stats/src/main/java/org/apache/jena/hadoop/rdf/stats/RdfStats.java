@@ -183,27 +183,21 @@ public class RdfStats implements Tool {
         } catch (ParseOptionMissingException e) {
             System.err.println(ANSI_RED + e.getMessage());
             System.err.println();
-            showUsage();
         } catch (ParseOptionMissingValueException e) {
             System.err.println(ANSI_RED + e.getMessage());
             System.err.println();
-            showUsage();
         } catch (ParseArgumentsMissingException e) {
             System.err.println(ANSI_RED + e.getMessage());
             System.err.println();
-            showUsage();
         } catch (ParseArgumentsUnexpectedException e) {
             System.err.println(ANSI_RED + e.getMessage());
             System.err.println();
-            showUsage();
         } catch (ParseOptionIllegalValueException e) {
             System.err.println(ANSI_RED + e.getMessage());
             System.err.println();
-            showUsage();
         } catch (ParseException e) {
             System.err.println(ANSI_RED + e.getMessage());
             System.err.println();
-            showUsage();
         } catch (UnsupportedOperationException e) {
             System.err.println(ANSI_RED + e.getMessage());
         } catch (Throwable e) {
