@@ -42,8 +42,8 @@
   <properties>
     <!-- TODO: Move to jena-parent? -->
     <ver.jena>2.12.2-SNAPSHOT</ver.jena>
-    <ver.jena-sdb>1.5.2-SNAPSHOT</ver.jena-sdb>
     <ver.jena-iri>1.1.2-SNAPSHOT</ver.jena-iri>
+    <ver.jena-tdb>1.1.2-SNAPSHOT</ver.jena-tdb>
     <ver.httpcore>4.2.5</ver.httpcore>
     <ver.jackson>2.3.3</ver.jackson> <!-- should match dependency in jsonld-java -->
   </properties>
@@ -88,8 +88,8 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-sdb</artifactId>
-      <version>${ver.jena-sdb}</version>
+      <artifactId>jena-tdb</artifactId>
+      <version>${ver.jena-tdb}</version>
       <scope>provided</scope>
     </dependency>
 
