@@ -181,7 +181,7 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
-          <!-- Exclude so we use out choice of versions -->
+          <!-- Exclude so we use our choice of versions -->
           <exclusion>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient-cache</artifactId>
