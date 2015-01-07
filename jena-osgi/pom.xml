@@ -156,15 +156,10 @@
         <dependency>
           <groupId>com.github.jsonld-java</groupId>
           <artifactId>jsonld-java</artifactId>
-          <scope>provided</scope>
-          <!-- FIXME: From jsonld-java 0.5.1 or newer (which is then OSGi
-               bundle), drop <scope>provided  so that we can use it
-               as a real dependency -->
         </dependency>
         <!--
              but until jsonld-java 0.5.1, we'll need to depend on jackson-databind and jackson-core ourselves
              as bundles:
-             -->
         <dependency>
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-core</artifactId>
@@ -175,6 +170,7 @@
           <artifactId>jackson-databind</artifactId>
           <version>${ver.jackson}</version>
         </dependency>
+             -->
 
         <dependency>
           <groupId>org.apache.commons</groupId>
