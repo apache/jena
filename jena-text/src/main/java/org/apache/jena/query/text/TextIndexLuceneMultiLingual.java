@@ -75,17 +75,19 @@ public class TextIndexLuceneMultiLingual extends TextIndexLucene {
     }
 
     public void addEntity(Entity entity, String lang) {
-        lang = ("".equals(lang) || "none".equals(lang))?"default":lang.toLowerCase().substring(0, 2);
-        TextIndex index = indexes.get(lang);
-        if (index != null)
-            index.addEntity(entity) ;
+        if (lang.length() >= 2)
+            lang = lang.toLowerCase().substring(0, 2);
+        if (!indexes.containsKey(lang))
+            lang = "default";
+        indexes.get(lang).addEntity(entity) ;
     }
 
     public void deleteEntity(Entity entity, String lang) {
-        lang = ("".equals(lang) || "none".equals(lang))?"default":lang.toLowerCase().substring(0, 2);
-        TextIndex index = indexes.get(lang);
-        if (index != null)
-            index.deleteEntity(entity) ;
+        if (lang.length() >= 2)
+            lang = lang.toLowerCase().substring(0, 2);
+        if (!indexes.containsKey(lang))
+            lang = "default";
+        indexes.get(lang).deleteEntity(entity);
     }
 
 }
