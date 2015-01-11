@@ -28,26 +28,13 @@
 	<packaging>bundle</packaging>
 
 	<dependencies>
-	<!-- 
+
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-osgi</artifactId>
 			<version>${project.version}</version>
 			<type>bundle</type>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-core</artifactId>
-			<version>${project.version}</version>
-			<type>test-jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-arq</artifactId>
-			<version>${project.version}</version>
-			<type>test-jar</type>
-		</dependency>
-	 -->
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -55,19 +42,19 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr.annotations</artifactId>
-			<version>1.9.8</version>
-			<type>bundle</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.everit.osgi.dev</groupId>
 			<artifactId>org.everit.osgi.dev.testrunner.junit4</artifactId>
-			<version>3.0.3</version>
-			<type>bundle</type>
+			<version>3.0.4</version>
+			<scope>test</scope>
 		</dependency>
+			<!--  NOTE: LGPL -->			
 
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.3.1</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -78,28 +65,14 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<!-- 
-						<Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency>
-						<Import-Package>com.hp.hpl.jena,org.apache.jena</Import-Package>
-						 -->
-						<!--  Update according to expected number of *Test classes -->
-						<EOSGi-TestNum>1</EOSGi-TestNum>
+						<Bundle-Activator>org.apache.jena.osgi.test.JenaOSGITestActivator</Bundle-Activator>
+						<!-- <Import-Package>com.hp.hpl.jena</Import-Package> -->
+						<!-- <Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency> -->
+						
+						<!-- Update according to expected number of @Test methods -->						     
+						<EOSGi-TestNum>4</EOSGi-TestNum>
 					</instructions>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-scr-plugin</artifactId>
-				<version>1.20.0</version>
-				<executions>
-					<execution>
-						<id>generate-scr-scrdescriptor</id>
-						<goals>
-							<goal>scr</goal>
-						</goals>
-					</execution>
-				</executions>
-
 			</plugin>
 			<plugin>
 				<groupId>org.everit.osgi.dev</groupId>
@@ -117,12 +90,14 @@
 				<configuration>
 					<environments>
 						<environment>
-							<id>equinox</id>
-							<framework>equinox</framework>
-						</environment>
-						<environment>
 							<id>felix</id>
 							<framework>felix</framework>
+							<timeout>150000</timeout><!-- 15000ms = 15s -->
+						</environment>
+						<environment>
+							<id>equinox</id>
+							<framework>equinox</framework>
+							<timeout>150000</timeout> <!-- 15000ms = 15s -->
 						</environment>
 					</environments>
 				</configuration>
