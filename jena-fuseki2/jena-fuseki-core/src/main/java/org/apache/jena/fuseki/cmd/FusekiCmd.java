@@ -26,6 +26,7 @@ import org.apache.jena.fuseki.FusekiLogging ;
 import org.apache.jena.fuseki.build.Template ;
 import org.apache.jena.fuseki.jetty.JettyServerConfig ;
 import org.apache.jena.fuseki.jetty.JettyFuseki ;
+import org.apache.jena.fuseki.server.FusekiEnv ;
 import org.apache.jena.fuseki.server.FusekiServerListener ;
 import org.apache.jena.fuseki.server.ServerInitialConfig ;
 import org.apache.jena.riot.Lang ;
@@ -51,6 +52,7 @@ public class FusekiCmd {
     // statics of a class are run.
 
     static {
+        FusekiEnv.mode = FusekiEnv.INIT.STANDALONE ;
         FusekiLogging.setLogging() ;
     }
 

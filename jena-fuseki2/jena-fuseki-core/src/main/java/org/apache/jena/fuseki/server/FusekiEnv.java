@@ -29,6 +29,51 @@ import java.nio.file.Paths ;
  * @See FusekiServer 
  */ 
 public class FusekiEnv {
+    // Initialization logging happens via stdout/stderr directly.
+    // Fuseki logging is not initialized to avoid going in circles.
+    
+    private static final boolean LogInit         = false ;
+    
+    /** Unused */
+    // public static final String DFT_FUSEKI_HOME = isWindows 
+    //        ? /*What's correct here?*/ "/usr/share/fuseki"
+    //        : "/usr/share/fuseki" ;
+    static final boolean isWindows = determineIfWindows() ;
+    static final String  DFT_FUSEKI_BASE = isWindows ? /* What's correct here? */"/etc/fuseki" : "/etc/fuseki" ;
+    
+    /** Initialization mode, depending on the way Fuseki is started:
+        <ul>
+        <li>{@code WAR} - Running as a WAR file.</li>
+        <li>{@code EMBEDDED}</li>
+        <li>{@code STANDALONE} - Running as the standalone server in Jetty</li>
+        <li>{@code TEST} - Running inside maven/JUnit and as the standalone server</li>
+        <li>{@code UNSET} - Initial state.</li>
+        </ul>
+        <p> 
+        If at server initialization, the MODE is UNSET, then assume WAR setup.
+        A WAR file does not have the opportunity to set the mode.
+        <p>
+        TEST:  (better to set FUSEKI_HOME, FUSEKI_BASE from the test environment</li>
+    */
+    public enum INIT {
+        // Default values of FUSEKI_HOME, and FUSEKI_BASE. 
+        WAR         (null, "/etc/fuseki") , 
+        EMBEDDED    (".", "run") ,
+        STANDALONE  (".", "run") ,
+        TEST        ("src/main/webapp", "target/run") ,
+        UNSET       (null, null) ;
+        
+        final String dftFusekiHome ;
+        final String dftFusekiBase ;
+        
+        INIT(String home, String base) {
+            this.dftFusekiHome = home ;
+            this.dftFusekiBase = base ;
+        }
+    }
+    
+    public static INIT mode = INIT.UNSET ;
+    
     /** Root of the Fuseki installation for fixed files. 
      *  This may be null (e.g. running inside a web application container) */ 
     public static Path FUSEKI_HOME = null ;
@@ -37,8 +82,6 @@ public class FusekiEnv {
      * This is not null - it may be /etc/fuseki, which must be writable.
      */ 
     public static Path FUSEKI_BASE = null ;
-    
-    static final boolean isWindows = determineIfWindows() ;
     
     // Copied from SystemTDB to avoid dependency.
     // This code must not touch Jena.  
@@ -49,41 +92,43 @@ public class FusekiEnv {
         return s.startsWith("Windows ") ;
     }
  
-    /** Unused */
-    // public static final String DFT_FUSEKI_HOME = isWindows 
-    //        ? /*What's correct here?*/ "/usr/share/fuseki"
-    //        : "/usr/share/fuseki" ;
-    static final String  DFT_FUSEKI_BASE = isWindows ? /* What's correct here? */"/etc/fuseki" : "/etc/fuseki" ;
-
     public static final String   ENV_runArea     = "run" ;
 
     private static boolean       initialized     = false ;
-    private static final boolean LogInit         = false ;
-    
     public static synchronized void setEnvironment() {
         if ( initialized )
             return ;
         initialized = true ;
-        logInit("FusekiInitEnv") ;
-        logInit("Start: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s", FUSEKI_HOME, FUSEKI_BASE) ;
         
+        logInit("FusekiEnv:Start: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s : MODE = %s", FUSEKI_HOME, FUSEKI_BASE, mode) ;
+        
+        if ( mode == null || mode == INIT.UNSET )
+            mode = INIT.WAR ;
+
         if ( FUSEKI_HOME == null ) {
             // Make absolute
             String x1 = getenv("FUSEKI_HOME") ;
+            if ( x1 == null )
+                x1 = mode.dftFusekiHome ;
             if ( x1 != null )
                 FUSEKI_HOME = Paths.get(x1) ;
         }
 
         if ( FUSEKI_BASE == null ) {
             String x2 = getenv("FUSEKI_BASE") ;
+            if ( x2 == null )
+                x2 = mode.dftFusekiBase ;
             if ( x2 != null )
                 FUSEKI_BASE = Paths.get(x2) ;
             else {
                 if ( FUSEKI_HOME != null )
                     FUSEKI_BASE = FUSEKI_HOME.resolve(ENV_runArea) ;
-                else
+                else {
+                    // This is bad - there should have been a default by now.
+                    logInitError("Can't find a setting for FUSEKI_BASE - guessing wildy") ;
                     // Neither FUSEKI_HOME nor FUSEKI_BASE set.
                     FUSEKI_BASE = Paths.get(DFT_FUSEKI_BASE) ;
+                }
             }
         }
 
@@ -92,7 +137,7 @@ public class FusekiEnv {
 
         FUSEKI_BASE = FUSEKI_BASE.toAbsolutePath() ;
 
-        logInit("Finish: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s", FUSEKI_HOME, FUSEKI_BASE) ;
+        logInit("FusekiEnv:Finish: ENV_FUSEKI_HOME = %s : ENV_FUSEKI_BASE = %s", FUSEKI_HOME, FUSEKI_BASE) ;
     }
     
     private static void logInit(String fmt, Object ... args) {
@@ -102,6 +147,11 @@ public class FusekiEnv {
         }
     }
     
+    private static void logInitError(String fmt, Object ... args) {
+        System.err.printf(fmt, args) ; 
+        System.err.println() ;
+    }
+
     /** Get environment variable value (maybe in system properties) */
     public static String getenv(String name) {
         String x = System.getenv(name) ;
