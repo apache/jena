@@ -202,7 +202,6 @@ public class TestMoreExamples extends TestCase implements
 //        System.err.println("runTest"+cnt + " " + getName());
        iri = getIRI();
        
-       
        assertEquals("violations",violations,getViolations());
        
        Iterator<Map.Entry<String, Map<String,String>>> it = methods.entrySet().iterator();
@@ -211,8 +210,7 @@ public class TestMoreExamples extends TestCase implements
            String m = ent.getKey();
            Map<String,String> attrs = ent.getValue();
            try {
-               Object r = IRI.class.getDeclaredMethod(m,TestCreator.nullSign)
-                .invoke(iri,new Object[]{});
+               Object r = IRI.class.getDeclaredMethod(m,TestCreator.nullSign).invoke(iri,new Object[]{});
                if (r==null)
                    assertEquals(attrs.get("nullValue"),"true");
                else
@@ -226,7 +224,6 @@ public class TestMoreExamples extends TestCase implements
                 if (t.getCause()!=null)
                     t= t.getCause();
                 String s = t.getMessage()!=null?t.getMessage():t.toString();
-                
                 assertEquals(attrs.get("exception"),s);
             }
        }
