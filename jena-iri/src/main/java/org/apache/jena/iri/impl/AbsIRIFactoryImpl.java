@@ -46,11 +46,6 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
     
     @Override
     public IRI create(URI uri) {
-// TODO: Should a relative URI remain relative IRI?    	
-    	if (! uri.isAbsolute()) {
-    		IRI relative = create(uri.toASCIIString());
-    		return create(relative);
-    	}
 		return create(uri.toASCIIString());
     }
     
