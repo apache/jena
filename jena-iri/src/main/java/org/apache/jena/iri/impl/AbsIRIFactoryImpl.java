@@ -19,6 +19,8 @@
 package org.apache.jena.iri.impl;
 
 
+import java.net.URI;
+
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIException ;
 import org.apache.jena.iri.IRIFactoryI ;
@@ -41,6 +43,17 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
 //                AbsIRIImpl.NO_EXCEPTIONS)
                 );
     }
+    
+    @Override
+    public IRI create(URI uri) {
+// TODO: Should a relative URI remain relative IRI?    	
+    	if (! uri.isAbsolute()) {
+    		IRI relative = create(uri.toASCIIString());
+    		return create(relative);
+    	}
+		return create(uri.toASCIIString());
+    }
+    
     
     //@Override
     @Override
