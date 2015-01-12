@@ -268,9 +268,12 @@ abstract public class AbsIRIImpl extends  IRI implements
     }
 
     @Override
-    public URI toURI() {
-        String x = createASCIIString() ;
-        return URI.create(x) ;
+    public URI toURI() throws URISyntaxException {
+        try {
+            String x = createASCIIString() ;
+            return new URI(x) ;
+        } catch (MalformedIDNException ex) 
+        { throw new URISyntaxException(toDisplayString(), ex.getMessage()) ; }
     }
 
     // TODO ToAsciiMask
@@ -283,14 +286,14 @@ abstract public class AbsIRIImpl extends  IRI implements
             | (1l << DOUBLE_DASH_IN_REG_NAME);
 */
     @Override
-    public String toASCIIString() {
+    public String toASCIIString() throws MalformedIDNException {
         if (hasExceptionMask(ToAsciiMask)) {
             return createASCIIString();
         }
         return toString();
     }
 
-    private String createASCIIString() {
+    private String createASCIIString() throws MalformedIDNException {
         StringBuffer asciiString = new StringBuffer();
 
         if (has(SCHEME)) {
@@ -323,7 +326,7 @@ abstract public class AbsIRIImpl extends  IRI implements
         return asciiString.toString();
     }
 
-    private void regNameToAscii(StringBuffer asciiString, String host) {
+    private void regNameToAscii(StringBuffer asciiString, String host) throws MalformedIDNException  {
         if ((errors(HOST) & ToAsciiMask) == 0) {
             asciiString.append(host);
             return;
@@ -331,9 +334,15 @@ abstract public class AbsIRIImpl extends  IRI implements
         asciiString.append(domainToAscii(host));
     }
 
-    static CharSequence domainToAscii(String host) {
-        
-        return IDNP.toASCII(host, IDN.USE_STD3_ASCII_RULES|IDN.ALLOW_UNASSIGNED);
+    private static CharSequence domainToAscii(String host) throws MalformedIDNException {
+        try {
+            return IDNP.toASCII(host, IDN.USE_STD3_ASCII_RULES|IDN.ALLOW_UNASSIGNED);
+            // IDNP (patched IDN) throws IlleaglArgimentException
+            
+        } catch (IllegalArgumentException ex) {
+            // IDNP (patched IDN) throws IlleaglArgumentException
+            throw new MalformedIDNException(ex) ; 
+        }
         /*
         int u[] = new int[host.length()];
         for (int i = 0; i < host.length(); i++)
