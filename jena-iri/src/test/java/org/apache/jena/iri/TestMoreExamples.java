@@ -242,7 +242,7 @@ public class TestMoreExamples extends TestCase implements
         SAXParserFactory fact = SAXParserFactory.newInstance();
         TestSuite result = new TestSuite();
         result.setName("More IRI Tests");
-        try ( InputStream in = TestCreator.class.getClassLoader().getResourceAsStream("org/apache/jena/iri/test/test.xml") ) {
+        try ( InputStream in = TestCreator.class.getClassLoader().getResourceAsStream("org/apache/jena/iri/test.xml") ) {
             fact.newSAXParser().parse(in, new TestReader(result) );
             return result;
         }
