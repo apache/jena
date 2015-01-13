@@ -5,6 +5,7 @@
 @prefix ja:         <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix sec:		<http://apache.org/jena/security/Assembler#> .
 @prefix my:         <http://apache.org/jena/security/test#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#>
 
 <>	ja:loadClass	"org.apache.jena.security.SecuredAssembler" .
 
@@ -23,3 +24,22 @@ my:secModel
 	sec:evaluatorFactory "org.apache.jena.security.MockSecurityEvaluator" ;
 	.
 		
+my:secModel2
+    a sec:Model;
+    sec:baseModel my:baseModel ;
+    ja:modelName "http://example.com/securedModel2" ;
+    sec:evaluatorImpl my:secEvaluator ;
+    .
+        
+my:secEvaluator
+    a sec:Evaluator ;
+    sec:args [  rdf:_1 "true"^^xsd:boolean ;
+                rdf:_2 "false"^^xsd:boolean ;
+                rdf:_3 "true"^^xsd:boolean ;
+                rdf:_4 "true"^^xsd:boolean ;
+                rdf:_5 "true"^^xsd:boolean ;
+                rdf:_6 "false"^^xsd:boolean ;
+                ] ;
+    sec:evaluatorClass "org.apache.jena.security.MockSecurityEvaluator" ;
+    .
+    
