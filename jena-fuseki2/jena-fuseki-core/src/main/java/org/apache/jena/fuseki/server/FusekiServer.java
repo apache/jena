@@ -53,7 +53,7 @@ import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class FusekiServer
 {
-    // Initialization of FUSEKI_HOME and FUSEKI_BASE is done in FusekiEnvInit
+    // Initialization of FUSEKI_HOME and FUSEKI_BASE is done in FusekiEnv.setEnvironment()
     // so that the code is independent of any logging.  FusekiLogging can use
     // initialized values of FUSEKI_BASE while looking forlog4j configuration.
     
@@ -290,7 +290,7 @@ public class FusekiServer
         
         addGlobals(params); 
 
-        String str = TemplateFunctions.templateFile(templateFile, params) ;
+        String str = TemplateFunctions.templateFile(templateFile, params, Lang.TTL) ;
         Lang lang = RDFLanguages.filenameToLang(str, Lang.TTL) ;
         StringReader sr =  new StringReader(str) ;
         Model model = ModelFactory.createDefaultModel() ;

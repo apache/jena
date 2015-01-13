@@ -44,7 +44,7 @@ public abstract class DataServiceDesc
         Map<String, String> params = new HashMap<>() ;
         params.put(Template.NAME, dbName) ;
         FusekiServer.addGlobals(params); 
-        String template = TemplateFunctions.templateFile(templateFile, params) ;
+        String template = TemplateFunctions.templateFile(templateFile, params, Lang.TTL) ;
         Lang lang = RDFLanguages.filenameToLang(templateFile, Lang.TTL) ;
         StringReader sr = new StringReader(template) ;
         return create(sr, lang) ;

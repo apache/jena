@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.index;
+package com.hp.hpl.jena.tdb.store.tupletable;
 
 import java.util.Iterator ;
 import java.util.Set ;

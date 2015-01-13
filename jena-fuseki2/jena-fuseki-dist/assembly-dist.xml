@@ -17,8 +17,8 @@
 -->
 
 <!-- 
-The distribution.
-Assumes jar made and onejar has been assembled.
+  The distribution.
+  Assumes jar made and onejar has been assembled.
 -->
 
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
@@ -35,29 +35,28 @@ Assumes jar made and onejar has been assembled.
   <baseDirectory>${project.artifactId}-${project.version}</baseDirectory>
 
   <dependencySets>
+    <!-- Standalone JAR -->
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
       <includes>
 	<include>org.apache.jena:jena-fuseki-server:jar</include>
+      </includes>
+      <outputFileNameMapping>fuseki-server.jar</outputFileNameMapping>
+
+    </dependencySet>
+    <!-- WAR file -->
+    <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
+      <includes>
 	<include>org.apache.jena:jena-fuseki-war:war</include>
       </includes>
+      <outputFileNameMapping>fuseki.war</outputFileNameMapping>
+
     </dependencySet>
   </dependencySets>
 
   <files>
     
-    <!--
-    <file>
-      <source>${project.build.directory}/${server.jar.name}.jar</source>
-      <outputDirectory></outputDirectory>
-      <destName>fuseki-server.jar</destName>
-    </file>
-    <file>
-      <source>${project.build.directory}/${project.build.finalName}.war</source>
-      <outputDirectory></outputDirectory>
-      <destName>fuseki-server.war</destName>
-    </file>
-    -->
     <file>
       <source>dist/LICENSE</source>
       <destName>LICENSE</destName>

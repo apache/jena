@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.base.file;
+package com.hp.hpl.jena.tdb.store;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -29,13 +29,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import com.hp.hpl.jena.tdb.StoreConnection;
 import com.hp.hpl.jena.tdb.TDBException;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.file.LocationLock ;
 import com.hp.hpl.jena.tdb.sys.ProcessUtils;
 
 /**
- * Tests for {@link LocationLock}
+ * Tests for {@link LocationLock} inconjucntion with {@link StoreConnection}s 
  */
-public class TestLocationLock {
+public class TestLocationLockStoreConnection {
 
     private static boolean negativePidsTreatedAsAlive = false;
     
@@ -46,19 +49,9 @@ public class TestLocationLock {
     public static void setup() {
         negativePidsTreatedAsAlive = ProcessUtils.negativePidsTreatedAsAlive();
     }
-
+    
     @Test
-    public void location_lock_mem() {
-        Location mem = Location.mem();
-        LocationLock lock = mem.getLock();
-        Assert.assertFalse(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertFalse(lock.canObtain());
-    }
-
-    @Test
-    public void location_lock_dir_01() {
+    public void location_lock_store_connection_01() {
         Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
         Assert.assertTrue(lock.canLock());
@@ -66,65 +59,23 @@ public class TestLocationLock {
         Assert.assertFalse(lock.isOwned());
         Assert.assertTrue(lock.canObtain());
 
-        // Try to obtain the lock
-        lock.obtain();
+        // Creating a StoreConnection on the location will obtain the lock
+        StoreConnection.make(dir);
         Assert.assertTrue(lock.isLocked());
         Assert.assertTrue(lock.isOwned());
+        Assert.assertTrue(lock.canObtain());
 
-        // Release the lock
-        lock.release();
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-    }
-
-    @Test
-    public void location_lock_dir_02() throws IOException {
-        Assume.assumeTrue(negativePidsTreatedAsAlive);
-
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
-        LocationLock lock = dir.getLock();
-        Assert.assertTrue(lock.canLock());
+        // Releasing the connection releases the lock
+        StoreConnection.release(dir);
         Assert.assertFalse(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
         Assert.assertTrue(lock.canObtain());
-
-        // Write a fake PID to the lock file
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
-            writer.write(Integer.toString(-1234)); // Fake PID that would never be valid
-        }
-        Assert.assertTrue(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertFalse(lock.canObtain());
     }
 
     @Test(expected = TDBException.class)
-    public void location_lock_dir_error_01() throws IOException {
+    public void location_lock_store_connection_02() throws IOException {
         Assume.assumeTrue(negativePidsTreatedAsAlive);
-
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
-        LocationLock lock = dir.getLock();
-        Assert.assertTrue(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
-
-        // Write a fake PID to the lock file
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
-            // Fake PID that would never be valid
-            writer.write(Integer.toString(-1234)); 
-        }
-        Assert.assertTrue(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-
-        // Attempting to obtain the lock should now error
-        Assert.assertFalse(lock.canObtain());
-        lock.obtain();
-    }
-
-    @Test(expected = TDBException.class)
-    public void location_lock_dir_error_02() throws IOException {
-        Assume.assumeTrue(negativePidsTreatedAsAlive);
-
+        
         Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
         Assert.assertTrue(lock.canLock());
@@ -141,8 +92,7 @@ public class TestLocationLock {
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());
 
-        // Attempting to release a lock we don't own should error
-        Assert.assertFalse(lock.canObtain());
-        lock.release();
+        // Attempting to create a connection on this location should error
+        StoreConnection.make(dir);
     }
 }
