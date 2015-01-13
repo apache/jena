@@ -91,10 +91,7 @@ public class TextQueryPF extends PropertyFunctionBase {
         // note: default index is the unlocalized index (if lang arg is not present).
         if (server instanceof TextIndexLuceneMultiLingual) {
             String lang = getArg("lang", argObject);
-            TextIndexLuceneMultiLingual iml = (TextIndexLuceneMultiLingual)server;
-            if (!iml.containsLanguage(lang))
-                lang = null;
-            server = iml.getIndex(lang);
+            server = ((TextIndexLuceneMultiLingual)server).getIndex(lang);
         }
     }
 

@@ -49,12 +49,8 @@ public class TextIndexLuceneMultiLingual extends TextIndexLucene {
         return indexes.values();
     }
 
-    boolean containsLanguage(String lang) {
-        return indexes.containsKey(lang);
-    }
-
     TextIndex getIndex(String lang) {
-        if (lang == null)
+        if (lang == null || !indexes.containsKey(lang))
             return indexes.get("default");
         else
             return indexes.get(lang);
