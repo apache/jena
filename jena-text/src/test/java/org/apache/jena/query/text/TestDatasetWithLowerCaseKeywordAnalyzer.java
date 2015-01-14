@@ -30,7 +30,8 @@ import org.junit.Test ;
  * This class defines a setup configuration for a dataset that uses a lowercase keyword analyzer with a Lucene index.
  */
 public class TestDatasetWithLowerCaseKeywordAnalyzer extends TestDatasetWithKeywordAnalyzer {
-	@Before
+	@Override
+    @Before
 	public void before() {
 		init("text:LowerCaseKeywordAnalyzer");
 	}	
