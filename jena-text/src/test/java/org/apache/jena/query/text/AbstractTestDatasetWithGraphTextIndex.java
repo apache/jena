@@ -35,14 +35,19 @@ import com.hp.hpl.jena.rdf.model.Model ;
 /**
  * This abstract class defines tests of the graph-specific indexing.
  */
-public class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWithTextIndex {
+public abstract class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWithTextIndex {
 
     private void putTurtleInModel(String turtle, String modelName) {
         Model model = modelName != null ? dataset.getNamedModel(modelName) : dataset.getDefaultModel() ;
         Reader reader = new StringReader(turtle) ;
         dataset.begin(ReadWrite.WRITE) ;
-        model.read(reader, "", "TURTLE") ;
-        dataset.commit() ;
+        try {
+            model.read(reader, "", "TURTLE") ;
+            dataset.commit() ;
+        }
+        finally {
+            dataset.end();
+        }
     }
 
 	@Test
@@ -165,10 +170,15 @@ public class AbstractTestDatasetWithGraphTextIndex extends AbstractTestDatasetWi
 				"    rdfs:label 'bar testResult barfoo foo' .",
 				"}"
 				);
-                StringReader reader = new StringReader(trig);
-                dataset.begin(ReadWrite.WRITE) ;
-                RDFDataMgr.read(dataset.asDatasetGraph(), reader, "", Lang.TRIG);
-                dataset.commit();
+        StringReader reader = new StringReader(trig);
+        dataset.begin(ReadWrite.WRITE) ;
+        try {
+            RDFDataMgr.read(dataset.asDatasetGraph(), reader, "", Lang.TRIG);
+            dataset.commit();
+        }
+        finally {
+            dataset.end();
+        }
 
 		String queryString = StrUtils.strjoinNL(
 				QUERY_PROLOG,

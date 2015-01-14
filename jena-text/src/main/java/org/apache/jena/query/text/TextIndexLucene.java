@@ -19,14 +19,21 @@
 package org.apache.jena.query.text ;
 
 import java.io.IOException ;
-import java.util.* ;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.List ;
+import java.util.Map ;
 import java.util.Map.Entry ;
 
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
-import org.apache.lucene.document.* ;
+import org.apache.lucene.document.Document ;
+import org.apache.lucene.document.Field ;
+import org.apache.lucene.document.FieldType ;
+import org.apache.lucene.document.StringField ;
+import org.apache.lucene.document.TextField ;
 import org.apache.lucene.index.DirectoryReader ;
 import org.apache.lucene.index.IndexReader ;
 import org.apache.lucene.index.IndexWriter ;
@@ -67,9 +74,9 @@ public class TextIndexLucene implements TextIndex {
 
     private final EntityDefinition docDef ;
     private final Directory        directory ;
-    private IndexWriter            indexWriter ;
-    private Analyzer               analyzer ;
-
+    private final IndexWriter      indexWriter ;
+    private final Analyzer         analyzer ;
+    
     public TextIndexLucene(Directory directory, EntityDefinition def) {
         this.directory = directory ;
         this.docDef = def ;
@@ -90,11 +97,15 @@ public class TextIndexLucene implements TextIndex {
         
         this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
 
-        // force creation of the index if it don't exist
-        // otherwise if we get a search before data is written we get an
-        // exception
-        startIndexing() ;
-        finishIndexing() ;
+        IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer) ;
+        try
+        {
+            indexWriter = new IndexWriter(directory, wConfig) ;
+        }
+        catch (IOException e)
+        {
+            throw new TextIndexException(e) ;
+        }
     }
 
     public Directory getDirectory() {
@@ -104,24 +115,18 @@ public class TextIndexLucene implements TextIndex {
     public Analyzer getAnalyzer() {
         return analyzer ;
     }
+    
+    public IndexWriter getIndexWriter() {
+        return indexWriter;
+    }
 
     @Override
-    public void startIndexing() {
-        try {
-            IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer) ;
-            indexWriter = new IndexWriter(directory, wConfig) ;
-        }
-        catch (IOException e) {
-            exception(e) ;
-        }
-    }
+    public void startIndexing() { }
 
     @Override
     public void finishIndexing() {
         try {
             indexWriter.commit() ;
-            indexWriter.close() ;
-            indexWriter = null ;
         }
         catch (IOException e) {
             exception(e) ;
@@ -140,13 +145,12 @@ public class TextIndexLucene implements TextIndex {
 
     @Override
     public void close() {
-        if ( indexWriter != null )
-            try {
-                indexWriter.close() ;
-            }
-            catch (IOException ex) {
-                exception(ex) ;
-            }
+        try {
+            indexWriter.close() ;
+        }
+        catch (IOException ex) {
+            exception(ex) ;
+        }
     }
 
     @Override
@@ -154,14 +158,8 @@ public class TextIndexLucene implements TextIndex {
         if ( log.isDebugEnabled() )
             log.debug("Add entity: " + entity) ;
         try {
-            boolean autoBatch = (indexWriter == null) ;
-
             Document doc = doc(entity) ;
-            if ( autoBatch )
-                startIndexing() ;
             indexWriter.addDocument(doc) ;
-            if ( autoBatch )
-                finishIndexing() ;
         }
         catch (IOException e) {
             exception(e) ;
@@ -189,7 +187,7 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public Map<String, Node> get(String uri) {
         try {
-            IndexReader indexReader = DirectoryReader.open(directory) ;
+            IndexReader indexReader = DirectoryReader.open(indexWriter, true);
             List<Map<String, Node>> x = get$(indexReader, uri) ;
             if ( x.size() == 0 )
                 return null ;
@@ -250,7 +248,7 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public List<Node> query(String qs, int limit) {
         //** score
-        try(IndexReader indexReader = DirectoryReader.open(directory)) {
+        try (IndexReader indexReader = DirectoryReader.open(indexWriter, true)) {
             return query$(indexReader, qs, limit) ;
         } 
         catch (Exception ex) {

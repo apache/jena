@@ -18,23 +18,23 @@
 
 package org.apache.jena.query.text;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays ;
+import java.util.HashSet ;
+import java.util.Set ;
 
-import org.apache.jena.atlas.lib.StrUtils;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.junit.Before ;
+import org.junit.Test ;
 
 /**
  * This class defines a setup configuration for a dataset that uses a lowercase keyword analyzer with a Lucene index.
  */
 public class TestDatasetWithLowerCaseKeywordAnalyzer extends TestDatasetWithKeywordAnalyzer {
-	@BeforeClass public static void beforeClass() {
+	@Before
+	public void before() {
 		init("text:LowerCaseKeywordAnalyzer");
 	}	
-
+	
 	@Test
 	public void testLowerCaseKeywordAnalyzerIsCaseInsensitive() {
 		final String testName = "testLowerCaseKeywordAnalyzerIsCaseInsensitive";

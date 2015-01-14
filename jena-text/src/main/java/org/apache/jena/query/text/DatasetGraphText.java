@@ -37,8 +37,14 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
     private final TextIndex     textIndex ;
     private final Transactional dsgtxn ;
     private final Graph         dftGraph ;
+    private final boolean       closeIndexOnClose;
 
     public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer)
+    { 
+        this(dsg, index, producer, false);
+    }
+    
+    public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer, boolean closeIndexOnClose)
     {
         super(dsg, producer) ;
         this.textIndex = index ;
@@ -47,6 +53,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         else
             dsgtxn = new DatasetGraphWithLock(dsg) ;
         dftGraph = GraphView.createDefaultGraph(this) ;
+        this.closeIndexOnClose = closeIndexOnClose;
     }
 
     // ---- Intecept these and force the use of views.
@@ -122,6 +129,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         catch (Throwable ex) {
             log.warn("Exception in commit: " + ex.getMessage(), ex) ;
             dsgtxn.abort() ;
+            throw ex;
         }
     }
 
@@ -152,4 +160,13 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
         }
         catch (Throwable ex) { log.warn("Exception in end: " + ex.getMessage(), ex) ; }
     }
+    
+    @Override
+    public void close() {
+        super.close();
+        if (closeIndexOnClose) {
+            textIndex.close();
+        }
+    }
+    
 }

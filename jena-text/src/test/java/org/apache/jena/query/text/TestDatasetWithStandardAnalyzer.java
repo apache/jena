@@ -18,24 +18,24 @@
 
 package org.apache.jena.query.text;
 
-import java.io.File;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.File ;
+import java.io.Reader ;
+import java.io.StringReader ;
+import java.util.Arrays ;
+import java.util.HashSet ;
+import java.util.Set ;
 
-import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.query.text.assembler.TextAssembler;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.query.text.assembler.TextAssembler ;
+import org.junit.After ;
+import org.junit.Before ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 
 /**
  * This class defines a setup configuration for a dataset that uses a standard analyzer with a Lucene index.
@@ -94,27 +94,30 @@ public class TestDatasetWithStandardAnalyzer extends AbstractTestDatasetWithText
 				    );
 	}      
 	
-	public static void init() {
+	public void init() {
 		Reader reader = new StringReader(SPEC);
 		Model specModel = ModelFactory.createDefaultModel();
 		specModel.read(reader, "", "TURTLE");
 		TextAssembler.init();			
-		deleteOldFiles();
+//		deleteOldFiles();
 		indexDir.mkdirs();
 		Resource root = specModel.getResource(SPEC_ROOT_URI);
 		dataset = (Dataset) Assembler.general.open(root);
 	}
 	
 	
-	public static void deleteOldFiles() {
+	public void deleteOldFiles() {
+	    dataset.close();
 		if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
 	}	
 
-	@BeforeClass public static void beforeClass() {
+	@Before
+	public void beforeClass() {
 		init();
 	}	
 	
-	@AfterClass public static void afterClass() {
+	@After
+	public void afterClass() {
 		deleteOldFiles();
 	}
 	
