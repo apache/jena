@@ -30,25 +30,25 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 public class AggAvgDistinct extends AggregatorBase
 {
     // ---- AVG(DISTINCT expr)
-    private Expr expr ;
-
     public AggAvgDistinct(Expr expr) { super("AVG", true, expr) ; } 
     @Override
-    public Aggregator copy(ExprList expr) { return new AggAvg(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggAvgDistinct(expr.get(0)) ; }
 
     private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; 
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccAvgDistinct(expr) ;
+        return new AccAvgDistinct(getExpr()) ;
     }
 
     @Override
     public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
 
     @Override
-    public int hashCode()   { return HC_AggAvgDistinct ^ expr.hashCode() ; }
+    public int hashCode()   {
+        return HC_AggAvgDistinct ^ getExprList().hashCode() ;
+    }
 
     @Override
     public boolean equals(Object other)
@@ -56,7 +56,7 @@ public class AggAvgDistinct extends AggregatorBase
         if ( this == other ) return true ;
         if ( ! ( other instanceof AggAvgDistinct ) ) return false ;
         AggAvgDistinct a = (AggAvgDistinct)other ;
-        return expr.equals(a.expr) ;
+        return exprList.equals(a.exprList) ;
     }
 
     
