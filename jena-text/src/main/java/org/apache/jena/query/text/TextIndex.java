@@ -28,23 +28,27 @@ import com.hp.hpl.jena.graph.Node ;
 /** TextIndex abstraction */ 
 public interface TextIndex extends Closeable //, Transactional 
 {
+    // Transactional operations
+    void prepareCommit() ;
+    void commit() ;
+    void rollback() ;
+    
+    
     // Update operations
-    public abstract void startIndexing() ;
-    public abstract void addEntity(Entity entity) ;
-    public abstract void finishIndexing() ;
-    public abstract void abortIndexing() ;
+    void addEntity(Entity entity) ;
+    
     
     // read operations
     /** Get all entries for uri */
-    public abstract Map<String, Node> get(String uri) ;
+    Map<String, Node> get(String uri) ;
 
     //** score
     // Need to have more complex results.
     
     /** Access the index - limit if -1 for as many as possible */ 
-    public abstract List<Node> query(String qs, int limit) ;
+    List<Node> query(String qs, int limit) ;
     
-    public abstract List<Node> query(String qs) ;
+    List<Node> query(String qs) ;
 
-    public abstract EntityDefinition getDocDef() ;
+    EntityDefinition getDocDef() ;
 }

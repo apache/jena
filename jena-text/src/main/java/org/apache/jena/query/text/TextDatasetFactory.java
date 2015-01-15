@@ -66,8 +66,8 @@ public class TextDatasetFactory
         DatasetGraph dsgt = new DatasetGraphText(dsg, textIndex, producer, closeIndexOnDSGClose) ;
         // Also set on dsg
         Context c = dsgt.getContext() ;
+        c.set(TextQuery.textIndex, textIndex) ;
         
-        dsgt.getContext().set(TextQuery.textIndex, textIndex) ;
         return dsgt ;
     }
     

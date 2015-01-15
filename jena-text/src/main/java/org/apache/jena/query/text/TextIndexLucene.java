@@ -74,9 +74,20 @@ public class TextIndexLucene implements TextIndex {
 
     private final EntityDefinition docDef ;
     private final Directory        directory ;
-    private final IndexWriter      indexWriter ;
     private final Analyzer         analyzer ;
     
+    // The IndexWriter can't be final because we may have to recreate it if rollback() is called.
+    // However, it needs to be volatile in case the next write transaction is on a different thread,
+    // but we do not need locking because we are assuming that there can only be one writer
+    // at a time (enforced elsewhere).
+    private volatile IndexWriter   indexWriter ;
+    
+    /**
+     * Constructs a new TextIndexLucene.
+     * 
+     * @param directory The Lucene Directory for the index
+     * @param def The EntityDefinition that defines how entities are stored in the index
+     */
     public TextIndexLucene(Directory directory, EntityDefinition def) {
         this.directory = directory ;
         this.docDef = def ;
@@ -97,17 +108,23 @@ public class TextIndexLucene implements TextIndex {
         
         this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(VER), analyzerPerField) ;
 
+        openIndexWriter();
+    }
+    
+    private void openIndexWriter() {
         IndexWriterConfig wConfig = new IndexWriterConfig(VER, analyzer) ;
         try
         {
             indexWriter = new IndexWriter(directory, wConfig) ;
+            // Force a commit to create the index, otherwise querying before writing will cause an exception
+            indexWriter.commit();
         }
         catch (IOException e)
         {
             throw new TextIndexException(e) ;
         }
     }
-
+    
     public Directory getDirectory() {
         return directory ;
     }
@@ -119,28 +136,40 @@ public class TextIndexLucene implements TextIndex {
     public IndexWriter getIndexWriter() {
         return indexWriter;
     }
-
+    
     @Override
-    public void startIndexing() { }
-
-    @Override
-    public void finishIndexing() {
+    public void prepareCommit() {
         try {
-            indexWriter.commit() ;
+            indexWriter.prepareCommit();
         }
         catch (IOException e) {
-            exception(e) ;
+            throw new TextIndexException(e);
         }
     }
-
+    
     @Override
-    public void abortIndexing() {
+    public void commit() {
         try {
-            indexWriter.rollback() ;
+            indexWriter.commit();
         }
-        catch (IOException ex) {
-            exception(ex) ;
+        catch (IOException e) {
+            throw new TextIndexException(e);
         }
+    }
+    
+    @Override
+    public void rollback() {
+        IndexWriter idx = indexWriter;
+        indexWriter = null;
+        try {
+            idx.rollback();
+        }
+        catch (IOException e) {
+            throw new TextIndexException(e);
+        }
+        
+        // The rollback will close the indexWriter, so we need to reopen it
+        openIndexWriter();
     }
 
     @Override
@@ -149,7 +178,7 @@ public class TextIndexLucene implements TextIndex {
             indexWriter.close() ;
         }
         catch (IOException ex) {
-            exception(ex) ;
+            throw new TextIndexException(ex) ;
         }
     }
 
@@ -162,7 +191,7 @@ public class TextIndexLucene implements TextIndex {
             indexWriter.addDocument(doc) ;
         }
         catch (IOException e) {
-            exception(e) ;
+            throw new TextIndexException(e) ;
         }
     }
 
@@ -187,7 +216,7 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public Map<String, Node> get(String uri) {
         try {
-            IndexReader indexReader = DirectoryReader.open(indexWriter, true);
+            IndexReader indexReader = DirectoryReader.open(directory);
             List<Map<String, Node>> x = get$(indexReader, uri) ;
             if ( x.size() == 0 )
                 return null ;
@@ -196,8 +225,7 @@ public class TextIndexLucene implements TextIndex {
             return x.get(0) ;
         }
         catch (Exception ex) {
-            exception(ex) ;
-            return null ;
+            throw new TextIndexException(ex) ;
         }
     }
 
@@ -248,12 +276,11 @@ public class TextIndexLucene implements TextIndex {
     @Override
     public List<Node> query(String qs, int limit) {
         //** score
-        try (IndexReader indexReader = DirectoryReader.open(indexWriter, true)) {
+        try (IndexReader indexReader = DirectoryReader.open(directory)) {
             return query$(indexReader, qs, limit) ;
         } 
         catch (Exception ex) {
-            exception(ex) ;
-            return null ;
+            throw new TextIndexException(ex) ;
         }
     }
 
@@ -286,9 +313,5 @@ public class TextIndexLucene implements TextIndex {
     private Node entryToNode(String v) {
         // TEMP
         return NodeFactoryExtra.createLiteralNode(v, null, null) ;
-    }
-
-    private static void exception(Exception ex) {
-        throw new TextIndexException(ex) ;
     }
 }
