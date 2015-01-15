@@ -18,6 +18,8 @@
 
 package org.apache.jena.iri;
 
+import java.net.URI;
+
 /**
  * This interface is used for
  * making new {@link IRI} objects.
@@ -103,5 +105,19 @@ public interface IRIFactoryI {
      * 
      */
     IRI create(String s);
+    /**
+     * Make a new IRI object (possibly
+     * including IRI resolution),
+     * and check it for violations
+     * of the standards being enforced by the factory.
+     *  This method does not throw exceptions, but
+     *  records all errors and warnings found
+     *  to be queried later using {@link IRI#hasViolation(boolean)}
+     *  and {@link IRI#violations(boolean)}.
+     * @param uri The URI to use (relative or absolute).
+     * @return A new IRI object.
+     * 
+     */
+    IRI create(URI uri);
 
 }
