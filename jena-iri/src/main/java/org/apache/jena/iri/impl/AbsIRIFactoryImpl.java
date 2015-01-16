@@ -19,6 +19,8 @@
 package org.apache.jena.iri.impl;
 
 
+import java.net.URI;
+
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIException ;
 import org.apache.jena.iri.IRIFactoryI ;
@@ -42,7 +44,12 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
                 );
     }
     
-    //@Override
+    @Override
+    public IRI create(URI uri) {
+		return create(uri.toASCIIString());
+    }
+    
+    
     @Override
     public IRI construct(String s) throws IRIException {
       return throwAnyErrors(create(s));
@@ -51,15 +58,14 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
     //@Override
     @Override
     public IRI construct(IRI i) throws IRIException {
-        return throwAnyErrors(create(i));
-        
-//     
-//     try {
-//     return create(i,true);
-//     } catch (Violation e) {
-//     throw new IRIImplException(e);
-//     }
+        return throwAnyErrors(create(i)); 
     }
+        
+    @Override
+    public IRI construct(URI uri) throws IRIException {
+        return throwAnyErrors(create(uri));
+    }
+
     protected IRI throwAnyErrors(IRI rslt) throws IRIException {
         if (rslt.hasViolation(false)) {
             throw new IRIImplException(rslt.violations(false).next());
@@ -72,9 +78,7 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
         }
         return rslt;
     }
-//    public IRI create(IRI i) {
-//        return create(i);
-//    }
+
     @Override
     abstract public IRI create(IRI i);
 }
