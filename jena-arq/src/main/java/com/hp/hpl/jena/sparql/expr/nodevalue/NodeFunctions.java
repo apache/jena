@@ -23,6 +23,7 @@ import java.util.UUID ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDBaseStringType;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 
@@ -66,8 +67,8 @@ public class NodeFunctions {
         RDFDatatype dt = n.getLiteralDatatype() ;
         if ( dt == null )
             return n ;
-        if ( XSDDatatype.XSDstring.equals(dt) )
-            return n ;
+        if (dt instanceof XSDBaseStringType)
+                return n ;
         throw new ExprEvalException(label + ": Not a string literal: " + nv) ;
     }
 

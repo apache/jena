@@ -316,4 +316,10 @@ public class TestNodeFunctions extends BaseTest {
         NodeValue r = NodeFunctions.isLiteral(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
+    
+    @Test public void testCheckAndGetStringLiteral() {
+        NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDnormalizedString) ;
+        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
 }
