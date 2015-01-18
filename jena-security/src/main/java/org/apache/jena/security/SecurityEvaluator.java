@@ -17,7 +17,6 @@
  */
 package org.apache.jena.security;
 
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -583,5 +582,5 @@ public interface SecurityEvaluator
 	 * 
 	 * @return The current principal
 	 */
-	public Principal getPrincipal();
+	public Object getPrincipal();
 }

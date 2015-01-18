@@ -54,7 +54,7 @@ public class SecuredGraphEventManager implements GraphEventManager
 	private class SecuredGraphListener implements GraphListener
 	{
 		private final GraphListener wrapped;
-		private final Principal runAs;
+		private final Object runAs;
 
 		SecuredGraphListener( final GraphListener wrapped )
 		{

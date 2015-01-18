@@ -20,7 +20,6 @@ package org.apache.jena.security.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.security.Principal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -33,7 +32,7 @@ import org.apache.jena.security.SecurityEvaluator;
 public class CachedSecurityEvaluator implements InvocationHandler
 {
 	private final SecurityEvaluator wrapped;
-	private final Principal origPrincipal;
+	private final Object origPrincipal;
 
 	// The getPrincipal() method.
 	private static Method GET_PRINCIPAL;
@@ -62,7 +61,7 @@ public class CachedSecurityEvaluator implements InvocationHandler
 	 * @return The proxied SecurityEvaluator.
 	 */
 	public static SecurityEvaluator getInstance(
-			final SecurityEvaluator evaluator, final Principal runAs )
+			final SecurityEvaluator evaluator, final Object runAs )
 	{
 		final Set<Class<?>> ifac = new LinkedHashSet<Class<?>>();
 		if (evaluator.getClass().isInterface())
@@ -83,7 +82,7 @@ public class CachedSecurityEvaluator implements InvocationHandler
 	 * @param runAs
 	 */
 	private CachedSecurityEvaluator( final SecurityEvaluator wrapped,
-			final Principal runAs )
+			final Object runAs )
 	{
 		origPrincipal = runAs;
 		this.wrapped = wrapped;
