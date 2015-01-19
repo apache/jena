@@ -27,6 +27,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class TestNodeFunctions extends BaseTest {
@@ -317,9 +318,30 @@ public class TestNodeFunctions extends BaseTest {
         assertEquals(NodeValue.FALSE, r) ;
     }
     
-    @Test public void testCheckAndGetStringLiteral() {
+    @Test public void testCheckAndGetStringLiteral1() {
+        NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDstring) ;
+        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+    
+    @Test public void testCheckAndGetStringLiteral2() {
         NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDnormalizedString) ;
         Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
         assertEquals( "abc", n.getLiteralLexicalForm());
     }
+
+    @Test public void testCheckAndGetStringLiteral3() {
+        NodeValue nv = NodeValue.makeString("abc") ;
+        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+    
+    @Test(expected=ExprEvalException.class)
+    public void testCheckAndGetStringLiteral4() {
+        // The form "abc"^^rdf:langString (no lang tag) is not derived from xsd:string. 
+        NodeValue nv = NodeValue.makeNode("abc", RDF.dtLangString) ;
+        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+
 }
