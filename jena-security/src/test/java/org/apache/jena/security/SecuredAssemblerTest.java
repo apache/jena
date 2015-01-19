@@ -67,11 +67,20 @@ public class SecuredAssemblerTest
 	}
 	
 	@Test
-	public void testSecurityEvaluatorWithArgs() throws Exception {
+	public void testSecurityEvaluatorWithStringArgs() throws Exception {
 		
 		Resource r = model.createResource( "http://apache.org/jena/security/test#secEvaluator");
 		Object o = assembler.open( r );
 		Assert.assertTrue( o instanceof SecurityEvaluator );
-		Assert.assertTrue( o instanceof MockSecurityEvaluator );
+		Assert.assertTrue( o instanceof StaticSecurityEvaluator );
+	}
+	
+	@Test
+	public void testSecurityEvaluatorWithModelArgs() throws Exception {
+		
+		Resource r = model.createResource( "http://apache.org/jena/security/test#secEvaluator2");
+		Object o = assembler.open( r );
+		Assert.assertTrue( o instanceof SecurityEvaluator );
+		Assert.assertTrue( o instanceof ModelBasedSecurityEvaluator );
 	}
 }
