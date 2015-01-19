@@ -134,7 +134,7 @@ public class DatasetGraphText extends DatasetGraphMonitor implements Transaction
      * on the TextIndex().
      * <p> 
      * If either of the objects fail on either the preparation or actual commit,
-     * it terminates and calls {@link #rollback()} on both of them.
+     * it terminates and calls {@link #abort()} on both of them.
      * <p>
      * <b>NOTE:</b> it may happen that the TextIndex fails to commit, after the
      * Transactional has already successfully committed.  A rollback instruction will
