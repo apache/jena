@@ -81,12 +81,14 @@ public class SecuredPrefixMappingTest
 	}
 
 	private final SecurityEvaluator securityEvaluator;
+	private final Object principal;
 
 	protected SecuredPrefixMapping securedMapping;
 
 	public SecuredPrefixMappingTest( final SecurityEvaluator securityEvaluator )
 	{
 		this.securityEvaluator = securityEvaluator;
+		this.principal = securityEvaluator.getPrincipal();
 	}
 
 	@Before
@@ -102,10 +104,10 @@ public class SecuredPrefixMappingTest
 	@Test
 	public void testExpandPrefix()
 	{
-		try
+				try
 		{
 			securedMapping.expandPrefix("foo");
-			if (!securityEvaluator.evaluate(Action.Read,
+			if (!securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -113,7 +115,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Read,
+			if (securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -126,10 +128,10 @@ public class SecuredPrefixMappingTest
 	@Test
 	public void testGetNsPrefixMap()
 	{
-		try
+				try
 		{
 			securedMapping.getNsPrefixMap();
-			if (!securityEvaluator.evaluate(Action.Read,
+			if (!securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -137,7 +139,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Read,
+			if (securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -150,11 +152,10 @@ public class SecuredPrefixMappingTest
 	@Test
 	public void testGetNsPrefixURI()
 	{
-
-		try
+				try
 		{
 			securedMapping.getNsPrefixURI("foo");
-			if (!securityEvaluator.evaluate(Action.Read,
+			if (!securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -162,7 +163,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Read,
+			if (securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -176,11 +177,10 @@ public class SecuredPrefixMappingTest
 	@Test
 	public void testGetNsURIPrefix()
 	{
-
-		try
+				try
 		{
 			securedMapping.getNsURIPrefix("http://example.com/foo");
-			if (!securityEvaluator.evaluate(Action.Read,
+			if (!securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -188,7 +188,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Read,
+			if (securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -201,10 +201,10 @@ public class SecuredPrefixMappingTest
 	@Test
 	public void testLock()
 	{
-		try
+				try
 		{
 			securedMapping.lock();
-			if (!securityEvaluator.evaluate(Action.Update,
+			if (!securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -212,7 +212,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Update,
+			if (securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -229,7 +229,7 @@ public class SecuredPrefixMappingTest
 		try
 		{
 			securedMapping.qnameFor("http://example.com/foo/bar");
-			if (!securityEvaluator.evaluate(Action.Read,
+			if (!securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -237,7 +237,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Read,
+			if (securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -253,7 +253,7 @@ public class SecuredPrefixMappingTest
 		try
 		{
 			securedMapping.removeNsPrefix("foo");
-			if (!securityEvaluator.evaluate(Action.Update,
+			if (!securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -261,7 +261,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Update,
+			if (securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -279,7 +279,7 @@ public class SecuredPrefixMappingTest
 		{
 			securedMapping.samePrefixMappingAs(GraphFactory
 					.createDefaultGraph().getPrefixMapping());
-			if (!securityEvaluator.evaluate(Action.Read,
+			if (!securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -287,7 +287,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Read,
+			if (securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -303,7 +303,7 @@ public class SecuredPrefixMappingTest
 		try
 		{
 			securedMapping.setNsPrefix("foo", "http://example.com/foo");
-			if (!securityEvaluator.evaluate(Action.Update,
+			if (!securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 
@@ -312,7 +312,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Update,
+			if (securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -325,7 +325,7 @@ public class SecuredPrefixMappingTest
 		{
 			securedMapping.setNsPrefixes(GraphFactory.createDefaultGraph()
 					.getPrefixMapping());
-			if (!securityEvaluator.evaluate(Action.Update,
+			if (!securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -333,7 +333,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Update,
+			if (securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -345,7 +345,7 @@ public class SecuredPrefixMappingTest
 		try
 		{
 			securedMapping.setNsPrefixes(new HashMap<String, String>());
-			if (!securityEvaluator.evaluate(Action.Update,
+			if (!securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -353,7 +353,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Update,
+			if (securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -369,7 +369,7 @@ public class SecuredPrefixMappingTest
 		try
 		{
 			securedMapping.shortForm("http://example.com/foo/bar");
-			if (!securityEvaluator.evaluate(Action.Read,
+			if (!securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -377,7 +377,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Read,
+			if (securityEvaluator.evaluate(principal, Action.Read,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -396,7 +396,7 @@ public class SecuredPrefixMappingTest
 		{
 			// make sure that it must update
 			securedMapping.withDefaultMappings(pm);
-			if (!securityEvaluator.evaluate(Action.Update,
+			if (!securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -404,7 +404,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Update,
+			if (securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String
@@ -430,7 +430,7 @@ public class SecuredPrefixMappingTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(Action.Update,
+			if (securityEvaluator.evaluate(principal, Action.Update,
 					securedMapping.getModelNode()))
 			{
 				Assert.fail(String

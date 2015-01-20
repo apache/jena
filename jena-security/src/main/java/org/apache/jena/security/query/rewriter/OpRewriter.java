@@ -242,7 +242,8 @@ public class OpRewriter implements OpVisitor
 	@Override
 	public void visit( final OpBGP opBGP )
 	{
-		if (!securityEvaluator.evaluate(Action.Read, graphIRI))
+		Object principal = securityEvaluator.getPrincipal();
+		if (!securityEvaluator.evaluate(principal, Action.Read, graphIRI))
 		{
 			if (silentFail)
 			{
@@ -255,7 +256,7 @@ public class OpRewriter implements OpVisitor
 		}
 
 		// if the user can read any triple just add the opBGP
-		if (securityEvaluator.evaluate(Action.Read, graphIRI, SecTriple.ANY))
+		if (securityEvaluator.evaluate(principal, Action.Read, graphIRI, SecTriple.ANY))
 		{
 			addOp(opBGP);
 		}

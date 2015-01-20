@@ -895,7 +895,7 @@ public class SecuredRDFListImpl extends SecuredResourceImpl implements
 		// have to be able to read and delete to delete all.
 		final Set<Action> perms = SecurityEvaluator.Util.asSet(new Action[] {
 				Action.Delete, Action.Read });
-		if (getSecurityEvaluator().evaluate(perms, this.getModelNode(),
+		if (getSecurityEvaluator().evaluate(getSecurityEvaluator().getPrincipal(), perms, this.getModelNode(),
 				SecuredItemImpl.convert(t)))
 		{
 			holder.getBaseItem().removeList();

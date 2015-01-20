@@ -55,7 +55,7 @@ public class SecuredRSIterator implements RSIterator
 		@Override
 		public boolean accept( final ReifiedStatement t )
 		{
-			return evaluator.evaluateAny(actions, modelNode,
+			return evaluator.evaluateAny(evaluator.getPrincipal(), actions, modelNode,
 					SecuredItemImpl.convert(t.getStatement().asTriple()));
 		}
 

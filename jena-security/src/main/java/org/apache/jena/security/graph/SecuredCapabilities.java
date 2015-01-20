@@ -62,7 +62,7 @@ public class SecuredCapabilities implements Capabilities
 	@Override
 	public boolean addAllowed()
 	{
-		return securityEvaluator.evaluate(Action.Update, graphIRI)
+		return securityEvaluator.evaluate(securityEvaluator.getPrincipal(), Action.Update, graphIRI)
 				&& capabilities.addAllowed();
 	}
 
@@ -73,12 +73,14 @@ public class SecuredCapabilities implements Capabilities
 	@Override
 	public boolean addAllowed( final boolean everyTriple )
 	{
-		boolean retval = securityEvaluator.evaluate(Action.Update, graphIRI)
+		Object principal = securityEvaluator.getPrincipal();
+		
+		boolean retval = securityEvaluator.evaluate(principal, Action.Update, graphIRI)
 				&& capabilities.addAllowed(everyTriple);
 		if (retval && everyTriple)
 		{
 			// special security check
-			retval = securityEvaluator.evaluate(Action.Create, graphIRI,
+			retval = securityEvaluator.evaluate(principal, Action.Create, graphIRI,
 					SecTriple.ANY);
 		}
 		return retval;
@@ -96,7 +98,7 @@ public class SecuredCapabilities implements Capabilities
 	@Override
 	public boolean deleteAllowed()
 	{
-		return securityEvaluator.evaluate(Action.Update, graphIRI)
+		return securityEvaluator.evaluate(securityEvaluator.getPrincipal(), Action.Update, graphIRI)
 				&& capabilities.deleteAllowed();
 	}
 
@@ -107,12 +109,14 @@ public class SecuredCapabilities implements Capabilities
 	@Override
 	public boolean deleteAllowed( final boolean everyTriple )
 	{
-		boolean retval = securityEvaluator.evaluate(Action.Update, graphIRI)
+		Object principal = securityEvaluator.getPrincipal();
+		
+		boolean retval = securityEvaluator.evaluate(principal, Action.Update, graphIRI)
 				&& capabilities.addAllowed(everyTriple);
 		if (retval && everyTriple)
 		{
 			// special security check
-			retval = securityEvaluator.evaluate(Action.Delete, graphIRI,
+			retval = securityEvaluator.evaluate(principal, Action.Delete, graphIRI,
 					SecTriple.ANY);
 		}
 		return retval;
@@ -136,7 +140,7 @@ public class SecuredCapabilities implements Capabilities
 	@Override
 	public boolean iteratorRemoveAllowed()
 	{
-		return securityEvaluator.evaluate(Action.Update, graphIRI)
+		return securityEvaluator.evaluate(securityEvaluator.getPrincipal(), Action.Update, graphIRI)
 				&& capabilities.iteratorRemoveAllowed();
 	}
 
