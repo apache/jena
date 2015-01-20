@@ -23,9 +23,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.lang.reflect.Proxy;
 
-import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.collections4.map.LRUMap;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.jena.security.AccessDeniedException;
 import org.apache.jena.security.SecurityEvaluator;
 import org.apache.jena.security.SecurityEvaluator.Action;
