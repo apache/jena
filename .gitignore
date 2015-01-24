@@ -5,6 +5,7 @@ target/
 .classpath
 .project
 .settings
+.recommenders
 
 # Idea IntelliJ
 *.ipr
