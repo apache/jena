@@ -1,0 +1,82 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix sec:    <http://apache.org/jena/security/Assembler#> .
+@prefix my:     <http://example.org/#> .
+
+#[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+[] ja:loadClass    "org.apache.jena.security.SecuredAssembler" .
+
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+sec:Model       rdfs:subClassOf  ja:NamedModel .
+
+my:dataset rdf:type tdb:DatasetTDB;
+    tdb:location "/tmp/myApp" ;
+    tdb:unionDefaultGraph true ;
+    .
+
+my:baseModel rdf:type tdb:GraphTDB ;
+    tdb:dataset my:dataset .   
+
+my:securedModel rdf:type sec:Model ;
+    sec:baseModel my:baseModel ;
+    ja:modelName "https://example.org/securedModel" ;
+    sec:evaluatorImpl my:secEvaluator .
+  
+my:secEvaluator rdf:type sec:Evaluator ;
+    sec:args [  
+        rdf:_1 my:baseModel ;
+    ] ;
+    sec:evaluatorClass "org.apache.jena.security.example.ShiroExampleEvaluator" .
+
+my:securedDataset rdf:type ja:RDFDataset ;
+   ja:defaultGraph my:securedModel .
+
+my:fuseki rdf:type fuseki:Server ;
+   # Server-wide context parameters can be given here.
+   # For example, to set query timeouts: on a server-wide basis:
+   # Format 1: "1000" -- 1 second timeout
+   # Format 2: "10000,60000" -- 10s timeout to first result, then 60s timeout to for rest of query.
+   # See java doc for ARQ.queryTimeout
+   # ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+
+   # Load custom code (rarely needed)
+   # ja:loadClass "your.code.Class" ;
+
+   # Services available.  Only explicitly listed services are configured.
+   #  If there is a service description not linked from this list, it is ignored.
+   fuseki:services (
+     my:service1
+   ) .
+
+    
+my:service1 rdf:type fuseki:Service ;
+    fuseki:name                       "myAppFuseki" ;       # http://host:port/myAppFuseki
+    fuseki:serviceQuery               "query" ;    # SPARQL query service
+    fuseki:serviceQuery               "sparql" ;   # SPARQL query service
+    fuseki:serviceUpdate              "update" ;   # SPARQL query service
+    fuseki:serviceUpload              "upload" ;   # Non-SPARQL upload service
+    fuseki:serviceReadWriteGraphStore "data" ;     # SPARQL Graph store protocol (read and write)
+    # A separate ead-only graph store endpoint:
+    fuseki:serviceReadGraphStore      "get" ;      # SPARQL Graph store protocol (read only)
+    fuseki:dataset                   my:securedDataset ;
+    .

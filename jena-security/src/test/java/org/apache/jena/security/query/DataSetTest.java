@@ -209,7 +209,7 @@ public class DataSetTest {
 				{
 					count++;
 					final QuerySolution soln = results.nextSolution();
-					System.out.println( soln );
+					//System.out.println( soln );
 				}
 				// 2x 3 values + type triple
 				Assert.assertEquals(8, count);
@@ -231,7 +231,7 @@ public class DataSetTest {
 				{
 					count++;
 					final QuerySolution soln = results.nextSolution();
-					System.out.println( soln );
+					//System.out.println( soln );
 				}
 				// 2x 3 values + type triple
 				// all are in the base graph so no named graphs

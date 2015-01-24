@@ -23,7 +23,6 @@ import java.util.Set;
 import org.apache.http.auth.BasicUserPrincipal;
 import org.apache.jena.security.SecurityEvaluator;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -34,7 +33,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
- * An example evaluator that only provides access ot messages in the graph that 
+ * An example evaluator that only provides access to messages in the graph that 
  * are from or to the principal.
  *
  */
@@ -56,13 +55,14 @@ public class ExampleEvaluator implements SecurityEvaluator {
 	}
 	
 	@Override
-	public boolean evaluate(Action action, SecNode graphIRI) {
+	public boolean evaluate(Object principal, Action action, SecNode graphIRI) {
 		// we allow any action on a graph.
 		return true;
 	}
 
-	private boolean evaluate( Resource r )
+	private boolean evaluate( Object principalObj, Resource r )
 	{
+		Principal principal = (Principal)principalObj;
 		// a message is only available to sender or recipient
 		if (r.hasProperty( RDF.type, msgType ))
 		{
@@ -72,7 +72,7 @@ public class ExampleEvaluator implements SecurityEvaluator {
 		return true;	
 	}
 	
-	private boolean evaluate( SecNode node )
+	private boolean evaluate( Object principal, SecNode node )
 	{
 		if (node.equals( SecNode.ANY )) {
 			return false;  // all wild cards are false
@@ -80,11 +80,11 @@ public class ExampleEvaluator implements SecurityEvaluator {
 		
 		if (node.getType().equals( SecNode.Type.URI)) {
 			Resource r = model.createResource( node.getValue() );
-			return evaluate( r );
+			return evaluate( principal, r );
 		}
 		else if (node.getType().equals( SecNode.Type.Anonymous)) {
 			Resource r = model.getRDFNode( NodeFactory.createAnon( new AnonId( node.getValue()) ) ).asResource();
-			return evaluate( r );
+			return evaluate( principal, r );
 		}
 		else
 		{
@@ -93,42 +93,42 @@ public class ExampleEvaluator implements SecurityEvaluator {
 
 	}
 	
-	private boolean evaluate( SecTriple triple ) {
-		return evaluate( triple.getSubject()) &&
-				evaluate( triple.getObject()) &&
-				evaluate( triple.getPredicate());
+	private boolean evaluate( Object principal, SecTriple triple ) {
+		return evaluate( principal, triple.getSubject()) &&
+				evaluate( principal, triple.getObject()) &&
+				evaluate( principal, triple.getPredicate());
 	}
 	
 	@Override
-	public boolean evaluate(Action action, SecNode graphIRI, SecTriple triple) {
-		return evaluate( triple );
+	public boolean evaluate(Object principal, Action action, SecNode graphIRI, SecTriple triple) {
+		return evaluate( principal, triple );
 	}
 
 	@Override
-	public boolean evaluate(Set<Action> actions, SecNode graphIRI) {
+	public boolean evaluate(Object principal, Set<Action> actions, SecNode graphIRI) {
 		return true;
 	}
 
 	@Override
-	public boolean evaluate(Set<Action> actions, SecNode graphIRI,
+	public boolean evaluate(Object principal, Set<Action> actions, SecNode graphIRI,
 			SecTriple triple) {
-		return evaluate( triple );
+		return evaluate( principal, triple );
 	}
 
 	@Override
-	public boolean evaluateAny(Set<Action> actions, SecNode graphIRI) {
+	public boolean evaluateAny(Object principal, Set<Action> actions, SecNode graphIRI) {
 		return true;
 	}
 
 	@Override
-	public boolean evaluateAny(Set<Action> actions, SecNode graphIRI,
+	public boolean evaluateAny(Object principal, Set<Action> actions, SecNode graphIRI,
 			SecTriple triple) {
-		return evaluate( triple );
+		return evaluate( principal, triple );
 	}
 
 	@Override
-	public boolean evaluateUpdate(SecNode graphIRI, SecTriple from, SecTriple to) {
-		return evaluate( from ) && evaluate( to );
+	public boolean evaluateUpdate(Object principal, SecNode graphIRI, SecTriple from, SecTriple to) {
+		return evaluate( principal, from ) && evaluate( principal, to );
 	}
 
 	public void setPrincipal( String userName )

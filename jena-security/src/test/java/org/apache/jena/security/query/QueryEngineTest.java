@@ -219,7 +219,7 @@ public class QueryEngineTest {
 				{
 					count++;
 					final QuerySolution soln = results.nextSolution();
-					System.out.println( soln );
+					//System.out.println( soln );
 				}
 				// 2x 3 values + type triple
 				Assert.assertEquals(8, count);
@@ -241,10 +241,11 @@ public class QueryEngineTest {
 				{
 					count++;
 					final QuerySolution soln = results.nextSolution();
-					System.out.println( soln );
+					//System.out.println( soln );
 				}
 				// 2x 3 values + type triple
-				Assert.assertEquals(8, count);
+				// no named graphs so no results.
+				Assert.assertEquals(0, count);
 			}
 			finally
 			{
