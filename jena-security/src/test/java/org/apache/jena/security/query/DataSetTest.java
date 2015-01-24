@@ -129,7 +129,7 @@ public class DataSetTest {
 				true, true, true, true) {
 
 			@Override
-			public boolean evaluate( final Action action,
+			public boolean evaluate( final Object principal, final Action action,
 					final SecNode graphIRI, final SecTriple triple )
 			{
 				if (triple.getSubject().equals(
@@ -137,7 +137,7 @@ public class DataSetTest {
 				{
 					return false;
 				}
-				return super.evaluate(action, graphIRI, triple);
+				return super.evaluate(principal, action, graphIRI, triple);
 			}
 		};
 		
@@ -181,7 +181,7 @@ public class DataSetTest {
 				true, true, true, true) {
 
 			@Override
-			public boolean evaluate( final Action action,
+			public boolean evaluate( final Object principal, final Action action,
 					final SecNode graphIRI, final SecTriple triple )
 			{
 				if (triple.getSubject().equals(
@@ -189,7 +189,7 @@ public class DataSetTest {
 				{
 					return false;
 				}
-				return super.evaluate(action, graphIRI, triple);
+				return super.evaluate(principal, action, graphIRI, triple);
 			}
 		};
 		

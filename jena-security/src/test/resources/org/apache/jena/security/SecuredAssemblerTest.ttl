@@ -33,13 +33,24 @@ my:secModel2
         
 my:secEvaluator
     a sec:Evaluator ;
-    sec:args [  rdf:_1 "true"^^xsd:boolean ;
-                rdf:_2 "false"^^xsd:boolean ;
-                rdf:_3 "true"^^xsd:boolean ;
-                rdf:_4 "true"^^xsd:boolean ;
-                rdf:_5 "true"^^xsd:boolean ;
-                rdf:_6 "false"^^xsd:boolean ;
+    sec:args [  rdf:_1 "bob" ;
                 ] ;
-    sec:evaluatorClass "org.apache.jena.security.MockSecurityEvaluator" ;
+    sec:evaluatorClass "org.apache.jena.security.StaticSecurityEvaluator" ;
     .
+    
+my:secModel3
+    a sec:Model;
+    sec:baseModel my:baseModel ;
+    ja:modelName "http://example.com/securedModel3" ;
+    sec:evaluatorImpl my:secEvaluator2 ;
+    .
+    
+ my:secEvaluator2
+    a sec:Evaluator ;
+    sec:args [  rdf:_1 my:baseModel ;
+                ] ;
+    sec:evaluatorClass "org.apache.jena.security.ModelBasedSecurityEvaluator" ;
+    .
+        
+    
     

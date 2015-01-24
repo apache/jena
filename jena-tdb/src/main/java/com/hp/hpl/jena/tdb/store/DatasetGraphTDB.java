@@ -28,7 +28,6 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -282,18 +281,8 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     public Dataset toDataset()      { return DatasetImpl.wrap(this) ; }
 
-    // ---- DataSourceGraph
-    
     @Override
-    public void addGraph(Node graphName, Graph graph)
-    {
-        Graph g = getGraph(graphName) ;
-        GraphUtil.addInto(g, graph) ;
-    }
-    
-    @Override
-    public void setDefaultGraph(Graph g)
-    { 
+    public void setDefaultGraph(Graph g) { 
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
     }
 

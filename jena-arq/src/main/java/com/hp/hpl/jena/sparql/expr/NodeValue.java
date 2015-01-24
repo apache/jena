@@ -80,7 +80,6 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.NodeFactory ;
@@ -342,9 +341,9 @@ public abstract class NodeValue extends ExprNode
         return nv ;
     }
                                
-    public static NodeValue makeNode(String lexicalForm, XSDDatatype dtype)
+    public static NodeValue makeNode(String lexicalForm, RDFDatatype dtype)
     {
-        Node n = com.hp.hpl.jena.graph.NodeFactory.createLiteral(lexicalForm, dtype) ;
+        Node n = NodeFactory.createLiteral(lexicalForm, dtype) ;
         NodeValue nv = NodeValue.makeNode(n) ;
         return nv ;
     }

@@ -55,7 +55,7 @@ public class TextDatasetAssembler extends AssemblerBase implements Assembler
         Dataset ds = (Dataset)a.open(dataset) ;
         TextIndex textIndex = (TextIndex)a.open(index) ;
         
-        Dataset dst = TextDatasetFactory.create(ds, textIndex) ;
+        Dataset dst = TextDatasetFactory.create(ds, textIndex, true) ;
         return dst ;
         
     }

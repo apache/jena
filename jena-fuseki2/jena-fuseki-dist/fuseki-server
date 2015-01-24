@@ -33,7 +33,6 @@ for J in "$JAR1" "$JAR2"
 do
     # Expand
     J="$(echo $J)"
-    echo $J
     if [ -e "$J" ]
     then
 	JAR="$J"
@@ -63,3 +62,19 @@ export FUSEKI_BASE="${FUSEKI_BASE:-$PWD/run}"
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 
 exec java  $JVM_ARGS -jar "$JAR" "$@"
+
+## Adding custom code to the Fuseki server:
+##
+## It is also possible to launch Fuseki using 
+##   java $JVM_ARGS -cp "$JAR" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+##
+## "exec" is optional - it simple frees up a OS process.
+## In this way, you can add custom java to the classpath:
+## 
+##   APPJAR=MyCode.jar
+##   java $JVM_ARGS -cp "$JAR:$APPJAR" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+
+
+
+
+

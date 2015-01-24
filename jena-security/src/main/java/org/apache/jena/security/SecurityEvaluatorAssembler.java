@@ -145,7 +145,7 @@ public class SecurityEvaluatorAssembler extends AssemblerBase implements Assembl
 				}
 				else if (n.isResource())
 				{
-					a.open( a, n.asResource(), mode );
+					args.add( a.open( a, n.asResource(), mode ) );
 				}
 				else
 				{

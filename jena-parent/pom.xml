@@ -165,6 +165,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>4.0</version>
+      </dependency>
+      
+      <dependency>
         <groupId>com.github.jsonld-java</groupId>
         <artifactId>jsonld-java</artifactId>
         <version>${ver.jsonldjava}</version>
@@ -287,7 +293,6 @@
           </exclusion>
         </exclusions>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -343,7 +348,7 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-	<version>0.11</version>
+        <version>0.11</version>
         <executions>
           <execution>
             <id>rat-checks</id>

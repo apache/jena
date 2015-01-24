@@ -81,10 +81,11 @@ public class BulkUpdateHandlerTest
 	@Test
 	public void testAdd()
 	{
+		Object principal = securityEvaluator.getPrincipal();
 		try
 		{
 			handler.add(tripleArray);
-			if (!securityEvaluator.evaluate(createAndUpdate,
+			if (!securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -93,7 +94,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(createAndUpdate,
+			if (securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -105,7 +106,7 @@ public class BulkUpdateHandlerTest
 		try
 		{
 			handler.add(Arrays.asList(tripleArray));
-			if (!securityEvaluator.evaluate(createAndUpdate,
+			if (!securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -114,7 +115,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(createAndUpdate,
+			if (securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -126,7 +127,7 @@ public class BulkUpdateHandlerTest
 		try
 		{
 			handler.add(Arrays.asList(tripleArray).iterator());
-			if (!securityEvaluator.evaluate(createAndUpdate,
+			if (!securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -135,7 +136,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(createAndUpdate,
+			if (securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -147,7 +148,7 @@ public class BulkUpdateHandlerTest
 		try
 		{
 			handler.add(new CollectionGraph(Arrays.asList(tripleArray)));
-			if (!securityEvaluator.evaluate(createAndUpdate,
+			if (!securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -156,7 +157,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(createAndUpdate,
+			if (securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -168,7 +169,7 @@ public class BulkUpdateHandlerTest
 		try
 		{
 			handler.add(new CollectionGraph(Arrays.asList(tripleArray)));
-			if (!securityEvaluator.evaluate(createAndUpdate,
+			if (!securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -177,7 +178,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(createAndUpdate,
+			if (securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -189,7 +190,7 @@ public class BulkUpdateHandlerTest
 		try
 		{
 			handler.add(new CollectionGraph(Arrays.asList(tripleArray)), true);
-			if (!securityEvaluator.evaluate(createAndUpdate,
+			if (!securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -198,7 +199,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(createAndUpdate,
+			if (securityEvaluator.evaluate(principal, createAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -211,11 +212,11 @@ public class BulkUpdateHandlerTest
 	@Test
 	public void testDelete()
 	{
-
+		Object principal = securityEvaluator.getPrincipal();
 		try
 		{
 			handler.delete(tripleArray);
-			if (!securityEvaluator.evaluate(deleteAndUpdate,
+			if (!securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -224,7 +225,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(deleteAndUpdate,
+			if (securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -236,7 +237,7 @@ public class BulkUpdateHandlerTest
 		try
 		{
 			handler.delete(Arrays.asList(tripleArray));
-			if (!securityEvaluator.evaluate(deleteAndUpdate,
+			if (!securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -245,7 +246,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(deleteAndUpdate,
+			if (securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -257,7 +258,7 @@ public class BulkUpdateHandlerTest
 		try
 		{
 			handler.delete(Arrays.asList(tripleArray).iterator());
-			if (!securityEvaluator.evaluate(deleteAndUpdate,
+			if (!securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -266,7 +267,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(deleteAndUpdate,
+			if (securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -278,7 +279,7 @@ public class BulkUpdateHandlerTest
 		try
 		{
 			handler.delete(new CollectionGraph(Arrays.asList(tripleArray)));
-			if (!securityEvaluator.evaluate(deleteAndUpdate,
+			if (!securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -287,7 +288,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(deleteAndUpdate,
+			if (securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -300,7 +301,7 @@ public class BulkUpdateHandlerTest
 		{
 			handler.delete(new CollectionGraph(Arrays.asList(tripleArray)),
 					true);
-			if (!securityEvaluator.evaluate(deleteAndUpdate,
+			if (!securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail("Should have thrown AccessDenied Exception");
@@ -308,7 +309,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(deleteAndUpdate,
+			if (securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -321,11 +322,12 @@ public class BulkUpdateHandlerTest
 
 	public void testRemove()
 	{
+		Object principal = securityEvaluator.getPrincipal();
 		try
 		{
 			handler.remove(NodeFactory.createURI("http://example.com/1"),
 					NodeFactory.createURI("http://example.com/v"), NodeFactory.createAnon());
-			if (!securityEvaluator.evaluate(deleteAndUpdate,
+			if (!securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -334,7 +336,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(deleteAndUpdate,
+			if (securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String
@@ -346,10 +348,11 @@ public class BulkUpdateHandlerTest
 
 	public void testRemoveAll()
 	{
+		Object principal = securityEvaluator.getPrincipal();
 		try
 		{
 			handler.removeAll();
-			if (!securityEvaluator.evaluate(deleteAndUpdate,
+			if (!securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 
@@ -358,7 +361,7 @@ public class BulkUpdateHandlerTest
 		}
 		catch (final AccessDeniedException e)
 		{
-			if (securityEvaluator.evaluate(deleteAndUpdate,
+			if (securityEvaluator.evaluate(principal, deleteAndUpdate,
 					handler.getModelNode()))
 			{
 				Assert.fail(String

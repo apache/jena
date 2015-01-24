@@ -18,31 +18,28 @@
 
 package org.apache.jena.query.text;
 
-import java.io.File;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Reader ;
+import java.io.StringReader ;
+import java.util.Arrays ;
+import java.util.HashSet ;
+import java.util.Set ;
 
-import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.query.text.assembler.TextAssembler;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.query.text.assembler.TextAssembler ;
+import org.junit.After ;
+import org.junit.Before ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 
 /**
  * This class defines a setup configuration for a dataset that uses a keyword analyzer with a Lucene index.
  */
 public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextIndexBase {
-	private static final String INDEX_PATH = "target/test/TestDatasetWithLuceneIndex";
-	private static final File indexDir = new File(INDEX_PATH);
 	
 	private static final String SPEC_BASE = "http://example.org/spec#";
 	private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
@@ -76,7 +73,7 @@ public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextI
                     "",
 				    ":indexLucene",
                     "    a text:TextIndexLucene ;",
-				    "    text:directory <file:" + INDEX_PATH + "> ;",
+				    "    text:directory \"mem\" ;",
 				    "    text:entityMap :entMap ;",
 				    "    .",
                     "",
@@ -94,28 +91,24 @@ public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithTextI
 				    );
 	}      
 	
-	public static void init(String analyzer) {
+	public void init(String analyzer) {
 		Reader reader = new StringReader(makeSpec(analyzer));
 		Model specModel = ModelFactory.createDefaultModel();
 		specModel.read(reader, "", "TURTLE");
 		TextAssembler.init();			
-		deleteOldFiles();
-		indexDir.mkdirs();
 		Resource root = specModel.getResource(SPEC_ROOT_URI);
 		dataset = (Dataset) Assembler.general.open(root);
 	}
 	
 	
-	public static void deleteOldFiles() {
-		if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
-	}	
-
-	@BeforeClass public static void beforeClass() {
+	@Before
+	public void before() {
 		init("text:KeywordAnalyzer");
-	}	
+	}
 	
-	@AfterClass public static void afterClass() {
-		deleteOldFiles();
+	@After
+	public void after() {
+		dataset.close();
 	}
 	
 	@Test

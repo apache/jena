@@ -31,6 +31,8 @@ public class TS_IRI extends TestCase{
         rslt.addTest(TestMoreExamples.suite());
         rslt.addTest(MoreTests.suite());
         rslt.addTest(Additional.suite());
+        rslt.addTest(TestIRIFactory.suite());
+        
         return rslt;
     }
 }

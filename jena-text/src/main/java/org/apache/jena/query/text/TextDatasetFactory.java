@@ -41,23 +41,34 @@ public class TextDatasetFactory
     /** Create a text-indexed dataset */ 
     public static Dataset create(Dataset base, TextIndex textIndex)
     {
+        return create(base, textIndex, false);
+    }
+    
+    /** Create a text-indexed dataset, optionally allowing the text index to be closed if the Dataset is */
+    public static Dataset create(Dataset base, TextIndex textIndex, boolean closeIndexOnDSGClose)
+    {
         DatasetGraph dsg = base.asDatasetGraph() ;
-        dsg = create(dsg, textIndex) ;
+        dsg = create(dsg, textIndex, closeIndexOnDSGClose) ;
         return DatasetFactory.create(dsg) ;
     }
 
 
-    /** Create a text-indexed dataset */ 
+    /** Create a text-indexed DatasetGraph */ 
     public static DatasetGraph create(DatasetGraph dsg, TextIndex textIndex)
     {
+        return create(dsg, textIndex, false);
+    }
+    
+    /** Create a text-indexed DatasetGraph, optionally allowing the text index to be closed if the DatasetGraph is */
+    public static DatasetGraph create(DatasetGraph dsg, TextIndex textIndex, boolean closeIndexOnDSGClose)
+    {
         TextDocProducer producer = new TextDocProducerTriples(textIndex.getDocDef(), textIndex) ;
-        DatasetGraph dsgt = new DatasetGraphText(dsg, textIndex, producer) ;
+        DatasetGraph dsgt = new DatasetGraphText(dsg, textIndex, producer, closeIndexOnDSGClose) ;
         // Also set on dsg
         Context c = dsgt.getContext() ;
+        c.set(TextQuery.textIndex, textIndex) ;
         
-        dsgt.getContext().set(TextQuery.textIndex, textIndex) ;
         return dsgt ;
-
     }
     
     /** Create a Lucene TextIndex */ 
@@ -71,14 +82,14 @@ public class TextDatasetFactory
     public static Dataset createLucene(Dataset base, Directory directory, EntityDefinition entMap)
     {
         TextIndex index = createLuceneIndex(directory, entMap) ;
-        return create(base, index) ; 
+        return create(base, index, true) ; 
     }
 
     /** Create a text-indexed dataset, using Lucene */ 
     public static DatasetGraph createLucene(DatasetGraph base, Directory directory, EntityDefinition entMap)
     {
         TextIndex index = createLuceneIndex(directory, entMap) ;
-        return create(base, index) ; 
+        return create(base, index, true) ; 
     }
 
     /** Create a Solr TextIndex */ 
@@ -92,14 +103,14 @@ public class TextDatasetFactory
     public static Dataset createSolrIndex(Dataset base, SolrServer server, EntityDefinition entMap)
     {
         TextIndex index = createSolrIndex(server, entMap) ;
-        return create(base, index) ; 
+        return create(base, index, true) ; 
     }
 
     /** Create a text-indexed dataset, using Solr */ 
     public static DatasetGraph createSolrIndex(DatasetGraph base, SolrServer server, EntityDefinition entMap)
     {
         TextIndex index = createSolrIndex(server, entMap) ;
-        return create(base, index) ; 
+        return create(base, index, true) ; 
     }
 }
 

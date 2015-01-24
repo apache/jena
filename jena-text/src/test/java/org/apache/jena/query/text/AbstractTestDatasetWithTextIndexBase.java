@@ -44,7 +44,6 @@ import com.hp.hpl.jena.rdf.model.Model;
  */
 public abstract class AbstractTestDatasetWithTextIndexBase {
 	protected static final String RESOURCE_BASE = "http://example.org/data/resource/";
-	protected static Dataset dataset;
 	protected static final String QUERY_PROLOG = 
 			StrUtils.strjoinNL(
 				"PREFIX text: <http://jena.apache.org/text#>",
@@ -56,6 +55,8 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
 						"@prefix text: <http://jena.apache.org/text#> .",
 						"@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ."
 						);
+	
+	protected Dataset dataset;
 	
 	protected void doTestSearch(String turtle, String queryString, Set<String> expectedEntityURIs) {
 		doTestSearch("", turtle, queryString, expectedEntityURIs);
@@ -76,8 +77,8 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
 	
 	public static void doTestQuery(Dataset dataset, String label, String queryString, Set<String> expectedEntityURIs, int expectedNumResults) {
 		Query query = QueryFactory.create(queryString) ;
+		dataset.begin(ReadWrite.READ);
 		try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
-			dataset.begin(ReadWrite.READ);
 		    ResultSet results = qexec.execSelect() ;
 		    
 		    assertEquals(label, expectedNumResults > 0, results.hasNext());
@@ -87,6 +88,9 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
 		        assertTrue(label + ": unexpected result: " + entityURI, expectedEntityURIs.contains(entityURI));
 		    }
 		    assertEquals(label, expectedNumResults, count);
-		} finally { dataset.end() ; }		
+		}
+		finally {
+		    dataset.end() ;
+	    }		
 	}
 }
