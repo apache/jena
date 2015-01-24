@@ -347,10 +347,9 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel
 			final String modelURI, final ItemHolder<Model, SecuredModel> holder )
 	{
 		super(securityEvaluator, modelURI, holder);
-		this.graph = org.apache.jena.security.Factory.getInstance(this
-				.getSecurityEvaluator(), this.getModelIRI(), holder
+		this.graph = org.apache.jena.security.Factory.getInstance(securityEvaluator, modelURI, holder
 				.getBaseItem().getGraph());
-		this.holder = holder;
+		this.holder = holder; // FIXME -- this should just access the super holder.
 	}
 	
 	 private RDFNode asObject( Object o )

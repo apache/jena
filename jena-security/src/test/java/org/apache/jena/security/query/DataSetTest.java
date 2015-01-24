@@ -1,14 +1,14 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
+ * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
+ * regarding copyright ownership.  The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,33 +17,32 @@
  */
 package org.apache.jena.security.query;
 
+import org.apache.jena.security.Factory;
+import org.apache.jena.security.MockSecurityEvaluator;
+import org.apache.jena.security.SecurityEvaluator.SecNode.Type;
+import org.apache.jena.security.model.SecuredModel;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBFactory;
 
-import org.junit.Assert;
-
-import org.apache.jena.security.Factory;
-import org.apache.jena.security.MockSecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluator;
-import org.apache.jena.security.SecurityEvaluator.SecNode.Type;
-import org.apache.jena.security.model.SecuredModel;
-import org.apache.jena.security.query.SecuredQueryEngineFactory;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-public class QueryEngineTest
-{
-
+public class DataSetTest {
+	private Dataset dataset;
+	private Model baseModel;
+	private MockSecurityEvaluator eval;
+	private SecuredModel dftModel;
+	
 	@BeforeClass
 	public static void setupFactory()
 	{
@@ -55,77 +54,43 @@ public class QueryEngineTest
 	{
 		SecuredQueryEngineFactory.unregister();
 	}
-
-	Model baseModel;
-
-	public QueryEngineTest()
-	{
-
-	}
-
-	public static Model populateModel(Model baseModel)
-	{
+	
+	
+	public void setup() {
 		
-		Resource r = ResourceFactory
-				.createResource("http://example.com/resource/1");
-		final Resource o = ResourceFactory
-				.createResource("http://example.com/class");
-		baseModel.add(r, RDF.type, o);
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_1"),
-				ResourceFactory.createTypedLiteral(1));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_2"),
-				ResourceFactory.createTypedLiteral("foo"));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_3"),
-				ResourceFactory.createTypedLiteral(3.14));
-		r = ResourceFactory.createResource("http://example.com/resource/2");
-		baseModel.add(r, RDF.type, o);
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_1"),
-				ResourceFactory.createTypedLiteral(2));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_2"),
-				ResourceFactory.createTypedLiteral("bar"));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_3"),
-				ResourceFactory.createTypedLiteral(6.28));
+		 DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
 
-		r = ResourceFactory.createResource("http://example.com/resource/3");
-		baseModel.add(r, RDF.type, ResourceFactory
-				.createResource("http://example.com/anotherClass"));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_1"),
-				ResourceFactory.createTypedLiteral(3));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_2"),
-				ResourceFactory.createTypedLiteral("baz"));
-		baseModel.add(r, ResourceFactory
-				.createProperty("http://example.com/property/_3"),
-				ResourceFactory.createTypedLiteral(9.42));
-		return baseModel;
+	       
+	    dsg.getContext().set(TDB.symUnionDefaultGraph, true) ;
+	    Dataset myDataset = DatasetFactory.create(dsg) ; 
+		
+//		DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+//		
+//		Dataset myDataset = TDBFactory.createDataset();
+	    baseModel = myDataset.getNamedModel( "http://example.com/baseModel");
+		//baseModel = myDataset.getDefaultModel();
+		baseModel = QueryEngineTest.populateModel( baseModel );
+		
+		dftModel = Factory.getInstance(eval,
+				"http://example.com/securedModel", baseModel);
+		
+	    dataset = DatasetFactory.createMem() ;
+	    dataset.setDefaultModel(dftModel) ;
+
+//	   // dataset.addNamedModel( dftModel.getModelIRI(), dftModel);
+	    
+	  
+        
 	}
 	
-	@Before
-	public void setUp()
-	{
-		baseModel = populateModel( ModelFactory.createDefaultModel());
-	}
-
-	@After
-	public void tearDown()
-	{
-		baseModel.close();
-	}
-
 	@Test
 	public void testOpenQueryType()
 	{
-		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
+		eval = new MockSecurityEvaluator(true, true,
 				true, true, true, true);
-		final SecuredModel model = Factory.getInstance(eval,
-				"http://example.com/securedModel", baseModel);
+		
+		setup();
+		
 		try
 		{
 			final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  "
@@ -134,7 +99,7 @@ public class QueryEngineTest
 					+ "?bar [] ."
 					+ "  } ";
 			final QueryExecution qexec = QueryExecutionFactory.create(query,
-					model);
+					dataset);
 			try
 			{
 				final ResultSet results = qexec.execSelect();
@@ -153,14 +118,14 @@ public class QueryEngineTest
 		}
 		finally
 		{
-			model.close();
+			dataset.close();
 		}
 	}
 
 	@Test
 	public void testRestrictedQueryType()
 	{
-		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
+		eval = new MockSecurityEvaluator(true, true,
 				true, true, true, true) {
 
 			@Override
@@ -175,8 +140,9 @@ public class QueryEngineTest
 				return super.evaluate(action, graphIRI, triple);
 			}
 		};
-		final SecuredModel model = Factory.getInstance(eval,
-				"http://example.com/securedModel", baseModel);
+		
+		setup();
+		
 		try
 		{
 			final String query = "prefix fn: <http://www.w3.org/2005/xpath-functions#>  "
@@ -185,7 +151,7 @@ public class QueryEngineTest
 					+ "?bar [] ."
 					+ "  } ";
 			final QueryExecution qexec = QueryExecutionFactory.create(query,
-					model);
+					dataset);
 			try
 			{
 				final ResultSet results = qexec.execSelect();
@@ -204,14 +170,14 @@ public class QueryEngineTest
 		}
 		finally
 		{
-			model.close();
+			dataset.close();
 		}
 	}
-
+	
 	@Test
 	public void testSelectAllType()
 	{
-		final SecurityEvaluator eval = new MockSecurityEvaluator(true, true,
+		eval = new MockSecurityEvaluator(true, true,
 				true, true, true, true) {
 
 			@Override
@@ -226,14 +192,15 @@ public class QueryEngineTest
 				return super.evaluate(action, graphIRI, triple);
 			}
 		};
-		final SecuredModel model = Factory.getInstance(eval,
-				"http://example.com/securedModel", baseModel);
+		
+		setup();
+		
 		try
 		{
 			 String query = "SELECT ?s ?p ?o WHERE "
 					+ " { ?s ?p ?o } ";
 			 QueryExecution qexec = QueryExecutionFactory.create(query,
-					model);
+					dataset);
 			try
 			{
 				final ResultSet results = qexec.execSelect();
@@ -252,10 +219,10 @@ public class QueryEngineTest
 				qexec.close();
 			}
 			
-			query = "SELECT ?s ?p ?o WHERE "
+			query = "SELECT ?g ?s ?p ?o WHERE "
 					+ " { GRAPH ?g {?s ?p ?o } }";
 			qexec = QueryExecutionFactory.create(query,
-					model);
+					dataset);
 			try
 			{
 				final ResultSet results = qexec.execSelect();
@@ -267,7 +234,8 @@ public class QueryEngineTest
 					System.out.println( soln );
 				}
 				// 2x 3 values + type triple
-				Assert.assertEquals(8, count);
+				// all are in the base graph so no named graphs
+				Assert.assertEquals(0, count);
 			}
 			finally
 			{
@@ -276,7 +244,7 @@ public class QueryEngineTest
 		}
 		finally
 		{
-			model.close();
+			dataset.close();
 		}
 	}
 }
