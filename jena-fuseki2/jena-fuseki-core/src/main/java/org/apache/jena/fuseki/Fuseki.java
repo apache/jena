@@ -18,26 +18,26 @@
 
 package org.apache.jena.fuseki ;
 
-import java.util.Calendar ;
-import java.util.TimeZone ;
-import java.util.concurrent.TimeUnit ;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.SystemARQ;
+import com.hp.hpl.jena.sparql.lib.Metadata;
+import com.hp.hpl.jena.sparql.mgt.SystemInfo;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.MappingRegistry;
+import com.hp.hpl.jena.sparql.util.Utils;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.transaction.TransactionManager;
+import org.apache.jena.fuseki.cache.CacheStore;
+import org.apache.jena.riot.RIOT;
+import org.apache.jena.riot.system.stream.LocatorFTP;
+import org.apache.jena.riot.system.stream.LocatorHTTP;
+import org.apache.jena.riot.system.stream.StreamManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.jena.riot.RIOT ;
-import org.apache.jena.riot.system.stream.LocatorFTP ;
-import org.apache.jena.riot.system.stream.LocatorHTTP ;
-import org.apache.jena.riot.system.stream.StreamManager ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.lib.Metadata ;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
-import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.MappingRegistry ;
-import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class Fuseki {
     // General fixed constants.
@@ -142,6 +142,12 @@ public class Fuseki {
     /** Instance of log for config server messages. */
     public static final Logger        configLog         = LoggerFactory.getLogger(configLogName) ;
 
+    /** Actual log file for cache messages. */
+    public static final String        cacheLogName      = PATH + ".Cache" ;
+
+    /** Instance of log for cache messages. */
+    public static final Logger        cacheLog          = LoggerFactory.getLogger(cacheLogName);
+
     /** Instance of log for config server message s */
     public static boolean             verboseLogging    = false ;
 
@@ -203,6 +209,7 @@ public class Fuseki {
         SystemARQ.registerSubSystem(sysInfo) ;
         RIOT.init() ;
         TDB.init() ;
+        CacheStore.init();
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
 
         TDB.setOptimizerWarningFlag(false) ;

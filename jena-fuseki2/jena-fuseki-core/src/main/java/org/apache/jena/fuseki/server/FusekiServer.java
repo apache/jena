@@ -18,38 +18,37 @@
 
 package org.apache.jena.fuseki.server;
 
-import java.io.File ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.StringReader ;
-import java.nio.file.Files ;
-import java.nio.file.Path ;
-import java.nio.file.StandardCopyOption ;
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.List ;
-import java.util.Map ;
+import arq.cmd.CmdException;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.tdb.sys.Names;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.DS;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.build.Builder;
+import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.build.Template;
+import org.apache.jena.fuseki.build.TemplateFunctions;
+import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.DS ;
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiConfigException ;
-import org.apache.jena.fuseki.build.Builder ;
-import org.apache.jena.fuseki.build.FusekiConfig ;
-import org.apache.jena.fuseki.build.Template ;
-import org.apache.jena.fuseki.build.TemplateFunctions ;
-import org.apache.jena.fuseki.servlets.ServletOps ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import arq.cmd.CmdException ;
-
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.tdb.sys.Names ;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FusekiServer
 {
@@ -82,6 +81,8 @@ public class FusekiServer
     public static final String     DFT_SHIRO_INI            = "shiro.ini" ; 
     // In FUSEKI_BASE
     public static final String     DFT_CONFIG               = "config.ttl" ;
+
+    public static final String     DFT_CACHE_CONFIG         = "cache.properties" ;
     
     /** Directory for TDB databases - this is known to the assembler templates */
     public static Path        dirDatabases       = null ;
@@ -163,6 +164,7 @@ public class FusekiServer
             // Copy missing files into FUSEKI_BASE
             copyFileIfMissing(null, DFT_SHIRO_INI, FUSEKI_BASE) ;
             copyFileIfMissing(null, DFT_CONFIG, FUSEKI_BASE) ;
+            copyFileIfMissing(null, DFT_CACHE_CONFIG, FUSEKI_BASE);
             for ( String n : Template.templateNames ) {
                 copyFileIfMissing(null, n, FUSEKI_BASE) ;
             }
