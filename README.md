@@ -1,6 +1,4 @@
-[![Build Status](https://api.travis-ci.org/afs/quack.png)](https://travis-ci.org/afs/quack)
-
-Mantis - Database Operating Environment
+==== Mantis - Database Operating Environment
 
 Mantis is a set of database-related components.
 
