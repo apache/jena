@@ -49,7 +49,6 @@ public class NOTES {
     //    Two counters, writer leading and trailing edge.
     //    R transactions note their start generation.
     //    Can promote IFF that is still the generation at the point of promotion.
-    //    Update nofitifer
     
     // == Index
 
