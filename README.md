@@ -1,4 +1,5 @@
-==== Mantis - Database Operating Environment
+Mantis - Database Operating Environment
+----
 
 Mantis is a set of database-related components.
 
