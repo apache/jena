@@ -19,19 +19,11 @@ package dev;
 
 public class NOTES {
     // Mantis / cohort / legion
-    // p540.base, p540.index, ...
 
-    // == Legion
+    // == Mantis
     
-    // Rename packages
-	// *** Clean LICENSE, pom.xml and java headers
-    // Move Quack
-
     // == Base 
     // Move LocationLock next to StoreConnection.
-    
-    // Weaker but usable version of BlockMgrTracker.
-    // Start with batches and BlockMgrs 
     
     // == Transactions
     
