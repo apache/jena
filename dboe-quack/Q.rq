@@ -1,0 +1,10 @@
+PREFIX  :     <http://example/>
+
+SELECT  *
+WHERE
+{
+##    :s1 :p ?z1 .
+
+        ?x :q :o1 .
+        ?x :q :o1 .
+}

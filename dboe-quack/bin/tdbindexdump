@@ -1,0 +1,6 @@
+#!/bin/bash
+
+QUACK="/home/afs/Projects/quack"
+. "$QUACK/bin/init"
+
+java -cp "$CP" $JVM_ARGS quack.tdbindexdump "$@"

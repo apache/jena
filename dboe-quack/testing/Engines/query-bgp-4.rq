@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+SELECT * {
+       # Same var - StepPredicateList can cope.
+    ?s :p ?v .
+    ?s :p ?v .
+}

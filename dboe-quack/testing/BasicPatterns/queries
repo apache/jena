@@ -1,0 +1,254 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+## 
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+
+# Templates for generating join coverage.
+# See also jena-arq/tetsing/ARQ/BasicPatterns
+# See produce.rb
+
+data=data-bgp.ttl
+
+pattern=bgp-1-triple-
+#0-var
+{ 
+  :s :p :o . 
+}
+
+# 1-var
+{ 
+   ?s :p :o .
+}
+{
+  :s ?p :o . 
+}
+{ 
+  :s :p ?o . 
+}
+
+{
+  :s :p "no"
+}
+
+# 2-var
+{ 
+  ?s :p ?o . 
+}
+{ 
+  :s ?p ?o . 
+}
+{ 
+  ?s ?p :o . 
+}
+
+## Duplicated variables
+{ 
+  ?x :p ?x . 
+} 
+{ 
+  :s ?x ?x . 
+}
+{ 
+  ?x ?x :o . 
+}
+{ 
+  ?z ?z ?z . 
+}
+
+## 2-triples
+pattern=bgp-2-term-
+{
+  :s1 :p ?x .
+  :s1 :q ?z .
+}
+{
+  :s1 :p ?x .
+  :s1 :q ?x .
+}
+{
+  :s1 :p ?x .
+  :s1 :p ?x .
+}
+{
+  :s1 :p ?x1 .
+  :s1 :p ?x2 .
+}
+{
+  :s1 ?p ?x .
+  :s1 ?q ?x .
+}
+{
+  :s1 ?p ?x1 .
+  :s1 ?q ?x2 .
+}
+
+pattern=bgp-2-var-
+{
+  ?s :p ?x .
+  ?s :q ?z .
+}
+{
+  ?s :q ?z .
+  ?s :p ?x .
+}
+{
+  ?s :p ?x .
+  ?s :q ?x .
+}
+{
+  ?s :p ?x .
+  ?s :p ?x .
+}
+{
+  ?s :p ?x1 .
+  ?s :p ?x2 .
+}
+
+{
+  ?s ?p ?x .
+  ?s ?q ?x .
+}
+{
+  ?s ?p ?x1 .
+  ?s ?q ?x2 .
+}
+
+## ---- Repeats
+pattern=bgp-3-term-
+
+{
+  :s3 :p ?p1 .
+  :s3 :p ?p2 .
+  :s3 :p ?p3 .
+}
+{
+  :s3 :p ?v .
+  :s3 :p ?x .
+  :s3 :q ?x .
+}
+{
+  :s3 :p ?x .
+  :s3 :p ?v .
+  :s3 :q ?x .
+}
+{
+  :s3 :p ?x .
+  :s3 :q ?x .
+  :s3 :q ?x .
+}
+{
+  :s3 :p ?x .
+  :s3 :p ?x .
+  :s3 :q ?x .
+}
+{
+  :s3 :p ?x1 .
+  :s3 :p ?x2 .
+  :s3 :q ?x2 .
+}
+{
+  :s3 :p ?x1 .
+  :s3 :q ?x2 .
+  :s3 :q ?x2 .
+}
+pattern=bgp-3-var-
+
+{
+  ?s :p ?p1 .
+  ?s :p ?p2 .
+  ?s :p ?p3 .
+}
+{
+  ?s :p ?v .
+  ?s :p ?x .
+  ?s :q ?x .
+}
+{
+  ?s :p ?x .
+  ?s :p ?v .
+  ?s :q ?x .
+}
+{
+  ?s :p ?x .
+  ?s :q ?x .
+  ?s :q ?x .
+}
+{
+  ?s :p ?x .
+  ?s :p ?x .
+  ?s :q ?x .
+}
+{
+  ?s :p ?x1 .
+  ?s :p ?x2 .
+  ?s :q ?x2 .
+}
+{
+  ?s :p ?x1 .
+  ?s :q ?x2 .
+  ?s :q ?x2 .
+}
+
+pattern=bgp-other-
+{
+  :s3 :p ?p1 .
+  :s3 :p ?p2 .
+  :s3 :p ?p3 .
+  :s3 :q ?q1 .
+  :s3 :q ?q2 .
+  :s3 :q ?q3 .
+}
+
+## Partials and no matches.
+{
+  :s3 :Z ?p .
+}
+{
+  :s3 :p ?p .
+  :s3 :Z ?q .
+}
+{
+  :s3 :p ?p1 .
+  :s3 :p ?p2 .
+  :s3 :Z ?q .
+}
+
+## Initial values
+pattern=bgp-input-
+{
+  BIND(:s1 AS ?s)
+  ?s :p ?x .
+}
+{
+  BIND(:s1 AS ?s)
+  ?s :p ?x1 .
+  ?s :p ?x2 .
+  ?s :p ?x1 .
+}
+{
+  VALUES ?s { :s1 :s2 }
+  ?s :p ?x .
+}
+{
+  VALUES ?s { :s1 :s2 }
+  ?s :p ?x1 .
+  ?s :p ?x2 .
+  ?s :p ?x1 .
+}
+{
+  VALUES (?s ?z) { (:s1 "Str1")  (:s2 undef) }
+  ?s :p ?x1 .
+  ?s :p ?x2 .
+  ?s :p ?x1 .
+}

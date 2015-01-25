@@ -1,0 +1,21 @@
+@prefix : <http://example/> .
+
+GRAPH :g1
+{
+    :x1 :p :x2 .
+    :x1 :k 1 .
+    :x2 :p :x3 .
+    :x2 :k 2 .
+    :x3 :p :x4 .
+    :x3 :k 2 .
+}
+
+GRAPH :g2 {
+    :s1 :p :o .
+    :s1 :k 1000 .
+    :s1 :p 123 .
+    :s2 :p :o .
+    :s2 :p 456 .
+}
+
+

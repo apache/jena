@@ -1,0 +1,9 @@
+PREFIX : <http://example/>
+
+SELECT *
+{
+  VALUES (?s ?z) { (:s1 "Str1")  (:s2 undef) }
+  ?s :p ?x1 .
+  ?s :p ?x2 .
+  ?s :p ?x1 .
+}
