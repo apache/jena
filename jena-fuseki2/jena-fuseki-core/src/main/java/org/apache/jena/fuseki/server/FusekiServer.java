@@ -82,8 +82,6 @@ public class FusekiServer
     // In FUSEKI_BASE
     public static final String     DFT_CONFIG               = "config.ttl" ;
 
-    public static final String     DFT_CACHE_CONFIG         = "cache.properties" ;
-    
     /** Directory for TDB databases - this is known to the assembler templates */
     public static Path        dirDatabases       = null ;
     
@@ -164,7 +162,6 @@ public class FusekiServer
             // Copy missing files into FUSEKI_BASE
             copyFileIfMissing(null, DFT_SHIRO_INI, FUSEKI_BASE) ;
             copyFileIfMissing(null, DFT_CONFIG, FUSEKI_BASE) ;
-            copyFileIfMissing(null, DFT_CACHE_CONFIG, FUSEKI_BASE);
             for ( String n : Template.templateNames ) {
                 copyFileIfMissing(null, n, FUSEKI_BASE) ;
             }

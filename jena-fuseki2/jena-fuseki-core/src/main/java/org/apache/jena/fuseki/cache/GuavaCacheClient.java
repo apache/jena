@@ -18,5 +18,56 @@
 
 package org.apache.jena.fuseki.cache;
 
-public class GuavaCacheClient {
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+public class GuavaCacheClient extends CacheClient{
+
+    /** The cache for storing SPARQL Query results **/
+    private Cache<Object, Object> cache;
+
+    /** Maximum size of cache data **/
+    private static int MAX_SIZE = 1000;
+
+    /** How long cache data will be stored after write **/
+    private static int EXPIRE_TIME = 5;
+
+
+    public GuavaCacheClient(){
+        cache = CacheBuilder.newBuilder()
+                .maximumSize(MAX_SIZE)
+                .expireAfterWrite(EXPIRE_TIME, TimeUnit.MINUTES)
+                .build();
+    }
+
+    public Object get(Object key) throws InterruptedException, ExecutionException, TimeoutException {
+        return cache.getIfPresent(key);
+   }
+
+    public boolean set(Object key, Object value, int ttl) throws InterruptedException, ExecutionException, TimeoutException {
+        cache.put(key,value);
+        return true;
+    }
+
+    public boolean unset(Object key) throws InterruptedException, ExecutionException, TimeoutException {
+        cache.invalidate(key);
+        return true;
+    }
+
+    /** Getters / Setters */
+    public Cache<Object, Object> getCache() {
+        return cache;
+    }
+
+    public void setCache(Cache<Object, Object> cache) {
+        this.cache = cache;
+    }
+    /** Getters / Setters */
+
+
+
 }

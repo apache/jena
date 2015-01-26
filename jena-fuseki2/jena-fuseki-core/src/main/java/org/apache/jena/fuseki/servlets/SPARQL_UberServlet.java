@@ -18,24 +18,23 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import static java.lang.String.format ;
-import static org.apache.jena.riot.WebContent.contentTypeSPARQLQuery ;
-import static org.apache.jena.riot.WebContent.contentTypeSPARQLUpdate ;
+import org.apache.jena.atlas.web.MediaType;
+import org.apache.jena.fuseki.DEF;
+import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.conneg.ConNeg;
+import org.apache.jena.fuseki.server.DataAccessPoint;
+import org.apache.jena.fuseki.server.DataService;
+import org.apache.jena.fuseki.server.Endpoint;
+import org.apache.jena.fuseki.server.OperationName;
+import org.apache.jena.riot.web.HttpNames;
 
-import java.util.List ;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
-
-import org.apache.jena.atlas.web.MediaType ;
-import org.apache.jena.fuseki.DEF ;
-import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.conneg.ConNeg ;
-import org.apache.jena.fuseki.server.DataAccessPoint ;
-import org.apache.jena.fuseki.server.DataService ;
-import org.apache.jena.fuseki.server.Endpoint ;
-import org.apache.jena.fuseki.server.OperationName ;
-import org.apache.jena.riot.web.HttpNames ;
+import static java.lang.String.format;
+import static org.apache.jena.riot.WebContent.contentTypeSPARQLQuery;
+import static org.apache.jena.riot.WebContent.contentTypeSPARQLUpdate;
 
 /** This servlet can be attached to a dataset location
  *  and acts as a router for all SPARQL operations

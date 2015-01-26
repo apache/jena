@@ -20,9 +20,16 @@
 package org.apache.jena.fuseki.cache;
 
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.servlets.ActionLib;
+import org.apache.jena.fuseki.servlets.HttpAction;
 import org.slf4j.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class CacheStore {
+
+    /** flag to check if data store was initialized */
+    public static boolean initialized = false ;
 
     private static Logger log = Fuseki.cacheLog ;
 
@@ -32,14 +39,13 @@ public class CacheStore {
     /** thread pool size for this data store */
     protected int defaultThreadPoolSize = 500 ;
 
-    /** flag to check if data store was initialized */
-    private static boolean initialized = false ;
 
-    /** client for interacting with Cache store **/
-    private CacheClient client = null;
+    /** client for interacting with  Cache store **/
+    private final CacheClient client = new GuavaCacheClient();
 
     /** Time to live for Cache data **/
     private int ttl;
+
 
     /** For testing - reset the places which initialize once */
     public synchronized static void reset() {
@@ -51,6 +57,7 @@ public class CacheStore {
         if ( initialized )
             return ;
         initialized = true ;
+
     }
 
     /**
@@ -106,7 +113,16 @@ public class CacheStore {
         }
     }
 
+    public static String generateKey(HttpAction action, String queryString) {
+        HttpServletRequest req = action.getRequest();
+        String uri = ActionLib.actionURI(req);
+        String dataSetUri = ActionLib.mapActionRequestToDataset(uri);
+        log.info("CacheStore Key " +dataSetUri+queryString);
+        return dataSetUri+queryString;
+    }
+
     /** Getters / Setters */
+
     public int getDefaultExecutionTimeout() {
         return defaultExecutionTimeout;
     }
@@ -128,12 +144,5 @@ public class CacheStore {
         this.ttl = ttl;
     }
 
-    public CacheClient getClient() {
-        return client;
-    }
-
-    public void setClient(CacheClient client) {
-        this.client = client;
-    }
-    /** Getters / Setters */
+   /** Getters / Setters */
 }

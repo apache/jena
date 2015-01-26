@@ -49,6 +49,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.web.HttpSC ;
@@ -249,6 +250,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             action.beginRead() ;
             Dataset dataset = decideDataset(action, query, queryStringLog) ;
             try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
+                if(CacheStore.initialized){
+                    action.log.info("CacheStore is initialized") ;
+                    String key = generateKey(action,queryString);
+                }else
+                    action.log.info("CacheStore is not initialized") ;
                 SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
                 // Deals with exceptions itself.
                 sendResults(action, result, query.getPrologue()) ;
@@ -390,4 +396,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return HttpOp.execHttpGetString(queryURI) ;
     }
 
+    private String generateKey(HttpAction action , String queryString){
+        return CacheStore.generateKey(action,queryString);
+    }
 }
