@@ -50,6 +50,11 @@ public class NOTES {
     //    R transactions note their start generation.
     //    Can promote IFF that is still the generation at the point of promotion.
     
+    // ComponentId
+    //   Registry
+    //   Base bytes and index. (6 bytes + 2 bytes (=64k))?
+    // TransactionalComponentLifecycle.super(ComponentId)
+    
     // == Index
 
     // BPlusTree.start/finishBatch - take a R/W flag?  Make transactional?

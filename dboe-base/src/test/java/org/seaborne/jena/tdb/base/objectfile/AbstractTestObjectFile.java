@@ -38,7 +38,7 @@ public abstract class AbstractTestObjectFile extends Assert
     @Test public void objectfile_01()
     {
 
-        assertEquals(0, file.length()) ;
+        assertEquals(0, file.position()) ;
     }
 
     @Test public void objectfile_02()

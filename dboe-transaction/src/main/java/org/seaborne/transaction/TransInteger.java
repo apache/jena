@@ -37,7 +37,6 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
     private final String filename ;
     private final ComponentId componentId ;
     
-    
     /** Per transaction state - and per thread safe because we subclass 
      * TransactionalComponentLifecycle
      */ 
@@ -64,9 +63,12 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
      */
     public TransInteger(String filename, int id) {
         this.filename = filename ;
+        // Common code
         byte[] bytes = ComponentIds.idTxnCounter.bytes().clone() ;
         Bytes.setInt(id, bytes, ComponentId.SIZE-4) ;
         componentId = new ComponentId("TransInteger-"+id, bytes) ;
+        // Common code
+        // Set the value now for "fast read" transactions.
         readLocation() ;
     }
     
@@ -141,7 +143,8 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
     @Override
     public void finishRecovery() {
         if ( recoveryAction )
-            writeLocation(); 
+            writeLocation();
+        // Leave true as a record.
     }
 
     

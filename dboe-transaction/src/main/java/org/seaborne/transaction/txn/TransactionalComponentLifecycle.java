@@ -198,6 +198,8 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         // Should not happen.
         throw new InternalErrorException("Unclear transaction state") ;
     }
+
+    protected boolean isReadTxn() { return ! isWriteTxn() ; }
     
     protected boolean isWriteTxn() {
         Transaction txn = threadTxn.get();
@@ -218,7 +220,7 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     }
     
     protected void checkWriteTxn() {
-        if ( ! isActiveTxn() || ! isWriteTxn() )
+        if ( ! isActiveTxn() || isReadTxn() )
             throw new TransactionException("Not in a write transaction") ;
     }
 

@@ -119,7 +119,13 @@ public class ObjectFileLogger implements ObjectFile
     @Override
     public long length()
     {
-        return other.length() ;
+        return position() ;
+    }
+
+    @Override
+    public long position()
+    {
+        return other.position() ;
     }
     
     @Override

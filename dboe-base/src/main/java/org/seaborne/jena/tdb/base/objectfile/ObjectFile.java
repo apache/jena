@@ -56,19 +56,37 @@ public interface ObjectFile extends Sync, Closeable
     /** Read a buffer at the accessor number. */
     public ByteBuffer read(long id) ;
     
-    /** Length, in units used by read/write for ids */
+    /** Length, in bytes
+     * @see #truncate
+     */
     public long length() ;
+
+    /** The append point.  The length, in units used by read/write for ids.
+     * @see #reposition
+     */
+    public long position() ;
     
     /** Any objects in this file? */
     public boolean isEmpty() ;
 
     /** Reset the "append" point; may only be moved earlier.
+     * All data after the new point is lost.
      * The new position must correspond to a position returned by
      * {@link #write(ByteBuffer)} or an id in a {@link Block Block} from {@link #completeWrite(Block)}
+     * <p>
+     * {@link #truncate} is in bytes;
+     * {@link #reposition} is in units returned {@link #write}
+     * @see #position
      */
     public void reposition(long id) ;
     
-    /** 
+    /** Truncate the file.
+     * The new file point should correspond to a position used by {@link #write}, otherwise the
+     * data written from the last valid position to this point is corrupted.
+     * <p>
+     * {@link #truncate} is in bytes;
+     * {@link #reposition} is in units returned {@link #write}
+     * @see #length
      */
     public void truncate(long size) ;
 

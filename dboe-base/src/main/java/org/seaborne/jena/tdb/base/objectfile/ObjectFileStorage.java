@@ -286,7 +286,7 @@ public class ObjectFileStorage implements ObjectFile
     {
         if ( inAllocWrite )
             throw new FileException("In the middle of an alloc-write") ;
-        if ( posn < 0 || posn > length() )
+        if ( posn < 0 || posn > position() )
             throw new IllegalArgumentException("reposition: Bad location: "+posn) ;
         flushOutputBuffer() ;
         file.truncate(posn) ;
@@ -360,6 +360,12 @@ public class ObjectFileStorage implements ObjectFile
     
     @Override
     public long length()
+    {
+        return position() ;
+    }
+
+    @Override
+    public long position()
     {
         if ( writeBuffer == null ) return filesize ; 
         return filesize+writeBuffer.position() ;
