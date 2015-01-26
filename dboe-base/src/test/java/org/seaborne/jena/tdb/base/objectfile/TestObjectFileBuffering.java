@@ -22,7 +22,7 @@ import static org.seaborne.jena.tdb.base.objectfile.AbstractTestObjectFile.fill 
 
 import java.nio.ByteBuffer ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.Test ;
 import org.seaborne.jena.tdb.base.block.Block ;
 import org.seaborne.jena.tdb.base.file.BufferChannel ;
@@ -30,7 +30,7 @@ import org.seaborne.jena.tdb.base.file.BufferChannelMem ;
 import org.seaborne.jena.tdb.base.objectfile.ObjectFile ;
 import org.seaborne.jena.tdb.base.objectfile.ObjectFileStorage ;
 
-public class TestObjectFileBuffering extends BaseTest
+public class TestObjectFileBuffering extends Assert
 {
     protected ObjectFile make(int bufferSize)
     {

@@ -19,10 +19,10 @@ package quack;
 
 import com.hp.hpl.jena.tdb.base.file.Location ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.Test ;
 
-public class TestIndexRef extends BaseTest {
+public class TestIndexRef extends Assert {
     @Test public void index_ref_1() {
         IndexRef ref = IndexRef.parse("SPO") ;
         assertEquals("SPO", ref.getBaseFileName()) ;

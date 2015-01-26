@@ -21,7 +21,7 @@ import java.io.PrintStream ;
 import java.util.Arrays ;
 import java.util.Collection ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.junit.* ;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 @RunWith(Parameterized.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestPatterns extends BaseTest
+public class TestPatterns extends Assert
 {
     @Parameters(name="{0}")
     public static Collection<Object[]> data()

@@ -19,7 +19,7 @@ package org.seaborne.jena.tdb.base.file;
 
 import java.io.File ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -27,7 +27,7 @@ import org.seaborne.jena.tdb.ConfigTest ;
 import org.seaborne.jena.tdb.base.file.MetaFile ;
 import org.seaborne.jena.tdb.sys.Names ;
 
-public class TestMetaFile extends BaseTest
+public class TestMetaFile extends Assert
 {
     String testfile = null ;
     String testfileMeta = null ;

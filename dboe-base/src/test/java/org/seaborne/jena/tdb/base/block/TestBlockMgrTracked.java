@@ -19,12 +19,12 @@ package org.seaborne.jena.tdb.base.block;
 
 import java.nio.ByteBuffer ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-public class TestBlockMgrTracked extends BaseTest
+public class TestBlockMgrTracked extends Assert
 {
     // Mainly testing the tracking
 

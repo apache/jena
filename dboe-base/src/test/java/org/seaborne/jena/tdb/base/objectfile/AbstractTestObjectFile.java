@@ -21,14 +21,14 @@ import static org.seaborne.jena.tdb.base.BufferTestLib.sameValue ;
 
 import java.nio.ByteBuffer ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.jena.tdb.base.block.Block ;
 import org.seaborne.jena.tdb.base.objectfile.ObjectFile ;
 
-public abstract class AbstractTestObjectFile extends BaseTest
+public abstract class AbstractTestObjectFile extends Assert
 {
     ObjectFile file ;
 

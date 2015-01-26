@@ -17,18 +17,17 @@
 
 package org.seaborne.jena.tdb.base.block;
 
-
 import java.nio.ByteBuffer ;
 
 import static org.apache.jena.atlas.lib.ByteBufferLib.fill ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.jena.tdb.base.block.Block ;
 import org.seaborne.jena.tdb.base.block.BlockMgr ;
 
-public abstract class AbstractTestBlockMgr extends BaseTest
+public abstract class AbstractTestBlockMgr extends Assert
 {
     static final public int BlkSize = 256 ;
     

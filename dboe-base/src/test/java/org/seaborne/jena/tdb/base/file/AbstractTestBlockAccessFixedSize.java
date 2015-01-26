@@ -18,7 +18,7 @@
 package org.seaborne.jena.tdb.base.file;
 
 import static org.seaborne.jena.tdb.base.BufferTestLib.sameValue ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -26,7 +26,7 @@ import org.seaborne.jena.tdb.base.block.Block ;
 import org.seaborne.jena.tdb.base.file.BlockAccess ;
 import org.seaborne.jena.tdb.base.file.FileException ;
 
-public abstract class AbstractTestBlockAccessFixedSize extends BaseTest
+public abstract class AbstractTestBlockAccessFixedSize extends Assert
 {
     // Fixed block tests.
     

@@ -17,7 +17,7 @@
 
 package org.seaborne.jena.engine;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.Test ;
 import org.seaborne.jena.engine.Join ;
 import org.seaborne.jena.engine.JoinKey ;
@@ -28,7 +28,7 @@ import org.seaborne.jena.engine.row.RowBuilderBase ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public class TestJoinMisc extends BaseTest {
+public class TestJoinMisc extends Assert {
     // Various of these tests check to see if two unrelated hashes
     // are not equal, which is not guaranteed.  Changes to the hash function
     // may require test tweaking. 

@@ -1,19 +1,18 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  See the NOTICE file distributed with this work for additional
+ *  information regarding copyright ownership.
  */
 
 package org.seaborne.transaction.txn.journal;
@@ -38,32 +37,15 @@ public class JournalControl
     public static void replay(Transaction transaction)
     {}
     
-    /**
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *  See the NOTICE file distributed with this work for additional
- *  information regarding copyright ownership.
- */
-    public static void print(String filename)
-    {
+    /** Dump a journal - debug support function - opens the journal specially - inconsistent views possible */
+    public static void print(String filename) {
         BufferChannelFile chan = BufferChannelFile.createUnmanaged(filename, "r") ;
         Journal journal = Journal.create(chan) ;
         JournalControl.print(journal) ;
         chan.close() ;
     }
     
-    public static void print(Journal journal)
-    {
+    public static void print(Journal journal) {
         System.out.println("Size: "+journal.size()) ;
         Iterator<JournalEntry> iter = journal.entries() ; 
         

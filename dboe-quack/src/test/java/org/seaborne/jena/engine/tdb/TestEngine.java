@@ -20,7 +20,7 @@ package org.seaborne.jena.engine.tdb;
 import java.io.PrintStream ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.tdb.sys.Names ;
  *  More complete testing happens when the full TDB test suite is run with this engine.
  */
 
-public class TestEngine extends BaseTest {
+public class TestEngine extends Assert {
     @BeforeClass public static void beforeClass() { Quack.init() ; } 
     
     private static final String DIR = "testing/EngineQ" ;

@@ -19,7 +19,7 @@ package org.seaborne.jena.engine;
 
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.Test ;
 import org.seaborne.jena.engine.Row ;
 import org.seaborne.jena.engine.RowBuilder ;
@@ -30,7 +30,7 @@ import org.seaborne.jena.engine.row.RowVarBinding ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public class TestRows extends BaseTest
+public class TestRows extends Assert
 {
     static Var var_x = Var.alloc("x") ;
     static Var var_y = Var.alloc("y") ;

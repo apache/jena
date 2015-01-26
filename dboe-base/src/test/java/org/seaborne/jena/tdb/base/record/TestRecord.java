@@ -19,11 +19,11 @@ package org.seaborne.jena.tdb.base.record;
 
 import static org.seaborne.jena.tdb.base.record.RecordLib.intToRecord ;
 import static org.seaborne.jena.tdb.base.record.RecordLib.recordToInt ;
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.Test;
 import org.seaborne.jena.tdb.base.record.Record ;
 
-public class TestRecord extends BaseTest
+public class TestRecord extends Assert
 {
     static final public int RecLen = 4 ;
     

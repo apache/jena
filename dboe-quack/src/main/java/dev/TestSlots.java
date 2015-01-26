@@ -17,14 +17,14 @@
 
 package dev;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.junit.Test ;
 import org.seaborne.jena.engine.Slot ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 
-public class TestSlots extends BaseTest
+public class TestSlots extends Assert
 {
     static Var var = Var.alloc("v") ;  
     

@@ -22,7 +22,7 @@ import static org.seaborne.jena.engine.QJT.parseTableInt ;
 import java.util.List ;
 import java.util.Set ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.junit.Test ;
 import org.seaborne.jena.engine.join.RowOrder ;
@@ -30,7 +30,7 @@ import org.seaborne.jena.engine.join.RowOrder ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Simple stuff - includes answers, rather than comparing to InnerLoopJoinBase */
-public abstract class AbstractTestJoin1 extends BaseTest {
+public abstract class AbstractTestJoin1 extends Assert {
     static Var var_a = Var.alloc("a") ; 
     static Var var_b = Var.alloc("b") ; 
     static Var var_c = Var.alloc("c") ; 

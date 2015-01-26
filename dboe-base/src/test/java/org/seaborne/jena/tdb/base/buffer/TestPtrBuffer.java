@@ -19,13 +19,13 @@ package org.seaborne.jena.tdb.base.buffer;
 
 import java.nio.ByteBuffer ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.seaborne.jena.tdb.sys.SystemIndex ;
 
-public class TestPtrBuffer extends BaseTest
+public class TestPtrBuffer extends Assert
 {
     static boolean originalNullOut ; 
     @BeforeClass static public void beforeClass()

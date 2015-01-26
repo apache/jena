@@ -17,13 +17,13 @@
 
 package org.seaborne.jena.tdb.base.objectfile;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.jena.tdb.base.objectfile.StringFile ;
 
-public abstract class AbstractTestStringFile extends BaseTest
+public abstract class AbstractTestStringFile extends Assert
 {
     StringFile f = null ;
     

@@ -19,7 +19,7 @@ package org.seaborne.jena.engine;
 
 import java.io.PrintStream ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.junit.Test ;
 
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 
 /** Tests of OpExecutor */
-public abstract class AbstractTestOpExecutor extends BaseTest
+public abstract class AbstractTestOpExecutor extends Assert
 {
     private static final String DIR = "testing/Engines" ; 
     protected final OpExecutorFactory factory ;

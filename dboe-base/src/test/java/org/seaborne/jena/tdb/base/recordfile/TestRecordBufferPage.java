@@ -17,7 +17,7 @@
 
 package org.seaborne.jena.tdb.base.recordfile;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -30,7 +30,7 @@ import org.seaborne.jena.tdb.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.jena.tdb.sys.SystemIndex ;
 
-public class TestRecordBufferPage extends BaseTest
+public class TestRecordBufferPage extends Assert
 {
     // Testing: records are 2 bytes, 3 records per block.  
     

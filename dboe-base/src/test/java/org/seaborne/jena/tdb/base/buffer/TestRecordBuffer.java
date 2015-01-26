@@ -23,7 +23,7 @@ import static org.seaborne.jena.tdb.base.record.RecordLib.r ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.junit.BaseTest ;
+import org.junit.Assert ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -32,7 +32,7 @@ import org.seaborne.jena.tdb.base.record.RecordFactory ;
 import org.seaborne.jena.tdb.base.record.RecordLib ;
 import org.seaborne.jena.tdb.sys.SystemIndex ;
 
-public class TestRecordBuffer extends BaseTest
+public class TestRecordBuffer extends Assert
 {
     static RecordFactory recordFactory = new RecordFactory(RecordLib.TestRecordLength, 0) ;
     
