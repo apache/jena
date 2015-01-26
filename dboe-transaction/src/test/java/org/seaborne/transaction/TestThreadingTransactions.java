@@ -96,21 +96,25 @@ public class TestThreadingTransactions {
     }
 
     void readRecord(String label, Transactional1 trans, long expected) {
+        if ( ! trans.isInTransaction() ) {
+            assertionFailed = label+ ": Not in transaction" ;
+        }
+        
         long x = trans.get() ;
         if ( expected != x) {
-            trans.get() ;   // Debug point.
-            assertionFailed = label ;
+            assertionFailed = label+ ": expected = "+expected+" :: got= "+x ;
+            return ;
         }
     }
 
     // Execute a thread that waits on semaBefore, read/checks the value, then releases semaAfter.
-    void threadReadAsync(String label, Transactional1 trans, long expected, Semaphore semaBefore, Semaphore semaAfter) {
+    void threadReadAsync(String label, Transactional1 trans, long expectedValue, Semaphore semaBefore, Semaphore semaAfter) {
         new Thread( ()-> {
             trans.begin(ReadWrite.READ) ;
-            readRecord(label, trans, expected) ;
+            // Make the test
             if ( assertionFailed == null ) {
                 semaBefore.acquireUninterruptibly() ;
-                readRecord(label, trans, expected) ;
+                readRecord(label, trans, expectedValue) ;
             }
             trans.end() ;
             semaAfter.release() ;
@@ -160,7 +164,11 @@ public class TestThreadingTransactions {
         threadReadAsync("[04/3]", trans1, InitValue, semaBefore1, semaAfter);
         
         Txn.executeWrite(trans1, trans1::inc);  // ++
+        
+        // ???
         threadReadAsync("[04/3]", trans1, InitValue+1, semaBefore2, semaAfter);
+        
+        
         testThread(semaBefore1, semaAfter);   //1
 
         Txn.executeWrite(trans1, trans1::inc);  // ++
