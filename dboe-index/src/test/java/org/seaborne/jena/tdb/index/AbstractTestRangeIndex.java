@@ -27,10 +27,11 @@ import static org.seaborne.jena.tdb.index.IndexTestLib.testInsertDelete ;
 
 import java.util.List ;
 
-import org.junit.After ;
 import org.junit.Assert ;
+import org.junit.After ;
 import org.junit.Test ;
 import org.seaborne.jena.tdb.base.record.RecordLib ;
+import org.seaborne.jena.tdb.index.RangeIndex ;
 
 public abstract class AbstractTestRangeIndex extends Assert {
     private RangeIndex rIndex = null ;

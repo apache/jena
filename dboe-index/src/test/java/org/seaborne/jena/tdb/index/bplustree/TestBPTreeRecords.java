@@ -18,6 +18,7 @@
 
 package org.seaborne.jena.tdb.index.bplustree;
 
+import org.junit.Assert ;
 import org.junit.* ;
 import org.seaborne.jena.tdb.base.block.BlockMgr ;
 import org.seaborne.jena.tdb.base.block.BlockMgrFactory ;

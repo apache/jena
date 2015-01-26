@@ -39,21 +39,35 @@ import org.seaborne.transaction.txn.TransactionalMRSW ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/**
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *  See the NOTICE file distributed with this work for additional
- *  information regarding copyright ownership.
+/** B-Tree converted to B+Tree
+ * 
+ * B-Tree taken from:
+ * <pre>
+ * Introduction to Algorithms, Second Edition
+ * Chapter 18: B-Trees
+ * by Thomas H. Cormen, Charles E. Leiserson, 
+ *    Ronald L. Rivest and Clifford Stein 
+ * </pre> 
+ * Includes implementation of removal.
+ * <p>
+ * Notes:
+ * <ul>
+ * <li>
+ * Stores "records", which are a key and value (the value may be null).
+ * <li>
+ * In this B+Tree implementation, the (key,value) pairs are held in
+ * RecordBuffer, which wrap a ByteBuffer that only has records in it.  
+ * BPTreeRecords provides the B+Tree view of a RecordBuffer. All records
+ * are in RecordBuffer - the "tree" part is an index for finding the right
+ * page. The tree only holds keys, copies from the (key, value) pairs in
+ * the RecordBuffers. 
+ *<li>
+ * The version above splits nodes on the way down when full,
+ * not when needed where a split can bubble up from below.
+ * It means it only ever walks down the tree on insert.
+ * Similarly, the delete code ensures a node is suitable
+ * before decending. 
+ * </ul>
  */
 
 public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, RangeIndex

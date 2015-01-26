@@ -19,14 +19,15 @@
 package org.seaborne.jena.tdb.index;
 
 import static org.seaborne.jena.tdb.base.record.RecordLib.intToRecord ;
-import static org.seaborne.jena.tdb.index.IndexTestLib.testDelete ;
-import static org.seaborne.jena.tdb.index.IndexTestLib.testIndexContents ;
-import static org.seaborne.jena.tdb.index.IndexTestLib.testInsert ;
-import org.junit.After ;
+import static org.seaborne.jena.tdb.index.IndexTestLib.* ;
 import org.junit.Assert ;
-import org.junit.Test ;
+import org.junit.After;
+import org.junit.Test;
 import org.seaborne.jena.tdb.base.record.Record ;
 import org.seaborne.jena.tdb.base.record.RecordLib ;
+import org.seaborne.jena.tdb.index.Index ;
+
+//import com.hp.hpl.jena.tdb.base.record.RecordLib;
 
 public abstract class AbstractTestIndex extends Assert 
 {

@@ -40,6 +40,8 @@ import java.util.TreeSet ;
 import org.junit.Assert ;
 import org.seaborne.jena.tdb.base.record.Record ;
 import org.seaborne.jena.tdb.base.record.RecordLib ;
+import org.seaborne.jena.tdb.index.Index ;
+import org.seaborne.jena.tdb.index.RangeIndex ;
 
 public class IndexTestLib
 {

@@ -23,9 +23,9 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.junit.Assert ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.junit.AfterClass ;
-import org.junit.Assert ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.seaborne.jena.tdb.base.block.BlockMgr ;
