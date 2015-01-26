@@ -19,7 +19,7 @@ package dev.opeval ;
 
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.atlas.logging.Log ;
-import org.seaborne.jena.engine.general.OpExecLib ;
+import org.seaborne.dboe.engine.general.OpExecLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;

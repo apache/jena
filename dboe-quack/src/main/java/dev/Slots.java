@@ -19,8 +19,8 @@ package dev;
 
 import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.seaborne.jena.engine.Row ;
-import org.seaborne.jena.engine.Slot ;
+import org.seaborne.dboe.engine.Row ;
+import org.seaborne.dboe.engine.Slot ;
 
 /** A tuple of slots - a pattern, involving terms and variables */
 public class Slots<X> extends Tuple<Slot<X>> {

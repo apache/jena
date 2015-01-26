@@ -20,7 +20,7 @@ package dev;
 //import static org.junit.Assert.* ;
 import org.apache.jena.atlas.lib.Tuple ;
 //import org.junit.Test ;
-import org.seaborne.jena.engine.Slot ;
+import org.seaborne.dboe.engine.Slot ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 

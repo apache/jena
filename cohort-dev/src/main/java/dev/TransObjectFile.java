@@ -22,9 +22,9 @@ import java.util.Iterator ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.seaborne.jena.tdb.base.block.Block ;
-import org.seaborne.jena.tdb.base.objectfile.ObjectFile ;
-import org.seaborne.transaction.txn.* ;
+import org.seaborne.dboe.base.block.Block ;
+import org.seaborne.dboe.base.objectfile.ObjectFile ;
+import org.seaborne.dboe.transaction.txn.* ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 

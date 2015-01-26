@@ -24,11 +24,11 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.seaborne.jena.engine.* ;
-import org.seaborne.jena.engine.general.OpExecutorRowsMain ;
-import org.seaborne.jena.engine.general.OpExecutorStageMain ;
-import org.seaborne.jena.engine.general.QueryEngineMain2 ;
-import org.seaborne.jena.engine.tdb.* ;
+import org.seaborne.dboe.engine.* ;
+import org.seaborne.dboe.engine.general.OpExecutorRowsMain ;
+import org.seaborne.dboe.engine.general.OpExecutorStageMain ;
+import org.seaborne.dboe.engine.general.QueryEngineMain2 ;
+import org.seaborne.dboe.engine.tdb.* ;
 import quack.IndexRef ;
 
 import com.hp.hpl.jena.graph.Node ;
