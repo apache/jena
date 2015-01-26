@@ -6,7 +6,6 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.seaborne.quack</groupId>
   <artifactId>dboe-quack</artifactId>
   <packaging>jar</packaging>
   <name>Mantis - Quack</name>
