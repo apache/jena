@@ -21,6 +21,10 @@ public class NOTES {
     // Mantis / cohort / legion
 
     // == Mantis
+    // dboe-test ?  See BufferTestLib
+    // log4j.properties.
+    // rename org.seaborne.jena.*
+    // Tests in quack.
     
     // == Base 
     // Move LocationLock next to StoreConnection.

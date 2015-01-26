@@ -20,7 +20,7 @@ package org.seaborne.jena.tdb.base.file;
 import org.junit.Test ;
 import org.seaborne.jena.tdb.base.block.Block ;
 import org.seaborne.jena.tdb.base.file.BlockAccess ;
-import static org.seaborne.jena.tdb.base.BufferTestLib.* ;
+import static org.seaborne.jena.tdb.test.BufferTestLib.* ;
 
 public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize
 {

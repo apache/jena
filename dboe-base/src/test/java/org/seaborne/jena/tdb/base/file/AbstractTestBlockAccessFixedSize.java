@@ -17,7 +17,7 @@
 
 package org.seaborne.jena.tdb.base.file;
 
-import static org.seaborne.jena.tdb.base.BufferTestLib.sameValue ;
+import static org.seaborne.jena.tdb.test.BufferTestLib.sameValue ;
 import org.junit.Assert ;
 import org.junit.After ;
 import org.junit.Before ;

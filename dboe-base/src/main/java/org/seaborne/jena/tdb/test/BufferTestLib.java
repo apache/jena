@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.jena.tdb.base;
+package org.seaborne.jena.tdb.test;
 
 import java.nio.ByteBuffer ;
 

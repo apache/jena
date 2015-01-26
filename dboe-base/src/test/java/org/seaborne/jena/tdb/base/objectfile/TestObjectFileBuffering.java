@@ -17,8 +17,8 @@
 
 package org.seaborne.jena.tdb.base.objectfile;
 
-import static org.seaborne.jena.tdb.base.BufferTestLib.sameValue ;
 import static org.seaborne.jena.tdb.base.objectfile.AbstractTestObjectFile.fill ;
+import static org.seaborne.jena.tdb.test.BufferTestLib.sameValue ;
 
 import java.nio.ByteBuffer ;
 
