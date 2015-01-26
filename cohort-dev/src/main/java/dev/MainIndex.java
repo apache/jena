@@ -18,7 +18,6 @@
 package dev;
 
 import java.io.File ;
-import java.io.IOException ;
 import java.io.PrintStream ;
 import java.nio.ByteBuffer ;
 import java.util.ArrayList ;
@@ -26,12 +25,14 @@ import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.seaborne.jena.tdb.base.block.BlockMgrFactory ;
+import org.seaborne.jena.tdb.base.file.FileFactory ;
 import org.seaborne.jena.tdb.base.file.Location ;
+import org.seaborne.jena.tdb.base.objectfile.ObjectFile ;
 import org.seaborne.jena.tdb.base.record.Record ;
 import org.seaborne.jena.tdb.base.record.RecordFactory ;
 import org.seaborne.jena.tdb.index.RangeIndex ;
@@ -39,9 +40,9 @@ import org.seaborne.jena.tdb.index.bplustree.BPlusTree ;
 import org.seaborne.jena.tdb.index.bplustree.BPlusTreeParams ;
 import org.seaborne.jena.tdb.sys.SystemIndex ;
 import org.seaborne.transaction.* ;
-import org.seaborne.transaction.txn.* ;
+import org.seaborne.transaction.txn.TransactionCoordinator ;
+import org.seaborne.transaction.txn.TransactionalBase ;
 import org.seaborne.transaction.txn.journal.Journal ;
-import org.seaborne.transaction.txn.journal.JournalEntry ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
@@ -52,106 +53,47 @@ public class MainIndex {
     
     static Journal journal = Journal.create(Location.mem()) ;
     
-    static private TransInteger i = new TransInteger("STATE", 4) ;
+//    // ?? TransactionalBase
+//    static class Transactional1 extends TransactionalBase {
+//        public Transactional1(Journal journal, TransactionalComponent unit) {
+//            super(new TransactionCoordinator(journal)) ;
+//            super.txnMgr.add(unit) ;
+//            super.txnMgr.add(new TransLogger()) ;
+//        }
+//    }
     
-    static class Transactional1 extends TransactionalBase {
-        public Transactional1(Journal journal) {
-            super(new TransactionCoordinator(journal)) ;
-            
-            super.txnMgr.add(i) ;
-            super.txnMgr.add(new TransLogger()) ;
-        }
-        
-        public void inc() { i.inc(); }
-        public long get() {
-            //super.isInTransaction()  ;
-            return i.get() ;
-        }
-    }
+    static long x = -99 ;
     
-    public static void main(String[] args) throws IOException {
-        // Fake a journal then recover.
-        Journal jrnl2 = Journal.create(Location.mem()) ;
-        ComponentId id = ComponentIds.idTxnCounter ;
-        ByteBuffer bb = ByteBuffer.allocate(Long.BYTES) ;
-        bb.putLong(345) ;
-        bb.rewind() ;
-        PrepareState ps = new PrepareState(id, bb) ; 
-        jrnl2.write(ps) ;
-        bb.rewind() ;
-        bb.putLong(556) ;
-        bb.rewind() ;
-        jrnl2.write(ps) ;
-        jrnl2.writeJournal(JournalEntry.COMMIT) ;
-        jrnl2.sync(); 
-        
-        // Compoent registry.
-        
-        i.startRecovery(); 
-        // Collect into commit groups 
-        
-        List<PrepareState> commitGroup = new ArrayList<>() ;
-        
-        jrnl2.entries().forEachRemaining( entry-> {
-            ComponentId idx = entry.getComponentId() ; 
-            switch(entry.getType()) {
-                case ABORT :
-                    commitGroup.clear() ;
-                    break ;
-                case COMMIT :
-                    commitGroup.forEach(p-> {
-                        ByteBuffer bbx = p.getData() ;
-                        //bbx.rewind() ;
-                        /*find component*/
-                        TransactionalComponent comp = i ;
-                        comp.recover(bbx) ;
-                    }) ;
-                    commitGroup.clear() ;
-                    break ;
-                case REDO : {
-                    // Assume component.
-                    ByteBuffer bbx = entry.getByteBuffer() ;
-                    commitGroup.add(new PrepareState(idx, bbx)) ;
-                    break ;
-                }
-                case UNDO :
-                    break ;
-                default :
-                    break ;
-            }
-        });
-        i.finishRecovery(); 
-        System.out.println("value = "+i.get()) ;
-        
-//        TransInteger i = new TransInteger("STATE", 1) ;
-//        long x = i.value() ;
-//        System.out.println("value = "+x) ;
-//        System.out.println("DONE") ;
-//        System.exit(0) ;
+    public static void main(String[] args) {
+        Journal journal = Journal.create(Location.mem()) ;
+        ObjectFile of = FileFactory.createObjectFileMem("ObjectFile") ;
+        TransObjectFile tObj = new TransObjectFile(of, 9) ;
+        Transactional t = new TransactionalBase(journal, tObj) ;
 
-        Transactional1 t1 = new Transactional1(journal) ;
-        t1.begin(ReadWrite.WRITE) ;
-        t1.inc() ;
-        System.out.println("State (txn)  = "+t1.get()) ;
-        System.out.println("State (live) = "+i.value()) ;
-        System.out.println("State (direct) = "+i.get()) ;
-        t1.commit(); 
-        t1.end() ;
+        Txn.executeWrite(t, ()->{
+            ByteBuffer bb = ByteBuffer.allocate(16) ;
+            ByteBufferLib.fill(bb, (byte)0x13); 
+            x = tObj.write(bb) ;
+        }) ;
+
         
-        String str = IO.readWholeFileAsUTF8("STATE") ;
-        System.out.println("State (disk) = "+str) ;
-        System.out.println("State (live) = "+i.get()) ;
+        t.begin(ReadWrite.WRITE) ;
+        {
+            ByteBuffer bb = ByteBuffer.allocate(16) ;
+            ByteBufferLib.fill(bb, (byte)0x15); 
+            //x =
+            tObj.write(bb) ;
+        }
+        t.abort();
+        t.end();
         
-        t1.begin(ReadWrite.READ) ;
-        long v = t1.get() ;
-        System.out.println("State (txn)  = "+v) ;
-        t1.commit(); 
-        t1.end() ;
-        
-        
-        System.out.println("DONE") ;
-        System.exit(0) ;
-        
+        System.out.println("Base.length   = "+of.length()) ;
+        System.out.println("Base.position = "+of.position()) ;
+
+        Txn.executeRead(t, ()->{
+            ByteBuffer bb = tObj.read(x) ;
+            ByteBufferLib.print(bb) ;
+        }) ;
     }
     
     public static void main1(String[] args) {

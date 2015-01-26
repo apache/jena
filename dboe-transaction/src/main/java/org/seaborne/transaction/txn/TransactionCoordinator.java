@@ -235,12 +235,15 @@ public class TransactionCoordinator {
                     readerEpoch.get() ;
             TxnId txnId = TxnId.create() ;
             List<SysTrans> sysTransList = new ArrayList<>() ;
-            // End threading needed if elements is unchanging.
             Transaction transaction = new Transaction(this, txnId, readWrite, dataVersion, sysTransList) ;
             try {
                 components.forEachComponent(elt -> {
                     SysTrans sysTrans = new SysTrans(elt, transaction, txnId) ;
                     sysTransList.add(sysTrans) ; }) ;
+                // Calling each component must be inside the lock
+                // so that a transaction does not commit overlapping with setup.
+                // If it did, different components might end up starting from
+                // different start states of the overall system.
                 components.forEachComponent(elt -> elt.begin(transaction)) ;
             } catch(Throwable ex) {
                 // Careful about incomplete.

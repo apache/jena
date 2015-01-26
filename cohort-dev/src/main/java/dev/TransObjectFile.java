@@ -21,7 +21,6 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.seaborne.jena.tdb.base.block.Block ;
 import org.seaborne.jena.tdb.base.objectfile.ObjectFile ;
@@ -38,28 +37,25 @@ import com.hp.hpl.jena.query.ReadWrite ;
 public class TransObjectFile extends TransactionalComponentLifecycle<TransObjectFile.TxnObjectFile>
     implements ObjectFile {
 
-    /* The file is written to as we go along so abort requires some action.
-     * Maybe need to introduce "undo" actiosn.
-     * We can't recover from just the file, no redo or undo recovery action.
-     * The length/position of the file may be duff  there is a possble abandoned section of the file.
+    /*
+     * The file is written to as we go along so abort requires some action. We
+     * can't recover from just the file, without any redo or undo recovery
+     * action. The length/position of the file may be duff, there is a possble
+     * abandoned section of the file.
      * 
-     *   
-     * But even if a partial entry, we don't corrupt data.
-     * Assumes no references to the abandoned area of the file.    
+     * But even if a partial entry, we don't corrupt data. Assumes no references
+     * to the abandoned area of the file.
      */
-
     
     // Space for 0xFFFF = (64k)  
-    static final String baseUuidStr = "95e0f729-ad29-48b2-bd70-e37386630000" ; 
+    private static final String baseUuidStr = "95e0f729-ad29-48b2-bd70-e37386630000" ; 
     
     //General machinery?
     private final ComponentId componentId ;
 
-    // The current commited position.
+    // The current committed position.
     // This is also the abort point.
     // And the limit as seen by readers.
-    
-    //private final Object lock = new Object() ;
     
     // Recovery record: (length, position)
     private final AtomicLong length ;
@@ -81,12 +77,17 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
         super() ;
         this.objFile = objFile ;
         
+        // Atomic 
         length   = new AtomicLong(objFile.length()) ;
         position = new AtomicLong(objFile.position()) ;
         
         // Common code
         byte[] bytes = L.uuidAsBytes(baseUuidStr) ;
-        Bytes.setInt(id, bytes, ComponentId.SIZE-2) ;
+        // Set half word
+        byte lo = (byte)(id&0xFF) ;
+        byte hi = (byte)((id >> 8) &0xFF) ;
+        bytes[bytes.length-2] = lo ;
+        bytes[bytes.length-1] = hi ;
         // Common code
         componentId = new ComponentId("Trans-TransObjectFile"+id, bytes) ;
     }
@@ -120,6 +121,10 @@ public class TransObjectFile extends TransactionalComponentLifecycle<TransObject
 
     @Override
     protected TxnObjectFile _begin(ReadWrite readWrite, TxnId txnId) {
+        // Atomic read across the two because it's called from within 
+        // TransactionCoordinator.begin$ where there is a lock.
+        long xLength = length.get() ;
+        long xPosition = position.get() ;
         return new TxnObjectFile(length.get(), position.get()) ;
     }
 

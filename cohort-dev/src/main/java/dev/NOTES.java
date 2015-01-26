@@ -17,6 +17,7 @@
 
 package dev;
 
+
 public class NOTES {
     // Mantis / cohort / legion
 
@@ -30,6 +31,8 @@ public class NOTES {
     // Move LocationLock next to StoreConnection.
     
     // == Transactions
+    
+    // TransactionCoordinator.start() -- helper ?
     
     // Tests 
     //   Promotion.

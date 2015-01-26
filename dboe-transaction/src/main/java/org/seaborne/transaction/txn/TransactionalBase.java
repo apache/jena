@@ -20,6 +20,7 @@ package org.seaborne.transaction.txn;
 import java.util.Objects ;
 
 import org.seaborne.transaction.Transactional ;
+import org.seaborne.transaction.txn.journal.Journal ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
@@ -34,6 +35,13 @@ public class TransactionalBase implements Transactional {
     
     // Per thread transaction.
     private final ThreadLocal<Transaction> theTxn = new ThreadLocal<Transaction>() ;
+    
+    public TransactionalBase(Journal journal, TransactionalComponent ... elements) {
+        this.label = null ;
+        this.txnMgr = new TransactionCoordinator(journal) ;
+        for ( TransactionalComponent elt : elements )
+            this.txnMgr.add(elt) ;
+    }
     
     public TransactionalBase(String label, TransactionCoordinator txnMgr) {
         this.label = label ;
@@ -54,11 +62,24 @@ public class TransactionalBase implements Transactional {
 
     @Override
     public final void commit() {
-        // Thse steps are per-thread so no synchronization needed.
+        // These steps are per-thread so no synchronization needed.
         checkActive() ;
         Transaction txn = theTxn.get() ;
         txn.commit() ;
         _end() ;
+
+        // More checking?
+//        Transaction txn = theTxn.get() ;
+//        if ( txn != null ) {
+//            // isCommited or isAborted.
+//        }
+//        
+//        if ( txn == null )
+//            throw new TransactionException(label("Not in a transaction")) ;
+//        
+//        checkActive() ;
+//        txn.commit() ;
+//        _end() ;
     }
 
     @Override
@@ -106,14 +127,14 @@ public class TransactionalBase implements Transactional {
     {
         checkNotShutdown() ;
         if ( ! isInTransaction() )
-            throw new TransactionException(label("Not in a transaction")) ;
+            throw new TransactionException(label("Not in an active transaction")) ;
     }
 
     final
     protected void checkNotActive() {
         checkNotShutdown() ;
         if ( isInTransaction() )
-            throw new TransactionException(label("Currently in a transaction")) ;
+            throw new TransactionException(label("Currently in an active transaction")) ;
     }
 
     final
