@@ -1,35 +1,4 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.seaborne.jena.tdb.base.file;
-
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import org.apache.jena.atlas.io.IO;
-import org.seaborne.jena.tdb.TDBException ;
-import org.seaborne.jena.tdb.sys.ProcessUtils ;
-import org.seaborne.jena.tdb.sys.SystemLz ;
-
-/**
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -44,6 +13,24 @@ import org.seaborne.jena.tdb.sys.SystemLz ;
  *
  *  See the NOTICE file distributed with this work for additional
  *  information regarding copyright ownership.
+ */
+
+package org.seaborne.jena.tdb.base.file;
+
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.apache.jena.atlas.io.IO;
+import org.seaborne.jena.tdb.TDBException ;
+import org.seaborne.jena.tdb.sys.ProcessUtils ;
+import org.seaborne.jena.tdb.sys.SystemIndex ;
+
+/**
+ * Represents a lock on a TDB location
+ * 
  */
 public class LocationLock {
     private static final int NO_OWNER = 0;
@@ -176,7 +163,7 @@ public class LocationLock {
             if (pid == NO_OWNER) {
                 // In the case where we cannot obtain our PID then we cannot
                 // obtain a lock
-                SystemLz.errlog.warn("Location " + location.getDirectoryPath() + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
+                SystemIndex.errlog.warn("Location " + location.getDirectoryPath() + " cannot be locked as unable to obtain PID of current process, if another JVM accessed this location while this process is accessing it then data corruption may occur");
                 return;
             }
 

@@ -1,41 +1,4 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.seaborne.jena.tdb.base.block ;
-
-import org.apache.jena.atlas.logging.Log ;
-import org.seaborne.jena.tdb.TDBException ;
-import org.seaborne.jena.tdb.base.file.* ;
-import org.seaborne.jena.tdb.sys.SystemLz ;
-
-public class BlockMgrFactory {
-    // This isn't always helpful so be careful if setting the default to "true".
-    // Sometimes the tracking is too strict
-    // e.g. transactions keep blocks and not release them down the layers.
-    public/* final */static boolean AddTracker = false ;
-
-    public static BlockMgr tracker(BlockMgr blockMgr) {
-        if ( blockMgr instanceof BlockMgrTracker )
-            return blockMgr ;
-        return BlockMgrTracker.track(blockMgr) ;
-    }
-
-    /**
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -51,6 +14,27 @@ public class BlockMgrFactory {
  *  See the NOTICE file distributed with this work for additional
  *  information regarding copyright ownership.
  */
+
+package org.seaborne.jena.tdb.base.block ;
+
+import org.apache.jena.atlas.logging.Log ;
+import org.seaborne.jena.tdb.TDBException ;
+import org.seaborne.jena.tdb.base.file.* ;
+import org.seaborne.jena.tdb.sys.SystemIndex ;
+
+public class BlockMgrFactory {
+    // This isn't always helpful so be careful if setting the default to "true".
+    // Sometimes the tracking is too strict
+    // e.g. transactions keep blocks and not release them down the layers.
+    public/* final */static boolean AddTracker = false ;
+
+    public static BlockMgr tracker(BlockMgr blockMgr) {
+        if ( blockMgr instanceof BlockMgrTracker )
+            return blockMgr ;
+        return BlockMgrTracker.track(blockMgr) ;
+    }
+
+    /** Add a tracker if the system default is to do so */
     private static BlockMgr track(BlockMgr blockMgr) {
         if ( !AddTracker )
             return blockMgr ;
@@ -97,7 +81,7 @@ public class BlockMgrFactory {
         /** Create a BlockMgr backed by a real file */
     public static BlockMgr createFile(String filename, FileMode fileMode, int blockSize, int readBlockCacheSize, int writeBlockCacheSize) {
         if ( fileMode == null )
-            fileMode = SystemLz.fileMode() ;
+            fileMode = SystemIndex.fileMode() ;
         switch (fileMode) {
             case mapped :
                 return createMMapFile(filename, blockSize) ;
@@ -151,7 +135,7 @@ public class BlockMgrFactory {
         if ( fileSet.isMem() )
             return blockMgr ;
         if ( fileMode == null )
-            fileMode = SystemLz.fileMode() ;
+            fileMode = SystemIndex.fileMode() ;
         if ( fileMode == FileMode.mapped )
             return blockMgr ;
         return addCache(blockMgr, readBlockCacheSize, writeBlockCacheSize) ;

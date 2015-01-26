@@ -1,41 +1,4 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.seaborne.jena.tdb.base.objectfile;
-
-import static org.seaborne.jena.tdb.sys.SystemLz.ObjectFileWriteCacheSize ;
-import static org.seaborne.jena.tdb.sys.SystemLz.SizeOfInt ;
-
-import java.nio.ByteBuffer ;
-import java.util.Iterator ;
-
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorSlotted ;
-import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.atlas.logging.Log ;
-import org.seaborne.jena.tdb.base.block.Block ;
-import org.seaborne.jena.tdb.base.file.BufferChannel ;
-import org.seaborne.jena.tdb.base.file.FileException ;
-import org.seaborne.jena.tdb.sys.SystemLz ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-
-/**
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -50,6 +13,29 @@ import org.slf4j.LoggerFactory ;
  *
  *  See the NOTICE file distributed with this work for additional
  *  information regarding copyright ownership.
+ */
+
+package org.seaborne.jena.tdb.base.objectfile;
+
+import static org.seaborne.jena.tdb.sys.SystemIndex.ObjectFileWriteCacheSize ;
+import static org.seaborne.jena.tdb.sys.SystemIndex.SizeOfInt ;
+
+import java.nio.ByteBuffer ;
+import java.util.Iterator ;
+
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorSlotted ;
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.logging.Log ;
+import org.seaborne.jena.tdb.base.block.Block ;
+import org.seaborne.jena.tdb.base.file.BufferChannel ;
+import org.seaborne.jena.tdb.base.file.FileException ;
+import org.seaborne.jena.tdb.sys.SystemIndex ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
+/** Variable length ByteBuffer file on disk. 
+ *  Buffering for delayed writes.
  */  
 
 public class ObjectFileStorage implements ObjectFile 
@@ -357,7 +343,7 @@ public class ObjectFileStorage implements ObjectFile
         if ( len > filesize-(loc+SizeOfInt) )
         {
             String msg = "ObjectFileStorage.read["+file.getLabel()+"]("+loc+")[filesize="+filesize+"][file.size()="+file.size()+"]: Impossibly large object : "+len+" bytes > filesize-(loc+SizeOfInt)="+(filesize-(loc+SizeOfInt)) ;
-            SystemLz.errlog.error(msg) ;
+            SystemIndex.errlog.error(msg) ;
             throw new FileException(msg) ;
         }
         
@@ -438,7 +424,7 @@ public class ObjectFileStorage implements ObjectFile
                 return null ;
             
             int x = buffer.getInt(posn) ;
-            posn += SystemLz.SizeOfInt ;
+            posn += SystemIndex.SizeOfInt ;
             ByteBuffer bb = ByteBuffer.allocate(x) ;
             int p = buffer.position() ;
             buffer.position(posn) ;
