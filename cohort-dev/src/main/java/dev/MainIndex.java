@@ -29,6 +29,7 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.Bytes ;
+import org.junit.Test ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.file.FileFactory ;
 import org.seaborne.dboe.base.file.Location ;
@@ -43,6 +44,7 @@ import org.seaborne.dboe.transaction.* ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
+import org.seaborne.mantis.mantis.TransObjectFile ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
@@ -52,6 +54,30 @@ public class MainIndex {
     static RecordFactory recordFactory = new RecordFactory(4, 0) ;
     
     static Journal journal = Journal.create(Location.mem()) ;
+    
+    // TestThreadingTransactions
+    static class TransactionalInteger extends TransactionalBase {
+        private TransInteger integer = new TransInteger() ;
+        
+        public TransactionalInteger(Journal journal) {
+            super(journal) ;
+            super.txnMgr.add(integer) ;
+        }
+        
+        public void inc() { 
+            integer.inc(); 
+        }
+        
+        public long get() { 
+            return integer.get(); 
+        }
+
+        
+    }
+    
+    @Test public void libTxn_10() {
+    }   
+
     
 //    // ?? TransactionalBase
 //    static class Transactional1 extends TransactionalBase {
@@ -65,6 +91,20 @@ public class MainIndex {
     static long x = -99 ;
     
     public static void main(String[] args) {
+        Journal jrnl = Journal.create(Location.mem()) ;
+        TransactionalInteger i = new TransactionalInteger(jrnl) ;
+        Txn.executeWrite(i, () -> {
+            i.inc() ;
+        }) ;
+        
+        long z = Txn.executeReadReturn(i, () -> {
+            i.inc();
+            return i.get();
+        }) ;
+        System.out.println("z = "+z) ;
+        
+        System.exit(0) ;
+        
         Journal journal = Journal.create(Location.mem()) ;
         ObjectFile of = FileFactory.createObjectFileMem("ObjectFile") ;
         TransObjectFile tObj = new TransObjectFile(of, 9) ;

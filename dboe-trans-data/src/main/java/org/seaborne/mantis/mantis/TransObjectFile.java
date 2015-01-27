@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package dev;
+package org.seaborne.mantis.mantis;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
