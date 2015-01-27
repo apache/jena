@@ -19,7 +19,6 @@ package dev;
 
 import java.io.File ;
 import java.io.PrintStream ;
-import java.nio.ByteBuffer ;
 import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.Iterator ;
@@ -27,24 +26,22 @@ import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.Transform ;
-import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.apache.jena.atlas.lib.Bytes ;
-import org.junit.Test ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
-import org.seaborne.dboe.base.file.FileFactory ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.base.objectfile.ObjectFile ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.index.bplustree.BPlusTree ;
 import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.sys.SystemIndex ;
-import org.seaborne.dboe.transaction.* ;
+import org.seaborne.dboe.transaction.TransInteger ;
+import org.seaborne.dboe.transaction.TransMonitor ;
+import org.seaborne.dboe.transaction.Transactional ;
+import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
-import org.seaborne.mantis.mantis.TransObjectFile ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
@@ -55,30 +52,6 @@ public class MainIndex {
     
     static Journal journal = Journal.create(Location.mem()) ;
     
-    // TestThreadingTransactions
-    static class TransactionalInteger extends TransactionalBase {
-        private TransInteger integer = new TransInteger() ;
-        
-        public TransactionalInteger(Journal journal) {
-            super(journal) ;
-            super.txnMgr.add(integer) ;
-        }
-        
-        public void inc() { 
-            integer.inc(); 
-        }
-        
-        public long get() { 
-            return integer.get(); 
-        }
-
-        
-    }
-    
-    @Test public void libTxn_10() {
-    }   
-
-    
 //    // ?? TransactionalBase
 //    static class Transactional1 extends TransactionalBase {
 //        public Transactional1(Journal journal, TransactionalComponent unit) {
@@ -87,58 +60,15 @@ public class MainIndex {
 //            super.txnMgr.add(new TransLogger()) ;
 //        }
 //    }
-    
-    static long x = -99 ;
-    
+
     public static void main(String[] args) {
-        Journal jrnl = Journal.create(Location.mem()) ;
-        TransactionalInteger i = new TransactionalInteger(jrnl) ;
-        Txn.executeWrite(i, () -> {
-            i.inc() ;
-        }) ;
         
-        long z = Txn.executeReadReturn(i, () -> {
-            i.inc();
-            return i.get();
-        }) ;
-        System.out.println("z = "+z) ;
-        
-        System.exit(0) ;
-        
-        Journal journal = Journal.create(Location.mem()) ;
-        ObjectFile of = FileFactory.createObjectFileMem("ObjectFile") ;
-        TransObjectFile tObj = new TransObjectFile(of, 9) ;
-        Transactional t = new TransactionalBase(journal, tObj) ;
-
-        Txn.executeWrite(t, ()->{
-            ByteBuffer bb = ByteBuffer.allocate(16) ;
-            ByteBufferLib.fill(bb, (byte)0x13); 
-            x = tObj.write(bb) ;
-        }) ;
-
-        
-        t.begin(ReadWrite.WRITE) ;
-        {
-            ByteBuffer bb = ByteBuffer.allocate(16) ;
-            ByteBufferLib.fill(bb, (byte)0x15); 
-            //x =
-            tObj.write(bb) ;
-        }
-        t.abort();
-        t.end();
-        
-        System.out.println("Base.length   = "+of.length()) ;
-        System.out.println("Base.position = "+of.position()) ;
-
-        Txn.executeRead(t, ()->{
-            ByteBuffer bb = tObj.read(x) ;
-            ByteBufferLib.print(bb) ;
-        }) ;
     }
     
     public static void main1(String[] args) {
         Journal jrnl = Journal.create(Location.mem()) ;
         TransactionCoordinator txnCoord = new TransactionCoordinator(jrnl) ;
+        
         BPlusTreeParams.Logging = false ;
         BlockMgrFactory.AddTracker = true ;
         SystemIndex.setNullOut(true) ;
