@@ -17,9 +17,9 @@
 
 package org.seaborne.dboe.transaction;
 
-import static org.junit.Assert.* ;
+import static org.junit.Assert.assertEquals ;
+import static org.junit.Assert.assertNotEquals ;
 import org.junit.Test ;
-import org.seaborne.dboe.transaction.Txn ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
@@ -138,7 +138,5 @@ public class TestTxnLib extends AbstractTestTxn {
         }) ;
         assertEquals("After W and R",x1 , x2) ;
     }
-
-
 }
 

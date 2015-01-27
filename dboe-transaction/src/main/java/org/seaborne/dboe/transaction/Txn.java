@@ -26,7 +26,7 @@ public class Txn {
     /** Execute the Runnable in a read transaction.
      * Nested transactions are not supported.
      */
-    public static void executeRead(Transactional txn, Runnable r) {
+    public static <T extends Transactional> void executeRead(T txn, Runnable r) {
         txn.begin(ReadWrite.READ) ;
         r.run(); 
         txn.end() ;
@@ -36,7 +36,7 @@ public class Txn {
      * Nested transactions are not supported.
      */
 
-    public static <X> X executeReadReturn(Transactional txn, Supplier<X> r) {
+    public static <T extends Transactional, X> X executeReadReturn(T txn, Supplier<X> r) {
         txn.begin(ReadWrite.READ) ;
         X x = r.get() ;
         txn.end() ;
@@ -44,9 +44,9 @@ public class Txn {
     }
 
     /** Execute the Runnable in a write transaction 
-     * Nested transaction are not supported.
+     *  Nested transaction are not supported.
      */
-    public static void executeWrite(Transactional txn, Runnable r) {
+    public static <T extends Transactional> void executeWrite(T txn, Runnable r) {
         txn.begin(ReadWrite.WRITE) ;
         r.run(); 
         txn.commit() ;
@@ -54,9 +54,9 @@ public class Txn {
     }
     
     /** Execute the Runnable in a write transaction 
-     * Nested transaction are not supported.
+     *  Nested transaction are not supported.
      */
-    public static <X> X executeWriteReturn(Transactional txn, Supplier<X> r) {
+    public static <T extends Transactional, X> X executeWriteReturn(Transactional txn, Supplier<X> r) {
         txn.begin(ReadWrite.WRITE) ;
         X x = r.get() ;
         txn.commit() ;

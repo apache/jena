@@ -119,23 +119,6 @@ public class Transaction {
               ()->{components.forEach((c) -> c.commitEnd()) ; } ) ;
         
         setState(COMMITTED) ;
-        
-        /* OLD CODE
-        checkState(ACTIVE) ;
-        setState(PREPARE) ;
-        txnMgr.notifyPrepare(this);
-        List<byte[]> x = new ArrayList<>(components.size()) ;
-        components.forEach((c) -> x.add(c.commitPrepare())) ;
-        // Journal.
-        setState(COMMIT) ;
-        txnMgr.notifyCommit(this);
-        components.forEach((c) -> c.commit()) ;
-        // Journal.
-        txnMgr.notifyCommitEnd(this);
-        components.forEach((c) -> c.commitEnd()) ;
-        // Journal.
-        setState(COMMITTED) ;
-        */
     }
     
     public void abort() {

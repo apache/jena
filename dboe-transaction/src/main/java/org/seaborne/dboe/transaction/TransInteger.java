@@ -30,7 +30,9 @@ import org.seaborne.dboe.transaction.txn.* ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
-/** A transactional integer supporting MR+SW (=one writer AND many readers). */
+/** A transaction component with an integer supporting MR+SW (=one writer AND many readers).
+ * @see TransactionalInteger
+ */
 public class TransInteger extends TransactionalComponentLifecycle<TransInteger.IntegerState> {
 
     private final AtomicLong value = new AtomicLong(-1712) ;
@@ -171,11 +173,11 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
     }
     
     /** Return the current value.
-     * If inside a tranaction, return the tarnsaction view of the value.
+     * If inside a transaction, return the transaction view of the value.
      * If not in a transaction return the state value (effectively
      * a read transaction, optimized by the fact that reading the
-     * {@code TransInteger} state is atomic).   
-     *   */
+     * {@code TransInteger} state is atomic).
+     */
     public long get() {
         if ( super.isActiveTxn() )
             return getState().txnValue ;

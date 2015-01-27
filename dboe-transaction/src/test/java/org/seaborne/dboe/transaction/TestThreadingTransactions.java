@@ -17,44 +17,24 @@
 
 package org.seaborne.dboe.transaction;
 
-import java.util.Arrays ;
-import java.util.List ;
 import java.util.concurrent.Semaphore ;
 
 import org.junit.Assert ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.seaborne.dboe.base.file.Location ;
-import org.seaborne.dboe.transaction.TransInteger ;
-import org.seaborne.dboe.transaction.Txn ;
-import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
-import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 
 public class TestThreadingTransactions {
     static final long InitValue = 3 ;
-    TransInteger i = new TransInteger(InitValue) ;
-    static class Transactional1 extends TransactionalBase {
-        private TransInteger txnInt ;
-        public Transactional1(TransactionCoordinator x, TransInteger i) {
-            super(x) ;
-            this.txnInt = i ;
-        }
-        
-        public void inc() { txnInt.inc() ; }
-        public long get() { return txnInt.get() ; }
-    }
     
-    Transactional1 trans1 ;
+    private TransactionalInteger transInt ; 
     
     @Before public void init() {
         Journal journal = Journal.create(Location.mem()) ;
-        List<TransactionalComponent> elts = Arrays.asList(i) ;
-        TransactionCoordinator coord = new TransactionCoordinator(journal, elts) ;
-        trans1 = new Transactional1(coord, i) ;
+        transInt = new TransactionalInteger(journal, InitValue) ;
         assertionFailed = null ;
     }
     
@@ -72,7 +52,7 @@ public class TestThreadingTransactions {
     static volatile String assertionFailed = null ; 
     
     // Execute that immediately read/checks the value, Wait for the thread.
-    void threadRead(String label, Transactional1 trans, long expected) {
+    void threadRead(String label, TransactionalInteger trans, long expected) {
         Semaphore testSemaImmediate = new Semaphore(0, true) ;
         new Thread( ()-> {
             trans.begin(ReadWrite.READ) ;
@@ -85,19 +65,19 @@ public class TestThreadingTransactions {
     }
 
     // Read synchronously in a transaction.
-    void readTxn(String label, Transactional1 trans, long expected) {
+    void readTxn(String label, TransactionalInteger trans, long expected) {
         Txn.executeRead(trans, () -> {
             read(label, trans, expected) ;
         }) ;
     }
     
 
-    void read(String label, Transactional1 trans, long expected) {
+    void read(String label, TransactionalInteger trans, long expected) {
         long x = trans.get() ;
         Assert.assertEquals(label, expected, x); 
     }
 
-    void readRecord(String label, Transactional1 trans, long expected) {
+    void readRecord(String label, TransactionalInteger trans, long expected) {
         if ( ! trans.isInTransaction() ) {
             assertionFailed = label+ ": Not in transaction" ;
         }
@@ -110,7 +90,7 @@ public class TestThreadingTransactions {
     }
 
     // Execute a thread that waits on semaBefore, read/checks the value, then releases semaAfter.
-    void threadReadAsync(String label, Transactional1 trans, long expectedValue, Semaphore semaBefore, Semaphore semaAfter) {
+    void threadReadAsync(String label, TransactionalInteger trans, long expectedValue, Semaphore semaBefore, Semaphore semaAfter) {
         new Thread( ()-> {
             trans.begin(ReadWrite.READ) ;
             // Make the test
@@ -124,36 +104,36 @@ public class TestThreadingTransactions {
     }
     
     @Test public void threadTrans_01() {
-        trans1.begin(ReadWrite.READ) ;
-        read("[01]", trans1, InitValue) ;
-        trans1.end();
+        transInt.begin(ReadWrite.READ) ;
+        read("[01]", transInt, InitValue) ;
+        transInt.end();
     }
     
     @Test public void threadTrans_02() {
-        trans1.begin(ReadWrite.READ) ;
-        threadRead("[02]", trans1, InitValue) ;
-        trans1.end();
+        transInt.begin(ReadWrite.READ) ;
+        threadRead("[02]", transInt, InitValue) ;
+        transInt.end();
     }
 
     @Test public void threadTrans_03() {
         Semaphore semaBefore = new Semaphore(0, true) ;
         Semaphore semaAfter  = new Semaphore(0, true) ;
-        threadReadAsync("[03/1]", trans1, InitValue, semaBefore, semaAfter);
-        threadReadAsync("[03/2]", trans1, InitValue, semaBefore, semaAfter);
+        threadReadAsync("[03/1]", transInt, InitValue, semaBefore, semaAfter);
+        threadReadAsync("[03/2]", transInt, InitValue, semaBefore, semaAfter);
         
-        trans1.begin(ReadWrite.WRITE) ;
-        read("[03/3]", trans1, InitValue) ;
-        trans1.inc(); 
-        read("[03/4]", trans1, InitValue+1) ;
+        transInt.begin(ReadWrite.WRITE) ;
+        read("[03/3]", transInt, InitValue) ;
+        transInt.inc(); 
+        read("[03/4]", transInt, InitValue+1) ;
         
         testThread(semaBefore, semaAfter);   //1
        
-        threadRead("[03/5]", trans1, InitValue) ;
+        threadRead("[03/5]", transInt, InitValue) ;
         
-        trans1.commit();
-        trans1.end();
+        transInt.commit();
+        transInt.end();
         testThread(semaBefore, semaAfter);   //2
-        readTxn("[03/6]", trans1, InitValue+1) ;
+        readTxn("[03/6]", transInt, InitValue+1) ;
     }
     
     @Test public void threadTrans_04() {
@@ -161,26 +141,26 @@ public class TestThreadingTransactions {
         Semaphore semaBefore2 = new Semaphore(0, true) ;
         Semaphore semaAfter  = new Semaphore(0, true) ;
         
-        threadReadAsync("[04/1]", trans1, InitValue, semaBefore1, semaAfter);
-        threadReadAsync("[04/2]", trans1, InitValue, semaBefore1, semaAfter);
-        threadReadAsync("[04/3]", trans1, InitValue, semaBefore1, semaAfter);
+        threadReadAsync("[04/1]", transInt, InitValue, semaBefore1, semaAfter);
+        threadReadAsync("[04/2]", transInt, InitValue, semaBefore1, semaAfter);
+        threadReadAsync("[04/3]", transInt, InitValue, semaBefore1, semaAfter);
         
-        Txn.executeWrite(trans1, trans1::inc);  // ++
+        Txn.executeWrite(transInt, transInt::inc);  // ++
         
         // ???
-        threadReadAsync("[04/3]", trans1, InitValue+1, semaBefore2, semaAfter);
+        threadReadAsync("[04/3]", transInt, InitValue+1, semaBefore2, semaAfter);
         
         
         testThread(semaBefore1, semaAfter);   //1
 
-        Txn.executeWrite(trans1, trans1::inc);  // ++
+        Txn.executeWrite(transInt, transInt::inc);  // ++
         testThread(semaBefore1, semaAfter);   //2
         testThread(semaBefore2, semaAfter);   //4
 
-        Txn.executeWrite(trans1, trans1::inc);  // ++
+        Txn.executeWrite(transInt, transInt::inc);  // ++
         testThread(semaBefore1, semaAfter);   //3
         
-        readTxn("[04/4]", trans1, InitValue+3) ;
+        readTxn("[04/4]", transInt, InitValue+3) ;
     }
 
 }
