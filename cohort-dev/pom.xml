@@ -49,7 +49,13 @@
       <groupId>org.seaborne.mantis</groupId>
       <artifactId>dboe-index</artifactId>
       <version>0.0.0-SNAPSHOT</version>
-  </dependency>
+   </dependency>
+   
+   <dependency>
+     <!-- Development - not in test scope -->
+     <groupId>junit</groupId>
+     <artifactId>junit</artifactId>
+   </dependency>
 
   </dependencies>
 
