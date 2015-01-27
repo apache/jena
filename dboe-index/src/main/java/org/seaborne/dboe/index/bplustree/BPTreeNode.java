@@ -395,7 +395,7 @@ public final class BPTreeNode extends BPTreePage
         int idx = findSlot(record) ;
 
         if ( logging() )
-            log.debug(format("internalInsert: idx=%d=>%d", idx, convert(idx))) ;
+            log.debug(format("internalInsert: idx=%d (=>%d)", idx, convert(idx))) ;
 
         idx = convert(idx) ;
 
