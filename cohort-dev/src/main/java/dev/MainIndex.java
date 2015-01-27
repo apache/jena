@@ -23,6 +23,7 @@ import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.stream.Collectors ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.Transform ;
@@ -32,18 +33,12 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
+import org.seaborne.dboe.index.bplustree.BPTreeNode ;
 import org.seaborne.dboe.index.bplustree.BPlusTree ;
 import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.sys.SystemIndex ;
-import org.seaborne.dboe.transaction.TransInteger ;
-import org.seaborne.dboe.transaction.TransMonitor ;
-import org.seaborne.dboe.transaction.Transactional ;
-import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
-import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
-
-import com.hp.hpl.jena.query.ReadWrite ;
 
 public class MainIndex {
     static { setLog4j() ; }
@@ -52,89 +47,44 @@ public class MainIndex {
     
     static Journal journal = Journal.create(Location.mem()) ;
     
-//    // ?? TransactionalBase
-//    static class Transactional1 extends TransactionalBase {
-//        public Transactional1(Journal journal, TransactionalComponent unit) {
-//            super(new TransactionCoordinator(journal)) ;
-//            super.txnMgr.add(unit) ;
-//            super.txnMgr.add(new TransLogger()) ;
-//        }
-//    }
-
     public static void main(String[] args) {
-        
-    }
-    
-    public static void main1(String[] args) {
-        Journal jrnl = Journal.create(Location.mem()) ;
-        TransactionCoordinator txnCoord = new TransactionCoordinator(jrnl) ;
-        
         BPlusTreeParams.Logging = false ;
-        BlockMgrFactory.AddTracker = true ;
+        BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;
         
         BPlusTree bpt = BPlusTree.makeMem(2, 1, recordFactory.keyLength(), recordFactory.valueLength()) ;
         
         RangeIndex idx = bpt ;
-        List<Integer> data1 = Arrays.asList( 1 , 3 , 5 , 7 , 9 , 8 , 6 , 4 , 2) ;
-        List<Integer> data2 = Arrays.asList( 1 , 2 , 3 , 4 , 5 , 6 ) ; // , 7 , 8 , 9 } ;
         
-//        Record r = r(0x99) ;
-//        idx.add( r ) ;
+        //List<Integer> data1 = Arrays.asList( 1 , 3 , 5 , 7 , 9 , 8 , 6 , 4 , 2) ;
         
+        List<Integer> data2a = Arrays.asList( 2 , 4 , 6) ; // , 7 , 8 , 9 } ;
+        List<Integer> data2b = Arrays.asList( 3 ) ; // , 7 , 8 , 9 } ;
         
-        // One component
+        List<Record> records1 =  data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> records2 =  data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
         
-        TransInteger counter1 = new TransInteger(0) ; 
-        TransInteger counter2 = new TransInteger(0) ;
-        TransMonitor monitor = new TransMonitor() ;
+//        Runnable r = () -> data2.forEach((x) -> idx.add(r(x)) ) ;
+        
+        bpt.startBatch();
+        
+        BPlusTreeParams.Logging = false ;
+        records1.forEach(bpt::add) ;
+        bpt.dump();
+        BPlusTreeParams.Logging = true ;
+        records2.forEach(bpt::add) ;
 
+        bpt.finishBatch();
         
-        txnCoord.add(counter1).add(counter2).add(monitor) ;
-        Transactional t = new TransactionalBase("Counter", txnCoord) ;
-        
-
-        long v1 = counter1.value() ;
-        long v2 = counter2.value() ;
-        
-        Txn.executeWrite(t, () -> {
-            counter1.inc() ;
-            counter2.inc() ;
-            if ( counter1.get() != counter2.get() ) {
-                System.err.println("Components out of line") ;
-            }
-            if ( counter1.get() == counter1.value() ) {
-                System.err.println("Components out of line") ;
-            }
-        }) ;
-        if ( v1+1 != counter1.value() ) {
-            System.err.println("Component 1 inconsistent") ;
-        }
-        if ( v2+1 != counter2.value() ) {
-            System.err.println("Component 2 inconsistent") ;
-        }
-        
-        monitor.print() ;
-        
-        t.begin(ReadWrite.WRITE);
-        counter1.inc();
-        t.commit();
-        t.end();
-
-        printTxnCoordState(txnCoord) ;
-
-        
-        System.out.println("DONE") ;
-        System.exit(0) ;
-        
-        TransactionCoordinator txnCoord1 = new TransactionCoordinator(Journal.create(Location.mem())) ;
-        Transactional tIdx = new TransactionalBase("Counter", txnCoord1) ;
-        txnCoord1.add(idx) ;
-        
-        Runnable r = () -> data2.forEach((x) -> idx.add(r(x)) ) ; 
-        Txn.executeWrite(tIdx, r) ;
-        
-        Txn.executeRead(tIdx, bpt::dump) ;
+        bpt.dump();
+//        
+//        TransactionCoordinator txnCoord1 = new TransactionCoordinator(Journal.create(Location.mem())) ;
+//        Transactional tIdx = new TransactionalBase("Counter", txnCoord1) ;
+//        txnCoord1.add(idx) ;
+//        
+//        Txn.executeWrite(tIdx, r) ;
+//        
+//        Txn.executeRead(tIdx, bpt::dump) ;
 
         
 //        bpt.begin(ReadWrite.WRITE) ; 
