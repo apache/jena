@@ -17,12 +17,14 @@
 
 package org.seaborne.dboe.transaction;
 
+import java.util.function.Supplier ;
+
 import com.hp.hpl.jena.query.ReadWrite ;
 
 /** Application utilities for transactions. */
 public class Txn {
-    /** Exexcute the Runnable in a read transaction.
-     * Nested transaction are not supported.
+    /** Execute the Runnable in a read transaction.
+     * Nested transactions are not supported.
      */
     public static void executeRead(Transactional txn, Runnable r) {
         txn.begin(ReadWrite.READ) ;
@@ -30,7 +32,18 @@ public class Txn {
         txn.end() ;
     }
 
-    /** Exexcute the Runnable in a write transaction 
+    /** Execute and return a value in a read transaction
+     * Nested transactions are not supported.
+     */
+
+    public static <X> X executeReadReturn(Transactional txn, Supplier<X> r) {
+        txn.begin(ReadWrite.READ) ;
+        X x = r.get() ;
+        txn.end() ;
+        return x ;
+    }
+
+    /** Execute the Runnable in a write transaction 
      * Nested transaction are not supported.
      */
     public static void executeWrite(Transactional txn, Runnable r) {
@@ -39,5 +52,17 @@ public class Txn {
         txn.commit() ;
         txn.end() ;
     }
+    
+    /** Execute the Runnable in a write transaction 
+     * Nested transaction are not supported.
+     */
+    public static <X> X executeWriteReturn(Transactional txn, Supplier<X> r) {
+        txn.begin(ReadWrite.WRITE) ;
+        X x = r.get() ;
+        txn.commit() ;
+        txn.end() ;
+        return x ;
+    }
+
 }
 

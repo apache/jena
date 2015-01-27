@@ -103,7 +103,42 @@ public class TestTxnLib extends AbstractTestTxn {
             assertEquals("Component 1 inconsistent (R)", 1, counter1.get()) ;
             assertEquals("Component 2 inconsistent (R)", 2, counter2.get()) ;
         }) ;
+    }
+    
+    @Test public void libTxn_5() {
+        long x = 
+            Txn.executeReadReturn(unit, () -> {
+                assertEquals("In R, value()", 0, counter2.get()) ;
+                assertEquals("In R, get()", 0, counter2.value()) ;
+                return counter2.get() ;
+            }) ;
+        assertEquals("Outside R", 0, x) ;
+    }
+    
+    @Test public void libTxn_6() {
+        long x = 
+            Txn.executeWriteReturn(unit, () -> {
+                counter2.inc() ;
+                assertEquals("In W, value()", 0, counter2.value()) ;
+                assertEquals("In W, get()",1, counter2.get()) ;
+                return counter2.get() ;
+            }) ;
+        assertEquals("Outside W",1, x) ;
+    }
 
-}
+    @Test public void libTxn_7() {
+        long x1 = 
+            Txn.executeWriteReturn(unit, () -> {
+                counter2.inc() ;
+                counter2.inc() ;
+                return counter2.get() ;
+            }) ;
+        long x2 = Txn.executeReadReturn(unit, () -> {
+            return counter2.get() ;
+        }) ;
+        assertEquals("After W and R",x1 , x2) ;
+    }
+
+
 }
 
