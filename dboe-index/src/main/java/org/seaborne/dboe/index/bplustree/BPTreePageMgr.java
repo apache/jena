@@ -29,8 +29,7 @@ abstract class BPTreePageMgr<T extends BPTreePage> extends PageBlockMgr<T>
     
     protected final BPlusTree bpTree ;
     
-    BPTreePageMgr(BPlusTree bpTree, BlockConverter<T> pageFactory, BlockMgr blockMgr)
-    {
+    BPTreePageMgr(BPlusTree bpTree, BlockConverter<T> pageFactory, BlockMgr blockMgr) {
         super(pageFactory, blockMgr) ;
         this.bpTree = bpTree ;
     }

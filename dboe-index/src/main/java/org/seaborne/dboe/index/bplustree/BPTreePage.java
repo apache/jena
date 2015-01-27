@@ -27,8 +27,7 @@ abstract public class BPTreePage implements Page
     protected final BPlusTree bpTree ;
     protected final BPlusTreeParams params ;
     
-    protected BPTreePage(BPlusTree bpTree)
-    {
+    protected BPTreePage(BPlusTree bpTree) {
         if ( bpTree == null )
             System.err.println("NULL B+Tree") ;
         

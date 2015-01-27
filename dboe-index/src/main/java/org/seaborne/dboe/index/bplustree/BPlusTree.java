@@ -132,22 +132,20 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
      * Initialize the persistent storage to the empty B+Tree if it does not exist.
      * This is the normal way to create a B+Tree.
      */
-    public static BPlusTree create(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
-    { 
+    public static BPlusTree create(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
         BPlusTree bpt = attach(params, blkMgrNodes, blkMgrLeaves) ;
-        bpt.startBatch(); 
+        bpt.startBatch() ;
         bpt.createIfAbsent() ;
-        bpt.finishBatch();
+        bpt.finishBatch() ;
         return bpt ;
     }
-    
-    /** Create the in-memory structures to correspond to
-     *  the supplied block managers for the persistent storage.
-     *  Does not inityalize the B+Tree - it assumes the block managers
-     *  correspond to an existing B+Tree.
+
+    /**
+     * Create the in-memory structures to correspond to the supplied block
+     * managers for the persistent storage. Does not inityalize the B+Tree - it
+     * assumes the block managers correspond to an existing B+Tree.
      */
-    public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords)
-    { 
+    public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
         return new BPlusTree(params, blkMgrNodes, blkMgrRecords) ;
     }
 
@@ -164,43 +162,38 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     { return makeMem(null, order, minDataRecords, keyLength, valueLength) ; }
     
     /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
-    public static BPlusTree makeMem(String name, int order, int minDataRecords, int keyLength, int valueLength)
-    {
+    public static BPlusTree makeMem(String name, int order, int minDataRecords, int keyLength, int valueLength) {
         if ( name == null )
             name = "Mem" ;
         BPlusTreeParams params = new BPlusTreeParams(order, keyLength, valueLength) ;
-        
+
         int blkSize ;
-        if ( minDataRecords > 0 )
-        {
-            int maxDataRecords = 2*minDataRecords ;
-            //int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
+        if ( minDataRecords > 0 ) {
+            int maxDataRecords = 2 * minDataRecords ;
+            // int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
             blkSize = RecordBufferPage.calcBlockSize(params.getRecordFactory(), maxDataRecords) ;
-        }
-        else
+        } else
             blkSize = params.getCalcBlockSize() ;
-        
-        BlockMgr mgr1 = BlockMgrFactory.createMem(name+"(nodes)", params.getCalcBlockSize()) ;
-        BlockMgr mgr2 = BlockMgrFactory.createMem(name+"(records)", blkSize) ;
+
+        BlockMgr mgr1 = BlockMgrFactory.createMem(name + "(nodes)", params.getCalcBlockSize()) ;
+        BlockMgr mgr2 = BlockMgrFactory.createMem(name + "(records)", blkSize) ;
         BPlusTree bpTree = BPlusTree.create(params, mgr1, mgr2) ;
         return bpTree ;
     }
 
     /** Debugging */
-    public static BPlusTree addTracking(BPlusTree bpTree)
-    {
+    public static BPlusTree addTracking(BPlusTree bpTree) {
         BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
         BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
-//        mgr1 = BlockMgrTracker.track("BPT/Nodes", mgr1) ;
-//        mgr2 = BlockMgrTracker.track("BPT/Records", mgr2) ;
+        // mgr1 = BlockMgrTracker.track("BPT/Nodes", mgr1) ;
+        // mgr2 = BlockMgrTracker.track("BPT/Records", mgr2) ;
         mgr1 = BlockMgrTracker.track(mgr1) ;
         mgr2 = BlockMgrTracker.track(mgr2) ;
 
         return BPlusTree.attach(bpTree.getParams(), mgr1, mgr2) ;
     }
 
-    private BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords)
-    {
+    private BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
         // Consistency checks.
         this.bpTreeParams = params ;
         this.nodeManager = new BPTreeNodeMgr(this, blkMgrNodes) ;
@@ -209,83 +202,65 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     }
 
     /** Create if does not exist */
-    private void createIfAbsent()
-    {
+    private void createIfAbsent() {
         // This fixes the root to being block 0
-        if ( ! nodeManager.valid(BPlusTreeParams.RootId) )
-        //if ( ! nodeManager.getBlockMgr().isEmpty() )
+        if ( !nodeManager.valid(BPlusTreeParams.RootId) )
+        // if ( ! nodeManager.getBlockMgr().isEmpty() )
         {
             // Create as does not exist.
-            // [TxTDB:PATCH-UP]
-            // ** Better: seperate "does it exist? - create statics used in factory"
-            
+            // TODO Better: seperate "does it exist? - create statics used in factory"
+
             startUpdateBlkMgr() ;
             // Fresh BPlusTree
             rootIdx = nodeManager.createEmptyBPT() ;
             if ( rootIdx != 0 )
                 throw new InternalError() ;
-            
-            if ( CheckingNode )
-            {            
+
+            if ( CheckingNode ) {
                 BPTreeNode root = nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
                 root.checkNodeDeep() ;
                 root.release() ;
             }
-            
-            // Sync created blocks to disk - any caches are now clean. 
+
+            // Sync created blocks to disk - any caches are now clean.
             nodeManager.getBlockMgr().sync() ;
             recordsMgr.getBlockMgr().sync() ;
-            
-            // Cache : not currently done - root is null
-            //setRoot(root) ;
+
             finishUpdateBlkMgr() ;
         }
     }
 
-    private BPTreeNode getRoot()
-    {
+    private BPTreeNode getRoot() {
         // No caching here.
         BPTreeNode root = nodeManager.getRoot(rootIdx) ;
-        //this.root = root ;
+        // this.root = root ;
         return root ;
     }
 
-    private void releaseRoot(BPTreeNode rootNode)
-    {
-//        // [TxTDB:PATCH-UP]
-//        if ( root != null ) 
-//        {
-//            root.release() ;
-//            //nodeManager.release(rootNode) ;
-//        }
-//        if ( root != null && rootNode != root )
-//            log.warn("Root is not root!") ;
-        
+    private void releaseRoot(BPTreeNode rootNode) {
         rootNode.release() ;
     }
 
-    private void setRoot(BPTreeNode node)
-    {
-        //root = node ;
+    private void setRoot(BPTreeNode node) {
+        // root = node ;
     }
 
     /** Get the parameters describing this B+Tree */
-    public BPlusTreeParams getParams()     { return bpTreeParams ; } 
+    public BPlusTreeParams getParams()          { return bpTreeParams ; } 
 
     /** Only use for careful manipulation of structures */
-    public BPTreeNodeMgr getNodeManager()          { return nodeManager ; }
+    public BPTreeNodeMgr getNodeManager()       { return nodeManager ; }
+    
     /** Only use for careful manipulation of structures */
     public BPTreeRecordsMgr getRecordsMgr()     { return recordsMgr ; }
     
     @Override
-    public RecordFactory getRecordFactory()
-    {
+    public RecordFactory getRecordFactory() {
         return bpTreeParams.recordFactory ;
     }
-    
+
     @Override
-    public Record find(Record record)
-    {
+    public Record find(Record record) {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
         Record v = BPTreeNode.search(root, record) ;
@@ -293,28 +268,25 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
         finishReadBlkMgr() ;
         return v ;
     }
-    
+
     @Override
-    public boolean contains(Record record)
-    {
+    public boolean contains(Record record) {
         Record r = find(record) ;
         return r != null ;
     }
 
     @Override
-    public Record minKey()
-    {
+    public Record minKey() {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Record r = root.minRecord();
+        Record r = root.minRecord() ;
         releaseRoot(root) ;
         finishReadBlkMgr() ;
         return r ;
     }
 
     @Override
-    public Record maxKey()
-    {
+    public Record maxKey() {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
         Record r = root.maxRecord() ;
@@ -324,41 +296,40 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     }
 
     @Override
-    public boolean add(Record record)
-    {
+    public boolean add(Record record) {
         return addAndReturnOld(record) == null ;
     }
-    
+
     /** Add a record into the B+Tree */
-    public Record addAndReturnOld(Record record)
-    {
+    public Record addAndReturnOld(Record record) {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
         Record r = BPTreeNode.insert(root, record) ;
-        if ( CheckingTree ) root.checkNodeDeep() ;
+        if ( CheckingTree )
+            root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;
         return r ;
     }
     
     @Override
-    public boolean delete(Record record)
-    { return deleteAndReturnOld(record) != null ; }
-    
-    public Record deleteAndReturnOld(Record record)
-    {
+    public boolean delete(Record record) {
+        return deleteAndReturnOld(record) != null ;
+    }
+
+    public Record deleteAndReturnOld(Record record) {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
         Record r = BPTreeNode.delete(root, record) ;
-        if ( CheckingTree ) root.checkNodeDeep() ;
+        if ( CheckingTree )
+            root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;
         return r ;
     }
 
     @Override
-    public Iterator<Record> iterator()
-    {
+    public Iterator<Record> iterator() {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
         Iterator<Record> iter = iterator(root, RecordFactory.mapperRecord) ;
@@ -366,7 +337,7 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
         finishReadBlkMgr() ;
         return iter ;
     }
-    
+
     @Override
     public Iterator<Record> iterator(Record fromRec, Record toRec) {
         return iterator(fromRec, toRec, RecordFactory.mapperRecord) ;
@@ -385,10 +356,9 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     }
 
     /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */ 
-    private static <X> Iterator<X> iterator(BPTreeNode node, Record fromRec, Record toRec, RecordMapper<X> mapper)
-    { 
+    private static <X> Iterator<X> iterator(BPTreeNode node, Record fromRec, Record toRec, RecordMapper<X> mapper) {
         // Look for starting RecordsBufferPage id.
-        int id = BPTreeNode.recordsPageId(node, fromRec) ; 
+        int id = BPTreeNode.recordsPageId(node, fromRec) ;
         if ( id < 0 )
             return Iter.nullIter() ;
         RecordBufferPageMgr pageMgr = node.getBPlusTree().getRecordsMgr().getRecordBufferPageMgr() ;
@@ -411,49 +381,42 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     }
     
     // Internal calls.
-    private void startReadBlkMgr()
-    {
+    private void startReadBlkMgr() {
         nodeManager.startRead() ;
         recordsMgr.startRead() ;
     }
 
-    private void finishReadBlkMgr()
-    {
+    private void finishReadBlkMgr() {
         nodeManager.finishRead() ;
         recordsMgr.finishRead() ;
     }
 
-    private void startUpdateBlkMgr()
-    {
+    private void startUpdateBlkMgr() {
         nodeManager.startUpdate() ;
         recordsMgr.startUpdate() ;
     }
-    
-    private void finishUpdateBlkMgr()
-    {
+
+    private void finishUpdateBlkMgr() {
         nodeManager.finishUpdate() ;
         recordsMgr.finishUpdate() ;
     }
-    
+
     // Or Txn interface?
-    public void startBatch()
-    {
+    public void startBatch() {
         nodeManager.startBatch() ;
         recordsMgr.startBatch() ;
     }
-    
-    public void finishBatch()
-    {
+
+    public void finishBatch() {
         nodeManager.finishBatch() ;
         recordsMgr.finishBatch() ;
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        boolean b = ! root.hasAnyKeys() ;
+        boolean b = !root.hasAnyKeys() ;
         releaseRoot(root) ;
         finishReadBlkMgr() ;
         return b ;
@@ -481,23 +444,18 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
         }
     }
     
-    
-    // TODO Proper implementation!
-    
     @Override
-    public void sync() 
-    { 
+    public void sync() {
         if ( nodeManager.getBlockMgr() != null )
             nodeManager.getBlockMgr().sync() ;
         if ( recordsMgr.getBlockMgr() != null )
             recordsMgr.getBlockMgr().sync() ;
     }
-    
+
     @Override
-    public void close()
-    { 
+    public void close() {
         if ( nodeManager.getBlockMgr() != null )
-            nodeManager.getBlockMgr().close()   ;
+            nodeManager.getBlockMgr().close() ;
         if ( recordsMgr.getBlockMgr() != null )
             recordsMgr.getBlockMgr().close() ;
     }
@@ -507,28 +465,24 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
 //    }
 
     @Override
-    public long size()
-    {
+    public long size() {
         Iterator<Record> iter = iterator() ;
         return Iter.count(iter) ;
     }
-    
+
     @Override
-    public void check()
-    {
+    public void check() {
         getRoot().checkNodeDeep() ;
     }
 
-    public void dump()
-    {
+    public void dump() {
         // Caution - nesting.
-        startReadBlkMgr();
+        startReadBlkMgr() ;
         getRoot().dump() ;
-        finishReadBlkMgr();
+        finishReadBlkMgr() ;
     }
-    
-    public void dump(IndentedWriter out)
-    {
+
+    public void dump(IndentedWriter out) {
         getRoot().dump(out) ;
     }
 }

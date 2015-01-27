@@ -28,9 +28,7 @@ import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 
 /** Tools for working with B+Trees and datastructures associated with them, rather directly */
-class BPlusTreeTools
-{
-    
+class BPlusTreeTools {
     /*public*/private static void binDump(String filename)
     {
         try(RandomAccessFile fh = new RandomAccessFile(filename, "r")) {

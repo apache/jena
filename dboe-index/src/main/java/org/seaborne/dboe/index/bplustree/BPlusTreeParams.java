@@ -52,8 +52,7 @@ public class BPlusTreeParams
     public static boolean DumpTree = false ;                 // Dump the tree during top level logging 
     public static boolean Logging = false ;                  // Turn on/off logging the hard way
     
-    public static void infoAll()
-    { 
+    public static void infoAll() { 
         DumpTree = true ;
         Logging = true ;
     }
@@ -107,14 +106,12 @@ public class BPlusTreeParams
      */
     static int BlockHeaderSize = 4 ;
     
-    static final boolean logging(Logger log)
-    {
+    static final boolean logging(Logger log) {
         return Logging && log.isDebugEnabled() ;
     }
     
     @Override
-    public String toString()
-    {
+    public String toString() {
         return String.format("Order=%d : Records [key=%d, value=%d] : records=[%d,%d] : pointers=[%d,%d] : split=%d",
                              order,
                              keyFactory.keyLength() ,
@@ -125,8 +122,7 @@ public class BPlusTreeParams
                              ) ;
     }
 
-    public static BPlusTreeParams readMeta(MetaFile mf)
-    {
+    public static BPlusTreeParams readMeta(MetaFile mf) {
         try {
             int pOrder = mf.getPropertyAsInteger(ParamOrder) ;
             int pKeyLen = mf.getPropertyAsInteger(ParamKeyLength) ;
@@ -139,22 +135,19 @@ public class BPlusTreeParams
         }
     }
     
-    public void addToMetaData(MetaFile mf)
-    {
+    public void addToMetaData(MetaFile mf) {
         mf.setProperty(ParamOrder, order) ;
         mf.setProperty(ParamKeyLength, recordFactory.keyLength()) ;
         mf.setProperty(ParamValueLength, recordFactory.valueLength()) ;
         mf.flush() ;
     }
 
-    public BPlusTreeParams(int order, int keyLen, int valLen)
-    { 
+    public BPlusTreeParams(int order, int keyLen, int valLen) { 
         this(order, new RecordFactory(keyLen, valLen)) ;
     }
     
-    public BPlusTreeParams(int order, RecordFactory factory)
-    {
-        // BTrees of order one aren't strictly BTrees, where the order is >= 2
+    public BPlusTreeParams(int order, RecordFactory factory) {
+        // BTrees of order one aren't strictly BTrees
         // Order 1 => Min size = 0 and max size = 2*N-1 = 1.
         // If there is a gap, then the code may be defensive enough
         // and something will work.  The B+Trees may have empty nodes
@@ -179,55 +172,47 @@ public class BPlusTreeParams
         HighRec  = HighPtr-1 ;
     }
 
-    public int getOrder()
-    {
+    public int getOrder() {
         return order ;
     }
 
-    public int getPtrLength()
-    {
+    public int getPtrLength() {
         return SizeOfPointer ;
     }
 
-    public int getRecordLength()
-    {
+    public int getRecordLength() {
         return recordFactory.recordLength() ;
     }
 
-    public RecordFactory getRecordFactory()
-    {
+    public RecordFactory getRecordFactory(){
         return recordFactory ;
     }
-    
-    public int getKeyLength()
-    {
+
+    public int getKeyLength() {
         return keyFactory.recordLength() ;
     }
 
-    public RecordFactory getKeyFactory()
-    {
+    public RecordFactory getKeyFactory() {
         return keyFactory ;
     }
-    
-    
-    public int getCalcBlockSize()
-    {
+
+    public int getCalcBlockSize() {
         return calcBlockSize(order, recordFactory) ;
     }
-    
-    /** Return the best fit for the blocksize and the record length.
-     * Knows about block header space. 
-     */ 
-    public static int calcOrder(int blockSize, RecordFactory factory) 
-    {
-        return calcOrder(blockSize, factory.recordLength()) ; 
+
+    /**
+     * Return the best fit for the blocksize and the record length. Knows about
+     * block header space.
+     */
+    public static int calcOrder(int blockSize, RecordFactory factory) {
+        return calcOrder(blockSize, factory.recordLength()) ;
     }
-    
-    /** Return the best fit for the blocksize and the record length.
-     * Knows about block header space. 
-     */ 
-    public static int calcOrder(int blockSize, int recordLength) 
-    {
+
+    /**
+     * Return the best fit for the blocksize and the record length. Knows about
+     * block header space.
+     */
+    public static int calcOrder(int blockSize, int recordLength)    {
         // Length = X*recordLength+(X+1)*PtrLength
         // => X = (Length-PtrLength)/(recordLength+PtrLength)
         // BTree order N
@@ -241,40 +226,31 @@ public class BPlusTreeParams
     }
 
     /** return the size of a block */
-    public static int calcBlockSize(int bpTreeOrder, RecordFactory factory) 
-    {
+    public static int calcBlockSize(int bpTreeOrder, RecordFactory factory) {
         BPlusTreeParams p = new BPlusTreeParams(bpTreeOrder, factory) ;
-        int x = p.getMaxRec()*factory.recordLength() + p.getMaxPtr()*SizeOfPointer ;
+        int x = p.getMaxRec() * factory.recordLength() + p.getMaxPtr() * SizeOfPointer ;
         x += BlockHeaderSize ;
         return x ;
     }
 
-
-    public int getMaxRec()
-    {
+    public int getMaxRec() {
         return MaxRec ;
     }
 
-
-    public int getMaxPtr()
-    {
+    public int getMaxPtr() {
         return MaxPtr ;
     }
 
-
-    public int getMinRec()
-    {
-        return MinRec;
+    public int getMinRec() {
+        return MinRec ;
     }
 
-    public int getMinPtr()
-    {
+    public int getMinPtr() {
         return MinPtr ;
     }
 
 //    /** return the size of a block */
-//    public static int calcBlockSize(int bTreeOrder, int recordLength)
-//    {
+//    public static int calcBlockSize(int bTreeOrder, int recordLength) {
 //        BTreeParams p = new BTreeParams(bTreeOrder, recordLength, 0) ;
 //        int x = p.getMaxRec()*recordLength + p.getMaxPtr()*PtrLength ;
 //        x += BlockHeaderSize ;

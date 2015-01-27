@@ -32,9 +32,7 @@ public enum BlockType implements Printable, Named
     BPTREE_LEAF(7, "BPlusTreeLeaf") ,
     DICTIONARY(10, "Dictionary") ,
     RECORD_BLOCK(99, "RecordBlock"),
-    
-    // [TxTDB:PATCH-UP]
-    UNDEF(-2, "UndefinedBlockType")
+    UNDEF(255, "UndefinedBlockType")
     ;
 
     private final int id ;
