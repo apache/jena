@@ -491,7 +491,7 @@ public final class TokenizerText implements Tokenizer
         // If we made no progress, nothing found, not even a keyword -- it's an
         // error.
         if ( posn == reader.getPosition() )
-            exception("Unknown char: %c(%d;0x%04X)", ch, ch, ch) ;
+            exception("Failed to find a prefix name or keyword: %c(%d;0x%04X)", ch, ch, ch) ;
 
         if ( Checking )
             checkKeyword(token.getImage()) ;
