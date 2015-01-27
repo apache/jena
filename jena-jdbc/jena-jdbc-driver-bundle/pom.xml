@@ -31,7 +31,7 @@
 			EMMA plugin having limited configurability and making it otherwise impossible 
 			to easily analyse code coverage on a multi-module project short of running 
 			the Emma plugin on your Jenkins server, however doing that loses the visual 
-			benefit of being to see in Eclipse what code is and isn't covered -->
+			benefit of being able to see in Eclipse what code is and isn't covered -->
 		<skipTests>true</skipTests>
 	</properties>
 
