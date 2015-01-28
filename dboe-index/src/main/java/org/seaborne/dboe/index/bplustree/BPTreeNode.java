@@ -399,12 +399,12 @@ public final class BPTreeNode extends BPTreePage
 
         idx = convert(idx) ;
 
-        BPTreePage page = get(idx, READ) ;
+        // [[Dev-RO]]
+        //BPTreePage page = get(idx, READ) ;
+        BPTreePage page = get(idx, WRITE) ;
 
         if ( logging() )
             log.debug(format("internalInsert: next: %s", page)) ;
-
-        // page = writable(page) ;
 
         if ( page.isFull() ) {
             // Need to split the page before descending.
@@ -415,7 +415,9 @@ public final class BPTreeNode extends BPTreePage
                 page.release() ;
                 // Yes. Get the new (upper) page
                 idx = idx + 1 ;
-                page = get(idx, READ) ;
+                // [[Dev-RO]]
+                //page = get(idx, READ) ;
+                page = get(idx, WRITE) ;
             }
             internalCheckNode() ;
         }
@@ -656,7 +658,8 @@ public final class BPTreeNode extends BPTreePage
 
         // If x is >= 0, may need to adjust this
         int y = convert(x) ;
-        BPTreePage page = get(y, READ) ;
+        // [[Dev-RO]]
+        BPTreePage page = get(y, WRITE) ;
 
         boolean thisWriteNeeded = false ;
         if ( page.isMinSize() ) // Can't be root - we decended in the get().
