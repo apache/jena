@@ -57,7 +57,7 @@ abstract class BufferBase
         this.slotLen = slotLen ;
         this.numSlot = num ;
         this.maxSlot = bb.limit()/slotLen ;
-        if ( NullOut )
+        if ( ! bb.isReadOnly() && NullOut )
             clear(numSlot, maxSlot-numSlot) ;
     }
     
