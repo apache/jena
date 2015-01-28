@@ -32,7 +32,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
 /**
- * RDF-JSON
+ * RDF-JSON.
  *
  * @see <a href="http://www.w3.org/TR/rdf-json/">http://www.w3.org/TR/rdf-json/</a>
  */

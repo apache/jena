@@ -29,7 +29,7 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** TriG language
+/** TriG.
  *
  * @see <a href="http://www.w3.org/TR/trig/">http://www.w3.org/TR/trig/</a> 
  */

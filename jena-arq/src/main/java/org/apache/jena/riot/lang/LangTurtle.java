@@ -27,7 +27,7 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
-/** Turtle 
+/** Turtle.
  *
  * @see <a href="http://www.w3.org/TR/turtle/">http://www.w3.org/TR/turtle/</a>
  **/

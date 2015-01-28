@@ -43,7 +43,7 @@ import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
 import com.hp.hpl.jena.rdfxml.xmlinput.* ;
 import com.hp.hpl.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 
-/** RDF/XML
+/** RDF/XML.
  *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */

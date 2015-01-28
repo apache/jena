@@ -32,7 +32,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
 /**
- * NTriples
+ * N-Triples.
  * 
  * @see <a href="http://www.w3.org/TR/n-triples/">http://www.w3.org/TR/n-triples/</a>
  */
