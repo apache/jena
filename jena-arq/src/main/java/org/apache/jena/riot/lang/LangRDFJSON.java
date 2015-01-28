@@ -32,7 +32,9 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
 /**
- * See http://docs.api.talis.com/platform-api/output-types/rdf-json
+ * RDF-JSON
+ *
+ * @see <a href="http://www.w3.org/TR/rdf-json/">http://www.w3.org/TR/rdf-json/</a>
  */
 public class LangRDFJSON extends LangBase
 {
