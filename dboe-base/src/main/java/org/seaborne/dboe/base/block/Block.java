@@ -48,67 +48,62 @@ public final class Block
     // this can be used to carry a ref to the real ByteBuffer.  
     private ByteBuffer underlyingByteBuffer ;
 
-    public Block(long id, ByteBuffer byteBuffer)
-    {
-        this(Long.valueOf(id), byteBuffer) ; 
+    public Block(long id, ByteBuffer byteBuffer) {
+        this(Long.valueOf(id), byteBuffer) ;
     }
-    
-    public Block(Long id, ByteBuffer byteBuffer)
-    {
-        // ByteBuffer is whole disk space from byte 0 for this disk unit. 
-        this.id = id ; 
+
+    public Block(Long id, ByteBuffer byteBuffer) {
+        // ByteBuffer is whole disk space from byte 0 for this disk unit.
+        this.id = id ;
         this.byteBuffer = byteBuffer ;
-        //this.blockRef = null ;
-        
+        // this.blockRef = null ;
+
         this.readOnly = false ;
         this.modified = false ;
         this.underlyingByteBuffer = null ;
     }
-    
-    
-    public <T extends Page> T convert(BlockConverter<T> converter)
-    {
-        // converter.checkType(type) ; 
+
+    public <T extends Page> T convert(BlockConverter<T> converter) {
+        // converter.checkType(type) ;
         return converter.fromBlock(this) ;
     }
-        
-    
-    public final Long getId()   { return id ; }
-    
-    public final ByteBuffer getByteBuffer()
-    {
+
+    public final Long getId() {
+        return id ;
+    }
+
+    public final ByteBuffer getByteBuffer() {
         return byteBuffer ;
     }
- 
-    public boolean isReadOnly()     { return readOnly ; }
-    public void setReadOnly(boolean readonly)
-    {
+
+    public boolean isReadOnly() {
+        return readOnly ;
+    }
+
+    public void setReadOnly(boolean readonly) {
         if ( readonly && modified )
             throw new BlockException("Attempt to mark a modified block as read-only") ;
         this.readOnly = readonly ;
     }
-    
-    public boolean isModified()     { return modified ; }
 
-    public void setModified(boolean modified)
-    {
+    public boolean isModified() {
+        return modified ;
+    }
+
+    public void setModified(boolean modified) {
         if ( readOnly && modified )
             throw new BlockException("Attempt to mark a readonly block as modified") ;
         this.modified = modified ;
     }
 
-//    public BlockRef getBlockRef()   { return blockRef ; }
-
     public ByteBuffer getUnderlyingByteBuffer()
     { return underlyingByteBuffer ; }
-
 
     public void setUnderlyingByteBuffer(ByteBuffer underlyingByteBuffer)
     { this.underlyingByteBuffer = underlyingByteBuffer ; }
     
     @Override
-    public String toString()
-    {
+    public String toString() {
         ByteBuffer bb = getByteBuffer() ;
         if ( true )
             // Short form.
@@ -121,58 +116,54 @@ public final class Block
         String str = out.toString() ;
         return String.format("Block: %d %s", id, str) ;
     }
-    
+
     /** Deep copy, including ByteBuffer contents into a HeapByteBuffer. */
-    public Block replicate()
-    {
-        ByteBuffer dstBuffer = ByteBuffer.allocate(getByteBuffer().capacity());
-        return replicate(dstBuffer);
+    public Block replicate() {
+        ByteBuffer dstBuffer = ByteBuffer.allocate(getByteBuffer().capacity()) ;
+        return replicate(dstBuffer) ;
     }
     
     /**
-     * Deep copy, including ByteBuffer contents, using the supplied ByteBuffer to hold the contents and
-     * to be used when constructing the new Block.  The capacity of the supplied ByteBuffer must be equal
-     * to or greater than this block's capacity.
+     * Deep copy, including ByteBuffer contents, using the supplied ByteBuffer
+     * to hold the contents and to be used when constructing the new Block. The
+     * capacity of the supplied ByteBuffer must be equal to or greater than this
+     * block's capacity.
      */
-    public Block replicate(ByteBuffer dstBuffer)
-    {
+    public Block replicate(ByteBuffer dstBuffer) {
         replicateByteBuffer(getByteBuffer(), dstBuffer) ;
         Block b = new Block(getId(), dstBuffer) ;
         b.modified = modified ;
         b.readOnly = readOnly ;
-//        b.blockRef = null ;
+        // b.blockRef = null ;
         return b ;
     }
 
-    public static void replicate(Block srcBlock, Block dstBlock)
-    {
-        if ( ! srcBlock.getId().equals(dstBlock.getId()) )
-            throw new BlockException("FileAccessMem: Attempt to copy across blocks: "+srcBlock.getId()+" => "+dstBlock.getId()) ;
+    public static void replicate(Block srcBlock, Block dstBlock) {
+        if ( !srcBlock.getId().equals(dstBlock.getId()) )
+            throw new BlockException("FileAccessMem: Attempt to copy across blocks: " + srcBlock.getId() + " => " + dstBlock.getId()) ;
         replicate(srcBlock.getByteBuffer(), dstBlock.getByteBuffer()) ;
-    }  
+    }
 
-    private static ByteBuffer replicateByteBuffer(ByteBuffer srcBlk, ByteBuffer dstBlk)
-    {
+    private static ByteBuffer replicateByteBuffer(ByteBuffer srcBlk, ByteBuffer dstBlk) {
         int x = srcBlk.position() ;
         int y = srcBlk.limit() ;
         srcBlk.clear() ;
-        
+
         if ( srcBlk.hasArray() && dstBlk.hasArray() )
             System.arraycopy(srcBlk.array(), 0, dstBlk.array(), 0, srcBlk.capacity()) ;
         else
             dstBlk.put(srcBlk) ;
-        
-        srcBlk.position(x);
-        dstBlk.position(x);
-        srcBlk.limit(y);
-        dstBlk.limit(y);
-        return dstBlk ; 
-    }  
 
-    private static void replicate(ByteBuffer srcBlk, ByteBuffer dstBlk)
-    {
+        srcBlk.position(x) ;
+        dstBlk.position(x) ;
+        srcBlk.limit(y) ;
+        dstBlk.limit(y) ;
+        return dstBlk ;
+    }
+
+    private static void replicate(ByteBuffer srcBlk, ByteBuffer dstBlk) {
         srcBlk.position(0) ;
         dstBlk.position(0) ;
         dstBlk.put(srcBlk) ;
-    }  
+    }
 }
