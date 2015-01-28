@@ -68,5 +68,8 @@ public class NOTES {
     // Transactional++ 
     
     // Upgrade BPTree to TransactionMVCC
+    
+    // Block : development code added to enforece read-only use. Marked [[Dev-RO]]
+
 }
 
