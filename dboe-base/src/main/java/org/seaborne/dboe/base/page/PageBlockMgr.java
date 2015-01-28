@@ -64,6 +64,13 @@ public class PageBlockMgr<T extends Page>
     public T getRead(int id)
     { 
         Block block = blockMgr.getRead(id) ;
+        if ( block.isModified() ) {
+            System.err.println("getRead - isModified");
+            // Debug.
+            blockMgr.getRead(id) ;
+        }
+        else 
+            block.setReadOnly(true); 
         T page = pageFactory.fromBlock(block) ;
         return page ;
     }

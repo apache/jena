@@ -27,8 +27,11 @@ import org.apache.jena.atlas.lib.ByteBufferLib ;
 
 import org.seaborne.dboe.base.page.Page ;
 
+
 public final class Block
 {
+    // XXX Note development code added to enforece read-only use. Marked [RO]
+    
     // While the general mechanisms support long block id,
     // some uses make restrictions.
     // BlockMgrs:
@@ -43,7 +46,7 @@ public final class Block
     private boolean readOnly = false ;
     private boolean modified = false ;
     
-    private final ByteBuffer byteBuffer ;
+    private /*[[Dev-RO]] final*/ ByteBuffer byteBuffer ;
     // If the byteBuffer is, say, a slice of another one,
     // this can be used to carry a ref to the real ByteBuffer.  
     private ByteBuffer underlyingByteBuffer ;
@@ -83,6 +86,11 @@ public final class Block
     public void setReadOnly(boolean readonly) {
         if ( readonly && modified )
             throw new BlockException("Attempt to mark a modified block as read-only") ;
+        // Expensive, development version.
+        // [[Dev-RO]]
+        //byteBuffer = ByteBufferLib.duplicate(byteBuffer).asReadOnlyBuffer() ;
+        // Just some checking.
+        byteBuffer = byteBuffer.asReadOnlyBuffer() ;
         this.readOnly = readonly ;
     }
 

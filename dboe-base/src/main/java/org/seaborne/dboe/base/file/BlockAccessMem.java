@@ -44,104 +44,97 @@ public class BlockAccessMem implements BlockAccess
     protected final int blockSize ;
     private final String label ;
     
-    public BlockAccessMem(String label, int blockSize)
-    {
+    public BlockAccessMem(String label, int blockSize) {
         this(label, blockSize, SafeMode) ;
     }
-    
-    private BlockAccessMem(String label, int blockSize, boolean b)
-    {
+
+    private BlockAccessMem(String label, int blockSize, boolean b) {
         this.blockSize = blockSize ;
         this.label = label ;
         safeModeThisMgr = b ;
     }
 
     @Override
-    public Block allocate(int blkSize)
-    {
+    public Block allocate(int blkSize) {
         if ( blkSize > 0 && blkSize != this.blockSize )
-            throw new FileException("Fixed blocksize only: request= "+blkSize+" / fixed size="+this.blockSize) ;
-        
+            throw new FileException("Fixed blocksize only: request= " + blkSize + " / fixed size=" + this.blockSize) ;
+
         int x = blocks.size() ;
         ByteBuffer bb = ByteBuffer.allocate(blkSize) ;
         Block block = new Block(x, bb) ;
         blocks.add(block) ;
-        return block;
+        return block ;
     }
 
     @Override
-    public Block read(long id)
-    {
+    public Block read(long id) {
         check(id) ;
         Block blk = blocks.get((int)id) ;
-        if ( safeModeThisMgr ) 
-            return blk.replicate() ;
-        else
-            return blk ;
+        if ( safeModeThisMgr ) {
+            // [[Dev-RO]]
+            blk = blk.replicate() ;
+            // blk.setModified(false) ; // Causes underflow.
+        }
+        return blk ;
     }
 
     @Override
-    public void write(Block block)
-    {
+    public void write(Block block) {
         check(block) ;
         _write(block) ;
     }
-    
+
     @Override
-    public void overwrite(Block block)
-    {
+    public void overwrite(Block block) {
         write(block) ;
     }
     
-    private void _write(Block block)
-    {
-        if ( safeModeThisMgr )
+    private void _write(Block block) {
+        if ( safeModeThisMgr ) {
             block = block.replicate() ;
+            // [[Dev-RO]]
+            block.setModified(false) ; // WHY DOES THIS THEN UNDERFLOW?
+        }
         // Memory isn't scaling to multi gigabytes.
         blocks.set(block.getId().intValue(), block) ;
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return blocks.isEmpty() ;
     }
 
     @Override
-    public boolean valid(long id)
-    {
+    public boolean valid(long id) {
         return id >= 0 && id < blocks.size() ;
     }
 
     @Override
-    public void close()
-    {
+    public void close() {
         fileClosed = true ;
-        //blocks = null ;
+        // blocks = null ;
     }
-    
+
     @Override
-    public void sync()
-    {}
-    
-    private void check(Block block)
-    {
+    public void sync() {}
+
+    private void check(Block block) {
         check(block.getId()) ;
         check(block.getByteBuffer()) ;
     }
 
-    private void check(long id)
-    {
+    private void check(long id) {
         if ( id > Integer.MAX_VALUE )
-            throw new FileException("BlockAccessMem: Bounds exception (id large than an int): "+id) ;
-        if ( !Checking ) return ;
+            throw new FileException("BlockAccessMem: Bounds exception (id large than an int): " + id) ;
+        if ( !Checking )
+            return ;
         if ( id < 0 || id >= blocks.size() )
-            throw new FileException("BlockAccessMem: Bounds exception: "+id) ;
+            throw new FileException("BlockAccessMem: Bounds exception: " + id) ;
     }
 
-    private void check(ByteBuffer bb)
-    {
-        if ( !Checking ) return ;
+    private void check(ByteBuffer bb) {
+        if ( !Checking )
+            return ;
         if ( bb.capacity() != blockSize )
             throw new FileException(format("FileAccessMem: Wrong size block.  Expected=%d : actual=%d", blockSize, bb.capacity())) ;
         if ( bb.order() != SystemIndex.NetworkOrder )
@@ -149,15 +142,13 @@ public class BlockAccessMem implements BlockAccess
     }
 
     @Override
-    public String getLabel()
-    {
+    public String getLabel() {
         return label ;
     }
-    
+
     @Override
-    public String toString()
-    {
-        return "Mem:"+label ;
+    public String toString() {
+        return "Mem:" + label ;
     }
 
 }
