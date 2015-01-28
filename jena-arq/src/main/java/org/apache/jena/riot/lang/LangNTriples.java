@@ -31,6 +31,11 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
+/**
+ * NTriples
+ * 
+ * @see <a href="http://www.w3.org/TR/n-triples/">http://www.w3.org/TR/n-triples/</a>
+ */
 public final class LangNTriples extends LangNTuple<Triple>
 {
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples") ;
