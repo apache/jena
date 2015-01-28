@@ -43,8 +43,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     }
    
     /** Allocate root node space. The root is a node with a Records block.*/ 
-    public int createEmptyBPT()
-    { 
+    public int createEmptyBPT() { 
         // Must be inside already : startUpdate() ;
         // Create an empty records block.
         
@@ -72,9 +71,8 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         return rootId ;
     }
     
-    /** Allocate space for a fresh node. */ 
-    public BPTreeNode createNode(int parent)
-    { 
+    /** Allocate space for a fresh node. */
+    public BPTreeNode createNode(int parent) {
         BPTreeNode n = create(BPTREE_BRANCH) ;
         n.isLeaf = false ;
         n.parent = parent ;
@@ -82,9 +80,11 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     }
 
     /** Fetch a block for the root. */
-    public BPTreeNode getRoot(int id)
-    {
-        return getRead(id, BPlusTreeParams.RootParent) ;
+    public BPTreeNode getRoot(int id) {
+        
+        return getWrite(id, BPlusTreeParams.RootParent) ;
+        // [[Dev-RO]]
+        //return getRead(id, BPlusTreeParams.RootParent) ;
     }
     
     // Maybe we should not inherit but wrap.
@@ -96,16 +96,14 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     { throw new UnsupportedOperationException("call getRead(int, int)") ; }
     
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
-    public BPTreeNode getRead(int id, int parent)
-    {
+    public BPTreeNode getRead(int id, int parent) {
         BPTreeNode n = super.getRead(id) ;
         n.parent = parent ;
         return n ;
     }
-    
+
     /** Fetch a block - fill in the parent id, which is not in the on-disk bytes */
-    public BPTreeNode getWrite(int id, int parent)
-    {
+    public BPTreeNode getWrite(int id, int parent) {
         BPTreeNode n = super.getWrite(id) ;
         n.parent = parent ;
         return n ;
@@ -118,30 +116,26 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         Block2BPTreeNode(BPlusTree bpTree) { this.bpTree = bpTree ; }
         
         @Override
-        public BPTreeNode createFromBlock(Block block, BlockType bType)
-        { 
-            return overlay(bpTree, block, bType==RECORD_BLOCK, 0) ;
+        public BPTreeNode createFromBlock(Block block, BlockType bType) {
+            return overlay(bpTree, block, bType == RECORD_BLOCK, 0) ;
         }
 
         @Override
-        public BPTreeNode fromBlock(Block block)
-        {
-            // synchronized - needed for multiple reader? 
-            synchronized (block)
-            {
+        public BPTreeNode fromBlock(Block block) {
+            // synchronized - needed for multiple reader?
+            synchronized (block) {
                 int x = block.getByteBuffer().getInt(0) ;
                 BlockType type = getType(x) ;
-                
+
                 if ( type != BPTREE_BRANCH && type != BPTREE_LEAF )
-                    throw new BPTreeException("Wrong block type: "+type) ; 
+                    throw new BPTreeException("Wrong block type: " + type) ;
                 int count = decodeCount(x) ;
-                return overlay(bpTree, block, (type==BPTREE_LEAF), count) ;
+                return overlay(bpTree, block, (type == BPTREE_LEAF), count) ;
             }
         }
 
         @Override
-        public Block toBlock(BPTreeNode node)
-        {
+        public Block toBlock(BPTreeNode node) {
             // It's manipulated in-place so no conversion needed, 
             // Just the count needs to be fixed up. 
 //            ByteBuffer bb = node.getBackingByteBuffer() ;
@@ -162,21 +156,18 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
 //    private static final int decCount(int i)     { return -i-1 ; }
 
     // ----
-    private static final BlockType getType(int x)
-    {
-        return BlockType.extract( x>>>24 ) ;
+    private static final BlockType getType(int x) {
+        return BlockType.extract(x >>> 24) ;
     }
-    
-    private static final int encodeCount(BlockType type, int i)
-    {
-        return (type.id()<<24) | (i&0x00FFFFFF) ;
+
+    private static final int encodeCount(BlockType type, int i) {
+        return (type.id() << 24) | (i & 0x00FFFFFF) ;
     }
-    
-    private static final int decodeCount(int i)
-    { 
+
+    private static final int decodeCount(int i) {
         return i & 0x00FFFFFF ;
     }
-    
+
     /** byte[] layout.
      * 
      * New:
@@ -186,80 +177,76 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
      *    4-X:        Records: b+tree.MaxRec*record length
      *    X- :        Pointers: b+tree.MaxPtr*ptr length 
      */
-    private static BPTreeNode overlay(BPlusTree bpTree, Block block, boolean asLeaf, int count)
-    {
-//        if ( byteBuffer.order() != Const.NetworkOrder )
-//            throw new BTreeException("ByteBuffer in wrong order") ;
+    private static BPTreeNode overlay(BPlusTree bpTree, Block block, boolean asLeaf, int count) {
+        // if ( byteBuffer.order() != Const.NetworkOrder )
+        // throw new BTreeException("ByteBuffer in wrong order") ;
 
         // Fix up the id later.
         BPTreeNode n = new BPTreeNode(bpTree, block) ;
         // The count is zero at the root only.
         // When the root is zero, it's a leaf.
-        formatBPTreeNode(n, bpTree, block, asLeaf, -2, count) ; 
+        formatBPTreeNode(n, bpTree, block, asLeaf, -2, count) ;
         return n ;
     }
-        
-    static void formatBPTreeNode(BPTreeNode n, BPlusTree bpTree, Block block, boolean leaf, int parent, int count)
-    {
+
+    static void formatBPTreeNode(BPTreeNode n, BPlusTree bpTree, Block block, boolean leaf, int parent, int count) {
         BPlusTreeParams params = bpTree.getParams() ;
 
         int ptrBuffLen = params.MaxPtr * params.getPtrLength() ;
         // Only store the key part of records in a B+Tree block
-        // OLD - Node table has real value part - what's going on? 
-        
+        // OLD - Node table has real value part - what's going on?
+
         // [Issue:FREC]
-        // Allocate space for record, key and value, despite slight over allocation.
+        // Allocate space for record, key and value, despite slight over
+        // allocation.
         int recBuffLen = params.MaxRec * params.getRecordLength() ;
-        
+
         // [Issue:FREC] Should be: key space only.
         // int recBuffLen = params.MaxRec * params.getKeyLength() ;
 
         n.parent = parent ;
         n.setCount(count) ;
-        n.isLeaf = leaf ; 
+        n.isLeaf = leaf ;
 
         int header = BPlusTreeParams.BlockHeaderSize ;
         int rStart = header ;
-        int pStart = header+recBuffLen ;
+        int pStart = header + recBuffLen ;
 
         // Find the number of pointers.
         int numPtrs = -1 ;
-        
+
         // The root can have count zero - which means one pointer always.
         // Junk when creating a new new node.
-        if ( n.getCount() < 0 )
-        {
+        if ( n.getCount() < 0 ) {
             numPtrs = 0 ;
-            n.setCount(decodeCount(n.getCount())) ; 
-        }
-        else
-            numPtrs = n.getCount()+1 ;
+            n.setCount(decodeCount(n.getCount())) ;
+        } else
+            numPtrs = n.getCount() + 1 ;
 
-        ByteBuffer byteBuffer = block.getByteBuffer() ; 
-        
+        ByteBuffer byteBuffer = block.getByteBuffer() ;
+
         // -- Records area
         byteBuffer.position(rStart) ;
-        byteBuffer.limit(rStart+recBuffLen) ;
+        byteBuffer.limit(rStart + recBuffLen) ;
         ByteBuffer bbr = byteBuffer.slice() ;
-        //bbr.limit(recBuffLen) ;
+        // bbr.limit(recBuffLen) ;
         n.setRecordBuffer(new RecordBuffer(bbr, n.getParams().keyFactory, n.getCount())) ;
 
         // -- Pointers area
         byteBuffer.position(pStart) ;
-        byteBuffer.limit(pStart+ptrBuffLen) ;
-        
+        byteBuffer.limit(pStart + ptrBuffLen) ;
+
         ByteBuffer bbi = byteBuffer.slice() ;
-        //bbi.limit(ptrBuffLen) ;
+        // bbi.limit(ptrBuffLen) ;
         n.ptrs = new PtrBuffer(bbi, numPtrs) ;
 
         // Reset
         byteBuffer.rewind() ;
     }
     
-    static final void formatForRoot(BPTreeNode n, boolean asLeaf)
-    {
+    static final void formatForRoot(BPTreeNode n, boolean asLeaf) {
         BPTreeNodeMgr.formatBPTreeNode(n, n.getBPlusTree(), n.getBackingBlock(), asLeaf, BPlusTreeParams.RootParent, 0) ;
-        // Tweak for the root-specials.  The node is not consistent yet.
+        // Tweak for the root-specials. The node is not consistent yet.
         // Has one dangling pointer.
     }
     
