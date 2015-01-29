@@ -230,14 +230,21 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
         }
     }
 
-    private BPTreeNode getRoot() {
+    private BPTreeNode getRootRead() {
         // No caching here.
-        BPTreeNode root = nodeManager.getRoot(rootIdx) ;
-        // this.root = root ;
-        return root ;
+        return nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
     }
 
-    private void releaseRoot(BPTreeNode rootNode) {
+    private BPTreeNode getRootWrite() {
+        // No caching here.
+        return nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
+    }
+
+    private void releaseRootRead(BPTreeNode rootNode) {
+        rootNode.release() ;
+    }
+
+    private void releaseRootWrite(BPTreeNode rootNode) {
         rootNode.release() ;
     }
 
@@ -262,9 +269,9 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     @Override
     public Record find(Record record) {
         startReadBlkMgr() ;
-        BPTreeNode root = getRoot() ;
+        BPTreeNode root = getRootRead() ;
         Record v = BPTreeNode.search(root, record) ;
-        releaseRoot(root) ;
+        releaseRootRead(root) ;
         finishReadBlkMgr() ;
         return v ;
     }
@@ -278,9 +285,9 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     @Override
     public Record minKey() {
         startReadBlkMgr() ;
-        BPTreeNode root = getRoot() ;
+        BPTreeNode root = getRootRead() ;
         Record r = root.minRecord() ;
-        releaseRoot(root) ;
+        releaseRootRead(root) ;
         finishReadBlkMgr() ;
         return r ;
     }
@@ -288,9 +295,9 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     @Override
     public Record maxKey() {
         startReadBlkMgr() ;
-        BPTreeNode root = getRoot() ;
+        BPTreeNode root = getRootRead() ;
         Record r = root.maxRecord() ;
-        releaseRoot(root) ;
+        releaseRootRead(root) ;
         finishReadBlkMgr() ;
         return r ;
     }
@@ -303,11 +310,11 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     /** Add a record into the B+Tree */
     public Record addAndReturnOld(Record record) {
         startUpdateBlkMgr() ;
-        BPTreeNode root = getRoot() ;
+        BPTreeNode root = getRootWrite() ;
         Record r = BPTreeNode.insert(root, record) ;
         if ( CheckingTree )
             root.checkNodeDeep() ;
-        releaseRoot(root) ;
+        releaseRootWrite(root) ;
         finishUpdateBlkMgr() ;
         return r ;
     }
@@ -319,23 +326,21 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
 
     public Record deleteAndReturnOld(Record record) {
         startUpdateBlkMgr() ;
-        BPTreeNode root = getRoot() ;
+        BPTreeNode root = getRootWrite() ;
         Record r = BPTreeNode.delete(root, record) ;
         if ( CheckingTree )
             root.checkNodeDeep() ;
-        releaseRoot(root) ;
+        releaseRootWrite(root) ;
         finishUpdateBlkMgr() ;
         return r ;
     }
 
+    private static Record noMin = null ; 
+    private static Record noMax = null ; 
+    
     @Override
     public Iterator<Record> iterator() {
-        startReadBlkMgr() ;
-        BPTreeNode root = getRoot() ;
-        Iterator<Record> iter = iterator(root, RecordFactory.mapperRecord) ;
-        releaseRoot(root) ;
-        finishReadBlkMgr() ;
-        return iter ;
+        return iterator(noMin, noMax) ; 
     }
 
     @Override
@@ -346,9 +351,9 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
         startReadBlkMgr() ;
-        BPTreeNode root = getRoot() ;
+        BPTreeNode root = getRootRead() ;
         Iterator<X> iter = iterator(root, minRec, maxRec, mapper) ;
-        releaseRoot(root) ;
+        releaseRootRead(root) ;
         finishReadBlkMgr() ;
         // Note that this end the read-part (find the start), not the iteration.
         // Iterator read blocks still get handled.
@@ -415,9 +420,9 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     @Override
     public boolean isEmpty() {
         startReadBlkMgr() ;
-        BPTreeNode root = getRoot() ;
+        BPTreeNode root = getRootRead() ;
         boolean b = !root.hasAnyKeys() ;
-        releaseRoot(root) ;
+        releaseRootRead(root) ;
         finishReadBlkMgr() ;
         return b ;
     }
@@ -472,17 +477,23 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
 
     @Override
     public void check() {
-        getRoot().checkNodeDeep() ;
+        BPTreeNode root = getRootRead() ;
+        try { root.checkNodeDeep() ; }
+        finally { releaseRootRead(root) ; }
     }
 
     public void dump() {
-        // Caution - nesting.
+        // Caution - nesting via startReadBlkMgr
         startReadBlkMgr() ;
-        getRoot().dump() ;
+        BPTreeNode root = getRootRead() ;
+        try { root.dump() ; }
+        finally { releaseRootRead(root) ; }
         finishReadBlkMgr() ;
     }
 
     public void dump(IndentedWriter out) {
-        getRoot().dump(out) ;
+        BPTreeNode root = getRootRead() ;
+        try { root.dump(out) ; }
+        finally { releaseRootRead(root) ; }
     }
 }
