@@ -79,14 +79,6 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         return n ;
     }
 
-    /** Fetch a block for the root. */
-    public BPTreeNode getRoot(int id) {
-        
-        return getWrite(id, BPlusTreeParams.RootParent) ;
-        // [[Dev-RO]]
-        //return getRead(id, BPlusTreeParams.RootParent) ;
-    }
-    
     // Maybe we should not inherit but wrap.
     @Override
     public BPTreeNode getWrite(int id)
