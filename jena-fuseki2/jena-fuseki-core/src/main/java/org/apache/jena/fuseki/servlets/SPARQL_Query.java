@@ -101,10 +101,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         }
 
         ContentType ct = FusekiLib.getContentType(action) ;
-        String incoming = ct.getContentType() ;
 
         // POST application/x-www-form-url
-        if ( isHtmlForm(ct) ) {
+        // POST ?query= and no Content-Type
+        if ( ct == null || isHtmlForm(ct) ) {
+            // validation checked that if no Content-type, then its a POST with ?query=
             executeWithParameter(action) ;
             return ;
         }
@@ -115,7 +116,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             return ;
         }
 
-        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + incoming) ;
+        ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + ct.getContentType()) ;
     }
 
     // All the params we support
@@ -170,8 +171,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
             if ( matchContentType(ctSPARQLQuery, ct) ) {
                 mustHaveQueryParam = false ;
-            } else if ( matchContentType(ctHTMLForm, ct))
-            {} 
+                // Drop through.
+            } else if ( matchContentType(ctHTMLForm, ct)) {
+                // Nothing specific to do
+            } 
             else
                 ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: " + incoming) ;
         }
