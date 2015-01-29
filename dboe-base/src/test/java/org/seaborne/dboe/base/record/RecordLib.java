@@ -28,8 +28,6 @@ import org.apache.jena.atlas.lib.Bytes ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 
-
-
 /** Record support operations (mainly for testing using ints) */
 
 public class RecordLib
