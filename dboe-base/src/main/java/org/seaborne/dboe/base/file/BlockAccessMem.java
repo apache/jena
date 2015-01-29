@@ -73,7 +73,7 @@ public class BlockAccessMem implements BlockAccess
         if ( safeModeThisMgr ) {
             // [[Dev-RO]]
             blk = blk.replicate() ;
-            // blk.setModified(false) ; // Causes underflow.
+            blk.setModified(false) ; 
         }
         return blk ;
     }
@@ -93,7 +93,7 @@ public class BlockAccessMem implements BlockAccess
         if ( safeModeThisMgr ) {
             block = block.replicate() ;
             // [[Dev-RO]]
-            block.setModified(false) ; // WHY DOES THIS THEN UNDERFLOW?
+            block.setModified(false) ;
         }
         // Memory isn't scaling to multi gigabytes.
         blocks.set(block.getId().intValue(), block) ;

@@ -69,8 +69,6 @@ public class PageBlockMgr<T extends Page>
             // Debug.
             blockMgr.getRead(id) ;
         }
-        else 
-            block.setReadOnly(true); 
         T page = pageFactory.fromBlock(block) ;
         return page ;
     }

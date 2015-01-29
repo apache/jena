@@ -42,7 +42,7 @@ public final class Block
     //private BlockRef blockRef ;
     
 
-    // Information carrying these are not enforced. 
+    // Information carrying -- not enforced. 
     private boolean readOnly = false ;
     private boolean modified = false ;
     

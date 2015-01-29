@@ -58,34 +58,37 @@ public class MainIndex {
         
         //List<Integer> data1 = Arrays.asList( 1 , 3 , 5 , 7 , 9 , 8 , 6 , 4 , 2) ;
         
-        List<Integer> data1 = Arrays.asList( 2 ) ; // , 7 , 8 , 9 } ;
-        List<Integer> data2a = Arrays.asList( 2 , 4, 3) ; // , 7 , 8 , 9 } ;
-        List<Integer> data2b = Arrays.asList( 1 ) ; // , 7 , 8 , 9 } ;
+        List<Integer> data1 = Arrays.asList( 2 ) ; // , 7 , 8 , 9 ) ;
         
-        List<Record> records0 =  data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> records1 =  null ; //data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
-        List<Record> records2 =  null ; // data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Integer> data2a = Arrays.asList( 2 , 4, 3) ; // , 7 , 8 , 9 ) ;
+        List<Integer> data2b= Arrays.asList( 1 ) ; // , 7 , 8 , 9 ) ;
+        
+        List<Record> dataRecords1 =  data1.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2a =  null ; // data2a.stream().map(x->r(x)).collect(Collectors.toList()) ;
+        List<Record> dataRecords2b =  null ; // data2b.stream().map(x->r(x)).collect(Collectors.toList()) ;
         
 //        Runnable r = () -> data2.forEach((x) -> idx.add(r(x)) ) ;
         
-        //records1 = records0 ;
         
         bpt.startBatch();
         
         BPlusTreeParams.Logging = false ;
-        
-        if ( records1 != null )
-            records1.forEach((x) -> { System.err.println("Add "+x) ; bpt.add(x) ;} ) ;
-        
-        System.out.println("After records1") ;
         bpt.dump();
-        BPlusTreeParams.Logging = true ;
-        if ( records2 != null )
-            records2.forEach(bpt::add) ;
+        dataRecords1.forEach(bpt::add) ;
+        
+        if ( false ) {
+            // Two part.
+            dataRecords2a.forEach((x) -> { System.err.println("Add "+x) ; bpt.add(x) ;} ) ;
+            System.out.println("After first records") ;
+            bpt.dump();
+            BPlusTreeParams.Logging = true ;
+            dataRecords2b.forEach(bpt::add) ;
+            System.out.println("After second records") ;    
+        }
 
         bpt.finishBatch();
         
-        System.out.println("After records2") ;
+        
         bpt.dump();
 //        
 //        TransactionCoordinator txnCoord1 = new TransactionCoordinator(Journal.create(Location.mem())) ;

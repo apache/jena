@@ -70,6 +70,9 @@ public class NOTES {
     // Upgrade BPTree to TransactionMVCC
     
     // Block : development code added to enforece read-only use. Marked [[Dev-RO]]
+    //   Remove readonly flag?  A block in a txn may be read in one place and write in another.
+    //   Not actually checked so useless.
+    //   
 
 }
 
