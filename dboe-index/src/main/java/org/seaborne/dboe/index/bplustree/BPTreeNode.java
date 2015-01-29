@@ -140,6 +140,14 @@ public final class BPTreeNode extends BPTreePage
 
     /** Get the page at slot idx - switch between B+Tree and records files */
     private BPTreePage get(int idx, short state) {
+        if ( logging() ) {
+            String s1 = "unknown" ;
+            if ( state == READ ) s1 = "read" ;
+            if ( state == WRITE ) s1 = "write" ;
+            String s2 = isLeaf ? "L" : "N" ;  
+            log.debug(format("get(%d[%s],%s)", idx, s2, s1)) ; 
+        }
+        
         int subId = ptrs.get(idx) ;
         if ( state == READ )
             return getMgrRead(subId) ;
