@@ -44,24 +44,25 @@ public abstract class IRIResolver
         // Allow relative references for file: URLs.
         iriFactory.setSameSchemeRelativeReferences("file") ;
 
+        iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME, false) ;
+        iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME, false) ;
+
         // iriFactory.shouldViolation(false,true);
+        
+        // ** Consider not applying NFC tests
+        //iriFactory.setIsError(ViolationCodes.NOT_NFC, false) ;
+        //iriFactory.setIsError(ViolationCodes.NOT_NFKC, false) ;
+
+        // ** Consider not applying -- applies to various unicode blocks. 
+        // iriFactory.setIsError(ViolationCodes.COMPATIBILITY_CHARACTER, false) ;
 
         // Moderate it -- allow unwise chars and any scheme name.
         // iriFactory.setIsError(ViolationCodes.UNWISE_CHARACTER,false);
         // iriFactory.setIsWarning(ViolationCodes.UNWISE_CHARACTER,false);
-
-        // Various errors for unicode conditions.
-        // iriFactory.setIsError(ViolationCodes.NOT_NFC, false) ;
-        // iriFactory.setIsError(ViolationCodes.NOT_NFKC, false) ;
-        // iriFactory.setIsError(ViolationCodes.UNDEFINED_UNICODE_CHARACTER,
-        // false) ;
-        // iriFactory.setIsError(ViolationCodes.UNASSIGNED_UNICODE_CHARACTER,
-        // false) ;
-        // iriFactory.setIsError(ViolationCodes.COMPATIBILITY_CHARACTER, false)
-        // ;
-
-        iriFactory.setIsError(ViolationCodes.UNREGISTERED_IANA_SCHEME, false) ;
-        iriFactory.setIsWarning(ViolationCodes.UNREGISTERED_IANA_SCHEME, false) ;
+        
+        // iriFactory.setIsError(ViolationCodes.UNDEFINED_UNICODE_CHARACTER, false) ;
+        // iriFactory.setIsError(ViolationCodes.UNASSIGNED_UNICODE_CHARACTER, false) ;
+        
     }
 
     /** Check an IRI string (does not resolve it) */

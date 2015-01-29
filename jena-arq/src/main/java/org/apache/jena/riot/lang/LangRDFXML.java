@@ -43,6 +43,10 @@ import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
 import com.hp.hpl.jena.rdfxml.xmlinput.* ;
 import com.hp.hpl.jena.rdfxml.xmlinput.impl.ARPSaxErrorHandler ;
 
+/** RDF/XML.
+ *
+ * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
+ */
 public class LangRDFXML implements LangRIOT
 {
     // This is not a full member of the RIOT suite because it needs to work
