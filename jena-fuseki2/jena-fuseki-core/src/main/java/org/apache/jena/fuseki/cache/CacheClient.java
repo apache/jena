@@ -24,7 +24,7 @@ import java.util.concurrent.TimeoutException;
 public abstract class CacheClient {
 
     public abstract Object get(Object key) throws InterruptedException, ExecutionException, TimeoutException ;
-    public abstract boolean set(Object key, Object value, int ttl) throws InterruptedException, ExecutionException, TimeoutException ;
+    public abstract boolean set(Object key, Object value) throws InterruptedException, ExecutionException, TimeoutException ;
     public abstract boolean unset(Object key) throws InterruptedException, ExecutionException, TimeoutException ;
 
 }

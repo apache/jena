@@ -48,7 +48,7 @@ public class GuavaCacheClient extends CacheClient{
         return cache.getIfPresent(key);
    }
 
-    public boolean set(Object key, Object value, int ttl) throws InterruptedException, ExecutionException, TimeoutException {
+    public boolean set(Object key, Object value) throws InterruptedException, ExecutionException, TimeoutException {
         cache.put(key,value);
         return true;
     }

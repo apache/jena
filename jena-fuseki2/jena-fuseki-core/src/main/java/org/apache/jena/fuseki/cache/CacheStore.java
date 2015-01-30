@@ -39,13 +39,19 @@ public class CacheStore {
     /** thread pool size for this data store */
     protected int defaultThreadPoolSize = 500 ;
 
-
     /** client for interacting with  Cache store **/
     private final CacheClient client = new GuavaCacheClient();
 
-    /** Time to live for Cache data **/
-    private int ttl;
+    private CacheStore instance;
 
+    public CacheStore getInstance(){
+
+        if(instance==null){
+            instance = new CacheStore();
+            return instance;
+        }
+        return instance;
+    }
 
     /** For testing - reset the places which initialize once */
     public synchronized static void reset() {
@@ -83,7 +89,7 @@ public class CacheStore {
      */
     public boolean doSet(String key, Object data) throws CacheStoreException{
         try{
-          if(client.set(key,data,ttl))
+          if(client.set(key,data))
               return true;
           else
               throw new CacheStoreException("CACHE  INSERT FAILED");
@@ -137,11 +143,6 @@ public class CacheStore {
 
     public void setDefaultThreadPoolSize(int defaultThreadPoolSize) {
         this.defaultThreadPoolSize = defaultThreadPoolSize;
-    }
-    public int getTtl() {return ttl;}
-
-    public void setTtl(int ttl) {
-        this.ttl = ttl;
     }
 
    /** Getters / Setters */

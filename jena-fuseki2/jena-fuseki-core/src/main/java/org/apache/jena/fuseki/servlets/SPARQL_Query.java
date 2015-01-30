@@ -67,7 +67,9 @@ import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
-    
+
+    private CacheStore cacheStore;
+
     public SPARQL_Query() {
         super() ;
     }
@@ -249,13 +251,22 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         try {
             action.beginRead() ;
             Dataset dataset = decideDataset(action, query, queryStringLog) ;
+            SPARQLResult result = null;
             try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
-                if(CacheStore.initialized){
+                if(cacheStore.initialized){
                     action.log.info("CacheStore is initialized") ;
-                    String key = generateKey(action,queryString);
-                }else
-                    action.log.info("CacheStore is not initialized") ;
-                SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
+                    String key = generateKey(action,queryString) ;
+                    Object data = cacheStore.doGet(key);
+                    if(data == null) {
+                        result = executeQuery(action, qExec, query, queryStringLog);
+                        cacheStore.doSet(key, result);
+                    }else
+                        result = (SPARQLResult)data;
+
+                }else {
+                    action.log.info("CacheStore is not initialized");
+                    result = executeQuery(action, qExec, query, queryStringLog);
+                }
                 // Deals with exceptions itself.
                 sendResults(action, result, query.getPrologue()) ;
             }
