@@ -49,6 +49,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.cache.CacheAction;
 import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.riot.web.HttpNames ;
 import org.apache.jena.riot.web.HttpOp ;
@@ -252,7 +253,9 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             action.beginRead() ;
             Dataset dataset = decideDataset(action, query, queryStringLog) ;
             SPARQLResult result = null;
+            CacheAction cacheAction = null;
             try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
+                cacheStore = CacheStore.getInstance();
                 if(cacheStore.initialized){
                     action.log.info("CacheStore is initialized") ;
                     String key = generateKey(action,queryString) ;
@@ -260,15 +263,20 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                     if(data == null) {
                         result = executeQuery(action, qExec, query, queryStringLog);
                         cacheStore.doSet(key, result);
-                    }else
-                        result = (SPARQLResult)data;
+                        cacheAction = new CacheAction(key,CacheAction.Type.WRITE_CACHE);
 
+                    }else
+
+                        result = (SPARQLResult)data;
+                        cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
                 }else {
                     action.log.info("CacheStore is not initialized");
                     result = executeQuery(action, qExec, query, queryStringLog);
+                    cacheAction = new CacheAction("",CacheAction.Type.IDLE);
                 }
                 // Deals with exceptions itself.
-                sendResults(action, result, query.getPrologue()) ;
+                //sendResults(action, result, query.getPrologue()) ;
+                sendResults(action, result, query.getPrologue(), cacheAction) ;
             }
         } catch (QueryCancelledException ex) {
             // Additional counter information.
@@ -392,6 +400,17 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             ResponseModel.doResponseModel(action, result.getModel()) ;
         else if ( result.isBoolean() )
             ResponseResultSet.doResponseResultSet(action, result.getBooleanResult()) ;
+        else
+            ServletOps.errorOccurred("Unknown or invalid result type") ;
+    }
+
+    protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue, CacheAction cacheAction) {
+        if ( result.isResultSet() )
+            ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue,cacheAction) ;
+        else if ( result.isGraph() )
+            ResponseModel.doResponseModel(action, result.getModel(),cacheAction) ;
+        else if ( result.isBoolean() )
+            ResponseResultSet.doResponseResultSet(action, result.getBooleanResult(),cacheAction) ;
         else
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }

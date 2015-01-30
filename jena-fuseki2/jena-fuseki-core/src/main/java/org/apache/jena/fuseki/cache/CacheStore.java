@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class CacheStore {
 
+
     /** flag to check if data store was initialized */
     public static boolean initialized = false ;
 
@@ -42,9 +43,9 @@ public class CacheStore {
     /** client for interacting with  Cache store **/
     private final CacheClient client = new GuavaCacheClient();
 
-    private CacheStore instance;
+    private static CacheStore instance;
 
-    public CacheStore getInstance(){
+    public static CacheStore getInstance(){
 
         if(instance==null){
             instance = new CacheStore();
@@ -123,8 +124,8 @@ public class CacheStore {
         HttpServletRequest req = action.getRequest();
         String uri = ActionLib.actionURI(req);
         String dataSetUri = ActionLib.mapActionRequestToDataset(uri);
-        log.info("CacheStore Key " +dataSetUri+queryString);
-        return dataSetUri+queryString;
+        log.info("CacheStore Key " +dataSetUri+" "+queryString);
+        return dataSetUri+" "+queryString;
     }
 
     /** Getters / Setters */
