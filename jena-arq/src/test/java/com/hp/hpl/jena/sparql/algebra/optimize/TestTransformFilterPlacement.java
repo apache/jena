@@ -327,12 +327,17 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
 
     @Test public void place_distinct_02() {
         test("(filter (= ?x 123) (distinct (bgp (?s ?p ?o)) ))",
-             "(distinct (filter (= ?x 123) (bgp (?s ?p ?o)) ))") ;
+             null) ;
     }
-    
+
     @Test public void place_distinct_03() {
-        test("(filter (= ?x 123) (reduced (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
-             "(reduced (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+        test("(filter (= ?x 123) (distinct (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
+             "(distinct (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+    }
+
+    @Test public void place_distinct_04() {
+        test("(filter ((= ?o 456) (= ?z 987)) (distinct (bgp (?s ?p ?o) )))",
+             "(filter (= ?z 987) (distinct (filter (= ?o 456) (bgp (?s ?p ?o) ))))") ;
     }
 
     @Test public void place_reduced_01() {
@@ -342,15 +347,19 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
 
     @Test public void place_reduced_02() {
         test("(filter (= ?x 123) (reduced (bgp (?s ?p ?o)) ))",
-             "(reduced (filter (= ?x 123) (bgp (?s ?p ?o)) ))") ;
+             null) ;
     }
     
-    @Test public void place_reduced_03() {
-        test("(filter (= ?x 123) (distinct (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
-             "(distinct (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+    @Test public void place_reduced_04() {
+        test("(filter ((= ?o 456) (= ?z 987)) (reduced (bgp (?s ?p ?o) )))",
+             "(filter (= ?z 987) (reduced (filter (= ?o 456) (bgp (?s ?p ?o) ))))") ;
     }
 
-
+    @Test public void place_reduced_03() {
+        test("(filter (= ?x 123) (reduced (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
+             "(reduced (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+    }
+    
     @Test public void place_extend_01() {
         test("(filter (= ?x 123) (extend ((?z 123)) (bgp (?s ?p ?x)) ))",
              "(extend ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
