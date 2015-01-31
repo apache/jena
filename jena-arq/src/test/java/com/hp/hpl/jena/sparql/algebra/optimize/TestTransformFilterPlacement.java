@@ -330,8 +330,6 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              null) ;
     }
 
-    // Breaks for JENA-874 fix but correct (again) when JENA-875 applied.
-    // Same outcome as pre JENA-874 for different reasons.
     @Test public void place_distinct_03() {
         test("(filter (= ?x 123) (distinct (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
              "(distinct (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
@@ -341,7 +339,6 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
         test("(filter ((= ?o 456) (= ?z 987)) (distinct (bgp (?s ?p ?o) )))",
              "(filter (= ?z 987) (distinct (filter (= ?o 456) (bgp (?s ?p ?o) ))))") ;
     }
-             
 
     @Test public void place_reduced_01() {
         test("(filter (= ?x 123) (reduced (bgp (?s ?p ?x)) ))",
@@ -358,8 +355,6 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              "(filter (= ?z 987) (reduced (filter (= ?o 456) (bgp (?s ?p ?o) ))))") ;
     }
 
-    // Breaks for JENA-874 fix but correct (again) when JENA-875 applied.
-    // Same outcome as pre JENA-874 for different reasons.
     @Test public void place_reduced_03() {
         test("(filter (= ?x 123) (reduced (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
              "(reduced (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
