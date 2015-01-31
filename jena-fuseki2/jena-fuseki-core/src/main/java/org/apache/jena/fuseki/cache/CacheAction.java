@@ -7,8 +7,9 @@ import com.hp.hpl.jena.util.cache.Cache;
  */
 public class CacheAction {
 
-    String key;
-    CacheAction.Type type;
+    public CacheAction.Type type;
+
+    private String key;
 
     public CacheAction(String key,CacheAction.Type type){
         this.key = key;

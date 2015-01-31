@@ -43,6 +43,8 @@ import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.cache.CacheAction;
+import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.WebContent ;
@@ -82,16 +84,29 @@ public class ResponseResultSet
         ResponseOps.put(shortNamesResultSet, contentOutputThrift, contentTypeResultsThrift) ;
     }
     
-    interface OutputContent { void output(ServletOutputStream out) ; }
+    interface OutputContent {
+        void output(ServletOutputStream out) ;
+        void output(ServletOutputStream out, StringBuilder cacheBuilder) ;
+    }
 
     public static void doResponseResultSet(HttpAction action, Boolean booleanResult)
     {
         doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean) ;
     }
 
+    public static void doResponseResultSet(HttpAction action, Boolean booleanResult, CacheAction cacheAction)
+    {
+        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean, cacheAction) ;
+    }
+
     public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue)
     {
         doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable) ;
+    }
+
+    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue, CacheAction cacheAction)
+    {
+        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable, cacheAction) ;
     }
     
     // If we refactor the conneg into a single function, we can split boolean and result set handling. 
@@ -159,8 +174,71 @@ public class ResponseResultSet
         else
             ServletOps.errorBadRequest("Can't determine output serialization: "+serializationType) ;
     }
-    
-    
+
+    private static void doResponseResultSet$(HttpAction action,
+                                             ResultSet resultSet, Boolean booleanResult,
+                                             Prologue qPrologue,
+                                             AcceptList contentTypeOffer,
+                                             CacheAction cacheAction)
+    {
+        HttpServletRequest request = action.request ;
+        HttpServletResponse response = action.response ;
+        long id = action.id ;
+
+        if ( resultSet == null && booleanResult == null )
+        {
+            xlog.warn("doResponseResult: Both result set and boolean result are null") ;
+            throw new FusekiException("Both result set and boolean result are null") ;
+        }
+
+        if ( resultSet != null && booleanResult != null )
+        {
+            xlog.warn("doResponseResult: Both result set and boolean result are set") ;
+            throw new FusekiException("Both result set and boolean result are set") ;
+        }
+
+        String mimeType = null ;
+        MediaType i = ConNeg.chooseContentType(request, contentTypeOffer, DEF.acceptRSXML) ;
+        if ( i != null )
+            mimeType = i.getContentType() ;
+
+        // Override content type
+        // Does &output= override?
+        // Requested output type by the web form or &output= in the request.
+        String outputField = ResponseOps.paramOutput(request, shortNamesResultSet) ;    // Expands short names
+        if ( outputField != null )
+            mimeType = outputField ;
+
+        String serializationType = mimeType ;           // Choose the serializer based on this.
+        String contentType = mimeType ;                 // Set the HTTP respose header to this.
+
+        // Stylesheet - change to application/xml.
+        final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
+        if ( stylesheetURL != null && equal(serializationType,contentTypeResultsXML) )
+            contentType = contentTypeXML ;
+
+        // Force to text/plain?
+        String forceAccept = ResponseOps.paramForceAccept(request) ;
+        if ( forceAccept != null )
+            contentType = contentTypeTextPlain ;
+
+        // Better : dispatch on MediaType
+        if ( equal(serializationType, contentTypeResultsXML) )
+            sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
+        else if ( equal(serializationType, contentTypeResultsJSON) )
+            jsonOutput(action, contentType, resultSet, booleanResult, cacheAction) ;
+        else if ( equal(serializationType, contentTypeTextPlain) )
+            textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
+        else if ( equal(serializationType, contentTypeTextCSV) )
+            csvOutput(action, contentType, resultSet, booleanResult) ;
+        else if (equal(serializationType, contentTypeTextTSV) )
+            tsvOutput(action, contentType, resultSet, booleanResult) ;
+        else if (equal(serializationType, WebContent.contentTypeResultsThrift) )
+            thriftOutput(action, contentType, resultSet, booleanResult) ;
+        else
+            ServletOps.errorBadRequest("Can't determine output serialization: "+serializationType) ;
+    }
+
     public static void setHttpResponse(HttpAction action, 
 //                                       HttpServletRequest httpRequest,
 //                                       HttpServletResponse httpResponse,
@@ -198,10 +276,13 @@ public class ResponseResultSet
                     ResultSetFormatter.outputAsXML(out, resultSet, stylesheetURL) ;
                 if ( booleanResult != null )
                     ResultSetFormatter.outputAsXML(out, booleanResult.booleanValue(), stylesheetURL) ;
-            }} ;
+            }
+            @Override
+            public void output(ServletOutputStream out, StringBuilder cacheBuilder) {}
+            } ;
             output(action, contentType, null, proc) ;
         }
-    
+
     private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult)
     {
         OutputContent proc = new OutputContent(){
@@ -213,8 +294,11 @@ public class ResponseResultSet
                 if (  booleanResult != null )
                     ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue()) ;
             }
+            @Override
+            public void output(ServletOutputStream out, StringBuilder cacheBuilder) {}
+
         } ;
-        
+
         try {
             String callback = ResponseOps.paramCallback(action.request) ;
             ServletOutputStream out = action.response.getOutputStream() ;
@@ -233,7 +317,60 @@ public class ResponseResultSet
                 out.println(")") ;
         } catch (IOException ex) { IO.exception(ex) ; }
     }
-    
+
+    private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult, final CacheAction cacheAction)
+    {
+        OutputContent proc = new OutputContent(){
+            @Override
+            public void output(ServletOutputStream out)
+            {
+                if ( resultSet != null )
+                    ResultSetFormatter.outputAsJSON(out, resultSet) ;
+                if (  booleanResult != null )
+                    ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue()) ;
+            }
+            @Override
+            public void output(ServletOutputStream out, StringBuilder cacheBuilder)
+            {
+                if ( resultSet != null )
+                    ResultSetFormatter.outputAsJSON(out, resultSet, cacheBuilder) ;
+                if (  booleanResult != null )
+                    ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue(), cacheBuilder) ;
+            }
+        } ;
+
+        try {
+            String callback = ResponseOps.paramCallback(action.request) ;
+            ServletOutputStream out = action.response.getOutputStream() ;
+            CacheStore cacheStore = CacheStore.getInstance();
+
+            if(CacheAction.Type.WRITE_CACHE == cacheAction.type) {
+
+                StringBuilder cacheBuilder = new StringBuilder();
+
+                if (callback != null) {
+                    callback = callback.replace("\r", "");
+                    callback = callback.replace("\n", "");
+                    cacheBuilder.append(callback);
+                    cacheBuilder.append("(");
+                    out.print(callback);
+                    out.println("(");
+                }
+                output(action, contentType, charsetUTF8, proc, cacheBuilder, cacheAction);
+
+                if (callback != null) {
+                    cacheBuilder.append(")");
+                    out.println(")");
+                }
+                cacheStore.doSet(cacheAction.getKey(),cacheBuilder);
+            }else{
+
+                StringBuilder cache =  (StringBuilder) cacheStore.doGet(cacheAction.getKey());
+                output(action, contentType, charsetUTF8, proc, cache, cacheAction);
+            }
+        } catch (IOException ex) { IO.exception(ex) ; }
+    }
+
     private static void textOutput(HttpAction action, String contentType, final ResultSet resultSet, final Prologue qPrologue, final Boolean booleanResult)
     {
         // Text is not streaming.
@@ -246,6 +383,9 @@ public class ResponseResultSet
                 if (  booleanResult != null )
                     ResultSetFormatter.out(out, booleanResult.booleanValue()) ;
             }
+            @Override
+            public void output(ServletOutputStream out, StringBuilder cacheBuilder) {}
+
         };
 
         output(action, contentType, charsetUTF8, proc) ;
@@ -261,6 +401,9 @@ public class ResponseResultSet
                 if (  booleanResult != null )
                     ResultSetFormatter.outputAsCSV(out, booleanResult.booleanValue()) ;
             }
+            @Override
+            public void output(ServletOutputStream out, StringBuilder cacheBuilder) {}
+
         } ;
         output(action, contentType, charsetUTF8, proc) ; 
     }
@@ -275,6 +418,9 @@ public class ResponseResultSet
                 if (  booleanResult != null )
                     ResultSetFormatter.outputAsTSV(out, booleanResult.booleanValue()) ;
             }
+            @Override
+            public void output(ServletOutputStream out, StringBuilder cacheBuilder) {}
+
         } ;
         output(action, contentType, charsetUTF8, proc) ; 
     }
@@ -289,6 +435,9 @@ public class ResponseResultSet
                 if ( booleanResult != null )
                     xlog.error("Can't write boolen result in thrift") ;
             }
+            @Override
+            public void output(ServletOutputStream out, StringBuilder cacheBuilder) {}
+
         } ;
         output(action, contentType, WebContent.charsetUTF8, proc) ; 
     }
@@ -319,4 +468,38 @@ public class ResponseResultSet
         // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
         // then the JSON callback closing details can't be added. 
     }
+
+    private static void output(HttpAction action, String contentType, String charset, OutputContent proc, StringBuilder cacheBuilder, CacheAction cacheAction)
+    {
+        try {
+            setHttpResponse(action, contentType, charset) ;
+            action.response.setStatus(HttpSC.OK_200) ;
+            ServletOutputStream out = action.response.getOutputStream() ;
+            try
+            {
+                if(CacheAction.Type.WRITE_CACHE == cacheAction.type) {
+                    proc.output(out,cacheBuilder);
+                    out.flush();
+                }else{
+                    out.println(cacheBuilder.toString());
+                    out.flush();
+                }
+            } catch (QueryCancelledException ex) {
+                // Bother.  Status code 200 already sent.
+                action.log.info(format("[%d] Query Cancelled - results truncated (but 200 already sent)", action.id)) ;
+                out.println() ;
+                out.println("##  Query cancelled due to timeout during execution   ##") ;
+                out.println("##  ****          Incomplete results           ****   ##") ;
+                out.flush() ;
+                // No point raising an exception - 200 was sent already.
+                //errorOccurred(ex) ;
+            }
+            // Includes client gone.
+        } catch (IOException ex)
+        { ServletOps.errorOccurred(ex) ; }
+        // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
+        // then the JSON callback closing details can't be added.
+    }
+
+
 }

@@ -34,12 +34,17 @@ public interface OutputFormatter
     
     public void format(OutputStream out, ResultSet resultSet) ;
 
+    public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder) ;
+
+
     /** Format a boolean result - output on the given stream
      * @param out
      * @param booleanResult
      */
     
     public void format(OutputStream out, boolean booleanResult) ;
+
+    public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder) ;
     
     /** Turn into a string */
     public String asString(ResultSet resultSet) ;

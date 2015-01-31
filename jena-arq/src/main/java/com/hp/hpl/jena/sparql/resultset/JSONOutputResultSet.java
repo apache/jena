@@ -55,7 +55,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
     
     JSONOutputResultSet(OutputStream outStream)
     { this(new IndentedWriter(outStream)) ; }
-    
+
     JSONOutputResultSet(IndentedWriter indentedOut)
     {   out = indentedOut ;
         outputGraphBNodeLabels = ARQ.isTrue(ARQ.outputGraphBNodeLabels) ;

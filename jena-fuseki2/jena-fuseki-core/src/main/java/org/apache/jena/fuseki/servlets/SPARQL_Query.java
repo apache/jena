@@ -408,7 +408,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         if ( result.isResultSet() )
             ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue,cacheAction) ;
         else if ( result.isGraph() )
-            ResponseModel.doResponseModel(action, result.getModel(),cacheAction) ;
+            ResponseModel.doResponseModel(action, result.getModel()) ;
         else if ( result.isBoolean() )
             ResponseResultSet.doResponseResultSet(action, result.getBooleanResult(),cacheAction) ;
         else

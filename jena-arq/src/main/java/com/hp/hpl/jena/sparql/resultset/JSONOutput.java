@@ -35,6 +35,15 @@ public class JSONOutput extends OutputBase
         ResultSetApply a = new ResultSetApply(resultSet, jsonOut) ;
         a.apply() ;
     }
+    @Override
+    public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder)
+    {
+        // Use direct string output - more control
+
+        JSONOutputResultSet jsonOut =  new JSONOutputResultSet(out, cacheBuilder) ;
+        ResultSetApply a = new ResultSetApply(resultSet, jsonOut, cacheBuilder) ;
+        a.apply() ;
+    }
 
     @Override
     public void format(OutputStream out, boolean booleanResult)
@@ -42,4 +51,11 @@ public class JSONOutput extends OutputBase
         JSONOutputASK jsonOut = new JSONOutputASK(out) ;
         jsonOut.exec(booleanResult) ;
     }
+    @Override
+    public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder)
+    {
+        JSONOutputASK jsonOut = new JSONOutputASK(out, cacheBuilder) ;
+        jsonOut.exec(booleanResult, cacheBuilder) ;
+    }
+
 }
