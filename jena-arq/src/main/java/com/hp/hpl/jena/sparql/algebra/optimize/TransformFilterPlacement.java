@@ -643,24 +643,29 @@ public class TransformFilterPlacement extends TransformCopy {
         return processSubOp1(pushed, unpushed, input) ;
     }
 
-    // For a  modifier without expressions (distinct, reduced), we push filters at least inside
-    // the modifier itself because does not affect scope.  It may enable parallel execution.
+    // For a modifier without expressions (distinct, reduced), we could
+    // push that inside the modifier if that were all there was.  But the 
+    // expressions may be processed elsewhere in the overall algebra.
+    // Putting them inside the modifier would lock them here as they don't
+    // get returned in the Placement as "unplaced."  
+    
+    // This is the cause of JENA-874.
+   
     private Placement placeDistinctReduced(ExprList exprs, OpDistinctReduced input) {
         Op subOp = input.getSubOp() ;
         Placement p = transform(exprs, subOp) ;
-        
-//        if ( p == null )
-//            // If push in IFF it makes a difference further in.
-//            return resultNoChange(input) ;
-        
-        // Always push in.
-        // This is safe even if the filter contains vars not defined by the subOp
-        // OpDistinctReduced has the same scope inside and outside.
-        Op op = ( p == null )
-                ? OpFilter.filter(exprs, subOp)
-                : OpFilter.filter(p.unplaced, p.op) ;
+
+        if ( p == null )
+            // No effect - we do not manage to make a change.
+            return resultNoChange(input) ;
+
+        // Rebuild.
+        // We managed to place at least some expressions.
+        Op op = p.op ;
+        // Put back distinct/reduced
         op = input.copy(op) ;
-        return result(op, emptyList) ;
+        // Return with unplaced filters. 
+        return result(op, p.unplaced) ;
     }
     
     private Placement placeTable(ExprList exprs, OpTable input) {
