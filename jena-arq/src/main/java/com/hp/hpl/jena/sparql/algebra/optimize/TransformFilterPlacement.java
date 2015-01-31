@@ -605,8 +605,8 @@ public class TransformFilterPlacement extends TransformCopy {
 
         // There are three cases:
         // 1 - expressions that can be pushed into the subop.
-        // 2 - expressions that are covered when the extend/assign has applied.
-        // 3 - "unpushed" : expressions that are not covered even at the outermost level.
+        // 2 - expressions that are covered when the extend/assign has applied. [wrapping]
+        // 3 - expressions that are not covered even at the outermost level. [unplaced]
         
         List<Var> vars1 = input.getVarExprList().getVars() ;
         Op subOp = input.getSubOp() ;
