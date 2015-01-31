@@ -599,30 +599,48 @@ public class TransformFilterPlacement extends TransformCopy {
     }
     
     private Placement processExtendAssign(ExprList exprs, OpExtendAssign input) {
-        // We assume that each (extend) and (assign) is in simple form - always one 
-        // assignment.  We cope with the general form (multiple assignments)
-        // but do not attempt reordering of assignments.
+        // We assume that each (extend) and (assign) is usually in simple form -
+        // always one assignment. We cope with the general form (multiple
+        // assignments) but do not attempt reordering of assignments.
+
+        // There are three cases:
+        // 1 - expressions that can be pushed into the subop.
+        // 2 - expressions that are covered when the extend/assign has applied.
+        // 3 - "unpushed" : expressions that are not covered even at the outermost level.
+        
         List<Var> vars1 = input.getVarExprList().getVars() ;
-        ExprList pushed = new ExprList() ;
-        ExprList unpushed = new ExprList() ;
         Op subOp = input.getSubOp() ;
-        Set<Var> subVars = OpVars.fixedVars(subOp) ;
         
-        for ( Expr expr : exprs ) {
-            Set<Var> exprVars = expr.getVarsMentioned() ;
-            if ( disjoint(vars1, exprVars) && subVars.containsAll(exprVars) ) 
-                pushed.add(expr);
-            else
-                unpushed.add(expr) ;
+        // Case 1 : Do as much inner placement as possible.
+        ExprList remaining = exprs ;
+        Placement p = transform(exprs, input.getSubOp()) ;
+        if ( p != null ) {
+            subOp = p.op ;
+            remaining = p.unplaced ;
         }
-                
-        if ( pushed.isEmpty() )
-            return resultNoChange(input) ;
         
-        // (filter ... (extend ... ))
-        //   ===>
-        // (extend ... (filter ... ))
-        return processSubOp1(pushed, unpushed, input) ;
+        // Case 2 : wrapping
+        // Case 3 : unplaced
+        
+        // Variables in subop and introduced by (extend)/(assign)
+        Set<Var> subVars = OpVars.fixedVars(subOp) ;
+        subVars.addAll(input.getVarExprList().getVars()) ;
+        
+        ExprList wrapping = new ExprList() ; 
+        ExprList unplaced = new ExprList() ;
+            
+        for ( Expr expr : remaining ) {
+            Set<Var> exprVars = expr.getVarsMentioned() ;
+            if ( subVars.containsAll(exprVars) )
+                wrapping.add(expr) ;
+            else
+                unplaced.add(expr) ;
+        }
+        
+        Op result = input.copy(subOp) ;
+        if ( ! wrapping.isEmpty() )
+            result = OpFilter.filter(wrapping, result) ;
+        return result(result, unplaced) ; 
     }
 
     private Placement placeProject(ExprList exprs, OpProject input) {

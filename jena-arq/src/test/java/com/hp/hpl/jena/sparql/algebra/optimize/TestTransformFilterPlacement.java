@@ -334,8 +334,7 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
     // Same outcome as pre JENA-874 for different reasons.
     @Test public void place_distinct_03() {
         test("(filter (= ?x 123) (distinct (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
-             null) ;
-            //"(distinct (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+             "(distinct (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
     }
 
     @Test public void place_distinct_04() {
@@ -354,12 +353,16 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
              null) ;
     }
     
+    @Test public void place_reduced_04() {
+        test("(filter ((= ?o 456) (= ?z 987)) (reduced (bgp (?s ?p ?o) )))",
+             "(filter (= ?z 987) (reduced (filter (= ?o 456) (bgp (?s ?p ?o) ))))") ;
+    }
+
     // Breaks for JENA-874 fix but correct (again) when JENA-875 applied.
     // Same outcome as pre JENA-874 for different reasons.
     @Test public void place_reduced_03() {
         test("(filter (= ?x 123) (reduced (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
-             null ) ;
-            //"(reduced (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+             "(reduced (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
     }
     
     @Test public void place_extend_01() {
@@ -435,8 +438,8 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
             ,"  (extend ((?w 2))"
             ,"    (filter (= ?s 'S')"
             ,"      (extend ((?s 1))"
-            ,"        (filter (= ?a 'A')"
-            ,"          (distinct"
+            ,"        (distinct"
+            ,"          (filter (= ?a 'A')"
             ,"            (extend ((?a 2))"
             ,"              (filter (= ?b 'B')"
             ,"                (extend ((?b 1))"
@@ -529,8 +532,8 @@ public class TestTransformFilterPlacement extends BaseTest { //extends AbstractT
             ,"  (assign ((?w 2))"
             ,"    (filter (= ?s 'S')"
             ,"      (assign ((?s 1))"
-            ,"        (filter (= ?a 'A')"
-            ,"          (distinct"
+            ,"        (distinct"
+            ,"          (filter (= ?a 'A')"
             ,"            (assign ((?a 2))"
             ,"              (filter (= ?b 'B')"
             ,"                (assign ((?b 1))"
