@@ -78,7 +78,7 @@
     <module>dboe-transaction</module>
     <module>dboe-index</module>
     <module>dboe-quack</module>
-    <module>dboe-trans-base</module> <!-- legion?? mantis? -->
+    <module>dboe-trans-data</module>
   </modules>
 
 </project>
