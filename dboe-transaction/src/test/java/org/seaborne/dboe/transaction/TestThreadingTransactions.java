@@ -145,9 +145,12 @@ public class TestThreadingTransactions {
         threadReadAsync("[04/2]", transInt, InitValue, semaBefore1, semaAfter);
         threadReadAsync("[04/3]", transInt, InitValue, semaBefore1, semaAfter);
         
-        Txn.executeWrite(transInt, transInt::inc);  // ++
+        Txn.executeWrite(transInt, transInt::inc);
+        // The above does not mean all other threads starting at this point now see the new value. 
+        //Assert.assertEquals(InitValue+1, transInt.get()) ;
         
-        // ???
+        // ??? Write barrer? Without the above assertEquals, this is seem to fail someimes.
+        // Maybe TransactionalInteger->TransInt needs force the atomic at transaction start.
         threadReadAsync("[04/3]", transInt, InitValue+1, semaBefore2, semaAfter);
         
         
