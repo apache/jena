@@ -54,4 +54,23 @@ public class JSONOutputASK
 
         IO.flush(outStream) ;
     }
+
+    public void exec(boolean result, StringBuilder cacheBuilder)
+    {
+        JSWriter out = new JSWriter(outStream, cacheBuilder) ;
+
+        out.startOutput() ;
+
+        out.startObject() ;
+        out.key(kHead) ;
+        out.startObject() ;
+        out.finishObject() ;
+        out.pair(kBoolean, result) ;
+        out.finishObject() ;
+
+        out.finishOutput() ;
+
+        IO.flush(outStream) ;
+    }
+
 }

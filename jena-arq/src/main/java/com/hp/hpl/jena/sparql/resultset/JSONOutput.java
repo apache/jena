@@ -51,6 +51,7 @@ public class JSONOutput extends OutputBase
         JSONOutputASK jsonOut = new JSONOutputASK(out) ;
         jsonOut.exec(booleanResult) ;
     }
+
     @Override
     public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder)
     {
