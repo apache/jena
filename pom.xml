@@ -65,7 +65,7 @@
   <properties>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-    <ver.jena>2.12.2-SNAPSHOT</ver.jena>
+    <ver.jena>2.13.0-SNAPSHOT</ver.jena>
     <ver.tdb>1.1.2-SNAPSHOT</ver.tdb>
     <ver.fuseki>2.0.0-SNAPSHOT</ver.fuseki>
     <ver.junit>4.12-beta-3</ver.junit>
