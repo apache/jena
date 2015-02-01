@@ -56,7 +56,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  * Brief tests of the Jena modules covered by jena-osgi
  * <p>
  * Do NOT add tests to this class without also adding a
- * @Test-annotated method to the interface JenaOSGITest
+ * \@Test-annotated method to the interface JenaOSGITest
  * -- otherwise it won't be picked up when testing inside OSGi
  *  
  */
