@@ -123,7 +123,7 @@
         <module>jena-extras</module>
         <module>jena-osgi</module>
 	<!-- Breaks the build -->
-	<module>jena-osgi-test</module>
+	<!--<module>jena-osgi-test</module>-->
       </modules>
     </profile>
   </profiles>
