@@ -121,6 +121,7 @@
         <module>apache-jena-libs</module>
         <module>apache-jena</module>
         <module>jena-extras</module>
+        <module>jena-osgi</module>
       </modules>
     </profile>
   </profiles>
@@ -161,4 +162,7 @@
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
+  <modules>
+  	<module>jena-osgi-test</module>
+  </modules>
 </project>
