@@ -16,7 +16,9 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
@@ -27,10 +29,6 @@
   <version>2.12.2-SNAPSHOT</version>
   <description>
       Embedding all Jena modules in a single OSGi bundle.
-      This works around classloader issues such as Jena's use of
-      Class.forName(), but does not yet support other OSGi bundles
-      to easily plug in 3rd party Jena implementations of say readers
-      and writers.
   </description>
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -39,143 +37,126 @@
     <relativePath>../jena-parent</relativePath>
   </parent>
 
-  <properties>
-    <!-- TODO: Move to jena-parent? -->
-    <ver.jena>2.12.2-SNAPSHOT</ver.jena>
-    <ver.jena-iri>1.1.2-SNAPSHOT</ver.jena-iri>
-    <ver.jena-tdb>1.1.2-SNAPSHOT</ver.jena-tdb>
-    <ver.httpcore>4.2.5</ver.httpcore>
-    <ver.jackson>2.3.3</ver.jackson> <!-- should match dependency in jsonld-java -->
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>${ver.jena}</version>
+      <version>2.12.2-SNAPSHOT</version>
       <scope>provided</scope>
-            <exclusions>
-              <!-- These are all embedded within httpclient-osgi -->
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpmime</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient-cache</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>fluent-hc</artifactId>
-              </exclusion>
-            </exclusions>
+      <exclusions>
+	<!-- These are all embedded within httpclient-osgi -->
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpclient</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>commons-codec</groupId>
+	  <artifactId>commons-codec</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpmime</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpclient-cache</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>fluent-hc</artifactId>
+	</exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>${ver.jena}</version>
+      <version>2.12.2-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>${ver.jena-tdb}</version>
+      <version>1.1.2-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>${ver.jena-iri}</version>
+      <version>1.1.2-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
-    <!-- Disabled as this is not included in apache-jena distribution
+    <!-- OSGi versions of Jena dependencies -->
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-fuseki</artifactId>
-      <version>${ver.fuseki}</version>
-      <scope>provided</scope>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient-osgi</artifactId>
+      <version>${ver.httpclient}</version>
+      <exclusions>
+	<!-- These are all embedded within httpclient-osgi -->
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpclient</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>commons-codec</groupId>
+	  <artifactId>commons-codec</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpmime</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpclient-cache</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>fluent-hc</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore-osgi</artifactId>
+      <version>${ver.httpcore}</version> 
+      <exclusions>
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpcore</artifactId>
+	</exclusion>
+	<exclusion>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpcore-nio</artifactId>
+	</exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.github.jsonld-java</groupId>
+      <artifactId>jsonld-java</artifactId>
+    </dependency>
+    <!--
+      but until jsonld-java 0.5.1, we'll need to depend on jackson-databind
+      and jackson-core ourselves as bundles:
+    
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${ver.jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${ver.jackson}</version>
     </dependency>
     -->
 
-    <!-- OSGi versions of Jena dependencies -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-osgi</artifactId>
-            <version>${ver.httpclient}</version>
-            <exclusions>
-              <!-- These are all embedded within httpclient-osgi -->
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpmime</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient-cache</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>fluent-hc</artifactId>
-              </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpcore-osgi</artifactId>
-          <version>${ver.httpcore}</version> 
-            <exclusions>
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore-nio</artifactId>
-              </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>com.github.jsonld-java</groupId>
-          <artifactId>jsonld-java</artifactId>
-        </dependency>
-        <!--
-             but until jsonld-java 0.5.1, we'll need to depend on jackson-databind and jackson-core ourselves
-             as bundles:
-        <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-core</artifactId>
-          <version>${ver.jackson}</version>
-        </dependency>
-        <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-databind</artifactId>
-          <version>${ver.jackson}</version>
-        </dependency>
-             -->
-
-        <dependency>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-csv</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
@@ -208,17 +189,17 @@
 
   <build>
     <plugins>
-        <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <configuration>
-                <instructions>
-                    <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
-                    <Embed-Dependency>artifactId=jena*;inline=true,artifactId=xercesImpl;inline=true,artifactId=xml-apis;inline=true</Embed-Dependency>
-                    <Embed-Transitive>true</Embed-Transitive>
-                    <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,*</Import-Package>
-                </instructions>
-            </configuration>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>com.hp.hpl.jena.*,org.apache.jena.*</Export-Package>
+            <Embed-Dependency>artifactId=jena*;inline=true,artifactId=xercesImpl;inline=true,artifactId=xml-apis;inline=true</Embed-Dependency>
+            <Embed-Transitive>true</Embed-Transitive>
+            <Import-Package>!sun.io,!org.apache.avalon.framework.logger,!com.ibm.uvm.tools,!com.sun.jdmk.comm,!org.apache.log,!org.apache.xml.*,!org.apache.xerces.*,*</Import-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
