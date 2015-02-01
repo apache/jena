@@ -42,6 +42,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.cache.CacheAction;
 import org.apache.jena.fuseki.cache.CacheStore;
@@ -62,6 +63,7 @@ import com.hp.hpl.jena.sparql.core.Prologue ;
 public class ResponseResultSet
 {
     private static Logger xlog = LoggerFactory.getLogger(ResponseResultSet.class) ;
+    private static Logger log = Fuseki.cacheLog ;
 
     // Short names for "output="
     private static final String contentOutputJSON          = "json" ;
@@ -362,7 +364,8 @@ public class ResponseResultSet
                     cacheBuilder.append(")");
                     out.println(")");
                 }
-                cacheStore.doSet(cacheAction.getKey(),cacheBuilder);
+                log.info("cacheBuilder ====== " + cacheBuilder.toString());
+                cacheStore.doSet(cacheAction.getKey(), cacheBuilder);
             }else{
 
                 StringBuilder cache =  (StringBuilder) cacheStore.doGet(cacheAction.getKey());
@@ -481,6 +484,8 @@ public class ResponseResultSet
                     proc.output(out,cacheBuilder);
                     out.flush();
                 }else{
+                    log.info("I am here!!!!!");
+                    log.info("cacheBuilder ==== "+cacheBuilder);
                     out.println(cacheBuilder.toString());
                     out.flush();
                 }

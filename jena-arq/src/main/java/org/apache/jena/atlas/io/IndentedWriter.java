@@ -36,7 +36,9 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     public static final IndentedWriter stdout = new IndentedWriter(System.out) ;
     /** Stderr wrapped in an IndentedWriter - no line numbers */
     public static final IndentedWriter stderr = new IndentedWriter(System.err) ;
-    
+
+    public StringBuilder cb = new StringBuilder();
+
     static {
         stdout.setFlushOnNewline(true) ;
         stderr.setFlushOnNewline(true) ;
@@ -46,7 +48,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     // 2/ newline() then no text, then finish should not cause a line number.
     
     protected Writer out = null ;
-    
+
     protected static final int INDENT = 2 ;
     protected int unitIndent = INDENT ;
     protected int currentIndent = 0 ;
@@ -65,13 +67,20 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
-    
+
+    public IndentedWriter(OutputStream outStream, StringBuilder cacheBuilder) { this(outStream, false, cacheBuilder) ; }
+
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers)
     {
         this(makeWriter(outStream), withLineNumbers) ;
     }
-    
+
+    public IndentedWriter(OutputStream outStream, boolean withLineNumbers, StringBuilder cacheBuilder)
+    {
+        this(makeWriter(outStream), withLineNumbers, cacheBuilder) ;
+    }
+
     private static Writer makeWriter(OutputStream out)
     {
         // return BufferingWriter.create(out) ;
@@ -88,7 +97,13 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         lineNumbers = withLineNumbers ;
         startingNewLine = true ;
     }
-
+    protected IndentedWriter(Writer writer, boolean withLineNumbers, StringBuilder cacheBuilder)
+    {
+        out = writer ;
+        lineNumbers = withLineNumbers ;
+        startingNewLine = true ;
+        cb = cacheBuilder;
+    }
     @Override
     public void print(String str) 
     {
@@ -168,10 +183,20 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
 
     private void write$(char ch) 
-    { try { out.write(ch) ; } catch (IOException ex) { throw new RuntimeIOException(ex) ; } }
+    {
+        try {
+            out.write(ch) ;
+            cb.append(ch);
+        }
+        catch (IOException ex) { throw new RuntimeIOException(ex) ; } }
     
     private void write$(String s) 
-    { try { out.write(s) ; } catch (IOException ex) { throw new RuntimeIOException(ex) ; } }
+    {
+        try {
+        out.write(s) ;
+        cb.append(s);
+        }
+        catch (IOException ex) { throw new RuntimeIOException(ex) ; } }
     
     public void newline()
     {

@@ -34,7 +34,7 @@ public interface OutputFormatter
     
     public void format(OutputStream out, ResultSet resultSet) ;
 
-    public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder) ;
+    //public void format(OutputStream out, ResultSet resultSet, StringBuilder cacheBuilder) ;
 
 
     /** Format a boolean result - output on the given stream
@@ -44,7 +44,7 @@ public interface OutputFormatter
     
     public void format(OutputStream out, boolean booleanResult) ;
 
-    public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder) ;
+    //public void format(OutputStream out, boolean booleanResult, StringBuilder cacheBuilder) ;
     
     /** Turn into a string */
     public String asString(ResultSet resultSet) ;

@@ -49,6 +49,8 @@ public class JSWriter {
 
     public JSWriter(OutputStream ps) { this(new IndentedWriter(ps)) ; }
 
+    public JSWriter(OutputStream ps,StringBuilder cacheBuilder) { this(new IndentedWriter(ps, cacheBuilder)) ; }
+
     public JSWriter(IndentedWriter ps) { out = ps ; }
 
     public void startOutput() {}

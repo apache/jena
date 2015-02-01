@@ -59,6 +59,7 @@ import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
+import org.slf4j.Logger;
 
 /** Handle SPARQL Query requests overt eh SPARQL Protocol. 
  * Subclasses provide this algorithm with the actual dataset to query, whether
@@ -67,6 +68,8 @@ import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
  */ 
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
+    private static Logger log = Fuseki.cacheLog ;
+
     private static final String QueryParseBase = Fuseki.BaseParserSPARQL ;
 
     private CacheStore cacheStore;
@@ -260,20 +263,26 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
                 cacheStore = CacheStore.getInstance();
                 if(cacheStore.initialized){
-                    action.log.info("CacheStore is initialized") ;
+                    log.info("CacheStore is initialized") ;
                     String key = generateKey(action,queryString) ;
                     Object data = cacheStore.doGet(key);
                     if(data == null) {
+                        log.info("Data is null so write cache");
                         result = executeQuery(action, qExec, query, queryStringLog);
-                        cacheStore.doSet(key, result);
-                        cacheAction = new CacheAction(key,CacheAction.Type.WRITE_CACHE);
 
-                    }else
+                        if(query.isConstructType() || query.isDescribeType()) {
+                            cacheStore.doSet(key, result);
+                        }
+                            cacheAction = new CacheAction(key, CacheAction.Type.WRITE_CACHE);
 
+
+                    }else{
+                        log.info("Data is not null so read cache");
                         result = (SPARQLResult)data;
                         cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
+                    }
                 }else {
-                    action.log.info("CacheStore is not initialized");
+                    log.info("CacheStore is not initialized");
                     result = executeQuery(action, qExec, query, queryStringLog);
                     cacheAction = new CacheAction("",CacheAction.Type.IDLE);
                 }
