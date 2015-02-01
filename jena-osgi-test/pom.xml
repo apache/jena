@@ -7,7 +7,7 @@
    (the "License"); you may not use this file except in compliance with
    the License.  You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,97 +17,97 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.apache.jena</groupId>
-		<artifactId>jena-parent</artifactId>
-		<version>12-SNAPSHOT</version>
-		<relativePath>../jena-parent</relativePath>
-	</parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-parent</artifactId>
+    <version>12-SNAPSHOT</version>
+    <relativePath>../jena-parent</relativePath>
+  </parent>
 
-	<artifactId>jena-osgi-test</artifactId>
-	<version>2.12.2-SNAPSHOT</version>
-	<name>Jena OSGi bundle tests</name>
-	<description>Tests for jena-osgi as a bundle</description>
-	<packaging>bundle</packaging>
+  <artifactId>jena-osgi-test</artifactId>
+  <version>2.12.2-SNAPSHOT</version>
+  <name>Apache Jena - OSGi bundle tests</name>
+  <description>Tests for jena-osgi as a bundle</description>
+  <packaging>bundle</packaging>
 
-	<dependencies>
+  <dependencies>
 
-		<dependency>
-			<groupId>org.apache.jena</groupId>
-			<artifactId>jena-osgi</artifactId>
-			<version>${project.version}</version>
-			<type>bundle</type>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-osgi</artifactId>
+      <version>${project.version}</version>
+      <type>bundle</type>
+    </dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.everit.osgi.dev</groupId>
-			<artifactId>org.everit.osgi.dev.testrunner.junit4</artifactId>
-			<version>3.0.4</version>
-			<scope>test</scope>
-		</dependency>
-			<!--  NOTE: LGPL -->			
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.everit.osgi.dev</groupId>
+      <artifactId>org.everit.osgi.dev.testrunner.junit4</artifactId>
+      <version>3.0.4</version>
+      <scope>test</scope>
+    </dependency>
+    <!--  NOTE: LGPL -->                        
 
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>4.3.1</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>4.3.1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-Activator>org.apache.jena.osgi.test.JenaOSGITestActivator</Bundle-Activator>
-						<!-- <Import-Package>com.hp.hpl.jena</Import-Package> -->
-						<!-- <Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency> -->
-						
-						<!-- Update according to expected number of @Test methods -->						     
-						<EOSGi-TestNum>4</EOSGi-TestNum>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.everit.osgi.dev</groupId>
-				<artifactId>eosgi-maven-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>integration-test</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>integration-test</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<environments>
-						<environment>
-							<id>felix</id>
-							<framework>felix</framework>
-							<timeout>150000</timeout><!-- 15000ms = 15s -->
-						</environment>
-						<environment>
-							<id>equinox</id>
-							<framework>equinox</framework>
-							<timeout>150000</timeout> <!-- 15000ms = 15s -->
-						</environment>
-					</environments>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-Activator>org.apache.jena.osgi.test.JenaOSGITestActivator</Bundle-Activator>
+            <!-- <Import-Package>com.hp.hpl.jena</Import-Package> -->
+            <!-- <Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency> -->
+            
+            <!-- Update according to expected number of @Test methods -->                                                    
+            <EOSGi-TestNum>4</EOSGi-TestNum>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.everit.osgi.dev</groupId>
+        <artifactId>eosgi-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <environments>
+            <environment>
+              <id>felix</id>
+              <framework>felix</framework>
+              <timeout>150000</timeout><!-- 15000ms = 15s -->
+            </environment>
+            <environment>
+              <id>equinox</id>
+              <framework>equinox</framework>
+              <timeout>150000</timeout> <!-- 15000ms = 15s -->
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
