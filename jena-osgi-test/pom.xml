@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>jena-osgi-test</artifactId>
-  <version>2.12.2-SNAPSHOT</version>
+  <version>2.13.0-SNAPSHOT</version>
   <name>Apache Jena - OSGi bundle tests</name>
   <description>Tests for jena-osgi as a bundle</description>
   <packaging>bundle</packaging>

@@ -26,7 +26,7 @@
   <packaging>bundle</packaging>
   <name>Apache Jena - OSGi bundle</name>
   <url>http://jena.apache.org/</url>
-  <version>2.12.2-SNAPSHOT</version>
+  <version>2.13.0-SNAPSHOT</version>
   <description>
       Embedding all Jena modules in a single OSGi bundle.
   </description>
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.13.0-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
 	<!-- These are all embedded within httpclient-osgi -->
@@ -71,7 +71,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.12.2-SNAPSHOT</version>
+      <version>2.13.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
