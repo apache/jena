@@ -123,36 +123,21 @@
       <artifactId>httpcore-osgi</artifactId>
       <version>${ver.httpcore}</version> 
       <exclusions>
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpcore</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpcore-nio</artifactId>
-	</exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore-nio</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
+
     <dependency>
       <groupId>com.github.jsonld-java</groupId>
       <artifactId>jsonld-java</artifactId>
     </dependency>
-    <!--
-      but until jsonld-java 0.5.1, we'll need to depend on jackson-databind
-      and jackson-core ourselves as bundles:
-    
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>${ver.jackson}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>${ver.jackson}</version>
-    </dependency>
-    -->
-
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
