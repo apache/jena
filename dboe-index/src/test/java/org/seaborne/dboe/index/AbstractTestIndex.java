@@ -17,14 +17,14 @@
 
 package org.seaborne.dboe.index;
 
-import static org.seaborne.dboe.base.record.RecordLib.intToRecord ;
 import static org.seaborne.dboe.index.IndexTestLib.* ;
+import static org.seaborne.dboe.test.RecordLib.intToRecord ;
 import org.junit.Assert ;
 import org.junit.After;
 import org.junit.Test;
 import org.seaborne.dboe.base.record.Record ;
-import org.seaborne.dboe.base.record.RecordLib ;
 import org.seaborne.dboe.index.Index ;
+import org.seaborne.dboe.test.RecordLib ;
 
 //import com.hp.hpl.jena.tdb.base.record.RecordLib;
 

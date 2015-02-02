@@ -19,12 +19,12 @@ package org.seaborne.dboe.index.bplustree;
 
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.seaborne.dboe.base.record.RecordLib ;
 import org.seaborne.dboe.index.AbstractTestRangeIndex ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.index.bplustree.BPlusTree ;
 import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.test.RecordLib ;
 
 public class TestBPlusTree extends AbstractTestRangeIndex
 {

@@ -17,8 +17,8 @@
 
 package org.seaborne.dboe.base.buffer;
 
-import static org.seaborne.dboe.base.record.RecordLib.intToRecord ;
-import static org.seaborne.dboe.base.record.RecordLib.r ;
+import static org.seaborne.dboe.test.RecordLib.intToRecord ;
+import static org.seaborne.dboe.test.RecordLib.r ;
 
 import java.util.Iterator ;
 import java.util.List ;
@@ -31,8 +31,8 @@ import org.seaborne.dboe.base.buffer.BufferException ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.base.record.RecordLib ;
 import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.test.RecordLib ;
 
 public class TestRecordBuffer extends Assert
 {

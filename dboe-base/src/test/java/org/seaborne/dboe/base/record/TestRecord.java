@@ -17,8 +17,8 @@
 
 package org.seaborne.dboe.base.record;
 
-import static org.seaborne.dboe.base.record.RecordLib.intToRecord ;
-import static org.seaborne.dboe.base.record.RecordLib.recordToInt ;
+import static org.seaborne.dboe.test.RecordLib.intToRecord ;
+import static org.seaborne.dboe.test.RecordLib.recordToInt ;
 import org.junit.Assert ;
 import org.junit.Test;
 import org.seaborne.dboe.base.record.Record ;

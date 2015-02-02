@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.record;
+package org.seaborne.dboe.test;
 
 
 import java.util.ArrayList;

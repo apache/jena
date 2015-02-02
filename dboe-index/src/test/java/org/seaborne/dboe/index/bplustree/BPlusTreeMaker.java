@@ -17,11 +17,11 @@
 
 package org.seaborne.dboe.index.bplustree;
 
-import org.seaborne.dboe.base.record.RecordLib ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.index.RangeIndexMaker ;
 import org.seaborne.dboe.index.bplustree.BPlusTree ;
+import org.seaborne.dboe.test.RecordLib ;
 
 public class BPlusTreeMaker implements RangeIndexMaker
 {

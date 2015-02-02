@@ -23,7 +23,6 @@ import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.base.record.RecordLib ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.dboe.index.bplustree.BPTreePage ;
@@ -31,6 +30,7 @@ import org.seaborne.dboe.index.bplustree.BPTreeRecords ;
 import org.seaborne.dboe.index.bplustree.BPlusTree ;
 import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.sys.SystemIndex ;
+import org.seaborne.dboe.test.RecordLib ;
 
 public class TestBPTreeRecords extends Assert
 {

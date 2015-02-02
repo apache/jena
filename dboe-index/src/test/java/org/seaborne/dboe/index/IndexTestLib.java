@@ -27,9 +27,9 @@ import static org.apache.jena.atlas.test.Gen.strings ;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.fail ;
-import static org.seaborne.dboe.base.record.RecordLib.intToRecord ;
-import static org.seaborne.dboe.base.record.RecordLib.r ;
-import static org.seaborne.dboe.base.record.RecordLib.toIntList ;
+import static org.seaborne.dboe.test.RecordLib.intToRecord ;
+import static org.seaborne.dboe.test.RecordLib.r ;
+import static org.seaborne.dboe.test.RecordLib.toIntList ;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -38,9 +38,9 @@ import java.util.TreeSet ;
 
 import org.junit.Assert ;
 import org.seaborne.dboe.base.record.Record ;
-import org.seaborne.dboe.base.record.RecordLib ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.RangeIndex ;
+import org.seaborne.dboe.test.RecordLib ;
 
 public class IndexTestLib
 {

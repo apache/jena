@@ -17,20 +17,20 @@
 
 package org.seaborne.dboe.index ;
 
-import static org.seaborne.dboe.base.record.RecordLib.r ;
-import static org.seaborne.dboe.base.record.RecordLib.toIntList ;
 import static org.seaborne.dboe.index.IndexTestLib.add ;
 import static org.seaborne.dboe.index.IndexTestLib.randTest ;
 import static org.seaborne.dboe.index.IndexTestLib.testInsert ;
 import static org.seaborne.dboe.index.IndexTestLib.testInsertDelete ;
+import static org.seaborne.dboe.test.RecordLib.r ;
+import static org.seaborne.dboe.test.RecordLib.toIntList ;
 
 import java.util.List ;
 
 import org.junit.Assert ;
 import org.junit.After ;
 import org.junit.Test ;
-import org.seaborne.dboe.base.record.RecordLib ;
 import org.seaborne.dboe.index.RangeIndex ;
+import org.seaborne.dboe.test.RecordLib ;
 
 public abstract class AbstractTestRangeIndex extends Assert {
     private RangeIndex rIndex = null ;
