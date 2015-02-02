@@ -190,12 +190,8 @@ public class TransInteger extends TransactionalComponentLifecycle<TransInteger.I
         return value.get() ;
     }
 
-    // If one thread commits, that thread creates another that reads the value, 
-    // the volatile in the AtmiocLong may not be up to date WRT the new thread.
-    // TestThreadingTransactions.threadTrans_04
-    // Hence added synchronized.
     @Override
-    protected synchronized IntegerState _begin(ReadWrite readWrite, TxnId txnId) {
+    protected IntegerState _begin(ReadWrite readWrite, TxnId txnId) {
         return new IntegerState(value.get()) ;
     }
 
