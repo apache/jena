@@ -54,13 +54,9 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 
 /**
  * Brief tests of the Jena modules covered by jena-osgi
- * <p>
- * Do NOT add tests to this class without also adding a
- * \@Test-annotated method to the interface JenaOSGITest
- * -- otherwise it won't be picked up when testing inside OSGi
  *  
  */
-public class JenaOSGITestImpl {
+public class JenaOSGITest {
 
 	private static final String EXAMPLE_COM_GRAPH = "http://example.com/graph";
 	private Resource alice;
