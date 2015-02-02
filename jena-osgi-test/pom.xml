@@ -98,12 +98,19 @@
             <environment>
               <id>felix</id>
               <framework>felix</framework>
-              <timeout>150000</timeout><!-- 15000ms = 15s -->
+              <timeout>15000</timeout><!-- = 15s -->
+              <systemProperties>
+                <!-- We don't care if there are any JNAs -->
+                <jna.nosys>true</jna.nosys>
+              </systemProperties>
             </environment>
             <environment>
               <id>equinox</id>
               <framework>equinox</framework>
-              <timeout>150000</timeout> <!-- 15000ms = 15s -->
+              <timeout>15000</timeout> <!-- = 15s -->
+              <systemProperties>
+                <jna.nosys>true</jna.nosys>
+              </systemProperties>
             </environment>
           </environments>
         </configuration>
