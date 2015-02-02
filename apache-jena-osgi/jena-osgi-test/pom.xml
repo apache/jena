@@ -26,6 +26,11 @@
 	<description>Tests for jena-osgi as a bundle</description>
 	<packaging>bundle</packaging>
 
+	<properties>
+		<!-- https://ops4j1.jira.com/wiki/display/PAXEXAM4/OSGi+Containers -->
+		<exam.version>3.4.0</exam.version>
+		<url.version>1.6.0</url.version>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -41,11 +46,49 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- <dependency> <groupId>org.osgi</groupId> <artifactId>org.osgi.core</artifactId> 
+			<version>4.3.1</version> <scope>provided</scope> </dependency> -->
+
+
 		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>4.3.1</version>
-			<scope>provided</scope>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam-container-native</artifactId>
+			<version>${exam.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam-junit4</artifactId>
+			<version>${exam.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.exam</groupId>
+			<artifactId>pax-exam-link-mvn</artifactId>
+			<version>${exam.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.url</groupId>
+			<artifactId>pax-url-aether</artifactId>
+			<version>${url.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>3.2.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
