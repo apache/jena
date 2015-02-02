@@ -34,24 +34,21 @@ import org.seaborne.dboe.base.record.RecordFactory ;
 
 public class HashBucketMgr extends PageBlockMgr<HashBucket>
 {
-    public HashBucketMgr(RecordFactory factory, BlockMgr blockMgr)
-    {
+    public HashBucketMgr(RecordFactory factory, BlockMgr blockMgr) {
         super(null, blockMgr) ;
         Block2HashBucketMgr conv = new Block2HashBucketMgr(factory) ;
         super.setConverter(conv) ;
     }
 
-    public HashBucket create(int hash, int hashBitLen)
-    {
+    public HashBucket create(int hash, int hashBitLen) {
         HashBucket bucket = super.create(BlockType.RECORD_BLOCK) ;
         bucket.setTrieValue(hash) ;
         bucket.setTrieLength(hashBitLen) ;
         return bucket ;
     }
-    
+
     @Override
-    public HashBucket getWrite(int id)
-    { 
+    public HashBucket getWrite(int id) {
         HashBucket page = _get(id) ;
         page.getBackingBlock().setModified(true) ;
         return page ;
@@ -59,43 +56,37 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
 
     @Override
     public HashBucket getRead(int id)        { return _get(id) ; }
-    
 
     //@Override
     public HashBucket get(int id)        { return getWrite(id) ; }
     
-    public HashBucket _get(int id)
-    {
+    public HashBucket _get(int id) {
         HashBucket bucket = super.getWrite(id) ;
         // Link and Count are in the block and got done by the converter.
         return bucket ;
     }
-    
-    private static class Block2HashBucketMgr implements BlockConverter<HashBucket>
-    {
+
+    private static class Block2HashBucketMgr implements BlockConverter<HashBucket> {
         private RecordFactory factory ;
 
-        Block2HashBucketMgr(RecordFactory factory)
-        {
+        Block2HashBucketMgr(RecordFactory factory) {
             this.factory = factory ;
         }
-        
+
         @Override
-        public HashBucket createFromBlock(Block block, BlockType blkType)
-        {
-            // No need to additionally sync - this is a triggered by write operations so only one writer.
+        public HashBucket createFromBlock(Block block, BlockType blkType) {
+            // No need to additionally sync - this is a triggered by write
+            // operations so only one writer.
             if ( blkType != BlockType.RECORD_BLOCK )
-                throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
+                throw new RecordException("Not RECORD_BLOCK: " + blkType) ;
             // Initially empty
-            HashBucket bucket = HashBucket.createBlank(block, factory) ; // NO_ID, -1, -1, block, factory, 0) ;
+            HashBucket bucket = HashBucket.createBlank(block, factory) ; 
             return bucket ;
         }
 
         @Override
-        public HashBucket fromBlock(Block block)
-        {
-            synchronized (block)
-            {
+        public HashBucket fromBlock(Block block) {
+            synchronized (block) {
                 HashBucket bucket = HashBucket.format(block, factory) ;
 //                // Be safe - one reader only.
 //                // But it is likely that the caller needs to also
@@ -111,14 +102,14 @@ public class HashBucketMgr extends PageBlockMgr<HashBucket>
         }
 
         @Override
-        public Block toBlock(HashBucket bucket)
-        {
-            // No need to additionally sync - this is a triggered by write operations so only one writer.
+        public Block toBlock(HashBucket bucket) {
+            // No need to additionally sync - this is a triggered by write
+            // operations so only one writer.
             int count = bucket.getRecordBuffer().size() ;
             ByteBuffer bb = bucket.getBackingBlock().getByteBuffer() ;
             bb.putInt(COUNT, bucket.getCount()) ;
-            bb.putInt(TRIE,  bucket.getTrieValue()) ;
-            bb.putInt(BITLEN,  bucket.getTrieBitLen()) ;
+            bb.putInt(TRIE, bucket.getTrieValue()) ;
+            bb.putInt(BITLEN, bucket.getTrieBitLen()) ;
             return bucket.getBackingBlock() ;
         }
     }

@@ -38,63 +38,54 @@ public class RecordBufferPageMgr extends PageBlockMgr<RecordBufferPage>
 {
     private final RecordFactory factory ;
     
-    public RecordBufferPageMgr(RecordFactory factory, BlockMgr blockMgr)
-    {
-        super(null, blockMgr) ;
-        Block2RecordBufferPage conv = new Block2RecordBufferPage(factory) ;
-        super.setConverter(conv) ;
+    public RecordBufferPageMgr(RecordFactory factory, BlockMgr blockMgr) {
+        super(new Block2RecordBufferPage(factory), blockMgr) ;
         this.factory = factory ;
     }
 
     public RecordFactory getRecordFactory() { return factory ; }
     
-    public RecordBufferPage create()
-    {
+    public RecordBufferPage create() {
         return super.create(BlockType.RECORD_BLOCK) ;
     }
     
-    public RecordBufferPage getReadIterator(int id)
-    { 
+    public RecordBufferPage getReadIterator(int id) {
         Block block = blockMgr.getReadIterator(id) ;
         RecordBufferPage page = pageFactory.fromBlock(block) ;
         return page ;
     }
-    
-    public static class Block2RecordBufferPage implements BlockConverter<RecordBufferPage>
-    {
+
+    public static class Block2RecordBufferPage implements BlockConverter<RecordBufferPage> {
         private RecordFactory factory ;
 
-        public Block2RecordBufferPage(RecordFactory factory)
-        {
+        public Block2RecordBufferPage(RecordFactory factory) {
             this.factory = factory ;
         }
-        
+
         @Override
-        public RecordBufferPage createFromBlock(Block block, BlockType blkType)
-        {
+        public RecordBufferPage createFromBlock(Block block, BlockType blkType) {
             if ( blkType != BlockType.RECORD_BLOCK )
-                throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
+                throw new RecordException("Not RECORD_BLOCK: " + blkType) ;
             // Initially empty
             RecordBufferPage rb = RecordBufferPage.createBlank(block, factory) ;
             return rb ;
         }
 
         @Override
-        public RecordBufferPage fromBlock(Block block)
-        {
-            synchronized (block)    // [[TxTDB:TODO] needed? Right place?
+        public RecordBufferPage fromBlock(Block block) {
+            synchronized (block) // [[TxTDB:TODO] needed? Right place?
             {
                 RecordBufferPage rb = RecordBufferPage.format(block, factory) ;
-//                int count = block.getByteBuffer().getInt(COUNT) ;
-//                int linkId = block.getByteBuffer().getInt(LINK) ;
-//                RecordBufferPage rb = new RecordBufferPage(block, linkId, factory, count) ;
+                // int count = block.getByteBuffer().getInt(COUNT) ;
+                // int linkId = block.getByteBuffer().getInt(LINK) ;
+                // RecordBufferPage rb = new RecordBufferPage(block, linkId,
+                // factory, count) ;
                 return rb ;
             }
         }
 
         @Override
-        public Block toBlock(RecordBufferPage rbp)
-        {
+        public Block toBlock(RecordBufferPage rbp) {
             int count = rbp.getRecordBuffer().size() ;
             ByteBuffer bb = rbp.getBackingBlock().getByteBuffer() ;
             bb.putInt(COUNT, rbp.getCount()) ;

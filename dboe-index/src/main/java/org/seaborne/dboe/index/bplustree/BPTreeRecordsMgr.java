@@ -32,16 +32,13 @@ final public class BPTreeRecordsMgr extends PageBlockMgr<BPTreeRecords>
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
 
-    private RecordBufferPageMgr rBuffPageMgr ;
+    private final RecordBufferPageMgr rBuffPageMgr ;
     
     BPTreeRecordsMgr(BPlusTree bpt, RecordFactory recordFactory, RecordBufferPageMgr rBuffPageMgr) {
         super(new Block2BPTreeRecords(bpt, recordFactory), rBuffPageMgr.getBlockMgr()) ;
-        // bpt is unititilized at this point.
+        // bpt is uninitialized at this point.
+        // so record rBuffPageMgr
         this.rBuffPageMgr = rBuffPageMgr ;
-        
-        
-        //TO DO ** NOT NEEDED **
-        super.setConverter(new Block2BPTreeRecords(bpt, recordFactory)) ;
     }
     
     /** Converter BPTreeRecords -- make a RecordBufferPage and wraps it.*/ 

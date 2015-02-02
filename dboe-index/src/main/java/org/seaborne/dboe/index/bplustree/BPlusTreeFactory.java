@@ -45,7 +45,9 @@ public class BPlusTreeFactory {
      */
     private static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
         // Creating a BPLusTree is a two stage process.
-        // 1 - Create the unitio
+        
+        // Create the Java object - so it can be in other structures
+        // but it is not fully initialized yet.
         BPlusTree bpt = new BPlusTree(params) ; 
         BPTreeNodeMgr nodeManager = new BPTreeNodeMgr(bpt, blkMgrNodes) ;
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrRecords) ;
@@ -115,7 +117,7 @@ public class BPlusTreeFactory {
         if ( CheckingNode ) {
             BPTreeNode root = nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
             root.checkNodeDeep() ;
-            root.release() ;
+            nodeManager.release(root) ;
         }
 
         // Sync created blocks to disk - any caches are now clean.
