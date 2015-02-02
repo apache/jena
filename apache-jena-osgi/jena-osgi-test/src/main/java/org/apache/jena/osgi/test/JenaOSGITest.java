@@ -27,11 +27,20 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import javax.inject.Inject;
+
 import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Configuration;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerMethod;
+import org.osgi.framework.BundleContext;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.ObjectProperty;
@@ -51,12 +60,25 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import static org.ops4j.pax.exam.CoreOptions.*;
 
 /**
  * Brief tests of the Jena modules covered by jena-osgi
- *  
+ * 
  */
+@RunWith(PaxExam.class)
+@ExamReactorStrategy(PerMethod.class)
 public class JenaOSGITest {
+
+	@Inject
+	private BundleContext bc;
+
+	@Configuration
+	public Option[] config() {
+		return options(
+				mavenBundle("org.apache.jena", "jena-osgi"),
+				junitBundles());
+	}
 
 	private static final String EXAMPLE_COM_GRAPH = "http://example.com/graph";
 	private Resource alice;
@@ -129,8 +151,8 @@ public class JenaOSGITest {
 				+ "SELECT ?bob WHERE { "
 				+ "  GRAPH <http://example.com/graph> { "
 				+ "      ?alice foaf:knows ?bob . " + "  }" + "}");
-		try (QueryExecution qexec = QueryExecutionFactory.create(query,
-				dataset)) {
+		try (QueryExecution qexec = QueryExecutionFactory
+				.create(query, dataset)) {
 			ResultSet results = qexec.execSelect();
 			assertTrue(results.hasNext());
 			QuerySolution r = results.next();
@@ -149,12 +171,12 @@ public class JenaOSGITest {
 	public void testJenaTdb() throws Exception {
 		Path tdbDir = Files.createTempDirectory("jena-tdb-test");
 		Dataset dataset = TDBFactory.createDataset(tdbDir.toString());
-		
-		dataset.begin(ReadWrite.WRITE) ;
+
+		dataset.begin(ReadWrite.WRITE);
 		dataset.addNamedModel(EXAMPLE_COM_GRAPH, makeModel());
 		dataset.commit();
 		dataset.end();
-		
+
 		dataset.begin(ReadWrite.READ);
 		runQuery(dataset);
 		dataset.end();
