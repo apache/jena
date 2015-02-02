@@ -70,7 +70,6 @@ public class TestThreadingTransactions {
             read(label, trans, expected) ;
         }) ;
     }
-    
 
     void read(String label, TransactionalInteger trans, long expected) {
         long x = trans.get() ;
@@ -91,8 +90,10 @@ public class TestThreadingTransactions {
 
     // Execute a thread that waits on semaBefore, read/checks the value, then releases semaAfter.
     void threadReadAsync(String label, TransactionalInteger trans, long expectedValue, Semaphore semaBefore, Semaphore semaAfter) {
+        Semaphore semaStartup = new Semaphore(0, true) ; 
         new Thread( ()-> {
             trans.begin(ReadWrite.READ) ;
+            semaStartup.release() ;
             // Make the test
             if ( assertionFailed == null ) {
                 semaBefore.acquireUninterruptibly() ;
@@ -101,6 +102,8 @@ public class TestThreadingTransactions {
             trans.end() ;
             semaAfter.release() ;
         }).start() ;
+        // Don't return until the transaction has started. 
+        semaStartup.acquireUninterruptibly();
     }
     
     @Test public void threadTrans_01() {
@@ -146,14 +149,8 @@ public class TestThreadingTransactions {
         threadReadAsync("[04/3]", transInt, InitValue, semaBefore1, semaAfter);
         
         Txn.executeWrite(transInt, transInt::inc);
-        // The above does not mean all other threads starting at this point now see the new value. 
-        //Assert.assertEquals(InitValue+1, transInt.get()) ;
-        
-        // ??? Write barrer? Without the above assertEquals, this is seem to fail someimes.
-        // Maybe TransactionalInteger->TransInt needs force the atomic at transaction start.
+
         threadReadAsync("[04/3]", transInt, InitValue+1, semaBefore2, semaAfter);
-        
-        
         testThread(semaBefore1, semaAfter);   //1
 
         Txn.executeWrite(transInt, transInt::inc);  // ++
