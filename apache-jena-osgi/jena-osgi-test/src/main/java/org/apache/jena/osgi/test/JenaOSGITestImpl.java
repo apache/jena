@@ -60,7 +60,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  * -- otherwise it won't be picked up when testing inside OSGi
  *  
  */
-public class JenaOSGITestImpl implements JenaOSGITest {
+public class JenaOSGITestImpl {
 
 	private static final String EXAMPLE_COM_GRAPH = "http://example.com/graph";
 	private Resource alice;
@@ -68,7 +68,6 @@ public class JenaOSGITestImpl implements JenaOSGITest {
 	private Resource bob;
 
 	@Test
-	@Override
 	public void testJenaCore() throws Exception {
 		Model model = makeModel();
 
@@ -108,7 +107,6 @@ public class JenaOSGITestImpl implements JenaOSGITest {
 	}
 
 	@Test
-	@Override
 	public void testJenaArq() throws Exception {
 		Dataset dataset = DatasetFactory.createMem();
 		dataset.addNamedModel(EXAMPLE_COM_GRAPH, makeModel());
@@ -145,7 +143,6 @@ public class JenaOSGITestImpl implements JenaOSGITest {
 	}
 
 	@Test
-	@Override
 	public void testJenaIRI() throws Exception {
 		IRIFactory iriFactory = IRIFactory.jenaImplementation();
 		IRI iri = iriFactory.create("http://example.com/");
@@ -153,7 +150,6 @@ public class JenaOSGITestImpl implements JenaOSGITest {
 	}
 
 	@Test
-	@Override
 	public void testJenaTdb() throws Exception {
 		Path tdbDir = Files.createTempDirectory("jena-tdb-test");
 		Dataset dataset = TDBFactory.createDataset(tdbDir.toString());
