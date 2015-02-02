@@ -364,7 +364,7 @@ public class ResponseResultSet
                     cacheBuilder.append(")");
                     out.println(")");
                 }
-                log.info("cacheBuilder ====== " + cacheBuilder.toString());
+                log.info("cacheBuilder prepared for storing in cacheStore ====== " + cacheBuilder.toString());
                 cacheStore.doSet(cacheAction.getKey(), cacheBuilder);
             }else{
 
@@ -485,7 +485,7 @@ public class ResponseResultSet
                     out.flush();
                 }else{
                     log.info("I am here!!!!!");
-                    log.info("cacheBuilder ==== "+cacheBuilder);
+                    log.info("cacheBuilder in cacheStore ==== "+cacheBuilder);
                     out.println(cacheBuilder.toString());
                     out.flush();
                 }

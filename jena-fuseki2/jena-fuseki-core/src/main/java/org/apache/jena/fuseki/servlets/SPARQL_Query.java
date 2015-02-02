@@ -271,6 +271,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                         result = executeQuery(action, qExec, query, queryStringLog);
 
                         if(query.isConstructType() || query.isDescribeType()) {
+                            log.info("query is Construct and Describe type");
                             cacheStore.doSet(key, result);
                         }
                             cacheAction = new CacheAction(key, CacheAction.Type.WRITE_CACHE);
@@ -278,7 +279,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
                     }else{
                         log.info("Data is not null so read cache");
-                        result = (SPARQLResult)data;
+                        if(query.isConstructType() || query.isDescribeType()) {
+                            result = (SPARQLResult) data;
+                        }
+                        result = executeQuery(action, qExec, query, queryStringLog);
                         cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
                     }
                 }else {
@@ -288,7 +292,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                 }
                 // Deals with exceptions itself.
                 //sendResults(action, result, query.getPrologue()) ;
-                sendResults(action, result, query.getPrologue(), cacheAction) ;
+                sendResults(action, query, result, query.getPrologue(), cacheAction) ;
             }
         } catch (QueryCancelledException ex) {
             // Additional counter information.
@@ -416,15 +420,26 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }
 
-    protected void sendResults(HttpAction action, SPARQLResult result, Prologue qPrologue, CacheAction cacheAction) {
-        if ( result.isResultSet() )
-            ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue,cacheAction) ;
-        else if ( result.isGraph() )
-            ResponseModel.doResponseModel(action, result.getModel()) ;
-        else if ( result.isBoolean() )
-            ResponseResultSet.doResponseResultSet(action, result.getBooleanResult(),cacheAction) ;
-        else
-            ServletOps.errorOccurred("Unknown or invalid result type") ;
+    protected void sendResults(HttpAction action, Query query, SPARQLResult result, Prologue qPrologue, CacheAction cacheAction) {
+        if(CacheAction.Type.WRITE_CACHE == cacheAction.type) {
+            if (query.isSelectType())
+                ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue, cacheAction);
+            else if (query.isConstructType() || query.isDescribeType())
+                ResponseModel.doResponseModel(action, result.getModel());
+            else if (query.isAskType())
+                ResponseResultSet.doResponseResultSet(action, result.getBooleanResult(), cacheAction);
+            else
+                ServletOps.errorOccurred("Unknown or invalid result type");
+        }else{
+            if (query.isSelectType())
+                ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue, cacheAction);
+            else if (query.isConstructType() || query.isDescribeType())
+                ResponseModel.doResponseModel(action, result.getModel());
+            else if (query.isAskType())
+                ResponseResultSet.doResponseResultSet(action, true, cacheAction);
+            else
+                ServletOps.errorOccurred("Unknown or invalid result type");
+        }
     }
 
     private String formatForLog(Query query) {
