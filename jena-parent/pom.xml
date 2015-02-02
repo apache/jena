@@ -453,7 +453,7 @@
 	       <exclude>**/*.classpath</exclude>
 
 	       <!-- Exclude anything created during the build (plugin generated files) ->-->
-	       <exclude>**/target/.plxarc</exclude>
+         <exclude>**/target/**/*</exclude>
 
             </excludes>
         </configuration>
