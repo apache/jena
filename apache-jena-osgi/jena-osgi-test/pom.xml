@@ -16,7 +16,7 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -44,13 +44,6 @@
       <artifactId>junit</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>org.everit.osgi.dev</groupId>
-      <artifactId>org.everit.osgi.dev.testrunner.junit4</artifactId>
-      <version>3.0.4</version>
-      <scope>test</scope>
-    </dependency>
-    <!--  NOTE: LGPL -->                        
 
     <dependency>
       <groupId>org.osgi</groupId>
@@ -71,45 +64,7 @@
             <Bundle-Activator>org.apache.jena.osgi.test.JenaOSGITestActivator</Bundle-Activator>
             <!-- <Import-Package>com.hp.hpl.jena</Import-Package> -->
             <!-- <Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency> -->
-            
-            <!-- Update according to expected number of @Test methods -->                                                    
-            <EOSGi-TestNum>4</EOSGi-TestNum>
           </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.everit.osgi.dev</groupId>
-        <artifactId>eosgi-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <environments>
-            <environment>
-              <id>felix</id>
-              <framework>felix</framework>
-              <timeout>15000</timeout><!-- = 15s -->
-              <systemProperties>
-                <!-- We don't care if there are any JNAs -->
-                <jna.nosys>true</jna.nosys>
-              </systemProperties>
-            </environment>
-            <environment>
-              <id>equinox</id>
-              <framework>equinox</framework>
-              <timeout>15000</timeout> <!-- = 15s -->
-              <systemProperties>
-                <jna.nosys>true</jna.nosys>
-              </systemProperties>
-            </environment>
-          </environments>
         </configuration>
       </plugin>
     </plugins>
