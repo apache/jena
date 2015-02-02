@@ -34,48 +34,43 @@ final public class BPTreeRecordsMgr extends PageBlockMgr<BPTreeRecords>
 
     private final RecordBufferPageMgr rBuffPageMgr ;
     
-    BPTreeRecordsMgr(BPlusTree bpt, RecordFactory recordFactory, RecordBufferPageMgr rBuffPageMgr) {
-        super(new Block2BPTreeRecords(bpt, recordFactory), rBuffPageMgr.getBlockMgr()) ;
+    BPTreeRecordsMgr(RecordFactory recordFactory, RecordBufferPageMgr rBuffPageMgr) {
+        super(null , rBuffPageMgr.getBlockMgr()) ;
+        super.setConverter(new Block2BPTreeRecords(this, recordFactory)) ;
         // bpt is uninitialized at this point.
         // so record rBuffPageMgr
         this.rBuffPageMgr = rBuffPageMgr ;
     }
     
     /** Converter BPTreeRecords -- make a RecordBufferPage and wraps it.*/ 
-    static class Block2BPTreeRecords implements BlockConverter<BPTreeRecords>
-    {
+    static class Block2BPTreeRecords implements BlockConverter<BPTreeRecords> {
         private Block2RecordBufferPage recordBufferConverter ;
-        private BPlusTree bpTree ;
+        private BPTreeRecordsMgr       recordsMgr ;
 
-        Block2BPTreeRecords(BPlusTree bpTree, RecordFactory recordFactory)
-        { 
-            this.bpTree = bpTree ; 
+        Block2BPTreeRecords(BPTreeRecordsMgr mgr, RecordFactory recordFactory) {
+            this.recordsMgr = mgr ;
             this.recordBufferConverter = new RecordBufferPageMgr.Block2RecordBufferPage(recordFactory) ;
         }
-        
+
         @Override
-        public BPTreeRecords fromBlock(Block block)
-        {
+        public BPTreeRecords fromBlock(Block block) {
             RecordBufferPage rbp = recordBufferConverter.fromBlock(block) ;
-            return new BPTreeRecords(bpTree.getRecordsMgr(), rbp) ;
+            return new BPTreeRecords(recordsMgr, rbp) ;
         }
 
         @Override
-        public Block toBlock(BPTreeRecords t)
-        {
+        public Block toBlock(BPTreeRecords t) {
             return recordBufferConverter.toBlock(t.getRecordBufferPage()) ;
         }
 
         @Override
-        public BPTreeRecords createFromBlock(Block block, BlockType bType)
-        {
+        public BPTreeRecords createFromBlock(Block block, BlockType bType) {
             RecordBufferPage rbp = recordBufferConverter.createFromBlock(block, bType) ;
-            return new BPTreeRecords(bpTree.getRecordsMgr(), rbp) ;
+            return new BPTreeRecords(recordsMgr, rbp) ;
         }
     }
     
-    public BPTreeRecords create()
-    {
+    public BPTreeRecords create() {
         return super.create(BlockType.RECORD_BLOCK) ;
 //        
 //        RecordBufferPage rbp = rBuffPageMgr.create() ;

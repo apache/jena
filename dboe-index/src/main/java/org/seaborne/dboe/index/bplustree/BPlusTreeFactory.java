@@ -44,14 +44,16 @@ public class BPlusTreeFactory {
      * assumes the block managers correspond to an existing B+Tree.
      */
     private static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
-        // Creating a BPLusTree is a two stage process.
-        
-        // Create the Java object - so it can be in other structures
-        // but it is not fully initialized yet.
+        // Creating and initializing the BPlusTree object is a two stage process.
+
+        // * Create the Java object - so it can be in other structures
+        //   but it is not fully initialized yet.
+        // * Create datastructures 
+        // * Initialize.
         BPlusTree bpt = new BPlusTree(params) ; 
         BPTreeNodeMgr nodeManager = new BPTreeNodeMgr(bpt, blkMgrNodes) ;
         RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrRecords) ;
-        BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(bpt, params.getKeyFactory(), recordPageMgr) ;
+        BPTreeRecordsMgr recordsMgr = new BPTreeRecordsMgr(params.getRecordFactory(), recordPageMgr) ;
         int rootId = createIfAbsent(nodeManager, recordsMgr) ;
         bpt.init(rootId, nodeManager, recordsMgr) ;
         return bpt ;
@@ -104,7 +106,7 @@ public class BPlusTreeFactory {
     /** Create if does not exist */ 
     private static int createIfAbsent(BPTreeNodeMgr nodeManager, BPTreeRecordsMgr recordsMgr) {
         // This fixes the root to being block 0
-        if ( nodeManager.valid(BPlusTreeParams.RootId) )
+        if ( nodeManager.getBlockMgr().valid(BPlusTreeParams.RootId) )
             return BPlusTreeParams.RootId ;
         
         // Create/format
