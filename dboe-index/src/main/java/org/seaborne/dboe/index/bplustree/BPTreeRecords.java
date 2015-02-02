@@ -36,11 +36,13 @@ public final class BPTreeRecords extends BPTreePage
 {
     private static Logger log = LoggerFactory.getLogger(BPTreeRecords.class) ;
     private final RecordBufferPage  rBuffPage ;
+    private final BPTreeRecordsMgr  bprRecordsMgr ;
     private RecordBuffer            rBuff ;         // Used heavily.
     
-    BPTreeRecords(BPlusTree bpTree, RecordBufferPage rbp)
+    BPTreeRecords(BPTreeRecordsMgr mgr, RecordBufferPage rbp)
     {
-        super(bpTree) ;
+        super() ;
+        this.bprRecordsMgr = mgr ;
         rBuffPage = rbp ;
         rBuff = rBuffPage.getRecordBuffer() ;
     }
@@ -112,16 +114,16 @@ public final class BPTreeRecords extends BPTreePage
 //    public BPTreeRecords findFirstPage() { return this ; }
 
     @Override final
-    public void write()     { bpTree.getRecordsMgr().write(this) ; } 
+    public void write()     { bprRecordsMgr.write(this) ; } 
     
     @Override final
-    public void promote()   { bpTree.getRecordsMgr().promote(this) ; } 
+    public void promote()   { bprRecordsMgr.promote(this) ; } 
     
     @Override final
-    public void release()   { bpTree.getRecordsMgr().release(this) ; }
+    public void release()   { bprRecordsMgr.release(this) ; }
     
     @Override final
-    public void free()      { bpTree.getRecordsMgr().free(this) ; }
+    public void free()      { bprRecordsMgr.free(this) ; }
 
     @Override
     public Record internalInsert(Record record)
@@ -203,7 +205,7 @@ public final class BPTreeRecords extends BPTreePage
 
     private BPTreeRecords create(int linkId)
     {
-        BPTreeRecords newPage = bpTree.getRecordsMgr().create() ;
+        BPTreeRecords newPage = bprRecordsMgr.create() ;
         newPage.getRecordBufferPage().setLink(linkId) ;
         return newPage ;
     }

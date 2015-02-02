@@ -45,13 +45,13 @@ public class TestBPlusTree extends AbstractTestRangeIndex
     @Override
     protected RangeIndex makeRangeIndex(int order, int minRecords)
     {
-        BPlusTree bpt = BPlusTree.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
+        BPlusTree bpt = BPlusTreeFactory.makeMem(order, minRecords, RecordLib.TestRecordLength, 0) ;
         if ( false )
         {
             // Breaks with CheckingTree = true ; because they deep reads the tree.
             BPlusTreeParams.CheckingNode = true ;
             BPlusTreeParams.CheckingTree = false ;
-            bpt = BPlusTree.addTracking(bpt) ;
+            bpt = BPlusTreeFactory.addTracking(bpt) ;
         }
         return bpt ; 
     }

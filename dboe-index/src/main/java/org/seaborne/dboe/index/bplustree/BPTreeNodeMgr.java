@@ -23,54 +23,24 @@ import static org.seaborne.dboe.base.block.BlockType.RECORD_BLOCK ;
 
 import java.nio.ByteBuffer ;
 
-import org.seaborne.dboe.DBOpEnvException ;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.block.BlockConverter ;
 import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockType ;
 import org.seaborne.dboe.base.buffer.PtrBuffer ;
 import org.seaborne.dboe.base.buffer.RecordBuffer ;
+import org.seaborne.dboe.base.page.PageBlockMgr ;
 
 /** BPlusTreePageMgr = BPlusTreeNode manager */
-public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
+public final class BPTreeNodeMgr extends PageBlockMgr<BPTreeNode>
 {
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
 
-    public BPTreeNodeMgr(BPlusTree bpTree, BlockMgr blockMgr)
-    {
-        super(bpTree, new Block2BPTreeNode(bpTree), blockMgr) ;
+    public BPTreeNodeMgr(BPlusTree bpTree, BlockMgr blockMgr) {
+        super(new Block2BPTreeNode(bpTree), blockMgr) ;
     }
    
-    /** Allocate root node space. The root is a node with a Records block.*/ 
-    public int createEmptyBPT() { 
-        // Must be inside already : startUpdate() ;
-        // Create an empty records block.
-        
-        BPTreePage recordsPage = bpTree.getRecordsMgr().create() ;
-        if ( recordsPage.getId() != BPlusTreeParams.RootId )
-            throw new DBOpEnvException("Root blocks must be at position zero (got "+recordsPage.getId()+")") ;
-        // Empty data block.
-        recordsPage.write();
-        recordsPage.release() ;
-        
-        BPTreeNode n = createNode(BPlusTreeParams.RootParent) ;
-        // n.ptrs is currently invalid.  count was 0 so thinks it has a pointer.
-        // Force to right layout.
-        n.ptrs.setSize(0) ;         // No pointers
-        n.ptrs.add(recordsPage.getId()) ;  // Add the page below
-        
-        //n.ptrs.set(0, page.getId()) ; // This is the same as the size is one.
-        
-        n.isLeaf = true ;
-        n.setCount(0) ;     // Count is count of records.
-        int rootId = n.getId()  ;
-        n.write();
-        n.release() ;
-        // Must be inside already : finishUpdate() ;
-        return rootId ;
-    }
-    
     /** Allocate space for a fresh node. */
     public BPTreeNode createNode(int parent) {
         BPTreeNode n = create(BPTREE_BRANCH) ;
@@ -222,7 +192,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
         byteBuffer.limit(rStart + recBuffLen) ;
         ByteBuffer bbr = byteBuffer.slice() ;
         // bbr.limit(recBuffLen) ;
-        n.setRecordBuffer(new RecordBuffer(bbr, n.getParams().keyFactory, n.getCount())) ;
+        n.setRecordBuffer(new RecordBuffer(bbr, n.params.keyFactory, n.getCount())) ;
 
         // -- Pointers area
         byteBuffer.position(pStart) ;
@@ -237,7 +207,7 @@ public final class BPTreeNodeMgr extends BPTreePageMgr<BPTreeNode>
     }
     
     static final void formatForRoot(BPTreeNode n, boolean asLeaf) {
-        BPTreeNodeMgr.formatBPTreeNode(n, n.getBPlusTree(), n.getBackingBlock(), asLeaf, BPlusTreeParams.RootParent, 0) ;
+        BPTreeNodeMgr.formatBPTreeNode(n, n.bpTree, n.getBackingBlock(), asLeaf, BPlusTreeParams.RootParent, 0) ;
         // Tweak for the root-specials. The node is not consistent yet.
         // Has one dangling pointer.
     }

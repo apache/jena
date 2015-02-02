@@ -17,20 +17,15 @@
 
 package org.seaborne.dboe.index.bplustree;
 
-import static org.seaborne.dboe.index.bplustree.BPlusTreeParams.CheckingNode ;
 import static org.seaborne.dboe.index.bplustree.BPlusTreeParams.CheckingTree ;
 
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
-import org.seaborne.dboe.base.block.BlockMgr ;
-import org.seaborne.dboe.base.block.BlockMgrFactory ;
-import org.seaborne.dboe.base.block.BlockMgrTracker ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.record.RecordMapper ;
-import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.dboe.base.recordbuffer.RecordRangeIterator ;
 import org.seaborne.dboe.index.RangeIndex ;
@@ -125,109 +120,23 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
     ///*package*/ BPTreeNode root ;
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
-    private BPlusTreeParams bpTreeParams ;
+    private final BPlusTreeParams bpTreeParams ;
     
-    /** Create the in-memory structures to correspond to
-     * the supplied block managers for the persistent storage.
-     * Initialize the persistent storage to the empty B+Tree if it does not exist.
-     * This is the normal way to create a B+Tree.
-     */
-    public static BPlusTree create(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves) {
-        BPlusTree bpt = attach(params, blkMgrNodes, blkMgrLeaves) ;
-        bpt.startBatch() ;
-        bpt.createIfAbsent() ;
-        bpt.finishBatch() ;
-        return bpt ;
+    // Construction is a two stage process
+    //    Create the object, uninitialized
+    //    Setup data structures
+    //    initialize
+    /*package*/ BPlusTree(BPlusTreeParams bpTreeParams) { 
+        this.rootIdx = -99 ;
+        this.bpTreeParams = bpTreeParams ;
+        this.nodeManager = null ;
+        this.recordsMgr = null ;
     }
 
-    /**
-     * Create the in-memory structures to correspond to the supplied block
-     * managers for the persistent storage. Does not inityalize the B+Tree - it
-     * assumes the block managers correspond to an existing B+Tree.
-     */
-    public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
-        return new BPlusTree(params, blkMgrNodes, blkMgrRecords) ;
-    }
-
-    /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
-    public static BPlusTree makeMem(int order, int keyLength, int valueLength)
-    { return makeMem(null, order, keyLength, valueLength) ; }
-
-    /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
-    public static BPlusTree makeMem(String name, int order, int keyLength, int valueLength)
-    { return makeMem(name, order, -1, keyLength, valueLength) ; }
-
-    /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
-    public static BPlusTree makeMem(int order, int minDataRecords, int keyLength, int valueLength)
-    { return makeMem(null, order, minDataRecords, keyLength, valueLength) ; }
-    
-    /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
-    public static BPlusTree makeMem(String name, int order, int minDataRecords, int keyLength, int valueLength) {
-        if ( name == null )
-            name = "Mem" ;
-        BPlusTreeParams params = new BPlusTreeParams(order, keyLength, valueLength) ;
-
-        int blkSize ;
-        if ( minDataRecords > 0 ) {
-            int maxDataRecords = 2 * minDataRecords ;
-            // int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
-            blkSize = RecordBufferPage.calcBlockSize(params.getRecordFactory(), maxDataRecords) ;
-        } else
-            blkSize = params.getCalcBlockSize() ;
-
-        BlockMgr mgr1 = BlockMgrFactory.createMem(name + "(nodes)", params.getCalcBlockSize()) ;
-        BlockMgr mgr2 = BlockMgrFactory.createMem(name + "(records)", blkSize) ;
-        BPlusTree bpTree = BPlusTree.create(params, mgr1, mgr2) ;
-        return bpTree ;
-    }
-
-    /** Debugging */
-    public static BPlusTree addTracking(BPlusTree bpTree) {
-        BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
-        BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
-        // mgr1 = BlockMgrTracker.track("BPT/Nodes", mgr1) ;
-        // mgr2 = BlockMgrTracker.track("BPT/Records", mgr2) ;
-        mgr1 = BlockMgrTracker.track(mgr1) ;
-        mgr2 = BlockMgrTracker.track(mgr2) ;
-
-        return BPlusTree.attach(bpTree.getParams(), mgr1, mgr2) ;
-    }
-
-    private BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords) {
-        // Consistency checks.
-        this.bpTreeParams = params ;
-        this.nodeManager = new BPTreeNodeMgr(this, blkMgrNodes) ;
-        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrRecords) ;
-        recordsMgr = new BPTreeRecordsMgr(this, recordPageMgr) ;
-    }
-
-    /** Create if does not exist */
-    private void createIfAbsent() {
-        // This fixes the root to being block 0
-        if ( !nodeManager.valid(BPlusTreeParams.RootId) )
-        // if ( ! nodeManager.getBlockMgr().isEmpty() )
-        {
-            // Create as does not exist.
-            // TODO Better: seperate "does it exist? - create statics used in factory"
-
-            startUpdateBlkMgr() ;
-            // Fresh BPlusTree
-            rootIdx = nodeManager.createEmptyBPT() ;
-            if ( rootIdx != 0 )
-                throw new InternalError() ;
-
-            if ( CheckingNode ) {
-                BPTreeNode root = nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
-                root.checkNodeDeep() ;
-                root.release() ;
-            }
-
-            // Sync created blocks to disk - any caches are now clean.
-            nodeManager.getBlockMgr().sync() ;
-            recordsMgr.getBlockMgr().sync() ;
-
-            finishUpdateBlkMgr() ;
-        }
+    /*package*/ void init(int rootId, BPTreeNodeMgr  nodeManager, BPTreeRecordsMgr recordsMgr) {
+        this.rootIdx = rootId ;
+        this.nodeManager = nodeManager ;
+        this.recordsMgr = recordsMgr ;
     }
 
     private BPTreeNode getRootRead() {
@@ -366,7 +275,7 @@ public class BPlusTree extends TransactionalMRSW implements Iterable<Record>, Ra
         int id = BPTreeNode.recordsPageId(node, fromRec) ;
         if ( id < 0 )
             return Iter.nullIter() ;
-        RecordBufferPageMgr pageMgr = node.getBPlusTree().getRecordsMgr().getRecordBufferPageMgr() ;
+        RecordBufferPageMgr pageMgr = node.bpTree.getRecordsMgr().getRecordBufferPageMgr() ;
         // No pages are active at this point.
         return RecordRangeIterator.iterator(id, fromRec, toRec, pageMgr, mapper) ;
     }

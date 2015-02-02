@@ -65,7 +65,7 @@ public class TestBPTreeRecords extends Assert
         recordBufferPageMgr = new RecordBufferPageMgr(recordFactory, blkMgrRecords) ;
         
         // B+Tree order does not matter.
-        bPlusTree = BPlusTree.attach(new BPlusTreeParams(3, recordFactory), null, blkMgrRecords) ;
+        bPlusTree = BPlusTreeFactory.create(new BPlusTreeParams(3, recordFactory), null, blkMgrRecords) ;
     }
     
     @AfterClass public static void afterClass()
@@ -333,7 +333,7 @@ public class TestBPTreeRecords extends Assert
     private static BPTreeRecords make()
     {
         RecordBufferPage page = recordBufferPageMgr.create() ;
-        return new BPTreeRecords(bPlusTree, page) ;
+        return new BPTreeRecords(bPlusTree.getRecordsMgr(), page) ;
     }
     
     private static void fill(BPTreeRecords bpr)

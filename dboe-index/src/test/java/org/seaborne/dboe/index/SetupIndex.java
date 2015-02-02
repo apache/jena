@@ -24,6 +24,7 @@ import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.index.bplustree.BPlusTree ;
+import org.seaborne.dboe.index.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.sys.Names ;
 import org.seaborne.dboe.sys.SystemIndex ;
@@ -160,7 +161,7 @@ public class SetupIndex {
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
         BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExtTree, blockSize, readCacheSize, writeCacheSize) ;
         BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExtRecords, blockSize, readCacheSize, writeCacheSize) ;
-        return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
+        return BPlusTreeFactory.create(params, blkMgrNodes, blkMgrRecords) ;
     }
 
 }

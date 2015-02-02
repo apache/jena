@@ -21,7 +21,7 @@ import org.seaborne.dboe.base.block.BlockMgr ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.file.FileSet ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.index.bplustree.BPlusTree ;
+import org.seaborne.dboe.index.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.setup.BlockMgrBuilder ;
 import org.seaborne.dboe.sys.Names ;
@@ -90,7 +90,7 @@ public class BuilderStdIndex {
             
             BlockMgr blkMgrNodes = blockMgrBuilderNodes.buildBlockMgr(fileset, Names.bptExtTree, indexParams) ;
             BlockMgr blkMgrRecords = blockMgrBuilderRecords.buildBlockMgr(fileset, Names.bptExtRecords, indexParams) ;
-            return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
+            return BPlusTreeFactory.create(params, blkMgrNodes, blkMgrRecords) ;
         }
     }
 

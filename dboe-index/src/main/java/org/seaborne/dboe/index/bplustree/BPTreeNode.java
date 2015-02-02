@@ -45,6 +45,9 @@ public final class BPTreeNode extends BPTreePage
     // Assume package access.
 
     private static Logger log = LoggerFactory.getLogger(BPTreeNode.class) ;
+    /*package*/ final BPlusTree bpTree ; 
+    // Convenience - this is used a lot.
+    /*package*/ final BPlusTreeParams params ;
     
     private Block block ;
     private int id ;
@@ -126,7 +129,8 @@ public final class BPTreeNode extends BPTreePage
     }
 
     /* package */ BPTreeNode(BPlusTree bpTree, Block block) {
-        super(bpTree) ;
+        this.bpTree = bpTree ;
+        this.params = bpTree.getParams() ;
         this.block = block ;
         this.id = block.getId().intValue() ;
     }
@@ -186,7 +190,7 @@ public final class BPTreeNode extends BPTreePage
     /** Insert a record - return existing value if any, else null */
     public static Record insert(BPTreeNode root, Record record) {
         if ( logging() ) {
-            log.debug(format("** insert(%s) / start", record)) ;
+            log.debug(format("** insert(%s) / root=%d", record, root.getId())) ;
             if ( DumpTree )
                 root.dump() ;
         }
@@ -312,7 +316,7 @@ public final class BPTreeNode extends BPTreePage
     // count is the number of pointers.
     
     @Override
-    final int getMaxSize()           { return params.getOrder() ; }
+    final int getMaxSize()           { return bpTree.getParams().getOrder() ; }
     
     @Override
     final int getCount()             { return count ; }

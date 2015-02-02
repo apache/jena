@@ -24,19 +24,8 @@ import org.seaborne.dboe.base.record.Record ;
 abstract public class BPTreePage implements Page
 {
     // Does not use PageBase because BPTreeRecords does not need it.
-    protected final BPlusTree bpTree ;
-    protected final BPlusTreeParams params ;
-    
-    protected BPTreePage(BPlusTree bpTree) {
-        if ( bpTree == null )
-            System.err.println("NULL B+Tree") ;
-        
-        this.bpTree = bpTree ;
-        this.params = bpTree.getParams() ;
-    }
-    
-    public final BPlusTree getBPlusTree()       { return bpTree ; } 
-    public final BPlusTreeParams getParams()    { return params ; }
+
+    protected BPTreePage() { }
     
 //    /** Return the page number */
 //    abstract int getId() ;

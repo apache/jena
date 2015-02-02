@@ -30,6 +30,7 @@ import static dev.RecordLib.* ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
 import org.seaborne.dboe.index.bplustree.BPlusTree ;
+import org.seaborne.dboe.index.bplustree.BPlusTreeFactory ;
 import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.sys.SystemIndex ;
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
@@ -47,7 +48,7 @@ public class MainIndex {
         BlockMgrFactory.AddTracker = false ;
         SystemIndex.setNullOut(true) ;
         
-        BPlusTree bpt = BPlusTree.makeMem(2, 1, recordFactory.keyLength(), recordFactory.valueLength()) ;
+        BPlusTree bpt = BPlusTreeFactory.makeMem(2, 1, recordFactory.keyLength(), recordFactory.valueLength()) ;
         
         RangeIndex idx = bpt ;
         

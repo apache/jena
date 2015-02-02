@@ -70,10 +70,10 @@ public class BPlusTreeRewriter
         
         if ( ! iterRecords.hasNext() )
             // No records. Just return a B+Tree.
-            return BPlusTree.create(bptParams, blkMgrNodes, blkMgrRecords) ;
+            return BPlusTreeFactory.create(bptParams, blkMgrNodes, blkMgrRecords) ;
     
         // Dummy B+tree needed to carry parameters around.
-        BPlusTree bpt2 = BPlusTree.attach(bptParams, blkMgrNodes, blkMgrRecords) ;
+        BPlusTree bpt2 = BPlusTreeFactory.create(bptParams, blkMgrNodes, blkMgrRecords) ;
     
         // Allocate and format a root index block.
         // We will use this slot later and write in the correct root.
@@ -122,7 +122,7 @@ public class BPlusTreeRewriter
         blkMgrNodes.sync() ;
         blkMgrRecords.sync() ;
         // Force root reset.
-        bpt2 = BPlusTree.create(bptParams, blkMgrNodes, blkMgrRecords) ;
+        bpt2 = BPlusTreeFactory.create(bptParams, blkMgrNodes, blkMgrRecords) ;
         return bpt2 ;
     }
 

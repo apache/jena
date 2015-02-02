@@ -20,24 +20,28 @@ package org.seaborne.dboe.index.bplustree;
 import org.seaborne.dboe.base.block.Block ;
 import org.seaborne.dboe.base.block.BlockConverter ;
 import org.seaborne.dboe.base.block.BlockType ;
+import org.seaborne.dboe.base.page.PageBlockMgr ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPage ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr ;
 import org.seaborne.dboe.base.recordbuffer.RecordBufferPageMgr.Block2RecordBufferPage ;
 
 /** Bridge for making, getting and putting BPTreeRecords over a RecordBufferPageMgr */
-final public class BPTreeRecordsMgr extends BPTreePageMgr<BPTreeRecords>
+final public class BPTreeRecordsMgr extends PageBlockMgr<BPTreeRecords>
 {
     // Only "public" for external very low level tools in development to access this class.
     // Assume package access.
 
     private RecordBufferPageMgr rBuffPageMgr ;
     
-    BPTreeRecordsMgr(BPlusTree bpTree, RecordBufferPageMgr rBuffPageMgr)
-    {
-        super(bpTree, null, rBuffPageMgr.getBlockMgr()) ;
+    BPTreeRecordsMgr(BPlusTree bpt, RecordFactory recordFactory, RecordBufferPageMgr rBuffPageMgr) {
+        super(new Block2BPTreeRecords(bpt, recordFactory), rBuffPageMgr.getBlockMgr()) ;
+        // bpt is unititilized at this point.
         this.rBuffPageMgr = rBuffPageMgr ;
-        super.setConverter(new Block2BPTreeRecords(bpTree, bpTree.getRecordFactory())) ;
+        
+        
+        //TO DO ** NOT NEEDED **
+        super.setConverter(new Block2BPTreeRecords(bpt, recordFactory)) ;
     }
     
     /** Converter BPTreeRecords -- make a RecordBufferPage and wraps it.*/ 
@@ -56,7 +60,7 @@ final public class BPTreeRecordsMgr extends BPTreePageMgr<BPTreeRecords>
         public BPTreeRecords fromBlock(Block block)
         {
             RecordBufferPage rbp = recordBufferConverter.fromBlock(block) ;
-            return new BPTreeRecords(bpTree, rbp) ;
+            return new BPTreeRecords(bpTree.getRecordsMgr(), rbp) ;
         }
 
         @Override
@@ -69,7 +73,7 @@ final public class BPTreeRecordsMgr extends BPTreePageMgr<BPTreeRecords>
         public BPTreeRecords createFromBlock(Block block, BlockType bType)
         {
             RecordBufferPage rbp = recordBufferConverter.createFromBlock(block, bType) ;
-            return new BPTreeRecords(bpTree, rbp) ;
+            return new BPTreeRecords(bpTree.getRecordsMgr(), rbp) ;
         }
     }
     
