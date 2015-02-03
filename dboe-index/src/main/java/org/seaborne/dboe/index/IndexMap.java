@@ -25,9 +25,8 @@ import java.util.Map ;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.transaction.txn.TransactionalMRSW ;
 
-public class IndexMap extends TransactionalMRSW implements Index
+public class IndexMap implements Index
 {
     private final Map<ByteArray, ByteArray> index = new HashMap<>() ;
     private final RecordFactory recordFactory ;

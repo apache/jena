@@ -25,7 +25,7 @@
   <groupId>org.seaborne.mantis</groupId>
   <artifactId>dboe-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Mantis - Parent</name>
+  <name>Mantis (${project.artifactId})</name>
 
   <parent>
     <groupId>org.seaborne.mantis</groupId>
@@ -242,7 +242,7 @@
     <!-- apache-repository-snapshots -->
     <repository>
       <id>apache-repository-snapshots</id>
-      <!-- <name>Apache Snapshot Repository</name> -->
+      <!-- <name>Mantis (${project.artifactId})</name> -->
       <url>https://repository.apache.org/snapshots</url>
       <releases>
 	<enabled>false</enabled>

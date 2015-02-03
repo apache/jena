@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dboe-transaction</artifactId>
   <packaging>jar</packaging>
-  <name>Mantis - Transactional Framework</name>
+  <name>Mantis (${project.artifactId})</name>
 
   <parent>
     <groupId>org.seaborne.mantis</groupId>

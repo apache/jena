@@ -27,7 +27,7 @@
   <packaging>pom</packaging>
   <url>https://github.com/afs/mantis/</url>
   <version>0.0.0-SNAPSHOT</version>
-  <name>Mantis - Database Operation Environment</name>
+  <name>Mantis :: Database Operation Environment</name>
 
   <licenses>
     <license>
@@ -77,6 +77,9 @@
     <module>dboe-base</module>
     <module>dboe-transaction</module>
     <module>dboe-index</module>
+    <module>dboe-index-test</module>
+    <module>dboe-index-ext</module>        <!-- Non-transactional external hash table -->
+    <module>dboe-index-btree</module>      <!-- Transactionl oblivious B+tree -->
     <module>dboe-quack</module>
     <module>dboe-trans-data</module>
   </modules>

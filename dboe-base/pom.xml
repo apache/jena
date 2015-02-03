@@ -24,7 +24,7 @@
 
   <artifactId>dboe-base</artifactId>
   <packaging>jar</packaging>
-  <name>Mantis - File Base</name>
+  <name>Mantis (${project.artifactId})</name>
 
   <parent>
     <groupId>org.seaborne.mantis</groupId>

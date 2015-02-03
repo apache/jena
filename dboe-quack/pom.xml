@@ -24,9 +24,9 @@
 
   <artifactId>dboe-quack</artifactId>
   <packaging>jar</packaging>
-  <name>Mantis - Quack</name>
+  <name>Mantis (${project.artifactId})</name>
 
-   <parent>
+  <parent>
     <groupId>org.seaborne.mantis</groupId>
     <artifactId>dboe-parent</artifactId>
     <version>0.0.0-SNAPSHOT</version>
@@ -77,7 +77,7 @@
         <configuration>
           <includes>
 	    <include>**/engine/TC_*.java</include>
-	    <!-- <include>**/sparql/TS_*.java</include> -->
+	    <!--<include>**/TS_*.java</include>-->
           </includes>
         </configuration>
       </plugin>

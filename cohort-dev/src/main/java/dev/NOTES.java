@@ -20,6 +20,11 @@ package dev;
 
 public class NOTES {
     // Mantis / cohort / legion
+    
+    // BlockMgrBuilderStd -> dboe-base
+    // Rename/interface for *BuilderStd.
+    // log4j.properties in all src/test/resources
+    // dboe-base-test ? 
 
     // == Mantis
     // dboe-test ?  See BufferTestLib

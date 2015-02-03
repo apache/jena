@@ -23,9 +23,8 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.transaction.txn.TransactionalComponent ;
 
-public interface Index extends Iterable<Record>, Sync, Closeable, TransactionalComponent
+public interface Index extends Iterable<Record>, Sync, Closeable
 {
     /** Find one record - and return the record actually in the index (may have a value part) */
     public Record find(Record record) ;

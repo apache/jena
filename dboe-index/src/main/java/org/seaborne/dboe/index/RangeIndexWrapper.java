@@ -17,14 +17,11 @@
 
 package org.seaborne.dboe.index;
 
-import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.base.record.RecordMapper ;
-import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.Transaction ;
 
 public class RangeIndexWrapper implements RangeIndex
 {
@@ -34,11 +31,6 @@ public class RangeIndexWrapper implements RangeIndex
     public RangeIndexWrapper(RangeIndex rIdx) { this.rIndex = rIdx ; }
     
     @Override
-    public ComponentId getComponentId() {
-        return rIndex.getComponentId() ;
-    }
-
-     @Override
     public Record find(Record record)
     { return rIndex.find(record) ; }
     
@@ -110,54 +102,4 @@ public class RangeIndexWrapper implements RangeIndex
     @Override
     public long size()
     { return rIndex.size() ; }
-    @Override
-    public void startRecovery() {
-        rIndex.startRecovery();
-    }
-
-    @Override
-    public void recover(ByteBuffer ref) {
-        rIndex.recover(ref) ;
-    }
-
-    @Override
-    public void finishRecovery() {
-        rIndex.finishRecovery() ;
-    }
-
-    @Override
-    public void begin(Transaction transaction) {
-        rIndex.begin(transaction) ;
-    }
-
-    @Override
-    public ByteBuffer commitPrepare(Transaction transaction) {
-        return rIndex.commitPrepare(transaction) ;
-    }
-
-    @Override
-    public void commit(Transaction transaction) {
-        rIndex.commit(transaction);
-    }
-
-    @Override
-    public void commitEnd(Transaction transaction) {
-        rIndex.commitEnd(transaction);
-    }
-
-    @Override
-    public void abort(Transaction transaction) {
-        rIndex.abort(transaction);
-    }
-
-    @Override
-    public void complete(Transaction transaction) {
-        rIndex.complete(transaction);
-    }
-
-    @Override
-    public void shutdown() {
-        rIndex.shutdown();
-    }
-
 }

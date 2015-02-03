@@ -17,24 +17,16 @@
 
 package org.seaborne.dboe.index ;
 
-import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.seaborne.dboe.base.record.Record ;
 import org.seaborne.dboe.base.record.RecordFactory ;
-import org.seaborne.dboe.transaction.txn.ComponentId ;
-import org.seaborne.dboe.transaction.txn.Transaction ;
 
 public class IndexWrapper implements Index {
     protected final Index index ;
 
     public IndexWrapper(Index idx) {
         this.index = idx ;
-    }
-
-    @Override
-    public ComponentId getComponentId() {
-        return index.getComponentId() ;
     }
 
     @Override
@@ -95,55 +87,5 @@ public class IndexWrapper implements Index {
     @Override
     public long size() {
         return index.size() ;
-    }
-
-    @Override
-    public void startRecovery() {
-        index.startRecovery();
-    }
-
-    @Override
-    public void recover(ByteBuffer ref) {
-        index.recover(ref) ;
-    }
-
-    @Override
-    public void finishRecovery() {
-        index.finishRecovery() ;
-    }
-
-    @Override
-    public void begin(Transaction transaction) {
-        index.begin(transaction) ;
-    }
-
-    @Override
-    public ByteBuffer commitPrepare(Transaction transaction) {
-        return index.commitPrepare(transaction) ;
-    }
-
-    @Override
-    public void commit(Transaction transaction) {
-        index.commit(transaction);
-    }
-
-    @Override
-    public void commitEnd(Transaction transaction) {
-        index.commitEnd(transaction);
-    }
-
-    @Override
-    public void abort(Transaction transaction) {
-        index.abort(transaction);
-    }
-
-    @Override
-    public void complete(Transaction transaction) {
-        index.complete(transaction);
-    }
-
-    @Override
-    public void shutdown() {
-        index.shutdown();
     }
 }

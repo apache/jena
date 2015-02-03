@@ -1,4 +1,4 @@
-/*
+/**
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -17,23 +17,12 @@
 
 package org.seaborne.dboe.index;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.seaborne.dboe.index.bplustree.TestBPTreeRecords ;
-import org.seaborne.dboe.index.bplustree.TestBPlusTree ;
-import org.seaborne.dboe.index.bplustree.TestBPlusTreeRewriter ;
-import org.seaborne.dboe.index.ext.TestExtHash ;
-
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestBPlusTree.class,
-    TestBPTreeRecords.class,
-    TestBPlusTreeRewriter.class,
-    
-    TestExtHash.class,
     TestIndexMem.class
-    
 } )
 
 public class TS_Index

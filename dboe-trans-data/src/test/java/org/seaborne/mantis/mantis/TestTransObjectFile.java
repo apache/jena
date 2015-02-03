@@ -32,7 +32,6 @@ import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
-import org.seaborne.mantis.mantis.TransObjectFile ;
 
 public class TestTransObjectFile extends Assert {
     private Journal journal ;

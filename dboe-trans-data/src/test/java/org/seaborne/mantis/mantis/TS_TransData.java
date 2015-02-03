@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses ;
 @RunWith(Suite.class)
 @SuiteClasses( {
     TestTransObjectFile.class
+    , TestTransIndexMem.class
 })
 
 public class TS_TransData { }

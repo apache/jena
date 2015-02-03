@@ -20,6 +20,7 @@ package org.seaborne.dboe.index;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.Index ;
 import org.seaborne.dboe.index.IndexMap ;
+import org.seaborne.dboe.index.test.AbstractTestIndex ;
 
 public class TestIndexMem extends AbstractTestIndex
 {
