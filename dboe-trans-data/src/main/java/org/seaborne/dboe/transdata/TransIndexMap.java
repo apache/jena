@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.mantis.mantis;
+package org.seaborne.dboe.transdata;
 
 import java.util.Arrays ;
 import java.util.HashMap ;

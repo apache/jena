@@ -1,4 +1,4 @@
-/**
+/*
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -15,17 +15,20 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.mantis.mantis;
+package org.seaborne.dboe.transdata;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.seaborne.dboe.base.record.RecordFactory ;
+import org.seaborne.dboe.index.Index ;
+import org.seaborne.dboe.index.IndexMap ;
+import org.seaborne.dboe.index.test.AbstractTestIndex ;
 
-@RunWith(Suite.class)
-@SuiteClasses( {
-    TestTransObjectFile.class
-    , TestTransIndexMem.class
-})
+public class TestTransIndexMem extends AbstractTestIndex
+{
+    @Override
+    protected Index makeIndex(int kLen, int vLen)
+    {
+        RecordFactory rf = new RecordFactory(kLen, vLen) ;
+        return new IndexMap(rf) ;
+    }
 
-public class TS_TransData { }
-
+}

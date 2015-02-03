@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.mantis.mantis;
+package org.seaborne.dboe.transdata;
 
 import java.nio.ByteBuffer ;
 
@@ -32,6 +32,7 @@ import org.seaborne.dboe.transaction.Transactional ;
 import org.seaborne.dboe.transaction.Txn ;
 import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
+import org.seaborne.dboe.transdata.TransObjectFile ;
 
 public class TestTransObjectFile extends Assert {
     private Journal journal ;
