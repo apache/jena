@@ -49,6 +49,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.fuseki.cache.Cache;
 import org.apache.jena.fuseki.cache.CacheAction;
 import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.riot.web.HttpNames ;
@@ -260,29 +261,25 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             Dataset dataset = decideDataset(action, query, queryStringLog) ;
             SPARQLResult result = null;
             CacheAction cacheAction = null;
+            Cache cache = null;
             try ( QueryExecution qExec = createQueryExecution(query, dataset) ; ) {
                 cacheStore = CacheStore.getInstance();
                 if(cacheStore.initialized){
                     log.info("CacheStore is initialized") ;
                     String key = generateKey(action,queryString) ;
-                    Object data = cacheStore.doGet(key);
-                    if(data == null) {
-                        log.info("Data is null so write cache");
+                    cache = (Cache)cacheStore.doGet(key);
+                    if(cache == null || !cache.isInitialized()) {
+                        log.info("cache is null or cache data is not initialized ");
                         result = executeQuery(action, qExec, query, queryStringLog);
-
-                        if(query.isConstructType() || query.isDescribeType()) {
-                            log.info("query is Construct and Describe type");
-                            cacheStore.doSet(key, result);
-                        }
-                            cacheAction = new CacheAction(key, CacheAction.Type.WRITE_CACHE);
-
-
+                        cache = new Cache();
+                        cache.setResult(result);
+                        cacheStore.doSet(key, cache);
+                        cacheAction = new CacheAction(key, CacheAction.Type.WRITE_CACHE);
                     }else{
-                        log.info("Data is not null so read cache");
-                        if(query.isConstructType() || query.isDescribeType()) {
-                            result = (SPARQLResult) data;
-                        }
-                        result = executeQuery(action, qExec, query, queryStringLog);
+                        log.info("cache is not null so read cache");
+                        result = cache.getResult();
+                        //StringBuilder s = cache.getCacheBuilder();
+                        //log.info("cache StringBuilder "+s.toString());
                         cacheAction = new CacheAction(key,CacheAction.Type.READ_CACHE);
                     }
                 }else {
@@ -292,7 +289,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                 }
                 // Deals with exceptions itself.
                 //sendResults(action, result, query.getPrologue()) ;
-                sendResults(action, query, result, query.getPrologue(), cacheAction) ;
+                sendResults(action, query, result, query.getPrologue(), cacheAction, cache) ;
             }
         } catch (QueryCancelledException ex) {
             // Additional counter information.
@@ -420,26 +417,21 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             ServletOps.errorOccurred("Unknown or invalid result type") ;
     }
 
-    protected void sendResults(HttpAction action, Query query, SPARQLResult result, Prologue qPrologue, CacheAction cacheAction) {
-        if(CacheAction.Type.WRITE_CACHE == cacheAction.type) {
-            if (query.isSelectType())
-                ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue, cacheAction);
-            else if (query.isConstructType() || query.isDescribeType())
+    protected void sendResults(HttpAction action,
+                               Query query,
+                               SPARQLResult result,
+                               Prologue qPrologue,
+                               CacheAction cacheAction,
+                               Cache cache) {
+            if (result.isResultSet())
+                ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue, cacheAction, cache);
+            else if (result.isGraph())
                 ResponseModel.doResponseModel(action, result.getModel());
-            else if (query.isAskType())
-                ResponseResultSet.doResponseResultSet(action, result.getBooleanResult(), cacheAction);
+            else if (result.isBoolean()){
+                ResponseResultSet.doResponseResultSet(action, result.getBooleanResult(), cacheAction, cache);
+            }
             else
                 ServletOps.errorOccurred("Unknown or invalid result type");
-        }else{
-            if (query.isSelectType())
-                ResponseResultSet.doResponseResultSet(action, result.getResultSet(), qPrologue, cacheAction);
-            else if (query.isConstructType() || query.isDescribeType())
-                ResponseModel.doResponseModel(action, result.getModel());
-            else if (query.isAskType())
-                ResponseResultSet.doResponseResultSet(action, true, cacheAction);
-            else
-                ServletOps.errorOccurred("Unknown or invalid result type");
-        }
     }
 
     private String formatForLog(Query query) {

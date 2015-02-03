@@ -44,6 +44,7 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.cache.Cache;
 import org.apache.jena.fuseki.cache.CacheAction;
 import org.apache.jena.fuseki.cache.CacheStore;
 import org.apache.jena.fuseki.conneg.ConNeg ;
@@ -96,9 +97,9 @@ public class ResponseResultSet
         doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean) ;
     }
 
-    public static void doResponseResultSet(HttpAction action, Boolean booleanResult, CacheAction cacheAction)
+    public static void doResponseResultSet(HttpAction action, Boolean booleanResult, CacheAction cacheAction, Cache cache)
     {
-        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean, cacheAction) ;
+        doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean, cacheAction, cache) ;
     }
 
     public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue)
@@ -106,9 +107,9 @@ public class ResponseResultSet
         doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable) ;
     }
 
-    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue, CacheAction cacheAction)
+    public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue, CacheAction cacheAction, Cache cache)
     {
-        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable, cacheAction) ;
+        doResponseResultSet$(action, resultSet, null, qPrologue, DEF.rsOfferTable, cacheAction, cache) ;
     }
     
     // If we refactor the conneg into a single function, we can split boolean and result set handling. 
@@ -181,7 +182,8 @@ public class ResponseResultSet
                                              ResultSet resultSet, Boolean booleanResult,
                                              Prologue qPrologue,
                                              AcceptList contentTypeOffer,
-                                             CacheAction cacheAction)
+                                             CacheAction cacheAction,
+                                             Cache cache)
     {
         HttpServletRequest request = action.request ;
         HttpServletResponse response = action.response ;
@@ -228,7 +230,7 @@ public class ResponseResultSet
         if ( equal(serializationType, contentTypeResultsXML) )
             sparqlXMLOutput(action, contentType, resultSet, stylesheetURL, booleanResult) ;
         else if ( equal(serializationType, contentTypeResultsJSON) )
-            jsonOutput(action, contentType, resultSet, booleanResult, cacheAction) ;
+            jsonOutput(action, contentType, resultSet, booleanResult, cacheAction, cache) ;
         else if ( equal(serializationType, contentTypeTextPlain) )
             textOutput(action, contentType, resultSet, qPrologue, booleanResult) ;
         else if ( equal(serializationType, contentTypeTextCSV) )
@@ -320,7 +322,7 @@ public class ResponseResultSet
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 
-    private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult, final CacheAction cacheAction)
+    private static void jsonOutput(HttpAction action, String contentType, final ResultSet resultSet, final Boolean booleanResult, final CacheAction cacheAction, Cache cache)
     {
         OutputContent proc = new OutputContent(){
             @Override
@@ -334,10 +336,12 @@ public class ResponseResultSet
             @Override
             public void output(ServletOutputStream out, StringBuilder cacheBuilder)
             {
-                if ( resultSet != null )
+                if ( resultSet != null ){
                     ResultSetFormatter.outputAsJSON(out, resultSet, cacheBuilder) ;
-                if (  booleanResult != null )
-                    ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue(), cacheBuilder) ;
+                }
+                if (  booleanResult != null ) {
+                    ResultSetFormatter.outputAsJSON(out, booleanResult.booleanValue(), cacheBuilder);
+                }
             }
         } ;
 
@@ -364,12 +368,15 @@ public class ResponseResultSet
                     cacheBuilder.append(")");
                     out.println(")");
                 }
-                log.info("cacheBuilder prepared for storing in cacheStore ====== " + cacheBuilder.toString());
-                cacheStore.doSet(cacheAction.getKey(), cacheBuilder);
+                log.info("cacheBuilder prepared for storing in cacheStore " + cacheBuilder.toString());
+                cache.initialized();
+                cache.setCacheBuilder(cacheBuilder);
+                cacheStore.doSet(cacheAction.getKey(), cache);
             }else{
 
-                StringBuilder cache =  (StringBuilder) cacheStore.doGet(cacheAction.getKey());
-                output(action, contentType, charsetUTF8, proc, cache, cacheAction);
+                Cache cacheValue =  (Cache)cacheStore.doGet(cacheAction.getKey());
+                StringBuilder cacheBuilder = cacheValue.getCacheBuilder();
+                output(action, contentType, charsetUTF8, proc, cacheBuilder, cacheAction);
             }
         } catch (IOException ex) { IO.exception(ex) ; }
     }
@@ -484,8 +491,7 @@ public class ResponseResultSet
                     proc.output(out,cacheBuilder);
                     out.flush();
                 }else{
-                    log.info("I am here!!!!!");
-                    log.info("cacheBuilder in cacheStore ==== "+cacheBuilder);
+                    log.info("cacheBuilder in cacheStore "+cacheBuilder);
                     out.println(cacheBuilder.toString());
                     out.flush();
                 }
