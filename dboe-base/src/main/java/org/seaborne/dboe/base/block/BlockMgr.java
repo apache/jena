@@ -33,6 +33,10 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     /** Answer whether there are any blocks in the collection being managed */
     public boolean isEmpty() ; 
     
+    /** The allocted allocated blocks are in the range [0,allocLimit).
+     * Allocation units need not be +1 increments */ 
+    public long allocLimit() ; 
+
     /** Fetch a block, use for read only */
     public Block getRead(long id);
     
@@ -42,7 +46,7 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     /** Fetch a block, use for write and read - only inside "update" */
     public Block getWrite(long id);
 
-    /** Release a block, unmodified. */
+    /** Release a block, unmodified or already written. */
     public void release(Block block) ;
 
     /** Promote to writeable : it's OK to promote an already writeable block */ 

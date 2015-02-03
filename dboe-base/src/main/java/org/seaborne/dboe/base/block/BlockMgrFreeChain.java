@@ -15,31 +15,27 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.base.block;
+package org.seaborne.dboe.base.block ;
 
 import java.util.ArrayDeque ;
 import java.util.Deque ;
 
-/** Recycle blocks - but only in-session.
- *   At the end of JVM run, the blocks are made "permanent" as no one finds them again on restart.
+/**
+ * Recycle blocks - but only in-session. At the end of JVM run, the blocks are
+ * made "permanent" as no one finds them again on restart.
  */
-final
-public class BlockMgrFreeChain extends BlockMgrWrapper
-{
+final public class BlockMgrFreeChain extends BlockMgrWrapper {
     // Could keep Pair<Integer, ByteBuffer>
-    //List<Block> freeBlocks = new ArrayList<Block>() ;
-    private final Deque<Block> freeBlocks = new ArrayDeque<>();
-    
-    public BlockMgrFreeChain(BlockMgr blockMgr)
-    {
+    // List<Block> freeBlocks = new ArrayList<Block>() ;
+    private final Deque<Block> freeBlocks = new ArrayDeque<>() ;
+
+    public BlockMgrFreeChain(BlockMgr blockMgr) {
         super(blockMgr) ;
     }
 
     @Override
-    public Block allocate(int blockSize)
-    {
-        if ( ! freeBlocks.isEmpty() )
-        {
+    public Block allocate(int blockSize) {
+        if ( !freeBlocks.isEmpty() ) {
             Block block = freeBlocks.removeFirst() ;
             block.getByteBuffer().position(0) ;
             return block ;
@@ -48,34 +44,31 @@ public class BlockMgrFreeChain extends BlockMgrWrapper
     }
 
     @Override
-    public void free(Block block)
-    {
+    public void free(Block block) {
         freeBlocks.add(block) ;
     }
 
     @Override
-    public boolean valid(int id)
-    {
-        for ( Block blk : freeBlocks ) 
-        {
+    public boolean valid(int id) {
+        for ( Block blk : freeBlocks ) {
             if ( blk.getId() == id )
-                return true ; 
+                return true ;
         }
         return super.valid(id) ;
     }
-    
-    private boolean isFree(int id)
-    {
-        return freeBlocks.contains(id) ; 
+
+    private boolean isFree(int id) {
+        return freeBlocks.contains(id) ;
     }
 
     @Override
-    public void sync()
-    {
+    public void sync() {
         // Flush free blocks?
         super.sync() ;
     }
-    
+
     @Override
-    public String toString() { return "Free:"+super.toString() ; }
+    public String toString() {
+        return "Free:" + super.toString() ;
+    }
 }

@@ -254,6 +254,11 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     public boolean isEmpty() {
         return blockMgr.isEmpty() ;
     }
+    
+    @Override
+    public long allocLimit() {
+        return blockMgr.allocLimit() ;
+    }
 
     @Override
     public boolean valid(int id) {

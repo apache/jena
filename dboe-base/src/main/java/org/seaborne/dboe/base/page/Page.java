@@ -24,6 +24,9 @@ public interface Page extends Printable
 {
     public static final int NO_ID   = -1 ;
     
+    /** Pages are addressed ints (a page ref does in on-disk blocks)
+     * although block are address in longs
+     */  
     public int getId() ;
     
     /** Return a string for display that identifies this Page */

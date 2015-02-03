@@ -35,9 +35,10 @@ public abstract class BlockAccessBase implements BlockAccess
     protected final FileBase file ; 
     
     protected final String label ;
+    // Does this need to be tread safe?
+    // Only changes in a write transaction 
     protected long numFileBlocks = -1 ;             // Don't overload use of this!
     protected final AtomicLong seq ;                // Id (future)
-    protected boolean isEmpty = false ;
 
     public BlockAccessBase(String filename, int blockSize)
     {
@@ -55,16 +56,13 @@ public abstract class BlockAccessBase implements BlockAccess
 
         if ( filesize%longBlockSize != 0 )
             throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;
-
-        if ( filesize == 0 )
-            isEmpty = true ;
     }
 
     protected abstract Logger getLog()  ;
     @Override
-    final public boolean isEmpty() { return isEmpty ; }
+    final public boolean isEmpty() { return numFileBlocks <= 0 ; }
     
-    final protected void writeNotification(Block block) { isEmpty = false ; }
+    final protected void writeNotification(Block block) { }
     
     final protected void overwriteNotification(Block block)
     {
@@ -76,11 +74,7 @@ public abstract class BlockAccessBase implements BlockAccess
         }
     }
 
-    
-    //@Override 
-    final
-    //public 
-    protected int allocateId()
+    final protected int allocateId()
     {
         checkIfClosed() ;
         int id = (int)seq.getAndIncrement() ;
@@ -89,10 +83,15 @@ public abstract class BlockAccessBase implements BlockAccess
     }
     
     @Override
+    final public long allocBoundary() { 
+        checkIfClosed() ;
+        return seq.get() ;
+    }
+    
+    @Override
     final synchronized
     public boolean valid(long id)
     {
-        // Access to numFileBlocks not synchronized - it's only a check
         if ( id >= numFileBlocks )
             return false ;
         if ( id < 0 )

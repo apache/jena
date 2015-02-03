@@ -41,6 +41,8 @@ public class PageBlockMgr<T extends Page>
     
     public BlockMgr getBlockMgr() { return blockMgr ; } 
     
+    public int allocLimit()        { return (int)blockMgr.allocLimit() ; }
+    
 //    /** Allocate an uninitialized slot.  Fill with a .put later */ 
 //    public int allocateId()           { return blockMgr.allocateId() ; }
     

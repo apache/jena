@@ -25,8 +25,6 @@ import java.util.Iterator ;
  */
 
 public class BlockMgrSync implements BlockMgr {
-    // Old code.
-
     protected final BlockMgr blockMgr ;
 
     public BlockMgrSync(BlockMgr blockMgr) {
@@ -100,6 +98,11 @@ public class BlockMgrSync implements BlockMgr {
     @Override
     synchronized public boolean isEmpty() {
         return blockMgr.isEmpty() ;
+    }
+
+    @Override
+    synchronized public long allocLimit() {
+        return blockMgr.allocLimit() ;
     }
 
     @Override

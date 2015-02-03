@@ -105,6 +105,11 @@ public class BlockAccessMem implements BlockAccess
     }
 
     @Override
+    public long allocBoundary() {
+        return blocks.size() ;
+    }
+
+    @Override
     public boolean valid(long id) {
         return id >= 0 && id < blocks.size() ;
     }

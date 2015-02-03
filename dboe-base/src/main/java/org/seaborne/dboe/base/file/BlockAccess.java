@@ -45,6 +45,12 @@ public interface BlockAccess extends Sync, Closeable
     
     public boolean isEmpty() ; 
     
+    /* The limit of the current allocation space.
+     * Allocated blocks have ids in [0, allocBoundary).
+     * Allocation units need not be in +1 increments.
+      */  
+    public long allocBoundary() ;
+    
     public boolean valid(long id) ;
 
     public String getLabel() ;
