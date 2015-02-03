@@ -41,9 +41,9 @@
     </dependency>
 
     <dependency>
+      <!--  Bring junit into scope-compile -->
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${ver.junit}</version>
       <scope>compile</scope>
     </dependency>
 
