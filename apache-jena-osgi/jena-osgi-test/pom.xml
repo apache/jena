@@ -99,12 +99,22 @@
 			<scope>test</scope>
 		</dependency>
 
+    <!-- OSGi Framework -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.framework</artifactId>
 			<version>${felix.version}</version>
 			<scope>test</scope>
 		</dependency>
+    <!-- or.. 
+    <dependency>
+      <groupId>org.eclipse</groupId>
+      <artifactId>osgi</artifactId>
+      <version>3.9.1-v20140110-1610</version>
+      <scope>test</scope>
+    </dependency>
+         -->
+
 		
 	</dependencies>
 
