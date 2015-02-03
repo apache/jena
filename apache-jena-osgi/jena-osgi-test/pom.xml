@@ -46,6 +46,7 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>5.0.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -58,6 +59,7 @@
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-log4j2</artifactId>
 			<version>${pax.logging.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
