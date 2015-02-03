@@ -20,6 +20,10 @@ package org.apache.jena.osgi.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackages;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
 
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -39,7 +43,7 @@ import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
+import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.BundleContext;
 
 import com.hp.hpl.jena.ontology.Individual;
@@ -60,14 +64,14 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.tdb.TDBFactory;
-import static org.ops4j.pax.exam.CoreOptions.*;
 
 /**
  * Brief tests of the Jena modules covered by jena-osgi
  * 
  */
 @RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
+// Restart OSGi framework PerClass or PerMethod ?
+@ExamReactorStrategy(PerClass.class)
 public class JenaOSGITest {
 
 	@Inject
@@ -86,17 +90,18 @@ public class JenaOSGITest {
 						// manually. See ../jena-osgi/pom.xml 
 						// for dependencies that are NOT in <scope>provided</scope>
 						// (luckily the version numbers are picked up!)
-				mavenBundle("org.apache.jena", "jena-osgi").versionAsInProject(),
-				mavenBundle("org.apache.httpcomponents", "httpclient-osgi").versionAsInProject(),
-				mavenBundle("org.apache.httpcomponents", "httpcore-osgi").versionAsInProject(),
-				mavenBundle("com.github.jsonld-java", "jsonld-java").versionAsInProject(),
-				mavenBundle("org.apache.commons", "commons-csv").versionAsInProject(),
-				mavenBundle("org.apache.thrift", "libthrift").versionAsInProject(),
-				mavenBundle("org.slf4j", "jcl-over-slf4j").versionAsInProject(),
-				mavenBundle("org.slf4j", "slf4j-log4j").versionAsInProject(),
-				mavenBundle("org.slf4j", "slf4j-api").versionAsInProject(),
-				mavenBundle("org.apache.commons", "commons-lang3").versionAsInProject(),
-				junitBundles());
+				junitBundles(),					
+				mavenBundle("org.apache.jena", "jena-osgi"),
+				mavenBundle("org.apache.httpcomponents", "httpclient-osgi"),
+				mavenBundle("org.apache.httpcomponents", "httpcore-osgi"),
+				mavenBundle("com.github.jsonld-java", "jsonld-java"),
+				mavenBundle("org.apache.commons", "commons-csv"),
+				mavenBundle("org.apache.thrift", "libthrift"),
+				mavenBundle("org.slf4j", "jcl-over-slf4j"),
+				mavenBundle("org.slf4j", "slf4j-log4j12"),
+				mavenBundle("org.slf4j", "slf4j-api"),
+				mavenBundle("org.apache.commons", "commons-lang3")	
+				);
 	}
 
 	private static final String EXAMPLE_COM_GRAPH = "http://example.com/graph";
