@@ -15,12 +15,8 @@
  *  information regarding copyright ownership.
  */
 
-package org.seaborne.dboe.index;
+package org.seaborne.dboe.base.block;
 
-import org.seaborne.dboe.base.block.BlockMgr ;
-import org.seaborne.dboe.base.block.BlockMgrBuilder ;
-import org.seaborne.dboe.base.block.BlockMgrFactory ;
-import org.seaborne.dboe.base.block.BlockParams ;
 import org.seaborne.dboe.base.file.FileSet ;
 
 public class BlockMgrBuilderStd implements BlockMgrBuilder {
