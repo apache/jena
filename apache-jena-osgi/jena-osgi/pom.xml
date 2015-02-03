@@ -21,21 +21,17 @@
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.jena</groupId>
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>apache-jena-osgi</artifactId>
+    <version>2.13.0-SNAPSHOT</version>
+  </parent>
   <artifactId>jena-osgi</artifactId>
   <packaging>bundle</packaging>
   <name>Apache Jena - OSGi bundle</name>
-  <url>http://jena.apache.org/</url>
-  <version>2.13.0-SNAPSHOT</version>
   <description>
-      Embedding all Jena modules in a single OSGi bundle.
+    Embedding the main Jena modules (iri/core/arq/tdb) in a single OSGi bundle.
   </description>
-  <parent>
-    <groupId>org.apache.jena</groupId>
-    <artifactId>jena-parent</artifactId>
-    <version>12-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
-  </parent>
 
 
   <!--
