@@ -25,7 +25,17 @@ public class NOTES {
     // Rename/interface for *BuilderStd.
     // log4j.properties in all src/test/resources
     // dboe-base-test ? 
-
+    
+    // BlockAccessBase/BlockAccessMapped needs to track highest block better.
+    // Delete BlockMgrSync - used by BlockMgrCahe
+    
+    // Free chain management for MVCC block mgrs.  BlockMgrFreeChain.
+    
+    // BPTreePage.isModifiable(int id, BptTxnState)
+    //   BPTreeRecords.isModifiable -- look into bptree object
+    //   BPTreeNode.isModifiable
+    
+    
     // == Mantis
     // dboe-test ?  See BufferTestLib
     // log4j.properties.

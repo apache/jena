@@ -26,15 +26,21 @@ import org.apache.jena.atlas.logging.LogCtl ;
 import org.seaborne.dboe.base.block.BlockMgrFactory ;
 import org.seaborne.dboe.base.file.Location ;
 import org.seaborne.dboe.base.record.Record ;
-import static dev.RecordLib.* ;
 import org.seaborne.dboe.base.record.RecordFactory ;
 import org.seaborne.dboe.index.RangeIndex ;
-import org.seaborne.dboe.index.bplustree.BPlusTree ;
-import org.seaborne.dboe.index.bplustree.BPlusTreeFactory ;
-import org.seaborne.dboe.index.bplustree.BPlusTreeParams ;
 import org.seaborne.dboe.sys.SystemIndex ;
+/* ***************** TRANSACTION BPLUSTREE *********************** */
+import org.seaborne.dboe.trans.bplustree.BPlusTree ;
+import org.seaborne.dboe.trans.bplustree.BPlusTreeFactory ;
+import org.seaborne.dboe.trans.bplustree.BPlusTreeParams ;
+import org.seaborne.dboe.transaction.Transactional ;
+/* ***************** TRANSACTION BPLUSTREE *********************** */
 import org.seaborne.dboe.transaction.txn.TransactionCoordinator ;
+import org.seaborne.dboe.transaction.txn.TransactionalBase ;
 import org.seaborne.dboe.transaction.txn.journal.Journal ;
+import static dev.RecordLib.* ;
+
+import com.hp.hpl.jena.query.ReadWrite ;
 
 public class MainIndex {
     static { LogCtl.setLog4j() ; }
@@ -49,6 +55,11 @@ public class MainIndex {
         SystemIndex.setNullOut(true) ;
         
         BPlusTree bpt = BPlusTreeFactory.makeMem(2, 1, recordFactory.keyLength(), recordFactory.valueLength()) ;
+
+        // Later - integrate
+        Transactional holder = new TransactionalBase(journal, bpt) ;
+
+        holder.begin(ReadWrite.WRITE);
         
         RangeIndex idx = bpt ;
         
@@ -72,6 +83,12 @@ public class MainIndex {
         
         verbose(true, ()->dataRecords1.forEach(bpt::add)) ;
         
+        holder.commit() ;
+        holder.end() ;
+        
+        holder.begin(ReadWrite.READ);
+
+        
         if ( false ) {
             // Two part.
             dataRecords2a.forEach((x) -> { System.err.println("Add "+x) ; bpt.add(x) ;} ) ;
@@ -86,6 +103,7 @@ public class MainIndex {
         
         
         bpt.dump();
+        
 //        
 //        TransactionCoordinator txnCoord1 = new TransactionCoordinator(Journal.create(Location.mem())) ;
 //        Transactional tIdx = new TransactionalBase("Counter", txnCoord1) ;
