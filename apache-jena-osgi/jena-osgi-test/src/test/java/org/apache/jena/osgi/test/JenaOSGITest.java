@@ -89,16 +89,28 @@ public class JenaOSGITest {
 						// manually. See ../jena-osgi/pom.xml 
 						// for dependencies that are NOT in <scope>provided</scope>
 						// (luckily the version numbers are picked up!)
-				mavenBundle("org.apache.jena", "jena-osgi", "2.13.0-SNAPSHOT"),
+				//  Error starting bundle slf4j.log4j12. Fragment bundles can not be started.
+				//linkBundle("slf4j.log4j12"),
+				//linkBundle("slf4j.api"),
+				// Not sure if this is a Felix problem or what..
+				// Instead we'll use:
+				linkBundle("org.ops4j.pax.logging.pax-logging-log4j2"),
+				linkBundle("org.ops4j.pax.logging.pax-logging-api"),
+
+				
+				mavenBundle("org.apache.jena", "jena-osgi"),
 				linkBundle("org.apache.httpcomponents.httpclient"),
 				linkBundle("org.apache.httpcomponents.httpcore"),
 				linkBundle("com.github.jsonld-java"),
 				linkBundle("org.apache.commons.csv"),
 				linkBundle("org.apache.thrift"),
 				linkBundle("jcl.over.slf4j"),
-				linkBundle("slf4j.api"),
-				linkBundle("slf4j.log4j12"),
+				
+				linkBundle("com.fasterxml.jackson.core.jackson-core"),
+				linkBundle("com.fasterxml.jackson.core.jackson-databind"),
+				linkBundle("com.fasterxml.jackson.core.jackson-annotations"),
 				linkBundle("org.apache.commons.lang3"),
+				
 				junitBundles()
 				);
 	}

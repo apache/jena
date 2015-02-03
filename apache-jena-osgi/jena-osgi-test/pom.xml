@@ -27,10 +27,10 @@
 	<packaging>bundle</packaging>
 
 	<properties>
-		<!-- https://ops4j1.jira.com/wiki/display/PAXEXAM4/OSGi+Containers -->
-		<exam.version>4.4.0</exam.version>
-		<url.version>1.6.0</url.version>
 		<felix.version>4.6.0</felix.version>
+		<pax.exam.version>4.4.0</pax.exam.version>
+		<pax.url.version>1.6.0</pax.url.version>
+		<pax.logging.version>1.8.1</pax.logging.version>
 	</properties>
 
 	<dependencies>
@@ -55,10 +55,23 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-log4j2</artifactId>
+			<version>${pax.logging.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>${pax.logging.version}</version>
+		</dependency>
+
+		
+		
+
+		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
-			<!-- One of: -forked -native -paxrunner -->
 			<artifactId>pax-exam-container-native</artifactId>
-			<version>${exam.version}</version>
+			<version>${pax.exam.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -66,21 +79,21 @@
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-junit4</artifactId>
-			<version>${exam.version}</version>
+			<version>${pax.exam.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-link-mvn</artifactId>
-			<version>${exam.version}</version>
+			<version>${pax.exam.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.ops4j.pax.url</groupId>
 			<artifactId>pax-url-aether</artifactId>
-			<version>${url.version}</version>
+			<version>${pax.url.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -90,12 +103,7 @@
 			<version>${felix.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
-		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -115,10 +123,10 @@
 			<plugin>
 				<groupId>org.ops4j.pax.exam</groupId>
 				<artifactId>exam-maven-plugin</artifactId>
-				<version>${exam.version}</version>
+				<version>${pax.exam.version}</version>
 				<executions>
 					<execution>
-						<id>generate-config</id>
+						<id>generate-link-files</id>
 						<goals>
 							<goal>generate-link-files</goal>
 						</goals>
