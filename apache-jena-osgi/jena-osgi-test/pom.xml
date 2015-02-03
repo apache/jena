@@ -28,8 +28,9 @@
 
 	<properties>
 		<!-- https://ops4j1.jira.com/wiki/display/PAXEXAM4/OSGi+Containers -->
-		<exam.version>3.4.0</exam.version>
+		<exam.version>4.4.0</exam.version>
 		<url.version>1.6.0</url.version>
+		<felix.version>4.6.0</felix.version>
 	</properties>
 
 	<dependencies>
@@ -38,6 +39,13 @@
 			<artifactId>jena-osgi</artifactId>
 			<version>${project.version}</version>
 			<type>bundle</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>5.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -79,7 +87,7 @@
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.framework</artifactId>
-			<version>3.2.2</version>
+			<version>${felix.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -103,6 +111,20 @@
 						<!-- <Embed-Dependency>artifactId=jena-core;inline=true</Embed-Dependency> -->
 					</instructions>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.ops4j.pax.exam</groupId>
+				<artifactId>exam-maven-plugin</artifactId>
+				<version>${exam.version}</version>
+				<executions>
+					<execution>
+						<id>generate-config</id>
+						<goals>
+							<goal>generate-link-files</goal>
+						</goals>
+						<phase>generate-test-resources</phase>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

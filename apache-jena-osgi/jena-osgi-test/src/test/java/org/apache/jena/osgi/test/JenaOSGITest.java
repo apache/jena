@@ -20,8 +20,8 @@ package org.apache.jena.osgi.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.bootDelegationPackages;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.linkBundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
@@ -40,6 +40,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
+import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -70,7 +71,6 @@ import com.hp.hpl.jena.tdb.TDBFactory;
  * 
  */
 @RunWith(PaxExam.class)
-// Restart OSGi framework PerClass or PerMethod ?
 @ExamReactorStrategy(PerClass.class)
 public class JenaOSGITest {
 
@@ -80,27 +80,26 @@ public class JenaOSGITest {
 	@Configuration
 	public Option[] config() {
 		return options(
-				bootDelegationPackages("sun.*", 
-						"com.sun.*",
-						"java.*",
-						"javax.*",
-						"javax.net.ssl"),
-						
+//				bootDelegationPackages("sun.*", 
+//						"com.sun.*",
+//						"java.*",
+//						"javax.*",
+//						"javax.net.ssl"),
 						// In PAX we have to list transitive dependencies
 						// manually. See ../jena-osgi/pom.xml 
 						// for dependencies that are NOT in <scope>provided</scope>
 						// (luckily the version numbers are picked up!)
-				junitBundles(),					
-				mavenBundle("org.apache.jena", "jena-osgi"),
-				mavenBundle("org.apache.httpcomponents", "httpclient-osgi"),
-				mavenBundle("org.apache.httpcomponents", "httpcore-osgi"),
-				mavenBundle("com.github.jsonld-java", "jsonld-java"),
-				mavenBundle("org.apache.commons", "commons-csv"),
-				mavenBundle("org.apache.thrift", "libthrift"),
-				mavenBundle("org.slf4j", "jcl-over-slf4j"),
-				mavenBundle("org.slf4j", "slf4j-log4j12"),
-				mavenBundle("org.slf4j", "slf4j-api"),
-				mavenBundle("org.apache.commons", "commons-lang3")	
+				mavenBundle("org.apache.jena", "jena-osgi", "2.13.0-SNAPSHOT"),
+				linkBundle("org.apache.httpcomponents.httpclient"),
+				linkBundle("org.apache.httpcomponents.httpcore"),
+				linkBundle("com.github.jsonld-java"),
+				linkBundle("org.apache.commons.csv"),
+				linkBundle("org.apache.thrift"),
+				linkBundle("jcl.over.slf4j"),
+				linkBundle("slf4j.api"),
+				linkBundle("slf4j.log4j12"),
+				linkBundle("org.apache.commons.lang3"),
+				junitBundles()
 				);
 	}
 
