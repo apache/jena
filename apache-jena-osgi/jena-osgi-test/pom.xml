@@ -43,17 +43,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>compile</scope>
+			<scope>test</scope>
 		</dependency>
-
-		<!-- <dependency> <groupId>org.osgi</groupId> <artifactId>org.osgi.core</artifactId> 
-			<version>4.3.1</version> <scope>provided</scope> </dependency> -->
-
 
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<!-- One of: -forked -native -paxrunner -->
-			<artifactId>pax-exam-container-forked</artifactId>
+			<artifactId>pax-exam-container-native</artifactId>
 			<version>${exam.version}</version>
 			<scope>test</scope>
 		</dependency>
