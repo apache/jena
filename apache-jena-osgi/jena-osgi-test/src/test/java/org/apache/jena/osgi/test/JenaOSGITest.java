@@ -81,7 +81,21 @@ public class JenaOSGITest {
 						"java.*",
 						"javax.*",
 						"javax.net.ssl"),
-				mavenBundle("org.apache.jena", "jena-osgi"),
+						
+						// In PAX we have to list transitive dependencies
+						// manually. See ../jena-osgi/pom.xml 
+						// for dependencies that are NOT in <scope>provided</scope>
+						// (luckily the version numbers are picked up!)
+				mavenBundle("org.apache.jena", "jena-osgi").versionAsInProject(),
+				mavenBundle("org.apache.httpcomponents", "httpclient-osgi").versionAsInProject(),
+				mavenBundle("org.apache.httpcomponents", "httpcore-osgi").versionAsInProject(),
+				mavenBundle("com.github.jsonld-java", "jsonld-java").versionAsInProject(),
+				mavenBundle("org.apache.commons", "commons-csv").versionAsInProject(),
+				mavenBundle("org.apache.thrift", "libthrift").versionAsInProject(),
+				mavenBundle("org.slf4j", "jcl-over-slf4j").versionAsInProject(),
+				mavenBundle("org.slf4j", "slf4j-log4j").versionAsInProject(),
+				mavenBundle("org.slf4j", "slf4j-api").versionAsInProject(),
+				mavenBundle("org.apache.commons", "commons-lang3").versionAsInProject(),
 				junitBundles());
 	}
 
