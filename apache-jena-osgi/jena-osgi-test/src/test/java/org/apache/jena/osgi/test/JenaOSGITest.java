@@ -76,6 +76,11 @@ public class JenaOSGITest {
 	@Configuration
 	public Option[] config() {
 		return options(
+				bootDelegationPackages("sun.*", 
+						"com.sun.*",
+						"java.*",
+						"javax.*",
+						"javax.net.ssl"),
 				mavenBundle("org.apache.jena", "jena-osgi"),
 				junitBundles());
 	}
