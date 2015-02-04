@@ -171,7 +171,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
     public final void blank_node_divergence_01() throws IOException, InterruptedException {
         Assume.assumeTrue("Requires ParserProfile be respected", this.respectsParserProfile());
         Assume.assumeFalse("Requires that Blank Node identity not be preserved", this.preservesBlankNodeIdentity());
-        
+
         // Temporary files
         File a = File.createTempFile("bnode_divergence", getInitialInputExtension());
         File intermediateOutputDir = Files.createTempDirectory("bnode_divergence", new FileAttribute[0]).toFile();
@@ -233,7 +233,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
             // by default get treated as different nodes and so the blank nodes
             // diverge which is incorrect and undesirable behaviour in
             // multi-stage pipelines
-            System.out.println(intermediateOutputDir.getAbsolutePath());
+            LOGGER.debug("Intermediate output directory is {}", intermediateOutputDir.getAbsolutePath());
             job = Job.getInstance(config);
             inputFormat = createIntermediateInputFormat();
             job.setInputFormatClass(inputFormat.getClass());
@@ -280,7 +280,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
     public void blank_node_divergence_02() throws IOException, InterruptedException {
         Assume.assumeTrue("Requires ParserProfile be respected", this.respectsParserProfile());
         Assume.assumeFalse("Requires that Blank Node identity not be preserved", this.preservesBlankNodeIdentity());
-        
+
         // Temporary files
         File a = File.createTempFile("bnode_divergence", getInitialInputExtension());
         File intermediateOutputDir = Files.createTempDirectory("bnode_divergence", new FileAttribute[0]).toFile();
@@ -344,7 +344,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
             // multi-stage pipelines. However it is the default behaviour
             // because when we start from external inputs we want them to be
             // file scoped.
-            System.out.println(intermediateOutputDir.getAbsolutePath());
+            LOGGER.debug("Intermediate output directory is {}", intermediateOutputDir.getAbsolutePath());
             job = Job.getInstance(config);
             inputFormat = createIntermediateInputFormat();
             job.setInputFormatClass(inputFormat.getClass());
@@ -390,7 +390,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
     public void blank_node_identity_01() throws IOException, InterruptedException {
         Assume.assumeTrue("Requires ParserProfile be respected", this.respectsParserProfile());
         Assume.assumeFalse("Requires that Blank Node identity not be preserved", this.preservesBlankNodeIdentity());
-        
+
         // Temporary files
         File a = File.createTempFile("bnode_identity", getInitialInputExtension());
         File b = File.createTempFile("bnode_identity", getInitialInputExtension());
@@ -454,7 +454,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
             // The Blank nodes should have been given separate identities so we
             // should not be conflating them, this is the opposite problem to
             // that described in JENA-820
-            System.out.println(intermediateOutputDir.getAbsolutePath());
+            LOGGER.debug("Intermediate output directory is {}", intermediateOutputDir.getAbsolutePath());
             job = Job.getInstance(config);
             inputFormat = createIntermediateInputFormat();
             job.setInputFormatClass(inputFormat.getClass());
@@ -499,7 +499,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
     public void blank_node_identity_02() throws IOException, InterruptedException {
         Assume.assumeTrue("Requires ParserProfile be respected", this.respectsParserProfile());
         Assume.assumeFalse("Requires that Blank Node identity not be preserved", this.preservesBlankNodeIdentity());
-        
+
         // Temporary files
         File a = File.createTempFile("bnode_identity", getInitialInputExtension());
         File b = File.createTempFile("bnode_identity", getInitialInputExtension());
@@ -563,7 +563,7 @@ public abstract class AbstractBlankNodeTests<T, TValue extends AbstractNodeTuple
             // The Blank nodes should have been given separate identities so we
             // should not be conflating them, this is the opposite problem to
             // that described in JENA-820
-            System.out.println(intermediateOutputDir.getAbsolutePath());
+            LOGGER.debug("Intermediate output directory is {}", intermediateOutputDir.getAbsolutePath());
             job = Job.getInstance(config);
             inputFormat = createIntermediateInputFormat();
             job.setInputFormatClass(inputFormat.getClass());
