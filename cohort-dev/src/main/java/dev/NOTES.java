@@ -35,6 +35,18 @@ public class NOTES {
     //   BPTreeRecords.isModifiable -- look into bptree object
     //   BPTreeNode.isModifiable
     
+    // BPlusTree.nonTrasnactional
+    //   No txn tests / always "writable"
+    //   No block cloning
+    //   All blocks writable.
+    // Indirects for 
+    //   getState
+    //   checkWriteTxn
+    //   checkTxn
+    // on BptTxnState
+    // or separate handler object.
+
+    
     // Easy route : make modifiable if 
     // **** There is an in-memory parent chain.
     

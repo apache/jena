@@ -57,8 +57,8 @@ public class MainIndex {
         BPlusTree bpt = BPlusTreeFactory.makeMem(2, 1, recordFactory.keyLength(), recordFactory.valueLength()) ;
 
         // Later - integrate
+        Journal journal = Journal.create(Location.mem()) ;
         Transactional holder = new TransactionalBase(journal, bpt) ;
-
         holder.begin(ReadWrite.WRITE);
         
         RangeIndex idx = bpt ;
